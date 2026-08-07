@@ -25,6 +25,17 @@ export const isMockQuiz = (quiz: QuizPlacementSource) => {
   return (quiz.type || 'quiz') === 'quiz';
 };
 
+/**
+ * يحدد ما إذا كان الاختبار محاكيًا حقيقيًا (على غرار قياس) بأقسام
+ */
+export const isTrueMockExam = (quiz: Partial<Quiz>) => {
+  return quiz.quizKind === 'mock' || quiz.mockExam?.enabled === true;
+};
+
+export const isDrill = (quiz: Partial<Quiz>) => {
+  return quiz.quizKind === 'drill';
+};
+
 export const getQuizPlacementLabel = (quiz: QuizPlacementSource) => {
   const training = isTrainingQuiz(quiz);
   const mock = isMockQuiz(quiz);

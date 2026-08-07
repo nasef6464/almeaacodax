@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
   ArrowRight,
   RefreshCw,
@@ -1921,14 +1921,171 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
   );
 };
 
+/* ─── Sparkline: pure SVG score trend ─── */
+const ScoreSparkline: React.FC<{ scores: number[]; width?: number; height?: number }> = ({
+  scores, width = 120, height = 36,
+}) => {
+  if (scores.length < 2) {
+    return (
+      <div className="flex items-center justify-center text-[10px] font-bold text-gray-400" style={{ width, height }}>
+        محاولة واحدة
+      </div>
+    );
+  }
+  const min = Math.min(...scores, 0);
+  const max = Math.max(...scores, 100);
+  const range = max - min || 1;
+  const pad = 4;
+  const w = width - pad * 2;
+  const h = height - pad * 2;
+  const points = scores.map((s, i) => {
+    const x = pad + (i / (scores.length - 1)) * w;
+    const y = pad + h - ((s - min) / range) * h;
+    return `${x},${y}`;
+  });
+  const lastScore = scores[scores.length - 1];
+  const lastX = pad + w;
+  const lastY = pad + h - ((lastScore - min) / range) * h;
+  const color = lastScore >= 75 ? '#10b981' : lastScore >= 50 ? '#f59e0b' : '#ef4444';
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
+      <polyline
+        points={points.join(' ')}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.7"
+      />
+      <circle cx={lastX} cy={lastY} r="3.5" fill={color} />
+    </svg>
+  );
+};
+
+/* ─── Single quiz group: expandable attempts list ─── */
+const QuizAttemptGroup: React.FC<{ quizTitle: string; groupAttempts: QuizResult[] }> = ({
+  quizTitle, groupAttempts,
+}) => {
+  const [open, setOpen] = React.useState(false);
+  const sorted = [...groupAttempts].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const scores = sorted.map(a => a.score);
+  const best = Math.max(...scores);
+  const latest = scores[scores.length - 1];
+  const first = scores[0];
+  const delta = latest - first;
+  const deltaColor = delta > 0 ? 'text-emerald-600' : delta < 0 ? 'text-rose-500' : 'text-gray-400';
+  const deltaSign = delta > 0 ? '▲' : delta < 0 ? '▼' : '─';
+
+  return (
+    <Card className="overflow-hidden border border-gray-100 p-0">
+      {/* Summary row */}
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-right hover:bg-gray-50 transition-colors"
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+            latest >= 75 ? 'bg-emerald-100 text-emerald-700' : latest >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
+          }`}>
+            {latest}%
+          </div>
+          <div className="min-w-0">
+            <div className="font-black text-gray-900 leading-6 truncate text-sm">{displayText(quizTitle)}</div>
+            <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] font-bold text-gray-500">
+              <span>{groupAttempts.length} محاولة</span>
+              <span className="text-gray-300">·</span>
+              <span>أعلى: {best}%</span>
+              <span className={`font-black ${deltaColor}`}>{deltaSign} {Math.abs(delta)}%</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="hidden sm:block">
+            <ScoreSparkline scores={scores} />
+          </div>
+          <ChevronRightIcon size={16} className={`text-gray-400 transition-transform ${open ? 'rotate-90' : '-rotate-90'}`} />
+        </div>
+      </button>
+
+      {/* Expanded list */}
+      {open && (
+        <div className="border-t border-gray-100 divide-y divide-gray-50">
+          {[...groupAttempts]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((attempt, idx) => {
+              const weakSkill = [...(attempt.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
+              const attemptLink = `/results?attempt=${encodeURIComponent(String(attempt.date || attempt.quizId))}`;
+              const isLatest = idx === 0;
+              return (
+                <div
+                  key={`${attempt.quizId}-${attempt.date}-${idx}`}
+                  className={`flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between ${isLatest ? 'bg-indigo-50/40' : ''}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xs font-black ${
+                      attempt.score >= 75 ? 'bg-emerald-100 text-emerald-700' : attempt.score >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
+                    }`}>
+                      {attempt.score}%
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-bold text-gray-700">
+                        <span>{new Date(attempt.date).toLocaleDateString('ar-SA')}</span>
+                        {isLatest && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-black text-indigo-700">الأحدث</span>}
+                      </div>
+                      <div className="mt-0.5 text-[11px] font-bold text-gray-400">
+                        {attempt.timeSpent} · {attempt.totalQuestions} سؤال
+                        {weakSkill ? ` · ضعف: ${displayText(weakSkill.skill)} ${weakSkill.mastery}%` : ''}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <Link to={attemptLink} className="rounded-lg bg-indigo-600 px-2.5 py-1.5 text-[11px] font-black text-white hover:bg-indigo-700">
+                      تحليل
+                    </Link>
+                    <Link to={`${attemptLink}&view=review`} className="rounded-lg border border-emerald-100 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-black text-emerald-700 hover:bg-emerald-100">
+                      مراجعة
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      )}
+    </Card>
+  );
+};
+
 const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: QuizResult[] }) => {
+  /* Group by quiz title */
+  const groups = React.useMemo(() => {
+    const map = new Map<string, QuizResult[]>();
+    attempts.forEach(a => {
+      const key = a.quizTitle || a.quizId || 'unknown';
+      const arr = map.get(key) || [];
+      arr.push(a);
+      map.set(key, arr);
+    });
+    return Array.from(map.entries()).sort((a, b) => {
+      const latestA = Math.max(...a[1].map(r => new Date(r.date).getTime()));
+      const latestB = Math.max(...b[1].map(r => new Date(r.date).getTime()));
+      return latestB - latestA;
+    });
+  }, [attempts]);
+
   return (
     <div className="space-y-4 pb-16">
       <header className="mb-4 flex items-center gap-3 sm:gap-4">
         <button onClick={onBack} className="text-gray-500">
           <ArrowRight />
         </button>
-        <h1 className="text-lg font-black">محاولاتك السابقة</h1>
+        <div>
+          <h1 className="text-lg font-black">محاولاتك السابقة</h1>
+          {attempts.length > 0 && (
+            <p className="text-xs font-bold text-gray-500 mt-0.5">{attempts.length} محاولة في {groups.length} اختبار</p>
+          )}
+        </div>
       </header>
 
       {attempts.length === 0 ? (
@@ -1938,7 +2095,7 @@ const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: 
           </div>
           <h2 className="mt-4 text-lg font-black text-gray-900">لا توجد محاولات بعد</h2>
           <p className="mx-auto mt-2 max-w-md text-sm font-bold leading-7 text-gray-500">
-            بعد أول اختبار ستظهر محاولاتك هنا بشكل مرتب.
+            بعد أول اختبار ستظهر محاولاتك هنا مرتبة حسب الاختبار.
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
             <Link to="/quiz" className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700 sm:text-sm">
@@ -1954,51 +2111,9 @@ const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: 
       ) : null}
 
       <div className="space-y-3">
-        {attempts.map((attempt, index) => {
-          const weakSkill = [...(attempt.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
-          const attemptLink = `/results?attempt=${encodeURIComponent(String(attempt.date || attempt.quizId))}`;
-
-          return (
-            <Card key={`${attempt.quizId}-${attempt.date}-${index}`} className="p-3 sm:p-4">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-black ${
-                      attempt.score >= 75 ? 'bg-emerald-100 text-emerald-700' : attempt.score >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
-                    }`}
-                  >
-                    {attempt.score}%
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-black leading-7 text-gray-900">{displayText(attempt.quizTitle)}</h3>
-                    <div className="mt-1 flex flex-wrap gap-2 text-xs font-bold text-gray-500">
-                      <span>{new Date(attempt.date).toLocaleDateString('ar-SA')}</span>
-                      <span>{attempt.timeSpent}</span>
-                      <span>{attempt.totalQuestions} سؤال</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Link to={attemptLink} className="rounded-xl bg-indigo-600 px-3 py-1.5 text-center text-xs font-black text-white hover:bg-indigo-700 sm:text-sm">
-                    تحليل
-                  </Link>
-                  <Link to={`${attemptLink}&view=review`} className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-center text-xs font-black text-emerald-700 hover:bg-emerald-100 sm:text-sm">
-                    مراجعة
-                  </Link>
-                  <Link to="/reports" className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-center text-xs font-black text-slate-700 hover:bg-slate-50 sm:text-sm">
-                    تقرير
-                  </Link>
-                </div>
-              </div>
-              <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2">
-                <div className="text-[11px] font-black text-slate-500">أضعف مهارة</div>
-                <div className="mt-1 text-sm font-black text-slate-900">
-                  {weakSkill ? `${displayText(weakSkill.skill)} - ${weakSkill.mastery}%` : 'لا توجد مهارة ضعيفة واضحة'}
-                </div>
-              </div>
-            </Card>
-          );
-        })}
+        {groups.map(([quizTitle, groupAttempts]) => (
+          <QuizAttemptGroup key={quizTitle} quizTitle={quizTitle} groupAttempts={groupAttempts} />
+        ))}
       </div>
     </div>
   );

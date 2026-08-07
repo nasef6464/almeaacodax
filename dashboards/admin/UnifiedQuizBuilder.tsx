@@ -8,6 +8,7 @@ import { useStore } from "../../store/useStore";
 import { Quiz } from "../../types";
 import { SmartQuestionSelector } from "./SmartQuestionSelector";
 import { getDefaultQuizSettings } from "../../utils/quizSettings";
+import { api } from "../../services/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type QuizKind = "drill" | "test" | "mock";
@@ -117,7 +118,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [timeLimit, setTimeLimit] = useState<number>((editingQuiz?.settings as any)?.timeLimit ?? (defaults as any)?.timeLimit ?? 0);
   const [maxAttempts, setMaxAttempts] = useState<number>((editingQuiz?.settings as any)?.maxAttempts ?? 1);
   const [passingScore, setPassingScore] = useState<number>((editingQuiz?.settings as any)?.passingScore ?? 60);
-  const [showCorrectAnswers, setShowCorrectAnswers] = useState<boolean>((editingQuiz?.settings as any)?.showCorrectAnswers ?? true);
+  const [showAnswers, setShowAnswers] = useState<boolean>(editingQuiz?.settings?.showAnswers ?? (editingQuiz?.settings as any)?.showCorrectAnswers ?? true);
   const [showExplanations, setShowExplanations] = useState<boolean>((editingQuiz?.settings as any)?.showExplanations ?? true);
   const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(editingQuiz?.settings?.randomizeQuestions ?? (editingQuiz?.settings as any)?.shuffleQuestions ?? false);
   const [shuffleOptions, setShuffleOptions] = useState<boolean>((editingQuiz?.settings as any)?.shuffleOptions ?? false);
@@ -174,6 +175,41 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
     }
   }, [kind, qiyasCategory]);
 
+  // Fetch missing questions if editing an existing quiz
+  useEffect(() => {
+    if (!editingQuiz) return;
+    
+    const allIds = editingQuiz.quizKind === 'mock' 
+      ? (editingQuiz.mockExam?.sections?.flatMap(s => s.questionIds || []) || [])
+      : (editingQuiz.questionIds || []);
+      
+    if (allIds.length === 0) return;
+
+    const currentQuestions = useStore.getState().questions || [];
+    const existingIds = new Set(currentQuestions.map(q => q.id));
+    const missingIds = allIds.filter(id => !existingIds.has(id));
+
+    if (missingIds.length > 0) {
+      api.getQuestions({ ids: missingIds.join(',') }).then(fetched => {
+        if (fetched && fetched.length > 0) {
+          useStore.setState(prev => {
+            const newQ = [...(prev.questions || [])];
+            let added = false;
+            fetched.forEach((fq: any) => {
+              if (!newQ.find(q => q.id === fq.id)) {
+                newQ.push(fq);
+                added = true;
+              }
+            });
+            return added ? { questions: newQ } : prev;
+          });
+        }
+      }).catch(err => {
+        console.error("Failed to fetch missing questions:", err);
+      });
+    }
+  }, [editingQuiz]);
+
   // ── Validation ────────────────────────────────────────────────────────────
   const stepValid = [
     title.trim().length > 0 && pathId.length > 0,
@@ -199,7 +235,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           timeLimit,
           maxAttempts,
           passingScore,
-          showCorrectAnswers,
+          showAnswers,
           showExplanations,
           randomizeQuestions: shuffleQuestions,
           shuffleOptions,
@@ -238,17 +274,11 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
       let saved: Quiz;
       if (editingQuiz) {
-        await updateQuiz(editingQuiz.id, payload);
-        saved = { ...editingQuiz, ...payload } as Quiz;
+        saved = (await updateQuiz(editingQuiz.id, payload)) as Quiz;
+        // Keep existing fields that weren't updated
+        saved = { ...editingQuiz, ...saved };
       } else {
-        // addQuiz يعيد void — نبني Quiz محلياً من الـ payload
-        addQuiz(payload as Quiz);
-        saved = {
-          ...payload,
-          id: `quiz_${Date.now()}`,
-          createdAt: Date.now(),
-          createdBy: '',
-        } as Quiz;
+        saved = await addQuiz(payload as Quiz);
       }
       onSave?.(saved);
       onClose?.();
@@ -507,7 +537,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
               <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 space-y-3">
                 {[
-                  { label: "إظهار الإجابة الصحيحة", val: showCorrectAnswers, set: setShowCorrectAnswers },
+                  { label: "إظهار الإجابة الصحيحة", val: showAnswers, set: setShowAnswers },
                   { label: "إظهار التفسيرات", val: showExplanations, set: setShowExplanations },
                   { label: "ترتيب عشوائي للأسئلة", val: shuffleQuestions, set: setShuffleQuestions },
                   { label: "ترتيب عشوائي للخيارات", val: shuffleOptions, set: setShuffleOptions },

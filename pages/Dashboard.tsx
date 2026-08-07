@@ -14,8 +14,8 @@ import { useStore } from '../store/useStore';
 import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import { isStandaloneMockExam } from '../utils/mockExam';
-import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
+import { UserLevel, getLevelMeta } from "../utils/leveling";
+import { isTrueMockExam } from "../utils/quizPlacement";
 import { EmptyState } from '../components/ui/EmptyState';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
@@ -760,13 +760,13 @@ const MyCoursesTab = () => {
     );
 };
 
-/** Unified Exams Hub: merges \u0633\u0627\u0647\u0631 + \u0627\u062e\u062a\u0628\u0627\u0631\u0627\u062a\u064a + \u0645\u062d\u0627\u0643\u064a \u0642\u064a\u0627\u0633 into one tab */
+/** Unified Exams Hub: merges ساهر + اختباراتي + محاكي قياس into one tab */
 const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> = ({ initialView = 'explore' }) => {
     const [view, setView] = React.useState<'explore' | 'attempts' | 'mock'>(initialView);
     const examViews = [
-        { id: 'explore' as const, label: '\u0645\u0631\u0643\u0632 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631\u0627\u062a', icon: <Zap size={16} /> },
-        { id: 'attempts' as const, label: '\u0645\u062d\u0627\u0648\u0644\u0627\u062a\u064a', icon: <FileText size={16} /> },
-        { id: 'mock' as const, label: '\u0645\u062d\u0627\u0643\u064a \u0642\u064a\u0627\u0633', icon: <Star size={16} /> },
+        { id: 'explore' as const, label: 'مركز الاختبارات', icon: <Zap size={16} /> },
+        { id: 'attempts' as const, label: 'محاولاتي', icon: <FileText size={16} /> },
+        { id: 'mock' as const, label: 'محاكي قياس', icon: <Star size={16} /> },
     ];
     return (
         <div className="space-y-4">
@@ -1818,17 +1818,17 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                                             <div className="flex justify-between items-start mb-3">
                                                 <div className={`p-2 rounded-lg ${
                                               quiz.quizKind === 'drill' ? 'bg-emerald-100 text-emerald-600'
-                                              : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? 'bg-violet-100 text-violet-600'
+                                              : isTrueMockExam(quiz) ? 'bg-violet-100 text-violet-600'
                                               : 'bg-indigo-100 text-indigo-600'
                                             }`}>
-                                                {quiz.quizKind === 'mock' || quiz.placement === 'mock' ? <ActivityIcon size={20} /> : <FileText size={20} />}
+                                                {isTrueMockExam(quiz) ? <ActivityIcon size={20} /> : <FileText size={20} />}
                                             </div>
                                             <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
                                               quiz.quizKind === 'drill' ? 'bg-emerald-50 text-emerald-700'
-                                              : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? 'bg-violet-50 text-violet-700'
+                                              : isTrueMockExam(quiz) ? 'bg-violet-50 text-violet-700'
                                               : 'bg-indigo-50 text-indigo-700'
                                             }`}>
-                                                {quiz.quizKind === 'drill' ? 'تدريب' : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? 'محاكي قياس' : 'اختبار'}
+                                                {quiz.quizKind === 'drill' ? 'تدريب' : isTrueMockExam(quiz) ? 'محاكي قياس' : 'اختبار'}
                                                 </span>
                                             </div>
                                             <h4 className="font-black text-gray-900 text-sm mb-1">{quiz.title}</h4>

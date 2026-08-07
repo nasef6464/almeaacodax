@@ -18,8 +18,9 @@ import { PaymentModal } from '../components/PaymentModal';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { EmptyState } from '../components/ui/EmptyState';
 import { useStore } from '../store/useStore';
-import { Quiz, QuizResult } from '../types';
-import { isStandaloneMockExam } from '../utils/mockExam';
+import { Quiz, Topic, ContentWorkflow, Activity, QuizResult } from "../types";
+import { isTrueMockExam } from "../utils/quizPlacement";
+import { UserLevel, getLevelMeta } from "../utils/leveling";
 import { buildQuizRouteWithContext, isSafeInternalRoute } from '../utils/quizLinks';
 import { api } from '../services/api';
 
@@ -814,13 +815,13 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                       <h3 className="truncate text-base font-black text-gray-900 group-hover:text-indigo-700 transition-colors">{quiz.title}</h3>
                       <p className="mt-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full inline-block">{pathName}</p>
                     </div>
-                    <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-black ${quiz.placement === 'mock' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                      {quiz.placement === 'mock' ? 'محاكي' : 'عادي'}
+                    <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-black ${isTrueMockExam(quiz) ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      {isTrueMockExam(quiz) ? 'محاكي' : 'عادي'}
                     </span>
                   </div>
                   <p className="line-clamp-2 text-xs font-bold leading-5 text-gray-500 flex-grow">{quiz.description || 'اختبار موجه'}</p>
                   <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-black text-indigo-700">
-                    <span className="flex items-center gap-1.5"><FileText size={14} /> {(quiz.questionIds || []).length} أسئلة</span>
+                    <span className="flex items-center gap-1.5"><FileText size={14} /> {quiz.quizKind === 'mock' ? (quiz.mockExam?.sections?.reduce((sum, s) => sum + (s.questionIds?.length || 0), 0) || 0) : (quiz.questionIds || []).length} أسئلة</span>
                     <span className="flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                       دخول الاختبار <ArrowRight size={14} className="mr-1" />
                     </span>

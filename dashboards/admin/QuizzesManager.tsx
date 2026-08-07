@@ -344,8 +344,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         .filter((quiz) => {
           if (!quiz.title.toLowerCase().includes(searchTerm.toLowerCase())) return false;
           if (quizKindFilter === 'drill') return quiz.quizKind === 'drill';
-          if (quizKindFilter === 'mock') return quiz.quizKind === 'mock' || quiz.placement === 'mock';
-          if (quizKindFilter === 'test') return quiz.quizKind === 'test' || (!quiz.quizKind && quiz.placement !== 'mock');
+          if (quizKindFilter === 'mock') return isTrueMockExam(quiz);
+          if (quizKindFilter === 'test') return quiz.quizKind === 'test' || (!quiz.quizKind && !isTrueMockExam(quiz));
           return true;
         })
         .sort((a, b) => {
@@ -366,8 +366,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       // جديد: تصنيف quizKind
       byKind: {
         drill: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && q.quizKind === 'drill').length,
-        test: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && (q.quizKind === 'test' || (!q.quizKind && q.placement !== 'mock'))).length,
-        mock: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && (q.quizKind === 'mock' || q.placement === 'mock')).length,
+        test: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && (q.quizKind === 'test' || (!q.quizKind && !isTrueMockExam(q)))).length,
+        mock: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && isTrueMockExam(q)).length,
       },
     }),
     [globalQuizzes],
@@ -1107,7 +1107,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700 border border-emerald-100">
                             <Dumbbell size={10} /> تدريب
                           </span>
-                        ) : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? (
+                        ) : isTrueMockExam(quiz) ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-black text-violet-700 border border-violet-100">
                             <Award size={10} /> محاكي
                           </span>
@@ -1390,7 +1390,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
               </div>
               <div className="rounded-2xl bg-amber-50 p-4">
                 <div className="text-xs font-black text-amber-500">الأسئلة</div>
-                <div className="mt-2 text-sm font-black text-amber-900">{previewQuiz.questionIds?.length || 0} سؤال</div>
+                <div className="mt-2 text-sm font-black text-amber-900">
+                  {previewQuiz.quizKind === 'mock' 
+                    ? (previewQuiz.mockExam?.sections?.reduce((sum, s) => sum + (s.questionIds?.length || 0), 0) || 0)
+                    : (previewQuiz.questionIds?.length || 0)} سؤال
+                </div>
               </div>
             </div>
 
@@ -1429,25 +1433,34 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                   أول أسئلة داخل الاختبار
                 </div>
                 <div className="mt-4 space-y-3">
-                  {(previewQuiz.questionIds || []).slice(0, 3).map((questionId, index) => {
-                    const question = questions.find((item) => item.id === questionId);
-                    return (
-                      <div key={questionId} className="rounded-2xl border border-white bg-white p-3 shadow-sm">
-                        <div className="text-[11px] font-black text-gray-400">سؤال {index + 1}</div>
-                        <div className="mt-1 text-sm font-bold text-gray-800 line-clamp-2">
-                          {question?.text || question?.imageUrl ? 'سؤال مرتبط بالمركز' : 'لا يوجد نص محفوظ لهذا السؤال'}
+                  {(() => {
+                    const allQuestionIds = previewQuiz.quizKind === 'mock' 
+                      ? (previewQuiz.mockExam?.sections?.flatMap(s => s.questionIds || []) || [])
+                      : (previewQuiz.questionIds || []);
+                    
+                    if (allQuestionIds.length === 0) {
+                      return (
+                        <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-4 text-sm font-bold text-gray-500">
+                          لا توجد أسئلة داخل هذا الاختبار بعد.
                         </div>
-                        <div className="mt-2 text-xs font-bold text-gray-500">
-                          {question?.skillIds?.length ? `مهارات: ${question.skillIds.length}` : 'بدون مهارات فرعية محفوظة'}
+                      );
+                    }
+
+                    return allQuestionIds.slice(0, 3).map((questionId, index) => {
+                      const question = questions.find((item) => item.id === questionId);
+                      return (
+                        <div key={questionId} className="rounded-2xl border border-white bg-white p-3 shadow-sm">
+                          <div className="text-[11px] font-black text-gray-400">سؤال {index + 1}</div>
+                          <div className="mt-1 text-sm font-bold text-gray-800 line-clamp-2">
+                            {question?.text || question?.imageUrl ? 'سؤال مرتبط بالمركز' : 'لا يوجد نص محفوظ لهذا السؤال'}
+                          </div>
+                          <div className="mt-2 text-xs font-bold text-gray-500">
+                            {question?.skillIds?.length ? `مهارات: ${question.skillIds.length}` : 'بدون مهارات فرعية محفوظة'}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                  {(previewQuiz.questionIds || []).length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-4 text-sm font-bold text-gray-500">
-                      لا توجد أسئلة داخل هذا الاختبار بعد.
-                    </div>
-                  ) : null}
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             </div>

@@ -1034,8 +1034,12 @@ export const useStore = create<AppState>()(
                     ...quiz,
                     showOnPlatform: typeof quiz.showOnPlatform === 'boolean' ? quiz.showOnPlatform : false,
                 });
-                const saved = await api.createQuiz(normalizedQuiz).catch(() => null);
-                const finalQuiz: Quiz = (saved && typeof saved === 'object' && 'id' in saved ? saved as Quiz : null) ?? normalizedQuiz;
+                const saved = await api.createQuiz(normalizedQuiz) as any;
+                const finalQuiz: Quiz = {
+                    ...normalizedQuiz,
+                    ...saved,
+                    id: String(saved?.id || saved?._id || normalizedQuiz.id),
+                };
                 set((state) => ({
                     quizzes: [finalQuiz, ...state.quizzes.filter(q => q.id !== finalQuiz.id)]
                 }));
@@ -1048,9 +1052,12 @@ export const useStore = create<AppState>()(
                     'showInTraining' in data ||
                     'showInMock' in data;
                 const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
-                const saved = await api.updateQuiz(quizId, updatePayload).catch(() => null);
-                const savedData = saved && typeof saved === 'object' ? (saved as Partial<Quiz>) : null;
-                const mergedPayload: Partial<Quiz> = savedData ?? updatePayload;
+                const saved = await api.updateQuiz(quizId, updatePayload) as any;
+                const mergedPayload: Partial<Quiz> = {
+                    ...updatePayload,
+                    ...saved,
+                    id: String(saved?.id || saved?._id || quizId),
+                };
                 set((state) => ({
                     quizzes: state.quizzes.map(q =>
                         q.id === quizId

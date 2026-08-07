@@ -824,6 +824,11 @@ const Plan: React.FC = () => {
   ]);
 
   const todayKey = new Date().toISOString().split('T')[0];
+  const weekEndKey = useMemo(() => {
+    const d = new Date(); d.setDate(d.getDate() + 6);
+    return d.toISOString().split('T')[0];
+  }, []);
+  const [scheduleView, setScheduleView] = useState<'today' | 'week' | 'all'>('today');
   const selectedDayTasks = useMemo(() => {
     if (!generatedTasks.length) return [];
     const todaysTasks = generatedTasks.filter((task) => task.scheduledDate === todayKey);
@@ -1512,12 +1517,57 @@ const Plan: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr]">
             <Card className="p-4 sm:p-6 shadow-sm border-0 bg-white/50">
-              <div className="mb-6 flex items-center justify-between text-gray-800 border-b border-gray-100 pb-4">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <Calendar size={24} className="text-indigo-600" />
-                  <h3 className="text-xl font-black">الجدول الزمني للخطة (يوم بيوم)</h3>
+                  <Calendar size={22} className="text-indigo-600" />
+                  <h3 className="text-lg font-black text-gray-800">الجدول الزمني</h3>
+                </div>
+                <div className="flex gap-1.5 rounded-2xl border border-gray-100 bg-gray-50 p-1">
+                  {([['today','اليوم'],['week','الأسبوع'],['all','الكل']] as const).map(([id,label]) => (
+                    <button key={id} onClick={() => setScheduleView(id)}
+                      className={`rounded-xl px-3 py-1.5 text-xs font-black transition-all ${
+                        scheduleView === id ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100'
+                      }`}>{label}</button>
+                  ))}
                 </div>
               </div>
+
+              {/* ── Today's progress strip ── */}
+              {(() => {
+                const todayAll = generatedTasks.filter(t => t.scheduledDate === todayKey);
+                const todayDone = todayAll.filter(t => t.completed).length;
+                const todayTotal = todayAll.length;
+                if (todayTotal === 0) {
+                  return scheduleView === 'today' ? (
+                    <div className="mb-4 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4 text-center text-sm font-bold text-gray-400">
+                      لا توجد مهام مجدولة اليوم —{' '}
+                      <button onClick={() => setScheduleView('all')} className="text-indigo-600 underline">عرض كل الجدول</button>
+                    </div>
+                  ) : null;
+                }
+                const pct = Math.round((todayDone / todayTotal) * 100);
+                return (
+                  <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50 p-3">
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle size={15} className={todayDone === todayTotal ? 'text-emerald-500' : 'text-indigo-400'} />
+                        <span className="text-xs font-black text-indigo-800">
+                          {todayDone === todayTotal && todayTotal > 0
+                            ? '🎉 أنجزت كل مهام اليوم!'
+                            : `أنجزت ${todayDone} من ${todayTotal} مهمة اليوم`}
+                        </span>
+                      </div>
+                      <span className="text-xs font-black text-indigo-600">{pct}%</span>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-indigo-100">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? 'bg-emerald-500' : 'bg-indigo-500'}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
 
               <div className="space-y-8">
                 {Object.entries(
@@ -1529,70 +1579,71 @@ const Plan: React.FC = () => {
                   }, {} as Record<string, typeof generatedTasks>)
                 )
                   .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+                  .filter(([date]) => {
+                    if (scheduleView === 'today') return date === todayKey;
+                    if (scheduleView === 'week') return date >= todayKey && date <= weekEndKey;
+                    return true;
+                  })
                   .map(([date, tasks]) => {
                     const isLate = date < todayKey && tasks.some(t => !t.completed);
-                    
+                    const doneCount = tasks.filter(t => t.completed).length;
+                    const totalCount = tasks.length;
                     return (
                       <div key={date} className={`relative pt-2 ${isLate ? 'opacity-90' : ''}`}>
                         <div className={`sticky top-0 z-10 mb-3 flex items-center justify-between rounded-xl px-4 py-2 font-bold shadow-sm border ${
                           isLate ? 'bg-red-50 text-red-700 border-red-100' : 
                           date === todayKey ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-gray-100 text-gray-700 border-gray-200'
                         }`}>
+                          <span>{formatDateForPlan(date)}</span>
                           <div className="flex items-center gap-2">
-                            <span>{formatDateForPlan(date)}</span>
-                            <span className="text-sm opacity-80">({date})</span>
+                            <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
+                              doneCount === totalCount
+                                ? 'bg-emerald-500/20 text-emerald-200'
+                                : date === todayKey ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'
+                            }`}>{doneCount}/{totalCount} ✓</span>
+                            {isLate && <span className="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-md">متأخر ⚠️</span>}
                           </div>
-                          {isLate && <span className="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-md">متأخر ⚠️</span>}
-                          {date === todayKey && <span className="text-xs bg-white/20 px-2 py-1 rounded-md">اليوم</span>}
                         </div>
                         
-                        <div className="relative mr-3 space-y-3 border-r-2 border-gray-100 pr-5">
+                        <div className="relative mr-3 space-y-2 border-r-2 border-gray-100 pr-4">
                           {tasks.map((task) => (
                             <div key={task.id} className="relative">
-                              <div className={`absolute -right-[27px] top-4 h-4 w-4 rounded-full border-2 border-white shadow-sm ${task.completed ? 'bg-emerald-500' : isLate ? 'bg-red-400' : 'bg-amber-400'}`} />
-                              <Card className={`p-4 transition-all hover:shadow-md border-0 ring-1 ${
-                                task.completed ? 'bg-gray-50/50 ring-gray-100 opacity-60' : 
-                                isLate ? 'bg-red-50/30 ring-red-100' : 'bg-white ring-gray-100 shadow-sm'
+                              <div className={`absolute -right-[23px] top-3.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-sm ${task.completed ? 'bg-emerald-500' : isLate ? 'bg-red-400' : 'bg-amber-400'}`} />
+                              <Card className={`px-3 py-2.5 border-0 ring-1 ${
+                                task.completed ? 'bg-gray-50/50 ring-gray-100 opacity-55' : 
+                                isLate ? 'bg-red-50/30 ring-red-100' : 'bg-white ring-gray-100 shadow-sm hover:shadow-md transition-shadow'
                               }`}>
-                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                  <div>
-                                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                                      <span className="rounded bg-indigo-50 px-2 py-1 text-[11px] font-bold text-indigo-600">
-                                        {task.scheduledTime} - {task.scheduledEndTime}
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0 flex-1">
+                                    <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+                                      <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600">
+                                        {task.scheduledTime}–{task.scheduledEndTime}
                                       </span>
-                                      <span className={`rounded px-2 py-1 text-[11px] font-bold ${getPlanPhaseMeta(task.phase).bg} ${getPlanPhaseMeta(task.phase).accent}`}>
-                                        {task.phaseLabel}
-                                      </span>
-                                    </div>
-                                    <h4 className={`text-base font-black ${task.completed ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
-                                      {task.title}
-                                    </h4>
-                                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500 font-bold">
-                                      <Clock size={14} />
-                                      <span>{task.durationLabel}</span>
-                                      <span className="mx-1">•</span>
                                       {task.type === 'lesson' && <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-black text-blue-600">درس</span>}
-                                      {task.type === 'resource' && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black text-amber-600">ملف مراجعة</span>}
+                                      {task.type === 'resource' && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black text-amber-600">ملف</span>}
                                       {task.type === 'quiz' && task.quizKind === 'drill' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700">🟢 تدريب</span>}
                                       {task.type === 'quiz' && task.quizKind === 'test' && <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-black text-indigo-700">🔵 اختبار</span>}
                                       {task.type === 'quiz' && task.quizKind === 'mock' && <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-black text-violet-700">🟣 محاكي</span>}
                                       {task.type === 'quiz' && !task.quizKind && <span className="rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-black text-gray-600">اختبار</span>}
+                                      <span className="text-[10px] font-bold text-gray-400 flex items-center gap-0.5"><Clock size={9} />{task.durationLabel}</span>
                                     </div>
-        
+                                    <h4 className={`text-sm font-black leading-snug ${task.completed ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+                                      {task.title}
+                                    </h4>
                                     {!task.completed && task.link && (
                                       task.external ? (
-                                        <a href={task.link} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg print-hide">
-                                          <FileText size={14} /> فتح المهمة
+                                        <a href={task.link} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-[11px] font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg print-hide">
+                                          <FileText size={11} /> فتح المهمة
                                         </a>
                                       ) : (
-                                        <Link to={task.link} className="mt-3 inline-flex items-center gap-1.5 text-xs font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg print-hide">
-                                          {task.type === 'quiz' ? <FileText size={14} /> : <PlayCircle size={14} />} فتح المهمة
+                                        <Link to={task.link} className="mt-2 inline-flex items-center gap-1 text-[11px] font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg print-hide">
+                                          {task.type === 'quiz' ? <FileText size={11} /> : <PlayCircle size={11} />} فتح المهمة
                                         </Link>
                                       )
                                     )}
                                   </div>
-                                  <div className={`rounded-full p-2 mt-2 sm:mt-0 ${task.completed ? 'bg-emerald-50 text-emerald-500' : 'bg-gray-50 text-gray-300'}`}>
-                                    {task.completed ? <CheckCircle size={24} /> : <Circle size={24} />}
+                                  <div className={`shrink-0 rounded-full p-1.5 ${task.completed ? 'bg-emerald-50 text-emerald-500' : 'bg-gray-50 text-gray-300'}`}>
+                                    {task.completed ? <CheckCircle size={18} /> : <Circle size={18} />}
                                   </div>
                                 </div>
                               </Card>

@@ -1,17 +1,13 @@
-# سجل تقدم إعادة بناء نظام الاختبارات
+# سجل تقدم إصلاح نظام الاختبارات
 
-- **التاريخ:** 5 أغسطس 2026
-- **المرحلة الحالية:** تنفيذ المرحلة الأولى (الإصلاحات الحرجة)
-- **المشكلات المُثبتة وتم إصلاحها:**
-  1. دوال החفظ `addQuiz` و `updateQuiz` أصبحت `async` وتمت إضافة معالجة الأخطاء `try/catch` في منشئات الاختبارات.
-  2. تم توحيد حقل `shuffleQuestions` إلى `randomizeQuestions` في `UnifiedQuizBuilder.tsx` ليتوافق مع العقد في `types.ts`.
-  3. تمت إضافة دالة `getAllQuizQuestionIds` في `utils/mockExam.ts` كأداة موحدة لجمع جميع المعرفات.
-- **الملفات المعدلة:** 
-  - `store/useStore.ts`
-  - `dashboards/admin/QuizBuilder.tsx`
-  - `dashboards/admin/UnifiedQuizBuilder.tsx`
-  - `dashboards/admin/MockExamManager.tsx`
-  - `utils/mockExam.ts`
-  - `docs/assessment-refactor-progress.md`
-- **الخطوة التالية المقترحة:** 
-  - الانتقال للمرحلة الثانية أو متابعة تحسينات واجهة المستخدم لمعالجة التحميل (Loading states).
+## المرحلة 0: التدقيق الهندسي (تم الإنجاز)
+- [x] تتبع دورة حياة الاختبار وأنواعها (عادي، محاكي، تدريب).
+- [x] فحص مشاكل الحفظ الوهمي للمعرفات.
+- [x] التحقق من توافق أسماء الحقول (`showAnswers`).
+- [x] إنشاء وثيقة التدقيق `docs/assessment-system-code-audit.md`.
+
+## المرحلة 1: إصلاح الأعطال الحرجة (قيد التنفيذ)
+- [x] إصلاح الـ Store لمنع الحفظ الوهمي وجعله ينتظر الـ Server (`useStore.ts`).
+- [x] إصلاح `UnifiedQuizBuilder.tsx` لانتظار الرد وتوحيد إعداد `showAnswers`.
+- [ ] ضمان ظهور الأسئلة المختارة مسبقاً عند التعديل (Fetching by IDs).
+- [ ] التأكد من صحة معاينة الاختبارات العادية والمحاكية.

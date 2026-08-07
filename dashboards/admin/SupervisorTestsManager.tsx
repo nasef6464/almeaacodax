@@ -9,6 +9,7 @@ import { Quiz } from '../../types';
 import { TestAnalyticsReport } from './TestAnalyticsReport';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { api } from '../../services/api';
+import { isTrueMockExam } from '../../utils/quizPlacement';
 
 type ViewMode = 'list' | 'create' | 'analytics' | 'compare';
 // drill = تدريبات | test = اختبارات عادية | mock = محاكيات قياس
@@ -137,10 +138,9 @@ export const SupervisorTestsManager: React.FC = () => {
   // ── Filtered list for tabs ─────────────────────────────────────────────────
   const filteredQuizzes = useMemo(() => {
     if (tabFilter === 'all') return quizzesWithStats;
-    if (tabFilter === 'mock') return quizzesWithStats.filter((q) => q.quizKind === 'mock' || q.placement === 'mock');
+    if (tabFilter === 'mock') return quizzesWithStats.filter((q) => isTrueMockExam(q));
     if (tabFilter === 'drill') return quizzesWithStats.filter((q) => q.quizKind === 'drill');
-    // test = كل ما ليس mock وليس drill
-    return quizzesWithStats.filter((q) => q.quizKind === 'test' || (!q.quizKind && q.placement !== 'mock'));
+    return quizzesWithStats.filter((q) => q.quizKind === 'test' || (!q.quizKind && !isTrueMockExam(q)));
   }, [quizzesWithStats, tabFilter]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -295,8 +295,8 @@ export const SupervisorTestsManager: React.FC = () => {
             >
               {tab === 'all' && <><ClipboardList size={14} /> الكل ({quizzesWithStats.length})</>}
               {tab === 'drill' && <><Dumbbell size={14} /> تدريبات ({quizzesWithStats.filter(q => q.quizKind === 'drill').length})</>}
-              {tab === 'test' && <><BookOpen size={14} /> اختبارات ({quizzesWithStats.filter(q => q.quizKind === 'test' || (!q.quizKind && q.placement !== 'mock')).length})</>}
-              {tab === 'mock' && <><Award size={14} /> محاكيات ({quizzesWithStats.filter(q => q.quizKind === 'mock' || q.placement === 'mock').length})</>}
+              {tab === 'test' && <><BookOpen size={14} /> اختبارات ({quizzesWithStats.filter(q => q.quizKind === 'test' || (!q.quizKind && !isTrueMockExam(q))).length})</>}
+              {tab === 'mock' && <><Award size={14} /> محاكيات ({quizzesWithStats.filter(q => isTrueMockExam(q)).length})</>}
             </button>
           ))}
         </div>
@@ -347,28 +347,28 @@ export const SupervisorTestsManager: React.FC = () => {
                   />
                   <div
                     className={`p-2.5 rounded-xl ${
-                      (q.quizKind === 'mock' || q.placement === 'mock')
+                      isTrueMockExam(q)
                         ? 'bg-violet-100 text-violet-600'
                         : q.quizKind === 'drill'
                           ? 'bg-emerald-100 text-emerald-600'
                           : 'bg-indigo-100 text-indigo-600'
                     }`}
                   >
-                    {(q.quizKind === 'mock' || q.placement === 'mock') ? <Award size={22} />
+                    {isTrueMockExam(q) ? <Award size={22} />
                       : q.quizKind === 'drill' ? <Dumbbell size={22} />
                         : <FileText size={22} />}
                   </div>
                 </div>
                 <span
                   className={`text-xs font-bold px-3 py-1 rounded-full border ${
-                    (q.quizKind === 'mock' || q.placement === 'mock')
+                    isTrueMockExam(q)
                       ? 'bg-violet-50 text-violet-700 border-violet-200'
                       : q.quizKind === 'drill'
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         : 'bg-indigo-50 text-indigo-700 border-indigo-200'
                   }`}
                 >
-                  {(q.quizKind === 'mock' || q.placement === 'mock') ? 'محاكي'
+                  {isTrueMockExam(q) ? 'محاكي'
                     : q.quizKind === 'drill' ? 'تدريب'
                       : 'اختبار'}
                 </span>

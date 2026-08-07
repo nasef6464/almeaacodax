@@ -71,6 +71,31 @@ const StatBadge: React.FC<{ label: string; value: string | number; icon: React.R
   </div>
 );
 
+/* ─── Mini sparkline for exam cards ─── */
+const MiniSparkline: React.FC<{ scores: number[] }> = ({ scores }) => {
+  if (scores.length < 2) return null;
+  const min = Math.min(...scores, 0);
+  const max = Math.max(...scores, 100);
+  const range = max - min || 1;
+  const w = 72; const h = 24; const pad = 3;
+  const iw = w - pad * 2; const ih = h - pad * 2;
+  const pts = scores.map((s, i) => {
+    const x = pad + (i / (scores.length - 1)) * iw;
+    const y = pad + ih - ((s - min) / range) * ih;
+    return `${x},${y}`;
+  }).join(' ');
+  const last = scores[scores.length - 1];
+  const lx = pad + iw;
+  const ly = pad + ih - ((last - min) / range) * ih;
+  const clr = last >= 75 ? '#10b981' : last >= 50 ? '#f59e0b' : '#ef4444';
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="overflow-visible shrink-0">
+      <polyline points={pts} fill="none" stroke={clr} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.75" />
+      <circle cx={lx} cy={ly} r="2.5" fill={clr} />
+    </svg>
+  );
+};
+
 const AttemptRow: React.FC<{ result: MockAttemptResult; index: number }> = ({ result, index }) => {
   const [open, setOpen] = useState(false);
   const ts = getTimestamp(result);
@@ -215,9 +240,34 @@ const MockExamCard: React.FC<{
         )}
       </div>
 
-      {examAttempts.length > 0 && (
-        <div className="mt-2 text-[11px] font-bold text-gray-400">{examAttempts.length} محاولة سابقة</div>
-      )}
+      {/* Score trend (sparkline) when multiple attempts exist */}
+      {examAttempts.length > 1 && (() => {
+        const chronoScores = [...examAttempts]
+          .sort((a, b) => getTimestamp(a) - getTimestamp(b))
+          .map(r => r.score);
+        const first = chronoScores[0];
+        const latest = chronoScores[chronoScores.length - 1];
+        const delta = latest - first;
+        return (
+          <div className="mt-3 flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 px-3 py-2">
+            <MiniSparkline scores={chronoScores} />
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] font-bold text-gray-400">تطور الأداء ({examAttempts.length} محاولة)</div>
+              <div className={`mt-0.5 text-xs font-black ${
+                delta > 0 ? 'text-emerald-600' : delta < 0 ? 'text-rose-500' : 'text-gray-500'
+              }`}>
+                {delta > 0 ? `▲ +${delta}%` : delta < 0 ? `▼ ${delta}%` : '— لا تغيير'}
+              </div>
+            </div>
+            {bestScore !== null && (
+              <div className="shrink-0 text-center">
+                <div className="text-[10px] font-bold text-gray-400">الأعلى</div>
+                <div className={`text-sm font-black ${bestScore >= 75 ? 'text-emerald-600' : bestScore >= 50 ? 'text-amber-600' : 'text-rose-500'}`}>{bestScore}%</div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       <div className="mt-4 flex gap-2">
         <Link

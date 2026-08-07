@@ -311,6 +311,8 @@ const quizSchema = z.object({
   mockExam: z.object({
     enabled: z.boolean().default(false),
     pathId: z.string().default(""),
+    qiyasCategory: z.enum(["qudrat", "tahsili"]).optional(),
+    isStrictSectionLock: z.boolean().optional(),
     sections: z.array(z.object({
       id: z.string().min(1),
       title: z.string().min(1),
@@ -318,6 +320,7 @@ const quizSchema = z.object({
       questionIds: z.array(z.string()).default([]),
       timeLimit: z.number().nullable().optional(),
       order: z.number().optional(),
+      domain: z.enum(["quantitative", "verbal", "math", "physics", "chemistry", "biology", "general"]).optional(),
     })).default([]),
   }).optional(),
   skillIds: z.array(z.string()).optional(),
