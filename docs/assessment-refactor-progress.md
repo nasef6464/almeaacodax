@@ -4,120 +4,139 @@
 - [x] تتبع دورة حياة الاختبار وأنواعها (عادي، محاكي، تدريب).
 - [x] فحص مشاكل الحفظ الوهمي للمعرفات.
 - [x] التحقق من توافق أسماء الحقول.
-- [x] إنشاء وثيقة التدقيق `docs/architecture/assessment-system-code-audit.md`.
-- [x] تحديث وثيقة التدقيق في `docs/assessment-system-code-audit.md`.
+- [x] إنشاء وثيقة التدقيق `docs/assessment-system-code-audit.md`.
 
 **الملفات المدروسة:**
-- `dashboards/admin/UnifiedQuizBuilder.tsx`
-- `dashboards/admin/SmartQuestionSelector.tsx`
-- `dashboards/admin/MockExamManager.tsx`
-- `dashboards/admin/QuizBuilder.tsx`
-- `store/useStore.ts`
-- `server/src/routes/quiz.routes.ts`
-- `utils/quizPlacement.ts`
-- `utils/mockExam.ts`
+- `dashboards/admin/UnifiedQuizBuilder.tsx`, `SmartQuestionSelector.tsx`, `MockExamManager.tsx`, `QuizBuilder.tsx`
+- `store/useStore.ts`, `server/src/routes/quiz.routes.ts`, `utils/quizPlacement.ts`, `utils/mockExam.ts`
 - `pages/Quiz.tsx`, `pages/QuizPage.tsx`
 
 ---
 
-## المرحلة 1: إصلاح الأعطال الحرجة ✅ (مكتملة)
+## المرحلة 1: إصلاح الأعطال الحرجة ✅ (مكتملة — جلسة 2026-08-07)
 
-### Commit: `7bd6f26c` — الحفظ الحقيقي (Async Save)
-- [x] إصلاح `addQuiz` في `useStore.ts`: ينتظر `api.createQuiz()` ويستخدم ID السيرفر.
-- [x] إصلاح `updateQuiz` في `useStore.ts`: ينتظر `api.updateQuiz()` ويستخدم ID السيرفر.
-- [x] لا يُضاف الاختبار للـ Store قبل نجاح السيرفر.
-- [x] عند الفشل يُرمى خطأ حقيقي يصل للـ UI.
+### Commit `7bd6f26c` — الحفظ الحقيقي (Async Save)
+- [x] `addQuiz/updateQuiz` في `useStore.ts` ينتظران السيرفر ويستخدمان ID الحقيقي.
 
-### Commit: `52b54af3` — توحيد الحقول والمنطق
+### Commit `52b54af3` — توحيد الحقول والمنطق
 - [x] توحيد `showAnswers` (بدلاً من `showCorrectAnswers`).
 - [x] إضافة `isTrueMockExam()` في `utils/quizPlacement.ts`.
-- [x] تحديث `MockExamManager` لاستخدام المُحدِّد الموحد.
 - [x] إضافة `getAllQuizQuestionIds()` في `utils/mockExam.ts`.
 
-### Commit: `78f520b7` — جلب الأسئلة المفقودة + إصلاح المحاكي
-- [x] إضافة `useEffect` في `UnifiedQuizBuilder` يجلب الأسئلة بـ IDs عند فتح اختبار موجود.
-- [x] إضافة `flattenMockExamQuestionIds` لجمع أسئلة أقسام المحاكي.
-- [x] تحديث `MockExamStudentHub` و`QuizzesManager`.
-- [x] إضافة حقول `mockExam` الناقصة في Zod schema (`isStrictSectionLock`, `domain`).
+### Commit `78f520b7` — جلب الأسئلة المفقودة + إصلاح المحاكي
+- [x] `UnifiedQuizBuilder` يجلب الأسئلة بـ IDs عند فتح اختبار موجود.
+- [x] `flattenMockExamQuestionIds` لجمع أسئلة أقسام المحاكي.
+- [x] حقول `mockExam` الناقصة في Zod schema.
 
-### هذه الجلسة — إصلاحات إضافية:
-
-#### `dashboards/admin/SmartQuestionSelector.tsx`
-- [x] **إصلاح حرج:** `selectedQuestions` كان يبحث في `pathQuestions` (مفلترة) فقط.
-  - **السلوك السابق:** الأسئلة المجلبة ولكن ذات `pathId` مختلف لا تظهر في قائمة المختارة.
-  - **السلوك الجديد:** `selectedQuestions` يبحث في `allQuestionsMap` (كل الـ Store) عبر `Map` سريع.
-  - **الأثر:** الأسئلة المختارة مسبقاً تظهر دائماً بغض النظر عن الفلاتر الحالية.
-
-#### `utils/quizPlacement.ts`
-- [x] **إصلاح:** `normalizeQuizPlacement` لم يكن يعالج `quizKind`.
-  - **السلوك السابق:** عند حفظ اختبار من `UnifiedQuizBuilder` بـ `quizKind: "mock"`, كانت `placement/type/showInMock` لا تُحدَّث صحيحاً في الـ Store.
-  - **السلوك الجديد:** أولوية `quizKind` → تحديد كامل لـ placement/type/showInTraining/showInMock.
-
-#### `store/useStore.ts`
-- [x] **إصلاح:** شرط `shouldNormalizePlacement` في `updateQuiz` يشمل الآن `quizKind`, `mockExam`, `learningPlacements`.
-
-#### `server/src/routes/quiz.routes.ts` (uncommitted → staged)
-- [x] **تحديث:** `normalizeQuizPlacementPayload` محسَّن ليدعم `quizKind` و`learningPlacements` و`mockExam.enabled` بوضوح.
+### Commit `f2d3541a` — إصلاحات إضافية
+- [x] `SmartQuestionSelector`: `selectedQuestions` يبحث في `allQuestionsMap`.
+- [x] `normalizeQuizPlacement` يعالج `quizKind`.
+- [x] `updateQuiz` يُطبِّع عند `quizKind/mockExam/learningPlacements`.
+- [x] Backend: `normalizeQuizPlacementPayload` يدعم `quizKind`.
 
 ---
 
-## المشاكل المؤكدة والمُصلَّحة (ملخص)
+## المرحلة 2: إزالة المعرفات المحلية + توحيد المنشئ ✅ (مكتملة — جلسة 2026-08-09)
+
+### Commit `43c9ab20` — إزالة كل المعرفات المحلية + توحيد المنشئ
+
+#### `dashboards/admin/QuizBuilder.tsx`
+- [x] **إصلاح حرج:** `handleSaveNewQuestion` كان يُنشئ `id: q_${Date.now()}` ثم يستخدمه لإضافة السؤال للاختبار.
+  - **السابق:** السؤال يُحفظ بـ ID حقيقي في السيرفر لكن الاختبار يحتفظ بالـ ID المحلي المؤقت.
+  - **الجديد:** يستخدم `persistedQuestion.id` المُرجع من `addQuestion()`.
+  - **إضافي:** النافذة تبقى مفتوحة عند الفشل بدلاً من الإغلاق الصامت.
+- [x] **إصلاح حرج:** `handleSaveWithFeedback` كان يُنشئ `id: quiz_${Date.now()}` محلياً.
+  - **الجديد:** يُرسل للسيرفر بدون ID مسبق، يستخدم الـ ID المُرجع.
+
+#### `dashboards/admin/QuizzesManager.tsx`
+- [x] **إصلاح حرج:** `handleDuplicate` كان يستخدم `quiz_${Date.now()}_copy` كـ ID محلي.
+  - **الجديد:** `async` يُرسل للسيرفر ويستخدم ID الحقيقي. يُعرض خطأ عند الفشل.
+- [x] **تحسين:** جميع الاختبارات (قديمة وجديدة) تفتح `UnifiedQuizBuilder`.
+  - الاختبارات القديمة (بدون `quizKind`) يُستنتج `quizKind` لها تلقائياً عبر `inferQuizKind()`.
+  - يُزال import غير المستخدم لـ `QuizBuilder`.
+
+#### `utils/quizPlacement.ts`
+- [x] إضافة `inferQuizKind()` — تستنتج `quizKind` من `mockExam.enabled / type / placement` للتوافق العكسي.
+
+### Commit `bb6d5b33` — إصلاح عرض الأسئلة في معاينة الاختبار
+- [x] `QuizzesManager` preview: كان يعرض 'سؤال مرتبط بالمركز' بدلاً من النص الفعلي.
+  - **الجديد:** يعرض النص المنقّى من HTML، ويُعلم بتحذير amber للأسئلة غير المحمّلة في الذاكرة.
+  - يعرض الصعوبة والمهارات لكل سؤال.
+
+---
+
+## جدول المشكلات الكاملة
 
 | # | المشكلة | الحالة | الملفات |
 |---|---|---|---|
-| 1 | حفظ وهمي بمعرفات محلية | ✅ تم | `useStore.ts` |
+| 1 | حفظ وهمي — `addQuiz/updateQuiz` | ✅ تم | `useStore.ts` |
 | 2 | اختفاء الأسئلة عند التعديل | ✅ تم | `UnifiedQuizBuilder.tsx`, `SmartQuestionSelector.tsx` |
-| 3 | تعارض `showAnswers/showCorrectAnswers` | ✅ تم | `UnifiedQuizBuilder.tsx`, schema |
-| 4 | تصنيف المحاكي غير موحد | ✅ تم | `quizPlacement.ts`, `mockExam.ts` |
-| 5 | `normalizeQuizPlacement` لا يعرف `quizKind` | ✅ تم | `quizPlacement.ts` |
-| 6 | schema Backend لا يقبل بعض حقول المحاكي | ✅ تم | `quiz.routes.ts` |
-
----
-
-## المشاكل الموثقة والمؤجلة (خارج نطاق المرحلة الحالية)
-
-| # | المشكلة | السبب | الوثيقة |
-|---|---|---|---|
-| A | تعدد المنشئات (QuizBuilder/MockExamManager/UnifiedQuizBuilder) | يحتاج دراسة أماكن الاستدعاء وتدريجية | Phase 3 |
-| B | كيان Assignment/التوجيه المستقل | تغيير معماري كبير ونموذج DB | Phase 4 |
-| C | دورة حياة موحدة (draft→approved→published) | تعديل شامل للنظام | Phase 5 |
-| D | Migration لبيانات قديمة (placement legacy) | يحتاج Dry Run وتقرير أعداد | Phase 5 |
-| E | حماية النتائج القديمة (Versioning) | يحتاج قرار معماري | Phase 6 |
-| F | تحليلات المحاكي لكل قسم | لم يُطلب في المرحلة الحالية | Phase 7 |
+| 3 | تعارض `showAnswers/showCorrectAnswers` | ✅ تم | `UnifiedQuizBuilder.tsx` |
+| 4 | `normalizeQuizPlacement` لا يعرف `quizKind` | ✅ تم | `quizPlacement.ts` |
+| 5 | Schema Backend يرفض حقول محاكي صحيحة | ✅ تم | `quiz.routes.ts` |
+| 6 | `updateQuiz` لا يُطبِّع `quizKind` | ✅ تم | `useStore.ts` |
+| 7 | `QuizBuilder.handleSaveNewQuestion` يستخدم `q_${Date.now()}` | ✅ تم | `QuizBuilder.tsx` |
+| 8 | `QuizBuilder.handleSaveWithFeedback` يستخدم `quiz_${Date.now()}` | ✅ تم | `QuizBuilder.tsx` |
+| 9 | `handleDuplicate` يستخدم `quiz_${Date.now()}_copy` | ✅ تم | `QuizzesManager.tsx` |
+| 10 | الاختبارات القديمة لا تفتح `UnifiedQuizBuilder` | ✅ تم | `QuizzesManager.tsx` |
+| 11 | Preview الاختبار يعرض نصاً مضللاً | ✅ تم | `QuizzesManager.tsx` |
+| A | تعدد المنشئات (QuizBuilder/MockExamManager/UnifiedQuizBuilder) | ⏳ Phase 3 | — |
+| B | كيان Assignment/التوجيه المستقل | ⏳ Phase 4 | — |
+| C | دورة حياة موحدة (draft→approved→published) | ⏳ Phase 5 | — |
+| D | Migration لبيانات قديمة (placement legacy) | ⏳ Phase 5 | — |
+| E | حماية النتائج القديمة (Versioning) | ⏳ Phase 6 | — |
+| F | تحليلات المحاكي لكل قسم | ⏳ Phase 7 | — |
 
 ---
 
 ## نتائج الفحوصات
 
 ```
-TypeScript:       جارٍ الفحص...
-Build:            لم يُشغَّل (بيئة الإنتاج)
-Lint:             لم يُشغَّل
-Unit Tests:       لا توجد اختبارات تلقائية مكوّنة
-API Tests:        لا توجد
+TypeScript (full project):  يفشل بـ OOM (المشروع كبير جداً بدون NODE_OPTIONS مناسب)
+TypeScript (ملفاتنا):       نظيفة — لا أخطاء type في الملفات المعدَّلة
+Build:                      لم يُشغَّل (بيئة الإنتاج)
+Lint:                       لم يُشغَّل
+Unit Tests:                 لا توجد اختبارات تلقائية مكوّنة
+validateQuizQuestionIntegrity: تُستدعى في Backend عند POST و PATCH — ✅
 ```
 
 ---
 
-## الملفات المعدَّلة في هذه الجلسة
+## الـ Commits الكاملة (بالترتيب)
 
-| الملف | نوع التعديل | السبب |
-|---|---|---|
-| `dashboards/admin/SmartQuestionSelector.tsx` | إصلاح حرج | `selectedQuestions` يبحث في allQuestionsMap |
-| `utils/quizPlacement.ts` | إصلاح حرج | دعم quizKind في normalizeQuizPlacement |
-| `store/useStore.ts` | إصلاح | شرط shouldNormalizePlacement شامل |
-| `server/src/routes/quiz.routes.ts` | تحديث | normalizeQuizPlacementPayload يدعم quizKind |
-| `docs/assessment-system-code-audit.md` | تحديث | تقرير من النموذج السابق |
+```
+d1796fd0  docs: assessment system code audit
+52b54af3  fix: critical assessment system fixes
+7bd6f26c  fix: make addQuiz/updateQuiz truly async
+78f520b7  fix(assessment): unify mock exam logic and fix missing questions
+f2d3541a  fix(assessment): complete Phase 1 critical fixes
+43c9ab20  fix(assessment): Phase 2 — remove all local temp IDs, unify quiz editor
+bb6d5b33  fix(assessment): improve quiz preview — show real question text
+```
+
+---
+
+## الملفات المعدَّلة (إجمالي المشروع)
+
+| الملف | نوع التعديل |
+|---|---|
+| `dashboards/admin/QuizBuilder.tsx` | إصلاح حرج — معرفات محلية في حفظ السؤال والاختبار |
+| `dashboards/admin/QuizzesManager.tsx` | إصلاح — duplicate + توحيد المنشئ + preview text |
+| `dashboards/admin/SmartQuestionSelector.tsx` | إصلاح حرج — allQuestionsMap بدلاً من pathQuestions |
+| `dashboards/admin/UnifiedQuizBuilder.tsx` | تحديث — جلب أسئلة عند التعديل |
+| `utils/quizPlacement.ts` | إضافة inferQuizKind + إصلاح normalizeQuizPlacement |
+| `store/useStore.ts` | إصلاح — async save + shouldNormalizePlacement |
+| `server/src/routes/quiz.routes.ts` | تحديث — normalizeQuizPlacementPayload |
+| `docs/assessment-system-code-audit.md` | تحديث مستمر |
+| `docs/assessment-refactor-progress.md` | هذا الملف |
 
 ---
 
 ## الخطوة التالية المقترحة
 
-**Phase 2 — التحقق من سلامة بيانات الاختبارات القديمة:**
-- تشغيل script يقرأ جميع الاختبارات في DB ويتحقق من:
-  - وجود `quizKind` لكل اختبار.
-  - توافق `placement/showInTraining/showInMock` مع `quizKind`.
-  - أن أسئلة المحاكيات موجودة في `mockExam.sections` وليس `questionIds` الجذر فقط.
-  - عدم وجود معرفات أسئلة مفقودة (تحقق `validateQuizQuestionIntegrity`).
+**Phase 3 — توحيد المنشئات (اختياري، منخفض الأولوية):**
+- `QuizBuilder.tsx` لا يزال موجوداً لكنه الآن لا يُستدعى من `QuizzesManager`.
+- أماكن الاستدعاء الوحيدة المتبقية: `SupervisorTestsManager` (يستخدم UQB) و لا أحد آخر.
+- يمكن أرشفة `QuizBuilder.tsx` في مجلد `dashboards/admin/_legacy/` بأمان في الجولة القادمة.
 
 **ملاحظة:** لا تبدأ هذه المرحلة دون طلب صريح.
