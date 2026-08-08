@@ -1446,15 +1446,22 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
                     return allQuestionIds.slice(0, 3).map((questionId, index) => {
                       const question = questions.find((item) => item.id === questionId);
+                      // نص السؤال الفعلي — يُعالج HTML بشكل آمن
+                      const plainText = (question?.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
                       return (
                         <div key={questionId} className="rounded-2xl border border-white bg-white p-3 shadow-sm">
                           <div className="text-[11px] font-black text-gray-400">سؤال {index + 1}</div>
                           <div className="mt-1 text-sm font-bold text-gray-800 line-clamp-2">
-                            {question?.text || question?.imageUrl ? 'سؤال مرتبط بالمركز' : 'لا يوجد نص محفوظ لهذا السؤال'}
+                            {!question
+                              ? <span className="text-amber-600">⚠ السؤال غير محمّل في الذاكرة — ID: {questionId}</span>
+                              : plainText || (question.imageUrl ? '🖼 سؤال بصري (صورة فقط)' : '— بدون نص —')}
                           </div>
-                          <div className="mt-2 text-xs font-bold text-gray-500">
-                            {question?.skillIds?.length ? `مهارات: ${question.skillIds.length}` : 'بدون مهارات فرعية محفوظة'}
-                          </div>
+                          {question && (
+                            <div className="mt-2 text-xs font-bold text-gray-500">
+                              {question.skillIds?.length ? `مهارات: ${question.skillIds.length}` : 'بدون مهارات فرعية'}
+                              {question.difficulty ? ` · ${question.difficulty}` : ''}
+                            </div>
+                          )}
                         </div>
                       );
                     });
