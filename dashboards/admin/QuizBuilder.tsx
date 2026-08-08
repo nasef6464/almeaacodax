@@ -354,24 +354,26 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
       return;
     }
 
-    const q: Question = {
+    // لا نُنشئ ID محلياً — نُرسل السؤال للسيرفر ونستخدم ID الحقيقي المُرجع
+    const questionPayload: Question = {
       ...savedQuestion,
-      id: `q_${Date.now()}`,
       pathId: savedQuestion.pathId || currentQuiz.pathId || '',
       subject: currentQuiz.subjectId || '',
     } as Question;
     
     try {
-      await addQuestion(q);
+      const persistedQuestion = await addQuestion(questionPayload);
       refreshQuestionBank();
+      // نستخدم ID السيرفر الحقيقي وليس ID محلي مؤقت
       setCurrentQuiz(prev => ({
         ...prev,
-        questionIds: [...(prev.questionIds || []), q.id]
+        questionIds: [...(prev.questionIds || []), persistedQuestion.id]
       }));
       setIsAddQuestionModalOpen(false);
     } catch (error) {
       console.error('Unable to save question', error);
       setOperationError('تعذر حفظ السؤال الآن. تحقق من الاتصال ثم حاول مرة أخرى.');
+      // النافذة تبقى مفتوحة عند الفشل — لا نُغلقها
     }
   };
 
@@ -460,17 +462,18 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
       if (currentQuiz.id) {
         await updateQuiz(currentQuiz.id, quizPayload as Quiz);
       } else {
-        const newQuiz: Quiz = {
+        // لا نُنشئ ID محلياً — السيرفر هو مصدر الحقيقة للمعرفات الدائمة
+        const newQuiz: Omit<Quiz, 'id'> & { createdAt: number } = {
           ...(quizPayload as Quiz),
-          id: `quiz_${Date.now()}`,
           createdAt: Date.now(),
-        } as Quiz;
-        await addQuiz(newQuiz);
+        };
+        await addQuiz(newQuiz as Quiz);
       }
 
       setOperationMessage('تم حفظ وتوجيه الاختبار بنجاح.');
       setIsEditing(false);
     } catch (err) {
+      // الخطأ يظهر للمستخدم والنموذج يبقى مفتوحاً
       setOperationError(err instanceof Error ? err.message : 'حدث خطأ أثناء حفظ الاختبار.');
     }
   };

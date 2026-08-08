@@ -2,9 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Question, Quiz } from '../../types';
 import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink, Dumbbell, Award, FileText } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { QuizBuilder } from './QuizBuilder';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
-import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, isTrueMockExam, normalizeQuizPlacement } from '../../utils/quizPlacement';
+import { getQuizPlacementDefaults, getQuizPlacementLabel, inferQuizKind, isMockQuiz, isTrainingQuiz, isTrueMockExam, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import {
   getQuizLearningPlacementAccessType,
   isQuizVisibleInLearningSlot,
@@ -462,15 +461,21 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     }
   };
 
-  const handleDuplicate = (quiz: Quiz) => {
-    addQuiz({
-      ...quiz,
-      id: `quiz_${Date.now()}_copy`,
-      title: `${quiz.title} (نسخة)`,
-      approvalStatus: 'draft',
-      isPublished: false,
-      showOnPlatform: false,
-    });
+  const handleDuplicate = async (quiz: Quiz) => {
+    // لا نُنشئ ID محلياً — نُرسل الاختبار المكرر للسيرفر ونستخدم ID الحقيقي المُرجع
+    try {
+      const { id: _originalId, ...quizWithoutId } = quiz;
+      await addQuiz({
+        ...quizWithoutId,
+        title: `${quiz.title} (نسخة)`,
+        approvalStatus: 'draft',
+        isPublished: false,
+        showOnPlatform: false,
+        createdAt: Date.now(),
+      } as Quiz);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'تعذر نسخ الاختبار. تحقق من الاتصال وحاول مرة أخرى.');
+    }
   };
 
   const handleApprove = (quiz: Quiz) => {
@@ -644,39 +649,19 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   if (isEditing) {
-    // الاختبارات الجديدة (لها quizKind) تُعدَّل عبر UnifiedQuizBuilder
     const editingQuiz = editingQuizId ? globalQuizzes.find((q) => q.id === editingQuizId) : null;
-    if (editingQuiz?.quizKind) {
-      return (
-        <UnifiedQuizBuilder
-          role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
-          editingQuiz={editingQuiz}
-          onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
-          onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
-        />
-      );
-    }
-    // الاختبارات القديمة (بلا quizKind) تبقى تُعدَّل عبر QuizBuilder لضمان التوافق العكسي
+    // جميع الاختبارات تُعدَّل عبر UnifiedQuizBuilder — نستنتج quizKind للاختبارات القديمة تلقائياً
+    const resolvedEditingQuiz = editingQuiz
+      ? { ...editingQuiz, quizKind: editingQuiz.quizKind || inferQuizKind(editingQuiz) }
+      : undefined;
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in">
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 className="font-bold text-gray-800">{editingQuizId ? 'تعديل الاختبار (نظام قديم)' : 'إنشاء اختبار جديد'}</h3>
-          <button onClick={() => { setIsEditing(false); setDraftMode(null); }} className="text-gray-500 hover:text-gray-700 font-bold text-sm">
-            العودة للقائمة
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          <QuizBuilder
-            initialQuizId={editingQuizId || undefined}
-            initialSubjectId={selectedSubjectId || undefined}
-            initialPathId={activePathId || undefined}
-            initialType={filterType}
-            initialMode={draftMode || undefined}
-            initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
-            initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
-          />
-        </div>
-      </div>
+      <UnifiedQuizBuilder
+        role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
+        editingQuiz={resolvedEditingQuiz}
+        defaultKind={draftMode === 'saher' || draftMode === 'central' ? 'test' : undefined}
+        onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
+        onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
+      />
     );
   }
 

@@ -36,6 +36,22 @@ export const isDrill = (quiz: Partial<Quiz>) => {
   return quiz.quizKind === 'drill';
 };
 
+/**
+ * يستنتج quizKind من الحقول القديمة للاختبارات التي لا تملك quizKind صريحاً.
+ * يستخدم للتوافق العكسي عند فتح اختبارات قديمة في UnifiedQuizBuilder.
+ */
+export const inferQuizKind = (quiz: Partial<Quiz>): NonNullable<Quiz['quizKind']> => {
+  // إذا كان quizKind موجوداً فعلاً فأرجعه مباشرة
+  if (quiz.quizKind) return quiz.quizKind;
+  // محاكي حقيقي
+  if (quiz.mockExam?.enabled === true) return 'mock';
+  // تدريب (bank / training placement)
+  if (quiz.type === 'bank' || quiz.placement === 'training') return 'drill';
+  // اختبار عادي هو الافتراضي
+  return 'test';
+};
+
+
 export const getQuizPlacementLabel = (quiz: QuizPlacementSource) => {
   const training = isTrainingQuiz(quiz);
   const mock = isMockQuiz(quiz);
