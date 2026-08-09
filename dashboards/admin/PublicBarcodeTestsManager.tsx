@@ -318,9 +318,9 @@ export const PublicBarcodeTestsManager: React.FC = () => {
     }
 
     try {
+      // لا نُنشئ ID محلياً — السيرفر هو مصدر الحقيقة للمعرفات الدائمة
       const created = await addQuestion({
         ...questionPayload,
-        id: `barcode_q_${Date.now()}`,
         pathId,
         subject: normalizedSubjectId,
         sectionId: questionPayload.sectionId || sectionId,
