@@ -80,12 +80,19 @@
 | 9 | `handleDuplicate` يستخدم `quiz_${Date.now()}_copy` | ✅ تم | `QuizzesManager.tsx` |
 | 10 | الاختبارات القديمة لا تفتح `UnifiedQuizBuilder` | ✅ تم | `QuizzesManager.tsx` |
 | 11 | Preview الاختبار يعرض نصاً مضللاً | ✅ تم | `QuizzesManager.tsx` |
-| A | تعدد المنشئات (QuizBuilder/MockExamManager/UnifiedQuizBuilder) | ⏳ Phase 3 | — |
-| B | كيان Assignment/التوجيه المستقل | ⏳ Phase 4 | — |
-| C | دورة حياة موحدة (draft→approved→published) | ⏳ Phase 5 | — |
-| D | Migration لبيانات قديمة (placement legacy) | ⏳ Phase 5 | — |
-| E | حماية النتائج القديمة (Versioning) | ⏳ Phase 6 | — |
-| F | تحليلات المحاكي لكل قسم | ⏳ Phase 7 | — |
+| 12 | `MockExamManager.saveExam` غير async + بدون await | ✅ تم | `MockExamManager.tsx` |
+| 13 | `MockExamManager` يستخدم `quiz_${now}` و`mock_exam_${now}` | ✅ تم | `MockExamManager.tsx` |
+| 14 | `MockExamManager.handleInlineQuestionSave` يستخدم `q_mock_${now}` | ✅ تم | `MockExamManager.tsx` |
+| 15 | دالة `handleSave` ميتة في `MockExamManager` لا تُستدعى | ✅ تم | `MockExamManager.tsx` |
+| 16 | `QuizBuilder` AI generation يستخدم `q_ai_${now}` | ✅ تم | `QuizBuilder.tsx` |
+| 17 | `QuestionBankManager.handleDuplicate` يستخدم `q_${now}_copy` | ✅ تم | `QuestionBankManager.tsx` |
+| 18 | `QuestionBankManager.handleSave` يستخدم `q_${now}` | ✅ تم | `QuestionBankManager.tsx` |
+| A | تعدد المنشئات (QuizBuilder/MockExamManager/UnifiedQuizBuilder) | ⏳ Phase 4 | — |
+| B | كيان Assignment/التوجيه المستقل | ⏳ Phase 5 | — |
+| C | دورة حياة موحدة (draft→approved→published) | ⏳ Phase 6 | — |
+| D | Migration لبيانات قديمة (placement legacy) | ⏳ Phase 6 | — |
+| E | حماية النتائج القديمة (Versioning) | ⏳ Phase 7 | — |
+| F | تحليلات المحاكي لكل قسم | ⏳ Phase 8 | — |
 
 ---
 
