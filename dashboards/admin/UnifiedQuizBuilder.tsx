@@ -485,6 +485,17 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                       maxQuestions={80}
                     />
                   )}
+                  {/* تحذير: أقسام فارغة */}
+                  {mockSections.some((s) => s.questionIds.length === 0) && (
+                    <div className="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
+                      <AlertCircle size={16} className="shrink-0 mt-0.5 text-amber-600" />
+                      <span>
+                        <strong>تنبيه:</strong> الأقسام التالية لا تحتوي على أسئلة:{" "}
+                        {mockSections.filter((s) => s.questionIds.length === 0).map((s) => s.title).join(" — ")}.
+                        يجب إضافة أسئلة لكل قسم قبل الانتقال للخطوة التالية.
+                      </span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <SmartQuestionSelector
