@@ -565,114 +565,6 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     );
   };
 
-  const handleSave = async () => {
-    if (!title.trim() && examType === 'regular') {
-      setSaveError('يرجى إدخال عنوان الاختبار.');
-      return;
-    }
-    setSaveError('');
-    const now = Date.now();
-
-    try {
-      if (examType === 'regular') {
-        if (regularQuestionIds.length === 0) {
-          setSaveError('لا يمكن حفظ الاختبار العادي بدون أسئلة.');
-          return;
-        }
-
-        const isAdminPlatform = role === 'admin' && publishMode === 'platform';
-        const finalTargetGroupIds = role === 'supervisor'
-          ? targetGroupIds
-          : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
-
-        const payload: Quiz = {
-          id: editingId || `quiz_${now}`,
-          title: title.trim() || 'اختبار موجه',
-          description,
-          pathId: selectedPathId,
-          subjectId: regularSubjectId,
-          type: 'quiz',
-          placement: 'training',
-          showInTraining: true,
-          showInMock: false,
-          mode: 'central',
-          settings: {
-            ...getDefaultQuizSettings({ mode: 'central' }),
-            passingScore,
-            timeLimit: regularTimeLimit,
-          },
-          access: { type: 'free', allowedGroupIds: [] },
-          questionIds: unique(regularQuestionIds),
-          targetGroupIds: finalTargetGroupIds,
-          dueDate: dueDate || undefined,
-          createdAt: now,
-          isPublished: true,
-          showOnPlatform: false,
-          approvalStatus: 'approved',
-          approvedAt: now,
-        };
-
-        if (editingId) await updateQuiz(editingId, payload);
-        else await addQuiz(payload);
-        resetDraft();
-        return;
-      }
-
-      // Mock exam
-      const cleanSections = sections
-        .map((section, index) => ({ ...section, order: index, questionIds: unique(section.questionIds) }))
-        .filter((section) => section.title.trim() && section.questionIds.length > 0);
-      const allQuestionIds = unique(cleanSections.flatMap((section) => section.questionIds));
-      if (allQuestionIds.length === 0) {
-        setSaveError('لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
-        return;
-      }
-
-      const firstSubjectId = cleanSections[0]?.subjectId || pathSubjects[0]?.id || 'mock_exam';
-
-      // Determine mode and targeting
-      const isAdminPlatform = role === 'admin' && publishMode === 'platform';
-      const finalTargetGroupIds = role === 'supervisor'
-        ? targetGroupIds
-        : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
-
-      const payload: Quiz = {
-        id: editingId || `mock_exam_${now}`,
-        title: title.trim() || 'اختبار محاكي',
-        description,
-        pathId: selectedPathId,
-        subjectId: firstSubjectId,
-        type: 'quiz',
-        placement: 'mock',
-        showInTraining: false,
-        showInMock: false,
-        mode: isAdminPlatform ? 'saher' : 'central',
-        settings: {
-          ...getDefaultQuizSettings({ mode: isAdminPlatform ? 'saher' : 'central', mockExam: true }),
-          passingScore,
-          timeLimit: cleanSections.reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || 60,
-        },
-        access: isAdminPlatform
-          ? { type: accessType, price: accessType === 'paid' ? accessPrice : undefined, allowedGroupIds: [] }
-          : { type: 'free', allowedGroupIds: [] },
-        questionIds: allQuestionIds,
-        mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections },
-        targetGroupIds: finalTargetGroupIds,
-        dueDate: (!isAdminPlatform && dueDate) ? dueDate : undefined,
-        createdAt: now,
-        isPublished: true,
-        showOnPlatform: isAdminPlatform,
-        approvalStatus: 'approved',
-        approvedAt: now,
-      };
-
-      if (editingId) await updateQuiz(editingId, payload);
-      else await addQuiz(payload);
-      resetDraft();
-    } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'حدث خطأ أثناء الحفظ.');
-    }
-  };
 
   const toggleSectionExpanded = (sectionId: string) => {
     setExpandedSections((prev) => {
@@ -698,10 +590,9 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
       setIsSavingQuestion(true);
       try {
         const now = Date.now();
-        const newId = `q_mock_${now}_${Math.random().toString(36).slice(2, 6)}`;
-        const fullQuestion: Question = {
+        // لا نُنشئ ID محلياً — نُرسل للسيرفر ونستخدم ID الحقيقي المُرجع
+        const questionPayload: Question = {
           ...draft,
-          id: newId,
           pathId: selectedPathId,
           approvalStatus: 'approved',
           approvedAt: now,
@@ -710,13 +601,14 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
           createdAt: now,
         } as Question;
 
-        await addQuestion(fullQuestion);
+        const persistedQuestion = await addQuestion(questionPayload);
         await refreshQuestionBank();
 
         if (builderTargetSectionId) {
+          // نستخدم ID السيرفر الحقيقي وليس ID محلي مؤقت
           setSections((prev) =>
             prev.map((s) =>
-              s.id === builderTargetSectionId ? { ...s, questionIds: unique([...s.questionIds, newId]) } : s,
+              s.id === builderTargetSectionId ? { ...s, questionIds: unique([...s.questionIds, persistedQuestion.id]) } : s,
             ),
           );
         }
@@ -724,6 +616,8 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
         setBuilderTargetSectionId('');
       } catch (err) {
         console.error('Failed to save question', err);
+        // أظهر الخطأ للمستخدم بدلاً من ابتلاعه بصمت
+        setSaveError(err instanceof Error ? err.message : 'تعذر حفظ السؤال. تحقق من الاتصال وحاول مرة أخرى.');
       } finally {
         setIsSavingQuestion(false);
       }
@@ -731,107 +625,112 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     [addQuestion, builderTargetSectionId, isSavingQuestion, refreshQuestionBank, selectedPathId],
   );
 
-  // ── Save ──────────────────────────────────────────────────────────────────
-  const saveExam = () => {
+  // ── Save (الدالة الوحيدة للحفظ — async مع إدارة الأخطاء وإزالة المعرفات المحلية) ──────────────────────
+  const saveExam = async () => {
     const now = Date.now();
     setSaveError('');
 
-    if (examType === 'regular') {
-      // Regular exam
-      if (regularQuestionIds.length === 0) {
-        setSaveError('لا يمكن حفظ الاختبار بدون أسئلة.');
+    try {
+      if (examType === 'regular') {
+        if (regularQuestionIds.length === 0) {
+          setSaveError('لا يمكن حفظ الاختبار بدون أسئلة.');
+          return;
+        }
+
+        const finalTargetGroupIds = role === 'supervisor'
+          ? targetGroupIds
+          : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
+
+        // لا نُنشئ ID محلياً — السيرفر هو مصدر الحقيقة للمعرفات الدائمة
+        const payload: Omit<Quiz, 'id'> & { id?: string } = {
+          ...(editingId ? { id: editingId } : {}),
+          title: title.trim() || 'اختبار موجه',
+          description,
+          pathId: selectedPathId,
+          subjectId: regularSubjectId || pathSubjects[0]?.id || '',
+          quizKind: 'test' as const,
+          type: 'quiz',
+          placement: 'training',
+          showInTraining: true,
+          showInMock: false,
+          mode: 'central',
+          settings: {
+            ...getDefaultQuizSettings({ mode: 'central' }),
+            passingScore,
+            timeLimit: regularTimeLimit,
+          },
+          access: { type: 'free', allowedGroupIds: [] },
+          questionIds: unique(regularQuestionIds),
+          targetGroupIds: finalTargetGroupIds,
+          dueDate: dueDate || undefined,
+          createdAt: now,
+          isPublished: true,
+          showOnPlatform: false,
+          approvalStatus: 'approved',
+          approvedAt: now,
+        };
+
+        if (editingId) await updateQuiz(editingId, payload as Quiz);
+        else await addQuiz(payload as Quiz);
+        resetDraft();
         return;
       }
 
-      // Build targeting
+      // Mock exam
+      const cleanSections = sections
+        .map((section, index) => ({ ...section, order: index, questionIds: unique(section.questionIds) }))
+        .filter((section) => section.title.trim() && section.questionIds.length > 0);
+      const allQuestionIds = unique(cleanSections.flatMap((section) => section.questionIds));
+      if (allQuestionIds.length === 0) {
+        setSaveError('لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
+        return;
+      }
+
+      const firstSubjectId = cleanSections[0]?.subjectId || pathSubjects[0]?.id || 'mock_exam';
+      const isAdminPlatform = role === 'admin' && publishMode === 'platform';
       const finalTargetGroupIds = role === 'supervisor'
         ? targetGroupIds
         : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
 
-      const payload: Quiz = {
-        id: editingId || `quiz_${now}`,
-        title: title.trim() || 'اختبار موجه',
+      // لا نُنشئ ID محلياً — السيرفر هو مصدر الحقيقة للمعرفات الدائمة
+      const payload: Omit<Quiz, 'id'> & { id?: string } = {
+        ...(editingId ? { id: editingId } : {}),
+        title: title.trim() || 'اختبار محاكي',
         description,
         pathId: selectedPathId,
-        subjectId: regularSubjectId || pathSubjects[0]?.id || '',
+        subjectId: firstSubjectId,
+        quizKind: 'mock' as const,
         type: 'quiz',
-        placement: 'training',
-        showInTraining: true,
+        placement: 'mock',
+        showInTraining: false,
         showInMock: false,
-        mode: 'central',
+        mode: isAdminPlatform ? 'saher' : 'central',
         settings: {
-          ...getDefaultQuizSettings({ mode: 'central' }),
+          ...getDefaultQuizSettings({ mode: isAdminPlatform ? 'saher' : 'central', mockExam: true }),
           passingScore,
-          timeLimit: regularTimeLimit,
+          timeLimit: cleanSections.reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || 60,
         },
-        access: { type: 'free', allowedGroupIds: [] },
-        questionIds: unique(regularQuestionIds),
+        access: isAdminPlatform
+          ? { type: accessType, price: accessType === 'paid' ? accessPrice : undefined, allowedGroupIds: [] }
+          : { type: 'free', allowedGroupIds: [] },
+        questionIds: allQuestionIds,
+        mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections },
         targetGroupIds: finalTargetGroupIds,
-        dueDate: dueDate || undefined,
+        dueDate: (!isAdminPlatform && dueDate) ? dueDate : undefined,
         createdAt: now,
         isPublished: true,
-        showOnPlatform: false,
+        showOnPlatform: isAdminPlatform,
         approvalStatus: 'approved',
         approvedAt: now,
       };
 
-      if (editingId) updateQuiz(editingId, payload);
-      else addQuiz(payload);
+      if (editingId) await updateQuiz(editingId, payload as Quiz);
+      else await addQuiz(payload as Quiz);
       resetDraft();
-      return;
+    } catch (err) {
+      // النموذج يبقى مفتوحاً عند الفشل — لا نستدعي resetDraft
+      setSaveError(err instanceof Error ? err.message : 'حدث خطأ أثناء الحفظ. تحقق من الاتصال وحاول مرة أخرى.');
     }
-
-    // Mock exam
-    const cleanSections = sections
-      .map((section, index) => ({ ...section, order: index, questionIds: unique(section.questionIds) }))
-      .filter((section) => section.title.trim() && section.questionIds.length > 0);
-    const allQuestionIds = unique(cleanSections.flatMap((section) => section.questionIds));
-    if (allQuestionIds.length === 0) {
-      setSaveError('لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
-      return;
-    }
-
-    const firstSubjectId = cleanSections[0]?.subjectId || pathSubjects[0]?.id || 'mock_exam';
-
-    // Determine mode and targeting
-    const isAdminPlatform = role === 'admin' && publishMode === 'platform';
-    const finalTargetGroupIds = role === 'supervisor'
-      ? targetGroupIds
-      : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
-
-    const payload: Quiz = {
-      id: editingId || `mock_exam_${now}`,
-      title: title.trim() || 'اختبار محاكي',
-      description,
-      pathId: selectedPathId,
-      subjectId: firstSubjectId,
-      type: 'quiz',
-      placement: 'mock',
-      showInTraining: false,
-      showInMock: false,
-      mode: isAdminPlatform ? 'saher' : 'central',
-      settings: {
-        ...getDefaultQuizSettings({ mode: isAdminPlatform ? 'saher' : 'central', mockExam: true }),
-        passingScore,
-        timeLimit: cleanSections.reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || 60,
-      },
-      access: isAdminPlatform
-        ? { type: accessType, price: accessType === 'paid' ? accessPrice : undefined, allowedGroupIds: [] }
-        : { type: 'free', allowedGroupIds: [] },
-      questionIds: allQuestionIds,
-      mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections },
-      targetGroupIds: finalTargetGroupIds,
-      dueDate: (!isAdminPlatform && dueDate) ? dueDate : undefined,
-      createdAt: now,
-      isPublished: true,
-      showOnPlatform: isAdminPlatform,
-      approvalStatus: 'approved',
-      approvedAt: now,
-    };
-
-    if (editingId) updateQuiz(editingId, payload);
-    else addQuiz(payload);
-    resetDraft();
   };
 
   const handlePreviewQuiz = (quiz: Quiz) => setPreviewQuiz(quiz);
