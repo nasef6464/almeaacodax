@@ -1056,21 +1056,21 @@ export const useStore = create<AppState>()(
                     'learningPlacements' in data;
                 const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
                 const saved = await api.updateQuiz(quizId, updatePayload) as any;
-                const mergedPayload: Partial<Quiz> = {
+                // نقرأ الـ quiz الحالية من state لنُرجع النسخة الكاملة
+                const currentQuiz = get().quizzes.find(q => q.id === quizId) ?? {};
+                const finalQuiz: Quiz = {
+                    ...(currentQuiz as Quiz),
                     ...updatePayload,
                     ...saved,
                     id: String(saved?.id || saved?._id || quizId),
                 };
+                const normalized = shouldNormalizePlacement ? normalizeQuizPlacement(finalQuiz) : finalQuiz;
                 set((state) => ({
                     quizzes: state.quizzes.map(q =>
-                        q.id === quizId
-                            ? (shouldNormalizePlacement
-                                ? normalizeQuizPlacement({ ...q, ...mergedPayload })
-                                : { ...q, ...mergedPayload })
-                            : q
+                        q.id === quizId ? normalized : q
                     )
                 }));
-                return mergedPayload as Quiz;
+                return normalized as Quiz;
             },
             deleteQuiz: (quizId) => {
                 api.deleteQuiz(quizId).catch(console.error);
