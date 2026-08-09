@@ -653,6 +653,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
           placement: 'training',
           showInTraining: true,
           showInMock: false,
+          // الاختبار العادي الموجه يظهر في التدريبات وليس في المحاكيات
           mode: 'central',
           settings: {
             ...getDefaultQuizSettings({ mode: 'central' }),
@@ -703,7 +704,8 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
         type: 'quiz',
         placement: 'mock',
         showInTraining: false,
-        showInMock: false,
+        // ضروري: isMockQuiz() يتحقق من showInMock — يجب أن يكون true ليظهر في QuizzesManager
+        showInMock: true,
         mode: isAdminPlatform ? 'saher' : 'central',
         settings: {
           ...getDefaultQuizSettings({ mode: isAdminPlatform ? 'saher' : 'central', mockExam: true }),

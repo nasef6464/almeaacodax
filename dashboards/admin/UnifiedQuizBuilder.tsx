@@ -263,6 +263,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 isStrictSectionLock: true,
               } as any,
               placement: "mock" as const,
+              // ضروري: isMockQuiz() يتحقق من showInMock لإظهار الاختبار في QuizzesManager
+              showInMock: true,
+              showInTraining: false,
             }
           : {
               // drill → يظهر في التدريبات فقط
