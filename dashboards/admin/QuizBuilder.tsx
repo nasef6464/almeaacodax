@@ -313,8 +313,8 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
           for (let i = 0; i < missingCount; i += 1) {
             const generated = await generateQuizQuestion(topicName);
             if (generated) {
-              const newQ: Question = {
-                id: `q_ai_${Date.now()}_${i}`,
+              // لا نُنشئ ID محلياً — نُرسل للسيرفر ونستخدم ID الحقيقي المُرجع
+              const newQ: Omit<Question, 'id'> = {
                 text: generated.question,
                 options: generated.options,
                 correctOptionIndex: generated.correctIndex,
@@ -326,8 +326,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
                 sectionId: currentQuiz.sectionId,
                 skillIds: autoGenConfig.skillIds
               };
-              await addQuestion(newQ);
-              selectedIds.push(newQ.id);
+              const persistedQ = await addQuestion(newQ as Question);
+              // نستخدم ID السيرفر وليس ID مؤقتاً محلياً
+              selectedIds.push(persistedQ.id);
             }
           }
         } catch (e) {
