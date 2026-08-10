@@ -319,6 +319,16 @@ export interface QuizQuestionReview {
     timeSpentSeconds?: number;
 }
 
+export interface QuizSectionResult {
+    sectionId: string;
+    sectionName: string;
+    total: number;
+    correct: number;
+    wrong: number;
+    unanswered: number;
+    score: number; // percentage
+}
+
 export interface QuizResult {
     userId?: string;
     quizId: string;
@@ -334,6 +344,7 @@ export interface QuizResult {
     date: string;
     skillsAnalysis: SkillGap[];
     questionReview?: QuizQuestionReview[];
+    sectionResults?: QuizSectionResult[]; // تحليل لكل قسم (للمحاكيات فقط)
 }
 
 export interface QuizHistoryItem {

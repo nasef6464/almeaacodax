@@ -875,6 +875,30 @@ export const QuizPage: React.FC = () => {
       });
     });
 
+    // ── تحليل لكل قسم (للمحاكيات فقط) ────────────────────────────────────
+    const sectionResults = quiz.mockExam?.enabled && quiz.mockExam.sections?.length
+      ? quiz.mockExam.sections.map((section) => {
+          const sectionQuestionIds = new Set(section.questionIds || []);
+          const sectionQs = quizQuestions.filter((q) => sectionQuestionIds.has(q.id));
+          const total = sectionQs.length;
+          const correct = sectionQs.filter((q) => selectedOptions[q.id] === q.correctOptionIndex).length;
+          const wrong = sectionQs.filter(
+            (q) => q.id in selectedOptions && selectedOptions[q.id] !== q.correctOptionIndex
+          ).length;
+          const unanswered = total - correct - wrong;
+          const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+          return {
+            sectionId: section.id,
+            sectionName: section.name,
+            total,
+            correct,
+            wrong,
+            unanswered,
+            score,
+          };
+        })
+      : undefined;
+
     const skillsAnalysis = Object.entries(skillStats).map(([skillId, stats]) => {
       const resolvedSkill = skills.find((skill) => skill.id === skillId);
       const mastery = Math.round((stats.correct / stats.total) * 100);
@@ -935,6 +959,8 @@ export const QuizPage: React.FC = () => {
       date: new Date().toISOString(),
       skillsAnalysis,
       questionReview,
+      // تحليل لكل قسم (للمحاكيات فقط)
+      ...(sectionResults ? { sectionResults } : {}),
     };
 
     let resultAttemptDate = result.date;
@@ -947,6 +973,8 @@ export const QuizPage: React.FC = () => {
           answers: selectedOptions,
           timeSpentSeconds: Math.max(0, timeSpentSeconds),
           source: result.source,
+          // تحليل الأقسام للمحاكيات — يتجاهله السيرفر إن لم يدعمه
+          ...(sectionResults ? { sectionResults } : {}),
         });
         const savedServerResult: QuizResult = {
           ...result,
