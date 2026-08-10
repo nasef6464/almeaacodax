@@ -369,9 +369,9 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
       showInTraining = false;
       placement = "mock";
       type = "quiz";
-      nextPayload.quizKind = "mock";
-      if (!nextPayload.mockExam) nextPayload.mockExam = { enabled: true, sections: [] };
-      nextPayload.mockExam.enabled = true;
+      (nextPayload as any).quizKind = "mock";
+      if (!(nextPayload as any).mockExam) (nextPayload as any).mockExam = { enabled: true, sections: [] };
+      (nextPayload as any).mockExam.enabled = true;
     } else if (quizKind === "drill") {
       showInTraining = true;
       placement = showInMock ? "both" : "training";
@@ -411,9 +411,9 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
     placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
     type = showInTraining && !showInMock ? "bank" : "quiz";
 
-    if (placement === "mock") nextPayload.quizKind = "mock";
-    else if (placement === "training" || type === "bank") nextPayload.quizKind = "drill";
-    else nextPayload.quizKind = "test";
+    if (placement === "mock") (nextPayload as any).quizKind = "mock";
+    else if (placement === "training" || type === "bank") (nextPayload as any).quizKind = "drill";
+    else (nextPayload as any).quizKind = "test";
   }
 
   return {
