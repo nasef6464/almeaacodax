@@ -1515,7 +1515,24 @@ quizRouter.delete(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
 
-    return res.json({ success: true });
+    const deletedId = String(deleted.id || deleted._id);
+
+    // Cascade: remove deleted questionId from all quizzes that reference it
+    // This prevents broken references in published quizzes
+    await Promise.all([
+      // Remove from root questionIds array
+      QuizModel.updateMany(
+        { questionIds: deletedId },
+        { $pull: { questionIds: deletedId } }
+      ),
+      // Remove from mockExam sections
+      QuizModel.updateMany(
+        { "mockExam.sections.questionIds": deletedId },
+        { $pull: { "mockExam.sections.$[].questionIds": deletedId } }
+      ),
+    ]);
+
+    return res.json({ success: true, cascadeRemovedFromQuizzes: true });
   }),
 );
 

@@ -1024,7 +1024,25 @@ export const useStore = create<AppState>()(
             deleteQuestion: async (questionId) => {
                 await api.deleteQuestion(questionId);
                 set((state) => ({
-                    questions: state.questions.filter(q => q.id !== questionId)
+                    questions: state.questions.filter(q => q.id !== questionId),
+                    // مزامنة محلية: إزالة الـ questionId من الاختبارات التي تُشير إليه
+                    // (السيرفر يقوم بنفس الشيء عبر cascade delete)
+                    quizzes: state.quizzes.map(quiz => {
+                        const hasInRoot = quiz.questionIds?.includes(questionId);
+                        const hasInSections = quiz.mockExam?.sections?.some(s => s.questionIds?.includes(questionId));
+                        if (!hasInRoot && !hasInSections) return quiz;
+                        return {
+                            ...quiz,
+                            questionIds: quiz.questionIds?.filter(id => id !== questionId),
+                            mockExam: quiz.mockExam ? {
+                                ...quiz.mockExam,
+                                sections: quiz.mockExam.sections?.map(s => ({
+                                    ...s,
+                                    questionIds: s.questionIds?.filter(id => id !== questionId) ?? [],
+                                })),
+                            } : quiz.mockExam,
+                        };
+                    }),
                 }));
             },
 
