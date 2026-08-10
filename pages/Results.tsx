@@ -1126,6 +1126,48 @@ const Results: React.FC = () => {
               </div>
             )}
 
+            {/* ── أداء لكل قسم (للمحاكيات فقط) ─────────────────────────── */}
+            {latestResult.sectionResults && latestResult.sectionResults.length > 0 ? (
+              <div className="mt-5 rounded-2xl border border-violet-100 bg-white/95 p-4 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <BarChart3 size={16} className="text-violet-600" />
+                  <h3 className="text-sm font-black text-gray-900">أداؤك لكل قسم</h3>
+                </div>
+                <div className="grid gap-3">
+                  {latestResult.sectionResults.map((sec) => {
+                    const tone =
+                      sec.score >= 80
+                        ? { bar: 'bg-emerald-500', text: 'text-emerald-700', bg: 'bg-emerald-50' }
+                        : sec.score >= 50
+                        ? { bar: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50' }
+                        : { bar: 'bg-red-500', text: 'text-red-700', bg: 'bg-red-50' };
+                    return (
+                      <div key={sec.sectionId} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                          <span className="text-sm font-black text-gray-800 truncate">{sec.sectionName}</span>
+                          <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-black ${tone.bg} ${tone.text}`}>
+                            {sec.score}%
+                          </span>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                          <div
+                            className={`h-full transition-all duration-500 ${tone.bar}`}
+                            style={{ width: `${sec.score}%` }}
+                          />
+                        </div>
+                        <div className="mt-2 flex gap-3 text-[11px] font-bold text-gray-500">
+                          <span>{sec.total} سؤال</span>
+                          <span className="text-emerald-600">✓ {sec.correct}</span>
+                          <span className="text-red-500">✗ {sec.wrong}</span>
+                          {sec.unanswered > 0 ? <span className="text-amber-500">⊘ {sec.unanswered}</span> : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <button
                 onClick={() => {
