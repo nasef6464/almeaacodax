@@ -515,6 +515,13 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     setSmartSections(new Set());
     setTargetGroupIds(quiz.targetGroupIds || []);
     setPublishMode(quiz.showOnPlatform ? 'platform' : 'school');
+    setDueDate(quiz.dueDate || '');
+    // للاختبارات العادية الموجهة: استعادة الأسئلة والمادة والوقت
+    if (!quiz.mockExam?.enabled) {
+      setRegularSubjectId(quiz.subjectId || '');
+      setRegularTimeLimit((quiz.settings as any)?.timeLimit || 30);
+      setRegularQuestionIds(quiz.questionIds || []);
+    }
   };
 
   const toggleQuestion = (sectionId: string, questionId: string) => {
@@ -650,10 +657,10 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
           subjectId: regularSubjectId || pathSubjects[0]?.id || '',
           quizKind: 'test' as const,
           type: 'quiz',
-          placement: 'training',
+          // test = يظهر في التدريبات والاختبارات — الاستهداف يتحكم في من يراه
+          placement: 'both',
           showInTraining: true,
-          showInMock: false,
-          // الاختبار العادي الموجه يظهر في التدريبات وليس في المحاكيات
+          showInMock: true,
           mode: 'central',
           settings: {
             ...getDefaultQuizSettings({ mode: 'central' }),
