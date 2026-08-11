@@ -23,6 +23,7 @@ import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from ".
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { sm2 } from "../services/spacedRepetition.js";
+import { createNotificationDeliveries } from "../services/notificationService.js";
 
 const questionBaseSchema = z.object({
   id: z.string().optional(),
@@ -1141,6 +1142,12 @@ const runQuizSubmissionSideEffects = async (args: {
   }>;
   questionById: Map<string, any>;
 }) => {
+  const score        = Number(args.result?.score ?? 0);
+  const quizTitle    = String(args.result?.quizTitle || "الاختبار");
+  const scoreEmoji   = score >= 80 ? "🎉" : score >= 60 ? "👍" : "💪";
+  const notifTitle   = `${scoreEmoji} نتيجة ${quizTitle}`;
+  const notifBody    = `حصلت على ${score}% في هذا الاختبار. ${score >= 80 ? 'أداء رائع!' : score >= 60 ? 'جيد جداً، استمر!' : 'لا تيأس، راجع الأخطاء وأعد المحاولة.'}`;
+
   const outcomes = await Promise.allSettled([
     updateSkillProgressFromResult(args.result, args.userId),
     upsertReviewCardsFromQuestionReview({
@@ -1148,6 +1155,14 @@ const runQuizSubmissionSideEffects = async (args: {
       questionReview: args.questionReview,
       questionById: args.questionById,
     }),
+    // Phase 14: إشعار تلقائي للطالب بنتيجة اختباره عبر SSE
+    createNotificationDeliveries({
+      title:     notifTitle,
+      body:      notifBody,
+      channels:  ["in_app"],
+      userIds:   [args.userId],
+      createdBy: "system",
+    }).catch(() => { /* non-critical */ }),
   ]);
 
   outcomes.forEach((outcome, index) => {
