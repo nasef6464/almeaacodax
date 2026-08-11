@@ -1075,9 +1075,40 @@ export const SupervisorDashboard: React.FC = () => {
         {/* ===== REPORTS TAB ===== */}
         {activeTab === 'reports' && (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-black text-gray-900">تقارير أداء فصول المدرسة والتحصيل</h1>
-              <p className="mt-1 text-sm text-gray-500">تحليل مقارن للمستويات الدراسية والفصول للمشرفين</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-black text-gray-900">تقارير أداء فصول المدرسة والتحصيل</h1>
+                <p className="mt-1 text-sm text-gray-500">تحليل مقارن للمستويات الدراسية والفصول للمشرفين</p>
+              </div>
+              <div className="flex items-center gap-2 print:hidden">
+                <button
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold text-sm hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                >
+                  <Printer size={16} />
+                  طباعة / تصدير PDF
+                </button>
+                <button
+                  onClick={() => {
+                    const rows = [
+                      ['الفصل', 'عدد الطلاب', 'المحاولات', 'الطلاب الضعفاء', 'المعدل%'],
+                      ...supervisorScopeSummary.groupSnapshots.map(g => [
+                        g.name, g.studentCount, g.attempts, g.weakStudents, g.average
+                      ])
+                    ];
+                    const csv = rows.map(r => r.join(',')).join('\n');
+                    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url; a.download = `تقرير_المشرف_${new Date().toLocaleDateString('ar-SA')}.csv`;
+                    a.click(); URL.revokeObjectURL(url);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 font-bold text-sm hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                >
+                  <Download size={16} />
+                  تصدير CSV
+                </button>
+              </div>
             </div>
 
             {/* Class Performance Leaderboard */}

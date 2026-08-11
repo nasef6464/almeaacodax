@@ -17,6 +17,7 @@ import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotificationStream } from '../contexts/useNotificationStream';
 import { isTrueMockExam } from "../utils/quizPlacement";
 import { EmptyState } from '../components/ui/EmptyState';
 import { isStandaloneMockExam } from '../utils/mockExam';
@@ -794,10 +795,23 @@ const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> =
 const Dashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [notifToast, setNotifToast] = useState<{ title: string; body: string } | null>(null);
     const { user } = useStore();
     const location = useLocation();
     const isParentDashboard = user.role === Role.PARENT;
-    const { logout } = useAuth();
+    const { logout, user: authUser } = useAuth();
+
+    // ── Real-time notifications ───────────────────────────────────────────
+    const { latestNotification } = useNotificationStream({
+        token: authUser?.token,
+        enabled: !!authUser?.token,
+    });
+    useEffect(() => {
+        if (!latestNotification) return;
+        setNotifToast({ title: latestNotification.title, body: latestNotification.body });
+        const timer = setTimeout(() => setNotifToast(null), 5000);
+        return () => clearTimeout(timer);
+    }, [latestNotification]);
 
     const studentMenuItems = [
         { id: 'overview',    label: 'نظرة عامة',       icon: <LayoutDashboard size={20} /> },
@@ -883,6 +897,22 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="flex min-h-screen bg-gray-50">
+            {/* ── Notification Toast (SSE real-time) ─────────────────────── */}
+            {notifToast && (
+                <div className="fixed bottom-6 left-6 z-[9999] max-w-sm w-full animate-fade-in">
+                    <div className="bg-white border border-indigo-100 rounded-2xl shadow-2xl p-4 flex items-start gap-3">
+                        <div className="shrink-0 w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg">
+                            🔔
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="font-black text-gray-900 text-sm truncate">{notifToast.title}</p>
+                            <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{notifToast.body}</p>
+                        </div>
+                        <button onClick={() => setNotifToast(null)} className="shrink-0 text-gray-400 hover:text-gray-700">✕</button>
+                    </div>
+                </div>
+            )}
+
             {/* Mobile Menu Toggle */}
             <button 
                 className="lg:hidden fixed bottom-6 left-6 z-50 bg-amber-500 text-white p-3 rounded-full shadow-lg"
