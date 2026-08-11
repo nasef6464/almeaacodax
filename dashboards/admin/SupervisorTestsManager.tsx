@@ -564,13 +564,27 @@ export const SupervisorTestsManager: React.FC = () => {
                 )}
               </div>
 
-              <button
-                onClick={() => { setSelectedQuizId(q.id); setViewMode('analytics'); }}
-                className="w-full mt-auto py-2.5 rounded-xl border border-indigo-100 bg-indigo-50/80 text-indigo-700 font-bold hover:bg-indigo-600 hover:text-white transition-all text-sm flex items-center justify-center gap-2 shadow-sm"
-              >
-                <BarChart size={18} />
-                عرض التحليل الاحترافي
-              </button>
+              <div className="flex gap-2 mt-auto">
+                <button
+                  onClick={() => { setSelectedQuizId(q.id); setViewMode('analytics'); }}
+                  className="flex-1 py-2.5 rounded-xl border border-indigo-100 bg-indigo-50/80 text-indigo-700 font-bold hover:bg-indigo-600 hover:text-white transition-all text-sm flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <BarChart size={18} />
+                  التحليل الاحترافي
+                </button>
+
+                {/* زر تقرير الأقسام — للمحاكيات فقط */}
+                {isTrueMockExam(q) && (
+                  <button
+                    onClick={() => { setSelectedQuizId(q.id); setViewMode('analytics'); }}
+                    title="تقرير أداء الطلاب لكل قسم"
+                    className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-violet-200 bg-violet-50 text-violet-700 font-bold hover:bg-violet-600 hover:text-white transition-all text-xs shadow-sm"
+                  >
+                    <Activity size={16} />
+                    الأقسام
+                  </button>
+                )}
+              </div>
             </div>
           ))
         )}
