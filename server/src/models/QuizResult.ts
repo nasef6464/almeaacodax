@@ -1,24 +1,39 @@
 import mongoose, { Schema } from "mongoose";
 
+const quizSectionResultSchema = new Schema(
+  {
+    sectionId:   { type: String, required: true },
+    sectionName: { type: String, default: "" },
+    total:       { type: Number, default: 0 },
+    correct:     { type: Number, default: 0 },
+    wrong:       { type: Number, default: 0 },
+    unanswered:  { type: Number, default: 0 },
+    score:       { type: Number, default: 0 }, // percentage 0-100
+  },
+  { _id: false },
+);
+
 const quizResultSchema = new Schema(
   {
-    userId: { type: String, required: true, index: true },
-    quizId: { type: String, required: true, index: true },
-    quizTitle: { type: String, required: true, trim: true },
-    score: { type: Number, default: 0 },
+    userId:         { type: String, required: true, index: true },
+    quizId:         { type: String, required: true, index: true },
+    quizTitle:      { type: String, required: true, trim: true },
+    score:          { type: Number, default: 0 },
     totalQuestions: { type: Number, default: 0 },
     correctAnswers: { type: Number, default: 0 },
-    wrongAnswers: { type: Number, default: 0 },
-    unanswered: { type: Number, default: 0 },
-    passed: { type: Boolean, default: false, index: true },
-    attemptNumber: { type: Number, default: 1 },
-    source: { type: String, default: "" },
+    wrongAnswers:   { type: Number, default: 0 },
+    unanswered:     { type: Number, default: 0 },
+    passed:         { type: Boolean, default: false, index: true },
+    attemptNumber:  { type: Number, default: 1 },
+    source:         { type: String, default: "" },
     timeSpentSeconds: { type: Number, default: 0 },
-    timeSpent: { type: String, default: "" },
-    date: { type: String, default: "" },
+    timeSpent:      { type: String, default: "" },
+    date:           { type: String, default: "" },
     skillsAnalysis: { type: [Schema.Types.Mixed], default: [] },
     questionReview: { type: [Schema.Types.Mixed], default: [] },
-    submissionKey: { type: String, default: undefined, unique: true, sparse: true, index: true },
+    // تحليل الأداء لكل قسم (للمحاكيات فقط — اختياري للتوافق مع السجلات القديمة)
+    sectionResults: { type: [quizSectionResultSchema], default: undefined },
+    submissionKey:  { type: String, default: undefined, unique: true, sparse: true, index: true },
   },
   {
     timestamps: true,
