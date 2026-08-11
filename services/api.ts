@@ -1012,6 +1012,18 @@ export const api = {
       body: payload || {},
       token,
     }),
+  // ── إشعارات المستخدم ─────────────────────────────────────────────────────
+  getMyNotifications: (params?: { page?: number; limit?: number }, token?: string | null) =>
+    request<{ notifications: unknown[]; pagination: unknown }>(
+      withQuery("/notifications/me", { limit: 20, ...params }),
+      { token },
+    ),
+  getUnreadCount: (token?: string | null) =>
+    request<{ unreadCount: number }>("/notifications/me/unread-count", { token }),
+  markNotificationRead: (id: string, token?: string | null) =>
+    request<{ notification: unknown }>(`/notifications/${id}/read`, { method: "PATCH", token }),
+  markAllNotificationsRead: (token?: string | null) =>
+    request<{ modifiedCount: number }>("/notifications/me/read-all", { method: "PATCH", token }),
   getPublicContactWidget: () =>
     requestCached<{
       enabled: boolean;

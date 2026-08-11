@@ -101,6 +101,102 @@ notificationRouter.get("/me", requireAuth, async (req, res, next) => {
   }
 });
 
+/**
+ * GET /api/notifications/me/unread-count
+ * عدد الإشعارات غير المقروءة للمستخدم الحالي
+ */
+notificationRouter.get("/me/unread-count", requireAuth, async (req, res, next) => {
+  try {
+    const count = await NotificationDeliveryModel.countDocuments({
+      recipientUserId: req.authUser!.id,
+      channel: "in_app",
+      status: "sent",
+      readAt: { $exists: false },
+    });
+    res.json({ unreadCount: count });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * PATCH /api/notifications/me/read-all
+ * تعليم جميع الإشعارات كمقروءة
+ */
+notificationRouter.patch("/me/read-all", requireAuth, async (req, res, next) => {
+  try {
+    const result = await NotificationDeliveryModel.updateMany(
+      { recipientUserId: req.authUser!.id, channel: "in_app", readAt: { $exists: false } },
+      { $set: { readAt: Date.now() } },
+    );
+    res.json({ modifiedCount: result.modifiedCount });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/notifications/stream
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Server-Sent Events (SSE) — إرسال فوري عند وصول إشعار جديد.
+ * يستخدم polling خفيف على MongoDB كل 10 ثواني.
+ * الـ Client يستمع بـ EventSource('/api/notifications/stream').
+ * يُرسل حدثين: 'notification' (إشعار جديد) و'unread_count' (عدد غير المقروء).
+ */
+notificationRouter.get("/stream", requireAuth, async (req, res) => {
+  const userId = String(req.authUser!.id);
+
+  res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("X-Accel-Buffering", "no");
+  res.flushHeaders();
+
+  const sendEvent = (event: string, data: unknown) => {
+    if (res.writableEnded) return;
+    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+  };
+
+  sendEvent("connected", { userId, ts: Date.now() });
+
+  let lastCheckedAt = Date.now();
+  let lastUnreadCount = -1;
+
+  const poll = async () => {
+    if (res.writableEnded) return;
+    try {
+      const newNotifications = await NotificationDeliveryModel.find({
+        recipientUserId: userId,
+        channel: "in_app",
+        status: "sent",
+        createdAt: { $gt: new Date(lastCheckedAt) },
+      }).sort({ createdAt: -1 }).limit(5).lean();
+
+      if (newNotifications.length > 0) {
+        for (const notif of newNotifications.reverse()) sendEvent("notification", notif);
+        lastCheckedAt = Date.now();
+      }
+
+      const unreadCount = await NotificationDeliveryModel.countDocuments({
+        recipientUserId: userId,
+        channel: "in_app",
+        status: "sent",
+        readAt: { $exists: false },
+      });
+      if (unreadCount !== lastUnreadCount) {
+        sendEvent("unread_count", { count: unreadCount });
+        lastUnreadCount = unreadCount;
+      }
+    } catch { /* silent — don't break the stream */ }
+  };
+
+  const pollInterval = setInterval(poll, 10_000);
+  const keepAlive = setInterval(() => { if (!res.writableEnded) res.write(": keepalive\n\n"); }, 30_000);
+
+  req.on("close", () => { clearInterval(pollInterval); clearInterval(keepAlive); });
+  poll();
+});
+
 notificationRouter.patch("/:id/read", requireAuth, async (req, res, next) => {
   try {
     const updated = await NotificationDeliveryModel.findOneAndUpdate(
