@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Target, Users, AlertTriangle, TrendingUp, Printer, Eye, Bell, FileText, X, ChevronDown, HelpCircle, CheckCircle, XCircle, ClipboardList, Send } from 'lucide-react';
+import { Target, Users, AlertTriangle, TrendingUp, Printer, Eye, Bell, FileText, X, ChevronDown, HelpCircle, CheckCircle, XCircle, ClipboardList, Send, BarChart3 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Quiz, QuizResult, SkillGap, QuizQuestionReview } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -152,6 +152,33 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
         mostCommonWrongOption: mostCommonWrongIdx >= 0 && item.options[mostCommonWrongIdx] ? item.options[mostCommonWrongIdx] : 'لا يوجد إجابة متكررة'
       };
     }).sort((a, b) => b.errorRate - a.errorRate);
+  }, [results]);
+
+  // 6. Section Analysis (للمحاكيات التي تحتوي على sectionResults)
+  const sectionAnalysis = useMemo(() => {
+    const sectionMap = new Map<string, { name: string; scoreSum: number; passCount: number; count: number }>();
+    results.forEach((result) => {
+      const sections = (result as any).sectionResults || [];
+      sections.forEach((sec: any) => {
+        const id = String(sec.sectionId);
+        if (!sectionMap.has(id)) {
+          sectionMap.set(id, { name: sec.sectionName || id, scoreSum: 0, passCount: 0, count: 0 });
+        }
+        const entry = sectionMap.get(id)!;
+        entry.scoreSum += Number(sec.score || 0);
+        entry.passCount += sec.score >= 60 ? 1 : 0;
+        entry.count += 1;
+      });
+    });
+    return Array.from(sectionMap.entries())
+      .map(([sectionId, data]) => ({
+        sectionId,
+        sectionName: data.name,
+        attempts: data.count,
+        avgScore: data.count > 0 ? Math.round(data.scoreSum / data.count) : 0,
+        passRate: data.count > 0 ? Math.round((data.passCount / data.count) * 100) : 0,
+      }))
+      .sort((a, b) => a.avgScore - b.avgScore); // الأضعف أولاً
   }, [results]);
 
   const handlePrint = () => {
@@ -391,6 +418,61 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
               )}
             </div>
           </div>
+
+          {/* ── أداء الأقسام (للمحاكيات فقط) ─────────────────────────────── */}
+          {sectionAnalysis.length > 0 && (
+            <div className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm mt-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+                <BarChart3 className="text-violet-600" size={20} />
+                أداء الطلاب لكل قسم
+                <span className="mr-auto text-xs font-bold bg-violet-50 text-violet-700 px-2 py-1 rounded-full">
+                  {sectionAnalysis.length} قسم
+                </span>
+              </h3>
+              <div className="grid gap-3">
+                {sectionAnalysis.map((sec) => {
+                  const tone =
+                    sec.avgScore >= 80
+                      ? { bar: 'bg-emerald-500', text: 'text-emerald-700', chip: 'bg-emerald-50 text-emerald-700' }
+                      : sec.avgScore >= 60
+                      ? { bar: 'bg-amber-400', text: 'text-amber-700', chip: 'bg-amber-50 text-amber-700' }
+                      : { bar: 'bg-red-500', text: 'text-red-700', chip: 'bg-red-50 text-red-700' };
+                  return (
+                    <div key={sec.sectionId} className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <span className="font-black text-gray-800 text-sm truncate">{sec.sectionName}</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${tone.chip}`}>
+                            متوسط {sec.avgScore}%
+                          </span>
+                          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-500">
+                            نجاح {sec.passRate}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                        <div
+                          className={`h-full transition-all duration-500 ${tone.bar}`}
+                          style={{ width: `${sec.avgScore}%` }}
+                        />
+                      </div>
+                      <div className="mt-1.5 text-[11px] font-bold text-gray-400">
+                        {sec.attempts} محاولة
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {sectionAnalysis.some((s) => s.avgScore < 60) && (
+                <div className="mt-4 rounded-xl border border-rose-100 bg-rose-50 p-3">
+                  <p className="text-xs font-black text-rose-700 flex items-center gap-1.5">
+                    <AlertTriangle size={14} />
+                    الأقسام التي تقل درجاتها عن 60% تستوجب مراجعة المحتوى وإعادة الشرح.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Item Analysis */}
           {itemAnalysis.length > 0 && (
