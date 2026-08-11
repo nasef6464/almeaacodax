@@ -1411,7 +1411,25 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  submitQuiz: (id: string, payload: { answers: Record<string, number>; timeSpentSeconds?: number; source?: string }, token?: string | null) =>
+  submitQuiz: (
+    id: string,
+    payload: {
+      answers: Record<string, number>;
+      timeSpentSeconds?: number;
+      source?: string;
+      // تحليل الأقسام للمحاكيات (اختياري)
+      sectionResults?: Array<{
+        sectionId: string;
+        sectionName: string;
+        total: number;
+        correct: number;
+        wrong: number;
+        unanswered: number;
+        score: number;
+      }>;
+    },
+    token?: string | null,
+  ) =>
     request<unknown>(`/quizzes/${id}/submit`, {
       method: "POST",
       body: payload,
@@ -1419,6 +1437,14 @@ export const api = {
     }),
   getQuizResults: async (pagination: QuizResultsPaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 100, noTotal: true, ...pagination })), "results"),
+  // تحليل أداء الطلاب لكل قسم (للمدير / المشرف)
+  getQuizSectionAnalytics: (quizId: string, token?: string | null) =>
+    request<{
+      quizId: string;
+      quizTitle: string;
+      totalAttempts: number;
+      sections: Array<{ sectionId: string; sectionName: string; attempts: number; avgScore: number; passRate: number }>;
+    }>(`/quizzes/results/section-analytics/${encodeURIComponent(quizId)}`, { token }),
   getMyQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
     request<QuizResultsPageResponse>(withQuery("/quiz-results/my", { limit: 100, ...pagination })),
   getQuizResultDetails: (id: string, token?: string | null) =>

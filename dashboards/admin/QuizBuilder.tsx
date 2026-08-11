@@ -313,8 +313,8 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
           for (let i = 0; i < missingCount; i += 1) {
             const generated = await generateQuizQuestion(topicName);
             if (generated) {
-              const newQ: Question = {
-                id: `q_ai_${Date.now()}_${i}`,
+              // لا نُنشئ ID محلياً — نُرسل للسيرفر ونستخدم ID الحقيقي المُرجع
+              const newQ: Omit<Question, 'id'> = {
                 text: generated.question,
                 options: generated.options,
                 correctOptionIndex: generated.correctIndex,
@@ -326,8 +326,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
                 sectionId: currentQuiz.sectionId,
                 skillIds: autoGenConfig.skillIds
               };
-              await addQuestion(newQ);
-              selectedIds.push(newQ.id);
+              const persistedQ = await addQuestion(newQ as Question);
+              // نستخدم ID السيرفر وليس ID مؤقتاً محلياً
+              selectedIds.push(persistedQ.id);
             }
           }
         } catch (e) {
@@ -354,24 +355,26 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
       return;
     }
 
-    const q: Question = {
+    // لا نُنشئ ID محلياً — نُرسل السؤال للسيرفر ونستخدم ID الحقيقي المُرجع
+    const questionPayload: Question = {
       ...savedQuestion,
-      id: `q_${Date.now()}`,
       pathId: savedQuestion.pathId || currentQuiz.pathId || '',
       subject: currentQuiz.subjectId || '',
     } as Question;
     
     try {
-      await addQuestion(q);
+      const persistedQuestion = await addQuestion(questionPayload);
       refreshQuestionBank();
+      // نستخدم ID السيرفر الحقيقي وليس ID محلي مؤقت
       setCurrentQuiz(prev => ({
         ...prev,
-        questionIds: [...(prev.questionIds || []), q.id]
+        questionIds: [...(prev.questionIds || []), persistedQuestion.id]
       }));
       setIsAddQuestionModalOpen(false);
     } catch (error) {
       console.error('Unable to save question', error);
       setOperationError('تعذر حفظ السؤال الآن. تحقق من الاتصال ثم حاول مرة أخرى.');
+      // النافذة تبقى مفتوحة عند الفشل — لا نُغلقها
     }
   };
 
@@ -460,17 +463,18 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
       if (currentQuiz.id) {
         await updateQuiz(currentQuiz.id, quizPayload as Quiz);
       } else {
-        const newQuiz: Quiz = {
+        // لا نُنشئ ID محلياً — السيرفر هو مصدر الحقيقة للمعرفات الدائمة
+        const newQuiz: Omit<Quiz, 'id'> & { createdAt: number } = {
           ...(quizPayload as Quiz),
-          id: `quiz_${Date.now()}`,
           createdAt: Date.now(),
-        } as Quiz;
-        await addQuiz(newQuiz);
+        };
+        await addQuiz(newQuiz as Quiz);
       }
 
       setOperationMessage('تم حفظ وتوجيه الاختبار بنجاح.');
       setIsEditing(false);
     } catch (err) {
+      // الخطأ يظهر للمستخدم والنموذج يبقى مفتوحاً
       setOperationError(err instanceof Error ? err.message : 'حدث خطأ أثناء حفظ الاختبار.');
     }
   };

@@ -2175,15 +2175,20 @@ const Reports: React.FC = () => {
             {(isStudentView ? hasStudentAnalytics : true) ? (
             <Card
                 aria-label={isStudentView ? 'تقرير مبسط للطالب' : roleScopeTitle[user.role] || 'تقرير نطاق'}
-                className={isStudentView ? 'p-4 border border-indigo-100 shadow-sm bg-white text-slate-900 overflow-hidden relative' : 'p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative'}
+                className={isStudentView ? 'p-6 border-0 shadow-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white overflow-hidden relative' : 'p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative'}
             >
                 {!isStudentView ? (
                     <>
                         <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
                         <div className="absolute -bottom-12 right-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
                     </>
-                ) : null}
-                <div className={isStudentView ? 'relative z-10 flex flex-col sm:flex-row gap-3 items-center w-full' : 'relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center'}>
+                ) : (
+                    <>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                        <div className="absolute bottom-0 left-0 w-40 h-40 bg-teal-300 opacity-20 rounded-full blur-2xl -ml-10 -mb-10"></div>
+                    </>
+                )}
+                <div className={isStudentView ? 'relative z-10 flex flex-col gap-6 w-full' : 'relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center'}>
                     {!isStudentView && (
                     <div>
                         <div className={isStudentView ? 'mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700' : 'mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100'}>
@@ -2244,28 +2249,28 @@ const Reports: React.FC = () => {
                         </div>
                     </div>
                     )}
-                    <div className={isStudentView ? 'flex w-full gap-2 sm:gap-3 flex-wrap sm:flex-nowrap' : 'grid gap-3 sm:grid-cols-3 lg:grid-cols-1'}>
-                        <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
-                            <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>أهم مؤشر</div>
-                            <div className={isStudentView ? 'mt-1 text-lg font-black text-indigo-700' : 'mt-2 text-xl font-black'}>
+                    <div className={isStudentView ? 'flex w-full gap-3 sm:gap-4 flex-wrap sm:flex-nowrap' : 'grid gap-3 sm:grid-cols-3 lg:grid-cols-1'}>
+                        <div className={isStudentView ? 'flex-1 rounded-2xl bg-white/10 border border-white/20 p-4 backdrop-blur-sm' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                            <div className={isStudentView ? 'text-xs font-bold text-teal-100' : 'text-xs font-bold text-indigo-100'}>أهم مؤشر</div>
+                            <div className={isStudentView ? 'mt-2 text-3xl font-black text-white' : 'mt-2 text-xl font-black'}>
                                 {isStudentView ? `${stats?.averageScore ?? 0}%` : `${scopedAnalytics?.scope.studentCount ?? 0} طالب`}
                             </div>
-                            <div className={isStudentView ? 'mt-1 text-xs font-bold text-slate-500' : 'mt-1 text-xs font-bold text-indigo-100'}>
+                            <div className={isStudentView ? 'mt-1 text-xs font-bold text-teal-100' : 'mt-1 text-xs font-bold text-indigo-100'}>
                                 {isStudentView ? 'متوسط الأداء' : 'داخل نطاق المتابعة'}
                             </div>
                         </div>
-                        <div className={isStudentView ? 'flex-1 rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
-                            <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>أولوية الآن</div>
-                            <div className={isStudentView ? 'mt-1 text-sm font-black leading-6 text-gray-900' : 'mt-2 text-sm font-black leading-6'}>
+                        <div className={isStudentView ? 'flex-[1.5] rounded-2xl bg-white/10 border border-white/20 p-4 backdrop-blur-sm' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                            <div className={isStudentView ? 'text-xs font-bold text-teal-100' : 'text-xs font-bold text-indigo-100'}>أولوية المراجعة الآن</div>
+                            <div className={isStudentView ? 'mt-2 text-xl font-black leading-7 text-white' : 'mt-2 text-sm font-black leading-6'}>
                                 {isStudentView
                                     ? displayText(weakestSkill?.skill) || 'ابدأ باختبار قصير'
                                     : displayText(scopedAnalytics?.weakestSkills?.[0]?.skill) || 'بانتظار بيانات المهارات'}
                             </div>
                         </div>
-                        <div className={isStudentView ? 'flex-1 rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
-                            <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>الخطوة التالية</div>
-                            <div className={isStudentView ? 'mt-1 text-sm font-bold leading-6 text-gray-700' : 'mt-2 text-sm font-bold leading-6'}>
-                                {isStudentView ? 'شرح قصير + تدريب + إعادة قياس' : 'تدخل موجه + اختبار متابعة'}
+                        <div className={isStudentView ? 'flex-1 rounded-2xl bg-white/10 border border-white/20 p-4 backdrop-blur-sm' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                            <div className={isStudentView ? 'text-xs font-bold text-teal-100' : 'text-xs font-bold text-indigo-100'}>الخطوة التالية</div>
+                            <div className={isStudentView ? 'mt-2 text-sm font-bold leading-6 text-emerald-50' : 'mt-2 text-sm font-bold leading-6'}>
+                                {isStudentView ? 'شرح قصير ثم اختبار سريع' : 'تدخل موجه + اختبار متابعة'}
                             </div>
                         </div>
                     </div>

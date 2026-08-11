@@ -36,6 +36,22 @@ export const isDrill = (quiz: Partial<Quiz>) => {
   return quiz.quizKind === 'drill';
 };
 
+/**
+ * يستنتج quizKind من الحقول القديمة للاختبارات التي لا تملك quizKind صريحاً.
+ * يستخدم للتوافق العكسي عند فتح اختبارات قديمة في UnifiedQuizBuilder.
+ */
+export const inferQuizKind = (quiz: Partial<Quiz>): NonNullable<Quiz['quizKind']> => {
+  // إذا كان quizKind موجوداً فعلاً فأرجعه مباشرة
+  if (quiz.quizKind) return quiz.quizKind;
+  // محاكي حقيقي
+  if (quiz.mockExam?.enabled === true) return 'mock';
+  // تدريب (bank / training placement)
+  if (quiz.type === 'bank' || quiz.placement === 'training') return 'drill';
+  // اختبار عادي هو الافتراضي
+  return 'test';
+};
+
+
 export const getQuizPlacementLabel = (quiz: QuizPlacementSource) => {
   const training = isTrainingQuiz(quiz);
   const mock = isMockQuiz(quiz);
@@ -56,6 +72,38 @@ export const getPlacementFromFlags = (quiz: QuizPlacementSource): Quiz['placemen
 };
 
 export const normalizeQuizPlacement = <T extends Partial<Quiz>>(quiz: T, fallbackType: Quiz['type'] = 'quiz'): T => {
+  // أولويًا: استنتاج من quizKind إن وُجد (المصدر الحديث من UnifiedQuizBuilder)
+  const qk = quiz.quizKind;
+  if (qk === 'mock') {
+    return {
+      ...quiz,
+      type: 'quiz' as Quiz['type'],
+      placement: 'mock' as Quiz['placement'],
+      showInTraining: false,
+      showInMock: true,
+      mockExam: { ...(quiz.mockExam || {}), enabled: true } as Quiz['mockExam'],
+    };
+  }
+  if (qk === 'drill') {
+    return {
+      ...quiz,
+      type: 'bank' as Quiz['type'],
+      placement: 'training' as Quiz['placement'],
+      showInTraining: true,
+      showInMock: false,
+    };
+  }
+  if (qk === 'test') {
+    return {
+      ...quiz,
+      type: 'quiz' as Quiz['type'],
+      placement: 'both' as Quiz['placement'],
+      showInTraining: true,
+      showInMock: true,
+    };
+  }
+
+  // fallback: الاستنتاج من الحقول القديمة (placement/type/showInTraining/showInMock)
   const inferredType = quiz.type || fallbackType;
   const showInTraining =
     typeof quiz.showInTraining === 'boolean'

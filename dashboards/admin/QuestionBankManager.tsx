@@ -376,12 +376,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   const handleDuplicate = async (question: Question) => {
     try {
+      // لا نُمرّر id محلياً — السيرفر يُنشئ ID حقيقياً دائماً
+      const { id: _omit, ...questionWithoutId } = question;
       await addQuestion({
-        ...question,
-        id: `q_${Date.now()}_copy`,
+        ...questionWithoutId,
         text: question.text ? `${question.text} (نسخة)` : question.text,
         approvalStatus: 'draft',
-      });
+      } as Question);
       refreshPagedQuestions();
       setImportMessage('تم نسخ السؤال بنجاح.');
       setImportError(null);
@@ -448,9 +449,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       }
     } else {
       try {
+        // لا نُنشئ ID محلياً — السيرفر هو مصدر الحقيقة للمعرفات الدائمة
         await addQuestion({
           ...savedQuestion,
-          id: `q_${Date.now()}`,
           ownerType: savedQuestion.ownerType || (user.role === 'teacher' ? 'teacher' : 'platform'),
           ownerId: savedQuestion.ownerId || user.id,
           createdBy: savedQuestion.createdBy || user.id,

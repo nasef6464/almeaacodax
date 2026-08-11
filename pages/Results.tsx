@@ -25,6 +25,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
+import { ShareScorecard } from '../components/ShareScorecard';
 import { useStore } from '../store/useStore';
 import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
@@ -693,6 +694,14 @@ const Results: React.FC = () => {
     }
   };
 
+  const averageTimeSeconds = React.useMemo(() => {
+    if (!latestResult || !latestResult.questionReview || latestResult.questionReview.length === 0) return 0;
+    const answeredQuestions = latestResult.questionReview.filter((q) => q.timeSpentSeconds !== undefined);
+    if (answeredQuestions.length === 0) return 0;
+    const totalSeconds = answeredQuestions.reduce((sum, q) => sum + (q.timeSpentSeconds || 0), 0);
+    return Math.round(totalSeconds / answeredQuestions.length);
+  }, [latestResult]);
+
   const donutData = [
     { name: 'Success', value: latestResult?.score || 0 },
     { name: 'Fail', value: 100 - (latestResult?.score || 0) },
@@ -1020,11 +1029,12 @@ const Results: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <SimpleResultStat label="عدد الأسئلة" value={latestResult.totalQuestions.toString()} />
                     <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
                     <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
                     <SimpleResultStat label="وقت الحل" value={latestResult.timeSpent} />
+                    <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/سؤال` : 'غير متاح'} />
                   </div>
 
                   <div className="rounded-2xl border border-gray-100 bg-white p-4">
@@ -1093,11 +1103,12 @@ const Results: React.FC = () => {
                     ) : null}
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                     <SimpleResultStat label="الأسئلة" value={latestResult.totalQuestions.toString()} />
                     <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
                     <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
                     <SimpleResultStat label="الوقت" value={latestResult.timeSpent} />
+                    <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/س` : 'غير متاح'} />
                   </div>
 
                   <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-3">
@@ -1114,6 +1125,48 @@ const Results: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* ── أداء لكل قسم (للمحاكيات فقط) ─────────────────────────── */}
+            {latestResult.sectionResults && latestResult.sectionResults.length > 0 ? (
+              <div className="mt-5 rounded-2xl border border-violet-100 bg-white/95 p-4 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <BarChart3 size={16} className="text-violet-600" />
+                  <h3 className="text-sm font-black text-gray-900">أداؤك لكل قسم</h3>
+                </div>
+                <div className="grid gap-3">
+                  {latestResult.sectionResults.map((sec) => {
+                    const tone =
+                      sec.score >= 80
+                        ? { bar: 'bg-emerald-500', text: 'text-emerald-700', bg: 'bg-emerald-50' }
+                        : sec.score >= 50
+                        ? { bar: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50' }
+                        : { bar: 'bg-red-500', text: 'text-red-700', bg: 'bg-red-50' };
+                    return (
+                      <div key={sec.sectionId} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                          <span className="text-sm font-black text-gray-800 truncate">{sec.sectionName}</span>
+                          <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-black ${tone.bg} ${tone.text}`}>
+                            {sec.score}%
+                          </span>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                          <div
+                            className={`h-full transition-all duration-500 ${tone.bar}`}
+                            style={{ width: `${sec.score}%` }}
+                          />
+                        </div>
+                        <div className="mt-2 flex gap-3 text-[11px] font-bold text-gray-500">
+                          <span>{sec.total} سؤال</span>
+                          <span className="text-emerald-600">✓ {sec.correct}</span>
+                          <span className="text-red-500">✗ {sec.wrong}</span>
+                          {sec.unanswered > 0 ? <span className="text-amber-500">⊘ {sec.unanswered}</span> : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <button
@@ -1203,6 +1256,12 @@ const Results: React.FC = () => {
             ) : null}
           </div>
         </Card>
+
+        {isFullResult ? null : (
+          <div className="flex justify-center py-4">
+            <ShareScorecard result={latestResult} />
+          </div>
+        )}
 
         <Card className="p-4 sm:p-6">
           <h3 className="text-lg font-bold text-gray-800">خطوتك التالية</h3>
@@ -1609,6 +1668,9 @@ const ReviewSolutions = ({
             <Star size={15} className={isReviewLater ? 'fill-current' : ''} />
             {isReviewLater ? 'للمراجعة' : 'راجع لاحقًا'}
           </button>
+          <span className="bg-slate-50 text-slate-600 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 flex items-center gap-1.5" title="الوقت المستغرق في حل هذا السؤال">
+            ⏳ {q.timeSpentSeconds || 0} ث
+          </span>
         </div>
       </header>
 

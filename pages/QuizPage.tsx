@@ -140,6 +140,7 @@ export const QuizPage: React.FC = () => {
   const [questionHydrationStartedAt, setQuestionHydrationStartedAt] = useState<number | null>(null);
   // Per-section timer (قياس-style): tracks seconds left in the CURRENT section
   const [sectionTimeLeft, setSectionTimeLeft] = useState<number | null>(null);
+  const [questionTimeSpent, setQuestionTimeSpent] = useState<Record<string, number>>({});
   // Sections that have been locked (time expired or manually advanced)
   const [lockedSectionIds, setLockedSectionIds] = useState<Set<string>>(new Set());
   const activeQuizLoadKeyRef = useRef('');
@@ -162,10 +163,12 @@ export const QuizPage: React.FC = () => {
   }, [returnToParam]);
   const resultSource = useMemo(() => {
     if (sourceParam) return sourceParam;
-    if (quiz?.mockExam?.enabled) return 'mock-exam';
+    if (quiz?.quizKind === 'mock' || quiz?.mockExam?.enabled) return 'mock-exam';
+    if (quiz?.quizKind === 'test') return 'tests';
+    if (quiz?.quizKind === 'drill') return 'training';
     if (quiz?.mode === 'saher') return 'self';
     return undefined;
-  }, [quiz?.mockExam?.enabled, quiz?.mode, sourceParam]);
+  }, [quiz?.mockExam?.enabled, quiz?.quizKind, quiz?.mode, sourceParam]);
   const shouldReturnToSourceAfterFinish =
     Boolean(safeReturnTo) &&
     (searchParams.get('returnOnFinish') === '1' ||
@@ -586,6 +589,20 @@ export const QuizPage: React.FC = () => {
     return () => window.clearTimeout(timerId);
   }, [sectionTimeLeft, isFinished, isSubmittingResult]);
 
+  // ── Per-question time tracking ────────────────────────────────────────────
+  useEffect(() => {
+    if (isFinished || isSubmittingResult || quizQuestions.length === 0) return;
+    const currentQ = quizQuestions[currentQuestionIndex];
+    if (!currentQ) return;
+    const timerId = window.setTimeout(() => {
+      setQuestionTimeSpent((prev) => ({
+        ...prev,
+        [currentQ.id]: (prev[currentQ.id] || 0) + 1,
+      }));
+    }, 1000);
+    return () => window.clearTimeout(timerId);
+  }, [currentQuestionIndex, isFinished, isSubmittingResult, quizQuestions]);
+
   // ── Section time-up: lock section and advance ─────────────────────────────
   useEffect(() => {
     if (sectionTimeLeft !== 0 || !currentMockExamSection || isFinished || isSubmittingResult) return;
@@ -858,6 +875,30 @@ export const QuizPage: React.FC = () => {
       });
     });
 
+    // ── تحليل لكل قسم (للمحاكيات فقط) ────────────────────────────────────
+    const sectionResults = quiz.mockExam?.enabled && quiz.mockExam.sections?.length
+      ? quiz.mockExam.sections.map((section) => {
+          const sectionQuestionIds = new Set(section.questionIds || []);
+          const sectionQs = quizQuestions.filter((q) => sectionQuestionIds.has(q.id));
+          const total = sectionQs.length;
+          const correct = sectionQs.filter((q) => selectedOptions[q.id] === q.correctOptionIndex).length;
+          const wrong = sectionQs.filter(
+            (q) => q.id in selectedOptions && selectedOptions[q.id] !== q.correctOptionIndex
+          ).length;
+          const unanswered = total - correct - wrong;
+          const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+          return {
+            sectionId: section.id,
+            sectionName: section.name,
+            total,
+            correct,
+            wrong,
+            unanswered,
+            score,
+          };
+        })
+      : undefined;
+
     const skillsAnalysis = Object.entries(skillStats).map(([skillId, stats]) => {
       const resolvedSkill = skills.find((skill) => skill.id === skillId);
       const mastery = Math.round((stats.correct / stats.total) * 100);
@@ -899,6 +940,7 @@ export const QuizPage: React.FC = () => {
         videoUrl: question.videoUrl,
         imageUrl: question.imageUrl,
         isCorrect: selectedOptionIndex === question.correctOptionIndex,
+        timeSpentSeconds: questionTimeSpent[question.id] || 0,
       };
     });
 
@@ -917,6 +959,8 @@ export const QuizPage: React.FC = () => {
       date: new Date().toISOString(),
       skillsAnalysis,
       questionReview,
+      // تحليل لكل قسم (للمحاكيات فقط)
+      ...(sectionResults ? { sectionResults } : {}),
     };
 
     let resultAttemptDate = result.date;
@@ -929,6 +973,8 @@ export const QuizPage: React.FC = () => {
           answers: selectedOptions,
           timeSpentSeconds: Math.max(0, timeSpentSeconds),
           source: result.source,
+          // تحليل الأقسام للمحاكيات — يتجاهله السيرفر إن لم يدعمه
+          ...(sectionResults ? { sectionResults } : {}),
         });
         const savedServerResult: QuizResult = {
           ...result,

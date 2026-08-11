@@ -27,6 +27,11 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   pathId, subjectId, selectedIds, onChange, maxQuestions = 100,
 }) => {
   const { questions: allQuestions, skills, sections, subjects } = useStore();
+  // allQuestionsMap: index سريع للبحث بالـ id عبر كل الأسئلة في الـ Store (بما فيها المجلبة)
+  const allQuestionsMap = useMemo(
+    () => new Map(allQuestions.map((q) => [q.id, q])),
+    [allQuestions],
+  );
   const [mode, setMode] = useState<SelectionMode>("manual");
   const [searchTerm, setSearchTerm] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty>("all");
@@ -68,9 +73,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     return result;
   }, [pathQuestions, mode, selectedSkillIds, searchTerm, difficulty, selectedSectionId]);
 
-  const selectedQuestions = useMemo(() =>
-    selectedIds.map((id) => pathQuestions.find((q) => q.id === id)).filter(Boolean) as Question[],
-    [selectedIds, pathQuestions]);
+  // البحث في allQuestionsMap وليس pathQuestions فقط — يضمن ظهور الأسئلة المختارة مسبقاً
+  // حتى لو كانت مجلوبة حديثاً أو خارج نطاق الفلاتر الحالية
+  const selectedQuestions = useMemo(
+    () => selectedIds.map((id) => allQuestionsMap.get(id)).filter(Boolean) as Question[],
+    [selectedIds, allQuestionsMap],
+  );
 
   const toggleQuestion = useCallback((id: string) => {
     if (selectedIds.includes(id)) onChange(selectedIds.filter((sid) => sid !== id));

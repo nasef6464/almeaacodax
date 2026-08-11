@@ -10,13 +10,16 @@ import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { Link, useLocation } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
+import { resolvePathProgress } from '../utils/pathProgress';
+import { calculateStreak } from '../utils/streak';
 import { useStore } from '../store/useStore';
 import { Activity, QuizResult, Role, SkillGap } from '../types';
+import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import { UserLevel, getLevelMeta } from "../utils/leveling";
 import { isTrueMockExam } from "../utils/quizPlacement";
 import { EmptyState } from '../components/ui/EmptyState';
+import { isStandaloneMockExam } from '../utils/mockExam';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
 
@@ -1539,6 +1542,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const [showApprovalsModal, setShowApprovalsModal] = useState(false);
     const [whatsappEnabled, setWhatsappEnabled] = useState(false);
     const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+    const [showCalculator, setShowCalculator] = useState(false);
 
     useEffect(() => {
         if (user.role === Role.PARENT) {
@@ -1570,39 +1574,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         });
     }, [quizzes, user]);
     
-    // Calculate Streak
-    const calculateStreak = () => {
-        if (!recentActivity || recentActivity.length === 0) return 0;
-        let streak = 0;
-        let currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-        
-        const activityDates = Array.from(new Set(
-            recentActivity.map(a => {
-                const d = new Date(a.date);
-                d.setHours(0, 0, 0, 0);
-                return d.getTime();
-            })
-        )).sort((a, b) => b - a);
-
-        if (activityDates.length === 0) return 0;
-        
-        let lastDate = currentDate.getTime();
-        if (activityDates[0] > lastDate) lastDate = activityDates[0];
-        
-        for (const date of activityDates) {
-            const diffDays = Math.round((lastDate - date) / (1000 * 60 * 60 * 24));
-            if (diffDays <= 1) {
-                if (diffDays === 1 || streak === 0) streak++;
-                lastDate = date;
-            } else {
-                break;
-            }
-        }
-        return Math.max(streak, 1);
-    };
-    
-    const streakDays = calculateStreak();
+    const streakDays = calculateStreak(recentActivity);
 
     // Group learning by registered paths
     const getSmallPathStyle = (pathId: string) => {
@@ -1653,22 +1625,26 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         </div>
 
         {/* Shortcuts for Students */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {[
-                { id: 'saher', icon: <Zap size={28} />, label: 'ساهر (اختبار سريع)', color: 'text-purple-600', bg: 'bg-purple-50', hover: 'hover:bg-purple-600' },
-                { id: 'flashcards', icon: <BookOpen size={28} />, label: 'بطاقات التذكر', color: 'text-rose-600', bg: 'bg-rose-50', hover: 'hover:bg-rose-600' },
-                { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', color: 'text-blue-600', bg: 'bg-blue-50', hover: 'hover:bg-blue-600' },
-                { id: 'reports', icon: <PieChart size={28} />, label: 'تقاريري', color: 'text-emerald-600', bg: 'bg-emerald-50', hover: 'hover:bg-emerald-600' }
+                { id: 'saher', icon: <Zap size={28} />, label: 'اختبار سريع', sub: 'تدريب ذكي', color: 'text-purple-600', bg: 'bg-purple-50', ring: 'focus:ring-purple-200' },
+                { id: 'flashcards', icon: <BookOpen size={28} />, label: 'البطاقات', sub: 'المراجعة السريعة', color: 'text-rose-600', bg: 'bg-rose-50', ring: 'focus:ring-rose-200' },
+                { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', sub: 'السابقة', color: 'text-blue-600', bg: 'bg-blue-50', ring: 'focus:ring-blue-200' },
+                { id: 'reports', icon: <PieChart size={28} />, label: 'التقارير', sub: 'أداء المستوى', color: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'focus:ring-emerald-200' }
             ].map(btn => (
                 <button 
                     key={btn.id}
                     onClick={() => setActiveTab(btn.id as any)} 
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-gray-100 shadow-sm transition-all group ${btn.bg} bg-white`}
+                    className={`group relative flex flex-col items-center justify-center gap-3 rounded-3xl bg-white p-5 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-4 ${btn.ring}`}
                 >
-                    <div className={`${btn.color}`}>
+                    <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${btn.bg}`}></div>
+                    <div className={`relative z-10 w-14 h-14 flex items-center justify-center rounded-2xl ${btn.bg} ${btn.color} transition-transform duration-300 group-hover:scale-110`}>
                         {btn.icon}
                     </div>
-                    <span className="font-black text-gray-800 text-sm">{btn.label}</span>
+                    <div className="relative z-10 text-center">
+                        <span className="block font-black text-gray-800 text-sm mb-0.5">{btn.label}</span>
+                        <span className="block text-xs font-bold text-gray-400">{btn.sub}</span>
+                    </div>
                 </button>
             ))}
         </div>
@@ -1676,6 +1652,21 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         {/* Student Tools: Parent Code & Notifications */}
         {user.role === Role.STUDENT && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm transition-all hover:shadow-md cursor-pointer" onClick={() => setShowCalculator(true)}>
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black">
+                        <Target size={24} />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-gray-900 text-sm">حاسبة القبول الجامعي</h4>
+                        <p className="text-xs text-gray-500 font-bold mt-1">احسب النسبة الموزونة وفرصتك.</p>
+                    </div>
+                </div>
+                <div className="text-indigo-600 bg-indigo-100 p-2 rounded-xl">
+                    <Calculator size={20} />
+                </div>
+            </Card>
+
             <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black">🔗</div>
@@ -1696,20 +1687,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                         <Copy size={16} />
                     </button>
                 </div>
-            </Card>
-
-            <Card className="p-5 flex items-center justify-between border border-amber-100 bg-amber-50/30 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">🔔</div>
-                    <div>
-                        <h4 className="font-black text-gray-900 text-sm">التنبيهات والمذاكرة</h4>
-                        <p className="text-xs text-gray-500 font-bold mt-1">تفعيل الإشعارات اليومية.</p>
-                    </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
             </Card>
         </div>
         )}
@@ -1893,6 +1870,8 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 </section>
             </div>
         </div>
+        
+        {showCalculator && <QiyasCalculatorModal isOpen={showCalculator} onClose={() => setShowCalculator(false)} />}
     </div>
 )};
 

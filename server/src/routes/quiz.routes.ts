@@ -348,32 +348,77 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
     }
   }
 
-  const hasPlacementFields =
-    payload.type !== undefined ||
-    payload.placement !== undefined ||
-    payload.showInTraining !== undefined ||
-    payload.showInMock !== undefined;
+  const nextPayload = { ...payload };
+  const quizKind = nextPayload.quizKind;
+  const mockExamEnabled = nextPayload.mockExam?.enabled === true;
+  const placements = Array.isArray(nextPayload.learningPlacements) ? nextPayload.learningPlacements : [];
+  
+  let showInTraining = false;
+  let showInMock = false;
+  let type = fallbackType;
+  let placement = "mock";
 
-  if (!hasPlacementFields) return payload;
+  if (quizKind || placements.length > 0 || mockExamEnabled) {
+    if (placements.length > 0) {
+      showInTraining = placements.some(p => p.slot === "training");
+      showInMock = placements.some(p => p.slot === "tests" || p.slot === "mock");
+    }
 
-  const inferredType = payload.type || fallbackType;
-  const showInTraining =
-    typeof payload.showInTraining === "boolean"
-      ? payload.showInTraining
-      : payload.placement
-        ? payload.placement === "training" || payload.placement === "both"
-        : inferredType === "bank";
-  const showInMock =
-    typeof payload.showInMock === "boolean"
-      ? payload.showInMock
-      : payload.placement
-        ? payload.placement === "mock" || payload.placement === "both"
-        : inferredType !== "bank";
-  const placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+    if (quizKind === "mock" || mockExamEnabled) {
+      showInMock = true;
+      showInTraining = false;
+      placement = "mock";
+      type = "quiz";
+      (nextPayload as any).quizKind = "mock";
+      if (!(nextPayload as any).mockExam) (nextPayload as any).mockExam = { enabled: true, sections: [] };
+      (nextPayload as any).mockExam.enabled = true;
+    } else if (quizKind === "drill") {
+      showInTraining = true;
+      placement = showInMock ? "both" : "training";
+      type = "bank";
+    } else if (quizKind === "test") {
+      showInTraining = true;
+      showInMock = true;
+      placement = "both";
+      type = "quiz";
+    } else {
+      placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+      type = showInTraining && !showInMock ? "bank" : "quiz";
+    }
+  } else {
+    const hasPlacementFields =
+      nextPayload.type !== undefined ||
+      nextPayload.placement !== undefined ||
+      nextPayload.showInTraining !== undefined ||
+      nextPayload.showInMock !== undefined;
+
+    if (!hasPlacementFields) return nextPayload;
+
+    const inferredType = nextPayload.type || fallbackType;
+    showInTraining =
+      typeof nextPayload.showInTraining === "boolean"
+        ? nextPayload.showInTraining
+        : nextPayload.placement
+          ? nextPayload.placement === "training" || nextPayload.placement === "both"
+          : inferredType === "bank";
+    showInMock =
+      typeof nextPayload.showInMock === "boolean"
+        ? nextPayload.showInMock
+        : nextPayload.placement
+          ? nextPayload.placement === "mock" || nextPayload.placement === "both"
+          : inferredType !== "bank";
+    
+    placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+    type = showInTraining && !showInMock ? "bank" : "quiz";
+
+    if (placement === "mock") (nextPayload as any).quizKind = "mock";
+    else if (placement === "training" || type === "bank") (nextPayload as any).quizKind = "drill";
+    else (nextPayload as any).quizKind = "test";
+  }
 
   return {
-    ...payload,
-    type: showInTraining && !showInMock ? "bank" : "quiz",
+    ...nextPayload,
+    type,
     placement,
     showInTraining,
     showInMock,
@@ -391,6 +436,20 @@ const quizSubmitSchema = z.object({
   answers: z.record(z.coerce.number()).default({}),
   timeSpentSeconds: z.number().min(0).default(0),
   source: z.string().optional(),
+  // تحليل الأقسام من الـ Frontend (للمحاكيات) — اختياري، يُعاد حسابه server-side أيضاً
+  sectionResults: z
+    .array(
+      z.object({
+        sectionId:   z.string(),
+        sectionName: z.string().default(""),
+        total:       z.number().int().min(0).default(0),
+        correct:     z.number().int().min(0).default(0),
+        wrong:       z.number().int().min(0).default(0),
+        unanswered:  z.number().int().min(0).default(0),
+        score:       z.number().min(0).max(100).default(0),
+      }),
+    )
+    .optional(),
 });
 
 const DIRECT_RESULT_DISABLED_MESSAGE =
@@ -1470,7 +1529,24 @@ quizRouter.delete(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
 
-    return res.json({ success: true });
+    const deletedId = String(deleted.id || deleted._id);
+
+    // Cascade: remove deleted questionId from all quizzes that reference it
+    // This prevents broken references in published quizzes
+    await Promise.all([
+      // Remove from root questionIds array
+      QuizModel.updateMany(
+        { questionIds: deletedId },
+        { $pull: { questionIds: deletedId } }
+      ),
+      // Remove from mockExam sections
+      QuizModel.updateMany(
+        { "mockExam.sections.questionIds": deletedId },
+        { $pull: { "mockExam.sections.$[].questionIds": deletedId } }
+      ),
+    ]);
+
+    return res.json({ success: true, cascadeRemovedFromQuizzes: true });
   }),
 );
 
@@ -2038,7 +2114,7 @@ quizRouter.get(
     }
     const projection = includeReview
       ? null
-      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt";
+      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
     const resultsQuery = QuizResultModel.find(filter)
       .sort(sort)
       .skip(pagination.skip)
@@ -2080,7 +2156,7 @@ quizRouter.get(
     const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
     const projection = includeReview
       ? null
-      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt pathId subjectId sectionId";
+      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt pathId subjectId sectionId";
     const { students, totalStudents, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser, {
       limit: Math.max(pagination.limit, 200),
     });
@@ -2318,6 +2394,91 @@ quizRouter.get(
     return res.json(serializeQuizResultForLearner(item));
   }),
 );
+
+/**
+ * GET /api/quizzes/results/section-analytics/:quizId
+ * ─────────────────────────────────────────────────────────────────────────────
+ * تقرير إجمالي لأداء جميع الطلاب في كل قسم من أقسام محاكٍ معين.
+ * للمدير والمشرف فقط.
+ *
+ * الاستجابة:
+ *   {
+ *     quizId, quizTitle,
+ *     totalAttempts,
+ *     sections: [{ sectionId, sectionName, avgScore, passRate, attempts }]
+ *   }
+ */
+quizRouter.get(
+  "/results/section-analytics/:quizId",
+  requireAuth,
+  requireRole(["admin", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const quizId = String(req.params.quizId || "").trim();
+    if (!quizId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "quizId is required" });
+    }
+
+    const quiz = await QuizModel.findOne(buildDocumentQuery(quizId))
+      .select("id title mockExam")
+      .lean();
+
+    if (!quiz) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+    }
+
+    if (!(quiz as any).mockExam?.enabled) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Section analytics are only available for mock exams",
+      });
+    }
+
+    // جلب جميع محاولات هذا المحاكي التي تحتوي على sectionResults
+    const results = await QuizResultModel.find({
+      quizId,
+      sectionResults: { $exists: true, $ne: [] },
+    })
+      .select("sectionResults score passed")
+      .lean();
+
+    const totalAttempts = results.length;
+
+    // بناء خريطة إحصائيات لكل قسم
+    const sectionMap = new Map<
+      string,
+      { name: string; scoreSum: number; passCount: number; count: number }
+    >();
+
+    for (const result of results) {
+      const sections = (result as any).sectionResults || [];
+      for (const sec of sections) {
+        const id = String(sec.sectionId);
+        if (!sectionMap.has(id)) {
+          sectionMap.set(id, { name: sec.sectionName || id, scoreSum: 0, passCount: 0, count: 0 });
+        }
+        const entry = sectionMap.get(id)!;
+        entry.scoreSum += Number(sec.score || 0);
+        entry.passCount += sec.score >= 60 ? 1 : 0;
+        entry.count += 1;
+      }
+    }
+
+    const sections = Array.from(sectionMap.entries()).map(([sectionId, data]) => ({
+      sectionId,
+      sectionName: data.name,
+      attempts: data.count,
+      avgScore: data.count > 0 ? Math.round(data.scoreSum / data.count) : 0,
+      passRate: data.count > 0 ? Math.round((data.passCount / data.count) * 100) : 0,
+    }));
+
+    return res.json({
+      quizId,
+      quizTitle: String((quiz as any).title || ""),
+      totalAttempts,
+      sections,
+    });
+  }),
+);
+
 
 quizRouter.post(
   "/",
@@ -2616,6 +2777,48 @@ quizRouter.post(
     const score = Math.round((correctAnswers / Math.max(totalQuestions, 1)) * 100);
     const passingScore = getQuizPassingScore(quiz);
     const timeSpentMinutes = Math.max(0, Math.round(payload.timeSpentSeconds / 60));
+
+    // ── تحليل الأداء لكل قسم (للمحاكيات فقط) ─────────────────────────────
+    const mockSections: any[] = (quiz as any).mockExam?.sections || [];
+    const sectionResults =
+      (quiz as any).mockExam?.enabled && mockSections.length > 0
+        ? mockSections.map((section: any) => {
+            const sectionQuestionIds = new Set<string>((section.questionIds || []).map(String));
+            const sectionQs = orderedQuestions.filter((q: any) =>
+              sectionQuestionIds.has(String(q.id || q._id)),
+            );
+            const secTotal = sectionQs.length;
+            const secCorrect = sectionQs.filter((q: any) => {
+              const qId = String(q.id || q._id);
+              const rawSelected = payload.answers[qId];
+              const selectedOptionIndex =
+                typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
+              return selectedOptionIndex === Number(q.correctOptionIndex ?? 0);
+            }).length;
+            const secWrong = sectionQs.filter((q: any) => {
+              const qId = String(q.id || q._id);
+              const rawSelected = payload.answers[qId];
+              const selectedOptionIndex =
+                typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
+              return (
+                selectedOptionIndex !== undefined &&
+                selectedOptionIndex !== Number(q.correctOptionIndex ?? 0)
+              );
+            }).length;
+            const secUnanswered = secTotal - secCorrect - secWrong;
+            const secScore = secTotal > 0 ? Math.round((secCorrect / secTotal) * 100) : 0;
+            return {
+              sectionId:   String(section.id || section._id || ""),
+              sectionName: String(section.name || ""),
+              total:       secTotal,
+              correct:     secCorrect,
+              wrong:       secWrong,
+              unanswered:  secUnanswered,
+              score:       secScore,
+            };
+          })
+        : undefined;
+
     let result;
     try {
       result = await QuizResultModel.create({
@@ -2635,6 +2838,8 @@ quizRouter.post(
         date: new Date().toISOString(),
         skillsAnalysis,
         questionReview,
+        // حفظ sectionResults فقط إذا كانت موجودة (للمحاكيات)
+        ...(sectionResults ? { sectionResults } : {}),
         submissionKey,
       });
     } catch (error: any) {

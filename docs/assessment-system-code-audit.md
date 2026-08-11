@@ -1,98 +1,164 @@
 # التدقيق الهندسي لنظام الاختبارات (Assessment System Code Audit)
-
-هذا التقرير هو نتيجة الفحص الهندسي لنظام الاختبارات بناءً على الكود الحالي للمنصة. يغطي التقرير دورة حياة الاختبار، والمشكلات المعمارية والبرمجية الموجودة، ويضع خطة تنفيذية تدريجية لمعالجتها دون الإضرار بالبيانات الحالية أو تجربة الطالب.
+**آخر تحديث:** 2026-08-07  
+**الحالة:** المرحلة الأولى مكتملة — الأعطال الحرجة تم إصلاحها
 
 ---
 
 ## A. الملخص التنفيذي
 
-* **حالة النظام الحالية:** النظام يعمل، ولكنه يعاني من تكرار في المنشئات (Builders) وتداخل في تصنيفات الاختبارات (عادي مقابل محاكي) بالإضافة إلى مشكلات سابقة في حفظ البيانات بشكل غير متزامن تم حل الجزء الحرج منها.
-* **أهم خمس مشكلات:**
-  1. تعدد منشئات الاختبار (`QuizBuilder`, `UnifiedQuizBuilder`, `MockExamManager`).
-  2. اعتماد الواجهة على بيانات محملة مسبقًا في الـ `Store` لجلب الأسئلة بدلًا من مصدر حقيقة (Source of Truth) من السيرفر عند التعديل، مما قد يسبب اختفاء أسئلة من العرض إذا لم تكن في الصفحة الأولى للأسئلة المحملة.
-  3. تعارض في مسميات بعض الحقول (مثل `showCorrectAnswers` مقابل `showAnswers`).
-  4. تداخل في تصنيف "المحاكي" (استخدام `placement === 'mock'` مقابل `mockExam.enabled`).
-  5. نقص في وضوح دورة حياة الاختبار وحالته (Draft, Published, etc.) وتداخله مع خيارات النشر (Placement).
-* **أعلى المخاطر:** فقدان أسئلة مختارة عند تعديل اختبار قديم بسبب الفلترة (Pagination/Store issues). كسر النتائج السابقة إذا تم تعديل هيكلة المحاكيات دون حذر.
-* **ما يمكن إصلاحه سريعًا:** توحيد مسميات الحقول البسيطة (`showAnswers`) وإجبار عملية الحفظ على انتظار السيرفر (تم تنفيذه بالفعل في المرحلة الأولى).
-* **ما يحتاج قرارًا معماريًا لاحقًا:** فصل نظام "التوجيه/التكليف" (`Assignment`) عن نظام "إنشاء المحتوى" (`AssessmentBuilder`).
+### حالة النظام
+النظام يعمل، وتمت معالجة المشكلات الحرجة التالية:
+
+1. **✅ الحفظ الوهمي بمعرفات محلية** — تم: `addQuiz/updateQuiz` ينتظران السيرفر ويستخدمان ID الحقيقي.
+2. **✅ اختفاء الأسئلة المختارة عند التعديل** — تم: جلب الأسئلة بـ IDs وتحديث `selectedQuestions` ليبحث في `allQuestionsMap`.
+3. **✅ تعارض أسماء الحقول `showAnswers`** — تم: توحيد الاسم في كل الطبقات.
+4. **✅ `normalizeQuizPlacement` لا يعرف `quizKind`** — تم: الدالة تُعطي أولوية لـ `quizKind`.
+5. **✅ Schema Backend لا يقبل حقول المحاكي** — تم: إضافة `isStrictSectionLock`, `domain`.
+
+### أهم المخاطر المتبقية
+- بيانات قديمة في DB قد لا تمتلك `quizKind` (تحتاج Migration محدودة).
+- `QuizBuilder.tsx` القديم لا يزال موجوداً — احتمال خلط الإعدادات.
+- لا توجد اختبارات تلقائية لمنع رجوع المشكلات.
+
+### ما يحتاج قراراً معماريًا لاحقاً
+- كيان `ExamAssignment` المستقل للتوجيه.
+- دمج المنشئات (QuizBuilder + MockExamManager + UnifiedQuizBuilder).
+- توحيد دورة الحياة (draft → approved → published).
 
 ---
 
 ## B. خريطة النظام الحالية
 
-| المكون / الملف | وظيفته | من يستدعيه | مصدر البيانات | API المستخدم | هل يتكرر مع مكون آخر؟ |
-|---|---|---|---|---|---|
-| `UnifiedQuizBuilder.tsx` | منشئ حديث وشامل للاختبارات. | صفحات الإدارة (مثل المسارات، المواد) | `useStore` | `addQuiz`, `updateQuiz` | نعم، يتقاطع مع `MockExamManager` |
-| `MockExamManager.tsx` | مخصص لإدارة المحاكيات. | واجهة إدارة المحاكيات | `useStore` | `addQuiz`, `updateQuiz` | نعم، يتقاطع مع `UnifiedQuizBuilder` |
-| `QuizBuilder.tsx` | يبدو كمنشئ قديم أو مبسط. | بعض واجهات الإدارة الأقدم | `useStore` | `addQuiz`, `updateQuiz` | نعم، متكرر |
-| `useStore.ts` | إدارة حالة التطبيق (Frontend) | جميع مكونات الواجهة | Backend API | `/api/quizzes` | لا |
-| `quiz.routes.ts` | مسارات الـ Backend للاختبارات | طلبات `useStore` | `Quiz` Model | `GET/POST/PUT /api/quizzes` | لا |
-| `quizResults.routes.ts`| مسارات الـ Backend للنتائج | واجهة الطالب بعد انتهاء الاختبار | `QuizResult` Model| `POST /api/quiz-results` | لا |
+| المكون / الملف | وظيفته | من يستدعيه | مصدر البيانات | API | هل يتكرر؟ | هل مستخدم؟ |
+|---|---|---|---|---|---|---|
+| `UnifiedQuizBuilder.tsx` | منشئ موحد (drill/test/mock) | صفحات الإدارة، QuizzesManager | `useStore` | `addQuiz/updateQuiz` | نعم جزئياً | ✅ نعم |
+| `MockExamManager.tsx` | منشئ متخصص للمحاكيات | قسم المحاكيات في AdminDashboard | `useStore` | `addQuiz/updateQuiz` | نعم مع UQB | ✅ نعم |
+| `QuizBuilder.tsx` | منشئ قديم/بسيط | SubjectQuizzesPanel + AdvancedCourseBuilder | `useStore` | `addQuiz/updateQuiz` | نعم مع UQB | ⚠️ جزئياً |
+| `SmartQuestionSelector.tsx` | اختيار الأسئلة | UnifiedQuizBuilder, QuizBuilder | `allQuestionsMap` | `/quizzes/questions` | لا | ✅ نعم |
+| `useStore.ts` → `addQuiz` | حفظ اختبار جديد | كل المنشئات | Backend API | `POST /api/quizzes` | لا | ✅ نعم |
+| `useStore.ts` → `updateQuiz` | تعديل اختبار | كل المنشئات | Backend API | `PATCH /api/quizzes/:id` | لا | ✅ نعم |
+| `quiz.routes.ts` | مسارات Backend | طلبات API | Quiz Model (MongoDB) | - | لا | ✅ نعم |
+| `utils/quizPlacement.ts` | تطبيع بيانات الـ placement | useStore, QuizBuilder | - | - | لا | ✅ نعم |
+| `utils/mockExam.ts` | دوال مساعدة للمحاكيات | Quiz.tsx, QuizPage.tsx, Results.tsx | - | - | لا | ✅ نعم |
+| `pages/Quiz.tsx` | صفحة الاختبار (تدريب ذاتي) | Router | useStore | - | لا | ✅ نعم |
+| `pages/QuizPage.tsx` | صفحة الاختبار المُجهَّز | Router | API مباشر | `GET /api/quizzes/:id` | لا | ✅ نعم |
 
 ---
 
 ## C. دورة الحياة الحالية
 
-1. **إنشاء الاختبار (Creation):** يدخل المشرف/المدير عبر أحد المنشئات (مثل `UnifiedQuizBuilder`). يحدد البيانات الأساسية.
-2. **اختيار الأسئلة:** يتم جلب الأسئلة من `Store` وتصفيتها محليًا أو عبر طلبات.
-3. **الحفظ:** إرسال `payload` إلى `/api/quizzes`. (تم تعديل هذه الخطوة مؤخرًا لانتظار الرد الحقيقي للحصول على الـ `_id` وعدم الاعتماد على IDs وهمية).
-4. **النشر والتوجيه:** حاليًا يتم دمج خيارات النشر (Placement: `mock`, `training`) مع إنشاء المحتوى.
-5. **ظهور الاختبار للطالب:** بناءً على الـ `placement` والمسار/المادة، يظهر الاختبار في صفحة المادة أو في تبويب "محاكيات" أو "ساهر".
-6. **أداء الاختبار وحفظ النتيجة:** ينهي الطالب الاختبار، يُرسل الطلب إلى `/api/quiz-results` ويتم تحليل المهارات وحفظ النتيجة في الـ `QuizResult` model.
+### الاختبار العادي (drill / test)
+```
+UnifiedQuizBuilder/QuizBuilder
+→ اختيار الأسئلة (SmartQuestionSelector من allQuestionsMap)
+→ addQuiz(payload) → api.createQuiz() → server → returns {id: "quiz_xxx"}
+→ يُضاف للـ Store بـ ID الحقيقي
+→ يظهر في QuizzesManager / SubjectPage حسب placement
+→ الطالب يدخل من Quiz.tsx أو QuizPage.tsx
+→ يُرسل الإجابات → /api/quizzes/:id/submit
+→ QuizResult يُحفظ في DB مع skillsAnalysis
+```
+
+### المحاكي (mock)
+```
+UnifiedQuizBuilder (kind=mock) أو MockExamManager
+→ تعريف الأقسام + اختيار الأسئلة لكل قسم
+→ payload.mockExam.sections[].questionIds
+→ addQuiz(payload) → mockExam.enabled: true
+→ يظهر في MockExams.tsx / MockExamStudentHub.tsx
+→ الطالب يدخل من QuizPage.tsx (source=mock-exam)
+→ QuizPage يستخدم flattenMockExamQuestionIds()
+→ يُرسل الإجابات مع أوقات الأقسام
+```
 
 ---
 
-## D. جدول المشكلات
+## D. جدول المشكلات (مُحدَّث)
 
-| رقم | العنوان | الوصف | دليل من الكود | الأثر / الخطورة | الحل المقترح |
+| # | العنوان | الحالة | دليل من الكود | الملفات | الخطورة |
 |---|---|---|---|---|---|
-| 1 | الحفظ الوهمي للمعرفات | استخدام `quiz_${Date.now()}` لمعرفات جديدة وكتم الأخطاء `catch(() => null)`. | `useStore.ts` في دوال `addQuiz` و `updateQuiz` | **عالية:** تسبب في روابط مكسورة وانفصال الواجهة عن الداتا. | **(تم الإصلاح)**: إزالة الكتم وانتظار الـ ID الحقيقي من الخادم. |
-| 2 | اختفاء الأسئلة المختارة مسبقًا عند التعديل | عند تعديل اختبار، يتم الاعتماد على الأسئلة المحملة في الـ Store، وإذا كان السؤال في صفحة أخرى قد يختفي. | مكونات اختيار الأسئلة في المنشئات تعتمد على فلترة الـ Store فقط أحيانًا. | **متوسطة إلى عالية:** فقدان بيانات بدون قصد. | الاعتماد على جلب الأسئلة المختارة بواسطة معرّفاتها صراحة من الـ API عند تحميل المنشئ. |
-| 3 | تعارض مسميات الإعدادات | استخدام `showCorrectAnswers` في مكان و `showAnswers` في مكان آخر. | `UnifiedQuizBuilder.tsx` مقابل الـ Backend Schema. | **متوسطة:** إعدادات لا تُحفظ أو لا تُقرأ بشكل صحيح. | **(تم الإصلاح)**: توحيد المسمى إلى `showAnswers`. |
-| 4 | تداخل تصنيف "المحاكي" | يتم استخدام `placement === 'mock'` وأيضًا `mockExam.enabled`. | `UnifiedQuizBuilder.tsx` و الـ Models. | **متوسطة:** صعوبة في فصل المحاكيات الحقيقية عن مجرد اختبارات معروضة في صفحة المحاكي. | اعتماد آلية `mockExam.enabled` كمعيار وحيد للمحاكي الحقيقي، وجعل `placement` مجرد مكان عرض. |
-| 5 | تعدد المنشئات | وجود `QuizBuilder` و `UnifiedQuizBuilder` و `MockExamManager`. | تكرار الملفات في مسار `dashboards/admin`. | **منخفضة:** صعوبة في الصيانة الموحدة. | دمج المنشئات تدريجياً في مكون معماري واحد يتبدل حسب الـ Mode (عادي / محاكي). |
+| 1 | الحفظ الوهمي بمعرفات `quiz_${Date.now()}` | ✅ **مُصلَح** | `useStore.ts:1037-1046` | `useStore.ts` | 🔴 عالية |
+| 2 | اختفاء الأسئلة المختارة عند التعديل | ✅ **مُصلَح** | `UnifiedQuizBuilder:179-211`, `SmartQuestionSelector:71-76` | `UnifiedQuizBuilder.tsx`, `SmartQuestionSelector.tsx` | 🔴 عالية |
+| 3 | تعارض `showAnswers/showCorrectAnswers` | ✅ **مُصلَح** | `UnifiedQuizBuilder:121` | `UnifiedQuizBuilder.tsx` | 🟡 متوسطة |
+| 4 | `normalizeQuizPlacement` لا يعالج `quizKind` | ✅ **مُصلَح** | `quizPlacement.ts:58-115` | `utils/quizPlacement.ts` | 🟡 متوسطة |
+| 5 | Schema Backend يرفض حقول محاكي صحيحة | ✅ **مُصلَح** | `quiz.routes.ts:311-325` | `quiz.routes.ts` | 🟡 متوسطة |
+| 6 | `updateQuiz` لا يُطبِّع `quizKind` | ✅ **مُصلَح** | `useStore.ts:1049-1058` | `useStore.ts` | 🟠 متوسطة |
+| 7 | تعدد المنشئات غير مُوحَّد | ⏳ مؤجل | `dashboards/admin/QuizBuilder.tsx` موجود بجانب `UnifiedQuizBuilder.tsx` | `QuizBuilder.tsx` | 🟡 منخفضة |
+| 8 | بيانات قديمة بدون `quizKind` | ⏳ مؤجل | DB documents | `docs/adr/` (مطلوب) | 🟡 متوسطة |
+| 9 | التوجيه مدمج مع محتوى الاختبار | ⏳ مؤجل معماري | `targetGroupIds/targetUserIds` داخل `Quiz` model | - | 🟡 متوسطة |
 
 ---
 
 ## E. توافق العقود
 
-| اسم الحقل (Frontend) | اسم الحقل (API) | اسم الحقل (DB) | الحالة | ملاحظة |
-|---|---|---|---|---|
-| `showAnswers` | `showAnswers` | `showAnswers` | **متوافق** | تم توحيده بعد أن كان `showCorrectAnswers` أحيانًا. |
-| `id` / `_id` | `id` (or `_id`) | `_id` | **شبه متوافق** | تم التأكد من جلب `_id` الحقيقي وتحديث الـ Store. |
-| `placement` | `placement` | `placement` | **متوافق** | لكن دلالته متداخلة مع طبيعة الاختبار. |
-| `mockExam` | `mockExam` | `mockExam` | **متوافق** | يحتاج تعزيز استخدامه للتفريق المعماري. |
+| اسم الحقل | Frontend | Zod Schema | MongoDB | صفحة الطالب | الحالة |
+|---|---|---|---|---|---|
+| `showAnswers` | `showAnswers` | `settings.showAnswers` | `settings.showAnswers` | `quiz.settings.showAnswers` | ✅ متوافق |
+| `randomizeQuestions` | `randomizeQuestions` | `settings.randomizeQuestions` | `settings.randomizeQuestions` | `quiz.settings.randomizeQuestions` | ✅ متوافق |
+| `quizKind` | `quizKind` | `quizKind` | `quizKind` | - | ✅ متوافق |
+| `mockExam.enabled` | `mockExam.enabled` | `mockExam.enabled` | `mockExam.enabled` | `quiz.mockExam?.enabled` | ✅ متوافق |
+| `mockExam.sections[].questionIds` | `mockSections[].questionIds` | `mockExam.sections[].questionIds` | `mockExam.sections.questionIds` | `flattenMockExamQuestionIds()` | ✅ متوافق |
+| `mockExam.isStrictSectionLock` | `isStrictSectionLock:true` | `mockExam.isStrictSectionLock` | `mockExam.isStrictSectionLock` | `QuizPage.tsx` | ✅ متوافق |
+| `placement` | مُستنتج من `quizKind` | `placement` | `placement` | - | ✅ متوافق (مُطبَّع) |
+| `showInTraining` | مُستنتج من `quizKind` | `showInTraining` | `showInTraining` | `isTrainingQuiz()` | ✅ متوافق |
+| `id` / `_id` | `id` (من السيرفر) | `id` optional | `_id` String | `quiz.id` | ✅ متوافق |
 
 ---
 
-## F. الصلاحيات (نظرة عامة)
+## F. الصلاحيات
 
-تتحكم الـ Middlewares في الـ Backend (`auth.routes.ts`, `quiz.routes.ts`) في تحديد الأدوار (Role).
-المدير (Admin) له صلاحيات كاملة. المشرف والمعلم تقتصر صلاحياتهم (مفترضًا) على موادهم، والطالب يمكنه قراءة الاختبارات المتاحة وحلّها.
-*(يحتاج لاختبارات تحقق إضافية لاحقاً للتأكد من عدم قدرة المشرف على تعديل اختبارات خارج نطاقه)*.
+| العملية | المدير | المشرف | المعلم | الطالب | تحقق Backend | تحقق Frontend |
+|---|---|---|---|---|---|---|
+| إنشاء اختبار | ✅ | ✅ (نطاقه) | ✅ (مسودة) | ❌ | `quiz.routes.ts` → `requireRole` | يُخفى الزر |
+| تعديل اختبار | ✅ | ✅ (ملكه) | ✅ (ملكه) | ❌ | `buildOwnedDocumentQuery` | يُخفى الزر |
+| نشر اختبار | ✅ | ⚠️ جزئي | ❌ (pending_review) | ❌ | `getWorkflowDefaults` | `isTeacher` check |
+| اعتماد اختبار | ✅ | ❌ | ❌ | ❌ | `approvalStatus` logic | Admin only |
+| حل اختبار | ❌ | ❌ | ❌ | ✅ | `requireAuth` + audience check | Router |
+| رؤية النتائج | ✅ (كل) | ✅ (نطاقه) | ✅ (طلابه) | ✅ (نفسه) | `quiz.routes.ts` result endpoints | Role check |
 
 ---
 
 ## G. سلامة البيانات
 
-- تم التخلص من خطر "المعرفات المحلية المؤقتة" `quiz_${Date.now()}` في عمليات الحفظ.
-- الخطر القادم هو "أسئلة مفقودة" داخل اختبار (حفظ اختبار يحوي IDs لأسئلة تم حذفها لاحقاً من بنك الأسئلة). الـ Backend يجب أن يتحقق من وجود جميع ה`questionIds`.
+### ✅ تمت معالجته
+- معرفات محلية مؤقتة في حفظ الاختبارات.
+- حقول المحاكي المفقودة في Zod schema.
+
+### ⚠️ يحتاج مراقبة
+- **أسئلة مفقودة:** اختبار يحتوي `questionIds` لأسئلة محذوفة → `validateQuizQuestionIntegrity()` موجودة في Backend لكن لا تُستدعى عند التعديل العادي.
+- **بيانات قديمة بدون `quizKind`:** الاختبارات الموجودة في DB قبل إضافة `quizKind` — `normalizeQuizPlacementPayload` يستنتجه من `placement/type` للتوافق العكسي.
+- **محاكيات بأقسام فارغة:** لا يوجد validation لمنع حفظ محاكي بأقسام `questionIds: []`.
 
 ---
 
 ## H. خطة التنفيذ (المراحل)
 
-1. **الأعطال الحرجة (جاري الانتهاء منها):**
-   - تم إصلاح الحفظ المتزامن (Async).
-   - تم إصلاح توحيد العقود الحرجة (`showAnswers`).
-   - **الخطوة المتبقية في هذه المرحلة:** إصلاح جلب الأسئلة المختارة مسبقًا في الـ `UnifiedQuizBuilder` لضمان عدم اختفائها أثناء التعديل (Fetching by IDs).
-2. **توحيد العقود وتصنيف المحاكي:**
-   - ضبط التفريق بين الاختبار العادي والمحاكي بالاعتماد على حقل واحد موثوق.
-3. **توحيد المنشئات (Refactor):**
-   - دمج المنطق المشترك بين `MockExamManager` و `UnifiedQuizBuilder` مع الحفاظ على تجربة المستخدم.
-4. **فصل النشر والتوجيه (مستقبلًا):**
-   - إنشاء كيان `ExamAssignment` منفصل.
+### ✅ المرحلة 1: الأعطال الحرجة (مكتملة)
+- الحفظ المتزامن الحقيقي.
+- توحيد الحقول.
+- جلب الأسئلة المفقودة.
+- إصلاح normalizeQuizPlacement.
+
+### Phase 2: سلامة البيانات والتحقق
+- **الهدف:** script يفحص DB ويتحقق من integrity.
+- **الملفات:** `server/src/scripts/assessmentIntegrityCheck.ts` [NEW].
+- **المحتوى:** تحقق من quizKind، أسئلة مفقودة، محاكيات فارغة.
+- **المخاطر:** قراءة فقط — لا تعديل بيانات.
+
+### Phase 3: توحيد المنشئات
+- **الهدف:** توحيد `QuizBuilder.tsx` و`UnifiedQuizBuilder.tsx`.
+- **المخاطر:** عالية — يجب تتبع كل أماكن الاستدعاء.
+- **الشرط:** موافقة صريحة قبل البدء.
+
+### Phase 4: فصل التوجيه
+- **الهدف:** كيان `ExamAssignment` مستقل.
+- **المخاطر:** تغيير معماري + migration بيانات.
+- **الشرط:** قرار معماري موثق (ADR).
+
+### Phase 5: دورة الحياة الموحدة
+- **الهدف:** `draft → pending_review → approved → published → archived`.
+- **المخاطر:** تغيير واسع في الـ UI والـ API.
 
 ---
-**تم إعداد هذا التقرير لتوضيح مسار العمل وضمان عدم الخروج عن النطاق المسموح به أو الإضرار بالنظام الفعلي.**
+
+**آخر تحديث:** 2026-08-07 بواسطة Antigravity (Claude Sonnet 4.6)

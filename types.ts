@@ -316,6 +316,17 @@ export interface QuizQuestionReview {
     videoUrl?: string;
     imageUrl?: string;
     isCorrect: boolean;
+    timeSpentSeconds?: number;
+}
+
+export interface QuizSectionResult {
+    sectionId: string;
+    sectionName: string;
+    total: number;
+    correct: number;
+    wrong: number;
+    unanswered: number;
+    score: number; // percentage
 }
 
 export interface QuizResult {
@@ -333,6 +344,7 @@ export interface QuizResult {
     date: string;
     skillsAnalysis: SkillGap[];
     questionReview?: QuizQuestionReview[];
+    sectionResults?: QuizSectionResult[]; // تحليل لكل قسم (للمحاكيات فقط)
 }
 
 export interface QuizHistoryItem {

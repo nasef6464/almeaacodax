@@ -263,10 +263,15 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 isStrictSectionLock: true,
               } as any,
               placement: "mock" as const,
+              // ضروري: isMockQuiz() يتحقق من showInMock لإظهار الاختبار في QuizzesManager
+              showInMock: true,
+              showInTraining: false,
             }
           : {
-              placement: kind === "drill" ? ("training" as const) : ("mock" as const),
-              showInTraining: kind === "drill",
+              // drill → يظهر في التدريبات فقط
+              // test  → يظهر في الاختبارات + التدريبات (both)
+              placement: kind === "drill" ? ("training" as const) : ("both" as const),
+              showInTraining: kind === "drill" || kind === "test",
               showInMock: kind === "test",
             }),
         approvalStatus: isTeacher ? "pending_review" : "approved",
@@ -479,6 +484,17 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                       onChange={(ids) => setMockSections((prev) => prev.map((s, i) => i === activeSectionIdx ? { ...s, questionIds: ids } : s))}
                       maxQuestions={80}
                     />
+                  )}
+                  {/* تحذير: أقسام فارغة */}
+                  {mockSections.some((s) => s.questionIds.length === 0) && (
+                    <div className="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
+                      <AlertCircle size={16} className="shrink-0 mt-0.5 text-amber-600" />
+                      <span>
+                        <strong>تنبيه:</strong> الأقسام التالية لا تحتوي على أسئلة:{" "}
+                        {mockSections.filter((s) => s.questionIds.length === 0).map((s) => s.title).join(" — ")}.
+                        يجب إضافة أسئلة لكل قسم قبل الانتقال للخطوة التالية.
+                      </span>
+                    </div>
                   )}
                 </div>
               ) : (

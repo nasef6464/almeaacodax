@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Lesson, LessonType, Question } from '../../../types';
 import { Plus, Save, Search, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
-import { QuizBuilder } from '../QuizBuilder';
+import { UnifiedQuizBuilder } from '../UnifiedQuizBuilder';
 import { UnifiedQuestionBuilder } from './UnifiedQuestionBuilder';
 import { useStore } from '../../../store/useStore';
 import { sanitizeVideoUrl } from '../../../utils/videoLinks';
@@ -896,14 +896,16 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
       </div>
 
       {showQuizBuilder && (
-        <div className="fixed inset-0 z-[60] bg-white overflow-y-auto">
-          <div className="p-4">
-            <button onClick={() => setShowQuizBuilder(false)} className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900 font-bold">
-              <X size={20} /> العودة للدرس
-            </button>
-            <QuizBuilder />
-          </div>
-        </div>
+        <UnifiedQuizBuilder
+          role="admin"
+          defaultKind="drill"
+          onClose={() => setShowQuizBuilder(false)}
+          onSave={(savedQuiz) => {
+            // ربط الاختبار المُنشأ بالدرس تلقائياً
+            setLesson((prev) => ({ ...prev, quizId: savedQuiz.id }));
+            setShowQuizBuilder(false);
+          }}
+        />
       )}
 
       {showQuestionBuilder && (
