@@ -2809,7 +2809,7 @@ quizRouter.post(
             const secScore = secTotal > 0 ? Math.round((secCorrect / secTotal) * 100) : 0;
             return {
               sectionId:   String(section.id || section._id || ""),
-              sectionName: String(section.name || ""),
+              sectionName: String(section.title || section.name || ""),
               total:       secTotal,
               correct:     secCorrect,
               wrong:       secWrong,
