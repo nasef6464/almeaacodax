@@ -26,6 +26,7 @@ import type { HomepageSettings } from '../types';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { ThemeToggle } from './ThemeToggle';
 import { SearchModal } from './SearchModal';
+import { NotificationBell } from './NotificationBell';
 import { calculateStreak } from '../utils/streak';
 
 const NavIcons: Record<string, React.ReactNode> = {
@@ -518,6 +519,9 @@ export const Header: React.FC = () => {
             >
               <Search size={20} />
             </button>
+
+            {/* جرس الإشعارات — للمستخدمين المسجلين فقط */}
+            {user && <NotificationBell token={user.token} />}
 
             <Link to="/cart" className="relative text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
               <ShoppingCart size={20} />
