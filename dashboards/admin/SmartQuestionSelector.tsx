@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from "react";
-import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2 } from "lucide-react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { Question } from "../../types";
 import { api } from "../../services/api";
@@ -26,12 +26,74 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   pathId, subjectId, selectedIds, onChange, maxQuestions = 100,
 }) => {
-  const { questions: allQuestions, skills, sections, subjects } = useStore();
-  // allQuestionsMap: index سريع للبحث بالـ id عبر كل الأسئلة في الـ Store (بما فيها المجلبة)
-  const allQuestionsMap = useMemo(
-    () => new Map(allQuestions.map((q) => [q.id, q])),
-    [allQuestions],
+  const { skills, sections, subjects } = useStore();
+
+  // ── حالة الأسئلة المُجلبة من API ──────────────────────────────────────────
+  const [apiQuestions, setApiQuestions] = useState<Question[]>([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [loadError, setLoadError] = useState("");
+  const [totalAvailable, setTotalAvailable] = useState(0);
+
+  const fetchRef = useRef<AbortController | null>(null);
+
+  // ── جلب الأسئلة من السيرفر عند تغيير pathId / subjectId ──────────────────
+  useEffect(() => {
+    if (!pathId) {
+      setApiQuestions([]);
+      setTotalAvailable(0);
+      return;
+    }
+
+    // إلغاء أي طلب سابق
+    if (fetchRef.current) fetchRef.current.abort();
+    fetchRef.current = new AbortController();
+
+    setLoadingQuestions(true);
+    setLoadError("");
+
+    const params: Record<string, string | number> = { pathId, limit: 200, page: 1 };
+    if (subjectId) params.subject = subjectId;
+
+    api.getQuestions(params as any)
+      .then((res: any) => {
+        const list: Question[] = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.questions)
+            ? res.questions
+            : Array.isArray(res?.data)
+              ? res.data
+              : [];
+        setApiQuestions(list);
+        setTotalAvailable(res?.total ?? res?.totalCount ?? list.length);
+        setLoadError("");
+      })
+      .catch((err: any) => {
+        if (err?.name === "AbortError") return;
+        setLoadError("تعذر تحميل الأسئلة. حاول مجدداً.");
+        setApiQuestions([]);
+      })
+      .finally(() => setLoadingQuestions(false));
+
+    return () => fetchRef.current?.abort();
+  }, [pathId, subjectId]);
+
+  // ── بناء خريطة API + Store لضمان الأسئلة المختارة مسبقاً تظهر دائماً ─────
+  const storeQuestions = useStore((s) => s.questions);
+  const allQuestionsMap = useMemo(() => {
+    const map = new Map<string, Question>();
+    // الأسئلة من Store (تشمل المختارة سابقاً)
+    storeQuestions.forEach((q) => map.set(q.id, q));
+    // تطغى عليها أسئلة API (أحدث)
+    apiQuestions.forEach((q) => map.set(q.id, q));
+    return map;
+  }, [storeQuestions, apiQuestions]);
+
+  // ── الأسئلة المختارة: من الخريطة المجمعة لضمان ظهورها حتى لو لم تكن في صفحة الفلتر ──
+  const selectedQuestions = useMemo(
+    () => selectedIds.map((id) => allQuestionsMap.get(id)).filter(Boolean) as Question[],
+    [selectedIds, allQuestionsMap],
   );
+
   const [mode, setMode] = useState<SelectionMode>("manual");
   const [searchTerm, setSearchTerm] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty>("all");
@@ -44,11 +106,19 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
-  const pathQuestions = useMemo(() =>
-    allQuestions.filter((q) => q.pathId === pathId && (!subjectId || q.subject === subjectId)),
-    [allQuestions, pathId, subjectId]);
+  // ── الفلترة تعمل على أسئلة API المُجلبة ────────────────────────────────────
+  const filteredQuestions = useMemo(() => {
+    let result = apiQuestions;
+    if (mode === "skills" && selectedSkillIds.length > 0)
+      result = result.filter((q) => (q.skillIds || []).some((id) => selectedSkillIds.includes(id)));
+    if (searchTerm.trim())
+      result = result.filter((q) => (q.text || "").toLowerCase().includes(searchTerm.toLowerCase()));
+    if (difficulty !== "all") result = result.filter((q) => q.difficulty === difficulty);
+    if (selectedSectionId) result = result.filter((q) => q.sectionId === selectedSectionId);
+    return result;
+  }, [apiQuestions, mode, selectedSkillIds, searchTerm, difficulty, selectedSectionId]);
 
-  // CategorySection ليس لديه pathId — نستخدم subjectId عبر قائمة المواد التابعة للمسار
+  // ── الأقسام والمهارات المتاحة للمسار ──────────────────────────────────────
   const pathSubjectIds = useMemo(() => {
     return new Set(subjects.filter((s) => s.pathId === pathId).map((s) => s.id));
   }, [subjects, pathId]);
@@ -61,24 +131,6 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     if (!selectedSectionId) return skills.filter((s) => pathSubjectIds.has(s.subjectId));
     return skills.filter((s) => pathSubjectIds.has(s.subjectId) && s.sectionId === selectedSectionId);
   }, [skills, pathSubjectIds, selectedSectionId]);
-
-  const filteredQuestions = useMemo(() => {
-    let result = pathQuestions;
-    if (mode === "skills" && selectedSkillIds.length > 0)
-      result = result.filter((q) => (q.skillIds || []).some((id) => selectedSkillIds.includes(id)));
-    if (searchTerm.trim())
-      result = result.filter((q) => (q.text || "").toLowerCase().includes(searchTerm.toLowerCase()));
-    if (difficulty !== "all") result = result.filter((q) => q.difficulty === difficulty);
-    if (selectedSectionId) result = result.filter((q) => q.sectionId === selectedSectionId);
-    return result;
-  }, [pathQuestions, mode, selectedSkillIds, searchTerm, difficulty, selectedSectionId]);
-
-  // البحث في allQuestionsMap وليس pathQuestions فقط — يضمن ظهور الأسئلة المختارة مسبقاً
-  // حتى لو كانت مجلوبة حديثاً أو خارج نطاق الفلاتر الحالية
-  const selectedQuestions = useMemo(
-    () => selectedIds.map((id) => allQuestionsMap.get(id)).filter(Boolean) as Question[],
-    [selectedIds, allQuestionsMap],
-  );
 
   const toggleQuestion = useCallback((id: string) => {
     if (selectedIds.includes(id)) onChange(selectedIds.filter((sid) => sid !== id));
@@ -116,6 +168,25 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     }
   };
 
+  // ── إعادة الجلب يدوياً ────────────────────────────────────────────────────
+  const handleRefetch = () => {
+    setApiQuestions([]);
+    setLoadingQuestions(true);
+    setLoadError("");
+    const params: Record<string, string | number> = { pathId, limit: 200, page: 1 };
+    if (subjectId) params.subject = subjectId;
+    api.getQuestions(params as any)
+      .then((res: any) => {
+        const list: Question[] = Array.isArray(res) ? res
+          : Array.isArray(res?.questions) ? res.questions
+            : Array.isArray(res?.data) ? res.data : [];
+        setApiQuestions(list);
+        setTotalAvailable(res?.total ?? res?.totalCount ?? list.length);
+      })
+      .catch(() => setLoadError("تعذر تحميل الأسئلة."))
+      .finally(() => setLoadingQuestions(false));
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* اللوحة اليسرى */}
@@ -133,6 +204,41 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
             </button>
           ))}
         </div>
+
+        {/* تنبيه: لم يتم اختيار مسار */}
+        {!pathId && (
+          <div className="py-6 text-center text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-xl font-bold">
+            ⚠️ اختر المسار أولاً لتظهر الأسئلة
+          </div>
+        )}
+
+        {/* حالة التحميل */}
+        {loadingQuestions && (
+          <div className="py-6 text-center text-xs text-indigo-600 flex items-center justify-center gap-2 font-bold">
+            <Loader2 size={16} className="animate-spin"/> جارٍ تحميل الأسئلة...
+          </div>
+        )}
+
+        {/* خطأ في التحميل */}
+        {loadError && !loadingQuestions && (
+          <div className="flex items-center justify-between bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
+            <span className="text-xs font-bold text-rose-600 flex items-center gap-1">
+              <AlertCircle size={13}/> {loadError}
+            </span>
+            <button type="button" onClick={handleRefetch}
+              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+              <RefreshCw size={12}/> إعادة المحاولة
+            </button>
+          </div>
+        )}
+
+        {/* معلومة عدد الأسئلة المتاحة */}
+        {!loadingQuestions && !loadError && pathId && apiQuestions.length > 0 && (
+          <div className="flex items-center justify-between text-[11px] text-gray-400 font-bold px-1">
+            <span>{filteredQuestions.length} سؤال ظاهر</span>
+            <span>{totalAvailable} متاح في المسار</span>
+          </div>
+        )}
 
         {/* وضع ذكي */}
         {mode === "smart" && (
@@ -167,7 +273,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
               </div>
             </div>
             {smartError && <p className="text-rose-600 text-xs font-bold flex items-center gap-1"><AlertCircle size={13}/>{smartError}</p>}
-            <button type="button" onClick={handleSmartGenerate} disabled={smartLoading}
+            <button type="button" onClick={handleSmartGenerate} disabled={smartLoading || !pathId}
               className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-sm transition-all disabled:opacity-50">
               {smartLoading ? <><Loader2 size={15} className="animate-spin"/>جارٍ التوليد...</> : <><Zap size={15}/>توليد {smartCount} سؤال</>}
             </button>
@@ -175,7 +281,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
         )}
 
         {/* فلاتر يدوي / مهارات */}
-        {mode !== "smart" && (
+        {mode !== "smart" && !loadingQuestions && (
           <div className="space-y-2">
             <div className="relative">
               <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"/>
@@ -210,11 +316,21 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           </div>
         )}
 
-        {mode !== "smart" && (
+        {/* قائمة الأسئلة */}
+        {mode !== "smart" && !loadingQuestions && pathId && (
           <div className="overflow-y-auto space-y-1.5 max-h-64 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
             {filteredQuestions.length === 0
-              ? <p className="py-6 text-center text-xs text-gray-400 font-bold">لا توجد أسئلة</p>
-              : filteredQuestions.slice(0, 80).map((q) => {
+              ? (
+                <div className="py-6 text-center text-xs text-gray-400">
+                  <BarChart2 size={24} className="mx-auto mb-2 opacity-30"/>
+                  <p className="font-bold">
+                    {apiQuestions.length === 0
+                      ? "لا توجد أسئلة في هذا المسار بعد"
+                      : "لا توجد أسئلة تطابق الفلتر"}
+                  </p>
+                </div>
+              )
+              : filteredQuestions.slice(0, 100).map((q) => {
                   const isSelected = selectedIds.includes(q.id);
                   const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 100);
                   return (
