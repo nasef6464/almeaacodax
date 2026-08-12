@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Question, Quiz } from '../../types';
-import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink, Dumbbell, Award, FileText } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink, Dumbbell, Award, FileText, SendHorizontal, Users, Calendar, Clock, ChevronLeft } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, inferQuizKind, isMockQuiz, isTrainingQuiz, isTrueMockExam, normalizeQuizPlacement } from '../../utils/quizPlacement';
@@ -198,11 +198,19 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
   const [draftMode, setDraftMode] = useState<'regular' | 'saher' | 'central' | null>(null);
-  // جديد: فلتر quizKind (drill | test | mock | all)
+  // فلتر quizKind (drill | test | mock | all)
   const [quizKindFilter, setQuizKindFilter] = useState<'all' | 'drill' | 'test' | 'mock'>('all');
-  // جديد: فتح UnifiedQuizBuilder كـ overlay لإنشاء جديد
+  // فتح UnifiedQuizBuilder كـ overlay لإنشاء جديد
   const [isUnifiedBuilderOpen, setIsUnifiedBuilderOpen] = useState(false);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
+  // تبديل بين مركز الاختبارات ولوحة التوجيه
+  const [mainView, setMainView] = useState<'quizzes' | 'assignments'>('quizzes');
+  // توجيه: الاختبار المحدد للتوجيه
+  const [assigningQuiz, setAssigningQuiz] = useState<Quiz | null>(null);
+  const [assignTargetGroupIds, setAssignTargetGroupIds] = useState<string[]>([]);
+  const [assignTargetUserIds, setAssignTargetUserIds] = useState<string[]>([]);
+  const [assignDueDate, setAssignDueDate] = useState('');
+  const [assignSaving, setAssignSaving] = useState(false);
   const activeSubject = useMemo(
     () => allowedSubjects.find((subject) => subject.id === (selectedSubjectId || subjectId)),
     [allowedSubjects, selectedSubjectId, subjectId],
@@ -705,6 +713,28 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </button>}
         </div>
       </div>
+
+      {/* ── شريط التبديل: مركز الاختبارات / توجيه الاختبارات ─────────────── */}
+      {!filterType && (
+        <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
+          {([
+            { key: 'quizzes' as const, label: 'مركز الاختبارات', icon: <FileQuestion size={14}/> },
+            { key: 'assignments' as const, label: 'توجيه الاختبارات', icon: <SendHorizontal size={14}/>, badge: globalQuizzes.filter(q => (q.targetGroupIds?.length || 0) + (q.targetUserIds?.length || 0) > 0).length },
+          ]).map(tab => (
+            <button key={tab.key} type="button" onClick={() => { setMainView(tab.key); setAssigningQuiz(null); }}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black transition-all ${
+                mainView === tab.key ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-500 hover:text-indigo-600'
+              }`}>
+              {tab.icon}{tab.label}
+              {'badge' in tab && tab.badge > 0 && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+                  mainView === tab.key ? 'bg-indigo-600 text-white' : 'bg-gray-300 text-gray-600'
+                }`}>{tab.badge}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
 
       {openedFromSchoolPortal && (
         <div data-testid="school-portal-directed-quiz-context" className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
@@ -1488,6 +1518,247 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </div>
         </div>
       ) : null}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* ── لوحة توجيه الاختبارات ─────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {mainView === 'assignments' && !filterType && (() => {
+        const directedQuizzes = globalQuizzes.filter(q =>
+          (q.targetGroupIds?.length || 0) + (q.targetUserIds?.length || 0) > 0
+        );
+
+        // لوحة التوجيه الجديد
+        if (assigningQuiz) {
+          const quizGroups = groups.filter(g => assignTargetGroupIds.includes(g.id));
+          const quizUsers  = users.filter(u => assignTargetUserIds.includes(u.id));
+          return (
+            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 space-y-5">
+              <div className="flex items-center gap-3">
+                <button onClick={() => setAssigningQuiz(null)} className="text-gray-400 hover:text-indigo-600">
+                  <ChevronLeft size={20}/>
+                </button>
+                <div>
+                  <h3 className="font-black text-gray-900 text-base">توجيه: {assigningQuiz.title}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">حدد الجمهور والموعد ثم احفظ التوجيه</p>
+                </div>
+              </div>
+
+              {/* المجموعات */}
+              <div>
+                <label className="block text-xs font-black text-gray-700 mb-2 flex items-center gap-1"><Users size={13}/> المجموعات المستهدفة</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {quizGroups.map(g => (
+                    <span key={g.id} className="inline-flex items-center gap-1 bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1 text-xs font-bold text-indigo-700">
+                      {g.name}
+                      <button type="button" onClick={() => setAssignTargetGroupIds(prev => prev.filter(id => id !== g.id))} className="hover:text-rose-500"><X size={11}/></button>
+                    </span>
+                  ))}
+                </div>
+                <select onChange={e => { const v = e.target.value; if (v && !assignTargetGroupIds.includes(v)) setAssignTargetGroupIds(p => [...p, v]); e.target.value = ''; }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-indigo-400">
+                  <option value="">+ أضف مجموعة...</option>
+                  {groups.filter(g => !assignTargetGroupIds.includes(g.id)).map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
+                </select>
+              </div>
+
+              {/* الطلاب المحددين */}
+              <div>
+                <label className="block text-xs font-black text-gray-700 mb-2 flex items-center gap-1"><Users size={13}/> طلاب محددون (اختياري)</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {quizUsers.map(u => (
+                    <span key={u.id} className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-100 rounded-full px-3 py-1 text-xs font-bold text-emerald-700">
+                      {u.name}
+                      <button type="button" onClick={() => setAssignTargetUserIds(prev => prev.filter(id => id !== u.id))} className="hover:text-rose-500"><X size={11}/></button>
+                    </span>
+                  ))}
+                </div>
+                <select onChange={e => { const v = e.target.value; if (v && !assignTargetUserIds.includes(v)) setAssignTargetUserIds(p => [...p, v]); e.target.value = ''; }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-indigo-400">
+                  <option value="">+ أضف طالباً...</option>
+                  {users.filter(u => (u.role === 'student' || !u.role) && !assignTargetUserIds.includes(u.id)).slice(0, 100).map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                </select>
+              </div>
+
+              {/* موعد الانتهاء */}
+              <div>
+                <label className="block text-xs font-black text-gray-700 mb-2 flex items-center gap-1"><Calendar size={13}/> موعد الانتهاء (اختياري)</label>
+                <input type="datetime-local" value={assignDueDate} onChange={e => setAssignDueDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"/>
+              </div>
+
+              {/* أزرار الحفظ */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  disabled={assignSaving || (assignTargetGroupIds.length + assignTargetUserIds.length === 0)}
+                  onClick={async () => {
+                    if (assignTargetGroupIds.length + assignTargetUserIds.length === 0) return;
+                    setAssignSaving(true);
+                    try {
+                      await updateQuiz(assigningQuiz.id, {
+                        mode: 'central',
+                        targetGroupIds: assignTargetGroupIds,
+                        targetUserIds: assignTargetUserIds,
+                        isPublished: true,
+                        showOnPlatform: true,
+                        ...(assignDueDate ? { dueDate: new Date(assignDueDate).getTime() } as any : {}),
+                      });
+                      setAssigningQuiz(null);
+                      setAssignTargetGroupIds([]);
+                      setAssignTargetUserIds([]);
+                      setAssignDueDate('');
+                    } catch (err) {
+                      alert(err instanceof Error ? err.message : 'تعذر حفظ التوجيه');
+                    } finally {
+                      setAssignSaving(false);
+                    }
+                  }}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                >
+                  {assignSaving ? '⏳ جارٍ الحفظ...' : <><SendHorizontal size={15}/> حفظ التوجيه</>}
+                </button>
+                <button onClick={() => setAssigningQuiz(null)}
+                  className="px-5 py-3 rounded-xl border border-gray-200 text-gray-600 font-black text-sm hover:bg-gray-50">
+                  إلغاء
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="space-y-4">
+            {/* معلومة معمارية */}
+            <div className="rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+              <p className="text-xs font-bold text-amber-800 leading-6">
+                📌 <strong>التوجيه ليس نوع اختبار منفصل</strong> — هو طريقة تكليف لاختبار موجود (عادي أو محاكي).
+                اختر الاختبار ثم حدد المجموعة أو الطالب والموعد. الاختبار نفسه يبقى في مركز الاختبارات دون تكرار.
+              </p>
+            </div>
+
+            {/* زر توجيه جديد */}
+            <div className="flex justify-between items-center">
+              <h3 className="font-black text-gray-800">الاختبارات الموجهة حالياً ({directedQuizzes.length})</h3>
+              <button onClick={() => handleCreateByMode('central')}
+                className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-black text-sm transition-all">
+                <Plus size={15}/> توجيه اختبار جديد
+              </button>
+            </div>
+
+            {/* قائمة الموجهة */}
+            {directedQuizzes.length === 0 ? (
+              <div className="bg-white border border-gray-100 rounded-2xl p-12 text-center">
+                <SendHorizontal size={36} className="mx-auto text-gray-200 mb-3"/>
+                <p className="font-black text-gray-400 text-sm">لا توجد اختبارات موجهة بعد</p>
+                <p className="text-xs text-gray-400 mt-1">اضغط "توجيه اختبار جديد" أو اختر اختباراً من مركز الاختبارات</p>
+              </div>
+            ) : (
+              <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
+                <table className="w-full text-right">
+                  <thead className="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                      <th className="px-5 py-3 text-xs font-black text-gray-600">الاختبار</th>
+                      <th className="px-5 py-3 text-xs font-black text-gray-600">النوع</th>
+                      <th className="px-5 py-3 text-xs font-black text-gray-600">الجمهور</th>
+                      <th className="px-5 py-3 text-xs font-black text-gray-600">موعد الانتهاء</th>
+                      <th className="px-5 py-3 text-xs font-black text-gray-600">الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {directedQuizzes.map(quiz => {
+                      const targetedGroups = groups.filter(g => (quiz.targetGroupIds || []).includes(g.id));
+                      const targetedUsers  = users.filter(u => (quiz.targetUserIds || []).includes(u.id));
+                      const totalTargets   = targetedGroups.reduce((s, g) => s + (g.memberCount || g.studentIds?.length || 0), 0) + targetedUsers.length;
+                      const dueDate        = (quiz as any).dueDate ? new Date((quiz as any).dueDate).toLocaleDateString('ar-SA') : null;
+                      return (
+                        <tr key={quiz.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-5 py-4">
+                            <div className="font-bold text-gray-900 text-sm">{quiz.title}</div>
+                            <div className="text-[11px] text-gray-400">{quiz.questionIds?.length || 0} سؤال</div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <span className={`text-[11px] font-black px-2 py-1 rounded-full ${
+                              (quiz as any).mockExam?.enabled ? 'bg-violet-50 text-violet-700' : 'bg-indigo-50 text-indigo-700'
+                            }`}>
+                              {(quiz as any).mockExam?.enabled ? 'محاكي' : 'اختبار'}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex flex-wrap gap-1">
+                              {targetedGroups.slice(0, 2).map(g => (
+                                <span key={g.id} className="text-[11px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-bold">{g.name}</span>
+                              ))}
+                              {targetedUsers.slice(0, 2).map(u => (
+                                <span key={u.id} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-bold">{u.name}</span>
+                              ))}
+                              {(targetedGroups.length + targetedUsers.length) > 4 && (
+                                <span className="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-bold">+{(targetedGroups.length + targetedUsers.length) - 4}</span>
+                              )}
+                              {totalTargets > 0 && <span className="text-[11px] text-gray-400 self-center">({totalTargets} طالب)</span>}
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            {dueDate ? (
+                              <div className="flex items-center gap-1 text-xs text-amber-700 font-bold">
+                                <Clock size={12}/>{dueDate}
+                              </div>
+                            ) : <span className="text-xs text-gray-300">—</span>}
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  setAssigningQuiz(quiz);
+                                  setAssignTargetGroupIds(quiz.targetGroupIds || []);
+                                  setAssignTargetUserIds(quiz.targetUserIds || []);
+                                  setAssignDueDate((quiz as any).dueDate ? new Date((quiz as any).dueDate).toISOString().slice(0,16) : '');
+                                }}
+                                className="text-xs font-black text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded-lg"
+                              >
+                                <Edit2 size={12}/> تعديل
+                              </button>
+                              <button
+                                onClick={() => updateQuiz(quiz.id, { targetGroupIds: [], targetUserIds: [], mode: 'regular' } as any)}
+                                className="text-xs font-black text-rose-500 hover:text-rose-700 flex items-center gap-1 bg-rose-50 px-2 py-1 rounded-lg"
+                                title="إلغاء التوجيه"
+                              >
+                                <X size={12}/> إلغاء
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* قائمة الاختبارات المتاحة للتوجيه */}
+            <div className="mt-6">
+              <h3 className="font-black text-gray-700 text-sm mb-3">اختبارات المستودع — اضغط لتوجيه أي منها</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {globalQuizzes.filter(q => !directedQuizzes.find(d => d.id === q.id)).slice(0, 30).map(quiz => (
+                  <button key={quiz.id} type="button"
+                    onClick={() => {
+                      setAssigningQuiz(quiz);
+                      setAssignTargetGroupIds(quiz.targetGroupIds || []);
+                      setAssignTargetUserIds(quiz.targetUserIds || []);
+                      setAssignDueDate('');
+                    }}
+                    className="text-right bg-white border border-gray-100 rounded-xl p-3.5 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all group">
+                    <div className="flex items-start justify-between gap-2">
+                      <SendHorizontal size={14} className="shrink-0 mt-0.5 text-gray-300 group-hover:text-indigo-500 transition-colors"/>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-gray-900 text-sm line-clamp-1">{quiz.title}</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">{quiz.questionIds?.length || 0} سؤال · {(quiz as any).mockExam?.enabled ? 'محاكي' : quiz.quizKind === 'drill' ? 'تدريب' : 'اختبار'}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
