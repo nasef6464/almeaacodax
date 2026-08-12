@@ -796,6 +796,7 @@ const Dashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [notifToast, setNotifToast] = useState<{ title: string; body: string } | null>(null);
+    const [weeklyReportState, setWeeklyReportState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
     const { user } = useStore();
     const location = useLocation();
     const isParentDashboard = user.role === Role.PARENT;
@@ -854,7 +855,46 @@ const Dashboard: React.FC = () => {
     const renderContent = () => {
         if (isParentDashboard) {
             switch(activeTab) {
-                case 'overview': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
+                case 'overview': return (
+                    <div className="space-y-4">
+                        <ParentDashboardOverview setActiveTab={setActiveTab} />
+                        {/* ── زر التقرير الأسبوعي ─────────────────── */}
+                        <div className="mx-auto max-w-sm">
+                            <button
+                                onClick={async () => {
+                                    if (weeklyReportState === 'sending') return;
+                                    setWeeklyReportState('sending');
+                                    try {
+                                        const r = await api.requestParentWeeklyReport();
+                                        const msg = (r as any).message === 'no_linked_students'
+                                            ? 'لا يوجد طلاب مرتبطون بحسابك بعد.'
+                                            : (r as any).message === 'no_results_this_week'
+                                                ? 'لا توجد نتائج لهذا الأسبوع حتى الآن.'
+                                                : `✅ تم إرسال التقرير الأسبوعي لـ ${(r as any).studentsReported || 0} طالب.`;
+                                        setNotifToast({ title: '📋 التقرير الأسبوعي', body: msg });
+                                        setWeeklyReportState('done');
+                                        setTimeout(() => setWeeklyReportState('idle'), 5000);
+                                    } catch {
+                                        setNotifToast({ title: '❌ خطأ', body: 'تعذر إرسال التقرير. تحقق من اتصالك وحاول مجدداً.' });
+                                        setWeeklyReportState('error');
+                                        setTimeout(() => setWeeklyReportState('idle'), 4000);
+                                    }
+                                }}
+                                disabled={weeklyReportState === 'sending'}
+                                className="w-full flex items-center justify-center gap-2 rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-3 text-sm font-black text-indigo-800 hover:bg-indigo-100 disabled:opacity-60 transition-all shadow-sm"
+                            >
+                                {weeklyReportState === 'sending' ? (
+                                    <><span className="animate-spin inline-block">⏳</span> جارٍ الإرسال...</>
+                                ) : weeklyReportState === 'done' ? (
+                                    <>✅ تم الإرسال بنجاح!</>
+                                ) : (
+                                    <>📋 طلب التقرير الأسبوعي لأبنائي</>
+                                )}
+                            </button>
+                            <p className="text-center text-[11px] text-gray-400 mt-1.5 font-bold">يُرسَل إشعار بملخص نتائج الأسبوع وأبرز المهارات</p>
+                        </div>
+                    </div>
+                );
                 case 'parent-results': return <ParentResultsTab />;
                 case 'parent-skills': return <ParentSkillsTab />;
                 case 'parent-followup': return <ParentDashboardOverview setActiveTab={setActiveTab} />;

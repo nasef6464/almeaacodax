@@ -518,3 +518,90 @@ notificationRouter.post("/admin/test-delivery", requireAuth, requireRole(["admin
     return next(error);
   }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/notifications/parent-weekly-report
+// يُرسل تقريراً أسبوعياً لولي الأمر بنتائج أبنائه (7 أيام الأخيرة)
+// ─────────────────────────────────────────────────────────────────────────────
+notificationRouter.post(
+  "/parent-weekly-report",
+  requireAuth,
+  async (req, res, next) => {
+    try {
+      const parentId = String((req as any).user?.id || (req as any).user?._id || "");
+      if (!parentId) return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+
+      // جلب الطلاب المرتبطين بولي الأمر
+      const parentUser = await UserModel.findOne({ $or: [{ _id: parentId }, { id: parentId }] })
+        .select("linkedStudentIds childrenIds name")
+        .lean() as any;
+
+      const linkedIds: string[] = [
+        ...(parentUser?.linkedStudentIds || []),
+        ...(parentUser?.childrenIds || []),
+      ];
+
+      if (!linkedIds.length) {
+        return res.status(StatusCodes.OK).json({ ok: true, message: "no_linked_students", sent: 0 });
+      }
+
+      // جلب نتائج 7 أيام الأخيرة
+      const since = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const { QuizResultModel } = await import("../models/QuizResult.js");
+      const userFilter = { $or: linkedIds.flatMap(id => [{ userId: id }, { studentId: id }]) };
+      const dateFilter = { $or: [{ createdAt: { $gte: new Date(since) } }, { date: { $gte: new Date(since) } }] };
+      const results = await QuizResultModel.find({ $and: [userFilter, dateFilter] })
+        .select("userId studentId quizTitle score skillsAnalysis date createdAt").lean() as any[];
+
+      if (!results.length) {
+        return res.status(StatusCodes.OK).json({ ok: true, message: "no_results_this_week", sent: 0 });
+      }
+
+      // بناء ملخص لكل طالب
+      const studentMap = new Map<string, { name?: string; scores: number[]; weakSkills: string[] }>();
+      for (const r of results) {
+        const sid = String(r.userId || r.studentId || "");
+        if (!sid) continue;
+        if (!studentMap.has(sid)) studentMap.set(sid, { scores: [], weakSkills: [] });
+        const entry = studentMap.get(sid)!;
+        entry.scores.push(Number(r.score || 0));
+        (r.skillsAnalysis || []).filter((s: any) => Number(s.mastery || 0) < 70).slice(0, 2).forEach((s: any) => {
+          if (s.skill && !entry.weakSkills.includes(s.skill)) entry.weakSkills.push(s.skill);
+        });
+      }
+
+      // تحديث الأسماء
+      const studentUsers = await UserModel.find({
+        $or: Array.from(studentMap.keys()).map(id => ({ $or: [{ _id: id }, { id }] })).flat(),
+      }).select("_id id name").lean() as any[];
+
+      for (const su of studentUsers) {
+        const sid = String(su.id || su._id);
+        if (studentMap.has(sid)) studentMap.get(sid)!.name = su.name || "الابن/الابنة";
+      }
+
+      // بناء رسالة الإشعار
+      const summaries = Array.from(studentMap.entries()).map(([, v]) => {
+        const avg = v.scores.length ? Math.round(v.scores.reduce((a, b) => a + b, 0) / v.scores.length) : 0;
+        const emoji = avg >= 80 ? "🌟" : avg >= 60 ? "📈" : "📌";
+        const weakPart = v.weakSkills.length ? ` · يحتاج تعزيز: ${v.weakSkills.slice(0,2).join("، ")}` : "";
+        return `${emoji} ${v.name || "الابن"}: متوسط ${avg}%${weakPart}`;
+      });
+
+      const title = "📋 تقريرك الأسبوعي عن أداء أبنائك";
+      const body = `هذا الأسبوع — ${summaries.join(" | ")} · استمر بالمتابعة!`;
+
+      await createNotificationDeliveries({
+        title,
+        body: body.slice(0, 500),
+        channels: ["in_app"],
+        userIds: [parentId],
+        createdBy: "system_weekly_report",
+      });
+
+      return res.json({ ok: true, sent: 1, studentsReported: studentMap.size });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);

@@ -1497,7 +1497,61 @@ export const QuizPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
+              {/* ── Section Breakdown (محاكيات فقط) ───────────────────────────── */}
+              {(quiz.mockExam?.enabled && sectionResults && sectionResults.length > 0) && (
+                <div className="mt-6 text-right space-y-3">
+                  <h3 className="text-base font-black text-gray-800 flex items-center gap-2 justify-center">
+                    <span className="text-indigo-500">📊</span> تحليل الأقسام التفصيلي
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {sectionResults.map((sec) => {
+                      const pct = sec.score;
+                      const color = pct >= 80 ? 'emerald' : pct >= 60 ? 'amber' : 'rose';
+                      const colorMap = { emerald: { bar:'bg-emerald-500', badge:'bg-emerald-50 text-emerald-700 border-emerald-100', label:'أداء ممتاز' }, amber: { bar:'bg-amber-400', badge:'bg-amber-50 text-amber-700 border-amber-100', label:'يحتاج مراجعة' }, rose: { bar:'bg-rose-500', badge:'bg-rose-50 text-rose-700 border-rose-100', label:'مراجعة عاجلة' } } as const;
+                      const m = colorMap[color];
+                      return (
+                        <div key={sec.sectionId} className="rounded-xl border border-gray-100 bg-gray-50/50 p-3.5 text-right">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className={`text-[11px] font-black px-2 py-0.5 rounded-full border ${m.badge}`}>{m.label}</span>
+                            <span className="font-black text-sm text-gray-900">{sec.sectionName}</span>
+                          </div>
+                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
+                            <div className={`h-full ${m.bar} rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
+                          </div>
+                          <div className="flex justify-between text-[11px] text-gray-500 font-bold">
+                            <span className="text-rose-500">{sec.wrong} خطأ</span>
+                            <span className="font-black text-gray-800">{pct}%</span>
+                            <span className="text-emerald-600">{sec.correct}/{sec.total} صح</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Top Weak Skills ───────────────────────────────────────────── */}
+              {(() => {
+                const weak = [...skillsAnalysis].filter(s => s.status === 'weak' || s.status === 'average').sort((a,b) => a.mastery - b.mastery).slice(0, 4);
+                if (!weak.length) return null;
+                return (
+                  <div className="mt-5 text-right space-y-2">
+                    <h3 className="text-base font-black text-gray-800 flex items-center gap-2 justify-center">
+                      <span>🎯</span> المهارات التي تحتاج تحسين
+                    </h3>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {weak.map((s, i) => (
+                        <span key={i} className={`inline-flex items-center gap-1 rounded-xl border px-3 py-1.5 text-xs font-bold ${s.status === 'weak' ? 'bg-rose-50 border-rose-100 text-rose-700' : 'bg-amber-50 border-amber-100 text-amber-700'}`}>
+                          {s.skill}
+                          <span className="font-black opacity-70">{s.mastery}%</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
                 <button onClick={() => navigate('/')} className="w-full sm:w-auto px-6 py-2 border border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 transition-colors">
                   العودة للرئيسية
                 </button>

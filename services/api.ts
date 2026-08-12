@@ -1006,6 +1006,11 @@ export const api = {
       body: payload,
       token,
     }),
+  requestParentWeeklyReport: (token?: string | null) =>
+    request<{ ok: boolean; sent: number; studentsReported: number; message?: string }>(
+      "/notifications/parent-weekly-report",
+      { method: "POST", body: {}, token },
+    ),
   processPendingNotifications: (payload?: { limit?: number }, token?: string | null) =>
     request<unknown>("/notifications/admin/process-pending", {
       method: "POST",
