@@ -51,7 +51,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     setLoadingQuestions(true);
     setLoadError("");
 
-    const params: Record<string, string | number> = { pathId, limit: 200, page: 1 };
+    const params: Record<string, string | number> = { pathId, limit: 300, page: 1 };
     if (subjectId) params.subject = subjectId;
 
     api.getQuestions(params as any)
@@ -76,6 +76,35 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
     return () => fetchRef.current?.abort();
   }, [pathId, subjectId]);
+
+  // ── جلب إضافي عند تحديد قسم (sectionId) — يضمن ظهور كل أسئلة القسم حتى لو تجاوزت الـ300 ──
+  useEffect(() => {
+    if (!pathId || !selectedSectionId) return;
+
+    const params: Record<string, string | number> = { pathId, sectionId: selectedSectionId, limit: 300, page: 1 };
+    if (subjectId) params.subject = subjectId;
+
+    api.getQuestions(params as any)
+      .then((res: any) => {
+        const list: Question[] = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.questions)
+            ? res.questions
+            : Array.isArray(res?.data)
+              ? res.data
+              : [];
+        if (list.length === 0) return;
+        setApiQuestions((prev) => {
+          const map = new Map<string, Question>();
+          prev.forEach((q) => map.set(q.id, q));
+          list.forEach((q) => map.set(q.id, q));
+          return Array.from(map.values());
+        });
+      })
+      .catch(() => { /* silent — main fetch already handles errors */ });
+  }, [pathId, subjectId, selectedSectionId]);
+
+
 
   // ── بناء خريطة API + Store لضمان الأسئلة المختارة مسبقاً تظهر دائماً ─────
   const storeQuestions = useStore((s) => s.questions);
@@ -173,7 +202,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     setApiQuestions([]);
     setLoadingQuestions(true);
     setLoadError("");
-    const params: Record<string, string | number> = { pathId, limit: 200, page: 1 };
+    const params: Record<string, string | number> = { pathId, limit: 300, page: 1 };
     if (subjectId) params.subject = subjectId;
     api.getQuestions(params as any)
       .then((res: any) => {

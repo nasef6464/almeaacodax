@@ -109,7 +109,11 @@ const hasPlacementDrift = (quiz: Quiz) => {
 const getQuizReadinessMeta = (quiz: Quiz, questions: Question[]) => {
   const issues: string[] = [];
   const measuredSkillIds = getMeasuredSkillIds(quiz, questions);
-  const questionCount = quiz.questionIds?.length || 0;
+  const isMock = quiz.quizKind === 'mock' || (quiz as any).mockExam?.enabled === true;
+  // For mocks: count questions from all sections
+  const questionCount = isMock
+    ? ((quiz as any).mockExam?.sections || []).reduce((sum: number, s: any) => sum + (s.questionIds?.length || 0), 0)
+    : (quiz.questionIds?.length || 0);
   const isVisible = quiz.showOnPlatform !== false;
   const isApproved = !quiz.approvalStatus || quiz.approvalStatus === 'approved';
   const isDirected = (quiz.targetGroupIds || []).length > 0 || (quiz.targetUserIds || []).length > 0 || (quiz.access.allowedGroupIds || []).length > 0;
@@ -117,7 +121,10 @@ const getQuizReadinessMeta = (quiz: Quiz, questions: Question[]) => {
   if (!quiz.pathId) issues.push('لم يتم تحديد المسار');
   if (!quiz.subjectId) issues.push('لم يتم تحديد المادة');
   if (questionCount === 0) issues.push('لا توجد أسئلة داخل الاختبار');
-  if (measuredSkillIds.length === 0) issues.push('لا توجد مهارات مقاسة من الأسئلة');
+  if (isMock && ((quiz as any).mockExam?.sections || []).some((s: any) => (s.questionIds?.length || 0) === 0)) {
+    issues.push('يوجد قسم فارغ في المحاكي');
+  }
+  if (measuredSkillIds.length === 0 && !isMock) issues.push('لا توجد مهارات مقاسة من الأسئلة');
   if ((quiz.mode || 'regular') === 'central' && !isDirected) issues.push('الاختبار الموجّه يحتاج مجموعة أو طلابًا محددين');
   if (isVisible && (!quiz.isPublished || !isApproved)) issues.push('ظاهر للمنصة قبل اكتمال الاعتماد والنشر');
 
@@ -146,6 +153,7 @@ const getQuizReadinessMeta = (quiz: Quiz, questions: Question[]) => {
     icon: 'warn' as const,
   };
 };
+
 
 export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filterType }) => {
   const {
@@ -409,9 +417,17 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         : 'هذا هو المصدر الرئيسي لكل التدريبات والاختبارات. من هنا تحدد مكان ظهور كل اختبار للطالب.';
 
   const quizzesWithoutQuestions = useMemo(
-    () => globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && (quiz.questionIds || []).length === 0).length,
+    () => globalQuizzes.filter((quiz) => {
+      if (!isMaterialQuizCandidate(quiz)) return false;
+      const isMock = quiz.quizKind === 'mock' || (quiz as any).mockExam?.enabled === true;
+      const count = isMock
+        ? ((quiz as any).mockExam?.sections || []).reduce((s: number, sec: any) => s + (sec.questionIds?.length || 0), 0)
+        : (quiz.questionIds || []).length;
+      return count === 0;
+    }).length,
     [globalQuizzes],
   );
+
 
   const quizzesWithoutMeasuredSkills = useMemo(
     () =>
@@ -1154,7 +1170,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>
+                      <span className="text-sm text-gray-600">
+                        {isTrueMockExam(quiz)
+                          ? ((quiz as any).mockExam?.sections || []).reduce((s: number, sec: any) => s + (sec.questionIds?.length || 0), 0)
+                          : (quiz.questionIds?.length || 0)} سؤال
+                      </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs font-bold">
@@ -1163,7 +1183,21 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2 max-w-xs">
-                        {measuredSkills.length > 0 ? (
+                        {isTrueMockExam(quiz) ? (
+                          // For mock exams: show section names from mockExam.sections
+                          ((quiz as any).mockExam?.sections || []).slice(0, 3).length > 0 ? (
+                            <>
+                              {((quiz as any).mockExam?.sections || []).slice(0, 3).map((sec: any) => (
+                                <span key={sec.id} className="px-2 py-1 rounded-full text-xs font-bold bg-violet-50 text-violet-700">
+                                  {sec.title}
+                                </span>
+                              ))}
+                              {((quiz as any).mockExam?.sections || []).length > 3 && <span className="text-xs text-gray-500">+{((quiz as any).mockExam?.sections || []).length - 3}</span>}
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-400">لا توجد أقسام بعد</span>
+                          )
+                        ) : measuredSkills.length > 0 ? (
                           <>
                             {measuredSections.slice(0, 1).map((sectionName) => (
                               <span key={`${quiz.id}-${sectionName}`} className="px-2 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700">
@@ -1447,11 +1481,19 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {(measuredSectionNames(previewQuiz) || []).slice(0, 4).map((sectionName) => (
-                    <span key={sectionName} className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                      {sectionName}
-                    </span>
-                  ))}
+                  {/* For mock exams, show the actual mock sections; for others show skill-based sections */}
+                  {previewQuiz.quizKind === 'mock'
+                    ? (previewQuiz.mockExam?.sections || []).slice(0, 4).map((sec) => (
+                        <span key={sec.id} className="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">
+                          {sec.title} <span className="opacity-60">({sec.questionIds?.length || 0})</span>
+                        </span>
+                      ))
+                    : (measuredSectionNames(previewQuiz) || []).slice(0, 4).map((sectionName) => (
+                        <span key={sectionName} className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                          {sectionName}
+                        </span>
+                      ))
+                  }
                 </div>
               </div>
 
@@ -1672,7 +1714,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                         <tr key={quiz.id} className="hover:bg-gray-50 transition-colors">
                           <td className="px-5 py-4">
                             <div className="font-bold text-gray-900 text-sm">{quiz.title}</div>
-                            <div className="text-[11px] text-gray-400">{quiz.questionIds?.length || 0} سؤال</div>
+                            <div className="text-[11px] text-gray-400">
+                              {(quiz as any).mockExam?.enabled
+                                ? ((quiz as any).mockExam?.sections?.reduce((s: number, sec: any) => s + (sec.questionIds?.length || 0), 0) || 0)
+                                : (quiz.questionIds?.length || 0)} سؤال
+                            </div>
                           </td>
                           <td className="px-5 py-4">
                             <span className={`text-[11px] font-black px-2 py-1 rounded-full ${
@@ -1749,7 +1795,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                       <SendHorizontal size={14} className="shrink-0 mt-0.5 text-gray-300 group-hover:text-indigo-500 transition-colors"/>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm line-clamp-1">{quiz.title}</p>
-                        <p className="text-[11px] text-gray-400 mt-0.5">{quiz.questionIds?.length || 0} سؤال · {(quiz as any).mockExam?.enabled ? 'محاكي' : quiz.quizKind === 'drill' ? 'تدريب' : 'اختبار'}</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          {(quiz as any).mockExam?.enabled
+                            ? ((quiz as any).mockExam?.sections?.reduce((s: number, sec: any) => s + (sec.questionIds?.length || 0), 0) || 0)
+                            : (quiz.questionIds?.length || 0)} سؤال · {(quiz as any).mockExam?.enabled ? 'محاكي' : quiz.quizKind === 'drill' ? 'تدريب' : 'اختبار'}
+                        </p>
                       </div>
                     </div>
                   </button>

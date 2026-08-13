@@ -478,6 +478,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                   </div>
                   {mockSections[activeSectionIdx] && (
                     <SmartQuestionSelector
+                      key={mockSections[activeSectionIdx].id}
                       pathId={pathId}
                       subjectId={mockSections[activeSectionIdx].subjectId || subjectId}
                       selectedIds={mockSections[activeSectionIdx].questionIds}
@@ -485,6 +486,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                       maxQuestions={80}
                     />
                   )}
+
                   {/* تحذير: أقسام فارغة */}
                   {mockSections.some((s) => s.questionIds.length === 0) && (
                     <div className="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
