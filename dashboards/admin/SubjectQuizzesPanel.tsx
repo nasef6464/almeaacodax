@@ -21,7 +21,7 @@ import { useStore } from "../../store/useStore";
 import { Quiz, Question } from "../../types";
 import { UnifiedQuizBuilder } from "./UnifiedQuizBuilder";
 import { UnifiedQuestionBuilder } from "./builders/UnifiedQuestionBuilder";
-import { isMaterialQuizCandidate } from "../../utils/mockExam";
+import { isMaterialQuizCandidate, isTrueMockExam } from "../../utils/mockExam";
 
 type PanelKind = "drill" | "test";
 
@@ -37,7 +37,9 @@ const kindColor = (kind: PanelKind) =>
     ? { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-100", pill: "bg-emerald-100 text-emerald-700", btn: "bg-emerald-600 hover:bg-emerald-700" }
     : { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-100", pill: "bg-indigo-100 text-indigo-700", btn: "bg-indigo-600 hover:bg-indigo-700" };
 
+// إصلاح #3: استبعاد المحاكيات الحقيقية من لوحة التدريبات/الاختبارات العادية
 const quizMatchesKind = (quiz: Quiz, kind: PanelKind): boolean => {
+  if (isTrueMockExam(quiz)) return false;
   if (quiz.quizKind) return quiz.quizKind === kind;
   if (kind === "drill") return quiz.placement === "training" || quiz.showInTraining === true;
   return quiz.placement === "mock" || quiz.type === "quiz" || !quiz.placement;
@@ -167,7 +169,8 @@ const QuizCard: React.FC<{
 };
 
 export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjectId, kind }) => {
-  const { quizzes: allQuizzes, questions, skills, updateQuiz, deleteQuiz, subjects } = useStore();
+  // إصلاح #1: استدعاء addQuestion و user من useStore
+  const { user, quizzes: allQuizzes, questions, skills, updateQuiz, deleteQuiz, subjects, addQuestion } = useStore();
   const subject = useMemo(() => subjects.find((s) => s.id === subjectId), [subjects, subjectId]);
   const pathId = subject?.pathId || "";
 
@@ -176,6 +179,8 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
   const [showBuilder, setShowBuilder] = useState(false);
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
   const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
+  // إصلاح #1: حالة لعرض خطأ إضافة السؤال دون إغلاق النافذة
+  const [questionSaveError, setQuestionSaveError] = useState<string | null>(null);
 
   const subjectQuizzes = useMemo(
     () => allQuizzes.filter((q) => isMaterialQuizCandidate(q) && q.subjectId === subjectId && quizMatchesKind(q, kind)),
@@ -209,6 +214,25 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
   const subjectSkills = useMemo(() => skills.filter((s) => s.subjectId === subjectId), [skills, subjectId]);
   const c = kindColor(kind);
 
+  // إصلاح #1 (حرجة): كان onSave={() => setShowQuestionBuilder(false)} يُغلق النافذة دون حفظ.
+  // الآن يستدعي addQuestion → api → قاعدة البيانات ويعرض خطأ واضح عند الفشل.
+  const handleQuestionSave = async (savedQuestion: Partial<Question>) => {
+    setQuestionSaveError(null);
+    try {
+      await addQuestion({
+        ...savedQuestion,
+        ownerType: savedQuestion.ownerType || (user?.role === "teacher" ? "teacher" : "platform"),
+        ownerId: savedQuestion.ownerId || user?.id || "",
+        createdBy: savedQuestion.createdBy || user?.id || "",
+        approvalStatus: savedQuestion.approvalStatus || (user?.role === "admin" ? "approved" : "pending_review"),
+      } as Question);
+      setShowQuestionBuilder(false);
+    } catch (error) {
+      // النافذة تبقى مفتوحة — المستخدم يرى الخطأ ولا يفقد بياناته
+      setQuestionSaveError(error instanceof Error ? error.message : "تعذر حفظ السؤال. تحقق من الاتصال وحاول مجدداً.");
+    }
+  };
+
   return (
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -223,7 +247,10 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => setShowQuestionBuilder(true)} className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 hover:bg-amber-100 transition">
+          <button
+            onClick={() => { setQuestionSaveError(null); setShowQuestionBuilder(true); }}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 hover:bg-amber-100 transition"
+          >
             <FileText size={14} /> إضافة سؤال
           </button>
           <button onClick={() => { setEditingQuizId(null); setShowBuilder(true); }} className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-black text-white transition ${c.btn}`}>
@@ -306,7 +333,18 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
               <button onClick={() => setShowQuestionBuilder(false)} className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 text-lg leading-none">✕</button>
             </div>
             <div className="p-6">
-              <UnifiedQuestionBuilder initialQuestion={{ pathId, subject: subjectId }} subjectId={subjectId} onSave={() => setShowQuestionBuilder(false)} onCancel={() => setShowQuestionBuilder(false)} />
+              {/* إصلاح #1: رسالة خطأ واضحة — النافذة لا تُغلق عند الفشل */}
+              {questionSaveError && (
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+                  ⚠️ {questionSaveError}
+                </div>
+              )}
+              <UnifiedQuestionBuilder
+                initialQuestion={{ pathId, subject: subjectId }}
+                subjectId={subjectId}
+                onSave={handleQuestionSave}
+                onCancel={() => setShowQuestionBuilder(false)}
+              />
             </div>
           </div>
         </div>
