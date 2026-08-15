@@ -145,10 +145,14 @@ export const SupervisorTestsManager: React.FC = () => {
   }, [quizzesWithStats, tabFilter]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
-  const handleSaveReassign = (quizId: string) => {
-    updateQuiz(quizId, { targetGroupIds: reassignGroupIds });
-    setReassignQuizId(null);
-    setReassignGroupIds([]);
+  const handleSaveReassign = async (quizId: string) => {
+    try {
+      await updateQuiz(quizId, { targetGroupIds: reassignGroupIds });
+      setReassignQuizId(null);
+      setReassignGroupIds([]);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'تعذر حفظ التكليف، حاول مجدداً');
+    }
   };
 
   const handleRemindStudents = async (quizWithStats: (typeof quizzesWithStats)[0]) => {
