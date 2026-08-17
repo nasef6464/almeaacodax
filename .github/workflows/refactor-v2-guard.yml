@@ -83,6 +83,9 @@ jobs:
       - name: Immutable architecture contract gate
         run: node tools/refactor/architecture-gate.mjs
 
+      - name: Progressive module boundary gate
+        run: node tools/refactor/module-boundary-gate.mjs
+
       - name: Route loading contract
         run: npm run smoke:route-loading
 
