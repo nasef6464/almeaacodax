@@ -1,13 +1,44 @@
 import { Role } from '../../../types';
-import type { PackageContentType } from '../../../types';
+import type {
+    AccessCode,
+    AnnouncementAd,
+    B2BPackage,
+    Group,
+    Lesson,
+    LibraryItem,
+    PackageContentType,
+    StudyPlan,
+    Topic,
+} from '../../../types';
 
 /**
- * Compatibility contracts for the SchoolsManager sub-panels.
+ * Stable contracts for the SchoolsManager feature and its sub-panels.
  *
- * These live outside SchoolsManager.tsx so child panels never import their
- * parent component. That keeps the component dependency graph acyclic while
- * the large manager is decomposed incrementally.
+ * Keeping these outside SchoolsManager.tsx avoids child -> parent imports and
+ * gives future hooks/services a single dependency-neutral contract surface.
  */
+export type AdminUserPayload = {
+    id?: string;
+    _id?: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    role: Role;
+    points?: number;
+    badges?: string[];
+    isActive?: boolean;
+    schoolId?: string | null;
+    groupIds?: string[];
+    linkedStudentIds?: string[];
+    managedPathIds?: string[];
+    managedSubjectIds?: string[];
+    subscription?: {
+        plan?: 'free' | 'premium';
+        purchasedCourses?: string[];
+        purchasedPackages?: string[];
+    };
+};
+
 export type ImportRow = {
     name: string;
     email: string;
@@ -24,6 +55,8 @@ export type ImportSummary = {
 export type ImportResponse = {
     summary: ImportSummary;
     credentials: Array<{ name: string; email: string; password: string; className?: string }>;
+    users?: AdminUserPayload[];
+    groups?: Group[];
 };
 
 export type RelationImportRow = {
@@ -55,6 +88,80 @@ export type RelationCredential = {
     email: string;
     password: string;
     linkedTo: string;
+};
+
+export type RelationResponse = {
+    summary: RelationImportSummary;
+    credentials: RelationCredential[];
+    users?: AdminUserPayload[];
+    groups?: Group[];
+};
+
+export type SchoolReport = {
+    school: {
+        id: string;
+        name: string;
+    };
+    metrics: {
+        totalStudents: number;
+        activeStudents: number;
+        totalClasses: number;
+        activePackages: number;
+        activeCodes: number;
+        quizAttempts: number;
+        averageScore: number;
+    };
+    classSummaries: Array<{
+        id: string;
+        name: string;
+        studentCount: number;
+        supervisorCount: number;
+        quizAttempts: number;
+        averageScore: number;
+    }>;
+    weakestSkills: Array<{
+        skillId?: string;
+        skill: string;
+        subjectId?: string;
+        sectionId?: string;
+        attempts: number;
+        mastery: number;
+    }>;
+};
+
+export type AccessCodesPagination = {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+};
+
+export type AccessCodesListResponse = {
+    data?: Array<{
+        id?: string;
+        _id?: string;
+        code?: string;
+        schoolId?: string;
+        packageId?: string;
+        maxUses?: number;
+        currentUses?: number;
+        expiresAt?: number;
+        createdAt?: number;
+    }>;
+    pagination?: Partial<AccessCodesPagination>;
+};
+
+export type ContentBootstrapPayload = {
+    topics?: Topic[];
+    lessons?: Lesson[];
+    libraryItems?: LibraryItem[];
+    groups?: Group[];
+    b2bPackages?: B2BPackage[];
+    accessCodes?: AccessCode[];
+    announcementAds?: AnnouncementAd[];
+    studyPlans?: StudyPlan[];
 };
 
 export const PACKAGE_CONTENT_OPTIONS: Array<{ value: PackageContentType; label: string }> = [
