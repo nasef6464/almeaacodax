@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-17T20:29:38.049Z",
-  "sourceGitHead": "f30aefdae47bedfc81d7ab9621d2ee0d44d95638",
+  "generatedAt": "2026-08-17T21:08:20.317Z",
+  "sourceGitHead": "c48bd1052586a9ab3270697711badf98a68026fa",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -437,6 +437,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/contracts.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/contracts.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/EditNameModal.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/EditNameModal.tsx",
       "domain": "schools",
@@ -773,6 +779,30 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "target": "apps/api/src/app/bootstrap/bootstrapServer.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/registerGracefulShutdown.ts",
+      "target": "apps/api/src/app/bootstrap/registerGracefulShutdown.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/reportStartupFailure.ts",
+      "target": "apps/api/src/app/bootstrap/reportStartupFailure.ts",
+      "domain": "reports",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runStartupMaintenance.ts",
+      "target": "apps/api/src/app/bootstrap/runStartupMaintenance.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/config/db.ts",
       "target": "apps/api/src/infrastructure/config/db.ts",
       "domain": "infrastructure",
@@ -1094,6 +1124,30 @@
       "source": "server/src/models/User.ts",
       "target": "apps/api/src/modules/users/infrastructure/persistence/User.ts",
       "domain": "users",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/auth/domain/auth-user.ts",
+      "target": "apps/api/src/modules/auth/domain/auth-user.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/notifications/domain/notification.types.ts",
+      "target": "apps/api/src/modules/notifications/domain/notification.types.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/notifications/http/openNotificationSseStream.ts",
+      "target": "apps/api/src/modules/notifications/http/openNotificationSseStream.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "target": "apps/api/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "domain": "schools",
       "confidence": "review-required"
     },
     {

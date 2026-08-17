@@ -1,26 +1,26 @@
 # Current Repository Architecture Audit
 
-Generated from commit `f30aefdae47bedfc81d7ab9621d2ee0d44d95638` using the TypeScript AST for imports and route extraction.
+Generated from commit `c48bd1052586a9ab3270697711badf98a68026fa` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 713 |
-| Source files (including scripts/tooling) | 437 |
-| Runtime source files | 289 |
-| Source lines | 142,858 |
-| Runtime source lines | 122,988 |
+| Tracked files | 726 |
+| Source files (including scripts/tooling) | 447 |
+| Runtime source files | 298 |
+| Source lines | 143,256 |
+| Runtime source lines | 123,155 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |
-| Runtime relative import edges | 1020 |
-| Unresolved runtime relative imports | 1 |
+| Runtime relative import edges | 1032 |
+| Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 2 |
-| Runtime dependency cycles | 2 |
-| Cross-domain runtime import edges | 750 |
+| Runtime dependency cycles | 0 |
+| Cross-domain runtime import edges | 757 |
 | Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 279 |
+| Candidate migration-map entries | 288 |
 
 ## Largest runtime source hotspots
 

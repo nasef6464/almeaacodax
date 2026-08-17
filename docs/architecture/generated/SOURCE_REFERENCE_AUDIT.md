@@ -2,15 +2,357 @@
 
 | Metric | Value |
 |---|---:|
-| Scripts/tool files scanned | 148 |
-| Scripts coupled to current frontend source paths | 73 |
-| Coupled source-path string references | 600 |
+| Scripts/tool files scanned | 149 |
+| Scripts coupled to current frontend source paths | 74 |
+| Coupled source-path string references | 602 |
+| Distinct coupled source targets | 110 |
 | Relative `new URL(..., import.meta.url)` targets checked | 222 |
 | Missing relative URL targets | 25 |
 
 ## Why this matters
 
 Many existing smoke/audit scripts validate source text directly. Runtime source cannot be moved safely until these path-coupled checks are either updated atomically or made path-independent. This audit makes that hidden refactor cost visible before any file move.
+
+## Most coupled source targets
+
+| Target | References | Scripts |
+|---|---:|---:|
+| `App.tsx` | 71 | 14 |
+| `services/api.ts` | 65 | 30 |
+| `pages/Reports.tsx` | 32 | 7 |
+| `components/LearningSection.tsx` | 25 | 14 |
+| `pages/GenericPathPage.tsx` | 19 | 9 |
+| `types.ts` | 18 | 16 |
+| `dashboards/admin/AdminDashboard.tsx` | 18 | 12 |
+| `dashboards/admin/HomepageManager.tsx` | 18 | 7 |
+| `store/useStore.ts` | 16 | 13 |
+| `dashboards/admin/QuestionBankManager.tsx` | 15 | 5 |
+| `dashboards/admin/QuizzesManager.tsx` | 12 | 6 |
+| `components/CourseOverview.tsx` | 12 | 5 |
+| `pages/Landing.tsx` | 12 | 5 |
+| `components/CustomVideoPlayer.tsx` | 11 | 4 |
+| `dashboards/admin/SchoolsManager.tsx` | 10 | 8 |
+| `pages/QuizPage.tsx` | 9 | 8 |
+| `contexts/AuthContext.tsx` | 9 | 5 |
+| `components/Header.tsx` | 8 | 8 |
+| `dashboards/admin/AdvancedCourseBuilder.tsx` | 8 | 6 |
+| `pages/CourseView.tsx` | 8 | 6 |
+| `pages/Results.tsx` | 8 | 5 |
+| `components/CoursePlayer.tsx` | 7 | 7 |
+| `pages/Dashboard.tsx` | 7 | 7 |
+| `components/PaymentModal.tsx` | 7 | 6 |
+| `pages/SubjectLearningPage.tsx` | 7 | 6 |
+| `index.tsx` | 7 | 4 |
+| `components/MainLayout.tsx` | 7 | 2 |
+| `dashboards/admin/UsersManager.tsx` | 6 | 5 |
+| `dashboards/admin/FinancialManager.tsx` | 5 | 5 |
+| `components/CourseLanding.tsx` | 5 | 4 |
+| `import { EmptyState } from '../components/ui/EmptyState'` | 5 | 2 |
+| `pages/StaticInfoPage.tsx` | 5 | 1 |
+| `dashboards/admin/PathsManager.tsx` | 4 | 4 |
+| `dashboards/admin/SchoolPortalManager.tsx` | 4 | 4 |
+| `services/adapter.ts` | 4 | 4 |
+| `dashboards/admin/LibraryManager.tsx` | 3 | 3 |
+| `dashboards/admin/MockExamManager.tsx` | 3 | 3 |
+| `dashboards/admin/PlatformIntegrationsManager.tsx` | 3 | 3 |
+| `dashboards/admin/QuizBuilder.tsx` | 3 | 3 |
+| `pages/Quizzes.tsx` | 3 | 3 |
+
+## High-impact target -> script index
+
+### `App.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 39 reference(s)
+- `scripts/smoke-seo-contract.mjs` — 9 reference(s)
+- `scripts/smoke-public-open-items-contract.mjs` — 7 reference(s)
+- `scripts/smoke-arabic-mojibake-guard.mjs` — 3 reference(s)
+- `tools/refactor/repository-audit.mjs` — 3 reference(s)
+- `scripts/smoke-real-usage-readiness-contract.mjs` — 2 reference(s)
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-auth-frontend-contract.mjs` — 1 reference(s)
+- `scripts/smoke-barcode-public-tests-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100q-operational-admin-runtime-contract.mjs` — 1 reference(s)
+- `scripts/smoke-my-quizzes-contract.mjs` — 1 reference(s)
+- `scripts/smoke-production-audit-contract.mjs` — 1 reference(s)
+- `scripts/smoke-route-loading-contract.mjs` — 1 reference(s)
+- `scripts/smoke-runtime-source-contract.mjs` — 1 reference(s)
+
+### `services/api.ts`
+
+- `scripts/smoke-performance-contract.mjs` — 22 reference(s)
+- `scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs` — 5 reference(s)
+- `scripts/smoke-batch100o-admin-crud-course-linkage-contract.mjs` — 4 reference(s)
+- `scripts/smoke-real-usage-readiness-contract.mjs` — 4 reference(s)
+- `scripts/smoke-homepage-hero-contract.mjs` — 3 reference(s)
+- `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs` — 2 reference(s)
+- `scripts/smoke-frontend-phase5-contract.mjs` — 2 reference(s)
+- `scripts/smoke-ai-config-bridge-contract.mjs` — 1 reference(s)
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-api-phase4-contract.mjs` — 1 reference(s)
+- `scripts/smoke-auth-account-contract.mjs` — 1 reference(s)
+- `scripts/smoke-auth-cookie-contract.mjs` — 1 reference(s)
+- `scripts/smoke-auth-frontend-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100d-admin-course-flow.mjs` — 1 reference(s)
+- `scripts/smoke-batch100f-relationship-audit-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100q-operational-admin-runtime-contract.mjs` — 1 reference(s)
+- `scripts/smoke-csrf-contract.mjs` — 1 reference(s)
+- `scripts/smoke-dashboards-phase11-contract.mjs` — 1 reference(s)
+- `scripts/smoke-direct-unlock-cleanup-contract.mjs` — 1 reference(s)
+- `scripts/smoke-integrations-runtime-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-package-contract.mjs` — 1 reference(s)
+- `scripts/smoke-platform-fonts-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-client-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-reports-role-contract.mjs` — 1 reference(s)
+- `scripts/smoke-school-management-contract.mjs` — 1 reference(s)
+- `scripts/smoke-school-portal-command-center-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-learning-progress-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-session-booking-contract.mjs` — 1 reference(s)
+- `tools/refactor/repository-audit.mjs` — 1 reference(s)
+
+### `pages/Reports.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 24 reference(s)
+- `scripts/smoke-arabic-mojibake-guard.mjs` — 3 reference(s)
+- `scripts/smoke-dashboards-phase11-contract.mjs` — 1 reference(s)
+- `scripts/smoke-global-student-journey-contract.mjs` — 1 reference(s)
+- `scripts/smoke-reports-role-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-path-scope-contract.mjs` — 1 reference(s)
+- `scripts/smoke-xlsx-safety-contract.mjs` — 1 reference(s)
+
+### `components/LearningSection.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 8 reference(s)
+- `scripts/smoke-batch100o-admin-crud-course-linkage-contract.mjs` — 4 reference(s)
+- `scripts/smoke-foundation-course-details-contract.mjs` — 2 reference(s)
+- `scripts/smoke-batch100d-admin-course-flow.mjs` — 1 reference(s)
+- `scripts/smoke-course-file-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-learning-placement-admin-contract.mjs` — 1 reference(s)
+- `scripts/smoke-library-support-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-course-split-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-path-navigation-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-package-contract.mjs` — 1 reference(s)
+- `scripts/smoke-production-audit-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-real-usage-readiness-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-learning-progress-contract.mjs` — 1 reference(s)
+
+### `pages/GenericPathPage.tsx`
+
+- `scripts/smoke-real-usage-readiness-contract.mjs` — 10 reference(s)
+- `scripts/smoke-performance-contract.mjs` — 2 reference(s)
+- `scripts/smoke-learning-placement-admin-contract.mjs` — 1 reference(s)
+- `scripts/smoke-mock-exam-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-course-split-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-path-navigation-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-package-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-route-loading-contract.mjs` — 1 reference(s)
+
+### `types.ts`
+
+- `scripts/smoke-homepage-hero-contract.mjs` — 2 reference(s)
+- `tools/refactor/repository-audit.mjs` — 2 reference(s)
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-builder-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-file-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-header-navigation-contract.mjs` — 1 reference(s)
+- `scripts/smoke-library-support-contract.mjs` — 1 reference(s)
+- `scripts/smoke-mock-exam-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-revenue-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-package-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-provider-readiness-contract.mjs` — 1 reference(s)
+- `scripts/smoke-platform-fonts-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-video-questions-contract.mjs` — 1 reference(s)
+
+### `dashboards/admin/AdminDashboard.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 5 reference(s)
+- `scripts/smoke-arabic-mojibake-guard.mjs` — 2 reference(s)
+- `scripts/smoke-homepage-hero-contract.mjs` — 2 reference(s)
+- `scripts/fix-mojibake.mjs` — 1 reference(s)
+- `scripts/smoke-admin-memberships-ai-closure-contract.mjs` — 1 reference(s)
+- `scripts/smoke-admin-tabs-contract.mjs` — 1 reference(s)
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100n-admin-tab-e2e-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs` — 1 reference(s)
+- `scripts/smoke-global-student-journey-contract.mjs` — 1 reference(s)
+- `scripts/smoke-platform-fonts-contract.mjs` — 1 reference(s)
+- `scripts/smoke-school-portal-command-center-contract.mjs` — 1 reference(s)
+
+### `dashboards/admin/HomepageManager.tsx`
+
+- `scripts/smoke-homepage-hero-contract.mjs` — 12 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100l-homepage-color-picker-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100m-homepage-live-preview-contract.mjs` — 1 reference(s)
+- `scripts/smoke-header-navigation-contract.mjs` — 1 reference(s)
+
+### `store/useStore.ts`
+
+- `scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs` — 3 reference(s)
+- `scripts/smoke-performance-contract.mjs` — 2 reference(s)
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100f-relationship-audit-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100q-operational-admin-runtime-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs` — 1 reference(s)
+- `scripts/smoke-direct-unlock-cleanup-contract.mjs` — 1 reference(s)
+- `scripts/smoke-library-support-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-client-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-runtime-source-contract.mjs` — 1 reference(s)
+- `scripts/smoke-school-management-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-learning-progress-contract.mjs` — 1 reference(s)
+- `tools/refactor/repository-audit.mjs` — 1 reference(s)
+
+### `dashboards/admin/QuestionBankManager.tsx`
+
+- `scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs` — 11 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-performance-contract.mjs` — 1 reference(s)
+- `scripts/smoke-question-html-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-xlsx-safety-contract.mjs` — 1 reference(s)
+
+### `dashboards/admin/QuizzesManager.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 6 reference(s)
+- `scripts/smoke-foundation-course-details-contract.mjs` — 2 reference(s)
+- `scripts/smoke-exam-question-source-contract.mjs` — 1 reference(s)
+- `scripts/smoke-learning-placement-admin-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-xlsx-safety-contract.mjs` — 1 reference(s)
+
+### `components/CourseOverview.tsx`
+
+- `scripts/smoke-foundation-course-details-contract.mjs` — 8 reference(s)
+- `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-file-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-quiz-context-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-path-scope-contract.mjs` — 1 reference(s)
+
+### `pages/Landing.tsx`
+
+- `scripts/smoke-homepage-hero-contract.mjs` — 8 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100l-homepage-color-picker-contract.mjs` — 1 reference(s)
+- `scripts/smoke-global-student-journey-contract.mjs` — 1 reference(s)
+
+### `components/CustomVideoPlayer.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 8 reference(s)
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-question-html-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-video-questions-contract.mjs` — 1 reference(s)
+
+### `dashboards/admin/SchoolsManager.tsx`
+
+- `scripts/smoke-arabic-mojibake-guard.mjs` — 2 reference(s)
+- `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs` — 2 reference(s)
+- `scripts/smoke-batch100f-relationship-audit-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-revenue-contract.mjs` — 1 reference(s)
+- `scripts/smoke-performance-contract.mjs` — 1 reference(s)
+- `scripts/smoke-school-management-contract.mjs` — 1 reference(s)
+- `scripts/smoke-xlsx-safety-contract.mjs` — 1 reference(s)
+- `tools/refactor/module-boundary-gate.mjs` — 1 reference(s)
+
+### `pages/QuizPage.tsx`
+
+- `scripts/smoke-public-open-items-contract.mjs` — 2 reference(s)
+- `scripts/smoke-batch100q-operational-admin-runtime-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-quiz-context-contract.mjs` — 1 reference(s)
+- `scripts/smoke-mock-exam-contract.mjs` — 1 reference(s)
+- `scripts/smoke-question-html-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-answer-exposure-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-client-security-contract.mjs` — 1 reference(s)
+
+### `contexts/AuthContext.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 5 reference(s)
+- `scripts/smoke-auth-cookie-contract.mjs` — 1 reference(s)
+- `scripts/smoke-frontend-phase5-contract.mjs` — 1 reference(s)
+- `scripts/smoke-homepage-hero-contract.mjs` — 1 reference(s)
+- `scripts/smoke-school-portal-command-center-contract.mjs` — 1 reference(s)
+
+### `components/Header.tsx`
+
+- `scripts/smoke-announcement-ads-contract.mjs` — 1 reference(s)
+- `scripts/smoke-auth-frontend-contract.mjs` — 1 reference(s)
+- `scripts/smoke-auth-login-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs` — 1 reference(s)
+- `scripts/smoke-header-navigation-contract.mjs` — 1 reference(s)
+- `scripts/smoke-mock-exam-contract.mjs` — 1 reference(s)
+- `scripts/smoke-my-quizzes-contract.mjs` — 1 reference(s)
+- `scripts/smoke-route-loading-contract.mjs` — 1 reference(s)
+
+### `dashboards/admin/AdvancedCourseBuilder.tsx`
+
+- `scripts/smoke-batch100o-admin-crud-course-linkage-contract.mjs` — 3 reference(s)
+- `scripts/smoke-batch100d-admin-course-flow.mjs` — 1 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-builder-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-file-access-contract.mjs` — 1 reference(s)
+
+### `pages/CourseView.tsx`
+
+- `scripts/smoke-arabic-mojibake-guard.mjs` — 3 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-file-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-path-navigation-contract.mjs` — 1 reference(s)
+- `scripts/smoke-real-usage-readiness-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-path-scope-contract.mjs` — 1 reference(s)
+
+### `pages/Results.tsx`
+
+- `scripts/smoke-performance-contract.mjs` — 4 reference(s)
+- `scripts/smoke-question-html-security-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-answer-exposure-contract.mjs` — 1 reference(s)
+- `scripts/smoke-results-contract.mjs` — 1 reference(s)
+- `scripts/smoke-saher-skill-scope.mjs` — 1 reference(s)
+
+### `components/CoursePlayer.tsx`
+
+- `scripts/smoke-batch100d-admin-course-flow.mjs` — 1 reference(s)
+- `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs` — 1 reference(s)
+- `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-file-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-course-quiz-context-contract.mjs` — 1 reference(s)
+- `scripts/smoke-performance-contract.mjs` — 1 reference(s)
+- `scripts/smoke-video-questions-contract.mjs` — 1 reference(s)
+
+### `pages/Dashboard.tsx`
+
+- `scripts/smoke-dashboards-phase11-contract.mjs` — 1 reference(s)
+- `scripts/smoke-foundation-course-details-contract.mjs` — 1 reference(s)
+- `scripts/smoke-global-student-journey-contract.mjs` — 1 reference(s)
+- `scripts/smoke-my-quizzes-contract.mjs` — 1 reference(s)
+- `scripts/smoke-reports-role-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-path-scope-contract.mjs` — 1 reference(s)
+- `scripts/smoke-student-session-booking-contract.mjs` — 1 reference(s)
+
+### `components/PaymentModal.tsx`
+
+- `scripts/smoke-foundation-course-details-contract.mjs` — 2 reference(s)
+- `scripts/smoke-global-student-journey-contract.mjs` — 1 reference(s)
+- `scripts/smoke-package-course-split-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-package-contract.mjs` — 1 reference(s)
+- `scripts/smoke-payment-provider-readiness-contract.mjs` — 1 reference(s)
+- `scripts/smoke-real-usage-readiness-contract.mjs` — 1 reference(s)
+
+### `pages/SubjectLearningPage.tsx`
+
+- `scripts/smoke-foundation-course-details-contract.mjs` — 2 reference(s)
+- `scripts/smoke-course-visibility-contract.mjs` — 1 reference(s)
+- `scripts/smoke-global-student-journey-contract.mjs` — 1 reference(s)
+- `scripts/smoke-library-support-contract.mjs` — 1 reference(s)
+- `scripts/smoke-quiz-access-contract.mjs` — 1 reference(s)
+- `scripts/smoke-video-questions-contract.mjs` — 1 reference(s)
 
 ## Coupled scripts
 
@@ -86,6 +428,7 @@ Many existing smoke/audit scripts validate source text directly. Runtime source 
 - `scripts/smoke-supervisor-dashboard-contract.mjs` — 1 reference(s)
 - `scripts/smoke-video-questions-contract.mjs` — 6 reference(s)
 - `scripts/smoke-xlsx-safety-contract.mjs` — 9 reference(s)
+- `tools/refactor/module-boundary-gate.mjs` — 2 reference(s)
 - `tools/refactor/repository-audit.mjs` — 15 reference(s)
 
 ## Missing relative targets
