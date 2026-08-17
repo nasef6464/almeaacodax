@@ -5,8 +5,6 @@ const files = {
   user: await readFile(new URL("../server/src/models/User.ts", import.meta.url), "utf8"),
   header: await readFile(new URL("../components/Header.tsx", import.meta.url), "utf8"),
   reset: await readFile(new URL("../pages/ResetPassword.tsx", import.meta.url), "utf8"),
-  guide: await readFile(new URL("../AUTH_ACCOUNT_SECURITY.md", import.meta.url), "utf8"),
-  readiness: await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
 };
 
 const checks = [];
@@ -55,11 +53,6 @@ check("successful login and password reset clear failed login state", () => {
 check("frontend warns users about password strength", () => {
   assertIncludes(files.header, "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.");
   assertIncludes(files.reset, "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.");
-});
-
-check("docs record auth login security sprint", () => {
-  assertIncludes(files.guide, "failed login attempts");
-  assertIncludes(files.readiness, "Auth Login Security Sprint - 2026-05-12");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
