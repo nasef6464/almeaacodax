@@ -1,0 +1,120 @@
+name: Refactor V2 Schools Contract Extraction
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - '.github/workflows/refactor-v2-schools-contract-extraction.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Apply exact SchoolsManager contract extraction
+        shell: python
+        run: |
+          from pathlib import Path
+
+          file = Path('dashboards/admin/SchoolsManager.tsx')
+          source = file.read_text(encoding='utf-8')
+
+          panel_import = "import { SchoolRelationsPanel } from './SchoolsManager/SchoolRelationsPanel';"
+          extra_imports = """import { SchoolRelationsPanel } from './SchoolsManager/SchoolRelationsPanel';
+          import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
+          import type {
+              AccessCodesListResponse,
+              AccessCodesPagination,
+              AdminUserPayload,
+              ContentBootstrapPayload,
+              ImportResponse,
+              ImportRow,
+              ImportSummary,
+              RelationCredential,
+              RelationImportRow,
+              RelationImportSummary,
+              RelationResponse,
+              SchoolReport,
+          } from './SchoolsManager/contracts';
+          import {
+              buildStoreGroup,
+              buildStoreUser,
+              generateTemporaryPassword,
+              loadSchoolAdminUsers,
+              mergeUsersById,
+          } from './SchoolsManager/dataAdapters';
+
+          export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
+          export type {
+              ImportResponse,
+              ImportRow,
+              ImportSummary,
+              RelationCredential,
+              RelationImportRow,
+              RelationImportSummary,
+          } from './SchoolsManager/contracts';"""
+
+          if "from './SchoolsManager/dataAdapters';" not in source:
+              if source.count(panel_import) != 1:
+                  raise SystemExit('SchoolRelationsPanel import anchor changed')
+              source = source.replace(panel_import, extra_imports, 1)
+
+          type_start = source.find('export type ImportRow = {')
+          normalize_start = source.find('const normalizeHeader = (value: string) =>')
+          if type_start >= 0:
+              if normalize_start < 0 or normalize_start <= type_start:
+                  raise SystemExit('SchoolsManager type/helper boundaries changed')
+              source = source[:type_start] + source[normalize_start:]
+
+          options_start = source.find("export const PACKAGE_CONTENT_OPTIONS: Array<{ value: PackageContentType; label: string }> = [")
+          component_start = source.find('export const SchoolsManager: React.FC = () => {')
+          if options_start >= 0:
+              if component_start < 0 or component_start <= options_start:
+                  raise SystemExit('PACKAGE_CONTENT_OPTIONS boundaries changed')
+              source = source[:options_start] + source[component_start:]
+
+          required = [
+              "from './SchoolsManager/contracts';",
+              "from './SchoolsManager/dataAdapters';",
+              'export const SchoolsManager: React.FC = () => {',
+              'const normalizeHeader = (value: string) =>',
+          ]
+          for marker in required:
+              if marker not in source:
+                  raise SystemExit(f'Missing post-patch marker: {marker}')
+
+          forbidden = [
+              'export type ImportRow = {',
+              'const buildStoreUser = (user: AdminUserPayload): User => ({',
+              'const loadSchoolAdminUsers = async (): Promise<User[]> => {',
+              'const generateTemporaryPassword = () => {',
+              "export const PACKAGE_CONTENT_OPTIONS: Array<{ value: PackageContentType; label: string }> = [",
+          ]
+          for marker in forbidden:
+              if marker in source:
+                  raise SystemExit(f'Legacy declaration still present: {marker}')
+
+          file.write_text(source, encoding='utf-8')
+
+      - name: Commit extraction
+        shell: bash
+        run: |
+          if git diff --quiet -- dashboards/admin/SchoolsManager.tsx; then
+            echo "SchoolsManager contracts are already extracted."
+            exit 0
+          fi
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx
+          git commit -m "refactor(schools): consume extracted contracts and data adapters"
+          git push origin HEAD:refactor/repository-v2-safe
