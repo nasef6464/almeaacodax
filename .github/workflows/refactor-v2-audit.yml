@@ -37,7 +37,7 @@ jobs:
       - name: Commit generated architecture evidence
         shell: bash
         run: |
-          if git diff --quiet -- docs/architecture/generated; then
+          if [ -z "$(git status --porcelain -- docs/architecture/generated)" ]; then
             echo "Generated audit is unchanged."
             exit 0
           fi
