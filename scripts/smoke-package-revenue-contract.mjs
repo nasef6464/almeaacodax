@@ -5,7 +5,10 @@ const root = process.cwd();
 const typeSource = fs.readFileSync(path.join(root, 'types.ts'), 'utf8');
 const packageModelSource = fs.readFileSync(path.join(root, 'server/src/models/B2BPackage.ts'), 'utf8');
 const contentRoutesSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8');
-const schoolsManagerSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
+const schoolsManagerSource = [
+  fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8'),
+  fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'), 'utf8'),
+].join('\n');
 const financialManagerSource = fs.readFileSync(path.join(root, 'dashboards/admin/FinancialManager.tsx'), 'utf8');
 
 const checks = [];
