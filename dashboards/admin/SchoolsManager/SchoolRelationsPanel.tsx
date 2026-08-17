@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, UserPlus, Download, Upload } from 'lucide-react';
 import { User, Group } from '../../../types';
-import { RelationImportRow, RelationImportSummary, RelationCredential } from '../SchoolsManager';
+import { RelationImportRow, RelationImportSummary, RelationCredential } from './contracts';
 
 interface SchoolRelationsPanelProps {
     schoolLevelSupervisors: User[];

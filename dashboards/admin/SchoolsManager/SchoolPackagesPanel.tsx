@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, Download, Plus, Trash2, Key } from 'lucide-react';
 import { AccessCode, B2BPackage, CategoryPath, CategorySubject, Course, Group, PackageContentType, User } from '../../../types';
-import { PACKAGE_CONTENT_OPTIONS } from '../SchoolsManager';
+import { PACKAGE_CONTENT_OPTIONS } from './contracts';
 
 interface SchoolPackagesPanelProps {
     selectedSchool: Group;
