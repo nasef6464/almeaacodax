@@ -1,31 +1,6 @@
-import { createServer } from "http";
-import { createApp } from "./app.js";
-import { registerGracefulShutdown } from "./app/bootstrap/registerGracefulShutdown.js";
-import { runStartupMaintenance } from "./app/bootstrap/runStartupMaintenance.js";
-import { connectToDatabase } from "./config/db.js";
-import { env } from "./config/env.js";
-import { startNotificationWorkers } from "./queues/notificationQueue.js";
-import { createSocketServer } from "./sockets/index.js";
-import { startWeeklyParentReportSchedule } from "./modules/reports/application/startWeeklyParentReportSchedule.js";
+import { bootstrapServer } from "./app/bootstrap/bootstrapServer.js";
 
-async function bootstrap() {
-  await connectToDatabase();
-
-  const app = createApp();
-  const server = createServer(app);
-  createSocketServer(server);
-  startNotificationWorkers();
-  registerGracefulShutdown(server);
-
-  server.listen(env.PORT, () => {
-    console.log(`API server listening on http://localhost:${env.PORT}`);
-  });
-
-  startWeeklyParentReportSchedule();
-  void runStartupMaintenance();
-}
-
-bootstrap().catch((error) => {
+bootstrapServer().catch((error) => {
   console.error("Failed to start API server", error);
 
   // Help non-technical operators quickly diagnose common Atlas/Render issues.
