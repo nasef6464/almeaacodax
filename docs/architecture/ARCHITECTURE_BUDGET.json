@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "description": "Progressive Refactor V2 quality floor. Tighten these values when architecture improves; never loosen them just to make CI pass.",
+  "maxUnresolvedRuntimeRelativeImports": 0,
+  "maxDependencyCycles": 0,
+  "maxHotspots400Lines": 83
+}
