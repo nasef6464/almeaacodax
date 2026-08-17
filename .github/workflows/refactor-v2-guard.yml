@@ -86,6 +86,21 @@ jobs:
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
 
+      - name: School management contract
+        run: node scripts/smoke-school-management-contract.mjs
+
+      - name: School XLSX safety contract
+        run: node scripts/smoke-xlsx-safety-contract.mjs
+
+      - name: School package revenue contract
+        run: node scripts/smoke-package-revenue-contract.mjs
+
+      - name: School admin relationship contract
+        run: node scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs
+
+      - name: School relationship audit contract
+        run: node scripts/smoke-batch100f-relationship-audit-contract.mjs
+
       - name: Route loading contract
         run: npm run smoke:route-loading
 
