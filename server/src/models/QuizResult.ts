@@ -34,6 +34,28 @@ const quizResultSchema = new Schema(
     // تحليل الأداء لكل قسم (للمحاكيات فقط — اختياري للتوافق مع السجلات القديمة)
     sectionResults: { type: [quizSectionResultSchema], default: undefined },
     submissionKey:  { type: String, default: undefined, unique: true, sparse: true, index: true },
+    // ── لقطة الاختبار ──────────────────────────────────────────────────────
+    // تُحفظ لقطة مجمدة من بيانات الاختبار الجوهرية وقت التسليم
+    // الغرض: حماية سلامة البيانات إذا عُدِّل الاختبار الأصلي أو حُذف لاحقاً
+    quizSnapshot: {
+      type: new Schema(
+        {
+          title:          { type: String, default: "" },
+          mode:           { type: String, default: "regular" },     // regular | saher | central
+          quizKind:       { type: String, default: "test" },        // drill | test | mock
+          passingScore:   { type: Number, default: 60 },
+          targetGroupIds: { type: [String], default: [] },
+          targetUserIds:  { type: [String], default: [] },
+          dueDate:        { type: String, default: null },
+          pathId:         { type: String, default: "" },
+          subjectId:      { type: String, default: "" },
+          totalQuestions: { type: Number, default: 0 },
+          snapshotAt:     { type: Number, default: () => Date.now() },
+        },
+        { _id: false },
+      ),
+      default: undefined,
+    },
   },
   {
     timestamps: true,

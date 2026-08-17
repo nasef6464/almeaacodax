@@ -329,6 +329,20 @@ export interface QuizSectionResult {
     score: number; // percentage
 }
 
+export interface QuizSnapshot {
+    title: string;
+    mode: 'regular' | 'saher' | 'central';
+    quizKind: 'drill' | 'test' | 'mock';
+    passingScore: number;
+    targetGroupIds: string[];
+    targetUserIds: string[];
+    dueDate?: string | null;
+    pathId: string;
+    subjectId: string;
+    totalQuestions: number;
+    snapshotAt: number;
+}
+
 export interface QuizResult {
     userId?: string;
     quizId: string;
@@ -345,6 +359,7 @@ export interface QuizResult {
     skillsAnalysis: SkillGap[];
     questionReview?: QuizQuestionReview[];
     sectionResults?: QuizSectionResult[]; // تحليل لكل قسم (للمحاكيات فقط)
+    quizSnapshot?: QuizSnapshot;          // لقطة مجمدة من بيانات الاختبار وقت التسليم
 }
 
 export interface QuizHistoryItem {

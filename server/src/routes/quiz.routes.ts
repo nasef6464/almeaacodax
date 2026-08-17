@@ -2666,6 +2666,33 @@ quizRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
+    // ── Security: re-validate group membership from DB for directed quizzes ──
+    // JWT claims (authUser.groupIds) could be stale or spoofed, so we
+    // look up actual group membership directly from GroupModel.
+    const targetGroupIds = uniqueStrings((quiz.targetGroupIds || []).map(String));
+    const targetUserIds  = uniqueStrings((quiz.targetUserIds  || []).map(String));
+    const isDirectedQuiz = targetGroupIds.length > 0 || targetUserIds.length > 0;
+    if (isDirectedQuiz && !isStaffRole(authUser.role)) {
+      const userId = String(authUser.id || authUser._id || "");
+      const isExplicitUser = targetUserIds.includes(userId);
+      if (!isExplicitUser && targetGroupIds.length > 0) {
+        // Verify the student genuinely belongs to at least one targeted group from DB
+        // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
+        const matchingGroup = await GroupModel.findOne({
+          $and: [
+            buildDocumentsByIdsQuery(targetGroupIds),
+            { studentIds: userId },
+          ],
+        }).select("_id").lean();
+        if (!matchingGroup) {
+          return res.status(StatusCodes.FORBIDDEN).json({
+            message: "This quiz is not assigned to you",
+          });
+        }
+      }
+    }
+
+
     if (!(await canSubmitQuiz(quiz, authUser, payload.source))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
@@ -2834,6 +2861,22 @@ quizRouter.post(
           })
         : undefined;
 
+    // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
+    // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً
+    const quizSnapshot = {
+      title:          String(quiz.title || ""),
+      mode:           String((quiz as any).mode || "regular"),
+      quizKind:       String((quiz as any).quizKind || "test"),
+      passingScore,
+      targetGroupIds: uniqueStrings((quiz.targetGroupIds || []).map(String)),
+      targetUserIds:  uniqueStrings((quiz.targetUserIds  || []).map(String)),
+      dueDate:        String((quiz as any).dueDate || "") || null,
+      pathId:         String(quiz.pathId || ""),
+      subjectId:      String(quiz.subjectId || ""),
+      totalQuestions,
+      snapshotAt:     Date.now(),
+    };
+
     let result;
     try {
       result = await QuizResultModel.create({
@@ -2856,6 +2899,7 @@ quizRouter.post(
         // حفظ sectionResults فقط إذا كانت موجودة (للمحاكيات)
         ...(sectionResults ? { sectionResults } : {}),
         submissionKey,
+        quizSnapshot,
       });
     } catch (error: any) {
       if (error?.code === 11000) {
