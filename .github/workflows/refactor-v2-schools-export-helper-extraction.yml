@@ -1,0 +1,87 @@
+name: Refactor V2 Schools Export Helper Extraction
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - '.github/workflows/refactor-v2-schools-export-helper-extraction.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Replace inline export helpers with feature module import
+        shell: python
+        run: |
+          from pathlib import Path
+
+          file = Path('dashboards/admin/SchoolsManager.tsx')
+          source = file.read_text(encoding='utf-8')
+
+          data_import = """import {
+              buildStoreGroup,
+              buildStoreUser,
+              generateTemporaryPassword,
+              loadSchoolAdminUsers,
+              mergeUsersById,
+          } from './SchoolsManager/dataAdapters';"""
+          helper_import = """import {
+              createCsvDownload,
+              createWorkbookDownload,
+              createXlsxDownload,
+              openPrintWindow,
+              renderPrintTable,
+          } from './SchoolsManager/exportHelpers';"""
+
+          if helper_import not in source:
+              if source.count(data_import) != 1:
+                  raise SystemExit('dataAdapters import anchor changed')
+              source = source.replace(data_import, data_import + '\n' + helper_import, 1)
+
+          start_marker = 'const createCsvDownload = (fileName: string, rows: string[][]) => {'
+          end_marker = 'const parseImportRows = (rows: unknown[][]): ImportRow[] => {'
+          start = source.find(start_marker)
+          end = source.find(end_marker)
+          if start >= 0:
+              if end < 0 or end <= start:
+                  raise SystemExit('export helper extraction boundaries changed')
+              source = source[:start] + source[end:]
+
+          for legacy in [
+              'const createCsvDownload = (fileName: string, rows: string[][]) => {',
+              'const createXlsxDownload = async (fileName: string, rows: string[][]) => {',
+              'const createWorkbookDownload = async (',
+              'const renderPrintTable = (headers: string[], rows: Array<Array<string | number>>) => `',
+              'const openPrintWindow = (title: string, bodyHtml: string) => {',
+          ]:
+              if legacy in source:
+                  raise SystemExit(f'Inline helper still present: {legacy}')
+
+          if helper_import not in source or end_marker not in source:
+              raise SystemExit('Post-patch SchoolsManager markers missing')
+
+          file.write_text(source, encoding='utf-8')
+
+      - name: Commit extraction
+        shell: bash
+        run: |
+          if git diff --quiet -- dashboards/admin/SchoolsManager.tsx; then
+            echo "SchoolsManager export helpers are already extracted."
+            exit 0
+          fi
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx
+          git commit -m "refactor(schools): consume extracted export helpers"
+          git push origin HEAD:refactor/repository-v2-safe
