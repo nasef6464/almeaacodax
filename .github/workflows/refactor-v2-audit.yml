@@ -1,0 +1,48 @@
+name: Refactor V2 Repository Audit
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'tools/refactor/repository-audit.mjs'
+      - '.github/workflows/refactor-v2-audit.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-repository-audit
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate current repository audit
+        run: node tools/refactor/repository-audit.mjs
+
+      - name: Commit generated architecture evidence
+        shell: bash
+        run: |
+          if git diff --quiet -- docs/architecture/generated; then
+            echo "Generated audit is unchanged."
+            exit 0
+          fi
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/architecture/generated
+          git commit -m "docs(audit): refresh repository architecture inventory"
+          git push origin HEAD:refactor/repository-v2-safe
