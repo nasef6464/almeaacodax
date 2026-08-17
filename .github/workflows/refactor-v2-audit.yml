@@ -18,7 +18,7 @@ concurrency:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout refactor branch
         uses: actions/checkout@v4
@@ -30,6 +30,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install parser dependencies
+        run: npm ci --ignore-scripts
 
       - name: Generate current repository audit
         run: node tools/refactor/repository-audit.mjs
