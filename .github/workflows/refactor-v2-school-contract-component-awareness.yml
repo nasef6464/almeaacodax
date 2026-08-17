@@ -1,0 +1,55 @@
+name: Refactor V2 School Contract Component Awareness
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - '.github/workflows/refactor-v2-school-contract-component-awareness.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Make school contract aware of extracted package panel
+        shell: python
+        run: |
+          from pathlib import Path
+
+          file = Path('scripts/smoke-school-management-contract.mjs')
+          source = file.read_text(encoding='utf-8')
+          old = '  schools: await read("dashboards/admin/SchoolsManager.tsx"),'
+          new = '''  schools: [
+            await read("dashboards/admin/SchoolsManager.tsx"),
+            await read("dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx"),
+          ].join("\\n"),'''
+
+          if new in source:
+              raise SystemExit(0)
+          if source.count(old) != 1:
+              raise SystemExit(f'Expected exactly one SchoolsManager source registration, found {source.count(old)}')
+
+          file.write_text(source.replace(old, new, 1), encoding='utf-8')
+
+      - name: Commit contract update
+        shell: bash
+        run: |
+          if git diff --quiet -- scripts/smoke-school-management-contract.mjs; then
+            echo "School contract already follows extracted package panel."
+            exit 0
+          fi
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/smoke-school-management-contract.mjs
+          git commit -m "test(schools): follow extracted package panel contract"
+          git push origin HEAD:refactor/repository-v2-safe
