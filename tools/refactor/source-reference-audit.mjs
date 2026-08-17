@@ -87,7 +87,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   summary,
   sourceCoupledScripts: coupled,
-  missingRelativeNewUrlTargets,
+  missingRelativeNewUrlTargets: missingNewUrlTargets,
 };
 
 fs.writeFileSync(path.join(OUT_DIR, 'SOURCE_REFERENCE_AUDIT.json'), `${JSON.stringify(report, null, 2)}\n`);
