@@ -54,6 +54,7 @@ import {
     createCsvDownload,
     createWorkbookDownload,
     createXlsxDownload,
+    escapeHtml,
     openPrintWindow,
     renderPrintTable,
 } from './SchoolsManager/exportHelpers';

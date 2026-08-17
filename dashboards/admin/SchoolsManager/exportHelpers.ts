@@ -39,7 +39,7 @@ export const createWorkbookDownload = async (
     XLSX.writeFile(workbook, fileName);
 };
 
-const escapeHtml = (value: string | number | null | undefined) =>
+export const escapeHtml = (value: string | number | null | undefined) =>
     String(value ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
