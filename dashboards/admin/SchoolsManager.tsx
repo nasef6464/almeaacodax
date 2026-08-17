@@ -163,28 +163,6 @@ const parseImportFile = async (file: File): Promise<ImportRow[]> => {
 
     const delimiter = lines[0].includes('\t') ? '\t' : ',';
     return parseImportRows(lines.map((line) => line.split(delimiter)));
-/*
-    const headers = lines[0].split(delimiter).map(normalizeHeader);
-    const nameIndex = headers.findIndex((header) => ['name', 'fullname', 'studentname', 'الاسم', 'اسمالطالب'].includes(header));
-    const emailIndex = headers.findIndex((header) => ['email', 'mail', 'البريد', 'البريدالالكتروني'].includes(header));
-    const classIndex = headers.findIndex((header) => ['classname', 'class', 'الفصل', 'اسمالفصل'].includes(header));
-    const passwordIndex = headers.findIndex((header) => ['password', 'pass', 'كلمةالمرور', 'passwordhint'].includes(header));
-
-    if (nameIndex === -1 || emailIndex === -1) {
-        throw new Error('الملف يحتاج عمودين أساسيين على الأقل: name و email.');
-    }
-
-    return lines
-        .slice(1)
-        .map((line) => line.split(delimiter))
-        .map((cells) => ({
-            name: (cells[nameIndex] || '').trim(),
-            email: (cells[emailIndex] || '').trim(),
-            className: classIndex >= 0 ? (cells[classIndex] || '').trim() : undefined,
-            password: passwordIndex >= 0 ? (cells[passwordIndex] || '').trim() : undefined,
-        }))
-        .filter((row) => row.name && row.email);
-*/
 };
 
 const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
