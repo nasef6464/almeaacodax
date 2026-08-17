@@ -1,25 +1,28 @@
 # Current Repository Architecture Audit
 
-Generated from commit `c72cd743e1f1feb664843f22d330e46ddfd7fab5`.
+Generated from commit `922b29d5f8cf9f7d694800023a2c7c0142720957` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
 | Tracked files | 704 |
-| Source files | 435 |
-| Source lines | 142,522 |
+| Source files (including scripts/tooling) | 435 |
+| Runtime source files | 289 |
+| Source lines | 142,645 |
+| Runtime source lines | 122,988 |
 | Frontend route literals | 49 |
-| Backend router method entries | 5 |
-| API mount points | 4 |
-| Relative import edges | 623 |
-| Unresolved relative imports | 429 |
-| Dependency cycles | 1 |
-| Cross-domain import edges | 454 |
-| Source hotspots >= 400 lines | 80 |
+| Backend HTTP route entries | 236 |
+| Router mount points | 25 |
+| Runtime relative import edges | 1020 |
+| Unresolved runtime relative imports | 1 |
+| Unresolved non-runtime relative imports | 2 |
+| Runtime dependency cycles | 2 |
+| Cross-domain runtime import edges | 750 |
+| Runtime hotspots >= 400 lines | 83 |
 | Candidate migration-map entries | 279 |
 
-## Largest source hotspots
+## Largest runtime source hotspots
 
 | File | Lines | Bytes | Domain candidate |
 |---|---:|---:|---|
@@ -53,12 +56,18 @@ Generated from commit `c72cd743e1f1feb664843f22d330e46ddfd7fab5`.
 | `pages/Quiz.tsx` | 1428 | 64184 | quizzes |
 | `pages/GenericPathPage.tsx` | 1380 | 80697 | paths |
 | `components/LearningSection.tsx` | 1308 | 80165 | learning |
+| `server/src/scripts/smokeOperationalJourneysApi.ts` | 1270 | 48899 | operations |
+| `dashboards/admin/LessonsManager.tsx` | 1263 | 61158 | learning |
+| `dashboards/admin/PublicBarcodeTestsManager.tsx` | 1250 | 64951 | exams |
+| `pages/SubjectLearningPage.tsx` | 1192 | 65541 | learning |
+| `dashboards/admin/HomepageManager.tsx` | 1166 | 69794 | content |
 
 ## Baseline safety evidence
 
-- `BASELINE_CONTRACT_MANIFEST.json` captures current frontend route literals, backend route entries, API mount points, environment-key usage, and hashes of route sources.
+- `BASELINE_CONTRACT_MANIFEST.json` captures current frontend route literals, backend HTTP route entries, router mount points, environment-key usage, and hashes of route sources.
 - `MIGRATION_MAP_V2_CANDIDATE.json` is deliberately a **candidate** map; ambiguous ownership is marked for review and must not be treated as an automatic move instruction.
-- Unresolved imports and cycles are measured before migration so structural changes cannot silently make the graph worse.
+- Runtime imports are parsed with the TypeScript compiler AST and Node/TypeScript ESM `.js` specifiers are resolved back to tracked TypeScript source files.
+- Cycles and cross-domain edges are measured only on runtime source, so test/audit scripts do not pollute architecture gates.
 
 ## Architectural interpretation
 

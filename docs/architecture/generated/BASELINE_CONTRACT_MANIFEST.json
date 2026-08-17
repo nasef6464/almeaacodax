@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-17T20:18:20.215Z",
-  "gitHead": "c72cd743e1f1feb664843f22d330e46ddfd7fab5",
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-17T20:19:35.931Z",
+  "gitHead": "922b29d5f8cf9f7d694800023a2c7c0142720957",
   "frontendRoutes": [
     "*",
     "/",
@@ -55,47 +55,1572 @@
   ],
   "backendRouteEntries": [
     {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "GET",
+      "path": "/admin/session-bookings",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/session-bookings/:id",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "POST",
+      "path": "/admin/session-bookings/:id/convert",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "GET",
+      "path": "/me",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "POST",
+      "path": "/me",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/admin-assistant",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/chat",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/course-summary",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/generate-mock-exam",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "GET",
+      "path": "/interactions",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/learning-path",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/providers/test",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/question",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "GET",
+      "path": "/readiness",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/remediation-plan",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "GET",
+      "path": "/status",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/study-plan",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/users",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/admin/users",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "DELETE",
+      "path": "/admin/users/:id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/users/:id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/csrf-token",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/email/resend-verification",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/email/verify",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/forgot-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/google/call",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/google/callback",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/google/start",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/login",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/login/national-id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/login/phone-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/logout",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/me",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/me/identity",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/me/preferences",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/me/profile",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/me/purchase",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/me/redeem-access-code",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/parent/link-student",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "DELETE",
+      "path": "/parent/link-student/:studentId",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/parent/linked-students",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/register",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/reset-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/whatsapp/start",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/whatsapp/verify",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/activity",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "POST",
+      "path": "/learning/restore",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/snapshots",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "POST",
+      "path": "/learning/snapshots",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "DELETE",
+      "path": "/learning/snapshots/:id",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/snapshots/:id",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "POST",
+      "path": "/learning/snapshots/:id/restore",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/status",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/certificates.routes.ts",
+      "method": "GET",
+      "path": "/:verificationCode",
+      "receiver": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/certificates.routes.ts",
+      "method": "POST",
+      "path": "/generate",
+      "receiver": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/certificates.routes.ts",
+      "method": "GET",
+      "path": "/mine",
+      "receiver": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/access-code-redemptions",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/access-codes",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/access-codes",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/access-codes/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/access-codes/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/announcement-ads",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/announcement-ads",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/announcement-ads/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/announcement-ads/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/b2b-packages",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/b2b-packages/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/b2b-packages/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/bootstrap",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/bootstrap/minimal",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/groups",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/groups/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/groups/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/homepage-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/homepage-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/lessons",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/lessons/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/lessons/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/library-items",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/library-items/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/library-items/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-font-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/platform-font-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/platform-integrations",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/history",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/platform-integrations/history/:id/restore",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/runtime-audit",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/setup-checklist",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/public-contact-widget",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/schools/:id/import-students",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/schools/:id/relations",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/schools/:id/report",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/study-plans",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/study-plans/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/study-plans/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/study-plans/intervention",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/topics",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/topics/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/topics/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "POST",
+      "path": "/",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "DELETE",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "GET",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "PATCH",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "PUT",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "POST",
+      "path": "/:id/enroll",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "POST",
+      "path": "/:id/join",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "GET",
+      "path": "/:entityType/:entityId",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "POST",
+      "path": "/:entityType/:entityId",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "GET",
+      "path": "/:threadId/replies",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "POST",
+      "path": "/:threadId/replies",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "POST",
+      "path": "/:threadId/resolve",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/live",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/ready",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/scale-ready",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/leaderboard.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "leaderboardRouter"
+    },
+    {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "DELETE",
-      "path": "/clear-test-data"
+      "path": "/clear-test-data",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "POST",
-      "path": "/end"
+      "path": "/end",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "POST",
-      "path": "/progress"
+      "path": "/progress",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "POST",
-      "path": "/start"
+      "path": "/start",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "GET",
-      "path": "/supervisor"
+      "path": "/supervisor",
+      "receiver": "router"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "PATCH",
+      "path": "/:id/read",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/admin/deliveries",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/process-pending",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/send",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/admin/templates",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/templates",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/test-delivery",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/intervention-alert",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/me",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "PATCH",
+      "path": "/me/read-all",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/me/unread-count",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/parent-weekly-report",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/stream",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/student-alert",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/admin-audit-logs",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/audit",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/client-events",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/client-events",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "PATCH",
+      "path": "/client-events/:id/resolve",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/client-events/resolve-all",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/delivery-readiness",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/health",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/integrations-readiness",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/migrate/quiz-kind",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/repair",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/sentry/test-event",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/status",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "GET",
+      "path": "/approvals",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/approvals/:id/approve",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/approvals/:id/reject",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "GET",
+      "path": "/children-progress",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/settings/whatsapp",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/weekly-report/send",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/weekly-report/trigger-all",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/discount-codes",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/discount-codes",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/discount-codes/:code",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/discount-codes/preview",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/initiate",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/requests",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/requests",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/requests/:id",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/requests/:id/review",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/requests/summary",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/settings",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/settings",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/settings/apply-country-preset",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/settings/presets",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/subscribe",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "DELETE",
+      "path": "/subscription",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/subscription",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/webhooks/payment",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/webhooks/tap",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/:slug",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "POST",
+      "path": "/:slug/submit",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/admin",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "POST",
+      "path": "/admin",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/admin/:id/report",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "POST",
+      "path": "/admin/tests/:id/live-control",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/assigned",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/pin/:pinCode",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "DELETE",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "PATCH",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "PUT",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/:id/questions",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/:id/submit",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/analytics/overview",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/integrity-repair",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/integrity-report",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/question-attempts",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/question-attempts",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/questions",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/questions",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "DELETE",
+      "path": "/questions/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "PATCH",
+      "path": "/questions/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/results",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results/latest",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results/scoped",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results/section-analytics/:quizId",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/skill-progress",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/smart-suggest",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quizResults.routes.ts",
+      "method": "GET",
+      "path": "/admin/quiz-results",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/quizResults.routes.ts",
+      "method": "GET",
+      "path": "/quiz-results/:id",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/quizResults.routes.ts",
+      "method": "GET",
+      "path": "/quiz-results/my",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "POST",
+      "path": "/:cardId/answer",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "GET",
+      "path": "/due",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "GET",
+      "path": "/stats",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/search.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "searchRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/manifest.json",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/robots.txt",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/sitemap.xml",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/status",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "GET",
+      "path": "/bootstrap",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/levels",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/levels/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/levels/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/paths",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/paths/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/paths/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/sections",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/sections/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/sections/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/skills",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/skills/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/skills/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/subjects",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/subjects/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/subjects/:id",
+      "receiver": "taxonomyRouter"
     }
   ],
-  "apiMounts": [
+  "routerMounts": [
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api",
-      "router": "csrfGuard"
+      "mounted": "csrfGuard"
     },
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api",
-      "router": "apiRouter"
+      "mounted": "apiRouter"
     },
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api/auth",
-      "router": "express"
+      "mounted": "express.json({ limit: \"100kb\" })"
     },
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/auth",
-      "router": "authRouter"
+      "mounted": "authRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/",
+      "mounted": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/activities",
+      "mounted": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/ai",
+      "mounted": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/auth",
+      "mounted": "authRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/backups",
+      "mounted": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/certificates",
+      "mounted": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/content",
+      "mounted": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/courses",
+      "mounted": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/discussions",
+      "mounted": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/health",
+      "mounted": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/leaderboard",
+      "mounted": "leaderboardRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/notifications",
+      "mounted": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/operations",
+      "mounted": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/parent",
+      "mounted": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/payments",
+      "mounted": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/public-tests",
+      "mounted": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/quizzes",
+      "mounted": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/review",
+      "mounted": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/search",
+      "mounted": "searchRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/seo",
+      "mounted": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/taxonomy",
+      "mounted": "taxonomyRouter"
     }
   ],
   "envKeys": [

@@ -1,19 +1,22 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-17T20:18:20.215Z",
-  "gitHead": "c72cd743e1f1feb664843f22d330e46ddfd7fab5",
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-17T20:19:35.931Z",
+  "gitHead": "922b29d5f8cf9f7d694800023a2c7c0142720957",
   "summary": {
     "trackedFiles": 704,
     "sourceFiles": 435,
-    "sourceLines": 142522,
+    "runtimeSourceFiles": 289,
+    "sourceLines": 142645,
+    "runtimeSourceLines": 122988,
     "frontendRoutes": 49,
-    "backendRouteEntries": 5,
-    "apiMounts": 4,
-    "relativeImportEdges": 623,
-    "unresolvedRelativeImports": 429,
-    "dependencyCycles": 1,
-    "crossDomainImportEdges": 454,
-    "hotspots400Lines": 80,
+    "backendRouteEntries": 236,
+    "routerMounts": 25,
+    "runtimeRelativeImportEdges": 1020,
+    "unresolvedRuntimeRelativeImports": 1,
+    "unresolvedNonRuntimeRelativeImports": 2,
+    "dependencyCycles": 2,
+    "crossDomainImportEdges": 750,
+    "hotspots400Lines": 83,
     "migrationCandidates": 279
   },
   "categoryStats": {
@@ -39,8 +42,8 @@
     },
     "documentation": {
       "files": 180,
-      "bytes": 2231074,
-      "lines": 49584
+      "bytes": 2232174,
+      "lines": 49616
     },
     "public-asset": {
       "files": 4,
@@ -64,85 +67,85 @@
     },
     "tooling": {
       "files": 2,
-      "bytes": 17873,
-      "lines": 394
+      "bytes": 23666,
+      "lines": 517
     }
   },
   "domainStats": {
     "shared": {
-      "files": 171,
-      "lines": 33028,
-      "bytes": 1429057
+      "files": 108,
+      "lines": 25541,
+      "bytes": 1118116
     },
     "notifications": {
-      "files": 15,
-      "lines": 2888,
-      "bytes": 125700
+      "files": 12,
+      "lines": 2641,
+      "bytes": 114077
     },
     "courses": {
-      "files": 26,
-      "lines": 7570,
-      "bytes": 390061
+      "files": 18,
+      "lines": 6966,
+      "bytes": 364015
     },
     "learning": {
-      "files": 24,
-      "lines": 8770,
-      "bytes": 430218
+      "files": 19,
+      "lines": 7716,
+      "bytes": 375317
     },
     "schools": {
-      "files": 32,
-      "lines": 16061,
-      "bytes": 901022
+      "files": 14,
+      "lines": 12107,
+      "bytes": 731944
     },
     "paths": {
-      "files": 9,
-      "lines": 4932,
-      "bytes": 268645
+      "files": 8,
+      "lines": 4836,
+      "bytes": 264821
     },
     "payments": {
-      "files": 21,
-      "lines": 6961,
-      "bytes": 346379
+      "files": 12,
+      "lines": 5939,
+      "bytes": 299211
     },
     "questions": {
-      "files": 21,
-      "lines": 6859,
-      "bytes": 341472
+      "files": 15,
+      "lines": 5784,
+      "bytes": 291264
     },
     "quizzes": {
-      "files": 28,
-      "lines": 14874,
-      "bytes": 700782
+      "files": 20,
+      "lines": 14023,
+      "bytes": 659308
     },
     "exams": {
-      "files": 15,
-      "lines": 6348,
-      "bytes": 312933
+      "files": 11,
+      "lines": 5374,
+      "bytes": 268863
     },
     "auth": {
-      "files": 22,
-      "lines": 4673,
-      "bytes": 199747
+      "files": 16,
+      "lines": 4266,
+      "bytes": 184124
     },
     "reports": {
-      "files": 10,
-      "lines": 7793,
-      "bytes": 447109
+      "files": 6,
+      "lines": 7034,
+      "bytes": 411924
     },
     "ai": {
-      "files": 5,
-      "lines": 2915,
-      "bytes": 128513
+      "files": 3,
+      "lines": 2530,
+      "bytes": 111600
     },
     "operations": {
-      "files": 21,
-      "lines": 11377,
-      "bytes": 495635
+      "files": 16,
+      "lines": 10964,
+      "bytes": 480469
     },
     "content": {
-      "files": 9,
-      "lines": 5334,
-      "bytes": 234045
+      "files": 5,
+      "lines": 5128,
+      "bytes": 223907
     },
     "users": {
       "files": 6,
@@ -720,14 +723,6 @@
       "sha256": "7e0a5a8da9976d980b740c4bf0d2f59c3ae8773ef1edee2140118042e87062c6"
     },
     {
-      "file": "scripts/live-student-learning-deep-audit.mjs",
-      "category": "test-or-ops-script",
-      "domain": "learning",
-      "bytes": 26200,
-      "lines": 503,
-      "sha256": "b449de3b96a3b0c16a1e3d41a841463c6f17474451466ca212a44d3ed1349233"
-    },
-    {
       "file": "pages/Profile.tsx",
       "category": "web-source",
       "domain": "users",
@@ -784,12 +779,44 @@
       "sha256": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd"
     },
     {
-      "file": "scripts/live-school-overview-focus-audit.mjs",
-      "category": "test-or-ops-script",
-      "domain": "schools",
-      "bytes": 25707,
+      "file": "components/QuizGenerator.tsx",
+      "category": "web-source",
+      "domain": "quizzes",
+      "bytes": 24290,
       "lines": 451,
-      "sha256": "59db2036fda1ccaa1e21d8d4b213028ded9c947891f00c0f6456088b1e6ae372"
+      "sha256": "97e92b6c34a824f7a2439e97e9c9cbb12c6a7d36ad13cd56a594b3e83610ccb5"
+    },
+    {
+      "file": "pages/BarcodeTest.tsx",
+      "category": "web-source",
+      "domain": "exams",
+      "bytes": 19827,
+      "lines": 446,
+      "sha256": "1b2837bca7da8e89a2350814a33bb4acc5b3bf37d6be9e2ee9bc2bfda849e435"
+    },
+    {
+      "file": "contexts/AuthContext.tsx",
+      "category": "web-source",
+      "domain": "auth",
+      "bytes": 13671,
+      "lines": 442,
+      "sha256": "ebbe2bb46e95ec72c1d82fefae189241a19a4ada8b8ae49d4e8584210b14d926"
+    },
+    {
+      "file": "dashboards/admin/NotificationsManager.tsx",
+      "category": "web-source",
+      "domain": "notifications",
+      "bytes": 25917,
+      "lines": 440,
+      "sha256": "f2e1a877ef5040a4e0567d51362c6396ea40425a37b24e88c269942161451ce2"
+    },
+    {
+      "file": "dashboards/admin/SmartQuestionSelector.tsx",
+      "category": "web-source",
+      "domain": "questions",
+      "bytes": 23295,
+      "lines": 440,
+      "sha256": "d24e54225bae073e0d186afad817c189c44c26f608deb414c93981e927fc17a3"
     }
   ],
   "frontendRoutes": [
@@ -845,47 +872,1572 @@
   ],
   "backendRouteEntries": [
     {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "GET",
+      "path": "/admin/session-bookings",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/session-bookings/:id",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "POST",
+      "path": "/admin/session-bookings/:id/convert",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "GET",
+      "path": "/me",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/activity.routes.ts",
+      "method": "POST",
+      "path": "/me",
+      "receiver": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/admin-assistant",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/chat",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/course-summary",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/generate-mock-exam",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "GET",
+      "path": "/interactions",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/learning-path",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/providers/test",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/question",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "GET",
+      "path": "/readiness",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/remediation-plan",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "GET",
+      "path": "/status",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/study-plan",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/users",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/admin/users",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "DELETE",
+      "path": "/admin/users/:id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/users/:id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/csrf-token",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/email/resend-verification",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/email/verify",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/forgot-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/google/call",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/google/callback",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/google/start",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/login",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/login/national-id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/login/phone-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/logout",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/me",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/me/identity",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/me/preferences",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/me/profile",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/me/purchase",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/me/redeem-access-code",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/parent/link-student",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "DELETE",
+      "path": "/parent/link-student/:studentId",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/parent/linked-students",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/register",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/reset-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/whatsapp/start",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "POST",
+      "path": "/whatsapp/verify",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/activity",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "POST",
+      "path": "/learning/restore",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/snapshots",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "POST",
+      "path": "/learning/snapshots",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "DELETE",
+      "path": "/learning/snapshots/:id",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/snapshots/:id",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "POST",
+      "path": "/learning/snapshots/:id/restore",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/backup.routes.ts",
+      "method": "GET",
+      "path": "/learning/status",
+      "receiver": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/certificates.routes.ts",
+      "method": "GET",
+      "path": "/:verificationCode",
+      "receiver": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/certificates.routes.ts",
+      "method": "POST",
+      "path": "/generate",
+      "receiver": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/certificates.routes.ts",
+      "method": "GET",
+      "path": "/mine",
+      "receiver": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/access-code-redemptions",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/access-codes",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/access-codes",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/access-codes/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/access-codes/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/announcement-ads",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/announcement-ads",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/announcement-ads/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/announcement-ads/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/b2b-packages",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/b2b-packages/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/b2b-packages/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/bootstrap",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/bootstrap/minimal",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/groups",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/groups/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/groups/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/homepage-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/homepage-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/lessons",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/lessons/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/lessons/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/library-items",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/library-items/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/library-items/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-font-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/platform-font-settings",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/platform-integrations",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/history",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/platform-integrations/history/:id/restore",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/runtime-audit",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/setup-checklist",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/public-contact-widget",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/schools/:id/import-students",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/schools/:id/relations",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/schools/:id/report",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/study-plans",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/study-plans/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/study-plans/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/study-plans/intervention",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "POST",
+      "path": "/topics",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "DELETE",
+      "path": "/topics/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/topics/:id",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "POST",
+      "path": "/",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "DELETE",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "GET",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "PATCH",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "PUT",
+      "path": "/:id",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "POST",
+      "path": "/:id/enroll",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/course.routes.ts",
+      "method": "POST",
+      "path": "/:id/join",
+      "receiver": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "GET",
+      "path": "/:entityType/:entityId",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "POST",
+      "path": "/:entityType/:entityId",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "GET",
+      "path": "/:threadId/replies",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "POST",
+      "path": "/:threadId/replies",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/discussions.routes.ts",
+      "method": "POST",
+      "path": "/:threadId/resolve",
+      "receiver": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/live",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/ready",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
+      "path": "/scale-ready",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/leaderboard.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "leaderboardRouter"
+    },
+    {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "DELETE",
-      "path": "/clear-test-data"
+      "path": "/clear-test-data",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "POST",
-      "path": "/end"
+      "path": "/end",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "POST",
-      "path": "/progress"
+      "path": "/progress",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "POST",
-      "path": "/start"
+      "path": "/start",
+      "receiver": "router"
     },
     {
       "file": "server/src/routes/live-exams.routes.ts",
       "method": "GET",
-      "path": "/supervisor"
+      "path": "/supervisor",
+      "receiver": "router"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "PATCH",
+      "path": "/:id/read",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/admin/deliveries",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/process-pending",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/send",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/admin/templates",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/templates",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/admin/test-delivery",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/intervention-alert",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/me",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "PATCH",
+      "path": "/me/read-all",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/me/unread-count",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/parent-weekly-report",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "GET",
+      "path": "/stream",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/notification.routes.ts",
+      "method": "POST",
+      "path": "/student-alert",
+      "receiver": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/admin-audit-logs",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/audit",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/client-events",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/client-events",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "PATCH",
+      "path": "/client-events/:id/resolve",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/client-events/resolve-all",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/delivery-readiness",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/health",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/integrations-readiness",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/migrate/quiz-kind",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/repair",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "POST",
+      "path": "/sentry/test-event",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/operations.routes.ts",
+      "method": "GET",
+      "path": "/status",
+      "receiver": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "GET",
+      "path": "/approvals",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/approvals/:id/approve",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/approvals/:id/reject",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "GET",
+      "path": "/children-progress",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/settings/whatsapp",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/weekly-report/send",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/parent.routes.ts",
+      "method": "POST",
+      "path": "/weekly-report/trigger-all",
+      "receiver": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/discount-codes",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/discount-codes",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/discount-codes/:code",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/discount-codes/preview",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/initiate",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/requests",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/requests",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/requests/:id",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/requests/:id/review",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/requests/summary",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/settings",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "PATCH",
+      "path": "/settings",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/settings/apply-country-preset",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/settings/presets",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/subscribe",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "DELETE",
+      "path": "/subscription",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "GET",
+      "path": "/subscription",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/webhooks/payment",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/payment.routes.ts",
+      "method": "POST",
+      "path": "/webhooks/tap",
+      "receiver": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/:slug",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "POST",
+      "path": "/:slug/submit",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/admin",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "POST",
+      "path": "/admin",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/admin/:id/report",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "POST",
+      "path": "/admin/tests/:id/live-control",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/assigned",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/publicTests.routes.ts",
+      "method": "GET",
+      "path": "/pin/:pinCode",
+      "receiver": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "DELETE",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "PATCH",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "PUT",
+      "path": "/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/:id/questions",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/:id/submit",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/analytics/overview",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/integrity-repair",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/integrity-report",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/question-attempts",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/question-attempts",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/questions",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/questions",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "DELETE",
+      "path": "/questions/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "PATCH",
+      "path": "/questions/:id",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "POST",
+      "path": "/results",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results/latest",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results/scoped",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/results/section-analytics/:quizId",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/skill-progress",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quiz.routes.ts",
+      "method": "GET",
+      "path": "/smart-suggest",
+      "receiver": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/quizResults.routes.ts",
+      "method": "GET",
+      "path": "/admin/quiz-results",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/quizResults.routes.ts",
+      "method": "GET",
+      "path": "/quiz-results/:id",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/quizResults.routes.ts",
+      "method": "GET",
+      "path": "/quiz-results/my",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "POST",
+      "path": "/:cardId/answer",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "GET",
+      "path": "/due",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "GET",
+      "path": "/stats",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/search.routes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "searchRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/manifest.json",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/robots.txt",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/sitemap.xml",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/seo.routes.ts",
+      "method": "GET",
+      "path": "/status",
+      "receiver": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "GET",
+      "path": "/bootstrap",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/levels",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/levels/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/levels/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/paths",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/paths/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/paths/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/sections",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/sections/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/sections/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/skills",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/skills/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/skills/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "POST",
+      "path": "/subjects",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "DELETE",
+      "path": "/subjects/:id",
+      "receiver": "taxonomyRouter"
+    },
+    {
+      "file": "server/src/routes/taxonomy.routes.ts",
+      "method": "PATCH",
+      "path": "/subjects/:id",
+      "receiver": "taxonomyRouter"
     }
   ],
-  "apiMounts": [
+  "routerMounts": [
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api",
-      "router": "csrfGuard"
+      "mounted": "csrfGuard"
     },
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api",
-      "router": "apiRouter"
+      "mounted": "apiRouter"
     },
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api/auth",
-      "router": "express"
+      "mounted": "express.json({ limit: \"100kb\" })"
     },
     {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/auth",
-      "router": "authRouter"
+      "mounted": "authRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/",
+      "mounted": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/activities",
+      "mounted": "activityRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/ai",
+      "mounted": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/auth",
+      "mounted": "authRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/backups",
+      "mounted": "backupRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/certificates",
+      "mounted": "certificateRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/content",
+      "mounted": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/courses",
+      "mounted": "courseRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/discussions",
+      "mounted": "discussionRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/health",
+      "mounted": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/leaderboard",
+      "mounted": "leaderboardRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/notifications",
+      "mounted": "notificationRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/operations",
+      "mounted": "operationsRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/parent",
+      "mounted": "parentRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/payments",
+      "mounted": "paymentRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/public-tests",
+      "mounted": "publicTestsRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/quizzes",
+      "mounted": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/review",
+      "mounted": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/search",
+      "mounted": "searchRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/seo",
+      "mounted": "seoRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/taxonomy",
+      "mounted": "taxonomyRouter"
     }
   ],
   "envKeys": [
@@ -1088,1720 +2640,18 @@
   ],
   "unresolvedRelativeImports": [
     {
+      "file": "server/src/utils/jwt.ts",
+      "specifier": "../types/express.js"
+    }
+  ],
+  "nonRuntimeUnresolvedRelativeImports": [
+    {
       "file": "scripts/audit-school-integrity.mjs",
       "specifier": "../server/node_modules/mongoose"
     },
     {
       "file": "scripts/cleanup-school-orphans.mjs",
       "specifier": "../server/node_modules/mongoose"
-    },
-    {
-      "file": "scripts/smoke-batch100q-operational-admin-runtime-contract.mjs",
-      "specifier": "./components/PwaInstallBanner"
-    },
-    {
-      "file": "scripts/smoke-homepage-hero-contract.mjs",
-      "specifier": "../../contexts/AuthContext"
-    },
-    {
-      "file": "scripts/smoke-monitoring-contract.mjs",
-      "specifier": "./middleware/requestLogger.js"
-    },
-    {
-      "file": "scripts/smoke-my-quizzes-contract.mjs",
-      "specifier": "./pages/Quizzes"
-    },
-    {
-      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
-      "specifier": "./middleware/mongoSanitize.js"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./CustomVideoPlayer"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./UsersManager"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./QuestionBankManager"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./LessonsManager"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./PaymentModal"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./SkillDetailsModal"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./SimulatedTestExperience"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./FileModal"
-    },
-    {
-      "file": "scripts/smoke-performance-contract.mjs",
-      "specifier": "./ChatWidget"
-    },
-    {
-      "file": "scripts/smoke-route-loading-contract.mjs",
-      "specifier": "./pages/Dashboard"
-    },
-    {
-      "file": "scripts/smoke-route-loading-contract.mjs",
-      "specifier": "./pages/GenericPathPage"
-    },
-    {
-      "file": "scripts/smoke-route-loading-contract.mjs",
-      "specifier": "./pages/Quizzes"
-    },
-    {
-      "file": "scripts/smoke-route-loading-contract.mjs",
-      "specifier": "./pages/MockExams"
-    },
-    {
-      "file": "scripts/smoke-route-loading-contract.mjs",
-      "specifier": "./pages/Courses"
-    },
-    {
-      "file": "scripts/smoke-route-loading-contract.mjs",
-      "specifier": "./dashboards/admin/AdminDashboard"
-    },
-    {
-      "file": "scripts/smoke-sentry-runtime-contract.mjs",
-      "specifier": "./observability/sentry.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./config/env.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./routes/index.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./routes/auth.routes.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./middleware/csrf.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./middleware/errorHandler.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./middleware/mongoSanitize.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./middleware/requestLogger.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./middleware/rateLimiters.js"
-    },
-    {
-      "file": "server/src/app.ts",
-      "specifier": "./observability/sentry.js"
-    },
-    {
-      "file": "server/src/config/db.ts",
-      "specifier": "./env.js"
-    },
-    {
-      "file": "server/src/config/redis.ts",
-      "specifier": "./env.js"
-    },
-    {
-      "file": "server/src/middleware/auth.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/middleware/auth.ts",
-      "specifier": "../utils/jwt.js"
-    },
-    {
-      "file": "server/src/middleware/auth.ts",
-      "specifier": "../utils/authCookie.js"
-    },
-    {
-      "file": "server/src/middleware/auth.ts",
-      "specifier": "../constants/roles.js"
-    },
-    {
-      "file": "server/src/middleware/auth.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/middleware/csrf.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/middleware/errorHandler.ts",
-      "specifier": "../observability/sentry.js"
-    },
-    {
-      "file": "server/src/middleware/rateLimiters.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/middleware/rateLimiters.ts",
-      "specifier": "../config/redis.js"
-    },
-    {
-      "file": "server/src/models/User.ts",
-      "specifier": "../constants/roles.js"
-    },
-    {
-      "file": "server/src/observability/sentry.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/queues/notificationQueue.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/queues/notificationQueue.ts",
-      "specifier": "../config/redis.js"
-    },
-    {
-      "file": "server/src/queues/notificationQueue.ts",
-      "specifier": "../models/NotificationDelivery.js"
-    },
-    {
-      "file": "server/src/queues/notificationQueue.ts",
-      "specifier": "../services/notificationService.js"
-    },
-    {
-      "file": "server/src/routes/activity.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/activity.routes.ts",
-      "specifier": "../models/Activity.js"
-    },
-    {
-      "file": "server/src/routes/activity.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/activity.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/activity.routes.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/AiInteraction.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/PlatformIntegrationSettings.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/SkillProgress.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../services/operationsAudit.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "specifier": "../utils/integrationSecretsCrypto.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../models/AccessCode.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../models/B2BPackage.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../models/PhoneOtp.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../utils/jwt.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../utils/authCookie.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../services/accessGrantService.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../services/adminAuditLog.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../services/notificationService.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../services/notificationProviders.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "specifier": "../middleware/csrf.js"
-    },
-    {
-      "file": "server/src/routes/backup.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/backup.routes.ts",
-      "specifier": "../models/BackupActivity.js"
-    },
-    {
-      "file": "server/src/routes/backup.routes.ts",
-      "specifier": "../models/BackupSnapshot.js"
-    },
-    {
-      "file": "server/src/routes/backup.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/backup.routes.ts",
-      "specifier": "../services/learningBackup.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../models/Certificate.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../services/notificationService.js"
-    },
-    {
-      "file": "server/src/routes/certificates.routes.ts",
-      "specifier": "../queues/notificationQueue.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/B2BPackage.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/AccessCode.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/AccessGrant.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/HomepageSettings.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/PlatformFontSettings.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/PlatformIntegrationSettings.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/PlatformIntegrationHistory.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/StudyPlan.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../models/AnnouncementAd.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../services/visibility.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../config/redis.js"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "specifier": "../utils/integrationSecretsCrypto.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/course.routes.ts",
-      "specifier": "../services/visibility.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../models/DiscussionThread.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../models/DiscussionReply.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/discussions.routes.ts",
-      "specifier": "../models/AccessGrant.js"
-    },
-    {
-      "file": "server/src/routes/health.routes.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/routes/health.routes.ts",
-      "specifier": "../config/redis.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./auth.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./health.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./taxonomy.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./course.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./quiz.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./content.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./payment.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./ai.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./operations.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./backup.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./seo.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./notification.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./quizResults.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./certificates.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./discussions.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./review.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./leaderboard.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./search.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./parent.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./activity.routes.js"
-    },
-    {
-      "file": "server/src/routes/index.ts",
-      "specifier": "./publicTests.routes.js"
-    },
-    {
-      "file": "server/src/routes/leaderboard.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/leaderboard.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/leaderboard.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/leaderboard.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/live-exams.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/live-exams.routes.ts",
-      "specifier": "../models/LiveExamSession.js"
-    },
-    {
-      "file": "server/src/routes/live-exams.routes.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../constants/roles.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../models/NotificationDelivery.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../models/NotificationTemplate.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../queues/notificationQueue.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../services/notificationService.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../services/notificationProviders.js"
-    },
-    {
-      "file": "server/src/routes/notification.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/AiInteraction.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/AdminAuditLog.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/BackupSnapshot.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/ClientEvent.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/SkillProgress.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../services/operationsAudit.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../services/operationsRepair.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../config/redis.js"
-    },
-    {
-      "file": "server/src/routes/operations.routes.ts",
-      "specifier": "../observability/sentry.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../models/PaymentRequest.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../services/notificationService.js"
-    },
-    {
-      "file": "server/src/routes/parent.routes.ts",
-      "specifier": "../queues/notificationQueue.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../models/DiscountCode.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../models/PaymentRequest.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../models/PaymentSettings.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../services/accessGrantService.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../services/adminAuditLog.js"
-    },
-    {
-      "file": "server/src/routes/payment.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../models/PublicBarcodeTest.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../models/PublicBarcodeSubmission.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/routes/publicTests.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/B2BPackage.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/SkillProgress.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/QuestionAttempt.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../models/ReviewCard.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../utils/pagination.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../utils/quizResultSerialization.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../services/visibility.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../services/adminAuditLog.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../services/spacedRepetition.js"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "specifier": "../services/notificationService.js"
-    },
-    {
-      "file": "server/src/routes/quizResults.routes.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/routes/quizResults.routes.ts",
-      "specifier": "../services/weakSkillsAnalysis.js"
-    },
-    {
-      "file": "server/src/routes/quizResults.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/quizResults.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/quizResults.routes.ts",
-      "specifier": "../utils/quizResultSerialization.js"
-    },
-    {
-      "file": "server/src/routes/review.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/review.routes.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/routes/review.routes.ts",
-      "specifier": "../models/ReviewCard.js"
-    },
-    {
-      "file": "server/src/routes/review.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/review.routes.ts",
-      "specifier": "../services/spacedRepetition.js"
-    },
-    {
-      "file": "server/src/routes/search.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/search.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/search.routes.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/routes/search.routes.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/routes/search.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/seo.routes.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/routes/seo.routes.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/routes/seo.routes.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../middleware/auth.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../utils/asyncHandler.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Level.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../services/ensureSkillTaxonomy.js"
-    },
-    {
-      "file": "server/src/routes/taxonomy.routes.ts",
-      "specifier": "../services/visibility.js"
-    },
-    {
-      "file": "server/src/scripts/backfillLearningPlacementsApi.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/HomepageSettings.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Level.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/scripts/backupLearningContent.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/PaymentRequest.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/Activity.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_mega_simulation.ts",
-      "specifier": "../models/AiInteraction.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_simulation.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_simulation.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_simulation.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_supervisor_directed_test.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_supervisor_directed_test.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_supervisor_directed_test.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/e2e_supervisor_directed_test.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/scripts/migrateQuizKind.ts",
-      "specifier": "../config/db.js"
-    },
-    {
-      "file": "server/src/scripts/migrateQuizKind.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/HomepageSettings.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Level.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/scripts/restoreLearningContent.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/scripts/seedAdmin.ts",
-      "specifier": "../config/db.js"
-    },
-    {
-      "file": "server/src/scripts/seedAdmin.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/scripts/seedAdmin.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/scripts/seedCoursesViaApi.ts",
-      "specifier": "../../../services/mockData.js"
-    },
-    {
-      "file": "server/src/scripts/seedDemoUsers.ts",
-      "specifier": "../config/db.js"
-    },
-    {
-      "file": "server/src/scripts/seedDemoUsers.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../config/db.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Level.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/QuizResult.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/Activity.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/B2BPackage.js"
-    },
-    {
-      "file": "server/src/scripts/seedOperationalScenario.ts",
-      "specifier": "../models/AccessCode.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../config/db.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../models/Level.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../services/ensureSkillTaxonomy.js"
-    },
-    {
-      "file": "server/src/scripts/seedPlatformData.ts",
-      "specifier": "../../../services/mockData.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./app.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./config/db.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./config/env.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./config/redis.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./services/ensureAdminAccount.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./services/ensureSkillTaxonomy.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./queues/notificationQueue.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./sockets/index.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./models/User.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./models/QuizResult.js"
-    },
-    {
-      "file": "server/src/server.ts",
-      "specifier": "./services/notificationService.js"
-    },
-    {
-      "file": "server/src/services/accessGrantService.ts",
-      "specifier": "../models/AccessGrant.js"
-    },
-    {
-      "file": "server/src/services/accessGrantService.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/services/adminAuditLog.ts",
-      "specifier": "../models/AdminAuditLog.js"
-    },
-    {
-      "file": "server/src/services/applyPurchaseToUser.ts",
-      "specifier": "./accessGrantService.js"
-    },
-    {
-      "file": "server/src/services/ensureAdminAccount.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/services/ensureAdminAccount.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/services/ensureSkillTaxonomy.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/services/ensureSkillTaxonomy.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/services/ensureSkillTaxonomy.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/AccessCode.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/B2BPackage.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/DiscountCode.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/HomepageSettings.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Level.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/PaymentSettings.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/StudyPlan.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/services/learningBackup.ts",
-      "specifier": "../models/AnnouncementAd.js"
-    },
-    {
-      "file": "server/src/services/notificationProviders.ts",
-      "specifier": "./notificationService.js"
-    },
-    {
-      "file": "server/src/services/notificationService.ts",
-      "specifier": "../constants/roles.js"
-    },
-    {
-      "file": "server/src/services/notificationService.ts",
-      "specifier": "../models/NotificationDelivery.js"
-    },
-    {
-      "file": "server/src/services/notificationService.ts",
-      "specifier": "../models/NotificationTemplate.js"
-    },
-    {
-      "file": "server/src/services/notificationService.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/services/notificationService.ts",
-      "specifier": "./notificationProviders.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/B2BPackage.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Course.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Group.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/HomepageSettings.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/LibraryItem.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/PaymentRequest.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Section.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/services/operationsAudit.ts",
-      "specifier": "../models/User.js"
-    },
-    {
-      "file": "server/src/services/operationsRepair.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/services/operationsRepair.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/services/operationsRepair.ts",
-      "specifier": "../models/Quiz.js"
-    },
-    {
-      "file": "server/src/services/operationsRepair.ts",
-      "specifier": "../models/Subject.js"
-    },
-    {
-      "file": "server/src/services/operationsRepair.ts",
-      "specifier": "../models/Topic.js"
-    },
-    {
-      "file": "server/src/services/visibility.ts",
-      "specifier": "../models/Path.js"
-    },
-    {
-      "file": "server/src/services/weakSkillsAnalysis.ts",
-      "specifier": "../models/Lesson.js"
-    },
-    {
-      "file": "server/src/services/weakSkillsAnalysis.ts",
-      "specifier": "../models/Question.js"
-    },
-    {
-      "file": "server/src/services/weakSkillsAnalysis.ts",
-      "specifier": "../models/Skill.js"
-    },
-    {
-      "file": "server/src/sockets/index.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/sockets/index.ts",
-      "specifier": "../config/redis.js"
-    },
-    {
-      "file": "server/src/types/express.d.ts",
-      "specifier": "../constants/roles.js"
-    },
-    {
-      "file": "server/src/utils/authCookie.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/utils/integrationSecretsCrypto.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/utils/jwt.ts",
-      "specifier": "../config/env.js"
-    },
-    {
-      "file": "server/src/utils/jwt.ts",
-      "specifier": "../types/express.js"
     }
   ],
   "cycles": [
@@ -2810,6 +2660,10 @@
       "dashboards/admin/SchoolsManager/SchoolImportPanel.tsx",
       "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
       "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx"
+    ],
+    [
+      "server/src/services/notificationProviders.ts",
+      "server/src/services/notificationService.ts"
     ]
   ],
   "crossDomainEdges": [
@@ -5358,36 +5212,1110 @@
       "targetDomain": "shared"
     },
     {
-      "source": "scripts/smoke-my-quizzes-contract.mjs",
-      "sourceDomain": "quizzes",
-      "target": "utils/mockExam.ts",
-      "targetDomain": "exams"
+      "source": "server/src/app.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/auth.routes.ts",
+      "targetDomain": "auth"
     },
     {
-      "source": "scripts/smoke-payment-package-contract.mjs",
-      "sourceDomain": "payments",
-      "target": "components/ui/EmptyState.tsx",
+      "source": "server/src/middleware/auth.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
       "targetDomain": "shared"
     },
     {
-      "source": "scripts/smoke-performance-contract.mjs",
+      "source": "server/src/middleware/auth.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/constants/roles.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/middleware/auth.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/middleware/auth.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/utils/jwt.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/models/User.ts",
+      "sourceDomain": "users",
+      "target": "server/src/constants/roles.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/queues/notificationQueue.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/queues/notificationQueue.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/config/redis.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/activity.routes.ts",
       "sourceDomain": "shared",
-      "target": "components/PaymentModal.tsx",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/activity.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/activity.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/AiInteraction.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/PlatformIntegrationSettings.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/SkillProgress.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/services/operationsAudit.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/utils/integrationSecretsCrypto.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/middleware/csrf.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/AccessCode.ts",
       "targetDomain": "payments"
     },
     {
-      "source": "scripts/smoke-performance-contract.mjs",
-      "sourceDomain": "shared",
-      "target": "components/results/ResultDonutChart.tsx",
-      "targetDomain": "reports"
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/B2BPackage.ts",
+      "targetDomain": "payments"
     },
     {
-      "source": "scripts/smoke-reports-role-contract.mjs",
-      "sourceDomain": "reports",
-      "target": "components/StudentNextActionStrip.tsx",
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/PhoneOtp.ts",
       "targetDomain": "shared"
     },
     {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/services/accessGrantService.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/services/adminAuditLog.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/services/notificationProviders.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/services/notificationService.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/utils/jwt.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/backup.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/backup.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/services/learningBackup.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/backup.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/certificates.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/certificates.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/certificates.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/certificates.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/queues/notificationQueue.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/certificates.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/services/notificationService.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/config/redis.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/AccessCode.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/AccessGrant.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/AnnouncementAd.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/B2BPackage.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/LibraryItem.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/PlatformFontSettings.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/PlatformIntegrationHistory.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/PlatformIntegrationSettings.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/StudyPlan.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/services/visibility.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/utils/integrationSecretsCrypto.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/services/visibility.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/discussions.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/discussions.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/AccessGrant.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/discussions.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/discussions.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/health.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/health.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/redis.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/ai.routes.ts",
+      "targetDomain": "ai"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/auth.routes.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/backup.routes.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/content.routes.ts",
+      "targetDomain": "content"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/course.routes.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/health.routes.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/notification.routes.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/operations.routes.ts",
+      "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/parent.routes.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/payment.routes.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/quiz.routes.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/quizResults.routes.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/routes/review.routes.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/leaderboard.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/leaderboard.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/leaderboard.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/live-exams.routes.ts",
+      "sourceDomain": "exams",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/live-exams.routes.ts",
+      "sourceDomain": "exams",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/live-exams.routes.ts",
+      "sourceDomain": "exams",
+      "target": "server/src/models/LiveExamSession.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/constants/roles.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/redis.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/AdminAuditLog.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/AiInteraction.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/ClientEvent.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/LibraryItem.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/SkillProgress.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/observability/sentry.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/PaymentRequest.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/queues/notificationQueue.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/services/notificationService.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/DiscountCode.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/services/adminAuditLog.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/PublicBarcodeSubmission.ts",
+      "targetDomain": "exams"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/PublicBarcodeTest.ts",
+      "targetDomain": "exams"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/B2BPackage.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/QuestionAttempt.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/ReviewCard.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/SkillProgress.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/adminAuditLog.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/notificationService.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/spacedRepetition.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/visibility.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/quizResults.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/quizResults.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/weakSkillsAnalysis.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quizResults.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/review.routes.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/review.routes.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/review.routes.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/services/spacedRepetition.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/review.routes.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/search.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/search.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/search.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/search.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/seo.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/routes/seo.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/LibraryItem.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/services/ensureSkillTaxonomy.ts",
+      "targetDomain": "questions"
+    },
+    {
       "source": "server/src/scripts/auditLearningContent.ts",
       "sourceDomain": "learning",
       "target": "server/src/models/Course.ts",
@@ -5412,6 +6340,144 @@
       "targetDomain": "courses"
     },
     {
+      "source": "server/src/scripts/backfillLearningPlacementsApi.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/HomepageSettings.ts",
+      "targetDomain": "content"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Level.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/e2e_mega_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/scripts/e2e_mega_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/PaymentRequest.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/scripts/e2e_mega_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/e2e_mega_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/e2e_mega_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/scripts/e2e_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/scripts/e2e_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/e2e_simulation.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/scripts/migrateQuizKind.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/config/db.ts",
+      "targetDomain": "shared"
+    },
+    {
       "source": "server/src/scripts/repairCurrentLearningContent.ts",
       "sourceDomain": "learning",
       "target": "server/src/models/Course.ts",
@@ -5434,6 +6500,570 @@
       "sourceDomain": "learning",
       "target": "server/src/models/Subject.ts",
       "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/HomepageSettings.ts",
+      "targetDomain": "content"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Level.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/seedAdmin.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/scripts/seedCoursesViaApi.ts",
+      "sourceDomain": "courses",
+      "target": "services/mockData.ts",
+      "targetDomain": "exams"
+    },
+    {
+      "source": "server/src/scripts/seedDemoUsers.ts",
+      "sourceDomain": "users",
+      "target": "server/src/config/db.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/db.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/AccessCode.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Activity.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/B2BPackage.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Level.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/LibraryItem.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/scripts/seedPlatformData.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/seedPlatformData.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/scripts/seedPlatformData.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/seedPlatformData.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/services/ensureSkillTaxonomy.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/seedPlatformData.ts",
+      "sourceDomain": "shared",
+      "target": "services/mockData.ts",
+      "targetDomain": "exams"
+    },
+    {
+      "source": "server/src/server.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/server.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/server.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/queues/notificationQueue.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/server.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/services/ensureSkillTaxonomy.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/server.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/services/notificationService.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/services/accessGrantService.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/services/applyPurchaseToUser.ts",
+      "sourceDomain": "users",
+      "target": "server/src/services/accessGrantService.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/services/ensureAdminAccount.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/services/ensureSkillTaxonomy.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/ensureSkillTaxonomy.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/AccessCode.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/AnnouncementAd.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/B2BPackage.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/DiscountCode.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/HomepageSettings.ts",
+      "targetDomain": "content"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Level.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/PaymentSettings.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/StudyPlan.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/notificationService.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/constants/roles.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/services/notificationService.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/B2BPackage.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/HomepageSettings.ts",
+      "targetDomain": "content"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/LibraryItem.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/PaymentRequest.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Section.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/services/operationsRepair.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/services/operationsRepair.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/services/operationsRepair.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/services/operationsRepair.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/services/operationsRepair.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/models/Topic.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/services/visibility.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Path.ts",
+      "targetDomain": "paths"
+    },
+    {
+      "source": "server/src/services/weakSkillsAnalysis.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/utils/authCookie.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/utils/integrationSecretsCrypto.ts",
+      "sourceDomain": "operations",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
     },
     {
       "source": "services/geminiService.ts",
@@ -8645,15 +10275,15 @@
       "domain": "shared",
       "bytes": 10174,
       "lines": 327,
-      "sha256": "b5538c2c4e80cb0cd9c3cee6f7f54f98bb1b193d432212d90681030ecce9c77b"
+      "sha256": "39695233635b798d9137a697617abada866e0d582536d01e73cf80dc9a9141b4"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 384596,
-      "lines": 12820,
-      "sha256": "0e160f6d4dd2d59aeea018572ec9585eaa8b2108e635ca04a0bebdeeeae31779"
+      "bytes": 385696,
+      "lines": 12852,
+      "sha256": "bde67613c471c280ef8606add64b449865974be0e69355b8c0872faf61e88946"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -8661,7 +10291,7 @@
       "domain": "shared",
       "bytes": 3285,
       "lines": 66,
-      "sha256": "60e07af727dd0eb3ba29a1621272855df3e5951b62c3fde1387729b892997452"
+      "sha256": "da022338d6730952a05a575b16d61fe809b2167d707b714bebf273bdb0c4743b"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -8669,7 +10299,7 @@
       "domain": "shared",
       "bytes": 55633,
       "lines": 1683,
-      "sha256": "6aef841650f30ca7744dde7acf97e9c3fcecd091efeb9260d6057a0d056c9942"
+      "sha256": "f652d892a4b06c7b382020e7f60854df8041a0f213c7ca4402674db40838307f"
     },
     {
       "file": "docs/archive_reports/01_FULL_AUDIT_REPORT.md",
@@ -12603,9 +14233,9 @@
       "file": "tools/refactor/repository-audit.mjs",
       "category": "tooling",
       "domain": "shared",
-      "bytes": 16225,
-      "lines": 347,
-      "sha256": "dc86c73d71f72ab57bbc88b27fd9c11ec7989de8f57abee707c8563900d99813"
+      "bytes": 22018,
+      "lines": 470,
+      "sha256": "9f472c528fd76615e6318b3d5d7cf32c0add2571c2270e9fc68aef9e51e31650"
     },
     {
       "file": "tsconfig.json",
