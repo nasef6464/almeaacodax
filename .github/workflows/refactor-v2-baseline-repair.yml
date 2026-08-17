@@ -1,0 +1,47 @@
+name: Refactor V2 Baseline Repair
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'tools/refactor/baseline-repair.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-baseline-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Run guarded source repair
+        run: node tools/refactor/baseline-repair.mjs
+
+      - name: Commit repair if changed
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No source changes were required."
+            exit 0
+          fi
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/QuizzesManager.tsx \
+                  dashboards/admin/SmartQuestionSelector.tsx \
+                  dashboards/admin/SubjectQuizzesPanel.tsx \
+                  pages/Dashboard.tsx \
+                  pages/QuizPage.tsx \
+                  services/api.ts
+          git commit -m "fix(baseline): restore frontend type safety before refactor"
+          git push origin HEAD:refactor/repository-v2-safe
