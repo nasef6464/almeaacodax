@@ -6,7 +6,10 @@ const files = {
   routes: await read("server/src/routes/content.routes.ts"),
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
-  schools: await read("dashboards/admin/SchoolsManager.tsx"),
+  schools: [
+  await read("dashboards/admin/SchoolsManager.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx"),
+].join("\n"),
   store: await read("store/useStore.ts"),
   packageJson: await read("package.json"),
   schoolFromScratchAudit: await read("scripts/live-school-from-scratch-audit.mjs"),
