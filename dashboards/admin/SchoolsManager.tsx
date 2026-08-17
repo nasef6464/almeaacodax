@@ -28,245 +28,38 @@ import { EditNameModal } from './SchoolsManager/EditNameModal';
 import { SchoolImportPanel } from './SchoolsManager/SchoolImportPanel';
 import { SchoolPackagesPanel } from './SchoolsManager/SchoolPackagesPanel';
 import { SchoolRelationsPanel } from './SchoolsManager/SchoolRelationsPanel';
+import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
+import type {
+    AccessCodesListResponse,
+    AccessCodesPagination,
+    AdminUserPayload,
+    ContentBootstrapPayload,
+    ImportResponse,
+    ImportRow,
+    ImportSummary,
+    RelationCredential,
+    RelationImportRow,
+    RelationImportSummary,
+    RelationResponse,
+    SchoolReport,
+} from './SchoolsManager/contracts';
+import {
+    buildStoreGroup,
+    buildStoreUser,
+    generateTemporaryPassword,
+    loadSchoolAdminUsers,
+    mergeUsersById,
+} from './SchoolsManager/dataAdapters';
 
-export type ImportRow = {
-    name: string;
-    email: string;
-    className?: string;
-    password?: string;
-};
-
-export type ImportSummary = {
-    totalRows: number;
-    imported: number;
-    classesTouched: number;
-};
-
-export type ImportResponse = {
-    summary: ImportSummary;
-    credentials: Array<{ name: string; email: string; password: string; className?: string }>;
-    users?: AdminUserPayload[];
-    groups?: Group[];
-};
-
-export type RelationImportRow = {
-    studentEmail: string;
-    parentEmail?: string;
-    parentName?: string;
-    supervisorEmail?: string;
-    supervisorName?: string;
-    className?: string;
-};
-
-export type RelationImportSummary = {
-    rows: number;
-    createdParents: number;
-    createdSupervisors: number;
-    linkedParents: number;
-    linkedSupervisors: number;
-    assignedClasses: number;
-    missingStudents: number;
-    missingParents: number;
-    missingSupervisors: number;
-    missingClasses: number;
-    skippedRows: number;
-};
-
-export type RelationCredential = {
-    role: Role.PARENT | Role.SUPERVISOR;
-    name: string;
-    email: string;
-    password: string;
-    linkedTo: string;
-};
-
-type RelationResponse = {
-    summary: RelationImportSummary;
-    credentials: RelationCredential[];
-    users?: AdminUserPayload[];
-    groups?: Group[];
-};
-
-type AdminUserPayload = {
-    id?: string;
-    _id?: string;
-    name: string;
-    email: string;
-    avatar?: string;
-    role: Role;
-    points?: number;
-    badges?: string[];
-    isActive?: boolean;
-    schoolId?: string | null;
-    groupIds?: string[];
-    linkedStudentIds?: string[];
-    managedPathIds?: string[];
-    managedSubjectIds?: string[];
-    subscription?: {
-        plan?: 'free' | 'premium';
-        purchasedCourses?: string[];
-        purchasedPackages?: string[];
-    };
-};
-
-type SchoolReport = {
-    school: {
-        id: string;
-        name: string;
-    };
-    metrics: {
-        totalStudents: number;
-        activeStudents: number;
-        totalClasses: number;
-        activePackages: number;
-        activeCodes: number;
-        quizAttempts: number;
-        averageScore: number;
-    };
-    classSummaries: Array<{
-        id: string;
-        name: string;
-        studentCount: number;
-        supervisorCount: number;
-        quizAttempts: number;
-        averageScore: number;
-    }>;
-    weakestSkills: Array<{
-        skillId?: string;
-        skill: string;
-        subjectId?: string;
-        sectionId?: string;
-        attempts: number;
-        mastery: number;
-    }>;
-};
-
-type AccessCodesPagination = {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-};
-
-type AccessCodesListResponse = {
-    data?: Array<{
-        id?: string;
-        _id?: string;
-        code?: string;
-        schoolId?: string;
-        packageId?: string;
-        maxUses?: number;
-        currentUses?: number;
-        expiresAt?: number;
-        createdAt?: number;
-    }>;
-    pagination?: Partial<AccessCodesPagination>;
-};
-
-type ContentBootstrapPayload = {
-    topics?: Topic[];
-    lessons?: Lesson[];
-    libraryItems?: LibraryItem[];
-    groups?: Group[];
-    b2bPackages?: B2BPackage[];
-    accessCodes?: AccessCode[];
-    announcementAds?: AnnouncementAd[];
-    studyPlans?: StudyPlan[];
-};
-
-const buildStoreUser = (user: AdminUserPayload): User => ({
-    id: String(user.id || user._id || user.email),
-    name: user.name,
-    email: user.email,
-    avatar: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
-    role: user.role,
-    points: user.points ?? 0,
-    badges: user.badges ?? [],
-    isActive: user.isActive ?? true,
-    schoolId: user.schoolId ?? undefined,
-    groupIds: user.groupIds ?? [],
-    linkedStudentIds: user.linkedStudentIds ?? [],
-    managedPathIds: user.managedPathIds ?? [],
-    managedSubjectIds: user.managedSubjectIds ?? [],
-    subscription: {
-        plan: user.subscription?.plan ?? 'free',
-        purchasedCourses: user.subscription?.purchasedCourses ?? [],
-        purchasedPackages: user.subscription?.purchasedPackages ?? [],
-    },
-});
-
-const loadAllUsersByRole = async (role: Role): Promise<User[]> => {
-    const firstPage = await api.getAdminUsers({ role, page: 1, limit: 100 });
-    const totalPages = Math.max(1, Number(firstPage.pagination?.totalPages || 1));
-    const remainingPages = Array.from({ length: totalPages - 1 }, (_, index) => index + 2);
-    const remainingResponses = await Promise.all(
-        remainingPages.map((page) => api.getAdminUsers({ role, page, limit: 100 })),
-    );
-
-    return [
-        ...(firstPage.users || []),
-        ...remainingResponses.flatMap((response) => response.users || []),
-    ].map((user) => buildStoreUser(user as AdminUserPayload));
-};
-
-const loadSchoolAdminUsers = async (): Promise<User[]> => {
-    const [firstPage, students, parents, supervisors, teachers] = await Promise.all([
-        api.getAdminUsers({ page: 1, limit: 100 }),
-        loadAllUsersByRole(Role.STUDENT),
-        loadAllUsersByRole(Role.PARENT),
-        loadAllUsersByRole(Role.SUPERVISOR),
-        loadAllUsersByRole(Role.TEACHER),
-    ]);
-
-    const usersById = new Map<string, User>();
-    [
-        ...(firstPage.users || []).map((user) => buildStoreUser(user as AdminUserPayload)),
-        ...students,
-        ...parents,
-        ...supervisors,
-        ...teachers,
-    ].forEach((user) => {
-        if (user.id) {
-            usersById.set(user.id, user);
-        }
-    });
-
-    return Array.from(usersById.values());
-};
-
-const mergeUsersById = (currentUsers: User[], incomingUsers: User[]): User[] => {
-    const usersById = new Map<string, User>();
-    currentUsers.forEach((user) => {
-        if (user.id) {
-            usersById.set(user.id, user);
-        }
-    });
-    incomingUsers.forEach((user) => {
-        if (user.id) {
-            usersById.set(user.id, user);
-        }
-    });
-    return Array.from(usersById.values());
-};
-
-const buildStoreGroup = (group: Group & { _id?: string; createdAt?: number | string }): Group => ({
-    ...group,
-    id: String(group.id || group._id || ''),
-    parentId: group.parentId ? String(group.parentId) : undefined,
-    ownerId: String(group.ownerId || ''),
-    supervisorIds: Array.isArray(group.supervisorIds) ? group.supervisorIds.map(String) : [],
-    studentIds: Array.isArray(group.studentIds) ? group.studentIds.map(String) : [],
-    courseIds: Array.isArray(group.courseIds) ? group.courseIds.map(String) : [],
-    createdAt: typeof group.createdAt === 'number' ? group.createdAt : Date.parse(String(group.createdAt || '')) || Date.now(),
-});
-
-const generateTemporaryPassword = () => {
-    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-    const random = Array.from({ length: 8 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
-    return `Alm@${random}`;
-};
+export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
+export type {
+    ImportResponse,
+    ImportRow,
+    ImportSummary,
+    RelationCredential,
+    RelationImportRow,
+    RelationImportSummary,
+} from './SchoolsManager/contracts';
 
 const normalizeHeader = (value: string) =>
     value
@@ -648,16 +441,6 @@ const getDuplicateImportEmails = (rows: ImportRow[]) => {
 
     return Array.from(duplicates);
 };
-
-export const PACKAGE_CONTENT_OPTIONS: Array<{ value: PackageContentType; label: string }> = [
-    { value: 'all', label: 'شاملة' },
-    { value: 'courses', label: 'الدورات' },
-    { value: 'foundation', label: 'التأسيس' },
-    { value: 'banks', label: 'التدريبات' },
-    { value: 'tests', label: 'الاختبارات' },
-    { value: 'mockExams', label: 'الاختبارات المحاكية' },
-    { value: 'library', label: 'المكتبة' },
-];
 
 export const SchoolsManager: React.FC = () => {
     const {
