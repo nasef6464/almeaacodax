@@ -8,6 +8,7 @@ on:
     branches:
       - main
     paths:
+      - 'src/**'
       - 'apps/**'
       - 'server/**'
       - 'pages/**'
@@ -17,9 +18,15 @@ on:
       - 'services/**'
       - 'store/**'
       - 'utils/**'
+      - 'hooks/**'
+      - 'styles/**'
       - 'scripts/**'
       - 'tests/**'
       - 'tools/**'
+      - 'App.tsx'
+      - 'index.tsx'
+      - 'types.ts'
+      - 'index.html'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
@@ -69,6 +76,12 @@ jobs:
 
       - name: API production build
         run: npm run server:build
+
+      - name: Generate architecture snapshot
+        run: node tools/refactor/repository-audit.mjs
+
+      - name: Immutable architecture contract gate
+        run: node tools/refactor/architecture-gate.mjs
 
       - name: Route loading contract
         run: npm run smoke:route-loading
