@@ -6,6 +6,7 @@ on:
       - refactor/repository-v2-safe
     paths:
       - 'tools/refactor/repository-audit.mjs'
+      - 'tools/refactor/source-reference-audit.mjs'
       - '.github/workflows/refactor-v2-audit.yml'
 
 permissions:
@@ -38,6 +39,9 @@ jobs:
 
       - name: Generate current repository audit
         run: node tools/refactor/repository-audit.mjs
+
+      - name: Audit source-coupled scripts
+        run: node tools/refactor/source-reference-audit.mjs
 
       - name: Commit generated architecture evidence
         shell: bash
