@@ -1,12 +1,12 @@
 # Current Repository Architecture Audit
 
-Generated from commit `c37b4cee9906cd261e25038d5ed6ea649a2b0da8`.
+Generated from commit `c72cd743e1f1feb664843f22d330e46ddfd7fab5`.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 700 |
+| Tracked files | 704 |
 | Source files | 435 |
 | Source lines | 142,522 |
 | Frontend route literals | 49 |

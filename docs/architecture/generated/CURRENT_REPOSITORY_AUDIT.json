@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-17T20:16:52.651Z",
-  "gitHead": "c37b4cee9906cd261e25038d5ed6ea649a2b0da8",
+  "generatedAt": "2026-08-17T20:18:20.215Z",
+  "gitHead": "c72cd743e1f1feb664843f22d330e46ddfd7fab5",
   "summary": {
-    "trackedFiles": 700,
+    "trackedFiles": 704,
     "sourceFiles": 435,
     "sourceLines": 142522,
     "frontendRoutes": 49,
@@ -24,8 +24,8 @@
     },
     "ci": {
       "files": 4,
-      "bytes": 6051,
-      "lines": 238
+      "bytes": 6203,
+      "lines": 243
     },
     "web-source": {
       "files": 158,
@@ -38,9 +38,9 @@
       "lines": 681
     },
     "documentation": {
-      "files": 176,
-      "bytes": 1777386,
-      "lines": 34688
+      "files": 180,
+      "bytes": 2231074,
+      "lines": 49584
     },
     "public-asset": {
       "files": 4,
@@ -7251,9 +7251,9 @@
       "file": ".github/workflows/refactor-v2-audit.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 1319,
-      "lines": 49,
-      "sha256": "736e54887767b61d56444104e3c8affa69d75b4accd0333c2f339e0b5e749c04"
+      "bytes": 1471,
+      "lines": 54,
+      "sha256": "30df97daba46316276db44734b70d57f341ac9b4c6960f9e6c57c844fe13649c"
     },
     {
       "file": ".github/workflows/refactor-v2-baseline-repair.yml",
@@ -8638,6 +8638,38 @@
       "bytes": 11823,
       "lines": 247,
       "sha256": "820d98edc1a282cd20815c3a6ca0c7db208b7d892b23fbda7ccd147d951b0d0e"
+    },
+    {
+      "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 10174,
+      "lines": 327,
+      "sha256": "b5538c2c4e80cb0cd9c3cee6f7f54f98bb1b193d432212d90681030ecce9c77b"
+    },
+    {
+      "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 384596,
+      "lines": 12820,
+      "sha256": "0e160f6d4dd2d59aeea018572ec9585eaa8b2108e635ca04a0bebdeeeae31779"
+    },
+    {
+      "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 3285,
+      "lines": 66,
+      "sha256": "60e07af727dd0eb3ba29a1621272855df3e5951b62c3fde1387729b892997452"
+    },
+    {
+      "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 55633,
+      "lines": 1683,
+      "sha256": "6aef841650f30ca7744dde7acf97e9c3fcecd091efeb9260d6057a0d056c9942"
     },
     {
       "file": "docs/archive_reports/01_FULL_AUDIT_REPORT.md",
