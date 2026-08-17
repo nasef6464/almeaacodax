@@ -1,0 +1,86 @@
+name: Refactor V2 Safety Gate
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/**'
+      - 'server/**'
+      - 'pages/**'
+      - 'components/**'
+      - 'dashboards/**'
+      - 'contexts/**'
+      - 'services/**'
+      - 'store/**'
+      - 'utils/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'vite.config.ts'
+      - 'vercel.json'
+      - 'Dockerfile.*'
+      - '.github/workflows/refactor-v2-guard.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refactor-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  baseline-quality-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm run server:check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm run server:build
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Quiz integrity contract
+        run: npm run smoke:quiz-integrity-guard
+
+      - name: Authentication security contract
+        run: npm run smoke:auth-login-security
+
+      - name: API security contract
+        run: npm run smoke:api-security
