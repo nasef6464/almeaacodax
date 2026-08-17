@@ -1708,7 +1708,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     {directedQuizzes.map(quiz => {
                       const targetedGroups = groups.filter(g => (quiz.targetGroupIds || []).includes(g.id));
                       const targetedUsers  = users.filter(u => (quiz.targetUserIds || []).includes(u.id));
-                      const totalTargets   = targetedGroups.reduce((s, g) => s + (g.memberCount || g.studentIds?.length || 0), 0) + targetedUsers.length;
+                      const totalTargets   = targetedGroups.reduce((s, g) => s + ((g as typeof g & { memberCount?: number }).memberCount || g.studentIds?.length || 0), 0) + targetedUsers.length;
                       const dueDate        = (quiz as any).dueDate ? new Date((quiz as any).dueDate).toLocaleDateString('ar-SA') : null;
                       return (
                         <tr key={quiz.id} className="hover:bg-gray-50 transition-colors">
