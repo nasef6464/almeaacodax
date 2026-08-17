@@ -42,6 +42,7 @@ jobs:
                   dashboards/admin/SubjectQuizzesPanel.tsx \
                   pages/Dashboard.tsx \
                   pages/QuizPage.tsx \
-                  services/api.ts
-          git commit -m "fix(baseline): restore frontend type safety before refactor"
+                  services/api.ts \
+                  server/src/routes/quiz.routes.ts
+          git commit -m "fix(baseline): restore guarded pre-refactor invariants"
           git push origin HEAD:refactor/repository-v2-safe
