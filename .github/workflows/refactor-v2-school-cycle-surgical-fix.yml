@@ -1,0 +1,59 @@
+name: Refactor V2 School Cycle Surgical Fix
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - '.github/workflows/refactor-v2-school-cycle-surgical-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Apply exact import-only edits
+        shell: python
+        run: |
+          from pathlib import Path
+
+          replacements = {
+              Path('dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'): (
+                  "import { PACKAGE_CONTENT_OPTIONS } from '../SchoolsManager';",
+                  "import { PACKAGE_CONTENT_OPTIONS } from './contracts';",
+              ),
+              Path('dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx'): (
+                  "import { RelationImportRow, RelationImportSummary, RelationCredential } from '../SchoolsManager';",
+                  "import { RelationImportRow, RelationImportSummary, RelationCredential } from './contracts';",
+              ),
+          }
+
+          for file, (old, new) in replacements.items():
+              source = file.read_text(encoding='utf-8')
+              if new in source:
+                  continue
+              if source.count(old) != 1:
+                  raise SystemExit(f'Expected exactly one import to replace in {file}')
+              file.write_text(source.replace(old, new), encoding='utf-8')
+
+      - name: Commit surgical cycle fix
+        shell: bash
+        run: |
+          if git diff --quiet -- dashboards/admin/SchoolsManager; then
+            echo "School panel imports are already decoupled."
+            exit 0
+          fi
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager
+          git commit -m "refactor(schools): remove child-to-parent panel imports"
+          git push origin HEAD:refactor/repository-v2-safe
