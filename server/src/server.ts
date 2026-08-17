@@ -1,30 +1,13 @@
 import { createServer } from "http";
 import { createApp } from "./app.js";
+import { runStartupMaintenance } from "./app/bootstrap/runStartupMaintenance.js";
 import { connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
 import { closeRedisClients } from "./config/redis.js";
-import { ensureAdminAccount } from "./services/ensureAdminAccount.js";
-import { ensureSkillTaxonomy } from "./services/ensureSkillTaxonomy.js";
 import { closeNotificationQueue, startNotificationWorkers } from "./queues/notificationQueue.js";
 import { createSocketServer } from "./sockets/index.js";
 import { startWeeklyParentReportSchedule } from "./modules/reports/application/startWeeklyParentReportSchedule.js";
 import mongoose from "mongoose";
-
-async function runStartupMaintenance() {
-  const tasks = [
-    ["skill taxonomy", ensureSkillTaxonomy],
-    ["admin account", ensureAdminAccount],
-  ] as const;
-
-  for (const [name, task] of tasks) {
-    try {
-      await task();
-      console.info(`[startup] ${name} maintenance completed`);
-    } catch (error) {
-      console.error(`[startup] ${name} maintenance failed`, error);
-    }
-  }
-}
 
 async function bootstrap() {
   await connectToDatabase();
