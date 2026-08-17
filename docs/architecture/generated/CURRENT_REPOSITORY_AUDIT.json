@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-17T20:19:35.931Z",
-  "gitHead": "922b29d5f8cf9f7d694800023a2c7c0142720957",
+  "generatedAt": "2026-08-17T20:29:38.049Z",
+  "gitHead": "f30aefdae47bedfc81d7ab9621d2ee0d44d95638",
   "summary": {
-    "trackedFiles": 704,
-    "sourceFiles": 435,
+    "trackedFiles": 713,
+    "sourceFiles": 437,
     "runtimeSourceFiles": 289,
-    "sourceLines": 142645,
+    "sourceLines": 142858,
     "runtimeSourceLines": 122988,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
@@ -21,14 +21,14 @@
   },
   "categoryStats": {
     "support": {
-      "files": 69,
-      "bytes": 490864,
-      "lines": 10176
+      "files": 70,
+      "bytes": 497832,
+      "lines": 10355
     },
     "ci": {
-      "files": 4,
-      "bytes": 6203,
-      "lines": 243
+      "files": 5,
+      "bytes": 8627,
+      "lines": 310
     },
     "web-source": {
       "files": 158,
@@ -41,9 +41,9 @@
       "lines": 681
     },
     "documentation": {
-      "files": 180,
-      "bytes": 2232174,
-      "lines": 49616
+      "files": 185,
+      "bytes": 2818372,
+      "lines": 69444
     },
     "public-asset": {
       "files": 4,
@@ -66,9 +66,9 @@
       "lines": 30196
     },
     "tooling": {
-      "files": 2,
-      "bytes": 23666,
-      "lines": 517
+      "files": 4,
+      "bytes": 32375,
+      "lines": 730
     }
   },
   "domainStats": {
@@ -8881,9 +8881,9 @@
       "file": ".github/workflows/refactor-v2-audit.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 1471,
-      "lines": 54,
-      "sha256": "30df97daba46316276db44734b70d57f341ac9b4c6960f9e6c57c844fe13649c"
+      "bytes": 1627,
+      "lines": 58,
+      "sha256": "11828f8e2f8510b3f3b63637eb4f127b4dd8b9aedb38260a025f3e22e4ac8b4a"
     },
     {
       "file": ".github/workflows/refactor-v2-baseline-repair.yml",
@@ -8894,12 +8894,20 @@
       "sha256": "62229299aa84d2d993d7502242b68bdbbb19533f1884bc41cae504ed291ae67a"
     },
     {
+      "file": ".github/workflows/refactor-v2-freeze-baseline.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 1927,
+      "lines": 50,
+      "sha256": "867b9aeb6fc087e905cbac43672caa65d6a7442db3b169731dd0f15504933fca"
+    },
+    {
       "file": ".github/workflows/refactor-v2-guard.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 1902,
-      "lines": 87,
-      "sha256": "e5c7b283f753259aa590f02c1140db621c827b9e71ae4571bb98bfd867fd0c99"
+      "bytes": 2243,
+      "lines": 100,
+      "sha256": "1acd2af6c16f8e66a3502f50b6e886adc658c1bf42970a3901a2b2b9ce6e406d"
     },
     {
       "file": ".gitignore",
@@ -8916,6 +8924,14 @@
       "bytes": 508,
       "lines": 31,
       "sha256": "052960ff9b3c0ef872a960e2ec5846dbd72a1b29ba9441253b7a515eee8c325d"
+    },
+    {
+      "file": "AGENTS.md",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 6968,
+      "lines": 179,
+      "sha256": "c8eb9877a3cd01eb46121e29244b50c2974d9144092dab0330bf0ed0bd20777d"
     },
     {
       "file": "App.tsx",
@@ -10246,6 +10262,14 @@
       "sha256": "5afc15baab899c6c992af5ad9713c25d9f8566094f4bd1e383e20966474dc7a6"
     },
     {
+      "file": "docs/architecture/ADR-001-RISK-MINIMIZED-MODULAR-MONOLITH.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 4310,
+      "lines": 92,
+      "sha256": "aae750b0bc9dbe1fe79ea04a8193d39c0fae942cd565d486090c1c9cceeb4952"
+    },
+    {
       "file": "docs/architecture/AUDIT_BASELINE_2026-08-17.md",
       "category": "documentation",
       "domain": "shared",
@@ -10262,6 +10286,14 @@
       "sha256": "a1d1e530dbefd63bc8f6d5e76b0996ec8d370fb0d7f26b988d6359cec53ca81a"
     },
     {
+      "file": "docs/architecture/PROJECT_MAP.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 9805,
+      "lines": 232,
+      "sha256": "b10385b9702574e8bae512832c678981c9c1700ada429f645a42d01961418850"
+    },
+    {
       "file": "docs/architecture/REFACTOR_V2_MASTER_PLAN_AR.md",
       "category": "documentation",
       "domain": "shared",
@@ -10270,28 +10302,52 @@
       "sha256": "820d98edc1a282cd20815c3a6ca0c7db208b7d892b23fbda7ccd147d951b0d0e"
     },
     {
+      "file": "docs/architecture/baseline/CONTRACTS_PRE_STRUCTURAL.json",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 49737,
+      "lines": 1852,
+      "sha256": "3e8ed81232d1a8ded723a5d2af14cd768ae4543991c597a035479bd6cb2f1c93"
+    },
+    {
+      "file": "docs/architecture/baseline/README.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 317,
+      "lines": 6,
+      "sha256": "d2b1f69bb7aa172cc3e39335ef9236800b144f3fab345cd5791544fb5741d022"
+    },
+    {
+      "file": "docs/architecture/baseline/REPOSITORY_PRE_STRUCTURAL.json",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 433696,
+      "lines": 14482,
+      "sha256": "8d280e24f62f7266f26baf5521ba7b218b3b02a62e3b4904bb915156911fa1a8"
+    },
+    {
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 10174,
-      "lines": 327,
-      "sha256": "39695233635b798d9137a697617abada866e0d582536d01e73cf80dc9a9141b4"
+      "bytes": 49737,
+      "lines": 1852,
+      "sha256": "3e8ed81232d1a8ded723a5d2af14cd768ae4543991c597a035479bd6cb2f1c93"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 385696,
-      "lines": 12852,
-      "sha256": "bde67613c471c280ef8606add64b449865974be0e69355b8c0872faf61e88946"
+      "bytes": 433696,
+      "lines": 14482,
+      "sha256": "8d280e24f62f7266f26baf5521ba7b218b3b02a62e3b4904bb915156911fa1a8"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3285,
-      "lines": 66,
-      "sha256": "da022338d6730952a05a575b16d61fe809b2167d707b714bebf273bdb0c4743b"
+      "bytes": 4055,
+      "lines": 75,
+      "sha256": "c989ec76995b3bb7ba49b95eab45ce6d59220140a4fab3745a28eb39d302798b"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -10299,7 +10355,7 @@
       "domain": "shared",
       "bytes": 55633,
       "lines": 1683,
-      "sha256": "f652d892a4b06c7b382020e7f60854df8041a0f213c7ca4402674db40838307f"
+      "sha256": "019a35bfc97d0a73517eb892c1942f9e679674c52463f113357273f0c68221e9"
     },
     {
       "file": "docs/archive_reports/01_FULL_AUDIT_REPORT.md",
@@ -14222,6 +14278,14 @@
       "sha256": "0c62bd827867e8193c7da00e236dcec9cf2d3e0ede6ef48c973e4b22ca45696d"
     },
     {
+      "file": "tools/refactor/architecture-gate.mjs",
+      "category": "tooling",
+      "domain": "shared",
+      "bytes": 4295,
+      "lines": 113,
+      "sha256": "ae2868d075e9325f7083a471d890e0f41fd6354f5654c8ade65a993bca997fa8"
+    },
+    {
       "file": "tools/refactor/baseline-repair.mjs",
       "category": "tooling",
       "domain": "shared",
@@ -14236,6 +14300,14 @@
       "bytes": 22018,
       "lines": 470,
       "sha256": "9f472c528fd76615e6318b3d5d7cf32c0add2571c2270e9fc68aef9e51e31650"
+    },
+    {
+      "file": "tools/refactor/source-reference-audit.mjs",
+      "category": "tooling",
+      "domain": "shared",
+      "bytes": 4414,
+      "lines": 100,
+      "sha256": "ab71c413cc745e4c7990e2aac6e1e7a68d71218a8eb55b270846c835a3943b6b"
     },
     {
       "file": "tsconfig.json",

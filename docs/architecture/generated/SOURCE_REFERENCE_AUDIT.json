@@ -1,0 +1,2930 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-17T20:29:38.797Z",
+  "summary": {
+    "scannedScriptFiles": 148,
+    "sourceCoupledScripts": 73,
+    "sourceCoupledReferences": 600,
+    "relativeNewUrlTargets": 222,
+    "missingRelativeNewUrlTargets": 25
+  },
+  "sourceCoupledScripts": [
+    {
+      "file": "scripts/fix-mojibake.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-admin-memberships-ai-closure-contract.mjs",
+      "references": [
+        {
+          "value": "../dashboards/admin/AdminDashboard.tsx",
+          "line": 3
+        },
+        {
+          "value": "../dashboards/admin/MembershipsManager.tsx",
+          "line": 4
+        },
+        {
+          "value": "../dashboards/admin/PlatformIntegrationsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "../dashboards/admin/AiAssistantManager.tsx",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-admin-tabs-contract.mjs",
+      "references": [
+        {
+          "value": "../dashboards/admin/AdminDashboard.tsx",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-ai-config-bridge-contract.mjs",
+      "references": [
+        {
+          "value": "../dashboards/admin/PlatformIntegrationsManager.tsx",
+          "line": 4
+        },
+        {
+          "value": "../dashboards/admin/AiAssistantManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "../services/api.ts",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-announcement-ads-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 13
+        },
+        {
+          "value": "services/api.ts",
+          "line": 25
+        },
+        {
+          "value": "services/adapter.ts",
+          "line": 26
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 27
+        },
+        {
+          "value": "components/AnnouncementAdsOverlay.tsx",
+          "line": 28
+        },
+        {
+          "value": "dashboards/admin/AnnouncementAdsManager.tsx",
+          "line": 29
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 30
+        },
+        {
+          "value": "App.tsx",
+          "line": 31
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 42
+        },
+        {
+          "value": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
+          "line": 45
+        },
+        {
+          "value": "dashboards/admin/AnnouncementAdsManager.tsx",
+          "line": 50
+        },
+        {
+          "value": "components/Header.tsx",
+          "line": 64
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-api-phase4-contract.mjs",
+      "references": [
+        {
+          "value": "../services/api.ts",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-arabic-mojibake-guard.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 7
+        },
+        {
+          "value": "index.tsx",
+          "line": 8
+        },
+        {
+          "value": "components/QuestionDrawingPad.tsx",
+          "line": 10
+        },
+        {
+          "value": "components/RichTextEditor.tsx",
+          "line": 11
+        },
+        {
+          "value": "components/StudentNextActionStrip.tsx",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 13
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 14
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 15
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 16
+        },
+        {
+          "value": "App.tsx",
+          "line": 26
+        },
+        {
+          "value": "App.tsx",
+          "line": 27
+        },
+        {
+          "value": "components/QuestionDrawingPad.tsx",
+          "line": 28
+        },
+        {
+          "value": "components/RichTextEditor.tsx",
+          "line": 29
+        },
+        {
+          "value": "components/StudentNextActionStrip.tsx",
+          "line": 30
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 31
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 32
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 33
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 34
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 35
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 36
+        },
+        {
+          "value": "index.tsx",
+          "line": 42
+        },
+        {
+          "value": "index.tsx",
+          "line": 43
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-auth-account-contract.mjs",
+      "references": [
+        {
+          "value": "../services/api.ts",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-auth-cookie-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 9
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-auth-frontend-contract.mjs",
+      "references": [
+        {
+          "value": "../App.tsx",
+          "line": 4
+        },
+        {
+          "value": "../components/Header.tsx",
+          "line": 5
+        },
+        {
+          "value": "../pages/ForgotPassword.tsx",
+          "line": 6
+        },
+        {
+          "value": "../pages/ResetPassword.tsx",
+          "line": 7
+        },
+        {
+          "value": "../pages/VerifyEmail.tsx",
+          "line": 8
+        },
+        {
+          "value": "../services/api.ts",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-auth-login-security-contract.mjs",
+      "references": [
+        {
+          "value": "../components/Header.tsx",
+          "line": 6
+        },
+        {
+          "value": "../pages/ResetPassword.tsx",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-barcode-public-tests-contract.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 14
+        },
+        {
+          "value": "pages/BarcodeTest",
+          "line": 155
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100d-admin-course-flow.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 21
+        },
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 29
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 41
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 52
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 11
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 13
+        },
+        {
+          "value": "dashboards/admin/SchoolPortalManager.tsx",
+          "line": 14
+        },
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "line": 15
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 26
+        },
+        {
+          "value": "dashboards/admin/CourseBuilder.tsx",
+          "line": 27
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 28
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 29
+        },
+        {
+          "value": "services/api.ts",
+          "line": 30
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 31
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 32
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 33
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 21
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 42
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 48
+        },
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 61
+        },
+        {
+          "value": "dashboards/admin/CourseBuilder.tsx",
+          "line": 65
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 69
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 74
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 15
+        },
+        {
+          "value": "components/Header.tsx",
+          "line": 16
+        },
+        {
+          "value": "types.ts",
+          "line": 17
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100l-homepage-color-picker-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 4
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100m-homepage-live-preview-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100n-admin-tab-e2e-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100o-admin-crud-course-linkage-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 18
+        },
+        {
+          "value": "services/api.ts",
+          "line": 23
+        },
+        {
+          "value": "services/api.ts",
+          "line": 28
+        },
+        {
+          "value": "services/api.ts",
+          "line": 33
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 76
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 81
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 86
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 91
+        },
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 97
+        },
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 102
+        },
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 107
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 20
+        },
+        {
+          "value": "services/api.ts",
+          "line": 25
+        },
+        {
+          "value": "services/api.ts",
+          "line": 30
+        },
+        {
+          "value": "services/api.ts",
+          "line": 35
+        },
+        {
+          "value": "services/api.ts",
+          "line": 40
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 46
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 51
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 56
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 62
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 67
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 72
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 77
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 82
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 87
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 92
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 97
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 102
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 107
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 112
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch100q-operational-admin-runtime-contract.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 24
+        },
+        {
+          "value": "components/PwaInstallBanner.tsx",
+          "line": 29
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 36
+        },
+        {
+          "value": "dashboards/admin/FinancialManager.tsx",
+          "line": 44
+        },
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "line": 57
+        },
+        {
+          "value": "dashboards/admin/SchoolPortalManager.tsx",
+          "line": 66
+        },
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 77
+        },
+        {
+          "value": "services/api.ts",
+          "line": 113
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "line": 28
+        },
+        {
+          "value": "services/api.ts",
+          "line": 39
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 57
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 64
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 76
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 86
+        },
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "line": 93
+        },
+        {
+          "value": "dashboards/admin/FinancialManager.tsx",
+          "line": 97
+        },
+        {
+          "value": "services/api.ts",
+          "line": 103
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-course-builder-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 5
+        },
+        {
+          "value": "types.ts",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-course-file-access-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/AdvancedCourseBuilder.tsx",
+          "line": 15
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 16
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 17
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 18
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 19
+        },
+        {
+          "value": "components/CourseLanding.tsx",
+          "line": 20
+        },
+        {
+          "value": "components/SimulatedTestExperience.tsx",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-course-quiz-context-contract.mjs",
+      "references": [
+        {
+          "value": "utils/quizLinks.ts",
+          "line": 10
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 11
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 12
+        },
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-course-visibility-contract.mjs",
+      "references": [
+        {
+          "value": "pages/SubjectLearningPage.tsx",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-csrf-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-dashboards-phase11-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 7
+        },
+        {
+          "value": "pages/Dashboard.tsx",
+          "line": 8
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-direct-unlock-cleanup-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 12
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-exam-question-source-contract.mjs",
+      "references": [
+        {
+          "value": "../utils/exams/questionBankSource.ts",
+          "line": 3
+        },
+        {
+          "value": "../dashboards/admin/QuizBuilder.tsx",
+          "line": 4
+        },
+        {
+          "value": "../dashboards/admin/PublicBarcodeTestsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "../dashboards/admin/MockExamManager.tsx",
+          "line": 6
+        },
+        {
+          "value": "../dashboards/admin/QuizzesManager.tsx",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-foundation-course-details-contract.mjs",
+      "references": [
+        {
+          "value": "utils/courseStats.ts",
+          "line": 18
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 23
+        },
+        {
+          "value": "components/CourseLanding.tsx",
+          "line": 28
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 33
+        },
+        {
+          "value": "components/CourseLanding.tsx",
+          "line": 38
+        },
+        {
+          "value": "pages/SubjectLearningPage.tsx",
+          "line": 43
+        },
+        {
+          "value": "pages/SubjectLearningPage.tsx",
+          "line": 48
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 53
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 58
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 63
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 68
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 73
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 78
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 83
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 88
+        },
+        {
+          "value": "components/PaymentModal.tsx",
+          "line": 93
+        },
+        {
+          "value": "components/PaymentModal.tsx",
+          "line": 98
+        },
+        {
+          "value": "pages/Dashboard.tsx",
+          "line": 103
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 108
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 113
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-frontend-phase5-contract.mjs",
+      "references": [
+        {
+          "value": "../services/api.ts",
+          "line": 4
+        },
+        {
+          "value": "../services/adapter.ts",
+          "line": 5
+        },
+        {
+          "value": "../contexts/AuthContext.tsx",
+          "line": 6
+        },
+        {
+          "value": "services/api.ts",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-global-student-journey-contract.mjs",
+      "references": [
+        {
+          "value": "../pages/Dashboard.tsx",
+          "line": 5
+        },
+        {
+          "value": "../components/StudentNextActionStrip.tsx",
+          "line": 6
+        },
+        {
+          "value": "../components/ui/EmptyState.tsx",
+          "line": 7
+        },
+        {
+          "value": "../pages/SubjectLearningPage.tsx",
+          "line": 8
+        },
+        {
+          "value": "../pages/Quizzes.tsx",
+          "line": 9
+        },
+        {
+          "value": "../pages/Reports.tsx",
+          "line": 10
+        },
+        {
+          "value": "../pages/Plan.tsx",
+          "line": 11
+        },
+        {
+          "value": "../pages/Pricing.tsx",
+          "line": 12
+        },
+        {
+          "value": "../components/PaymentModal.tsx",
+          "line": 13
+        },
+        {
+          "value": "../pages/Landing.tsx",
+          "line": 14
+        },
+        {
+          "value": "../dashboards/admin/AdminDashboard.tsx",
+          "line": 15
+        },
+        {
+          "value": "import { EmptyState } from '../components/ui/EmptyState'",
+          "line": 60
+        },
+        {
+          "value": "import { EmptyState } from '../components/ui/EmptyState'",
+          "line": 98
+        },
+        {
+          "value": "import { EmptyState } from '../components/ui/EmptyState'",
+          "line": 99
+        },
+        {
+          "value": "import { EmptyState } from '../components/ui/EmptyState'",
+          "line": 100
+        },
+        {
+          "value": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
+          "line": 134
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-header-navigation-contract.mjs",
+      "references": [
+        {
+          "value": "components/Header.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 8
+        },
+        {
+          "value": "types.ts",
+          "line": 9
+        },
+        {
+          "value": "utils/sanitizeMojibakeArabic.ts",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-homepage-hero-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Landing.tsx",
+          "line": 31
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 32
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 33
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 34
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 35
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 36
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 38
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 39
+        },
+        {
+          "value": "import { useAuth } from '../../contexts/AuthContext';",
+          "line": 39
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 40
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 41
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 42
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 43
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 44
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 45
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 46
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 47
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 48
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 49
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 50
+        },
+        {
+          "value": "dashboards/admin/HomepageManager.tsx",
+          "line": 51
+        },
+        {
+          "value": "types.ts",
+          "line": 53
+        },
+        {
+          "value": "types.ts",
+          "line": 54
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 61
+        },
+        {
+          "value": "pages/Landing.tsx",
+          "line": 62
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 63
+        },
+        {
+          "value": "services/api.ts",
+          "line": 65
+        },
+        {
+          "value": "services/api.ts",
+          "line": 66
+        },
+        {
+          "value": "services/api.ts",
+          "line": 67
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-integrations-runtime-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/PlatformIntegrationsManager.tsx",
+          "line": 11
+        },
+        {
+          "value": "from \"../utils/integrationSecretsCrypto.js\"",
+          "line": 31
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-learning-placement-admin-contract.mjs",
+      "references": [
+        {
+          "value": "../dashboards/admin/PathsManager.tsx",
+          "line": 3
+        },
+        {
+          "value": "../dashboards/admin/QuizzesManager.tsx",
+          "line": 4
+        },
+        {
+          "value": "../components/LearningSection.tsx",
+          "line": 5
+        },
+        {
+          "value": "../pages/GenericPathPage.tsx",
+          "line": 6
+        },
+        {
+          "value": "../dashboards/admin/MockExamManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "../pages/MockExams.tsx",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-library-support-contract.mjs",
+      "references": [
+        {
+          "value": "../dashboards/admin/LibraryManager.tsx",
+          "line": 3
+        },
+        {
+          "value": "../dashboards/admin/FoundationManager.tsx",
+          "line": 4
+        },
+        {
+          "value": "../components/LearningSection.tsx",
+          "line": 5
+        },
+        {
+          "value": "../components/SkillDetailsModal.tsx",
+          "line": 6
+        },
+        {
+          "value": "../pages/SubjectLearningPage.tsx",
+          "line": 7
+        },
+        {
+          "value": "../types.ts",
+          "line": 8
+        },
+        {
+          "value": "../services/adapter.ts",
+          "line": 9
+        },
+        {
+          "value": "../store/useStore.ts",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-membership-pricing-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Pricing.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/PathsManager.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/MembershipsManager.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-mock-exam-contract.mjs",
+      "references": [
+        {
+          "value": "../types.ts",
+          "line": 3
+        },
+        {
+          "value": "../utils/mockExam.ts",
+          "line": 4
+        },
+        {
+          "value": "../dashboards/admin/MockExamManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "../pages/GenericPathPage.tsx",
+          "line": 6
+        },
+        {
+          "value": "../pages/MockExams.tsx",
+          "line": 7
+        },
+        {
+          "value": "../pages/QuizPage.tsx",
+          "line": 8
+        },
+        {
+          "value": "../components/Header.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-my-quizzes-contract.mjs",
+      "references": [
+        {
+          "value": "../App.tsx",
+          "line": 3
+        },
+        {
+          "value": "../components/Header.tsx",
+          "line": 4
+        },
+        {
+          "value": "../styles/main.css",
+          "line": 6
+        },
+        {
+          "value": "../pages/Dashboard.tsx",
+          "line": 7
+        },
+        {
+          "value": "../pages/Quizzes.tsx",
+          "line": 8
+        },
+        {
+          "value": "../components/SmartLearningPath.tsx",
+          "line": 9
+        },
+        {
+          "value": "import { isStandaloneMockExam } from '../utils/mockExam'",
+          "line": 82
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-package-course-split-contract.mjs",
+      "references": [
+        {
+          "value": "components/PaymentModal.tsx",
+          "line": 7
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 8
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 9
+        },
+        {
+          "value": "pages/Courses.tsx",
+          "line": 10
+        },
+        {
+          "value": "pages/Qudrat.tsx",
+          "line": 11
+        },
+        {
+          "value": "pages/Tahsili.tsx",
+          "line": 12
+        },
+        {
+          "value": "pages/Step.tsx",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-package-path-navigation-contract.mjs",
+      "references": [
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 7
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 8
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 9
+        },
+        {
+          "value": "components/CourseLanding.tsx",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-package-revenue-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/FinancialManager.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-payment-package-contract.mjs",
+      "references": [
+        {
+          "value": "components/PaymentModal.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Cart.tsx",
+          "line": 8
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 9
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 10
+        },
+        {
+          "value": "types.ts",
+          "line": 15
+        },
+        {
+          "value": "dashboards/admin/PathsManager.tsx",
+          "line": 16
+        },
+        {
+          "value": "dashboards/admin/FinancialManager.tsx",
+          "line": 17
+        },
+        {
+          "value": "services/api.ts",
+          "line": 18
+        },
+        {
+          "value": "import { EmptyState } from '../components/ui/EmptyState'",
+          "line": 146
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-payment-provider-readiness-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 7
+        },
+        {
+          "value": "components/PaymentModal.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/FinancialManager.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-performance-contract.mjs",
+      "references": [
+        {
+          "value": "components/VideoModal.tsx",
+          "line": 33
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 34
+        },
+        {
+          "value": "components/CourseLanding.tsx",
+          "line": 35
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 46
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 47
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 48
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 49
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 50
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 51
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 52
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 53
+        },
+        {
+          "value": "index.tsx",
+          "line": 59
+        },
+        {
+          "value": "styles/main.css",
+          "line": 60
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 64
+        },
+        {
+          "value": "import { loadXlsx } from '../utils/xlsxLoader';",
+          "line": 64
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 65
+        },
+        {
+          "value": "pages/Results.tsx",
+          "line": 66
+        },
+        {
+          "value": "pages/Results.tsx",
+          "line": 67
+        },
+        {
+          "value": "import('../components/results/ResultDonutChart')",
+          "line": 67
+        },
+        {
+          "value": "pages/Results.tsx",
+          "line": 68
+        },
+        {
+          "value": "pages/Results.tsx",
+          "line": 69
+        },
+        {
+          "value": "components/results/ResultDonutChart.tsx",
+          "line": 70
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 71
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 72
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 73
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 74
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 75
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 76
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 77
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 78
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 79
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 80
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 81
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 82
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 83
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 84
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 85
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 86
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 87
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 88
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 89
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 90
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 91
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 92
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 93
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 94
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 95
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 96
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 97
+        },
+        {
+          "value": "utils/xlsxLoader.ts",
+          "line": 99
+        },
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "line": 101
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 102
+        },
+        {
+          "value": "dashboards/admin/SchoolPortalManager.tsx",
+          "line": 103
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 104
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 105
+        },
+        {
+          "value": "dashboards/admin/LibraryManager.tsx",
+          "line": 106
+        },
+        {
+          "value": "dashboards/admin/LessonsManager.tsx",
+          "line": 107
+        },
+        {
+          "value": "dashboards/admin/GroupsManager.tsx",
+          "line": 108
+        },
+        {
+          "value": "from '../../utils/xlsxLoader';",
+          "line": 110
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 115
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 116
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 117
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 118
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 119
+        },
+        {
+          "value": "App.tsx",
+          "line": 121
+        },
+        {
+          "value": "App.tsx",
+          "line": 122
+        },
+        {
+          "value": "App.tsx",
+          "line": 123
+        },
+        {
+          "value": "App.tsx",
+          "line": 124
+        },
+        {
+          "value": "App.tsx",
+          "line": 125
+        },
+        {
+          "value": "App.tsx",
+          "line": 126
+        },
+        {
+          "value": "App.tsx",
+          "line": 127
+        },
+        {
+          "value": "App.tsx",
+          "line": 128
+        },
+        {
+          "value": "App.tsx",
+          "line": 129
+        },
+        {
+          "value": "App.tsx",
+          "line": 130
+        },
+        {
+          "value": "App.tsx",
+          "line": 131
+        },
+        {
+          "value": "App.tsx",
+          "line": 132
+        },
+        {
+          "value": "App.tsx",
+          "line": 133
+        },
+        {
+          "value": "App.tsx",
+          "line": 137
+        },
+        {
+          "value": "App.tsx",
+          "line": 141
+        },
+        {
+          "value": "App.tsx",
+          "line": 142
+        },
+        {
+          "value": "App.tsx",
+          "line": 143
+        },
+        {
+          "value": "App.tsx",
+          "line": 144
+        },
+        {
+          "value": "App.tsx",
+          "line": 145
+        },
+        {
+          "value": "App.tsx",
+          "line": 146
+        },
+        {
+          "value": "App.tsx",
+          "line": 147
+        },
+        {
+          "value": "App.tsx",
+          "line": 148
+        },
+        {
+          "value": "services/api.ts",
+          "line": 149
+        },
+        {
+          "value": "services/api.ts",
+          "line": 150
+        },
+        {
+          "value": "services/api.ts",
+          "line": 151
+        },
+        {
+          "value": "services/api.ts",
+          "line": 152
+        },
+        {
+          "value": "services/api.ts",
+          "line": 153
+        },
+        {
+          "value": "services/api.ts",
+          "line": 154
+        },
+        {
+          "value": "services/api.ts",
+          "line": 155
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 198
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 199
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 200
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 201
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 202
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 203
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 204
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 205
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 206
+        },
+        {
+          "value": "React.lazy(() => import('../components/PaymentModal')",
+          "line": 206
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 207
+        },
+        {
+          "value": "import { PaymentModal } from '../components/PaymentModal';",
+          "line": 207
+        },
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 208
+        },
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 209
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 210
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 211
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 212
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 213
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 214
+        },
+        {
+          "value": "App.tsx",
+          "line": 215
+        },
+        {
+          "value": "App.tsx",
+          "line": 216
+        },
+        {
+          "value": "App.tsx",
+          "line": 217
+        },
+        {
+          "value": "App.tsx",
+          "line": 218
+        },
+        {
+          "value": "App.tsx",
+          "line": 219
+        },
+        {
+          "value": "App.tsx",
+          "line": 220
+        },
+        {
+          "value": "services/api.ts",
+          "line": 221
+        },
+        {
+          "value": "services/api.ts",
+          "line": 222
+        },
+        {
+          "value": "services/api.ts",
+          "line": 223
+        },
+        {
+          "value": "services/api.ts",
+          "line": 224
+        },
+        {
+          "value": "services/api.ts",
+          "line": 225
+        },
+        {
+          "value": "services/api.ts",
+          "line": 226
+        },
+        {
+          "value": "services/api.ts",
+          "line": 227
+        },
+        {
+          "value": "services/api.ts",
+          "line": 228
+        },
+        {
+          "value": "services/api.ts",
+          "line": 229
+        },
+        {
+          "value": "services/api.ts",
+          "line": 230
+        },
+        {
+          "value": "services/api.ts",
+          "line": 231
+        },
+        {
+          "value": "services/api.ts",
+          "line": 232
+        },
+        {
+          "value": "services/api.ts",
+          "line": 233
+        },
+        {
+          "value": "services/api.ts",
+          "line": 234
+        },
+        {
+          "value": "components/PlatformFontBootstrap.tsx",
+          "line": 235
+        },
+        {
+          "value": "App.tsx",
+          "line": 236
+        },
+        {
+          "value": "App.tsx",
+          "line": 237
+        },
+        {
+          "value": "App.tsx",
+          "line": 238
+        },
+        {
+          "value": "App.tsx",
+          "line": 239
+        },
+        {
+          "value": "App.tsx",
+          "line": 240
+        },
+        {
+          "value": "App.tsx",
+          "line": 241
+        },
+        {
+          "value": "App.tsx",
+          "line": 242
+        },
+        {
+          "value": "App.tsx",
+          "line": 243
+        },
+        {
+          "value": "App.tsx",
+          "line": 244
+        },
+        {
+          "value": "App.tsx",
+          "line": 245
+        },
+        {
+          "value": "App.tsx",
+          "line": 246
+        },
+        {
+          "value": "services/api.ts",
+          "line": 247
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 256
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 257
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-platform-fonts-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 9
+        },
+        {
+          "value": "services/api.ts",
+          "line": 12
+        },
+        {
+          "value": "utils/platformFonts.ts",
+          "line": 13
+        },
+        {
+          "value": "components/PlatformFontBootstrap.tsx",
+          "line": 14
+        },
+        {
+          "value": "dashboards/admin/PlatformFontsManager.tsx",
+          "line": 15
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 16
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-production-audit-contract.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 24
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-public-open-items-contract.mjs",
+      "references": [
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 19
+        },
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 20
+        },
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 21
+        },
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 22
+        },
+        {
+          "value": "components/MainLayout.tsx",
+          "line": 23
+        },
+        {
+          "value": "App.tsx",
+          "line": 25
+        },
+        {
+          "value": "App.tsx",
+          "line": 26
+        },
+        {
+          "value": "App.tsx",
+          "line": 27
+        },
+        {
+          "value": "App.tsx",
+          "line": 28
+        },
+        {
+          "value": "App.tsx",
+          "line": 29
+        },
+        {
+          "value": "App.tsx",
+          "line": 30
+        },
+        {
+          "value": "App.tsx",
+          "line": 31
+        },
+        {
+          "value": "pages/StaticInfoPage.tsx",
+          "line": 33
+        },
+        {
+          "value": "pages/StaticInfoPage.tsx",
+          "line": 34
+        },
+        {
+          "value": "pages/StaticInfoPage.tsx",
+          "line": 35
+        },
+        {
+          "value": "pages/StaticInfoPage.tsx",
+          "line": 36
+        },
+        {
+          "value": "pages/StaticInfoPage.tsx",
+          "line": 37
+        },
+        {
+          "value": "pages/Blog.tsx",
+          "line": 39
+        },
+        {
+          "value": "pages/Cart.tsx",
+          "line": 40
+        },
+        {
+          "value": "pages/Cart.tsx",
+          "line": 41
+        },
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 42
+        },
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 43
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-question-html-security-contract.mjs",
+      "references": [
+        {
+          "value": "utils/questionHtml.ts",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SkillsTreeManager.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 9
+        },
+        {
+          "value": "dashboards/admin/QuizBuilder.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/builders/UnifiedQuestionBuilder.tsx",
+          "line": 11
+        },
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 12
+        },
+        {
+          "value": "pages/Quiz.tsx",
+          "line": 13
+        },
+        {
+          "value": "pages/Results.tsx",
+          "line": 14
+        },
+        {
+          "value": "pages/Favorites.tsx",
+          "line": 15
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 16
+        },
+        {
+          "value": "components/RichTextEditor.tsx",
+          "line": 17
+        },
+        {
+          "value": "components/QuestionDrawingPad.tsx",
+          "line": 18
+        },
+        {
+          "value": "styles/main.css",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-quiz-access-contract.mjs",
+      "references": [
+        {
+          "value": "../types.ts",
+          "line": 3
+        },
+        {
+          "value": "../components/LearningSection.tsx",
+          "line": 4
+        },
+        {
+          "value": "../pages/GenericPathPage.tsx",
+          "line": 5
+        },
+        {
+          "value": "../dashboards/admin/PathsManager.tsx",
+          "line": 6
+        },
+        {
+          "value": "../dashboards/admin/QuizBuilder.tsx",
+          "line": 7
+        },
+        {
+          "value": "../dashboards/admin/QuizzesManager.tsx",
+          "line": 8
+        },
+        {
+          "value": "../pages/SubjectLearningPage.tsx",
+          "line": 9
+        },
+        {
+          "value": "../dashboards/admin/FoundationManager.tsx",
+          "line": 10
+        },
+        {
+          "value": "../utils/quizLearningPlacement.ts",
+          "line": 12
+        },
+        {
+          "value": "../pages/QuizPage.tsx",
+          "line": 13
+        },
+        {
+          "value": "../components/SimulatedTestExperience.tsx",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-quiz-answer-exposure-contract.mjs",
+      "references": [
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 9
+        },
+        {
+          "value": "pages/Results.tsx",
+          "line": 10
+        },
+        {
+          "value": "utils/quizPresentation.ts",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-quiz-client-security-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 6
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 7
+        },
+        {
+          "value": "pages/QuizPage.tsx",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-real-usage-readiness-contract.mjs",
+      "references": [
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 23
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 24
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 25
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 26
+        },
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 30
+        },
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 31
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 32
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 36
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 37
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 38
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 39
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 40
+        },
+        {
+          "value": "components/PaymentModal.tsx",
+          "line": 50
+        },
+        {
+          "value": "services/api.ts",
+          "line": 54
+        },
+        {
+          "value": "services/api.ts",
+          "line": 55
+        },
+        {
+          "value": "App.tsx",
+          "line": 56
+        },
+        {
+          "value": "services/api.ts",
+          "line": 57
+        },
+        {
+          "value": "services/api.ts",
+          "line": 58
+        },
+        {
+          "value": "App.tsx",
+          "line": 59
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-role-contract.mjs",
+      "references": [
+        {
+          "value": "../pages/Reports.tsx",
+          "line": 3
+        },
+        {
+          "value": "../pages/Dashboard.tsx",
+          "line": 4
+        },
+        {
+          "value": "../services/api.ts",
+          "line": 8
+        },
+        {
+          "value": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
+          "line": 43
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-results-contract.mjs",
+      "references": [
+        {
+          "value": "../pages/Results.tsx",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-route-loading-contract.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 6
+        },
+        {
+          "value": "components/Header.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/GenericPathPage.tsx",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-runtime-source-contract.mjs",
+      "references": [
+        {
+          "value": "../App.tsx",
+          "line": 4
+        },
+        {
+          "value": "../services/adapter.ts",
+          "line": 5
+        },
+        {
+          "value": "../store/useStore.ts",
+          "line": 6
+        },
+        {
+          "value": "../services/firebaseSync.ts",
+          "line": 40
+        },
+        {
+          "value": "../services/firebase.ts",
+          "line": 43
+        },
+        {
+          "value": "../services/firebase",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-saher-skill-scope.mjs",
+      "references": [
+        {
+          "value": "../pages/Quiz.tsx",
+          "line": 7
+        },
+        {
+          "value": "../pages/Results.tsx",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-school-management-contract.mjs",
+      "references": [
+        {
+          "value": "services/api.ts",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 9
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-school-portal-command-center-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolPortalManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "line": 8
+        },
+        {
+          "value": "contexts/AuthContext.tsx",
+          "line": 9
+        },
+        {
+          "value": "services/api.ts",
+          "line": 10
+        },
+        {
+          "value": "components/AnnouncementAdsOverlay.tsx",
+          "line": 191
+        },
+        {
+          "value": "components/AnnouncementAdsOverlay.tsx",
+          "line": 192
+        },
+        {
+          "value": "dashboards/admin/AnnouncementAdsManager.tsx",
+          "line": 193
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-sentry-runtime-contract.mjs",
+      "references": [
+        {
+          "value": "../index.tsx",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-seo-contract.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 21
+        },
+        {
+          "value": "App.tsx",
+          "line": 22
+        },
+        {
+          "value": "App.tsx",
+          "line": 23
+        },
+        {
+          "value": "App.tsx",
+          "line": 24
+        },
+        {
+          "value": "App.tsx",
+          "line": 25
+        },
+        {
+          "value": "App.tsx",
+          "line": 26
+        },
+        {
+          "value": "App.tsx",
+          "line": 27
+        },
+        {
+          "value": "App.tsx",
+          "line": 28
+        },
+        {
+          "value": "App.tsx",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-student-learning-progress-contract.mjs",
+      "references": [
+        {
+          "value": "components/LearningSection.tsx",
+          "line": 10
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 11
+        },
+        {
+          "value": "services/api.ts",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-student-path-scope-contract.mjs",
+      "references": [
+        {
+          "value": "pages/CourseView.tsx",
+          "line": 7
+        },
+        {
+          "value": "components/CourseOverview.tsx",
+          "line": 8
+        },
+        {
+          "value": "pages/Dashboard.tsx",
+          "line": 9
+        },
+        {
+          "value": "pages/Quizzes.tsx",
+          "line": 10
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-student-session-booking-contract.mjs",
+      "references": [
+        {
+          "value": "pages/BookSession.tsx",
+          "line": 13
+        },
+        {
+          "value": "pages/MyRequests.tsx",
+          "line": 14
+        },
+        {
+          "value": "pages/Dashboard.tsx",
+          "line": 15
+        },
+        {
+          "value": "dashboards/admin/LiveSessionsManager.tsx",
+          "line": 16
+        },
+        {
+          "value": "services/api.ts",
+          "line": 17
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-supervisor-dashboard-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SupervisorDashboard.tsx",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-video-questions-contract.mjs",
+      "references": [
+        {
+          "value": "types.ts",
+          "line": 4
+        },
+        {
+          "value": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
+          "line": 7
+        },
+        {
+          "value": "components/CustomVideoPlayer.tsx",
+          "line": 8
+        },
+        {
+          "value": "components/VideoModal.tsx",
+          "line": 9
+        },
+        {
+          "value": "pages/SubjectLearningPage.tsx",
+          "line": 10
+        },
+        {
+          "value": "components/CoursePlayer.tsx",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-xlsx-safety-contract.mjs",
+      "references": [
+        {
+          "value": "utils/xlsxLoader.ts",
+          "line": 22
+        },
+        {
+          "value": "dashboards/admin/LessonsManager.tsx",
+          "line": 62
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 63
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "line": 64
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "line": 86
+        },
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "line": 87
+        },
+        {
+          "value": "dashboards/admin/GroupsManager.tsx",
+          "line": 88
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "line": 89
+        },
+        {
+          "value": "dashboards/admin/LibraryManager.tsx",
+          "line": 90
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/repository-audit.mjs",
+      "references": [
+        {
+          "value": "App.tsx",
+          "line": 63
+        },
+        {
+          "value": "index.tsx",
+          "line": 63
+        },
+        {
+          "value": "types.ts",
+          "line": 63
+        },
+        {
+          "value": "App.tsx",
+          "line": 98
+        },
+        {
+          "value": "index.tsx",
+          "line": 99
+        },
+        {
+          "value": "types.ts",
+          "line": 100
+        },
+        {
+          "value": "services/api.ts",
+          "line": 101
+        },
+        {
+          "value": "store/useStore.ts",
+          "line": 102
+        },
+        {
+          "value": "services/",
+          "line": 113
+        },
+        {
+          "value": "services/",
+          "line": 113
+        },
+        {
+          "value": "store/",
+          "line": 114
+        },
+        {
+          "value": "store/",
+          "line": 114
+        },
+        {
+          "value": "utils/",
+          "line": 115
+        },
+        {
+          "value": "utils/",
+          "line": 115
+        },
+        {
+          "value": "App.tsx",
+          "line": 438
+        }
+      ]
+    }
+  ],
+  "missingRelativeNewUrlTargets": [
+    {
+      "file": "scripts/smoke-auth-account-contract.mjs",
+      "value": "../AUTH_ACCOUNT_SECURITY.md",
+      "resolved": "AUTH_ACCOUNT_SECURITY.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-auth-account-contract.mjs",
+      "value": "../PRODUCTION_READINESS_REPORT.md",
+      "resolved": "PRODUCTION_READINESS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-auth-frontend-contract.mjs",
+      "value": "../PRODUCTION_READINESS_REPORT.md",
+      "resolved": "PRODUCTION_READINESS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-database-index-contract.mjs",
+      "value": "../DATABASE_REVIEW.md",
+      "resolved": "DATABASE_REVIEW.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-database-index-contract.mjs",
+      "value": "../PRODUCTION_READINESS_REPORT.md",
+      "resolved": "PRODUCTION_READINESS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-deployment-handover-phase19-contract.mjs",
+      "value": "../19_20_DEPLOYMENT_HANDOVER_REPORT.md",
+      "resolved": "19_20_DEPLOYMENT_HANDOVER_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-deployment-handover-phase19-contract.mjs",
+      "value": "../DEPLOYMENT_GUIDE.md",
+      "resolved": "DEPLOYMENT_GUIDE.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-frontend-phase5-contract.mjs",
+      "value": "../05_FRONTEND_IMPLEMENTATION_REPORT.md",
+      "resolved": "05_FRONTEND_IMPLEMENTATION_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-load-test-contract.mjs",
+      "value": "../LOAD_TEST_REPORT.md",
+      "resolved": "LOAD_TEST_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-monitoring-contract.mjs",
+      "value": "../MONITORING_AND_LOGGING_GUIDE.md",
+      "resolved": "MONITORING_AND_LOGGING_GUIDE.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-monitoring-contract.mjs",
+      "value": "../PRODUCTION_READINESS_REPORT.md",
+      "resolved": "PRODUCTION_READINESS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
+      "value": "../SECURITY_CHECKLIST.md",
+      "resolved": "SECURITY_CHECKLIST.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
+      "value": "../PRODUCTION_READINESS_REPORT.md",
+      "resolved": "PRODUCTION_READINESS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
+      "value": "../DEPLOYMENT_GUIDE.md",
+      "resolved": "DEPLOYMENT_GUIDE.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-notification-contract.mjs",
+      "value": "../NOTIFICATION_SYSTEM_GUIDE.md",
+      "resolved": "NOTIFICATION_SYSTEM_GUIDE.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-notification-contract.mjs",
+      "value": "../WHATSAPP_INTEGRATION_GUIDE.md",
+      "resolved": "WHATSAPP_INTEGRATION_GUIDE.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-notification-contract.mjs",
+      "value": "../PRODUCTION_READINESS_REPORT.md",
+      "resolved": "PRODUCTION_READINESS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-production-ops-phase14-contract.mjs",
+      "value": "../14_15_16_PRODUCTION_OPS_REPORT.md",
+      "resolved": "14_15_16_PRODUCTION_OPS_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-qa-phase17-contract.mjs",
+      "value": "../17_18_TESTING_REPORT.md",
+      "resolved": "17_18_TESTING_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-qa-phase17-contract.mjs",
+      "value": "../TESTING_REPORT.md",
+      "resolved": "TESTING_REPORT.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-runtime-source-contract.mjs",
+      "value": "../services/firebaseSync.ts",
+      "resolved": "services/firebaseSync.ts",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-runtime-source-contract.mjs",
+      "value": "../services/firebase.ts",
+      "resolved": "services/firebase.ts",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
+      "value": "../SECURITY_CHECKLIST.md",
+      "resolved": "SECURITY_CHECKLIST.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
+      "value": "../RBAC_MATRIX.md",
+      "resolved": "RBAC_MATRIX.md",
+      "exists": false
+    },
+    {
+      "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
+      "value": "../06_07_SECURITY_RBAC_REPORT.md",
+      "resolved": "06_07_SECURITY_RBAC_REPORT.md",
+      "exists": false
+    }
+  ]
+}
