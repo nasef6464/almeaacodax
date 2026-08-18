@@ -47,3 +47,13 @@
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
+
+## Package Card presentation boundary — Full Phase Review PASS
+
+- تم نقل JSX وإدارة حقول بطاقة الباقة الواحدة من `SchoolPackagesPanel.tsx` إلى `SchoolPackageCard.tsx`.
+- الـchild يستقبل handlers والبيانات كـprops ولا يستورد manager/store/api، للحفاظ على فصل presentation عن orchestration.
+- الهدف تخفيض حجم parent panel إلى orchestration واضح مع بقاء update/delete/course assignment semantics كما هي.
+- أثناء أول Quick Gate ظهر خطأ TypeScript لأن `Trash2` ما زال مستخدمًا في parent panel لحذف أكواد التفعيل؛ تم إصلاح patcher للحفاظ على import بدل إزالة أيقونة لازالت مطلوبة.
+- الدفعة لا تغلق إلا بعد boundary contract + Quick Gate + Full Review + Standard Safety Gate.
+
+- Package Card Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
