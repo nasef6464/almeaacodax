@@ -14,6 +14,7 @@ const sources = {
     read("dashboards/admin/SchoolsManager.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
   ].join("\n"),
   schoolPortal: read("dashboards/admin/SchoolPortalManager.tsx"),
   usersManager: read("dashboards/admin/UsersManager.tsx"),
@@ -125,7 +126,8 @@ check("Frontend uses the server relations endpoint and refreshes users/groups fr
 
 check("Admin UI exposes school/class supervisor assignment, class movement, and parent linking flows", () => {
   assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
-  assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, classroom.id)");
+  assertIncludes(sources.schoolsManager, "onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}");
+  assertIncludes(sources.schoolsManager, "onAssignSupervisor(value).finally");
   assertIncludes(sources.schoolsManager, "handleAssignStudentToClass(student.id, value)");
   assertIncludes(sources.schoolsManager, "handleApplyRelationImport");
   assertIncludes(sources.schoolsManager, "بريد ولي الأمر");

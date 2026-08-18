@@ -176,3 +176,11 @@
 - فصل roster UI مع الحفاظ على search/class filter/current-class display/reassignment/confirmations/removal/pagination.
 - mutation functions لم تنتقل إلى child؛ لا API ولا global store imports.
 - direct boundary contract جديد يمنع رجوع markup إلى God Component ويثبت wiring والـconfirm/pending guards.
+
+## دفعة Schools Class Operating Card Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- فصل card presentation عن God Component مع إبقاء API/store/mutations/confirmations في orchestration layer.
+- boundary contract جديد يثبت أن child لا يستورد store أو API ويمنع رجوع markup إلى `SchoolsManager.tsx`.
+- school management وrelationship audit أصبحا يتبعان ownership الجديد بدل الاعتماد على موقع النص القديم.

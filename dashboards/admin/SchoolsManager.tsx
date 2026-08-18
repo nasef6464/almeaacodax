@@ -31,6 +31,7 @@ import { SchoolPackagesPanel } from './SchoolsManager/SchoolPackagesPanel';
 import { SchoolRelationsPanel } from './SchoolsManager/SchoolRelationsPanel';
 import { SchoolReportsPanel } from './SchoolsManager/SchoolReportsPanel';
 import { SchoolStudentRosterPanel } from './SchoolsManager/SchoolStudentRosterPanel';
+import { SchoolClassOperatingCard } from './SchoolsManager/SchoolClassOperatingCard';
 import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 import type {
     AccessCodesListResponse,
@@ -1562,6 +1563,65 @@ export const SchoolsManager: React.FC = () => {
                     ],
                 },
             ]);
+        };
+
+        const openClassRenameModal = (classroom: Group) => {
+            setEditNameModalState({
+                isOpen: true,
+                title: 'أدخل اسم الفصل الجديد',
+                initialValue: classroom.name,
+                onSave: async (newName: string) => {
+                    if (!newName.trim() || newName.trim() === classroom.name) return;
+                    setSchoolActionPending(`rename-class-${classroom.id}`);
+                    setSaveVerificationState('saving');
+                    setSaveVerificationMessage('جاري حفظ اسم الفصل...');
+                    setManagementError(null);
+                    setManagementNotice(null);
+                    try {
+                        await updateGroupAsync(classroom.id, { name: newName.trim() });
+                        await refreshSchoolWorkspace(selectedSchool.id);
+                        setSaveVerificationState('success');
+                        setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
+                        setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
+                    } catch (error) {
+                        setSaveVerificationState('error');
+                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
+                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
+                        throw error;
+                    } finally {
+                        setSchoolActionPending(null);
+                    }
+                },
+            });
+        };
+
+        const handleDeleteClass = async (classroom: Group) => {
+            if (!window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) return;
+
+            setSchoolActionPending(`delete-class-${classroom.id}`);
+            setSaveVerificationState('saving');
+            setSaveVerificationMessage('جاري حذف الفصل...');
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await deleteGroupAsync(classroom.id);
+                await refreshSchoolWorkspace(selectedSchool.id);
+                setSaveVerificationState('success');
+                setSaveVerificationMessage('تم حذف الفصل والتأكد منه من الخادم.');
+                setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
+            } catch (error) {
+                setSaveVerificationState('error');
+                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
+                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
+            } finally {
+                setSchoolActionPending(null);
+            }
+        };
+
+        const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {
+            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
+                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
+            }
         };
 
         const downloadClassReport = (classroom: Group) => {
@@ -3139,229 +3199,31 @@ export const SchoolsManager: React.FC = () => {
                                             const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
 
                                             return (
-                                                <div key={classroom.id} data-testid="school-class-card" data-school-class-id={classroom.id} className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
-                                                    <div className="flex justify-between items-start gap-3">
-                                                        <div>
-                                                            <h4 className="font-bold text-gray-900">{classroom.name}</h4>
-                                                            <p className="text-sm text-gray-500">
-                                                                {classStudents.length} طالب • {classSupervisors.length} مشرف • {classCourses.length} دورة
-                                                            </p>
-                                                            {classStudentsWithoutParent.length > 0 && (
-                                                                <p className="mt-1 text-xs font-bold text-amber-700">
-                                                                    {classStudentsWithoutParent.length} طالب بلا ولي أمر
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            <button
-                                                                onClick={() => downloadClassReport(classroom)}
-                                                                className="text-gray-400 hover:text-emerald-600 transition-colors"
-                                                                title="تصدير تقرير الفصل"
-                                                            >
-                                                                <Download size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => printClassReport(classroom)}
-                                                                className="text-gray-400 hover:text-indigo-600 transition-colors"
-                                                                title="طباعة تقرير الفصل"
-                                                            >
-                                                                <Printer size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => {
-                                                                    setEditNameModalState({
-                                                                        isOpen: true,
-                                                                        title: 'أدخل اسم الفصل الجديد',
-                                                                        initialValue: classroom.name,
-                                                                        onSave: async (newName: string) => {
-                                                                            if (!newName.trim() || newName.trim() === classroom.name) return;
-                                                                            setSchoolActionPending(`rename-class-${classroom.id}`);
-                                                                            setSaveVerificationState('saving');
-                                                                            setSaveVerificationMessage('جاري حفظ اسم الفصل...');
-                                                                            setManagementError(null);
-                                                                            setManagementNotice(null);
-                                                                            try {
-                                                                                await updateGroupAsync(classroom.id, { name: newName.trim() });
-                                                                                await refreshSchoolWorkspace(selectedSchool.id);
-                                                                                setSaveVerificationState('success');
-                                                                                setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
-                                                                                setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
-                                                                            } catch (error) {
-                                                                                setSaveVerificationState('error');
-                                                                                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
-                                                                                setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
-                                                                                throw error;
-                                                                            } finally {
-                                                                                setSchoolActionPending(null);
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                }}
-                                                                disabled={isSchoolWorkspaceBusy}
-                                                                className="text-gray-400 hover:text-amber-600 transition-colors"
-                                                            >
-                                                                <Edit2 size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={async () => {
-                                                                    if (window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) {
-                                                                        setSchoolActionPending(`delete-class-${classroom.id}`);
-                                                                        setSaveVerificationState('saving');
-                                                                        setSaveVerificationMessage('جاري حذف الفصل...');
-                                                                        setManagementError(null);
-                                                                        setManagementNotice(null);
-                                                                        try {
-                                                                            await deleteGroupAsync(classroom.id);
-                                                                            await refreshSchoolWorkspace(selectedSchool.id);
-                                                                            setSaveVerificationState('success');
-                                                                            setSaveVerificationMessage('تم حذف الفصل والتأكد من الخادم.');
-                                                                            setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
-                                                                        } catch (error) {
-                                                                            setSaveVerificationState('error');
-                                                                            setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
-                                                                            setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
-                                                                        } finally {
-                                                                            setSchoolActionPending(null);
-                                                                        }
-                                                                    }
-                                                                }}
-                                                                disabled={isSchoolWorkspaceBusy}
-                                                                className="text-gray-400 hover:text-red-600 transition-colors"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    <div data-testid="school-class-operating-actions" className="grid grid-cols-2 gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-3 md:grid-cols-4">
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-add-students"
-                                                            onClick={() => focusClassStudentForm(classroom.name)}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-indigo-600 hover:text-white"
-                                                        >
-                                                            إضافة طالب
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-roster"
-                                                            onClick={() => focusClassRoster(classroom.id)}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
-                                                        >
-                                                            طلاب الفصل
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-import-students"
-                                                            onClick={() => setActiveTab('import')}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-amber-500 hover:text-white"
-                                                        >
-                                                            Excel للفصل
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-access"
-                                                            onClick={() => setActiveTab('packages')}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-emerald-600 hover:text-white"
-                                                        >
-                                                            محتوى وأكواد
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 gap-3">
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-gray-600 mb-2">المشرف المسؤول</label>
-                                                            <select
-                                                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                                                defaultValue=""
-                                                                onChange={(event) => {
-                                                                    const target = event.currentTarget;
-                                                                    const value = event.target.value;
-                                                                    if (!value) return;
-                                                                    void handleAssignSchoolSupervisor(value, classroom.id).finally(() => {
-                                                                        target.value = '';
-                                                                    });
-                                                                }}
-                                                                disabled={Boolean(rosterActionPending)}
-                                                            >
-                                                                <option value="">إضافة مشرف للفصل</option>
-                                                                {supervisors
-                                                                    .filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id))
-                                                                    .map((currentUser) => (
-                                                                        <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
-                                                                    ))}
-                                                            </select>
-                                                            {supervisors.filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id)).length === 0 && (
-                                                                <p className="mt-2 text-xs font-bold leading-6 text-amber-700">
-                                                                    لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.
-                                                                </p>
-                                                            )}
-                                                            <button
-                                                                type="button"
-                                                                data-testid="school-class-create-supervisor"
-                                                                onClick={() => focusQuickSupervisorEntry(classroom.id, classroom.name)}
-                                                                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
-                                                            >
-                                                                <UserPlus size={14} />
-                                                                إنشاء مشرف جديد لهذا الفصل
-                                                            </button>
-                                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                                {classSupervisors.length === 0 ? (
-                                                                    <span className="text-xs text-gray-400">لا يوجد مشرف مرتبط بهذا الفصل.</span>
-                                                                ) : classSupervisors.map((currentUser) => (
-                                                                    <button
-                                                                        key={currentUser.id}
-                                                                        type="button"
-                                                                        data-testid="school-remove-class-supervisor"
-                                                                        onClick={() => {
-                                                                            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
-                                                                                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
-                                                                            }
-                                                                        }}
-                                                                        disabled={Boolean(rosterActionPending)}
-                                                                        className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
-                                                                    >
-                                                                        {currentUser.name} ×
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-gray-600 mb-2">الدورات المخصصة</label>
-                                                            <select
-                                                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                                                defaultValue=""
-                                                                onChange={(event) => {
-                                                                    const value = event.target.value;
-                                                                    if (!value) return;
-                                                                    assignCourseToGroup(value, classroom.id);
-                                                                    event.target.value = '';
-                                                                }}
-                                                            >
-                                                                <option value="">إضافة دورة للفصل</option>
-                                                                {publishedCourses
-                                                                    .filter((course) => !classroom.courseIds.includes(course.id))
-                                                                    .map((course) => (
-                                                                        <option key={course.id} value={course.id}>{course.title}</option>
-                                                                    ))}
-                                                            </select>
-                                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                                {classCourses.length === 0 ? (
-                                                                    <span className="text-xs text-gray-400">لا توجد دورات مرتبطة بهذا الفصل.</span>
-                                                                ) : classCourses.map((course) => (
-                                                                    <button
-                                                                        key={course.id}
-                                                                        onClick={() => removeCourseFromGroup(course.id, classroom.id)}
-                                                                        className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
-                                                                    >
-                                                                        {course.title} ×
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <SchoolClassOperatingCard
+                                                    key={classroom.id}
+                                                    classroom={classroom}
+                                                    classStudentCount={classStudents.length}
+                                                    studentsWithoutParentCount={classStudentsWithoutParent.length}
+                                                    classSupervisors={classSupervisors}
+                                                    classCourses={classCourses}
+                                                    supervisors={supervisors}
+                                                    publishedCourses={publishedCourses}
+                                                    rosterActionPending={rosterActionPending}
+                                                    isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                                    onDownloadReport={() => downloadClassReport(classroom)}
+                                                    onPrintReport={() => printClassReport(classroom)}
+                                                    onRename={() => openClassRenameModal(classroom)}
+                                                    onDelete={() => void handleDeleteClass(classroom)}
+                                                    onFocusStudentForm={() => focusClassStudentForm(classroom.name)}
+                                                    onFocusRoster={() => focusClassRoster(classroom.id)}
+                                                    onOpenImport={() => setActiveTab('import')}
+                                                    onOpenPackages={() => setActiveTab('packages')}
+                                                    onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}
+                                                    onCreateSupervisor={() => focusQuickSupervisorEntry(classroom.id, classroom.name)}
+                                                    onRemoveSupervisor={(currentUser) => handleRemoveClassSupervisor(classroom, currentUser)}
+                                                    onAssignCourse={(courseId) => assignCourseToGroup(courseId, classroom.id)}
+                                                    onRemoveCourse={(courseId) => removeCourseFromGroup(courseId, classroom.id)}
+                                                />
                                             );
                                         })}
                                     </div>

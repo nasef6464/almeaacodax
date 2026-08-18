@@ -81,3 +81,11 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
 
 ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
+
+## دفعة Schools Class Operating Card Presentation
+
+- تم فصل عرض بطاقة تشغيل الفصل إلى `SchoolClassOperatingCard.tsx`.
+- rename/delete/supervisor/course mutations بقيت في `SchoolsManager.tsx` وتصل للـchild عبر callbacks صريحة.
+- تم الحفاظ على إجراءات إضافة الطالب، كشف الفصل، Excel، المحتوى والأكواد، المشرفين والدورات بدون تغيير النصوص أو التدفق.
+- Full Class Card Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
