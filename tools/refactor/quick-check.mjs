@@ -19,6 +19,7 @@ const profiles = {
     ['school package access view-model contract', 'node', ['scripts/smoke-schools-package-access-viewmodel-contract.mjs']],
     ['school package card boundary contract', 'node', ['scripts/smoke-schools-package-card-boundary-contract.mjs']],
     ['school access codes boundary contract', 'node', ['scripts/smoke-schools-access-codes-boundary-contract.mjs']],
+    ['school relations import boundary contract', 'node', ['scripts/smoke-schools-relations-import-boundary-contract.mjs']],
     ['school XLSX safety contract', 'npm', ['run', 'smoke:xlsx-safety']],
     ['frontend performance contract', 'npm', ['run', 'smoke:performance']],
     ...sharedArchitectureChecks,
