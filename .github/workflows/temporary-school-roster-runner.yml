@@ -1,0 +1,87 @@
+name: Temporary School Roster Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/roster-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-roster-phase:
+    if: startsWith(github.head_ref, 'refactor/roster-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Import staged roster phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/roster-runner-base -- \
+            dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx \
+            scripts/smoke-schools-student-roster-boundary-contract.mjs \
+            tools/refactor/apply-school-roster-extraction.py \
+            tools/refactor/phase-review-school-roster.mjs
+
+      - name: Apply roster presentation extraction
+        run: python tools/refactor/apply-school-roster-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full roster phase review
+        run: node tools/refactor/phase-review-school-roster.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified roster phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Schools Student Roster Presentation\n\n- تم نقل البحث/فلترة الفصل/جدول الطلاب/النقل/الإزالة/التصفح إلى `SchoolStudentRosterPanel.tsx`.\n- API/store/mutation ownership بقي في `SchoolsManager.tsx`؛ child يستقبل callbacks صريحة فقط.\n- `rosterViewModel.ts` بقي مسؤولًا عن projection/filter/pagination عالي الكفاءة.\n- Full Roster Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint المستخدم للتحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Schools Student Roster Presentation\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- فصل roster UI مع الحفاظ على search/class filter/current-class display/reassignment/confirmations/removal/pagination.\n- mutation functions لم تنتقل إلى child؛ لا API ولا global store imports.\n- direct boundary contract جديد يمنع رجوع markup إلى God Component ويثبت wiring والـconfirm/pending guards.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-school-roster-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx \
+            dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx \
+            scripts/smoke-school-management-contract.mjs \
+            scripts/smoke-schools-student-roster-boundary-contract.mjs \
+            tools/refactor/phase-review-school-roster.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(schools): extract student roster presentation"
+          git push origin HEAD:refactor/repository-v2-safe
