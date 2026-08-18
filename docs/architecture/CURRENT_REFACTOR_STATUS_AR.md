@@ -1,52 +1,70 @@
 # نقطة متابعة Refactor V2 الحالية
 
-هذا الملف مختصر سريع بجانب السجل الكامل `REFACTOR_V2_EXECUTION_LEDGER_AR.md` حتى يستطيع أي مطور أو Agent معرفة آخر نقطة موثقة قبل المتابعة.
+هذا الملف هو المختصر التشغيلي السريع بجانب السجل الكامل `REFACTOR_V2_EXECUTION_LEDGER_AR.md`.
 
 ## الهدف الثابت
 
-إعادة تنظيم ALMEAA كـ Modular Monolith واضح وقابل للتوسع بدون تغيير سلوك المنتج أو الـURLs أو API contracts أو auth/RBAC أو quiz integrity أو payment/access semantics أو بيانات الإنتاج.
+إعادة تنظيم ALMEAA كـ **Modular Monolith** واضح وقابل للتوسع، بدون تغيير سلوك المنتج أو الـURLs أو API contracts أو auth/RBAC أو quiz integrity أو payment/access semantics أو بيانات الإنتاج.
 
-## ما أصبح ثابتًا حتى الآن
+## ما أصبح ثابتًا
 
-- العمل فقط على `refactor/repository-v2-safe`، و`main` غير مدموج معه.
-- Architecture Gate يمنع فقد routes/mounts وruntime broken imports وdependency cycles وتجاوز budget المتفق عليه.
+- العمل البنيوي على `refactor/repository-v2-safe`، و`main` لا يُدمج معه قبل Release Candidate مغلق بالكامل.
+- Architecture Gate يمنع فقد routes/mounts وruntime broken imports وdependency cycles وتجاوز budget.
 - Module Boundary Gate يحمي الوحدات الجديدة وحدود Schools child/parent.
-- Quick Gate أثناء الدفعات الصغيرة، وFull Phase Review + Safety Gate عند إغلاق كل دفعة.
-- تم فصل import parsing/XLSX، readiness/portfolio، relationships، decision/handover، roster pagination، package/access projections وعدة presentation boundaries من SchoolsManager.
-- أصبح نجاح Vercel Preview شرطًا إضافيًا لإغلاق أي دفعة؛ المرجع: `docs/architecture/DEPLOYMENT_STAGE_GATE_AR.md`.
+- Quick Gate أثناء الدفعات الصغيرة، وFull Safety Gate عند إغلاق الدفعات.
+- Vercel Preview Gate شرط إغلاق إضافي، لكنه لا يحول مشكلة quota خارجية إلى عيب كود.
+- المرجع المحلي للـAgents: `docs/development/LOCAL_AGENT_SYNC_AR.md` والسكربت `tools/sync-refactor-local.ps1`.
 
-## آخر نتيجة مؤكدة
+## آخر فحص كود مؤكد
 
-- Safety Gate run `#277`: **PASS بالكامل** بعد إصلاح عقد relations-import.
-- Frontend + API typecheck/build: **PASS**.
-- Architecture + module boundaries: **PASS**.
-- School management/import/readiness/relationship/workspace/roster/package/access/presentation contracts: **PASS**.
-- Performance + routes + runtime + quiz integrity + auth/API security: **PASS**.
-- repository audit في هذا التشغيل: `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime imports، `0` dependency cycles، و`82` hotspot فوق 400 سطر مقابل budget `83`.
-- `SchoolsManager.tsx` ظهر في آخر import contract عند `4308` أسطر.
-- Vercel commit status على آخر checkpoint قبل إضافة بوابة النشر كان `success`، وهو متوافق مع رسالة Vercel التي تقول إن Preview Deployments أصبحت ready.
+على commit `d32c5b24186606d10c4c453a66c7ff6dae743946`:
 
-## ما تم اكتشافه وإصلاحه أخيرًا
+- frontend typecheck: **PASS**.
+- API typecheck: **PASS**.
+- frontend production build: **PASS**.
+- API production build: **PASS**.
+- architecture + module boundaries: **PASS**.
+- Schools management/XLSX/import/readiness/relationships/workspace/roster/package/access/presentation contracts: **PASS**.
+- performance + package revenue + relationship audit: **PASS**.
+- routes + runtime source + quiz integrity + auth security + API security: **PASS**.
+- repository audit: `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime imports، `0` dependency cycles، و`82` hotspot فوق 400 سطر مقابل budget `83`.
+- `SchoolsManager.tsx`: `4308` أسطر في آخر import contract.
 
-عقد `smoke-schools-relations-import-boundary-contract.mjs` كان يبحث عن action قديم باسم `downloadSchoolReport` بينما الـcomponent الحالي يستخدم `downloadRelationsReport`. تم إصلاح العقد ليتحقق من الاسم الفعلي ومن الربط `onClick={downloadRelationsReport}` بدل تمرير failure كاذب أو إضعاف الحماية.
+## حالة Vercel الحالية
 
-## التغيير الجاري الآن
+آخر failure ظهر بعنوان `build-rate-limit` من Vercel Hobby بسبب كثرة Preview builds خلال الساعة، وليس failure في TypeScript أو build داخل GitHub Actions.
 
-تمت إضافة `Vercel preview deployment gate` إلى `Refactor V2 Safety Gate`. بعد نجاح فحوص الكود ينتظر GitHub حالة Vercel لنفس commit:
+لذلك:
 
-- success -> Preview مثبت.
-- failure/error -> المرحلة حمراء.
-- timeout -> المرحلة حمراء بدل افتراض أن النشر تم.
+- لا يتم تخفيف Vercel Preview Gate.
+- لا تُعلن المرحلة مغلقة نهائيًا حتى يعود Preview إلى `success`.
+- يتم تجميع التعديلات في commits أكبر ومنطقية وتقليل عدد branch pushes لتجنب استهلاك quota بلا داعٍ.
 
-هذا يحقق شرط أن كل مرحلة كبيرة يكون لها CI أخضر **وPreview Deployment ناجح** قبل إعلان إغلاقها، مع إبقاء Production و`main` منفصلين حتى Release Candidate آمن.
+## الدفعة الجاري تجهيزها
 
-## الخطوة التالية
+`Schools Relations Presentation`:
 
-1. التحقق من نجاح Safety Gate + Vercel Preview Gate على commit إضافة بوابة النشر.
-2. مواصلة تفكيك `SchoolRelationsPanel`/School workspace إلى presentation components صغيرة دون نقل API/store ownership إلى children.
-3. إغلاق hotspot المدارس فقط بعد Full Gate + Preview Gate.
-4. الانتقال إلى `pages/Reports.tsx` ثم `content.routes.ts` و`quiz.routes.ts` بنفس البروتوكول.
+1. فصل حالة الجاهزية وإحصاءات العلاقات إلى `SchoolRelationsStatusPanel.tsx`.
+2. فصل نموذج إضافة مدير/مشرف إلى `SchoolQuickSupervisorCard.tsx`.
+3. إبقاء API/store/orchestration في parent وعدم نقلها إلى presentation children.
+4. استخدام عقد `QuickSupervisorDraft` مشترك داخل `SchoolsManager/contracts.ts` بدل تكرار الشكل inline.
+5. إضافة boundary contracts جديدة لكلا الجزأين وجعلهما جزءًا من Safety Gate.
 
-## قاعدة الإغلاق
+الدفعة لا تُغلق إلا بعد Full Gate أخضر ثم Preview ناجح.
 
-لا تُغلق أي دفعة إذا كان أي من التالي أحمر: typecheck، frontend/API build، direct logic contract، performance، architecture، module boundaries، routes/runtime، quiz integrity، auth، API security، أو Vercel Preview deployment status.
+## المسار التالي
+
+بعد إغلاق Schools Relations Presentation:
+
+1. استخراج reports tab الخاص بالمدرسة من `SchoolsManager.tsx` إلى presentation/read-model boundaries أصغر.
+2. استخراج student roster/table presentation من `SchoolsManager.tsx` مع إبقاء actions في orchestration layer.
+3. إغلاق hotspot المدارس بعد فحص شامل.
+4. الانتقال إلى `pages/Reports.tsx` ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بنفس البروتوكول.
+
+## قاعدة الاستمرار لأي Agent
+
+ابدأ دائمًا من:
+
+`AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
+
+ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
