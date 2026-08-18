@@ -108,6 +108,12 @@ jobs:
       - name: School roster filter and pagination logic contract
         run: node scripts/smoke-schools-roster-viewmodel-contract.mjs
 
+      - name: School student roster presentation boundary contract
+        run: node scripts/smoke-schools-student-roster-boundary-contract.mjs
+
+      - name: School class operating card presentation boundary contract
+        run: node scripts/smoke-schools-class-card-boundary-contract.mjs
+
       - name: School package access projection contract
         run: node scripts/smoke-schools-package-access-viewmodel-contract.mjs
 
