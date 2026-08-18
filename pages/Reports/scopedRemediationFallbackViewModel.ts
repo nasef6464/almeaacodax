@@ -1,7 +1,7 @@
 import { displayText, type SmartRemediationPlan } from './reportDomain';
 
 export type ScopedRemediationSkill = {
-    skill: unknown;
+    skill: string;
     mastery: number;
 };
 
