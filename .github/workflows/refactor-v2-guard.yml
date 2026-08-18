@@ -199,7 +199,9 @@ jobs:
           exit 1
 
   execute-school-reports-extraction:
-    if: github.event_name == 'push' && github.event.head_commit.message == 'ci(refactor): execute school reports extraction'
+    if: >-
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'ci(refactor): execute school reports extraction'
     needs: baseline-quality-gate
     permissions:
       contents: write
