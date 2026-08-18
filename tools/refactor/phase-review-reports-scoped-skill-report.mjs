@@ -81,6 +81,24 @@ if (applyStudentSelectedSkillPresentation.status !== 0) {
   process.exit(applyStudentSelectedSkillPresentation.status ?? 1);
 }
 
+const applySchoolPortfolioProjection = spawnSync('node', ['tools/refactor/apply-school-portfolio-projection.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (applySchoolPortfolioProjection.status !== 0) {
+  console.error('[reports-student-report-scope-phase-review] Failed to apply school portfolio projection extraction');
+  process.exit(applySchoolPortfolioProjection.status ?? 1);
+}
+
+const reviewSchoolPortfolioProjection = spawnSync('node', ['tools/refactor/phase-review-school-portfolio-projection.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (reviewSchoolPortfolioProjection.status !== 0) {
+  console.error('[reports-student-report-scope-phase-review] Failed school portfolio projection phase review');
+  process.exit(reviewSchoolPortfolioProjection.status ?? 1);
+}
+
 const checks = [
   ['git diff whitespace validation', 'git', ['diff', '--check']],
   ['frontend typecheck', 'npm', ['run', 'typecheck']],

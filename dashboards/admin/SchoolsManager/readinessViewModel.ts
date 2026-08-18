@@ -1,6 +1,7 @@
 import type { AccessCode, B2BPackage, Group, User } from '../../../types';
 
 export type SchoolReadinessTab = 'overview' | 'relations' | 'packages';
+export type SchoolPortfolioFilterMode = 'active' | 'needs_setup' | 'ready' | 'all';
 
 export interface SchoolReadinessCheck {
     key: 'classes' | 'students' | 'supervisors' | 'packages' | 'codes';
@@ -38,6 +39,7 @@ export interface SchoolPortfolioRow {
     activeCodeCount: number;
     readinessScore: number;
     readinessTotal: number;
+    isCommerciallyHiddenDraft: boolean;
     status: 'جاهزة للبيع/التسليم' | 'قريبة من التسليم' | 'تحتاج تجهيز';
     nextAction?: SchoolReadinessCheck;
 }
@@ -49,6 +51,12 @@ export interface SchoolPortfolioSummary {
     totalStudents: number;
     totalActivePackages: number;
     nextPriority?: SchoolPortfolioRow;
+}
+
+export interface SchoolPortfolioFilterResult {
+    filteredRows: SchoolPortfolioRow[];
+    hiddenDraftSchoolsCount: number;
+    visibleDraftSchoolsCount: number;
 }
 
 export const getStudentsForSchool = (
@@ -179,10 +187,36 @@ export const buildSchoolPortfolioRows = (
         activeCodeCount: snapshot.activeCodeCount,
         readinessScore,
         readinessTotal: readinessChecks.length,
+        isCommerciallyHiddenDraft: snapshot.isCommerciallyHiddenDraft,
         status,
         nextAction,
     };
 });
+
+export const filterSchoolPortfolioRows = (
+    rows: SchoolPortfolioRow[],
+    schoolSearch: string,
+    schoolListMode: SchoolPortfolioFilterMode,
+): SchoolPortfolioFilterResult => {
+    const keyword = schoolSearch.trim().toLowerCase();
+    const filteredRows = rows.filter((row) => {
+        const matchesSearch = !keyword || row.school.name.toLowerCase().includes(keyword);
+        if (!matchesSearch) return false;
+
+        if (schoolListMode === 'all' || keyword) return true;
+        if (schoolListMode === 'ready') return row.readinessScore === row.readinessTotal;
+        if (schoolListMode === 'needs_setup') {
+            return row.readinessScore < row.readinessTotal && !row.isCommerciallyHiddenDraft;
+        }
+        return !row.isCommerciallyHiddenDraft;
+    });
+
+    return {
+        filteredRows,
+        hiddenDraftSchoolsCount: rows.filter((row) => row.isCommerciallyHiddenDraft).length,
+        visibleDraftSchoolsCount: filteredRows.filter((row) => row.isCommerciallyHiddenDraft).length,
+    };
+};
 
 export const summarizeSchoolPortfolio = (
     rows: SchoolPortfolioRow[],
