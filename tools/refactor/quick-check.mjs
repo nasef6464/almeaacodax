@@ -12,6 +12,8 @@ const profiles = {
     ['frontend typecheck', 'npm', ['run', 'typecheck']],
     ['school management contract', 'npm', ['run', 'smoke:school-management']],
     ['school import parser contract', 'npm', ['run', 'smoke:schools-import-parsing']],
+    ['school readiness view-model contract', 'node', ['scripts/smoke-schools-readiness-viewmodel-contract.mjs']],
+    ['school relationship workspace contract', 'node', ['scripts/smoke-schools-relationship-viewmodel-contract.mjs']],
     ['school XLSX safety contract', 'npm', ['run', 'smoke:xlsx-safety']],
     ['frontend performance contract', 'npm', ['run', 'smoke:performance']],
     ...sharedArchitectureChecks,
