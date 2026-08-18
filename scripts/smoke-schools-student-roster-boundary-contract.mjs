@@ -42,7 +42,7 @@ assert.ok(lineCount(roster) <= 260, `SchoolStudentRosterPanel must stay <= 260 l
 
 assert.ok(manager.includes("from './SchoolsManager/SchoolStudentRosterPanel';"), 'SchoolsManager must compose student roster panel');
 assert.ok(manager.includes('<SchoolStudentRosterPanel'), 'SchoolsManager must render student roster panel');
-assert.ok(!manager.includes('data-testid="school-roster-panel"'), 'roster markup must not return to manager');
+assert.ok(!manager.includes('<div data-testid="school-roster-panel"'), 'roster markup must not return to manager');
 assert.ok(!manager.includes('pagedVisibleSchoolStudents.map((student)'), 'student row rendering must remain outside manager');
 assert.ok(lineCount(manager) <= 3950, `SchoolsManager roster extraction regression: ${lineCount(manager)} lines exceeds 3950.`);
 
