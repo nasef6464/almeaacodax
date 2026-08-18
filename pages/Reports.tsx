@@ -41,6 +41,7 @@ import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildS
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
 import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
+import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -182,50 +183,30 @@ const Reports: React.FC = () => {
         [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects],
     );
 
-    const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
     const studentEvidenceSummary = useMemo(
         () => buildStudentEvidenceSummary(aggregatedSkills),
         [aggregatedSkills],
     );
-    const studentEnrolledPathIds = useMemo(() => Array.from(new Set(enrolledPaths || [])).filter(Boolean), [enrolledPaths]);
-    const studentEnrolledPathLabels = useMemo(
-        () => studentEnrolledPathIds.map((pathId, index) => displayText(paths.find((path) => path.id === pathId)?.name) || `مسار مسجل ${index + 1}`),
-        [paths, studentEnrolledPathIds],
+    const {
+        weakestSkill, studentEnrolledPathIds, studentEnrolledPathLabels, studentReportPathOptions,
+        studentPathScopedSkills, reportBaseSkills, reliableAggregatedSkills, reliableWeakSkills,
+        reliableAverageSkills, earlyWeakSignals, focusedReportSkills, primaryReportSkill,
+        selectedReportSkill, studentTrackLabel, hasStudentTrackScope,
+    } = useMemo(
+        () => buildStudentReportScope({
+            aggregatedSkills,
+            paths,
+            enrolledPaths,
+            selectedStudentPathId,
+            selectedSkillKey,
+            role: user.role,
+        }),
+        [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, user.role],
     );
-    const studentReportPathOptions = useMemo(
-        () => paths.filter((path) => studentEnrolledPathIds.includes(path.id) || user.role !== Role.STUDENT),
-        [paths, studentEnrolledPathIds, user.role],
-    );
-    const effectiveStudentPathIds = selectedStudentPathId === 'all'
-        ? studentEnrolledPathIds
-        : [selectedStudentPathId].filter(Boolean);
-    const studentPathScopedSkills = useMemo(
-        () =>
-            effectiveStudentPathIds.length > 0
-                ? aggregatedSkills.filter((skill) => skill.pathId && effectiveStudentPathIds.includes(skill.pathId))
-                : aggregatedSkills,
-        [aggregatedSkills, effectiveStudentPathIds],
-    );
-    const reportBaseSkills = studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills;
-    const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
-    const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);
-    const reliableAverageSkills = reliableAggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75);
-    const earlyWeakSignals = reportBaseSkills.filter((skill) => skill.mastery < 50 && !skill.isReliable);
-    const focusedReportSkills = (
-        reliableWeakSkills.length > 0
-            ? [...reliableWeakSkills, ...reliableAverageSkills]
-            : reliableAggregatedSkills.length > 0
-                ? reliableAggregatedSkills
-                : reportBaseSkills
-    ).slice(0, 6);
-    const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
-    const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
-    const studentTrackLabel = studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '';
-    const hasStudentTrackScope = studentEnrolledPathIds.length > 0;
     const skillReadinessSummary = useMemo(
         () => buildStudentSkillReadinessSummary(
             reportBaseSkills,
