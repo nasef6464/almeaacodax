@@ -35,7 +35,9 @@ for (const behavior of [
 assert.ok(child.includes("window.confirm('هل تريد حذف كود التفعيل هذا؟')"), 'access code delete confirmation must remain intact');
 assert.ok(child.includes("toLocaleDateString('ar-SA')"), 'Arabic expiry-date presentation must remain intact');
 assert.ok(child.includes('copiedCodeId === code.id'), 'copy feedback must remain intact');
-assert.ok(lineCount(child) <= 260, `SchoolAccessCodesPanel must stay <= 260 lines; got ${lineCount(child)}`);
+// Verified extraction measured 171 lines. Lock a small growth allowance instead
+// of leaving the initial exploratory 260-line ceiling in place.
+assert.ok(lineCount(child) <= 180, `SchoolAccessCodesPanel must stay <= 180 lines; got ${lineCount(child)}`);
 
 assert.ok(parent.includes("from './SchoolAccessCodesPanel';"), 'SchoolPackagesPanel must compose access-code child');
 assert.ok(parent.includes('<SchoolAccessCodesPanel'), 'SchoolPackagesPanel must render extracted access-code panel');
