@@ -126,6 +126,9 @@ jobs:
       - name: School command center presentation boundary contract
         run: node scripts/smoke-schools-command-center-boundary-contract.mjs
 
+      - name: School portfolio filter presentation boundary contract
+        run: node scripts/smoke-schools-portfolio-filter-boundary-contract.mjs
+
       - name: School package access projection contract
         run: node scripts/smoke-schools-package-access-viewmodel-contract.mjs
 
@@ -161,6 +164,21 @@ jobs:
 
       - name: School relationship audit contract
         run: node scripts/smoke-batch100f-relationship-audit-contract.mjs
+
+      - name: Reports domain boundary contract
+        run: node scripts/smoke-reports-domain-boundary-contract.mjs
+
+      - name: Reports role contract
+        run: npm run smoke:reports-role
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Student learning journey contract
+        run: npm run smoke:student-learning-journey
+
+      - name: Results contract
+        run: npm run smoke:results
 
       - name: Route loading contract
         run: npm run smoke:route-loading
