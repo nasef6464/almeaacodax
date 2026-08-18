@@ -45,6 +45,15 @@ if (applyScopedRemediationFallback.status !== 0) {
   process.exit(applyScopedRemediationFallback.status ?? 1);
 }
 
+const applyScopedExportRows = spawnSync('node', ['tools/refactor/apply-reports-scoped-export-rows.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (applyScopedExportRows.status !== 0) {
+  console.error('[reports-student-report-scope-phase-review] Failed to apply scoped export rows extraction');
+  process.exit(applyScopedExportRows.status ?? 1);
+}
+
 const checks = [
   ['git diff whitespace validation', 'git', ['diff', '--check']],
   ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -66,6 +75,7 @@ const checks = [
   ['reports student report scope boundary', 'node', ['scripts/smoke-reports-student-report-scope-boundary-contract.mjs']],
   ['reports student remediation fallback boundary', 'node', ['scripts/smoke-reports-student-remediation-fallback-boundary-contract.mjs']],
   ['reports scoped remediation fallback boundary', 'node', ['scripts/smoke-reports-scoped-remediation-fallback-boundary-contract.mjs']],
+  ['reports scoped export rows boundary', 'node', ['scripts/smoke-reports-scoped-export-rows-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
