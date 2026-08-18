@@ -146,3 +146,15 @@
 ثم يغيّر concern واحدًا فقط في كل دفعة صغيرة، يستخدم Quick Gate أثناء العمل، ويستخدم Full Gate فقط عند إغلاق المرحلة.
 
 - Schools relationship workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.
+
+## دفعة Schools Workspace الثانية — Decision / Handover View-Model
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate القياسي على commit الناتج.**
+
+- نقل readiness checks والـoperational warnings وقرار التسليم والـoperating steps والـdecision cards والـlaunch plan والـhandover message إلى `SchoolsManager/workspaceViewModel.ts`.
+- الهدف: إبقاء `SchoolsManager.tsx` مسؤولًا عن orchestration/actions/UI فقط، وتقليل منطق القرار التجاري/التشغيلي المكرر داخل الـcomponent.
+- العقد المباشر يغطي المدرسة الفارغة، المدرسة الجاهزة 5/5، استهلاك المقاعد، الطلاب بلا فصل/ولي أمر، حالات save verification، وحساب 10,000 نموذج لمنع انحدار حسابي واضح.
+
+- أثناء Quick Gate ظهر أن عقد school-management الخاص بأكواد الدخول كان مربوطًا بشكل تنفيذ قديم (`payload`/نسخ studentIds). تمت مراجعة `auth.routes.ts` وتأكد أن السلوك الحالي يحفظ `schoolId` و`groupIds` للمستخدم، يضيف الطالب إلى `Group.studentIds`، ويعيد مزامنة `totalStudents`. تم تحديث العقد ليتحقق من هذه الدلالات الحالية بدل الشكل القديم، بدون تخفيف السلوك المطلوب.
+
+- Schools decision/handover workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.

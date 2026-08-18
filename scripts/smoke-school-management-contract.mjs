@@ -268,10 +268,15 @@ check("school bulk import and relation uploads keep class membership singular", 
 });
 
 check("school access codes attach students to the school roster", () => {
-  assertIncludes(files.authRoutes, "if (accessCode.schoolId) {");
-  assertIncludes(files.authRoutes, "payload.schoolId = schoolId;");
-  assertIncludes(files.authRoutes, "schoolStudentIds = uniqueStrings([...(school.studentIds || []).map(String), userId]);");
-  assertIncludes(files.authRoutes, "{ $set: { studentIds: schoolStudentIds } }");
+  assertIncludes(files.authRoutes, 'const schoolId = String(accessCode.schoolId || linkedPackage.schoolId || "").trim();');
+  assertIncludes(files.authRoutes, 'if (schoolId && String(user.role || "") === "student") {');
+  assertIncludes(files.authRoutes, 'UserModel.findByIdAndUpdate(user._id, {');
+  assertIncludes(files.authRoutes, '$set: { schoolId },');
+  assertIncludes(files.authRoutes, '$addToSet: { groupIds: schoolId },');
+  assertIncludes(files.authRoutes, 'GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {');
+  assertIncludes(files.authRoutes, '$addToSet: { studentIds: String(user.id || user._id) },');
+  assertIncludes(files.authRoutes, 'const schoolStudentCount = await UserModel.countDocuments({ schoolId, role: "student" });');
+  assertIncludes(files.authRoutes, '$set: { totalStudents: schoolStudentCount },');
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
