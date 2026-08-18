@@ -44,6 +44,7 @@ import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLe
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
 import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
 import { buildScopedRemediationFallback } from './Reports/scopedRemediationFallbackViewModel';
+import { buildScopedSkillsWorkbookRows, buildScopedStudentsWorkbookRows } from './Reports/scopedExportRowsViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -542,44 +543,17 @@ const Reports: React.FC = () => {
     );
     const downloadScopedSkillsWorkbook = async () => {
         if (!scopedAnalytics?.weakestSkills?.length) return;
-
         const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
-        const rows = [
-            ['المهارة', 'المحور', 'نسبة الإتقان', 'طلاب متأثرون', 'محاولات', 'الإجراء المقترح', 'شرح / دعم', 'اختبار موجه'],
-            ...scopedSkillReportCards.map((skill) => [
-                displayText(skill.skill) || '-',
-                displayText(skill.section) || '-',
-                `${skill.mastery}%`,
-                skill.affectedStudents,
-                skill.attempts,
-                displayText(skill.recommendedAction) || 'شرح قصير ثم تدريب علاجي ثم اختبار متابعة.',
-                displayText(skill.lessonTitle) || '-',
-                displayText(skill.quizTitle) || '-',
-            ]),
-        ];
-
+        const rows = buildScopedSkillsWorkbookRows(scopedSkillReportCards);
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'skills-report');
         XLSX.writeFile(workbook, `skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
     const downloadScopedStudentsWorkbook = async () => {
         if (!scopedAnalytics?.weakestStudents?.length) return;
-
         const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
-        const rows = [
-            ['الطالب', 'المجموعات', 'متوسط الأداء', 'عدد المحاولات', 'مهارات تحتاج دعم', 'أبرز المهارات', 'الإجراء المقترح'],
-            ...scopedStudentFocusCards.map((student) => [
-                displayText(student.name) || '-',
-                student.groupNames?.length ? student.groupNames.map((name) => displayText(name)).join('، ') : '-',
-                `${student.averageScore}%`,
-                student.attempts,
-                student.weakSkillCount,
-                student.topSkills.length ? student.topSkills.map((skill) => `${displayText(skill.skill)} ${skill.mastery}%`).join('، ') : '-',
-                displayText(student.recommendedAction) || 'شرح قصير ثم تدريب موجه ثم قياس.',
-            ]),
-        ];
-
+        const rows = buildScopedStudentsWorkbookRows(scopedStudentFocusCards);
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'students-report');
         XLSX.writeFile(workbook, `students-performance-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
