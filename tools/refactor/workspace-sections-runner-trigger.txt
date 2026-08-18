@@ -1,2 +1,3 @@
 Trigger Temporary School Workspace Sections Runner.
 No production code is sourced from this file.
+Retry after nested class-card boundary ownership update.
