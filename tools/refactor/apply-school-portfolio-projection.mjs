@@ -50,21 +50,13 @@ const blockAfter = `    const schoolPortfolioRows = useMemo(
         () => buildSchoolPortfolioRows(schools, { classes, students, b2bPackages, accessCodes }),
         [accessCodes, b2bPackages, classes, schools, students],
     );
-    const {
-        filteredRows: filteredSchoolRows,
-        hiddenDraftSchoolsCount,
-        visibleDraftSchoolsCount,
-    } = useMemo(
+    const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo(
         () => filterSchoolPortfolioRows(schoolPortfolioRows, schoolSearch, schoolListMode),
         [schoolListMode, schoolPortfolioRows, schoolSearch],
-    );
-    const filteredSchools = useMemo(
-        () => filteredSchoolRows.map((row) => row.school),
-        [filteredSchoolRows],
     );`;
 
 const alreadyApplied = source.includes('filterSchoolPortfolioRows,')
-    && source.includes('filteredRows: filteredSchoolRows')
+    && source.includes('const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo(')
     && !source.includes('const filteredSchools = useMemo(() => {');
 
 if (alreadyApplied) {

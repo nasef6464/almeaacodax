@@ -55,6 +55,7 @@ export interface SchoolPortfolioSummary {
 
 export interface SchoolPortfolioFilterResult {
     filteredRows: SchoolPortfolioRow[];
+    filteredSchools: Group[];
     hiddenDraftSchoolsCount: number;
     visibleDraftSchoolsCount: number;
 }
@@ -213,6 +214,7 @@ export const filterSchoolPortfolioRows = (
 
     return {
         filteredRows,
+        filteredSchools: filteredRows.map((row) => row.school),
         hiddenDraftSchoolsCount: rows.filter((row) => row.isCommerciallyHiddenDraft).length,
         visibleDraftSchoolsCount: filteredRows.filter((row) => row.isCommerciallyHiddenDraft).length,
     };

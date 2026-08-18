@@ -50,26 +50,25 @@ const rows = [
 check('manager delegates school portfolio filtering to one readiness projection', () => {
     assert.ok(managerSource.includes('filterSchoolPortfolioRows,'));
     assert.ok(managerSource.includes('filterSchoolPortfolioRows(schoolPortfolioRows, schoolSearch, schoolListMode)'));
-    assert.ok(managerSource.includes('filteredRows: filteredSchoolRows'));
-    assert.ok(managerSource.includes('filteredSchoolRows.map((row) => row.school)'));
+    assert.ok(managerSource.includes('const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo('));
     assert.ok(!managerSource.includes('const filteredSchools = useMemo(() => {'));
 });
 
 check('active, setup, ready, and all modes preserve existing school visibility semantics', () => {
     assert.deepEqual(
-        viewModel.filterSchoolPortfolioRows(rows, '', 'active').filteredRows.map((row) => row.school.id),
+        viewModel.filterSchoolPortfolioRows(rows, '', 'active').filteredSchools.map((school) => school.id),
         ['ready', 'needs'],
     );
     assert.deepEqual(
-        viewModel.filterSchoolPortfolioRows(rows, '', 'needs_setup').filteredRows.map((row) => row.school.id),
+        viewModel.filterSchoolPortfolioRows(rows, '', 'needs_setup').filteredSchools.map((school) => school.id),
         ['needs'],
     );
     assert.deepEqual(
-        viewModel.filterSchoolPortfolioRows(rows, '', 'ready').filteredRows.map((row) => row.school.id),
+        viewModel.filterSchoolPortfolioRows(rows, '', 'ready').filteredSchools.map((school) => school.id),
         ['ready'],
     );
     assert.deepEqual(
-        viewModel.filterSchoolPortfolioRows(rows, '', 'all').filteredRows.map((row) => row.school.id),
+        viewModel.filterSchoolPortfolioRows(rows, '', 'all').filteredSchools.map((school) => school.id),
         ['ready', 'needs', 'demo'],
     );
 });
@@ -77,12 +76,14 @@ check('active, setup, ready, and all modes preserve existing school visibility s
 check('explicit search still reveals matching hidden drafts exactly like the previous manager behavior', () => {
     const result = viewModel.filterSchoolPortfolioRows(rows, 'demo', 'active');
     assert.deepEqual(result.filteredRows.map((row) => row.school.id), ['demo']);
+    assert.deepEqual(result.filteredSchools.map((school) => school.id), ['demo']);
     assert.equal(result.hiddenDraftSchoolsCount, 1);
     assert.equal(result.visibleDraftSchoolsCount, 1);
 });
 
 check('portfolio rows carry the hidden-draft decision so snapshots are not recomputed for filtering', () => {
     assert.ok(viewModelSource.includes('isCommerciallyHiddenDraft: snapshot.isCommerciallyHiddenDraft'));
+    assert.ok(viewModelSource.includes('filteredSchools: filteredRows.map((row) => row.school)'));
     assert.ok(!managerSource.includes('schools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft'));
     assert.ok(!managerSource.includes('filteredSchools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft'));
 });

@@ -1,0 +1,48 @@
+import { spawnSync } from 'node:child_process';
+
+const checks = [
+    ['git diff whitespace validation', 'git', ['diff', '--check']],
+    ['frontend typecheck', 'npm', ['run', 'typecheck']],
+    ['API typecheck', 'npm', ['run', 'server:check']],
+    ['frontend production build', 'npm', ['run', 'build']],
+    ['API production build', 'npm', ['run', 'server:build']],
+    ['architecture contract', 'node', ['tools/refactor/architecture-gate.mjs']],
+    ['module boundary contract', 'node', ['tools/refactor/module-boundary-gate.mjs']],
+    ['school portfolio projection boundary', 'node', ['scripts/smoke-schools-portfolio-projection-boundary-contract.mjs']],
+    ['school readiness view-model contract', 'node', ['scripts/smoke-schools-readiness-viewmodel-contract.mjs']],
+    ['school portfolio filter presentation contract', 'node', ['scripts/smoke-schools-portfolio-filter-boundary-contract.mjs']],
+    ['school management contract', 'node', ['scripts/smoke-school-management-contract.mjs']],
+    ['school XLSX safety contract', 'node', ['scripts/smoke-xlsx-safety-contract.mjs']],
+    ['frontend performance contract', 'npm', ['run', 'smoke:performance']],
+    ['route loading contract', 'npm', ['run', 'smoke:route-loading']],
+    ['runtime source contract', 'npm', ['run', 'smoke:runtime-source']],
+];
+
+const results = [];
+for (const [name, command, args] of checks) {
+    const startedAt = Date.now();
+    console.log(`\n[school-portfolio-projection-phase-review] START ${name}`);
+    const result = spawnSync(command, args, {
+        stdio: 'inherit',
+        shell: process.platform === 'win32',
+    });
+    const durationMs = Date.now() - startedAt;
+    results.push({ name, status: result.status === 0 ? 'PASS' : 'FAIL', durationMs });
+    if (result.status !== 0) {
+        console.error(`\n[school-portfolio-projection-phase-review] FAIL ${name}`);
+        console.error(JSON.stringify(results, null, 2));
+        process.exit(result.status ?? 1);
+    }
+}
+
+const stageManager = spawnSync('git', ['add', 'dashboards/admin/SchoolsManager.tsx'], {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+});
+if (stageManager.status !== 0) {
+    console.error('[school-portfolio-projection-phase-review] Failed to stage verified manager projection change');
+    process.exit(stageManager.status ?? 1);
+}
+
+console.log('\n[school-portfolio-projection-phase-review] ALL CHECKS PASS');
+console.log(JSON.stringify(results, null, 2));
