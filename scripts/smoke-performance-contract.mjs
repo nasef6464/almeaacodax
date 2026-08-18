@@ -80,7 +80,7 @@ assertIncludes('pages/Reports.tsx', 'studentEnrolledPathIds');
 assertIncludes('pages/Reports.tsx', 'studentPathScopedSkills');
 assertIncludes('pages/Reports.tsx', 'تقاريرك مرتبة حسب مسارك');
 assertIncludes('pages/Reports.tsx', 'اختر مسارك أولًا');
-assertIncludes('pages/Reports.tsx', 'مسار مسجل');
+assertIncludes('pages/Reports/studentReportScopeViewModel.ts', 'مسار مسجل');
 assertIncludes('pages/Reports.tsx', 'مركز متابعة مؤسسي');
 assertIncludes('pages/Reports.tsx', 'توجيه اختبار');
 assertIncludes('pages/Reports.tsx', 'نسخ تنبيه');
