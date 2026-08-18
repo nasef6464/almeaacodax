@@ -6,9 +6,12 @@ import ts from 'typescript';
 const root = process.cwd();
 const managerFile = 'dashboards/admin/SchoolsManager.tsx';
 const helperFile = 'dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts';
+const cardFile = 'dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx';
 const managerSource = fs.readFileSync(path.join(root, managerFile), 'utf8').replace(/\r\n/g, '\n');
 const helperSource = fs.readFileSync(path.join(root, helperFile), 'utf8').replace(/\r\n/g, '\n');
+const cardSource = fs.readFileSync(path.join(root, cardFile), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
+const delegatesCardPresentation = managerSource.includes("import { SchoolPortfolioCard } from './SchoolsManager/SchoolPortfolioCard';");
 
 const checks = [];
 const check = (name, assertion) => {
@@ -52,20 +55,29 @@ const emptyRow = {
 
 check('school cards render from already projected portfolio rows instead of recomputing school snapshots', () => {
     assert.ok(managerSource.includes('filteredRows: filteredSchoolRows'));
-    assert.ok(managerSource.includes('{filteredSchoolRows.map((cardPortfolioRow) => {'));
-    assert.ok(managerSource.includes('const { school } = cardPortfolioRow;'));
-    assert.ok(managerSource.includes('buildSchoolCardReadinessActions(cardPortfolioRow)'));
+    if (delegatesCardPresentation) {
+        assert.ok(managerSource.includes('{filteredSchoolRows.map((cardPortfolioRow) => ('));
+        assert.ok(managerSource.includes('<SchoolPortfolioCard'));
+        assert.ok(managerSource.includes('row={cardPortfolioRow}'));
+        assert.ok(cardSource.includes('buildSchoolCardReadinessActions(row)'));
+    } else {
+        assert.ok(managerSource.includes('{filteredSchoolRows.map((cardPortfolioRow) => {'));
+        assert.ok(managerSource.includes('const { school } = cardPortfolioRow;'));
+        assert.ok(managerSource.includes('buildSchoolCardReadinessActions(cardPortfolioRow)'));
+    }
     assert.ok(!managerSource.includes('const cardOperationalSnapshot = getOperationalSnapshotForSchool(school);'));
     assert.ok(!managerSource.includes('const cardReadinessScore = ['));
 });
 
 check('school card counts and readiness state come from the single projected row', () => {
-    assert.ok(managerSource.includes('cardPortfolioRow.readinessScore'));
-    assert.ok(managerSource.includes('cardPortfolioRow.readinessTotal'));
-    assert.ok(managerSource.includes('cardPortfolioRow.studentCount'));
-    assert.ok(managerSource.includes('cardPortfolioRow.activePackageCount'));
-    assert.ok(managerSource.includes('cardPortfolioRow.activeCodeCount'));
-    assert.ok(managerSource.includes('cardPortfolioRow.isCommerciallyHiddenDraft'));
+    const ownerSource = delegatesCardPresentation ? cardSource : managerSource;
+    const rowName = delegatesCardPresentation ? 'row' : 'cardPortfolioRow';
+    assert.ok(ownerSource.includes(`${rowName}.readinessScore`));
+    assert.ok(ownerSource.includes(`${rowName}.readinessTotal`));
+    assert.ok(ownerSource.includes(`${rowName}.studentCount`));
+    assert.ok(ownerSource.includes(`${rowName}.activePackageCount`));
+    assert.ok(ownerSource.includes(`${rowName}.activeCodeCount`));
+    assert.ok(ownerSource.includes(`${rowName}.isCommerciallyHiddenDraft`));
 });
 
 check('card readiness actions preserve the exact existing dynamic labels and navigation targets', () => {
@@ -102,21 +114,36 @@ check('card helper remains pure and manager keeps mutations and navigation owner
     for (const forbidden of ['useState(', 'useEffect(', 'useMemo(', 'api.', 'window.', 'document.', 'setSelectedSchool(', 'setActiveTab(']) {
         assert.ok(!helperSource.includes(forbidden), `card helper must not include ${forbidden}`);
     }
-    assert.ok(managerSource.includes('setSelectedSchool(school);'));
-    assert.ok(managerSource.includes("setActiveTab(nextCardAction?.tab || 'overview');"));
+    if (delegatesCardPresentation) {
+        for (const forbidden of ['useStore', 'api.', 'window.', 'document.', 'setSelectedSchool(', 'setActiveTab(']) {
+            assert.ok(!cardSource.includes(forbidden), `portfolio card presentation must not include ${forbidden}`);
+        }
+        assert.ok(managerSource.includes('setSelectedSchool(cardPortfolioRow.school);'));
+        assert.ok(managerSource.includes('setActiveTab(tab);'));
+        assert.ok(managerSource.includes("window.setTimeout(() => {"));
+    } else {
+        assert.ok(managerSource.includes('setSelectedSchool(school);'));
+        assert.ok(managerSource.includes("setActiveTab(nextCardAction?.tab || 'overview');"));
+    }
 });
 
 check('card projection meaningfully reduces the manager hotspot without creating another hotspot', () => {
     assert.ok(lineCount(helperSource) <= 75, `schoolCardReadinessViewModel.ts exceeded 75 lines (${lineCount(helperSource)}).`);
     assert.ok(lineCount(managerSource) <= 3050, `SchoolsManager.tsx did not shrink below 3050 lines (${lineCount(managerSource)}).`);
+    if (delegatesCardPresentation) {
+        assert.ok(lineCount(cardSource) < 240, `SchoolPortfolioCard.tsx is unexpectedly large (${lineCount(cardSource)}).`);
+        assert.ok(lineCount(managerSource) < 2950, `SchoolsManager.tsx did not shrink below the presentation target (${lineCount(managerSource)}).`);
+    }
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({
     phase: 'schools-card-readiness-projection-boundary',
     status: failed.length === 0 ? 'PASS' : 'FAIL',
+    ownership: delegatesCardPresentation ? 'SchoolPortfolioCard' : 'SchoolsManager',
     managerLines: lineCount(managerSource),
     helperLines: lineCount(helperSource),
+    cardLines: lineCount(cardSource),
     checks,
 }, null, 2));
 
