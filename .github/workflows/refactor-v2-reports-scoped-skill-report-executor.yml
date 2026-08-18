@@ -1,5 +1,6 @@
 name: Refactor V2 Reports Scoped Skill Report Executor
 
+# Workflow registration trigger for the safe refactor branch.
 on:
   push:
     branches:
