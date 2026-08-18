@@ -94,8 +94,8 @@ assertIncludes('dashboards/admin/UnifiedQuizBuilder.tsx', 'skillIds: editingQuiz
 assertIncludes('dashboards/admin/UnifiedQuizBuilder.tsx', 'targetUserIds,');
 assertIncludes('dashboards/admin/UnifiedQuizBuilder.tsx', 'mode: editingQuiz?.mode ?? initialMode');
 assertIncludes('pages/Reports.tsx', 'targetUserId: scopedLeadStudent?.id');
-assertIncludes('pages/Reports.tsx', 'targetUserId: student.id');
-assertIncludes('pages/Reports.tsx', 'targetGroupId: student.groupIds?.[0]');
+assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetUserId: student.id');
+assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetGroupId: student.groupIds?.[0]');
 assertIncludes('pages/Reports.tsx', 'to={student.followUpLink}');
 assertIncludes('pages/Reports.tsx', 'subjectId: subject.subjectId');
 assertIncludes('pages/Reports.tsx', 'const attemptFollowUpLink = buildDirectedQuizManagerLink');
