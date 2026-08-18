@@ -1,21 +1,8 @@
-import type { NotificationChannel } from "./notificationService.js";
-
-type ProviderPayload = {
-  channel: NotificationChannel;
-  id: string;
-  recipientEmail?: string;
-  recipientPhone?: string;
-  subject: string;
-  title: string;
-  body: string;
-};
-
-type ProviderResult = {
-  ok: boolean;
-  provider: string;
-  providerMessageId?: string;
-  failureReason?: string;
-};
+import type {
+  NotificationChannel,
+  NotificationProviderPayload as ProviderPayload,
+  NotificationProviderResult as ProviderResult,
+} from "../modules/notifications/domain/notification.types.js";
 
 const jsonHeaders = { "content-type": "application/json" };
 

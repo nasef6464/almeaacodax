@@ -17,647 +17,75 @@ import {
     ShieldCheck,
     Trash2,
     Upload,
-    UserPlus,
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { AccessCode, AnnouncementAd, B2BPackage, Group, Lesson, LibraryItem, PackageContentType, Role, StudyPlan, Topic, User } from '../../types';
 import { api } from '../../services/api';
-import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeRows } from '../../utils/xlsxLoader';
+import { parseImportFile, parseRelationFile } from './SchoolsManager/importFileReaders';
+import { getDuplicateImportEmails } from './SchoolsManager/importRowParsing';
 import { EditNameModal } from './SchoolsManager/EditNameModal';
 import { SchoolImportPanel } from './SchoolsManager/SchoolImportPanel';
 import { SchoolPackagesPanel } from './SchoolsManager/SchoolPackagesPanel';
 import { SchoolRelationsPanel } from './SchoolsManager/SchoolRelationsPanel';
+import { SchoolReportsPanel } from './SchoolsManager/SchoolReportsPanel';
+import { SchoolStudentRosterPanel } from './SchoolsManager/SchoolStudentRosterPanel';
+import { SchoolCoursesPanel } from './SchoolsManager/SchoolCoursesPanel';
+import { SchoolClassesPanel } from './SchoolsManager/SchoolClassesPanel';
+import { SchoolSingleStudentPanel } from './SchoolsManager/SchoolSingleStudentPanel';
+import { SchoolWideSupervisorsPanel } from './SchoolsManager/SchoolWideSupervisorsPanel';
+import { SchoolOverviewOperationsPanel } from './SchoolsManager/SchoolOverviewOperationsPanel';
+import { SchoolCommandCenterPanel } from './SchoolsManager/SchoolCommandCenterPanel';
+import { SchoolPortfolioFilterPanel } from './SchoolsManager/SchoolPortfolioFilterPanel';
+import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
+import type {
+    AccessCodesListResponse,
+    AccessCodesPagination,
+    AdminUserPayload,
+    ContentBootstrapPayload,
+    ImportResponse,
+    ImportRow,
+    ImportSummary,
+    RelationCredential,
+    RelationImportRow,
+    RelationImportSummary,
+    RelationResponse,
+    SchoolReport,
+} from './SchoolsManager/contracts';
+import {
+    buildStoreGroup,
+    buildStoreUser,
+    generateTemporaryPassword,
+    loadSchoolAdminUsers,
+    mergeUsersById,
+} from './SchoolsManager/dataAdapters';
+import {
+    createCsvDownload,
+    createWorkbookDownload,
+    createXlsxDownload,
+    escapeHtml,
+    openPrintWindow,
+    renderPrintTable,
+} from './SchoolsManager/exportHelpers';
+import {
+    buildSchoolPortfolioRows,
+    getSchoolOperationalSnapshot as calculateSchoolOperationalSnapshot,
+    getStudentsForSchool,
+    summarizeSchoolPortfolio,
+} from './SchoolsManager/readinessViewModel';
+import { buildSchoolRelationshipViewModel } from './SchoolsManager/relationshipViewModel';
+import { buildSchoolWorkspaceViewModel } from './SchoolsManager/workspaceViewModel';
+import { buildSchoolRosterViewModel } from './SchoolsManager/rosterViewModel';
 
-export type ImportRow = {
-    name: string;
-    email: string;
-    className?: string;
-    password?: string;
-};
-
-export type ImportSummary = {
-    totalRows: number;
-    imported: number;
-    classesTouched: number;
-};
-
-export type ImportResponse = {
-    summary: ImportSummary;
-    credentials: Array<{ name: string; email: string; password: string; className?: string }>;
-    users?: AdminUserPayload[];
-    groups?: Group[];
-};
-
-export type RelationImportRow = {
-    studentEmail: string;
-    parentEmail?: string;
-    parentName?: string;
-    supervisorEmail?: string;
-    supervisorName?: string;
-    className?: string;
-};
-
-export type RelationImportSummary = {
-    rows: number;
-    createdParents: number;
-    createdSupervisors: number;
-    linkedParents: number;
-    linkedSupervisors: number;
-    assignedClasses: number;
-    missingStudents: number;
-    missingParents: number;
-    missingSupervisors: number;
-    missingClasses: number;
-    skippedRows: number;
-};
-
-export type RelationCredential = {
-    role: Role.PARENT | Role.SUPERVISOR;
-    name: string;
-    email: string;
-    password: string;
-    linkedTo: string;
-};
-
-type RelationResponse = {
-    summary: RelationImportSummary;
-    credentials: RelationCredential[];
-    users?: AdminUserPayload[];
-    groups?: Group[];
-};
-
-type AdminUserPayload = {
-    id?: string;
-    _id?: string;
-    name: string;
-    email: string;
-    avatar?: string;
-    role: Role;
-    points?: number;
-    badges?: string[];
-    isActive?: boolean;
-    schoolId?: string | null;
-    groupIds?: string[];
-    linkedStudentIds?: string[];
-    managedPathIds?: string[];
-    managedSubjectIds?: string[];
-    subscription?: {
-        plan?: 'free' | 'premium';
-        purchasedCourses?: string[];
-        purchasedPackages?: string[];
-    };
-};
-
-type SchoolReport = {
-    school: {
-        id: string;
-        name: string;
-    };
-    metrics: {
-        totalStudents: number;
-        activeStudents: number;
-        totalClasses: number;
-        activePackages: number;
-        activeCodes: number;
-        quizAttempts: number;
-        averageScore: number;
-    };
-    classSummaries: Array<{
-        id: string;
-        name: string;
-        studentCount: number;
-        supervisorCount: number;
-        quizAttempts: number;
-        averageScore: number;
-    }>;
-    weakestSkills: Array<{
-        skillId?: string;
-        skill: string;
-        subjectId?: string;
-        sectionId?: string;
-        attempts: number;
-        mastery: number;
-    }>;
-};
-
-type AccessCodesPagination = {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-};
-
-type AccessCodesListResponse = {
-    data?: Array<{
-        id?: string;
-        _id?: string;
-        code?: string;
-        schoolId?: string;
-        packageId?: string;
-        maxUses?: number;
-        currentUses?: number;
-        expiresAt?: number;
-        createdAt?: number;
-    }>;
-    pagination?: Partial<AccessCodesPagination>;
-};
-
-type ContentBootstrapPayload = {
-    topics?: Topic[];
-    lessons?: Lesson[];
-    libraryItems?: LibraryItem[];
-    groups?: Group[];
-    b2bPackages?: B2BPackage[];
-    accessCodes?: AccessCode[];
-    announcementAds?: AnnouncementAd[];
-    studyPlans?: StudyPlan[];
-};
-
-const buildStoreUser = (user: AdminUserPayload): User => ({
-    id: String(user.id || user._id || user.email),
-    name: user.name,
-    email: user.email,
-    avatar: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
-    role: user.role,
-    points: user.points ?? 0,
-    badges: user.badges ?? [],
-    isActive: user.isActive ?? true,
-    schoolId: user.schoolId ?? undefined,
-    groupIds: user.groupIds ?? [],
-    linkedStudentIds: user.linkedStudentIds ?? [],
-    managedPathIds: user.managedPathIds ?? [],
-    managedSubjectIds: user.managedSubjectIds ?? [],
-    subscription: {
-        plan: user.subscription?.plan ?? 'free',
-        purchasedCourses: user.subscription?.purchasedCourses ?? [],
-        purchasedPackages: user.subscription?.purchasedPackages ?? [],
-    },
-});
-
-const loadAllUsersByRole = async (role: Role): Promise<User[]> => {
-    const firstPage = await api.getAdminUsers({ role, page: 1, limit: 100 });
-    const totalPages = Math.max(1, Number(firstPage.pagination?.totalPages || 1));
-    const remainingPages = Array.from({ length: totalPages - 1 }, (_, index) => index + 2);
-    const remainingResponses = await Promise.all(
-        remainingPages.map((page) => api.getAdminUsers({ role, page, limit: 100 })),
-    );
-
-    return [
-        ...(firstPage.users || []),
-        ...remainingResponses.flatMap((response) => response.users || []),
-    ].map((user) => buildStoreUser(user as AdminUserPayload));
-};
-
-const loadSchoolAdminUsers = async (): Promise<User[]> => {
-    const [firstPage, students, parents, supervisors, teachers] = await Promise.all([
-        api.getAdminUsers({ page: 1, limit: 100 }),
-        loadAllUsersByRole(Role.STUDENT),
-        loadAllUsersByRole(Role.PARENT),
-        loadAllUsersByRole(Role.SUPERVISOR),
-        loadAllUsersByRole(Role.TEACHER),
-    ]);
-
-    const usersById = new Map<string, User>();
-    [
-        ...(firstPage.users || []).map((user) => buildStoreUser(user as AdminUserPayload)),
-        ...students,
-        ...parents,
-        ...supervisors,
-        ...teachers,
-    ].forEach((user) => {
-        if (user.id) {
-            usersById.set(user.id, user);
-        }
-    });
-
-    return Array.from(usersById.values());
-};
-
-const mergeUsersById = (currentUsers: User[], incomingUsers: User[]): User[] => {
-    const usersById = new Map<string, User>();
-    currentUsers.forEach((user) => {
-        if (user.id) {
-            usersById.set(user.id, user);
-        }
-    });
-    incomingUsers.forEach((user) => {
-        if (user.id) {
-            usersById.set(user.id, user);
-        }
-    });
-    return Array.from(usersById.values());
-};
-
-const buildStoreGroup = (group: Group & { _id?: string; createdAt?: number | string }): Group => ({
-    ...group,
-    id: String(group.id || group._id || ''),
-    parentId: group.parentId ? String(group.parentId) : undefined,
-    ownerId: String(group.ownerId || ''),
-    supervisorIds: Array.isArray(group.supervisorIds) ? group.supervisorIds.map(String) : [],
-    studentIds: Array.isArray(group.studentIds) ? group.studentIds.map(String) : [],
-    courseIds: Array.isArray(group.courseIds) ? group.courseIds.map(String) : [],
-    createdAt: typeof group.createdAt === 'number' ? group.createdAt : Date.parse(String(group.createdAt || '')) || Date.now(),
-});
-
-const generateTemporaryPassword = () => {
-    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-    const random = Array.from({ length: 8 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
-    return `Alm@${random}`;
-};
-
-const normalizeHeader = (value: string) =>
-    value
-        .trim()
-        .toLowerCase()
-        .replace(/\uFEFF/g, '')
-        .replace(/[ًٌٍَُِّْـ]/g, '')
-        .replace(/\s+/g, '');
-
-const headerMatches = (header: string, aliases: string[]) =>
-    aliases.map(normalizeHeader).includes(header);
-
-const STUDENT_IMPORT_HEADERS = {
-    name: ['name', 'fullName', 'studentName', 'الاسم', 'اسم الطالب', 'اسم', 'الطالب'],
-    email: ['email', 'mail', 'البريد', 'البريد الإلكتروني', 'الايميل', 'الإيميل', 'بريد الطالب'],
-    className: ['className', 'class', 'classroom', 'الفصل', 'اسم الفصل', 'الصف', 'المجموعة'],
-    password: ['password', 'pass', 'كلمة المرور', 'كلمة السر', 'الرقم السري', 'passwordHint'],
-};
-
-const RELATION_IMPORT_HEADERS = {
-    studentEmail: ['studentEmail', 'student', 'بريد الطالب', 'ايميل الطالب', 'إيميل الطالب', 'البريد الإلكتروني للطالب'],
-    parentEmail: ['parentEmail', 'parent', 'ولي الأمر', 'بريد ولي الأمر', 'ايميل ولي الأمر', 'إيميل ولي الأمر'],
-    parentName: ['parentName', 'اسم ولي الأمر', 'ولي الامر', 'guardianName'],
-    supervisorEmail: ['supervisorEmail', 'teacherEmail', 'بريد المشرف', 'ايميل المشرف', 'إيميل المشرف', 'بريد المعلم'],
-    supervisorName: ['supervisorName', 'teacherName', 'اسم المشرف', 'اسم المعلم'],
-    className: ['className', 'class', 'الفصل', 'اسم الفصل', 'الصف', 'المجموعة'],
-};
-
-const createCsvDownload = (fileName: string, rows: string[][]) => {
-    const csv = `\uFEFF${rows.map((row) => row.map((cell) => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n')}`;
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    anchor.click();
-    URL.revokeObjectURL(url);
-};
-
-const createXlsxDownload = async (fileName: string, rows: string[][]) => {
-    const XLSX = await loadXlsx();
-    const worksheet = XLSX.utils.aoa_to_sheet(rows);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'students');
-    XLSX.writeFile(workbook, fileName);
-};
-
-const createWorkbookDownload = async (
-    fileName: string,
-    sheets: Array<{ name: string; rows: Array<Array<string | number>> }>,
-) => {
-    const XLSX = await loadXlsx();
-    const workbook = XLSX.utils.book_new();
-    sheets.forEach((sheet) => {
-        const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows);
-        XLSX.utils.book_append_sheet(workbook, worksheet, sheet.name.slice(0, 31));
-    });
-    XLSX.writeFile(workbook, fileName);
-};
-
-const escapeHtml = (value: string | number | null | undefined) =>
-    String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-
-const renderPrintTable = (headers: string[], rows: Array<Array<string | number>>) => `
-    <table>
-        <thead>
-            <tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('')}</tr>
-        </thead>
-        <tbody>
-            ${
-                rows.length
-                    ? rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')
-                    : `<tr><td colspan="${headers.length}">لا توجد بيانات مسجلة حاليا.</td></tr>`
-            }
-        </tbody>
-    </table>
-`;
-
-const openPrintWindow = (title: string, bodyHtml: string) => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return false;
-
-    printWindow.document.write(`
-        <!doctype html>
-        <html lang="ar" dir="rtl">
-            <head>
-                <meta charset="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>${escapeHtml(title)}</title>
-                <style>
-                    * { box-sizing: border-box; }
-                    body {
-                        margin: 0;
-                        background: #f8fafc;
-                        color: #111827;
-                        font-family: Tahoma, Arial, sans-serif;
-                        line-height: 1.8;
-                    }
-                    main {
-                        width: min(1040px, calc(100% - 32px));
-                        margin: 24px auto;
-                        background: white;
-                        border: 1px solid #e5e7eb;
-                        border-radius: 18px;
-                        padding: 28px;
-                    }
-                    .hero {
-                        border-radius: 16px;
-                        padding: 22px;
-                        background: linear-gradient(135deg, #4f46e5, #0f766e);
-                        color: white;
-                        margin-bottom: 20px;
-                    }
-                    .hero p, .hero h1 { margin: 0; }
-                    .hero h1 { font-size: 28px; margin-top: 6px; }
-                    .muted { color: #64748b; font-size: 13px; }
-                    .hero .muted { color: #e0f2fe; }
-                    .metrics {
-                        display: grid;
-                        grid-template-columns: repeat(4, minmax(0, 1fr));
-                        gap: 12px;
-                        margin: 18px 0;
-                    }
-                    .metric {
-                        border: 1px solid #e5e7eb;
-                        border-radius: 14px;
-                        padding: 14px;
-                        background: #f9fafb;
-                    }
-                    .metric strong {
-                        display: block;
-                        font-size: 24px;
-                        margin-top: 4px;
-                    }
-                    h2 {
-                        font-size: 18px;
-                        margin: 24px 0 10px;
-                    }
-                    table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-bottom: 14px;
-                        overflow: hidden;
-                        border-radius: 12px;
-                    }
-                    th, td {
-                        border: 1px solid #e5e7eb;
-                        padding: 10px 12px;
-                        text-align: right;
-                        vertical-align: top;
-                        font-size: 13px;
-                    }
-                    th {
-                        background: #f3f4f6;
-                        font-weight: 800;
-                    }
-                    .notice {
-                        margin-top: 20px;
-                        padding: 12px 14px;
-                        border-radius: 12px;
-                        background: #fff7ed;
-                        color: #9a3412;
-                        border: 1px solid #fed7aa;
-                        font-size: 13px;
-                        font-weight: 700;
-                    }
-                    @media print {
-                        body { background: white; }
-                        main { width: 100%; margin: 0; border: 0; border-radius: 0; }
-                        .no-print { display: none; }
-                    }
-                    @media (max-width: 760px) {
-                        .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-                    }
-                </style>
-            </head>
-            <body>
-                <main>
-                    ${bodyHtml}
-                    <div class="notice">هذا التقرير للاستخدام التشغيلي الداخلي، ويعكس البيانات المتاحة وقت الطباعة.</div>
-                </main>
-                <script>
-                    window.setTimeout(function () {
-                        window.focus();
-                        window.print();
-                    }, 250);
-                </script>
-            </body>
-        </html>
-    `);
-    printWindow.document.close();
-    return true;
-};
-
-const parseImportRows = (rows: unknown[][]): ImportRow[] => {
-    const normalizedRows = rows
-        .map((row) => row.map((cell) => String(cell ?? '').trim()))
-        .filter((row) => row.some(Boolean));
-
-    if (normalizedRows.length < 2) {
-        return [];
-    }
-
-    normalizedRows[0] = normalizedRows[0].map((header) => {
-        const normalizedHeader = normalizeHeader(header);
-        if (headerMatches(normalizedHeader, STUDENT_IMPORT_HEADERS.name)) return 'name';
-        if (headerMatches(normalizedHeader, STUDENT_IMPORT_HEADERS.email)) return 'email';
-        if (headerMatches(normalizedHeader, STUDENT_IMPORT_HEADERS.className)) return 'className';
-        if (headerMatches(normalizedHeader, STUDENT_IMPORT_HEADERS.password)) return 'password';
-        return header;
-    });
-
-    const headers = normalizedRows[0].map(normalizeHeader);
-    const nameIndex = headers.findIndex((header) => ['name', 'fullname', 'studentname', 'الاسم', 'اسمالطالب'].includes(header));
-    const emailIndex = headers.findIndex((header) => ['email', 'mail', 'البريد', 'البريدالالكتروني', 'البريدالإلكتروني', 'الايميل', 'الإيميل'].includes(header));
-    const classIndex = headers.findIndex((header) => ['classname', 'class', 'الفصل', 'اسمالفصل', 'الصف', 'المجموعة'].includes(header));
-    const passwordIndex = headers.findIndex((header) => ['password', 'pass', 'كلمةالمرور', 'كلمةالسر', 'الرقمالسري', 'passwordhint'].includes(header));
-
-    if (nameIndex === -1 || emailIndex === -1) {
-        throw new Error('الملف يحتاج عمودين أساسيين على الأقل: name و email.');
-    }
-
-    return normalizedRows
-        .slice(1)
-        .map((cells) => ({
-            name: (cells[nameIndex] || '').trim(),
-            email: (cells[emailIndex] || '').trim(),
-            className: classIndex >= 0 ? (cells[classIndex] || '').trim() : undefined,
-            password: passwordIndex >= 0 ? (cells[passwordIndex] || '').trim() : undefined,
-        }))
-        .filter((row) => row.name && row.email);
-};
-
-const parseImportFile = async (file: File): Promise<ImportRow[]> => {
-    if (/\.(xlsx|xls)$/i.test(file.name)) {
-        const XLSX = await loadXlsx();
-        registerXlsxRuntime(XLSX);
-        const buffer = await file.arrayBuffer();
-        const workbook = await readWorkbookFromBuffer(buffer);
-        const firstSheetName = workbook.SheetNames[0];
-        if (!firstSheetName) {
-            return [];
-        }
-
-        const worksheet = workbook.Sheets[firstSheetName];
-        return parseImportRows(sheetToSafeRows(worksheet, ''));
-    }
-
-    const raw = await file.text();
-    const content = raw.replace(/\r\n/g, '\n').trim();
-    if (!content) {
-        return [];
-    }
-
-    const lines = content.split('\n').filter(Boolean);
-    if (lines.length < 2) {
-        return [];
-    }
-
-    const delimiter = lines[0].includes('\t') ? '\t' : ',';
-    return parseImportRows(lines.map((line) => line.split(delimiter)));
-/*
-    const headers = lines[0].split(delimiter).map(normalizeHeader);
-    const nameIndex = headers.findIndex((header) => ['name', 'fullname', 'studentname', 'الاسم', 'اسمالطالب'].includes(header));
-    const emailIndex = headers.findIndex((header) => ['email', 'mail', 'البريد', 'البريدالالكتروني'].includes(header));
-    const classIndex = headers.findIndex((header) => ['classname', 'class', 'الفصل', 'اسمالفصل'].includes(header));
-    const passwordIndex = headers.findIndex((header) => ['password', 'pass', 'كلمةالمرور', 'passwordhint'].includes(header));
-
-    if (nameIndex === -1 || emailIndex === -1) {
-        throw new Error('الملف يحتاج عمودين أساسيين على الأقل: name و email.');
-    }
-
-    return lines
-        .slice(1)
-        .map((line) => line.split(delimiter))
-        .map((cells) => ({
-            name: (cells[nameIndex] || '').trim(),
-            email: (cells[emailIndex] || '').trim(),
-            className: classIndex >= 0 ? (cells[classIndex] || '').trim() : undefined,
-            password: passwordIndex >= 0 ? (cells[passwordIndex] || '').trim() : undefined,
-        }))
-        .filter((row) => row.name && row.email);
-*/
-};
-
-const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
-    const normalizedRows = rows
-        .map((row) => row.map((cell) => String(cell ?? '').trim()))
-        .filter((row) => row.some(Boolean));
-
-    if (normalizedRows.length < 2) {
-        return [];
-    }
-
-    normalizedRows[0] = normalizedRows[0].map((header) => {
-        const normalizedHeader = normalizeHeader(header);
-        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.studentEmail)) return 'studentEmail';
-        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.parentEmail)) return 'parentEmail';
-        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.parentName)) return 'parentName';
-        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.supervisorEmail)) return 'supervisorEmail';
-        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.supervisorName)) return 'supervisorName';
-        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.className)) return 'className';
-        return header;
-    });
-
-    const headers = normalizedRows[0].map(normalizeHeader);
-    const studentEmailIndex = headers.findIndex((header) => header === 'studentemail');
-    const parentEmailIndex = headers.findIndex((header) => header === 'parentemail');
-    const parentNameIndex = headers.findIndex((header) => header === 'parentname');
-    const supervisorEmailIndex = headers.findIndex((header) => header === 'supervisoremail');
-    const supervisorNameIndex = headers.findIndex((header) => header === 'supervisorname');
-    const classNameIndex = headers.findIndex((header) => header === 'classname');
-
-    if (studentEmailIndex === -1) {
-        throw new Error('ملف الربط يحتاج عمود بريد الطالب على الأقل.');
-    }
-
-    return normalizedRows
-        .slice(1)
-        .map((cells) => ({
-            studentEmail: (cells[studentEmailIndex] || '').trim(),
-            parentEmail: parentEmailIndex >= 0 ? (cells[parentEmailIndex] || '').trim() : undefined,
-            parentName: parentNameIndex >= 0 ? (cells[parentNameIndex] || '').trim() : undefined,
-            supervisorEmail: supervisorEmailIndex >= 0 ? (cells[supervisorEmailIndex] || '').trim() : undefined,
-            supervisorName: supervisorNameIndex >= 0 ? (cells[supervisorNameIndex] || '').trim() : undefined,
-            className: classNameIndex >= 0 ? (cells[classNameIndex] || '').trim() : undefined,
-        }))
-        .filter((row) => row.studentEmail || row.parentEmail || row.supervisorEmail || row.className);
-};
-
-const parseRelationFile = async (file: File): Promise<RelationImportRow[]> => {
-    if (/\.(xlsx|xls)$/i.test(file.name)) {
-        const XLSX = await loadXlsx();
-        registerXlsxRuntime(XLSX);
-        const buffer = await file.arrayBuffer();
-        const workbook = await readWorkbookFromBuffer(buffer);
-        const firstSheetName = workbook.SheetNames[0];
-        if (!firstSheetName) {
-            return [];
-        }
-
-        const worksheet = workbook.Sheets[firstSheetName];
-        return parseRelationRows(sheetToSafeRows(worksheet, ''));
-    }
-
-    const raw = await file.text();
-    const content = raw.replace(/\r\n/g, '\n').trim();
-    if (!content) {
-        return [];
-    }
-
-    const lines = content.split('\n').filter(Boolean);
-    if (lines.length < 2) {
-        return [];
-    }
-
-    const delimiter = lines[0].includes('\t') ? '\t' : ',';
-    return parseRelationRows(lines.map((line) => line.split(delimiter)));
-};
-
-const getDuplicateImportEmails = (rows: ImportRow[]) => {
-    const seen = new Set<string>();
-    const duplicates = new Set<string>();
-
-    rows.forEach((row) => {
-        const email = row.email.trim().toLowerCase();
-        if (!email) return;
-        if (seen.has(email)) {
-            duplicates.add(email);
-            return;
-        }
-        seen.add(email);
-    });
-
-    return Array.from(duplicates);
-};
-
-export const PACKAGE_CONTENT_OPTIONS: Array<{ value: PackageContentType; label: string }> = [
-    { value: 'all', label: 'شاملة' },
-    { value: 'courses', label: 'الدورات' },
-    { value: 'foundation', label: 'التأسيس' },
-    { value: 'banks', label: 'التدريبات' },
-    { value: 'tests', label: 'الاختبارات' },
-    { value: 'mockExams', label: 'الاختبارات المحاكية' },
-    { value: 'library', label: 'المكتبة' },
-];
+export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
+export type {
+    ImportResponse,
+    ImportRow,
+    ImportSummary,
+    RelationCredential,
+    RelationImportRow,
+    RelationImportSummary,
+} from './SchoolsManager/contracts';
 
 export const SchoolsManager: React.FC = () => {
     const {
@@ -807,19 +235,6 @@ export const SchoolsManager: React.FC = () => {
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
     const students = useMemo(() => users.filter((currentUser) => currentUser.role === Role.STUDENT), [users]);
-    const getStudentsForSchool = (school: Group, schoolClasses: Group[]) => {
-        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
-        const linkedStudentIds = new Set<string>([
-            ...(school.studentIds || []),
-            ...schoolClasses.flatMap((classroom) => classroom.studentIds || []),
-        ]);
-
-        return students.filter((student) => (
-            student.schoolId === school.id
-            || linkedStudentIds.has(student.id)
-            || (student.groupIds || []).some((groupId) => groupId === school.id || schoolClassIds.has(groupId))
-        ));
-    };
     const supervisors = useMemo(
         () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR || currentUser.role === Role.TEACHER),
         [users],
@@ -844,37 +259,12 @@ export const SchoolsManager: React.FC = () => {
         };
     }, [importRows, users]);
 
-    const getSchoolOperationalSnapshot = (school: Group) => {
-        const schoolClasses = classes.filter((group) => group.parentId === school.id);
-        const schoolStudents = getStudentsForSchool(school, schoolClasses);
-        const activePackageCount = b2bPackages.filter((pkg) => pkg.schoolId === school.id && pkg.status === 'active').length;
-        const activeCodeCount = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now()).length;
-        const readinessScore = [
-            schoolClasses.length > 0,
-            schoolStudents.length > 0,
-            school.supervisorIds.length > 0,
-            activePackageCount > 0,
-            activeCodeCount > 0,
-        ].filter(Boolean).length;
-        const normalizedSchoolName = school.name.trim().toLowerCase();
-        const hasRealOperation = readinessScore > 0 || schoolClasses.length > 0 || schoolStudents.length > 0;
-        const isLikelyDemoSchool = /(^|\s|-)(تجريبي|تجربة|اختبار|نموذج|demo|test|sample|trial)(\s|$|-)/i.test(normalizedSchoolName);
-        const isEmptyDraft =
-            !hasRealOperation &&
-            (/^مدرسة جديدة(?:\s|$|-)/.test(school.name.trim()) || isLikelyDemoSchool);
-        const isCommerciallyHiddenDraft = isEmptyDraft || (isLikelyDemoSchool && readinessScore < 2 && schoolStudents.length === 0);
-
-        return {
-            schoolClasses,
-            schoolStudents,
-            activePackageCount,
-            activeCodeCount,
-            readinessScore,
-            isEmptyDraft,
-            isLikelyDemoSchool,
-            isCommerciallyHiddenDraft,
-        };
-    };
+    const getOperationalSnapshotForSchool = (school: Group) => calculateSchoolOperationalSnapshot(school, {
+        classes,
+        students,
+        b2bPackages,
+        accessCodes,
+    });
 
     const filteredSchools = useMemo(() => {
         const keyword = schoolSearch.trim().toLowerCase();
@@ -882,7 +272,7 @@ export const SchoolsManager: React.FC = () => {
             const matchesSearch = !keyword || school.name.toLowerCase().includes(keyword);
             if (!matchesSearch) return false;
 
-            const snapshot = getSchoolOperationalSnapshot(school);
+            const snapshot = getOperationalSnapshotForSchool(school);
             if (schoolListMode === 'all' || keyword) return true;
             if (schoolListMode === 'ready') return snapshot.readinessScore === 5;
             if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isCommerciallyHiddenDraft;
@@ -890,62 +280,21 @@ export const SchoolsManager: React.FC = () => {
         });
     }, [accessCodes, b2bPackages, classes, schoolListMode, schoolSearch, schools, students]);
     const hiddenDraftSchoolsCount = useMemo(
-        () => schools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
+        () => schools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft).length,
         [accessCodes, b2bPackages, classes, schools, students],
     );
     const visibleDraftSchoolsCount = useMemo(
-        () => filteredSchools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
+        () => filteredSchools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft).length,
         [accessCodes, b2bPackages, classes, filteredSchools, students],
     );
-    const schoolPortfolioRows = useMemo(() => schools.map((school) => {
-        const schoolClasses = classes.filter((group) => group.parentId === school.id);
-        const schoolStudents = getStudentsForSchool(school, schoolClasses);
-        const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
-        const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
-        const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
-        const readinessChecks = [
-            { key: 'classes', label: 'الفصول', isReady: schoolClasses.length > 0, tab: 'overview' as const, hint: 'أضف فصول المدرسة' },
-            { key: 'students', label: 'الطلاب', isReady: schoolStudents.length > 0, tab: 'overview' as const, hint: 'أضف الطلاب أو استورد كشف المدرسة' },
-            { key: 'supervisors', label: 'المشرفون', isReady: school.supervisorIds.length > 0, tab: 'relations' as const, hint: 'اربط مدير المدرسة أو المشرفين' },
-            { key: 'packages', label: 'الباقة/المسارات', isReady: activePackageCount > 0, tab: 'packages' as const, hint: 'فعّل باقة مدرسية مرتبطة بالمسارات' },
-            { key: 'codes', label: 'الأكواد', isReady: schoolCodes.length > 0, tab: 'packages' as const, hint: 'ولّد كود دخول صالح' },
-        ];
-        const readinessScore = readinessChecks.filter((check) => check.isReady).length;
-        const nextAction = readinessChecks.find((check) => !check.isReady);
-        const status = readinessScore === readinessChecks.length
-            ? 'جاهزة للبيع/التسليم'
-            : readinessScore >= 2
-                ? 'قريبة من التسليم'
-                : 'تحتاج تجهيز';
-
-        return {
-            school,
-            classCount: schoolClasses.length,
-            studentCount: schoolStudents.length,
-            supervisorCount: school.supervisorIds.length,
-            activePackageCount,
-            activeCodeCount: schoolCodes.length,
-            readinessScore,
-            readinessTotal: readinessChecks.length,
-            status,
-            nextAction,
-        };
-    }), [accessCodes, b2bPackages, classes, schools, students]);
-    const schoolPortfolioSummary = useMemo(() => {
-        const ready = schoolPortfolioRows.filter((row) => row.readinessScore === row.readinessTotal).length;
-        const nearReady = schoolPortfolioRows.filter((row) => row.readinessScore >= 2 && row.readinessScore < row.readinessTotal).length;
-        const needsSetup = schoolPortfolioRows.filter((row) => row.readinessScore < 2).length;
-        const nextPriority = [...schoolPortfolioRows].sort((a, b) => a.readinessScore - b.readinessScore || b.studentCount - a.studentCount)[0];
-
-        return {
-            ready,
-            nearReady,
-            needsSetup,
-            totalStudents: schoolPortfolioRows.reduce((sum, row) => sum + row.studentCount, 0),
-            totalActivePackages: schoolPortfolioRows.reduce((sum, row) => sum + row.activePackageCount, 0),
-            nextPriority,
-        };
-    }, [schoolPortfolioRows]);
+    const schoolPortfolioRows = useMemo(
+        () => buildSchoolPortfolioRows(schools, { classes, students, b2bPackages, accessCodes }),
+        [accessCodes, b2bPackages, classes, schools, students],
+    );
+    const schoolPortfolioSummary = useMemo(
+        () => summarizeSchoolPortfolio(schoolPortfolioRows),
+        [schoolPortfolioRows],
+    );
 
     const exportSchoolPortfolioReadiness = () => {
         createWorkbookDownload('schools-portfolio-readiness.xlsx', [
@@ -1568,76 +917,23 @@ export const SchoolsManager: React.FC = () => {
         const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id);
         const schoolCodes = accessCodes.filter((code) => code.schoolId === selectedSchool.id);
         const schoolClasses = classes.filter((group) => group.parentId === selectedSchool.id);
-        const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses);
-        const schoolGroupIds = new Set([selectedSchool.id, ...schoolClasses.map((classroom) => classroom.id)]);
-        const schoolSupervisors = supervisors.filter((currentUser) => (
-            selectedSchool.supervisorIds.includes(currentUser.id)
-            || schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
-            || (currentUser.groupIds || []).some((groupId) => schoolGroupIds.has(groupId))
-        ));
-        const schoolLevelSupervisors = schoolSupervisors.filter((currentUser) => (
-            selectedSchool.supervisorIds.includes(currentUser.id)
-            || (currentUser.groupIds || []).includes(selectedSchool.id)
-        ));
-        const classScopedSupervisors = schoolSupervisors.filter((currentUser) => (
-            !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id)
-            && (
-                schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
-                || (currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
-            )
-        ));
-        const supervisorScopeRows = schoolSupervisors.map((currentUser) => {
-            const schoolScope = selectedSchool.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(selectedSchool.id);
-            const scopedClassNames = schoolClasses
-                .filter((classroom) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id))
-                .map((classroom) => classroom.name);
-
-            return {
-                user: currentUser,
-                scopeLabel: schoolScope ? 'مدير/مشرف المدرسة كاملة' : 'مشرف فصول محددة',
-                scopeDetails: schoolScope ? selectedSchool.name : scopedClassNames.join('، ') || 'بدون نطاق واضح',
-                isSchoolWide: schoolScope,
-            };
-        });
-        const schoolParentUsers = parents.filter((currentUser) => (
-            (currentUser.linkedStudentIds || []).some((studentId) => schoolStudents.some((student) => student.id === studentId))
-        ));
-        const studentsWithoutParent = schoolStudents.filter((student) => (
-            !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
-        ));
-        const studentsWithoutClass = schoolStudents.filter((student) => (
-            !(student.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
-        ));
-        const supervisorsWithoutClass = schoolSupervisors.filter((currentUser) => (
-            !(currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
-            && !schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
-        ));
-        const classOperatingRows = schoolClasses.map((classroom) => {
-            const classStudents = schoolStudents.filter((student) => (
-                classroom.studentIds.includes(student.id)
-                || (student.groupIds || []).includes(classroom.id)
-            ));
-            const classSupervisors = schoolSupervisors.filter((currentUser) => (
-                classroom.supervisorIds.includes(currentUser.id)
-                || (currentUser.groupIds || []).includes(classroom.id)
-            ));
-            const classStudentsWithoutParent = classStudents.filter((student) => (
-                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
-            ));
-            const gaps = [
-                classStudents.length === 0 ? 'لا يوجد طلاب' : '',
-                classSupervisors.length === 0 ? 'لا يوجد مشرف فصل' : '',
-                classStudentsWithoutParent.length > 0 ? `${classStudentsWithoutParent.length} بلا ولي أمر` : '',
-            ].filter(Boolean);
-
-            return {
-                classroom,
-                studentCount: classStudents.length,
-                supervisorCount: classSupervisors.length,
-                studentsWithoutParentCount: classStudentsWithoutParent.length,
-                gaps,
-                isReady: classStudents.length > 0 && classSupervisors.length > 0,
-            };
+        const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses, students);
+        const {
+            schoolSupervisors,
+            schoolLevelSupervisors,
+            classScopedSupervisors,
+            supervisorScopeRows,
+            schoolParentUsers,
+            studentsWithoutParent,
+            studentsWithoutClass,
+            supervisorsWithoutClass,
+            classOperatingRows,
+        } = buildSchoolRelationshipViewModel({
+            school: selectedSchool,
+            schoolClasses,
+            schoolStudents,
+            supervisors,
+            parents,
         });
         const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
         const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
@@ -1646,21 +942,21 @@ export const SchoolsManager: React.FC = () => {
         const selectedPackageForCode = schoolPackages.find((pkg) => pkg.id === selectedPackageIdForCode);
         const totalSeats = activeSchoolPackages.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
         const usedSeats = schoolCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
-        const visibleSchoolStudents = schoolStudents.filter((student) => {
-            const query = studentSearch.trim().toLowerCase();
-            const matchesSearch = !query || student.name.toLowerCase().includes(query) || (student.email || '').toLowerCase().includes(query);
-            if (!matchesSearch) return false;
-            if (selectedClassFilter === 'all') return true;
-            if (selectedClassFilter === 'unassigned') {
-                return !(student.groupIds || []).some((groupId) => schoolClasses.some((item) => item.id === groupId));
-            }
-            return (student.groupIds || []).includes(selectedClassFilter);
+        const {
+            visibleSchoolStudents,
+            schoolStudentTotalPages,
+            safeSchoolStudentPage,
+            schoolStudentStartIndex,
+            schoolStudentEndIndex,
+            pagedVisibleSchoolStudents,
+        } = buildSchoolRosterViewModel({
+            schoolStudents,
+            schoolClasses,
+            search: studentSearch,
+            classFilter: selectedClassFilter,
+            page: schoolStudentPage,
+            pageSize: schoolStudentPageSize,
         });
-        const schoolStudentTotalPages = Math.max(1, Math.ceil(visibleSchoolStudents.length / schoolStudentPageSize));
-        const safeSchoolStudentPage = Math.min(schoolStudentPage, schoolStudentTotalPages);
-        const schoolStudentStartIndex = (safeSchoolStudentPage - 1) * schoolStudentPageSize;
-        const schoolStudentEndIndex = Math.min(schoolStudentStartIndex + schoolStudentPageSize, visibleSchoolStudents.length);
-        const pagedVisibleSchoolStudents = visibleSchoolStudents.slice(schoolStudentStartIndex, schoolStudentEndIndex);
         const focusClassStudentForm = (classroomName: string) => {
             setSingleStudent((current) => ({ ...current, className: classroomName }));
             setIsSingleStudentOpen(true);
@@ -1778,6 +1074,13 @@ export const SchoolsManager: React.FC = () => {
                 setRosterActionPending(null);
             }
         };
+        const handleRemoveSchoolWideSupervisor = (currentUser: User) => {
+            if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
+                return;
+            }
+            void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
+        };
+
         const focusQuickSupervisorEntry = (targetGroupId: string, targetGroupName: string) => {
             setQuickSupervisor((current) => ({ ...current, targetGroupId }));
             setManagementNotice(`تم اختيار ${targetGroupName}. اكتب بيانات المشرف ثم اضغط إنشاء/ربط المشرف.`);
@@ -1995,271 +1298,48 @@ export const SchoolsManager: React.FC = () => {
                 setAccessCodeActionPending(null);
             }
         };
-        const readinessChecks = [
-            {
-                label: 'فصول دراسية',
-                isReady: schoolClasses.length > 0,
-                hint: schoolClasses.length > 0 ? `${schoolClasses.length} فصل جاهز` : 'أضف فصلًا واحدًا على الأقل',
-                tab: 'overview' as const,
-            },
-            {
-                label: 'طلاب مسجلون',
-                isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
-                hint: schoolStudents.length === 0
-                    ? 'أضف الطلاب أو ارفع ملف Excel'
-                    : studentsWithoutClass.length > 0
-                        ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح`
-                        : `${schoolStudents.length} طالب داخل فصول واضحة`,
-                tab: schoolStudents.length === 0 ? 'import' as const : 'overview' as const,
-            },
-            {
-                label: 'مشرفون',
-                isReady: schoolSupervisors.length > 0,
-                hint: schoolSupervisors.length > 0 ? `${schoolSupervisors.length} مشرف/معلم` : 'اربط مشرفًا أو معلمًا بالمدرسة',
-                tab: 'relations' as const,
-            },
-            {
-                label: 'باقة/مسارات',
-                isReady: activeSchoolPackages.length > 0,
-                hint: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة مرتبطة بالمسارات` : 'فعّل باقة مدرسية واحدة على الأقل وحدد مساراتها',
-                tab: 'packages' as const,
-            },
-            {
-                label: 'أكواد دخول',
-                isReady: activeSchoolCodes.length > 0,
-                hint: activeSchoolCodes.length > 0 ? `${activeSchoolCodes.length} كود صالح` : 'ولّد كودًا صالحًا للطلاب',
-                tab: 'packages' as const,
-            },
-        ];
-        const readinessScore = readinessChecks.filter((check) => check.isReady).length;
-        const handoverBlockingGaps = readinessChecks.filter((check) => !check.isReady);
-        const visibleReadinessGaps = handoverBlockingGaps.slice(0, 3);
-        const operationalWarnings = [
-            schoolClasses.length === 0 ? 'أضف فصلًا واحدًا على الأقل قبل تسليم المدرسة.' : '',
-            schoolSupervisors.length === 0 ? 'اربط مشرفًا أو معلمًا ليتمكن من متابعة الطلاب.' : '',
-            activeSchoolPackages.length === 0 ? 'فعّل باقة مدرسية مرتبطة بالمسارات حتى يحصل الطلاب على الوصول بدون شراء فردي.' : '',
-            activeSchoolCodes.length === 0 ? 'ولّد كود دخول صالحًا إذا كانت المدرسة ستسجل الطلاب بالأكواد.' : '',
-            totalSeats > 0 && usedSeats >= totalSeats ? 'تم استهلاك كل المقاعد المتاحة، راجع سعة الباقات.' : '',
-            studentsWithoutClass.length > 0
-                ? 'يوجد طلاب بلا فصل، يفضل نقلهم لفصول قبل متابعة التقارير.'
-                : '',
-            studentsWithoutParent.length > 0
-                ? 'يوجد طلاب بلا ولي أمر مرتبط، راجع تبويب الربط والمتابعة قبل تسليم الحسابات.'
-                : '',
-        ].filter(Boolean);
-        const readinessStatusLabel = readinessScore === readinessChecks.length
-            ? 'جاهزة للتسليم'
-            : readinessScore >= 2
-                ? 'قريبة من التسليم'
-                : 'تحتاج تجهيز';
-        const readinessNextStep = operationalWarnings[0] || 'المدرسة جاهزة تشغيليًا. راجع تقرير الأداء أسبوعيًا بعد بدء الطلاب.';
-        const commercialOperatingSteps = [
-            {
-                id: 'classes',
-                title: 'الفصول',
-                metric: `${schoolClasses.length} فصل`,
-                description: schoolClasses.length > 0 ? 'الفصول جاهزة لاستقبال الطلاب.' : 'ابدأ بإنشاء فصول المدرسة.',
-                statusLabel: schoolClasses.length > 0 ? 'جاهز' : 'ناقص',
-                isReady: schoolClasses.length > 0,
-                tab: 'overview' as const,
-                buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصول',
-            },
-            {
-                id: 'students',
-                title: 'الطلاب',
-                metric: `${schoolStudents.length} طالب`,
-                description: studentsWithoutClass.length > 0
-                    ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح.`
-                    : 'الطلاب مربوطون داخل نطاق المدرسة.',
-                statusLabel: schoolStudents.length > 0 && studentsWithoutClass.length === 0 ? 'جاهز' : 'راجع',
-                isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
-                tab: 'import' as const,
-                buttonLabel: schoolStudents.length > 0 ? 'استيراد/إضافة طلاب' : 'إضافة الطلاب',
-            },
-            {
-                id: 'supervisors',
-                title: 'المشرفون',
-                metric: `${schoolSupervisors.length} مشرف`,
-                description: schoolSupervisors.length > 0 ? 'يمكن متابعة المدرسة أو الفصول حسب النطاق.' : 'اربط مدير المدرسة أو مشرفي الفصول.',
-                statusLabel: schoolSupervisors.length > 0 ? 'جاهز' : 'ناقص',
-                isReady: schoolSupervisors.length > 0,
-                tab: 'relations' as const,
-                buttonLabel: 'ربط المشرفين',
-            },
-            {
-                id: 'access',
-                title: 'الباقة والمسارات',
-                metric: `${activeSchoolPackages.length} باقة`,
-                description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
-                    ? 'الباقة والمسارات والأكواد جاهزة للتسليم.'
-                    : 'فعّل باقة مدرسية مرتبطة بالمسارات وولّد كود دخول.',
-                statusLabel: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
-                isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
-                tab: 'packages' as const,
-                buttonLabel: 'إدارة الباقات والمسارات',
-            },
-            {
-                id: 'reports',
-                title: 'تقرير التسليم',
-                metric: schoolReport ? `${schoolReport.metrics.averageScore}%` : 'قريبًا',
-                description: schoolReport && schoolReport.metrics.quizAttempts > 0
-                    ? 'تقرير الأداء جاهز للإدارة والمتابعة.'
-                    : 'يظهر التقرير بعد أول اختبارات أو تدريبات.',
-                statusLabel: schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'ينتظر بيانات',
-                isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
-                tab: 'reports' as const,
-                buttonLabel: 'فتح التقارير',
-            },
-        ];
-        const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
-        const currentOperatingStepIndex = Math.max(0, commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id));
-        const readinessPercent = Math.round((readinessScore / Math.max(readinessChecks.length, 1)) * 100);
-        const handoverDecisionTitle = handoverBlockingGaps.length === 0
-            ? 'جاهزة للتسليم التجاري'
-            : `لا تسلم المدرسة قبل إغلاق ${handoverBlockingGaps.length} بند`;
-        const handoverDecisionCopy = handoverBlockingGaps.length === 0
-            ? 'كل عناصر التشغيل الأساسية مكتملة. يمكنك تحميل ملف التسليم أو فتح بوابة المتابعة بعد بدء الطلاب.'
-            : 'هذه هي البنود التي تمنع التسليم النظيف للمدرسة. ابدأ بأول بند، وسيأخذك الزر مباشرة للمكان الصحيح.';
-        const isSaveVerificationBusy = saveVerificationState === 'saving' || saveVerificationState === 'verifying';
-        const isSchoolWorkspaceBusy = Boolean(
-            isSaveVerificationBusy
-            || schoolActionPending
-            || rosterActionPending
-            || packageActionPending
-            || accessCodeActionPending
-            || isImporting
-            || isApplyingRelations,
-        );
-        const saveVerificationButtonLabel = saveVerificationState === 'saving'
-            ? 'جاري الحفظ...'
-            : saveVerificationState === 'verifying'
-                ? 'جاري التحقق...'
-                : saveVerificationState === 'success'
-                    ? 'تم الحفظ والتأكد'
-                    : saveVerificationState === 'error'
-                        ? 'فشل الحفظ'
-                        : 'حفظ وتأكيد البيانات';
-        const commercialDecisionCards = [
-            {
-                id: 'readiness',
-                label: 'قرار التشغيل',
-                value: readinessStatusLabel,
-                hint: readinessScore === readinessChecks.length
-                    ? 'يمكن تسليم المدرسة بثقة ومتابعة الأداء من البوابة.'
-                    : 'لا تزال هناك خطوات تشغيل قبل التسليم التجاري الكامل.',
-                tone: readinessScore === readinessChecks.length ? 'emerald' : readinessScore >= 3 ? 'amber' : 'rose',
-                tab: 'overview' as const,
-                target: 'school-next-action',
-            },
-            {
-                id: 'scope',
-                label: 'النطاق الحالي',
-                value: `${schoolClasses.length} فصل / ${schoolStudents.length} طالب`,
-                hint: schoolSupervisors.length > 0
-                    ? `${schoolSupervisors.length} مشرف أو معلم مرتبط بالنطاق.`
-                    : 'اربط مدير المدرسة أو مشرفي الفصول قبل التسليم.',
-                tone: schoolSupervisors.length > 0 ? 'blue' : 'amber',
-                tab: 'relations' as const,
-                target: 'school-wide-supervisors-panel',
-            },
-            {
-                id: 'access',
-                label: 'الوصول التجاري',
-                value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة` : 'بلا باقة نشطة',
-                hint: activeSchoolCodes.length > 0
-                    ? `${activeSchoolCodes.length} كود صالح للتوزيع.`
-                    : 'أنشئ باقة مرتبطة بالمسارات وكود دخول لتجنب شراء الطلاب بشكل فردي.',
-                tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
-                tab: 'packages' as const,
-                target: 'school-packages-panel',
-            },
-            {
-                id: 'next-action',
-                label: 'إجراء اليوم',
-                value: nextOperatingStep.title,
-                hint: nextOperatingStep.description,
-                tone: nextOperatingStep.isReady ? 'emerald' : 'slate',
-                tab: nextOperatingStep.tab,
-                target: nextOperatingStep.id === 'supervisors'
-                    ? 'school-wide-supervisors-panel'
-                    : nextOperatingStep.id === 'access'
-                        ? 'school-packages-panel'
-                        : nextOperatingStep.id === 'reports'
-                            ? 'school-reports-panel'
-                            : nextOperatingStep.id === 'students'
-                                ? 'school-students-panel'
-                                : 'school-classes-panel',
-            },
-        ];
-        const overviewFocusActions = [
-            {
-                id: 'classes',
-                label: 'الفصول',
-                value: `${schoolClasses.length} فصل`,
-                hint: schoolClasses.length > 0
-                    ? 'راجع توزيع الطلاب والمشرفين داخل كل فصل.'
-                    : 'ابدأ بإنشاء الفصول قبل استيراد الطلاب.',
-                actionLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إنشاء الفصول',
-                target: 'school-class-creation-panel',
-                tone: schoolClasses.length > 0 ? 'emerald' : 'amber',
-            },
-            {
-                id: 'students',
-                label: 'الطلاب',
-                value: `${schoolStudents.length} طالب`,
-                hint: studentsWithoutClass.length > 0
-                    ? `${studentsWithoutClass.length} طالب يحتاجون فصل.`
-                    : schoolStudents.length > 0
-                        ? 'الطلاب مرتبطون ويمكن متابعة توزيعهم.'
-                        : 'أضف طالبًا سريعًا أو استورد ملف المدرسة.',
-                actionLabel: schoolStudents.length > 0 ? 'تنظيم الطلاب' : 'إضافة طالب',
-                target: 'school-students-panel',
-                tone: studentsWithoutClass.length > 0 ? 'amber' : schoolStudents.length > 0 ? 'emerald' : 'indigo',
-            },
-            {
-                id: 'supervisors',
-                label: 'المشرفون',
-                value: `${schoolSupervisors.length} مشرف`,
-                hint: schoolSupervisors.length > 0
-                    ? 'الصلاحيات موزعة بين المدرسة والفصول.'
-                    : 'اربط مدير المدرسة أو مشرفي الفصول.',
-                actionLabel: 'ربط مشرف',
-                target: 'school-relations-quick-supervisor-card',
-                tab: 'relations' as const,
-                tone: schoolSupervisors.length > 0 ? 'emerald' : 'purple',
-            },
-            {
-                id: 'access',
-                label: 'الباقة/المسارات',
-                value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة` : 'بدون باقة',
-                hint: activeSchoolCodes.length > 0
-                    ? `${activeSchoolCodes.length} كود جاهز للتسليم.`
-                    : 'فعّل باقة مرتبطة بالمسارات أو أنشئ أكواد المدرسة.',
-                actionLabel: 'الباقة والمسارات',
-                target: 'school-packages-panel',
-                tab: 'packages' as const,
-                tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
-            },
-        ];
-        const schoolLaunchPlan = [
-            ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقة والمسارات والأكواد', readinessNextStep],
-            ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقة والمسارات'],
-            ['أول 3 أيام', 'متابعة الطلاب الذين لم يبدأوا التدريب أو الاختبارات', studentsWithoutClass.length > 0 ? 'ابدأ بالطلاب غير المصنفين في فصول' : 'راجع بوابة المشرف يوميًا'],
-            ['نهاية الأسبوع الأول', 'تصدير تقرير الأداء ومشاركته مع الإدارة', schoolReport ? 'تقرير الأداء متاح من تبويب التقارير' : 'سيظهر التقرير بعد بدء الطلاب في القياس'],
-        ];
-        const supervisorHandoverChecklist = [
-            ['المشرف يرى مدرسته/فصوله من لوحة المشرف', schoolSupervisors.length > 0 ? 'جاهز' : 'يحتاج ربط مشرف'],
-            ['كل طالب داخل فصل واضح', studentsWithoutClass.length === 0 ? 'جاهز' : `${studentsWithoutClass.length} طالب يحتاج فصل`],
-            ['أولياء الأمور المرتبطون بالطلاب المهمين', studentsWithoutParent.length === 0 ? 'جاهز' : `${studentsWithoutParent.length} طالب بلا ولي أمر`],
-            ['يوجد كود أو باقة نشطة لتفعيل الطلاب', activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'يحتاج باقة وكود صالح'],
-            ['تقرير الأداء جاهز للمتابعة', schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'يظهر بعد بدء الاختبارات'],
-        ];
-        const schoolHandoverMessage = [
-            `تم تجهيز مساحة ${selectedSchool.name} على منصة المئة.`,
-            `حالة الجاهزية الحالية: ${readinessStatusLabel} (${readinessScore}/${readinessChecks.length}).`,
-            `الخطوة التالية: ${readinessNextStep}`,
-            'يمكن للمشرف متابعة الطلاب، تصدير التقارير، وتوجيه الاختبارات من لوحة المشرف.',
-        ].join('\n');
+        const {
+            readinessChecks,
+            readinessScore,
+            handoverBlockingGaps,
+            visibleReadinessGaps,
+            operationalWarnings,
+            readinessStatusLabel,
+            readinessNextStep,
+            commercialOperatingSteps,
+            nextOperatingStep,
+            currentOperatingStepIndex,
+            readinessPercent,
+            handoverDecisionTitle,
+            handoverDecisionCopy,
+            isSaveVerificationBusy,
+            isSchoolWorkspaceBusy,
+            saveVerificationButtonLabel,
+            commercialDecisionCards,
+            overviewFocusActions,
+            schoolLaunchPlan,
+            supervisorHandoverChecklist,
+            schoolHandoverMessage,
+        } = buildSchoolWorkspaceViewModel({
+            school: selectedSchool,
+            schoolClasses,
+            schoolStudents,
+            schoolSupervisors,
+            studentsWithoutClass,
+            studentsWithoutParent,
+            activeSchoolPackages,
+            activeSchoolCodes,
+            totalSeats,
+            usedSeats,
+            schoolReport,
+            saveVerificationState,
+            schoolActionPending,
+            rosterActionPending,
+            packageActionPending,
+            accessCodeActionPending,
+            isImporting,
+            isApplyingRelations,
+        });
         const copySchoolHandoverMessage = async () => {
             try {
                 await navigator.clipboard.writeText(schoolHandoverMessage);
@@ -2495,6 +1575,91 @@ export const SchoolsManager: React.FC = () => {
                     ],
                 },
             ]);
+        };
+
+        const handleAssignCourseToSchool = (courseId: string) => {
+            assignCourseToGroup(courseId, selectedSchool.id);
+            setSelectedSchool((current) =>
+                current
+                    ? {
+                          ...current,
+                          courseIds: current.courseIds.includes(courseId)
+                              ? current.courseIds
+                              : [...current.courseIds, courseId],
+                      }
+                    : current,
+            );
+        };
+
+        const handleRemoveCourseFromSchool = (courseId: string) => {
+            removeCourseFromGroup(courseId, selectedSchool.id);
+            setSelectedSchool((current) =>
+                current
+                    ? {
+                          ...current,
+                          courseIds: current.courseIds.filter((id) => id !== courseId),
+                      }
+                    : current,
+            );
+        };
+
+        const openClassRenameModal = (classroom: Group) => {
+            setEditNameModalState({
+                isOpen: true,
+                title: 'أدخل اسم الفصل الجديد',
+                initialValue: classroom.name,
+                onSave: async (newName: string) => {
+                    if (!newName.trim() || newName.trim() === classroom.name) return;
+                    setSchoolActionPending(`rename-class-${classroom.id}`);
+                    setSaveVerificationState('saving');
+                    setSaveVerificationMessage('جاري حفظ اسم الفصل...');
+                    setManagementError(null);
+                    setManagementNotice(null);
+                    try {
+                        await updateGroupAsync(classroom.id, { name: newName.trim() });
+                        await refreshSchoolWorkspace(selectedSchool.id);
+                        setSaveVerificationState('success');
+                        setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
+                        setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
+                    } catch (error) {
+                        setSaveVerificationState('error');
+                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
+                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
+                        throw error;
+                    } finally {
+                        setSchoolActionPending(null);
+                    }
+                },
+            });
+        };
+
+        const handleDeleteClass = async (classroom: Group) => {
+            if (!window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) return;
+
+            setSchoolActionPending(`delete-class-${classroom.id}`);
+            setSaveVerificationState('saving');
+            setSaveVerificationMessage('جاري حذف الفصل...');
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await deleteGroupAsync(classroom.id);
+                await refreshSchoolWorkspace(selectedSchool.id);
+                setSaveVerificationState('success');
+                setSaveVerificationMessage('تم حذف الفصل والتأكد منه من الخادم.');
+                setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
+            } catch (error) {
+                setSaveVerificationState('error');
+                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
+                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
+            } finally {
+                setSchoolActionPending(null);
+            }
+        };
+
+        const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {
+            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
+                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
+            }
         };
 
         const downloadClassReport = (classroom: Group) => {
@@ -3231,1222 +2396,168 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 </div>
 
-                <div data-testid="school-command-center" className="hidden">
-                    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
-                                <Building2 size={14} />
-                                مركز تشغيل المدرسة
-                            </div>
-                            <h2 className="mt-3 text-lg font-black text-gray-900">{readinessStatusLabel}</h2>
-                            <p data-testid="school-next-action" className="mt-1 text-sm font-bold leading-7 text-gray-600">{readinessNextStep}</p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <span className={`px-4 py-2 rounded-full text-sm font-bold ${
-                                readinessScore === readinessChecks.length
-                                    ? 'bg-emerald-100 text-emerald-700'
-                                    : readinessScore >= 3
-                                        ? 'bg-amber-100 text-amber-700'
-                                        : 'bg-red-100 text-red-700'
-                            }`}>
-                                {readinessScore}/{readinessChecks.length} جاهز
-                            </span>
-                            <button
-                                type="button"
-                                onClick={downloadSchoolHandover}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-amber-600"
-                            >
-                                <Download size={16} />
-                                ملف التسليم
-                            </button>
-                        </div>
-                    </div>
-                    <div className="mb-4 grid gap-3 lg:grid-cols-[0.7fr_1.3fr]">
-                        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                            <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-500">
-                                <span>نسبة الجاهزية</span>
-                                <span>{readinessPercent}%</span>
-                            </div>
-                            <div className="h-2 rounded-full bg-white">
-                                <div
-                                    className={`h-2 rounded-full ${readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-red-500'}`}
-                                    style={{ width: `${readinessPercent}%` }}
-                                />
-                            </div>
-                            <p className="mt-3 text-xs font-bold leading-6 text-slate-600">
-                                {readinessScore === readinessChecks.length ? 'جاهزة للتجربة والتسليم.' : `${readinessScore}/${readinessChecks.length} بنود جاهزة.`}
-                            </p>
-                        </div>
-                        <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
-                            <div className="mb-3 flex items-center justify-between gap-2">
-                                <span className="text-sm font-black text-gray-900">أهم النواقص الآن</span>
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab('reports')}
-                                    className="rounded-xl bg-white px-3 py-1.5 text-xs font-black text-amber-800 transition-colors hover:bg-amber-100"
-                                >
-                                    التفاصيل في التقرير
-                                </button>
-                            </div>
-                            {visibleReadinessGaps.length === 0 ? (
-                                <p className="text-sm font-bold text-emerald-700">لا توجد نواقص تشغيلية تمنع التجربة.</p>
-                            ) : (
-                                <div className="grid gap-2 md:grid-cols-3">
-                                    {visibleReadinessGaps.map((gap) => (
-                                        <button
-                                            key={gap.label}
-                                            type="button"
-                                            onClick={() => setActiveTab(gap.tab)}
-                                            className="rounded-xl bg-white px-3 py-2 text-right text-xs font-bold leading-5 text-amber-900 transition-colors hover:bg-amber-100"
-                                        >
-                                            <span className="block font-black">{gap.label}</span>
-                                            {gap.hint}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <div data-testid="school-commercial-summary-strip" className="hidden">
-                        {commercialDecisionCards.map((card) => (
-                            <button
-                                key={card.id}
-                                type="button"
-                                data-testid={`school-commercial-decision-${card.id}`}
-                                onClick={() => {
-                                    setActiveTab(card.tab);
-                                    window.setTimeout(() => {
-                                        if (card.target === 'school-wide-supervisors-panel') {
-                                            document.querySelector('[data-testid="school-wide-supervisors-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                            return;
-                                        }
-                                        document.querySelector(`[data-testid="${card.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                    }, 80);
-                                }}
-                                className={`rounded-2xl border p-4 text-right transition-colors ${
-                                    card.tone === 'emerald'
-                                        ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
-                                        : card.tone === 'amber'
-                                            ? 'border-amber-100 bg-amber-50 hover:bg-amber-100'
-                                            : card.tone === 'rose'
-                                                ? 'border-rose-100 bg-rose-50 hover:bg-rose-100'
-                                                : card.tone === 'blue'
-                                                    ? 'border-blue-100 bg-blue-50 hover:bg-blue-100'
-                                                    : 'border-slate-100 bg-slate-50 hover:bg-slate-100'
-                                }`}
-                            >
-                                <div className="text-xs font-black text-slate-500">{card.label}</div>
-                                <div className="mt-2 text-base font-black text-gray-900">{card.value}</div>
-                                <p className="mt-2 min-h-[44px] text-xs font-bold leading-6 text-gray-600">{card.hint}</p>
-                            </button>
-                        ))}
-                    </div>
-                    <div data-testid="school-handover-decision-board" className={`hidden ${
-                        handoverBlockingGaps.length === 0
-                            ? 'border-emerald-100 bg-emerald-50'
-                            : 'border-amber-100 bg-amber-50'
-                    }`}>
-                        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                            <div>
-                                <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black ${
-                                    handoverBlockingGaps.length === 0
-                                        ? 'bg-white text-emerald-700'
-                                        : 'bg-white text-amber-800'
-                                }`}>
-                                    <ShieldCheck size={14} />
-                                    قرار التسليم
-                                </div>
-                                <h3 className="mt-3 text-lg font-black text-gray-900">{handoverDecisionTitle}</h3>
-                                <p className="mt-1 text-sm font-bold leading-7 text-gray-700">{handoverDecisionCopy}</p>
-                            </div>
-                            <button
-                                type="button"
-                                data-testid="school-handover-decision-report"
-                                onClick={() => setActiveTab('reports')}
-                                className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
-                            >
-                                فتح تقرير التسليم
-                            </button>
-                        </div>
-                        <div data-testid="school-handover-decision-items" className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-                            {(handoverBlockingGaps.length > 0 ? handoverBlockingGaps : readinessChecks).map((item, index) => (
-                                <button
-                                    key={`${item.label}-${index}`}
-                                    type="button"
-                                    data-testid={`school-handover-decision-item-${index}`}
-                                    onClick={() => setActiveTab(item.tab)}
-                                    className={`rounded-xl border bg-white px-3 py-2 text-right transition-colors hover:bg-gray-50 ${
-                                        item.isReady ? 'border-emerald-100' : 'border-amber-200'
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span className="text-sm font-black text-gray-900">{item.label}</span>
-                                        <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
-                                            item.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'
-                                        }`}>
-                                            {item.isReady ? 'جاهز' : 'ناقص'}
-                                        </span>
-                                    </div>
-                                    <p className="mt-1 text-xs font-bold leading-5 text-gray-600">{item.hint}</p>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    <div data-testid="school-delivery-journey" className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                            <div>
-                                <div className="text-xs font-black text-slate-500">مسار تسليم المدرسة</div>
-                                <h3 className="mt-1 text-base font-black text-gray-900">
-                                    الخطوة الحالية: {nextOperatingStep.title}
-                                </h3>
-                                <p className="mt-1 text-sm font-bold leading-6 text-gray-600">
-                                    {nextOperatingStep.description}
-                                </p>
-                            </div>
-                            <button
-                                type="button"
-                                data-testid="school-next-step-button"
-                                onClick={() => setActiveTab(nextOperatingStep.tab)}
-                                className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
-                            >
-                                {nextOperatingStep.buttonLabel}
-                            </button>
-                        </div>
-                        <div className="mt-4">
-                            <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-500">
-                                <span>{readinessPercent}% جاهزية تشغيل</span>
-                                <span>{readinessScore}/{readinessChecks.length}</span>
-                            </div>
-                            <div className="h-2 rounded-full bg-white">
-                                <div
-                                    className={`h-2 rounded-full ${readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-red-500'}`}
-                                    style={{ width: `${readinessPercent}%` }}
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-4 grid gap-2 md:grid-cols-5">
-                            {commercialOperatingSteps.map((step, index) => (
-                                <button
-                                    key={step.id}
-                                    type="button"
-                                    data-testid={`school-delivery-journey-step-${step.id}`}
-                                    onClick={() => {
-                                        setActiveTab(step.tab);
-                                        setExpandedSchoolStep(step.tab);
-                                    }}
-                                    className={`rounded-xl border px-3 py-3 text-right transition-colors ${
-                                        expandedSchoolStep === step.tab
-                                            ? 'border-slate-300 bg-slate-900 text-white shadow-sm'
-                                            : step.isReady
-                                            ? 'border-emerald-100 bg-white text-emerald-700 hover:bg-emerald-50'
-                                            : index === currentOperatingStepIndex
-                                                ? 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
-                                                : 'border-slate-100 bg-white text-slate-500 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    <span className="block text-[11px] font-black text-slate-400">مرحلة {index + 1}</span>
-                                    <span className={`mt-1 block text-sm font-black ${expandedSchoolStep === step.tab ? 'text-white' : 'text-gray-900'}`}>{step.title}</span>
-                                    <span className="mt-1 block text-xs font-bold leading-5">{step.metric}</span>
-                                    <span className={`mt-2 inline-flex rounded-lg px-2.5 py-1 text-[11px] font-black ${expandedSchoolStep === step.tab ? 'bg-white/15 text-white' : 'bg-white text-gray-700'}`}>
-                                        {step.buttonLabel}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    <div data-testid="school-setup-progress" className="hidden">
-                        {commercialOperatingSteps.map((step, index) => (
-                            <div
-                                key={step.id}
-                                data-testid={`school-commercial-step-${step.id}`}
-                                className={`rounded-2xl border p-4 ${
-                                    step.isReady
-                                        ? 'border-emerald-100 bg-emerald-50'
-                                        : 'border-amber-100 bg-amber-50'
-                                }`}
-                            >
-                                <div className="mb-3 flex items-center justify-between gap-2">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-black text-gray-900">
-                                        {index + 1}
-                                    </span>
-                                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
-                                        step.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                                    }`}>
-                                        {step.statusLabel}
-                                    </span>
-                                </div>
-                                <p className="text-sm font-black text-gray-900">{step.title}</p>
-                                <p className="mt-1 text-xl font-black text-gray-900">{step.metric}</p>
-                                <p className="mt-2 min-h-[44px] text-xs font-bold leading-6 text-gray-600">{step.description}</p>
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab(step.tab)}
-                                    className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
-                                >
-                                    {step.buttonLabel}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                    <div data-testid="school-primary-actions" className="mt-4 grid gap-2 md:grid-cols-3 xl:grid-cols-6">
-                        <button
-                            type="button"
-                            data-testid="school-primary-add-class"
-                            disabled={isSchoolWorkspaceBusy}
-                            onClick={async () => {
-                                setActiveTab('overview');
-                                await handleCreateSingleClass();
-                            }}
-                            className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-black text-white transition-colors hover:bg-slate-800"
-                        >
-                            إضافة فصل
-                        </button>
-                        <button
-                            type="button"
-                            data-testid="school-primary-add-student"
-                            onClick={() => {
-                                setActiveTab('overview');
-                                setIsSingleStudentOpen(true);
-                                window.setTimeout(() => {
-                                    document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }, 50);
-                            }}
-                            className="rounded-xl bg-indigo-50 px-3 py-2.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100"
-                        >
-                            إضافة طالب
-                        </button>
-                        <button
-                            type="button"
-                            data-testid="school-primary-add-supervisor"
-                            onClick={() => {
-                                setActiveTab('relations');
-                                window.setTimeout(() => {
-                                    document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }, 50);
-                            }}
-                            className="rounded-xl bg-purple-50 px-3 py-2.5 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
-                        >
-                            إضافة مشرف
-                        </button>
-                        <button
-                            type="button"
-                            data-testid="school-primary-open-packages"
-                            onClick={() => setActiveTab('packages')}
-                            className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100"
-                        >
-                            الباقة والمسارات
-                        </button>
-                        <button
-                            type="button"
-                            data-testid="school-primary-open-reports"
-                            onClick={() => setActiveTab('reports')}
-                            className="rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-black text-blue-700 transition-colors hover:bg-blue-100"
-                        >
-                            تقرير التسليم
-                        </button>
-                        <button
-                            type="button"
-                            data-testid="school-primary-open-portal"
-                            onClick={() => {
-                                const url = new URL('/admin-dashboard', window.location.origin);
-                                url.searchParams.set('tab', 'school-portal');
-                                window.history.pushState(null, '', `${url.pathname}${url.search}`);
-                                window.dispatchEvent(new HashChangeEvent('hashchange'));
-                            }}
-                            className="rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-100"
-                        >
-                            بوابة المتابعة
-                        </button>
-                    </div>
-                </div>
+                <SchoolCommandCenterPanel
+                    readinessStatusLabel={readinessStatusLabel}
+                    readinessNextStep={readinessNextStep}
+                    readinessScore={readinessScore}
+                    readinessChecks={readinessChecks}
+                    readinessPercent={readinessPercent}
+                    visibleReadinessGaps={visibleReadinessGaps}
+                    commercialDecisionCards={commercialDecisionCards}
+                    handoverBlockingGaps={handoverBlockingGaps}
+                    handoverDecisionTitle={handoverDecisionTitle}
+                    handoverDecisionCopy={handoverDecisionCopy}
+                    nextOperatingStep={nextOperatingStep}
+                    commercialOperatingSteps={commercialOperatingSteps}
+                    currentOperatingStepIndex={currentOperatingStepIndex}
+                    expandedSchoolStep={expandedSchoolStep}
+                    isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                    onDownloadHandover={downloadSchoolHandover}
+                    onSelectTab={(tab) => setActiveTab(tab)}
+                    onCommercialDecision={(card) => {
+                        setActiveTab(card.tab || 'overview');
+                        window.setTimeout(() => {
+                            if (card.target === 'school-wide-supervisors-panel') {
+                                document.querySelector('[data-testid="school-wide-supervisors-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                return;
+                            }
+                            document.querySelector(`[data-testid="${card.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 80);
+                    }}
+                    onSelectJourneyStep={(tab) => {
+                        setActiveTab(tab);
+                        setExpandedSchoolStep(tab);
+                    }}
+                    onAddClass={async () => {
+                        setActiveTab('overview');
+                        await handleCreateSingleClass();
+                    }}
+                    onAddStudent={() => {
+                        setActiveTab('overview');
+                        setIsSingleStudentOpen(true);
+                        window.setTimeout(() => {
+                            document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 50);
+                    }}
+                    onAddSupervisor={() => {
+                        setActiveTab('relations');
+                        window.setTimeout(() => {
+                            document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 50);
+                    }}
+                    onOpenPortal={() => {
+                        const url = new URL('/admin-dashboard', window.location.origin);
+                        url.searchParams.set('tab', 'school-portal');
+                        window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                        window.dispatchEvent(new HashChangeEvent('hashchange'));
+                    }}
+                />
 
                 <div className={`${expandedSchoolStep ? 'bg-white p-6 rounded-xl shadow-sm border border-gray-100' : 'hidden'}`}>
                     {activeTab === 'overview' && expandedSchoolStep === 'overview' && (
                         <div data-testid="school-classes-panel" className="space-y-8">
-                            <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <p className="text-xs font-black text-slate-500">لوحة تشغيل المدرسة</p>
-                                        <h3 className="text-lg font-black text-gray-900">ابدأ من هنا بدل البحث داخل الصفحة</h3>
-                                    </div>
-                                    <span className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-slate-600">
-                                        {nextOperatingStep.title}
-                                    </span>
-                                </div>
-                                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                                    {overviewFocusActions.map((action) => (
-                                        <button
-                                            key={action.id}
-                                            type="button"
-                                            data-testid={`school-overview-focus-${action.id}`}
-                                            onClick={() => {
-                                                if (action.tab) {
-                                                    setActiveTab(action.tab);
-                                                } else {
-                                                    setActiveTab('overview');
-                                                }
-                                                window.setTimeout(() => {
-                                                    document.querySelector(`[data-testid="${action.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                }, 80);
-                                            }}
-                                            className={`rounded-2xl border p-4 text-right transition-all hover:-translate-y-0.5 hover:shadow-sm ${
-                                                action.tone === 'emerald'
-                                                    ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
-                                                    : action.tone === 'amber'
-                                                        ? 'border-amber-100 bg-amber-50 hover:bg-amber-100'
-                                                        : action.tone === 'purple'
-                                                            ? 'border-purple-100 bg-purple-50 hover:bg-purple-100'
-                                                            : action.tone === 'rose'
-                                                                ? 'border-rose-100 bg-rose-50 hover:bg-rose-100'
-                                                                : 'border-indigo-100 bg-indigo-50 hover:bg-indigo-100'
-                                            }`}
-                                        >
-                                            <div className="mb-3 flex items-center justify-between gap-2">
-                                                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-gray-600">
-                                                    {action.label}
-                                                </span>
-                                                <span className="text-lg font-black text-gray-900">{action.value}</span>
-                                            </div>
-                                            <p className="min-h-[44px] text-xs font-bold leading-6 text-gray-600">{action.hint}</p>
-                                            <span className="mt-3 inline-flex rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800">
-                                                {action.actionLabel}
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                            <SchoolOverviewOperationsPanel
+                                overviewFocusActions={overviewFocusActions}
+                                nextOperatingStep={nextOperatingStep}
+                                studentCount={schoolStudents.length}
+                                classCount={schoolClasses.length}
+                                activePackageCount={activeSchoolPackages.length}
+                                totalSeats={totalSeats}
+                                usedSeats={usedSeats}
+                                activeCodeCount={activeSchoolCodes.length}
+                                classOperatingRows={classOperatingRows}
+                                onFocusAction={(action) => {
+                                    setActiveTab(action.tab || 'overview');
+                                    window.setTimeout(() => {
+                                        document.querySelector(`[data-testid="${action.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 80);
+                                }}
+                                onOpenClass={(classroomId) => {
+                                    document.querySelector(`[data-school-class-id="${classroomId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }}
+                            />
 
-                            <div data-testid="school-overview-metrics-grid" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="bg-blue-50 p-6 rounded-xl">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <Users className="text-blue-500" size={24} />
-                                        <h3 className="font-bold text-gray-900">إجمالي الطلاب</h3>
-                                    </div>
-                                    <p className="text-3xl font-bold text-blue-600">{schoolStudents.length}</p>
-                                </div>
-                                <div className="bg-purple-50 p-6 rounded-xl">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <Building2 className="text-purple-500" size={24} />
-                                        <h3 className="font-bold text-gray-900">الفصول الدراسية</h3>
-                                    </div>
-                                    <p className="text-3xl font-bold text-purple-600">{schoolClasses.length}</p>
-                                </div>
-                                <div className="bg-emerald-50 p-6 rounded-xl">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <BookOpen className="text-emerald-500" size={24} />
-                                        <h3 className="font-bold text-gray-900">الباقات النشطة</h3>
-                                    </div>
-                                    <p className="text-3xl font-bold text-emerald-600">{schoolPackages.filter((pkg) => pkg.status === 'active').length}</p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-                                    <div className="flex items-center gap-2 text-amber-700 mb-2">
-                                        <ShieldCheck size={18} />
-                                        <span className="text-xs font-black">المقاعد المتاحة</span>
-                                    </div>
-                                    <div className="text-2xl font-black text-amber-800">{totalSeats}</div>
-                                    <p className="text-xs text-amber-700 mt-1">إجمالي سعة الباقات المدرسية</p>
-                                </div>
-                                <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
-                                    <div className="flex items-center gap-2 text-indigo-700 mb-2">
-                                        <Users size={18} />
-                                        <span className="text-xs font-black">مقاعد مستخدمة</span>
-                                    </div>
-                                    <div className="text-2xl font-black text-indigo-800">{usedSeats}</div>
-                                    <p className="text-xs text-indigo-700 mt-1">استخدام الأكواد حتى الآن</p>
-                                </div>
-                                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                                    <div className="flex items-center gap-2 text-emerald-700 mb-2">
-                                        <Key size={18} />
-                                        <span className="text-xs font-black">أكواد فعالة</span>
-                                    </div>
-                                    <div className="text-2xl font-black text-emerald-800">{activeSchoolCodes.length}</div>
-                                    <p className="text-xs text-emerald-700 mt-1">صالحة الآن للتوزيع</p>
-                                </div>
-                                <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
-                                    <div className="flex items-center gap-2 text-rose-700 mb-2">
-                                        <Clock3 size={18} />
-                                        <span className="text-xs font-black">طلاب المدرسة</span>
-                                    </div>
-                                    <div className="text-2xl font-black text-rose-800">{schoolStudents.length}</div>
-                                    <p className="text-xs text-rose-700 mt-1">مرتبطون فعليًا بهذه المدرسة</p>
-                                </div>
-                            </div>
-
-                            <div data-testid="school-class-operating-brief" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <p className="text-xs font-black text-slate-500">كشف تشغيل الفصول</p>
-                                        <h3 className="text-lg font-black text-gray-900">كل فصل واضح قبل التسليم</h3>
-                                        <p className="mt-1 text-sm font-bold leading-6 text-gray-500">
-                                            ملخص سريع يوضح الطلاب والمشرفين والنواقص داخل كل فصل بدون فتح الجداول الطويلة.
-                                        </p>
-                                    </div>
-                                    <span className="w-fit rounded-full bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700">
-                                        {classOperatingRows.filter((row) => row.isReady).length}/{Math.max(classOperatingRows.length, 1)} جاهز
-                                    </span>
-                                </div>
-                                {classOperatingRows.length === 0 ? (
-                                    <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50 px-4 py-5 text-sm font-bold text-amber-800">
-                                        لا توجد فصول بعد. ابدأ بإنشاء فصل واحد حتى تصبح رحلة الطلاب والمشرفين واضحة.
-                                    </div>
-                                ) : (
-                                    <div className="grid gap-3 lg:grid-cols-2">
-                                        {classOperatingRows.map((row) => (
-                                            <div
-                                                key={row.classroom.id}
-                                                data-testid="school-class-operating-row"
-                                                className={`rounded-2xl border p-4 ${
-                                                    row.isReady ? 'border-emerald-100 bg-emerald-50/60' : 'border-amber-100 bg-amber-50/70'
-                                                }`}
-                                            >
-                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                                    <div>
-                                                        <div className="flex flex-wrap items-center gap-2">
-                                                            <h4 className="text-sm font-black text-gray-900">{row.classroom.name}</h4>
-                                                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
-                                                                row.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'
-                                                            }`}>
-                                                                {row.isReady ? 'جاهز' : 'يحتاج مراجعة'}
-                                                            </span>
-                                                        </div>
-                                                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-black">
-                                                            <span className="rounded-full bg-white px-2.5 py-1 text-slate-700">{row.studentCount} طالب</span>
-                                                            <span className="rounded-full bg-white px-2.5 py-1 text-purple-700">{row.supervisorCount} مشرف</span>
-                                                            <span className="rounded-full bg-white px-2.5 py-1 text-amber-700">{row.studentsWithoutParentCount} بلا ولي أمر</span>
-                                                        </div>
-                                                        <p className="mt-3 text-xs font-bold leading-6 text-gray-600">
-                                                            {row.gaps.length > 0 ? row.gaps.join('، ') : 'الفصل جاهز للتسليم والمتابعة.'}
-                                                        </p>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        data-testid="school-class-operating-open"
-                                                        onClick={() => {
-                                                            document
-                                                                .querySelector(`[data-school-class-id="${row.classroom.id}"]`)
-                                                                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                        }}
-                                                        className="inline-flex shrink-0 items-center justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
-                                                    >
-                                                        فتح الفصل
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div data-testid="school-students-panel" className="min-w-0 max-w-full rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
-                                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <h3 className="text-lg font-black text-gray-900">إضافة طالب منفرد</h3>
-                                        <p className="text-sm text-indigo-800">للطالب الواحد أو التصحيح السريع داخل فصل واضح.</p>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsSingleStudentOpen((current) => !current)}
-                                        className="rounded-xl bg-white px-5 py-2.5 text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
-                                    >
-                                        {isSingleStudentOpen ? 'إغلاق البطاقة' : 'إضافة طالب منفرد'}
-                                    </button>
-                                </div>
-                                {isSingleStudentOpen && schoolClasses.length === 0 && (
-                                    <div data-testid="school-student-needs-class-note" className="mb-4 flex flex-col gap-3 rounded-2xl border border-amber-100 bg-white px-4 py-3 md:flex-row md:items-center md:justify-between">
-                                        <div>
-                                            <div className="text-sm font-black text-amber-800">ابدأ بفصل واحد قبل إضافة الطلاب</div>
-                                            <p className="mt-1 text-xs font-bold leading-5 text-amber-700">الإضافة اليدوية تحتاج فصلًا واضحًا حتى لا تتراكم طلاب بلا تصنيف.</p>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            data-testid="school-student-create-first-class"
-                                            disabled={isSchoolWorkspaceBusy}
-                                            onClick={async () => {
-                                                await handleCreateSingleClass('تم إنشاء فصل جديد. اختره من حقل فصل الطالب ثم أضف الطالب.');
-                                            }}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-amber-600"
-                                        >
-                                            <Plus size={14} />
-                                            إنشاء فصل الآن
-                                        </button>
-                                    </div>
-                                )}
-                                {isSingleStudentOpen && (
-                                    <div className="space-y-3">
-                                        <div className="grid gap-3 md:grid-cols-4">
-                                            <input
-                                                data-testid="school-single-student-name"
-                                                value={singleStudent.name}
-                                                onChange={(event) => setSingleStudent((current) => ({ ...current, name: event.target.value }))}
-                                                placeholder="اسم الطالب"
-                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                            />
-                                            <input
-                                                data-testid="school-single-student-email"
-                                                value={singleStudent.email}
-                                                onChange={(event) => setSingleStudent((current) => ({ ...current, email: event.target.value }))}
-                                                placeholder="بريد الطالب"
-                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                            />
-                                            <select
-                                                data-testid="school-single-student-class"
-                                                value={singleStudent.className}
-                                                onChange={(event) => setSingleStudent((current) => ({ ...current, className: event.target.value }))}
-                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                            >
-                                                <option value="">اختر فصل الطالب</option>
-                                                {schoolClasses.map((classroom) => (
-                                                    <option key={classroom.id} value={classroom.name}>{classroom.name}</option>
-                                                ))}
-                                            </select>
-                                            <input
-                                                data-testid="school-single-student-password"
-                                                value={singleStudent.password}
-                                                onChange={(event) => setSingleStudent((current) => ({ ...current, password: event.target.value }))}
-                                                placeholder="كلمة مرور اختيارية"
-                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                            />
-                                        </div>
-                                        <div className="flex justify-end">
-                                            <button
-                                                data-testid="school-single-student-submit"
-                                                onClick={() => void handleAddSingleStudent()}
-                                                disabled={isImporting}
-                                                className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-                                            >
-                                                إضافة الطالب
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            <SchoolSingleStudentPanel
+                                isOpen={isSingleStudentOpen}
+                                schoolClasses={schoolClasses}
+                                student={singleStudent}
+                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                isImporting={isImporting}
+                                onToggle={() => setIsSingleStudentOpen((current) => !current)}
+                                onChangeField={(field, value) => setSingleStudent((current) => ({ ...current, [field]: value }))}
+                                onCreateFirstClass={() => handleCreateSingleClass('تم إنشاء فصل جديد. اختره من حقل فصل الطالب ثم أضف الطالب.')}
+                                onSubmit={() => void handleAddSingleStudent()}
+                            />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div data-testid="school-wide-supervisors-panel" className="border border-gray-100 rounded-xl p-5 space-y-4">
-                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                        <h3 className="text-lg font-bold text-gray-900">مدير/مشرف المدرسة كاملة</h3>
-                                        <span className="text-sm text-gray-500">{schoolLevelSupervisors.length} يرى المدرسة كاملة</span>
-                                    </div>
-                                    <p className="text-xs font-bold leading-6 text-gray-500">
-                                        هذا النطاق مناسب لمدير المدرسة أو المسؤول العام؛ سيظهر له كل الفصول والطلاب والتقارير داخل هذه المدرسة.
-                                    </p>
-                                    <div data-testid="school-supervisor-scope-decision" className="grid gap-3 md:grid-cols-2">
-                                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span className="text-sm font-black text-emerald-900">مدير المدرسة كاملة</span>
-                                                <span data-testid="school-supervisor-schoolwide-count" className="rounded-full bg-white px-3 py-1 text-xs font-black text-emerald-700">
-                                                    {schoolLevelSupervisors.length}
-                                                </span>
-                                            </div>
-                                            <p className="mt-2 text-xs font-bold leading-6 text-emerald-800">
-                                                يرى كل الفصول والطلاب وتقارير المدرسة. استخدمه لمدير المدرسة أو المشرف العام.
-                                            </p>
-                                        </div>
-                                        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span className="text-sm font-black text-blue-900">مشرف فصول محددة</span>
-                                                <span data-testid="school-supervisor-class-count" className="rounded-full bg-white px-3 py-1 text-xs font-black text-blue-700">
-                                                    {classScopedSupervisors.length}
-                                                </span>
-                                            </div>
-                                            <p className="mt-2 text-xs font-bold leading-6 text-blue-800">
-                                                يرى الفصول التي تم ربطه بها فقط. استخدمه للمعلم أو مشرف الفصل.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div data-testid="school-supervisor-single-entry-note" className="rounded-2xl border border-purple-100 bg-purple-50/70 p-4">
-                                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                                            <div>
-                                                <div className="mb-2 flex items-center gap-2 text-sm font-black text-purple-800">
-                                                    <UserPlus size={16} />
-                                                    إضافة المشرفين من مكان واحد
-                                                </div>
-                                                <p className="text-xs font-bold leading-6 text-purple-900">
-                                                    حتى لا تتكرر نفس المهمة، يتم إنشاء مدير المدرسة أو مشرف الفصل من تبويب المشرفون والتسليم فقط. هذه البطاقة تعرض النطاق الحالي وتوجهك للمكان الصحيح.
-                                                </p>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                data-testid="school-open-supervisor-entry"
-                                                onClick={() => focusQuickSupervisorEntry(selectedSchool.id, selectedSchool.name)}
-                                                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
-                                            >
-                                                <UserPlus size={16} />
-                                                فتح إضافة المشرف
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <select
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                        defaultValue=""
-                                        onChange={(event) => {
-                                            const target = event.currentTarget;
-                                            const value = event.target.value;
-                                            if (!value) return;
-                                            void handleAssignSchoolSupervisor(value, selectedSchool.id).finally(() => {
-                                                target.value = '';
-                                            });
-                                        }}
-                                        disabled={Boolean(rosterActionPending)}
-                                    >
-                                        <option value="">إضافة مدير/مشرف للمدرسة كاملة</option>
-                                        {supervisors
-                                            .filter((currentUser) => !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id))
-                                            .map((currentUser) => (
-                                                <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
-                                            ))}
-                                    </select>
-                                    {supervisors.filter((currentUser) => !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id)).length === 0 && (
-                                        <p className="text-xs font-bold leading-6 text-amber-700">
-                                            لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.
-                                        </p>
-                                    )}
-                                    <div className="flex flex-wrap gap-2">
-                                        {schoolLevelSupervisors.length === 0 ? (
-                                            <span className="text-sm text-gray-400">لا يوجد مدير أو مشرف عام لهذه المدرسة بعد.</span>
-                                        ) : schoolLevelSupervisors.map((currentUser) => (
-                                            <button
-                                                key={currentUser.id}
-                                                type="button"
-                                                data-testid="school-remove-school-supervisor"
-                                                onClick={() => {
-                                                    if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
-                                                        return;
-                                                    }
-                                                    void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
-                                                }}
-                                                disabled={Boolean(rosterActionPending)}
-                                                className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
-                                            >
-                                                {currentUser.name} ×
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div data-testid="school-supervisor-scope-summary" className="rounded-xl border border-slate-100 bg-slate-50 p-3">
-                                        <div className="mb-2 flex items-center justify-between gap-2">
-                                            <span className="text-xs font-black text-slate-700">نطاقات المشرفين</span>
-                                            <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-slate-600">
-                                                {classScopedSupervisors.length} للفصول فقط
-                                            </span>
-                                        </div>
-                                        <div className="space-y-2">
-                                            {supervisorScopeRows.length === 0 ? (
-                                                <p className="text-xs font-bold text-slate-500">اربط مشرفًا بالمدرسة أو فصلًا محددًا لتظهر الصلاحيات هنا.</p>
-                                            ) : supervisorScopeRows.map((row) => (
-                                                <div key={row.user.id} data-testid={row.isSchoolWide ? 'school-supervisor-scope-school' : 'school-supervisor-scope-class'} className="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2">
-                                                    <div>
-                                                        <p className="text-xs font-black text-gray-900">{row.user.name}</p>
-                                                        <p className="text-[11px] font-bold text-gray-500">{row.scopeDetails}</p>
-                                                    </div>
-                                                    <span className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-black ${
-                                                        row.isSchoolWide ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
-                                                    }`}>
-                                                        {row.scopeLabel}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
+                                <SchoolWideSupervisorsPanel
+                                    schoolLevelSupervisors={schoolLevelSupervisors}
+                                    classScopedSupervisors={classScopedSupervisors}
+                                    supervisorScopeRows={supervisorScopeRows}
+                                    supervisors={supervisors}
+                                    rosterActionPending={rosterActionPending}
+                                    onOpenSupervisorEntry={() => focusQuickSupervisorEntry(selectedSchool.id, selectedSchool.name)}
+                                    onAssignSupervisor={(value) => handleAssignSchoolSupervisor(value, selectedSchool.id)}
+                                    onRemoveSupervisor={handleRemoveSchoolWideSupervisor}
+                                />
 
-                                <div className="border border-gray-100 rounded-xl p-5 space-y-4">
-                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                        <h3 className="text-lg font-bold text-gray-900">دورات المدرسة</h3>
-                                        <span className="text-sm text-gray-500">{schoolCourses.length} دورة مرتبطة</span>
-                                    </div>
-                                    <select
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                        defaultValue=""
-                                        onChange={(event) => {
-                                            const value = event.target.value;
-                                            if (!value) return;
-                                            assignCourseToGroup(value, selectedSchool.id);
-                                            setSelectedSchool((current) =>
-                                                current
-                                                    ? {
-                                                          ...current,
-                                                          courseIds: current.courseIds.includes(value)
-                                                              ? current.courseIds
-                                                              : [...current.courseIds, value],
-                                                      }
-                                                    : current,
-                                            );
-                                            event.target.value = '';
-                                        }}
-                                    >
-                                        <option value="">ربط دورة مباشرة بالمدرسة</option>
-                                        {publishedCourses
-                                            .filter((course) => !selectedSchool.courseIds.includes(course.id))
-                                            .map((course) => (
-                                                <option key={course.id} value={course.id}>{course.title}</option>
-                                            ))}
-                                    </select>
-                                    <div className="flex flex-wrap gap-2">
-                                        {schoolCourses.length === 0 ? (
-                                            <span className="text-sm text-gray-400">لا توجد دورات مرتبطة بهذه المدرسة حتى الآن.</span>
-                                        ) : schoolCourses.map((course) => (
-                                            <button
-                                                key={course.id}
-                                                onClick={() => {
-                                                    removeCourseFromGroup(course.id, selectedSchool.id);
-                                                    setSelectedSchool((current) =>
-                                                        current
-                                                            ? {
-                                                                  ...current,
-                                                                  courseIds: current.courseIds.filter((id) => id !== course.id),
-                                                              }
-                                                            : current,
-                                                    );
-                                                }}
-                                                className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
-                                            >
-                                                {course.title} ×
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                                <SchoolCoursesPanel
+                                    schoolCourses={schoolCourses}
+                                    publishedCourses={publishedCourses}
+                                    selectedCourseIds={selectedSchool.courseIds}
+                                    onAssignCourse={handleAssignCourseToSchool}
+                                    onRemoveCourse={handleRemoveCourseFromSchool}
+                                />
                             </div>
 
-                            <div>
-                                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
-                                    <h3 className="text-lg font-bold text-gray-900">الفصول الدراسية</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        <button
-                                            onClick={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
-                                            className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
-                                        >
-                                            <Download size={16} /> تصدير كشف الطلاب
-                                        </button>
-                                        <button
-                                            disabled={isSchoolWorkspaceBusy}
-                                            onClick={() => void handleCreateSingleClass()}
-                                            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center gap-2"
-                                        >
-                                            <Plus size={16} /> إضافة فصل
-                                        </button>
-                                    </div>
-                                </div>
+                            <SchoolClassesPanel
+                                schoolClasses={schoolClasses}
+                                schoolStudents={schoolStudents}
+                                parents={parents}
+                                supervisors={supervisors}
+                                publishedCourses={publishedCourses}
+                                bulkClassNames={bulkClassNames}
+                                setBulkClassNames={setBulkClassNames}
+                                schoolActionPending={schoolActionPending}
+                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                rosterActionPending={rosterActionPending}
+                                onDownloadSchoolRoster={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
+                                onCreateSingleClass={() => void handleCreateSingleClass()}
+                                onCreateBulkClasses={handleCreateBulkClasses}
+                                onDownloadClassReport={downloadClassReport}
+                                onPrintClassReport={printClassReport}
+                                onRenameClass={openClassRenameModal}
+                                onDeleteClass={(classroom) => void handleDeleteClass(classroom)}
+                                onFocusClassStudentForm={(classroom) => focusClassStudentForm(classroom.name)}
+                                onFocusClassRoster={(classroom) => focusClassRoster(classroom.id)}
+                                onOpenImport={() => setActiveTab('import')}
+                                onOpenPackages={() => setActiveTab('packages')}
+                                onAssignSupervisor={handleAssignSchoolSupervisor}
+                                onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
+                                onRemoveSupervisor={handleRemoveClassSupervisor}
+                                onAssignCourse={assignCourseToGroup}
+                                onRemoveCourse={removeCourseFromGroup}
+                            />
 
-                                <div data-testid="school-class-creation-panel" className="mb-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
-                                    <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
-                                        <div>
-                                            <label className="mb-2 block text-sm font-bold text-amber-900">
-                                                إنشاء عدة فصول مرة واحدة
-                                            </label>
-                                            <textarea
-                                                value={bulkClassNames}
-                                                onChange={(event) => setBulkClassNames(event.target.value)}
-                                                placeholder="مثال: أول ثانوي أ&#10;أول ثانوي ب&#10;ثاني ثانوي قدرات"
-                                                rows={3}
-                                                className="w-full rounded-xl border border-amber-100 bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-amber-400"
-                                            />
-                                            <p className="mt-2 text-xs leading-6 text-amber-800">
-                                                اكتب كل فصل في سطر، أو افصل بينها بفاصلة. النظام يتجنب تكرار أسماء الفصول الموجودة.
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={handleCreateBulkClasses}
-                                            disabled={Boolean(schoolActionPending)}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-amber-600"
-                                        >
-                                            <Plus size={16} />
-                                            إنشاء الفصول
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {schoolClasses.length === 0 ? (
-                                    <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                                        <Building2 size={48} className="mx-auto text-gray-300 mb-4" />
-                                        <p className="text-gray-500">لا توجد فصول دراسية مضافة حتى الآن.</p>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {schoolClasses.map((classroom) => {
-                                            const classSupervisors = supervisors.filter((currentUser) => classroom.supervisorIds.includes(currentUser.id));
-                                            const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
-                                            const classStudents = schoolStudents.filter((student) => classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id));
-                                            const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
-
-                                            return (
-                                                <div key={classroom.id} data-testid="school-class-card" data-school-class-id={classroom.id} className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
-                                                    <div className="flex justify-between items-start gap-3">
-                                                        <div>
-                                                            <h4 className="font-bold text-gray-900">{classroom.name}</h4>
-                                                            <p className="text-sm text-gray-500">
-                                                                {classStudents.length} طالب • {classSupervisors.length} مشرف • {classCourses.length} دورة
-                                                            </p>
-                                                            {classStudentsWithoutParent.length > 0 && (
-                                                                <p className="mt-1 text-xs font-bold text-amber-700">
-                                                                    {classStudentsWithoutParent.length} طالب بلا ولي أمر
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            <button
-                                                                onClick={() => downloadClassReport(classroom)}
-                                                                className="text-gray-400 hover:text-emerald-600 transition-colors"
-                                                                title="تصدير تقرير الفصل"
-                                                            >
-                                                                <Download size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => printClassReport(classroom)}
-                                                                className="text-gray-400 hover:text-indigo-600 transition-colors"
-                                                                title="طباعة تقرير الفصل"
-                                                            >
-                                                                <Printer size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => {
-                                                                    setEditNameModalState({
-                                                                        isOpen: true,
-                                                                        title: 'أدخل اسم الفصل الجديد',
-                                                                        initialValue: classroom.name,
-                                                                        onSave: async (newName: string) => {
-                                                                            if (!newName.trim() || newName.trim() === classroom.name) return;
-                                                                            setSchoolActionPending(`rename-class-${classroom.id}`);
-                                                                            setSaveVerificationState('saving');
-                                                                            setSaveVerificationMessage('جاري حفظ اسم الفصل...');
-                                                                            setManagementError(null);
-                                                                            setManagementNotice(null);
-                                                                            try {
-                                                                                await updateGroupAsync(classroom.id, { name: newName.trim() });
-                                                                                await refreshSchoolWorkspace(selectedSchool.id);
-                                                                                setSaveVerificationState('success');
-                                                                                setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
-                                                                                setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
-                                                                            } catch (error) {
-                                                                                setSaveVerificationState('error');
-                                                                                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
-                                                                                setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
-                                                                                throw error;
-                                                                            } finally {
-                                                                                setSchoolActionPending(null);
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                }}
-                                                                disabled={isSchoolWorkspaceBusy}
-                                                                className="text-gray-400 hover:text-amber-600 transition-colors"
-                                                            >
-                                                                <Edit2 size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={async () => {
-                                                                    if (window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) {
-                                                                        setSchoolActionPending(`delete-class-${classroom.id}`);
-                                                                        setSaveVerificationState('saving');
-                                                                        setSaveVerificationMessage('جاري حذف الفصل...');
-                                                                        setManagementError(null);
-                                                                        setManagementNotice(null);
-                                                                        try {
-                                                                            await deleteGroupAsync(classroom.id);
-                                                                            await refreshSchoolWorkspace(selectedSchool.id);
-                                                                            setSaveVerificationState('success');
-                                                                            setSaveVerificationMessage('تم حذف الفصل والتأكد من الخادم.');
-                                                                            setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
-                                                                        } catch (error) {
-                                                                            setSaveVerificationState('error');
-                                                                            setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
-                                                                            setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
-                                                                        } finally {
-                                                                            setSchoolActionPending(null);
-                                                                        }
-                                                                    }
-                                                                }}
-                                                                disabled={isSchoolWorkspaceBusy}
-                                                                className="text-gray-400 hover:text-red-600 transition-colors"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    <div data-testid="school-class-operating-actions" className="grid grid-cols-2 gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-3 md:grid-cols-4">
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-add-students"
-                                                            onClick={() => focusClassStudentForm(classroom.name)}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-indigo-600 hover:text-white"
-                                                        >
-                                                            إضافة طالب
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-roster"
-                                                            onClick={() => focusClassRoster(classroom.id)}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
-                                                        >
-                                                            طلاب الفصل
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-import-students"
-                                                            onClick={() => setActiveTab('import')}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-amber-500 hover:text-white"
-                                                        >
-                                                            Excel للفصل
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            data-testid="school-class-access"
-                                                            onClick={() => setActiveTab('packages')}
-                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-emerald-600 hover:text-white"
-                                                        >
-                                                            محتوى وأكواد
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 gap-3">
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-gray-600 mb-2">المشرف المسؤول</label>
-                                                            <select
-                                                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                                                defaultValue=""
-                                                                onChange={(event) => {
-                                                                    const target = event.currentTarget;
-                                                                    const value = event.target.value;
-                                                                    if (!value) return;
-                                                                    void handleAssignSchoolSupervisor(value, classroom.id).finally(() => {
-                                                                        target.value = '';
-                                                                    });
-                                                                }}
-                                                                disabled={Boolean(rosterActionPending)}
-                                                            >
-                                                                <option value="">إضافة مشرف للفصل</option>
-                                                                {supervisors
-                                                                    .filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id))
-                                                                    .map((currentUser) => (
-                                                                        <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
-                                                                    ))}
-                                                            </select>
-                                                            {supervisors.filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id)).length === 0 && (
-                                                                <p className="mt-2 text-xs font-bold leading-6 text-amber-700">
-                                                                    لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.
-                                                                </p>
-                                                            )}
-                                                            <button
-                                                                type="button"
-                                                                data-testid="school-class-create-supervisor"
-                                                                onClick={() => focusQuickSupervisorEntry(classroom.id, classroom.name)}
-                                                                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
-                                                            >
-                                                                <UserPlus size={14} />
-                                                                إنشاء مشرف جديد لهذا الفصل
-                                                            </button>
-                                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                                {classSupervisors.length === 0 ? (
-                                                                    <span className="text-xs text-gray-400">لا يوجد مشرف مرتبط بهذا الفصل.</span>
-                                                                ) : classSupervisors.map((currentUser) => (
-                                                                    <button
-                                                                        key={currentUser.id}
-                                                                        type="button"
-                                                                        data-testid="school-remove-class-supervisor"
-                                                                        onClick={() => {
-                                                                            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
-                                                                                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
-                                                                            }
-                                                                        }}
-                                                                        disabled={Boolean(rosterActionPending)}
-                                                                        className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
-                                                                    >
-                                                                        {currentUser.name} ×
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-
-                                                        <div>
-                                                            <label className="block text-xs font-bold text-gray-600 mb-2">الدورات المخصصة</label>
-                                                            <select
-                                                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                                                defaultValue=""
-                                                                onChange={(event) => {
-                                                                    const value = event.target.value;
-                                                                    if (!value) return;
-                                                                    assignCourseToGroup(value, classroom.id);
-                                                                    event.target.value = '';
-                                                                }}
-                                                            >
-                                                                <option value="">إضافة دورة للفصل</option>
-                                                                {publishedCourses
-                                                                    .filter((course) => !classroom.courseIds.includes(course.id))
-                                                                    .map((course) => (
-                                                                        <option key={course.id} value={course.id}>{course.title}</option>
-                                                                    ))}
-                                                            </select>
-                                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                                {classCourses.length === 0 ? (
-                                                                    <span className="text-xs text-gray-400">لا توجد دورات مرتبطة بهذا الفصل.</span>
-                                                                ) : classCourses.map((course) => (
-                                                                    <button
-                                                                        key={course.id}
-                                                                        onClick={() => removeCourseFromGroup(course.id, classroom.id)}
-                                                                        className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
-                                                                    >
-                                                                        {course.title} ×
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div data-testid="school-roster-panel" className="min-w-0 max-w-full border border-gray-100 rounded-2xl p-5 space-y-4">
-                                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900">طلاب المدرسة</h3>
-                                        <p className="text-sm text-gray-500 mt-1">استعراض سريع للطلاب مع نقلهم بين الفصول بدون مغادرة الصفحة.</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-[540px]">
-                                        <div className="relative">
-                                            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                            <input
-                                                value={studentSearch}
-                                                onChange={(event) => setStudentSearch(event.target.value)}
-                                                placeholder="ابحث بالاسم أو البريد..."
-                                                className="w-full rounded-xl border border-gray-200 px-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                            />
-                                        </div>
-                                        <select
-                                            value={selectedClassFilter}
-                                            onChange={(event) => setSelectedClassFilter(event.target.value)}
-                                            className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                        >
-                                            <option value="all">كل الفصول</option>
-                                            <option value="unassigned">طلاب بدون فصل</option>
-                                            {schoolClasses.map((classroom) => (
-                                                <option key={classroom.id} value={classroom.id}>{classroom.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                {visibleSchoolStudents.length === 0 ? (
-                                    <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
-                                        لا يوجد طلاب مطابقون للبحث الحالي داخل هذه المدرسة.
-                                    </div>
-                                ) : (
-                                    <div className="overflow-hidden rounded-2xl border border-gray-200">
-                                        <table className="w-full text-right">
-                                            <thead className="bg-gray-50 text-xs font-bold text-gray-600">
-                                                <tr>
-                                                    <th className="p-4">الطالب</th>
-                                                    <th className="p-4">البريد</th>
-                                                    <th className="p-4">الفصل الحالي</th>
-                                                    <th className="p-4">النقل إلى فصل</th>
-                                                    <th className="p-4">إجراءات</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-100 bg-white text-sm">
-                                                {pagedVisibleSchoolStudents.map((student) => {
-                                                    const currentClass = schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id));
-                                                    return (
-                                                        <tr key={student.id}>
-                                                            <td className="p-4">
-                                                                <div className="font-bold text-gray-900">{student.name}</div>
-                                                                <div className="text-xs text-gray-400 mt-1">{student.isActive === false ? 'الحساب موقوف' : 'الحساب نشط'}</div>
-                                                            </td>
-                                                            <td className="p-4 text-gray-600">{student.email || '-'}</td>
-                                                            <td className="p-4">
-                                                                <span className={`rounded-full px-3 py-1 text-xs font-bold ${currentClass ? 'bg-indigo-50 text-indigo-700' : 'bg-amber-50 text-amber-700'}`}>
-                                                                    {currentClass?.name || 'بدون فصل'}
-                                                                </span>
-                                                            </td>
-                                                            <td className="p-4">
-                                                                <select
-                                                                    value={currentClass?.id || ''}
-                                                                    onChange={(event) => {
-                                                                        const value = event.target.value;
-                                                                        if (!value || value === currentClass?.id) return;
-                                                                        void handleAssignStudentToClass(student.id, value);
-                                                                    }}
-                                                                    disabled={Boolean(rosterActionPending)}
-                                                                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                                                >
-                                                                    <option value="">اختر فصلاً</option>
-                                                                    {schoolClasses.map((classroom) => (
-                                                                        <option key={classroom.id} value={classroom.id}>{classroom.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </td>
-                                                            <td className="p-4">
-                                                                <div className="flex flex-wrap gap-2">
-                                                                    {currentClass && (
-                                                                        <button
-                                                                            type="button"
-                                                                            data-testid="school-student-remove-class"
-                                                                            onClick={() => {
-                                                                                if (window.confirm(`هل تريد إخراج ${student.name} من فصل ${currentClass.name}؟ سيبقى الطالب داخل المدرسة.`)) {
-                                                                                    void handleRemoveStudentScope(student.id, currentClass.id);
-                                                                                }
-                                                                            }}
-                                                                            disabled={Boolean(rosterActionPending)}
-                                                                            className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100"
-                                                                        >
-                                                                            إخراج من الفصل
-                                                                        </button>
-                                                                    )}
-                                                                    <button
-                                                                        type="button"
-                                                                        data-testid="school-student-remove-school"
-                                                                        onClick={() => {
-                                                                            if (window.confirm(`هل تريد إزالة ${student.name} من ${selectedSchool.name}؟ سيتم إخراجه من المدرسة وفصولها.`)) {
-                                                                                void handleRemoveStudentScope(student.id, selectedSchool.id);
-                                                                            }
-                                                                        }}
-                                                                        disabled={Boolean(rosterActionPending)}
-                                                                        className="rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-700 transition-colors hover:bg-red-100"
-                                                                    >
-                                                                        إزالة من المدرسة
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                        {schoolStudentTotalPages > 1 && (
-                                            <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 px-4 py-3 text-xs font-bold text-gray-600 sm:flex-row sm:items-center sm:justify-between">
-                                                <span>
-                                                    عرض {schoolStudentStartIndex + 1}-{schoolStudentEndIndex} من {visibleSchoolStudents.length} طالب
-                                                </span>
-                                                <div className="flex items-center gap-2">
-                                                    <button
-                                                        type="button"
-                                                        disabled={safeSchoolStudentPage <= 1}
-                                                        onClick={() => setSchoolStudentPage((page) => Math.max(1, page - 1))}
-                                                        className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-                                                    >
-                                                        السابق
-                                                    </button>
-                                                    <span className="rounded-xl bg-white px-3 py-2 text-gray-500">
-                                                        صفحة {safeSchoolStudentPage} / {schoolStudentTotalPages}
-                                                    </span>
-                                                    <button
-                                                        type="button"
-                                                        disabled={safeSchoolStudentPage >= schoolStudentTotalPages}
-                                                        onClick={() => setSchoolStudentPage((page) => Math.min(schoolStudentTotalPages, page + 1))}
-                                                        className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-                                                    >
-                                                        التالي
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                            <SchoolStudentRosterPanel
+                                studentSearch={studentSearch}
+                                setStudentSearch={setStudentSearch}
+                                selectedClassFilter={selectedClassFilter}
+                                setSelectedClassFilter={setSelectedClassFilter}
+                                schoolClasses={schoolClasses}
+                                visibleSchoolStudents={visibleSchoolStudents}
+                                pagedVisibleSchoolStudents={pagedVisibleSchoolStudents}
+                                schoolStudentTotalPages={schoolStudentTotalPages}
+                                safeSchoolStudentPage={safeSchoolStudentPage}
+                                schoolStudentStartIndex={schoolStudentStartIndex}
+                                schoolStudentEndIndex={schoolStudentEndIndex}
+                                setSchoolStudentPage={setSchoolStudentPage}
+                                rosterActionPending={rosterActionPending}
+                                selectedSchoolName={selectedSchool.name}
+                                selectedSchoolId={selectedSchool.id}
+                                handleAssignStudentToClass={handleAssignStudentToClass}
+                                handleRemoveStudentScope={handleRemoveStudentScope}
+                            />
                         </div>
                     )}
 
@@ -4532,223 +2643,29 @@ export const SchoolsManager: React.FC = () => {
                     )}
 
                     {activeTab === 'reports' && (
-                        <div data-testid="school-reports-panel" className="space-y-6">
-                            <div data-testid="school-handover-report-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                                <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-                                    <div>
-                                        <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black ${
-                                            readinessScore === readinessChecks.length
-                                                ? 'bg-emerald-50 text-emerald-700'
-                                                : readinessScore >= 3
-                                                    ? 'bg-amber-50 text-amber-700'
-                                                    : 'bg-red-50 text-red-700'
-                                        }`}>
-                                            <ShieldCheck size={14} />
-                                            {readinessStatusLabel}
-                                        </div>
-                                        <h3 className="mt-3 text-xl font-black text-gray-900">قرار تسليم المدرسة</h3>
-                                        <p className="mt-2 text-sm font-bold leading-7 text-gray-600">{readinessNextStep}</p>
-                                        <div data-testid="school-handover-readiness-progress" className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
-                                            <div
-                                                className={`h-full rounded-full ${
-                                                    readinessScore === readinessChecks.length
-                                                        ? 'bg-emerald-500'
-                                                        : readinessScore >= 3
-                                                            ? 'bg-amber-500'
-                                                            : 'bg-red-500'
-                                                }`}
-                                                style={{ width: `${readinessPercent}%` }}
-                                            />
-                                        </div>
-                                        <div className="mt-2 flex items-center justify-between text-xs font-black text-gray-500">
-                                            <span>جاهزية التشغيل</span>
-                                            <span>{readinessScore}/{readinessChecks.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                                        <button
-                                            type="button"
-                                            data-testid="school-report-download-handover"
-                                            onClick={downloadSchoolHandover}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white transition-colors hover:bg-slate-800"
-                                        >
-                                            <Download size={16} />
-                                            ملف التسليم
-                                        </button>
-                                        <button
-                                            type="button"
-                                            data-testid="school-report-download-gaps"
-                                            onClick={downloadSchoolGapReport}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
-                                        >
-                                            <FileSpreadsheet size={16} />
-                                            فجوات الجاهزية
-                                        </button>
-                                        <button
-                                            type="button"
-                                            data-testid="school-report-print-readiness"
-                                            onClick={printSchoolReport}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
-                                        >
-                                            <Printer size={16} />
-                                            طباعة تقرير التسليم
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="mt-5 grid gap-3 md:grid-cols-3">
-                                    {[
-                                        ['نطاق المدرسة', `${schoolClasses.length} فصل / ${schoolStudents.length} طالب`],
-                                        ['المشرفون', `${schoolSupervisors.length} مشرف`],
-                                        ['الوصول', `${activeSchoolPackages.length} باقة / ${activeSchoolCodes.length} كود`],
-                                    ].map(([label, value]) => (
-                                        <div key={label} className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-                                            <div className="text-xs font-black text-gray-500">{label}</div>
-                                            <div className="mt-1 text-sm font-black text-gray-900">{value}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div data-testid="school-handover-blocking-gaps" className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                        <div>
-                                            <h4 className="text-sm font-black text-gray-900">نواقص تمنع التسليم</h4>
-                                            <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
-                                                هذه القائمة هي قرار اليوم: أكمل البنود الناقصة فقط، ثم اطبع تقرير التسليم.
-                                            </p>
-                                        </div>
-                                        <span className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-black ${
-                                            handoverBlockingGaps.length === 0
-                                                ? 'bg-emerald-50 text-emerald-700'
-                                                : 'bg-amber-50 text-amber-700'
-                                        }`}>
-                                            {handoverBlockingGaps.length === 0 ? 'لا توجد نواقص تشغيلية' : `${handoverBlockingGaps.length} بند يحتاج استكمال`}
-                                        </span>
-                                    </div>
-                                    {handoverBlockingGaps.length === 0 ? (
-                                        <div className="mt-4 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-sm font-bold text-emerald-700">
-                                            المدرسة جاهزة للتسليم. استخدم ملف التسليم أو الطباعة لمشاركة النسخة النهائية مع الإدارة.
-                                        </div>
-                                    ) : (
-                                        <div className="mt-4 grid gap-3 md:grid-cols-2">
-                                            {handoverBlockingGaps.map((gap) => (
-                                                <div key={gap.label} className="flex flex-col gap-3 rounded-xl border border-white bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-                                                    <div>
-                                                        <div className="text-sm font-black text-gray-900">{gap.label}</div>
-                                                        <div className="mt-1 text-xs font-bold leading-6 text-gray-500">{gap.hint}</div>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setActiveTab(gap.tab)}
-                                                        className="inline-flex shrink-0 items-center justify-center rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white hover:bg-gray-800"
-                                                    >
-                                                        استكمال
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            {isLoadingReport ? (
-                                <div className="py-12 text-center text-gray-500">جارٍ تحميل تقرير المدرسة...</div>
-                            ) : reportError ? (
-                                <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
-                                    {reportError}
-                                </div>
-                            ) : schoolReport ? (
-                                <>
-                                    <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-5 md:flex-row md:items-center md:justify-between">
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900">ملف تقرير المدرسة</h3>
-                                            <p className="mt-1 text-sm text-gray-500">
-                                                لقطة تنفيذية للمدير أو المشرف تشمل الأداء العام، أضعف المهارات، وأداء الفصول.
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={downloadSchoolPerformanceReport}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800"
-                                        >
-                                            <Download size={16} />
-                                            تصدير تقرير المدرسة
-                                        </button>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                        <div className="bg-blue-50 p-5 rounded-xl">
-                                            <p className="text-sm text-blue-700 mb-1">الطلاب النشطون</p>
-                                            <p className="text-3xl font-bold text-blue-600">{schoolReport.metrics.activeStudents}</p>
-                                        </div>
-                                        <div className="bg-purple-50 p-5 rounded-xl">
-                                            <p className="text-sm text-purple-700 mb-1">محاولات الاختبار</p>
-                                            <p className="text-3xl font-bold text-purple-600">{schoolReport.metrics.quizAttempts}</p>
-                                        </div>
-                                        <div className="bg-emerald-50 p-5 rounded-xl">
-                                            <p className="text-sm text-emerald-700 mb-1">متوسط الأداء</p>
-                                            <p className="text-3xl font-bold text-emerald-600">{schoolReport.metrics.averageScore}%</p>
-                                        </div>
-                                        <div className="bg-amber-50 p-5 rounded-xl">
-                                            <p className="text-sm text-amber-700 mb-1">الأكواد النشطة</p>
-                                            <p className="text-3xl font-bold text-amber-600">{schoolReport.metrics.activeCodes}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                        <div className="border border-gray-100 rounded-xl p-5">
-                                            <h3 className="text-lg font-bold text-gray-900 mb-4">أضعف المهارات داخل المدرسة</h3>
-                                            <div className="space-y-3">
-                                                {schoolReport.weakestSkills.length === 0 ? (
-                                                    <p className="text-sm text-gray-500">لا توجد بيانات نتائج كافية بعد لإظهار نقاط الضعف.</p>
-                                                ) : schoolReport.weakestSkills.map((item) => {
-                                                    const subjectName = subjects.find((subject) => subject.id === item.subjectId)?.name;
-                                                    const sectionName = sections.find((section) => section.id === item.sectionId)?.name;
-                                                    return (
-                                                        <div key={`${item.skillId || item.skill}-${item.attempts}`} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                                                            <div className="flex items-center justify-between gap-3 mb-2">
-                                                                <div>
-                                                                    <p className="font-bold text-gray-900">{item.skill}</p>
-                                                                    <p className="text-xs text-gray-500">{[subjectName, sectionName].filter(Boolean).join(' • ') || 'بدون تصنيف إضافي'}</p>
-                                                                </div>
-                                                                <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.mastery < 50 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
-                                                                    إتقان {item.mastery}%
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-sm text-gray-600">عدد المحاولات: {item.attempts}</p>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        <div className="border border-gray-100 rounded-xl p-5">
-                                            <h3 className="text-lg font-bold text-gray-900 mb-4">أداء الفصول</h3>
-                                            <div className="space-y-3">
-                                                {schoolReport.classSummaries.length === 0 ? (
-                                                    <p className="text-sm text-gray-500">لا توجد فصول مرتبطة بهذه المدرسة بعد.</p>
-                                                ) : schoolReport.classSummaries.map((classroom) => (
-                                                    <div key={classroom.id} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                                                        <div className="flex items-center justify-between gap-3">
-                                                            <div>
-                                                                <p className="font-bold text-gray-900">{classroom.name}</p>
-                                                                <p className="text-xs text-gray-500">{classroom.studentCount} طالب • {classroom.supervisorCount} مشرف</p>
-                                                            </div>
-                                                            <span className="text-sm font-bold text-gray-900">{classroom.averageScore}%</span>
-                                                        </div>
-                                                        <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
-                                                            <div
-                                                                className={`h-2 rounded-full ${classroom.averageScore >= 70 ? 'bg-emerald-500' : classroom.averageScore >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
-                                                                style={{ width: `${Math.min(classroom.averageScore, 100)}%` }}
-                                                            ></div>
-                                                        </div>
-                                                        <p className="mt-2 text-xs text-gray-500">محاولات الاختبار: {classroom.quizAttempts}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="py-12 text-center text-gray-500">لا توجد بيانات تقرير متاحة بعد.</div>
-                            )}
-                        </div>
+                        <SchoolReportsPanel
+                            readinessScore={readinessScore}
+                            readinessTotal={readinessChecks.length}
+                            readinessStatusLabel={readinessStatusLabel}
+                            readinessNextStep={readinessNextStep}
+                            readinessPercent={readinessPercent}
+                            schoolClassCount={schoolClasses.length}
+                            schoolStudentCount={schoolStudents.length}
+                            schoolSupervisorCount={schoolSupervisors.length}
+                            activePackageCount={activeSchoolPackages.length}
+                            activeCodeCount={activeSchoolCodes.length}
+                            handoverBlockingGaps={handoverBlockingGaps}
+                            onNavigateTab={(tab) => setActiveTab(tab)}
+                            downloadSchoolHandover={downloadSchoolHandover}
+                            downloadSchoolGapReport={downloadSchoolGapReport}
+                            printSchoolReport={printSchoolReport}
+                            isLoadingReport={isLoadingReport}
+                            reportError={reportError}
+                            schoolReport={schoolReport}
+                            subjects={subjects}
+                            sections={sections}
+                            downloadSchoolPerformanceReport={downloadSchoolPerformanceReport}
+                        />
                     )}
                 </div>
             </div>
@@ -4916,81 +2833,26 @@ export const SchoolsManager: React.FC = () => {
                 </div>
             )}
 
-            <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2">
-                        <Search size={18} className="text-gray-400" />
-                        <input
-                            value={schoolSearch}
-                            onChange={(event) => setSchoolSearch(event.target.value)}
-                            placeholder="ابحث باسم المدرسة أو الجهة..."
-                            className="w-full bg-transparent text-sm text-gray-700 outline-none"
-                        />
-                    </div>
-                    <div data-testid="school-list-mode-filter" className="flex flex-wrap gap-2">
-                        {[
-                            { id: 'active', label: 'الأولوية التجارية' },
-                            { id: 'needs_setup', label: 'تحتاج تجهيز' },
-                            { id: 'ready', label: 'جاهزة' },
-                            { id: 'all', label: 'عرض الكل/التنظيف' },
-                        ].map((mode) => (
-                            <button
-                                key={mode.id}
-                                type="button"
-                                data-testid={`school-list-mode-${mode.id}`}
-                                onClick={() => setSchoolListMode(mode.id as typeof schoolListMode)}
-                                className={`rounded-xl px-3 py-2 text-xs font-black transition-colors ${
-                                    schoolListMode === mode.id
-                                        ? 'bg-gray-900 text-white'
-                                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                                }`}
-                            >
-                                {mode.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-                <div data-testid="school-list-hygiene-summary" className="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold leading-6 text-slate-700">
-                    القائمة تعرض {filteredSchools.length} من {schools.length} مدرسة.
-                    {hiddenDraftSchoolsCount > 0
-                        ? ` تم عزل ${hiddenDraftSchoolsCount} مدرسة مسودة أو تجريبية عن الأولوية التجارية.`
-                        : ' لا توجد مدارس تجريبية معزولة حاليًا.'}
-                    {schoolListMode === 'all' ? ' أنت الآن في وضع المراجعة والتنظيف.' : ' استخدم عرض الكل/التنظيف عند مراجعة التجارب القديمة.'}
-                </div>
-                {schoolListMode === 'active' && hiddenDraftSchoolsCount > 0 && !schoolSearch.trim() && (
-                    <div data-testid="school-hidden-drafts-note" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                            <span>تم إخفاء {hiddenDraftSchoolsCount} مدرسة مسودة أو تجريبية لتقليل الزحمة. افتح وضع التنظيف لمراجعتها أو حذف التجارب فقط.</span>
-                            <button
-                                type="button"
-                                data-testid="school-open-cleanup-mode"
-                                onClick={() => setSchoolListMode('all')}
-                                className="inline-flex w-fit items-center justify-center rounded-lg bg-amber-600 px-3 py-1.5 text-[11px] font-black text-white hover:bg-amber-700"
-                            >
-                                فتح وضع التنظيف
-                            </button>
-                        </div>
-                    </div>
-                )}
-                {schoolListMode === 'all' && (
-                    <div data-testid="school-cleanup-review-panel" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold leading-6 text-amber-900">
-                        وضع التنظيف يعرض العقود والتجارب معًا للمراجعة. التجارب المعزولة تظهر بعلامة واضحة وزر "مراجعة الحذف"، ولا يتم حذف أي مدرسة إلا من لوحة التأكيد.
-                        {visibleDraftSchoolsCount > 0
-                            ? ` يظهر الآن ${visibleDraftSchoolsCount} مدرسة مسودة أو تجريبية داخل القائمة.`
-                            : ' لا تظهر مدارس تجريبية في نتيجة البحث الحالية.'}
-                    </div>
-                )}
-            </div>
+            <SchoolPortfolioFilterPanel
+                schoolSearch={schoolSearch}
+                schoolListMode={schoolListMode}
+                filteredSchoolsCount={filteredSchools.length}
+                schoolsCount={schools.length}
+                hiddenDraftSchoolsCount={hiddenDraftSchoolsCount}
+                visibleDraftSchoolsCount={visibleDraftSchoolsCount}
+                onSearchChange={setSchoolSearch}
+                onModeChange={setSchoolListMode}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredSchools.map((school) => {
                     const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
                     const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
                     const schoolClasses = classes.filter((group) => group.parentId === school.id);
-                    const schoolStudents = getStudentsForSchool(school, schoolClasses);
+                    const schoolStudents = getStudentsForSchool(school, schoolClasses, students);
                     const schoolClassCount = schoolClasses.length;
                     const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
-                    const cardOperationalSnapshot = getSchoolOperationalSnapshot(school);
+                    const cardOperationalSnapshot = getOperationalSnapshotForSchool(school);
                     const cardReadinessScore = [
                         schoolClassCount > 0,
                         schoolStudents.length > 0,

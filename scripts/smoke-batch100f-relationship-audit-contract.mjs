@@ -10,7 +10,18 @@ const sources = {
   contentRoutes: read("server/src/routes/content.routes.ts"),
   api: read("services/api.ts"),
   store: read("store/useStore.ts"),
-  schoolsManager: read("dashboards/admin/SchoolsManager.tsx"),
+  schoolsManager: [
+    read("dashboards/admin/SchoolsManager.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
+  ].join("\n"),
   schoolPortal: read("dashboards/admin/SchoolPortalManager.tsx"),
   usersManager: read("dashboards/admin/UsersManager.tsx"),
   supervisorSmoke: read("scripts/smoke-supervisor-dashboard-contract.mjs"),
@@ -121,9 +132,13 @@ check("Frontend uses the server relations endpoint and refreshes users/groups fr
 
 check("Admin UI exposes school/class supervisor assignment, class movement, and parent linking flows", () => {
   assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
-  assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, classroom.id)");
+  assertIncludes(sources.schoolsManager, "onAssignSupervisor={handleAssignSchoolSupervisor}");
+  assertIncludes(sources.schoolsManager, "onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}");
+  assertIncludes(sources.schoolsManager, "onAssignSupervisor(value).finally");
   assertIncludes(sources.schoolsManager, "handleAssignStudentToClass(student.id, value)");
-  assertIncludes(sources.schoolsManager, "parentLinks.set(parent.id");
+  assertIncludes(sources.schoolsManager, "handleApplyRelationImport");
+  assertIncludes(sources.schoolsManager, "بريد ولي الأمر");
+  assertIncludes(sources.schoolsManager, "createMissingRelationUsers");
   assertIncludes(sources.usersManager, "handleSupervisorGroupsChange");
   assertIncludes(sources.usersManager, "handleParentLinkedStudentsChange");
   assertIncludes(sources.usersManager, "linkedStudentIds");
@@ -146,7 +161,7 @@ check("Supervisor portal scopes students, groups, quiz results, and targeted qui
   assertIncludes(sources.schoolPortal, "const results = examResults.filter");
   assertIncludes(sources.schoolPortal, "targetGroupIds");
   assertIncludes(sources.schoolPortal, "targetUserIds");
-  assertIncludes(sources.supervisorSmoke, "scopedStudentIds");
+  assertIncludes(sources.supervisorSmoke, "scopedStudentIdSet");
   assertIncludes(sources.supervisorSmoke, "groupSnapshots");
 });
 

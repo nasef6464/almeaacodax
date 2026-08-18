@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import type { AppRole } from "../constants/roles.js";
+import type { NotificationChannel } from "../modules/notifications/domain/notification.types.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
 import { UserModel } from "../models/User.js";
 import { sendExternalNotification } from "./notificationProviders.js";
 
-export type NotificationChannel = "in_app" | "email" | "whatsapp";
+export type { NotificationChannel } from "../modules/notifications/domain/notification.types.js";
 
 type NotificationRecipient = {
   id: string;
