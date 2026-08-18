@@ -168,6 +168,9 @@ jobs:
       - name: Reports domain boundary contract
         run: node scripts/smoke-reports-domain-boundary-contract.mjs
 
+      - name: Reports recommendation boundary contract
+        run: node scripts/smoke-reports-recommendation-boundary-contract.mjs
+
       - name: Reports role contract
         run: npm run smoke:reports-role
 
