@@ -15,6 +15,7 @@ const files = {
     await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/institutionalReportViewModel.ts', import.meta.url), 'utf8'),
   ].join('\n'),
   plan: await readFile(new URL('../pages/Plan.tsx', import.meta.url), 'utf8'),
   pricing: await readFile(new URL('../pages/Pricing.tsx', import.meta.url), 'utf8'),

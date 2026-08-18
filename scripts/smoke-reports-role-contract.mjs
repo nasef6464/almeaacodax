@@ -8,6 +8,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/institutionalReportViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
@@ -239,6 +240,8 @@ check('supervisor can analyze and export a specific directed quiz by students an
 });
 
 check('staff reports can send a real intervention alert to linked parent and supervisor recipients', () => {
+  assertIncludes(reportsSource, 'buildInstitutionalReportHub({');
+  assertIncludes(reportsSource, 'buildScopedLeadStudentSummary(scopedLeadStudent)');
   assertIncludes(reportsSource, 'sendInterventionAlert');
   assertIncludes(reportsSource, 'canSendInterventionAlert');
   assertIncludes(reportsSource, 'إرسال تنبيه');
