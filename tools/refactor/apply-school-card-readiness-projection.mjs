@@ -91,9 +91,15 @@ const cardAfter = `                {filteredSchoolRows.map((cardPortfolioRow) =>
                     const cardReadinessActions = buildSchoolCardReadinessActions(cardPortfolioRow);
                     const nextCardAction = cardReadinessActions.find((action) => !action.isReady);`;
 
-const alreadyApplied = source.includes("buildSchoolCardReadinessActions")
+const inlineProjectionApplied = source.includes("buildSchoolCardReadinessActions")
     && source.includes('{filteredSchoolRows.map((cardPortfolioRow) => {')
     && !source.includes('const cardReadinessScore = [');
+const presentationProjectionApplied = source.includes("import { SchoolPortfolioCard } from './SchoolsManager/SchoolPortfolioCard';")
+    && source.includes('{filteredSchoolRows.map((cardPortfolioRow) => (')
+    && source.includes('row={cardPortfolioRow}')
+    && source.includes('classes, students, b2bPackages, accessCodes, now: Date.now(),')
+    && !source.includes('const cardReadinessScore = [');
+const alreadyApplied = inlineProjectionApplied || presentationProjectionApplied;
 
 if (alreadyApplied) {
     console.log(JSON.stringify({ status: 'ALREADY_APPLIED', phase: 'school-card-readiness-projection' }, null, 2));
