@@ -36,6 +36,7 @@ import {
     buildStudentPerformanceStats,
     buildStudentSkillReadinessSummary,
 } from './Reports/studentAnalyticsViewModel';
+import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -225,35 +226,19 @@ const Reports: React.FC = () => {
         ),
         [reliableAggregatedSkills.length, reportBaseSkills],
     );
-    const studentWeeklyPlan = useMemo(() => {
-        const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
-
-        return focusedReportSkills.slice(0, 3).map((skill, index) => {
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
-
-            return {
-                day: dayLabels[index],
-                skillId: skill.skillId,
-                skill: displayText(skill.skill),
-                subjectName: displayText(skill.subjectName),
-                sectionName: displayText(skill.sectionName),
-                mastery: skill.mastery,
-                attempts: skill.attempts,
-                isReliable: skill.isReliable,
-                lessonTitle: recommendation.lessonTitle,
-                lessonLink: recommendation.lessonLink,
-                lessonTopicTitle: recommendation.lessonTopicTitle,
-                foundationTopicLink: recommendation.foundationTopicLink,
-                quizTitle: recommendation.quizTitle,
-                quizLink: recommendation.quizLink,
-                actionText:
-                    recommendation.actionText ||
-                    (skill.mastery < 50
-                        ? 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'
-                        : 'حل تدريبًا قصيرًا للتأكد من ثبات المستوى.'),
-            };
-        });
-    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
+    const studentWeeklyPlan = useMemo(
+        () => buildStudentWeeklyPlan(focusedReportSkills, {
+            allSkills: skills,
+            lessons,
+            quizzes,
+            libraryItems,
+            questions,
+            topics,
+            subjects,
+            sections,
+        }),
+        [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
+    );
     const studentTodayFocus = studentWeeklyPlan[0] || null;
     const studentQuickActions = useMemo(() => {
         if (!studentTodayFocus) {

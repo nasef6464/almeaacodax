@@ -12,6 +12,7 @@ const files = {
     await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),

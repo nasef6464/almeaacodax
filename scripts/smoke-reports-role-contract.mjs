@@ -5,6 +5,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
@@ -118,7 +119,7 @@ check('report action buttons have stable live-audit selectors', () => {
 });
 
 check('student therapeutic report keeps a short weekly loop with direct actions', () => {
-  assertIncludes(reportsSource, 'const studentWeeklyPlan = useMemo');
+  assertIncludes(reportsSource, 'buildStudentWeeklyPlan(focusedReportSkills, {');
   assertIncludes(reportsSource, 'const studentTodayFocus = studentWeeklyPlan[0] || null');
   assertIncludes(reportsSource, 'const studentQuickActions = useMemo');
   assertIncludes(reportsSource, 'راجع الشرح');
