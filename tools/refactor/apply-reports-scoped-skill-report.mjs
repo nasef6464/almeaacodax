@@ -135,6 +135,68 @@ if (!weeklyAlreadyApplied) {
   appliedPhases.push('student-weekly-plan');
 }
 
+const studentActionsImport = "import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';";
+const studentActionsDelegation = 'buildStudentAdaptiveLearningBridge(studentTodayFocus)';
+const studentActionsRoleOwnership = "../pages/Reports/studentReportActionsViewModel.ts";
+const studentActionsGlobalOwnership = "../pages/Reports/studentReportActionsViewModel.ts";
+
+const studentActionsAlreadyApplied =
+  reports.includes(studentActionsImport) &&
+  reports.includes(studentActionsDelegation) &&
+  reports.includes('buildStudentReportNextAction(isStudentView, studentTodayFocus)') &&
+  reports.includes('buildStudentFollowUpSummary({') &&
+  roleContract.includes(studentActionsRoleOwnership) &&
+  globalJourney.includes(studentActionsGlobalOwnership) &&
+  !roleContract.includes("assertIncludes(reportsSource, 'const studentAdaptiveLearningBridge = useMemo');");
+
+if (!studentActionsAlreadyApplied) {
+  if (!reports.includes(studentActionsImport)) {
+    reports = replaceOnce(
+      reports,
+      "import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';\n",
+      "import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';\nimport { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';\n",
+      'student weekly plan import anchor',
+    );
+  }
+
+  if (!reports.includes(studentActionsDelegation)) {
+    reports = replaceRange(
+      reports,
+      '    const studentAdaptiveLearningBridge = useMemo(() => {',
+      '    const copyStudentSummary = async () => {',
+      "    const studentAdaptiveLearningBridge = useMemo(\n        () => buildStudentAdaptiveLearningBridge(studentTodayFocus),\n        [studentTodayFocus],\n    );\n    const studentReportNextAction = useMemo(\n        () => buildStudentReportNextAction(isStudentView, studentTodayFocus),\n        [isStudentView, studentTodayFocus],\n    );\n    const studentFollowUpSummary = useMemo(\n        () => buildStudentFollowUpSummary({\n            isStudentView,\n            hasStudentAnalytics,\n            focusedReportSkills,\n            averageScore: stats?.averageScore || 0,\n            studentPeriodLabel,\n            studentTrackLabel,\n        }),\n        [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentPeriodLabel, studentTrackLabel],\n    );\n",
+      'student report action derivation block',
+    );
+  }
+
+  if (!roleContract.includes(studentActionsRoleOwnership)) {
+    roleContract = replaceOnce(
+      roleContract,
+      "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+      "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      'reports role student actions ownership list',
+    );
+  }
+  if (roleContract.includes("assertIncludes(reportsSource, 'const studentAdaptiveLearningBridge = useMemo');")) {
+    roleContract = replaceOnce(
+      roleContract,
+      "  assertIncludes(reportsSource, 'const studentAdaptiveLearningBridge = useMemo');\n",
+      "  assertIncludes(reportsSource, 'buildStudentAdaptiveLearningBridge(studentTodayFocus)');\n",
+      'reports role student actions delegation assertion',
+    );
+  }
+
+  if (!globalJourney.includes(studentActionsGlobalOwnership)) {
+    globalJourney = replaceOnce(
+      globalJourney,
+      "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+      "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      'global journey student actions ownership list',
+    );
+  }
+  appliedPhases.push('student-report-actions');
+}
+
 if (appliedPhases.length > 0) {
   write(reportsPath, reports);
   write(roleContractPath, roleContract);
