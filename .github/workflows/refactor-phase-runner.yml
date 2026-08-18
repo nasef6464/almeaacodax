@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  run-schools-package-card-phase:
+  run-schools-access-codes-phase:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -27,8 +27,8 @@ jobs:
             package-lock.json
             server/package-lock.json
 
-      - name: Apply package card presentation boundary
-        run: python tools/refactor/apply-schools-package-card-boundary.py
+      - name: Apply access codes presentation boundary
+        run: python tools/refactor/apply-schools-access-codes-boundary.py
 
       - name: Install frontend dependencies
         run: npm ci
@@ -36,8 +36,8 @@ jobs:
       - name: Install API dependencies
         run: npm --prefix server ci
 
-      - name: Direct package card boundary contract
-        run: node scripts/smoke-schools-package-card-boundary-contract.mjs
+      - name: Direct access codes boundary contract
+        run: node scripts/smoke-schools-access-codes-boundary-contract.mjs
 
       - name: Fast targeted schools gate
         run: node tools/refactor/quick-check.mjs schools
@@ -57,20 +57,20 @@ jobs:
           checkpoint_path = Path('docs/architecture/REFACTOR_V2_LATEST_CHECKPOINT_AR.md')
           checkpoint = checkpoint_path.read_text(encoding='utf-8')
           checkpoint = checkpoint.replace(
-              '## Package Card presentation boundary — قيد التحقق',
-              '## Package Card presentation boundary — Full Phase Review PASS',
+              '## Access Codes presentation boundary — قيد التحقق',
+              '## Access Codes presentation boundary — Full Phase Review PASS',
               1,
           )
-          if 'Package Card Full Phase Review: **PASS**' not in checkpoint:
-              checkpoint += '\n- Package Card Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.\n'
+          if 'Access Codes Full Phase Review: **PASS**' not in checkpoint:
+              checkpoint += '\n- Access Codes Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.\n'
           checkpoint_path.write_text(checkpoint, encoding='utf-8')
           PY
 
-          git rm -f tools/refactor/apply-schools-package-card-boundary.py
+          git rm -f tools/refactor/apply-schools-access-codes-boundary.py
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract package card presentation"
+          git commit -m "refactor(schools): extract access codes presentation"
           git push origin HEAD:refactor/repository-v2-safe
