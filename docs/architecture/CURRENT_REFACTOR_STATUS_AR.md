@@ -54,15 +54,25 @@
 - Full Reports Phase Review: **PASS** قبل commit الإغلاق.
 - commit الكود المطبق: `bea54ce18a35ff982488dd97d44624d521fc90c5`.
 - نتائج الفحص المباشر بعد الاستخراج: `SchoolsManager.tsx = 4115` سطر، `SchoolReportsPanel = 85`، `SchoolHandoverReportSummary = 158`، `SchoolPerformanceReportPanel = 133`، مع `49` frontend routes و`236` backend entries و`25` mounts و`0` runtime broken imports و`0` cycles.
-- هذا checkpoint الموثق تم إنشاؤه لتشغيل Safety Gate + Vercel Preview Gate على نفس شجرة الكود بعد أن كان commit التطبيق صادرًا من GitHub Actions ولا يعيد تشغيل workflows تلقائيًا.
-- القبول النهائي للدفعة ينتظر أن يصبح الاثنان أخضرين.
+- Safety Gate للكود نفسه مرّ على جميع فحوص الكود، بينما Vercel Preview ما زال متأثرًا بـ `build-rate-limit` الخارجي.
+- القبول النهائي للدفعة ينتظر Preview أخضر دون تغيير معايير القبول.
+
+## دفعة Schools Student Roster Presentation
+
+- تم نقل البحث/فلترة الفصل/جدول الطلاب/النقل/الإزالة/التصفح إلى `SchoolStudentRosterPanel.tsx`.
+- API/store/mutation ownership بقي في `SchoolsManager.tsx`؛ child يستقبل callbacks صريحة فقط.
+- `rosterViewModel.ts` بقي مسؤولًا عن projection/filter/pagination عالي الكفاءة.
+- Full Roster Phase Review: **PASS** قبل commit التطبيق.
+- commit الكود المطبق: `12b8ebfabf5dd03f4947eaf9923e97763a97ed64`.
+- بعد الاستخراج أصبح `SchoolsManager.tsx = 3989` سطر و`SchoolStudentRosterPanel.tsx = 192` سطر، مع بقاء typecheck وproduction builds وعقود المدارس سليمة في Phase Review.
+- هذا checkpoint التوثيقي يعيد تشغيل Safety Gate + Vercel Preview Gate لأن commit التطبيق صدر من GitHub Actions ولا يعيد تشغيل workflows تلقائيًا.
+- القبول النهائي للدفعة ينتظر Safety Gate + Vercel Preview Gate على نفس شجرة الكود.
 
 ## المسار التالي
 
-1. استخراج student roster/table presentation من `SchoolsManager.tsx` مع إبقاء API/store/mutations في orchestration layer.
-2. تفكيك class operating cards بعد إثبات عقودها وتثبيت roster boundary.
-3. إغلاق hotspot المدارس بعد Full Gate + Preview Gate.
-4. الانتقال إلى `pages/Reports.tsx` ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بنفس البروتوكول.
+1. تفكيك class operating cards بعد تثبيت roster boundary النهائي.
+2. إغلاق hotspot المدارس بعد Full Gate + Preview Gate.
+3. الانتقال إلى `pages/Reports.tsx` ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بنفس البروتوكول.
 
 ## قاعدة الاستمرار لأي Agent
 
@@ -71,11 +81,3 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
 
 ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
-
-## دفعة Schools Student Roster Presentation
-
-- تم نقل البحث/فلترة الفصل/جدول الطلاب/النقل/الإزالة/التصفح إلى `SchoolStudentRosterPanel.tsx`.
-- API/store/mutation ownership بقي في `SchoolsManager.tsx`؛ child يستقبل callbacks صريحة فقط.
-- `rosterViewModel.ts` بقي مسؤولًا عن projection/filter/pagination عالي الكفاءة.
-- Full Roster Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint المستخدم للتحقق.
