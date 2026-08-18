@@ -104,6 +104,9 @@ jobs:
       - name: School decision and handover workspace logic contract
         run: node scripts/smoke-schools-workspace-viewmodel-contract.mjs
 
+      - name: School roster filter and pagination logic contract
+        run: node scripts/smoke-schools-roster-viewmodel-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 
