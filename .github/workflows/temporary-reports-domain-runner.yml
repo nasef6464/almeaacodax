@@ -1,0 +1,88 @@
+name: Temporary Reports Domain Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/reports-domain-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-reports-domain-phase:
+    if: startsWith(github.head_ref, 'refactor/reports-domain-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Import staged reports-domain phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/reports-domain-runner-base -- \
+            pages/Reports/reportDomain.ts \
+            scripts/smoke-reports-domain-boundary-contract.mjs \
+            tools/refactor/apply-reports-domain-extraction.py \
+            tools/refactor/phase-review-reports-domain.mjs
+
+      - name: Apply reports domain extraction
+        run: python tools/refactor/apply-reports-domain-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full reports-domain phase review
+        run: node tools/refactor/phase-review-reports-domain.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified reports-domain phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Reports Domain Contracts\n\n- بدأ تفكيك `pages/Reports.tsx` بعد تثبيت حدود Schools.\n- تم نقل عقود وأنواع التقارير والمساعدات النقية للمدة والروابط والألوان إلى `pages/Reports/reportDomain.ts`.\n- بقي React state وAPI/store وعمليات التصدير والمعالجة التشغيلية داخل `Reports.tsx` في هذه الدفعة.\n- تم تحديث عقود Reports وGlobal Student Journey لتقرأ ownership الجديد بدون إسقاط أي contract قائم.\n- Full Reports Domain Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Reports Domain Contracts\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- تم بدء تفكيك hotspot التقارير بأقل تغيير سلوكي ممكن: نقل types/pure helpers فقط.\n- `reportDomain.ts` لا يعتمد React أو store أو API أو browser أو XLSX.\n- source contracts تم تحويلها إلى aggregate ownership حتى تبقى الاختبارات تراقب السلوك بعد توزيع الملفات.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-reports-domain-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add pages/Reports.tsx \
+            pages/Reports/reportDomain.ts \
+            scripts/smoke-reports-role-contract.mjs \
+            scripts/smoke-global-student-journey-contract.mjs \
+            scripts/smoke-reports-domain-boundary-contract.mjs \
+            tools/refactor/phase-review-reports-domain.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(reports): extract domain contracts and helpers"
+          git push origin HEAD:refactor/repository-v2-safe
