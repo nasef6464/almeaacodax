@@ -120,6 +120,9 @@ jobs:
       - name: School relations import presentation boundary contract
         run: node scripts/smoke-schools-relations-import-boundary-contract.mjs
 
+      - name: School relations report presentation boundary contract
+        run: node scripts/smoke-schools-relations-report-boundary-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 
