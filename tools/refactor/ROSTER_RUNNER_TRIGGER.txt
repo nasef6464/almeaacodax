@@ -1,1 +1,2 @@
 Temporary trigger for the verified Schools Student Roster Presentation phase. Never merge this branch into main.
+Retry after fixing the boundary contract to distinguish removed JSX markup from the retained scroll-selector reference.
