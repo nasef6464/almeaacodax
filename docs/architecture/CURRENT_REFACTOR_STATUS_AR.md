@@ -68,3 +68,17 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
 
 ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
+
+## إغلاق دفعة Schools Relations Presentation ✅
+
+- Safety Gate run `#285`: **PASS**.
+- Vercel Preview Gate لنفس checkpoint: **PASS**.
+- تم فصل status/readiness وquick supervisor UI مع بقاء API/store/orchestration خارج presentation children.
+
+## دفعة Schools Reports Presentation
+
+- تم استخراج reports tab من `SchoolsManager.tsx` إلى `SchoolReportsPanel.tsx`.
+- تم فصل handover/readiness report إلى `SchoolHandoverReportSummary.tsx`.
+- تم فصل performance metrics/weak skills/class summaries إلى `SchoolPerformanceReportPanel.tsx`.
+- Full Reports Phase Review: **PASS** قبل commit الإغلاق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على commit الناتج.

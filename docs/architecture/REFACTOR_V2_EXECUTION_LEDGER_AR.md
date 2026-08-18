@@ -158,3 +158,13 @@
 - أثناء Quick Gate ظهر أن عقد school-management الخاص بأكواد الدخول كان مربوطًا بشكل تنفيذ قديم (`payload`/نسخ studentIds). تمت مراجعة `auth.routes.ts` وتأكد أن السلوك الحالي يحفظ `schoolId` و`groupIds` للمستخدم، يضيف الطالب إلى `Group.studentIds`، ويعيد مزامنة `totalStudents`. تم تحديث العقد ليتحقق من هذه الدلالات الحالية بدل الشكل القديم، بدون تخفيف السلوك المطلوب.
 
 - Schools decision/handover workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.
+
+## دفعة Schools Reports Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview على commit الإغلاق.**
+
+- نقل report tab من God Component إلى feature-owned presentation composition.
+- حافظت الدفعة على readiness decision، downloads/print، blocking gaps/navigation، loading/error/empty states، performance metrics، weakest skills، class summaries.
+- presentation children لا تستورد API أو global store.
+- `smoke-school-management-contract.mjs` أصبح يتبع ownership الجديد بدل إجبار markup على البقاء في parent.
+- أضيف direct boundary contract جديد وحدود أحجام للملفات المستخرجة.
