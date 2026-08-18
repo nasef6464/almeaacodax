@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+      - refactor/phase-runner-base
     paths:
       - 'src/**'
       - 'apps/**'
@@ -117,7 +118,7 @@ jobs:
         run: npm run smoke:api-security
 
   execute-schools-import-decomposition:
-    if: (github.event_name == 'push' && github.event.head_commit.message == 'ci(refactor): execute schools import decomposition') || (github.event_name == 'pull_request' && github.head_ref == 'refactor/repository-v2-safe')
+    if: (github.event_name == 'push' && github.event.head_commit.message == 'ci(refactor): execute schools import decomposition') || (github.event_name == 'pull_request' && (github.head_ref == 'refactor/repository-v2-safe' || github.head_ref == 'refactor/phase-runner-trigger'))
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
