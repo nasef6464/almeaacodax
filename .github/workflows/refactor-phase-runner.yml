@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  run-schools-workspace-phase:
+  run-schools-workspace-decision-phase:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -27,8 +27,8 @@ jobs:
             package-lock.json
             server/package-lock.json
 
-      - name: Apply relationship workspace extraction
-        run: python tools/refactor/apply-schools-relationship-viewmodel.py
+      - name: Apply workspace decision and handover extraction
+        run: python tools/refactor/apply-schools-workspace-viewmodel.py
 
       - name: Install frontend dependencies
         run: npm ci
@@ -36,8 +36,8 @@ jobs:
       - name: Install API dependencies
         run: npm --prefix server ci
 
-      - name: Direct relationship workspace contract
-        run: node scripts/smoke-schools-relationship-viewmodel-contract.mjs
+      - name: Direct workspace decision contract
+        run: node scripts/smoke-schools-workspace-viewmodel-contract.mjs
 
       - name: Fast targeted schools gate
         run: node tools/refactor/quick-check.mjs schools
@@ -57,20 +57,20 @@ jobs:
           ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
           ledger = ledger_path.read_text(encoding='utf-8')
           ledger = ledger.replace(
-              '**الحالة: تم تطبيق أول دفعة من workspace extraction وتنتظر Quick + Full Gate.**',
-              '**الحالة: أول دفعة Workspace Full Phase Review PASS؛ تنتظر Safety Gate القياسي.**',
+              '**الحالة: تم تطبيق الاستخراج وتنتظر Full Phase Review.**',
+              '**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate القياسي على commit الناتج.**',
               1,
           )
-          if 'Schools relationship workspace Full Phase Review' not in ledger:
-              ledger += '\n- Schools relationship workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.\n'
+          if 'Schools decision/handover workspace Full Phase Review' not in ledger:
+              ledger += '\n- Schools decision/handover workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.\n'
           ledger_path.write_text(ledger, encoding='utf-8')
           PY
 
-          git rm -f tools/refactor/apply-schools-relationship-viewmodel.py
+          git rm -f tools/refactor/apply-schools-workspace-viewmodel.py
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract relationship workspace view model"
+          git commit -m "refactor(schools): extract workspace decision view model"
           git push origin HEAD:refactor/repository-v2-safe
