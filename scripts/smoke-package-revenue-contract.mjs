@@ -7,7 +7,8 @@ const packageModelSource = fs.readFileSync(path.join(root, 'server/src/models/B2
 const contentRoutesSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8');
 const schoolsManagerParentSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
 const schoolPackagesPanelSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'), 'utf8');
-const schoolsManagerSource = [schoolsManagerParentSource, schoolPackagesPanelSource].join('\n');
+const schoolPackageCardSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackageCard.tsx'), 'utf8');
+const schoolsManagerSource = [schoolsManagerParentSource, schoolPackagesPanelSource, schoolPackageCardSource].join('\n');
 const financialManagerSource = fs.readFileSync(path.join(root, 'dashboards/admin/FinancialManager.tsx'), 'utf8');
 
 const checks = [];
@@ -28,10 +29,12 @@ check('B2B package contract stores teacher and revenue share metadata', () => {
 });
 
 check('school package manager lets admin assign trainer and share percentage', () => {
-  assertIncludes(schoolPackagesPanelSource, 'المعلم/المدرب المرتبط');
-  assertIncludes(schoolPackagesPanelSource, 'نسبة المعلم من دخل الباقة');
-  assertIncludes(schoolPackagesPanelSource, 'handleUpdateSchoolPackage(pkg.id, { revenueSharePercentage: value })');
-  assertIncludes(schoolPackagesPanelSource, 'assignedTeacherId: event.target.value');
+  assertIncludes(schoolPackageCardSource, 'المعلم/المدرب المرتبط');
+  assertIncludes(schoolPackageCardSource, 'نسبة المعلم من دخل الباقة');
+  assertIncludes(schoolPackageCardSource, 'handleUpdateSchoolPackage(pkg.id, { revenueSharePercentage: value })');
+  assertIncludes(schoolPackageCardSource, 'assignedTeacherId: event.target.value');
+  assertIncludes(schoolPackagesPanelSource, '<SchoolPackageCard');
+  assertIncludes(schoolPackagesPanelSource, 'handleUpdateSchoolPackage={handleUpdateSchoolPackage}');
   assertIncludes(schoolsManagerParentSource, 'handleUpdateSchoolPackage={handleUpdateSchoolPackage}');
   assertIncludes(schoolsManagerParentSource, 'await updateB2BPackageAsync(packageId, data);');
 });
