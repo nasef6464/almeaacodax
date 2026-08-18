@@ -4,62 +4,53 @@
 
 ## آخر مرحلة مغلقة
 
-**Schools Workspace — Package Card Presentation Boundary: مغلقة بنجاح.**
+**Schools Workspace — Access Codes Presentation Boundary: مغلقة بنجاح.**
 
 - الفرع: `refactor/repository-v2-safe`.
 - لا يوجد أي دمج إلى `main` ولا نشر Production ضمن هذه المرحلة.
-- تم نقل JSX وحقول/actions بطاقة الباقة الواحدة من `SchoolPackagesPanel.tsx` إلى `dashboards/admin/SchoolsManager/SchoolPackageCard.tsx`.
-- `SchoolPackageCard` يستقبل handlers والبيانات صراحة عبر props ولا يستورد `SchoolsManager` أو global store أو API مباشرة.
-- `SchoolPackagesPanel.tsx` أصبح parent orchestration أصغر: **329 سطرًا**.
-- `SchoolPackageCard.tsx`: **372 سطرًا** مع budget دائم يمنع تجاوزه `400` سطر.
-- تم الإبقاء على `Trash2` داخل parent لأن حذف أكواد التفعيل ما زال من مسؤوليته؛ أول TypeScript failure كشف ذلك وتم إصلاحه قبل قبول المرحلة.
-- تم تحديث package-revenue contract ليتبع حقول المعلم ونسبة الإيراد إلى child الجديد، مع التحقق من wiring إلى parent manager وتحديث الـAPI/store كما كان.
-- Direct package-card boundary contract: PASS.
-- Package/access scale contract: PASS على `5,000` باقة + `2,000` دورة + `800` مسار + `1,200` مادة + `500` معلم في قرابة `11.7 ms`.
-- `SchoolsManager.tsx`: **4308** أسطر، ولم نعد إدخال منطق الباقات إليه.
-- Frontend production build: PASS، و`SchoolsManager` chunk قرابة `206.73 KB` قبل gzip / `45.58 KB` gzip؛ ما يزال تقسيم presentation/lazy boundaries هدفًا لاحقًا.
-- Quick Gate: PASS.
-- Full Schools Workspace Phase Review: PASS.
-- Refactor V2 Safety Gate run `#227`: **PASS** على commit `0f1ed7536eb6d1851b9f147ec47bbb85be00dce8`.
-- Architecture contract: `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime relative imports، `0` dependency cycles.
-- Hotspots فوق 400 سطر: **82** بدل الحد السابق 83.
-- School management: `22/22 PASS`.
-- XLSX safety: `18/18 PASS`.
-- Package revenue: `4/4 PASS`.
-- School relationship deep audit: `10/10 PASS`, `0 warnings`.
-- Frontend/API typecheck + production builds + performance + route loading + runtime source + quiz integrity + auth/API security: PASS.
+- تم نقل نموذج إنشاء أكواد المدرسة، قائمة الأكواد، copy/delete، وحالات loading/error/pagination من `SchoolPackagesPanel.tsx` إلى `dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx`.
+- تم فصل row projection إلى `dashboards/admin/SchoolsManager/accessCodeViewModel.ts` واستخدام `Map` لأسماء الباقات بدل `schoolPackages.find` لكل كود.
+- `SchoolAccessCodesPanel.tsx`: **171 سطرًا**، والـboundary contract يمنع تجاوزه **180** سطرًا.
+- `SchoolPackagesPanel.tsx`: **237 سطرًا** بعد الفصل، والـboundary contract يقفله عند **240** سطرًا.
+- الـchild يستقبل state/handlers صراحة عبر props ولا يستورد `SchoolsManager` أو global store أو API.
+- تم الحفاظ على selected package، max uses، duration days، copy feedback، delete confirmation، paged access codes، loading/error/pagination semantics كما كانت.
+- Direct scale contract يختبر **50,000 كود + 10,000 باقة** مع package fallback وترتيب الصفوف وحماية `maxUses=0` وحد usage percentage.
+- Quick Gate: **PASS**.
+- Full Schools Workspace Phase Review: **PASS** على commit runner الموثق `d2d81e17c4b520d3bab5d75c35c632241f74e2ca`.
+- Refactor V2 Safety Gate run **#247**: **PASS** على commit `cacdffed6bb266905b12630d2b521bc36894a4a8`.
+- Frontend + API typecheck/build: PASS.
+- Architecture/module boundaries: PASS.
+- School management/XLSX/package revenue/relationship audits: PASS.
+- Route loading/runtime source/quiz integrity/auth security/API security: PASS.
 
-## ملاحظات جودة حالية
+## أخطاء/عقود تم تصحيحها أثناء المرحلة
 
-- `SchoolPackagesPanel` أصبح أصغر، لكنه لا يزال يجمع orchestration للباقة مع واجهة أكواد التفعيل؛ الخطوة التالية تفصل Access Codes presentation بدون تغيير handlers أو payloads.
-- قوائم `available paths / subjects / courses` داخل `SchoolPackageCard` ما زالت تُشتق أثناء render؛ بعد فصل Access Codes سنراجعها بمقياس أداء منفصل ونفهرسها فقط إذا كان ذلك يحافظ على الترتيب والسلوك.
-- `SchoolsManager` نفسه ما يزال God Component بحوالي `4308` أسطر، لكنه أصبح يعتمد view-models مستقلة للـreadiness والعلاقات والـworkspace والـroster والباقات بدل احتواء تلك الحسابات داخله.
-- `npm audit` ما زال يبلغ عن dependencies تحتاج مسار ترقية أمني مستقل؛ لا يتم استخدام `npm audit fix --force` داخل structural refactor.
+1. أول direct boundary check وضع حدًا تقديريًا `210` سطرًا للـparent قبل قياس نتيجة الفصل؛ الناتج الآمن الحقيقي كان `237`. لم يتم تخفيف baseline قائم: تم تثبيت budget بعد القياس عند `240` لمنع النمو من جديد.
+2. عقد Package Card القديم كان يفترض أن parent ما زال يمتلك `Trash2` وحذف أكواد التفعيل. بعد نقل Access Codes إلى child مستقل، تم إعادة توجيه العقد ليتحقق من أن `SchoolAccessCodesPanel` يمتلك الأيقونة و`window.confirm` و`handleDeleteSchoolAccessCode`، بدل إعادة المسؤولية إلى الـparent.
+3. بعد نجاح المرحلة تم تشديد budget الخاص بالـchild من سقف استكشافي `260` إلى `180` لأن القياس الفعلي هو `171` سطرًا.
+
+## الوضع الحالي لمدارس B2B
+
+- `SchoolsManager.tsx` قرابة **4308** أسطر، مقارنة بأكثر من 5200 في بداية العمل.
+- الحسابات المستخرجة حاليًا تشمل: import parsing، readiness، relationship workspace، decision/handover workspace، roster filtering/pagination، package/access projection، access-code rows.
+- presentation boundaries المستخرجة تشمل: `SchoolPackageCard` و`SchoolAccessCodesPanel`، إضافة إلى panels التي كانت منفصلة سابقًا.
+- لا تزال الأولوية لتخفيض God Component تدريجيًا بدون تغيير handlers أو API payloads أو صلاحيات.
 
 ## المرحلة التالية
 
-**Schools Access Codes Presentation Boundary.**
+**SchoolRelationsPanel — Summary / Import / Presentation Boundaries.**
 
 الترتيب:
 
-1. نقل نموذج إنشاء كود الدخول، قائمة الأكواد، copy/delete، حالات loading/error، ومعلومات pagination إلى component مستقل مثل `SchoolAccessCodesPanel.tsx`.
-2. الـchild يستقبل state/handlers كـprops فقط ولا يستورد manager/store/api.
-3. الحفاظ على selected package، max uses، duration days، copy feedback، delete behavior، paged access codes، والتحميل من الخادم بنفس الدلالات الحالية.
-4. إضافة direct boundary contract + budgets للـparent/child، ثم Quick Gate + Full Review + Standard Safety Gate.
-5. بعدها مراجعة `SchoolRelationsPanel.tsx`، ثم العودة لتقسيم أجزاء أكبر من `SchoolsManager.tsx` قبل الانتقال إلى `pages/Reports.tsx`.
+1. فحص `SchoolRelationsPanel.tsx` وتحديد الحسابات/sections التي يمكن فصلها بدون نقل actions أو تغيير payloads.
+2. فصل relation summary/import preview إلى pure view-model أو child component حسب طبيعة الجزء.
+3. الحفاظ على school-wide supervisor scope، class-scoped supervisors، parent links، quick supervisor creation، relation import preview/results، create-missing-users semantics.
+4. إضافة direct contracts وحدود file size ومنع child-to-parent/store/API imports.
+5. Quick Gate -> Full Review -> Standard Safety Gate قبل إغلاق المرحلة.
+6. بعد استقرار relations، نعود لأكبر sections داخل `SchoolsManager.tsx` ثم ننتقل إلى `pages/Reports.tsx`.
 
 ## بروتوكول كل دفعة
 
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
-
-## Access Codes presentation boundary — Full Phase Review PASS
-
-- تم نقل نموذج إنشاء أكواد المدرسة، قائمة الأكواد، copy/delete، وحالات loading/error/pagination إلى `SchoolAccessCodesPanel.tsx`.
-- تم فصل row projection إلى `accessCodeViewModel.ts` مع Map للباقة بدل `schoolPackages.find` لكل كود.
-- الـchild يستقبل state/handlers كـprops ولا يستورد manager/store/api.
-- direct scale contract يغطي 50,000 كود و10,000 باقة، إضافةً إلى package fallback وusage percentage semantics.
-- الدفعة لا تغلق إلا بعد Direct Contract + Quick Gate + Full Review + Standard Safety Gate.
-
-- Access Codes Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
