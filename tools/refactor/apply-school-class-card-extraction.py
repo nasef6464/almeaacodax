@@ -4,6 +4,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MANAGER = ROOT / "dashboards/admin/SchoolsManager.tsx"
 SCHOOL_SMOKE = ROOT / "scripts/smoke-school-management-contract.mjs"
 RELATIONSHIP_SMOKE = ROOT / "scripts/smoke-batch100f-relationship-audit-contract.mjs"
+ADMIN_RELATIONSHIP_SMOKE = ROOT / "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs"
 
 
 def replace_once(source: str, old: str, new: str, label: str) -> str:
@@ -79,5 +80,14 @@ relationship_smoke = replace_once(
     "relationship audit class supervisor wiring",
 )
 RELATIONSHIP_SMOKE.write_text(relationship_smoke, encoding="utf-8")
+
+admin_relationship_smoke = ADMIN_RELATIONSHIP_SMOKE.read_text(encoding="utf-8")
+admin_relationship_smoke = replace_once(
+    admin_relationship_smoke,
+    '  "handleAssignSchoolSupervisor(value, classroom.id)",\n',
+    '  "onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}",\n',
+    "batch136 class supervisor wiring",
+)
+ADMIN_RELATIONSHIP_SMOKE.write_text(admin_relationship_smoke, encoding="utf-8")
 
 print("School class operating-card presentation extraction applied safely.")
