@@ -6,12 +6,18 @@ import ts from 'typescript';
 
 const root = process.cwd();
 const source = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/rosterViewModel.ts'), 'utf8');
+const managerSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
+const lineCount = (text) => text.split(/\r?\n/).length;
 
 assert.ok(source.includes('buildSchoolRosterViewModel'), 'roster builder must be exported');
 assert.ok(!source.includes('useState(') && !source.includes('useMemo('), 'roster view model must remain React-independent');
 assert.ok(!source.includes("from '../../../services/api'"), 'roster view model must remain API-independent');
 assert.ok(source.includes('new Set(schoolClasses.map'), 'unassigned filtering must use a class-id Set');
-assert.ok(source.split(/\r?\n/).length <= 130, 'roster view model must stay <= 130 lines');
+assert.ok(lineCount(source) <= 130, 'roster view model must stay <= 130 lines');
+assert.ok(managerSource.includes("from './SchoolsManager/rosterViewModel';"), 'SchoolsManager must delegate roster projection');
+assert.ok(managerSource.includes('buildSchoolRosterViewModel({'), 'SchoolsManager must call the extracted roster view model');
+assert.ok(!managerSource.includes('const visibleSchoolStudents = schoolStudents.filter((student) => {'), 'inline roster filtering must not return to SchoolsManager');
+assert.ok(lineCount(managerSource) <= 4350, `SchoolsManager roster regression: ${lineCount(managerSource)} lines exceeds the 4350-line safety budget`);
 
 const transpiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 },
@@ -108,6 +114,7 @@ assert.ok(elapsedMs < 1500, `20k-student roster projection regressed: ${elapsedM
 console.log(JSON.stringify({
   phase: 'schools-roster-viewmodel',
   status: 'PASS',
+  managerLines: lineCount(managerSource),
   students: largeStudents.length,
   classes: largeClasses.length,
   elapsedMs: Number(elapsedMs.toFixed(2)),
