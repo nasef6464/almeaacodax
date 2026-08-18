@@ -13,6 +13,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts"),
   await read("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/relationshipViewModel.ts"),
   await read("dashboards/admin/SchoolsManager/workspaceViewModel.ts"),
   await read("dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx"),
