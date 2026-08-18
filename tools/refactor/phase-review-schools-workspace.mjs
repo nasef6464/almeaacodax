@@ -8,6 +8,7 @@ const checks = [
   ['API production build', 'npm', ['run', 'server:build']],
   ['school readiness view-model logic', 'node', ['scripts/smoke-schools-readiness-viewmodel-contract.mjs']],
   ['school relationship workspace logic', 'node', ['scripts/smoke-schools-relationship-viewmodel-contract.mjs']],
+  ['school decision/handover workspace logic', 'node', ['scripts/smoke-schools-workspace-viewmodel-contract.mjs']],
   ['school import parser logic/performance', 'npm', ['run', 'smoke:schools-import-parsing']],
   ['school management contract', 'npm', ['run', 'smoke:school-management']],
   ['school XLSX safety contract', 'npm', ['run', 'smoke:xlsx-safety']],
