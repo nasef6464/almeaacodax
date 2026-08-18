@@ -26,6 +26,20 @@ elif 'const parseImportRows =' in manager or 'const parseRelationRows =' in mana
     raise SystemExit('Parser block shape changed; refusing partial extraction.')
 manager_path.write_text(manager, encoding='utf-8')
 
+# The broader performance review exposed a real Reports regression: the evidence
+# summary is computed but no longer rendered. Restore the user-facing confidence
+# context instead of weakening the existing contract.
+reports_path = root / 'pages/Reports.tsx'
+reports = reports_path.read_text(encoding='utf-8')
+evidence_line = 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال'
+if evidence_line not in reports:
+    report_marker = '''                        <p className="mt-1 text-sm font-bold leading-6 text-gray-700">\n                            {hasStudentTrackScope\n                                ? `نركز الآن على: ${studentTrackLabel}.`\n                                : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}\n                        </p>\n'''
+    report_replacement = report_marker + '''                        <p className="mt-1 text-xs font-bold leading-5 text-gray-500">\n                            القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.\n                        </p>\n'''
+    if report_marker not in reports:
+        raise SystemExit('Could not locate Reports student track evidence insertion point; refusing unsafe edit.')
+    reports = reports.replace(report_marker, report_replacement, 1)
+reports_path.write_text(reports, encoding='utf-8')
+
 package_path = root / 'package.json'
 package_text = package_path.read_text(encoding='utf-8')
 script_line = '        "smoke:schools-import-parsing": "node scripts/smoke-schools-import-parsing-contract.mjs",\n'
@@ -62,6 +76,8 @@ ledger = ledger.replace(
     'الحالة: **قيد التنفيذ، ولا تُغلق إلا بعد نجاح Phase Review وRefactor V2 Safety Gate.**',
     'الحالة: **تم تطبيق الاستخراج، وتنتظر نتيجة Phase Review قبل الإغلاق.**',
 )
+if 'Reports evidence summary regression' not in ledger:
+    ledger += '''\n## أخطاء اكتُشفت أثناء مراجعة الدفعة\n\n- كشف `smoke:performance` أن `studentEvidenceSummary` في `pages/Reports.tsx` كان يُحسب دون عرضه، بينما عقد الأداء/جودة التقارير يتطلب إظهار حجم العينة للطالب. تم اختيار إصلاح السلوك بإعادة عبارة حجم الدليل إلى الواجهة بدل إضعاف الاختبار.\n'''
 ledger_path.write_text(ledger, encoding='utf-8')
 
-print('Schools import decomposition patch applied safely.')
+print('Schools import decomposition patch applied safely, including Reports evidence regression fix.')
