@@ -123,6 +123,12 @@ jobs:
       - name: School relations report presentation boundary contract
         run: node scripts/smoke-schools-relations-report-boundary-contract.mjs
 
+      - name: School relations status presentation boundary contract
+        run: node scripts/smoke-schools-relations-status-boundary-contract.mjs
+
+      - name: School quick supervisor presentation boundary contract
+        run: node scripts/smoke-schools-quick-supervisor-boundary-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 

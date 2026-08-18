@@ -39,6 +39,13 @@ export type AdminUserPayload = {
     };
 };
 
+export type QuickSupervisorDraft = {
+    name: string;
+    email: string;
+    password?: string;
+    targetGroupId: string;
+};
+
 export type ImportRow = {
     name: string;
     email: string;
