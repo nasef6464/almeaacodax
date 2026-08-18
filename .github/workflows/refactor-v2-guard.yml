@@ -36,7 +36,7 @@ on:
       - '.github/workflows/refactor-v2-guard.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: refactor-v2-${{ github.ref }}
@@ -115,3 +115,85 @@ jobs:
 
       - name: API security contract
         run: npm run smoke:api-security
+
+  execute-schools-import-decomposition:
+    if: github.event_name == 'push' && github.event.head_commit.message == 'ci(refactor): execute schools import decomposition'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Apply extraction patch
+        run: python tools/refactor/apply-schools-import-decomposition.py
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full phase review before commit
+        run: node tools/refactor/phase-review-schools-import.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Finalize verified phase and remove temporary machinery
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger = ledger.replace(
+              'الحالة: **تم تطبيق الاستخراج، وتنتظر نتيجة Phase Review قبل الإغلاق.**',
+              'الحالة: **Phase Review PASS؛ تم تطبيق الدفعة، والقبول النهائي مشروط بنجاح Safety Gate على commit الناتج.**',
+          )
+          ledger_path.write_text(ledger, encoding='utf-8')
+
+          guard_path = Path('.github/workflows/refactor-v2-guard.yml')
+          guard = guard_path.read_text(encoding='utf-8')
+          marker = '\n  execute-schools-import-decomposition:\n'
+          if marker not in guard:
+              raise SystemExit('Temporary patch job marker was not found during finalization.')
+          guard = guard.split(marker, 1)[0].rstrip() + '\n'
+          guard = guard.replace('permissions:\n  contents: write', 'permissions:\n  contents: read', 1)
+          xlsx_step = '''      - name: School XLSX safety contract\n        run: node scripts/smoke-xlsx-safety-contract.mjs\n\n'''
+          persistent_steps = xlsx_step + '''      - name: School import parsing logic and performance contract\n        run: npm run smoke:schools-import-parsing\n\n      - name: Frontend performance contract\n        run: npm run smoke:performance\n\n'''
+          if xlsx_step not in guard:
+              raise SystemExit('Safety Gate XLSX insertion point was not found during finalization.')
+          guard = guard.replace(xlsx_step, persistent_steps, 1)
+          guard_path.write_text(guard, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-schools-import-decomposition.py
+          if [ -f .github/workflows/refactor-v2-schools-import-phase.yml ]; then
+            git rm -f .github/workflows/refactor-v2-schools-import-phase.yml
+          fi
+
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx \
+            scripts/smoke-xlsx-safety-contract.mjs \
+            scripts/smoke-performance-contract.mjs \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md \
+            package.json \
+            .github/workflows/refactor-v2-guard.yml
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(schools): extract import parsing with verified phase gate"
+          git push origin HEAD:refactor/repository-v2-safe
