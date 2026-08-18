@@ -54,7 +54,7 @@ if (!reports.includes(fallbackDelegation)) {
     reports,
     "        } catch {\n            setScopedSmartRemediation({\n",
     "        }\n\n        const leadStudent = scopedAnalytics.weakestStudents[0];\n",
-    "        } catch {\n            setScopedSmartRemediation(buildScopedRemediationFallback(skillPayload));\n        }\n\n        const leadStudent = scopedAnalytics.weakestStudents[0];\n",
+    "        } catch {\n            setScopedSmartRemediation(buildScopedRemediationFallback(skillPayload));\n",
     'scoped remediation local fallback block',
   );
 }
