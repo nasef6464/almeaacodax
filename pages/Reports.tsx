@@ -40,6 +40,7 @@ import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
 import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
+import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -80,6 +81,8 @@ const getSkillRecommendation = (
         subjects: useStore.getState().subjects,
         sections: useStore.getState().sections,
     });
+
+const studentLearningActionIcons: Record<StudentLearningActionIconKey, LucideIcon> = { checkCircle: CheckCircle, video: Video, fileText: FileText };
 
 const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };
 
@@ -245,100 +248,18 @@ const Reports: React.FC = () => {
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
     const studentTodayFocus = studentWeeklyPlan[0] || null;
-    const studentQuickActions = useMemo(() => {
-        if (!studentTodayFocus) {
-            return [
-                {
-                    title: 'ابدأ بقياس قصير',
-                    body: 'اختبار ساهر يحدد أول مهارة تحتاج تركيزًا.',
-                    label: 'اختبار ساهر',
-                    link: '/dashboard?tab=saher',
-                    Icon: CheckCircle,
-                    className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
-                },
-                {
-                    title: 'استعرض الشروح',
-                    body: 'افتح موضوع تأسيس مناسب بعد أول قياس.',
-                    label: 'الشروحات',
-                    link: '/courses',
-                    Icon: Video,
-                    className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
-                },
-                {
-                    title: 'حل تدريب قصير',
-                    body: 'تدريب سريع بعد ظهور المهارة الأضعف.',
-                    label: 'اختيار تدريب',
-                    link: '/my-quizzes',
-                    Icon: FileText,
-                    className: 'border-amber-100 bg-amber-50 text-amber-800',
-                },
-            ];
-        }
-
-        return [
-            {
-                title: 'راجع الشرح',
-                body: studentTodayFocus.lessonTitle
-                    ? displayText(studentTodayFocus.lessonTopicTitle || studentTodayFocus.lessonTitle)
-                    : 'أقرب شرح لهذه المهارة.',
-                label: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح الشرح' : 'استعراض الشروحات',
-                link: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
-                Icon: Video,
-                className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
-            },
-            {
-                title: 'حل تدريب قصير',
-                body: studentTodayFocus.quizTitle
-                    ? displayText(studentTodayFocus.quizTitle)
-                    : 'تدريب موجه على نفس المهارة.',
-                label: studentTodayFocus.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
-                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
-                Icon: FileText,
-                className: 'border-amber-100 bg-amber-50 text-amber-800',
-            },
-            {
-                title: 'أعد القياس',
-                body: 'اختبار قصير بعد الشرح والتدريب.',
-                label: 'قياس التحسن',
-                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
-                Icon: CheckCircle,
-                className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
-            },
-        ];
-    }, [studentTodayFocus]);
+    const studentQuickActions = useMemo(
+        () => buildStudentQuickActions(studentTodayFocus),
+        [studentTodayFocus],
+    );
     const studentTodayLearningLoop = useMemo(() => {
-        if (!studentTodayFocus) {
-            return {
-                skillName: 'ابدأ بقياس قصير',
-                mastery: 0,
-                evidenceLabel: 'لا توجد بيانات كافية بعد',
-                readinessLabel: 'قياس البداية',
-                steps: studentQuickActions.map((action, index) => ({
-                    ...action,
-                    step: index + 1,
-                })),
-            };
-        }
-
-        const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
-        const mastery = Number(studentTodayFocus.mastery || 0);
-        const evidenceLabel = studentTodayFocus.isReliable
-            ? `${studentTodayFocus.attempts} محاولات`
-            : `قراءة أولية من ${studentTodayFocus.attempts} محاولة`;
-        const readinessLabel = mastery >= 75
-            ? 'جاهز للتثبيت'
-            : mastery >= 50
-                ? 'راجع ثم قِس'
-                : 'ابدأ من الشرح';
+        const loop = buildStudentTodayLearningLoop(studentTodayFocus, studentQuickActions);
 
         return {
-            skillName,
-            mastery,
-            evidenceLabel,
-            readinessLabel,
-            steps: studentQuickActions.map((action, index) => ({
+            ...loop,
+            steps: loop.steps.map((action) => ({
                 ...action,
-                step: index + 1,
+                Icon: studentLearningActionIcons[action.iconKey],
             })),
         };
     }, [studentQuickActions, studentTodayFocus]);
