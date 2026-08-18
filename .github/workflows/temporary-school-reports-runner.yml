@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   apply-verified-reports-phase:
-    if: github.head_ref == 'refactor/reports-runner-trigger'
+    if: startsWith(github.head_ref, 'refactor/reports-runner-trigger')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
