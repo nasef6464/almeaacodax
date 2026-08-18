@@ -9,8 +9,10 @@ const lineCount = (text) => text.split(/\r?\n/).length;
 
 const panelFile = 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx';
 const cardFile = 'dashboards/admin/SchoolsManager/SchoolPackageCard.tsx';
+const accessCodesFile = 'dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx';
 const panel = read(panelFile);
 const card = read(cardFile);
+const accessCodes = read(accessCodesFile);
 
 assert.ok(card.includes('export const SchoolPackageCard'), 'package card must expose a feature-owned presentation component');
 assert.ok(!card.includes("from '../SchoolsManager'"), 'package card must never import the parent manager');
@@ -25,13 +27,21 @@ assert.ok(lineCount(card) <= 400, `SchoolPackageCard must stay <= 400 lines; got
 
 assert.ok(panel.includes("from './SchoolPackageCard';"), 'SchoolPackagesPanel must compose SchoolPackageCard');
 assert.ok(panel.includes('<SchoolPackageCard'), 'SchoolPackagesPanel must render extracted package cards');
-assert.ok(panel.includes("import { ShieldCheck, Download, Plus, Trash2, Key } from 'lucide-react';"), 'parent panel must keep Trash2 for access-code deletion');
 assert.ok(!panel.includes('PACKAGE_CONTENT_OPTIONS.map'), 'package-card content controls must not leak back into parent panel');
 assert.ok(!panel.includes('pkg.revenueSharePercentage'), 'package-card commercial form fields must not leak back into parent panel');
 assert.ok(!panel.includes('const packageCourses ='), 'package-specific presentation setup must remain outside the parent panel');
 assert.ok(lineCount(panel) <= 350, `SchoolPackagesPanel should remain an orchestration panel <= 350 lines; got ${lineCount(panel)}`);
 
-for (const [file, source] of [[panelFile, panel], [cardFile, card]]) {
+// Access-code deletion used to be owned by this parent. After the dedicated
+// access-code boundary was introduced, preserve the same behavior in that child
+// rather than forcing Trash2/delete confirmation back into the orchestration panel.
+assert.ok(panel.includes("from './SchoolAccessCodesPanel';"), 'parent must compose the access-code presentation boundary');
+assert.ok(panel.includes('<SchoolAccessCodesPanel'), 'parent must render the access-code presentation boundary');
+assert.ok(accessCodes.includes("import { Key, Trash2 } from 'lucide-react';"), 'access-code child must own its delete icon');
+assert.ok(accessCodes.includes("window.confirm('هل تريد حذف كود التفعيل هذا؟')"), 'access-code delete confirmation must remain intact after the move');
+assert.ok(accessCodes.includes('handleDeleteSchoolAccessCode(code.id)'), 'access-code delete handler must remain wired');
+
+for (const [file, source] of [[panelFile, panel], [cardFile, card], [accessCodesFile, accessCodes]]) {
   const result = ts.transpileModule(source, {
     compilerOptions: {
       jsx: ts.JsxEmit.ReactJSX,
