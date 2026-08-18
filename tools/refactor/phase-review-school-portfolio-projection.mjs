@@ -1,5 +1,14 @@
 import { spawnSync } from 'node:child_process';
 
+const applyCardProjection = spawnSync('node', ['tools/refactor/apply-school-card-readiness-projection.mjs'], {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+});
+if (applyCardProjection.status !== 0) {
+    console.error('[school-portfolio-projection-phase-review] Failed to apply school card readiness projection');
+    process.exit(applyCardProjection.status ?? 1);
+}
+
 const checks = [
     ['git diff whitespace validation', 'git', ['diff', '--check']],
     ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -9,6 +18,7 @@ const checks = [
     ['architecture contract', 'node', ['tools/refactor/architecture-gate.mjs']],
     ['module boundary contract', 'node', ['tools/refactor/module-boundary-gate.mjs']],
     ['school portfolio projection boundary', 'node', ['scripts/smoke-schools-portfolio-projection-boundary-contract.mjs']],
+    ['school card readiness projection boundary', 'node', ['scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs']],
     ['school readiness view-model contract', 'node', ['scripts/smoke-schools-readiness-viewmodel-contract.mjs']],
     ['school portfolio filter presentation contract', 'node', ['scripts/smoke-schools-portfolio-filter-boundary-contract.mjs']],
     ['school management contract', 'node', ['scripts/smoke-school-management-contract.mjs']],
@@ -40,7 +50,7 @@ const stageManager = spawnSync('git', ['add', 'dashboards/admin/SchoolsManager.t
     shell: process.platform === 'win32',
 });
 if (stageManager.status !== 0) {
-    console.error('[school-portfolio-projection-phase-review] Failed to stage verified manager projection change');
+    console.error('[school-portfolio-projection-phase-review] Failed to stage verified school projection changes');
     process.exit(stageManager.status ?? 1);
 }
 
