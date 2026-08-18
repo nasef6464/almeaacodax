@@ -37,6 +37,7 @@ on:
 
 permissions:
   contents: read
+  statuses: read
 
 concurrency:
   group: refactor-v2-${{ github.ref }}
@@ -145,3 +146,46 @@ jobs:
 
       - name: API security contract
         run: npm run smoke:api-security
+
+  preview-deployment-gate:
+    name: Vercel preview deployment gate
+    needs: baseline-quality-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Wait for Vercel preview to become ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUSH_SHA: ${{ github.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEPLOY_SHA="${PR_HEAD_SHA:-$PUSH_SHA}"
+          echo "Waiting for Vercel status on ${DEPLOY_SHA}"
+
+          for attempt in $(seq 1 60); do
+            STATUS_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${DEPLOY_SHA}/status")"
+            STATE="$(printf '%s' "$STATUS_JSON" | jq -r '[.statuses[] | select(.context == "Vercel")][0].state // "missing"')"
+            TARGET_URL="$(printf '%s' "$STATUS_JSON" | jq -r '[.statuses[] | select(.context == "Vercel")][0].target_url // ""')"
+
+            echo "Attempt ${attempt}/60: Vercel=${STATE}"
+            case "$STATE" in
+              success)
+                echo "Vercel preview deployment is ready."
+                if [ -n "$TARGET_URL" ]; then
+                  echo "Deployment status page: $TARGET_URL"
+                fi
+                exit 0
+                ;;
+              failure|error)
+                echo "Vercel reported deployment failure for ${DEPLOY_SHA}."
+                exit 1
+                ;;
+            esac
+
+            sleep 10
+          done
+
+          echo "Timed out waiting for Vercel preview deployment status."
+          exit 1
