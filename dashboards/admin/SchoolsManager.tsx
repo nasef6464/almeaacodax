@@ -74,6 +74,7 @@ import {
     getStudentsForSchool,
     summarizeSchoolPortfolio,
 } from './SchoolsManager/readinessViewModel';
+import { buildSchoolCardReadinessActions } from './SchoolsManager/schoolCardReadinessViewModel';
 import { buildSchoolRelationshipViewModel } from './SchoolsManager/relationshipViewModel';
 import { buildSchoolWorkspaceViewModel } from './SchoolsManager/workspaceViewModel';
 import { buildSchoolRosterViewModel } from './SchoolsManager/rosterViewModel';
@@ -267,18 +268,12 @@ export const SchoolsManager: React.FC = () => {
         accessCodes,
     });
 
-    const schoolPortfolioRows = useMemo(
-        () => buildSchoolPortfolioRows(schools, { classes, students, b2bPackages, accessCodes }),
-        [accessCodes, b2bPackages, classes, schools, students],
-    );
-    const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo(
-        () => filterSchoolPortfolioRows(schoolPortfolioRows, schoolSearch, schoolListMode),
-        [schoolListMode, schoolPortfolioRows, schoolSearch],
-    );
-    const schoolPortfolioSummary = useMemo(
-        () => summarizeSchoolPortfolio(schoolPortfolioRows),
-        [schoolPortfolioRows],
-    );
+    const schoolPortfolioRows = buildSchoolPortfolioRows(schools, {
+        classes, students, b2bPackages, accessCodes, now: Date.now(),
+    });
+    const { filteredRows: filteredSchoolRows, filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } =
+        filterSchoolPortfolioRows(schoolPortfolioRows, schoolSearch, schoolListMode);
+    const schoolPortfolioSummary = summarizeSchoolPortfolio(schoolPortfolioRows);
 
     const exportSchoolPortfolioReadiness = () => {
         createWorkbookDownload('schools-portfolio-readiness.xlsx', [
@@ -2829,68 +2824,18 @@ export const SchoolsManager: React.FC = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredSchools.map((school) => {
-                    const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
-                    const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
-                    const schoolClasses = classes.filter((group) => group.parentId === school.id);
-                    const schoolStudents = getStudentsForSchool(school, schoolClasses, students);
-                    const schoolClassCount = schoolClasses.length;
-                    const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
-                    const cardOperationalSnapshot = getOperationalSnapshotForSchool(school);
-                    const cardReadinessScore = [
-                        schoolClassCount > 0,
-                        schoolStudents.length > 0,
-                        school.supervisorIds.length > 0,
-                        activePackageCount > 0,
-                        schoolCodes.length > 0,
-                    ].filter(Boolean).length;
-                    const cardReadinessTotal = 5;
-                    const cardReadinessActions = [
-                        {
-                            id: 'classes',
-                            label: 'الفصول',
-                            isReady: schoolClassCount > 0,
-                            tab: 'overview' as const,
-                            hint: schoolClassCount > 0 ? `${schoolClassCount} فصل` : 'أضف فصولًا',
-                        },
-                        {
-                            id: 'students',
-                            label: 'الطلاب',
-                            isReady: schoolStudents.length > 0,
-                            tab: 'overview' as const,
-                            hint: schoolStudents.length > 0 ? `${schoolStudents.length} طالب` : 'أضف الطلاب',
-                        },
-                        {
-                            id: 'supervisors',
-                            label: 'المشرفون',
-                            isReady: school.supervisorIds.length > 0,
-                            tab: 'relations' as const,
-                            hint: school.supervisorIds.length > 0 ? `${school.supervisorIds.length} مشرف` : 'اربط مشرفًا',
-                        },
-                        {
-                            id: 'packages',
-                            label: 'الباقة/المسارات',
-                            isReady: activePackageCount > 0,
-                            tab: 'packages' as const,
-                            hint: activePackageCount > 0 ? `${activePackageCount} باقة` : 'فعّل باقة ومسارات',
-                        },
-                        {
-                            id: 'codes',
-                            label: 'الأكواد',
-                            isReady: schoolCodes.length > 0,
-                            tab: 'packages' as const,
-                            hint: schoolCodes.length > 0 ? `${schoolCodes.length} كود` : 'ولّد كودًا',
-                        },
-                    ];
+                {filteredSchoolRows.map((cardPortfolioRow) => {
+                    const { school } = cardPortfolioRow;
+                    const cardReadinessActions = buildSchoolCardReadinessActions(cardPortfolioRow);
                     const nextCardAction = cardReadinessActions.find((action) => !action.isReady);
 
                     return (
                         <div
                             key={school.id}
                             data-testid="school-card"
-                            data-cleanup-draft={cardOperationalSnapshot.isCommerciallyHiddenDraft ? 'true' : 'false'}
+                            data-cleanup-draft={cardPortfolioRow.isCommerciallyHiddenDraft ? 'true' : 'false'}
                             className={`bg-white rounded-3xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 ${
-                                cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all'
+                                cardPortfolioRow.isCommerciallyHiddenDraft && schoolListMode === 'all'
                                     ? 'border-amber-200 bg-amber-50/30'
                                     : 'border-slate-100 hover:border-indigo-100'
                             }`}
@@ -2901,13 +2846,13 @@ export const SchoolsManager: React.FC = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`px-2.5 py-1 rounded-full text-[11px] font-black border ${
-                                        cardReadinessScore === cardReadinessTotal
+                                        cardPortfolioRow.readinessScore === cardPortfolioRow.readinessTotal
                                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                            : cardReadinessScore >= 2
+                                            : cardPortfolioRow.readinessScore >= 2
                                                 ? 'bg-amber-50 text-amber-700 border-amber-200'
                                                 : 'bg-rose-50 text-rose-700 border-rose-200'
                                     }`}>
-                                        {cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل 🟢' : 'قيد التجهيز 🟠'}
+                                        {cardPortfolioRow.readinessScore === cardPortfolioRow.readinessTotal ? 'جاهزة للتشغيل 🟢' : 'قيد التجهيز 🟠'}
                                     </span>
                                     <button
                                         type="button"
@@ -2946,7 +2891,7 @@ export const SchoolsManager: React.FC = () => {
                                 )}
                             </div>
 
-                            {cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
+                            {cardPortfolioRow.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
                                 <div data-testid="school-card-cleanup-badge" className="mb-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-3.5 py-2 text-xs font-black leading-5 text-amber-900 shadow-sm">
                                     مسودة/تجربة معزولة عن الأولوية التجارية. راجعها قبل حذفها حتى لا تحذف عقدًا حقيقيًا بالخطأ.
                                 </div>
@@ -2956,25 +2901,25 @@ export const SchoolsManager: React.FC = () => {
                             <p data-testid="school-card-operating-copy" className="text-xs text-gray-500 mb-4 leading-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقة/مسارات، أكواد، ثم تقرير تسليم.</p>
 
                             <div data-testid="school-card-readiness" className={`mb-2.5 rounded-2xl px-3.5 py-2 text-xs font-bold flex items-center justify-between border ${
-                                cardReadinessScore === cardReadinessTotal
+                                cardPortfolioRow.readinessScore === cardPortfolioRow.readinessTotal
                                     ? 'bg-emerald-50/70 text-emerald-800 border-emerald-100'
-                                    : cardReadinessScore >= 2
+                                    : cardPortfolioRow.readinessScore >= 2
                                         ? 'bg-amber-50/70 text-amber-800 border-amber-100'
                                         : 'bg-rose-50/70 text-rose-800 border-rose-100'
                             }`}>
-                                <span>{cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال المسار'}</span>
-                                <span className="font-black">{cardReadinessScore}/{cardReadinessTotal}</span>
+                                <span>{cardPortfolioRow.readinessScore === cardPortfolioRow.readinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال المسار'}</span>
+                                <span className="font-black">{cardPortfolioRow.readinessScore}/{cardPortfolioRow.readinessTotal}</span>
                             </div>
                             <div data-testid="school-card-readiness-progress" className="mb-4 h-2 overflow-hidden rounded-full bg-gray-100 p-0.5">
                                 <div
                                     className={`h-full rounded-full transition-all duration-500 ${
-                                        cardReadinessScore === cardReadinessTotal
+                                        cardPortfolioRow.readinessScore === cardPortfolioRow.readinessTotal
                                             ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                                            : cardReadinessScore >= 2
+                                            : cardPortfolioRow.readinessScore >= 2
                                                 ? 'bg-gradient-to-r from-amber-400 to-amber-500'
                                                 : 'bg-gradient-to-r from-rose-500 to-red-500'
                                     }`}
-                                    style={{ width: `${Math.round((cardReadinessScore / cardReadinessTotal) * 100)}%` }}
+                                    style={{ width: `${Math.round((cardPortfolioRow.readinessScore / cardPortfolioRow.readinessTotal) * 100)}%` }}
                                 />
                             </div>
                             <div data-testid="school-card-next-action-panel" className="mb-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-3.5 space-y-3">
@@ -3023,15 +2968,15 @@ export const SchoolsManager: React.FC = () => {
                             <div className="grid grid-cols-3 gap-2.5 mb-5">
                                 <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-2.5 text-center">
                                     <p className="text-[11px] text-gray-500 font-bold mb-0.5">طلاب</p>
-                                    <p className="font-black text-gray-900 text-sm">{schoolStudents.length}</p>
+                                    <p className="font-black text-gray-900 text-sm">{cardPortfolioRow.studentCount}</p>
                                 </div>
                                 <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-2.5 text-center">
                                     <p className="text-[11px] text-gray-500 font-bold mb-0.5">باقات</p>
-                                    <p className="font-black text-gray-900 text-sm">{activePackageCount}</p>
+                                    <p className="font-black text-gray-900 text-sm">{cardPortfolioRow.activePackageCount}</p>
                                 </div>
                                 <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-2.5 text-center">
                                     <p className="text-[11px] text-gray-500 font-bold mb-0.5">أكواد</p>
-                                    <p className="font-black text-gray-900 text-sm">{schoolCodes.length}</p>
+                                    <p className="font-black text-gray-900 text-sm">{cardPortfolioRow.activeCodeCount}</p>
                                 </div>
                             </div>
 
@@ -3046,7 +2991,7 @@ export const SchoolsManager: React.FC = () => {
                             >
                                 فتح تشغيل المدرسة
                             </button>
-                            {cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
+                            {cardPortfolioRow.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
                                 <button
                                     type="button"
                                     data-testid="school-card-review-delete"
