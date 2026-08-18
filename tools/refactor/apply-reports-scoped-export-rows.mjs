@@ -74,6 +74,24 @@ if (!reports.includes(studentsDelegation)) {
   );
 }
 
+reports = reports
+  .replace(
+    "    const downloadScopedSkillsWorkbook = async () => {\n        if (!scopedAnalytics?.weakestSkills?.length) return;\n\n        const XLSX = await loadXlsx();",
+    "    const downloadScopedSkillsWorkbook = async () => {\n        if (!scopedAnalytics?.weakestSkills?.length) return;\n        const XLSX = await loadXlsx();",
+  )
+  .replace(
+    "        const rows = buildScopedSkillsWorkbookRows(scopedSkillReportCards);\n\n        XLSX.utils.book_append_sheet",
+    "        const rows = buildScopedSkillsWorkbookRows(scopedSkillReportCards);\n        XLSX.utils.book_append_sheet",
+  )
+  .replace(
+    "    const downloadScopedStudentsWorkbook = async () => {\n        if (!scopedAnalytics?.weakestStudents?.length) return;\n\n        const XLSX = await loadXlsx();",
+    "    const downloadScopedStudentsWorkbook = async () => {\n        if (!scopedAnalytics?.weakestStudents?.length) return;\n        const XLSX = await loadXlsx();",
+  )
+  .replace(
+    "        const rows = buildScopedStudentsWorkbookRows(scopedStudentFocusCards);\n\n        XLSX.utils.book_append_sheet",
+    "        const rows = buildScopedStudentsWorkbookRows(scopedStudentFocusCards);\n        XLSX.utils.book_append_sheet",
+  );
+
 if (!roleContract.includes(roleOwnership)) {
   roleContract = replaceOnce(
     roleContract,
