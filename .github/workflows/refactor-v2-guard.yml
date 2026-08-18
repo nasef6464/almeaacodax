@@ -186,6 +186,9 @@ jobs:
       - name: Reports institutional boundary contract
         run: node scripts/smoke-reports-institutional-boundary-contract.mjs
 
+      - name: Reports scoped student focus boundary contract
+        run: node scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs
+
       - name: Reports role contract
         run: npm run smoke:reports-role
 
