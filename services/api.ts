@@ -866,8 +866,6 @@ export const api = {
         token,
       },
     ),
-  getMyNotifications: (pagination?: { page?: number; limit?: number }, token?: string | null) =>
-    request<unknown>(withQuery("/notifications/me", pagination || {}), { token }),
   getMyActivities: (pagination?: { limit?: number }, token?: string | null) =>
     request<{ activities: unknown[] }>(withQuery("/activities/me", pagination || {}), { token, cache: "no-store" }),
   createMyActivity: (
@@ -937,12 +935,6 @@ export const api = {
     request<{ success: boolean; test: unknown }>(`/public-tests/admin/tests/${id}/live-control`, {
       method: "POST",
       body: payload,
-      token,
-    }),
-  markNotificationRead: (id: string, token?: string | null) =>
-    request<unknown>(`/notifications/${id}/read`, {
-      method: "PATCH",
-      body: {},
       token,
     }),
   getNotificationTemplates: (pagination?: { page?: number; limit?: number }, token?: string | null) =>
