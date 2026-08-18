@@ -2,6 +2,7 @@ import React from 'react';
 import { ShieldCheck, Download, Plus, Trash2, Key } from 'lucide-react';
 import { AccessCode, B2BPackage, CategoryPath, CategorySubject, Course, Group, PackageContentType, User } from '../../../types';
 import { PACKAGE_CONTENT_OPTIONS } from './contracts';
+import { buildSchoolPackageAccessViewModel } from './packageAccessViewModel';
 
 interface SchoolPackagesPanelProps {
     selectedSchool: Group;
@@ -74,6 +75,20 @@ export const SchoolPackagesPanel: React.FC<SchoolPackagesPanelProps> = ({
     pagedAccessCodesError,
     pagedAccessCodesPagination,
 }) => {
+    const packageAccessSummary = buildSchoolPackageAccessViewModel({
+        schoolPackages,
+        activeSchoolPackages,
+        schoolCodes,
+        activeSchoolCodes,
+        totalSeats,
+        usedSeats,
+        publishedCourses,
+        paths,
+        subjects,
+        teachers,
+    });
+    const { packageAccessRowsById } = packageAccessSummary;
+
     return (
         <div data-testid="school-packages-panel" className="space-y-8">
             <div data-testid="school-access-decision-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
@@ -85,24 +100,18 @@ export const SchoolPackagesPanel: React.FC<SchoolPackagesPanelProps> = ({
                                 : 'bg-amber-50 text-amber-700'
                         }`}>
                             <ShieldCheck size={14} />
-                            {activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'الوصول جاهز للتسليم' : 'الوصول يحتاج استكمال'}
+                            {packageAccessSummary.accessStatusLabel}
                         </div>
                         <h3 className="mt-3 text-xl font-black text-gray-900">قرار وصول المدرسة</h3>
                         <p data-testid="school-access-next-action" className="mt-2 text-sm font-bold leading-7 text-gray-600">
-                            {activeSchoolPackages.length === 0
-                                ? 'فعّل باقة مدرسية مرتبطة بالمسارات حتى يحصل الطلاب على الوصول بدون شراء فردي.'
-                                : activeSchoolCodes.length === 0
-                                    ? 'ولّد كود دخول صالحًا للطلاب أو أرسل رابط التسجيل حسب طريقة التسليم.'
-                                    : totalSeats > 0 && usedSeats >= totalSeats
-                                        ? 'المقاعد المتاحة مستهلكة بالكامل. زِد سعة الباقة قبل إضافة طلاب جدد.'
-                                        : 'الباقة والمسارات والأكواد جاهزة. يمكنك إرسال ملف التسليم للمدرسة أو متابعة الاستهلاك.'}
+                            {packageAccessSummary.accessNextAction}
                         </p>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-3">
                         {[
-                            ['الباقات النشطة', activeSchoolPackages.length, activeSchoolPackages.length > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'],
-                            ['الأكواد الصالحة', activeSchoolCodes.length, activeSchoolCodes.length > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'],
-                            ['المقاعد', totalSeats > 0 ? `${usedSeats}/${totalSeats}` : '0/0', totalSeats > 0 && usedSeats < totalSeats ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'],
+                            ['الباقات النشطة', packageAccessSummary.activePackageCount, packageAccessSummary.activePackageCount > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'],
+                            ['الأكواد الصالحة', packageAccessSummary.activeCodeCount, packageAccessSummary.activeCodeCount > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'],
+                            ['المقاعد', packageAccessSummary.seatsLabel, packageAccessSummary.hasSeatCapacity && !packageAccessSummary.seatCapacityExhausted ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'],
                         ].map(([label, value, tone]) => (
                             <div key={label} className={`rounded-2xl px-4 py-3 text-center ${tone}`}>
                                 <div className="text-xs font-black opacity-80">{label}</div>
@@ -119,15 +128,15 @@ export const SchoolPackagesPanel: React.FC<SchoolPackagesPanelProps> = ({
                 </div>
                 <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
                     <div className="text-xs font-black text-rose-700 mb-2">باقات موقوفة/منتهية</div>
-                    <div className="text-2xl font-black text-rose-800">{schoolPackages.filter((pkg) => pkg.status !== 'active').length}</div>
+                    <div className="text-2xl font-black text-rose-800">{packageAccessSummary.inactivePackageCount}</div>
                 </div>
                 <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
                     <div className="text-xs font-black text-indigo-700 mb-2">إجمالي الأكواد</div>
-                    <div className="text-2xl font-black text-indigo-800">{schoolCodes.length}</div>
+                    <div className="text-2xl font-black text-indigo-800">{packageAccessSummary.totalCodeCount}</div>
                 </div>
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
                     <div className="text-xs font-black text-amber-700 mb-2">معدل الاستخدام</div>
-                    <div className="text-2xl font-black text-amber-800">{totalSeats > 0 ? `${Math.min(100, Math.round((usedSeats / totalSeats) * 100))}%` : '0%'}</div>
+                    <div className="text-2xl font-black text-amber-800">{`${packageAccessSummary.seatUsagePercent}%`}</div>
                 </div>
             </div>
             <div>
@@ -182,10 +191,11 @@ export const SchoolPackagesPanel: React.FC<SchoolPackagesPanelProps> = ({
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {schoolPackages.map((pkg) => {
-                        const packageCourses = publishedCourses.filter((course) => pkg.courseIds.includes(course.id));
-                        const packagePaths = paths.filter((path) => (pkg.pathIds || []).includes(path.id));
-                        const packageSubjects = subjects.filter((currentSubject) => (pkg.subjectIds || []).includes(currentSubject.id));
-                        const packageTeacher = teachers.find((teacher) => teacher.id === pkg.assignedTeacherId);
+                        const packagePresentation = packageAccessRowsById.get(pkg.id);
+                        const packageCourses = packagePresentation?.courses || [];
+                        const packagePaths = packagePresentation?.paths || [];
+                        const packageSubjects = packagePresentation?.subjects || [];
+                        const packageTeacher = packagePresentation?.teacher;
 
                         return (
                         <div key={pkg.id} className="border border-gray-200 p-5 rounded-xl space-y-4">

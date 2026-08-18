@@ -46,3 +46,11 @@
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
+
+## Package/access view-model extraction — Full Phase Review PASS
+
+- تم نقل access decision/seat summary وتهيئة package reference lookups إلى `SchoolsManager/packageAccessViewModel.ts`.
+- lookup لكل package أصبح يعتمد Maps مسبقة بدل filter/find على كل collections لكل بطاقة.
+- الدفعة لا تُغلق إلا بعد direct performance contract + Quick Gate + Full Review + Standard Safety Gate.
+
+- Package/access Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
