@@ -9,6 +9,15 @@ if (applyCardProjection.status !== 0) {
     process.exit(applyCardProjection.status ?? 1);
 }
 
+const applyPortfolioCardPresentation = spawnSync('node', ['tools/refactor/apply-school-portfolio-card-presentation.mjs'], {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+});
+if (applyPortfolioCardPresentation.status !== 0) {
+    console.error('[school-portfolio-projection-phase-review] Failed to apply school portfolio card presentation extraction');
+    process.exit(applyPortfolioCardPresentation.status ?? 1);
+}
+
 const checks = [
     ['git diff whitespace validation', 'git', ['diff', '--check']],
     ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -19,6 +28,7 @@ const checks = [
     ['module boundary contract', 'node', ['tools/refactor/module-boundary-gate.mjs']],
     ['school portfolio projection boundary', 'node', ['scripts/smoke-schools-portfolio-projection-boundary-contract.mjs']],
     ['school card readiness projection boundary', 'node', ['scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs']],
+    ['school portfolio card presentation boundary', 'node', ['scripts/smoke-schools-portfolio-card-boundary-contract.mjs']],
     ['school readiness view-model contract', 'node', ['scripts/smoke-schools-readiness-viewmodel-contract.mjs']],
     ['school portfolio filter presentation contract', 'node', ['scripts/smoke-schools-portfolio-filter-boundary-contract.mjs']],
     ['school management contract', 'node', ['scripts/smoke-school-management-contract.mjs']],
@@ -45,13 +55,17 @@ for (const [name, command, args] of checks) {
     }
 }
 
-const stageManager = spawnSync('git', ['add', 'dashboards/admin/SchoolsManager.tsx'], {
+const stageVerifiedFiles = spawnSync('git', [
+    'add',
+    'dashboards/admin/SchoolsManager.tsx',
+    'scripts/smoke-school-management-contract.mjs',
+], {
     stdio: 'inherit',
     shell: process.platform === 'win32',
 });
-if (stageManager.status !== 0) {
+if (stageVerifiedFiles.status !== 0) {
     console.error('[school-portfolio-projection-phase-review] Failed to stage verified school projection changes');
-    process.exit(stageManager.status ?? 1);
+    process.exit(stageVerifiedFiles.status ?? 1);
 }
 
 console.log('\n[school-portfolio-projection-phase-review] ALL CHECKS PASS');
