@@ -8,9 +8,9 @@ permissions:
   contents: write
 
 jobs:
-  run-schools-import-phase:
+  run-schools-readiness-phase:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     steps:
       - name: Checkout target refactor branch
         uses: actions/checkout@v4
@@ -27,14 +27,8 @@ jobs:
             package-lock.json
             server/package-lock.json
 
-      - name: Apply schools extraction patch
-        run: python tools/refactor/apply-schools-import-decomposition.py
-
-      - name: Apply directed quiz context repair
-        run: python tools/refactor/fix-directed-quiz-context.py
-
-      - name: Repair scoped bootstrap performance contract
-        run: python tools/refactor/fix-bootstrap-performance-contract.py
+      - name: Apply schools readiness extraction
+        run: python tools/refactor/apply-schools-readiness-decomposition.py
 
       - name: Install frontend dependencies
         run: npm ci
@@ -42,8 +36,14 @@ jobs:
       - name: Install API dependencies
         run: npm --prefix server ci
 
-      - name: Full phase review before commit
-        run: node tools/refactor/phase-review-schools-import.mjs
+      - name: Direct readiness view-model contract
+        run: node scripts/smoke-schools-readiness-viewmodel-contract.mjs
+
+      - name: Fast targeted schools gate
+        run: node tools/refactor/quick-check.mjs schools
+
+      - name: Full schools readiness phase review
+        run: node tools/refactor/phase-review-schools-readiness.mjs
 
       - name: Restore generated audit snapshots
         run: git checkout -- docs/architecture/generated
@@ -57,39 +57,20 @@ jobs:
           ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
           ledger = ledger_path.read_text(encoding='utf-8')
           ledger = ledger.replace(
-              'الحالة: **تم تطبيق الاستخراج، وتنتظر نتيجة Phase Review قبل الإغلاق.**',
-              'الحالة: **Phase Review PASS؛ تم تطبيق الدفعة، والقبول النهائي مشروط بنجاح Safety Gate على commit الناتج.**',
+              '**الحالة: تم تطبيق استخراج readiness/view-model وتنتظر Full Phase Review قبل الإغلاق.**',
+              '**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate القياسي على commit الناتج.**',
+              1,
           )
-          if 'bootstrap blocking performance contract' not in ledger:
-              ledger += '\n- أثناء الفحص اتضح أن عقد الأداء كان يبحث عن تسلسل نصي عبر الملف كاملًا بدل فحص `DATA_BOOTSTRAP_BLOCKING_PREFIXES` نفسه، مما أعطى failure كاذبًا بسبب وجود `/category` ثم `/quiz` داخل قائمة بدء bootstrap. تم تضييق الاختبار ليتحقق من القائمة المقصودة فقط بدون تغيير منطق التطبيق.\n'
+          if 'Schools readiness Full Phase Review' not in ledger:
+              ledger += '\n- Schools readiness Full Phase Review: **PASS** قبل إنشاء commit المرحلة.\n'
           ledger_path.write_text(ledger, encoding='utf-8')
-
-          guard_path = Path('.github/workflows/refactor-v2-guard.yml')
-          guard = guard_path.read_text(encoding='utf-8')
-          marker = '\n  execute-schools-import-decomposition:\n'
-          if marker in guard:
-              guard = guard.split(marker, 1)[0].rstrip() + '\n'
-          guard = guard.replace('permissions:\n  contents: write', 'permissions:\n  contents: read', 1)
-          xlsx_step = '''      - name: School XLSX safety contract\n        run: node scripts/smoke-xlsx-safety-contract.mjs\n\n'''
-          persistent_steps = xlsx_step + '''      - name: School import parsing logic and performance contract\n        run: npm run smoke:schools-import-parsing\n\n      - name: Frontend performance contract\n        run: npm run smoke:performance\n\n'''
-          if 'School import parsing logic and performance contract' not in guard:
-              if xlsx_step not in guard:
-                  raise SystemExit('Safety Gate XLSX insertion point was not found during finalization.')
-              guard = guard.replace(xlsx_step, persistent_steps, 1)
-          guard_path.write_text(guard, encoding='utf-8')
           PY
 
-          git rm -f tools/refactor/apply-schools-import-decomposition.py
-          git rm -f tools/refactor/fix-directed-quiz-context.py
-          git rm -f tools/refactor/fix-bootstrap-performance-contract.py
-          if [ -f .github/workflows/refactor-v2-schools-import-phase.yml ]; then
-            git rm -f .github/workflows/refactor-v2-schools-import-phase.yml
-          fi
-
+          git rm -f tools/refactor/apply-schools-readiness-decomposition.py
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract imports and repair verified regressions"
+          git commit -m "refactor(schools): extract readiness view model"
           git push origin HEAD:refactor/repository-v2-safe
