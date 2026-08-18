@@ -35,6 +35,14 @@ if roster_child not in contract:
     if anchor not in contract:
         raise SystemExit('School management contract report aggregation anchor not found.')
     contract = contract.replace(anchor, anchor + roster_child, 1)
+
+old_school_remove_contract = '  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchool.id)");\n'
+new_school_remove_contract = '  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchoolId)");\n'
+if old_school_remove_contract in contract:
+    contract = contract.replace(old_school_remove_contract, new_school_remove_contract, 1)
+elif new_school_remove_contract not in contract:
+    raise SystemExit('School roster removal contract anchor not found; refusing unsafe contract migration.')
+
 contract_path.write_text(contract, encoding='utf-8')
 
 print('School student roster presentation extraction applied safely.')
