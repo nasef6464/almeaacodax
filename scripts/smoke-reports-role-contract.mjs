@@ -11,6 +11,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
@@ -158,7 +159,7 @@ check('student smart remediation uses AI with a local fallback plan', () => {
   assertIncludes(reportsSource, 'const buildSmartRemediation = async () =>');
   assertIncludes(reportsSource, 'api.aiRemediationPlan');
   assertIncludes(reportsSource, 'skills: focusedReportSkills.slice(0, 5)');
-  assertIncludes(reportsSource, 'setSmartRemediation({');
+  assertIncludes(reportsSource, 'buildStudentRemediationFallback(focusedReportSkills)');
   assertIncludes(reportsSource, 'خطة علاجية قصيرة');
   assertIncludes(reportsSource, 'parentNote');
 });
