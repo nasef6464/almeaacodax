@@ -1,0 +1,91 @@
+name: Temporary School Workspace Sections Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/school-workspace-sections-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-workspace-sections-phase:
+    if: startsWith(github.head_ref, 'refactor/school-workspace-sections-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Import staged workspace-section phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/school-workspace-sections-runner-base -- \
+            dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx \
+            dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx \
+            scripts/smoke-schools-workspace-sections-boundary-contract.mjs \
+            tools/refactor/apply-school-workspace-sections-extraction.py \
+            tools/refactor/phase-review-school-workspace-sections.mjs
+
+      - name: Apply workspace-section presentation extraction
+        run: python tools/refactor/apply-school-workspace-sections-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full workspace-section phase review
+        run: node tools/refactor/phase-review-school-workspace-sections.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified workspace-section phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Schools Workspace Courses/Classes Presentation\n\n- تم فصل عرض دورات المدرسة إلى `SchoolCoursesPanel.tsx`.\n- تم فصل shell الفصول والإنشاء الجماعي وتجميع `SchoolClassOperatingCard` إلى `SchoolClassesPanel.tsx`.\n- course/class mutations بقيت في `SchoolsManager.tsx` وتصل للـchildren عبر callbacks صريحة.\n- Full Workspace Sections Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Schools Workspace Courses/Classes Presentation\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- فصل school courses presentation وclasses shell عن `SchoolsManager.tsx`.\n- mutations بقيت في orchestration layer؛ child components لا تستورد store/API.\n- تم تحديث source-text contracts لتتبع ownership الجديد بدل الاعتماد على موقع النص القديم.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-school-workspace-sections-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx \
+            dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx \
+            dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx \
+            scripts/smoke-school-management-contract.mjs \
+            scripts/smoke-batch100f-relationship-audit-contract.mjs \
+            scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs \
+            scripts/smoke-schools-workspace-sections-boundary-contract.mjs \
+            tools/refactor/phase-review-school-workspace-sections.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(schools): extract workspace course and class sections"
+          git push origin HEAD:refactor/repository-v2-safe
