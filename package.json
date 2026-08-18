@@ -96,6 +96,7 @@
         "smoke:school-from-scratch-live": "node scripts/live-school-from-scratch-audit.mjs",
         "repair:supervisor-school-scope": "node scripts/repair-live-supervisor-school-scope.mjs",
         "smoke:school-management": "node scripts/smoke-school-management-contract.mjs",
+        "smoke:schools-import-parsing": "node scripts/smoke-schools-import-parsing-contract.mjs",
         "smoke:admin-school-command": "node scripts/smoke-admin-school-command-center-contract.mjs",
         "smoke:school-portal-command": "node scripts/smoke-school-portal-command-center-contract.mjs",
         "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
