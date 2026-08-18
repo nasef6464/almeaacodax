@@ -40,7 +40,7 @@ permissions:
   statuses: read
 
 concurrency:
-  group: refactor-v2-${{ github.ref }}
+  group: refactor-v2-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -52,6 +52,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -218,19 +219,23 @@ jobs:
       - name: API security contract
         run: npm run smoke:api-security
 
+      - name: Refactor workflow race-safety contract
+        run: node scripts/smoke-refactor-workflow-race-contract.mjs
+
       - name: Apply scoped skill report extraction
-        if: github.actor != 'github-actions[bot]'
+        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
         run: node tools/refactor/apply-reports-scoped-skill-report.mjs
 
       - name: Run scoped skill report phase review
-        if: github.actor != 'github-actions[bot]'
+        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
         run: node tools/refactor/phase-review-reports-scoped-skill-report.mjs
 
       - name: Commit verified scoped skill report extraction
-        if: github.actor != 'github-actions[bot]'
+        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
         shell: bash
         run: |
           set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha }}"
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add \
@@ -243,8 +248,28 @@ jobs:
             exit 0
           fi
 
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale auto-commit safely."
+            exit 0
+          fi
+
           git commit -m "refactor(reports): extract scoped skill report view model"
-          git push origin HEAD:refactor/repository-v2-safe
+          if git push origin HEAD:refactor/repository-v2-safe; then
+            echo "Verified refactor changes pushed successfully."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch advanced to ${NEW_REMOTE_SHA} during push; newer verification run will own the save."
+            exit 0
+          fi
+
+          echo "Push failed while remote remained at verified head ${EXPECTED_SHA}." >&2
+          exit 1
 
   preview-deployment-gate:
     name: Vercel preview deployment gate
