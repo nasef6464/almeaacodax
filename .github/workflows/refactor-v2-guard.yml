@@ -171,6 +171,9 @@ jobs:
       - name: Reports recommendation boundary contract
         run: node scripts/smoke-reports-recommendation-boundary-contract.mjs
 
+      - name: Reports student analytics boundary contract
+        run: node scripts/smoke-reports-student-analytics-boundary-contract.mjs
+
       - name: Reports role contract
         run: npm run smoke:reports-role
 
