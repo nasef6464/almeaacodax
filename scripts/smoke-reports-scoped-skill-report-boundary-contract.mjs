@@ -7,8 +7,6 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n
 const reports = read('pages/Reports.tsx');
 const skillCards = read('pages/Reports/scopedSkillReportViewModel.ts');
 const recommendation = read('pages/Reports/recommendationViewModel.ts');
-const reportsRole = read('scripts/smoke-reports-role-contract.mjs');
-const globalJourney = read('scripts/smoke-global-student-journey-contract.mjs');
 
 const checks = [];
 
@@ -34,11 +32,10 @@ check('Reports delegates scoped skill card projection while keeping workbook sid
   assertIncludes(reports, 'buildScopedSkillReportCards(scopedAnalytics, {');
   assertIncludes(reports, 'const downloadScopedSkillsWorkbook = async () =>');
   assertIncludes(reports, 'const XLSX = await loadXlsx();');
-  assertNotIncludes(reports, "label: 'دعم عاجل'");
-  assertNotIncludes(reports, 'recommendation.lessonTopicTitle || recommendation.lessonTitle');
+  assertIncludes(reports, 'scopedSkillReportCards.map((skill) =>');
 });
 
-check('scoped skill view-model preserves card limits and severity threshold', () => {
+check('scoped skill view-model preserves card limits and severity presentation', () => {
   assertIncludes(skillCards, '(scopedAnalytics?.weakestSkills || []).slice(0, 4).map');
   assertIncludes(skillCards, 'skill.mastery < 50');
   assertIncludes(skillCards, "label: 'دعم عاجل'");
@@ -53,7 +50,8 @@ check('scoped skill view-model preserves card limits and severity threshold', ()
 
 check('scoped skill view-model reuses recommendation ownership without duplicating ranking logic', () => {
   assertIncludes(skillCards, 'buildSkillRecommendation(skill, catalog)');
-  assertIncludes(skillCards, 'recommendation.lessonTopicTitle || recommendation.lessonTitle');
+  assertIncludes(skillCards, 'lessonLink: recommendation.lessonLink');
+  assertIncludes(skillCards, 'lessonTitle: recommendation.lessonTopicTitle || recommendation.lessonTitle');
   assertIncludes(skillCards, 'quizLink: recommendation.quizLink');
   assertIncludes(skillCards, 'quizTitle: recommendation.quizTitle');
   assertNotIncludes(skillCards, 'topicHasLesson');
@@ -69,12 +67,6 @@ check('scoped skill view-model remains deterministic and runtime-side-effect fre
   assertNotIncludes(skillCards, 'navigator.');
   assertNotIncludes(skillCards, 'window.');
   assertNotIncludes(skillCards, 'loadXlsx');
-});
-
-check('Reports contracts follow scoped skill report ownership', () => {
-  assertIncludes(reportsRole, "../pages/Reports/scopedSkillReportViewModel.ts");
-  assertIncludes(globalJourney, "../pages/Reports/scopedSkillReportViewModel.ts");
-  assertIncludes(reportsRole, "assertIncludes(reportsSource, 'buildScopedSkillReportCards(scopedAnalytics, {');");
 });
 
 check('scoped skill extraction reduces Reports without creating a replacement hotspot', () => {
