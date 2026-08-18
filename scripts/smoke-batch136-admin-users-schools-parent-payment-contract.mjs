@@ -57,8 +57,10 @@ assertAllIncludes("server/src/routes/auth.routes.ts", [
 assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "toggleSchoolActions",
   "activeSchoolActionsId === school.id",
-  "ربط المشرفين",
   "فتح تشغيل المدرسة",
+]);
+assertAllIncludes("dashboards/admin/SchoolsManager/workspaceViewModel.ts", [
+  "ربط المشرفين",
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
@@ -76,7 +78,7 @@ assertAllIncludes("server/src/routes/payment.routes.ts", [
 assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "handleAssignSchoolSupervisor(value, selectedSchool.id)",
   "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)",
-  "handleAssignSchoolSupervisor(value, classroom.id)",
+  "onAssignSupervisor={handleAssignSchoolSupervisor}",
   "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)",
   "rosterActionPending",
   "setActiveTab('relations')",

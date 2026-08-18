@@ -32,6 +32,12 @@ export interface UnifiedQuizBuilderProps {
   onSave?: (quiz: Quiz) => void;
   onClose?: () => void;
   defaultKind?: QuizKind;
+  initialPathId?: string;
+  initialSubjectId?: string;
+  initialSkillIds?: string[];
+  initialTargetGroupIds?: string[];
+  initialTargetUserIds?: string[];
+  initialMode?: NonNullable<Quiz['mode']>;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -78,6 +84,12 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   onSave,
   onClose,
   defaultKind = "test",
+  initialPathId = "",
+  initialSubjectId = "",
+  initialSkillIds,
+  initialTargetGroupIds,
+  initialTargetUserIds,
+  initialMode = "regular",
 }) => {
   const { subjects, paths, groups, addQuiz, updateQuiz } = useStore();
 
@@ -92,8 +104,8 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   // Step 1
   const [title, setTitle] = useState(editingQuiz?.title ?? "");
   const [description, setDescription] = useState(editingQuiz?.description ?? "");
-  const [pathId, setPathId] = useState(editingQuiz?.pathId ?? "");
-  const [subjectId, setSubjectId] = useState(editingQuiz?.subjectId ?? "");
+  const [pathId, setPathId] = useState(editingQuiz?.pathId ?? initialPathId);
+  const [subjectId, setSubjectId] = useState(editingQuiz?.subjectId ?? initialSubjectId);
   const [qiyasCategory, setQiyasCategory] = useState<"qudrat" | "tahsili">(
     editingQuiz?.mockExam?.qiyasCategory === "tahsili" ? "tahsili" : "qudrat",
   );
@@ -124,7 +136,8 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [shuffleOptions, setShuffleOptions] = useState<boolean>((editingQuiz?.settings as any)?.shuffleOptions ?? false);
 
   // Step 4
-  const [targetGroupIds, setTargetGroupIds] = useState<string[]>(editingQuiz?.targetGroupIds ?? []);
+  const [targetGroupIds, setTargetGroupIds] = useState<string[]>(editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? []);
+  const [targetUserIds] = useState<string[]>(editingQuiz?.targetUserIds ?? initialTargetUserIds ?? []);
   const [dueDate, setDueDate] = useState(editingQuiz?.dueDate ?? "");
   const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? isAdmin);
   const [showOnPlatform, setShowOnPlatform] = useState(editingQuiz?.showOnPlatform ?? isAdmin);
@@ -215,7 +228,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
     title.trim().length > 0 && pathId.length > 0,
     kind === "mock" ? mockSections.every((s) => s.questionIds.length > 0) : questionIds.length > 0,
     true,
-    isAdmin || targetGroupIds.length > 0,
+    isAdmin || targetGroupIds.length > 0 || targetUserIds.length > 0,
   ];
 
   // ── Save ──────────────────────────────────────────────────────────────────
@@ -241,7 +254,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           shuffleOptions,
         } as any,
         access: { type: accessType === "package" ? "paid" : accessType } as any,
+        mode: editingQuiz?.mode ?? initialMode,
+        skillIds: editingQuiz?.skillIds ?? initialSkillIds ?? [],
         targetGroupIds,
+        targetUserIds,
         dueDate: dueDate || undefined,
         isPublished,
         showOnPlatform,

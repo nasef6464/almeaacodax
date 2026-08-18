@@ -1,6 +1,17 @@
 import { readFile } from 'node:fs/promises';
 
-const reportsSource = await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8');
+const reportsSource = [
+  await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/institutionalReportViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
+].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
@@ -63,7 +74,7 @@ check('student report shows the quick decision card instead of hiding it behind 
 check('student skill performance report is explicitly driven by quiz answers and evidence', () => {
   assertIncludes(reportsSource, 'تقرير أداء المهارات من الاختبارات');
   assertIncludes(reportsSource, 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
-  assertIncludes(reportsSource, 'مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.');
+  assertIncludes(reportsSource, 'نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار');
   assertIncludes(reportsSource, 'skill.totalEvidence');
   assertIncludes(reportsSource, 'skill.correctAttempts');
 });
@@ -146,7 +157,7 @@ check('student smart remediation uses AI with a local fallback plan', () => {
 });
 
 check('parent report stays brief with copied/shared/PDF summary and practical actions', () => {
-  assertIncludes(reportsSource, 'if (user.role === Role.PARENT)');
+  assertIncludes(reportsSource, 'if (user?.role === Role.PARENT)');
   assertIncludes(reportsSource, 'parentBriefSummary');
   assertIncludes(reportsSource, 'const copyParentBriefSummary = async () =>');
   assertIncludes(reportsSource, 'await navigator.clipboard.writeText(parentBriefSummary)');
@@ -181,6 +192,8 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'scopedStudentFocusCards');
   assertIncludes(reportsSource, 'scopedGroupPerformanceRows');
   assertIncludes(reportsSource, 'scopedTeacherPerformanceRows');
+  assertIncludes(reportsSource, 'buildScopedGroupPerformanceRows({');
+  assertIncludes(reportsSource, 'buildScopedTeacherPerformanceRows({');
   assertIncludes(reportsSource, 'data-testid="staff-comparison-report"');
   assertIncludes(reportsSource, 'مقارنة الفصول');
   assertIncludes(reportsSource, 'مقارنة المعلمين');
@@ -217,6 +230,8 @@ check('supervisor can analyze and export a specific directed quiz by students an
   assertIncludes(reportsSource, "return mode === 'central' || hasTargets");
   assertIncludes(reportsSource, 'const directedQuizAnalysisResults = useMemo');
   assertIncludes(reportsSource, 'const directedQuizSkillAnalysis = useMemo');
+  assertIncludes(reportsSource, 'buildDirectedQuizAnalysisResults({');
+  assertIncludes(reportsSource, 'buildDirectedQuizSkillAnalysis(directedQuizAnalysisResults)');
   assertIncludes(reportsSource, 'const directedQuizStudentAnalysis = useMemo');
   assertIncludes(reportsSource, 'const downloadDirectedQuizAnalysisWorkbook = async () =>');
   assertIncludes(reportsSource, 'تحليل اختبار موجه');
@@ -226,6 +241,8 @@ check('supervisor can analyze and export a specific directed quiz by students an
 });
 
 check('staff reports can send a real intervention alert to linked parent and supervisor recipients', () => {
+  assertIncludes(reportsSource, 'buildInstitutionalReportHub({');
+  assertIncludes(reportsSource, 'buildScopedLeadStudentSummary(scopedLeadStudent)');
   assertIncludes(reportsSource, 'sendInterventionAlert');
   assertIncludes(reportsSource, 'canSendInterventionAlert');
   assertIncludes(reportsSource, 'إرسال تنبيه');
@@ -239,12 +256,13 @@ check('staff reports can send a real intervention alert to linked parent and sup
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {
-  assertIncludes(reportsSource, 'const scopedInterventionPlan = useMemo');
+  assertIncludes(reportsSource, 'buildScopedStudentFocusCards(scopedFilteredStudents, skills)');
+  assertIncludes(reportsSource, 'buildScopedInterventionPlan(scopedAnalytics)');
   assertIncludes(reportsSource, 'ابدأ بالمهارة الأكثر احتياجًا');
   assertIncludes(reportsSource, 'تابع الطالب الأكثر احتياجًا');
   assertIncludes(reportsSource, 'حوّلها لمسار تعلم تكيفي');
   assertIncludes(reportsSource, 'تدريبًا تكيفيًا');
-  assertIncludes(reportsSource, 'const scopedFollowUpSummary = useMemo');
+  assertIncludes(reportsSource, 'buildScopedFollowUpSummary(scopedAnalytics, user.role)');
   assertIncludes(reportsSource, 'const buildScopedSmartRemediation = async () =>');
   assertIncludes(reportsSource, 'const skillPayload = scopedAnalytics.weakestSkills.slice(0, 5)');
   assertIncludes(reportsSource, 'api.createInterventionStudyPlan');

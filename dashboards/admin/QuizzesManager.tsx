@@ -683,6 +683,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
         editingQuiz={resolvedEditingQuiz}
         defaultKind={draftMode === 'saher' || draftMode === 'central' ? 'test' : undefined}
+        initialPathId={selectedPathId || activePathId}
+        initialSubjectId={selectedSubjectId || activeSubjectId}
+        initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
+        initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
+        initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
+        initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}
         onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
         onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
       />
@@ -697,7 +703,13 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
           allowedGroupIds={undefined}
           allowedPathIds={user.role === 'teacher' ? (user.managedPathIds?.length ? user.managedPathIds : undefined) : undefined}
-          defaultKind={isSupervisor ? 'test' : 'test'}
+          defaultKind="test"
+          initialPathId={selectedPathId || activePathId}
+          initialSubjectId={selectedSubjectId || activeSubjectId}
+          initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
+          initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
+          initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
+          initialMode={openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}
           onClose={() => setIsUnifiedBuilderOpen(false)}
         />
       )}
@@ -1708,7 +1720,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     {directedQuizzes.map(quiz => {
                       const targetedGroups = groups.filter(g => (quiz.targetGroupIds || []).includes(g.id));
                       const targetedUsers  = users.filter(u => (quiz.targetUserIds || []).includes(u.id));
-                      const totalTargets   = targetedGroups.reduce((s, g) => s + (g.memberCount || g.studentIds?.length || 0), 0) + targetedUsers.length;
+                      const totalTargets   = targetedGroups.reduce((s, g) => s + ((g as typeof g & { memberCount?: number }).memberCount || g.studentIds?.length || 0), 0) + targetedUsers.length;
                       const dueDate        = (quiz as any).dueDate ? new Date((quiz as any).dueDate).toLocaleDateString('ar-SA') : null;
                       return (
                         <tr key={quiz.id} className="hover:bg-gray-50 transition-colors">
