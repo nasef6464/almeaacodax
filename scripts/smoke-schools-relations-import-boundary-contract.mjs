@@ -30,7 +30,7 @@ assert.ok(child.includes('accept=".xlsx,.xls,.csv,.tsv,.txt"'), 'accepted relati
 assert.ok(child.includes('relationRows.slice(0, 6)'), 'preview must remain capped at six rows');
 assert.ok(child.includes('<Upload size={28} />'), 'relation upload affordance must stay inside the import child');
 assert.ok(!child.includes('تقرير المتابعة المدرسية'), 'school report presentation must not leak into the relation-import child');
-assert.ok(!child.includes('downloadSchoolReport'), 'school report actions must remain outside the relation-import child');
+assert.ok(!child.includes('downloadRelationsReport'), 'school report actions must remain outside the relation-import child');
 for (const field of [
   'createdParents',
   'createdSupervisors',
@@ -52,7 +52,8 @@ assert.ok(!parent.includes('تم تجهيز {relationRows.length} صف للرب�
 assert.ok(!parent.includes('relationSummary.createdParents'), 'relation import results must remain in child');
 assert.ok(!parent.includes('<Upload size={28} />'), 'relation upload markup must remain owned by the import child');
 assert.ok(parent.includes('تقرير المتابعة المدرسية'), 'school report section must remain owned by the parent until its own boundary extraction');
-assert.ok(parent.includes('downloadSchoolReport'), 'school report action wiring must remain intact in the parent');
+assert.ok(parent.includes('downloadRelationsReport'), 'school relations report action wiring must remain intact in the parent');
+assert.ok(parent.includes('onClick={downloadRelationsReport}'), 'school relations report export button must stay wired to its action');
 assert.ok(lineCount(parent) <= 280, `SchoolRelationsPanel should shrink below 280 lines; got ${lineCount(parent)}`);
 
 for (const [file, source] of [[parentFile, parent], [childFile, child]]) {
