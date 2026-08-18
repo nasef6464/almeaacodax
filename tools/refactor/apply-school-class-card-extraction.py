@@ -24,7 +24,7 @@ manager = replace_once(
 )
 
 handler_anchor = "        const downloadClassReport = (classroom: Group) => {\n"
-handlers = """        const openClassRenameModal = (classroom: Group) => {\n            setEditNameModalState({\n                isOpen: true,\n                title: 'أدخل اسم الفصل الجديد',\n                initialValue: classroom.name,\n                onSave: async (newName: string) => {\n                    if (!newName.trim() || newName.trim() === classroom.name) return;\n                    setSchoolActionPending(`rename-class-${classroom.id}`);\n                    setSaveVerificationState('saving');\n                    setSaveVerificationMessage('جاري حفظ اسم الفصل...');\n                    setManagementError(null);\n                    setManagementNotice(null);\n                    try {\n                        await updateGroupAsync(classroom.id, { name: newName.trim() });\n                        await refreshSchoolWorkspace(selectedSchool.id);\n                        setSaveVerificationState('success');\n                        setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');\n                        setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');\n                    } catch (error) {\n                        setSaveVerificationState('error');\n                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');\n                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');\n                        throw error;\n                    } finally {\n                        setSchoolActionPending(null);\n                    }\n                },\n            });\n        };\n\n        const handleDeleteClass = async (classroom: Group) => {\n            if (!window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) return;\n\n            setSchoolActionPending(`delete-class-${classroom.id}`);\n            setSaveVerificationState('saving');\n            setSaveVerificationMessage('جاري حذف الفصل...');\n            setManagementError(null);\n            setManagementNotice(null);\n            try {\n                await deleteGroupAsync(classroom.id);\n                await refreshSchoolWorkspace(selectedSchool.id);\n                setSaveVerificationState('success');\n                setSaveVerificationMessage('تم حذف الفصل والتأكد من الخادم.');\n                setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');\n            } catch (error) {\n                setSaveVerificationState('error');\n                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');\n                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');\n            } finally {\n                setSchoolActionPending(null);\n            }\n        };\n\n        const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {\n            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {\n                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);\n            }\n        };\n\n"""
+handlers = """        const openClassRenameModal = (classroom: Group) => {\n            setEditNameModalState({\n                isOpen: true,\n                title: 'أدخل اسم الفصل الجديد',\n                initialValue: classroom.name,\n                onSave: async (newName: string) => {\n                    if (!newName.trim() || newName.trim() === classroom.name) return;\n                    setSchoolActionPending(`rename-class-${classroom.id}`);\n                    setSaveVerificationState('saving');\n                    setSaveVerificationMessage('جاري حفظ اسم الفصل...');\n                    setManagementError(null);\n                    setManagementNotice(null);\n                    try {\n                        await updateGroupAsync(classroom.id, { name: newName.trim() });\n                        await refreshSchoolWorkspace(selectedSchool.id);\n                        setSaveVerificationState('success');\n                        setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');\n                        setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');\n                    } catch (error) {\n                        setSaveVerificationState('error');\n                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');\n                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');\n                        throw error;\n                    } finally {\n                        setSchoolActionPending(null);\n                    }\n                },\n            });\n        };\n\n        const handleDeleteClass = async (classroom: Group) => {\n            if (!window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) return;\n\n            setSchoolActionPending(`delete-class-${classroom.id}`);\n            setSaveVerificationState('saving');\n            setSaveVerificationMessage('جاري حذف الفصل...');\n            setManagementError(null);\n            setManagementNotice(null);\n            try {\n                await deleteGroupAsync(classroom.id);\n                await refreshSchoolWorkspace(selectedSchool.id);\n                setSaveVerificationState('success');\n                setSaveVerificationMessage('تم حذف الفصل والتأكد منه من الخادم.');\n                setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');\n            } catch (error) {\n                setSaveVerificationState('error');\n                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');\n                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');\n            } finally {\n                setSchoolActionPending(null);\n            }\n        };\n\n        const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {\n            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {\n                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);\n            }\n        };\n\n"""
 manager = replace_once(
     manager,
     handler_anchor,
@@ -46,15 +46,38 @@ replacement = """                                        {schoolClasses.map((cla
 manager = manager[:start] + replacement + manager[end:]
 MANAGER.write_text(manager, encoding="utf-8")
 
-for path in (SCHOOL_SMOKE, RELATIONSHIP_SMOKE):
-    source = path.read_text(encoding="utf-8")
-    anchor = '  await read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),\n' if path == SCHOOL_SMOKE else '    read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),\n'
-    addition = anchor + (
-        '  await read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),\n'
-        if path == SCHOOL_SMOKE
-        else '    read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),\n'
-    )
-    source = replace_once(source, anchor, addition, f"{path.name} class card ownership")
-    path.write_text(source, encoding="utf-8")
+school_smoke = SCHOOL_SMOKE.read_text(encoding="utf-8")
+school_anchor = '  await read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),\n'
+school_smoke = replace_once(
+    school_smoke,
+    school_anchor,
+    school_anchor + '  await read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),\n',
+    "school management class-card ownership",
+)
+school_smoke = replace_once(
+    school_smoke,
+    '  assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, classroom.id)");\n',
+    '  assertIncludes(files.schools, "onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}");\n'
+    '  assertIncludes(files.schools, "onAssignSupervisor(value).finally");\n',
+    "school management class supervisor wiring",
+)
+SCHOOL_SMOKE.write_text(school_smoke, encoding="utf-8")
+
+relationship_smoke = RELATIONSHIP_SMOKE.read_text(encoding="utf-8")
+relationship_anchor = '    read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),\n'
+relationship_smoke = replace_once(
+    relationship_smoke,
+    relationship_anchor,
+    relationship_anchor + '    read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),\n',
+    "relationship audit class-card ownership",
+)
+relationship_smoke = replace_once(
+    relationship_smoke,
+    '  assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, classroom.id)");\n',
+    '  assertIncludes(sources.schoolsManager, "onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}");\n'
+    '  assertIncludes(sources.schoolsManager, "onAssignSupervisor(value).finally");\n',
+    "relationship audit class supervisor wiring",
+)
+RELATIONSHIP_SMOKE.write_text(relationship_smoke, encoding="utf-8")
 
 print("School class operating-card presentation extraction applied safely.")
