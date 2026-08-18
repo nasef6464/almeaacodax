@@ -69,6 +69,7 @@ import {
 } from './SchoolsManager/exportHelpers';
 import {
     buildSchoolPortfolioRows,
+    filterSchoolPortfolioRows,
     getSchoolOperationalSnapshot as calculateSchoolOperationalSnapshot,
     getStudentsForSchool,
     summarizeSchoolPortfolio,
@@ -266,30 +267,13 @@ export const SchoolsManager: React.FC = () => {
         accessCodes,
     });
 
-    const filteredSchools = useMemo(() => {
-        const keyword = schoolSearch.trim().toLowerCase();
-        return schools.filter((school) => {
-            const matchesSearch = !keyword || school.name.toLowerCase().includes(keyword);
-            if (!matchesSearch) return false;
-
-            const snapshot = getOperationalSnapshotForSchool(school);
-            if (schoolListMode === 'all' || keyword) return true;
-            if (schoolListMode === 'ready') return snapshot.readinessScore === 5;
-            if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isCommerciallyHiddenDraft;
-            return !snapshot.isCommerciallyHiddenDraft;
-        });
-    }, [accessCodes, b2bPackages, classes, schoolListMode, schoolSearch, schools, students]);
-    const hiddenDraftSchoolsCount = useMemo(
-        () => schools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft).length,
-        [accessCodes, b2bPackages, classes, schools, students],
-    );
-    const visibleDraftSchoolsCount = useMemo(
-        () => filteredSchools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft).length,
-        [accessCodes, b2bPackages, classes, filteredSchools, students],
-    );
     const schoolPortfolioRows = useMemo(
         () => buildSchoolPortfolioRows(schools, { classes, students, b2bPackages, accessCodes }),
         [accessCodes, b2bPackages, classes, schools, students],
+    );
+    const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo(
+        () => filterSchoolPortfolioRows(schoolPortfolioRows, schoolSearch, schoolListMode),
+        [schoolListMode, schoolPortfolioRows, schoolSearch],
     );
     const schoolPortfolioSummary = useMemo(
         () => summarizeSchoolPortfolio(schoolPortfolioRows),
