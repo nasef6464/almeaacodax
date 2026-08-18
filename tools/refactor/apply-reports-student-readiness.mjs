@@ -55,7 +55,7 @@ reports = replaceOnce(
 reports = replaceOnce(
   reports,
   'const Reports: React.FC = () => {',
-  "const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = {\n    target: Target,\n    checkCircle: CheckCircle,\n    fileText: FileText,\n    bookOpen: BookOpen,\n};\n\nconst Reports: React.FC = () => {",
+  "const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };\n\nconst Reports: React.FC = () => {",
   'Reports component declaration',
 );
 
