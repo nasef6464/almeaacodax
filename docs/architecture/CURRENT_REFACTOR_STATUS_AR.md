@@ -97,3 +97,11 @@
 - course/class mutations بقيت في `SchoolsManager.tsx` وتصل للـchildren عبر callbacks صريحة.
 - Full Workspace Sections Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Schools Overview Operators Presentation
+
+- تم فصل بطاقة إضافة الطالب المنفرد إلى `SchoolSingleStudentPanel.tsx`.
+- تم فصل عرض مدير/مشرف المدرسة ونطاقاته إلى `SchoolWideSupervisorsPanel.tsx`.
+- إنشاء الطالب وربط/إزالة المشرف وتأكيد الإزالة بقيت في `SchoolsManager.tsx`؛ المكونات الجديدة تستقبل callbacks صريحة فقط.
+- Full Overview Operators Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.

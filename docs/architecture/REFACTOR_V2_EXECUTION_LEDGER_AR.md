@@ -192,3 +192,11 @@
 - فصل school courses presentation وclasses shell عن `SchoolsManager.tsx`.
 - mutations بقيت في orchestration layer؛ child components لا تستورد store/API.
 - تم تحديث source-text contracts لتتبع ownership الجديد بدل الاعتماد على موقع النص القديم.
+
+## دفعة Schools Overview Operators Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- تم إخراج single-student presentation وschool-wide supervisor scope presentation من `SchoolsManager.tsx`.
+- API/store mutations والتأكيدات بقيت في orchestration layer، ولم تنتقل إلى child components.
+- تم تحديث عقود school management وrelationship audit لتتبع ownership الجديد عبر الملفات الجديدة.
