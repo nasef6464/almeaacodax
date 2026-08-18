@@ -3208,6 +3208,9 @@ const Reports: React.FC = () => {
                                 ? `نركز الآن على: ${studentTrackLabel}.`
                                 : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
                         </p>
+                        <p className="mt-1 text-xs font-bold leading-5 text-gray-500">
+                            القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
+                        </p>
                         {studentReportPathOptions.length > 0 ? (
                             <select
                                 value={selectedStudentPathId}

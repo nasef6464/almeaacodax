@@ -683,6 +683,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
         editingQuiz={resolvedEditingQuiz}
         defaultKind={draftMode === 'saher' || draftMode === 'central' ? 'test' : undefined}
+        initialPathId={selectedPathId || activePathId}
+        initialSubjectId={selectedSubjectId || activeSubjectId}
+        initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
+        initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
+        initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
+        initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}
         onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
         onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
       />
@@ -697,7 +703,13 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
           allowedGroupIds={undefined}
           allowedPathIds={user.role === 'teacher' ? (user.managedPathIds?.length ? user.managedPathIds : undefined) : undefined}
-          defaultKind={isSupervisor ? 'test' : 'test'}
+          defaultKind="test"
+          initialPathId={selectedPathId || activePathId}
+          initialSubjectId={selectedSubjectId || activeSubjectId}
+          initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
+          initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
+          initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
+          initialMode={openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}
           onClose={() => setIsUnifiedBuilderOpen(false)}
         />
       )}
