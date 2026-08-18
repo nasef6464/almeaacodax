@@ -10,6 +10,8 @@ const files = {
   await read("dashboards/admin/SchoolsManager.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/readinessViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx"),
   await read("dashboards/admin/SchoolsManager/relationshipViewModel.ts"),
   await read("dashboards/admin/SchoolsManager/workspaceViewModel.ts"),
   await read("dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx"),
@@ -93,7 +95,7 @@ check("school list cards expose next readiness action", () => {
   assertIncludes(files.schools, "cardReadinessActions");
   assertIncludes(files.schools, "nextCardAction");
   assertIncludes(files.schools, "الخطوة التالية");
-  assertIncludes(files.schools, "setActiveTab(action.tab)");
+  assertIncludes(files.schools, "onOpenTab(action.tab)");
 });
 
 check("school management can copy handover message", () => {
