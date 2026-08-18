@@ -113,6 +113,9 @@ jobs:
       - name: School package card presentation boundary contract
         run: node scripts/smoke-schools-package-card-boundary-contract.mjs
 
+      - name: School access codes presentation boundary contract
+        run: node scripts/smoke-schools-access-codes-boundary-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 
