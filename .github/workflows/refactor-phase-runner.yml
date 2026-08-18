@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  run-schools-workspace-decision-phase:
+  run-schools-roster-phase:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -27,8 +27,8 @@ jobs:
             package-lock.json
             server/package-lock.json
 
-      - name: Apply workspace decision and handover extraction
-        run: python tools/refactor/apply-schools-workspace-viewmodel.py
+      - name: Apply roster filter and pagination extraction
+        run: python tools/refactor/apply-schools-roster-viewmodel.py
 
       - name: Install frontend dependencies
         run: npm ci
@@ -36,8 +36,8 @@ jobs:
       - name: Install API dependencies
         run: npm --prefix server ci
 
-      - name: Direct workspace decision contract
-        run: node scripts/smoke-schools-workspace-viewmodel-contract.mjs
+      - name: Direct roster view-model contract
+        run: node scripts/smoke-schools-roster-viewmodel-contract.mjs
 
       - name: Fast targeted schools gate
         run: node tools/refactor/quick-check.mjs schools
@@ -54,23 +54,23 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
-          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
-          ledger = ledger_path.read_text(encoding='utf-8')
-          ledger = ledger.replace(
-              '**الحالة: تم تطبيق الاستخراج وتنتظر Full Phase Review.**',
-              '**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate القياسي على commit الناتج.**',
+          checkpoint_path = Path('docs/architecture/REFACTOR_V2_LATEST_CHECKPOINT_AR.md')
+          checkpoint = checkpoint_path.read_text(encoding='utf-8')
+          checkpoint = checkpoint.replace(
+              '## Roster/filter/pagination extraction — قيد التحقق',
+              '## Roster/filter/pagination extraction — Full Phase Review PASS',
               1,
           )
-          if 'Schools decision/handover workspace Full Phase Review' not in ledger:
-              ledger += '\n- Schools decision/handover workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.\n'
-          ledger_path.write_text(ledger, encoding='utf-8')
+          if 'Roster Full Phase Review: **PASS**' not in checkpoint:
+              checkpoint += '\n- Roster Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.\n'
+          checkpoint_path.write_text(checkpoint, encoding='utf-8')
           PY
 
-          git rm -f tools/refactor/apply-schools-workspace-viewmodel.py
+          git rm -f tools/refactor/apply-schools-roster-viewmodel.py
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract workspace decision view model"
+          git commit -m "refactor(schools): extract roster view model"
           git push origin HEAD:refactor/repository-v2-safe
