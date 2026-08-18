@@ -16,6 +16,7 @@ const profiles = {
     ['school relationship workspace contract', 'node', ['scripts/smoke-schools-relationship-viewmodel-contract.mjs']],
     ['school decision/handover workspace contract', 'node', ['scripts/smoke-schools-workspace-viewmodel-contract.mjs']],
     ['school roster filter/pagination contract', 'node', ['scripts/smoke-schools-roster-viewmodel-contract.mjs']],
+    ['school package access view-model contract', 'node', ['scripts/smoke-schools-package-access-viewmodel-contract.mjs']],
     ['school XLSX safety contract', 'npm', ['run', 'smoke:xlsx-safety']],
     ['frontend performance contract', 'npm', ['run', 'smoke:performance']],
     ...sharedArchitectureChecks,
