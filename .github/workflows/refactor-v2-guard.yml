@@ -36,7 +36,7 @@ on:
       - '.github/workflows/refactor-v2-guard.yml'
 
 permissions:
-  contents: write
+  contents: read
   statuses: read
 
 concurrency:
@@ -217,32 +217,67 @@ jobs:
         run: npm run smoke:api-security
 
       - name: Apply scoped skill report extraction
-        if: github.actor != 'github-actions[bot]'
         run: node tools/refactor/apply-reports-scoped-skill-report.mjs
 
-      - name: Run scoped skill report phase review
-        if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/phase-review-reports-scoped-skill-report.mjs
+      - name: Post-extraction whitespace validation
+        run: git diff --check
 
-      - name: Commit verified scoped skill report extraction
-        if: github.actor != 'github-actions[bot]'
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "almeaa-refactor-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add \
-            pages/Reports.tsx \
-            scripts/smoke-reports-role-contract.mjs \
-            scripts/smoke-global-student-journey-contract.mjs
+      - name: Post-extraction frontend typecheck
+        run: npm run typecheck
 
-          if git diff --cached --quiet; then
-            echo "No scoped skill report changes to commit."
-            exit 0
-          fi
+      - name: Post-extraction API typecheck
+        run: npm run server:check
 
-          git commit -m "refactor(reports): extract scoped skill report view model"
-          git push origin HEAD:refactor/repository-v2-safe
+      - name: Post-extraction frontend production build
+        run: npm run build
+
+      - name: Post-extraction API production build
+        run: npm run server:build
+
+      - name: Post-extraction scoped skill report boundary
+        run: node scripts/smoke-reports-scoped-skill-report-boundary-contract.mjs
+
+      - name: Post-extraction scoped student focus boundary
+        run: node scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs
+
+      - name: Post-extraction institutional boundary
+        run: node scripts/smoke-reports-institutional-boundary-contract.mjs
+
+      - name: Post-extraction directed quiz analytics boundary
+        run: node scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs
+
+      - name: Post-extraction scoped comparison boundary
+        run: node scripts/smoke-reports-scoped-comparison-boundary-contract.mjs
+
+      - name: Post-extraction scoped analytics boundary
+        run: node scripts/smoke-reports-scoped-analytics-boundary-contract.mjs
+
+      - name: Post-extraction student analytics boundary
+        run: node scripts/smoke-reports-student-analytics-boundary-contract.mjs
+
+      - name: Post-extraction recommendation boundary
+        run: node scripts/smoke-reports-recommendation-boundary-contract.mjs
+
+      - name: Post-extraction domain boundary
+        run: node scripts/smoke-reports-domain-boundary-contract.mjs
+
+      - name: Post-extraction Reports role contract
+        run: npm run smoke:reports-role
+
+      - name: Post-extraction global student journey
+        run: npm run smoke:global-student-journey
+
+      - name: Post-extraction student learning journey
+        run: npm run smoke:student-learning-journey
+
+      - name: Post-extraction frontend performance contract
+        run: npm run smoke:performance
+
+      - name: Post-extraction route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Post-extraction runtime source contract
+        run: npm run smoke:runtime-source
 
   preview-deployment-gate:
     name: Vercel preview deployment gate
