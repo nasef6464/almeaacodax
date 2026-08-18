@@ -43,6 +43,7 @@ import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './R
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
 import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
+import { buildScopedRemediationFallback } from './Reports/scopedRemediationFallbackViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -377,17 +378,7 @@ const Reports: React.FC = () => {
             });
             setScopedSmartRemediation(response);
         } catch {
-            setScopedSmartRemediation({
-                title: 'خطة تدخل للنطاق الحالي',
-                summary: 'ابدأ بالمهارة الأكثر ضعفًا، وجه شرحًا قصيرًا، ثم اختبار متابعة لقياس التحسن.',
-                steps: skillPayload.slice(0, 3).map((skill, index) => ({
-                    day: `خطوة ${index + 1}`,
-                    skill: displayText(skill.skill),
-                    action: index === 0 ? 'أنشئ شرحًا أو حصة قصيرة لهذه المهارة.' : 'وجّه تدريبًا علاجيًا للطلاب المتأثرين.',
-                    check: 'أعد القياس باختبار قصير موجه لنفس المهارة.',
-                })),
-                parentNote: 'تابع الطلاب الضعاف بهدوء، واجعل التغذية الراجعة قصيرة وواضحة بعد كل محاولة.',
-            });
+            setScopedSmartRemediation(buildScopedRemediationFallback(skillPayload));
         }
 
         const leadStudent = scopedAnalytics.weakestStudents[0];
