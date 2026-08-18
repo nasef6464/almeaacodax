@@ -53,37 +53,59 @@
 4. Phase review شامل -> `tools/refactor/phase-review-schools-import.mjs`.
 5. إضافة parser/performance checks إلى `Refactor V2 Safety Gate` كحماية دائمة.
 
-## أخطاء اكتُشفت وأُصلحت أثناء المرحلة
+## أخطاء اكتُشفت وأُصلحت أثناء مرحلة الاستيراد
 
 - كشف الفحص الشامل تراجعًا وظيفيًا في تدفق `Reports -> QuizzesManager -> UnifiedQuizBuilder`: سياق المهارة/الطالب/المجموعة كان يظهر للمستخدم لكنه لا ينتقل إلى payload الحفظ في الـbuilder الموحد. تم إصلاحه بتمرير defaults صريحة وحفظ `mode/skillIds/targetUserIds/targetGroupIds` مع الحفاظ على editing values عند تعديل اختبار موجود.
 - كشف `smoke:performance` أن `studentEvidenceSummary` في `pages/Reports.tsx` كان يُحسب دون عرضه. تم إصلاح السلوك بإعادة عرض حجم الدليل بدل إضعاف الاختبار.
 - بعض عقود الأداء كانت مربوطة بالشكل القديم للملفات بعد فصل bootstrap الخاص بالـAPI. تم تعديل العقود لتتحقق من السلوك الفعلي: DB connect قبل التشغيل، و`server.listen` قبل startup maintenance غير الحاجبة، مع بقاء ترتيب taxonomy ثم admin.
 - عقد `DATA_BOOTSTRAP_BLOCKING_PREFIXES` كان يفحص substring على `App.tsx` كله، فأعطى failure كاذبًا بسبب قائمة أخرى. تم تضييقه إلى القائمة المقصودة فقط بدون تغيير منطق التطبيق.
-- GitHub Actions استطاع إنشاء commit المرحلة بعد الفحص لكنه مُنع من تحديث workflow file لعدم امتلاك token المؤقت صلاحية workflows. لم يتم تجاوز الحماية؛ تم تحريك safe branch إلى **نفس commit المفحوص** عبر GitHub Connector المصرح له، ثم شُغّل Safety Gate القياسي ونجح.
 
-## المرحلة الحالية — Schools Readiness & View-Model Decomposition
+## المرحلة المغلقة ✅ — Schools Readiness & View-Model Decomposition
 
-**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate القياسي على commit الناتج.**
+**الحالة: مغلقة بنجاح.**
 
-الهدف: إخراج الحسابات والـview-models النقية من `SchoolsManager.tsx` قبل لمس الـUI الكبير، خصوصًا:
+- Direct readiness logic contract: **PASS**.
+- Quick Gate المخصص للمدارس: **PASS**.
+- Full Schools Readiness Phase Review: **PASS**.
+- Refactor V2 Safety Gate run `#121`: **PASS** على commit `85c7dcaf3ec98e51516dcee89b0c40c2a935b76a`.
+- تم جعل اختبار readiness الجديد جزءًا دائمًا من Safety Gate، وليس اختبارًا مؤقتًا للمرحلة فقط.
+- frontend + API typecheck/build: **PASS**.
+- architecture + module boundaries + performance + routes + runtime + quiz integrity + auth/API security: **PASS**.
 
-1. تحديد طلاب المدرسة من school/class relationships.
-2. operational snapshot وreadiness score وحالة draft/demo.
-3. portfolio/readiness rows وnext-action derivation.
-4. إبقاء React component مسؤولًا عن orchestration/state فقط بدل احتواء حسابات الأعمال والعرض معًا.
-5. بعد تثبيت هذه الحدود: تقسيم أقسام UI الكبيرة ثم مراجعة `SchoolPackagesPanel` و`SchoolRelationsPanel`.
+### ما تم فصله
 
-### شروط قبول المرحلة الحالية
+1. `getStudentsForSchool` أصبح pure selector داخل `dashboards/admin/SchoolsManager/readinessViewModel.ts` ويغطي علاقات `schoolId`, school/class `studentIds`, و`groupIds`.
+2. operational snapshot وreadiness score وdraft/demo hiding خرجت من React component إلى نفس الـview-model.
+3. readiness checks وnext action وportfolio rows وportfolio summary أصبحت pure functions قابلة للاختبار المباشر.
+4. `SchoolsManager.tsx` أصبح يستدعي هذه الحسابات عبر dependencies صريحة بدل امتلاك منطق الأعمال داخل component.
+5. تمت إضافة `scripts/smoke-schools-readiness-viewmodel-contract.mjs` ويغطي 4 مسارات لعلاقة الطالب و5 أبعاد readiness وحالات demo/draft والـpackage/code expiry والـportfolio priority.
+6. تمت إضافة `tools/refactor/quick-check.mjs` لتقليل زمن دورة العمل مع الإبقاء على Full Gate عند إغلاق المرحلة.
 
-- عدم تغيير معنى readiness أو الطلاب المحسوبين أو حالات المدارس المخفية/الجاهزة.
-- pure helpers تقبل dependencies صراحة ولا تعتمد على React state مخفي.
-- إضافة direct logic tests لحالات: مدرسة بلا فصول، طلاب عبر schoolId، طلاب عبر studentIds، طلاب عبر class membership، package/code readiness، demo/draft detection.
-- عدم زيادة hotspots أو cycles أو unresolved imports.
-- targeted quick checks بعد كل تعديل صغير، ثم full phase review قبل الإغلاق.
+### خطأ تم اكتشافه أثناء الاستخراج
+
+- أول Quick Gate كشف وجود call sites إضافية لـ`getStudentsForSchool` داخل selected-school workspace وبطاقات المدارس. لم يتم تجاوز الفشل؛ تم إصلاح جميع المواقع وتمرير `students` صراحة إلى pure selector ثم إعادة Quick + Full Gate حتى النجاح.
+
+## المرحلة الحالية — Schools Workspace & Presentation Decomposition
+
+**الحالة: بدأ التحضير والفحص.**
+
+الهدف التالي هو تقليل مسؤوليات `SchoolsManager.tsx` من جهة العرض والـworkspace بدون تغيير أي action أو API call أو صلاحية. الأولوية:
+
+1. استخراج view-models الخاصة بالمدرسة المحددة: الطلاب، المشرفون، أولياء الأمور، الفصول، gaps، seats/codes/package summaries.
+2. فصل أقسام العرض الكبيرة إلى components محددة المدخلات بدل تمرير store كامل أو استيراد parent component.
+3. تقليل re-computation داخل render عبر pure selectors/memos واضحة وقابلة للاختبار.
+4. الحفاظ على كل إجراءات الإضافة/الربط/الاستيراد/الحذف/التحقق كما هي، ثم نقل orchestration لاحقًا بعد تثبيت حدود العرض.
+5. بعد استقرار workspace: مراجعة وتقسيم `SchoolPackagesPanel.tsx` و`SchoolRelationsPanel.tsx`، ثم إنهاء hotspot المدارس والانتقال إلى `pages/Reports.tsx`.
+
+### شروط القبول
+
+- لا تغيير في أسماء الأزرار/التبويبات/التدفقات أو API methods كجزء من الفصل البنيوي.
+- عدم تغيير معنى الطلاب/المشرفين/الأهل المحسوبين أو readiness/gaps/seats/codes.
+- direct logic tests لأي selector/view-model جديد.
+- Quick Gate بعد كل دفعة صغيرة.
+- Full Phase Review + Safety Gate أخضر قبل إعلان إغلاق المرحلة.
 
 ## نظام الفحص من مستويين
-
-لتقليل زمن الانتظار بدون تقليل الأمان:
 
 ### Quick Gate بعد التعديلات الصغيرة
 
@@ -122,7 +144,3 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا السجل -> آخر Safety Gate.
 
 ثم يغيّر concern واحدًا فقط في كل دفعة صغيرة، يستخدم Quick Gate أثناء العمل، ويستخدم Full Gate فقط عند إغلاق المرحلة.
-
-- كشف Quick Gate بعد استخراج readiness وجود call sites إضافية لاحتساب طلاب المدرسة داخل workspace/cards. تم إبقاؤها على نفس المنطق وتمرير `students` صراحة إلى الـpure selector بدل إعادة منطق مكرر داخل component.
-
-- Schools readiness Full Phase Review: **PASS** قبل إنشاء commit المرحلة.
