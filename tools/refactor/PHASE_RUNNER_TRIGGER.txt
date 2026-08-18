@@ -1,0 +1,1 @@
+Temporary trigger for the SchoolPackagesPanel package/access view-model verification run. This branch/PR must never be merged into main.
