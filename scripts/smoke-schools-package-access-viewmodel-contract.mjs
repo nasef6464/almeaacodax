@@ -6,6 +6,8 @@ import ts from 'typescript';
 
 const root = process.cwd();
 const source = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/packageAccessViewModel.ts'), 'utf8');
+const panelSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'), 'utf8');
+const lineCount = (text) => text.split(/\r?\n/).length;
 
 assert.ok(source.includes('buildSchoolPackageAccessViewModel'), 'package access builder must be exported');
 assert.ok(source.includes('new Map(publishedCourses.map'), 'course lookups must be indexed');
@@ -14,7 +16,18 @@ assert.ok(source.includes('new Map(subjects.map'), 'subject lookups must be inde
 assert.ok(source.includes('new Map(teachers.map'), 'teacher lookups must be indexed');
 assert.ok(!source.includes('useMemo(') && !source.includes('useState('), 'package access view model must stay React-independent');
 assert.ok(!source.includes("from '../../../services/api'"), 'package access view model must stay API-independent');
-assert.ok(source.split(/\r?\n/).length <= 170, 'package access view model must stay <= 170 lines');
+assert.ok(lineCount(source) <= 170, 'package access view model must stay <= 170 lines');
+assert.ok(panelSource.includes("from './packageAccessViewModel';"), 'SchoolPackagesPanel must delegate package access projection');
+assert.ok(panelSource.includes('buildSchoolPackageAccessViewModel({'), 'SchoolPackagesPanel must call the extracted package access view model');
+assert.ok(panelSource.includes('packageAccessRowsById.get(pkg.id)'), 'package cards must use indexed presentation rows');
+for (const staleScan of [
+  'const packageCourses = publishedCourses.filter',
+  'const packagePaths = paths.filter',
+  'const packageSubjects = subjects.filter',
+  'const packageTeacher = teachers.find',
+]) {
+  assert.ok(!panelSource.includes(staleScan), `per-package collection scan must not return: ${staleScan}`);
+}
 
 const transpiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 },
