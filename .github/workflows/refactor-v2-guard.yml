@@ -90,6 +90,9 @@ jobs:
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
 
+      - name: Content learning schema boundary contract
+        run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
+
       - name: School management contract
         run: node scripts/smoke-school-management-contract.mjs
 
@@ -222,15 +225,15 @@ jobs:
       - name: Refactor workflow race-safety contract
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
-      - name: Apply scoped skill report extraction
+      - name: Apply current refactor phase — content learning schemas
         if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/apply-reports-scoped-skill-report.mjs
+        run: node tools/refactor/apply-content-learning-schemas.mjs
 
-      - name: Run scoped skill report phase review
+      - name: Run current refactor phase review
         if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/phase-review-reports-scoped-skill-report.mjs
+        run: node tools/refactor/phase-review-content-learning-schemas.mjs
 
-      - name: Commit verified scoped skill report extraction
+      - name: Commit verified current refactor phase
         if: github.actor != 'github-actions[bot]'
         shell: bash
         run: |
@@ -238,13 +241,10 @@ jobs:
           EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add \
-            pages/Reports.tsx \
-            scripts/smoke-reports-role-contract.mjs \
-            scripts/smoke-global-student-journey-contract.mjs
+          git add server/src/routes/content.routes.ts
 
           if git diff --cached --quiet; then
-            echo "No scoped skill report changes to commit."
+            echo "No verified current refactor changes to commit."
             exit 0
           fi
 
@@ -255,7 +255,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "refactor(reports): extract scoped skill report view model"
+          git commit -m "refactor(content): extract learning content schemas"
           if git push origin HEAD:refactor/repository-v2-safe; then
             echo "Verified refactor changes pushed successfully."
             exit 0
