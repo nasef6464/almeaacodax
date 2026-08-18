@@ -121,3 +121,10 @@
 - لم تنتقل أي API/store mutation أو منطق إنتاجي إلى مكوّن العرض الجديد.
 - Full Command Center Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Schools Portfolio Filter Presentation
+
+- تم فصل البحث، فلترة أولوية المدارس، ووضع مراجعة/تنظيف المسودات إلى `SchoolPortfolioFilterPanel.tsx`.
+- اشتقاق `filteredSchools` وحساب جاهزية/إخفاء المسودات بقي في `SchoolsManager.tsx`؛ المكوّن الجديد عرضي فقط ويستقبل القيم وcallbacks.
+- Full Portfolio Filter Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.

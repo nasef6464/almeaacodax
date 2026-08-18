@@ -216,3 +216,10 @@
 - تم إخراج command-center/readiness/delivery/primary-actions presentation من `SchoolsManager.tsx`.
 - orchestration بقي في parent والـchild presentation-only.
 - عقود المدرسة والـrelationship audit تقرأ ownership الجديد دون تغيير السلوك أو العقود التشغيلية.
+
+## دفعة Schools Portfolio Filter Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- فصل school portfolio search/filter/cleanup presentation عن `SchoolsManager.tsx`.
+- filtering/readiness derivation بقي في orchestration layer ولم تنتقل store/API mutations إلى child.
