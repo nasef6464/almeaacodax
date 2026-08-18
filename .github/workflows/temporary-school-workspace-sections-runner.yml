@@ -81,6 +81,7 @@ jobs:
             scripts/smoke-school-management-contract.mjs \
             scripts/smoke-batch100f-relationship-audit-contract.mjs \
             scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs \
+            scripts/smoke-schools-class-card-boundary-contract.mjs \
             scripts/smoke-schools-workspace-sections-boundary-contract.mjs \
             tools/refactor/phase-review-school-workspace-sections.mjs \
             docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
