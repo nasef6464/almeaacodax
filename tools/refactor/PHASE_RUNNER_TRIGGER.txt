@@ -1,1 +1,2 @@
 Temporary trigger for the Schools Readiness & View-Model decomposition verification run. This branch/PR must never be merged into main.
+Rerun after preserving all extracted school roster selector call sites.
