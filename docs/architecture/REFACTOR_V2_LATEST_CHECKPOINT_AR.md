@@ -4,49 +4,45 @@
 
 ## آخر مرحلة مغلقة
 
-**Schools Workspace — Decision / Handover View-Model: مغلقة بنجاح.**
+**Schools Workspace — Roster / Filter / Pagination View-Model: مغلقة بنجاح.**
 
 - الفرع: `refactor/repository-v2-safe`.
 - لا يوجد أي دمج إلى `main` ولا نشر Production ضمن هذه المرحلة.
-- تم استخراج منطق readiness/operating decisions/handover من `SchoolsManager.tsx` إلى `dashboards/admin/SchoolsManager/workspaceViewModel.ts`.
-- `SchoolsManager.tsx` أصبح قرابة `4307` أسطر أثناء اختبار المرحلة، بعد أن كان يتجاوز 5200 سطر في بداية العمل.
-- Direct workspace logic/performance contract: PASS، و10,000 عملية حساب في عشرات المللي ثانية داخل CI.
+- تم نقل بحث وفلترة وتقسيم صفحات طلاب المدرسة من `SchoolsManager.tsx` إلى `dashboards/admin/SchoolsManager/rosterViewModel.ts`.
+- تم الحفاظ على سلوك `all`, `unassigned`, class filter, البحث بالاسم/البريد، page clamping، وحجم الصفحة.
+- مسار `unassigned` أصبح يستخدم `Set` لمعرفات فصول المدرسة بدل فحص كل فصل لكل طالب، لتجنب نمط O(students × classes) في هذا الجزء.
+- اختبار ضغط مباشر: `20,000` طالب + `400` فصل: **PASS** في قرابة `3.36 ms` داخل Standard Safety Gate.
+- `SchoolsManager.tsx`: `4308` أسطر في الفحص القياسي، مع budget يمنع رجوعه فوق `4350` في عقد roster/workspace الحالي.
+- Direct roster contract: PASS.
 - Quick Gate: PASS.
 - Full Schools Workspace Phase Review: PASS.
-- Refactor V2 Safety Gate run `#163`: PASS على commit `ed2d0dddfa16e9412cda6b8ca2bf90ab9c254825`.
-- Architecture contract ما زال يحافظ على `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime relative imports، و`0` dependency cycles.
-- School management contract: `22/22 PASS`.
+- Refactor V2 Safety Gate run `#183`: **PASS** على commit `320f70597c88a4d9c1361277774c12fdc477803f`.
+- Architecture contract: `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime relative imports، `0` dependency cycles.
+- School management: `22/22 PASS`.
 - XLSX safety: `18/18 PASS`.
-- typecheck/build للواجهة والـAPI، performance، relationships، route loading، runtime source، quiz integrity، auth security وAPI security: PASS.
+- School relationship deep audit: `10/10 PASS`, `0 warnings`.
+- Frontend/API typecheck + production builds + performance + package revenue + route loading + runtime source + quiz integrity + auth/API security: PASS.
 
-## أخطاء/اختبارات تم تصحيحها أثناء المرحلة
+## ملاحظات جودة حالية
 
-1. عقد school-management الخاص بتفعيل الطالب بكود المدرسة كان مربوطًا بتنفيذ backend قديم. تمت مراجعة `auth.routes.ts` والتأكد من أن السلوك الحالي ما زال يحفظ `schoolId` و`groupIds` للمستخدم، يضيفه إلى `Group.studentIds` ويزامن `totalStudents`؛ تم تحديث العقد ليتحقق من السلوك الحالي بدل النص القديم.
-2. عقد Batch 136 كان يبحث عن نص `ربط المشرفين` داخل God Component فقط. بعد استخراج القرار إلى feature-owned view model، تم تعديل العقد ليتتبع المصدر الجديد بدل إجبار النص على العودة إلى `SchoolsManager.tsx`.
-3. تمت إضافة budget دائم يمنع رجوع `SchoolsManager.tsx` فوق `4350` سطرًا في عقد workspace الحالي.
+- ما زال `SchoolsManager` كبيرًا؛ هدف المرحلة الحالية هو إخراج الحسابات والـview-models والمسؤوليات تدريجيًا قبل تقسيم JSX الكبير، وليس عمل Big Bang rewrite.
+- بناء الواجهة ما زال ينتج `SchoolsManager` chunk كبيرًا (قرابة `205 KB` قبل gzip في آخر فحص)، لذلك فصل presentation/lazy boundaries سيكون له أولوية بعد تثبيت منطق المدارس.
+- `npm audit` ما زال يبلغ عن dependencies تحتاج مسار ترقية أمني مستقل؛ لا يتم استخدام `--force` داخل structural refactor.
 
 ## المرحلة التالية
 
-**Schools Workspace & Presentation — roster/filter/pagination + UI section boundaries.**
+**Schools Workspace & Presentation — Package/Access summary ثم UI boundaries.**
 
 الترتيب:
 
-1. فصل pure view-model الخاص ببحث/فلترة/صفحات roster الطلاب من `SchoolsManager.tsx` مع direct tests لحالات `all`, `unassigned`, class filter, search, page clamping.
-2. فحص أي O(n²) واضح في علاقات الطلاب/الفصول وتحويل lookups المتكررة إلى Sets/Maps داخل pure calculation إن أمكن بدون تغيير النتائج.
-3. بعدها فصل أكبر أقسام presentation إلى components محددة props، مع منع child-to-parent imports.
-4. مراجعة `SchoolPackagesPanel.tsx` و`SchoolRelationsPanel.tsx` وتقليل coupling.
-5. عند استقرار hotspot المدارس، الانتقال إلى `pages/Reports.tsx` ثم backend hotspots `content.routes.ts` و`quiz.routes.ts`.
+1. فصل الحسابات النقية في `SchoolPackagesPanel` مثل حالة الوصول، seat utilization، package/path/subject/teacher lookups إلى view-model صغير واختباره مباشرة.
+2. مراجعة loops/lookups داخل package cards وتحويل lookups المتكررة إلى Maps/Sets عندما تكون النتائج متطابقة.
+3. تقسيم `SchoolPackagesPanel` إلى وحدات presentation أصغر ذات props واضحة إذا ظل حجمه أعلى من الحد المقبول.
+4. نفس المراجعة لـ`SchoolRelationsPanel` مع منع child-to-parent imports.
+5. بعد استقرار مدارس B2B، الانتقال إلى `pages/Reports.tsx`، ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts`.
 
 ## بروتوكول كل دفعة
 
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
-
-## Roster/filter/pagination extraction — Full Phase Review PASS
-
-- تم نقل بحث/فلترة/pagination طلاب المدرسة إلى `SchoolsManager/rosterViewModel.ts`.
-- unassigned filtering يستخدم Set لمعرفات الفصول بدل `schoolClasses.some` داخل كل طالب، مع الحفاظ على نفس النتيجة.
-- لا تعتبر الدفعة مغلقة إلا بعد direct contract + Quick Gate + Full Review + Standard Safety Gate.
-
-- Roster Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
