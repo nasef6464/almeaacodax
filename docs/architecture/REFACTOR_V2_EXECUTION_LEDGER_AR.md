@@ -87,7 +87,7 @@
 
 ## المرحلة الحالية — Schools Workspace & Presentation Decomposition
 
-**الحالة: بدأ التحضير والفحص.**
+**الحالة: أول دفعة Workspace Full Phase Review PASS؛ تنتظر Safety Gate القياسي.**
 
 الهدف التالي هو تقليل مسؤوليات `SchoolsManager.tsx` من جهة العرض والـworkspace بدون تغيير أي action أو API call أو صلاحية. الأولوية:
 
@@ -144,3 +144,5 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا السجل -> آخر Safety Gate.
 
 ثم يغيّر concern واحدًا فقط في كل دفعة صغيرة، يستخدم Quick Gate أثناء العمل، ويستخدم Full Gate فقط عند إغلاق المرحلة.
+
+- Schools relationship workspace Full Phase Review: **PASS** قبل إنشاء commit الدفعة.

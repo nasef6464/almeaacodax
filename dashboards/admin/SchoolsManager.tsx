@@ -65,6 +65,7 @@ import {
     getStudentsForSchool,
     summarizeSchoolPortfolio,
 } from './SchoolsManager/readinessViewModel';
+import { buildSchoolRelationshipViewModel } from './SchoolsManager/relationshipViewModel';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -907,75 +908,22 @@ export const SchoolsManager: React.FC = () => {
         const schoolCodes = accessCodes.filter((code) => code.schoolId === selectedSchool.id);
         const schoolClasses = classes.filter((group) => group.parentId === selectedSchool.id);
         const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses, students);
-        const schoolGroupIds = new Set([selectedSchool.id, ...schoolClasses.map((classroom) => classroom.id)]);
-        const schoolSupervisors = supervisors.filter((currentUser) => (
-            selectedSchool.supervisorIds.includes(currentUser.id)
-            || schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
-            || (currentUser.groupIds || []).some((groupId) => schoolGroupIds.has(groupId))
-        ));
-        const schoolLevelSupervisors = schoolSupervisors.filter((currentUser) => (
-            selectedSchool.supervisorIds.includes(currentUser.id)
-            || (currentUser.groupIds || []).includes(selectedSchool.id)
-        ));
-        const classScopedSupervisors = schoolSupervisors.filter((currentUser) => (
-            !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id)
-            && (
-                schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
-                || (currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
-            )
-        ));
-        const supervisorScopeRows = schoolSupervisors.map((currentUser) => {
-            const schoolScope = selectedSchool.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(selectedSchool.id);
-            const scopedClassNames = schoolClasses
-                .filter((classroom) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id))
-                .map((classroom) => classroom.name);
-
-            return {
-                user: currentUser,
-                scopeLabel: schoolScope ? 'مدير/مشرف المدرسة كاملة' : 'مشرف فصول محددة',
-                scopeDetails: schoolScope ? selectedSchool.name : scopedClassNames.join('، ') || 'بدون نطاق واضح',
-                isSchoolWide: schoolScope,
-            };
-        });
-        const schoolParentUsers = parents.filter((currentUser) => (
-            (currentUser.linkedStudentIds || []).some((studentId) => schoolStudents.some((student) => student.id === studentId))
-        ));
-        const studentsWithoutParent = schoolStudents.filter((student) => (
-            !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
-        ));
-        const studentsWithoutClass = schoolStudents.filter((student) => (
-            !(student.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
-        ));
-        const supervisorsWithoutClass = schoolSupervisors.filter((currentUser) => (
-            !(currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
-            && !schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
-        ));
-        const classOperatingRows = schoolClasses.map((classroom) => {
-            const classStudents = schoolStudents.filter((student) => (
-                classroom.studentIds.includes(student.id)
-                || (student.groupIds || []).includes(classroom.id)
-            ));
-            const classSupervisors = schoolSupervisors.filter((currentUser) => (
-                classroom.supervisorIds.includes(currentUser.id)
-                || (currentUser.groupIds || []).includes(classroom.id)
-            ));
-            const classStudentsWithoutParent = classStudents.filter((student) => (
-                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
-            ));
-            const gaps = [
-                classStudents.length === 0 ? 'لا يوجد طلاب' : '',
-                classSupervisors.length === 0 ? 'لا يوجد مشرف فصل' : '',
-                classStudentsWithoutParent.length > 0 ? `${classStudentsWithoutParent.length} بلا ولي أمر` : '',
-            ].filter(Boolean);
-
-            return {
-                classroom,
-                studentCount: classStudents.length,
-                supervisorCount: classSupervisors.length,
-                studentsWithoutParentCount: classStudentsWithoutParent.length,
-                gaps,
-                isReady: classStudents.length > 0 && classSupervisors.length > 0,
-            };
+        const {
+            schoolSupervisors,
+            schoolLevelSupervisors,
+            classScopedSupervisors,
+            supervisorScopeRows,
+            schoolParentUsers,
+            studentsWithoutParent,
+            studentsWithoutClass,
+            supervisorsWithoutClass,
+            classOperatingRows,
+        } = buildSchoolRelationshipViewModel({
+            school: selectedSchool,
+            schoolClasses,
+            schoolStudents,
+            supervisors,
+            parents,
         });
         const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
         const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
