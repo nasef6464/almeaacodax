@@ -40,35 +40,6 @@
 - لا تُعلن المرحلة مغلقة نهائيًا حتى يعود Preview إلى `success`.
 - يتم تجميع التعديلات في commits أكبر ومنطقية وتقليل عدد branch pushes لتجنب استهلاك quota بلا داعٍ.
 
-## الدفعة الجاري تجهيزها
-
-`Schools Relations Presentation`:
-
-1. فصل حالة الجاهزية وإحصاءات العلاقات إلى `SchoolRelationsStatusPanel.tsx`.
-2. فصل نموذج إضافة مدير/مشرف إلى `SchoolQuickSupervisorCard.tsx`.
-3. إبقاء API/store/orchestration في parent وعدم نقلها إلى presentation children.
-4. استخدام عقد `QuickSupervisorDraft` مشترك داخل `SchoolsManager/contracts.ts` بدل تكرار الشكل inline.
-5. إضافة boundary contracts جديدة لكلا الجزأين وجعلهما جزءًا من Safety Gate.
-
-الدفعة لا تُغلق إلا بعد Full Gate أخضر ثم Preview ناجح.
-
-## المسار التالي
-
-بعد إغلاق Schools Relations Presentation:
-
-1. استخراج reports tab الخاص بالمدرسة من `SchoolsManager.tsx` إلى presentation/read-model boundaries أصغر.
-2. استخراج student roster/table presentation من `SchoolsManager.tsx` مع إبقاء actions في orchestration layer.
-3. إغلاق hotspot المدارس بعد فحص شامل.
-4. الانتقال إلى `pages/Reports.tsx` ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بنفس البروتوكول.
-
-## قاعدة الاستمرار لأي Agent
-
-ابدأ دائمًا من:
-
-`AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
-
-ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
-
 ## إغلاق دفعة Schools Relations Presentation ✅
 
 - Safety Gate run `#285`: **PASS**.
@@ -81,4 +52,22 @@
 - تم فصل handover/readiness report إلى `SchoolHandoverReportSummary.tsx`.
 - تم فصل performance metrics/weak skills/class summaries إلى `SchoolPerformanceReportPanel.tsx`.
 - Full Reports Phase Review: **PASS** قبل commit الإغلاق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على commit الناتج.
+- commit الكود المطبق: `bea54ce18a35ff982488dd97d44624d521fc90c5`.
+- نتائج الفحص المباشر بعد الاستخراج: `SchoolsManager.tsx = 4115` سطر، `SchoolReportsPanel = 85`، `SchoolHandoverReportSummary = 158`، `SchoolPerformanceReportPanel = 133`، مع `49` frontend routes و`236` backend entries و`25` mounts و`0` runtime broken imports و`0` cycles.
+- هذا checkpoint الموثق تم إنشاؤه لتشغيل Safety Gate + Vercel Preview Gate على نفس شجرة الكود بعد أن كان commit التطبيق صادرًا من GitHub Actions ولا يعيد تشغيل workflows تلقائيًا.
+- القبول النهائي للدفعة ينتظر أن يصبح الاثنان أخضرين.
+
+## المسار التالي
+
+1. استخراج student roster/table presentation من `SchoolsManager.tsx` مع إبقاء API/store/mutations في orchestration layer.
+2. تفكيك class operating cards بعد إثبات عقودها وتثبيت roster boundary.
+3. إغلاق hotspot المدارس بعد Full Gate + Preview Gate.
+4. الانتقال إلى `pages/Reports.tsx` ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بنفس البروتوكول.
+
+## قاعدة الاستمرار لأي Agent
+
+ابدأ دائمًا من:
+
+`AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
+
+ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
