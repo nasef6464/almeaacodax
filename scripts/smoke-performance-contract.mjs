@@ -74,7 +74,7 @@ assertIncludes('pages/Reports.tsx', "from './Reports/reportDomain';");
 assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.count >= minSkillEvidence');
 assertIncludes('pages/Reports.tsx', 'const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);');
 assertIncludes('pages/Reports/studentReportActionsViewModel.ts', 'weaknessLabel = weakest?.isReliable');
-assertIncludes('pages/Reports.tsx', 'evidenceLabel: skill.isReliable');
+assertIncludes('pages/Reports/studentSkillRowsViewModel.ts', 'evidenceLabel: skill.isReliable');
 assertIncludes('pages/Reports.tsx', 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
 assertIncludes('pages/Reports.tsx', 'studentEnrolledPathIds');
 assertIncludes('pages/Reports.tsx', 'studentPathScopedSkills');

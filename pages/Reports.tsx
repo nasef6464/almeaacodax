@@ -38,6 +38,7 @@ import {
 } from './Reports/studentAnalyticsViewModel';
 import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
+import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -414,25 +415,19 @@ const Reports: React.FC = () => {
             Icon: BookOpen,
         };
     }, [isStudentView, studentTodayFocus]);
-    const compactStudentSkillRows = useMemo(() => {
-        return focusedReportSkills.slice(0, 5).map((skill) => {
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
-            const quizLink = recommendation.quizLink || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
-
-            return {
-                ...skill,
-                tone: getReportMasteryTone(skill.mastery),
-                lessonLink: recommendation.lessonLink || recommendation.foundationTopicLink || '/courses',
-                lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
-                quizLink,
-                quizLabel: recommendation.quizTitle || 'تدريب',
-                retestLink: quizLink,
-                evidenceLabel: skill.isReliable
-                    ? `${skill.correctAttempts}/${skill.totalEvidence} صحيح`
-                    : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence}`,
-            };
-        });
-    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
+    const compactStudentSkillRows = useMemo(
+        () => buildStudentSkillReportRows(focusedReportSkills, {
+            allSkills: skills,
+            lessons,
+            quizzes,
+            libraryItems,
+            questions,
+            topics,
+            subjects,
+            sections,
+        }),
+        [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
+    );
     const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 5);
     const studentAdaptiveLearningBridge = useMemo(
         () => buildStudentAdaptiveLearningBridge(studentTodayFocus),
