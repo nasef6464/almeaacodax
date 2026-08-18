@@ -56,7 +56,9 @@ assertAllIncludes("server/src/routes/auth.routes.ts", [
 
 assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "toggleSchoolActions",
-  "activeSchoolActionsId === school.id",
+  "activeSchoolActionsId === cardPortfolioRow.school.id",
+]);
+assertAllIncludes("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx", [
   "فتح تشغيل المدرسة",
 ]);
 assertAllIncludes("dashboards/admin/SchoolsManager/workspaceViewModel.ts", [
