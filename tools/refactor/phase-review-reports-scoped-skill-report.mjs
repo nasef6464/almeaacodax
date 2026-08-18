@@ -54,6 +54,15 @@ if (applyScopedExportRows.status !== 0) {
   process.exit(applyScopedExportRows.status ?? 1);
 }
 
+const applyStudentWeeklyPlanPresentation = spawnSync('node', ['tools/refactor/apply-reports-student-weekly-plan-presentation.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (applyStudentWeeklyPlanPresentation.status !== 0) {
+  console.error('[reports-student-report-scope-phase-review] Failed to apply student weekly plan presentation extraction');
+  process.exit(applyStudentWeeklyPlanPresentation.status ?? 1);
+}
+
 const checks = [
   ['git diff whitespace validation', 'git', ['diff', '--check']],
   ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -76,6 +85,7 @@ const checks = [
   ['reports student remediation fallback boundary', 'node', ['scripts/smoke-reports-student-remediation-fallback-boundary-contract.mjs']],
   ['reports scoped remediation fallback boundary', 'node', ['scripts/smoke-reports-scoped-remediation-fallback-boundary-contract.mjs']],
   ['reports scoped export rows boundary', 'node', ['scripts/smoke-reports-scoped-export-rows-boundary-contract.mjs']],
+  ['reports student weekly plan presentation boundary', 'node', ['scripts/smoke-reports-student-weekly-plan-presentation-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
