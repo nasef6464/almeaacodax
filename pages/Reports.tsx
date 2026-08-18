@@ -37,6 +37,14 @@ import {
     buildStudentSkillReadinessSummary,
 } from './Reports/studentAnalyticsViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
+import {
+    buildScopedAvailableGroups,
+    buildScopedGroupPerformanceRows,
+    buildScopedLatestResults,
+    buildScopedTeacherPerformanceRows,
+    filterScopedStudentsByGroup,
+    getStrongestScopedGroup,
+} from './Reports/scopedComparisonViewModel';
 
 const getSkillRecommendation = (
     skill: { skill?: string; skillId?: string } | undefined,
@@ -631,151 +639,31 @@ const Reports: React.FC = () => {
     const scopedLeadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
     const scopedLeadSkill = scopedAnalytics?.weakestSkills?.[0] || null;
     const scopedLeadSubject = scopedAnalytics?.subjectSummaries?.[0] || null;
-    const scopedAvailableGroups = useMemo(() => {
-        const names = new Set<string>();
-        (scopedAnalytics?.weakestStudents || []).forEach((student) => {
-            (student.groupNames || []).forEach((name) => {
-                const normalized = displayText(name);
-                if (normalized) names.add(normalized);
-            });
-        });
-        return Array.from(names);
-    }, [scopedAnalytics?.weakestStudents]);
-    const scopedFilteredStudents = useMemo(() => {
-        if (!scopedAnalytics?.weakestStudents?.length) return [];
-        if (scopedGroupFilter === 'all') return scopedAnalytics.weakestStudents;
-        return scopedAnalytics.weakestStudents.filter((student) => (student.groupNames || []).some((name) => displayText(name) === scopedGroupFilter));
-    }, [scopedAnalytics?.weakestStudents, scopedGroupFilter]);
-    const scopedLatestResults = useMemo(() => {
-        if (!scopedResults.length) return [];
-        const filtered = scopedGroupFilter === 'all'
-            ? scopedResults
-            : scopedResults.filter((result) => {
-                const student = scopedFilteredStudents.find((item) => item.id === result.userId);
-                return !!student;
-            });
-        return filtered.slice(0, 6);
-    }, [scopedResults, scopedGroupFilter, scopedFilteredStudents]);
-    const scopedGroupPerformanceRows = useMemo(() => {
-        if (!scopedAnalytics) return [];
-
-        const groupNameById = new Map(groups.map((group) => [group.id, displayText(group.name) || group.id]));
-        const studentGroups = new Map<string, string[]>();
-        const rows = new Map<string, {
-            groupName: string;
-            scoreTotal: number;
-            attempts: number;
-            weakAttempts: number;
-            weakStudentIds: Set<string>;
-            studentIds: Set<string>;
-        }>();
-
-        const ensureRow = (groupName: string) => {
-            const safeGroupName = displayText(groupName) || 'مجموعة غير محددة';
-            const current = rows.get(safeGroupName);
-            if (current) return current;
-
-            const created = {
-                groupName: safeGroupName,
-                scoreTotal: 0,
-                attempts: 0,
-                weakAttempts: 0,
-                weakStudentIds: new Set<string>(),
-                studentIds: new Set<string>(),
-            };
-            rows.set(safeGroupName, created);
-            return created;
-        };
-
-        scopedAnalytics.weakestStudents.forEach((student) => {
-            const names = (student.groupNames || []).map(displayText).filter(Boolean);
-            const ids = (student.groupIds || []).map((groupId) => groupNameById.get(groupId) || groupId).filter(Boolean);
-            const resolvedNames = names.length ? names : ids;
-            if (!resolvedNames.length) return;
-
-            studentGroups.set(student.id, resolvedNames);
-            resolvedNames.forEach((groupName) => {
-                const row = ensureRow(groupName);
-                row.studentIds.add(student.id);
-                row.weakStudentIds.add(student.id);
-            });
-        });
-
-        scopedResults.forEach((result) => {
-            const directGroups = (result.studentGroupIds || []).map((groupId) => groupNameById.get(groupId) || groupId).filter(Boolean);
-            const resolvedGroups = directGroups.length ? directGroups : (result.userId ? studentGroups.get(result.userId) || [] : []);
-            const score = Number(result.score || 0);
-            const studentId = String(result.userId || result.studentEmail || result.studentName || '');
-
-            resolvedGroups.forEach((groupName) => {
-                const row = ensureRow(groupName);
-                row.scoreTotal += score;
-                row.attempts += 1;
-                if (score < 75) row.weakAttempts += 1;
-                if (studentId) row.studentIds.add(studentId);
-            });
-        });
-
-        return Array.from(rows.values())
-            .map((row) => ({
-                groupName: row.groupName,
-                averageScore: row.attempts ? Math.round(row.scoreTotal / row.attempts) : 0,
-                attempts: row.attempts,
-                weakAttempts: row.weakAttempts,
-                weakStudentCount: row.weakStudentIds.size,
-                studentCount: row.studentIds.size,
-            }))
-            .sort((a, b) => {
-                const weaknessScoreA = a.weakStudentCount * 10 + a.weakAttempts - a.averageScore;
-                const weaknessScoreB = b.weakStudentCount * 10 + b.weakAttempts - b.averageScore;
-                return weaknessScoreB - weaknessScoreA;
-            })
-            .slice(0, 8);
-    }, [groups, scopedAnalytics, scopedResults]);
+    const scopedAvailableGroups = useMemo(
+        () => buildScopedAvailableGroups(scopedAnalytics),
+        [scopedAnalytics],
+    );
+    const scopedFilteredStudents = useMemo(
+        () => filterScopedStudentsByGroup(scopedAnalytics, scopedGroupFilter),
+        [scopedAnalytics, scopedGroupFilter],
+    );
+    const scopedLatestResults = useMemo(
+        () => buildScopedLatestResults(scopedResults, scopedGroupFilter, scopedFilteredStudents),
+        [scopedResults, scopedGroupFilter, scopedFilteredStudents],
+    );
+    const scopedGroupPerformanceRows = useMemo(
+        () => buildScopedGroupPerformanceRows({ scopedAnalytics, scopedResults, groups }),
+        [groups, scopedAnalytics, scopedResults],
+    );
     const weakestScopedGroup = scopedGroupPerformanceRows[0] || null;
-    const strongestScopedGroup = useMemo(() => {
-        return [...scopedGroupPerformanceRows]
-            .filter((group) => group.attempts > 0)
-            .sort((a, b) => b.averageScore - a.averageScore || a.weakStudentCount - b.weakStudentCount)[0] || null;
-    }, [scopedGroupPerformanceRows]);
-    const scopedTeacherPerformanceRows = useMemo(() => {
-        if (!scopedAnalytics) return [];
-
-        const scopedGroupIds = new Set<string>([
-            ...scopedAnalytics.weakestStudents.flatMap((student) => student.groupIds || []),
-            ...scopedResults.flatMap((result) => result.studentGroupIds || []),
-        ]);
-        const scopedGroups = groups.filter((group) => scopedGroupIds.has(group.id));
-
-        return users
-            .filter((candidate) => candidate.role === Role.TEACHER)
-            .map((teacher) => {
-                const teacherGroupIds = new Set(
-                    scopedGroups
-                        .filter((group) => group.supervisorIds.includes(teacher.id) || (teacher.groupIds || []).includes(group.id))
-                        .map((group) => group.id),
-                );
-                const teacherResults = scopedResults.filter((result) =>
-                    (result.studentGroupIds || []).some((groupId) => teacherGroupIds.has(groupId)),
-                );
-                if (teacherGroupIds.size === 0 || teacherResults.length === 0) return null;
-
-                const weakStudentIds = new Set(
-                    teacherResults.filter((result) => Number(result.score || 0) < 70).map((result) => result.userId).filter(Boolean),
-                );
-                return {
-                    id: teacher.id,
-                    name: displayText(teacher.name) || displayText(teacher.email) || 'معلم',
-                    groupCount: teacherGroupIds.size,
-                    attempts: teacherResults.length,
-                    averageScore: Math.round(teacherResults.reduce((total, result) => total + Number(result.score || 0), 0) / teacherResults.length),
-                    weakStudentCount: weakStudentIds.size,
-                };
-            })
-            .filter((teacher): teacher is NonNullable<typeof teacher> => Boolean(teacher))
-            .sort((a, b) => a.averageScore - b.averageScore || b.weakStudentCount - a.weakStudentCount)
-            .slice(0, 8);
-    }, [groups, scopedAnalytics, scopedResults, users]);
+    const strongestScopedGroup = useMemo(
+        () => getStrongestScopedGroup(scopedGroupPerformanceRows),
+        [scopedGroupPerformanceRows],
+    );
+    const scopedTeacherPerformanceRows = useMemo(
+        () => buildScopedTeacherPerformanceRows({ scopedAnalytics, scopedResults, groups, users }),
+        [groups, scopedAnalytics, scopedResults, users],
+    );
     const directedFollowUpOptions = useMemo(
         () => (scopedAnalytics?.assignedFollowUps || []).filter((quiz) => {
             const mode = quiz.mode || 'regular';

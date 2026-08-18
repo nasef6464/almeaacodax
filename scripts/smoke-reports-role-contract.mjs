@@ -6,6 +6,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
@@ -188,6 +189,8 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'scopedStudentFocusCards');
   assertIncludes(reportsSource, 'scopedGroupPerformanceRows');
   assertIncludes(reportsSource, 'scopedTeacherPerformanceRows');
+  assertIncludes(reportsSource, 'buildScopedGroupPerformanceRows({');
+  assertIncludes(reportsSource, 'buildScopedTeacherPerformanceRows({');
   assertIncludes(reportsSource, 'data-testid="staff-comparison-report"');
   assertIncludes(reportsSource, 'مقارنة الفصول');
   assertIncludes(reportsSource, 'مقارنة المعلمين');
