@@ -5,7 +5,7 @@ manager_path = root / 'dashboards/admin/SchoolsManager.tsx'
 manager = manager_path.read_text(encoding='utf-8')
 
 import_anchor = "import {\n    createCsvDownload,\n    createWorkbookDownload,\n    createXlsxDownload,\n    escapeHtml,\n    openPrintWindow,\n    renderPrintTable,\n} from './SchoolsManager/exportHelpers';\n"
-readiness_import = "import {\n    buildSchoolPortfolioRows,\n    getSchoolOperationalSnapshot as calculateSchoolOperationalSnapshot,\n    summarizeSchoolPortfolio,\n} from './SchoolsManager/readinessViewModel';\n"
+readiness_import = "import {\n    buildSchoolPortfolioRows,\n    getSchoolOperationalSnapshot as calculateSchoolOperationalSnapshot,\n    getStudentsForSchool,\n    summarizeSchoolPortfolio,\n} from './SchoolsManager/readinessViewModel';\n"
 if readiness_import not in manager:
     if import_anchor not in manager:
         raise SystemExit('Could not locate SchoolsManager exportHelpers import anchor.')
@@ -21,6 +21,18 @@ if start != -1:
     manager = manager[:start] + manager[end:]
 elif 'const getStudentsForSchool = (school: Group' in manager:
     raise SystemExit('School student selector shape changed; refusing partial edit.')
+
+# Preserve every existing call site by explicitly supplying the student source to
+# the extracted pure selector. These calls are used both in the selected-school
+# workspace and in the school-card list.
+manager = manager.replace(
+    'getStudentsForSchool(selectedSchool, schoolClasses)',
+    'getStudentsForSchool(selectedSchool, schoolClasses, students)',
+)
+manager = manager.replace(
+    'getStudentsForSchool(school, schoolClasses)',
+    'getStudentsForSchool(school, schoolClasses, students)',
+)
 
 snapshot_start = "    const getSchoolOperationalSnapshot = (school: Group) => {\n"
 snapshot_end = "    const filteredSchools = useMemo(() => {\n"
@@ -57,6 +69,8 @@ ledger = ledger.replace(
     '**الحالة: تم تطبيق استخراج readiness/view-model وتنتظر Full Phase Review قبل الإغلاق.**',
     1,
 )
+if 'remaining school roster selector call sites' not in ledger:
+    ledger += '\n- كشف Quick Gate بعد استخراج readiness وجود call sites إضافية لاحتساب طلاب المدرسة داخل workspace/cards. تم إبقاؤها على نفس المنطق وتمرير `students` صراحة إلى الـpure selector بدل إعادة منطق مكرر داخل component.\n'
 ledger_path.write_text(ledger, encoding='utf-8')
 
-print('Schools readiness/view-model decomposition applied safely.')
+print('Schools readiness/view-model decomposition applied safely with all roster selector call sites preserved.')
