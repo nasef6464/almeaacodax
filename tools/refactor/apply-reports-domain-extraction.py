@@ -64,6 +64,18 @@ role_smoke = replace_once(
     "].join('\\n');\n",
     "reports role aggregate source",
 )
+role_smoke = replace_once(
+    role_smoke,
+    "  assertIncludes(reportsSource, 'مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.');\n",
+    "  assertIncludes(reportsSource, 'نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار');\n",
+    "student evidence explanation follows current UI semantics",
+)
+role_smoke = replace_once(
+    role_smoke,
+    "  assertIncludes(reportsSource, 'if (user.role === Role.PARENT)');\n",
+    "  assertIncludes(reportsSource, 'if (user?.role === Role.PARENT)');\n",
+    "parent branch follows current null-safe role guard",
+)
 REPORT_ROLE_SMOKE.write_text(role_smoke, encoding="utf-8")
 
 global_smoke = GLOBAL_JOURNEY_SMOKE.read_text(encoding="utf-8")
