@@ -168,3 +168,11 @@
 - presentation children لا تستورد API أو global store.
 - `smoke-school-management-contract.mjs` أصبح يتبع ownership الجديد بدل إجبار markup على البقاء في parent.
 - أضيف direct boundary contract جديد وحدود أحجام للملفات المستخرجة.
+
+## دفعة Schools Student Roster Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- فصل roster UI مع الحفاظ على search/class filter/current-class display/reassignment/confirmations/removal/pagination.
+- mutation functions لم تنتقل إلى child؛ لا API ولا global store imports.
+- direct boundary contract جديد يمنع رجوع markup إلى God Component ويثبت wiring والـconfirm/pending guards.

@@ -71,3 +71,11 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
 
 ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
+
+## دفعة Schools Student Roster Presentation
+
+- تم نقل البحث/فلترة الفصل/جدول الطلاب/النقل/الإزالة/التصفح إلى `SchoolStudentRosterPanel.tsx`.
+- API/store/mutation ownership بقي في `SchoolsManager.tsx`؛ child يستقبل callbacks صريحة فقط.
+- `rosterViewModel.ts` بقي مسؤولًا عن projection/filter/pagination عالي الكفاءة.
+- Full Roster Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint المستخدم للتحقق.

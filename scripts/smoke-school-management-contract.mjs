@@ -15,6 +15,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
 ].join("\n"),
   store: await read("store/useStore.ts"),
   packageJson: await read("package.json"),
@@ -198,7 +199,7 @@ check("school student roster exposes direct removal actions", () => {
   assertIncludes(files.schools, "إزالة من المدرسة");
   assertIncludes(files.schools, "handleAssignStudentToClass(student.id, value)");
   assertIncludes(files.schools, "handleRemoveStudentScope(student.id, currentClass.id)");
-  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchool.id)");
+  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchoolId)");
   assertIncludes(files.schools, "rosterActionPending");
 });
 
