@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  run-schools-access-codes-phase:
+  run-schools-relations-import-phase:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -27,8 +27,8 @@ jobs:
             package-lock.json
             server/package-lock.json
 
-      - name: Apply access codes presentation boundary
-        run: python tools/refactor/apply-schools-access-codes-boundary.py
+      - name: Apply relations import presentation boundary
+        run: python tools/refactor/apply-schools-relations-import-boundary.py
 
       - name: Install frontend dependencies
         run: npm ci
@@ -36,8 +36,8 @@ jobs:
       - name: Install API dependencies
         run: npm --prefix server ci
 
-      - name: Direct access codes boundary contract
-        run: node scripts/smoke-schools-access-codes-boundary-contract.mjs
+      - name: Direct relations import boundary contract
+        run: node scripts/smoke-schools-relations-import-boundary-contract.mjs
 
       - name: Fast targeted schools gate
         run: node tools/refactor/quick-check.mjs schools
@@ -57,20 +57,20 @@ jobs:
           checkpoint_path = Path('docs/architecture/REFACTOR_V2_LATEST_CHECKPOINT_AR.md')
           checkpoint = checkpoint_path.read_text(encoding='utf-8')
           checkpoint = checkpoint.replace(
-              '## Access Codes presentation boundary — قيد التحقق',
-              '## Access Codes presentation boundary — Full Phase Review PASS',
+              '## Relations Import presentation boundary — قيد التحقق',
+              '## Relations Import presentation boundary — Full Phase Review PASS',
               1,
           )
-          if 'Access Codes Full Phase Review: **PASS**' not in checkpoint:
-              checkpoint += '\n- Access Codes Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.\n'
+          if 'Relations Import Full Phase Review: **PASS**' not in checkpoint:
+              checkpoint += '\n- Relations Import Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.\n'
           checkpoint_path.write_text(checkpoint, encoding='utf-8')
           PY
 
-          git rm -f tools/refactor/apply-schools-access-codes-boundary.py
+          git rm -f tools/refactor/apply-schools-relations-import-boundary.py
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract access codes presentation"
+          git commit -m "refactor(schools): extract relations import presentation"
           git push origin HEAD:refactor/repository-v2-safe
