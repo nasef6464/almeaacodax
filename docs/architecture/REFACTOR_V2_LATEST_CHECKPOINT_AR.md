@@ -1,65 +1,96 @@
 # آخر نقطة تحقق — Refactor V2
 
-> هذا الملف مختصر استئناف سريع، بينما يبقى `REFACTOR_V2_EXECUTION_LEDGER_AR.md` هو السجل التاريخي الرئيسي.
+> هذا الملف هو نقطة الاستئناف السريعة الحالية. التاريخ الأقدم محفوظ في `REFACTOR_V2_EXECUTION_LEDGER_AR.md`، والمراحل الحديثة موثقة في `REFACTOR_V2_EXECUTION_LEDGER_CONTINUATION_2026-08-18_AR.md`.
 
 ## آخر مرحلة مغلقة
 
-**Schools Workspace — Access Codes Presentation Boundary: مغلقة بنجاح.**
+**Schools Workspace — Visible Launch Board Presentation Boundary: مغلقة بنجاح.**
 
 - الفرع: `refactor/repository-v2-safe`.
-- لا يوجد أي دمج إلى `main` ولا نشر Production ضمن هذه المرحلة.
-- تم نقل نموذج إنشاء أكواد المدرسة، قائمة الأكواد، copy/delete، وحالات loading/error/pagination من `SchoolPackagesPanel.tsx` إلى `dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx`.
-- تم فصل row projection إلى `dashboards/admin/SchoolsManager/accessCodeViewModel.ts` واستخدام `Map` لأسماء الباقات بدل `schoolPackages.find` لكل كود.
-- `SchoolAccessCodesPanel.tsx`: **171 سطرًا**، والـboundary contract يمنع تجاوزه **180** سطرًا.
-- `SchoolPackagesPanel.tsx`: **237 سطرًا** بعد الفصل، والـboundary contract يقفله عند **240** سطرًا.
-- الـchild يستقبل state/handlers صراحة عبر props ولا يستورد `SchoolsManager` أو global store أو API.
-- تم الحفاظ على selected package، max uses، duration days، copy feedback، delete confirmation، paged access codes، loading/error/pagination semantics كما كانت.
-- Direct scale contract يختبر **50,000 كود + 10,000 باقة** مع package fallback وترتيب الصفوف وحماية `maxUses=0` وحد usage percentage.
-- Quick Gate: **PASS**.
-- Full Schools Workspace Phase Review: **PASS** على commit runner الموثق `d2d81e17c4b520d3bab5d75c35c632241f74e2ca`.
-- Refactor V2 Safety Gate run **#247**: **PASS** على commit `cacdffed6bb266905b12630d2b521bc36894a4a8`.
-- Frontend + API typecheck/build: PASS.
-- Architecture/module boundaries: PASS.
-- School management/XLSX/package revenue/relationship audits: PASS.
-- Route loading/runtime source/quiz integrity/auth security/API security: PASS.
+- PR التحقق: `#3` وما زال Draft، ولم يتم دمجه إلى `main`.
+- الرأس الموثق: `45cb2ba6dc2a7c0e0bfb33ed802ec0f9d915883c`.
+- Safety Gate run: `32186249911`.
+- baseline quality gate: **56/56 PASS**.
+- post-apply Phase Review: **PASS**.
+- auto-commit الموثق: **PASS**.
+- frontend typecheck/build + API typecheck/build: **PASS**.
+- architecture/module boundaries: **PASS**.
+- Schools/Reports/global student journey/results/routes/runtime/quiz/auth/API security/race-safety contracts: **PASS**.
 
-## أخطاء/عقود تم تصحيحها أثناء المرحلة
+## الوضع الحالي للـhotspots الرئيسيين
 
-1. أول direct boundary check وضع حدًا تقديريًا `210` سطرًا للـparent قبل قياس نتيجة الفصل؛ الناتج الآمن الحقيقي كان `237`. لم يتم تخفيف baseline قائم: تم تثبيت budget بعد القياس عند `240` لمنع النمو من جديد.
-2. عقد Package Card القديم كان يفترض أن parent ما زال يمتلك `Trash2` وحذف أكواد التفعيل. بعد نقل Access Codes إلى child مستقل، تم إعادة توجيه العقد ليتحقق من أن `SchoolAccessCodesPanel` يمتلك الأيقونة و`window.confirm` و`handleDeleteSchoolAccessCode`، بدل إعادة المسؤولية إلى الـparent.
-3. بعد نجاح المرحلة تم تشديد budget الخاص بالـchild من سقف استكشافي `260` إلى `180` لأن القياس الفعلي هو `171` سطرًا.
+- `dashboards/admin/SchoolsManager.tsx`: قرابة **2710** أسطر، مقابل قرابة **4308** في الـcheckpoint القديم وأكثر من **5200** في بداية العمل.
+- `pages/Reports.tsx`: **2607** أسطر في آخر baseline موثق.
+- `SchoolsManager` أصبح في الغالب orchestration/composition؛ presentation الرئيسية موزعة على feature-owned children، بينما store/API/mutations/navigation/browser side effects بقيت في الـmanager.
+- لا يوجد `runtime unresolved relative imports` ولا dependency cycles في آخر Architecture Gate.
 
-## الوضع الحالي لمدارس B2B
+## أهم حدود Schools المغلقة
 
-- `SchoolsManager.tsx` قرابة **4308** أسطر، مقارنة بأكثر من 5200 في بداية العمل.
-- الحسابات المستخرجة حاليًا تشمل: import parsing، readiness، relationship workspace، decision/handover workspace، roster filtering/pagination، package/access projection، access-code rows.
-- presentation boundaries المستخرجة تشمل: `SchoolPackageCard` و`SchoolAccessCodesPanel`، إضافة إلى panels التي كانت منفصلة سابقًا.
-- لا تزال الأولوية لتخفيض God Component تدريجيًا بدون تغيير handlers أو API payloads أو صلاحيات.
+تشمل الآن على الأقل:
+
+- import parsing/file readers.
+- readiness / relationship / workspace / roster view-models.
+- package/access projections.
+- student roster.
+- class operating card.
+- courses/classes shells.
+- single-student + school-wide supervisors.
+- overview operations.
+- command center.
+- portfolio filter.
+- relations import/status/report/quick supervisor.
+- reports/handover/performance panels.
+- portfolio projection + card readiness projection.
+- `SchoolPortfolioCard`.
+- `SchoolWorkspaceControlsPanel`.
+- `SchoolLaunchBoardPanel`.
+
+## أهم حدود Reports المغلقة
+
+تشمل الآن:
+
+- report domain/types facade.
+- recommendation view-model.
+- student analytics/evidence.
+- scoped analytics/comparison.
+- directed quiz analytics.
+- institutional report projection.
+- scoped student focus + scoped skill report.
+- weekly plan + report actions + skill rows + readiness + learning loop.
+- student report scope.
+- student/scoped remediation fallbacks.
+- scoped export rows.
+- weekly-plan / smart-remediation / selected-skill presentation boundaries.
+
+## CI / Safety Gate
+
+تم تثبيت حماية race-safety للـworkflow:
+
+- push وPR runs يشتركان في concurrency key للفرع الآمن.
+- checkout على exact source head وليس synthetic merge ref.
+- run واحد فقط يملك حق auto-commit.
+- أي branch move أثناء المراجعة يمنع stale auto-commit.
+- لا يوجد force-push.
+
+## Vercel
+
+على الرأس `45cb2ba...` حالة Vercel الحالية **failure خارجي بسبب `build-rate-limit`** (`upgradeToPro=build-rate-limit`). هذا ليس TypeScript/build regression؛ GitHub production build نفسه PASS. لا يتم إخفاء الحالة ولا اعتبارها نجاحًا، لكنها لا تعيد فتح مرحلة كود اجتازت Safety Gate بالكامل.
 
 ## المرحلة التالية
 
-**SchoolRelationsPanel — Summary / Import / Presentation Boundaries.**
+لم نعد نطارد عدد أسطر `SchoolsManager` فقط. المسار الآن **Repo-wide Stabilization & Production Readiness**:
 
-الترتيب:
-
-1. فحص `SchoolRelationsPanel.tsx` وتحديد الحسابات/sections التي يمكن فصلها بدون نقل actions أو تغيير payloads.
-2. فصل relation summary/import preview إلى pure view-model أو child component حسب طبيعة الجزء.
-3. الحفاظ على school-wide supervisor scope، class-scoped supervisors، parent links، quick supervisor creation، relation import preview/results، create-missing-users semantics.
-4. إضافة direct contracts وحدود file size ومنع child-to-parent/store/API imports.
-5. Quick Gate -> Full Review -> Standard Safety Gate قبل إغلاق المرحلة.
-6. بعد استقرار relations، نعود لأكبر sections داخل `SchoolsManager.tsx` ثم ننتقل إلى `pages/Reports.tsx`.
+1. fresh repository hotspot/ownership scan على الرأس الحالي.
+2. مراجعة duplications/dead code/hard-coded URLs/API-in-presentation/store coupling.
+3. مراجعة الملفات الكبيرة التالية حسب risk/value، وليس حسب الحجم وحده.
+4. تحديث `PROJECT_MAP` وownership/development notes بما يعكس البنية الحالية.
+5. full product verification لرحلات الطالب/المعلم/المشرف/المدرسة/الأدمن، مع empty/loading/error/direct URL/refresh/RTL/mobile/import/export/session/API-failure scenarios.
+6. dependency/security remediation بشكل مضبوط؛ ممنوع `npm audit fix --force` العشوائي.
+7. production env/CORS/health/logging/backups/monitoring smoke.
+8. Freeze -> Full Safety Gate -> compare branch vs `main` -> مراجعة نهائية -> merge فقط بعد موافقة المستخدم الصريحة.
 
 ## بروتوكول كل دفعة
 
-`تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
+`تغيير صغير -> Direct Contract -> Quick/Baseline Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> checkpoint`.
 
-لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
-
-## Relations Import presentation boundary — Full Phase Review PASS
-
-- تم نقل رفع ملف العلاقات، preview، خيار إنشاء الحسابات الناقصة، التنفيذ، credentials handover ونتائج الربط إلى `SchoolRelationsImportPanel.tsx`.
-- الـchild يستقبل كل state/handlers كـprops ولا يستورد manager/store/api.
-- تم الحفاظ على file types، preview لأول 6 صفوف، create-missing-users semantics وكل summary counters.
-- الدفعة لا تغلق إلا بعد Direct Boundary Contract + Quick Gate + Full Review + Standard Safety Gate.
-
-- Relations Import Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
+لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا انتقلت ملكية السلوك يُعاد توجيه العقد إلى المالك الجديد، وإذا تراجع السلوك يُصلح الكود نفسه.

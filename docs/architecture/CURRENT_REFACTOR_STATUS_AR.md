@@ -1,155 +1,88 @@
 # نقطة متابعة Refactor V2 الحالية
 
-هذا الملف هو المختصر التشغيلي السريع بجانب السجل الكامل `REFACTOR_V2_EXECUTION_LEDGER_AR.md`.
+هذا هو المختصر التشغيلي الحي للمشروع بعد إغلاق حدود Schools وReports الرئيسية.
 
 ## الهدف الثابت
 
-إعادة تنظيم ALMEAA كـ **Modular Monolith** واضح وقابل للتوسع، بدون تغيير سلوك المنتج أو الـURLs أو API contracts أو auth/RBAC أو quiz integrity أو payment/access semantics أو بيانات الإنتاج.
+إعادة تنظيم ALMEAA كـ **Modular Monolith** واضح وقابل للتوسع مع الحفاظ على URLs وAPI contracts وauth/RBAC وquiz integrity وpayment/access semantics وسلوك المنتج أثناء النقل البنيوي.
 
-## ما أصبح ثابتًا
+## مصدر الحقيقة الحالي
 
-- العمل البنيوي على `refactor/repository-v2-safe`، و`main` لا يُدمج معه قبل Release Candidate مغلق بالكامل.
-- Architecture Gate يمنع فقد routes/mounts وruntime broken imports وdependency cycles وتجاوز budget.
-- Module Boundary Gate يحمي الوحدات الجديدة وحدود Schools child/parent.
-- Quick Gate أثناء الدفعات الصغيرة، وFull Safety Gate عند إغلاق الدفعات.
-- Vercel Preview Gate شرط إغلاق إضافي، لكنه لا يحول مشكلة quota خارجية إلى عيب كود.
-- المرجع المحلي للـAgents: `docs/development/LOCAL_AGENT_SYNC_AR.md` والسكربت `tools/sync-refactor-local.ps1`.
+- branch: `refactor/repository-v2-safe`.
+- Draft PR: `#3` للتحقق فقط، وليس للدمج التلقائي.
+- آخر رأس كود موثق: `45cb2ba6dc2a7c0e0bfb33ed802ec0f9d915883c`.
+- آخر Safety Gate كامل: run `32186249911` — **PASS**.
+- baseline: **56/56 PASS**.
+- Phase Review بعد تطبيق Visible Launch Board extraction: **PASS**.
+- `main` لم يتغير.
 
-## آخر فحص كود مؤكد
+## المقاييس الحالية المهمة
 
-على commit `d32c5b24186606d10c4c453a66c7ff6dae743946`:
+- `SchoolsManager.tsx`: ~**2710** سطر.
+- `Reports.tsx`: **2607** سطر في آخر baseline.
+- frontend routes: `49`.
+- backend route entries: `236`.
+- router mounts: `25`.
+- runtime unresolved relative imports: `0`.
+- dependency cycles: `0`.
+- آخر audit قبل مرحلة Launch Board كان يسجل `82` hotspot فوق 400 سطر مقابل architecture budget `83`؛ المطلوب الآن fresh audit وليس افتراض أن هذه القائمة ما زالت كما هي.
 
-- frontend typecheck: **PASS**.
-- API typecheck: **PASS**.
-- frontend production build: **PASS**.
-- API production build: **PASS**.
-- architecture + module boundaries: **PASS**.
-- Schools management/XLSX/import/readiness/relationships/workspace/roster/package/access/presentation contracts: **PASS**.
-- performance + package revenue + relationship audit: **PASS**.
-- routes + runtime source + quiz integrity + auth security + API security: **PASS**.
-- repository audit: `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime imports، `0` dependency cycles، و`82` hotspot فوق 400 سطر مقابل budget `83`.
-- `SchoolsManager.tsx`: `4308` أسطر في آخر import contract.
+## ما أصبح معماريًا ثابتًا
 
-## حالة Vercel الحالية
+### Schools
 
-آخر failure ظهر بعنوان `build-rate-limit` من Vercel Hobby بسبب كثرة Preview builds خلال الساعة، وليس failure في TypeScript أو build داخل GitHub Actions.
+`SchoolsManager.tsx` يحتفظ بالـorchestration: state, store/API mutations, confirmations, browser side effects, navigation، بينما presentation والحسابات الكبيرة موزعة على feature-owned modules داخل `dashboards/admin/SchoolsManager/`.
 
-لذلك:
+أحدث الحدود المغلقة:
 
-- لا يتم تخفيف Vercel Preview Gate.
-- لا تُعلن المرحلة مغلقة نهائيًا حتى يعود Preview إلى `success`.
-- يتم تجميع التعديلات في commits أكبر ومنطقية وتقليل عدد branch pushes لتجنب استهلاك quota بلا داعٍ.
+- `SchoolPortfolioCard.tsx`.
+- `SchoolWorkspaceControlsPanel.tsx`.
+- `SchoolLaunchBoardPanel.tsx`.
+- portfolio/readiness projections.
 
-## إغلاق دفعة Schools Relations Presentation ✅
+وتسبقها حدود roster/classes/courses/supervisors/overview/command-center/relations/packages/access-codes/reports.
 
-- Safety Gate run `#285`: **PASS**.
-- Vercel Preview Gate لنفس checkpoint: **PASS**.
-- تم فصل status/readiness وquick supervisor UI مع بقاء API/store/orchestration خارج presentation children.
+### Reports
 
-## دفعة Schools Reports Presentation
+تم فصل domain contracts وعدد كبير من pure view-models وpresentation boundaries، بينما side effects مثل API/browser/XLSX بقيت في الصفحة أو في boundary مناسب.
 
-- تم استخراج reports tab من `SchoolsManager.tsx` إلى `SchoolReportsPanel.tsx`.
-- تم فصل handover/readiness report إلى `SchoolHandoverReportSummary.tsx`.
-- تم فصل performance metrics/weak skills/class summaries إلى `SchoolPerformanceReportPanel.tsx`.
-- Full Reports Phase Review: **PASS** قبل commit الإغلاق.
-- commit الكود المطبق: `bea54ce18a35ff982488dd97d44624d521fc90c5`.
-- نتائج الفحص المباشر بعد الاستخراج: `SchoolsManager.tsx = 4115` سطر، `SchoolReportsPanel = 85`، `SchoolHandoverReportSummary = 158`، `SchoolPerformanceReportPanel = 133`، مع `49` frontend routes و`236` backend entries و`25` mounts و`0` runtime broken imports و`0` cycles.
-- Safety Gate للكود نفسه مرّ على جميع فحوص الكود، بينما Vercel Preview ما زال متأثرًا بـ `build-rate-limit` الخارجي.
-- القبول النهائي للدفعة ينتظر Preview أخضر دون تغيير معايير القبول.
+## Safety / CI
 
-## دفعة Schools Student Roster Presentation
+- exact-head checkout.
+- shared concurrency بين push وPR لنفس safe branch.
+- stale auto-commit protection.
+- no force push.
+- architecture + module boundary + performance + security contracts جزء من gate.
 
-- تم نقل البحث/فلترة الفصل/جدول الطلاب/النقل/الإزالة/التصفح إلى `SchoolStudentRosterPanel.tsx`.
-- API/store/mutation ownership بقي في `SchoolsManager.tsx`؛ child يستقبل callbacks صريحة فقط.
-- `rosterViewModel.ts` بقي مسؤولًا عن projection/filter/pagination عالي الكفاءة.
-- Full Roster Phase Review: **PASS** قبل commit التطبيق.
-- commit الكود المطبق: `12b8ebfabf5dd03f4947eaf9923e97763a97ed64`.
-- بعد الاستخراج أصبح `SchoolsManager.tsx = 3989` سطر و`SchoolStudentRosterPanel.tsx = 192` سطر، مع بقاء typecheck وproduction builds وعقود المدارس سليمة في Phase Review.
-- هذا checkpoint التوثيقي يعيد تشغيل Safety Gate + Vercel Preview Gate لأن commit التطبيق صدر من GitHub Actions ولا يعيد تشغيل workflows تلقائيًا.
-- القبول النهائي للدفعة ينتظر Safety Gate + Vercel Preview Gate على نفس شجرة الكود.
+## حالة Vercel
+
+الرأس الحالي يظهر Vercel failure من النوع `build-rate-limit`. GitHub frontend production build **PASS**، لذلك الحالة مصنفة external preview quota وليس code regression. لا يتم تزويرها كنجاح، ولا يتم تعديل الكود فقط لإرضاء quota خارجي.
+
+## المخاطر المفتوحة
+
+1. الوثائق القديمة كانت تشير إلى `SchoolsManager ~4308` وخطة Relations قديمة؛ يجري تحديثها الآن.
+2. repo ما زال يحتوي عشرات hotspots فوق 400 سطر ويحتاج ترتيبًا حسب risk/value.
+3. `npm ci` يبلّغ عن vulnerabilities في frontend/server؛ تحتاج dependency audit مضبوط وليس `--force`.
+4. full end-to-end product verification ما زال مطلوبًا قبل Release Candidate.
+5. production readiness: env/CORS/health/logging/backups/monitoring تحتاج إغلاقًا موثقًا.
 
 ## المسار التالي
 
-1. تفكيك class operating cards بعد تثبيت roster boundary النهائي.
-2. إغلاق hotspot المدارس بعد Full Gate + Preview Gate.
-3. الانتقال إلى `pages/Reports.tsx` ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بنفس البروتوكول.
+**Repo-wide Stabilization** وليس مزيدًا من line-count refactor العشوائي:
+
+1. fresh repository audit وتحديد أعلى hotspots والـcoupling.
+2. اختيار concern واحد فقط لكل دفعة.
+3. تحديث `PROJECT_MAP` وownership notes.
+4. product journeys verification.
+5. dependency/security review.
+6. production readiness.
+7. Freeze + full gate + compare مع main.
+8. الدمج لا يتم إلا بعد موافقة المستخدم الصريحة.
 
 ## قاعدة الاستمرار لأي Agent
 
-ابدأ دائمًا من:
+ابدأ من:
 
-`AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_AR.md` -> آخر Safety Gate.
+`AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> `REFACTOR_V2_LATEST_CHECKPOINT_AR.md` -> هذا الملف -> `REFACTOR_V2_EXECUTION_LEDGER_CONTINUATION_2026-08-18_AR.md` -> آخر Safety Gate.
 
-ولا تعتبر أي refactor ناجحًا لمجرد أن الملفات أصبحت أصغر؛ يجب أن يبقى السلوك والعقود والفحص والنشر التجريبي مثبتين.
-
-## دفعة Schools Class Operating Card Presentation
-
-- تم فصل عرض بطاقة تشغيل الفصل إلى `SchoolClassOperatingCard.tsx`.
-- rename/delete/supervisor/course mutations بقيت في `SchoolsManager.tsx` وتصل للـchild عبر callbacks صريحة.
-- تم الحفاظ على إجراءات إضافة الطالب، كشف الفصل، Excel، المحتوى والأكواد، المشرفين والدورات بدون تغيير النصوص أو التدفق.
-- Full Class Card Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Schools Workspace Courses/Classes Presentation
-
-- تم فصل عرض دورات المدرسة إلى `SchoolCoursesPanel.tsx`.
-- تم فصل shell الفصول والإنشاء الجماعي وتجميع `SchoolClassOperatingCard` إلى `SchoolClassesPanel.tsx`.
-- course/class mutations بقيت في `SchoolsManager.tsx` وتصل للـchildren عبر callbacks صريحة.
-- Full Workspace Sections Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Schools Overview Operators Presentation
-
-- تم فصل بطاقة إضافة الطالب المنفرد إلى `SchoolSingleStudentPanel.tsx`.
-- تم فصل عرض مدير/مشرف المدرسة ونطاقاته إلى `SchoolWideSupervisorsPanel.tsx`.
-- إنشاء الطالب وربط/إزالة المشرف وتأكيد الإزالة بقيت في `SchoolsManager.tsx`؛ المكونات الجديدة تستقبل callbacks صريحة فقط.
-- Full Overview Operators Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Schools Overview Operations Summary
-
-- تم فصل لوحة التركيز ومؤشرات المدرسة وملخص تشغيل الفصول إلى `SchoolOverviewOperationsPanel.tsx`.
-- تغيير التبويب والتمرير للمناطق التشغيلية بقي في `SchoolsManager.tsx` عبر callbacks صريحة.
-- لم تنتقل أي API/store mutation إلى مكوّن العرض الجديد.
-- Full Overview Summary Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Schools Command Center Presentation
-
-- تم فصل مركز التشغيل، جاهزية التسليم، رحلة التسليم والإجراءات الأساسية إلى `SchoolCommandCenterPanel.tsx`.
-- التنقل، التمرير، إنشاء الفصل، فتح الطالب، توجيه المشرف وبوابة المتابعة بقيت في `SchoolsManager.tsx` عبر callbacks صريحة.
-- لم تنتقل أي API/store mutation أو منطق إنتاجي إلى مكوّن العرض الجديد.
-- Full Command Center Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Schools Portfolio Filter Presentation
-
-- تم فصل البحث، فلترة أولوية المدارس، ووضع مراجعة/تنظيف المسودات إلى `SchoolPortfolioFilterPanel.tsx`.
-- اشتقاق `filteredSchools` وحساب جاهزية/إخفاء المسودات بقي في `SchoolsManager.tsx`؛ المكوّن الجديد عرضي فقط ويستقبل القيم وcallbacks.
-- Full Portfolio Filter Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Reports Domain Contracts
-
-- بدأ تفكيك `pages/Reports.tsx` بعد تثبيت حدود Schools.
-- تم نقل عقود وأنواع التقارير والمساعدات النقية للمدة والروابط والألوان إلى `pages/Reports/reportDomain.ts`.
-- بقي React state وAPI/store وعمليات التصدير والمعالجة التشغيلية داخل `Reports.tsx` في هذه الدفعة.
-- تم تحديث عقود Reports وGlobal Student Journey لتقرأ ownership الجديد بدون إسقاط أي contract قائم.
-- Full Reports Domain Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Reports Skill Recommendation View-Model
-
-- تم نقل ترتيب محتوى علاج المهارة وبناء روابط الشرح/التدريب إلى `pages/Reports/recommendationViewModel.ts`.
-- الموديول الجديد لا يعتمد React أو store أو API؛ `Reports.tsx` يحتفظ فقط بمحوّل صغير يمرر كتالوج البيانات الحالي دون تغيير السلوك.
-- تم الحفاظ على أوزان اختيار الموضوع، روابط التأسيس، نصوص الإجراءات، وأسماء المادة/القسم كما هي.
-- Full Reports Recommendation Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
-
-## دفعة Reports Student Analytics View-Model
-
-- تم نقل حساب متوسط الأداء وتجميع دليل المهارات وملخص الجاهزية إلى `pages/Reports/studentAnalyticsViewModel.ts`.
-- الموديول الجديد pure ولا يعتمد React أو store أو API أو browser؛ الصفحة تمرر له snapshots الحالية فقط.
-- تم الحفاظ على fallback الأسئلة، حد موثوقية الدليل، ترتيب المهارات من الأضعف، ونصوص قرار الجاهزية دون تغيير.
-- Full Reports Student Analytics Phase Review: **PASS** قبل commit التطبيق.
-- القبول النهائي ينتظر checkpoint Safety Gate + Vercel Preview Gate المجمع.
+ولا تعتبر صِغر الملفات وحده نجاحًا؛ النجاح هو ownership أوضح + behavior ثابت + contracts وbuilds خضراء.
