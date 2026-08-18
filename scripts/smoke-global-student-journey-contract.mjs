@@ -7,7 +7,19 @@ const files = {
   emptyState: await readFile(new URL('../components/ui/EmptyState.tsx', import.meta.url), 'utf8'),
   subjectLearning: await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8'),
   quizzes: await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8'),
-  reports: await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
+  reports: [
+    await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/institutionalReportViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),
+  ].join('\n'),
   plan: await readFile(new URL('../pages/Plan.tsx', import.meta.url), 'utf8'),
   pricing: await readFile(new URL('../pages/Pricing.tsx', import.meta.url), 'utf8'),
   paymentModal: await readFile(new URL('../components/PaymentModal.tsx', import.meta.url), 'utf8'),
@@ -55,11 +67,12 @@ function assertPattern(source, pattern, message) {
   }
 }
 
-check('student dashboard keeps one clear continuation area and learner shortcuts', () => {
-  assertIncludes(files.dashboard, 'StudentNextActionStrip');
+check('student dashboard keeps a clear continuation area and learner shortcuts', () => {
   assertIncludes(files.dashboard, "import { EmptyState } from '../components/ui/EmptyState'");
-  assertIncludes(files.dashboard, 'smartAction.buttonText');
-  assertIncludes(files.dashboard, 'smartAction.link');
+  assertIncludes(files.dashboard, 'const smartPathSkills = buildSmartPathSkillsFromResults(examResults);');
+  assertIncludes(files.dashboard, '<SmartLearningPath skills={smartPathSkills} />');
+  assertIncludes(files.dashboard, 'أكمل مساراتك');
+  assertIncludes(files.dashboard, 'to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}');
   assertIncludes(files.dashboard, 'data-testid="student-path-enroll"');
   assertIncludes(files.dashboard, 'data-testid="student-path-unenroll"');
   assertIncludes(files.dashboard, 'data-testid="student-paths-empty-state"');
@@ -67,11 +80,12 @@ check('student dashboard keeps one clear continuation area and learner shortcuts
   assertIncludes(files.dashboard, 'secondaryAction={{ label:');
   assertIncludes(files.dashboard, 'id="available-paths"');
   assertIncludes(files.dashboard, 'هل تريد إلغاء التسجيل في مسار');
-  assertIncludes(files.dashboard, "setActiveTab('saher')");
-  assertIncludes(files.dashboard, "setActiveTab('quizzes')");
-  assertIncludes(files.dashboard, "setActiveTab('reports')");
-  assertIncludes(files.dashboard, "setActiveTab('plan')");
-  assertAnyIncludes(files.dashboard, ['آخر الأنشطة', 'Ø¢Ø®Ø± Ø§Ù„Ø£Ù†Ø´Ø·Ø©']);
+  assertIncludes(files.dashboard, "{ id: 'saher'");
+  assertIncludes(files.dashboard, "{ id: 'flashcards'");
+  assertIncludes(files.dashboard, "{ id: 'quizzes'");
+  assertIncludes(files.dashboard, "{ id: 'reports'");
+  assertIncludes(files.dashboard, 'onClick={() => setActiveTab(btn.id as any)}');
+  assertIncludes(files.dashboard, 'آخر إنجازاتك');
 });
 
 check('student next action strip is compact, reusable, and has one primary action', () => {

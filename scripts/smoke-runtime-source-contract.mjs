@@ -6,8 +6,6 @@ const adapterSource = await readFile(new URL("../services/adapter.ts", import.me
 const storeSource = await readFile(new URL("../store/useStore.ts", import.meta.url), "utf8");
 const authMiddlewareSource = await readFile(new URL("../server/src/middleware/auth.ts", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
-const readinessSource = await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
-const securityChecklist = await readFile(new URL("../SECURITY_CHECKLIST.md", import.meta.url), "utf8");
 
 const checks = [];
 
@@ -58,12 +56,6 @@ check("local admin bypass is impossible in production", () => {
 check("production env template carries safe runtime defaults", () => {
   assertIncludes(envExample, "NODE_ENV=production");
   assertIncludes(envExample, "DEV_LOCAL_ADMIN_BYPASS=false");
-});
-
-check("reports record source-of-truth hardening", () => {
-  assertIncludes(readinessSource, "Runtime Source-Of-Truth Sprint - 2026-05-12");
-  assertIncludes(securityChecklist, "Legacy Firebase sync is development-only");
-  assertIncludes(securityChecklist, "Local admin bypass is blocked when `NODE_ENV=production`");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

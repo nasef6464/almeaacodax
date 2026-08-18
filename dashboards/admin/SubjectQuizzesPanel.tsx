@@ -21,7 +21,8 @@ import { useStore } from "../../store/useStore";
 import { Quiz, Question } from "../../types";
 import { UnifiedQuizBuilder } from "./UnifiedQuizBuilder";
 import { UnifiedQuestionBuilder } from "./builders/UnifiedQuestionBuilder";
-import { isMaterialQuizCandidate, isTrueMockExam } from "../../utils/mockExam";
+import { isMaterialQuizCandidate } from "../../utils/mockExam";
+import { isTrueMockExam } from "../../utils/quizPlacement";
 
 type PanelKind = "drill" | "test";
 

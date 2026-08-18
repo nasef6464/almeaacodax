@@ -121,6 +121,8 @@ export const QuizPage: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, number>>({});
   const [isFinished, setIsFinished] = useState(false);
+  const [submittedSectionResults, setSubmittedSectionResults] = useState<NonNullable<QuizResult['sectionResults']>>([]);
+  const [submittedSkillsAnalysis, setSubmittedSkillsAnalysis] = useState<NonNullable<QuizResult['skillsAnalysis']>>([]);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حاليًا.');
@@ -889,7 +891,7 @@ export const QuizPage: React.FC = () => {
           const score = total > 0 ? Math.round((correct / total) * 100) : 0;
           return {
             sectionId: section.id,
-            sectionName: section.name,
+            sectionName: section.title || '',
             total,
             correct,
             wrong,
@@ -926,6 +928,9 @@ export const QuizPage: React.FC = () => {
         section: sectionLabel,
       };
     });
+
+    setSubmittedSectionResults(sectionResults || []);
+    setSubmittedSkillsAnalysis(skillsAnalysis);
 
     const questionReview = quizQuestions.map((question) => {
       const selectedOptionIndex = selectedOptions[question.id];
@@ -1498,13 +1503,13 @@ export const QuizPage: React.FC = () => {
               </div>
 
               {/* ── Section Breakdown (محاكيات فقط) ───────────────────────────── */}
-              {(quiz.mockExam?.enabled && sectionResults && sectionResults.length > 0) && (
+              {(quiz.mockExam?.enabled && submittedSectionResults.length > 0) && (
                 <div className="mt-6 text-right space-y-3">
                   <h3 className="text-base font-black text-gray-800 flex items-center gap-2 justify-center">
                     <span className="text-indigo-500">📊</span> تحليل الأقسام التفصيلي
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {sectionResults.map((sec) => {
+                    {submittedSectionResults.map((sec) => {
                       const pct = sec.score;
                       const color = pct >= 80 ? 'emerald' : pct >= 60 ? 'amber' : 'rose';
                       const colorMap = { emerald: { bar:'bg-emerald-500', badge:'bg-emerald-50 text-emerald-700 border-emerald-100', label:'أداء ممتاز' }, amber: { bar:'bg-amber-400', badge:'bg-amber-50 text-amber-700 border-amber-100', label:'يحتاج مراجعة' }, rose: { bar:'bg-rose-500', badge:'bg-rose-50 text-rose-700 border-rose-100', label:'مراجعة عاجلة' } } as const;
@@ -1532,7 +1537,7 @@ export const QuizPage: React.FC = () => {
 
               {/* ── Top Weak Skills ───────────────────────────────────────────── */}
               {(() => {
-                const weak = [...skillsAnalysis].filter(s => s.status === 'weak' || s.status === 'average').sort((a,b) => a.mastery - b.mastery).slice(0, 4);
+                const weak = [...submittedSkillsAnalysis].filter(s => s.status === 'weak' || s.status === 'average').sort((a,b) => a.mastery - b.mastery).slice(0, 4);
                 if (!weak.length) return null;
                 return (
                   <div className="mt-5 text-right space-y-2">

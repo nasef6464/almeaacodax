@@ -5,7 +5,10 @@ const root = process.cwd();
 const typeSource = fs.readFileSync(path.join(root, 'types.ts'), 'utf8');
 const packageModelSource = fs.readFileSync(path.join(root, 'server/src/models/B2BPackage.ts'), 'utf8');
 const contentRoutesSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8');
-const schoolsManagerSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
+const schoolsManagerParentSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
+const schoolPackagesPanelSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'), 'utf8');
+const schoolPackageCardSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackageCard.tsx'), 'utf8');
+const schoolsManagerSource = [schoolsManagerParentSource, schoolPackagesPanelSource, schoolPackageCardSource].join('\n');
 const financialManagerSource = fs.readFileSync(path.join(root, 'dashboards/admin/FinancialManager.tsx'), 'utf8');
 
 const checks = [];
@@ -26,10 +29,14 @@ check('B2B package contract stores teacher and revenue share metadata', () => {
 });
 
 check('school package manager lets admin assign trainer and share percentage', () => {
-  assertIncludes(schoolsManagerSource, 'المعلم/المدرب المرتبط');
-  assertIncludes(schoolsManagerSource, 'نسبة المعلم من دخل الباقة');
-  assertIncludes(schoolsManagerSource, 'updateB2BPackage(pkg.id, { revenueSharePercentage: value })');
-  assertIncludes(schoolsManagerSource, 'assignedTeacherId: event.target.value');
+  assertIncludes(schoolPackageCardSource, 'المعلم/المدرب المرتبط');
+  assertIncludes(schoolPackageCardSource, 'نسبة المعلم من دخل الباقة');
+  assertIncludes(schoolPackageCardSource, 'handleUpdateSchoolPackage(pkg.id, { revenueSharePercentage: value })');
+  assertIncludes(schoolPackageCardSource, 'assignedTeacherId: event.target.value');
+  assertIncludes(schoolPackagesPanelSource, '<SchoolPackageCard');
+  assertIncludes(schoolPackagesPanelSource, 'handleUpdateSchoolPackage={handleUpdateSchoolPackage}');
+  assertIncludes(schoolsManagerParentSource, 'handleUpdateSchoolPackage={handleUpdateSchoolPackage}');
+  assertIncludes(schoolsManagerParentSource, 'await updateB2BPackageAsync(packageId, data);');
 });
 
 check('school package exports include trainer revenue fields', () => {

@@ -58,26 +58,30 @@ addCheck(
   "import parsers cannot silently run against an unregistered runtime",
 );
 
-const adminImportFiles = [
-  "dashboards/admin/LessonsManager.tsx",
-  "dashboards/admin/QuestionBankManager.tsx",
-  "dashboards/admin/SchoolsManager.tsx",
+const adminImportFlows = [
+  { surface: "dashboards/admin/LessonsManager.tsx", reader: "dashboards/admin/LessonsManager.tsx" },
+  { surface: "dashboards/admin/QuestionBankManager.tsx", reader: "dashboards/admin/QuestionBankManager.tsx" },
+  { surface: "dashboards/admin/SchoolsManager.tsx", reader: "dashboards/admin/SchoolsManager/importFileReaders.ts" },
 ];
 
-for (const file of adminImportFiles) {
+for (const { surface, reader } of adminImportFlows) {
   addCheck(
-    `${file} uses safe workbook reader`,
-    includes(file, "readWorkbookFromBuffer") &&
-      includes(file, "registerXlsxRuntime") &&
-      (includes(file, "sheetToSafeObjects") || includes(file, "sheetToSafeRows")),
-    "Excel imports must go through xlsxLoader safety helpers",
+    `${surface} uses safe workbook reader`,
+    includes(reader, "readWorkbookFromBuffer") &&
+      includes(reader, "registerXlsxRuntime") &&
+      (includes(reader, "sheetToSafeObjects") || includes(reader, "sheetToSafeRows")),
+    "Excel imports must go through xlsxLoader safety helpers, directly or through a feature-owned reader",
   );
   addCheck(
-    `${file} has no static xlsx import`,
-    notIncludes(file, "import * as XLSX from 'xlsx'") &&
-      notIncludes(file, 'import * as XLSX from "xlsx"') &&
-      notIncludes(file, "from 'xlsx'") &&
-      notIncludes(file, 'from "xlsx"'),
+    `${surface} has no static xlsx import`,
+    notIncludes(surface, "import * as XLSX from 'xlsx'") &&
+      notIncludes(surface, 'import * as XLSX from "xlsx"') &&
+      notIncludes(surface, "from 'xlsx'") &&
+      notIncludes(surface, 'from "xlsx"') &&
+      notIncludes(reader, "import * as XLSX from 'xlsx'") &&
+      notIncludes(reader, 'import * as XLSX from "xlsx"') &&
+      notIncludes(reader, "from 'xlsx'") &&
+      notIncludes(reader, 'from "xlsx"'),
     "static xlsx imports would bypass lazy loading and safety review",
   );
 }
