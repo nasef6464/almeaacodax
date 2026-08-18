@@ -32,14 +32,15 @@ check('verification checks out the exact source head rather than a synthetic PR 
   assertIncludes('ref: ${{ github.event.pull_request.head.sha || github.sha }}');
 });
 
-check('automatic refactor writes are restricted to pull-request verification runs', () => {
-  const guard = "if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'";
+check('only the single winning non-bot verification run may mutate the refactor branch', () => {
+  const guard = "if: github.actor != 'github-actions[bot]'";
   const occurrences = workflow.split(guard).length - 1;
-  if (occurrences < 3) throw new Error(`Expected the PR-only write guard on all three mutation steps; found ${occurrences}`);
+  if (occurrences < 3) throw new Error(`Expected the non-bot write guard on all three mutation steps; found ${occurrences}`);
+  assertNotIncludes("if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'");
 });
 
 check('verified auto-commit refuses to overwrite a branch that moved during review', () => {
-  assertIncludes('EXPECTED_SHA="${{ github.event.pull_request.head.sha }}"');
+  assertIncludes('EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"');
   assertIncludes('REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
   assertIncludes('if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
   assertIncludes('NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
