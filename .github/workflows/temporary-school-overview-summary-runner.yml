@@ -1,0 +1,88 @@
+name: Temporary School Overview Summary Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/school-overview-summary-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-overview-summary-phase:
+    if: startsWith(github.head_ref, 'refactor/school-overview-summary-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Import staged overview-summary phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/school-overview-summary-runner-base -- \
+            dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx \
+            scripts/smoke-schools-overview-operations-boundary-contract.mjs \
+            tools/refactor/apply-school-overview-summary-extraction.py \
+            tools/refactor/phase-review-school-overview-summary.mjs
+
+      - name: Apply overview-summary presentation extraction
+        run: python tools/refactor/apply-school-overview-summary-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full overview-summary phase review
+        run: node tools/refactor/phase-review-school-overview-summary.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified overview-summary phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Schools Overview Operations Summary\n\n- تم فصل لوحة التركيز ومؤشرات المدرسة وملخص تشغيل الفصول إلى `SchoolOverviewOperationsPanel.tsx`.\n- تغيير التبويب والتمرير للمناطق التشغيلية بقي في `SchoolsManager.tsx` عبر callbacks صريحة.\n- لم تنتقل أي API/store mutation إلى مكوّن العرض الجديد.\n- Full Overview Summary Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Schools Overview Operations Summary\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- تم إخراج focus/metrics/capacity/class-operating summary من `SchoolsManager.tsx`.\n- navigation/scroll orchestration بقي في parent، والـchild presentation-only.\n- تم تحديث عقود المدرسة لتقرأ ownership الجديد دون إسقاط السلوك السابق.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-school-overview-summary-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx \
+            dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx \
+            scripts/smoke-school-management-contract.mjs \
+            scripts/smoke-batch100f-relationship-audit-contract.mjs \
+            scripts/smoke-schools-overview-operations-boundary-contract.mjs \
+            tools/refactor/phase-review-school-overview-summary.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(schools): extract overview operations summary"
+          git push origin HEAD:refactor/repository-v2-safe
