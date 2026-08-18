@@ -36,7 +36,7 @@ on:
       - '.github/workflows/refactor-v2-guard.yml'
 
 permissions:
-  contents: read
+  contents: write
   statuses: read
 
 concurrency:
@@ -215,6 +215,34 @@ jobs:
 
       - name: API security contract
         run: npm run smoke:api-security
+
+      - name: Apply scoped skill report extraction
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/apply-reports-scoped-skill-report.mjs
+
+      - name: Run scoped skill report phase review
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/phase-review-reports-scoped-skill-report.mjs
+
+      - name: Commit verified scoped skill report extraction
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            pages/Reports.tsx \
+            scripts/smoke-reports-role-contract.mjs \
+            scripts/smoke-global-student-journey-contract.mjs
+
+          if git diff --cached --quiet; then
+            echo "No scoped skill report changes to commit."
+            exit 0
+          fi
+
+          git commit -m "refactor(reports): extract scoped skill report view model"
+          git push origin HEAD:refactor/repository-v2-safe
 
   preview-deployment-gate:
     name: Vercel preview deployment gate
