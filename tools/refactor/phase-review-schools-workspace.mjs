@@ -11,6 +11,7 @@ const checks = [
   ['school decision/handover workspace logic', 'node', ['scripts/smoke-schools-workspace-viewmodel-contract.mjs']],
   ['school roster filter/pagination logic', 'node', ['scripts/smoke-schools-roster-viewmodel-contract.mjs']],
   ['school package access view-model logic', 'node', ['scripts/smoke-schools-package-access-viewmodel-contract.mjs']],
+  ['school package card presentation boundary', 'node', ['scripts/smoke-schools-package-card-boundary-contract.mjs']],
   ['school import parser logic/performance', 'npm', ['run', 'smoke:schools-import-parsing']],
   ['school management contract', 'npm', ['run', 'smoke:school-management']],
   ['school XLSX safety contract', 'npm', ['run', 'smoke:xlsx-safety']],
