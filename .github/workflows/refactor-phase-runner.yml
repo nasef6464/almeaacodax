@@ -33,6 +33,9 @@ jobs:
       - name: Apply directed quiz context repair
         run: python tools/refactor/fix-directed-quiz-context.py
 
+      - name: Repair scoped bootstrap performance contract
+        run: python tools/refactor/fix-bootstrap-performance-contract.py
+
       - name: Install frontend dependencies
         run: npm ci
 
@@ -57,6 +60,8 @@ jobs:
               'الحالة: **تم تطبيق الاستخراج، وتنتظر نتيجة Phase Review قبل الإغلاق.**',
               'الحالة: **Phase Review PASS؛ تم تطبيق الدفعة، والقبول النهائي مشروط بنجاح Safety Gate على commit الناتج.**',
           )
+          if 'bootstrap blocking performance contract' not in ledger:
+              ledger += '\n- أثناء الفحص اتضح أن عقد الأداء كان يبحث عن تسلسل نصي عبر الملف كاملًا بدل فحص `DATA_BOOTSTRAP_BLOCKING_PREFIXES` نفسه، مما أعطى failure كاذبًا بسبب وجود `/category` ثم `/quiz` داخل قائمة بدء bootstrap. تم تضييق الاختبار ليتحقق من القائمة المقصودة فقط بدون تغيير منطق التطبيق.\n'
           ledger_path.write_text(ledger, encoding='utf-8')
 
           guard_path = Path('.github/workflows/refactor-v2-guard.yml')
@@ -76,6 +81,7 @@ jobs:
 
           git rm -f tools/refactor/apply-schools-import-decomposition.py
           git rm -f tools/refactor/fix-directed-quiz-context.py
+          git rm -f tools/refactor/fix-bootstrap-performance-contract.py
           if [ -f .github/workflows/refactor-v2-schools-import-phase.yml ]; then
             git rm -f .github/workflows/refactor-v2-schools-import-phase.yml
           fi
@@ -85,5 +91,5 @@ jobs:
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract imports and repair directed quiz context"
+          git commit -m "refactor(schools): extract imports and repair verified regressions"
           git push origin HEAD:refactor/repository-v2-safe
