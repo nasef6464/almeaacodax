@@ -9,6 +9,9 @@ const files = {
   schools: [
   await read("dashboards/admin/SchoolsManager.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/readinessViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/relationshipViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/workspaceViewModel.ts"),
 ].join("\n"),
   store: await read("store/useStore.ts"),
   packageJson: await read("package.json"),
@@ -259,20 +262,18 @@ check("school bulk import and relation uploads keep class membership singular", 
   const relationsRouteIndex = files.routes.indexOf('"/schools/:id/relations"');
   const relationCleanupIndex = files.routes.indexOf('await GroupModel.updateMany(\n          { type: "CLASS", parentId: schoolId }', relationsRouteIndex);
   const relationAddIndex = files.routes.indexOf("GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } })", relationsRouteIndex);
-  if (relationCleanupIndex < 0 || relationAddIndex < 0 || relationCleanupIndex > relationAddIndex) {
-    throw new Error("School relation upload must clear old class rosters before adding the student to the target class");
+  if (relationsRouteIndex < 0 || relationCleanupIndex < 0 || relationAddIndex < 0 || relationCleanupIndex > relationAddIndex) {
+    throw new Error("relations endpoint must clean old class memberships before adding the new class");
   }
 });
 
 check("school access codes attach students to the school roster", () => {
-  assertIncludes(files.authRoutes, '"/me/redeem-access-code"');
-  assertIncludes(files.authRoutes, "$set: { schoolId }");
-  assertIncludes(files.authRoutes, "$addToSet: { groupIds: schoolId }");
-  assertIncludes(files.authRoutes, "$addToSet: { studentIds: String(user.id || user._id) }");
-  assertIncludes(files.authRoutes, "totalStudents: schoolStudentCount");
+  assertIncludes(files.authRoutes, "if (accessCode.schoolId) {");
+  assertIncludes(files.authRoutes, "payload.schoolId = schoolId;");
+  assertIncludes(files.authRoutes, "schoolStudentIds = uniqueStrings([...(school.studentIds || []).map(String), userId]);");
+  assertIncludes(files.authRoutes, "{ $set: { studentIds: schoolStudentIds } }");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
-
-if (failed.length > 0) process.exit(1);
+if (failed.length) process.exit(1);
