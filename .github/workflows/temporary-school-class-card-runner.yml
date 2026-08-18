@@ -1,0 +1,88 @@
+name: Temporary School Class Card Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/class-card-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-class-card-phase:
+    if: startsWith(github.head_ref, 'refactor/class-card-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Import staged class-card phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/class-card-runner-base -- \
+            dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx \
+            scripts/smoke-schools-class-card-boundary-contract.mjs \
+            tools/refactor/apply-school-class-card-extraction.py \
+            tools/refactor/phase-review-school-class-card.mjs
+
+      - name: Apply class-card presentation extraction
+        run: python tools/refactor/apply-school-class-card-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full class-card phase review
+        run: node tools/refactor/phase-review-school-class-card.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified class-card phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Schools Class Operating Card Presentation\n\n- تم فصل عرض بطاقة تشغيل الفصل إلى `SchoolClassOperatingCard.tsx`.\n- rename/delete/supervisor/course mutations بقيت في `SchoolsManager.tsx` وتصل للـchild عبر callbacks صريحة.\n- تم الحفاظ على إجراءات إضافة الطالب، كشف الفصل، Excel، المحتوى والأكواد، المشرفين والدورات بدون تغيير النصوص أو التدفق.\n- Full Class Card Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Schools Class Operating Card Presentation\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- فصل card presentation عن God Component مع إبقاء API/store/mutations/confirmations في orchestration layer.\n- boundary contract جديد يثبت أن child لا يستورد store أو API ويمنع رجوع markup إلى `SchoolsManager.tsx`.\n- school management وrelationship audit أصبحا يتبعان ownership الجديد بدل الاعتماد على موقع النص القديم.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-school-class-card-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx \
+            dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx \
+            scripts/smoke-school-management-contract.mjs \
+            scripts/smoke-batch100f-relationship-audit-contract.mjs \
+            scripts/smoke-schools-class-card-boundary-contract.mjs \
+            tools/refactor/phase-review-school-class-card.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(schools): extract class operating card presentation"
+          git push origin HEAD:refactor/repository-v2-safe
