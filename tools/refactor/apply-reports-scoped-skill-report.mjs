@@ -23,10 +23,13 @@ function replaceRange(source, startMarker, endMarker, replacement, label) {
 const reportsPath = 'pages/Reports.tsx';
 const roleContractPath = 'scripts/smoke-reports-role-contract.mjs';
 const globalJourneyPath = 'scripts/smoke-global-student-journey-contract.mjs';
+const performanceContractPath = 'scripts/smoke-performance-contract.mjs';
 
 let reports = read(reportsPath);
 let roleContract = read(roleContractPath);
 let globalJourney = read(globalJourneyPath);
+let performanceContract = read(performanceContractPath);
+let performanceContractChanged = false;
 const appliedPhases = [];
 
 const scopedSkillImport = "import { buildScopedSkillReportCards } from './Reports/scopedSkillReportViewModel';";
@@ -197,14 +200,85 @@ if (!studentActionsAlreadyApplied) {
   appliedPhases.push('student-report-actions');
 }
 
+const studentSkillRowsImport = "import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';";
+const studentSkillRowsDelegation = 'buildStudentSkillReportRows(focusedReportSkills, {';
+const studentSkillRowsRoleOwnership = "../pages/Reports/studentSkillRowsViewModel.ts";
+const studentSkillRowsGlobalOwnership = "../pages/Reports/studentSkillRowsViewModel.ts";
+const oldPerformanceEvidenceOwnership = "assertIncludes('pages/Reports.tsx', 'evidenceLabel: skill.isReliable');";
+const newPerformanceEvidenceOwnership = "assertIncludes('pages/Reports/studentSkillRowsViewModel.ts', 'evidenceLabel: skill.isReliable');";
+
+const studentSkillRowsAlreadyApplied =
+  reports.includes(studentSkillRowsImport) &&
+  reports.includes(studentSkillRowsDelegation) &&
+  roleContract.includes(studentSkillRowsRoleOwnership) &&
+  globalJourney.includes(studentSkillRowsGlobalOwnership) &&
+  performanceContract.includes(newPerformanceEvidenceOwnership) &&
+  !performanceContract.includes(oldPerformanceEvidenceOwnership);
+
+if (!studentSkillRowsAlreadyApplied) {
+  if (!reports.includes(studentSkillRowsImport)) {
+    reports = replaceOnce(
+      reports,
+      "import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';\n",
+      "import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';\nimport { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';\n",
+      'student report actions import anchor',
+    );
+  }
+
+  if (!reports.includes(studentSkillRowsDelegation)) {
+    reports = replaceRange(
+      reports,
+      '    const compactStudentSkillRows = useMemo(() => {',
+      '    const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 5);',
+      "    const compactStudentSkillRows = useMemo(\n        () => buildStudentSkillReportRows(focusedReportSkills, {\n            allSkills: skills,\n            lessons,\n            quizzes,\n            libraryItems,\n            questions,\n            topics,\n            subjects,\n            sections,\n        }),\n        [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],\n    );\n",
+      'compact student skill row derivation block',
+    );
+  }
+
+  if (!roleContract.includes(studentSkillRowsRoleOwnership)) {
+    roleContract = replaceOnce(
+      roleContract,
+      "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      'reports role student skill row ownership list',
+    );
+  }
+
+  if (!globalJourney.includes(studentSkillRowsGlobalOwnership)) {
+    globalJourney = replaceOnce(
+      globalJourney,
+      "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      'global journey student skill row ownership list',
+    );
+  }
+
+  if (performanceContract.includes(oldPerformanceEvidenceOwnership)) {
+    performanceContract = replaceOnce(
+      performanceContract,
+      oldPerformanceEvidenceOwnership,
+      newPerformanceEvidenceOwnership,
+      'performance student skill evidence ownership',
+    );
+    performanceContractChanged = true;
+  } else if (!performanceContract.includes(newPerformanceEvidenceOwnership)) {
+    throw new Error('Missing performance student skill evidence ownership assertion');
+  }
+
+  appliedPhases.push('student-skill-rows');
+}
+
 if (appliedPhases.length > 0) {
   write(reportsPath, reports);
   write(roleContractPath, roleContract);
   write(globalJourneyPath, globalJourney);
+  if (performanceContractChanged) {
+    write(performanceContractPath, performanceContract);
+  }
 }
 
 console.log(JSON.stringify({
   status: appliedPhases.length > 0 ? 'APPLIED' : 'ALREADY_APPLIED',
   appliedPhases,
-  files: [reportsPath, roleContractPath, globalJourneyPath],
+  files: [reportsPath, roleContractPath, globalJourneyPath, ...(performanceContractChanged ? [performanceContractPath] : [])],
 }, null, 2));

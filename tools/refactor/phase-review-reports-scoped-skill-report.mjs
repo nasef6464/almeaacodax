@@ -15,6 +15,7 @@ const checks = [
   ['reports student analytics boundary', 'node', ['scripts/smoke-reports-student-analytics-boundary-contract.mjs']],
   ['reports student weekly plan boundary', 'node', ['scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs']],
   ['reports student report actions boundary', 'node', ['scripts/smoke-reports-student-report-actions-boundary-contract.mjs']],
+  ['reports student skill rows boundary', 'node', ['scripts/smoke-reports-student-skill-rows-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
@@ -28,7 +29,7 @@ const checks = [
 const results = [];
 for (const [name, command, args] of checks) {
   const startedAt = Date.now();
-  console.log(`\n[reports-student-actions-phase-review] START ${name}`);
+  console.log(`\n[reports-student-skill-rows-phase-review] START ${name}`);
   const result = spawnSync(command, args, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
@@ -36,11 +37,20 @@ for (const [name, command, args] of checks) {
   const durationMs = Date.now() - startedAt;
   results.push({ name, status: result.status === 0 ? 'PASS' : 'FAIL', durationMs });
   if (result.status !== 0) {
-    console.error(`\n[reports-student-actions-phase-review] FAIL ${name}`);
+    console.error(`\n[reports-student-skill-rows-phase-review] FAIL ${name}`);
     console.error(JSON.stringify(results, null, 2));
     process.exit(result.status ?? 1);
   }
 }
 
-console.log('\n[reports-student-actions-phase-review] ALL CHECKS PASS');
+const stagePerformanceContract = spawnSync('git', ['add', 'scripts/smoke-performance-contract.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (stagePerformanceContract.status !== 0) {
+  console.error('[reports-student-skill-rows-phase-review] Failed to stage performance ownership update');
+  process.exit(stagePerformanceContract.status ?? 1);
+}
+
+console.log('\n[reports-student-skill-rows-phase-review] ALL CHECKS PASS');
 console.log(JSON.stringify(results, null, 2));
