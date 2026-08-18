@@ -18,6 +18,15 @@ if (applyPortfolioCardPresentation.status !== 0) {
     process.exit(applyPortfolioCardPresentation.status ?? 1);
 }
 
+const applyWorkspaceControlsPresentation = spawnSync('node', ['tools/refactor/apply-school-workspace-controls-presentation.mjs'], {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+});
+if (applyWorkspaceControlsPresentation.status !== 0) {
+    console.error('[school-portfolio-projection-phase-review] Failed to apply school workspace controls presentation extraction');
+    process.exit(applyWorkspaceControlsPresentation.status ?? 1);
+}
+
 const checks = [
     ['git diff whitespace validation', 'git', ['diff', '--check']],
     ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -29,6 +38,7 @@ const checks = [
     ['school portfolio projection boundary', 'node', ['scripts/smoke-schools-portfolio-projection-boundary-contract.mjs']],
     ['school card readiness projection boundary', 'node', ['scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs']],
     ['school portfolio card presentation boundary', 'node', ['scripts/smoke-schools-portfolio-card-boundary-contract.mjs']],
+    ['school workspace controls presentation boundary', 'node', ['scripts/smoke-schools-workspace-controls-boundary-contract.mjs']],
     ['school readiness view-model contract', 'node', ['scripts/smoke-schools-readiness-viewmodel-contract.mjs']],
     ['school portfolio filter presentation contract', 'node', ['scripts/smoke-schools-portfolio-filter-boundary-contract.mjs']],
     ['school management contract', 'node', ['scripts/smoke-school-management-contract.mjs']],
