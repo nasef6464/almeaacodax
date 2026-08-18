@@ -1,0 +1,94 @@
+name: Temporary Reports Recommendation Runner V2
+
+on:
+  pull_request:
+    branches:
+      - refactor/reports-recommendation-runner-base-v2
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-reports-recommendation-phase:
+    if: startsWith(github.head_ref, 'refactor/reports-recommendation-runner-trigger-v2')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Confirm expected safe-branch base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "c90a7f8e1ed6db1e25ba6ab5fb02907eb357876a"
+
+      - name: Import staged reports-recommendation phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/reports-recommendation-runner-base-v2 -- \
+            pages/Reports/recommendationViewModel.ts \
+            scripts/smoke-reports-recommendation-boundary-contract.mjs \
+            tools/refactor/apply-reports-recommendation-extraction.py \
+            tools/refactor/phase-review-reports-recommendation.mjs
+
+      - name: Apply reports recommendation extraction
+        run: python tools/refactor/apply-reports-recommendation-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full reports-recommendation phase review
+        run: node tools/refactor/phase-review-reports-recommendation.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified reports-recommendation phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Reports Skill Recommendation View-Model\n\n- تم نقل ترتيب محتوى علاج المهارة وبناء روابط الشرح/التدريب إلى `pages/Reports/recommendationViewModel.ts`.\n- الموديول الجديد لا يعتمد React أو store أو API؛ `Reports.tsx` يحتفظ فقط بمحوّل صغير يمرر كتالوج البيانات الحالي دون تغيير السلوك.\n- تم الحفاظ على أوزان اختيار الموضوع، روابط التأسيس، نصوص الإجراءات، وأسماء المادة/القسم كما هي.\n- Full Reports Recommendation Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Reports Skill Recommendation View-Model\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- خرج ranking/link-building الخاص بتوصيات المهارات من `Reports.tsx` إلى view-model نقي.\n- store snapshot access بقي في adapter داخل الصفحة لضمان تطابق السلوك الحالي، ولم تنتقل mutations أو side effects.\n- عقود Reports وGlobal Student Journey أصبحت aggregate-aware لملكية التوصيات الجديدة.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-reports-recommendation-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add pages/Reports.tsx \
+            pages/Reports/recommendationViewModel.ts \
+            scripts/smoke-reports-role-contract.mjs \
+            scripts/smoke-global-student-journey-contract.mjs \
+            scripts/smoke-reports-recommendation-boundary-contract.mjs \
+            tools/refactor/phase-review-reports-recommendation.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(reports): extract skill recommendation view model"
+          git push origin HEAD:refactor/repository-v2-safe
