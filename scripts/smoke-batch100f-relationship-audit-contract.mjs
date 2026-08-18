@@ -19,6 +19,7 @@ const sources = {
     read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
   ].join("\n"),
   schoolPortal: read("dashboards/admin/SchoolPortalManager.tsx"),
   usersManager: read("dashboards/admin/UsersManager.tsx"),

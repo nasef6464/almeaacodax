@@ -200,3 +200,11 @@
 - تم إخراج single-student presentation وschool-wide supervisor scope presentation من `SchoolsManager.tsx`.
 - API/store mutations والتأكيدات بقيت في orchestration layer، ولم تنتقل إلى child components.
 - تم تحديث عقود school management وrelationship audit لتتبع ownership الجديد عبر الملفات الجديدة.
+
+## دفعة Schools Overview Operations Summary
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- تم إخراج focus/metrics/capacity/class-operating summary من `SchoolsManager.tsx`.
+- navigation/scroll orchestration بقي في parent، والـchild presentation-only.
+- تم تحديث عقود المدرسة لتقرأ ownership الجديد دون إسقاط السلوك السابق.

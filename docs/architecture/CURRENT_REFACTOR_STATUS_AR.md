@@ -105,3 +105,11 @@
 - إنشاء الطالب وربط/إزالة المشرف وتأكيد الإزالة بقيت في `SchoolsManager.tsx`؛ المكونات الجديدة تستقبل callbacks صريحة فقط.
 - Full Overview Operators Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Schools Overview Operations Summary
+
+- تم فصل لوحة التركيز ومؤشرات المدرسة وملخص تشغيل الفصول إلى `SchoolOverviewOperationsPanel.tsx`.
+- تغيير التبويب والتمرير للمناطق التشغيلية بقي في `SchoolsManager.tsx` عبر callbacks صريحة.
+- لم تنتقل أي API/store mutation إلى مكوّن العرض الجديد.
+- Full Overview Summary Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
