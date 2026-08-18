@@ -117,6 +117,9 @@ jobs:
       - name: School workspace courses/classes presentation boundary contract
         run: node scripts/smoke-schools-workspace-sections-boundary-contract.mjs
 
+      - name: School overview operator presentation boundary contract
+        run: node scripts/smoke-schools-overview-operators-boundary-contract.mjs
+
       - name: School package access projection contract
         run: node scripts/smoke-schools-package-access-viewmodel-contract.mjs
 
