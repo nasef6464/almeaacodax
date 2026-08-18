@@ -223,19 +223,19 @@ jobs:
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
       - name: Apply scoped skill report extraction
-        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+        if: github.actor != 'github-actions[bot]'
         run: node tools/refactor/apply-reports-scoped-skill-report.mjs
 
       - name: Run scoped skill report phase review
-        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+        if: github.actor != 'github-actions[bot]'
         run: node tools/refactor/phase-review-reports-scoped-skill-report.mjs
 
       - name: Commit verified scoped skill report extraction
-        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+        if: github.actor != 'github-actions[bot]'
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED_SHA="${{ github.event.pull_request.head.sha }}"
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add \
