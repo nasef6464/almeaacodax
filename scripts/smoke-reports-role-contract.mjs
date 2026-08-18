@@ -8,6 +8,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
