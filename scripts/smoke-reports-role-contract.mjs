@@ -5,6 +5,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
@@ -245,12 +246,12 @@ check('staff reports can send a real intervention alert to linked parent and sup
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {
-  assertIncludes(reportsSource, 'const scopedInterventionPlan = useMemo');
+  assertIncludes(reportsSource, 'buildScopedInterventionPlan(scopedAnalytics)');
   assertIncludes(reportsSource, 'ابدأ بالمهارة الأكثر احتياجًا');
   assertIncludes(reportsSource, 'تابع الطالب الأكثر احتياجًا');
   assertIncludes(reportsSource, 'حوّلها لمسار تعلم تكيفي');
   assertIncludes(reportsSource, 'تدريبًا تكيفيًا');
-  assertIncludes(reportsSource, 'const scopedFollowUpSummary = useMemo');
+  assertIncludes(reportsSource, 'buildScopedFollowUpSummary(scopedAnalytics, user.role)');
   assertIncludes(reportsSource, 'const buildScopedSmartRemediation = async () =>');
   assertIncludes(reportsSource, 'const skillPayload = scopedAnalytics.weakestSkills.slice(0, 5)');
   assertIncludes(reportsSource, 'api.createInterventionStudyPlan');
