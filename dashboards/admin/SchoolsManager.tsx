@@ -75,6 +75,7 @@ import {
     summarizeSchoolPortfolio,
 } from './SchoolsManager/readinessViewModel';
 import { SchoolPortfolioCard } from './SchoolsManager/SchoolPortfolioCard';
+import { SchoolWorkspaceControlsPanel } from './SchoolsManager/SchoolWorkspaceControlsPanel';
 import { buildSchoolRelationshipViewModel } from './SchoolsManager/relationshipViewModel';
 import { buildSchoolWorkspaceViewModel } from './SchoolsManager/workspaceViewModel';
 import { buildSchoolRosterViewModel } from './SchoolsManager/rosterViewModel';
@@ -2017,154 +2018,68 @@ export const SchoolsManager: React.FC = () => {
             }
         };
 
+        const openSchoolRenameModal = () => {
+            setEditNameModalState({
+                isOpen: true,
+                title: 'اكتب اسم المدرسة الجديد',
+                initialValue: selectedSchool.name,
+                onSave: async (newName: string) => {
+                    if (newName.trim() === selectedSchool.name) return;
+                    setSchoolActionPending('rename-school');
+                    setSaveVerificationState('saving');
+                    setSaveVerificationMessage('جاري حفظ اسم المدرسة...');
+                    setManagementError(null);
+                    setManagementNotice(null);
+                    try {
+                        const persistedSchool = await updateGroupAsync(selectedSchool.id, { name: newName.trim() });
+                        const verifiedSchool = await refreshSchoolWorkspace(persistedSchool.id);
+                        setSelectedSchool(verifiedSchool);
+                        setSaveVerificationState('success');
+                        setSaveVerificationMessage('تم حفظ اسم المدرسة والتأكد منه من الخادم.');
+                        setManagementNotice('تم حفظ اسم المدرسة بعد التحقق من الخادم.');
+                    } catch (error) {
+                        setSaveVerificationState('error');
+                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
+                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
+                        throw error;
+                    } finally {
+                        setSchoolActionPending(null);
+                    }
+                },
+            });
+        };
+
         return (
             <div data-testid="school-workspace-shell" className="min-w-0 max-w-full space-y-6 overflow-x-hidden animate-fade-in">
-                <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                    <button onClick={() => { setManagementError(null); setManagementNotice(null); setIsDeleteSchoolConfirmOpen(false); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
-                        &rarr; عودة لقائمة المدارس
-                    </button>
-                    <h1 className="min-w-[220px] flex-1 text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
-                    <button
-                        type="button"
-                        data-testid="school-save-verify-button"
-                        onClick={() => void handleSaveAndVerifySchool()}
-                        disabled={isSchoolWorkspaceBusy}
-                        className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
-                            saveVerificationState === 'error'
-                                ? 'bg-red-50 text-red-700 hover:bg-red-100'
-                                : saveVerificationState === 'success'
-                                    ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                        } disabled:cursor-not-allowed disabled:opacity-60`}
-                        title="حفظ ثم إعادة قراءة بيانات المدرسة من الخادم للتأكد"
-                    >
-                        <CheckCircle size={16} />
-                        {saveVerificationButtonLabel}
-                    </button>
-                    <button
-                        onClick={() => {
-                            setEditNameModalState({
-                                isOpen: true,
-                                title: 'اكتب اسم المدرسة الجديد',
-                                initialValue: selectedSchool.name,
-                                onSave: async (newName: string) => {
-                                    if (newName.trim() === selectedSchool.name) return;
-                                    setSchoolActionPending('rename-school');
-                                    setSaveVerificationState('saving');
-                                    setSaveVerificationMessage('جاري حفظ اسم المدرسة...');
-                                    setManagementError(null);
-                                    setManagementNotice(null);
-                                    try {
-                                        const persistedSchool = await updateGroupAsync(selectedSchool.id, { name: newName.trim() });
-                                        const verifiedSchool = await refreshSchoolWorkspace(persistedSchool.id);
-                                        setSelectedSchool(verifiedSchool);
-                                        setSaveVerificationState('success');
-                                        setSaveVerificationMessage('تم حفظ اسم المدرسة والتأكد منه من الخادم.');
-                                        setManagementNotice('تم حفظ اسم المدرسة بعد التحقق من الخادم.');
-                                    } catch (error) {
-                                        setSaveVerificationState('error');
-                                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
-                                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
-                                        throw error;
-                                    } finally {
-                                        setSchoolActionPending(null);
-                                    }
-                                }
-                            });
-                        }}
-                        disabled={isSchoolWorkspaceBusy}
-                        className="inline-flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm font-bold text-gray-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
-                        title="تعديل اسم المدرسة"
-                    >
-                        <Edit2 size={16} />
-                        تعديل الاسم
-                    </button>
-                    <button
-                        onClick={downloadSchoolHandover}
-                        className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-colors"
-                        title="تحميل ملف تسليم شامل للمدرسة"
-                    >
-                        <Download size={16} />
-                        ملف تسليم المدرسة
-                    </button>
-                    <button
-                        onClick={() => void copySchoolHandoverMessage()}
-                        className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 transition-colors"
-                        title="نسخ رسالة جاهزة لإرسالها لإدارة المدرسة"
-                    >
-                        <Clipboard size={16} />
-                        نسخ رسالة التسليم
-                    </button>
-                    <button
-                        onClick={printSchoolReport}
-                        className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
-                        title="طباعة تقرير جاهزية وتشغيل المدرسة"
-                    >
-                        <Printer size={16} />
-                        طباعة التقرير
-                    </button>
-                    <button
-                        type="button"
-                        data-testid="school-delete-button"
-                        onClick={handleDeleteSelectedSchool}
-                        className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
-                        title="حذف المدرسة وفصلها عن الطلاب والمشرفين"
-                    >
-                        <Trash2 size={16} />
-                        حذف المدرسة
-                    </button>
-                </div>
-
-                {isDeleteSchoolConfirmOpen && (
-                    <div data-testid="school-delete-confirm-panel" className="rounded-2xl border border-red-200 bg-red-50 p-5">
-                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                            <div>
-                                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-red-700">
-                                    <Trash2 size={14} />
-                                    تأكيد حذف مدرسة
-                                </div>
-                                <h3 className="mt-3 text-lg font-black text-gray-900">راجع الأثر قبل حذف {selectedSchool.name}</h3>
-                                <p className="mt-1 text-sm font-bold leading-6 text-red-800">
-                                    الحذف يزيل المدرسة من هذه القائمة ويفصل نطاقها التشغيلي. استخدمه للتنظيف فقط عندما تكون متأكدًا أن المدرسة ليست عقدًا نشطًا.
-                                </p>
-                            </div>
-                            <div className="grid min-w-[280px] grid-cols-2 gap-2 text-center">
-                                {[
-                                    ['فصول', schoolClasses.length],
-                                    ['طلاب', schoolStudents.length],
-                                    ['مشرفون', schoolSupervisors.length],
-                                    ['باقات', schoolPackages.length],
-                                    ['أكواد', schoolCodes.length],
-                                    ['جاهزية', `${readinessScore}/${readinessChecks.length}`],
-                                ].map(([label, value]) => (
-                                    <div key={label} className="rounded-xl bg-white px-3 py-2">
-                                        <div className="text-lg font-black text-gray-900">{value}</div>
-                                        <div className="text-[11px] font-black text-gray-500">{label}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
-                            <button
-                                type="button"
-                                data-testid="school-delete-cancel"
-                                onClick={() => setIsDeleteSchoolConfirmOpen(false)}
-                                className="rounded-xl bg-white px-4 py-2.5 text-sm font-black text-gray-700 transition-colors hover:bg-gray-100"
-                            >
-                                إلغاء والعودة للإدارة
-                            </button>
-                            <button
-                                type="button"
-                                data-testid="school-delete-confirm"
-                                onClick={confirmDeleteSelectedSchool}
-                                disabled={Boolean(schoolActionPending)}
-                                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-red-700"
-                            >
-                                حذف المدرسة نهائيًا
-                            </button>
-                        </div>
-                    </div>
-                )}
+                <SchoolWorkspaceControlsPanel
+                    schoolName={selectedSchool.name}
+                    saveVerificationState={saveVerificationState}
+                    saveVerificationButtonLabel={saveVerificationButtonLabel}
+                    isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                    isDeleteConfirmOpen={isDeleteSchoolConfirmOpen}
+                    classCount={schoolClasses.length}
+                    studentCount={schoolStudents.length}
+                    supervisorCount={schoolSupervisors.length}
+                    packageCount={schoolPackages.length}
+                    codeCount={schoolCodes.length}
+                    readinessScore={readinessScore}
+                    readinessTotal={readinessChecks.length}
+                    isDeletePending={Boolean(schoolActionPending)}
+                    onBack={() => {
+                        setManagementError(null);
+                        setManagementNotice(null);
+                        setIsDeleteSchoolConfirmOpen(false);
+                        setSelectedSchool(null);
+                    }}
+                    onSaveAndVerify={() => void handleSaveAndVerifySchool()}
+                    onRename={openSchoolRenameModal}
+                    onDownloadHandover={downloadSchoolHandover}
+                    onCopyHandover={() => void copySchoolHandoverMessage()}
+                    onPrintReport={printSchoolReport}
+                    onRequestDelete={handleDeleteSelectedSchool}
+                    onCancelDelete={() => setIsDeleteSchoolConfirmOpen(false)}
+                    onConfirmDelete={confirmDeleteSelectedSchool}
+                />
 
                 <div data-testid="school-workspace-tabs" className="hidden">
                     {[
