@@ -79,8 +79,8 @@ if (!managementContractSource.includes(oldActionOwnership)) {
     throw new Error('School management contract action ownership anchor not found.');
 }
 
-managerSource = managerSource.replace(oldImport, newImport);
 managerSource = `${managerSource.slice(0, cardStart)}${cardReplacement}${managerSource.slice(cardEnd)}`;
+managerSource = managerSource.replace(oldImport, newImport);
 managementContractSource = managementContractSource
     .replace(managementListAnchor, managementListReplacement)
     .replace(oldActionOwnership, newActionOwnership);
