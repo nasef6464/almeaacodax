@@ -53,3 +53,13 @@
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
+
+## Access Codes presentation boundary — Full Phase Review PASS
+
+- تم نقل نموذج إنشاء أكواد المدرسة، قائمة الأكواد، copy/delete، وحالات loading/error/pagination إلى `SchoolAccessCodesPanel.tsx`.
+- تم فصل row projection إلى `accessCodeViewModel.ts` مع Map للباقة بدل `schoolPackages.find` لكل كود.
+- الـchild يستقبل state/handlers كـprops ولا يستورد manager/store/api.
+- direct scale contract يغطي 50,000 كود و10,000 باقة، إضافةً إلى package fallback وusage percentage semantics.
+- الدفعة لا تغلق إلا بعد Direct Contract + Quick Gate + Full Review + Standard Safety Gate.
+
+- Access Codes Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
