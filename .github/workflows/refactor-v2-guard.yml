@@ -180,6 +180,9 @@ jobs:
       - name: Reports scoped comparison boundary contract
         run: node scripts/smoke-reports-scoped-comparison-boundary-contract.mjs
 
+      - name: Reports directed quiz analytics boundary contract
+        run: node scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs
+
       - name: Reports role contract
         run: npm run smoke:reports-role
 
