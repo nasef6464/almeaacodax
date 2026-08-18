@@ -6,6 +6,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
@@ -82,7 +83,7 @@ check('student skill performance report is explicitly driven by quiz answers and
 });
 
 check('student skill report bridges weak quiz skills into relearning, adaptive training, and smart path', () => {
-  assertIncludes(reportsSource, 'const studentAdaptiveLearningBridge = useMemo');
+  assertIncludes(reportsSource, 'buildStudentAdaptiveLearningBridge(studentTodayFocus)');
   assertIncludes(reportsSource, 'إعادة التعلم والتعلم التكيفي');
   assertIncludes(reportsSource, 'إعادة تعلم قصيرة، تدريب تكيفي، ثم قياس جديد داخل المسار الذكي.');
   assertIncludes(reportsSource, 'studentAdaptiveLearningBridge.adaptiveTrainingLink');

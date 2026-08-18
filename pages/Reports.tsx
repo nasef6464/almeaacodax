@@ -37,6 +37,7 @@ import {
     buildStudentSkillReadinessSummary,
 } from './Reports/studentAnalyticsViewModel';
 import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
+import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
 import {
     buildScopedAvailableGroups,
@@ -433,68 +434,25 @@ const Reports: React.FC = () => {
         });
     }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
     const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 5);
-    const studentAdaptiveLearningBridge = useMemo(() => {
-        if (!studentTodayFocus) return null;
-
-        const skillParam = studentTodayFocus.skillId ? `?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '';
-
-        return {
-            skillName: displayText(studentTodayFocus.skill),
-            evidenceLine: studentTodayFocus.isReliable
-                ? `الحكم مؤكد من ${studentTodayFocus.attempts} محاولات على المهارة.`
-                : `هذه قراءة أولية من ${studentTodayFocus.attempts} محاولة وتحتاج قياسًا إضافيًا.`,
-            relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
-            adaptiveTrainingLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
-            smartPathLink: '/plan',
-            retestLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
-        };
-    }, [studentTodayFocus]);
-    const studentReportNextAction = useMemo(() => {
-        if (!isStudentView) return null;
-
-        if (studentTodayFocus) {
-            const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
-            const learningLink = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
-            const trainingLink = studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
-
-            return {
-                title: `ابدأ بـ ${skillName}`,
-                description: 'افتح موضوع التأسيس المرتبط، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.',
-                primaryLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح موضوع التأسيس' : 'استعراض الشروح',
-                primaryHref: learningLink,
-                secondaryLabel: 'تدريب قصير',
-                secondaryHref: trainingLink,
-                tone: studentTodayFocus.mastery < 50 ? 'rose' as const : 'amber' as const,
-            };
-        }
-
-        return {
-            title: 'ابدأ بقياس قصير',
-            description: 'حل اختبار ساهر أولًا، وبعدها سيظهر تقرير المهارات والخطة العلاجية تلقائيًا.',
-            primaryLabel: 'اختبار ساهر',
-            primaryHref: '/dashboard?tab=saher',
-            secondaryLabel: 'اختباراتي',
-            secondaryHref: '/my-quizzes',
-            tone: 'indigo' as const,
-        };
-    }, [isStudentView, studentTodayFocus]);
-    const studentFollowUpSummary = useMemo(() => {
-        if (!isStudentView || !hasStudentAnalytics) return '';
-
-        const weakest = focusedReportSkills[0];
-        const nextTwo = focusedReportSkills.slice(0, 2).map((skill) => displayText(skill.skill)).filter(Boolean);
-        const weaknessLabel = weakest?.isReliable ? 'ضعف مؤكد' : 'إشارة أولية';
-        const parts = [
-            `متوسطك الحالي ${stats?.averageScore || 0}%.`,
-            `الفترة: ${studentPeriodLabel}.`,
-            studentTrackLabel ? `المسار: ${studentTrackLabel}.` : 'اختر مسارك حتى نرتب التقارير والاختبارات حسبه.',
-            weakest ? `${weaknessLabel}: ${displayText(weakest.skill)} (${weakest.mastery}%) من ${weakest.attempts} محاولة.` : null,
-            nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
-            'الخطوة: إعادة تعلم قصيرة، تدريب تكيفي، ثم قياس داخل المسار الذكي.',
-        ].filter(Boolean);
-
-        return parts.join(' ');
-    }, [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentPeriodLabel, studentTrackLabel]);
+    const studentAdaptiveLearningBridge = useMemo(
+        () => buildStudentAdaptiveLearningBridge(studentTodayFocus),
+        [studentTodayFocus],
+    );
+    const studentReportNextAction = useMemo(
+        () => buildStudentReportNextAction(isStudentView, studentTodayFocus),
+        [isStudentView, studentTodayFocus],
+    );
+    const studentFollowUpSummary = useMemo(
+        () => buildStudentFollowUpSummary({
+            isStudentView,
+            hasStudentAnalytics,
+            focusedReportSkills,
+            averageScore: stats?.averageScore || 0,
+            studentPeriodLabel,
+            studentTrackLabel,
+        }),
+        [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentPeriodLabel, studentTrackLabel],
+    );
     const copyStudentSummary = async () => {
         if (!studentFollowUpSummary) return;
 
