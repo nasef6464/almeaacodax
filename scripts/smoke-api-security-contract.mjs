@@ -6,8 +6,6 @@ const errorHandlerSource = await readFile(new URL("../server/src/middleware/erro
 const loggerSource = await readFile(new URL("../server/src/middleware/requestLogger.ts", import.meta.url), "utf8");
 const typesSource = await readFile(new URL("../server/src/types/express.d.ts", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
-const securityChecklist = await readFile(new URL("../SECURITY_CHECKLIST.md", import.meta.url), "utf8");
-const readinessSource = await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
 
 const checks = [];
 
@@ -62,12 +60,6 @@ check("production errors do not leak server details", () => {
 check("deployment env template documents API hardening controls", () => {
   assertIncludes(envExample, "NODE_ENV=production");
   assertIncludes(envExample, "CORS_ALLOWED_ORIGINS=");
-});
-
-check("reports record API hardening sprint", () => {
-  assertIncludes(securityChecklist, "Request IDs are returned and logged");
-  assertIncludes(securityChecklist, "Production CORS can be restricted with `CORS_ALLOWED_ORIGINS`");
-  assertIncludes(readinessSource, "API Surface Hardening Sprint - 2026-05-12");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

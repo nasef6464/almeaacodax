@@ -2524,7 +2524,7 @@ quizRouter.post(
     const hasQuestions = getQuizQuestionIds(payload).length > 0;
     const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : hasQuestions) : false;
     
-    if (willBePublished && hasQuestions) {
+    if (willBePublished) {
       const integrity = await validateQuizQuestionIntegrity(payload);
       if (!integrity.ok) {
         return res.status(StatusCodes.BAD_REQUEST).json({

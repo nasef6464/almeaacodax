@@ -1,6 +1,6 @@
 import React from 'react';
 import { Download, CheckCircle, FileSpreadsheet, Plus, ShieldAlert } from 'lucide-react';
-import { ImportRow, ImportSummary, ImportResponse } from '../SchoolsManager';
+import { ImportRow, ImportSummary, ImportResponse } from './contracts';
 
 interface SchoolImportPanelProps {
     importRows: ImportRow[];

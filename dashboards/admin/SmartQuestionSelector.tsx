@@ -33,6 +33,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [totalAvailable, setTotalAvailable] = useState(0);
+  const [selectedSectionId, setSelectedSectionId] = useState("");
 
   const fetchRef = useRef<AbortController | null>(null);
 
@@ -126,7 +127,6 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [mode, setMode] = useState<SelectionMode>("manual");
   const [searchTerm, setSearchTerm] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty>("all");
-  const [selectedSectionId, setSelectedSectionId] = useState("");
   const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
   const [smartCount, setSmartCount] = useState(10);
   const [smartMode, setSmartMode] = useState<SmartMode>("balanced");

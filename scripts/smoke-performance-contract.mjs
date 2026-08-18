@@ -68,27 +68,34 @@ assertIncludes('pages/Results.tsx', "import('../components/results/ResultDonutCh
 assertIncludes('pages/Results.tsx', '<React.Suspense fallback={<ResultChartFallback />}>');
 assertNotIncludes('pages/Results.tsx', "from 'recharts';");
 assertIncludes('components/results/ResultDonutChart.tsx', "from 'recharts';");
-assertIncludes('pages/Reports.tsx', 'const MIN_SKILL_EVIDENCE_COUNT = 3;');
-assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');
-assertIncludes('pages/Reports.tsx', 'const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);');
-assertIncludes('pages/Reports.tsx', 'weaknessLabel = weakest?.isReliable');
-assertIncludes('pages/Reports.tsx', 'evidenceLabel: skill.isReliable');
+assertIncludes('pages/Reports/reportDomain.ts', 'export const MIN_SKILL_EVIDENCE_COUNT = 3;');
+assertIncludes('pages/Reports.tsx', 'MIN_SKILL_EVIDENCE_COUNT,');
+assertIncludes('pages/Reports.tsx', "from './Reports/reportDomain';");
+assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.count >= minSkillEvidence');
+assertIncludes('pages/Reports/studentReportScopeViewModel.ts', 'const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);');
+assertIncludes('pages/Reports/studentReportActionsViewModel.ts', 'weaknessLabel = weakest?.isReliable');
+assertIncludes('pages/Reports/studentSkillRowsViewModel.ts', 'evidenceLabel: skill.isReliable');
 assertIncludes('pages/Reports.tsx', 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
 assertIncludes('pages/Reports.tsx', 'studentEnrolledPathIds');
 assertIncludes('pages/Reports.tsx', 'studentPathScopedSkills');
 assertIncludes('pages/Reports.tsx', 'تقاريرك مرتبة حسب مسارك');
 assertIncludes('pages/Reports.tsx', 'اختر مسارك أولًا');
-assertIncludes('pages/Reports.tsx', 'مسار مسجل');
+assertIncludes('pages/Reports/studentReportScopeViewModel.ts', 'مسار مسجل');
 assertIncludes('pages/Reports.tsx', 'مركز متابعة مؤسسي');
 assertIncludes('pages/Reports.tsx', 'توجيه اختبار');
 assertIncludes('pages/Reports.tsx', 'نسخ تنبيه');
 assertIncludes('pages/Reports.tsx', 'buildDirectedQuizManagerLink');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'openedFromReports');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'source') ;
-assertIncludes('dashboards/admin/QuizzesManager.tsx', 'skillIds: selectedSkillId ? [selectedSkillId] : []');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialSkillIds={selectedSkillId ? [selectedSkillId] : []}');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}');
+assertIncludes('dashboards/admin/UnifiedQuizBuilder.tsx', 'skillIds: editingQuiz?.skillIds ?? initialSkillIds ?? []');
+assertIncludes('dashboards/admin/UnifiedQuizBuilder.tsx', 'targetUserIds,');
+assertIncludes('dashboards/admin/UnifiedQuizBuilder.tsx', 'mode: editingQuiz?.mode ?? initialMode');
 assertIncludes('pages/Reports.tsx', 'targetUserId: scopedLeadStudent?.id');
-assertIncludes('pages/Reports.tsx', 'targetUserId: student.id');
-assertIncludes('pages/Reports.tsx', 'targetGroupId: student.groupIds?.[0]');
+assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetUserId: student.id');
+assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetGroupId: student.groupIds?.[0]');
 assertIncludes('pages/Reports.tsx', 'to={student.followUpLink}');
 assertIncludes('pages/Reports.tsx', 'subjectId: subject.subjectId');
 assertIncludes('pages/Reports.tsx', 'const attemptFollowUpLink = buildDirectedQuizManagerLink');
@@ -99,7 +106,6 @@ assertIncludes('dashboards/admin/QuizzesManager.tsx', 'reportContextStudent');
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('@e965/xlsx');");
 for (const file of [
   'dashboards/admin/UsersManager.tsx',
-  'dashboards/admin/SchoolsManager.tsx',
   'dashboards/admin/SchoolPortalManager.tsx',
   'dashboards/admin/QuizzesManager.tsx',
   'dashboards/admin/QuestionBankManager.tsx',
@@ -111,6 +117,10 @@ for (const file of [
   assertIncludes(file, 'loadXlsx');
   assertNotIncludes(file, "import * as XLSX from 'xlsx';");
 }
+assertIncludes('dashboards/admin/SchoolsManager.tsx', "from './SchoolsManager/importFileReaders';");
+assertIncludes('dashboards/admin/SchoolsManager/importFileReaders.ts', "from '../../../utils/xlsxLoader';");
+assertIncludes('dashboards/admin/SchoolsManager/importFileReaders.ts', 'loadXlsx');
+assertNotIncludes('dashboards/admin/SchoolsManager/importFileReaders.ts', "import * as XLSX from 'xlsx';");
 
 assertIncludes('dashboards/admin/AdminDashboard.tsx', "const lazyNamed = <TProps extends object>(");
 assertIncludes('dashboards/admin/AdminDashboard.tsx', '<React.Suspense fallback={<AdminTabLoading />}>');
@@ -119,7 +129,12 @@ assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { QuestionBankM
 assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { LessonsManager } from './LessonsManager';");
 
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [');
-assertNotIncludes('App.tsx', "  '/category',\n  '/quiz',");
+const dataBootstrapBlockingPrefixesBlock = read('App.tsx').match(
+  /const DATA_BOOTSTRAP_BLOCKING_PREFIXES = \[([\s\S]*?)\];/,
+)?.[1] ?? '';
+if (dataBootstrapBlockingPrefixesBlock.includes("'/category'")) {
+  throw new Error('App.tsx must not block initial data bootstrap for /category routes');
+}
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_START_PREFIXES = [');
 assertIncludes('App.tsx', 'const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [');
 assertIncludes('App.tsx', 'const shouldDeferQuestionBootstrap = (path: string) =>');
@@ -247,11 +262,26 @@ assertIncludes('App.tsx', "'/results'");
 assertIncludes('services/api.ts', 'getPublicAnnouncementAds: () =>');
 assertIncludes('server/src/routes/content.routes.ts', '"/announcement-ads"');
 assertIncludes('server/src/routes/content.routes.ts', '.limit(8)');
-assertIncludes('server/src/server.ts', 'async function runStartupMaintenance()');
-assertIncludes('server/src/server.ts', 'void runStartupMaintenance();');
-assertIncludes('server/src/server.ts', 'await connectToDatabase();');
-assertIncludes('server/src/server.ts', 'server.listen(env.PORT');
-assertNotIncludes('server/src/server.ts', 'await ensureSkillTaxonomy();\n  await ensureAdminAccount();');
+assertIncludes('server/src/server.ts', 'bootstrapServer().catch((error) => {');
+assertIncludes('server/src/app/bootstrap/bootstrapServer.ts', 'await connectToDatabase();');
+assertIncludes('server/src/app/bootstrap/bootstrapServer.ts', 'server.listen(env.PORT');
+assertIncludes('server/src/app/bootstrap/bootstrapServer.ts', 'void runStartupMaintenance();');
+assertIncludes('server/src/app/bootstrap/runStartupMaintenance.ts', 'export async function runStartupMaintenance()');
+assertIncludes('server/src/app/bootstrap/runStartupMaintenance.ts', '["skill taxonomy", ensureSkillTaxonomy]');
+assertIncludes('server/src/app/bootstrap/runStartupMaintenance.ts', '["admin account", ensureAdminAccount]');
+assertNotIncludes('server/src/app/bootstrap/bootstrapServer.ts', 'await runStartupMaintenance();');
+const apiBootstrapSource = read('server/src/app/bootstrap/bootstrapServer.ts');
+const apiListenIndex = apiBootstrapSource.indexOf('server.listen(env.PORT');
+const maintenanceStartIndex = apiBootstrapSource.indexOf('void runStartupMaintenance();');
+if (apiListenIndex === -1 || maintenanceStartIndex === -1 || maintenanceStartIndex < apiListenIndex) {
+  throw new Error('API startup maintenance must remain best-effort and start only after server.listen is initiated');
+}
+const startupMaintenanceSource = read('server/src/app/bootstrap/runStartupMaintenance.ts');
+const taxonomyMaintenanceIndex = startupMaintenanceSource.indexOf('["skill taxonomy", ensureSkillTaxonomy]');
+const adminMaintenanceIndex = startupMaintenanceSource.indexOf('["admin account", ensureAdminAccount]');
+if (taxonomyMaintenanceIndex === -1 || adminMaintenanceIndex === -1 || adminMaintenanceIndex < taxonomyMaintenanceIndex) {
+  throw new Error('Startup maintenance must preserve taxonomy-before-admin task ordering');
+}
 
 assertIncludes('store/useStore.ts', "runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false'");
 assertIncludes('store/useStore.ts', 'const shouldSyncUserToApi = (user?: User | null) => Boolean(USE_REAL_API');
