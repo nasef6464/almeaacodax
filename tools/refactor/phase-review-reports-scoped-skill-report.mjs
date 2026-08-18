@@ -36,6 +36,15 @@ if (applyStudentRemediationFallback.status !== 0) {
   process.exit(applyStudentRemediationFallback.status ?? 1);
 }
 
+const applyScopedRemediationFallback = spawnSync('node', ['tools/refactor/apply-reports-scoped-remediation-fallback.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (applyScopedRemediationFallback.status !== 0) {
+  console.error('[reports-student-report-scope-phase-review] Failed to apply scoped remediation fallback extraction');
+  process.exit(applyScopedRemediationFallback.status ?? 1);
+}
+
 const checks = [
   ['git diff whitespace validation', 'git', ['diff', '--check']],
   ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -56,6 +65,7 @@ const checks = [
   ['reports student learning loop boundary', 'node', ['scripts/smoke-reports-student-learning-loop-boundary-contract.mjs']],
   ['reports student report scope boundary', 'node', ['scripts/smoke-reports-student-report-scope-boundary-contract.mjs']],
   ['reports student remediation fallback boundary', 'node', ['scripts/smoke-reports-student-remediation-fallback-boundary-contract.mjs']],
+  ['reports scoped remediation fallback boundary', 'node', ['scripts/smoke-reports-scoped-remediation-fallback-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
