@@ -1,7 +1,7 @@
 # سجل تنفيذ Refactor V2 — ALMEAA
 
 > هذا الملف هو المرجع التشغيلي المستمر أثناء إعادة الهيكلة.
-> الفرع الوحيد لهذه المرحلة: `refactor/repository-v2-safe`.
+> الفرع الوحيد للعمل الحالي: `refactor/repository-v2-safe`.
 
 ## الهدف الثابت
 
@@ -16,6 +16,7 @@
 - لا circular dependencies ولا unresolved runtime imports.
 - لا تخفيف Architecture Budget فقط لتمرير CI.
 - أي تحسن في الحدود أو الاختبارات يتحول إلى gate دائم كلما كان ذلك عمليًا.
+- `main` وProduction لا يتم تحديثهما أثناء وجود مرحلة غير مغلقة بالكامل.
 
 ## ما تم إنجازه قبل دفعة الاستيراد
 
@@ -26,66 +27,98 @@
 - فصل `dataAdapters.ts` من `SchoolsManager`.
 - فصل بنية التصدير والطباعة إلى `SchoolsManager/exportHelpers.ts` مع الحفاظ على escape/safety contract.
 - إزالة كود CSV قديم غير قابل للتنفيذ.
-- آخر Safety Gate قبل دفعة الاستيراد كان أخضر بالكامل.
 
-## الدفعة الحالية — Schools Import Decomposition
+## المرحلة المغلقة ✅ — Schools Import Decomposition
 
-الحالة: **Phase Review PASS؛ تم تطبيق الدفعة، والقبول النهائي مشروط بنجاح Safety Gate على commit الناتج.**
+**الحالة: مغلقة بنجاح.**
 
-الهدف من الدفعة:
+- Phase Review: **PASS**.
+- Refactor V2 Safety Gate run `#100`: **PASS** على commit `137e69d3399e9d22f2246e89da16eefb6224808f`.
+- `SchoolsManager.tsx`: أصبح `4654` سطرًا في اختبار المرحلة بدل بقاء parsing داخله.
+- `importRowParsing.ts`: `127` سطرًا، pure وبدون browser/XLSX dependency.
+- `importFileReaders.ts`: `33` سطرًا ويستخدم safe lazy XLSX runtime.
+- اختبار 10,000 صف: **PASS** في قرابة `6 ms` في CI، مع safety ceiling واسع لمنع أي انحدار O(n²).
+- School Management: `22/22 PASS`.
+- XLSX Safety: `18/18 PASS`.
+- School relationship deep audit: `10/10 PASS`, `0 warnings`.
+- Frontend typecheck/build + API typecheck/build: **PASS**.
+- Performance + architecture + module boundaries + route loading + runtime source + quiz integrity + auth security + API security: **PASS**.
+- خريطة العقود بقيت: `49` frontend routes، `236` backend route entries، `25` router mounts، `0` unresolved runtime imports، `0` dependency cycles.
 
-1. نقل تطبيع headers العربية/الإنجليزية وتحويل rows إلى عقود الطلاب والعلاقات إلى `importRowParsing.ts`.
-2. نقل قراءة CSV/TSV/XLSX واستخدام safe lazy XLSX runtime إلى `importFileReaders.ts`.
-3. إضافة اختبار تنفيذي مباشر لمنطق parsing والـaliases والأخطاء والduplicates و10,000-row performance ceiling في `smoke-schools-import-parsing-contract.mjs`.
-4. استخدام `tools/refactor/phase-review-schools-import.mjs` لمراجعة typecheck/build والعقود والمنطق والأداء والمعمار والأمن قبل إغلاق الدفعة.
-5. تحديث XLSX/performance contracts لتقبل التفويض إلى feature-owned reader بدل إجبار God Component على امتلاك parser مباشرة.
-6. إضافة parser/performance checks إلى Refactor V2 Safety Gate كحماية دائمة بعد اكتمال الاستخراج.
+### ما تم فصله في هذه المرحلة
 
-### معايير قبول الدفعة
+1. تطبيع headers العربية/الإنجليزية وتحويل rows إلى عقود الطلاب والعلاقات -> `dashboards/admin/SchoolsManager/importRowParsing.ts`.
+2. قراءة CSV/TSV/XLSX واستخدام safe lazy XLSX runtime -> `dashboards/admin/SchoolsManager/importFileReaders.ts`.
+3. اختبار تنفيذي مباشر لمنطق parsing والـaliases والأخطاء والduplicates والأداء -> `scripts/smoke-schools-import-parsing-contract.mjs`.
+4. Phase review شامل -> `tools/refactor/phase-review-schools-import.mjs`.
+5. إضافة parser/performance checks إلى `Refactor V2 Safety Gate` كحماية دائمة.
 
-- `SchoolsManager.tsx <= 5100` سطر بعد الاستخراج.
-- ملفات parsing الجديدة تحت حدود الملفات الجديدة المسموح بها.
-- Arabic/English header behavior محفوظ.
-- required-column errors محفوظة.
-- duplicate email semantics محفوظة (`trim + case-insensitive`).
-- 10k-row pure parsing ينجح داخل safety ceiling الفضفاض لمنع انحدار O(n²).
-- XLSX يبقى lazy ويستخدم `readWorkbookFromBuffer` + `registerXlsxRuntime` + safe row conversion.
-- typecheck/build frontend + API PASS.
-- architecture/module boundaries/school contracts/performance/security PASS.
+## أخطاء اكتُشفت وأُصلحت أثناء المرحلة
 
-## ترتيب العمل التالي بعد إغلاق دفعة الاستيراد
+- كشف الفحص الشامل تراجعًا وظيفيًا في تدفق `Reports -> QuizzesManager -> UnifiedQuizBuilder`: سياق المهارة/الطالب/المجموعة كان يظهر للمستخدم لكنه لا ينتقل إلى payload الحفظ في الـbuilder الموحد. تم إصلاحه بتمرير defaults صريحة وحفظ `mode/skillIds/targetUserIds/targetGroupIds` مع الحفاظ على editing values عند تعديل اختبار موجود.
+- كشف `smoke:performance` أن `studentEvidenceSummary` في `pages/Reports.tsx` كان يُحسب دون عرضه. تم إصلاح السلوك بإعادة عرض حجم الدليل بدل إضعاف الاختبار.
+- بعض عقود الأداء كانت مربوطة بالشكل القديم للملفات بعد فصل bootstrap الخاص بالـAPI. تم تعديل العقود لتتحقق من السلوك الفعلي: DB connect قبل التشغيل، و`server.listen` قبل startup maintenance غير الحاجبة، مع بقاء ترتيب taxonomy ثم admin.
+- عقد `DATA_BOOTSTRAP_BLOCKING_PREFIXES` كان يفحص substring على `App.tsx` كله، فأعطى failure كاذبًا بسبب قائمة أخرى. تم تضييقه إلى القائمة المقصودة فقط بدون تغيير منطق التطبيق.
+- GitHub Actions استطاع إنشاء commit المرحلة بعد الفحص لكنه مُنع من تحديث workflow file لعدم امتلاك token المؤقت صلاحية workflows. لم يتم تجاوز الحماية؛ تم تحريك safe branch إلى **نفس commit المفحوص** عبر GitHub Connector المصرح له، ثم شُغّل Safety Gate القياسي ونجح.
 
-1. مواصلة تفكيك `SchoolsManager.tsx` بالبدء في pure/readiness/report view-model helpers ثم UI sections كبيرة، بدون تغيير السلوك.
-2. تخفيض `SchoolPackagesPanel.tsx` و`SchoolRelationsPanel.tsx` إلى وحدات presentation/application أصغر مع حدود dependency واضحة.
-3. بعد وصول hotspot المدارس إلى نقطة مستقرة، الانتقال إلى `pages/Reports.tsx`.
-4. ثم `server/src/routes/content.routes.ts` و`server/src/routes/quiz.routes.ts` بتحويل routes تدريجيًا إلى thin HTTP + application services.
-5. بعد تثبيت facades والحدود، يبدأ النقل المنظم إلى `src/features/*` و`server/src/modules/*` مع compatibility exports.
+## المرحلة الحالية — Schools Readiness & View-Model Decomposition
 
-## بروتوكول الإغلاق لأي مرحلة لاحقة
+**الحالة: بدأت مرحلة الفحص والتفكيك التدريجي.**
 
-قبل اعتبار أي مرحلة مكتملة:
+الهدف: إخراج الحسابات والـview-models النقية من `SchoolsManager.tsx` قبل لمس الـUI الكبير، خصوصًا:
 
-1. فحص diff وعدم وجود whitespace/merge artifacts.
+1. تحديد طلاب المدرسة من school/class relationships.
+2. operational snapshot وreadiness score وحالة draft/demo.
+3. portfolio/readiness rows وnext-action derivation.
+4. إبقاء React component مسؤولًا عن orchestration/state فقط بدل احتواء حسابات الأعمال والعرض معًا.
+5. بعد تثبيت هذه الحدود: تقسيم أقسام UI الكبيرة ثم مراجعة `SchoolPackagesPanel` و`SchoolRelationsPanel`.
+
+### شروط قبول المرحلة الحالية
+
+- عدم تغيير معنى readiness أو الطلاب المحسوبين أو حالات المدارس المخفية/الجاهزة.
+- pure helpers تقبل dependencies صراحة ولا تعتمد على React state مخفي.
+- إضافة direct logic tests لحالات: مدرسة بلا فصول، طلاب عبر schoolId، طلاب عبر studentIds، طلاب عبر class membership، package/code readiness، demo/draft detection.
+- عدم زيادة hotspots أو cycles أو unresolved imports.
+- targeted quick checks بعد كل تعديل صغير، ثم full phase review قبل الإغلاق.
+
+## نظام الفحص من مستويين
+
+لتقليل زمن الانتظار بدون تقليل الأمان:
+
+### Quick Gate بعد التعديلات الصغيرة
+
+`node tools/refactor/quick-check.mjs schools`
+
+ويفحص frontend typecheck + school contracts + import parser + XLSX safety + performance + architecture + module boundaries.
+
+توجد أيضًا profiles: `frontend`, `api`, `architecture`.
+
+### Full Gate عند إغلاق المرحلة
+
+1. `git diff --check`.
 2. frontend + API typecheck.
 3. frontend + API production build.
-4. اختبارات منطقية خاصة بالجزء الذي تم نقله، وليس source-text فقط متى أمكن.
+4. اختبارات منطقية مباشرة للجزء المستخرج.
 5. performance contract ذي صلة.
 6. domain smoke contracts.
 7. repository audit + architecture gate + module boundary gate.
 8. route/runtime/quiz/auth/API security gates.
-9. إصلاح أي failure قبل commit، ثم إعادة نفس المراجعة.
-10. Safety Gate أخضر على commit النهائي للمرحلة.
+9. إصلاح أي failure ثم إعادة المراجعة من البداية.
+10. Refactor V2 Safety Gate أخضر على commit النهائي.
+
+## ترتيب العمل بعد استقرار مدارس B2B
+
+1. `pages/Reports.tsx` وتقسيم data aggregation / view models / export / presentation.
+2. `server/src/routes/content.routes.ts` وتحويله إلى thin HTTP handlers + application services.
+3. `server/src/routes/quiz.routes.ts` بنفس الأسلوب مع حماية quiz integrity الحالية.
+4. `store/useStore.ts` و`services/api.ts` عبر domain slices/clients بدون كسر public facade.
+5. بعد تثبيت facades والحدود، النقل المنظم إلى `src/features/*` و`server/src/modules/*` مع compatibility exports.
+6. مسار مستقل لاحقًا لتحديث dependencies والثغرات؛ لا يتم استخدام `npm audit fix --force` داخل structural refactor.
 
 ## قاعدة الاستمرار
 
-أي Agent يكمل العمل يبدأ من: `AGENTS.md` -> `PROJECT_MAP.md` -> هذا السجل -> آخر Safety Gate، ثم يغيّر concern واحدًا فقط ويحدّث هذا السجل عند إغلاق دفعة كبيرة.
+أي مطور أو Agent يكمل العمل يبدأ بهذا الترتيب:
 
-## أخطاء اكتُشفت أثناء مراجعة الدفعة
+`AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا السجل -> آخر Safety Gate.
 
-- كشف الفحص الشامل تراجعًا وظيفيًا في تدفق `Reports -> QuizzesManager -> UnifiedQuizBuilder`: سياق المهارة/الطالب/المجموعة كان يظهر للمستخدم لكنه لا ينتقل إلى payload الحفظ في الـbuilder الموحد. تم إصلاحه بتمرير defaults صريحة وحفظ `mode/skillIds/targetUserIds/targetGroupIds` مع الحفاظ على editing values عند تعديل اختبار موجود.
-
-- كشف `smoke:performance` أن `studentEvidenceSummary` في `pages/Reports.tsx` كان يُحسب دون عرضه، بينما عقد الأداء/جودة التقارير يتطلب إظهار حجم العينة للطالب. تم اختيار إصلاح السلوك بإعادة عبارة حجم الدليل إلى الواجهة بدل إضعاف الاختبار.
-
-- كشف `smoke:performance` أن بعض عقود الأداء ما زالت مربوطة بالشكل القديم للملفات بعد فصل bootstrap الخاص بالـAPI. تم تصحيح العقد ليتحقق من السلوك الفعلي: الاتصال بقاعدة البيانات قبل التشغيل، بدء `server.listen` قبل صيانة startup غير الحاجبة، وبقاء ترتيب صيانة taxonomy ثم admin؛ بدون إعادة المنطق إلى `server.ts` أو إضعاف الضمان.
-
-- أثناء الفحص اتضح أن عقد الأداء كان يبحث عن تسلسل نصي عبر الملف كاملًا بدل فحص `DATA_BOOTSTRAP_BLOCKING_PREFIXES` نفسه، مما أعطى failure كاذبًا بسبب وجود `/category` ثم `/quiz` داخل قائمة بدء bootstrap. تم تضييق الاختبار ليتحقق من القائمة المقصودة فقط بدون تغيير منطق التطبيق.
+ثم يغيّر concern واحدًا فقط في كل دفعة صغيرة، يستخدم Quick Gate أثناء العمل، ويستخدم Full Gate فقط عند إغلاق المرحلة.
