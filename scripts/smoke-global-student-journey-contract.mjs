@@ -10,6 +10,7 @@ const files = {
   reports: [
     await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
   ].join('\n'),
   plan: await readFile(new URL('../pages/Plan.tsx', import.meta.url), 'utf8'),
   pricing: await readFile(new URL('../pages/Pricing.tsx', import.meta.url), 'utf8'),

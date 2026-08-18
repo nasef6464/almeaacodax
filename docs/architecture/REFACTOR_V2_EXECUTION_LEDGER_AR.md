@@ -231,3 +231,11 @@
 - تم بدء تفكيك hotspot التقارير بأقل تغيير سلوكي ممكن: نقل types/pure helpers فقط.
 - `reportDomain.ts` لا يعتمد React أو store أو API أو browser أو XLSX.
 - source contracts تم تحويلها إلى aggregate ownership حتى تبقى الاختبارات تراقب السلوك بعد توزيع الملفات.
+
+## دفعة Reports Skill Recommendation View-Model
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- خرج ranking/link-building الخاص بتوصيات المهارات من `Reports.tsx` إلى view-model نقي.
+- store snapshot access بقي في adapter داخل الصفحة لضمان تطابق السلوك الحالي، ولم تنتقل mutations أو side effects.
+- عقود Reports وGlobal Student Journey أصبحت aggregate-aware لملكية التوصيات الجديدة.

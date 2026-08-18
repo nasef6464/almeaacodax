@@ -137,3 +137,11 @@
 - تم تحديث عقود Reports وGlobal Student Journey لتقرأ ownership الجديد بدون إسقاط أي contract قائم.
 - Full Reports Domain Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Reports Skill Recommendation View-Model
+
+- تم نقل ترتيب محتوى علاج المهارة وبناء روابط الشرح/التدريب إلى `pages/Reports/recommendationViewModel.ts`.
+- الموديول الجديد لا يعتمد React أو store أو API؛ `Reports.tsx` يحتفظ فقط بمحوّل صغير يمرر كتالوج البيانات الحالي دون تغيير السلوك.
+- تم الحفاظ على أوزان اختيار الموضوع، روابط التأسيس، نصوص الإجراءات، وأسماء المادة/القسم كما هي.
+- Full Reports Recommendation Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
