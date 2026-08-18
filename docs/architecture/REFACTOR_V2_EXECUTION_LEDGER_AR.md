@@ -184,3 +184,11 @@
 - فصل card presentation عن God Component مع إبقاء API/store/mutations/confirmations في orchestration layer.
 - boundary contract جديد يثبت أن child لا يستورد store أو API ويمنع رجوع markup إلى `SchoolsManager.tsx`.
 - school management وrelationship audit أصبحا يتبعان ownership الجديد بدل الاعتماد على موقع النص القديم.
+
+## دفعة Schools Workspace Courses/Classes Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- فصل school courses presentation وclasses shell عن `SchoolsManager.tsx`.
+- mutations بقيت في orchestration layer؛ child components لا تستورد store/API.
+- تم تحديث source-text contracts لتتبع ownership الجديد بدل الاعتماد على موقع النص القديم.

@@ -78,7 +78,7 @@ assertAllIncludes("server/src/routes/payment.routes.ts", [
 assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "handleAssignSchoolSupervisor(value, selectedSchool.id)",
   "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)",
-  "onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}",
+  "onAssignSupervisor={handleAssignSchoolSupervisor}",
   "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)",
   "rosterActionPending",
   "setActiveTab('relations')",

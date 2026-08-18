@@ -5,6 +5,7 @@ const root = process.cwd();
 const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n');
 
 const manager = read('dashboards/admin/SchoolsManager.tsx');
+const classesPanel = read('dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx');
 const card = read('dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx');
 
 const checks = [];
@@ -26,15 +27,23 @@ function assertNotIncludes(source, fragment, message) {
   if (source.includes(fragment)) throw new Error(message || `Unexpected fragment: ${fragment}`);
 }
 
-check('manager delegates class operating-card presentation', () => {
-  assertIncludes(manager, "import { SchoolClassOperatingCard } from './SchoolsManager/SchoolClassOperatingCard';");
-  assertIncludes(manager, '<SchoolClassOperatingCard');
-  assertIncludes(manager, 'classStudentCount={classStudents.length}');
-  assertIncludes(manager, 'studentsWithoutParentCount={classStudentsWithoutParent.length}');
-  assertIncludes(manager, 'onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}');
-  assertIncludes(manager, 'onRemoveSupervisor={(currentUser) => handleRemoveClassSupervisor(classroom, currentUser)}');
-  assertIncludes(manager, 'onAssignCourse={(courseId) => assignCourseToGroup(courseId, classroom.id)}');
-  assertIncludes(manager, 'onRemoveCourse={(courseId) => removeCourseFromGroup(courseId, classroom.id)}');
+check('manager delegates classes shell and classes panel delegates class operating-card presentation', () => {
+  assertIncludes(manager, "import { SchoolClassesPanel } from './SchoolsManager/SchoolClassesPanel';");
+  assertIncludes(manager, '<SchoolClassesPanel');
+  assertIncludes(manager, 'onAssignSupervisor={handleAssignSchoolSupervisor}');
+  assertIncludes(manager, 'onRemoveSupervisor={handleRemoveClassSupervisor}');
+  assertIncludes(manager, 'onAssignCourse={assignCourseToGroup}');
+  assertIncludes(manager, 'onRemoveCourse={removeCourseFromGroup}');
+  assertNotIncludes(manager, "import { SchoolClassOperatingCard } from './SchoolsManager/SchoolClassOperatingCard';");
+  assertNotIncludes(manager, '<SchoolClassOperatingCard');
+  assertIncludes(classesPanel, "import { SchoolClassOperatingCard } from './SchoolClassOperatingCard';");
+  assertIncludes(classesPanel, '<SchoolClassOperatingCard');
+  assertIncludes(classesPanel, 'classStudentCount={classStudents.length}');
+  assertIncludes(classesPanel, 'studentsWithoutParentCount={classStudentsWithoutParent.length}');
+  assertIncludes(classesPanel, 'onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}');
+  assertIncludes(classesPanel, 'onRemoveSupervisor={(currentUser) => onRemoveSupervisor(classroom, currentUser)}');
+  assertIncludes(classesPanel, 'onAssignCourse={(courseId) => onAssignCourse(courseId, classroom.id)}');
+  assertIncludes(classesPanel, 'onRemoveCourse={(courseId) => onRemoveCourse(courseId, classroom.id)}');
   assertNotIncludes(manager, 'data-testid="school-class-card"');
   assertNotIncludes(manager, 'data-testid="school-class-operating-actions"');
 });
@@ -83,8 +92,10 @@ check('rename delete and supervisor confirmations remain in manager orchestratio
 
 check('extraction reduces the school manager hotspot without creating a new hotspot', () => {
   const managerLines = manager.split('\n').length;
+  const classesPanelLines = classesPanel.split('\n').length;
   const cardLines = card.split('\n').length;
   if (managerLines >= 3900) throw new Error(`SchoolsManager remained too large after class-card extraction: ${managerLines}`);
+  if (classesPanelLines > 260) throw new Error(`SchoolClassesPanel exceeded 260 lines: ${classesPanelLines}`);
   if (cardLines > 300) throw new Error(`SchoolClassOperatingCard exceeded 300 lines: ${cardLines}`);
 });
 
@@ -93,6 +104,7 @@ const result = {
   phase: 'schools-class-card-presentation-boundary',
   status: failed.length === 0 ? 'PASS' : 'FAIL',
   managerLines: manager.split('\n').length,
+  classesPanelLines: classesPanel.split('\n').length,
   cardLines: card.split('\n').length,
   checks,
 };

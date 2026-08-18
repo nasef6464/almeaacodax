@@ -17,6 +17,8 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
 ].join("\n"),
   store: await read("store/useStore.ts"),
   packageJson: await read("package.json"),
@@ -187,7 +189,8 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.store, "removeSupervisorFromGroupAsync: async");
   assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
   assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)");
-  assertIncludes(files.schools, "onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}");
+  assertIncludes(files.schools, "onAssignSupervisor={handleAssignSchoolSupervisor}");
+  assertIncludes(files.schools, "onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}");
   assertIncludes(files.schools, "onAssignSupervisor(value).finally");
   assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)");
   assertIncludes(files.schools, "rosterActionPending");

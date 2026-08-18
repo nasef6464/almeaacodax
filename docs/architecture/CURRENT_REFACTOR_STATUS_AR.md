@@ -89,3 +89,11 @@
 - تم الحفاظ على إجراءات إضافة الطالب، كشف الفصل، Excel، المحتوى والأكواد، المشرفين والدورات بدون تغيير النصوص أو التدفق.
 - Full Class Card Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Schools Workspace Courses/Classes Presentation
+
+- تم فصل عرض دورات المدرسة إلى `SchoolCoursesPanel.tsx`.
+- تم فصل shell الفصول والإنشاء الجماعي وتجميع `SchoolClassOperatingCard` إلى `SchoolClassesPanel.tsx`.
+- course/class mutations بقيت في `SchoolsManager.tsx` وتصل للـchildren عبر callbacks صريحة.
+- Full Workspace Sections Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.

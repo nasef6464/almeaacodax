@@ -31,7 +31,8 @@ import { SchoolPackagesPanel } from './SchoolsManager/SchoolPackagesPanel';
 import { SchoolRelationsPanel } from './SchoolsManager/SchoolRelationsPanel';
 import { SchoolReportsPanel } from './SchoolsManager/SchoolReportsPanel';
 import { SchoolStudentRosterPanel } from './SchoolsManager/SchoolStudentRosterPanel';
-import { SchoolClassOperatingCard } from './SchoolsManager/SchoolClassOperatingCard';
+import { SchoolCoursesPanel } from './SchoolsManager/SchoolCoursesPanel';
+import { SchoolClassesPanel } from './SchoolsManager/SchoolClassesPanel';
 import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 import type {
     AccessCodesListResponse,
@@ -1565,6 +1566,32 @@ export const SchoolsManager: React.FC = () => {
             ]);
         };
 
+        const handleAssignCourseToSchool = (courseId: string) => {
+            assignCourseToGroup(courseId, selectedSchool.id);
+            setSelectedSchool((current) =>
+                current
+                    ? {
+                          ...current,
+                          courseIds: current.courseIds.includes(courseId)
+                              ? current.courseIds
+                              : [...current.courseIds, courseId],
+                      }
+                    : current,
+            );
+        };
+
+        const handleRemoveCourseFromSchool = (courseId: string) => {
+            removeCourseFromGroup(courseId, selectedSchool.id);
+            setSelectedSchool((current) =>
+                current
+                    ? {
+                          ...current,
+                          courseIds: current.courseIds.filter((id) => id !== courseId),
+                      }
+                    : current,
+            );
+        };
+
         const openClassRenameModal = (classroom: Group) => {
             setEditNameModalState({
                 isOpen: true,
@@ -3079,156 +3106,43 @@ export const SchoolsManager: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="border border-gray-100 rounded-xl p-5 space-y-4">
-                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                        <h3 className="text-lg font-bold text-gray-900">دورات المدرسة</h3>
-                                        <span className="text-sm text-gray-500">{schoolCourses.length} دورة مرتبطة</span>
-                                    </div>
-                                    <select
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                        defaultValue=""
-                                        onChange={(event) => {
-                                            const value = event.target.value;
-                                            if (!value) return;
-                                            assignCourseToGroup(value, selectedSchool.id);
-                                            setSelectedSchool((current) =>
-                                                current
-                                                    ? {
-                                                          ...current,
-                                                          courseIds: current.courseIds.includes(value)
-                                                              ? current.courseIds
-                                                              : [...current.courseIds, value],
-                                                      }
-                                                    : current,
-                                            );
-                                            event.target.value = '';
-                                        }}
-                                    >
-                                        <option value="">ربط دورة مباشرة بالمدرسة</option>
-                                        {publishedCourses
-                                            .filter((course) => !selectedSchool.courseIds.includes(course.id))
-                                            .map((course) => (
-                                                <option key={course.id} value={course.id}>{course.title}</option>
-                                            ))}
-                                    </select>
-                                    <div className="flex flex-wrap gap-2">
-                                        {schoolCourses.length === 0 ? (
-                                            <span className="text-sm text-gray-400">لا توجد دورات مرتبطة بهذه المدرسة حتى الآن.</span>
-                                        ) : schoolCourses.map((course) => (
-                                            <button
-                                                key={course.id}
-                                                onClick={() => {
-                                                    removeCourseFromGroup(course.id, selectedSchool.id);
-                                                    setSelectedSchool((current) =>
-                                                        current
-                                                            ? {
-                                                                  ...current,
-                                                                  courseIds: current.courseIds.filter((id) => id !== course.id),
-                                                              }
-                                                            : current,
-                                                    );
-                                                }}
-                                                className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
-                                            >
-                                                {course.title} ×
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                                <SchoolCoursesPanel
+                                    schoolCourses={schoolCourses}
+                                    publishedCourses={publishedCourses}
+                                    selectedCourseIds={selectedSchool.courseIds}
+                                    onAssignCourse={handleAssignCourseToSchool}
+                                    onRemoveCourse={handleRemoveCourseFromSchool}
+                                />
                             </div>
 
-                            <div>
-                                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
-                                    <h3 className="text-lg font-bold text-gray-900">الفصول الدراسية</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        <button
-                                            onClick={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
-                                            className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
-                                        >
-                                            <Download size={16} /> تصدير كشف الطلاب
-                                        </button>
-                                        <button
-                                            disabled={isSchoolWorkspaceBusy}
-                                            onClick={() => void handleCreateSingleClass()}
-                                            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center gap-2"
-                                        >
-                                            <Plus size={16} /> إضافة فصل
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div data-testid="school-class-creation-panel" className="mb-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
-                                    <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
-                                        <div>
-                                            <label className="mb-2 block text-sm font-bold text-amber-900">
-                                                إنشاء عدة فصول مرة واحدة
-                                            </label>
-                                            <textarea
-                                                value={bulkClassNames}
-                                                onChange={(event) => setBulkClassNames(event.target.value)}
-                                                placeholder="مثال: أول ثانوي أ&#10;أول ثانوي ب&#10;ثاني ثانوي قدرات"
-                                                rows={3}
-                                                className="w-full rounded-xl border border-amber-100 bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-amber-400"
-                                            />
-                                            <p className="mt-2 text-xs leading-6 text-amber-800">
-                                                اكتب كل فصل في سطر، أو افصل بينها بفاصلة. النظام يتجنب تكرار أسماء الفصول الموجودة.
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={handleCreateBulkClasses}
-                                            disabled={Boolean(schoolActionPending)}
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-amber-600"
-                                        >
-                                            <Plus size={16} />
-                                            إنشاء الفصول
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {schoolClasses.length === 0 ? (
-                                    <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                                        <Building2 size={48} className="mx-auto text-gray-300 mb-4" />
-                                        <p className="text-gray-500">لا توجد فصول دراسية مضافة حتى الآن.</p>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {schoolClasses.map((classroom) => {
-                                            const classSupervisors = supervisors.filter((currentUser) => classroom.supervisorIds.includes(currentUser.id));
-                                            const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
-                                            const classStudents = schoolStudents.filter((student) => classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id));
-                                            const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
-
-                                            return (
-                                                <SchoolClassOperatingCard
-                                                    key={classroom.id}
-                                                    classroom={classroom}
-                                                    classStudentCount={classStudents.length}
-                                                    studentsWithoutParentCount={classStudentsWithoutParent.length}
-                                                    classSupervisors={classSupervisors}
-                                                    classCourses={classCourses}
-                                                    supervisors={supervisors}
-                                                    publishedCourses={publishedCourses}
-                                                    rosterActionPending={rosterActionPending}
-                                                    isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
-                                                    onDownloadReport={() => downloadClassReport(classroom)}
-                                                    onPrintReport={() => printClassReport(classroom)}
-                                                    onRename={() => openClassRenameModal(classroom)}
-                                                    onDelete={() => void handleDeleteClass(classroom)}
-                                                    onFocusStudentForm={() => focusClassStudentForm(classroom.name)}
-                                                    onFocusRoster={() => focusClassRoster(classroom.id)}
-                                                    onOpenImport={() => setActiveTab('import')}
-                                                    onOpenPackages={() => setActiveTab('packages')}
-                                                    onAssignSupervisor={(userId) => handleAssignSchoolSupervisor(userId, classroom.id)}
-                                                    onCreateSupervisor={() => focusQuickSupervisorEntry(classroom.id, classroom.name)}
-                                                    onRemoveSupervisor={(currentUser) => handleRemoveClassSupervisor(classroom, currentUser)}
-                                                    onAssignCourse={(courseId) => assignCourseToGroup(courseId, classroom.id)}
-                                                    onRemoveCourse={(courseId) => removeCourseFromGroup(courseId, classroom.id)}
-                                                />
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
+                            <SchoolClassesPanel
+                                schoolClasses={schoolClasses}
+                                schoolStudents={schoolStudents}
+                                parents={parents}
+                                supervisors={supervisors}
+                                publishedCourses={publishedCourses}
+                                bulkClassNames={bulkClassNames}
+                                setBulkClassNames={setBulkClassNames}
+                                schoolActionPending={schoolActionPending}
+                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                rosterActionPending={rosterActionPending}
+                                onDownloadSchoolRoster={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
+                                onCreateSingleClass={() => void handleCreateSingleClass()}
+                                onCreateBulkClasses={handleCreateBulkClasses}
+                                onDownloadClassReport={downloadClassReport}
+                                onPrintClassReport={printClassReport}
+                                onRenameClass={openClassRenameModal}
+                                onDeleteClass={(classroom) => void handleDeleteClass(classroom)}
+                                onFocusClassStudentForm={(classroom) => focusClassStudentForm(classroom.name)}
+                                onFocusClassRoster={(classroom) => focusClassRoster(classroom.id)}
+                                onOpenImport={() => setActiveTab('import')}
+                                onOpenPackages={() => setActiveTab('packages')}
+                                onAssignSupervisor={handleAssignSchoolSupervisor}
+                                onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
+                                onRemoveSupervisor={handleRemoveClassSupervisor}
+                                onAssignCourse={assignCourseToGroup}
+                                onRemoveCourse={removeCourseFromGroup}
+                            />
 
                             <SchoolStudentRosterPanel
                                 studentSearch={studentSearch}
