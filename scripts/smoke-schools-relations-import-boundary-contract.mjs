@@ -51,10 +51,11 @@ assert.ok(!parent.includes('relationRows.slice(0, 6)'), 'relation preview markup
 assert.ok(!parent.includes('تم تجهيز {relationRows.length} صف للربط'), 'relation import execution UI must remain in child');
 assert.ok(!parent.includes('relationSummary.createdParents'), 'relation import results must remain in child');
 assert.ok(!parent.includes('<Upload size={28} />'), 'relation upload markup must remain owned by the import child');
-assert.ok(parent.includes('تقرير المتابعة المدرسية'), 'school report section must remain owned by the parent until its own boundary extraction');
-assert.ok(parent.includes('downloadRelationsReport'), 'school relations report action wiring must remain intact in the parent');
-assert.ok(parent.includes('onClick={downloadRelationsReport}'), 'school relations report export button must stay wired to its action');
-assert.ok(lineCount(parent) <= 280, `SchoolRelationsPanel should shrink below 280 lines; got ${lineCount(parent)}`);
+assert.ok(parent.includes("from './SchoolRelationsReportPanel';"), 'school report must be composed as a sibling presentation boundary');
+assert.ok(parent.includes('<SchoolRelationsReportPanel'), 'SchoolRelationsPanel must render the report sibling');
+assert.ok(parent.includes('downloadRelationsReport={downloadRelationsReport}'), 'school relations report action wiring must remain explicit at composition');
+assert.ok(!parent.includes('<h3 className="text-lg font-black text-gray-900">تقرير المتابعة المدرسية</h3>'), 'school report markup must not leak back into the composition parent');
+assert.ok(lineCount(parent) <= 250, `SchoolRelationsPanel should remain below 250 lines; got ${lineCount(parent)}`);
 
 for (const [file, source] of [[parentFile, parent], [childFile, child]]) {
   const result = ts.transpileModule(source, {
