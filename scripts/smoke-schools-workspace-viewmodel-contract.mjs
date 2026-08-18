@@ -6,12 +6,18 @@ import ts from 'typescript';
 
 const root = process.cwd();
 const sourcePath = path.join(root, 'dashboards/admin/SchoolsManager/workspaceViewModel.ts');
+const managerPath = path.join(root, 'dashboards/admin/SchoolsManager.tsx');
 const source = fs.readFileSync(sourcePath, 'utf8');
+const managerSource = fs.readFileSync(managerPath, 'utf8');
+const lineCount = (text) => text.split(/\r?\n/).length;
 
 assert.ok(source.includes('buildSchoolWorkspaceViewModel'), 'workspace builder must be exported');
 assert.ok(!source.includes('useState(') && !source.includes('useMemo('), 'workspace view model must stay React-independent');
 assert.ok(!source.includes("from '../../../services/api'"), 'workspace view model must stay API-independent');
-assert.ok(source.split(/\r?\n/).length <= 430, 'workspace view model must stay under 430 lines');
+assert.ok(lineCount(source) <= 430, 'workspace view model must stay under 430 lines');
+assert.ok(managerSource.includes("from './SchoolsManager/workspaceViewModel';"), 'SchoolsManager must delegate workspace decisions');
+assert.ok(managerSource.includes('buildSchoolWorkspaceViewModel({'), 'SchoolsManager must call the extracted workspace model');
+assert.ok(lineCount(managerSource) <= 4350, `SchoolsManager workspace regression: ${lineCount(managerSource)} lines exceeds 4350`);
 
 const transpiled = ts.transpileModule(source, {
   compilerOptions: {
@@ -49,7 +55,6 @@ const classroom = {
 };
 const student = { id: 'student-1', name: 'طالب', email: 'student@example.com', groupIds: ['class-1'] };
 const supervisor = { id: 'sup-1', name: 'مشرف', email: 'sup@example.com', groupIds: ['class-1'] };
-const parent = { id: 'parent-1', name: 'ولي أمر', email: 'parent@example.com', linkedStudentIds: ['student-1'] };
 const activePackage = { id: 'pkg-1', schoolId: school.id, status: 'active', maxStudents: 50 };
 const activeCode = { id: 'code-1', schoolId: school.id, packageId: 'pkg-1', currentUses: 10, maxUses: 50, expiresAt: Date.now() + 86400000 };
 const report = {
@@ -162,6 +167,7 @@ assert.ok(elapsedMs < 2500, `10k workspace calculations regressed: ${elapsedMs.t
 console.log(JSON.stringify({
   phase: 'schools-workspace-viewmodel',
   status: 'PASS',
+  managerLines: lineCount(managerSource),
   readinessChecks: ready.readinessChecks.length,
   iterations: 10000,
   elapsedMs: Number(elapsedMs.toFixed(2)),
