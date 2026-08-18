@@ -1,0 +1,104 @@
+name: Temporary Reports Student Analytics Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/reports-student-analytics-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-reports-student-analytics-phase:
+    if: startsWith(github.head_ref, 'refactor/reports-student-analytics-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout latest target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Confirm staged base is safe and targeted Reports files did not drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_SHA="687745f7a94ad91f35fbd0a4134a84fc79c6f8cf"
+          git merge-base --is-ancestor "$BASE_SHA" HEAD
+          git diff --quiet "$BASE_SHA"..HEAD -- \
+            pages/Reports.tsx \
+            pages/Reports/reportDomain.ts \
+            pages/Reports/reportTypes.ts \
+            pages/Reports/recommendationViewModel.ts \
+            scripts/smoke-reports-role-contract.mjs \
+            scripts/smoke-global-student-journey-contract.mjs \
+            scripts/smoke-performance-contract.mjs
+
+      - name: Import staged student-analytics phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/reports-student-analytics-runner-base -- \
+            pages/Reports/studentAnalyticsViewModel.ts \
+            scripts/smoke-reports-student-analytics-boundary-contract.mjs \
+            tools/refactor/apply-reports-student-analytics-extraction.py \
+            tools/refactor/phase-review-reports-student-analytics.mjs
+
+      - name: Apply student analytics extraction
+        run: python tools/refactor/apply-reports-student-analytics-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full student-analytics phase review
+        run: node tools/refactor/phase-review-reports-student-analytics.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified student-analytics phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Reports Student Analytics View-Model\n\n- تم نقل حساب متوسط الأداء وتجميع دليل المهارات وملخص الجاهزية إلى `pages/Reports/studentAnalyticsViewModel.ts`.\n- الموديول الجديد pure ولا يعتمد React أو store أو API أو browser؛ الصفحة تمرر له snapshots الحالية فقط.\n- تم الحفاظ على fallback الأسئلة، حد موثوقية الدليل، ترتيب المهارات من الأضعف، ونصوص قرار الجاهزية دون تغيير.\n- Full Reports Student Analytics Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر checkpoint Safety Gate + Vercel Preview Gate المجمع.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Reports Student Analytics View-Model\n\n**الحالة: Full Phase Review PASS؛ تنتظر checkpoint مجمع.**\n\n- خرجت مشتقات الأداء/المهارات/الدليل/الجاهزية من `Reports.tsx` إلى view-model نقي.\n- لم تتغير API calls أو mutations أو rendering contracts.\n- source/performance contracts أصبحت تتبع ownership الجديد بدل الاعتماد على مكان التنفيذ داخل الصفحة.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-reports-student-analytics-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add pages/Reports.tsx \
+            pages/Reports/studentAnalyticsViewModel.ts \
+            scripts/smoke-reports-role-contract.mjs \
+            scripts/smoke-global-student-journey-contract.mjs \
+            scripts/smoke-performance-contract.mjs \
+            scripts/smoke-reports-student-analytics-boundary-contract.mjs \
+            tools/refactor/phase-review-reports-student-analytics.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(reports): extract student analytics view model"
+          git push origin HEAD:refactor/repository-v2-safe
