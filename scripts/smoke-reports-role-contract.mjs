@@ -4,6 +4,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');

@@ -239,3 +239,11 @@
 - خرج ranking/link-building الخاص بتوصيات المهارات من `Reports.tsx` إلى view-model نقي.
 - store snapshot access بقي في adapter داخل الصفحة لضمان تطابق السلوك الحالي، ولم تنتقل mutations أو side effects.
 - عقود Reports وGlobal Student Journey أصبحت aggregate-aware لملكية التوصيات الجديدة.
+
+## دفعة Reports Student Analytics View-Model
+
+**الحالة: Full Phase Review PASS؛ تنتظر checkpoint مجمع.**
+
+- خرجت مشتقات الأداء/المهارات/الدليل/الجاهزية من `Reports.tsx` إلى view-model نقي.
+- لم تتغير API calls أو mutations أو rendering contracts.
+- source/performance contracts أصبحت تتبع ownership الجديد بدل الاعتماد على مكان التنفيذ داخل الصفحة.

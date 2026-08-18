@@ -145,3 +145,11 @@
 - تم الحفاظ على أوزان اختيار الموضوع، روابط التأسيس، نصوص الإجراءات، وأسماء المادة/القسم كما هي.
 - Full Reports Recommendation Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Reports Student Analytics View-Model
+
+- تم نقل حساب متوسط الأداء وتجميع دليل المهارات وملخص الجاهزية إلى `pages/Reports/studentAnalyticsViewModel.ts`.
+- الموديول الجديد pure ولا يعتمد React أو store أو API أو browser؛ الصفحة تمرر له snapshots الحالية فقط.
+- تم الحفاظ على fallback الأسئلة، حد موثوقية الدليل، ترتيب المهارات من الأضعف، ونصوص قرار الجاهزية دون تغيير.
+- Full Reports Student Analytics Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر checkpoint Safety Gate + Vercel Preview Gate المجمع.
