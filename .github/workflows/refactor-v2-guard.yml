@@ -101,6 +101,9 @@ jobs:
       - name: School relationship workspace logic contract
         run: node scripts/smoke-schools-relationship-viewmodel-contract.mjs
 
+      - name: School decision and handover workspace logic contract
+        run: node scripts/smoke-schools-workspace-viewmodel-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 
