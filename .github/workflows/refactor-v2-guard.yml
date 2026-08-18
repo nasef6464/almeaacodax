@@ -98,6 +98,9 @@ jobs:
       - name: School readiness view-model logic contract
         run: node scripts/smoke-schools-readiness-viewmodel-contract.mjs
 
+      - name: School relationship workspace logic contract
+        run: node scripts/smoke-schools-relationship-viewmodel-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 
