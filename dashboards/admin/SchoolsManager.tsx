@@ -59,6 +59,12 @@ import {
     openPrintWindow,
     renderPrintTable,
 } from './SchoolsManager/exportHelpers';
+import {
+    buildSchoolPortfolioRows,
+    getSchoolOperationalSnapshot as calculateSchoolOperationalSnapshot,
+    getStudentsForSchool,
+    summarizeSchoolPortfolio,
+} from './SchoolsManager/readinessViewModel';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -218,19 +224,6 @@ export const SchoolsManager: React.FC = () => {
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
     const students = useMemo(() => users.filter((currentUser) => currentUser.role === Role.STUDENT), [users]);
-    const getStudentsForSchool = (school: Group, schoolClasses: Group[]) => {
-        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
-        const linkedStudentIds = new Set<string>([
-            ...(school.studentIds || []),
-            ...schoolClasses.flatMap((classroom) => classroom.studentIds || []),
-        ]);
-
-        return students.filter((student) => (
-            student.schoolId === school.id
-            || linkedStudentIds.has(student.id)
-            || (student.groupIds || []).some((groupId) => groupId === school.id || schoolClassIds.has(groupId))
-        ));
-    };
     const supervisors = useMemo(
         () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR || currentUser.role === Role.TEACHER),
         [users],
@@ -255,37 +248,12 @@ export const SchoolsManager: React.FC = () => {
         };
     }, [importRows, users]);
 
-    const getSchoolOperationalSnapshot = (school: Group) => {
-        const schoolClasses = classes.filter((group) => group.parentId === school.id);
-        const schoolStudents = getStudentsForSchool(school, schoolClasses);
-        const activePackageCount = b2bPackages.filter((pkg) => pkg.schoolId === school.id && pkg.status === 'active').length;
-        const activeCodeCount = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now()).length;
-        const readinessScore = [
-            schoolClasses.length > 0,
-            schoolStudents.length > 0,
-            school.supervisorIds.length > 0,
-            activePackageCount > 0,
-            activeCodeCount > 0,
-        ].filter(Boolean).length;
-        const normalizedSchoolName = school.name.trim().toLowerCase();
-        const hasRealOperation = readinessScore > 0 || schoolClasses.length > 0 || schoolStudents.length > 0;
-        const isLikelyDemoSchool = /(^|\s|-)(تجريبي|تجربة|اختبار|نموذج|demo|test|sample|trial)(\s|$|-)/i.test(normalizedSchoolName);
-        const isEmptyDraft =
-            !hasRealOperation &&
-            (/^مدرسة جديدة(?:\s|$|-)/.test(school.name.trim()) || isLikelyDemoSchool);
-        const isCommerciallyHiddenDraft = isEmptyDraft || (isLikelyDemoSchool && readinessScore < 2 && schoolStudents.length === 0);
-
-        return {
-            schoolClasses,
-            schoolStudents,
-            activePackageCount,
-            activeCodeCount,
-            readinessScore,
-            isEmptyDraft,
-            isLikelyDemoSchool,
-            isCommerciallyHiddenDraft,
-        };
-    };
+    const getOperationalSnapshotForSchool = (school: Group) => calculateSchoolOperationalSnapshot(school, {
+        classes,
+        students,
+        b2bPackages,
+        accessCodes,
+    });
 
     const filteredSchools = useMemo(() => {
         const keyword = schoolSearch.trim().toLowerCase();
@@ -293,7 +261,7 @@ export const SchoolsManager: React.FC = () => {
             const matchesSearch = !keyword || school.name.toLowerCase().includes(keyword);
             if (!matchesSearch) return false;
 
-            const snapshot = getSchoolOperationalSnapshot(school);
+            const snapshot = getOperationalSnapshotForSchool(school);
             if (schoolListMode === 'all' || keyword) return true;
             if (schoolListMode === 'ready') return snapshot.readinessScore === 5;
             if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isCommerciallyHiddenDraft;
@@ -301,62 +269,21 @@ export const SchoolsManager: React.FC = () => {
         });
     }, [accessCodes, b2bPackages, classes, schoolListMode, schoolSearch, schools, students]);
     const hiddenDraftSchoolsCount = useMemo(
-        () => schools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
+        () => schools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft).length,
         [accessCodes, b2bPackages, classes, schools, students],
     );
     const visibleDraftSchoolsCount = useMemo(
-        () => filteredSchools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
+        () => filteredSchools.filter((school) => getOperationalSnapshotForSchool(school).isCommerciallyHiddenDraft).length,
         [accessCodes, b2bPackages, classes, filteredSchools, students],
     );
-    const schoolPortfolioRows = useMemo(() => schools.map((school) => {
-        const schoolClasses = classes.filter((group) => group.parentId === school.id);
-        const schoolStudents = getStudentsForSchool(school, schoolClasses);
-        const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
-        const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
-        const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
-        const readinessChecks = [
-            { key: 'classes', label: 'الفصول', isReady: schoolClasses.length > 0, tab: 'overview' as const, hint: 'أضف فصول المدرسة' },
-            { key: 'students', label: 'الطلاب', isReady: schoolStudents.length > 0, tab: 'overview' as const, hint: 'أضف الطلاب أو استورد كشف المدرسة' },
-            { key: 'supervisors', label: 'المشرفون', isReady: school.supervisorIds.length > 0, tab: 'relations' as const, hint: 'اربط مدير المدرسة أو المشرفين' },
-            { key: 'packages', label: 'الباقة/المسارات', isReady: activePackageCount > 0, tab: 'packages' as const, hint: 'فعّل باقة مدرسية مرتبطة بالمسارات' },
-            { key: 'codes', label: 'الأكواد', isReady: schoolCodes.length > 0, tab: 'packages' as const, hint: 'ولّد كود دخول صالح' },
-        ];
-        const readinessScore = readinessChecks.filter((check) => check.isReady).length;
-        const nextAction = readinessChecks.find((check) => !check.isReady);
-        const status = readinessScore === readinessChecks.length
-            ? 'جاهزة للبيع/التسليم'
-            : readinessScore >= 2
-                ? 'قريبة من التسليم'
-                : 'تحتاج تجهيز';
-
-        return {
-            school,
-            classCount: schoolClasses.length,
-            studentCount: schoolStudents.length,
-            supervisorCount: school.supervisorIds.length,
-            activePackageCount,
-            activeCodeCount: schoolCodes.length,
-            readinessScore,
-            readinessTotal: readinessChecks.length,
-            status,
-            nextAction,
-        };
-    }), [accessCodes, b2bPackages, classes, schools, students]);
-    const schoolPortfolioSummary = useMemo(() => {
-        const ready = schoolPortfolioRows.filter((row) => row.readinessScore === row.readinessTotal).length;
-        const nearReady = schoolPortfolioRows.filter((row) => row.readinessScore >= 2 && row.readinessScore < row.readinessTotal).length;
-        const needsSetup = schoolPortfolioRows.filter((row) => row.readinessScore < 2).length;
-        const nextPriority = [...schoolPortfolioRows].sort((a, b) => a.readinessScore - b.readinessScore || b.studentCount - a.studentCount)[0];
-
-        return {
-            ready,
-            nearReady,
-            needsSetup,
-            totalStudents: schoolPortfolioRows.reduce((sum, row) => sum + row.studentCount, 0),
-            totalActivePackages: schoolPortfolioRows.reduce((sum, row) => sum + row.activePackageCount, 0),
-            nextPriority,
-        };
-    }, [schoolPortfolioRows]);
+    const schoolPortfolioRows = useMemo(
+        () => buildSchoolPortfolioRows(schools, { classes, students, b2bPackages, accessCodes }),
+        [accessCodes, b2bPackages, classes, schools, students],
+    );
+    const schoolPortfolioSummary = useMemo(
+        () => summarizeSchoolPortfolio(schoolPortfolioRows),
+        [schoolPortfolioRows],
+    );
 
     const exportSchoolPortfolioReadiness = () => {
         createWorkbookDownload('schools-portfolio-readiness.xlsx', [
@@ -979,7 +906,7 @@ export const SchoolsManager: React.FC = () => {
         const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id);
         const schoolCodes = accessCodes.filter((code) => code.schoolId === selectedSchool.id);
         const schoolClasses = classes.filter((group) => group.parentId === selectedSchool.id);
-        const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses);
+        const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses, students);
         const schoolGroupIds = new Set([selectedSchool.id, ...schoolClasses.map((classroom) => classroom.id)]);
         const schoolSupervisors = supervisors.filter((currentUser) => (
             selectedSchool.supervisorIds.includes(currentUser.id)
@@ -4398,10 +4325,10 @@ export const SchoolsManager: React.FC = () => {
                     const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
                     const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
                     const schoolClasses = classes.filter((group) => group.parentId === school.id);
-                    const schoolStudents = getStudentsForSchool(school, schoolClasses);
+                    const schoolStudents = getStudentsForSchool(school, schoolClasses, students);
                     const schoolClassCount = schoolClasses.length;
                     const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
-                    const cardOperationalSnapshot = getSchoolOperationalSnapshot(school);
+                    const cardOperationalSnapshot = getOperationalSnapshotForSchool(school);
                     const cardReadinessScore = [
                         schoolClassCount > 0,
                         schoolStudents.length > 0,

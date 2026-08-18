@@ -63,7 +63,7 @@
 
 ## المرحلة الحالية — Schools Readiness & View-Model Decomposition
 
-**الحالة: بدأت مرحلة الفحص والتفكيك التدريجي.**
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate القياسي على commit الناتج.**
 
 الهدف: إخراج الحسابات والـview-models النقية من `SchoolsManager.tsx` قبل لمس الـUI الكبير، خصوصًا:
 
@@ -122,3 +122,7 @@
 `AGENTS.md` -> `docs/architecture/PROJECT_MAP.md` -> هذا السجل -> آخر Safety Gate.
 
 ثم يغيّر concern واحدًا فقط في كل دفعة صغيرة، يستخدم Quick Gate أثناء العمل، ويستخدم Full Gate فقط عند إغلاق المرحلة.
+
+- كشف Quick Gate بعد استخراج readiness وجود call sites إضافية لاحتساب طلاب المدرسة داخل workspace/cards. تم إبقاؤها على نفس المنطق وتمرير `students` صراحة إلى الـpure selector بدل إعادة منطق مكرر داخل component.
+
+- Schools readiness Full Phase Review: **PASS** قبل إنشاء commit المرحلة.
