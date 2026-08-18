@@ -1,0 +1,86 @@
+name: Temporary School Portfolio Filter Runner
+
+on:
+  pull_request:
+    branches:
+      - refactor/school-portfolio-filter-runner-base
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-verified-portfolio-filter-phase:
+    if: startsWith(github.head_ref, 'refactor/school-portfolio-filter-runner-trigger')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout target refactor branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/repository-v2-safe
+          fetch-depth: 0
+
+      - name: Import staged portfolio-filter phase files
+        shell: bash
+        run: |
+          git checkout origin/refactor/school-portfolio-filter-runner-base -- \
+            dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx \
+            scripts/smoke-schools-portfolio-filter-boundary-contract.mjs \
+            tools/refactor/apply-school-portfolio-filter-extraction.py \
+            tools/refactor/phase-review-school-portfolio-filter.mjs
+
+      - name: Apply portfolio-filter presentation extraction
+        run: python tools/refactor/apply-school-portfolio-filter-extraction.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Full portfolio-filter phase review
+        run: node tools/refactor/phase-review-school-portfolio-filter.mjs
+
+      - name: Restore generated audit snapshots
+        run: git checkout -- docs/architecture/generated
+
+      - name: Commit verified portfolio-filter phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('docs/architecture/CURRENT_REFACTOR_STATUS_AR.md')
+          status = status_path.read_text(encoding='utf-8')
+          status += '''\n## دفعة Schools Portfolio Filter Presentation\n\n- تم فصل البحث، فلترة أولوية المدارس، ووضع مراجعة/تنظيف المسودات إلى `SchoolPortfolioFilterPanel.tsx`.\n- اشتقاق `filteredSchools` وحساب جاهزية/إخفاء المسودات بقي في `SchoolsManager.tsx`؛ المكوّن الجديد عرضي فقط ويستقبل القيم وcallbacks.\n- Full Portfolio Filter Phase Review: **PASS** قبل commit التطبيق.\n- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.\n'''
+          status_path.write_text(status, encoding='utf-8')
+
+          ledger_path = Path('docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md')
+          ledger = ledger_path.read_text(encoding='utf-8')
+          ledger += '''\n## دفعة Schools Portfolio Filter Presentation\n\n**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**\n\n- فصل school portfolio search/filter/cleanup presentation عن `SchoolsManager.tsx`.\n- filtering/readiness derivation بقي في orchestration layer ولم تنتقل store/API mutations إلى child.\n'''
+          ledger_path.write_text(ledger, encoding='utf-8')
+          PY
+
+          git rm -f tools/refactor/apply-school-portfolio-filter-extraction.py
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/SchoolsManager.tsx \
+            dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx \
+            scripts/smoke-schools-portfolio-filter-boundary-contract.mjs \
+            tools/refactor/phase-review-school-portfolio-filter.mjs \
+            docs/architecture/CURRENT_REFACTOR_STATUS_AR.md \
+            docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_AR.md
+          git diff --cached --check
+          git status --short
+          git commit -m "refactor(schools): extract portfolio filter presentation"
+          git push origin HEAD:refactor/repository-v2-safe
