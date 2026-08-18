@@ -63,7 +63,23 @@ globalJourney = replaceOnce(
 );
 write(globalJourneyPath, globalJourney);
 
+const performanceContractPath = 'scripts/smoke-performance-contract.mjs';
+let performanceContract = read(performanceContractPath);
+performanceContract = replaceOnce(
+  performanceContract,
+  "assertIncludes('pages/Reports.tsx', 'targetUserId: student.id');",
+  "assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetUserId: student.id');",
+  'student focus target user performance ownership',
+);
+performanceContract = replaceOnce(
+  performanceContract,
+  "assertIncludes('pages/Reports.tsx', 'targetGroupId: student.groupIds?.[0]');",
+  "assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetGroupId: student.groupIds?.[0]');",
+  'student focus target group performance ownership',
+);
+write(performanceContractPath, performanceContract);
+
 console.log(JSON.stringify({
   status: 'APPLIED',
-  files: [reportsPath, roleContractPath, globalJourneyPath],
+  files: [reportsPath, roleContractPath, globalJourneyPath, performanceContractPath],
 }, null, 2));

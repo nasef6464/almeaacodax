@@ -8,6 +8,7 @@ const reports = read('pages/Reports.tsx');
 const focus = read('pages/Reports/scopedStudentFocusViewModel.ts');
 const reportsRole = read('scripts/smoke-reports-role-contract.mjs');
 const globalJourney = read('scripts/smoke-global-student-journey-contract.mjs');
+const performance = read('scripts/smoke-performance-contract.mjs');
 
 const checks = [];
 
@@ -69,10 +70,13 @@ check('student focus view-model remains deterministic and runtime-side-effect fr
   assertNotIncludes(focus, 'loadXlsx');
 });
 
-check('Reports contracts follow scoped student focus ownership', () => {
+check('Reports and performance contracts follow scoped student focus ownership', () => {
   assertIncludes(reportsRole, "../pages/Reports/scopedStudentFocusViewModel.ts");
   assertIncludes(globalJourney, "../pages/Reports/scopedStudentFocusViewModel.ts");
   assertIncludes(reportsRole, "assertIncludes(reportsSource, 'buildScopedStudentFocusCards(scopedFilteredStudents, skills)');");
+  assertIncludes(performance, "assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetUserId: student.id');");
+  assertIncludes(performance, "assertIncludes('pages/Reports/scopedStudentFocusViewModel.ts', 'targetGroupId: student.groupIds?.[0]');");
+  assertIncludes(performance, "assertIncludes('pages/Reports.tsx', 'to={student.followUpLink}');");
 });
 
 check('student focus extraction does not create a replacement hotspot', () => {

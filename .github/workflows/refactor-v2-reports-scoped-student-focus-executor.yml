@@ -52,7 +52,8 @@ jobs:
           git add \
             pages/Reports.tsx \
             scripts/smoke-reports-role-contract.mjs \
-            scripts/smoke-global-student-journey-contract.mjs
+            scripts/smoke-global-student-journey-contract.mjs \
+            scripts/smoke-performance-contract.mjs
 
           if git diff --cached --quiet; then
             echo "No extraction changes to commit."
