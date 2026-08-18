@@ -95,6 +95,9 @@ jobs:
       - name: School import parsing logic and performance contract
         run: npm run smoke:schools-import-parsing
 
+      - name: School readiness view-model logic contract
+        run: node scripts/smoke-schools-readiness-viewmodel-contract.mjs
+
       - name: Frontend performance contract
         run: npm run smoke:performance
 
