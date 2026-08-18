@@ -27,8 +27,11 @@ jobs:
             package-lock.json
             server/package-lock.json
 
-      - name: Apply extraction patch
+      - name: Apply schools extraction patch
         run: python tools/refactor/apply-schools-import-decomposition.py
+
+      - name: Apply directed quiz context repair
+        run: python tools/refactor/fix-directed-quiz-context.py
 
       - name: Install frontend dependencies
         run: npm ci
@@ -72,6 +75,7 @@ jobs:
           PY
 
           git rm -f tools/refactor/apply-schools-import-decomposition.py
+          git rm -f tools/refactor/fix-directed-quiz-context.py
           if [ -f .github/workflows/refactor-v2-schools-import-phase.yml ]; then
             git rm -f .github/workflows/refactor-v2-schools-import-phase.yml
           fi
@@ -81,5 +85,5 @@ jobs:
           git add -A
           git diff --cached --check
           git status --short
-          git commit -m "refactor(schools): extract import parsing with verified phase gate"
+          git commit -m "refactor(schools): extract imports and repair directed quiz context"
           git push origin HEAD:refactor/repository-v2-safe
