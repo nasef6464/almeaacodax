@@ -7,6 +7,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedComparisonViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
@@ -227,6 +228,8 @@ check('supervisor can analyze and export a specific directed quiz by students an
   assertIncludes(reportsSource, "return mode === 'central' || hasTargets");
   assertIncludes(reportsSource, 'const directedQuizAnalysisResults = useMemo');
   assertIncludes(reportsSource, 'const directedQuizSkillAnalysis = useMemo');
+  assertIncludes(reportsSource, 'buildDirectedQuizAnalysisResults({');
+  assertIncludes(reportsSource, 'buildDirectedQuizSkillAnalysis(directedQuizAnalysisResults)');
   assertIncludes(reportsSource, 'const directedQuizStudentAnalysis = useMemo');
   assertIncludes(reportsSource, 'const downloadDirectedQuizAnalysisWorkbook = async () =>');
   assertIncludes(reportsSource, 'تحليل اختبار موجه');
