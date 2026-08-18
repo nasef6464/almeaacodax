@@ -1,6 +1,9 @@
 import { readFile } from 'node:fs/promises';
 
-const reportsSource = await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8');
+const reportsSource = [
+  await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
+].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
@@ -63,7 +66,7 @@ check('student report shows the quick decision card instead of hiding it behind 
 check('student skill performance report is explicitly driven by quiz answers and evidence', () => {
   assertIncludes(reportsSource, 'تقرير أداء المهارات من الاختبارات');
   assertIncludes(reportsSource, 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
-  assertIncludes(reportsSource, 'مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.');
+  assertIncludes(reportsSource, 'نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار');
   assertIncludes(reportsSource, 'skill.totalEvidence');
   assertIncludes(reportsSource, 'skill.correctAttempts');
 });
@@ -146,7 +149,7 @@ check('student smart remediation uses AI with a local fallback plan', () => {
 });
 
 check('parent report stays brief with copied/shared/PDF summary and practical actions', () => {
-  assertIncludes(reportsSource, 'if (user.role === Role.PARENT)');
+  assertIncludes(reportsSource, 'if (user?.role === Role.PARENT)');
   assertIncludes(reportsSource, 'parentBriefSummary');
   assertIncludes(reportsSource, 'const copyParentBriefSummary = async () =>');
   assertIncludes(reportsSource, 'await navigator.clipboard.writeText(parentBriefSummary)');

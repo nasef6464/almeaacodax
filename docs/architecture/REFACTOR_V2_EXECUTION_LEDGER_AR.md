@@ -223,3 +223,11 @@
 
 - فصل school portfolio search/filter/cleanup presentation عن `SchoolsManager.tsx`.
 - filtering/readiness derivation بقي في orchestration layer ولم تنتقل store/API mutations إلى child.
+
+## دفعة Reports Domain Contracts
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- تم بدء تفكيك hotspot التقارير بأقل تغيير سلوكي ممكن: نقل types/pure helpers فقط.
+- `reportDomain.ts` لا يعتمد React أو store أو API أو browser أو XLSX.
+- source contracts تم تحويلها إلى aggregate ownership حتى تبقى الاختبارات تراقب السلوك بعد توزيع الملفات.

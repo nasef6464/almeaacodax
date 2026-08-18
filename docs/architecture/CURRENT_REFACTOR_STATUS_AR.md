@@ -128,3 +128,12 @@
 - اشتقاق `filteredSchools` وحساب جاهزية/إخفاء المسودات بقي في `SchoolsManager.tsx`؛ المكوّن الجديد عرضي فقط ويستقبل القيم وcallbacks.
 - Full Portfolio Filter Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Reports Domain Contracts
+
+- بدأ تفكيك `pages/Reports.tsx` بعد تثبيت حدود Schools.
+- تم نقل عقود وأنواع التقارير والمساعدات النقية للمدة والروابط والألوان إلى `pages/Reports/reportDomain.ts`.
+- بقي React state وAPI/store وعمليات التصدير والمعالجة التشغيلية داخل `Reports.tsx` في هذه الدفعة.
+- تم تحديث عقود Reports وGlobal Student Journey لتقرأ ownership الجديد بدون إسقاط أي contract قائم.
+- Full Reports Domain Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
