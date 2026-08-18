@@ -42,3 +42,11 @@
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
+
+## Roster/filter/pagination extraction — Full Phase Review PASS
+
+- تم نقل بحث/فلترة/pagination طلاب المدرسة إلى `SchoolsManager/rosterViewModel.ts`.
+- unassigned filtering يستخدم Set لمعرفات الفصول بدل `schoolClasses.some` داخل كل طالب، مع الحفاظ على نفس النتيجة.
+- لا تعتبر الدفعة مغلقة إلا بعد direct contract + Quick Gate + Full Review + Standard Safety Gate.
+
+- Roster Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.

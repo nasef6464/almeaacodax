@@ -67,6 +67,7 @@ import {
 } from './SchoolsManager/readinessViewModel';
 import { buildSchoolRelationshipViewModel } from './SchoolsManager/relationshipViewModel';
 import { buildSchoolWorkspaceViewModel } from './SchoolsManager/workspaceViewModel';
+import { buildSchoolRosterViewModel } from './SchoolsManager/rosterViewModel';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -933,21 +934,21 @@ export const SchoolsManager: React.FC = () => {
         const selectedPackageForCode = schoolPackages.find((pkg) => pkg.id === selectedPackageIdForCode);
         const totalSeats = activeSchoolPackages.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
         const usedSeats = schoolCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
-        const visibleSchoolStudents = schoolStudents.filter((student) => {
-            const query = studentSearch.trim().toLowerCase();
-            const matchesSearch = !query || student.name.toLowerCase().includes(query) || (student.email || '').toLowerCase().includes(query);
-            if (!matchesSearch) return false;
-            if (selectedClassFilter === 'all') return true;
-            if (selectedClassFilter === 'unassigned') {
-                return !(student.groupIds || []).some((groupId) => schoolClasses.some((item) => item.id === groupId));
-            }
-            return (student.groupIds || []).includes(selectedClassFilter);
+        const {
+            visibleSchoolStudents,
+            schoolStudentTotalPages,
+            safeSchoolStudentPage,
+            schoolStudentStartIndex,
+            schoolStudentEndIndex,
+            pagedVisibleSchoolStudents,
+        } = buildSchoolRosterViewModel({
+            schoolStudents,
+            schoolClasses,
+            search: studentSearch,
+            classFilter: selectedClassFilter,
+            page: schoolStudentPage,
+            pageSize: schoolStudentPageSize,
         });
-        const schoolStudentTotalPages = Math.max(1, Math.ceil(visibleSchoolStudents.length / schoolStudentPageSize));
-        const safeSchoolStudentPage = Math.min(schoolStudentPage, schoolStudentTotalPages);
-        const schoolStudentStartIndex = (safeSchoolStudentPage - 1) * schoolStudentPageSize;
-        const schoolStudentEndIndex = Math.min(schoolStudentStartIndex + schoolStudentPageSize, visibleSchoolStudents.length);
-        const pagedVisibleSchoolStudents = visibleSchoolStudents.slice(schoolStudentStartIndex, schoolStudentEndIndex);
         const focusClassStudentForm = (classroomName: string) => {
             setSingleStudent((current) => ({ ...current, className: classroomName }));
             setIsSingleStudentOpen(true);
