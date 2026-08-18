@@ -6,6 +6,7 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n
 
 const reports = read('pages/Reports.tsx');
 const analytics = read('pages/Reports/studentAnalyticsViewModel.ts');
+const evidence = read('pages/Reports/studentEvidenceViewModel.ts');
 const reportsRole = read('scripts/smoke-reports-role-contract.mjs');
 const globalJourney = read('scripts/smoke-global-student-journey-contract.mjs');
 const performance = read('scripts/smoke-performance-contract.mjs');
@@ -29,7 +30,7 @@ function assertNotIncludes(source, fragment, message) {
   if (source.includes(fragment)) throw new Error(message || `Unexpected fragment: ${fragment}`);
 }
 
-check('Reports delegates student analytics derivation to a pure view-model', () => {
+check('Reports delegates student analytics derivation through the stable analytics facade', () => {
   assertIncludes(reports, "from './Reports/studentAnalyticsViewModel';");
   assertIncludes(reports, 'buildStudentPerformanceStats(');
   assertIncludes(reports, 'buildStudentAggregatedSkills({');
@@ -41,7 +42,7 @@ check('Reports delegates student analytics derivation to a pure view-model', () 
   assertNotIncludes(reports, 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');
 });
 
-check('student analytics view-model preserves performance and evidence semantics', () => {
+check('student analytics view-model preserves performance and aggregation semantics', () => {
   assertIncludes(analytics, 'export const buildStudentPerformanceStats = (');
   assertIncludes(analytics, "bestSubject: { name: 'تدريبات الأسئلة', score: averageScore }");
   assertIncludes(analytics, "worstSubject: { name: 'تحتاج متابعة', score: averageScore }");
@@ -54,37 +55,46 @@ check('student analytics view-model preserves performance and evidence semantics
   assertIncludes(analytics, ".sort((a, b) => a.mastery - b.mastery)");
 });
 
-check('student analytics view-model preserves readiness messaging and evidence summary', () => {
-  assertIncludes(analytics, 'export const buildStudentEvidenceSummary =');
-  assertIncludes(analytics, 'skill.totalEvidence || skill.attempts || 0');
-  assertIncludes(analytics, 'export const buildStudentSkillReadinessSummary = (');
-  assertIncludes(analytics, 'مؤشراتك مطمئنة. حافظ على التدريب القصير.');
-  assertIncludes(analytics, 'ابدأ اختبارًا قصيرًا حتى تظهر خريطة مهاراتك.');
-  assertIncludes(analytics, 'مهارة بها إشارات أولية وتحتاج محاولات أكثر قبل الحكم.');
+check('student evidence view-model owns evidence totals and readiness messaging', () => {
+  assertIncludes(analytics, "from './studentEvidenceViewModel';");
+  assertIncludes(analytics, 'buildStudentEvidenceSummary,');
+  assertIncludes(analytics, 'buildStudentSkillReadinessSummary,');
+  assertNotIncludes(analytics, 'export const buildStudentEvidenceSummary =');
+  assertNotIncludes(analytics, 'export const buildStudentSkillReadinessSummary =');
+  assertIncludes(evidence, 'export const buildStudentEvidenceSummary =');
+  assertIncludes(evidence, 'skill.totalEvidence || skill.attempts || 0');
+  assertIncludes(evidence, 'export const buildStudentSkillReadinessSummary = (');
+  assertIncludes(evidence, 'مؤشراتك مطمئنة. حافظ على التدريب القصير.');
+  assertIncludes(evidence, 'ابدأ اختبارًا قصيرًا حتى تظهر خريطة مهاراتك.');
+  assertIncludes(evidence, 'مهارة بها إشارات أولية وتحتاج محاولات أكثر قبل الحكم.');
 });
 
-check('student analytics view-model is deterministic and runtime-side-effect free', () => {
-  assertNotIncludes(analytics, 'useStore');
-  assertNotIncludes(analytics, "from 'react'");
-  assertNotIncludes(analytics, "from '../../services/api'");
-  assertNotIncludes(analytics, 'api.');
-  assertNotIncludes(analytics, 'navigator.');
-  assertNotIncludes(analytics, 'window.');
-  assertNotIncludes(analytics, 'loadXlsx');
+check('student analytics and evidence view-models are deterministic and runtime-side-effect free', () => {
+  for (const source of [analytics, evidence]) {
+    assertNotIncludes(source, 'useStore');
+    assertNotIncludes(source, "from 'react'");
+    assertNotIncludes(source, "from '../../services/api'");
+    assertNotIncludes(source, 'api.');
+    assertNotIncludes(source, 'navigator.');
+    assertNotIncludes(source, 'window.');
+    assertNotIncludes(source, 'loadXlsx');
+  }
 });
 
-check('source contracts follow extracted student analytics ownership', () => {
+check('source contracts keep the stable student analytics facade while evidence has separate ownership', () => {
   assertIncludes(reportsRole, "../pages/Reports/studentAnalyticsViewModel.ts");
   assertIncludes(globalJourney, "../pages/Reports/studentAnalyticsViewModel.ts");
   assertIncludes(performance, "assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.count >= minSkillEvidence');");
   assertNotIncludes(performance, "assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');");
 });
 
-check('student analytics extraction materially reduces Reports without creating a replacement hotspot', () => {
+check('student analytics split reduces responsibility without creating a replacement hotspot', () => {
   const reportLines = reports.split('\n').length;
   const analyticsLines = analytics.split('\n').length;
+  const evidenceLines = evidence.split('\n').length;
   if (reportLines >= 3350) throw new Error(`Reports.tsx remained too large after student analytics extraction: ${reportLines}`);
-  if (analyticsLines > 260) throw new Error(`studentAnalyticsViewModel.ts exceeded 260 lines: ${analyticsLines}`);
+  if (analyticsLines > 220) throw new Error(`studentAnalyticsViewModel.ts exceeded 220 lines: ${analyticsLines}`);
+  if (evidenceLines > 100) throw new Error(`studentEvidenceViewModel.ts exceeded 100 lines: ${evidenceLines}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
@@ -93,6 +103,7 @@ const result = {
   status: failed.length === 0 ? 'PASS' : 'FAIL',
   reportsLines: reports.split('\n').length,
   analyticsLines: analytics.split('\n').length,
+  evidenceLines: evidence.split('\n').length,
   checks,
 };
 
