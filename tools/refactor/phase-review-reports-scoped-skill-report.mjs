@@ -5,8 +5,17 @@ const applyReadiness = spawnSync('node', ['tools/refactor/apply-reports-student-
   shell: process.platform === 'win32',
 });
 if (applyReadiness.status !== 0) {
-  console.error('[reports-student-readiness-phase-review] Failed to apply student readiness extraction');
+  console.error('[reports-student-learning-loop-phase-review] Failed to verify student readiness extraction');
   process.exit(applyReadiness.status ?? 1);
+}
+
+const applyLearningLoop = spawnSync('node', ['tools/refactor/apply-reports-student-learning-loop.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (applyLearningLoop.status !== 0) {
+  console.error('[reports-student-learning-loop-phase-review] Failed to apply student learning loop extraction');
+  process.exit(applyLearningLoop.status ?? 1);
 }
 
 const checks = [
@@ -26,6 +35,7 @@ const checks = [
   ['reports student report actions boundary', 'node', ['scripts/smoke-reports-student-report-actions-boundary-contract.mjs']],
   ['reports student skill rows boundary', 'node', ['scripts/smoke-reports-student-skill-rows-boundary-contract.mjs']],
   ['reports student readiness boundary', 'node', ['scripts/smoke-reports-student-readiness-boundary-contract.mjs']],
+  ['reports student learning loop boundary', 'node', ['scripts/smoke-reports-student-learning-loop-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
@@ -39,7 +49,7 @@ const checks = [
 const results = [];
 for (const [name, command, args] of checks) {
   const startedAt = Date.now();
-  console.log(`\n[reports-student-readiness-phase-review] START ${name}`);
+  console.log(`\n[reports-student-learning-loop-phase-review] START ${name}`);
   const result = spawnSync(command, args, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
@@ -47,7 +57,7 @@ for (const [name, command, args] of checks) {
   const durationMs = Date.now() - startedAt;
   results.push({ name, status: result.status === 0 ? 'PASS' : 'FAIL', durationMs });
   if (result.status !== 0) {
-    console.error(`\n[reports-student-readiness-phase-review] FAIL ${name}`);
+    console.error(`\n[reports-student-learning-loop-phase-review] FAIL ${name}`);
     console.error(JSON.stringify(results, null, 2));
     process.exit(result.status ?? 1);
   }
@@ -58,9 +68,9 @@ const stagePerformanceContract = spawnSync('git', ['add', 'scripts/smoke-perform
   shell: process.platform === 'win32',
 });
 if (stagePerformanceContract.status !== 0) {
-  console.error('[reports-student-readiness-phase-review] Failed to stage performance ownership update');
+  console.error('[reports-student-learning-loop-phase-review] Failed to stage performance ownership update');
   process.exit(stagePerformanceContract.status ?? 1);
 }
 
-console.log('\n[reports-student-readiness-phase-review] ALL CHECKS PASS');
+console.log('\n[reports-student-learning-loop-phase-review] ALL CHECKS PASS');
 console.log(JSON.stringify(results, null, 2));
