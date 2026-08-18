@@ -208,3 +208,11 @@
 - تم إخراج focus/metrics/capacity/class-operating summary من `SchoolsManager.tsx`.
 - navigation/scroll orchestration بقي في parent، والـchild presentation-only.
 - تم تحديث عقود المدرسة لتقرأ ownership الجديد دون إسقاط السلوك السابق.
+
+## دفعة Schools Command Center Presentation
+
+**الحالة: Full Phase Review PASS؛ تنتظر Safety Gate + Vercel Preview checkpoint.**
+
+- تم إخراج command-center/readiness/delivery/primary-actions presentation من `SchoolsManager.tsx`.
+- orchestration بقي في parent والـchild presentation-only.
+- عقود المدرسة والـrelationship audit تقرأ ownership الجديد دون تغيير السلوك أو العقود التشغيلية.

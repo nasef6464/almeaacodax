@@ -22,6 +22,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
 ].join("\n"),
   store: await read("store/useStore.ts"),
   packageJson: await read("package.json"),

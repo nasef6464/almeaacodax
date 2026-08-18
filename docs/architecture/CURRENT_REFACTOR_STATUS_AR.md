@@ -113,3 +113,11 @@
 - لم تنتقل أي API/store mutation إلى مكوّن العرض الجديد.
 - Full Overview Summary Phase Review: **PASS** قبل commit التطبيق.
 - القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
+
+## دفعة Schools Command Center Presentation
+
+- تم فصل مركز التشغيل، جاهزية التسليم، رحلة التسليم والإجراءات الأساسية إلى `SchoolCommandCenterPanel.tsx`.
+- التنقل، التمرير، إنشاء الفصل، فتح الطالب، توجيه المشرف وبوابة المتابعة بقيت في `SchoolsManager.tsx` عبر callbacks صريحة.
+- لم تنتقل أي API/store mutation أو منطق إنتاجي إلى مكوّن العرض الجديد.
+- Full Command Center Phase Review: **PASS** قبل commit التطبيق.
+- القبول النهائي ينتظر Safety Gate + Vercel Preview Gate على checkpoint التحقق.
