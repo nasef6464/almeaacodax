@@ -13,6 +13,7 @@ const checks = [
   ['reports scoped comparison boundary', 'node', ['scripts/smoke-reports-scoped-comparison-boundary-contract.mjs']],
   ['reports scoped analytics boundary', 'node', ['scripts/smoke-reports-scoped-analytics-boundary-contract.mjs']],
   ['reports student analytics boundary', 'node', ['scripts/smoke-reports-student-analytics-boundary-contract.mjs']],
+  ['reports student weekly plan boundary', 'node', ['scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
@@ -26,7 +27,7 @@ const checks = [
 const results = [];
 for (const [name, command, args] of checks) {
   const startedAt = Date.now();
-  console.log(`\n[reports-scoped-skill-report-phase-review] START ${name}`);
+  console.log(`\n[reports-weekly-plan-phase-review] START ${name}`);
   const result = spawnSync(command, args, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
@@ -34,11 +35,11 @@ for (const [name, command, args] of checks) {
   const durationMs = Date.now() - startedAt;
   results.push({ name, status: result.status === 0 ? 'PASS' : 'FAIL', durationMs });
   if (result.status !== 0) {
-    console.error(`\n[reports-scoped-skill-report-phase-review] FAIL ${name}`);
+    console.error(`\n[reports-weekly-plan-phase-review] FAIL ${name}`);
     console.error(JSON.stringify(results, null, 2));
     process.exit(result.status ?? 1);
   }
 }
 
-console.log('\n[reports-scoped-skill-report-phase-review] ALL CHECKS PASS');
+console.log('\n[reports-weekly-plan-phase-review] ALL CHECKS PASS');
 console.log(JSON.stringify(results, null, 2));
