@@ -21,14 +21,15 @@ assert.ok(card.includes('handleDeleteSchoolPackage'), 'package card must receive
 assert.ok(card.includes('assignCourseToGroup'), 'package card must receive course assignment behavior explicitly');
 assert.ok(card.includes('PACKAGE_CONTENT_OPTIONS'), 'package content-type controls must remain inside the card');
 assert.ok(card.includes('window.confirm('), 'final package deletion confirmation must remain intact');
-assert.ok(lineCount(card) <= 430, `SchoolPackageCard must stay <= 430 lines; got ${lineCount(card)}`);
+assert.ok(lineCount(card) <= 400, `SchoolPackageCard must stay <= 400 lines; got ${lineCount(card)}`);
 
 assert.ok(panel.includes("from './SchoolPackageCard';"), 'SchoolPackagesPanel must compose SchoolPackageCard');
 assert.ok(panel.includes('<SchoolPackageCard'), 'SchoolPackagesPanel must render extracted package cards');
+assert.ok(panel.includes("import { ShieldCheck, Download, Plus, Trash2, Key } from 'lucide-react';"), 'parent panel must keep Trash2 for access-code deletion');
 assert.ok(!panel.includes('PACKAGE_CONTENT_OPTIONS.map'), 'package-card content controls must not leak back into parent panel');
 assert.ok(!panel.includes('pkg.revenueSharePercentage'), 'package-card commercial form fields must not leak back into parent panel');
 assert.ok(!panel.includes('const packageCourses ='), 'package-specific presentation setup must remain outside the parent panel');
-assert.ok(lineCount(panel) <= 430, `SchoolPackagesPanel should become an orchestration panel <= 430 lines; got ${lineCount(panel)}`);
+assert.ok(lineCount(panel) <= 350, `SchoolPackagesPanel should remain an orchestration panel <= 350 lines; got ${lineCount(panel)}`);
 
 for (const [file, source] of [[panelFile, panel], [cardFile, card]]) {
   const result = ts.transpileModule(source, {
