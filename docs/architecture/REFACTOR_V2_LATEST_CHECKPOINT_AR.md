@@ -54,3 +54,12 @@
 `تغيير صغير -> Direct Contract -> Quick Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> تسجيل checkpoint`.
 
 لا يتم تخفيف اختبار لمجرد تمرير CI؛ إذا تغير شكل الكود مع بقاء السلوك، يُعاد توجيه العقد إلى الحدود الجديدة بعد التحقق من الدلالة. وإذا ظهر تراجع وظيفي حقيقي، يتم إصلاح الكود نفسه.
+
+## Relations Import presentation boundary — Full Phase Review PASS
+
+- تم نقل رفع ملف العلاقات، preview، خيار إنشاء الحسابات الناقصة، التنفيذ، credentials handover ونتائج الربط إلى `SchoolRelationsImportPanel.tsx`.
+- الـchild يستقبل كل state/handlers كـprops ولا يستورد manager/store/api.
+- تم الحفاظ على file types، preview لأول 6 صفوف، create-missing-users semantics وكل summary counters.
+- الدفعة لا تغلق إلا بعد Direct Boundary Contract + Quick Gate + Full Review + Standard Safety Gate.
+
+- Relations Import Full Phase Review: **PASS** قبل إنشاء commit الدفعة؛ القبول النهائي ينتظر Standard Safety Gate.
