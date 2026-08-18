@@ -55,9 +55,16 @@ const blockAfter = `    const schoolPortfolioRows = useMemo(
         [schoolListMode, schoolPortfolioRows, schoolSearch],
     );`;
 
+const hasLegacyInlineFilter = source.includes('const filteredSchools = useMemo(() => {');
+const hasMemoizedProjection = source.includes(
+    'const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo(',
+);
+const hasCardProjection = source.includes(
+    'filteredRows: filteredSchoolRows, filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount',
+);
 const alreadyApplied = source.includes('filterSchoolPortfolioRows,')
-    && source.includes('const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo(')
-    && !source.includes('const filteredSchools = useMemo(() => {');
+    && !hasLegacyInlineFilter
+    && (hasMemoizedProjection || hasCardProjection);
 
 if (alreadyApplied) {
     console.log(JSON.stringify({ status: 'ALREADY_APPLIED', phase: 'school-portfolio-projection' }, null, 2));
