@@ -72,6 +72,15 @@ if (applyStudentSmartRemediationPresentation.status !== 0) {
   process.exit(applyStudentSmartRemediationPresentation.status ?? 1);
 }
 
+const applyStudentSelectedSkillPresentation = spawnSync('node', ['tools/refactor/apply-reports-student-selected-skill-presentation.mjs'], {
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (applyStudentSelectedSkillPresentation.status !== 0) {
+  console.error('[reports-student-report-scope-phase-review] Failed to apply student selected skill presentation extraction');
+  process.exit(applyStudentSelectedSkillPresentation.status ?? 1);
+}
+
 const checks = [
   ['git diff whitespace validation', 'git', ['diff', '--check']],
   ['frontend typecheck', 'npm', ['run', 'typecheck']],
@@ -96,6 +105,7 @@ const checks = [
   ['reports scoped export rows boundary', 'node', ['scripts/smoke-reports-scoped-export-rows-boundary-contract.mjs']],
   ['reports student weekly plan presentation boundary', 'node', ['scripts/smoke-reports-student-weekly-plan-presentation-boundary-contract.mjs']],
   ['reports student smart remediation presentation boundary', 'node', ['scripts/smoke-reports-student-smart-remediation-presentation-boundary-contract.mjs']],
+  ['reports student selected skill presentation boundary', 'node', ['scripts/smoke-reports-student-selected-skill-presentation-boundary-contract.mjs']],
   ['reports recommendation boundary', 'node', ['scripts/smoke-reports-recommendation-boundary-contract.mjs']],
   ['reports domain boundary', 'node', ['scripts/smoke-reports-domain-boundary-contract.mjs']],
   ['reports role contract', 'npm', ['run', 'smoke:reports-role']],
