@@ -24,93 +24,7 @@ import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
 import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from "../utils/integrationSecretsCrypto.js";
-
-const topicSchema = z.object({
-  id: z.string().optional(),
-  pathId: z.string().min(1),
-  subjectId: z.string().min(1),
-  sectionId: z.string().nullable().optional(),
-  title: z.string().min(1),
-  parentId: z.string().nullable().optional(),
-  order: z.number().default(0),
-  showOnPlatform: z.boolean().default(true),
-  isLocked: z.boolean().default(false),
-  lessonIds: z.array(z.string()).default([]),
-  quizIds: z.array(z.string()).default([]),
-  libraryItemIds: z.array(z.string()).default([]),
-});
-
-const topicUpdateSchema = z.object({
-  id: z.string().optional(),
-  pathId: z.string().min(1).optional(),
-  subjectId: z.string().min(1).optional(),
-  sectionId: z.string().nullable().optional(),
-  title: z.string().min(1).optional(),
-  parentId: z.string().nullable().optional(),
-  order: z.number().optional(),
-  showOnPlatform: z.boolean().optional(),
-  isLocked: z.boolean().optional(),
-  lessonIds: z.array(z.string()).optional(),
-  quizIds: z.array(z.string()).optional(),
-  libraryItemIds: z.array(z.string()).optional(),
-});
-
-const lessonSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1),
-  description: z.string().optional(),
-  pathId: z.string().min(1),
-  subjectId: z.string().min(1),
-  sectionId: z.string().nullable().optional(),
-  type: z.enum(["video", "quiz", "file", "assignment", "text", "live_youtube", "zoom", "google_meet", "teams"]),
-  duration: z.string().default(""),
-  content: z.string().optional(),
-  videoUrl: z.string().optional(),
-  videoSource: z.enum(["upload", "youtube", "vimeo"]).optional(),
-  interactiveQuestions: z
-    .array(
-      z.object({
-        id: z.string().min(1),
-        timestamp: z.number().min(0),
-        questionId: z.string().optional(),
-        inlineQuestion: z
-          .object({
-            text: z.string().min(1),
-            options: z.array(z.string()).min(2),
-            correctOptionIndex: z.number().min(0),
-          })
-          .optional(),
-        mustPass: z.boolean().default(false),
-        actionOnFail: z.enum(["rewatch", "continue"]).default("continue"),
-        rewatchTimestamp: z.number().min(0).optional(),
-      }),
-    )
-    .default([]),
-  fileUrl: z.string().optional(),
-  meetingUrl: z.string().optional(),
-  meetingDate: z.string().optional(),
-  recordingUrl: z.string().optional(),
-  joinInstructions: z.string().optional(),
-  showRecordingOnPlatform: z.boolean().optional(),
-  showOnPlatform: z.boolean().default(true),
-  quizId: z.string().nullable().optional(),
-  order: z.number().default(0),
-  isLocked: z.boolean().default(false),
-  skillIds: z.array(z.string()).min(1),
-  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
-  ownerId: z.string().optional(),
-  assignedTeacherId: z.string().optional(),
-  assignedTeacherName: z.string().optional(),
-  schoolId: z.string().optional(),
-  classId: z.string().optional(),
-  maxAttendees: z.number().optional(),
-  attendedStudentIds: z.array(z.string()).optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
-  reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
-});
+import { lessonSchema, librarySchema, libraryUpdateSchema, topicSchema, topicUpdateSchema } from "../modules/content/http/learningContentSchemas.js";
 
 const sanitizeVideoUrl = (rawUrl?: string | null) => {
   if (!rawUrl) return "";
@@ -483,54 +397,6 @@ const sanitizeWorkflowUpdate = (
 
   return nextPayload;
 };
-
-const librarySchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1),
-  size: z.string().default(""),
-  downloads: z.number().default(0),
-  type: z.enum(["pdf", "doc", "video"]).default("pdf"),
-  pathId: z.string().min(1),
-  subjectId: z.string().min(1),
-  sectionId: z.string().nullable().optional(),
-  skillIds: z.array(z.string()).min(1),
-  url: z.string().optional(),
-  showOnPlatform: z.boolean().default(true),
-  isLocked: z.boolean().default(false),
-  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
-  ownerId: z.string().optional(),
-  createdBy: z.string().optional(),
-  assignedTeacherId: z.string().optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
-  reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
-});
-
-const libraryUpdateSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1).optional(),
-  size: z.string().optional(),
-  downloads: z.number().optional(),
-  type: z.enum(["pdf", "doc", "video"]).optional(),
-  pathId: z.string().min(1).optional(),
-  subjectId: z.string().min(1).optional(),
-  sectionId: z.string().nullable().optional(),
-  skillIds: z.array(z.string()).min(1).optional(),
-  url: z.string().optional(),
-  showOnPlatform: z.boolean().optional(),
-  isLocked: z.boolean().optional(),
-  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
-  ownerId: z.string().optional(),
-  createdBy: z.string().optional(),
-  assignedTeacherId: z.string().optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
-  reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
-});
 
 const groupSchema = z.object({
   name: z.string().min(1),
