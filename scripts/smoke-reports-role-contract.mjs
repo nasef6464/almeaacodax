@@ -10,6 +10,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/directedQuizAnalyticsViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/institutionalReportViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
@@ -256,6 +257,7 @@ check('staff reports can send a real intervention alert to linked parent and sup
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {
+  assertIncludes(reportsSource, 'buildScopedSkillReportCards(scopedAnalytics, {');
   assertIncludes(reportsSource, 'buildScopedStudentFocusCards(scopedFilteredStudents, skills)');
   assertIncludes(reportsSource, 'buildScopedInterventionPlan(scopedAnalytics)');
   assertIncludes(reportsSource, 'ابدأ بالمهارة الأكثر احتياجًا');

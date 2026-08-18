@@ -55,6 +55,7 @@ import {
 } from './Reports/directedQuizAnalyticsViewModel';
 import { buildInstitutionalReportHub, buildScopedLeadStudentSummary } from './Reports/institutionalReportViewModel';
 import { buildScopedStudentFocusCards } from './Reports/scopedStudentFocusViewModel';
+import { buildScopedSkillReportCards } from './Reports/scopedSkillReportViewModel';
 
 const getSkillRecommendation = (
     skill: { skill?: string; skillId?: string } | undefined,
@@ -764,33 +765,19 @@ const Reports: React.FC = () => {
             setInterventionAlertSending(false);
         }
     };
-    const scopedSkillReportCards = useMemo(() => {
-        return (scopedAnalytics?.weakestSkills || []).slice(0, 4).map((skill) => {
-            const tone = skill.mastery < 50
-                ? {
-                    label: 'دعم عاجل',
-                    card: 'border-rose-100 bg-rose-50/70',
-                    text: 'text-rose-700',
-                    bar: 'bg-rose-500',
-                }
-                : {
-                    label: 'دعم قريب',
-                    card: 'border-amber-100 bg-amber-50/70',
-                    text: 'text-amber-700',
-                    bar: 'bg-amber-500',
-                };
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
-
-            return {
-                ...skill,
-                tone,
-                lessonLink: recommendation.lessonLink,
-                lessonTitle: recommendation.lessonTopicTitle || recommendation.lessonTitle,
-                quizLink: recommendation.quizLink,
-                quizTitle: recommendation.quizTitle,
-            };
-        });
-    }, [lessons, libraryItems, questions, quizzes, scopedAnalytics?.weakestSkills, skills, topics]);
+    const scopedSkillReportCards = useMemo(
+        () => buildScopedSkillReportCards(scopedAnalytics, {
+            allSkills: skills,
+            lessons,
+            quizzes,
+            libraryItems,
+            questions,
+            topics,
+            subjects,
+            sections,
+        }),
+        [lessons, libraryItems, questions, quizzes, scopedAnalytics, sections, skills, subjects, topics],
+    );
     const scopedStudentFocusCards = useMemo(
         () => buildScopedStudentFocusCards(scopedFilteredStudents, skills),
         [scopedFilteredStudents, skills],
