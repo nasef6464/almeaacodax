@@ -47,10 +47,13 @@ const rows = [
     makeRow({ id: 'demo', name: 'Demo School', readinessScore: 1, hidden: true }),
 ];
 
-check('manager delegates school portfolio filtering to one readiness projection', () => {
+check('manager delegates school portfolio filtering to one time-aware readiness projection', () => {
     assert.ok(managerSource.includes('filterSchoolPortfolioRows,'));
     assert.ok(managerSource.includes('filterSchoolPortfolioRows(schoolPortfolioRows, schoolSearch, schoolListMode)'));
-    assert.ok(managerSource.includes('const { filteredSchools, hiddenDraftSchoolsCount, visibleDraftSchoolsCount } = useMemo('));
+    assert.ok(managerSource.includes('const schoolPortfolioRows = buildSchoolPortfolioRows('));
+    assert.ok(managerSource.includes('classes, students, b2bPackages, accessCodes, now: Date.now(),'));
+    assert.ok(managerSource.includes('filteredRows: filteredSchoolRows'));
+    assert.ok(!managerSource.includes('const schoolPortfolioRows = useMemo('));
     assert.ok(!managerSource.includes('const filteredSchools = useMemo(() => {'));
 });
 
