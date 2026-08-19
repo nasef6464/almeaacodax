@@ -11,7 +11,7 @@ if (apply.status !== 0) {
 
 const checks = [
   ['git diff whitespace validation', 'git', ['diff', '--check']],
-  ['frontend typecheck', 'npm', ['run', 'typecheck']],
+  ['repository typecheck', 'npm', ['run', 'typecheck']],
   ['frontend production build', 'npm', ['run', 'build']],
   ['architecture contract', 'node', ['tools/refactor/architecture-gate.mjs']],
   ['module boundary contract', 'node', ['tools/refactor/module-boundary-gate.mjs']],

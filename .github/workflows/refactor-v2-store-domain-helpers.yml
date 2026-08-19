@@ -59,7 +59,7 @@ jobs:
       - name: Verify store domain helper boundary before any apply
         run: node scripts/smoke-store-domain-helpers-boundary-contract.mjs
 
-      - name: Frontend typecheck on source head
+      - name: Repository typecheck on source head
         run: npm run typecheck
 
       - name: Apply current refactor phase — store domain helpers
