@@ -1,0 +1,144 @@
+name: Platform V3 Certificate Integrity Code Repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-certificate-integrity-code-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-certificate-integrity-code-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Commit verified certificate code and contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Apply certificate integrity code repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const routePath = 'server/src/routes/certificates.routes.ts';
+          let route = fs.readFileSync(routePath, 'utf8');
+
+          const importOld = 'import { CourseModel } from "../models/Course.js";\nimport { UserModel } from "../models/User.js";';
+          const importNew = 'import { CourseModel } from "../models/Course.js";\nimport { AccessGrantModel } from "../models/AccessGrant.js";\nimport { UserModel } from "../models/User.js";';
+          if (route.split(importOld).length - 1 !== 1) throw new Error('Certificate import anchor changed');
+          route = route.replace(importOld, importNew);
+
+          const schemaAnchor = 'const generateSchema = z.object({\n  courseId: z.string().min(1),\n});';
+          const helpers = `const generateSchema = z.object({\n  courseId: z.string().min(1),\n});\n\nconst normalizeStringList = (value: unknown) =>\n  Array.isArray(value) ? value.map((item) => String(item || "").trim()).filter(Boolean) : [];\n\nconst grantAllowsCourse = (grant: any, course: any) => {\n  if (!grant || grant.status !== "active") return false;\n  const expiresAt = Number(grant.expiresAt || 0);\n  if (expiresAt > 0 && expiresAt <= Date.now()) return false;\n\n  const courseId = String(course.id || course._id || "").trim();\n  const coursePathId = String(course.pathId || course.category || "").trim();\n  const courseSubjectId = String(course.subjectId || course.subject || "").trim();\n  const courseIds = normalizeStringList(grant.courseIds);\n  if (courseIds.length > 0) return courseIds.includes(courseId);\n\n  const contentTypes = normalizeStringList(grant.contentTypes);\n  if (!contentTypes.includes("all") && !contentTypes.includes("courses")) return false;\n\n  const pathIds = normalizeStringList(grant.pathIds);\n  const subjectIds = normalizeStringList(grant.subjectIds);\n  const matchesPath = pathIds.length === 0 || (!!coursePathId && pathIds.includes(coursePathId));\n  const matchesSubject = subjectIds.length === 0 || (!!courseSubjectId && subjectIds.includes(courseSubjectId));\n  return matchesPath && matchesSubject;\n};`;
+          if (route.split(schemaAnchor).length - 1 !== 1) throw new Error('Certificate schema anchor changed');
+          route = route.replace(schemaAnchor, helpers);
+
+          const roleOld = '  requireRole(["student", "parent", "admin", "teacher", "supervisor"]),';
+          const roleNew = '  requireRole(["student"]),';
+          if (route.split(roleOld).length - 1 !== 1) throw new Error('Certificate role guard changed');
+          route = route.replace(roleOld, roleNew);
+
+          const loadOld = `    const [user, course] = await Promise.all([\n      UserModel.findById(userId).select("id name completedLessons"),\n      CourseModel.findOne({ $or: [{ id: courseId }, { _id: courseId }] }).select("id title modules pathId category"),\n    ]);\n    if (!user) return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });\n    if (!course) return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });`;
+          const loadNew = `    const [user, course, activeGrants] = await Promise.all([\n      UserModel.findById(userId).select("id name role completedLessons enrolledCourses subscription"),\n      CourseModel.findOne({ $or: [{ id: courseId }, { _id: courseId }] }).select("id title modules pathId category subjectId subject certificateEnabled"),\n      AccessGrantModel.find({ userId, status: "active" }).select("courseIds contentTypes pathIds subjectIds status expiresAt").lean(),\n    ]);\n    if (!user) return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });\n    if (!course) return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });\n    if (course.certificateEnabled !== true) {\n      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Certificates are not enabled for this course" });\n    }\n\n    const normalizedCourseId = String(course.id || course._id);\n    const enrolledCourseIds = new Set([\n      ...normalizeStringList(user.enrolledCourses),\n      ...normalizeStringList((user as any).subscription?.purchasedCourses),\n    ]);\n    const hasCourseEntitlement = enrolledCourseIds.has(normalizedCourseId) || activeGrants.some((grant) => grantAllowsCourse(grant, course));\n    if (!hasCourseEntitlement) {\n      return res.status(StatusCodes.FORBIDDEN).json({ message: "Course access is required before issuing a certificate" });\n    }`;
+          if (route.split(loadOld).length - 1 !== 1) throw new Error('Certificate user/course load block changed');
+          route = route.replace(loadOld, loadNew);
+
+          const completionOld = `    const totalLessons = moduleLessons.length;\n    const completedLessons = new Set((user.completedLessons || []).map(String));\n    const completedInCourse = moduleLessons.filter((lesson: any) => completedLessons.has(String(lesson?.id || lesson?._id))).length;\n    const completionPercentage = totalLessons > 0 ? Math.round((completedInCourse / totalLessons) * 100) : 100;`;
+          const completionNew = `    const totalLessons = moduleLessons.length;\n    if (totalLessons === 0) {\n      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Course has no certifiable lessons" });\n    }\n    const completedLessons = new Set((user.completedLessons || []).map(String));\n    const completedInCourse = moduleLessons.filter((lesson: any) => completedLessons.has(String(lesson?.id || lesson?._id))).length;\n    const completionPercentage = Math.round((completedInCourse / totalLessons) * 100);`;
+          if (route.split(completionOld).length - 1 !== 1) throw new Error('Certificate completion block changed');
+          route = route.replace(completionOld, completionNew);
+
+          const existingOld = '    const existing = await CertificateModel.findOne({ userId, courseId: String(course.id || course._id) });';
+          const existingNew = '    const existing = await CertificateModel.findOne({ userId, courseId: normalizedCourseId });';
+          if (route.split(existingOld).length - 1 !== 1) throw new Error('Certificate normalized course id anchor changed');
+          route = route.replace(existingOld, existingNew);
+
+          const createOld = '      courseId: String(course.id || course._id),';
+          const createNew = '      courseId: normalizedCourseId,';
+          if (route.split(createOld).length - 1 !== 1) throw new Error('Certificate create course id anchor changed');
+          route = route.replace(createOld, createNew);
+          fs.writeFileSync(routePath, route);
+
+          const contractPath = 'scripts/smoke-certificate-integrity-contract.mjs';
+          fs.writeFileSync(contractPath, `import fs from "node:fs";\nimport path from "node:path";\n\nconst root = process.cwd();\nconst source = fs.readFileSync(path.join(root, "server", "src", "routes", "certificates.routes.ts"), "utf8");\n\nconst checks = [\n  ["certificate generation is student-only", source.includes('requireRole(["student"])')],\n  ["certificate requires course opt-in", source.includes('course.certificateEnabled !== true')],\n  ["certificate rejects empty courses", source.includes('if (totalLessons === 0)') && source.includes('Course has no certifiable lessons')],\n  ["certificate reads direct enrollment and purchased courses", source.includes('user.enrolledCourses') && source.includes('subscription?.purchasedCourses')],\n  ["certificate checks active access grants", source.includes('AccessGrantModel.find({ userId, status: "active" })') && source.includes('grantAllowsCourse')],\n  ["certificate grant scope checks course/path/subject", source.includes('courseIds.includes(courseId)') && source.includes('matchesPath && matchesSubject')],\n  ["certificate requires entitlement", source.includes('if (!hasCourseEntitlement)') && source.includes('Course access is required before issuing a certificate')],\n  ["certificate still requires full completion", source.includes('if (completionPercentage < 100)')],\n];\n\nconst failed = checks.filter(([, pass]) => !pass);\nfor (const [name, pass] of checks) console.log(\`${'${pass ? "PASS" : "FAIL"}'} ${'${name}'}\`);\nif (failed.length) {\n  console.error(\`Certificate integrity contract failed: ${'${failed.length}'} check(s).\`);\n  process.exit(1);\n}\nconsole.log(\`Certificate integrity contract passed: ${'${checks.length}'} checks.\`);\n`);
+
+          const packagePath = 'package.json';
+          let pkg = fs.readFileSync(packagePath, 'utf8');
+          const pkgOld = '        "smoke:course-quiz-context": "node scripts/smoke-course-quiz-context-contract.mjs",';
+          const pkgNew = '        "smoke:course-quiz-context": "node scripts/smoke-course-quiz-context-contract.mjs",\n        "smoke:certificate-integrity": "node scripts/smoke-certificate-integrity-contract.mjs",';
+          if (pkg.split(pkgOld).length - 1 !== 1) throw new Error('package.json certificate script anchor changed');
+          pkg = pkg.replace(pkgOld, pkgNew);
+          fs.writeFileSync(packagePath, pkg);
+          NODE
+
+      - name: Certificate integrity contract
+        run: npm run smoke:certificate-integrity
+      - name: Auth security contract
+        run: npm run smoke:auth-login-security
+      - name: API security contract
+        run: npm run smoke:api-security
+      - name: Course visibility contract
+        run: npm run smoke:course-visibility
+      - name: Frontend typecheck
+        run: npm run typecheck
+      - name: API typecheck
+        run: npm --prefix server run check
+      - name: Frontend production build
+        run: npm run build
+      - name: API production build
+        run: npm --prefix server run build
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <({ git diff --name-only; git ls-files --others --exclude-standard; } | sort -u)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 3
+          test "${changed[0]}" = "package.json"
+          test "${changed[1]}" = "scripts/smoke-certificate-integrity-contract.mjs"
+          test "${changed[2]}" = "server/src/routes/certificates.routes.ts"
+
+      - name: Commit verified certificate repair
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json scripts/smoke-certificate-integrity-contract.mjs server/src/routes/certificates.routes.ts
+          git commit -m "fix(certificates): enforce eligibility and entitlement"
+          git push origin HEAD:develop/platform-v3-recovery
