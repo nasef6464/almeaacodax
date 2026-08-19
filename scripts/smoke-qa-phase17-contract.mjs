@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 const k6Source = await readFile(new URL("../load-tests/k6-platform-journey.js", import.meta.url), "utf8");
 const loadReadme = await readFile(new URL("../load-tests/README.md", import.meta.url), "utf8");
-const phaseReport = await readFile(new URL("../17_18_TESTING_REPORT.md", import.meta.url), "utf8");
-const testingReport = await readFile(new URL("../TESTING_REPORT.md", import.meta.url), "utf8");
+const phaseReport = await readFile(new URL("../docs/archive_reports/17_18_TESTING_REPORT.md", import.meta.url), "utf8");
+const testingReport = await readFile(new URL("../docs/archive_reports/TESTING_REPORT.md", import.meta.url), "utf8");
 
 const scripts = packageJson.scripts || {};
 const checks = [];
