@@ -54,7 +54,7 @@ jobs:
         run: |
           set -euo pipefail
           cp package.json /tmp/package.json.before
-          npm install --package-lock-only --save=false react-router-dom@7.18.2
+          npm update --package-lock-only react-router-dom react-router
           cmp --silent package.json /tmp/package.json.before || {
             echo "package.json changed during lock-only remediation; refusing scope expansion." >&2
             git diff -- package.json
