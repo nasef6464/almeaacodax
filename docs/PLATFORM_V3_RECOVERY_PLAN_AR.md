@@ -48,6 +48,13 @@
 - commit: `64a665e28626b41b21b55d7c529fc5209f643d14`.
 - verified before commit: package/course split PASS + payment-package PASS + payment-tampering PASS + frontend typecheck PASS + API typecheck PASS + production build PASS + guarded one-file patch PASS.
 
+### Product bug #3 — payment country preset persistence — FIXED
+- الخلل: أزرار Preset السعودية/مصر في `FinancialManager` كانت تغيّر الإعدادات محليًا فقط رغم وجود API وBackend endpoint مخصصين للحفظ الفوري.
+- الأثر: المدير قد يرى الـPreset مطبقًا داخل الشاشة بدون ضمان حفظه على الخادم في نفس العملية.
+- الإصلاح: `applyCountryPreset` أصبح يستدعي `api.applyPaymentCountryPreset(country)` ثم يحدّث الواجهة من الإعدادات الراجعة من الخادم، مع معالجة خطأ واضحة.
+- commit: `da8bf55fe0247df955f81433b9ab7f6c8e658436`.
+- verified before commit بواسطة guarded repair: operational-admin-runtime + payment-package + payment-tampering + frontend/API typecheck + frontend/API production builds.
+
 ### CI issue #1 — docs-only Vercel preview false negative — REPAIR IN VERIFICATION
 - Safety baseline نفسه PASS بالكامل.
 - Vercel أنشأ Preview READY للـruntime commit `64a665e28626b41b21b55d7c529fc5209f643d14`.
@@ -95,6 +102,7 @@
 - [x] Reports role contracts
 - [x] Membership / payment security contracts
 - [x] Manual payment approval evidence repair
+- [x] Country preset persistence repair
 - [ ] Users / schools / question bank / quiz / courses / paths live
 - [ ] Packages / memberships / finance live
 - [ ] Reports / settings / integrations live
