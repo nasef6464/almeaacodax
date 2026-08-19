@@ -29,6 +29,7 @@ import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
 import { buildRecommendedAction, buildResultSkillStatus, buildSkillRecommendation, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
+import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -71,28 +72,12 @@ const clearQuizResultsCache = () => {
   quizResultsCache.clear();
 };
 
-const buildQuizResultsCacheKey = (
-  userId: string,
-  originalUrl: string,
-  includeReview: boolean,
-) => `${userId}:${includeReview ? "review" : "list"}:${originalUrl}`;
-
 const trimQuizResultsCacheIfNeeded = () => {
   if (quizResultsCache.size <= QUIZ_RESULTS_CACHE_MAX_ENTRIES) return;
   const firstKey = quizResultsCache.keys().next().value;
   if (firstKey) {
     quizResultsCache.delete(firstKey);
   }
-};
-
-const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const parseDateFilter = (value?: string) => {
-  const raw = String(value || "").trim();
-  if (!raw) return null;
-  const parsed = new Date(raw);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed;
 };
 
 const resolveAuthUserByAuthId = async (authId: string) =>
