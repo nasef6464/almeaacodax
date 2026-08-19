@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: platform-v3-payment-evidence-repair
+  group: platform-v3-payment-evidence-repair-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
