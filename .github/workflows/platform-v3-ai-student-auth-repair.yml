@@ -1,0 +1,129 @@
+name: Platform V3 Student AI Auth Repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-ai-student-auth-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-ai-student-auth-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Require authentication for student AI planning endpoints
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Apply exact student AI auth guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const aiPath = 'server/src/routes/ai.routes.ts';
+          let ai = fs.readFileSync(aiPath, 'utf8');
+          for (const endpoint of ['/study-plan', '/learning-path', '/remediation-plan']) {
+            const oldBlock = `aiRouter.post(\n  "${endpoint}",\n  asyncHandler(async (req, res) => {`;
+            const newBlock = `aiRouter.post(\n  "${endpoint}",\n  requireAuth,\n  asyncHandler(async (req, res) => {`;
+            if (ai.split(oldBlock).length - 1 !== 1) {
+              throw new Error(`Expected exactly one unguarded ${endpoint} endpoint`);
+            }
+            ai = ai.replace(oldBlock, newBlock);
+          }
+          fs.writeFileSync(aiPath, ai);
+
+          const contractPath = 'scripts/smoke-security-rbac-phase6-contract.mjs';
+          let contract = fs.readFileSync(contractPath, 'utf8');
+          const anchor = 'check("AI question generation is staff-only in UI and API", () => {';
+          const authCheck = [
+            'check("student AI planning endpoints require authentication", () => {',
+            '  for (const endpoint of ["/study-plan", "/learning-path", "/remediation-plan"]) {',
+            '    assertIncludes(files.aiRoutes, `aiRouter.post(\\n  "${endpoint}",\\n  requireAuth,`);',
+            '  }',
+            '});',
+            '',
+          ].join('\n');
+          if (contract.split(anchor).length - 1 !== 1) {
+            throw new Error('Security contract AI question check anchor changed');
+          }
+          contract = contract.replace(anchor, authCheck + anchor);
+          fs.writeFileSync(contractPath, contract);
+          NODE
+
+      - name: Security and RBAC contract
+        run: npm run smoke:security-rbac-phase6
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Reports role contract
+        run: npm run smoke:reports-role
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm --prefix server run check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm --prefix server run build
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 2
+          test "${changed[0]}" = "scripts/smoke-security-rbac-phase6-contract.mjs"
+          test "${changed[1]}" = "server/src/routes/ai.routes.ts"
+
+      - name: Commit verified auth repair
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/src/routes/ai.routes.ts scripts/smoke-security-rbac-phase6-contract.mjs
+          git commit -m "fix(security): require auth for student AI planning"
+          git push origin HEAD:develop/platform-v3-recovery
