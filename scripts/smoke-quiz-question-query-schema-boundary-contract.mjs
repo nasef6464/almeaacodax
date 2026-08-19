@@ -95,8 +95,8 @@ check('delegated question/query schema import is singular and anchored before ro
   const importCount = routeSource.split(schemaImport).length - 1;
   assert.equal(importCount, 1, `expected one delegated schema import, found ${importCount}`);
   const importIndex = routeSource.indexOf(schemaImport);
-  const cacheIndex = routeSource.indexOf('const QUESTION_SUMMARY_TEXT_LIMIT = 280;');
-  assert.ok(importIndex >= 0 && cacheIndex >= 0 && importIndex < cacheIndex, 'delegated schema import must precede route-local cache/state declarations');
+  const stateIndex = routeSource.indexOf('const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;');
+  assert.ok(importIndex >= 0 && stateIndex >= 0 && importIndex < stateIndex, 'delegated schema import must precede route-local cache/state declarations');
 });
 
 check('quiz definition ownership handoff is explicit when delegated by a later phase', () => {
