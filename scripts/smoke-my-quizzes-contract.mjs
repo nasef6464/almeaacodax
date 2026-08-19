@@ -42,8 +42,12 @@ check('account menu opens the simple my quizzes attempts page', () => {
   assertIncludes(headerSource, 'label={text.quizzes}');
 });
 
-check('student dashboard still embeds the same attempts view for sidebar users', () => {
-  assertIncludes(dashboardSource, "case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes view=\"attempts\" /></Suspense>;");
+check('student dashboard exam hub preserves the attempts view for sidebar and legacy quiz links', () => {
+  assertIncludes(dashboardSource, "const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }>");
+  assertIncludes(dashboardSource, "{view === 'attempts' && <Quizzes view=\"attempts\" />}");
+  assertIncludes(dashboardSource, "const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams' };");
+  assertIncludes(dashboardSource, "case 'quizzes':");
+  assertIncludes(dashboardSource, "return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'quizzes' ? 'attempts' : 'explore'} />;");
 });
 
 check('my quizzes groups attempts by quiz and separates regular from mock exams', () => {
