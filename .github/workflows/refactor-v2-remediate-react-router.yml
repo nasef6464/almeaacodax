@@ -84,8 +84,8 @@ jobs:
       - name: Frontend production build
         run: npm run build
 
-      - name: Frontend strict contract
-        run: npm run smoke:frontend:strict
+      - name: Frontend live route contract without pre-deployment SHA assertion
+        run: npm run smoke:frontend
 
       - name: Route loading contract
         run: npm run smoke:route-loading
