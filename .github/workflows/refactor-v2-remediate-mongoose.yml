@@ -1,0 +1,148 @@
+name: Refactor V2 Remediate Mongoose
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-mongoose.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-mongoose.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-remediate-mongoose-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-remediate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Record pre-remediation API production audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm --prefix server audit --omit=dev --json > /tmp/server-prod-before.json || true
+          node tools/refactor/dependency-audit-summary.mjs server-production-before /tmp/server-prod-before.json
+
+      - name: Update only Mongoose lock resolution
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp server/package.json /tmp/server-package.json.before
+          npm --prefix server update --package-lock-only mongoose
+          cmp --silent server/package.json /tmp/server-package.json.before || {
+            echo "server/package.json changed during lock-only remediation; refusing scope expansion." >&2
+            git diff -- server/package.json
+            exit 1
+          }
+          git diff --check -- server/package-lock.json
+
+      - name: Verify Mongoose advisory is gone
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm --prefix server audit --omit=dev --json > /tmp/server-prod-after.json || true
+          node tools/refactor/dependency-audit-summary.mjs server-production-after /tmp/server-prod-after.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/server-prod-after.json mongoose
+
+      - name: Install exact frontend dependencies for repository smoke contracts
+        run: npm ci
+
+      - name: Install exact remediated API dependencies
+        run: npm --prefix server ci
+
+      - name: API typecheck
+        run: npm run server:check
+
+      - name: API production build
+        run: npm run server:build
+
+      - name: Database index contract
+        run: npm run smoke:database
+
+      - name: NoSQL sanitizer contract
+        run: npm run smoke:nosql-sanitizer
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: Authentication login security contract
+        run: npm run smoke:auth-login-security
+
+      - name: Quiz integrity contract
+        run: npm run smoke:quiz-integrity-guard
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Confirm remediation scope
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHANGED="$(git diff --name-only)"
+          echo "$CHANGED"
+          if [ "$CHANGED" != "server/package-lock.json" ]; then
+            echo "Mongoose remediation must modify server/package-lock.json only." >&2
+            exit 1
+          fi
+
+      - name: Commit verified Mongoose remediation
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add server/package-lock.json
+
+          if git diff --cached --quiet; then
+            echo "No Mongoose lockfile remediation changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale remediation commit safely."
+            exit 0
+          fi
+
+          git commit -m "fix(deps): remediate mongoose advisory"
+          git push origin HEAD:refactor/repository-v2-safe
