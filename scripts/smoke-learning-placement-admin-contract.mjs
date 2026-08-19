@@ -68,7 +68,9 @@ check('mock exam manager prepares Qiyas-style section skeletons without duplicat
   assertIncludes(mockExamManagerSource, "['أحياء', 'احياء', 'biology']");
   assertIncludes(mockExamManagerSource, "['كمي', 'الكمي', 'quant']");
   assertIncludes(mockExamManagerSource, "['لفظي', 'اللفظي', 'verbal']");
-  assertIncludes(mockExamManagerSource, 'تجهيز حسب قياس');
+  assertIncludes(mockExamManagerSource, 'setSections(buildQiyasSections(selectedPathName, pathSubjects))');
+  assertIncludes(mockExamManagerSource, 'هيكل قياس');
+  assertIncludes(mockExamManagerSource, 'تجهيز أقسام القدرات أو التحصيلي حسب مواد المسار الحالية');
   assertIncludes(mockExamManagerSource, 'mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections }');
 });
 
