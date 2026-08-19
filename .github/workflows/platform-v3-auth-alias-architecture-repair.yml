@@ -1,0 +1,151 @@
+name: Platform V3 Auth Alias Architecture Repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-auth-alias-architecture-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-auth-alias-architecture-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Preserve immutable mounts while protecting auth alias
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Apply architecture-compatible alias protection
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const appPath = 'server/src/app.ts';
+          let app = fs.readFileSync(appPath, 'utf8');
+
+          const jsonOld = '  app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }));';
+          const jsonNew = `  app.use("/api/auth", express.json({ limit: "100kb" }));\n  const authAliasJsonParser = express.json({ limit: "100kb" });\n  app.use((req, res, next) => {\n    const pathname = req.path || "";\n    if (pathname === "/auth" || pathname.startsWith("/auth/")) {\n      authAliasJsonParser(req, res, next);\n      return;\n    }\n    next();\n  });`;
+          if (app.split(jsonOld).length - 1 !== 1) throw new Error('Dual auth body-limit mount changed');
+          app = app.replace(jsonOld, jsonNew);
+
+          const aliasCsrfOld = '  app.use("/api", csrfGuard);\n  app.use("/auth", csrfGuard);';
+          const aliasCsrfNew = '  app.use("/api", csrfGuard);';
+          if (app.split(aliasCsrfOld).length - 1 !== 1) throw new Error('Auth alias CSRF app mount changed');
+          app = app.replace(aliasCsrfOld, aliasCsrfNew);
+          fs.writeFileSync(appPath, app);
+
+          const authPath = 'server/src/routes/auth.routes.ts';
+          let auth = fs.readFileSync(authPath, 'utf8');
+          const csrfImportOld = 'import { issueCsrfToken } from "../middleware/csrf.js";';
+          const csrfImportNew = 'import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";';
+          if (auth.split(csrfImportOld).length - 1 !== 1) throw new Error('Auth CSRF import anchor changed');
+          auth = auth.replace(csrfImportOld, csrfImportNew);
+
+          const routerOld = 'export const authRouter = Router();\n\nconst shouldExposeTokenInAuthResponse';
+          const routerNew = 'export const authRouter = Router();\nauthRouter.use(csrfGuard);\n\nconst shouldExposeTokenInAuthResponse';
+          if (auth.split(routerOld).length - 1 !== 1) throw new Error('Auth router middleware anchor changed');
+          auth = auth.replace(routerOld, routerNew);
+          fs.writeFileSync(authPath, auth);
+
+          const csrfContractPath = 'scripts/smoke-csrf-contract.mjs';
+          let csrfContract = fs.readFileSync(csrfContractPath, 'utf8');
+          const csrfCheckOld = `check("csrf guard is enabled for API and compatibility auth routes", () => {\n  assertIncludes(appSource, "import { csrfGuard } from \\\"./middleware/csrf.js\\\"");\n  assertIncludes(appSource, "app.use(\\\"/api\\\", csrfGuard)");\n  assertIncludes(appSource, "app.use(\\\"/auth\\\", csrfGuard)");\n});\n\ncheck("compatibility auth alias keeps API-equivalent request protections", () => {\n  assertIncludes(appSource, 'app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }))');\n  for (const route of ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"]) {\n    assertIncludes(appSource, route);\n  }\n  assertIncludes(appSource, '\"/auth/me/redeem-access-code\"');\n  assertIncludes(appSource, "authRateLimiter");\n  assertIncludes(appSource, "sensitiveActionRateLimiter");\n});`;
+          const csrfCheckNew = `check("csrf guard protects API and both auth mounts without changing app mount contracts", () => {\n  assertIncludes(appSource, "import { csrfGuard } from \\\"./middleware/csrf.js\\\"");\n  assertIncludes(appSource, "app.use(\\\"/api\\\", csrfGuard)");\n  assertIncludes(authRoutesSource, "import { csrfGuard, issueCsrfToken } from \\\"../middleware/csrf.js\\\"");\n  assertIncludes(authRoutesSource, "authRouter.use(csrfGuard)");\n});\n\ncheck("compatibility auth alias keeps API-equivalent request protections", () => {\n  assertIncludes(appSource, 'app.use("/api/auth", express.json({ limit: "100kb" }))');\n  assertIncludes(appSource, 'const authAliasJsonParser = express.json({ limit: "100kb" })');\n  assertIncludes(appSource, 'pathname === "/auth" || pathname.startsWith("/auth/")');\n  for (const route of ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"]) {\n    assertIncludes(appSource, route);\n  }\n  assertIncludes(appSource, '\"/auth/me/redeem-access-code\"');\n  assertIncludes(appSource, "authRateLimiter");\n  assertIncludes(appSource, "sensitiveActionRateLimiter");\n});`;
+          if (csrfContract.split(csrfCheckOld).length - 1 !== 1) throw new Error('CSRF alias parity contract changed');
+          csrfContract = csrfContract.replace(csrfCheckOld, csrfCheckNew);
+          fs.writeFileSync(csrfContractPath, csrfContract);
+
+          const apiContractPath = 'scripts/smoke-api-security-contract.mjs';
+          let apiContract = fs.readFileSync(apiContractPath, 'utf8');
+          const bodyLimitOld = `  assertIncludes(appSource, 'app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }));');`;
+          const bodyLimitNew = `  assertIncludes(appSource, 'app.use("/api/auth", express.json({ limit: "100kb" }));');\n  assertIncludes(appSource, 'const authAliasJsonParser = express.json({ limit: "100kb" });');\n  assertIncludes(appSource, 'pathname === "/auth" || pathname.startsWith("/auth/")');`;
+          if (apiContract.split(bodyLimitOld).length - 1 !== 1) throw new Error('API body-limit contract changed');
+          apiContract = apiContract.replace(bodyLimitOld, bodyLimitNew);
+          fs.writeFileSync(apiContractPath, apiContract);
+          NODE
+
+      - name: Generate architecture snapshot
+        run: node tools/refactor/repository-audit.mjs
+
+      - name: Immutable architecture contract
+        run: node tools/refactor/architecture-gate.mjs
+
+      - name: CSRF contract
+        run: npm run smoke:csrf
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: Auth login security contract
+        run: npm run smoke:auth-login-security
+
+      - name: Production hardening contract
+        run: npm run smoke:production-hardening
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm --prefix server run check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm --prefix server run build
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 4
+          test "${changed[0]}" = "scripts/smoke-api-security-contract.mjs"
+          test "${changed[1]}" = "scripts/smoke-csrf-contract.mjs"
+          test "${changed[2]}" = "server/src/app.ts"
+          test "${changed[3]}" = "server/src/routes/auth.routes.ts"
+
+      - name: Commit verified architecture-compatible repair
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/src/app.ts server/src/routes/auth.routes.ts scripts/smoke-csrf-contract.mjs scripts/smoke-api-security-contract.mjs
+          git commit -m "fix(security): preserve auth mount architecture"
+          git push origin HEAD:develop/platform-v3-recovery
