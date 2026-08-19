@@ -19,8 +19,8 @@ const files = {
   db: await readFile(new URL("../server/src/config/db.ts", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8"),
   pagination: await readFile(new URL("../server/src/utils/pagination.ts", import.meta.url), "utf8"),
-  guide: await readFile(new URL("../DATABASE_REVIEW.md", import.meta.url), "utf8"),
-  readiness: await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
+  guide: await readFile(new URL("../docs/archive_reports/DATABASE_REVIEW.md", import.meta.url), "utf8"),
+  readiness: await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
 };
 
 const checks = [];
