@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 
 const typeSource = await readFile(new URL('../types.ts', import.meta.url), 'utf8');
 const mockUtilsSource = await readFile(new URL('../utils/mockExam.ts', import.meta.url), 'utf8');
+const quizPlacementSource = await readFile(new URL('../utils/quizPlacement.ts', import.meta.url), 'utf8');
+const learningPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
 const adminSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8');
 const pathPageSource = await readFile(new URL('../pages/GenericPathPage.tsx', import.meta.url), 'utf8');
 const mockPageSource = await readFile(new URL('../pages/MockExams.tsx', import.meta.url), 'utf8');
@@ -32,12 +34,6 @@ function assertNotIncludes(source, fragment, message) {
   }
 }
 
-function assertPattern(source, pattern, message) {
-  if (!pattern.test(source)) {
-    throw new Error(message || `Missing pattern: ${pattern}`);
-  }
-}
-
 check('mock exam data model is path-level with ordered sections from question bank refs', () => {
   assertIncludes(typeSource, 'export interface MockExamSection');
   assertIncludes(typeSource, 'subjectId?: string');
@@ -48,13 +44,27 @@ check('mock exam data model is path-level with ordered sections from question ba
   assertIncludes(typeSource, 'sections: MockExamSection[]');
 });
 
-check('mock exam utilities keep standalone mock exams out of material quiz centers', () => {
+check('mock exam utilities preserve modern quizKind mocks while excluding only legacy standalone mocks from material centers', () => {
   assertIncludes(mockUtilsSource, 'export const isPathMockExam');
   assertIncludes(mockUtilsSource, 'quiz.mockExam?.pathId === pathId || quiz.pathId === pathId');
   assertIncludes(mockUtilsSource, 'export const isStandaloneMockExam = (quiz: Quiz) => quiz.mockExam?.enabled === true');
-  assertIncludes(mockUtilsSource, 'export const isMaterialQuizCandidate = (quiz: Quiz) => !isStandaloneMockExam(quiz)');
+  assertIncludes(mockUtilsSource, 'export const isMaterialQuizCandidate = (quiz: Quiz) => {');
+  assertIncludes(mockUtilsSource, 'if (quiz.quizKind) return true');
+  assertIncludes(mockUtilsSource, 'if (isStandaloneMockExam(quiz)) return false');
   assertIncludes(mockUtilsSource, 'flattenMockExamQuestionIds');
   assertIncludes(mockUtilsSource, 'getMockExamTimeLimit');
+  assertIncludes(quizPlacementSource, "if (qk === 'mock')");
+  assertIncludes(quizPlacementSource, "placement: 'mock' as Quiz['placement']");
+  assertIncludes(quizPlacementSource, 'showInTraining: false');
+  assertIncludes(quizPlacementSource, 'showInMock: true');
+});
+
+check('explicit learning placements keep mock classification separate from subject learning visibility', () => {
+  assertIncludes(learningPlacementSource, 'export const isQuizVisibleInLearningSlot');
+  assertIncludes(learningPlacementSource, 'const placement = getQuizLearningPlacement(quiz, scope)');
+  assertIncludes(learningPlacementSource, 'return placement ? placement.isVisible !== false : false');
+  assertIncludes(learningPlacementSource, 'requireExplicitPlacement = false');
+  assertIncludes(learningPlacementSource, 'hasExplicitPlacement || requireExplicitPlacement');
 });
 
 check('admin mock exam manager creates independent path mock exams from question center questions', () => {
@@ -67,14 +77,15 @@ check('admin mock exam manager creates independent path mock exams from question
   assertIncludes(adminSource, 'toggleQuestion(section.id, question.id)');
 });
 
-check('admin mock exam save publishes a standalone mock quiz without training/material placement', () => {
+check('admin mock exam save publishes a typed mock without training placement', () => {
+  assertIncludes(adminSource, "quizKind: 'mock' as const");
   assertIncludes(adminSource, "mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections }");
   assertIncludes(adminSource, "placement: 'mock'");
   assertIncludes(adminSource, 'showInTraining: false');
-  assertIncludes(adminSource, 'showInMock: false');
+  assertIncludes(adminSource, 'showInMock: true');
   assertIncludes(adminSource, 'questionIds: allQuestionIds');
   assertIncludes(adminSource, 'isPublished: true');
-  assertIncludes(adminSource, 'showOnPlatform: true');
+  assertIncludes(adminSource, 'showOnPlatform: isAdminPlatform');
   assertIncludes(adminSource, "approvalStatus: 'approved'");
 });
 
@@ -95,10 +106,11 @@ check('global mock exam page is a simple path picker and links to the same path 
   assertIncludes(mockPageSource, '<details');
 });
 
-check('quiz runner loads mock exam sections and uses their total time and return source', () => {
+check('quiz runner loads mock exam sections and resolves modern or legacy mock source consistently', () => {
   assertIncludes(quizPageSource, 'flattenMockExamQuestionIds(foundQuiz)');
   assertIncludes(quizPageSource, 'foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz)');
-  assertIncludes(quizPageSource, "if (quiz?.mockExam?.enabled) return 'mock-exam'");
+  assertIncludes(quizPageSource, "quiz?.quizKind === 'mock' || quiz?.mockExam?.enabled");
+  assertIncludes(quizPageSource, "return 'mock-exam'");
   assertIncludes(quizPageSource, "sourceParam === 'mock-exam'");
   assertIncludes(quizPageSource, 'mockExamSectionSummaries');
   assertIncludes(quizPageSource, 'currentMockExamSection');
