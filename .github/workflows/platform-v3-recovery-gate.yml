@@ -169,6 +169,44 @@ jobs:
       - name: Admin users/schools/parent/payment contract
         run: npm run smoke:batch136-admin-users-schools-parent-payment
 
+  content-product-admin:
+    name: Content + product + admin recovery
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Course builder
+        run: npm run smoke:course-builder
+      - name: Course visibility
+        run: npm run smoke:course-visibility
+      - name: Course quiz context
+        run: npm run smoke:course-quiz-context
+      - name: Curriculum import scope
+        run: npm run smoke:curriculum-import-scope
+      - name: Video questions
+        run: npm run smoke:video-questions
+      - name: Library support
+        run: npm run smoke:library-support
+      - name: Learning placement admin
+        run: npm run smoke:learning-placement-admin
+      - name: Foundation and course details
+        run: npm run smoke:foundation-course-details
+      - name: Barcode public tests
+        run: npm run smoke:barcode-public-tests
+      - name: Announcement ads
+        run: npm run smoke:announcement-ads
+      - name: Integrations runtime contract
+        run: npm run smoke:integrations-runtime
+      - name: Admin tabs
+        run: npm run smoke:admin-tabs
+      - name: Payment provider readiness
+        run: npm run smoke:payment-providers
+
   production-readiness:
     name: Production readiness contracts
     runs-on: ubuntu-latest
