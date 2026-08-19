@@ -74,13 +74,21 @@ jobs:
           app = app.replace(csrfOld, csrfNew);
           fs.writeFileSync(appPath, app);
 
-          const contractPath = 'scripts/smoke-csrf-contract.mjs';
-          let contract = fs.readFileSync(contractPath, 'utf8');
+          const csrfContractPath = 'scripts/smoke-csrf-contract.mjs';
+          let csrfContract = fs.readFileSync(csrfContractPath, 'utf8');
           const guardOld = `check("csrf guard is enabled for API routes", () => {\n  assertIncludes(appSource, "import { csrfGuard } from \\\"./middleware/csrf.js\\\"");\n  assertIncludes(appSource, "app.use(\\\"/api\\\", csrfGuard)");\n});`;
           const guardNew = `check("csrf guard is enabled for API and compatibility auth routes", () => {\n  assertIncludes(appSource, "import { csrfGuard } from \\\"./middleware/csrf.js\\\"");\n  assertIncludes(appSource, "app.use(\\\"/api\\\", csrfGuard)");\n  assertIncludes(appSource, "app.use(\\\"/auth\\\", csrfGuard)");\n});\n\ncheck("compatibility auth alias keeps API-equivalent request protections", () => {\n  assertIncludes(appSource, 'app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }))');\n  for (const route of ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"]) {\n    assertIncludes(appSource, route);\n  }\n  assertIncludes(appSource, '"/auth/me/redeem-access-code"');\n  assertIncludes(appSource, "authRateLimiter");\n  assertIncludes(appSource, "sensitiveActionRateLimiter");\n});`;
-          if (contract.split(guardOld).length - 1 !== 1) throw new Error('CSRF contract guard block changed');
-          contract = contract.replace(guardOld, guardNew);
-          fs.writeFileSync(contractPath, contract);
+          if (csrfContract.split(guardOld).length - 1 !== 1) throw new Error('CSRF contract guard block changed');
+          csrfContract = csrfContract.replace(guardOld, guardNew);
+          fs.writeFileSync(csrfContractPath, csrfContract);
+
+          const apiContractPath = 'scripts/smoke-api-security-contract.mjs';
+          let apiContract = fs.readFileSync(apiContractPath, 'utf8');
+          const apiLimitOld = `  assertIncludes(appSource, 'app.use("/api/auth", express.json({ limit: "100kb" }));');`;
+          const apiLimitNew = `  assertIncludes(appSource, 'app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }));');`;
+          if (apiContract.split(apiLimitOld).length - 1 !== 1) throw new Error('API security auth body-limit assertion changed');
+          apiContract = apiContract.replace(apiLimitOld, apiLimitNew);
+          fs.writeFileSync(apiContractPath, apiContract);
           NODE
 
       - name: CSRF contract
@@ -106,9 +114,10 @@ jobs:
           set -euo pipefail
           mapfile -t changed < <(git diff --name-only | sort)
           printf '%s\n' "${changed[@]}"
-          test "${#changed[@]}" -eq 2
-          test "${changed[0]}" = "scripts/smoke-csrf-contract.mjs"
-          test "${changed[1]}" = "server/src/app.ts"
+          test "${#changed[@]}" -eq 3
+          test "${changed[0]}" = "scripts/smoke-api-security-contract.mjs"
+          test "${changed[1]}" = "scripts/smoke-csrf-contract.mjs"
+          test "${changed[2]}" = "server/src/app.ts"
 
       - name: Commit verified alias repair
         shell: bash
@@ -120,6 +129,6 @@ jobs:
           test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add server/src/app.ts scripts/smoke-csrf-contract.mjs
+          git add server/src/app.ts scripts/smoke-csrf-contract.mjs scripts/smoke-api-security-contract.mjs
           git commit -m "fix(security): protect auth compatibility alias"
           git push origin HEAD:develop/platform-v3-recovery
