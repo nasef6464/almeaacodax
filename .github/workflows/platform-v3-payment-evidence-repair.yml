@@ -1,0 +1,78 @@
+name: Platform V3 Payment Evidence Repair
+
+on:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+    paths:
+      - tools/recovery/apply-payment-evidence-repair.mjs
+      - .github/workflows/platform-v3-payment-evidence-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-payment-evidence-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.head_commit.message == 'ci(platform-v3): add payment evidence repair executor'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop/platform-v3-recovery
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Apply exact guarded repair
+        run: node tools/recovery/apply-payment-evidence-repair.mjs
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify payment/package contract
+        run: npm run smoke:payment-package
+      - name: Verify frontend types
+        run: npm run typecheck
+      - name: Verify frontend production build
+        run: npm run build
+      - name: Verify clean patch shape
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          mapfile -t changed < <(git diff --name-only)
+          if [ "${#changed[@]}" -eq 0 ]; then
+            echo "Repair already present; nothing to commit."
+            exit 0
+          fi
+          if [ "${#changed[@]}" -ne 1 ] || [ "${changed[0]}" != "dashboards/admin/FinancialManager.tsx" ]; then
+            printf 'Unexpected changed files:\n%s\n' "${changed[*]}"
+            exit 1
+          fi
+      - name: Commit verified repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No repair commit needed."
+            exit 0
+          fi
+          remote_sha="$(git ls-remote origin refs/heads/develop/platform-v3-recovery | awk '{print $1}')"
+          if [ "$remote_sha" != "$GITHUB_SHA" ]; then
+            echo "Branch moved from $GITHUB_SHA to $remote_sha; refusing stale auto-commit."
+            exit 1
+          fi
+          git config user.name "almeaa-recovery-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/FinancialManager.tsx
+          mapfile -t staged < <(git diff --cached --name-only)
+          if [ "${#staged[@]}" -ne 1 ] || [ "${staged[0]}" != "dashboards/admin/FinancialManager.tsx" ]; then
+            printf 'Unexpected staged files:\n%s\n' "${staged[*]}"
+            exit 1
+          fi
+          git commit -m "fix(payments): send manual approval evidence"
+          git push origin HEAD:develop/platform-v3-recovery
