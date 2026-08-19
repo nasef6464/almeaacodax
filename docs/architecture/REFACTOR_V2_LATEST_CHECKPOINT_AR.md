@@ -1,72 +1,110 @@
 # آخر نقطة تحقق — Refactor V2
 
-> نقطة الاستئناف السريعة الحالية. التاريخ السابق محفوظ في `REFACTOR_V2_EXECUTION_LEDGER_AR.md` و`REFACTOR_V2_EXECUTION_LEDGER_CONTINUATION_2026-08-18_AR.md`، وآخر دفعة موثقة بالتفصيل في `REFACTOR_V2_EXECUTION_LEDGER_CONTINUATION_2026-08-19_AR.md`.
+> نقطة الاستئناف السريعة الحالية. التاريخ التفصيلي محفوظ في سجلات `docs/architecture/REFACTOR_V2_EXECUTION_LEDGER*`. العمل يظل على `refactor/repository-v2-safe` فقط، ولا يتم دمج `main` إلا بعد Release Candidate verification وموافقة المستخدم الصريحة.
 
-## آخر مرحلة مغلقة
-
-**Content Routes — Study Plan Transport Schema Boundary: مغلقة بنجاح.**
+## الحالة الحالية — Quiz Boundary Decomposition ✅
 
 - الفرع: `refactor/repository-v2-safe`.
 - PR #3: **open + draft + mergeable + not merged**.
-- آخر runtime refactor commit: `0b5a75d135eb1a64fc655b7911abfdddf71ed86f`.
-- آخر verification commit: `aec7825b26551232a5aa8390a9eb99e9dc2fbff6`.
-- Dedicated Study Plan workflow: run `32212487608` — **SUCCESS**.
-- Standard Safety Gate: run `32212487578` — **SUCCESS**.
-- Vercel status + preview deployment gate: **SUCCESS**.
-- `main` لم يتم تعديله، ولا force-push.
+- آخر runtime refactor commit: `8eb3d0fa6c336ae5f870fe57f4be19e489eb6e98` — `refactor(quizzes): extract query utilities`.
+- `main` لم يتم تعديله.
+- لا force-push.
+- `server/src/routes/quiz.routes.ts` انخفض من نحو **3145** سطرًا عند بداية هذه الدفعات إلى **2892** سطرًا بعد آخر extraction، بدون نقل scoring/access/authorization/database orchestration خارج الـroute.
 
-## ما تغير
+## Quiz ownership المستخرج
 
-نُقلت فقط transport schemas التالية من `server/src/routes/content.routes.ts` إلى `server/src/modules/content/http/studyPlanSchemas.ts`:
+أصبحت الحدود التالية مستقلة وتحت عقود مباشرة:
 
-- `studyPlanSchema`.
-- `interventionStudyPlanSchema`.
+- `server/src/modules/quizzes/http/questionQuerySchemas.ts`
+  - Question transport schema.
+  - Question list query schema.
+  - analytics/results query schemas.
+- `server/src/modules/quizzes/http/quizDefinitionSchema.ts`
+  - Quiz definition transport schema فقط.
+- `server/src/modules/quizzes/http/submissionSchemas.ts`
+  - Question attempt وquiz submit transport schemas فقط.
+- `server/src/modules/quizzes/http/queryUtilities.ts`
+  - regex escaping، date parsing، quiz-results cache-key construction.
+- `server/src/modules/quizzes/presentation/questionPresentation.ts`
+  - question summary projection، learner sanitization، question usability.
+- `server/src/modules/quizzes/analytics/skillAnalytics.ts`
+  - pure mastery/status/recommendation helpers.
 
-وظلت داخل route كل مسؤوليات HTTP/auth/database/intervention orchestration، كما تم تثبيت مسارات `/study-plans` و`/study-plans/intervention` بعقد مباشر.
+## ما بقي داخل `quiz.routes.ts` عمدًا
 
-## آخر Safety Gate
+لأن الأولوية risk/value وليست line-count:
 
-على post-extraction verification head `aec7825...` نجح:
+- HTTP routing وmiddleware.
+- authorization وrole/scope checks.
+- DB queries/persistence.
+- quiz/question integrity validation.
+- publish/update orchestration.
+- attempt limits، quiz windows، submission keys.
+- learner/group/package access enforcement.
+- server-side scoring وresult creation.
+- skill-progress persistence وsubmission side effects.
+- cache state/TTL/eviction.
+- `MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3` وسياسة evidence المرتبطة بتقارير المنصة.
 
-- frontend typecheck/build.
-- API typecheck/build.
-- architecture + module boundaries.
-- content schema boundaries.
-- Schools contracts.
-- Reports contracts.
-- global student journey.
-- student learning journey.
-- results + route loading + runtime source.
-- quiz integrity.
-- auth security + API security.
-- workflow race-safety.
-- Vercel preview deployment gate.
+لا يتم نقل هذه المسؤوليات لمجرد تقليل حجم الملف؛ أي انتقال لاحق يحتاج عقدًا مباشرًا يثبت business/security semantics أولًا.
 
-## ملاحظة CI
+## التحقق المغلق ✅
 
-أي `action_required` بدون jobs ناتج عن PR event لcommit أنشأه `github-actions[bot]` لا يُعامل كفشل كود. التحقق النهائي لهذه الدفعة تم على commit بشري `aec7825...` واحتوى jobs فعلية انتهت كلها بنجاح.
+آخر Phase Reviews الخاصة بـQuiz مرّت على:
 
-## الوضع المعماري الحالي
+- API typecheck + production build.
+- architecture + module boundary gates.
+- Question/Query schema boundary.
+- Quiz Definition boundary.
+- Submission schema boundary.
+- Question Presentation boundary.
+- Skill Analytics boundary.
+- Query Utilities boundary.
+- Question Bank runtime CRUD/regex-safety contract.
+- Reports role/evidence contract.
+- Frontend performance contract.
+- Question HTML security.
+- Quiz integrity guard.
+- Quiz answer-exposure contract.
+- Quiz client security.
+- My Quizzes + Quiz Access.
+- Authentication + API security.
+- Global Student Journey + Student Learning Journey.
+- Results + Route Loading + Runtime Source.
+- Refactor workflow race-safety.
 
-- Schools/Reports decomposition السابقة ما زالت مغلقة بعقودها.
-- Content route بدأ يُفكك transport schemas إلى `server/src/modules/content/http/*` مع بقاء route orchestration في مكانها.
-- لا نطارد line-count ميكانيكيًا؛ الأولوية risk/value/coupling.
+آخر Standard Safety Gate للـcode path أنهى baseline-quality-gate **SUCCESS** بجميع فحوصات frontend/API/Schools/Reports/student/security. Vercel exact-head preview أصبح يُرفض أحيانًا بسبب `build-rate-limit` من Vercel وليس build regression؛ آخر runtime preview موثق قبل بلوغ الحد كان READY ويرجع HTTP 200.
 
-## المرحلة التالية
+## Repo-wide audit baseline
 
-**Repo-wide Stabilization & Production Readiness**:
+آخر repository audit الموثق أظهر:
 
-1. fresh repository audit على الرأس الحديث.
-2. hotspot ranking حسب coupling/risk/product impact.
-3. duplicate/dead code/hard-coded URL/API-in-presentation/store-coupling scan.
-4. تحديث `PROJECT_MAP` وownership notes.
-5. product journeys verification للطالب/المعلم/المشرف/المدرسة/الأدمن.
-6. controlled dependency/security remediation.
-7. production readiness.
-8. Freeze -> Full Safety Gate -> compare with `main` -> merge فقط بعد موافقة المستخدم الصريحة.
+- 899 tracked files.
+- 125,895 runtime lines وقت القياس.
+- 0 unresolved runtime relative imports.
+- 0 dependency cycles.
+- 82 hotspots فوق 400 سطر.
 
-## بروتوكول كل دفعة
+بعد إغلاق دفعات Quiz الحالية، لا نواصل تفكيك business logic عالي الحساسية آليًا؛ نعود إلى ترتيب المخاطر على مستوى المستودع.
 
-`تغيير صغير -> Direct Contract -> Quick/Baseline Gate -> إصلاح أي failure -> Full Phase Review -> Standard Safety Gate -> checkpoint`.
+## المرحلة الحالية — Production Readiness / Dependency Security
 
-لا يتم تخفيف اختبار لمجرد تمرير CI؛ عند انتقال ownership يُنقل العقد إلى المالك الجديد، وعند regression يُصلح الكود نفسه.
+أثناء `npm ci` داخل GitHub Actions يظهر حاليًا:
+
+- root/frontend: **10 vulnerabilities** (1 low, 2 moderate, 7 high).
+- server: **25 vulnerabilities** (2 low, 17 moderate, 6 high).
+
+هذه الأرقام وحدها لا تكفي لاتخاذ قرار تحديث. القاعدة الحالية:
+
+1. تشغيل dependency audit **قراءة فقط** داخل GitHub Actions.
+2. فصل all-dependencies عن production-only للـroot والـserver.
+3. استخراج package/advisory/severity/direct-vs-transitive/fixAvailable بدقة.
+4. عدم تشغيل `npm audit fix --force`.
+5. معالجة كل upgrade على دفعة صغيرة مع typecheck/build والعقود المرتبطة به.
+6. لا تعديل lockfiles قبل تحديد remediation آمن وغير breaking.
+
+## بروتوكول الاستمرار
+
+`تغيير صغير -> Direct Contract -> Quick/Baseline Gate -> إصلاح failure الحقيقي أو نقل ownership للعقد -> Full Phase Review -> Standard Safety Gate -> checkpoint`.
+
+عند ظهور فشل ناتج من contract قديم بعد انتقال ownership، يتم تحديث العقد ليتبع المالك الجديد مع الحفاظ على نفس semantic requirement؛ لا يتم حذف الاختبار لمجرد تمرير CI.
