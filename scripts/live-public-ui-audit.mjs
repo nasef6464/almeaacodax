@@ -2,9 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
-const BASE_URL = 'http://127.0.0.1:4173';
-const API_TARGET = 'https://almeaacodax-k2ux.onrender.com/api';
-const RUN_ID = 'branch-public-ui';
+const BASE_URL = process.env.PUBLIC_UI_BASE_URL || 'http://127.0.0.1:4173';
+const API_TARGET = process.env.PUBLIC_UI_API_TARGET || 'https://almeaacodax-k2ux.onrender.com/api';
+const RUN_ID = process.env.PUBLIC_UI_AUDIT_RUN_ID || 'branch-public-ui';
 const OUT_DIR = path.resolve('audit-artifacts', 'platform-v3-public-ui', RUN_ID);
 const PAGE_TIMEOUT_MS = 30000;
 const MOJIBAKE_PATTERN = /[\u00c3\u00d8\u00d9][^\n\r]{0,80}[\u00c3\u00d8\u00d9]/;
@@ -233,6 +233,7 @@ fs.writeFileSync(path.join(OUT_DIR, 'SUMMARY.md'), [
   `- Generated: ${summary.generatedAt}`,
   `- Branch UI: ${summary.baseUrl}`,
   `- API target: ${summary.apiTarget}`,
+  `- Run ID: ${summary.runId}`,
   `- Total: ${summary.total}`,
   `- PASS: ${summary.pass}`,
   `- FAIL: ${summary.fail}`,
@@ -241,5 +242,27 @@ fs.writeFileSync(path.join(OUT_DIR, 'SUMMARY.md'), [
   '',
 ].join('\n'), 'utf8');
 
+const failures = results.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({ outDir: OUT_DIR, total: summary.total, pass: summary.pass, fail: summary.fail }, null, 2));
-if (summary.fail) process.exit(1);
+if (failures.length) {
+  console.error('\nPublic UI failures:');
+  for (const item of failures) {
+    console.error(JSON.stringify({
+      viewport: item.viewport,
+      path: item.path,
+      expect: item.expect,
+      href: item.href,
+      navigationError: item.navigationError,
+      navigationWarning: item.navigationWarning,
+      layoutFailure: item.layoutFailure,
+      textFailure: item.textFailure,
+      network4xx: item.network4xx,
+      network5xx: item.network5xx,
+      consoleErrors: item.consoleErrors,
+      bodyLength: item.bodyLength,
+      controlCount: item.controlCount,
+      horizontalOverflow: item.horizontalOverflow,
+    }, null, 2));
+  }
+  process.exit(1);
+}
