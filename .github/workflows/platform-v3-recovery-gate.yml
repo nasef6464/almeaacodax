@@ -94,6 +94,8 @@ jobs:
         run: npm run smoke:quiz-answer-exposure
       - name: Results
         run: npm run smoke:results
+      - name: Certificate integrity
+        run: npm run smoke:certificate-integrity
       - name: Data visibility regression
         run: npm run smoke:data-visibility-regression
 
