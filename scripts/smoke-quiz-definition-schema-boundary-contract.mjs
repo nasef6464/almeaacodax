@@ -53,7 +53,7 @@ check('delegated quiz definition import is singular and before route-local behav
   if (!delegated) return;
   assert.equal(routeSource.split(schemaImport).length - 1, 1, 'quiz definition import must be singular');
   const importIndex = routeSource.indexOf(schemaImport);
-  const behaviorIndex = routeSource.indexOf('const QUESTION_SUMMARY_TEXT_LIMIT = 280;');
+  const behaviorIndex = routeSource.indexOf('const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;');
   assert.ok(importIndex >= 0 && behaviorIndex >= 0 && importIndex < behaviorIndex, 'quiz definition import must stay with transport imports');
 });
 
