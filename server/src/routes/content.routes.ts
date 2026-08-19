@@ -26,6 +26,7 @@ import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
 import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from "../utils/integrationSecretsCrypto.js";
 import { lessonSchema, librarySchema, libraryUpdateSchema, topicSchema, topicUpdateSchema } from "../modules/content/http/learningContentSchemas.js";
 import { platformIntegrationSettingsPatchSchema, platformIntegrationSettingsSchema } from "../modules/content/http/platformIntegrationSchemas.js";
+import { defaultPlatformIntegrationSettings } from "../modules/content/integrations/platformIntegrationDefaults.js";
 import { announcementAdSchema, announcementAdUpdateSchema, homepageSettingsSchema, platformFontSettingsSchema } from "../modules/content/http/platformPresentationSchemas.js";
 import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
@@ -564,86 +565,6 @@ const sanitizeAndValidateExternalPlatforms = (input: Array<Record<string, unknow
   }
 
   return normalized;
-};
-
-const defaultPlatformIntegrationSettings = {
-  key: "default",
-  auth: {
-    allowSelfRegistration: true,
-    allowEmailPassword: true,
-    requireEmailVerification: false,
-    requireAdminApproval: false,
-    defaultRole: "student",
-    registrationTitle: "ابدأ رحلتك التعليمية الآن",
-    registrationSubtitle: "سجل حسابك واختر المسار المناسب لك.",
-    termsLink: "",
-    privacyLink: "",
-    maxAccountsPerDevice: 3,
-    allowedEmailDomains: [],
-  },
-  providers: {
-    google: { enabled: false, mode: "oauth", clientId: "", callbackUrl: "", note: "" },
-    facebook: { enabled: false, mode: "oauth", clientId: "", callbackUrl: "", note: "" },
-    whatsapp: { enabled: false, mode: "otp", phoneNumberId: "", webhookUrl: "", note: "" },
-    telegram: { enabled: false, mode: "bot", botUsername: "", webhookUrl: "", note: "" },
-    email: { enabled: false, mode: "smtp", fromEmail: "", senderName: "", apiKey: "", webhookUrl: "", note: "" },
-    sentry: { enabled: false, mode: "dsn", accessToken: "", note: "" },
-    redis: { enabled: false, mode: "managed", callbackUrl: "", accessToken: "", note: "" },
-    zoom: { enabled: false, mode: "oauth", clientId: "", clientSecret: "", callbackUrl: "", note: "" },
-    googleMeet: { enabled: false, mode: "oauth", clientId: "", clientSecret: "", callbackUrl: "", note: "" },
-    teams: { enabled: false, mode: "oauth", clientId: "", clientSecret: "", callbackUrl: "", note: "" },
-    youtubeLive: { enabled: false, mode: "api", apiKey: "", callbackUrl: "", note: "" },
-  },
-  seo: {
-    enabled: true,
-    siteName: "منصة المئة",
-    defaultTitle: "منصة المئة | قدرات وتحصيلي",
-    defaultDescription: "منصة تعليمية ذكية للتدريب على القدرات والتحصيلي.",
-    defaultKeywords: ["منصة المئة", "قدرات", "تحصيلي", "اختبارات", "تدريب"],
-    canonicalBaseUrl: "",
-    defaultOgImage: "",
-    twitterHandle: "",
-    googleSiteVerification: "",
-    googleAnalyticsId: "",
-    googleTagManagerId: "",
-    robotsIndexingEnabled: true,
-    noIndexPaths: ["/#/admin-dashboard", "/#/dashboard", "/#/login"],
-    organizationName: "منصة المئة",
-    organizationLogoUrl: "",
-    organizationUrl: "",
-  },
-  contactWidget: {
-    enabled: true,
-    channel: "whatsapp",
-    whatsappNumber: "",
-    whatsappMessage: "مرحبًا، أريد الاستفسار عن منصة المئة.",
-    openInNewTab: true,
-    showOnPublicPages: true,
-    showOnDashboardPages: false,
-  },
-  externalPlatforms: [
-    {
-      id: "eduoma",
-      name: "Eduoma",
-      enabled: false,
-      platformType: "lms",
-      baseUrl: "",
-      apiKey: "",
-      apiSecret: "",
-      webhookUrl: "",
-      webhookSecret: "",
-      syncStudents: false,
-      syncCourses: false,
-      syncOrders: false,
-      syncScheduleCron: "",
-      note: "",
-    },
-  ],
-  registrationFields: [
-    { id: "full_name", key: "name", label: "الاسم الكامل", type: "text", required: true, enabled: true, options: [], placeholder: "", helpText: "", order: 0 },
-    { id: "email", key: "email", label: "البريد الإلكتروني", type: "email", required: true, enabled: true, options: [], placeholder: "", helpText: "", order: 1 },
-    { id: "phone", key: "phone", label: "رقم الجوال", type: "phone", required: false, enabled: true, options: [], placeholder: "", helpText: "", order: 2 },
-  ],
 };
 
 const normalizeBaseUrl = (value?: string) => {
