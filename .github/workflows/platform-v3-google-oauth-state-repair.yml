@@ -1,0 +1,135 @@
+name: Platform V3 Google OAuth State Repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-google-oauth-state-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-google-oauth-state-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Bind Google OAuth state to initiating browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Apply exact OAuth state binding repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const authPath = 'server/src/routes/auth.routes.ts';
+          let auth = fs.readFileSync(authPath, 'utf8');
+
+          const cryptoOld = 'import { createHash, randomBytes } from "node:crypto";';
+          const cryptoNew = 'import { createHash, randomBytes, timingSafeEqual } from "node:crypto";';
+          if (auth.split(cryptoOld).length - 1 !== 1) throw new Error('Auth crypto import changed');
+          auth = auth.replace(cryptoOld, cryptoNew);
+
+          const constantsOld = 'const GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth";\nconst GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";\nconst GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";';
+          const constantsNew = `const GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth";\nconst GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";\nconst GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";\nconst GOOGLE_OAUTH_STATE_COOKIE_NAME = "almeaa_google_oauth_state";\nconst GOOGLE_OAUTH_STATE_TTL_MS = 10 * 60 * 1000;\nconst googleOAuthStateCookieOptions = {\n  httpOnly: true,\n  path: "/",\n  sameSite: "lax" as const,\n  secure: env.NODE_ENV === "production",\n};\n\nconst normalizeOAuthReturnTo = (value: unknown) => {\n  const candidate = typeof value === "string" ? value.trim() : "/";\n  if (!candidate.startsWith("/") || candidate.startsWith("//") || candidate.includes("\\\\") || /[\\r\\n]/.test(candidate)) {\n    return "/";\n  }\n  return candidate;\n};\n\nconst timingSafeStringEqual = (left: string, right: string) => {\n  const leftBuffer = Buffer.from(left, "utf8");\n  const rightBuffer = Buffer.from(right, "utf8");\n  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);\n};`;
+          if (auth.split(constantsOld).length - 1 !== 1) throw new Error('Google OAuth constants anchor changed');
+          auth = auth.replace(constantsOld, constantsNew);
+
+          const startOld = `    const statePayload = {\n      returnTo: typeof req.query.returnTo === "string" ? req.query.returnTo : "/",\n      ts: Date.now(),\n    };\n    const state = Buffer.from(JSON.stringify(statePayload), "utf8").toString("base64url");\n    const params = new URLSearchParams({`;
+          const startNew = `    const statePayload = {\n      returnTo: normalizeOAuthReturnTo(req.query.returnTo),\n      ts: Date.now(),\n      nonce: createSecureToken(),\n    };\n    const state = Buffer.from(JSON.stringify(statePayload), "utf8").toString("base64url");\n    res.cookie(GOOGLE_OAUTH_STATE_COOKIE_NAME, hashToken(state), {\n      ...googleOAuthStateCookieOptions,\n      maxAge: GOOGLE_OAUTH_STATE_TTL_MS,\n    });\n    const params = new URLSearchParams({`;
+          if (auth.split(startOld).length - 1 !== 1) throw new Error('Google OAuth start state block changed');
+          auth = auth.replace(startOld, startNew);
+
+          const callbackOld = `  const fallbackRedirect = \`${'${env.CLIENT_URL}'}/#/login?oauth_error=google\`;\n  if (oauthError || !code) {\n    return res.redirect(fallbackRedirect);\n  }\n\n  let returnTo = "/";\n  if (stateRaw) {\n    try {\n      const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as { returnTo?: string };\n      if (parsed?.returnTo && parsed.returnTo.startsWith("/")) {\n        returnTo = parsed.returnTo;\n      }\n    } catch {\n      returnTo = "/";\n    }\n  }`;
+          const callbackNew = `  const fallbackRedirect = \`${'${env.CLIENT_URL}'}/#/login?oauth_error=google\`;\n  const expectedStateHash = String(req.cookies?.[GOOGLE_OAUTH_STATE_COOKIE_NAME] || "").trim();\n  res.clearCookie(GOOGLE_OAUTH_STATE_COOKIE_NAME, googleOAuthStateCookieOptions);\n\n  if (oauthError || !code) {\n    return res.redirect(fallbackRedirect);\n  }\n\n  const actualStateHash = stateRaw ? hashToken(stateRaw) : "";\n  if (!stateRaw || !expectedStateHash || !timingSafeStringEqual(actualStateHash, expectedStateHash)) {\n    return res.redirect(\`${'${fallbackRedirect}'}&step=state\`);\n  }\n\n  let returnTo = "/";\n  try {\n    const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as {\n      returnTo?: unknown;\n      ts?: unknown;\n      nonce?: unknown;\n    };\n    const issuedAt = Number(parsed.ts || 0);\n    const nonce = String(parsed.nonce || "");\n    const now = Date.now();\n    const stateExpired =\n      !Number.isFinite(issuedAt) ||\n      issuedAt <= 0 ||\n      issuedAt > now + 60_000 ||\n      now - issuedAt > GOOGLE_OAUTH_STATE_TTL_MS ||\n      nonce.length < 32;\n    if (stateExpired) {\n      return res.redirect(\`${'${fallbackRedirect}'}&step=state_expired\`);\n    }\n    returnTo = normalizeOAuthReturnTo(parsed.returnTo);\n  } catch {\n    return res.redirect(\`${'${fallbackRedirect}'}&step=state_payload\`);\n  }`;
+          if (auth.split(callbackOld).length - 1 !== 1) throw new Error('Google OAuth callback state block changed');
+          auth = auth.replace(callbackOld, callbackNew);
+          fs.writeFileSync(authPath, auth);
+
+          const contractPath = 'scripts/smoke-auth-login-security-contract.mjs';
+          let contract = fs.readFileSync(contractPath, 'utf8');
+          const anchor = 'check("frontend warns users about password strength", () => {';
+          const oauthChecks = `check("Google OAuth binds state to a short-lived browser cookie", () => {\n  assertIncludes(files.auth, 'GOOGLE_OAUTH_STATE_COOKIE_NAME = "almeaa_google_oauth_state"');\n  assertIncludes(files.auth, "GOOGLE_OAUTH_STATE_TTL_MS = 10 * 60 * 1000");\n  assertIncludes(files.auth, "nonce: createSecureToken()");\n  assertIncludes(files.auth, "res.cookie(GOOGLE_OAUTH_STATE_COOKIE_NAME, hashToken(state)");\n  assertIncludes(files.auth, 'sameSite: "lax" as const');\n  assertIncludes(files.auth, "httpOnly: true");\n});\n\ncheck("Google OAuth callback verifies, expires, and clears state before token exchange", () => {\n  assertIncludes(files.auth, "timingSafeEqual");\n  assertIncludes(files.auth, "expectedStateHash");\n  assertIncludes(files.auth, "timingSafeStringEqual(actualStateHash, expectedStateHash)");\n  assertIncludes(files.auth, "now - issuedAt > GOOGLE_OAUTH_STATE_TTL_MS");\n  assertIncludes(files.auth, "res.clearCookie(GOOGLE_OAUTH_STATE_COOKIE_NAME");\n  assertIncludes(files.auth, "step=state_expired");\n});\n\ncheck("Google OAuth return path rejects scheme-relative and malformed redirects", () => {\n  assertIncludes(files.auth, "normalizeOAuthReturnTo");\n  assertIncludes(files.auth, 'candidate.startsWith("//")');\n  assertIncludes(files.auth, 'candidate.includes("\\\\")');\n});\n\n`;
+          if (contract.split(anchor).length - 1 !== 1) throw new Error('Auth login security contract anchor changed');
+          contract = contract.replace(anchor, oauthChecks + anchor);
+          fs.writeFileSync(contractPath, contract);
+          NODE
+
+      - name: Auth login security contract
+        run: npm run smoke:auth-login-security
+
+      - name: Auth account contract
+        run: npm run smoke:auth-account
+
+      - name: Auth cookie contract
+        run: npm run smoke:auth-cookie
+
+      - name: CSRF contract
+        run: npm run smoke:csrf
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm --prefix server run check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm --prefix server run build
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 2
+          test "${changed[0]}" = "scripts/smoke-auth-login-security-contract.mjs"
+          test "${changed[1]}" = "server/src/routes/auth.routes.ts"
+
+      - name: Commit verified OAuth repair
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/src/routes/auth.routes.ts scripts/smoke-auth-login-security-contract.mjs
+          git commit -m "fix(auth): bind Google OAuth state to browser" 
+          git push origin HEAD:develop/platform-v3-recovery
