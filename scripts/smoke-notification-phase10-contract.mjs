@@ -10,6 +10,7 @@ const files = {
   service: await read("server/src/services/notificationService.ts"),
   route: await read("server/src/routes/notification.routes.ts"),
   server: await read("server/src/server.ts"),
+  bootstrap: await read("server/src/app/bootstrap/bootstrapServer.ts"),
   guide: await read("docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md"),
   whatsapp: await read("docs/archive_reports/WHATSAPP_INTEGRATION_GUIDE.md"),
 };
@@ -55,7 +56,8 @@ check("notification queue uses Redis, BullMQ, idempotent job ids, and retry poli
 check("workers are optional and started by server bootstrap", () => {
   assertIncludes(files.queue, "isNotificationQueueEnabled");
   assertIncludes(files.queue, "set REDIS_URL and NOTIFICATION_QUEUE_ENABLED=true");
-  assertIncludes(files.server, "startNotificationWorkers()");
+  assertIncludes(files.server, "bootstrapServer()");
+  assertIncludes(files.bootstrap, "startNotificationWorkers()");
 });
 
 check("admin send route queues external deliveries and keeps inline fallback", () => {
