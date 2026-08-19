@@ -110,6 +110,10 @@ jobs:
           set -euo pipefail
           CHANGED="$(git diff --name-only)"
           echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "React Router is already clean; no lockfile remediation is required."
+            exit 0
+          fi
           if [ "$CHANGED" != "package-lock.json" ]; then
             echo "React Router remediation must modify package-lock.json only." >&2
             exit 1
