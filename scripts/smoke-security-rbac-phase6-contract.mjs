@@ -61,6 +61,11 @@ check("RBAC middleware verifies current user state from MongoDB", () => {
   assertIncludes(files.auth, "!allowedRoles.includes(req.authUser.role)");
 });
 
+check("student AI planning endpoints require authentication", () => {
+  for (const endpoint of ["/study-plan", "/learning-path", "/remediation-plan"]) {
+    assertIncludes(files.aiRoutes, `aiRouter.post(\n  "${endpoint}",\n  requireAuth,`);
+  }
+});
 check("AI question generation is staff-only in UI and API", () => {
   assertIncludes(files.clientApp, `<Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />`);
   assertIncludes(files.aiRoutes, 'aiRouter.post(\n  "/question",\n  requireAuth,\n  requireRole(["admin", "teacher", "supervisor"]),');

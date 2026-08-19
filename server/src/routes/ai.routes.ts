@@ -1476,6 +1476,7 @@ aiRouter.post(
 
 aiRouter.post(
   "/study-plan",
+  requireAuth,
   asyncHandler(async (req, res) => {
     const { weaknesses } = studyPlanSchema.parse(req.body);
     const fallback = {
@@ -1505,6 +1506,7 @@ ${weaknesses.join(", ") || "مهارات عامة"}
 
 aiRouter.post(
   "/learning-path",
+  requireAuth,
   asyncHandler(async (req, res) => {
     const { skills } = learningPathSchema.parse(req.body);
     const targetSkills = skills.filter((skill) => skill.status === "weak" || skill.status === "average").slice(0, 5);
@@ -1545,6 +1547,7 @@ type واحد من lesson أو quiz أو flashcard. priority واحد من high 
 
 aiRouter.post(
   "/remediation-plan",
+  requireAuth,
   asyncHandler(async (req, res) => {
     const { skills, ageBand } = remediationPlanSchema.parse(req.body);
     const targetSkills = skills
