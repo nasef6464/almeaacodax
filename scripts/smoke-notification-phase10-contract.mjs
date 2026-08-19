@@ -10,8 +10,8 @@ const files = {
   service: await read("server/src/services/notificationService.ts"),
   route: await read("server/src/routes/notification.routes.ts"),
   server: await read("server/src/server.ts"),
-  guide: await read("NOTIFICATION_SYSTEM_GUIDE.md"),
-  whatsapp: await read("WHATSAPP_INTEGRATION_GUIDE.md"),
+  guide: await read("docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md"),
+  whatsapp: await read("docs/archive_reports/WHATSAPP_INTEGRATION_GUIDE.md"),
 };
 
 const checks = [];
