@@ -8,18 +8,12 @@ on:
     paths:
       - 'tools/refactor/apply-handover-blockers-repair.mjs'
       - '.github/workflows/refactor-v2-repair-handover-blockers.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'tools/refactor/apply-handover-blockers-repair.mjs'
-      - '.github/workflows/refactor-v2-repair-handover-blockers.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: refactor-v2-repair-handover-blockers-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: refactor-v2-repair-handover-blockers-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -31,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -67,7 +61,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          EXPECTED_SHA="${{ github.sha }}"
           git add docs/NEXT_SESSION_HANDOVER_AR.md
           if git diff --cached --quiet; then
             echo 'No handover repair to commit.'
