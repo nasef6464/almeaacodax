@@ -1,0 +1,66 @@
+name: Platform V3 Preview Gate Repair
+
+on:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-preview-gate-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop/platform-v3-recovery
+          fetch-depth: 50
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply guarded preview-gate repair
+        run: node tools/recovery/apply-vercel-preview-docs-fallback.mjs
+      - name: Verify workflow patch shape
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          grep -q 'No deployable changes since Vercel-ready ancestor' .github/workflows/refactor-v2-guard.yml
+          grep -q 'Exact-head preview is still required' .github/workflows/refactor-v2-guard.yml
+          mapfile -t changed < <(git diff --name-only)
+          if [ "${#changed[@]}" -eq 0 ]; then
+            echo "Preview gate repair already present; nothing to commit."
+            exit 0
+          fi
+          if [ "${#changed[@]}" -ne 1 ] || [ "${changed[0]}" != ".github/workflows/refactor-v2-guard.yml" ]; then
+            printf 'Unexpected changed files:\n%s\n' "${changed[*]}"
+            exit 1
+          fi
+      - name: Commit verified preview-gate repair
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No repair commit needed."
+            exit 0
+          fi
+          remote_sha="$(git ls-remote origin refs/heads/develop/platform-v3-recovery | awk '{print $1}')"
+          if [ "$remote_sha" != "$EXPECTED_SHA" ]; then
+            echo "Branch moved from $EXPECTED_SHA to $remote_sha; refusing stale auto-commit."
+            exit 1
+          fi
+          git config user.name "almeaa-recovery-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add .github/workflows/refactor-v2-guard.yml
+          git commit -m "ci(safety): accept docs-only heads with ready runtime preview"
+          git push origin HEAD:develop/platform-v3-recovery
