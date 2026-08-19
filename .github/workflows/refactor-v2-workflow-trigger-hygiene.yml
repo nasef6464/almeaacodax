@@ -34,7 +34,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Verify trigger hygiene state before apply
+      - name: Verify trigger hygiene source state before apply
         run: node scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs
 
       - name: Apply closed-workflow trigger hygiene
