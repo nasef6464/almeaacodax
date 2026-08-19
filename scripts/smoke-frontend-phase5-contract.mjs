@@ -33,8 +33,10 @@ check("api client keeps paginated backend responses compatible with existing pag
 check("adapter still normalizes course and quiz arrays after API compatibility layer", () => {
   assertIncludes(files.adapter, "normalizeCourse");
   assertIncludes(files.adapter, "normalizeQuiz");
-  assertIncludes(files.adapter, "const data = await api.getCourses()");
-  assertIncludes(files.adapter, "const data = await api.getQuizzes()");
+  assertIncludes(files.adapter, "const data = await api.getCourses(params)");
+  assertIncludes(files.adapter, "data.map(normalizeCourse)");
+  assertIncludes(files.adapter, "const data = await api.getQuizzes(params)");
+  assertIncludes(files.adapter, "data.map(normalizeQuiz)");
 });
 
 check("auth bootstrap keeps heavy quiz data non-critical", () => {
