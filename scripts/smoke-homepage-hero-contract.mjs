@@ -54,8 +54,10 @@ assertIncludes('types.ts', 'imageAlt?: string;');
 assertIncludes('types.ts', 'export interface HomepageTypography');
 assertIncludes('server/src/models/HomepageSettings.ts', 'imageAlt: { type: String, default: "" }');
 assertIncludes('server/src/models/HomepageSettings.ts', 'homepageTypographySchema');
-assertIncludes('server/src/routes/content.routes.ts', 'imageAlt: z.string().optional()');
-assertIncludes('server/src/routes/content.routes.ts', 'typography: z');
+assertIncludes('server/src/modules/content/http/platformPresentationSchemas.ts', 'imageAlt: z.string().optional()');
+assertIncludes('server/src/modules/content/http/platformPresentationSchemas.ts', 'typography: z');
+assertIncludes('server/src/modules/content/http/platformPresentationSchemas.ts', 'homepageSettingsSchema');
+assertIncludes('server/src/routes/content.routes.ts', 'homepageSettingsSchema.parse(req.body)');
 assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');
 
 assertIncludes('pages/Landing.tsx', 'const fontClassByChoice =');
