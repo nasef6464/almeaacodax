@@ -27,6 +27,7 @@ import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } 
 import { lessonSchema, librarySchema, libraryUpdateSchema, topicSchema, topicUpdateSchema } from "../modules/content/http/learningContentSchemas.js";
 import { platformIntegrationSettingsPatchSchema, platformIntegrationSettingsSchema } from "../modules/content/http/platformIntegrationSchemas.js";
 import { announcementAdSchema, announcementAdUpdateSchema, homepageSettingsSchema, platformFontSettingsSchema } from "../modules/content/http/platformPresentationSchemas.js";
+import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
 import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content/http/studyPlanSchemas.js";
 
@@ -541,122 +542,6 @@ const buildScopedGroupCreatePayload = async (
       metadata: payload.metadata || {},
     },
   };
-};
-
-const defaultHomepageSettings = {
-  key: "default",
-  brand: {
-    logoUrl: "",
-    logoAlt: "\u0634\u0639\u0627\u0631 \u0645\u0646\u0635\u0629 \u0627\u0644\u0645\u0626\u0629",
-    logoText: "\u0645\u0646\u0635\u0629",
-    logoAccentText: "\u0627\u0644\u0645\u0626\u0629",
-  },
-  hero: {
-    badgeText: "المنصة الأولى للقدرات والتحصيلي",
-    titlePrefix: "حقق",
-    titleHighlight: "المئة",
-    titleSuffix: "في اختباراتك",
-    description:
-      "رحلة تعليمية ذكية تجمع بين التدريب المكثف، الشروحات التفاعلية، والتحليل الدقيق لنقاط ضعفك لضمان أعلى الدرجات.",
-    primaryCtaLabel: "ابدأ التدريب مجانًا",
-    primaryCtaLink: "/dashboard",
-    secondaryCtaLabel: "تصفح الدورات",
-    secondaryCtaLink: "/courses",
-    tertiaryCtaLabel: "",
-    tertiaryCtaLink: "",
-    badgeTextColor: "",
-    titlePrefixColor: "",
-    titleHighlightColor: "",
-    titleSuffixColor: "",
-    descriptionColor: "",
-    primaryCtaColor: "",
-    secondaryCtaColor: "",
-    tertiaryCtaColor: "",
-    imageUrl: "/images/homepage-hero-boy-platform.jpg?v=20260512",
-    imageAlt: "طالب يستخدم منصة المئة",
-    floatingCardTitle: "منصة المئة",
-    floatingCardSubtitle: "مستواك: متقدم",
-    floatingCardProgressLabel: "التقدم",
-    floatingCardProgressValue: "75%",
-  },
-  stats: [
-    { id: "students", label: "طالب وطالبة", mode: "dynamic", source: "students", manualValue: "" },
-    { id: "courses", label: "دورة تدريبية", mode: "dynamic", source: "courses", manualValue: "" },
-    { id: "assets", label: "مواد تعليمية", mode: "dynamic", source: "assets", manualValue: "" },
-    { id: "rating", label: "تقييم عام", mode: "dynamic", source: "rating", manualValue: "" },
-  ],
-  sections: {
-    featuredCoursesTitle: "الدورات الأكثر طلبًا",
-    featuredCoursesSubtitle: "اختر دورتك وابدأ رحلة التفوق اليوم",
-    whyChooseTitle: "لماذا يختار الطلاب منصة المئة؟",
-    whyChooseDescription:
-      "نحن لا نقدم مجرد دورات، بل نقدم نظامًا بيئيًا متكاملًا يضمن لك الفهم العميق والتدريب المستمر.",
-    testimonialsTitle: "قصص نجاح نعتز بها",
-    testimonialsSubtitle: "انضم لآلاف الطلاب الذين حققوا أحلامهم معنا",
-  },
-  testimonials: [
-    {
-      id: "t1",
-      name: "سارة العتيبي",
-      degree: "98% قدرات",
-      text: "المنصة غيرت طريقة مذاكرتي تمامًا. تحليل نقاط الضعف ساعدني أركز جهدي في المكان الصح.",
-      image: "https://i.pravatar.cc/100?img=5",
-    },
-    {
-      id: "t2",
-      name: "فهد الشمري",
-      degree: "96% تحصيلي",
-      text: "شروحات الفيزياء والكيمياء بسطت لي المعلومات بشكل عجيب. شكرًا لكل القائمين على المنصة.",
-      image: "https://i.pravatar.cc/100?img=11",
-    },
-    {
-      id: "t3",
-      name: "نورة السالم",
-      degree: "99% قدرات",
-      text: "اختبارات المحاكاة كانت مطابقة جدًا للاختبار الحقيقي، دخلت الاختبار وأنا واثقة جدًا.",
-      image: "https://i.pravatar.cc/100?img=9",
-    },
-  ],
-  typography: {
-    headingFont: "tajawal",
-    bodyFont: "tajawal",
-    headingWeight: "black",
-  },
-  navigation: {
-    showAutoPaths: true,
-    moreLabel: "أخرى",
-    items: [
-      { id: "home", label: "الرئيسية", visible: true, order: 0 },
-      { id: "mock-exams", label: "اختبارات محاكية", visible: true, order: 20 },
-      { id: "pricing", label: "العضويات", visible: true, order: 90 },
-      { id: "blog", label: "المدونة", visible: true, order: 100 },
-    ],
-  },
-  featuredPathIds: [],
-  featuredCourseIds: [],
-  featuredArticleLessonIds: [],
-};
-
-const defaultPlatformFontSettings = {
-  key: "default",
-  bodyFont: "tajawal",
-  headingFont: "tajawal",
-  navigationFont: "tajawal",
-  buttonFont: "tajawal",
-  bodySize: "",
-  headingSize: "",
-  navigationSize: "",
-  buttonSize: "",
-  bodyWeight: "",
-  headingWeight: "",
-  navigationWeight: "",
-  buttonWeight: "",
-  bodyColor: "",
-  headingColor: "",
-  navigationColor: "",
-  buttonColor: "",
-  bodyCustomFont: {},
-  headingCustomFont: {},
 };
 
 const sanitizeAndValidateExternalPlatforms = (input: Array<Record<string, unknown>> | undefined) => {

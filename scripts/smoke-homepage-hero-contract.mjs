@@ -58,7 +58,7 @@ assertIncludes('server/src/modules/content/http/platformPresentationSchemas.ts',
 assertIncludes('server/src/modules/content/http/platformPresentationSchemas.ts', 'typography: z');
 assertIncludes('server/src/modules/content/http/platformPresentationSchemas.ts', 'homepageSettingsSchema');
 assertIncludes('server/src/routes/content.routes.ts', 'homepageSettingsSchema.parse(req.body)');
-assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');
+assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');
 
 assertIncludes('pages/Landing.tsx', 'const fontClassByChoice =');
 assertIncludes('pages/Landing.tsx', 'homepageSettings.typography');
