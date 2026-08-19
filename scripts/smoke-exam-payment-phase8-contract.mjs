@@ -2,8 +2,9 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [quizRoutes, quizResultModel, accessGrantService, paymentRoutes, authRoutes] = await Promise.all([
+const [quizRoutes, questionPresentation, quizResultModel, accessGrantService, paymentRoutes, authRoutes] = await Promise.all([
   read("server/src/routes/quiz.routes.ts"),
+  read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   read("server/src/models/QuizResult.ts"),
   read("server/src/services/accessGrantService.ts"),
   read("server/src/routes/payment.routes.ts"),
@@ -58,8 +59,10 @@ check("quiz score and pass/fail are calculated only on the server", () => {
 
 check("learner question list does not expose answer keys before submission", () => {
   assertIncludes(quizRoutes, "sanitizeQuestionForLearner");
-  assertIncludes(quizRoutes, "const { correctOptionIndex, explanation, __v, ...safeQuestion } = question");
   assertIncludes(quizRoutes, "canSeeAnswers");
+  assertIncludes(questionPresentation, "export const sanitizeQuestionForLearner");
+  assertIncludes(questionPresentation, "const { correctOptionIndex, explanation, __v, ...safeQuestion } = question");
+  assertIncludes(questionPresentation, "return safeQuestion");
 });
 
 check("result model stores attempt metadata for audit and race protection", () => {
