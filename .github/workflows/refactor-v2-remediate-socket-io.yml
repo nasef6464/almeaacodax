@@ -68,13 +68,13 @@ jobs:
           npm --prefix server audit --omit=dev --json > /tmp/server-prod-before.json || true
           node tools/refactor/dependency-audit-summary.mjs server-production-before /tmp/server-prod-before.json
 
-      - name: Update only Socket.IO lock resolution
+      - name: Update only Socket.IO-owned transitive lock resolutions
         if: github.actor != 'github-actions[bot]'
         shell: bash
         run: |
           set -euo pipefail
           cp server/package.json /tmp/server-package.json.before
-          npm --prefix server update --package-lock-only socket.io
+          npm --prefix server update --package-lock-only engine.io socket.io-adapter socket.io-parser ws
           cmp --silent server/package.json /tmp/server-package.json.before || {
             echo "server/package.json changed during lock-only remediation; refusing scope expansion." >&2
             git diff -- server/package.json
@@ -88,7 +88,7 @@ jobs:
           set -uo pipefail
           npm --prefix server audit --omit=dev --json > /tmp/server-prod-after.json || true
           node tools/refactor/dependency-audit-summary.mjs server-production-after /tmp/server-prod-after.json
-          node tools/refactor/assert-audit-packages-clean.mjs /tmp/server-prod-after.json ws socket.io-parser
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/server-prod-after.json engine.io socket.io-adapter socket.io-parser ws
 
       - name: Install exact frontend dependencies for repository contracts
         run: npm ci
@@ -96,18 +96,34 @@ jobs:
       - name: Install exact remediated API dependencies
         run: npm --prefix server ci
 
-      - name: Explain remediated Socket.IO tree
+      - name: Verify remediated packages remain Socket.IO-owned
         shell: bash
         run: |
-          set -uo pipefail
-          echo '===== SOCKET.IO ====='
-          npm --prefix server explain socket.io || true
-          echo '===== ENGINE.IO ====='
-          npm --prefix server explain engine.io || true
-          echo '===== WS ====='
-          npm --prefix server explain ws || true
-          echo '===== SOCKET.IO-PARSER ====='
-          npm --prefix server explain socket.io-parser || true
+          set -euo pipefail
+          ENGINE_EXPLAIN="$(npm --prefix server explain engine.io 2>&1 || true)"
+          ADAPTER_EXPLAIN="$(npm --prefix server explain socket.io-adapter 2>&1 || true)"
+          PARSER_EXPLAIN="$(npm --prefix server explain socket.io-parser 2>&1 || true)"
+          WS_EXPLAIN="$(npm --prefix server explain ws 2>&1 || true)"
+          printf '%s\n' "$ENGINE_EXPLAIN"
+          printf '%s\n' "$ADAPTER_EXPLAIN"
+          printf '%s\n' "$PARSER_EXPLAIN"
+          printf '%s\n' "$WS_EXPLAIN"
+          printf '%s' "$ENGINE_EXPLAIN" | grep -F 'socket.io@' >/dev/null || {
+            echo "engine.io is no longer resolved through socket.io; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
+          printf '%s' "$PARSER_EXPLAIN" | grep -F 'socket.io@' >/dev/null || {
+            echo "socket.io-parser is no longer resolved through socket.io; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
+          printf '%s' "$ADAPTER_EXPLAIN" | grep -E 'socket.io@|@socket.io/redis-adapter@' >/dev/null || {
+            echo "socket.io-adapter is no longer resolved through the Socket.IO stack; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
+          printf '%s' "$WS_EXPLAIN" | grep -E 'engine.io@|socket.io-adapter@' >/dev/null || {
+            echo "ws is no longer resolved through the Socket.IO stack; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
 
       - name: API typecheck
         run: npm run server:check
@@ -144,7 +160,7 @@ jobs:
           CHANGED="$(git diff --name-only)"
           echo "$CHANGED"
           if [ -z "$CHANGED" ]; then
-            echo "Socket.IO tree is already clean; no lockfile remediation is required."
+            echo "Socket.IO dependency tree is already clean; no lockfile remediation is required."
             exit 0
           fi
           if [ "$CHANGED" != "server/package-lock.json" ]; then
