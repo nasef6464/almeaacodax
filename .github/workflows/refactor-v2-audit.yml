@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: refactor-v2-repository-audit
+  group: refactor-v2-repository-audit-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout refactor branch
+      - name: Checkout exact audit source head
         uses: actions/checkout@v4
         with:
-          ref: refactor/repository-v2-safe
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Setup Node
@@ -43,15 +43,40 @@ jobs:
       - name: Audit source-coupled scripts
         run: node tools/refactor/source-reference-audit.mjs
 
-      - name: Commit generated architecture evidence
+      - name: Commit generated architecture evidence from verified head
         shell: bash
         run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.sha }}"
+
           if [ -z "$(git status --porcelain -- docs/architecture/generated)" ]; then
             echo "Generated audit is unchanged."
             exit 0
           fi
+
           git config user.name "almeaa-refactor-bot"
           git config user.email "actions@users.noreply.github.com"
           git add docs/architecture/generated
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Audit source head moved from ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale evidence commit safely."
+            exit 0
+          fi
+
           git commit -m "docs(audit): refresh repository architecture inventory"
-          git push origin HEAD:refactor/repository-v2-safe
+          if git push origin HEAD:refactor/repository-v2-safe; then
+            echo "Fresh architecture evidence pushed successfully."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Audit branch advanced to ${NEW_REMOTE_SHA} during push; a newer run owns the evidence."
+            exit 0
+          fi
+
+          echo "Audit push failed while remote remained at verified head ${EXPECTED_SHA}." >&2
+          exit 1

@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const workflow = readFileSync(path.join(root, '.github/workflows/refactor-v2-guard.yml'), 'utf8').replace(/\r\n/g, '\n');
+const guardWorkflow = readFileSync(path.join(root, '.github/workflows/refactor-v2-guard.yml'), 'utf8').replace(/\r\n/g, '\n');
+const auditWorkflow = readFileSync(path.join(root, '.github/workflows/refactor-v2-audit.yml'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
 
@@ -15,42 +16,64 @@ function check(name, assertion) {
   }
 }
 
-function assertIncludes(fragment, message) {
-  if (!workflow.includes(fragment)) throw new Error(message || `Missing workflow fragment: ${fragment}`);
+function assertIncludes(source, fragment, message) {
+  if (!source.includes(fragment)) throw new Error(message || `Missing workflow fragment: ${fragment}`);
 }
 
-function assertNotIncludes(fragment, message) {
-  if (workflow.includes(fragment)) throw new Error(message || `Unsafe workflow fragment: ${fragment}`);
+function assertNotIncludes(source, fragment, message) {
+  if (source.includes(fragment)) throw new Error(message || `Unsafe workflow fragment: ${fragment}`);
 }
 
 check('push and pull-request runs share the safe branch concurrency key', () => {
-  assertIncludes('group: refactor-v2-${{ github.event.pull_request.head.ref || github.ref_name }}');
-  assertIncludes('cancel-in-progress: true');
+  assertIncludes(guardWorkflow, 'group: refactor-v2-${{ github.event.pull_request.head.ref || github.ref_name }}');
+  assertIncludes(guardWorkflow, 'cancel-in-progress: true');
 });
 
 check('verification checks out the exact source head rather than a synthetic PR merge ref', () => {
-  assertIncludes('ref: ${{ github.event.pull_request.head.sha || github.sha }}');
+  assertIncludes(guardWorkflow, 'ref: ${{ github.event.pull_request.head.sha || github.sha }}');
 });
 
 check('only the single winning non-bot verification run may mutate the refactor branch', () => {
   const guard = "if: github.actor != 'github-actions[bot]'";
-  const occurrences = workflow.split(guard).length - 1;
+  const occurrences = guardWorkflow.split(guard).length - 1;
   if (occurrences < 3) throw new Error(`Expected the non-bot write guard on all three mutation steps; found ${occurrences}`);
-  assertNotIncludes("if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'");
+  assertNotIncludes(guardWorkflow, "if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'");
 });
 
 check('verified auto-commit refuses to overwrite a branch that moved during review', () => {
-  assertIncludes('EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"');
-  assertIncludes('REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
-  assertIncludes('if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
-  assertIncludes('NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
-  assertIncludes('if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
+  assertIncludes(guardWorkflow, 'EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"');
+  assertIncludes(guardWorkflow, 'REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
+  assertIncludes(guardWorkflow, 'if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
+  assertIncludes(guardWorkflow, 'NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
+  assertIncludes(guardWorkflow, 'if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
 });
 
-check('workflow never force-pushes the protected refactor branch', () => {
-  assertNotIncludes('git push --force');
-  assertNotIncludes('git push -f');
-  assertNotIncludes('--force-with-lease');
+check('primary safety workflow never force-pushes the protected refactor branch', () => {
+  assertNotIncludes(guardWorkflow, 'git push --force');
+  assertNotIncludes(guardWorkflow, 'git push -f');
+  assertNotIncludes(guardWorkflow, '--force-with-lease');
+});
+
+check('repository audit uses branch-scoped concurrency and exact trigger head', () => {
+  assertIncludes(auditWorkflow, 'group: refactor-v2-repository-audit-${{ github.ref_name }}');
+  assertIncludes(auditWorkflow, 'cancel-in-progress: true');
+  assertIncludes(auditWorkflow, 'ref: ${{ github.sha }}');
+  assertNotIncludes(auditWorkflow, 'ref: refactor/repository-v2-safe', 'Audit workflow must not checkout a moving branch ref.');
+});
+
+check('repository audit refuses to commit stale generated evidence', () => {
+  assertIncludes(auditWorkflow, 'EXPECTED_SHA="${{ github.sha }}"');
+  assertIncludes(auditWorkflow, 'REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
+  assertIncludes(auditWorkflow, 'if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
+  assertIncludes(auditWorkflow, 'NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"');
+  assertIncludes(auditWorkflow, 'if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then');
+  assertIncludes(auditWorkflow, 'git add docs/architecture/generated');
+});
+
+check('repository audit never force-pushes the protected refactor branch', () => {
+  assertNotIncludes(auditWorkflow, 'git push --force');
+  assertNotIncludes(auditWorkflow, 'git push -f');
+  assertNotIncludes(auditWorkflow, '--force-with-lease');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
