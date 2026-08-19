@@ -1,6 +1,7 @@
 name: Refactor V2 Repository Audit
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
