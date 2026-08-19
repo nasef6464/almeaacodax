@@ -65,7 +65,7 @@ check('delegated submission schema import is singular and remains with transport
   if (!delegated) return;
   assert.equal(routeSource.split(schemaImport).length - 1, 1, 'submission schema import must be singular');
   const importIndex = routeSource.indexOf(schemaImport);
-  const stateIndex = routeSource.indexOf('const QUESTION_SUMMARY_TEXT_LIMIT = 280;');
+  const stateIndex = routeSource.indexOf('const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;');
   assert.ok(importIndex >= 0 && stateIndex >= 0 && importIndex < stateIndex, 'submission schema import must precede route-local state');
 });
 
