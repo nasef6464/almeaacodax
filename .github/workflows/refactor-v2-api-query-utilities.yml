@@ -58,7 +58,7 @@ jobs:
       - name: Install API dependencies required by repository typecheck
         run: npm --prefix server ci
 
-      - name: Verify API query utility boundary before any apply
+      - name: Verify API query utility boundary on source head
         run: node scripts/smoke-api-query-utilities-boundary-contract.mjs
 
       - name: Repository typecheck on source head
