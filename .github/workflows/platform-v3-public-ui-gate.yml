@@ -2,22 +2,6 @@ name: Platform V3 Public UI Gate
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop/platform-v3-recovery
-    paths:
-      - 'App.tsx'
-      - 'pages/**'
-      - 'components/**'
-      - 'contexts/**'
-      - 'services/**'
-      - 'store/**'
-      - 'utils/**'
-      - 'styles/**'
-      - 'index.html'
-      - 'vite.config.ts'
-      - 'scripts/live-public-ui-audit.mjs'
-      - '.github/workflows/platform-v3-public-ui-gate.yml'
   pull_request:
     branches:
       - main
