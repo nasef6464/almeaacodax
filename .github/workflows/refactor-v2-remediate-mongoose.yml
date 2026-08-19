@@ -129,6 +129,10 @@ jobs:
           set -euo pipefail
           CHANGED="$(git diff --name-only)"
           echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "Mongoose dependency tree is already clean; no lockfile remediation is required."
+            exit 0
+          fi
           if [ "$CHANGED" != "server/package-lock.json" ]; then
             echo "Mongoose remediation must modify server/package-lock.json only." >&2
             exit 1
