@@ -1,0 +1,101 @@
+name: Platform V3 Payment Country Preset Runtime Repair
+
+on:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+    paths:
+      - tools/recovery/apply-payment-country-preset-runtime-repair.mjs
+      - .github/workflows/platform-v3-payment-country-preset-runtime-repair.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-payment-country-preset-runtime-repair
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: develop/platform-v3-recovery
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Capture expected branch head
+        id: expected
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Apply exact guarded runtime repair
+        run: node tools/recovery/apply-payment-country-preset-runtime-repair.mjs
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Verify operational admin runtime contract
+        run: npm run smoke:batch100q-operational-admin-runtime
+
+      - name: Verify payment package contract
+        run: npm run smoke:payment-package
+
+      - name: Verify payment tampering contract
+        run: npm run smoke:payment-tampering
+
+      - name: Verify frontend types
+        run: npm run typecheck
+
+      - name: Verify API types
+        run: npm run server:check
+
+      - name: Verify frontend production build
+        run: npm run build
+
+      - name: Verify API production build
+        run: npm run server:build
+
+      - name: Verify clean patch shape
+        run: |
+          git status --short
+          changed="$(git diff --name-only)"
+          if [ "$changed" != "dashboards/admin/FinancialManager.tsx" ]; then
+            echo "Unexpected changed files:"
+            echo "$changed"
+            exit 1
+          fi
+
+      - name: Commit verified repair
+        env:
+          EXPECTED_SHA: ${{ steps.expected.outputs.sha }}
+        run: |
+          git fetch origin develop/platform-v3-recovery
+          remote_sha="$(git rev-parse origin/develop/platform-v3-recovery)"
+          if [ "$remote_sha" != "$EXPECTED_SHA" ]; then
+            echo "Branch moved while verification was running; refusing stale auto-commit."
+            exit 1
+          fi
+          if git diff --quiet -- dashboards/admin/FinancialManager.tsx; then
+            echo "No runtime repair change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dashboards/admin/FinancialManager.tsx
+          git commit -m "fix(payments): persist country preset from admin runtime"
+          git push origin HEAD:develop/platform-v3-recovery
