@@ -489,18 +489,19 @@ export const FinancialManager: React.FC = () => {
     };
 
     const applyCountryPreset = async (country: 'SA' | 'EG') => {
-        const saPreset = {
-            card: { ...defaultSettings.card, supportedCountries: ['SA'], providerName: 'Tap / MyFatoorah / HyperPay', providerCode: 'tap' },
-            transfer: { ...defaultSettings.transfer, supportedCountries: ['SA'] },
-            wallet: { ...defaultSettings.wallet, supportedCountries: ['SA'], providerName: 'STC Pay' },
-        };
-        const egPreset = {
-            card: { ...defaultSettings.card, supportedCountries: ['EG'], providerName: 'Paymob / Fawry', providerCode: 'paymob' },
-            transfer: { ...defaultSettings.transfer, supportedCountries: ['EG'] },
-            wallet: { ...defaultSettings.wallet, supportedCountries: ['EG'], providerName: 'Vodafone Cash / Fawry' },
-        };
-        const preset = country === 'SA' ? saPreset : egPreset;
-        setSettings((current) => ({ ...current, ...preset }));
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await api.applyPaymentCountryPreset(country) as { settings?: PaymentSettings } | PaymentSettings;
+            const persistedSettings = 'settings' in response && response.settings ? response.settings : response;
+            setSettings(persistedSettings as PaymentSettings);
+            setFeedback(country === 'SA' ? 'تم تطبيق إعدادات الدفع للسعودية وحفظها' : 'تم تطبيق إعدادات الدفع لمصر وحفظها');
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (presetError) {
+            setError(presetError instanceof Error ? presetError.message : 'تعذر تطبيق إعدادات الدولة الآن.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const applyProviderPreset = (
