@@ -58,7 +58,7 @@ jobs:
       - name: Install API dependencies required by repository typecheck
         run: npm --prefix server ci
 
-      - name: Verify Dashboard path progress boundary on source head
+      - name: Verify post-extraction Dashboard path progress boundary
         run: node scripts/smoke-dashboard-path-progress-boundary-contract.mjs
 
       - name: Verify student path scope on source head
