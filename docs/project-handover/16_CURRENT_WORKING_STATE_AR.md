@@ -1,253 +1,214 @@
 # حالة العمل الحالية وتسليم الاستكمال
 
-آخر تحديث: 2026-05-14  
-الفرع النشط: `complete-platform-production-v1`  
-آخر نسخة مرفوعة وقت كتابة هذا الملف: `338a96e`  
+آخر تحديث: 2026-08-19  
+Production branch: `main`  
+فرع الاستعادة والتطوير النشط: `develop/platform-v3-recovery`  
+Draft PR النشط: `#26 — Platform V3 Recovery & Development`  
+Production baseline عند بدء الدورة: `fab4e31f037feeeb178788dd2a79971e4fce2cbc`  
 رابط الواجهة الإنتاجية: `https://almeaacodax.vercel.app/`  
-رابط API الإنتاجي المستخدم في الواجهة: `https://almeaacodax-k2ux.onrender.com/api`  
+رابط API الإنتاجي: `https://almeaacodax-k2ux.onrender.com/api`  
 مستودع GitHub: `https://github.com/nasef6464/almeaacodax.git`
 
-هذا الملف هو نقطة البداية لأي حساب Codex أو مطور جديد. اقرأه قبل لمس الكود.
+هذا الملف هو نقطة البداية لأي Codex أو Antigravity أو مطور جديد. اقرأه قبل لمس الكود.
 
-## طريقة العمل المتفق عليها
+## القاعدة الأساسية الآن
 
-1. لا تغيّر شكل الموقع أو الخطوط أو الألوان إلا بطلب واضح من صاحب المشروع.
-2. أي دفعة يجب أن تكون محددة، مكتملة، ومغلقة بفحص.
-3. قبل التعديل اقرأ الملفات المرتبطة ولا تعتمد على التخمين.
-4. بعد التعديل شغل الفحص المناسب ثم `typecheck` ثم البناء.
-5. بعد الرفع افحص الإنتاج على `almeaacodax.vercel.app` وليس المحلي فقط.
-6. استخدم المتصفح الداخلي للفحص البصري بعد كل دفعة واجهة.
-7. لا تطبع أي أسرار أو مفاتيح في المحادثة أو الملفات.
-8. لا تستخدم `git reset --hard` أو أي حذف واسع بدون إذن صريح.
+- `main` هو خط الإنتاج المستقر فقط.
+- لا يتم التطوير مباشرة على `main`.
+- لا تستخدم `git push <feature-branch>:main`.
+- أي إصلاح أو تطوير يمر عبر Branch ثم Pull Request ثم Build/Typecheck/Contracts/Preview المناسب.
+- لا دمج إلى `main` قبل موافقة صريحة بعد اكتمال التحقق.
+- لا Force Push.
+- لا أسرار أو كلمات مرور أو Tokens داخل المستودع أو سجلات CI.
+- لا تغييرات مدمرة لقاعدة البيانات أثناء دورة الاستعادة.
+- لا تغيّر شكل الموقع أو الخطوط أو الألوان إلا ضمن مهمة UI مقصودة ومع فحص بصري Desktop + Mobile.
 
-## آخر الدفعات المنجزة
+## لماذا توجد دورة Platform V3
 
-هذه آخر الدفعات التي أغلقتها ورفعتها:
+تم دمج Refactor V2 إلى `main` بعد بوابات Safety/Readiness ناجحة. دورة `Platform V3 Recovery & Development` لا تعيد المشروع للكود القديم؛ هدفها:
 
-| Commit | الدفعة | ماذا أضافت |
-|---|---|---|
-| `338a96e` | خطة متابعة الفصول في بوابة المشرف | جدول يوضح أولوية كل فصل، متوسط الأداء، عدد الطلاب المحتاجين متابعة، والإجراء التالي، مع تصدير Excel وشيت داخل تقرير المشرف |
-| `90c2074` | نسخ رسالة تسليم المدرسة | زر داخل إدارة المدارس لنسخ رسالة جاهزة للإدارة مع إشعار نجاح |
-| `10846fb` | إجراءات جاهزية المدرسة على البطاقات | بطاقات المدارس تعرض الخطوة التالية وتفتح التبويب المناسب مباشرة |
-| `8096f00` | ملخص المشرف الأسبوعي | ملخص تنفيذي وخطة أسبوعية للمشرف داخل بوابة المدرسة |
-| `cee74a4` | ملف تسليم المدرسة | ملف Excel للتسليم يشمل خطة التشغيل، checklist للمشرف، ورسالة جاهزة |
-| `713b828` | مركز جاهزية تشغيل المدرسة | فحص قبل التسليم: فصول، مشرفون، باقات، أكواد، وطلاب بلا ولي أمر |
-| `1d2dd7c` | تدفقات بوابة المدرسة | أدوات يومية للمشرف: تقرير، اختبار موجه، رسالة، وتصدير قائمة متابعة |
-| `0790355` | تحسين بوابة المدرسة ومعاينة الإعلانات | ربط الإعلان بمعاينة مباشرة وتحسين تشغيل بوابة المدرسة |
-| `3c41b20` | مركز تقارير وإشراف مدرسي | مركز إداري يخدم التعاقد مع المدارس: متابعة، تقارير، وتوجيه إجراءات |
-| `9a94582` | تقوية إدارة المدارس | تحسين سير المدارس، الفصول، المشرفين، الباقات، والأكواد |
-| `2a46b4f` | لوحة المشرف | دعم مشرف المدرسة أو عدة مجموعات من نفس الحساب |
-| `30603a3` | الإعلانات المتقدمة | إعدادات متقدمة للإعلانات والروابط والمعاينة |
+1. تأكيد أن كل وظائف المنصة ما زالت تعمل فوق الهيكلة الجديدة.
+2. اكتشاف وإصلاح أي Regression حقيقي.
+3. تحديث عقود الاختبار القديمة التي ما زالت تشير إلى ملفات أو بنية ما قبل الـrefactor.
+4. تشغيل فحص UI عام وفحص حي لكل الأدوار.
+5. بعد الاستقرار، بدء تطوير المنتج في Features صغيرة وآمنة.
 
-## ما تم بقوة حتى الآن
+## حالة الإنتاج المؤكدة عند بدء الدورة
 
-- فصل الباقات عن الدورات في السلوك: الباقات تعرض كاختيار شراء مستقل، والدورة تبقى منتجًا مستقلًا يمكن شراؤه من مكانها.
-- تحسين سرعة الفتح على الإنتاج عبر إزالة انتظار bootstrap الثقيل قدر الإمكان وتحسين smoke الإنتاج.
-- إضافة حراسة إنتاجية تمنع نشر نسخة غير متوقعة: `smoke:frontend` يتحقق من commit المنشور.
-- تحسين إدارة المدارس والفصول والمشرفين لخدمة المدارس.
-- دعم المشرف كمدير مدرسة أو مسؤول عن فصل/عدة فصول من نفس الحساب.
-- إضافة تقارير ومخرجات Excel للمشرف والمدرسة.
-- تحسين الإعلانات لتكون قابلة للمعاينة والروابط.
-- إضافة تقارير أدوار للطالب، ولي الأمر، المشرف، المعلم، والمدير.
-- تقوية أجزاء أمنية سابقة: منع فتح مباشر للمحتوى، حماية quiz client/security، وفصل الدفع عن الفتح المباشر.
-- إضافة تقارير المراحل من `01_FULL_AUDIT_REPORT.md` حتى `19_20_DEPLOYMENT_HANDOVER_REPORT.md`.
+- Frontend Production منشور على Vercel.
+- Backend Production يعمل على Render.
+- `/api/health` أكد اتصال MongoDB.
+- Redis rate-limit وqueue كانا Ready في فحص الإنتاج.
+- `/courses` و`/quizzes` كانا متاحين على Production.
+- Learning bootstrap أعاد بيانات تعليمية حقيقية من قاعدة البيانات.
+- `/api/auth/me` بدون جلسة يعيد `401` كما يجب.
+- Admin users API بدون جلسة يعيد `401` كما يجب.
+- CSRF endpoint يعمل ويصدر cookie.
 
-## مشاكل واجهتنا أثناء العمل
+## بوابات Platform V3 الحالية
 
-- حصل كسر بصري سابق عند نقل Tailwind من CDN إلى build؛ تم الرجوع لمسار أكثر أمانًا. قاعدة مهمة: لا تلمس `index.html` أو CSS العام بدون فحص بصري فوري.
-- صاحب المشروع لاحظ بطءًا في الإنتاج. تم تحسين جزء من bootstrap والتحميل، لكن قابلية 10,000 طالب لا تُثبت إلا باختبار ضغط حقيقي مع Redis وRender instances وMongo Atlas tier مناسب.
-- بعض صفحات الإدارة تحتاج جلسة مدير حقيقية للفحص البصري الكامل. إذا لم تكن الجلسة مديرًا، رابط `#/admin-dashboard` قد يعيدك للواجهة العامة أو لا يظهر الإدارة.
-- بعض ملفات التسليم القديمة قد تظهر بترميز غريب في PowerShell، لكن ملفات الكود نفسها تعمل. عند التوثيق العربي استخدم UTF-8 ولا تعتمد على نسخ PowerShell إذا ظهر Mojibake.
+### Platform V3 Recovery Gate
+يغطي على الأقل:
+- Frontend/API typecheck وproduction builds.
+- architecture snapshot + immutable contract + module boundaries.
+- Student journey / Mock exams / Quiz integrity / Results.
+- Auth / Cookie / CSRF / RBAC / API security / NoSQL sanitizer.
+- Schools / Supervisor / Reports / Packages / Payments.
+- Content / Course builder / Library / Integrations / Admin tabs.
+- Admin data integrity / Question bank / Course linkage.
+- Homepage/Admin UX contracts.
+- Production readiness / monitoring / database / notifications / Sentry / SEO.
 
-## ما يزال موجودًا ويحتاج استكمالًا
+### Platform V3 Public UI Gate
+- يبني الفرع نفسه.
+- يشغل Chromium.
+- يفحص الصفحات العامة والمحروسة على Desktop وMobile.
+- يجمع evidence بدل الاعتماد على أن Build فقط يساوي UI سليم.
 
-الأولوية التالية المقترحة:
+### Platform V3 Phase + Handover Gate
+- يعيد تشغيل العقود التاريخية المهمة من Phase 4 حتى Phase 20.
+- يستخدم المراجع الحالية للملفات بعد نقل التقارير إلى `docs/archive_reports/`.
+- يمنع أن تصبح ملفات التسليم القديمة مصدر تعليمات خاطئة للمطور التالي.
 
-1. فحص بصري حقيقي من حساب مدير وحساب مشرف وحساب طالب على الإنتاج.
-2. اختبار كامل لتبويب المدارس داخل الإدارة: إنشاء مدرسة، إضافة فصل، ربط مشرف، ربط طالب، إنشاء باقة، إنشاء كود، تحميل تقرير.
-3. إكمال دورة الدفع الحقيقية: مزود دفع مناسب لمصر والسعودية، webhook، وAccessGrant ذري.
-4. تفعيل Redis إنتاجيًا للـ rate limit وBullMQ وSocket.IO عند الحاجة للتوسع.
-5. اختبار ضغط حقيقي باستخدام scripts الموجودة في `load-tests`.
-6. مراجعة تخزين token طويل المدى في الواجهة والتحول المرحلي إلى cookie strategy عند اكتمال الخطة.
-7. تنظيف أي بقايا Firebase fallback إذا ثبت أن MongoDB هو المصدر الوحيد.
-8. مراجعة SEO النهائية بعد استقرار الروابط.
+### Platform V3 Live Role Gate
+Workflow يدوي آمن يستخدم GitHub Actions Secrets فقط ويشغل `smoke:role-pages-live` بالحسابات التجريبية للأدوار:
+- Student
+- Admin
+- Parent
+- Teacher
+- Supervisor
 
-## ربط GitHub / Vercel / Render
+لا تضع بيانات هذه الحسابات في ملفات المستودع.
 
-### GitHub
+## إصلاحات Recovery المهمة حتى الآن
 
-- المستودع: `https://github.com/nasef6464/almeaacodax.git`
-- الفرع الذي نعمل عليه: `complete-platform-production-v1`
-- يتم الدفع أيضًا إلى `main` لأن Vercel مربوط غالبًا بفرع `main`.
-- أوامر الرفع المستخدمة:
+- إصلاح مسار اعتماد الدفع اليدوي ليشترط evidence قبل فتح الوصول.
+- فصل شراء الدورة المباشر عن استبداله تلقائيًا بباقة.
+- حفظ Payment Country Preset للسعودية/مصر عبر Backend بدل تغيير UI محلي فقط.
+- تحديث عقود قديمة لتتبع وحدات الـquiz الحالية بدون إضعاف حماية إخفاء الإجابة الصحيحة.
+- تحديث عقود التقارير التي انتقلت من root إلى `docs/archive_reports/`.
 
-```bash
-git push origin complete-platform-production-v1
-git push origin complete-platform-production-v1:main
-```
+التفاصيل والـcheckpoints محفوظة في:
 
-### Vercel
+`docs/PLATFORM_V3_RECOVERY_PLAN_AR.md`
 
-- رابط الواجهة: `https://almeaacodax.vercel.app/`
-- البناء: `npm run build`
-- المتغير المهم للواجهة عند الحاجة:
+## رحلة التطوير الآمنة
 
-```bash
-VITE_API_URL=https://almeaacodax-k2ux.onrender.com/api
-```
-
-الواجهة تحتوي fallback إنتاجي في `services/api.ts` يشير إلى:
-
-```text
-https://almeaacodax-k2ux.onrender.com/api
-```
-
-### Render
-
-- رابط API المستخدم: `https://almeaacodax-k2ux.onrender.com/api`
-- فحص الصحة:
-
-```text
-https://almeaacodax-k2ux.onrender.com/api/health/live
-https://almeaacodax-k2ux.onrender.com/api/health/ready
-```
-
-- بناء السيرفر: `npm --prefix server run build`
-- تشغيل السيرفر: `npm --prefix server run start`
-
-متغيرات Render الأساسية، بدون قيم أسرار:
+ابدأ دائمًا من أحدث `main` أو من فرع الاستعادة حسب المهمة:
 
 ```bash
-NODE_ENV=production
-PORT=4000
-CLIENT_URL=https://almeaacodax.vercel.app
-CORS_ALLOWED_ORIGINS=https://almeaacodax.vercel.app
-MONGODB_URI=<MongoDB Atlas connection string>
-JWT_SECRET=<long random secret, at least 32 chars recommended>
-JWT_EXPIRES_IN=7d
-ADMIN_NAME=<admin display name>
-ADMIN_EMAIL=<admin email>
-ADMIN_PASSWORD=<strong password>
-REDIS_URL=<managed redis url, required for high scale>
-REDIS_KEY_PREFIX=almeaa
-RATE_LIMIT_REDIS_ENABLED=true
-NOTIFICATION_QUEUE_ENABLED=true
-NOTIFICATION_QUEUE_CONCURRENCY=5
+git switch main
+git pull --ff-only origin main
+git switch -c feature/<short-feature-name>
 ```
 
-متغيرات اختيارية حسب المزود:
+أثناء دورة Platform V3 الحالية يمكن للمهام المتعلقة بالاستعادة أن تبدأ من:
 
 ```bash
-EMAIL_PROVIDER=console|resend|http
-EMAIL_FROM=<verified sender>
-RESEND_API_KEY=<secret>
-EMAIL_WEBHOOK_URL=<provider webhook>
-EMAIL_WEBHOOK_TOKEN=<secret>
-WHATSAPP_PROVIDER=console|whatsapp_cloud|http
-WHATSAPP_ACCESS_TOKEN=<secret>
-WHATSAPP_PHONE_NUMBER_ID=<id>
-WHATSAPP_WEBHOOK_URL=<provider webhook>
-WHATSAPP_WEBHOOK_TOKEN=<secret>
-AI_PROVIDER=none|gemini|openrouter|deepseek|qwen|openai|ollama|lmstudio
-OPENAI_API_KEY=<secret if used>
-GEMINI_API_KEY=<secret if used>
-SENTRY_DSN=<optional>
+git fetch origin
+git switch develop/platform-v3-recovery
+git pull --ff-only origin develop/platform-v3-recovery
 ```
 
-### MongoDB Atlas
-
-- `MONGODB_URI` يجب أن يكون مضبوطًا في Render فقط وليس في الواجهة.
-- إعدادات pooling موجودة في `server/src/config/env.ts` و`server/src/config/db.ts`.
-- القيم الافتراضية الحالية:
+بعد التعديل شغّل الحد الأدنى المناسب:
 
 ```bash
-MONGODB_MAX_POOL_SIZE=30
-MONGODB_MIN_POOL_SIZE=2
-MONGODB_SERVER_SELECTION_TIMEOUT_MS=5000
-MONGODB_SOCKET_TIMEOUT_MS=45000
-MONGODB_MAX_IDLE_TIME_MS=60000
-```
-
-للضغط العالي، راجع هذه القيم بعد اختبار حقيقي وليس بالتخمين.
-
-## أوامر الفحص المهمة
-
-بعد أي تعديل عام:
-
-```bash
+npm ci
+npm --prefix server ci
 npm run typecheck
+npm run server:check
 npm run build
-npm --prefix server run build
-npm run smoke:frontend
+npm run server:build
 ```
 
-لفحص محور المدارس والمشرفين:
+ثم شغّل الـsmoke/contract المرتبط بالجزء الذي عدلته. لا تعتمد على Build فقط.
 
-```bash
-npm run smoke:school-management
-npm run smoke:admin-school-command
-npm run smoke:school-portal-command
-```
+## قواعد الاختبارات والـCI
 
-لفحص الأداء والإنتاج:
+- إذا فشل Contract: حدد أولًا هل كشف Bug حقيقي أم أن العقد نفسه يعتمد شكل كود/مسار ملف قديم.
+- لا تغيّر الاختبار لمجرد جعله أخضر إذا كان يحمي سلوكًا أمنيًا أو وظيفيًا.
+- عند نقل logic إلى module جديد، حدّث العقد ليتحقق من الـmodule الجديد ومن wiring داخل route/component.
+- `npm audit fix --force` ممنوع في هذه الدورة.
+- أي Major dependency migration، خصوصًا Sentry، تعامل معها كمشروع مستقل بعد الاستقرار.
 
-```bash
-npm run smoke:performance
-npm run smoke:production-speed
-npm run smoke:frontend
-```
+## الفحص الحي المطلوب قبل إغلاق Recovery
 
-لفحص الدفع والباقات:
+### Guest
+- Landing / Pricing / Blog.
+- تأكيد حراسة Reports/My Requests بدون تسجيل دخول.
 
-```bash
-npm run smoke:package-course-split
-npm run smoke:payment-package
-npm run smoke:payment-providers
-```
+### Student
+- Login.
+- Dashboard.
+- Course/Lesson.
+- Quiz start → answer → submit → Results → Reports.
+- Plan/Profile/My Quizzes.
 
-لفحص الاختبارات والأمان:
+### Admin
+- Login.
+- Admin dashboard.
+- Users / Schools / Paths / Courses / Question Bank / Quizzes.
+- Packages / Memberships / Finance.
+- Reports / Settings / Integrations.
 
-```bash
-npm run smoke:quiz-access
-npm run smoke:quiz-client-security
-npm run smoke:api-security
-```
+### Supervisor
+- Login.
+- School scope فقط.
+- Reports.
+- رفض الوصول خارج نطاق المدرسة.
 
-## بروتوكول الفحص البصري
+### Teacher
+- Login.
+- المحتوى والطلاب المسموح بهم فقط.
+- Reports وصلاحيات الدور.
 
-1. افتح الإنتاج دائمًا:
+### Parent
+- Login.
+- الطالب المرتبط فقط.
+- Reports.
+- رفض أي طالب غير مرتبط.
+
+## Infrastructure / Deployment
+
+### Frontend
+- Production: `https://almeaacodax.vercel.app/`
+- Build: `npm run build`
+
+### API
+- Base: `https://almeaacodax-k2ux.onrender.com/api`
+- Health:
+  - `/health/live`
+  - `/health/ready`
+- Build: `npm --prefix server run build`
+
+### Environment names
+احتفظ بالقيم السرية خارج GitHub files. أسماء المتغيرات المهمة تشمل:
 
 ```text
-https://almeaacodax.vercel.app/?v=<commit>_<batch_name>_<timestamp>#/
+VITE_API_URL
+MONGODB_URI
+JWT_SECRET
+REDIS_URL
+RATE_LIMIT_REDIS_ENABLED
+NOTIFICATION_QUEUE_ENABLED
+PAYMENT_WEBHOOK_SECRET
+SENTRY_DSN
 ```
 
-2. افحص على الأقل:
+## الفروع القديمة
 
-```text
-/
-/#/category/p_1777779639431?subject=sub_1777779748206&tab=courses
-/#/reports
-/#/admin-dashboard
-```
+الفروع من نوع `refactor/*runner*` و`refactor/*trigger*` هي آثار تنفيذ Refactor V2. لا تدمجها تلقائيًا. نظفها فقط بعد التأكد من أن `main` يحتوي المطلوب ولا يوجد PR أو workflow يعتمد عليها.
 
-3. لو لم تكن الجلسة مديرًا، سجّل ذلك بوضوح ولا تدّعي أن لوحة الإدارة تم فحصها بصريًا بالكامل.
-4. لا تعتمد على المحلي وحده؛ صاحب المشروع يراجع Vercel.
+## تعريف النجاح قبل الانتقال من Recovery إلى Product Development
 
-## ملاحظات مهمة للدفعة التالية
+نعتبر الاستعادة مغلقة عندما:
 
-- الدفعة المناسبة التالية ليست إضافة شكل جديد، بل فحص كامل لتبويب المدارس من حساب مدير حقيقي وتثبيت أي زر لا يعمل.
-- إن لم تتوفر جلسة مدير داخل المتصفح الداخلي، اعمل فحصًا برمجيًا وSmoke، واذكر أن الفحص البصري الإداري يحتاج تسجيل دخول مدير.
-- لا توسع لوحة المشرف بكلام كثير؛ المطلوب إمكانيات كبيرة بعرض بسيط.
-- أي تحسين جديد في الإدارة يجب أن يخدم التعاقد مع المدارس: متابعة الطلاب، تقارير مجمعة وفردية، تصدير، توجيه اختبار، ومراسلة.
+1. Recovery Gate = PASS.
+2. Phase + Handover Gate = PASS.
+3. Public UI Gate = PASS على Desktop + Mobile.
+4. Live Role Gate = PASS للحسابات التجريبية المطلوبة أو يتم توثيق أي Blocker خارجي بوضوح.
+5. لا توجد Runtime errors حرجة مرتبطة بالتغييرات.
+6. Preview للفرع ناجح عند وجود تغييرات deployable.
+7. PR يظل Draft حتى اكتمال الأدلة والموافقة الصريحة على الدمج.
 
-## حالة التسليم الآن
-
-المشروع ليس “جاهزًا نظريًا لـ 10,000 طالب” بمجرد الكود. الكود أصبح أقرب وأكثر تنظيمًا، لكن الاعتماد الحقيقي يحتاج:
-
-- Redis مفعل في الإنتاج.
-- Render backend بعدة instances عند الحاجة.
-- MongoDB Atlas tier مناسب ومراقب.
-- اختبار ضغط موثق.
-- مراقبة أخطاء وإشعارات.
-
-حتى الآن يمكن اعتباره مناسبًا لتجارب أصغر ومراحل إطلاق تدريجية بعد فحص الحسابات الحقيقية والبيانات الحالية.
+بعد ذلك تبدأ Features جديدة في فروع منفصلة، وليس دفعة تغييرات ضخمة مباشرة على `main`.
