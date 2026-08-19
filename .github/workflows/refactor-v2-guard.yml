@@ -93,6 +93,9 @@ jobs:
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 
+      - name: Content platform integration schema boundary contract
+        run: node scripts/smoke-content-platform-integration-schema-boundary-contract.mjs
+
       - name: School management contract
         run: node scripts/smoke-school-management-contract.mjs
 
@@ -225,13 +228,13 @@ jobs:
       - name: Refactor workflow race-safety contract
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
-      - name: Apply current refactor phase — content learning schemas
+      - name: Apply current refactor phase — content platform integration schemas
         if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/apply-content-learning-schemas.mjs
+        run: node tools/refactor/apply-content-platform-integration-schemas.mjs
 
       - name: Run current refactor phase review
         if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/phase-review-content-learning-schemas.mjs
+        run: node tools/refactor/phase-review-content-platform-integration-schemas.mjs
 
       - name: Commit verified current refactor phase
         if: github.actor != 'github-actions[bot]'
@@ -255,7 +258,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "refactor(content): extract learning content schemas"
+          git commit -m "refactor(content): extract platform integration schemas"
           if git push origin HEAD:refactor/repository-v2-safe; then
             echo "Verified refactor changes pushed successfully."
             exit 0
