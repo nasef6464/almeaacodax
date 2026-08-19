@@ -7,6 +7,9 @@ on:
     paths:
       - 'server/package.json'
       - 'server/package-lock.json'
+      - 'scripts/smoke-database-index-contract.mjs'
+      - 'docs/archive_reports/DATABASE_REVIEW.md'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-mongoose.yml'
   pull_request:
@@ -15,6 +18,9 @@ on:
     paths:
       - 'server/package.json'
       - 'server/package-lock.json'
+      - 'scripts/smoke-database-index-contract.mjs'
+      - 'docs/archive_reports/DATABASE_REVIEW.md'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-mongoose.yml'
 
