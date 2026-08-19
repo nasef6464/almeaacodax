@@ -13,17 +13,6 @@ on:
       - 'tools/refactor/apply-dashboard-path-progress.mjs'
       - 'tools/refactor/phase-review-dashboard-path-progress.mjs'
       - '.github/workflows/refactor-v2-dashboard-path-progress.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'pages/Dashboard.tsx'
-      - 'pages/Dashboard/pathProgressProjection.ts'
-      - 'scripts/smoke-dashboard-path-progress-boundary-contract.mjs'
-      - 'scripts/smoke-student-path-scope-contract.mjs'
-      - 'tools/refactor/apply-dashboard-path-progress.mjs'
-      - 'tools/refactor/phase-review-dashboard-path-progress.mjs'
-      - '.github/workflows/refactor-v2-dashboard-path-progress.yml'
 
 permissions:
   contents: write
