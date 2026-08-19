@@ -207,6 +207,36 @@ jobs:
       - name: Payment provider readiness
         run: npm run smoke:payment-providers
 
+  admin-data-integrity:
+    name: Admin + data integrity regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Student path scope
+        run: npm run smoke:student-path-scope
+      - name: Direct unlock cleanup
+        run: npm run smoke:direct-unlock-cleanup
+      - name: AI config bridge
+        run: npm run smoke:ai-config-bridge
+      - name: Course data repair contract
+        run: npm run smoke:batch100e-course-data-repair
+      - name: School student pagination
+        run: npm run smoke:batch100g-school-student-pagination
+      - name: Group creation scope
+        run: npm run smoke:batch100h-group-create-scope
+      - name: Admin dashboard functional QA
+        run: npm run smoke:batch100i-admin-dashboard-functional-qa
+      - name: Admin CRUD course linkage
+        run: npm run smoke:batch100o-admin-crud-course-linkage
+      - name: Question bank CRUD contract
+        run: npm run smoke:batch100p-question-bank-crud
+
   production-readiness:
     name: Production readiness contracts
     runs-on: ubuntu-latest
