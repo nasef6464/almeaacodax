@@ -1592,6 +1592,8 @@ ${JSON.stringify(targetSkills)}
 
 aiRouter.post(
   "/question",
+  requireAuth,
+  requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const { topic } = questionSchema.parse(req.body);
     const fallback = {

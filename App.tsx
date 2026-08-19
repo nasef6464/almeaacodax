@@ -945,7 +945,7 @@ const App: React.FC = () => {
                   <Route path="/live-sessions" element={<RequireAuth><LiveSessions /></RequireAuth>} />
                   <Route path="/live-sessions/:lessonId" element={<RequireAuth><LiveSessionLobby /></RequireAuth>} />
                   <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-                  <Route path="/admin/quiz-gen" element={<QuizGenerator />} />
+                  <Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />
                   <Route path="/achievements" element={<Achievements />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />

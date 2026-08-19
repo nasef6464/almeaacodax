@@ -7,6 +7,8 @@ const files = {
   redis: await readFile(new URL("../server/src/config/redis.ts", import.meta.url), "utf8"),
   rateLimiters: await readFile(new URL("../server/src/middleware/rateLimiters.ts", import.meta.url), "utf8"),
   app: await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8"),
+  clientApp: await readFile(new URL("../App.tsx", import.meta.url), "utf8"),
+  aiRoutes: await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8"),
   auth: await readFile(new URL("../server/src/middleware/auth.ts", import.meta.url), "utf8"),
   sockets: await readFile(new URL("../server/src/sockets/index.ts", import.meta.url), "utf8"),
   securityChecklist: await readFile(new URL("../docs/archive_reports/SECURITY_CHECKLIST.md", import.meta.url), "utf8"),
@@ -59,6 +61,10 @@ check("RBAC middleware verifies current user state from MongoDB", () => {
   assertIncludes(files.auth, "!allowedRoles.includes(req.authUser.role)");
 });
 
+check("AI question generation is staff-only in UI and API", () => {
+  assertIncludes(files.clientApp, `<Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />`);
+  assertIncludes(files.aiRoutes, 'aiRouter.post(\n  "/question",\n  requireAuth,\n  requireRole(["admin", "teacher", "supervisor"]),');
+});
 check("security documents cover phase six controls", () => {
   assertIncludes(files.securityChecklist, "Redis-backed distributed storage");
   assertIncludes(files.securityChecklist, "requireRole");
