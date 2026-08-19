@@ -99,6 +99,9 @@ jobs:
       - name: Content platform presentation schema boundary contract
         run: node scripts/smoke-content-platform-presentation-schema-boundary-contract.mjs
 
+      - name: Content school operations schema boundary contract
+        run: node scripts/smoke-content-school-operations-schema-boundary-contract.mjs
+
       - name: School management contract
         run: node scripts/smoke-school-management-contract.mjs
 
@@ -231,13 +234,13 @@ jobs:
       - name: Refactor workflow race-safety contract
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
-      - name: Apply current refactor phase — content platform presentation schemas
+      - name: Apply current refactor phase — content school operations schemas
         if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/apply-content-platform-presentation-schemas.mjs
+        run: node tools/refactor/apply-content-school-operations-schemas.mjs
 
       - name: Run current refactor phase review
         if: github.actor != 'github-actions[bot]'
-        run: node tools/refactor/phase-review-content-platform-presentation-schemas.mjs
+        run: node tools/refactor/phase-review-content-school-operations-schemas.mjs
 
       - name: Commit verified current refactor phase
         if: github.actor != 'github-actions[bot]'
@@ -261,7 +264,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "refactor(content): extract platform presentation schemas"
+          git commit -m "refactor(content): extract school operations schemas"
           if git push origin HEAD:refactor/repository-v2-safe; then
             echo "Verified refactor changes pushed successfully."
             exit 0
