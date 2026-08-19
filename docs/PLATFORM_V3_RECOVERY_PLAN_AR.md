@@ -26,9 +26,11 @@
 - لا Runtime Errors ظهرت في فحص Vercel الأخير.
 
 ## تقدم Recovery Gate
-- Core build + architecture: PASS على آخر جولة مكتملة قبل آخر إصلاحين، وسيعاد على checkpoint الحالي.
+- Recovery Gate #40: PASS كامل على checkpoint `92201af4dd242a9611c281b8d08255ba0ba7ed94`.
+- Core build + architecture: PASS.
 - Student + assessment regression: PASS.
 - Auth + security regression: PASS.
+- Admin + schools + reports + payments: PASS.
 - Production readiness contracts: PASS.
 - Mock Exams / School Portal / Exam Question Source / Quiz Access: العقود القديمة تم تحديثها لتطابق المالك والسلوك الحالي بدل إعطاء إنذارات كاذبة.
 - `smoke:frontend:strict` أُخرج من PR CI لأنه يقارن commit الفرع مع Production المنشور؛ يظل Post-Deploy check فقط.
@@ -46,6 +48,13 @@
 - commit: `64a665e28626b41b21b55d7c529fc5209f643d14`.
 - verified before commit: package/course split PASS + payment-package PASS + payment-tampering PASS + frontend typecheck PASS + API typecheck PASS + production build PASS + guarded one-file patch PASS.
 
+### CI issue #1 — docs-only Vercel preview false negative — REPAIR IN VERIFICATION
+- Safety baseline نفسه PASS بالكامل.
+- Vercel أنشأ Preview READY للـruntime commit `64a665e28626b41b21b55d7c529fc5209f643d14`.
+- الـcheckpoint اللاحق كان تغييرات `docs/**` / `.github/**` فقط، ولذلك لم يظهر status exact-head جديد بينما بوابة Safety القديمة انتظرته حتى timeout.
+- تم تجهيز guarded repair يسمح بالرجوع لأقرب Vercel-ready ancestor فقط إذا كان الفرق حتى الـHead محصورًا في `docs/**` و`.github/**`.
+- أي تغيير deployable خارج هذين المسارين يظل مطالبًا بـ exact-head Preview ولا يقبل fallback.
+
 ## مصفوفة الاستعادة الوظيفية
 
 ### 1. Production / Infrastructure
@@ -53,6 +62,7 @@
 - [x] Backend health
 - [x] Database connectivity
 - [x] Redis readiness
+- [x] Full static Recovery Gate
 - [ ] Production runtime observation بعد استخدام فعلي لكل الأدوار
 
 ### 2. Visitor / Public
@@ -124,7 +134,7 @@
 
 ## ترتيب التنفيذ
 1. Keep the Platform V3 read-only regression gate green after every recovery fix.
-2. Continue peeling the admin / package / navigation contracts until the full static gate is green.
+2. Expand static coverage to remaining content/admin/product contracts not yet in Recovery Gate.
 3. Complete live role journeys using dedicated test accounts when an authenticated browser/POST-capable runner is available.
 4. Record every defect as BLOCKER / HIGH / MEDIUM / LOW.
 5. Fix one defect group at a time on the recovery branch.
