@@ -62,13 +62,13 @@ jobs:
           npm --prefix server audit --omit=dev --json > /tmp/server-prod-before.json || true
           node tools/refactor/dependency-audit-summary.mjs server-production-before /tmp/server-prod-before.json
 
-      - name: Update only express-rate-limit lock resolution
+      - name: Update only express-rate-limit-owned ip-address lock resolution
         if: github.actor != 'github-actions[bot]'
         shell: bash
         run: |
           set -euo pipefail
           cp server/package.json /tmp/server-package.json.before
-          npm --prefix server update --package-lock-only express-rate-limit
+          npm --prefix server update --package-lock-only ip-address
           cmp --silent server/package.json /tmp/server-package.json.before || {
             echo "server/package.json changed during lock-only remediation; refusing scope expansion." >&2
             git diff -- server/package.json
@@ -90,14 +90,16 @@ jobs:
       - name: Install exact remediated API dependencies
         run: npm --prefix server ci
 
-      - name: Explain remediated rate-limit tree
+      - name: Verify ip-address remains express-rate-limit-owned
         shell: bash
         run: |
-          set -uo pipefail
-          echo '===== EXPRESS-RATE-LIMIT ====='
-          npm --prefix server explain express-rate-limit || true
-          echo '===== IP-ADDRESS ====='
-          npm --prefix server explain ip-address || true
+          set -euo pipefail
+          IP_EXPLAIN="$(npm --prefix server explain ip-address 2>&1 || true)"
+          printf '%s\n' "$IP_EXPLAIN"
+          printf '%s' "$IP_EXPLAIN" | grep -F 'express-rate-limit@' >/dev/null || {
+            echo "ip-address is no longer resolved through express-rate-limit; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
 
       - name: API typecheck
         run: npm run server:check
@@ -131,7 +133,7 @@ jobs:
           CHANGED="$(git diff --name-only)"
           echo "$CHANGED"
           if [ -z "$CHANGED" ]; then
-            echo "express-rate-limit tree is already clean; no lockfile remediation is required."
+            echo "express-rate-limit ip-address tree is already clean; no lockfile remediation is required."
             exit 0
           fi
           if [ "$CHANGED" != "server/package-lock.json" ]; then
