@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Sentry Brace Expansion
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -15,21 +16,6 @@ on:
       - 'scripts/smoke-runtime-source-contract.mjs'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-sentry-brace-expansion.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/package.json'
-      - 'server/package-lock.json'
-      - 'server/src/config/sentry.ts'
-      - 'server/src/app.ts'
-      - 'scripts/smoke-sentry-runtime-contract.mjs'
-      - 'scripts/smoke-monitoring-contract.mjs'
-      - 'scripts/smoke-api-security-contract.mjs'
-      - 'scripts/smoke-runtime-source-contract.mjs'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-sentry-brace-expansion.yml'
-
 permissions:
   contents: write
 

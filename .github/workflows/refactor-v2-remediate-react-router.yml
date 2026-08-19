@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate React Router
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -10,16 +11,6 @@ on:
       - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-react-router.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'package-lock.json'
-      - 'scripts/smoke-auth-frontend-contract.mjs'
-      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-react-router.yml'
-
 permissions:
   contents: write
 

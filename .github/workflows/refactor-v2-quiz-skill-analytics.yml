@@ -1,6 +1,7 @@
 name: Refactor V2 Quiz Skill Analytics
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -16,22 +17,6 @@ on:
       - 'tools/refactor/apply-quiz-skill-analytics.mjs'
       - 'tools/refactor/phase-review-quiz-skill-analytics.mjs'
       - '.github/workflows/refactor-v2-quiz-skill-analytics.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/src/routes/quiz.routes.ts'
-      - 'server/src/modules/quizzes/analytics/skillAnalytics.ts'
-      - 'scripts/smoke-quiz-question-query-schema-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-definition-schema-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-submission-schema-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-question-presentation-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-skill-analytics-boundary-contract.mjs'
-      - 'scripts/smoke-reports-role-contract.mjs'
-      - 'tools/refactor/apply-quiz-skill-analytics.mjs'
-      - 'tools/refactor/phase-review-quiz-skill-analytics.mjs'
-      - '.github/workflows/refactor-v2-quiz-skill-analytics.yml'
-
 permissions:
   contents: write
 

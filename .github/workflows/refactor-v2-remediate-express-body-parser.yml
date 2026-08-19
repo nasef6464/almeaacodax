@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Express Body Parser
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -14,20 +15,6 @@ on:
       - 'scripts/smoke-runtime-source-contract.mjs'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-express-body-parser.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/package.json'
-      - 'server/package-lock.json'
-      - 'server/src/app.ts'
-      - 'scripts/smoke-api-security-contract.mjs'
-      - 'scripts/smoke-auth-login-security-contract.mjs'
-      - 'scripts/smoke-nosql-sanitizer-contract.mjs'
-      - 'scripts/smoke-runtime-source-contract.mjs'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-express-body-parser.yml'
-
 permissions:
   contents: write
 

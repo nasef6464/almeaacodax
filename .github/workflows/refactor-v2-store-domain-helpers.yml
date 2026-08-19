@@ -12,17 +12,6 @@ on:
       - 'tools/refactor/apply-store-domain-helpers.mjs'
       - 'tools/refactor/phase-review-store-domain-helpers.mjs'
       - '.github/workflows/refactor-v2-store-domain-helpers.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'store/useStore.ts'
-      - 'store/storeDomainHelpers.ts'
-      - 'scripts/smoke-store-domain-helpers-boundary-contract.mjs'
-      - 'tools/refactor/apply-store-domain-helpers.mjs'
-      - 'tools/refactor/phase-review-store-domain-helpers.mjs'
-      - '.github/workflows/refactor-v2-store-domain-helpers.yml'
-
 permissions:
   contents: write
 

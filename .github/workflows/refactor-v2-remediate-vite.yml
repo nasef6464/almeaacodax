@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Vite
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -12,18 +13,6 @@ on:
       - 'scripts/smoke-deployment-cache-contract.mjs'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-vite.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'vite.config.ts'
-      - 'scripts/smoke-performance-contract.mjs'
-      - 'scripts/smoke-deployment-cache-contract.mjs'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-vite.yml'
-
 permissions:
   contents: write
 

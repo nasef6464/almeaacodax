@@ -1,6 +1,7 @@
 name: Refactor V2 Quiz Definition Schema
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -12,18 +13,6 @@ on:
       - 'tools/refactor/apply-quiz-definition-schema.mjs'
       - 'tools/refactor/phase-review-quiz-definition-schema.mjs'
       - '.github/workflows/refactor-v2-quiz-definition-schema.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/src/routes/quiz.routes.ts'
-      - 'server/src/modules/quizzes/http/quizDefinitionSchema.ts'
-      - 'scripts/smoke-quiz-definition-schema-boundary-contract.mjs'
-      - 'scripts/smoke-performance-contract.mjs'
-      - 'tools/refactor/apply-quiz-definition-schema.mjs'
-      - 'tools/refactor/phase-review-quiz-definition-schema.mjs'
-      - '.github/workflows/refactor-v2-quiz-definition-schema.yml'
-
 permissions:
   contents: write
 

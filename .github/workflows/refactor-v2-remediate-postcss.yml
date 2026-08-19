@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate PostCSS
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -14,20 +15,6 @@ on:
       - 'scripts/smoke-typography-contract.mjs'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-postcss.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'postcss.config.cjs'
-      - 'tailwind.config.cjs'
-      - 'styles/main.css'
-      - 'scripts/smoke-performance-contract.mjs'
-      - 'scripts/smoke-typography-contract.mjs'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-postcss.yml'
-
 permissions:
   contents: write
 

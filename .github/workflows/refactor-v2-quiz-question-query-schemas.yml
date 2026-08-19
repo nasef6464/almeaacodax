@@ -1,6 +1,7 @@
 name: Refactor V2 Quiz Question Query Schemas
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -12,18 +13,6 @@ on:
       - 'tools/refactor/apply-quiz-question-query-schemas.mjs'
       - 'tools/refactor/phase-review-quiz-question-query-schemas.mjs'
       - '.github/workflows/refactor-v2-quiz-question-query-schemas.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/src/routes/quiz.routes.ts'
-      - 'server/src/modules/quizzes/http/questionQuerySchemas.ts'
-      - 'scripts/smoke-quiz-question-query-schema-boundary-contract.mjs'
-      - 'scripts/smoke-my-quizzes-contract.mjs'
-      - 'tools/refactor/apply-quiz-question-query-schemas.mjs'
-      - 'tools/refactor/phase-review-quiz-question-query-schemas.mjs'
-      - '.github/workflows/refactor-v2-quiz-question-query-schemas.yml'
-
 permissions:
   contents: write
 

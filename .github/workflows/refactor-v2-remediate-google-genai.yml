@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Google GenAI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -16,22 +17,6 @@ on:
       - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-google-genai.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'services/ai.ts'
-      - 'services/ai/**'
-      - 'scripts/smoke-ai-config-bridge-contract.mjs'
-      - 'scripts/smoke-integrations-runtime-contract.mjs'
-      - 'scripts/smoke-monitoring-contract.mjs'
-      - 'docs/archive_reports/MONITORING_AND_LOGGING_GUIDE.md'
-      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-google-genai.yml'
-
 permissions:
   contents: write
 

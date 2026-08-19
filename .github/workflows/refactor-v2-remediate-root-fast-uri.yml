@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Root Fast URI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -14,20 +15,6 @@ on:
       - 'scripts/smoke-runtime-source-contract.mjs'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-root-fast-uri.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'vite.config.*'
-      - 'scripts/smoke-performance-contract.mjs'
-      - 'scripts/smoke-deployment-cache-contract.mjs'
-      - 'scripts/smoke-route-loading-contract.mjs'
-      - 'scripts/smoke-runtime-source-contract.mjs'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-root-fast-uri.yml'
-
 permissions:
   contents: write
 

@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Socket.IO
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -17,23 +18,6 @@ on:
       - 'docs/archive_reports/06_07_SECURITY_RBAC_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-socket-io.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/package.json'
-      - 'server/package-lock.json'
-      - 'server/src/sockets/**'
-      - 'server/src/config/redis.ts'
-      - 'scripts/smoke-security-rbac-phase6-contract.mjs'
-      - 'scripts/smoke-notification-contract.mjs'
-      - 'scripts/smoke-notification-phase10-contract.mjs'
-      - 'docs/archive_reports/SECURITY_CHECKLIST.md'
-      - 'docs/archive_reports/RBAC_MATRIX.md'
-      - 'docs/archive_reports/06_07_SECURITY_RBAC_REPORT.md'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-socket-io.yml'
-
 permissions:
   contents: write
 

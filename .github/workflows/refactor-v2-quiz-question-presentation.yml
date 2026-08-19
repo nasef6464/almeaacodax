@@ -1,6 +1,7 @@
 name: Refactor V2 Quiz Question Presentation
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -15,21 +16,6 @@ on:
       - 'tools/refactor/apply-quiz-question-presentation.mjs'
       - 'tools/refactor/phase-review-quiz-question-presentation.mjs'
       - '.github/workflows/refactor-v2-quiz-question-presentation.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/src/routes/quiz.routes.ts'
-      - 'server/src/modules/quizzes/presentation/questionPresentation.ts'
-      - 'scripts/smoke-quiz-question-query-schema-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-definition-schema-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-submission-schema-boundary-contract.mjs'
-      - 'scripts/smoke-quiz-question-presentation-boundary-contract.mjs'
-      - 'scripts/smoke-question-html-security-contract.mjs'
-      - 'tools/refactor/apply-quiz-question-presentation.mjs'
-      - 'tools/refactor/phase-review-quiz-question-presentation.mjs'
-      - '.github/workflows/refactor-v2-quiz-question-presentation.yml'
-
 permissions:
   contents: write
 

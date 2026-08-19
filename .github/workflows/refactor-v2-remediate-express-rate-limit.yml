@@ -1,6 +1,7 @@
 name: Refactor V2 Remediate Express Rate Limit
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
@@ -14,20 +15,6 @@ on:
       - 'scripts/smoke-auth-login-security-contract.mjs'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-express-rate-limit.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/package.json'
-      - 'server/package-lock.json'
-      - 'server/src/middleware/rateLimiters.ts'
-      - 'server/src/config/redis.ts'
-      - 'scripts/smoke-security-rbac-phase6-contract.mjs'
-      - 'scripts/smoke-api-security-contract.mjs'
-      - 'scripts/smoke-auth-login-security-contract.mjs'
-      - 'tools/refactor/assert-audit-packages-clean.mjs'
-      - '.github/workflows/refactor-v2-remediate-express-rate-limit.yml'
-
 permissions:
   contents: write
 
