@@ -27,8 +27,8 @@ import { createNotificationDeliveries } from "../services/notificationService.js
 import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
+import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
 
-const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
@@ -106,53 +106,6 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
     sectionId: query.sectionId || "",
     skillId: query.skillId || "",
   });
-
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-
-const toQuestionSummaryText = (value: unknown) => {
-  const raw = typeof value === "string" ? value : "";
-  const withoutDangerousBlocks = raw
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<script[\s\S]*?<\/script>/gi, " ");
-  const plain = withoutDangerousBlocks
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const summaryText = plain.length > QUESTION_SUMMARY_TEXT_LIMIT
-    ? `${plain.slice(0, QUESTION_SUMMARY_TEXT_LIMIT).trim()}...`
-    : plain;
-  const inlineMedia = withoutDangerousBlocks.match(/<img\b[^>]*\/?>|<svg\b[\s\S]*?<\/svg>|<table\b[\s\S]*?<\/table>/i)?.[0] || "";
-
-  if (inlineMedia) {
-    return `${summaryText ? `<p>${escapeHtml(summaryText)}</p>` : ""}${inlineMedia}`.trim();
-  }
-
-  return summaryText;
-};
-
-const sanitizeQuestionForLearner = (question: Record<string, any>) => {
-  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
-  return safeQuestion;
-};
-
-const isQuestionContentUsable = (question: any) => {
-  const hasText = String(question?.text || "").trim().length > 0;
-  const hasImage = String(question?.imageUrl || "").trim().length > 0;
-  if (!hasText && !hasImage) return false;
-
-  const type = String(question?.type || "mcq");
-  if (type === "mcq" || type === "true_false") {
-    return Array.isArray(question?.options) && question.options.length >= 2;
-  }
-  return true;
-};
 
 const validateQuizQuestionIntegrity = async (quizLike: any) => {
   const normalizedIds = uniqueStrings(getQuizQuestionIds(quizLike).map((value) => String(value || "").trim()).filter(Boolean));
