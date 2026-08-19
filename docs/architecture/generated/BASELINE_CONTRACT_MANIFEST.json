@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-17T21:08:20.317Z",
-  "gitHead": "c48bd1052586a9ab3270697711badf98a68026fa",
+  "generatedAt": "2026-08-19T03:39:43.125Z",
+  "gitHead": "82165aeba69d7fed3e2a6661259436c5b0c2cce1",
   "frontendRoutes": [
     "*",
     "/",
@@ -1829,7 +1829,7 @@
     "server/src/routes/auth.routes.ts": "837402261d82b8b04e26239ef25da27f24fcc1fdec7962a534c8a352a5b4668d",
     "server/src/routes/backup.routes.ts": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd",
     "server/src/routes/certificates.routes.ts": "9f1168030e263b17f2593b26835f522d64266caeb9e328e0c757936f03cb3c29",
-    "server/src/routes/content.routes.ts": "3749cd0fba8b5aff67d8aa8bf55951243539690a849be82109ac00ea7ea9ca2a",
+    "server/src/routes/content.routes.ts": "ee5fd178d534bb1eb282255842f67585cfa8a83a1f76f986048a72167ee7c212",
     "server/src/routes/course.routes.ts": "01f95cea96101d401c00bf3beb9442c05620f9c9a6b551734a64388e2b903491",
     "server/src/routes/discussions.routes.ts": "73aa2402cc15ffc059fbd71c747999c22dd2443b2e832794c5cdbfe61d3a4bd7",
     "server/src/routes/health.routes.ts": "e1a99f36ebfab6201e2d4ec413cd40402e3a099eb6620d0a52c2b881cab1e05a",

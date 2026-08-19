@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-17T21:08:20.317Z",
-  "sourceGitHead": "c48bd1052586a9ab3270697711badf98a68026fa",
+  "generatedAt": "2026-08-19T03:39:43.125Z",
+  "sourceGitHead": "82165aeba69d7fed3e2a6661259436c5b0c2cce1",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -437,8 +437,20 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/accessCodeViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/accessCodeViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/contracts.ts",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/contracts.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/dataAdapters.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/dataAdapters.ts",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -449,8 +461,110 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/exportHelpers.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/exportHelpers.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/importFileReaders.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/importRowParsing.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/importRowParsing.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/packageAccessViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/packageAccessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/readinessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/relationshipViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/rosterViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolClassesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/SchoolImportPanel.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolImportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPackageCard.tsx",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -461,8 +575,86 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolReportsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/workspaceViewModel.ts",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -715,6 +907,144 @@
     {
       "source": "pages/Reports.tsx",
       "target": "apps/web/src/features/reports/Reports.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+      "target": "apps/web/src/features/quizzes/Reports/directedQuizAnalyticsViewModel.ts",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/institutionalReportViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/institutionalReportViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/recommendationViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/recommendationViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/reportDomain.ts",
+      "target": "apps/web/src/features/reports/Reports/reportDomain.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/reportTypes.ts",
+      "target": "apps/web/src/features/reports/Reports/reportTypes.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedAnalyticsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedAnalyticsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedComparisonViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedComparisonViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedExportRowsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedExportRowsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedRemediationFallbackViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedRemediationFallbackViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedSkillReportViewModel.ts",
+      "target": "apps/web/src/features/questions/Reports/scopedSkillReportViewModel.ts",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedStudentFocusViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedStudentFocusViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentAnalyticsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentAnalyticsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentEvidenceViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentEvidenceViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentLearningLoopViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentLearningLoopViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentReadinessViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentReadinessViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentRemediationFallbackViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentRemediationFallbackViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentReportActionsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentReportActionsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentReportScopeViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentReportScopeViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/StudentSelectedSkillPanel.tsx",
+      "target": "apps/web/src/features/questions/Reports/StudentSelectedSkillPanel.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentSkillRowsViewModel.ts",
+      "target": "apps/web/src/features/questions/Reports/studentSkillRowsViewModel.ts",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/StudentSmartRemediationPanel.tsx",
+      "target": "apps/web/src/features/reports/Reports/StudentSmartRemediationPanel.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+      "target": "apps/web/src/features/reports/Reports/StudentWeeklyPlanPanel.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentWeeklyPlanViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentWeeklyPlanViewModel.ts",
       "domain": "reports",
       "confidence": "candidate"
     },
@@ -1130,6 +1460,36 @@
       "source": "server/src/modules/auth/domain/auth-user.ts",
       "target": "apps/api/src/modules/auth/domain/auth-user.ts",
       "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/learningContentSchemas.ts",
+      "target": "apps/api/src/modules/content/http/learningContentSchemas.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/platformIntegrationSchemas.ts",
+      "target": "apps/api/src/modules/content/http/platformIntegrationSchemas.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/platformPresentationSchemas.ts",
+      "target": "apps/api/src/modules/content/http/platformPresentationSchemas.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/schoolOperationsSchemas.ts",
+      "target": "apps/api/src/modules/content/http/schoolOperationsSchemas.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/studyPlanSchemas.ts",
+      "target": "apps/api/src/modules/content/http/studyPlanSchemas.ts",
+      "domain": "content",
       "confidence": "review-required"
     },
     {

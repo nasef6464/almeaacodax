@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-17T21:08:21.056Z",
+  "generatedAt": "2026-08-19T03:39:43.947Z",
   "summary": {
-    "scannedScriptFiles": 149,
-    "sourceCoupledScripts": 74,
-    "sourceCoupledReferences": 602,
-    "sourceCoupledTargets": 110,
-    "relativeNewUrlTargets": 222,
+    "scannedScriptFiles": 248,
+    "sourceCoupledScripts": 137,
+    "sourceCoupledReferences": 969,
+    "sourceCoupledTargets": 218,
+    "relativeNewUrlTargets": 270,
     "missingRelativeNewUrlTargets": 25
   },
   "sourceCoupledScripts": [
@@ -396,17 +396,62 @@
         {
           "value": "dashboards/admin/SchoolsManager.tsx",
           "target": "dashboards/admin/SchoolsManager.tsx",
-          "line": 13
+          "line": 14
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "line": 15
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+          "line": 16
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+          "line": 17
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+          "line": 18
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "line": 19
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+          "line": 20
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+          "line": 21
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+          "line": 22
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+          "line": 23
         },
         {
           "value": "dashboards/admin/SchoolPortalManager.tsx",
           "target": "dashboards/admin/SchoolPortalManager.tsx",
-          "line": 14
+          "line": 25
         },
         {
           "value": "dashboards/admin/UsersManager.tsx",
           "target": "dashboards/admin/UsersManager.tsx",
-          "line": 15
+          "line": 26
         }
       ]
     },
@@ -774,34 +819,44 @@
           "line": 57
         },
         {
+          "value": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "line": 61
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+          "line": 64
+        },
+        {
           "value": "dashboards/admin/AdminDashboard.tsx",
           "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 64
+          "line": 68
         },
         {
           "value": "dashboards/admin/SchoolsManager.tsx",
           "target": "dashboards/admin/SchoolsManager.tsx",
-          "line": 76
+          "line": 80
         },
         {
           "value": "store/useStore.ts",
           "target": "store/useStore.ts",
-          "line": 86
+          "line": 90
         },
         {
           "value": "dashboards/admin/UsersManager.tsx",
           "target": "dashboards/admin/UsersManager.tsx",
-          "line": 93
+          "line": 97
         },
         {
           "value": "dashboards/admin/FinancialManager.tsx",
           "target": "dashboards/admin/FinancialManager.tsx",
-          "line": 97
+          "line": 101
         },
         {
           "value": "services/api.ts",
           "target": "services/api.ts",
-          "line": 103
+          "line": 107
         }
       ]
     },
@@ -1136,57 +1191,147 @@
         {
           "value": "../pages/Reports.tsx",
           "target": "pages/Reports.tsx",
-          "line": 10
+          "line": 11
+        },
+        {
+          "value": "../pages/Reports/reportDomain.ts",
+          "target": "pages/Reports/reportDomain.ts",
+          "line": 12
+        },
+        {
+          "value": "../pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 13
+        },
+        {
+          "value": "../pages/Reports/studentAnalyticsViewModel.ts",
+          "target": "pages/Reports/studentAnalyticsViewModel.ts",
+          "line": 14
+        },
+        {
+          "value": "../pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 15
+        },
+        {
+          "value": "../pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "line": 16
+        },
+        {
+          "value": "../pages/Reports/StudentSmartRemediationPanel.tsx",
+          "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "line": 17
+        },
+        {
+          "value": "../pages/Reports/StudentSelectedSkillPanel.tsx",
+          "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "line": 18
+        },
+        {
+          "value": "../pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 19
+        },
+        {
+          "value": "../pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 20
+        },
+        {
+          "value": "../pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 21
+        },
+        {
+          "value": "../pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 22
+        },
+        {
+          "value": "../pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/scopedAnalyticsViewModel.ts",
+          "target": "pages/Reports/scopedAnalyticsViewModel.ts",
+          "line": 24
+        },
+        {
+          "value": "../pages/Reports/scopedComparisonViewModel.ts",
+          "target": "pages/Reports/scopedComparisonViewModel.ts",
+          "line": 25
+        },
+        {
+          "value": "../pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "target": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "line": 26
+        },
+        {
+          "value": "../pages/Reports/institutionalReportViewModel.ts",
+          "target": "pages/Reports/institutionalReportViewModel.ts",
+          "line": 27
+        },
+        {
+          "value": "../pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "line": 28
+        },
+        {
+          "value": "../pages/Reports/scopedSkillReportViewModel.ts",
+          "target": "pages/Reports/scopedSkillReportViewModel.ts",
+          "line": 29
         },
         {
           "value": "../pages/Plan.tsx",
           "target": "pages/Plan.tsx",
-          "line": 11
+          "line": 31
         },
         {
           "value": "../pages/Pricing.tsx",
           "target": "pages/Pricing.tsx",
-          "line": 12
+          "line": 32
         },
         {
           "value": "../components/PaymentModal.tsx",
           "target": "components/PaymentModal.tsx",
-          "line": 13
+          "line": 33
         },
         {
           "value": "../pages/Landing.tsx",
           "target": "pages/Landing.tsx",
-          "line": 14
+          "line": 34
         },
         {
           "value": "../dashboards/admin/AdminDashboard.tsx",
           "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 15
+          "line": 35
         },
         {
           "value": "import { EmptyState } from '../components/ui/EmptyState'",
           "target": "import { EmptyState } from '../components/ui/EmptyState'",
-          "line": 60
+          "line": 79
         },
         {
           "value": "import { EmptyState } from '../components/ui/EmptyState'",
           "target": "import { EmptyState } from '../components/ui/EmptyState'",
-          "line": 98
+          "line": 120
         },
         {
           "value": "import { EmptyState } from '../components/ui/EmptyState'",
           "target": "import { EmptyState } from '../components/ui/EmptyState'",
-          "line": 99
+          "line": 121
         },
         {
           "value": "import { EmptyState } from '../components/ui/EmptyState'",
           "target": "import { EmptyState } from '../components/ui/EmptyState'",
-          "line": 100
+          "line": 122
         },
         {
           "value": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
           "target": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
-          "line": 134
+          "line": 156
         }
       ]
     },
@@ -1336,32 +1481,32 @@
         {
           "value": "pages/Landing.tsx",
           "target": "pages/Landing.tsx",
-          "line": 61
+          "line": 63
         },
         {
           "value": "pages/Landing.tsx",
           "target": "pages/Landing.tsx",
-          "line": 62
+          "line": 64
         },
         {
           "value": "contexts/AuthContext.tsx",
           "target": "contexts/AuthContext.tsx",
-          "line": 63
-        },
-        {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
           "line": 65
         },
         {
           "value": "services/api.ts",
           "target": "services/api.ts",
-          "line": 66
+          "line": 67
         },
         {
           "value": "services/api.ts",
           "target": "services/api.ts",
-          "line": 67
+          "line": 68
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 69
         }
       ]
     },
@@ -1641,12 +1786,22 @@
         {
           "value": "dashboards/admin/SchoolsManager.tsx",
           "target": "dashboards/admin/SchoolsManager.tsx",
-          "line": 8
+          "line": 9
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+          "line": 11
         },
         {
           "value": "dashboards/admin/FinancialManager.tsx",
           "target": "dashboards/admin/FinancialManager.tsx",
-          "line": 9
+          "line": 13
         }
       ]
     },
@@ -1834,8 +1989,8 @@
           "line": 70
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "pages/Reports/reportDomain.ts",
+          "target": "pages/Reports/reportDomain.ts",
           "line": 71
         },
         {
@@ -1849,23 +2004,23 @@
           "line": 73
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "pages/Reports/studentAnalyticsViewModel.ts",
+          "target": "pages/Reports/studentAnalyticsViewModel.ts",
           "line": 74
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
           "line": 75
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
           "line": 76
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
           "line": 77
         },
         {
@@ -1894,8 +2049,8 @@
           "line": 82
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
           "line": 83
         },
         {
@@ -1909,13 +2064,13 @@
           "line": 85
         },
         {
-          "value": "dashboards/admin/QuizzesManager.tsx",
-          "target": "dashboards/admin/QuizzesManager.tsx",
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
           "line": 86
         },
         {
-          "value": "dashboards/admin/QuizzesManager.tsx",
-          "target": "dashboards/admin/QuizzesManager.tsx",
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
           "line": 87
         },
         {
@@ -1924,68 +2079,78 @@
           "line": 88
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "target": "dashboards/admin/QuizzesManager.tsx",
           "line": 89
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "target": "dashboards/admin/QuizzesManager.tsx",
           "line": 90
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "target": "dashboards/admin/QuizzesManager.tsx",
           "line": 91
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "target": "dashboards/admin/QuizzesManager.tsx",
           "line": 92
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/UnifiedQuizBuilder.tsx",
+          "target": "dashboards/admin/UnifiedQuizBuilder.tsx",
           "line": 93
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/UnifiedQuizBuilder.tsx",
+          "target": "dashboards/admin/UnifiedQuizBuilder.tsx",
           "line": 94
         },
         {
-          "value": "pages/Reports.tsx",
-          "target": "pages/Reports.tsx",
+          "value": "dashboards/admin/UnifiedQuizBuilder.tsx",
+          "target": "dashboards/admin/UnifiedQuizBuilder.tsx",
           "line": 95
         },
         {
-          "value": "dashboards/admin/QuizzesManager.tsx",
-          "target": "dashboards/admin/QuizzesManager.tsx",
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
           "line": 96
         },
         {
-          "value": "dashboards/admin/QuizzesManager.tsx",
-          "target": "dashboards/admin/QuizzesManager.tsx",
+          "value": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
           "line": 97
         },
         {
-          "value": "utils/xlsxLoader.ts",
-          "target": "utils/xlsxLoader.ts",
+          "value": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "line": 98
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
           "line": 99
         },
         {
-          "value": "dashboards/admin/UsersManager.tsx",
-          "target": "dashboards/admin/UsersManager.tsx",
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 100
+        },
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
           "line": 101
         },
         {
-          "value": "dashboards/admin/SchoolsManager.tsx",
-          "target": "dashboards/admin/SchoolsManager.tsx",
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
           "line": 102
         },
         {
-          "value": "dashboards/admin/SchoolPortalManager.tsx",
-          "target": "dashboards/admin/SchoolPortalManager.tsx",
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "target": "dashboards/admin/QuizzesManager.tsx",
           "line": 103
         },
         {
@@ -1994,104 +2159,99 @@
           "line": 104
         },
         {
+          "value": "utils/xlsxLoader.ts",
+          "target": "utils/xlsxLoader.ts",
+          "line": 106
+        },
+        {
+          "value": "dashboards/admin/UsersManager.tsx",
+          "target": "dashboards/admin/UsersManager.tsx",
+          "line": 108
+        },
+        {
+          "value": "dashboards/admin/SchoolPortalManager.tsx",
+          "target": "dashboards/admin/SchoolPortalManager.tsx",
+          "line": 109
+        },
+        {
+          "value": "dashboards/admin/QuizzesManager.tsx",
+          "target": "dashboards/admin/QuizzesManager.tsx",
+          "line": 110
+        },
+        {
           "value": "dashboards/admin/QuestionBankManager.tsx",
           "target": "dashboards/admin/QuestionBankManager.tsx",
-          "line": 105
+          "line": 111
         },
         {
           "value": "dashboards/admin/LibraryManager.tsx",
           "target": "dashboards/admin/LibraryManager.tsx",
-          "line": 106
+          "line": 112
         },
         {
           "value": "dashboards/admin/LessonsManager.tsx",
           "target": "dashboards/admin/LessonsManager.tsx",
-          "line": 107
+          "line": 113
         },
         {
           "value": "dashboards/admin/GroupsManager.tsx",
           "target": "dashboards/admin/GroupsManager.tsx",
-          "line": 108
+          "line": 114
         },
         {
           "value": "from '../../utils/xlsxLoader';",
           "target": "from '../../utils/xlsxLoader';",
-          "line": 110
-        },
-        {
-          "value": "dashboards/admin/AdminDashboard.tsx",
-          "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 115
-        },
-        {
-          "value": "dashboards/admin/AdminDashboard.tsx",
-          "target": "dashboards/admin/AdminDashboard.tsx",
           "line": 116
         },
         {
-          "value": "dashboards/admin/AdminDashboard.tsx",
-          "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 117
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 120
         },
         {
-          "value": "dashboards/admin/AdminDashboard.tsx",
-          "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 118
-        },
-        {
-          "value": "dashboards/admin/AdminDashboard.tsx",
-          "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 119
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "target": "dashboards/admin/SchoolsManager/importFileReaders.ts",
           "line": 121
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "from '../../../utils/xlsxLoader';",
+          "target": "from '../../../utils/xlsxLoader';",
+          "line": 121
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "target": "dashboards/admin/SchoolsManager/importFileReaders.ts",
           "line": 122
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "target": "dashboards/admin/SchoolsManager/importFileReaders.ts",
           "line": 123
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 124
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "target": "dashboards/admin/AdminDashboard.tsx",
           "line": 125
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "target": "dashboards/admin/AdminDashboard.tsx",
           "line": 126
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "target": "dashboards/admin/AdminDashboard.tsx",
           "line": 127
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "target": "dashboards/admin/AdminDashboard.tsx",
           "line": 128
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "dashboards/admin/AdminDashboard.tsx",
+          "target": "dashboards/admin/AdminDashboard.tsx",
           "line": 129
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 130
         },
         {
           "value": "App.tsx",
@@ -2104,14 +2264,24 @@
           "line": 132
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 133
+          "value": "App.tsx must not block initial data bootstrap for /category routes",
+          "target": "App.tsx must not block initial data bootstrap for /category routes",
+          "line": 136
         },
         {
           "value": "App.tsx",
           "target": "App.tsx",
-          "line": 137
+          "line": 138
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 139
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 140
         },
         {
           "value": "App.tsx",
@@ -2154,293 +2324,263 @@
           "line": 148
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
-          "line": 149
-        },
-        {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
-          "line": 150
-        },
-        {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
-          "line": 151
-        },
-        {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 152
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
-          "line": 153
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 156
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 157
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 158
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 159
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 160
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 161
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 162
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 163
         },
         {
           "value": "services/api.ts",
           "target": "services/api.ts",
-          "line": 154
+          "line": 164
         },
         {
           "value": "services/api.ts",
           "target": "services/api.ts",
-          "line": 155
+          "line": 165
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 166
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 167
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 168
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 169
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 170
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 198
+          "line": 213
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 199
+          "line": 214
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 200
+          "line": 215
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 201
+          "line": 216
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 202
+          "line": 217
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 203
+          "line": 218
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 204
+          "line": 219
         },
         {
           "value": "components/LearningSection.tsx",
           "target": "components/LearningSection.tsx",
-          "line": 205
+          "line": 220
         },
         {
           "value": "pages/GenericPathPage.tsx",
           "target": "pages/GenericPathPage.tsx",
-          "line": 206
+          "line": 221
         },
         {
           "value": "React.lazy(() => import('../components/PaymentModal')",
           "target": "React.lazy(() => import('../components/PaymentModal')",
-          "line": 206
+          "line": 221
         },
         {
           "value": "pages/GenericPathPage.tsx",
           "target": "pages/GenericPathPage.tsx",
-          "line": 207
+          "line": 222
         },
         {
           "value": "import { PaymentModal } from '../components/PaymentModal';",
           "target": "import { PaymentModal } from '../components/PaymentModal';",
-          "line": 207
-        },
-        {
-          "value": "components/MainLayout.tsx",
-          "target": "components/MainLayout.tsx",
-          "line": 208
-        },
-        {
-          "value": "components/MainLayout.tsx",
-          "target": "components/MainLayout.tsx",
-          "line": 209
-        },
-        {
-          "value": "contexts/AuthContext.tsx",
-          "target": "contexts/AuthContext.tsx",
-          "line": 210
-        },
-        {
-          "value": "contexts/AuthContext.tsx",
-          "target": "contexts/AuthContext.tsx",
-          "line": 211
-        },
-        {
-          "value": "contexts/AuthContext.tsx",
-          "target": "contexts/AuthContext.tsx",
-          "line": 212
-        },
-        {
-          "value": "contexts/AuthContext.tsx",
-          "target": "contexts/AuthContext.tsx",
-          "line": 213
-        },
-        {
-          "value": "contexts/AuthContext.tsx",
-          "target": "contexts/AuthContext.tsx",
-          "line": 214
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 215
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 216
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 217
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 218
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 219
-        },
-        {
-          "value": "App.tsx",
-          "target": "App.tsx",
-          "line": 220
-        },
-        {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
-          "line": 221
-        },
-        {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
           "line": 222
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "components/MainLayout.tsx",
+          "target": "components/MainLayout.tsx",
           "line": 223
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "components/MainLayout.tsx",
+          "target": "components/MainLayout.tsx",
           "line": 224
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "contexts/AuthContext.tsx",
+          "target": "contexts/AuthContext.tsx",
           "line": 225
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "contexts/AuthContext.tsx",
+          "target": "contexts/AuthContext.tsx",
           "line": 226
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "contexts/AuthContext.tsx",
+          "target": "contexts/AuthContext.tsx",
           "line": 227
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "contexts/AuthContext.tsx",
+          "target": "contexts/AuthContext.tsx",
           "line": 228
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "contexts/AuthContext.tsx",
+          "target": "contexts/AuthContext.tsx",
           "line": 229
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 230
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 231
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 232
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 233
         },
         {
-          "value": "services/api.ts",
-          "target": "services/api.ts",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 234
         },
         {
-          "value": "components/PlatformFontBootstrap.tsx",
-          "target": "components/PlatformFontBootstrap.tsx",
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 235
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 236
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 237
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 238
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 239
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 240
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 241
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 242
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 243
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 244
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 245
         },
         {
-          "value": "App.tsx",
-          "target": "App.tsx",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
           "line": 246
         },
         {
@@ -2449,14 +2589,89 @@
           "line": 247
         },
         {
-          "value": "store/useStore.ts",
-          "target": "store/useStore.ts",
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 248
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 249
+        },
+        {
+          "value": "components/PlatformFontBootstrap.tsx",
+          "target": "components/PlatformFontBootstrap.tsx",
+          "line": 250
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 251
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 252
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 253
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 254
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 255
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
           "line": 256
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 257
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 258
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 259
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 260
+        },
+        {
+          "value": "App.tsx",
+          "target": "App.tsx",
+          "line": 261
+        },
+        {
+          "value": "services/api.ts",
+          "target": "services/api.ts",
+          "line": 262
         },
         {
           "value": "store/useStore.ts",
           "target": "store/useStore.ts",
-          "line": 257
+          "line": 286
+        },
+        {
+          "value": "store/useStore.ts",
+          "target": "store/useStore.ts",
+          "line": 287
         }
       ]
     },
@@ -2471,27 +2686,27 @@
         {
           "value": "services/api.ts",
           "target": "services/api.ts",
-          "line": 12
+          "line": 13
         },
         {
           "value": "utils/platformFonts.ts",
           "target": "utils/platformFonts.ts",
-          "line": 13
+          "line": 14
         },
         {
           "value": "components/PlatformFontBootstrap.tsx",
           "target": "components/PlatformFontBootstrap.tsx",
-          "line": 14
+          "line": 15
         },
         {
           "value": "dashboards/admin/PlatformFontsManager.tsx",
           "target": "dashboards/admin/PlatformFontsManager.tsx",
-          "line": 15
+          "line": 16
         },
         {
           "value": "dashboards/admin/AdminDashboard.tsx",
           "target": "dashboards/admin/AdminDashboard.tsx",
-          "line": 16
+          "line": 17
         }
       ]
     },
@@ -2896,7 +3111,337 @@
       ]
     },
     {
+      "file": "scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "target": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 74
+        },
+        {
+          "value": "../pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "target": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "line": 83
+        },
+        {
+          "value": "../pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "target": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "line": 84
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-domain-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/reportDomain.ts",
+          "target": "pages/Reports/reportDomain.ts",
+          "line": 8
+        },
+        {
+          "value": "pages/Reports/reportTypes.ts",
+          "target": "pages/Reports/reportTypes.ts",
+          "line": 9
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 55
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 75
+        },
+        {
+          "value": "../pages/Reports/reportDomain.ts",
+          "target": "pages/Reports/reportDomain.ts",
+          "line": 83
+        },
+        {
+          "value": "../pages/Reports/reportDomain.ts",
+          "target": "pages/Reports/reportDomain.ts",
+          "line": 84
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-institutional-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/institutionalReportViewModel.ts",
+          "target": "pages/Reports/institutionalReportViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 76
+        },
+        {
+          "value": "../pages/Reports/institutionalReportViewModel.ts",
+          "target": "pages/Reports/institutionalReportViewModel.ts",
+          "line": 85
+        },
+        {
+          "value": "../pages/Reports/institutionalReportViewModel.ts",
+          "target": "pages/Reports/institutionalReportViewModel.ts",
+          "line": 86
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-recommendation-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "import { matchesEntityId } from '../utils/entityIds';",
+          "target": "import { matchesEntityId } from '../utils/entityIds';",
+          "line": 37
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 61
+        },
+        {
+          "value": "../pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 71
+        },
+        {
+          "value": "../pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 72
+        }
+      ]
+    },
+    {
       "file": "scripts/smoke-reports-role-contract.mjs",
+      "references": [
+        {
+          "value": "../pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 4
+        },
+        {
+          "value": "../pages/Reports/reportDomain.ts",
+          "target": "pages/Reports/reportDomain.ts",
+          "line": 5
+        },
+        {
+          "value": "../pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 6
+        },
+        {
+          "value": "../pages/Reports/studentAnalyticsViewModel.ts",
+          "target": "pages/Reports/studentAnalyticsViewModel.ts",
+          "line": 7
+        },
+        {
+          "value": "../pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "../pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "line": 9
+        },
+        {
+          "value": "../pages/Reports/StudentSmartRemediationPanel.tsx",
+          "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "../pages/Reports/StudentSelectedSkillPanel.tsx",
+          "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "../pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 12
+        },
+        {
+          "value": "../pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 13
+        },
+        {
+          "value": "../pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 14
+        },
+        {
+          "value": "../pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 15
+        },
+        {
+          "value": "../pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 16
+        },
+        {
+          "value": "../pages/Reports/studentRemediationFallbackViewModel.ts",
+          "target": "pages/Reports/studentRemediationFallbackViewModel.ts",
+          "line": 17
+        },
+        {
+          "value": "../pages/Reports/scopedRemediationFallbackViewModel.ts",
+          "target": "pages/Reports/scopedRemediationFallbackViewModel.ts",
+          "line": 18
+        },
+        {
+          "value": "../pages/Reports/scopedExportRowsViewModel.ts",
+          "target": "pages/Reports/scopedExportRowsViewModel.ts",
+          "line": 19
+        },
+        {
+          "value": "../pages/Reports/scopedAnalyticsViewModel.ts",
+          "target": "pages/Reports/scopedAnalyticsViewModel.ts",
+          "line": 20
+        },
+        {
+          "value": "../pages/Reports/scopedComparisonViewModel.ts",
+          "target": "pages/Reports/scopedComparisonViewModel.ts",
+          "line": 21
+        },
+        {
+          "value": "../pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "target": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+          "line": 22
+        },
+        {
+          "value": "../pages/Reports/institutionalReportViewModel.ts",
+          "target": "pages/Reports/institutionalReportViewModel.ts",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "line": 24
+        },
+        {
+          "value": "../pages/Reports/scopedSkillReportViewModel.ts",
+          "target": "pages/Reports/scopedSkillReportViewModel.ts",
+          "line": 25
+        },
+        {
+          "value": "../pages/Reports/reportTypes.ts",
+          "target": "pages/Reports/reportTypes.ts",
+          "line": 26
+        },
+        {
+          "value": "../pages/Dashboard.tsx",
+          "target": "pages/Dashboard.tsx",
+          "line": 28
+        },
+        {
+          "value": "../services/api.ts",
+          "target": "services/api.ts",
+          "line": 32
+        },
+        {
+          "value": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
+          "target": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
+          "line": 67
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-scoped-analytics-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/scopedAnalyticsViewModel.ts",
+          "target": "pages/Reports/scopedAnalyticsViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 63
+        },
+        {
+          "value": "../pages/Reports/scopedAnalyticsViewModel.ts",
+          "target": "pages/Reports/scopedAnalyticsViewModel.ts",
+          "line": 71
+        },
+        {
+          "value": "../pages/Reports/scopedAnalyticsViewModel.ts",
+          "target": "pages/Reports/scopedAnalyticsViewModel.ts",
+          "line": 74
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-scoped-comparison-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/scopedComparisonViewModel.ts",
+          "target": "pages/Reports/scopedComparisonViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 73
+        },
+        {
+          "value": "../pages/Reports/scopedComparisonViewModel.ts",
+          "target": "pages/Reports/scopedComparisonViewModel.ts",
+          "line": 81
+        },
+        {
+          "value": "../pages/Reports/scopedComparisonViewModel.ts",
+          "target": "pages/Reports/scopedComparisonViewModel.ts",
+          "line": 82
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-scoped-export-rows-boundary-contract.mjs",
       "references": [
         {
           "value": "../pages/Reports.tsx",
@@ -2904,19 +3449,394 @@
           "line": 3
         },
         {
-          "value": "../pages/Dashboard.tsx",
-          "target": "pages/Dashboard.tsx",
+          "value": "../pages/Reports/scopedExportRowsViewModel.ts",
+          "target": "pages/Reports/scopedExportRowsViewModel.ts",
           "line": 4
         },
         {
-          "value": "../services/api.ts",
-          "target": "services/api.ts",
+          "value": "../pages/Reports/scopedExportRowsViewModel.ts",
+          "target": "pages/Reports/scopedExportRowsViewModel.ts",
+          "line": 58
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-scoped-remediation-fallback-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "../pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 3
+        },
+        {
+          "value": "../pages/Reports/scopedRemediationFallbackViewModel.ts",
+          "target": "pages/Reports/scopedRemediationFallbackViewModel.ts",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-scoped-skill-report-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/scopedSkillReportViewModel.ts",
+          "target": "pages/Reports/scopedSkillReportViewModel.ts",
           "line": 8
         },
         {
-          "value": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
-          "target": "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'",
-          "line": 43
+          "value": "pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 9
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 65
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 66
+        },
+        {
+          "value": "../pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "line": 74
+        },
+        {
+          "value": "../pages/Reports/scopedStudentFocusViewModel.ts",
+          "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-analytics-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentAnalyticsViewModel.ts",
+          "target": "pages/Reports/studentAnalyticsViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "pages/Reports/studentEvidenceViewModel.ts",
+          "target": "pages/Reports/studentEvidenceViewModel.ts",
+          "line": 9
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 76
+        },
+        {
+          "value": "../pages/Reports/studentAnalyticsViewModel.ts",
+          "target": "pages/Reports/studentAnalyticsViewModel.ts",
+          "line": 85
+        },
+        {
+          "value": "../pages/Reports/studentAnalyticsViewModel.ts",
+          "target": "pages/Reports/studentAnalyticsViewModel.ts",
+          "line": 86
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-learning-loop-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 63
+        },
+        {
+          "value": "../pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 74
+        },
+        {
+          "value": "../pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-readiness-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 61
+        },
+        {
+          "value": "../pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 72
+        },
+        {
+          "value": "../pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-remediation-fallback-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "../pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 3
+        },
+        {
+          "value": "../pages/Reports/studentRemediationFallbackViewModel.ts",
+          "target": "pages/Reports/studentRemediationFallbackViewModel.ts",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-report-actions-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 63
+        },
+        {
+          "value": "../pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 75
+        },
+        {
+          "value": "../pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 76
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-report-scope-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 57
+        },
+        {
+          "value": "../pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 63
+        },
+        {
+          "value": "../pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 64
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-selected-skill-presentation-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "../pages/Reports/StudentSelectedSkillPanel.tsx",
+          "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "line": 72
+        },
+        {
+          "value": "../pages/Reports/StudentSelectedSkillPanel.tsx",
+          "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-skill-rows-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 59
+        },
+        {
+          "value": "../pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 71
+        },
+        {
+          "value": "../pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 72
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-smart-remediation-presentation-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "../pages/Reports/StudentSmartRemediationPanel.tsx",
+          "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "line": 70
+        },
+        {
+          "value": "../pages/Reports/StudentSmartRemediationPanel.tsx",
+          "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "line": 71
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "pages/Reports/recommendationViewModel.ts",
+          "target": "pages/Reports/recommendationViewModel.ts",
+          "line": 9
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 81
+        },
+        {
+          "value": "../pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 92
+        },
+        {
+          "value": "../pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 93
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-reports-student-weekly-plan-presentation-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 7
+        },
+        {
+          "value": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "../pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "line": 74
+        },
+        {
+          "value": "../pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "line": 75
         }
       ]
     },
@@ -3011,12 +3931,107 @@
         {
           "value": "dashboards/admin/SchoolsManager.tsx",
           "target": "dashboards/admin/SchoolsManager.tsx",
-          "line": 9
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+          "line": 13
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "line": 14
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+          "line": 15
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+          "line": 16
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+          "line": 17
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+          "line": 18
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+          "line": 19
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+          "line": 20
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+          "line": 21
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+          "line": 22
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+          "line": 23
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+          "line": 24
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "line": 25
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+          "line": 26
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+          "line": 27
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+          "line": 28
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+          "line": 29
         },
         {
           "value": "store/useStore.ts",
           "target": "store/useStore.ts",
-          "line": 10
+          "line": 31
         }
       ]
     },
@@ -3057,6 +4072,601 @@
           "value": "dashboards/admin/AnnouncementAdsManager.tsx",
           "target": "dashboards/admin/AnnouncementAdsManager.tsx",
           "line": 193
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-access-codes-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/accessCodeViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/accessCodeViewModel.ts",
+          "line": 13
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 20
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-class-card-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+          "line": 9
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 70
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-command-center-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-import-parsing-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 11
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/importRowParsing.ts",
+          "target": "dashboards/admin/SchoolsManager/importRowParsing.ts",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "target": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "line": 13
+        },
+        {
+          "value": "from '../../utils/xlsxLoader';",
+          "target": "from '../../utils/xlsxLoader';",
+          "line": 20
+        },
+        {
+          "value": "from '../../../utils/xlsxLoader';",
+          "target": "from '../../../utils/xlsxLoader';",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-launch-board-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 6
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-overview-operations-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 57
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-overview-operators-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+          "line": 9
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 55
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 91
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-package-access-viewmodel-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/packageAccessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/packageAccessViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "line": 9
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-package-card-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+          "line": 11
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+          "line": 12
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 19
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-portfolio-card-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+          "line": 6
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-portfolio-filter-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "services/api",
+          "target": "services/api",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-portfolio-projection-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "from '../../services/api'",
+          "target": "from '../../services/api'",
+          "line": 98
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-quick-supervisor-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+          "line": 11
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 17
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-readiness-viewmodel-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-relations-import-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 17
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-relations-report-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 17
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-relations-status-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 17
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-relationship-viewmodel-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+          "line": 12
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+          "line": 13
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 28
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 29
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 42
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 43
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 63
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 64
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-roster-viewmodel-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 9
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-student-roster-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 10
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+          "line": 11
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+          "line": 12
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 18
+        },
+        {
+          "value": "from '../../../store/useStore'",
+          "target": "from '../../../store/useStore'",
+          "line": 19
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-workspace-controls-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 6
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-workspace-sections-boundary-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 7
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "target": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+          "line": 9
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 76
+        }
+      ]
+    },
+    {
+      "file": "scripts/smoke-schools-workspace-viewmodel-contract.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+          "target": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+          "line": 8
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 9
+        },
+        {
+          "value": "from '../../../services/api'",
+          "target": "from '../../../services/api'",
+          "line": 16
         }
       ]
     },
@@ -3221,27 +4831,27 @@
         {
           "value": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
           "target": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
-          "line": 7
+          "line": 8
         },
         {
           "value": "components/CustomVideoPlayer.tsx",
           "target": "components/CustomVideoPlayer.tsx",
-          "line": 8
+          "line": 9
         },
         {
           "value": "components/VideoModal.tsx",
           "target": "components/VideoModal.tsx",
-          "line": 9
+          "line": 10
         },
         {
           "value": "pages/SubjectLearningPage.tsx",
           "target": "pages/SubjectLearningPage.tsx",
-          "line": 10
+          "line": 11
         },
         {
           "value": "components/CoursePlayer.tsx",
           "target": "components/CoursePlayer.tsx",
-          "line": 11
+          "line": 12
         }
       ]
     },
@@ -3259,6 +4869,16 @@
           "line": 62
         },
         {
+          "value": "dashboards/admin/LessonsManager.tsx",
+          "target": "dashboards/admin/LessonsManager.tsx",
+          "line": 62
+        },
+        {
+          "value": "dashboards/admin/QuestionBankManager.tsx",
+          "target": "dashboards/admin/QuestionBankManager.tsx",
+          "line": 63
+        },
+        {
           "value": "dashboards/admin/QuestionBankManager.tsx",
           "target": "dashboards/admin/QuestionBankManager.tsx",
           "line": 63
@@ -3269,29 +4889,549 @@
           "line": 64
         },
         {
+          "value": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "target": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+          "line": 64
+        },
+        {
           "value": "pages/Reports.tsx",
           "target": "pages/Reports.tsx",
-          "line": 86
+          "line": 90
         },
         {
           "value": "dashboards/admin/UsersManager.tsx",
           "target": "dashboards/admin/UsersManager.tsx",
-          "line": 87
+          "line": 91
         },
         {
           "value": "dashboards/admin/GroupsManager.tsx",
           "target": "dashboards/admin/GroupsManager.tsx",
-          "line": 88
+          "line": 92
         },
         {
           "value": "dashboards/admin/QuizzesManager.tsx",
           "target": "dashboards/admin/QuizzesManager.tsx",
-          "line": 89
+          "line": 93
         },
         {
           "value": "dashboards/admin/LibraryManager.tsx",
           "target": "dashboards/admin/LibraryManager.tsx",
+          "line": 94
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-content-learning-schemas.mjs",
+      "references": [
+        {
+          "value": "import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from \"../utils/integrationSecretsCrypto.js\";",
+          "target": "import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from \"../utils/integrationSecretsCrypto.js\";",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-scoped-export-rows.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 25
+        },
+        {
+          "value": "../pages/Reports/scopedExportRowsViewModel.ts",
+          "target": "pages/Reports/scopedExportRowsViewModel.ts",
+          "line": 34
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 98
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedExportRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedExportRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-scoped-remediation-fallback.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/scopedRemediationFallbackViewModel.ts",
+          "target": "pages/Reports/scopedRemediationFallbackViewModel.ts",
+          "line": 31
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 65
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/scopedSkillReportViewModel.ts",
+          "target": "pages/Reports/scopedSkillReportViewModel.ts",
+          "line": 37
+        },
+        {
+          "value": "../pages/Reports/scopedSkillReportViewModel.ts",
+          "target": "pages/Reports/scopedSkillReportViewModel.ts",
+          "line": 38
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 62
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 63
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 74
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 75
+        },
+        {
+          "value": "../pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 83
+        },
+        {
+          "value": "../pages/Reports/studentWeeklyPlanViewModel.ts",
+          "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+          "line": 84
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 116
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 117
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 133
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 134
+        },
+        {
+          "value": "../pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 143
+        },
+        {
+          "value": "../pages/Reports/studentReportActionsViewModel.ts",
+          "target": "pages/Reports/studentReportActionsViewModel.ts",
+          "line": 144
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 178
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 179
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 195
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 196
+        },
+        {
+          "value": "../pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 205
+        },
+        {
+          "value": "../pages/Reports/studentSkillRowsViewModel.ts",
+          "target": "pages/Reports/studentSkillRowsViewModel.ts",
+          "line": 206
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 241
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 242
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 250
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 251
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 33
+        },
+        {
+          "value": "../pages/Reports/studentLearningLoopViewModel.ts",
+          "target": "pages/Reports/studentLearningLoopViewModel.ts",
+          "line": 34
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 74
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 75
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 83
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 84
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-readiness.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 33
+        },
+        {
+          "value": "../pages/Reports/studentReadinessViewModel.ts",
+          "target": "pages/Reports/studentReadinessViewModel.ts",
+          "line": 34
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 73
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 74
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 82
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 83
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-remediation-fallback.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/studentRemediationFallbackViewModel.ts",
+          "target": "pages/Reports/studentRemediationFallbackViewModel.ts",
+          "line": 31
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 66
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 67
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 33
+        },
+        {
+          "value": "../pages/Reports/studentReportScopeViewModel.ts",
+          "target": "pages/Reports/studentReportScopeViewModel.ts",
+          "line": 34
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 80
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 81
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 89
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
           "line": 90
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/StudentSelectedSkillPanel.tsx",
+          "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+          "line": 32
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 63
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentSelectedSkillPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentSelectedSkillPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 64
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 72
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentSelectedSkillPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentSelectedSkillPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/StudentSmartRemediationPanel.tsx",
+          "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+          "line": 33
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 67
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 68
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 76
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
+      "references": [
+        {
+          "value": "pages/Reports.tsx",
+          "target": "pages/Reports.tsx",
+          "line": 23
+        },
+        {
+          "value": "../pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+          "line": 33
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 67
+        },
+        {
+          "value": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 68
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+          "line": 76
+        },
+        {
+          "value": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-school-card-readiness-projection.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 136
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-school-launch-board-presentation.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 72
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-school-portfolio-card-presentation.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-school-portfolio-projection.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 87
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-school-workspace-controls-presentation.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 5
+        },
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 118
         }
       ]
     },
@@ -3307,6 +5447,16 @@
           "value": "dashboards/admin/SchoolsManager.tsx",
           "target": "dashboards/admin/SchoolsManager.tsx",
           "line": 122
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/phase-review-school-portfolio-projection.mjs",
+      "references": [
+        {
+          "value": "dashboards/admin/SchoolsManager.tsx",
+          "target": "dashboards/admin/SchoolsManager.tsx",
+          "line": 80
         }
       ]
     },
@@ -3584,12 +5734,12 @@
     },
     {
       "target": "pages/Reports.tsx",
-      "references": 32,
-      "scriptCount": 7,
+      "references": 57,
+      "scriptCount": 38,
       "scripts": [
         {
           "file": "scripts/smoke-performance-contract.mjs",
-          "references": 24
+          "references": 18
         },
         {
           "file": "scripts/smoke-arabic-mojibake-guard.mjs",
@@ -3604,7 +5754,91 @@
           "references": 1
         },
         {
+          "file": "scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-domain-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-institutional-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-recommendation-boundary-contract.mjs",
+          "references": 1
+        },
+        {
           "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-analytics-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-comparison-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-export-rows-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-remediation-fallback-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-skill-report-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-analytics-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-learning-loop-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-readiness-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-remediation-fallback-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-report-actions-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-report-scope-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-selected-skill-presentation-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-skill-rows-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-smart-remediation-presentation-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-weekly-plan-presentation-boundary-contract.mjs",
           "references": 1
         },
         {
@@ -3613,6 +5847,181 @@
         },
         {
           "file": "scripts/smoke-xlsx-safety-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-export-rows.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-remediation-fallback.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-readiness.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-remediation-fallback.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager.tsx",
+      "references": 39,
+      "scriptCount": 32,
+      "scripts": [
+        {
+          "file": "scripts/smoke-arabic-mojibake-guard.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "tools/refactor/apply-school-card-readiness-projection.mjs",
+          "references": 2
+        },
+        {
+          "file": "tools/refactor/apply-school-launch-board-presentation.mjs",
+          "references": 2
+        },
+        {
+          "file": "tools/refactor/apply-school-portfolio-card-presentation.mjs",
+          "references": 2
+        },
+        {
+          "file": "tools/refactor/apply-school-portfolio-projection.mjs",
+          "references": 2
+        },
+        {
+          "file": "tools/refactor/apply-school-workspace-controls-presentation.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-package-revenue-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-class-card-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-command-center-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-import-parsing-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-launch-board-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operations-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operators-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-card-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-filter-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-projection-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-readiness-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relationship-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-roster-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-student-roster-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-controls-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-sections-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-xlsx-safety-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/module-boundary-gate.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/phase-review-school-portfolio-projection.mjs",
           "references": 1
         }
       ]
@@ -3676,6 +6085,77 @@
         },
         {
           "file": "scripts/smoke-student-learning-progress-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "from '../../../services/api'",
+      "references": 19,
+      "scriptCount": 16,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operators-boundary-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-schools-access-codes-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-class-card-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-command-center-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operations-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-package-access-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-package-card-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-quick-supervisor-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relations-import-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relations-report-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relations-status-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-roster-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-student-roster-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-sections-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-viewmodel-contract.mjs",
           "references": 1
         }
       ]
@@ -3885,6 +6365,77 @@
       ]
     },
     {
+      "target": "from '../../services/api'",
+      "references": 17,
+      "scriptCount": 16,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-domain-boundary-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-institutional-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-recommendation-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-analytics-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-comparison-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-skill-report-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-analytics-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-learning-loop-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-readiness-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-report-actions-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-report-scope-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-skill-rows-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-projection-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "store/useStore.ts",
       "references": 16,
       "scriptCount": 13,
@@ -3945,12 +6496,16 @@
     },
     {
       "target": "dashboards/admin/QuestionBankManager.tsx",
-      "references": 15,
+      "references": 16,
       "scriptCount": 5,
       "scripts": [
         {
           "file": "scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs",
           "references": 11
+        },
+        {
+          "file": "scripts/smoke-xlsx-safety-contract.mjs",
+          "references": 2
         },
         {
           "file": "scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs",
@@ -3963,21 +6518,17 @@
         {
           "file": "scripts/smoke-question-html-security-contract.mjs",
           "references": 1
-        },
-        {
-          "file": "scripts/smoke-xlsx-safety-contract.mjs",
-          "references": 1
         }
       ]
     },
     {
       "target": "dashboards/admin/QuizzesManager.tsx",
-      "references": 12,
+      "references": 14,
       "scriptCount": 6,
       "scripts": [
         {
           "file": "scripts/smoke-performance-contract.mjs",
-          "references": 6
+          "references": 8
         },
         {
           "file": "scripts/smoke-foundation-course-details-contract.mjs",
@@ -4079,40 +6630,40 @@
       ]
     },
     {
-      "target": "dashboards/admin/SchoolsManager.tsx",
+      "target": "from '../../../store/useStore'",
       "references": 10,
       "scriptCount": 8,
       "scripts": [
         {
-          "file": "scripts/smoke-arabic-mojibake-guard.mjs",
-          "references": 2
+          "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+          "references": 3
         },
         {
-          "file": "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
-          "references": 2
-        },
-        {
-          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "file": "scripts/smoke-schools-access-codes-boundary-contract.mjs",
           "references": 1
         },
         {
-          "file": "scripts/smoke-package-revenue-contract.mjs",
+          "file": "scripts/smoke-schools-package-card-boundary-contract.mjs",
           "references": 1
         },
         {
-          "file": "scripts/smoke-performance-contract.mjs",
+          "file": "scripts/smoke-schools-quick-supervisor-boundary-contract.mjs",
           "references": 1
         },
         {
-          "file": "scripts/smoke-school-management-contract.mjs",
+          "file": "scripts/smoke-schools-relations-import-boundary-contract.mjs",
           "references": 1
         },
         {
-          "file": "scripts/smoke-xlsx-safety-contract.mjs",
+          "file": "scripts/smoke-schools-relations-report-boundary-contract.mjs",
           "references": 1
         },
         {
-          "file": "tools/refactor/module-boundary-gate.mjs",
+          "file": "scripts/smoke-schools-relations-status-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-student-roster-boundary-contract.mjs",
           "references": 1
         }
       ]
@@ -4179,6 +6730,33 @@
         },
         {
           "file": "scripts/smoke-school-portal-command-center-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentReportScopeViewModel.ts",
+      "references": 9,
+      "scriptCount": 5,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-report-scope-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
           "references": 1
         }
       ]
@@ -4280,6 +6858,60 @@
         },
         {
           "file": "scripts/smoke-student-path-scope-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentReportActionsViewModel.ts",
+      "references": 8,
+      "scriptCount": 5,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-report-actions-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentSkillRowsViewModel.ts",
+      "references": 8,
+      "scriptCount": 5,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-skill-rows-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
           "references": 1
         }
       ]
@@ -4444,6 +7076,33 @@
       ]
     },
     {
+      "target": "pages/Reports/recommendationViewModel.ts",
+      "references": 7,
+      "scriptCount": 5,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-recommendation-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-skill-report-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "index.tsx",
       "references": 7,
       "scriptCount": 4,
@@ -4462,6 +7121,98 @@
         },
         {
           "file": "scripts/smoke-sentry-runtime-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/scopedStudentFocusViewModel.ts",
+      "references": 7,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentLearningLoopViewModel.ts",
+      "references": 7,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-learning-loop-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentReadinessViewModel.ts",
+      "references": 7,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-readiness-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-readiness.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentWeeklyPlanViewModel.ts",
+      "references": 7,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-weekly-plan-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
           "references": 1
         }
       ]
@@ -4509,6 +7260,121 @@
       ]
     },
     {
+      "target": "pages/Reports/reportDomain.ts",
+      "references": 6,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-domain-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentAnalyticsViewModel.ts",
+      "references": 6,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-analytics-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/StudentSelectedSkillPanel.tsx",
+      "references": 6,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-selected-skill-presentation-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/StudentSmartRemediationPanel.tsx",
+      "references": 6,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-smart-remediation-presentation-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+      "references": 6,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-weekly-plan-presentation-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "dashboards/admin/FinancialManager.tsx",
       "references": 5,
       "scriptCount": 5,
@@ -4536,6 +7402,60 @@
       ]
     },
     {
+      "target": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+      "references": 5,
+      "scriptCount": 5,
+      "scripts": [
+        {
+          "file": "scripts/smoke-package-revenue-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-access-codes-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-package-access-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-package-card-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+      "references": 5,
+      "scriptCount": 5,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-quick-supervisor-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relations-import-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relations-report-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relations-status-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "components/CourseLanding.tsx",
       "references": 5,
       "scriptCount": 4,
@@ -4554,6 +7474,124 @@
         },
         {
           "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/scopedSkillReportViewModel.ts",
+      "references": 5,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-skill-report-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+      "references": 5,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-schools-import-parsing-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-xlsx-safety-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+      "references": 5,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/institutionalReportViewModel.ts",
+      "references": 5,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-institutional-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/scopedAnalyticsViewModel.ts",
+      "references": 5,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-scoped-analytics-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/scopedComparisonViewModel.ts",
+      "references": 5,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-scoped-comparison-boundary-contract.mjs",
+          "references": 3
+        },
+        {
+          "file": "scripts/smoke-global-student-journey-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
           "references": 1
         }
       ]
@@ -4631,6 +7669,52 @@
       ]
     },
     {
+      "target": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+      "references": 4,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-class-card-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-sections-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+      "references": 4,
+      "scriptCount": 4,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-card-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "services/adapter.ts",
       "references": 4,
       "scriptCount": 4,
@@ -4649,6 +7733,25 @@
         },
         {
           "file": "scripts/smoke-runtime-source-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/scopedExportRowsViewModel.ts",
+      "references": 4,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-scoped-export-rows-boundary-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-export-rows.mjs",
           "references": 1
         }
       ]
@@ -4730,6 +7833,196 @@
       ]
     },
     {
+      "target": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-projection-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-readiness-viewmodel-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-card-readiness-projection-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-portfolio-card-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-class-card-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-command-center-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-sections-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operations-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operators-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-student-roster-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch100f-relationship-audit-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-overview-operators-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-viewmodel-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "pages/Quizzes.tsx",
       "references": 3,
       "scriptCount": 3,
@@ -4744,6 +8037,44 @@
         },
         {
           "file": "scripts/smoke-student-path-scope-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/scopedRemediationFallbackViewModel.ts",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-scoped-remediation-fallback-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-scoped-remediation-fallback.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "pages/Reports/studentRemediationFallbackViewModel.ts",
+      "references": 3,
+      "scriptCount": 3,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-student-remediation-fallback-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-remediation-fallback.mjs",
           "references": 1
         }
       ]
@@ -4843,6 +8174,21 @@
       ]
     },
     {
+      "target": "dashboards/admin/LessonsManager.tsx",
+      "references": 3,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-xlsx-safety-contract.mjs",
+          "references": 2
+        },
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "pages/Cart.tsx",
       "references": 3,
       "scriptCount": 2,
@@ -4853,6 +8199,47 @@
         },
         {
           "file": "scripts/smoke-payment-package-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/UnifiedQuizBuilder.tsx",
+      "references": 3,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 3
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        },
+        {
+          "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
           "references": 1
         }
       ]
@@ -4978,21 +8365,6 @@
       ]
     },
     {
-      "target": "dashboards/admin/LessonsManager.tsx",
-      "references": 2,
-      "scriptCount": 2,
-      "scripts": [
-        {
-          "file": "scripts/smoke-performance-contract.mjs",
-          "references": 1
-        },
-        {
-          "file": "scripts/smoke-xlsx-safety-contract.mjs",
-          "references": 1
-        }
-      ]
-    },
-    {
       "target": "dashboards/admin/MembershipsManager.tsx",
       "references": 2,
       "scriptCount": 2,
@@ -5003,6 +8375,171 @@
         },
         {
           "file": "scripts/smoke-membership-pricing-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-relationship-viewmodel-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-roster-viewmodel-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-student-roster-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-access-codes-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-package-card-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-launch-board-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-package-revenue-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-package-card-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-reports-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-school-management-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-workspace-controls-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "from '../../../utils/xlsxLoader';",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-import-parsing-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "from '../../utils/xlsxLoader';",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-schools-import-parsing-contract.mjs",
           "references": 1
         }
       ]
@@ -5068,6 +8605,21 @@
       ]
     },
     {
+      "target": "pages/Reports/reportTypes.ts",
+      "references": 2,
+      "scriptCount": 2,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-domain-boundary-contract.mjs",
+          "references": 1
+        },
+        {
+          "file": "scripts/smoke-reports-role-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "pages/ResetPassword.tsx",
       "references": 2,
       "scriptCount": 2,
@@ -5127,6 +8679,479 @@
         {
           "file": "tools/refactor/repository-audit.mjs",
           "references": 2
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-readiness.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-readiness.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentSelectedSkillPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "    await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n    await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-export-rows.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedExportRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-export-rows.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/scopedStudentFocusViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-report-scope.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentLearningLoopViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-learning-loop.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-remediation-fallback.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/scopedRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-remediation-fallback.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-remediation-fallback.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentReportScopeViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentRemediationFallbackViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-remediation-fallback.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-readiness.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentSkillRowsViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReadinessViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-readiness.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentSelectedSkillPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-selected-skill-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-smart-remediation-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-scoped-skill-report.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "  await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),\n  await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),\n",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-reports-student-weekly-plan-presentation.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "App.tsx must not block initial data bootstrap for /category routes",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
         }
       ]
     },
@@ -5241,6 +9266,94 @@
       ]
     },
     {
+      "target": "dashboards/admin/SchoolsManager/accessCodeViewModel.ts",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-access-codes-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/importRowParsing.ts",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-import-parsing-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/packageAccessViewModel.ts",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-package-access-viewmodel-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-portfolio-filter-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-quick-supervisor-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-relations-import-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-relations-report-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "dashboards/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-relations-status-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "dashboards/admin/SkillsTreeManager.tsx",
       "references": 1,
       "scriptCount": 1,
@@ -5263,23 +9376,23 @@
       ]
     },
     {
-      "target": "from '../../utils/xlsxLoader';",
-      "references": 1,
-      "scriptCount": 1,
-      "scripts": [
-        {
-          "file": "scripts/smoke-performance-contract.mjs",
-          "references": 1
-        }
-      ]
-    },
-    {
       "target": "from \"../utils/integrationSecretsCrypto.js\"",
       "references": 1,
       "scriptCount": 1,
       "scripts": [
         {
           "file": "scripts/smoke-integrations-runtime-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from \"../utils/integrationSecretsCrypto.js\";",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-content-learning-schemas.mjs",
           "references": 1
         }
       ]
@@ -5302,6 +9415,17 @@
       "scripts": [
         {
           "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "import { matchesEntityId } from '../utils/entityIds';",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-recommendation-boundary-contract.mjs",
           "references": 1
         }
       ]
@@ -5439,6 +9563,17 @@
       ]
     },
     {
+      "target": "pages/Reports/studentEvidenceViewModel.ts",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-reports-student-analytics-boundary-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "pages/Step.tsx",
       "references": 1,
       "scriptCount": 1,
@@ -5478,6 +9613,17 @@
       "scripts": [
         {
           "file": "scripts/smoke-performance-contract.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
+      "target": "services/api",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "scripts/smoke-schools-portfolio-filter-boundary-contract.mjs",
           "references": 1
         }
       ]

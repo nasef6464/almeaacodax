@@ -1,35 +1,35 @@
 # Current Repository Architecture Audit
 
-Generated from commit `c48bd1052586a9ab3270697711badf98a68026fa` using the TypeScript AST for imports and route extraction.
+Generated from commit `82165aeba69d7fed3e2a6661259436c5b0c2cce1` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 726 |
-| Source files (including scripts/tooling) | 447 |
-| Runtime source files | 298 |
-| Source lines | 143,256 |
-| Runtime source lines | 123,155 |
+| Tracked files | 900 |
+| Source files (including scripts/tooling) | 606 |
+| Runtime source files | 358 |
+| Source lines | 154,847 |
+| Runtime source lines | 125,895 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |
-| Runtime relative import edges | 1032 |
+| Runtime relative import edges | 1174 |
 | Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 2 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 757 |
-| Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 288 |
+| Cross-domain runtime import edges | 800 |
+| Runtime hotspots >= 400 lines | 82 |
+| Candidate migration-map entries | 348 |
 
 ## Largest runtime source hotspots
 
 | File | Lines | Bytes | Domain candidate |
 |---|---:|---:|---|
-| `dashboards/admin/SchoolsManager.tsx` | 5243 | 331742 | schools |
-| `pages/Reports.tsx` | 3742 | 248917 | reports |
-| `server/src/routes/content.routes.ts` | 3406 | 128523 | content |
 | `server/src/routes/quiz.routes.ts` | 3145 | 119634 | quizzes |
+| `server/src/routes/content.routes.ts` | 2822 | 105957 | content |
+| `dashboards/admin/SchoolsManager.tsx` | 2711 | 144835 | schools |
+| `pages/Reports.tsx` | 2607 | 184711 | reports |
 | `dashboards/admin/PathsManager.tsx` | 2289 | 126749 | paths |
 | `pages/Dashboard.tsx` | 2211 | 131122 | shared |
 | `store/useStore.ts` | 2210 | 104715 | shared |
@@ -40,7 +40,7 @@ Generated from commit `c48bd1052586a9ab3270697711badf98a68026fa` using the TypeS
 | `server/src/routes/payment.routes.ts` | 1887 | 69433 | payments |
 | `pages/QuizPage.tsx` | 1879 | 95941 | quizzes |
 | `dashboards/admin/PlatformIntegrationsManager.tsx` | 1845 | 99379 | operations |
-| `dashboards/admin/QuizzesManager.tsx` | 1815 | 98694 | quizzes |
+| `dashboards/admin/QuizzesManager.tsx` | 1827 | 99651 | quizzes |
 | `dashboards/admin/SchoolPortalManager.tsx` | 1735 | 99998 | schools |
 | `pages/Plan.tsx` | 1732 | 77391 | shared |
 | `server/src/scripts/seedOperationalScenario.ts` | 1725 | 60632 | operations |
