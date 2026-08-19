@@ -12,16 +12,6 @@ on:
       - 'tools/refactor/apply-content-platform-integration-defaults.mjs'
       - 'tools/refactor/phase-review-content-platform-integration-defaults.mjs'
       - '.github/workflows/refactor-v2-content-platform-integration-defaults.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/src/routes/content.routes.ts'
-      - 'server/src/modules/content/integrations/platformIntegrationDefaults.ts'
-      - 'scripts/smoke-content-platform-integration-defaults-boundary-contract.mjs'
-      - 'tools/refactor/apply-content-platform-integration-defaults.mjs'
-      - 'tools/refactor/phase-review-content-platform-integration-defaults.mjs'
-      - '.github/workflows/refactor-v2-content-platform-integration-defaults.yml'
 
 permissions:
   contents: write
