@@ -7,6 +7,9 @@ on:
     paths:
       - 'server/src/routes/quiz.routes.ts'
       - 'server/src/modules/quizzes/presentation/questionPresentation.ts'
+      - 'scripts/smoke-quiz-question-query-schema-boundary-contract.mjs'
+      - 'scripts/smoke-quiz-definition-schema-boundary-contract.mjs'
+      - 'scripts/smoke-quiz-submission-schema-boundary-contract.mjs'
       - 'scripts/smoke-quiz-question-presentation-boundary-contract.mjs'
       - 'scripts/smoke-question-html-security-contract.mjs'
       - 'tools/refactor/apply-quiz-question-presentation.mjs'
@@ -18,6 +21,9 @@ on:
     paths:
       - 'server/src/routes/quiz.routes.ts'
       - 'server/src/modules/quizzes/presentation/questionPresentation.ts'
+      - 'scripts/smoke-quiz-question-query-schema-boundary-contract.mjs'
+      - 'scripts/smoke-quiz-definition-schema-boundary-contract.mjs'
+      - 'scripts/smoke-quiz-submission-schema-boundary-contract.mjs'
       - 'scripts/smoke-quiz-question-presentation-boundary-contract.mjs'
       - 'scripts/smoke-question-html-security-contract.mjs'
       - 'tools/refactor/apply-quiz-question-presentation.mjs'
