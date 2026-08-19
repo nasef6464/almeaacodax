@@ -237,6 +237,30 @@ jobs:
       - name: Question bank CRUD contract
         run: npm run smoke:batch100p-question-bank-crud
 
+  homepage-admin-ux:
+    name: Homepage + admin UX regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Homepage branding and course lesson icons
+        run: npm run smoke:batch100j-homepage-branding-course-icons
+      - name: Homepage admin functional sweep
+        run: npm run smoke:batch100k-homepage-admin-sweep
+      - name: Homepage color picker
+        run: npm run smoke:batch100l-homepage-color-picker
+      - name: Homepage live preview
+        run: npm run smoke:batch100m-homepage-live-preview
+      - name: Admin tab URL routing
+        run: npm run smoke:batch100n-admin-tab-e2e
+      - name: Operational admin runtime contract
+        run: npm run smoke:batch100q-operational-admin-runtime
+
   production-readiness:
     name: Production readiness contracts
     runs-on: ubuntu-latest
