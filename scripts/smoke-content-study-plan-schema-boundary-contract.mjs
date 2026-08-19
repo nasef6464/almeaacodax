@@ -51,6 +51,12 @@ check('study plan parser call sites remain route-owned and unchanged', () => {
   ]) assert.ok(routeSource.includes(fragment), `route parser call missing ${fragment}`);
 });
 
+check('study plan HTTP route surface remains stable', () => {
+  for (const fragment of ['"/study-plans"', '"/study-plans/intervention"']) {
+    assert.ok(routeSource.includes(fragment), `study plan route missing ${fragment}`);
+  }
+});
+
 check('study plan schema ownership is exclusive after delegation while staging remains baseline-compatible', () => {
   for (const declaration of [
     'const studyPlanSchema = z.object({',
