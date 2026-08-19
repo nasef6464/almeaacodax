@@ -7,7 +7,9 @@ const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.rout
 const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/http/questionQuerySchemas.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
 const schemaImport = 'import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";';
+const quizDefinitionImport = 'import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";';
 const delegated = routeSource.includes(schemaImport);
+const quizDefinitionDelegated = routeSource.includes(quizDefinitionImport);
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -95,10 +97,22 @@ check('delegated question/query schema import is singular and anchored before ro
   assert.ok(importIndex >= 0 && cacheIndex >= 0 && importIndex < cacheIndex, 'delegated schema import must precede route-local cache/state declarations');
 });
 
+check('quiz definition ownership handoff is explicit when delegated by a later phase', () => {
+  assert.equal(
+    routeSource.includes('const quizSchema = z.object({'),
+    !quizDefinitionDelegated,
+    `${quizDefinitionDelegated ? 'delegated' : 'route-owned'} quiz definition ownership mismatch`,
+  );
+  if (quizDefinitionDelegated) {
+    assert.equal(routeSource.split(quizDefinitionImport).length - 1, 1, 'quiz definition import must be singular');
+    assert.ok(routeSource.includes('normalizeQuizPlacementPayload(quizSchema.parse(req.body))'), 'delegated quiz definition must keep create parser call route-owned');
+    assert.ok(routeSource.includes('quizSchema.partial().parse(req.body)'), 'delegated quiz definition must keep update parser call route-owned');
+  }
+});
+
 check('quiz business rules and submission schemas remain route-owned', () => {
   for (const fragment of [
     'const validateQuizQuestionIntegrity = async',
-    'const quizSchema = z.object({',
     'const normalizeQuizPlacementPayload =',
     'const questionAttemptSchema = z.object({',
     'const quizSubmitSchema = z.object({',
@@ -121,6 +135,7 @@ console.log(JSON.stringify({
   phase: 'quiz-question-query-schema-boundary',
   status: failed.length ? 'FAIL' : 'PASS',
   delegated,
+  quizDefinitionDelegated,
   routeLines: lineCount(routeSource),
   schemaLines: lineCount(schemaSource),
   checks,
