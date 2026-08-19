@@ -10,12 +10,20 @@ on:
       - 'tools/refactor/phase-review-workflow-trigger-hygiene.mjs'
       - 'scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs'
       - '.github/workflows/refactor-v2-workflow-trigger-hygiene.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'tools/refactor/apply-workflow-trigger-hygiene.mjs'
+      - 'tools/refactor/phase-review-workflow-trigger-hygiene.mjs'
+      - 'scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs'
+      - '.github/workflows/refactor-v2-workflow-trigger-hygiene.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: refactor-v2-workflow-trigger-hygiene-${{ github.ref_name }}
+  group: refactor-v2-workflow-trigger-hygiene-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -27,7 +35,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -50,7 +58,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED_SHA="${{ github.sha }}"
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
 
           if git diff --cached --quiet; then
             echo "No verified workflow-trigger changes to commit."
