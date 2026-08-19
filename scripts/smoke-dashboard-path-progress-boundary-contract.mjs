@@ -9,7 +9,7 @@ const helperPath = 'pages/Dashboard/pathProgressProjection.ts';
 const dashboardSource = read(dashboardPath);
 const helperSource = read(helperPath);
 
-const importLine = "import { resolvePathProgress } from './Dashboard/pathProgressProjection';";
+const importLine = "import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';";
 const localMarkers = [
   'const normalizeDashboardScope =',
   'const courseBelongsToPath =',
@@ -70,7 +70,7 @@ check('path progress helper owns only deterministic projection logic', () => {
   }
 });
 
-check('Dashboard retains page, store, smart-path, parent, and routing ownership', () => {
+check('Dashboard retains page, store, smart-path, parent, routing, and path composition ownership', () => {
   for (const marker of [
     'const buildSmartPathSkillsFromResults =',
     'const useParentScopedResults =',
@@ -79,6 +79,8 @@ check('Dashboard retains page, store, smart-path, parent, and routing ownership'
     'useLocation()',
     'api.requestParentWeeklyReport()',
     'const enrolledPathSet = new Set(enrolledPaths ?? []);',
+    'courses.filter((course) => !course.isPackage && courseBelongsToPath(course, path))',
+    'const pathStats = resolvePathProgress(path, pathCourses, completedLessons, examResults);',
   ]) {
     assertIncludes(dashboardSource, marker);
   }

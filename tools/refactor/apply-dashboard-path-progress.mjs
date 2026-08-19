@@ -8,7 +8,7 @@ const dashboardFile = path.join(root, dashboardPath);
 const source = fs.readFileSync(dashboardFile, 'utf8');
 
 const importAnchor = "import { ParentStudentLinker } from '../components/ParentStudentLinker';";
-const importLine = "import { resolvePathProgress } from './Dashboard/pathProgressProjection';";
+const importLine = "import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';";
 
 const block = `const normalizeDashboardScope = (value?: string) => (value ?? '').trim().toLowerCase();
 
