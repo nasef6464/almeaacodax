@@ -2,22 +2,12 @@ name: Platform V3 Live Role Gate
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop/platform-v3-recovery
-    paths:
-      - '.github/workflows/platform-v3-live-role-gate.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/platform-v3-live-role-gate.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: platform-v3-live-role-gate-${{ github.event_name }}
+  group: platform-v3-live-role-gate
   cancel-in-progress: false
 
 jobs:
