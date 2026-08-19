@@ -25,6 +25,7 @@ import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { sm2 } from "../services/spacedRepetition.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
+import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
@@ -204,69 +205,6 @@ const validateQuizQuestionIntegrity = async (quizLike: any) => {
       : "Cannot publish quiz: some referenced questions are missing or have incomplete content",
   };
 };
-
-const quizSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1),
-  description: z.string().optional(),
-  pathId: z.string().min(1),
-  subjectId: z.string().min(1),
-  sectionId: z.string().nullable().optional(),
-  type: z.enum(["quiz", "bank"]).default("quiz"),
-  // quizKind: التصنيف الموحد للاختبارات
-  quizKind: z.enum(["drill", "test", "mock"]).default("test"),
-  placement: z.enum(["training", "mock", "both"]).optional(),
-  showInTraining: z.boolean().optional(),
-  showInMock: z.boolean().optional(),
-  learningPlacements: z.array(z.object({
-    pathId: z.string().min(1),
-    subjectId: z.string().optional().default(""),
-    slot: z.enum(["training", "tests", "foundation", "course"]),
-    accessType: z.enum(["inherit", "free", "paid", "package"]).optional().default("inherit"),
-    isVisible: z.boolean().optional().default(true),
-    order: z.number().optional().default(0),
-    courseId: z.string().nullable().optional(),
-    lessonId: z.string().nullable().optional(),
-    topicId: z.string().nullable().optional(),
-    createdAt: z.number().optional(),
-    updatedAt: z.number().optional(),
-  })).optional(),
-  mode: z.enum(["regular", "saher", "central"]).default("regular"),
-  settings: z.record(z.any()).optional().default({}),
-  access: z.record(z.any()).optional().default({}),
-  questionIds: z.array(z.string()).default([]),
-  questions: z.array(z.any()).optional(),
-  mockExam: z.object({
-    enabled: z.boolean().default(false),
-    pathId: z.string().default(""),
-    qiyasCategory: z.enum(["qudrat", "tahsili"]).optional(),
-    isStrictSectionLock: z.boolean().optional(),
-    sections: z.array(z.object({
-      id: z.string().min(1),
-      title: z.string().min(1),
-      subjectId: z.string().optional().default(""),
-      questionIds: z.array(z.string()).default([]),
-      timeLimit: z.number().nullable().optional(),
-      order: z.number().optional(),
-      domain: z.enum(["quantitative", "verbal", "math", "physics", "chemistry", "biology", "general"]).optional(),
-    })).default([]),
-  }).optional(),
-  skillIds: z.array(z.string()).optional(),
-  targetGroupIds: z.array(z.string()).default([]),
-  targetUserIds: z.array(z.string()).default([]),
-  dueDate: z.string().nullable().optional(),
-  isPublished: z.boolean().default(false),
-  showOnPlatform: z.boolean().default(true),
-  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
-  ownerId: z.string().optional(),
-  createdBy: z.string().optional(),
-  assignedTeacherId: z.string().optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
-  reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
-});
 
 const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T, fallbackType = "quiz") => {
   if (payload.access && typeof payload.access === "object") {
