@@ -5,7 +5,7 @@ const redisConfig = await readFile(new URL("../server/src/config/redis.ts", impo
 const envConfig = await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8");
 const serverSource = await readFile(new URL("../server/src/server.ts", import.meta.url), "utf8");
 const queueSource = await readFile(new URL("../server/src/queues/notificationQueue.ts", import.meta.url), "utf8");
-const report = await readFile(new URL("../14_15_16_PRODUCTION_OPS_REPORT.md", import.meta.url), "utf8");
+const report = await readFile(new URL("../docs/archive_reports/14_15_16_PRODUCTION_OPS_REPORT.md", import.meta.url), "utf8");
 
 const checks = [];
 
