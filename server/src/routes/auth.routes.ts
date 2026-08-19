@@ -19,7 +19,7 @@ import { createNotificationDeliveries } from "../services/notificationService.js
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
-import { issueCsrfToken } from "../middleware/csrf.js";
+import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -240,6 +240,7 @@ const ensureGoogleOAuthEnabled = (res: any) => {
 };
 
 export const authRouter = Router();
+authRouter.use(csrfGuard);
 
 const shouldExposeTokenInAuthResponse = env.NODE_ENV !== "production";
 

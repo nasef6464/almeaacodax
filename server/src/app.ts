@@ -69,7 +69,16 @@ export function createApp() {
   );
   app.use(compression());
   app.use(requestLogger);
-  app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }));
+  app.use("/api/auth", express.json({ limit: "100kb" }));
+  const authAliasJsonParser = express.json({ limit: "100kb" });
+  app.use((req, res, next) => {
+    const pathname = req.path || "";
+    if (pathname === "/auth" || pathname.startsWith("/auth/")) {
+      authAliasJsonParser(req, res, next);
+      return;
+    }
+    next();
+  });
   app.use(globalRateLimiter);
   app.use(
     [
@@ -101,7 +110,6 @@ export function createApp() {
   app.use(rejectUnsafeMongoKeys);
   app.use(cookieParser());
   app.use("/api", csrfGuard);
-  app.use("/auth", csrfGuard);
 
   app.get("/", (_req, res) => {
     res.json({
