@@ -12,7 +12,7 @@ const qudratPage = read('pages/Qudrat.tsx');
 const tahsiliPage = read('pages/Tahsili.tsx');
 const stepPage = read('pages/Step.tsx');
 const paymentRoutes = read('server/src/routes/payment.routes.ts');
-const report = read('PACKAGE_COURSE_SPLIT_REPORT.md');
+const report = read('docs/archive_reports/PACKAGE_COURSE_SPLIT_REPORT.md');
 
 const checks = [];
 const check = (name, fn) => checks.push({ name, fn });
