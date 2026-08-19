@@ -28,6 +28,7 @@ import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySch
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
+import { buildRecommendedAction, buildResultSkillStatus, buildSkillRecommendation, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -538,37 +539,6 @@ const uniqueStrings = (values: Array<string | undefined | null>) =>
 const idOf = (item: any) => String(item?.id || item?._id || "");
 
 const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;
-
-const buildRecommendedAction = (mastery: number, attemptCount: number) => {
-  if (mastery < 45) {
-    return "خطة علاج عاجلة: شرح + تدريب + اختبار موجه";
-  }
-
-  if (mastery < 65) {
-    return attemptCount >= 3 ? "زيادة التدريب ثم اختبار ساهر علاجي" : "إضافة تدريب قصير ومتابعة الأداء";
-  }
-
-  return "تثبيت المهارة بتدريب خفيف وإعادة قياس لاحقًا";
-};
-
-const buildSkillStatus = (mastery: number) => {
-  if (mastery >= 90) return "mastered";
-  if (mastery >= 75) return "good";
-  if (mastery >= 50) return "average";
-  return "weak";
-};
-
-const buildResultSkillStatus = (mastery: number) => {
-  if (mastery >= 80) return "strong";
-  if (mastery >= 50) return "average";
-  return "weak";
-};
-
-const buildSkillRecommendation = (mastery: number) => {
-  if (mastery < 50) return "راجع شرحًا قصيرًا ثم حل تدريبًا موجّهًا على نفس المهارة";
-  if (mastery < 80) return "أداؤك قريب من الإتقان. زد التدريب قليلًا ثم أعد القياس";
-  return "أداء ممتاز. حافظ على المهارة بتدريب خفيف من وقت لآخر";
-};
 
 const matchesContentScope = (
   item: { contentTypes?: string[]; pathIds?: string[]; subjectIds?: string[] },
