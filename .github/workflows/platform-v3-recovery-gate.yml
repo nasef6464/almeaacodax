@@ -1,0 +1,216 @@
+name: Platform V3 Recovery Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  statuses: read
+
+concurrency:
+  group: platform-v3-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  CI: "true"
+
+jobs:
+  core-build-and-architecture:
+    name: Core build + architecture
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Frontend typecheck
+        run: npm run typecheck
+      - name: API typecheck
+        run: npm run server:check
+      - name: Frontend production build
+        run: npm run build
+      - name: API production build
+        run: npm run server:build
+      - name: Generate architecture snapshot
+        run: node tools/refactor/repository-audit.mjs
+      - name: Immutable architecture contract
+        run: node tools/refactor/architecture-gate.mjs
+      - name: Progressive module boundary gate
+        run: node tools/refactor/module-boundary-gate.mjs
+      - name: Frontend strict route smoke
+        run: npm run smoke:frontend:strict
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+      - name: Frontend performance contract
+        run: npm run smoke:performance
+
+  student-assessment:
+    name: Student + assessment regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Global student journey
+        run: npm run smoke:global-student-journey
+      - name: Student learning journey
+        run: npm run smoke:student-learning-journey
+      - name: Mock exams
+        run: npm run smoke:mock-exams
+      - name: Exam question source
+        run: npm run smoke:exam-question-source
+      - name: My quizzes
+        run: npm run smoke:my-quizzes
+      - name: Quiz access
+        run: npm run smoke:quiz-access
+      - name: Quiz client security
+        run: npm run smoke:quiz-client-security
+      - name: Quiz integrity guard
+        run: npm run smoke:quiz-integrity-guard
+      - name: Quiz answer exposure
+        run: npm run smoke:quiz-answer-exposure
+      - name: Results
+        run: npm run smoke:results
+      - name: Data visibility regression
+        run: npm run smoke:data-visibility-regression
+
+  auth-and-security:
+    name: Auth + security regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Auth account contract
+        run: npm run smoke:auth-account
+      - name: Auth frontend contract
+        run: npm run smoke:auth-frontend
+      - name: Login security contract
+        run: npm run smoke:auth-login-security
+      - name: Cookie auth contract
+        run: npm run smoke:auth-cookie
+      - name: Token response contract
+        run: npm run smoke:auth-token-response
+      - name: School RBAC scope
+        run: npm run smoke:rbac-school-scope
+      - name: CSRF contract
+        run: npm run smoke:csrf
+      - name: API security contract
+        run: npm run smoke:api-security
+      - name: NoSQL sanitizer contract
+        run: npm run smoke:nosql-sanitizer
+      - name: Question HTML security
+        run: npm run smoke:question-html-security
+      - name: Discussions RBAC scope
+        run: npm run smoke:discussions-rbac-scope
+
+  admin-schools-reports-payments:
+    name: Admin + schools + reports + payments
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: School management
+        run: npm run smoke:school-management
+      - name: School import parsing
+        run: npm run smoke:schools-import-parsing
+      - name: Admin school command center
+        run: npm run smoke:admin-school-command
+      - name: School portal command center
+        run: npm run smoke:school-portal-command
+      - name: Supervisor dashboard
+        run: npm run smoke:supervisor-dashboard
+      - name: Reports role contract
+        run: npm run smoke:reports-role
+      - name: Package revenue
+        run: npm run smoke:package-revenue
+      - name: Membership pricing
+        run: npm run smoke:membership-pricing
+      - name: Payment package
+        run: npm run smoke:payment-package
+      - name: Payment tampering
+        run: npm run smoke:payment-tampering
+      - name: Package course split
+        run: npm run smoke:package-course-split
+      - name: Package path navigation
+        run: npm run smoke:package-path-navigation
+      - name: Admin users/schools/parent/payment contract
+        run: npm run smoke:batch136-admin-users-schools-parent-payment
+
+  production-readiness:
+    name: Production readiness contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Production hardening
+        run: npm run smoke:production-hardening
+      - name: Production audit
+        run: npm run smoke:production-audit
+      - name: Real usage readiness
+        run: npm run smoke:real-usage-readiness
+      - name: Health readiness contract
+        run: npm run smoke:health-readiness
+      - name: Deployment cache contract
+        run: npm run smoke:deployment-cache
+      - name: Load-test contract
+        run: npm run smoke:load-tests
+      - name: Monitoring contract
+        run: npm run smoke:monitoring
+      - name: Database contract
+        run: npm run smoke:database
+      - name: Notifications contract
+        run: npm run smoke:notifications
+      - name: Notification phase 10 contract
+        run: npm run smoke:notification-phase10
+      - name: Sentry runtime contract
+        run: npm run smoke:sentry-runtime
+      - name: Homepage hero contract
+        run: npm run smoke:homepage-hero
+      - name: Typography contract
+        run: npm run smoke:typography
+      - name: Platform fonts contract
+        run: npm run smoke:platform-fonts
+      - name: SEO contract
+        run: npm run smoke:seo
+      - name: Public open-items contract
+        run: npm run smoke:public-open-items
+      - name: Handover blockers contract
+        run: npm run smoke:handover-blockers
