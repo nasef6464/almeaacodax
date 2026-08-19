@@ -22,6 +22,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { isStandaloneMockExam } from '../utils/mockExam';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
+import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -109,38 +110,6 @@ const formatQuizCardDate = (createdAt?: number) => {
         month: 'long',
         day: 'numeric'
     });
-};
-
-const normalizeDashboardScope = (value?: string) => (value ?? '').trim().toLowerCase();
-
-const courseBelongsToPath = (course: { pathId?: string; category?: string }, path: { id: string; name?: string }) => {
-    const coursePath = normalizeDashboardScope(course.pathId || course.category);
-    return coursePath === normalizeDashboardScope(path.id) || coursePath === normalizeDashboardScope(path.name);
-};
-
-const getCourseLessons = (course: { modules?: Array<{ lessons: Array<{ id: string }> }> }) =>
-    course.modules?.flatMap((module) => module.lessons || []) || [];
-
-const resolvePathProgress = (
-    path: { id: string; name?: string },
-    courses: Array<{ pathId?: string; category?: string; modules?: Array<{ lessons: Array<{ id: string }> }> }>,
-    completedLessons: string[],
-    examResults: Array<{ skillsAnalysis?: Array<{ pathId?: string }> }>,
-) => {
-    const pathCourses = courses.filter((course) => courseBelongsToPath(course, path));
-    const lessonIds = pathCourses.flatMap(getCourseLessons).map((lesson) => lesson.id);
-    const completedLessonCount = lessonIds.filter((lessonId) => completedLessons.includes(lessonId)).length;
-    const pathExamCount = examResults.filter((result) => (result.skillsAnalysis || []).some((skill) => skill.pathId === path.id)).length;
-    const completedUnits = completedLessonCount + pathExamCount;
-    const totalUnits = lessonIds.length + pathExamCount;
-
-    return {
-        coursesCount: pathCourses.length,
-        lessonsCount: lessonIds.length,
-        completedLessonCount,
-        examsCount: pathExamCount,
-        progress: totalUnits > 0 ? Math.round((completedUnits / totalUnits) * 100) : 0,
-    };
 };
 
 type ScopedQuizResult = QuizResult & {
