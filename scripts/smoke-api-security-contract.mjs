@@ -50,6 +50,17 @@ check("sensitive API routes have smaller body limits", () => {
   assertIncludes(appSource, 'app.use(express.json({ limit: "5mb" }));');
 });
 
+check("email verification resend is protected from notification flooding", () => {
+  assertIncludes(appSource, '"/api/auth/email/resend-verification"');
+  assertIncludes(appSource, '"/auth/email/resend-verification"');
+  const limiterIndex = appSource.indexOf("sensitiveActionRateLimiter");
+  const canonicalIndex = appSource.indexOf('"/api/auth/email/resend-verification"');
+  const aliasIndex = appSource.indexOf('"/auth/email/resend-verification"');
+  if (limiterIndex < 0 || canonicalIndex < 0 || aliasIndex < 0) {
+    throw new Error("Verification resend limiter coverage is incomplete");
+  }
+});
+
 check("production errors do not leak server details", () => {
   assertIncludes(errorHandlerSource, 'process.env.NODE_ENV === "production"');
   assertIncludes(errorHandlerSource, 'statusCode >= 500 && isProduction ? "Internal server error"');

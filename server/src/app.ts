@@ -91,6 +91,8 @@ export function createApp() {
       "/api/payments/*",
       "/api/auth/me/redeem-access-code",
       "/auth/me/redeem-access-code",
+      "/api/auth/email/resend-verification",
+      "/auth/email/resend-verification",
     ],
     sensitiveActionRateLimiter,
   );
