@@ -32,7 +32,7 @@ concurrency:
 jobs:
   inventory:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout exact source head
         uses: actions/checkout@v4
@@ -76,6 +76,33 @@ jobs:
           set -uo pipefail
           npm --prefix server audit --omit=dev --json > /tmp/server-prod-audit.json || true
           node tools/refactor/dependency-audit-summary.mjs server-production /tmp/server-prod-audit.json
+
+      - name: Install exact dependency trees for provenance
+        run: |
+          npm ci --ignore-scripts
+          npm --prefix server ci --ignore-scripts
+
+      - name: Explain root production blockers
+        shell: bash
+        run: |
+          set -uo pipefail
+          echo '===== ROOT PROVENANCE: ws ====='
+          npm explain ws || true
+          echo '===== ROOT PROVENANCE: protobufjs ====='
+          npm explain protobufjs || true
+
+      - name: Explain API production blockers
+        shell: bash
+        run: |
+          set -uo pipefail
+          echo '===== API PROVENANCE: @sentry/node ====='
+          npm --prefix server explain @sentry/node || true
+          echo '===== API PROVENANCE: ws ====='
+          npm --prefix server explain ws || true
+          echo '===== API PROVENANCE: socket.io-parser ====='
+          npm --prefix server explain socket.io-parser || true
+          echo '===== API PROVENANCE: ip-address ====='
+          npm --prefix server explain ip-address || true
 
       - name: Confirm audit is read-only
         shell: bash
