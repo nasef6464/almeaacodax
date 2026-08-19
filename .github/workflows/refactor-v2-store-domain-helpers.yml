@@ -46,10 +46,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
 
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Install API dependencies required by repository typecheck
+        run: npm --prefix server ci
 
       - name: Verify store domain helper boundary before any apply
         run: node scripts/smoke-store-domain-helpers-boundary-contract.mjs
