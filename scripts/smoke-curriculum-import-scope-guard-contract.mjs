@@ -13,15 +13,24 @@ check("scope guard helper exists", () => {
   assertIncludes("const assertCurriculumImportScope", "guard helper");
   assertIncludes("Lesson scope mismatch", "lesson mismatch error");
   assertIncludes("Quiz scope mismatch", "quiz mismatch error");
+  assertIncludes("Lesson import scope mismatch", "imported lesson mismatch error");
 });
 
-check("create route enforces curriculum scope", () => {
-  assertIncludes("await assertCurriculumImportScope({\n      coursePathId: payload.pathId", "post scope guard");
+check("create route normalizes curriculum before enforcing scope", () => {
+  assertIncludes("modules: normalizeCourseModules(payload.modules)", "normalized course modules");
+  assertIncludes("assessments: normalizeCourseAssessments(payload.assessments)", "normalized course assessments");
+  assertIncludes("await assertCurriculumImportScope({\n      coursePathId: normalizedPayload.pathId", "post scope guard");
+  assertIncludes("courseSubjectId: normalizedPayload.subjectId", "post subject scope");
+  assertIncludes("modules: normalizedPayload.modules as CurriculumModule[]", "post normalized modules scope");
 });
 
-check("update route enforces curriculum scope", () => {
-  assertIncludes("const nextPathId = String(payload.pathId", "patch scope derivation");
-  assertIncludes("await assertCurriculumImportScope({\n      coursePathId: nextPathId", "patch scope guard");
+check("update route derives effective scope before enforcing imported curriculum", () => {
+  assertIncludes("const nextPathId = String(normalizedPayload.pathId", "patch path scope derivation");
+  assertIncludes("const nextSubjectId = String(normalizedPayload.subjectId", "patch subject scope derivation");
+  assertIncludes("const nextModules = Array.isArray(normalizedPayload.modules)", "patch module scope derivation");
+  assertIncludes("await assertCurriculumImportScope({\n    coursePathId: nextPathId", "patch scope guard");
+  assertIncludes("courseSubjectId: nextSubjectId", "patch subject guard");
+  assertIncludes("modules: nextModules", "patch modules guard");
 });
 
 let failed = 0;
@@ -37,8 +46,8 @@ for (const item of checks) {
 }
 
 if (failed) {
-  console.error(`\\n${failed}/${checks.length} curriculum scope guard checks failed.`);
+  console.error(`\n${failed}/${checks.length} curriculum scope guard checks failed.`);
   process.exit(1);
 }
 
-console.log(`\\nAll ${checks.length} curriculum scope guard checks passed.`);
+console.log(`\nAll ${checks.length} curriculum scope guard checks passed.`);
