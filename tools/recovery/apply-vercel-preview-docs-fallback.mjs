@@ -102,7 +102,7 @@ source = `${prefix}${replacement}`;
 if (!source.includes(installedMarker)) {
   throw new Error('Fallback marker missing after replacement.');
 }
-if (!source.includes("grep -Ev '^(docs/|\\\\.github/)'")) {
+if (!source.includes("grep -Ev '^(docs/|\\.github/)'")) {
   throw new Error('Deployability allowlist guard missing after replacement.');
 }
 if (!source.includes('Exact-head preview is still required.')) {
