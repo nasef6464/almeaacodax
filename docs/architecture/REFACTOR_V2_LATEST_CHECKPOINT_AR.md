@@ -2,82 +2,145 @@
 
 > نقطة الاستئناف السريعة الحالية. التاريخ التفصيلي محفوظ في سجلات `docs/architecture/REFACTOR_V2_EXECUTION_LEDGER*`. العمل يظل على `refactor/repository-v2-safe` فقط، ولا يتم دمج `main` إلا بعد Release Candidate verification وموافقة المستخدم الصريحة.
 
-## الحالة الحالية — Quiz Boundary Decomposition ✅
+## الحالة الحالية — Dependency Security Closure ✅
 
 - الفرع: `refactor/repository-v2-safe`.
 - PR #3: **open + draft + mergeable + not merged**.
-- آخر runtime refactor commit: `8eb3d0fa6c336ae5f870fe57f4be19e489eb6e98` — `refactor(quizzes): extract query utilities`.
+- آخر dependency-remediation runtime-equivalent head قبل هذا checkpoint: `e3026a90a2aafa3ecbbdc81145f6d3939d19cc66` — `fix(deps): remediate root babel core advisory`.
 - `main` لم يتم تعديله.
 - لا force-push.
-- `server/src/routes/quiz.routes.ts` انخفض من نحو **3145** سطرًا عند بداية هذه الدفعات إلى **2892** سطرًا بعد آخر extraction، بدون نقل scoring/access/authorization/database orchestration خارج الـroute.
+- لا `npm audit fix --force`.
+- لا overrides عشوائية.
+- لم يتم تنفيذ Sentry major upgrade تلقائيًا.
 
-## Quiz ownership المستخرج
+## نتيجة Root / Frontend dependency audit ✅
 
-أصبحت الحدود التالية مستقلة وتحت عقود مباشرة:
+تم إغلاق جميع advisories في شجرة الـroot، بما فيها production وdev/build dependencies.
 
-- `server/src/modules/quizzes/http/questionQuerySchemas.ts`
-  - Question transport schema.
-  - Question list query schema.
-  - analytics/results query schemas.
-- `server/src/modules/quizzes/http/quizDefinitionSchema.ts`
-  - Quiz definition transport schema فقط.
-- `server/src/modules/quizzes/http/submissionSchemas.ts`
-  - Question attempt وquiz submit transport schemas فقط.
-- `server/src/modules/quizzes/http/queryUtilities.ts`
-  - regex escaping، date parsing، quiz-results cache-key construction.
-- `server/src/modules/quizzes/presentation/questionPresentation.ts`
-  - question summary projection، learner sanitization، question usability.
-- `server/src/modules/quizzes/analytics/skillAnalytics.ts`
-  - pure mastery/status/recommendation helpers.
+آخر evidence مباشر من dedicated Babel remediation run `32227322380` / job `95989605166`:
 
-## ما بقي داخل `quiz.routes.ts` عمدًا
+- `root-all-after`: **0 vulnerabilities**.
+  - info: 0
+  - low: 0
+  - moderate: 0
+  - high: 0
+  - critical: 0
+- `root-production-after`: **0 vulnerabilities**.
+- `npm ci`: `found 0 vulnerabilities`.
 
-لأن الأولوية risk/value وليست line-count:
+أهم الإصلاحات التي أوصلت الـroot إلى الصفر:
 
-- HTTP routing وmiddleware.
+- PostCSS: `8.5.15 -> 8.5.26`، ومعه `nanoid 3.3.12 -> 3.3.18` كاعتماد تابع.
+- Vite: `6.4.2 -> 6.4.3`.
+- GenAI tree:
+  - `ws 8.20.1 -> 8.21.3`.
+  - `protobufjs 7.6.1 -> 7.6.5`.
+- root `brace-expansion`:
+  - `5.0.6 -> 5.0.9`.
+  - النسخة المتداخلة `2.1.0 -> 2.1.4`.
+- `fast-uri 3.1.2 -> 3.1.5`.
+- `@babel/core 7.29.0 -> 7.29.7` مع تحديثات Babel 7.x الداخلية المتوافقة داخل `package-lock.json` فقط.
+
+كل دفعة بقيت lock-only ولم تحول الاعتمادات التابعة إلى direct dependencies.
+
+## نتيجة Server production dependency audit
+
+تم إغلاق جميع High/Low advisories التي أمكن إصلاحها بدون major migration:
+
+- **High: 0**.
+- **Low: 0**.
+- **Critical: 0**.
+- المتبقي: **16 Moderate** داخل شجرة `@sentry/node` / OpenTelemetry.
+
+الحالة المتبقية ليست remediation بسيطة داخل نفس major:
+
+- `@sentry/node` الحالي داخل 9.x، والـaudit يوجه إلى `10.70.0` كحل major.
+- لذلك تم **تأجيل Sentry 9 -> 10 عمدًا**؛ أي انتقال له يحتاج دفعة migration مستقلة مع Sentry runtime/live proof، monitoring، API build/typecheck، integration/security contracts، ثم Full Safety Gate.
+- لا يتم استخدام `--force` أو override لكسر هذه الحدود.
+
+أهم server remediations المغلقة:
+
+- Mongoose: `8.23.0 -> 8.24.3`.
+- Express-owned body-parser: `1.20.5 -> 1.20.6`.
+- Sentry-owned `brace-expansion 2.1.0 -> 2.1.4` بدون Sentry major.
+- express-rate-limit-owned `ip-address 10.2.0 -> 10.5.0`.
+- Socket.IO tree:
+  - `engine.io 6.6.8 -> 6.6.9`.
+  - `socket.io-adapter 2.5.7 -> 2.5.8`.
+  - `socket.io-parser 4.2.6 -> 4.2.7`.
+  - `ws 8.20.1 -> 8.21.3`.
+
+## Contract / CI ownership repairs المغلقة ✅
+
+أثناء remediation ظهرت عقود صحيحة في معناها لكنها تتبع مواقع قديمة. تم إصلاح ownership فقط بدون تخفيف المتطلبات:
+
+- `smoke:monitoring` أصبح يقرأ الأدلة من `docs/archive_reports/`.
+- NoSQL/security contracts أصبحت تتبع مواقع الأدلة المؤرشفة الحالية.
+- Notification + Notification Phase 10 contracts أصبحت تتبع الأدلة الحالية.
+- Notification Phase 10 يثبت الآن أن:
+  - `server.ts` يبدأ `bootstrapServer()`.
+  - `server/src/app/bootstrap/bootstrapServer.ts` هو المالك الحالي لـ`startNotificationWorkers()`.
+- Mongoose remediation workflow أصبح يقبل **clean no-op**؛ إذا لم توجد تغييرات فهذا نجاح، وإذا وُجدت تغييرات فلا يُسمح إلا بـ`server/package-lock.json`.
+- كل remediation workflows تستخدم exact-head checkout + concurrency + remote-head verification + no force-push.
+
+## Quiz Boundary Decomposition المحفوظ ✅
+
+لا تزال حدود Quiz المستخرجة كما هي بدون رجوع أو خلط مع security remediation:
+
+- `server/src/modules/quizzes/http/questionQuerySchemas.ts`.
+- `server/src/modules/quizzes/http/quizDefinitionSchema.ts`.
+- `server/src/modules/quizzes/http/submissionSchemas.ts`.
+- `server/src/modules/quizzes/http/queryUtilities.ts`.
+- `server/src/modules/quizzes/presentation/questionPresentation.ts`.
+- `server/src/modules/quizzes/analytics/skillAnalytics.ts`.
+
+ويظل داخل `server/src/routes/quiz.routes.ts` عمدًا:
+
+- HTTP routing/middleware.
 - authorization وrole/scope checks.
 - DB queries/persistence.
-- quiz/question integrity validation.
+- integrity validation.
 - publish/update orchestration.
-- attempt limits، quiz windows، submission keys.
+- attempt limits/windows/submission keys.
 - learner/group/package access enforcement.
-- server-side scoring وresult creation.
+- server-side scoring/result creation.
 - skill-progress persistence وsubmission side effects.
-- cache state/TTL/eviction.
-- `MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3` وسياسة evidence المرتبطة بتقارير المنصة.
+- cache runtime state.
 
-لا يتم نقل هذه المسؤوليات لمجرد تقليل حجم الملف؛ أي انتقال لاحق يحتاج عقدًا مباشرًا يثبت business/security semantics أولًا.
+لا يتم استئناف تفكيك business/security-sensitive Quiz logic لمجرد line-count.
 
-## التحقق المغلق ✅
+## التحقق المغلق أثناء Security Closure ✅
 
-آخر Phase Reviews الخاصة بـQuiz مرّت على:
+دفعات remediation الموثقة مرّت، حسب نطاق كل دفعة، على مجموعات من:
 
-- API typecheck + production build.
-- architecture + module boundary gates.
-- Question/Query schema boundary.
-- Quiz Definition boundary.
-- Submission schema boundary.
-- Question Presentation boundary.
-- Skill Analytics boundary.
-- Query Utilities boundary.
-- Question Bank runtime CRUD/regex-safety contract.
-- Reports role/evidence contract.
-- Frontend performance contract.
-- Question HTML security.
-- Quiz integrity guard.
-- Quiz answer-exposure contract.
-- Quiz client security.
-- My Quizzes + Quiz Access.
-- Authentication + API security.
-- Global Student Journey + Student Learning Journey.
-- Results + Route Loading + Runtime Source.
-- Refactor workflow race-safety.
+- root/API typecheck.
+- frontend/API production builds.
+- performance contract.
+- deployment-cache contract.
+- route-loading.
+- runtime-source.
+- Global Student Journey.
+- API/Auth/NoSQL security.
+- database contract.
+- Sentry runtime + monitoring.
+- Redis / Socket.IO / Notification / Notification Phase 10.
+- integrations runtime.
+- dependency provenance checks.
+- lockfile-only scope checks.
 
-آخر Standard Safety Gate للـcode path أنهى baseline-quality-gate **SUCCESS** بجميع فحوصات frontend/API/Schools/Reports/student/security. Vercel exact-head preview أصبح يُرفض أحيانًا بسبب `build-rate-limit` من Vercel وليس build regression؛ آخر runtime preview موثق قبل بلوغ الحد كان READY ويرجع HTTP 200.
+آخر root remediation أثبت تحديدًا أن root all-dependencies وroot production كلاهما **0 vulnerabilities** بعد التحديث، ثم مرّ typecheck/build/performance/cache/routes/runtime/student journey قبل الـcommit.
+
+## Vercel
+
+Vercel exact-head قد يظهر `failure` بسبب `build-rate-limit` / quota. هذا يُعامل كحالة بنية تحتية منفصلة وليس code regression.
+
+- لا يقال إن Vercel exact-head أخضر إذا كان rate-limited.
+- الـStandard Safety Gate code job وdedicated workflows تبقى دليل الكود.
+- آخر runtime-equivalent previews الموثقة قبل بلوغ الحد كانت READY وتعيد HTTP 200.
 
 ## Repo-wide audit baseline
 
-آخر repository audit الموثق أظهر:
+آخر repository audit الموثق قبل Security Closure أظهر:
 
 - 899 tracked files.
 - 125,895 runtime lines وقت القياس.
@@ -85,23 +148,18 @@
 - 0 dependency cycles.
 - 82 hotspots فوق 400 سطر.
 
-بعد إغلاق دفعات Quiz الحالية، لا نواصل تفكيك business logic عالي الحساسية آليًا؛ نعود إلى ترتيب المخاطر على مستوى المستودع.
+بعد إغلاق dependency security ضمن السياسة non-breaking، الخطوة التالية ليست Sentry major تلقائيًا. نعود إلى **fresh repository audit + Production Readiness ranking حسب risk/value/coupling**.
 
-## المرحلة الحالية — Production Readiness / Dependency Security
+## الاتجاه التالي
 
-أثناء `npm ci` داخل GitHub Actions يظهر حاليًا:
-
-- root/frontend: **10 vulnerabilities** (1 low, 2 moderate, 7 high).
-- server: **25 vulnerabilities** (2 low, 17 moderate, 6 high).
-
-هذه الأرقام وحدها لا تكفي لاتخاذ قرار تحديث. القاعدة الحالية:
-
-1. تشغيل dependency audit **قراءة فقط** داخل GitHub Actions.
-2. فصل all-dependencies عن production-only للـroot والـserver.
-3. استخراج package/advisory/severity/direct-vs-transitive/fixAvailable بدقة.
-4. عدم تشغيل `npm audit fix --force`.
-5. معالجة كل upgrade على دفعة صغيرة مع typecheck/build والعقود المرتبطة به.
-6. لا تعديل lockfiles قبل تحديد remediation آمن وغير breaking.
+1. تشغيل fresh Dependency Audit وStandard Safety Gate على checkpoint الحالي.
+2. تشغيل/fresh repository architecture audit بعد تثبيت security closure.
+3. إعادة ترتيب hotspots حسب coupling + change risk + product impact وليس line-count فقط.
+4. مراجعة duplicate/dead-code/hard-coded URL/API-in-presentation/store-coupling.
+5. مراجعة `PROJECT_MAP` وownership notes.
+6. product journey verification للطالب/المعلم/المشرف/المدرسة/الأدمن.
+7. إبقاء Sentry major migration كمسار منفصل يحتاج قرارًا واختبارات مخصصة، وليس تحديثًا آليًا.
+8. Production Readiness -> Freeze -> Full Safety Gate -> compare vs `main` -> explicit merge approval.
 
 ## بروتوكول الاستمرار
 
