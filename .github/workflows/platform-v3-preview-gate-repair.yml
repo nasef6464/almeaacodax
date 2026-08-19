@@ -4,18 +4,21 @@ on:
   push:
     branches:
       - develop/platform-v3-recovery
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: platform-v3-preview-gate-repair
+  group: platform-v3-preview-gate-repair-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
   repair:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && ((github.event_name == 'pull_request' && github.head_ref == 'develop/platform-v3-recovery') || (github.event_name == 'push' && github.ref_name == 'develop/platform-v3-recovery') || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -26,6 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Validate guarded executor syntax
+        run: node --check tools/recovery/apply-vercel-preview-docs-fallback.mjs
       - name: Apply guarded preview-gate repair
         run: node tools/recovery/apply-vercel-preview-docs-fallback.mjs
       - name: Verify workflow patch shape
@@ -47,7 +52,7 @@ jobs:
       - name: Commit verified preview-gate repair
         shell: bash
         env:
-          EXPECTED_SHA: ${{ github.sha }}
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
           if git diff --quiet; then
