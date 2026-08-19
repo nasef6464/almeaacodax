@@ -8,8 +8,6 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { adapter } from '../services/adapter';
 
-const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
-
 const withCourseAccessLocks = (course: Course, hasAccess: boolean): Course => {
     if (hasAccess) return course;
 
@@ -33,7 +31,6 @@ const CourseView: React.FC = () => {
     const [loadError, setLoadError] = useState('');
     const [isPlaying, setIsPlaying] = useState(() => searchParams.get('learn') === '1');
     const requestedTab = searchParams.get('tab');
-    const purchaseRequested = searchParams.get('buy') === '1';
     const [certificateCode, setCertificateCode] = useState('');
     const { user, enrolledCourses, hasScopedPackageAccess, courses } = useStore();
     const isGuestUser = !user?.email || user.id === 'guest';
@@ -54,7 +51,6 @@ const CourseView: React.FC = () => {
         const nextParams = new URLSearchParams(searchParams);
         if (nextPlaying) {
             nextParams.set('learn', '1');
-            nextParams.delete('buy');
             if (lessonId) {
                 nextParams.set('lesson', lessonId);
             }
@@ -62,12 +58,6 @@ const CourseView: React.FC = () => {
             nextParams.delete('learn');
             nextParams.delete('lesson');
         }
-        setSearchParams(nextParams, { replace: true });
-    }, [searchParams, setSearchParams]);
-
-    const closePurchaseModal = useCallback(() => {
-        const nextParams = new URLSearchParams(searchParams);
-        nextParams.delete('buy');
         setSearchParams(nextParams, { replace: true });
     }, [searchParams, setSearchParams]);
 
@@ -152,7 +142,7 @@ const CourseView: React.FC = () => {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center">
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 leading-tight">الدورة غير متاحة حاليًا</h1>
-                <button
+                <button 
                     onClick={() => window.history.back()}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold w-full sm:w-auto"
                 >
@@ -179,24 +169,21 @@ const CourseView: React.FC = () => {
         coursePath && courseSubjectPath
             ? `/category/${coursePath}?subject=${courseSubjectPath}&tab=skills`
             : '/dashboard?tab=paths';
-    const packagesHref =
-        coursePath && courseSubjectPath
-            ? `/category/${coursePath}?subject=${courseSubjectPath}&tab=packages&contentType=courses`
-            : '/pricing';
     const courseNextAction = (
         <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
             <StudentNextActionStrip
-                title={canOpenCoursePlayer ? 'ابدأ أول درس الآن' : 'اشتر الدورة أو اختر باقة مناسبة'}
-                description={canOpenCoursePlayer ? 'شاهد درسًا قصيرًا، ثم انتقل لتدريب بسيط من نفس المهارة.' : 'يمكنك شراء هذه الدورة وحدها، أو اختيار باقة تفتح محتوى أوسع في نفس المسار.'}
-                primaryLabel={canOpenCoursePlayer ? 'ابدأ التعلم' : 'شراء الدورة'}
-                primaryHref={canOpenCoursePlayer ? `/course/${course.id}?learn=1` : `/course/${course.id}?buy=1`}
-                secondaryLabel={canOpenCoursePlayer ? 'التأسيس' : 'عرض الباقات'}
-                secondaryHref={canOpenCoursePlayer ? foundationHref : packagesHref}
+                title={canOpenCoursePlayer ? 'ابدأ أول درس الآن' : 'افتح الباقة المناسبة'}
+                description={canOpenCoursePlayer ? 'شاهد درسًا قصيرًا، ثم انتقل لتدريب بسيط من نفس المهارة.' : 'بعد التفعيل تظهر لك الدروس والاختبارات المرتبطة بهذه الدورة.'}
+                primaryLabel={canOpenCoursePlayer ? 'ابدأ التعلم' : 'عرض الباقات'}
+                primaryHref={canOpenCoursePlayer ? `/course/${course.id}?learn=1` : '/pricing'}
+                secondaryLabel="التأسيس"
+                secondaryHref={foundationHref}
                 tone={canOpenCoursePlayer ? 'indigo' : 'amber'}
             />
         </div>
     );
 
+    // if (isPlaying)
     if (isPlaying && (isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson)) {
         return (
             <CoursePlayer
@@ -279,18 +266,11 @@ const CourseView: React.FC = () => {
                     updateLearningUrlState(true, lessonId);
                 }}
             />
-            {purchaseRequested && !isFreeCourse && !isStaffViewer ? (
-                <React.Suspense fallback={null}>
-                    <PaymentModal
-                        isOpen
-                        onClose={closePurchaseModal}
-                        item={{ ...course, purchaseType: 'course' }}
-                        type="course"
-                    />
-                </React.Suspense>
-            ) : null}
         </div>
     );
 };
 
 export default CourseView;
+
+
+
