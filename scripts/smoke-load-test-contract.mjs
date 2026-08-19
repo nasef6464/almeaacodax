@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const k6Source = await readFile(new URL("../load-tests/k6-platform-journey.js", import.meta.url), "utf8");
 const readmeSource = await readFile(new URL("../load-tests/README.md", import.meta.url), "utf8");
-const reportSource = await readFile(new URL("../LOAD_TEST_REPORT.md", import.meta.url), "utf8");
+const reportSource = await readFile(new URL("../docs/archive_reports/LOAD_TEST_REPORT.md", import.meta.url), "utf8");
 
 const checks = [];
 
