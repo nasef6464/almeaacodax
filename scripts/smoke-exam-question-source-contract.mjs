@@ -52,9 +52,15 @@ for (const [name, source] of [
   });
 }
 
-check('directed exam entry opens an unsaved draft instead of persisting zero questions', () => {
+check('directed exam entry opens an unsaved normalized draft instead of persisting zero questions', () => {
   assertIncludes(quizzesManagerSource, 'setDraftMode(mode)');
-  assertIncludes(quizzesManagerSource, 'initialMode={draftMode || undefined}');
+  assertIncludes(quizzesManagerSource, 'setEditingQuizId(null)');
+  assertIncludes(quizzesManagerSource, 'setIsEditing(true)');
+  assertIncludes(quizzesManagerSource, "defaultKind={draftMode === 'saher' || draftMode === 'central' ? 'test' : undefined}");
+  assertIncludes(
+    quizzesManagerSource,
+    "initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}",
+  );
   assertNotIncludes(quizzesManagerSource, 'addQuiz(draftQuiz)');
 });
 
