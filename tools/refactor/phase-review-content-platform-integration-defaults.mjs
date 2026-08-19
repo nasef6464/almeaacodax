@@ -48,6 +48,13 @@ if (changed.status !== 0 || untracked.status !== 0) {
   process.exit(1);
 }
 const changedFiles = [...new Set(`${changed.stdout || ''}\n${untracked.stdout || ''}`.split(/\r?\n/).map((item) => item.trim()).filter(Boolean))];
+
+if (changedFiles.length === 0) {
+  console.log('\n[content-platform-integration-defaults-phase-review] ALL CHECKS PASS — verified clean no-op');
+  console.log(JSON.stringify({ results, changedFiles, mode: 'NO_OP' }, null, 2));
+  process.exit(0);
+}
+
 const unexpected = changedFiles.filter((file) => !allowedFiles.has(file));
 if (unexpected.length) {
   console.error(`[content-platform-integration-defaults-phase-review] Unexpected changed files: ${unexpected.join(', ')}`);
@@ -67,4 +74,4 @@ if (stageVerifiedFiles.status !== 0) {
 }
 
 console.log('\n[content-platform-integration-defaults-phase-review] ALL CHECKS PASS');
-console.log(JSON.stringify({ results, changedFiles }, null, 2));
+console.log(JSON.stringify({ results, changedFiles, mode: 'APPLY' }, null, 2));
