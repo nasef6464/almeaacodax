@@ -86,6 +86,15 @@ check('question/query schema ownership is exclusive after delegation while stagi
   }
 });
 
+check('delegated question/query schema import is singular and anchored before route-local state', () => {
+  if (!delegated) return;
+  const importCount = routeSource.split(schemaImport).length - 1;
+  assert.equal(importCount, 1, `expected one delegated schema import, found ${importCount}`);
+  const importIndex = routeSource.indexOf(schemaImport);
+  const cacheIndex = routeSource.indexOf('const QUESTION_SUMMARY_TEXT_LIMIT = 280;');
+  assert.ok(importIndex >= 0 && cacheIndex >= 0 && importIndex < cacheIndex, 'delegated schema import must precede route-local cache/state declarations');
+});
+
 check('quiz business rules and submission schemas remain route-owned', () => {
   for (const fragment of [
     'const validateQuizQuestionIntegrity = async',
