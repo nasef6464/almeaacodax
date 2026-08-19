@@ -12,16 +12,6 @@ on:
       - 'tools/refactor/apply-results-score-presentation.mjs'
       - 'tools/refactor/phase-review-results-score-presentation.mjs'
       - '.github/workflows/refactor-v2-results-score-presentation.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'pages/Results.tsx'
-      - 'components/results/resultScorePresentation.ts'
-      - 'scripts/smoke-results-score-presentation-boundary-contract.mjs'
-      - 'tools/refactor/apply-results-score-presentation.mjs'
-      - 'tools/refactor/phase-review-results-score-presentation.mjs'
-      - '.github/workflows/refactor-v2-results-score-presentation.yml'
 
 permissions:
   contents: write

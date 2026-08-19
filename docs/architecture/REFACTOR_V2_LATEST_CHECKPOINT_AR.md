@@ -27,6 +27,12 @@
 - Low: **0**.
 - المتبقي: **16 Moderate** داخل `@sentry/node` / OpenTelemetry tree ويتطلب Sentry major حسب audit؛ لذلك لا يتم ترقيته تلقائيًا.
 
+آخر read-only Dependency Audit على clean Results checkpoint:
+
+- run `32251210469` — **SUCCESS**.
+- جميع root/API audit + provenance steps نجحت.
+- لم يتم فتح major upgrade أو override جديد.
+
 ## Fresh repository audit baseline
 
 آخر fresh audit بعد Security Closure أظهر:
@@ -47,113 +53,124 @@
 
 ## Paths Display Presentation Closure ✅
 
-تم اختيار `dashboards/admin/PathsManager.tsx` كأول hotspot منخفض المخاطر لأن أعلى الملف كان يحتوي presentation/display logic صافيًا منفصلًا عن store/mutations/access/quiz placement.
+تم استخراج presentation/display logic الصافي من `dashboards/admin/PathsManager.tsx` إلى:
 
-### المالك الجديد
+`dashboards/admin/PathsManager/pathDisplayPresentation.tsx`
 
-`dashboards/admin/PathsManager/pathDisplayPresentation.tsx` أصبح يملك فقط:
+المالك الجديد يملك فقط:
 
 - `resolveColor`.
 - `resolvePathDisplaySettings`.
 - `getPathIcon`.
 - `getSubjectIcon`.
 
-ويمنع direct contract نقل store/fetch/storage/CRUD side effects إلى هذا helper.
-
-### ما بقي داخل PathsManager عمدًا
+وبقي داخل `PathsManager` عمدًا:
 
 - `useStore()`.
 - CRUD mutations.
-- `publicPackageContentOptions`.
-- `isSelectedForSubjectLearningSlot`.
 - package/access logic.
 - quiz placement/orchestration.
 
-### commits / evidence
+Evidence:
 
-- setup: `289f83169884aa897fcbab06348e6b18a2b65df4` — `ci(refactor): add paths display presentation gate`.
-- runtime: `15871e3e3b34a9501f627fb9f5f41e53d4888f9e` — `refactor(paths): extract display presentation helpers`.
-  - runtime diff: `PathsManager.tsx` فقط، `+1 / -39`.
-- clean checkpoint: `ded38e5f6870eccadfb253ab243db2184d382f78`.
-- primary apply run: `32246291252` / job `96047434638` — PASS.
-- clean verification run على post-boundary: `32246816035` — PASS.
-
-التحقق شمل typecheck + frontend build + architecture + module boundary + direct POST boundary + performance + route loading + runtime source + Global Student Journey.
+- setup: `289f83169884aa897fcbab06348e6b18a2b65df4`.
+- runtime: `15871e3e3b34a9501f627fb9f5f41e53d4888f9` — `PathsManager.tsx` فقط، `+1 / -39`.
+- primary run: `32246291252` — PASS.
+- clean verification: `32246816035` — PASS.
 
 ## Workflow Trigger Hygiene Closure ✅
 
-المشكلة: الـclosed phase/remediation workflows كانت تحتفظ بـ`pull_request` على PR طويل العمر، لذلك أي synchronize كان يعيد تشغيل عشرات workflows مغلقة حتى عندما لا تتغير ملكيتها.
-
-### التحويل الذري
+تم إغلاق مشكلة إعادة تشغيل closed phase/remediation workflows مع كل PR synchronize.
 
 - target workflows: **23**.
 - PRE_HYGIENE: `pullRequestTriggerCount = 23`.
-- apply: أزال **23** PR trigger وأضاف `workflow_dispatch` إلى **19** workflows التي لم تكن تملكه.
 - POST_HYGIENE: `pullRequestTriggerCount = 0`, `workflowDispatchCount = 23`.
-- كل الـ23 ما زالت تحتفظ بـsafe-branch scoped `push` verification.
-- central Safety Gate بقي PR + safe-branch triggered.
-- Dependency Audit بقي PR-triggered.
+- safe-branch scoped `push` verification بقي موجودًا.
+- central Safety Gate وDependency Audit بقيا PR-triggered.
 - race-safety contract بقي PASS.
 
-### evidence
+Evidence:
 
-- observability fix: `c703bfa83b1fa4ad56306791f2a1d0796caa50cf`.
-- verification run: `32246713720` / job `96048724146`.
-  - source contract: PASS / PRE_HYGIENE.
-  - apply: PASS, 23/23.
-  - phase review: PASS / POST_HYGIENE.
-  - race-safety: PASS.
-  - runner push فقط رُفض لأن workflow `GITHUB_TOKEN` لا يملك `workflows` permission.
-- runner-created verified commit object: `03938efbbc24f22a88e97c5d1253727ce0395c7b`.
-- تم fast-forward للفرع الآمن إلى نفس الـverified commit عبر GitHub connector وبدون force.
+- verified commit: `03938efbbc24f22a88e97c5d1253727ce0395c7b`.
 - post-hygiene run `32246815920`: **SUCCESS**.
+- بعد الإغلاق انخفض cumulative PR noise من قرابة 26 workflows إلى البوابات الفعلية فقط.
 
-النتيجة العملية بعد الإغلاق: الرأس post-hygiene شغّل فقط Paths verification + Dependency Audit + Safety Gate + Hygiene confirmation، بدل قرابة 26 cumulative workflows.
+## Results Score Presentation Closure ✅
 
-## Dependency Audit بعد Hygiene ✅
+تم اختيار `pages/Results.tsx` كدفعة منخفضة المخاطر لأن أعلى الملف احتوى deterministic score/display mapping منفصلًا عن recommendation resolution وreview reconstruction وrouting/store ownership.
 
-- run `32246816071`: **SUCCESS**.
-- لم يتم فتح major upgrade أو override جديد.
+### المالك الجديد
 
-## Standard Safety Gate بعد Paths + Hygiene
+`components/results/resultScorePresentation.ts` أصبح يملك فقط:
 
-run: `32246815869`.
+- `getMasteryClasses`.
+- `getSkillPriorityLabel`.
+- `getFriendlyResultMessage`.
+- `getScoreVisualTone`.
+- `getStudentFriendlyChecklist`.
 
-### Code / baseline job ✅
+### ما بقي داخل Results عمدًا
 
-`baseline-quality-gate`: **SUCCESS**.
+- `getQuestionContextScore`.
+- `supplementMissingReviewQuestions`.
+- `getSkillRecommendation`.
+- `getStatusFromMastery`.
+- store state/selectors.
+- result routing/retry context.
+- recommendation resolution.
+- review reconstruction.
+- PDF/share interactions.
+- analytics aggregation/page orchestration.
 
-نجح فيه:
+### commits / evidence
 
-- frontend typecheck.
-- API typecheck.
+- setup: `4a0b7fd3893a297f008eae82c4232b10f9c7527d` — `ci(refactor): add Results score presentation gate`.
+- runtime: `0e470642027af8b9c53e621b2790521b8df6c9c0` — `refactor(results): extract score presentation helpers`.
+  - runtime diff: `pages/Results.tsx` فقط، `+1 / -96`.
+- clean no-op checkpoint: `b45ab0f59cacb19d8bba40fbe69aebe48559c3d3`.
+- primary run: `32247684291` / job `96051681322` — **SUCCESS**.
+- clean verification run: `32251210489` / job `96062411275` — **SUCCESS**.
+
+التحقق شمل:
+
+- PRE/POST direct boundary.
+- repository typecheck.
 - frontend production build.
-- API production build.
-- architecture snapshot/gate.
+- architecture gate.
 - module boundary gate.
-- Content boundary contracts.
-- جميع School management/presentation/relationship/revenue contracts الموجودة في الـgate.
-- Reports boundaries/role contracts.
+- Results product contract (6/6).
 - performance.
-- Global Student Journey.
-- Student Learning Journey.
-- Results.
 - route loading.
 - runtime source.
+- Global Student Journey (12/12).
+- clean re-apply/no-op commit path.
+
+## Standard Safety Gate — clean Results checkpoint ✅
+
+run: `32251210288`.
+
+### baseline-quality-gate ✅
+
+**SUCCESS** بالكامل، بما فيه:
+
+- frontend/API typecheck.
+- frontend/API production build.
+- architecture + module boundary.
+- Content/School/Reports contracts.
+- performance.
+- Global Student Journey + Student Learning Journey.
+- Results contract.
+- route loading + runtime source.
 - quiz integrity.
-- authentication security.
-- API security.
+- authentication/API security.
 - workflow race-safety.
-- current central phase apply/review/commit path بدون regression.
+- central phase review/commit path.
 
-### Vercel exact-head ⚠️
+### Vercel exact-head ✅
 
-- Vercel preview gate: **failure**.
-- combined status target يشير إلى `upgradeToPro=build-rate-limit`.
-- هذه حالة quota/infrastructure خارجية وليست code regression.
-- لا يتم الادعاء بأن exact-head Vercel أخضر ما دام rate-limited.
-
-إذن الحالة الصحيحة: **code gate green / exact-head Vercel quota-blocked**.
+- `Vercel preview deployment gate`: **SUCCESS** في نفس run `32251210288`.
+- هذا يعني أن clean Results checkpoint أعطى exact-head preview جاهزًا بعد فترة كان فيها Vercel أحيانًا محجوبًا بـbuild-rate quota.
+- إذا عاد rate-limit مستقبلًا، لا يُعتبر code regression تلقائيًا؛ لكن **هذه النقطة تحديدًا Vercel فيها أخضر**.
 
 ## Quiz Boundary Decomposition المحفوظ
 
@@ -161,9 +178,10 @@ run: `32246815869`.
 
 ## الاتجاه التالي
 
-1. إبقاء المرحلتين المغلقتين Paths Display وWorkflow Hygiene خارج cumulative PR triggers؛ تبقيان manual + safe-push verifiable.
+1. إبقاء Paths Display وWorkflow Hygiene وResults Score Presentation خارج cumulative PR triggers؛ تبقى manual + safe-push verifiable.
 2. اختيار hotspot التالي من fresh audit حسب risk/value/coupling.
 3. تفضيل pure presentation/projector/query helpers قبل auth/payment/session/cache/persistence orchestration.
-4. إبقاء Quiz/Auth/Payments/Sentry-major في مسارات عالية الحذر ولا تُفكك تلقائيًا.
-5. كل دفعة جديدة تتبع: `small change -> direct contract -> typecheck/build -> focused phase review -> Standard Safety Gate -> checkpoint`.
-6. Production Readiness -> Freeze -> Full Safety Gate -> compare vs `main` -> explicit merge approval.
+4. عدم نقل `Results` recommendation/review reconstruction لمجرد line-count؛ coupling فيها أعلى من score presentation.
+5. إبقاء Quiz/Auth/Payments/Sentry-major في مسارات عالية الحذر ولا تُفكك تلقائيًا.
+6. كل دفعة جديدة تتبع: `small change -> direct contract -> typecheck/build -> focused phase review -> Standard Safety Gate -> checkpoint`.
+7. Production Readiness -> Freeze -> Full Safety Gate -> compare vs `main` -> explicit merge approval.
