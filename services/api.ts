@@ -1,3 +1,13 @@
+import {
+  extractList,
+  withQuery,
+  type PaginatedResponseShape,
+  type PaginationMeta,
+  type PaginationOptions,
+  type QuizResultsPageResponse,
+  type QuizResultsPaginationOptions,
+} from './apiQueryUtilities';
+
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
 const configuredApiBaseUrl =
@@ -18,56 +28,6 @@ interface RequestOptions {
   token?: string | null;
   cache?: RequestCache;
   skipCsrf?: boolean;
-}
-
-interface PaginationOptions {
-  page?: number;
-  limit?: number;
-  search?: string;
-  role?: string;
-  isActive?: boolean;
-  pathId?: string;
-  subjectId?: string;
-}
-
-interface QuizResultsPaginationOptions extends PaginationOptions {
-  noTotal?: boolean;
-  quizId?: string;
-  studentId?: string;
-  status?: "passed" | "failed";
-  dateFrom?: string;
-  dateTo?: string;
-  sortBy?: "createdAt" | "score" | "quizTitle" | "date";
-  sortOrder?: "asc" | "desc";
-}
-
-interface QuizResultsPageResponse<T = unknown> {
-  data: T[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
-}
-
-interface PaginatedResponseShape {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  items?: number;
-}
-
-interface PaginationMeta {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
 }
 
 const PUBLIC_CACHE_PREFIX = "almeaa:public-api:";
@@ -334,32 +294,6 @@ const requestCached = async <T>(path: string, cacheKey: string, ttlMs = PUBLIC_C
   const fresh = await request<T>(path);
   writePublicCache(cacheKey, fresh, ttlMs);
   return fresh;
-};
-
-const extractList = <T = unknown>(payload: unknown, key: string): T[] => {
-  if (Array.isArray(payload)) {
-    return payload as T[];
-  }
-
-  if (payload && typeof payload === "object") {
-    const value = (payload as Record<string, unknown>)[key];
-    return Array.isArray(value) ? (value as T[]) : [];
-  }
-
-  return [];
-};
-
-const withQuery = (path: string, query?: Record<string, string | number | boolean | undefined | null>) => {
-  const entries = Object.entries(query || {}).filter(([, value]) => value !== undefined && value !== null && value !== "");
-  if (!entries.length) {
-    return path;
-  }
-
-  const search = new URLSearchParams();
-  entries.forEach(([key, value]) => {
-    search.set(key, String(value));
-  });
-  return `${path}?${search.toString()}`;
 };
 
 export const api = {
@@ -866,8 +800,6 @@ export const api = {
         token,
       },
     ),
-  getMyNotifications: (pagination?: { page?: number; limit?: number }, token?: string | null) =>
-    request<unknown>(withQuery("/notifications/me", pagination || {}), { token }),
   getMyActivities: (pagination?: { limit?: number }, token?: string | null) =>
     request<{ activities: unknown[] }>(withQuery("/activities/me", pagination || {}), { token, cache: "no-store" }),
   createMyActivity: (
@@ -937,12 +869,6 @@ export const api = {
     request<{ success: boolean; test: unknown }>(`/public-tests/admin/tests/${id}/live-control`, {
       method: "POST",
       body: payload,
-      token,
-    }),
-  markNotificationRead: (id: string, token?: string | null) =>
-    request<unknown>(`/notifications/${id}/read`, {
-      method: "PATCH",
-      body: {},
       token,
     }),
   getNotificationTemplates: (pagination?: { page?: number; limit?: number }, token?: string | null) =>

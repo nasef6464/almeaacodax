@@ -1,0 +1,323 @@
+name: Refactor V2 Safety Gate
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'apps/**'
+      - 'server/**'
+      - 'pages/**'
+      - 'components/**'
+      - 'dashboards/**'
+      - 'contexts/**'
+      - 'services/**'
+      - 'store/**'
+      - 'utils/**'
+      - 'hooks/**'
+      - 'styles/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'App.tsx'
+      - 'index.tsx'
+      - 'types.ts'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'vite.config.ts'
+      - 'vercel.json'
+      - 'Dockerfile.*'
+      - '.github/workflows/refactor-v2-guard.yml'
+
+permissions:
+  contents: write
+  statuses: read
+
+concurrency:
+  group: refactor-v2-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  baseline-quality-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm run server:check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm run server:build
+
+      - name: Generate architecture snapshot
+        run: node tools/refactor/repository-audit.mjs
+
+      - name: Immutable architecture contract gate
+        run: node tools/refactor/architecture-gate.mjs
+
+      - name: Progressive module boundary gate
+        run: node tools/refactor/module-boundary-gate.mjs
+
+      - name: Content learning schema boundary contract
+        run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
+
+      - name: Content platform integration schema boundary contract
+        run: node scripts/smoke-content-platform-integration-schema-boundary-contract.mjs
+
+      - name: Content platform presentation schema boundary contract
+        run: node scripts/smoke-content-platform-presentation-schema-boundary-contract.mjs
+
+      - name: Content school operations schema boundary contract
+        run: node scripts/smoke-content-school-operations-schema-boundary-contract.mjs
+
+      - name: School management contract
+        run: node scripts/smoke-school-management-contract.mjs
+
+      - name: School XLSX safety contract
+        run: node scripts/smoke-xlsx-safety-contract.mjs
+
+      - name: School import parsing logic and performance contract
+        run: npm run smoke:schools-import-parsing
+
+      - name: School readiness view-model logic contract
+        run: node scripts/smoke-schools-readiness-viewmodel-contract.mjs
+
+      - name: School relationship workspace logic contract
+        run: node scripts/smoke-schools-relationship-viewmodel-contract.mjs
+
+      - name: School decision and handover workspace logic contract
+        run: node scripts/smoke-schools-workspace-viewmodel-contract.mjs
+
+      - name: School roster filter and pagination logic contract
+        run: node scripts/smoke-schools-roster-viewmodel-contract.mjs
+
+      - name: School student roster presentation boundary contract
+        run: node scripts/smoke-schools-student-roster-boundary-contract.mjs
+
+      - name: School class operating card presentation boundary contract
+        run: node scripts/smoke-schools-class-card-boundary-contract.mjs
+
+      - name: School workspace courses/classes presentation boundary contract
+        run: node scripts/smoke-schools-workspace-sections-boundary-contract.mjs
+
+      - name: School overview operator presentation boundary contract
+        run: node scripts/smoke-schools-overview-operators-boundary-contract.mjs
+
+      - name: School overview operations presentation boundary contract
+        run: node scripts/smoke-schools-overview-operations-boundary-contract.mjs
+
+      - name: School command center presentation boundary contract
+        run: node scripts/smoke-schools-command-center-boundary-contract.mjs
+
+      - name: School portfolio filter presentation boundary contract
+        run: node scripts/smoke-schools-portfolio-filter-boundary-contract.mjs
+
+      - name: School package access projection contract
+        run: node scripts/smoke-schools-package-access-viewmodel-contract.mjs
+
+      - name: School package card presentation boundary contract
+        run: node scripts/smoke-schools-package-card-boundary-contract.mjs
+
+      - name: School access codes presentation boundary contract
+        run: node scripts/smoke-schools-access-codes-boundary-contract.mjs
+
+      - name: School relations import presentation boundary contract
+        run: node scripts/smoke-schools-relations-import-boundary-contract.mjs
+
+      - name: School relations report presentation boundary contract
+        run: node scripts/smoke-schools-relations-report-boundary-contract.mjs
+
+      - name: School relations status presentation boundary contract
+        run: node scripts/smoke-schools-relations-status-boundary-contract.mjs
+
+      - name: School quick supervisor presentation boundary contract
+        run: node scripts/smoke-schools-quick-supervisor-boundary-contract.mjs
+
+      - name: School reports presentation boundary contract
+        run: node scripts/smoke-schools-reports-boundary-contract.mjs
+
+      - name: Frontend performance contract
+        run: npm run smoke:performance
+
+      - name: School package revenue contract
+        run: node scripts/smoke-package-revenue-contract.mjs
+
+      - name: School admin relationship contract
+        run: node scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs
+
+      - name: School relationship audit contract
+        run: node scripts/smoke-batch100f-relationship-audit-contract.mjs
+
+      - name: Reports domain boundary contract
+        run: node scripts/smoke-reports-domain-boundary-contract.mjs
+
+      - name: Reports recommendation boundary contract
+        run: node scripts/smoke-reports-recommendation-boundary-contract.mjs
+
+      - name: Reports student analytics boundary contract
+        run: node scripts/smoke-reports-student-analytics-boundary-contract.mjs
+
+      - name: Reports scoped analytics boundary contract
+        run: node scripts/smoke-reports-scoped-analytics-boundary-contract.mjs
+
+      - name: Reports scoped comparison boundary contract
+        run: node scripts/smoke-reports-scoped-comparison-boundary-contract.mjs
+
+      - name: Reports directed quiz analytics boundary contract
+        run: node scripts/smoke-reports-directed-quiz-analytics-boundary-contract.mjs
+
+      - name: Reports institutional boundary contract
+        run: node scripts/smoke-reports-institutional-boundary-contract.mjs
+
+      - name: Reports scoped student focus boundary contract
+        run: node scripts/smoke-reports-scoped-student-focus-boundary-contract.mjs
+
+      - name: Reports role contract
+        run: npm run smoke:reports-role
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Student learning journey contract
+        run: npm run smoke:student-learning-journey
+
+      - name: Results contract
+        run: npm run smoke:results
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Quiz integrity contract
+        run: npm run smoke:quiz-integrity-guard
+
+      - name: Authentication security contract
+        run: npm run smoke:auth-login-security
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: Refactor workflow race-safety contract
+        run: node scripts/smoke-refactor-workflow-race-contract.mjs
+
+      - name: Apply current refactor phase — content school operations schemas
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/apply-content-school-operations-schemas.mjs
+
+      - name: Run current refactor phase review
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/phase-review-content-school-operations-schemas.mjs
+
+      - name: Commit verified current refactor phase
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add server/src/routes/content.routes.ts
+
+          if git diff --cached --quiet; then
+            echo "No verified current refactor changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale auto-commit safely."
+            exit 0
+          fi
+
+          git commit -m "refactor(content): extract school operations schemas"
+          if git push origin HEAD:refactor/repository-v2-safe; then
+            echo "Verified refactor changes pushed successfully."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch advanced to ${NEW_REMOTE_SHA} during push; newer verification run will own the save."
+            exit 0
+          fi
+
+          echo "Push failed while remote remained at verified head ${EXPECTED_SHA}." >&2
+          exit 1
+
+  preview-deployment-gate:
+    name: Vercel preview deployment gate
+    needs: baseline-quality-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Wait for Vercel preview to become ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUSH_SHA: ${{ github.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEPLOY_SHA="${PR_HEAD_SHA:-$PUSH_SHA}"
+          echo "Waiting for Vercel status on ${DEPLOY_SHA}"
+
+          for attempt in $(seq 1 60); do
+            STATUS_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${DEPLOY_SHA}/status")"
+            STATE="$(printf '%s' "$STATUS_JSON" | jq -r '[.statuses[] | select(.context == "Vercel")][0].state // "missing"')"
+            TARGET_URL="$(printf '%s' "$STATUS_JSON" | jq -r '[.statuses[] | select(.context == "Vercel")][0].target_url // ""')"
+
+            echo "Attempt ${attempt}/60: Vercel=${STATE}"
+            case "$STATE" in
+              success)
+                echo "Vercel preview deployment is ready."
+                if [ -n "$TARGET_URL" ]; then
+                  echo "Deployment status page: $TARGET_URL"
+                fi
+                exit 0
+                ;;
+              failure|error)
+                echo "Vercel reported deployment failure for ${DEPLOY_SHA}."
+                exit 1
+                ;;
+            esac
+            sleep 10
+          done
+
+          echo "Timed out waiting for Vercel preview deployment status."
+          exit 1

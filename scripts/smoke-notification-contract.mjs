@@ -8,9 +8,9 @@ const files = {
   route: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   index: await readFile(new URL("../server/src/routes/index.ts", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/.env.example", import.meta.url), "utf8"),
-  guide: await readFile(new URL("../NOTIFICATION_SYSTEM_GUIDE.md", import.meta.url), "utf8"),
-  whatsapp: await readFile(new URL("../WHATSAPP_INTEGRATION_GUIDE.md", import.meta.url), "utf8"),
-  readiness: await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
+  guide: await readFile(new URL("../docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md", import.meta.url), "utf8"),
+  whatsapp: await readFile(new URL("../docs/archive_reports/WHATSAPP_INTEGRATION_GUIDE.md", import.meta.url), "utf8"),
+  readiness: await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
 };
 
 const checks = [];

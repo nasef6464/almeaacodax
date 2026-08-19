@@ -1,0 +1,2132 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-19T09:31:05.432Z",
+  "sourceGitHead": "eac69b98ee23ef18ddc814108743a13e2322db99",
+  "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
+  "entries": [
+    {
+      "source": "App.tsx",
+      "target": "apps/web/src/app/App.tsx",
+      "domain": "app",
+      "confidence": "explicit"
+    },
+    {
+      "source": "components/AnnouncementAdsOverlay.tsx",
+      "target": "apps/web/src/features/notifications/AnnouncementAdsOverlay.tsx",
+      "domain": "notifications",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/AppErrorBoundary.tsx",
+      "target": "apps/web/src/features/shared/AppErrorBoundary.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/auth/RequireAuth.tsx",
+      "target": "apps/web/src/features/auth/auth/RequireAuth.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/auth/RequireRole.tsx",
+      "target": "apps/web/src/features/auth/auth/RequireRole.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/ChatWidget.tsx",
+      "target": "apps/web/src/features/shared/ChatWidget.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/CourseLanding.tsx",
+      "target": "apps/web/src/features/courses/CourseLanding.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/CourseOverview.tsx",
+      "target": "apps/web/src/features/courses/CourseOverview.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/CoursePlayer.tsx",
+      "target": "apps/web/src/features/courses/CoursePlayer.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/CustomVideoPlayer.tsx",
+      "target": "apps/web/src/features/shared/CustomVideoPlayer.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/DashboardLayout.tsx",
+      "target": "apps/web/src/features/shared/DashboardLayout.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/DetailedAnalysisModal.tsx",
+      "target": "apps/web/src/features/shared/DetailedAnalysisModal.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/FileModal.tsx",
+      "target": "apps/web/src/features/shared/FileModal.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/Header.tsx",
+      "target": "apps/web/src/features/shared/Header.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/Layout.tsx",
+      "target": "apps/web/src/features/shared/Layout.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/LearningSection.tsx",
+      "target": "apps/web/src/features/learning/LearningSection.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/MainLayout.tsx",
+      "target": "apps/web/src/features/shared/MainLayout.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/NotificationBell.tsx",
+      "target": "apps/web/src/features/notifications/NotificationBell.tsx",
+      "domain": "notifications",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/ParentStudentLinker.tsx",
+      "target": "apps/web/src/features/schools/ParentStudentLinker.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/PathLayout.tsx",
+      "target": "apps/web/src/features/paths/PathLayout.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/PaymentModal.tsx",
+      "target": "apps/web/src/features/payments/PaymentModal.tsx",
+      "domain": "payments",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/PlatformFontBootstrap.tsx",
+      "target": "apps/web/src/features/shared/PlatformFontBootstrap.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/PwaInstallBanner.tsx",
+      "target": "apps/web/src/features/shared/PwaInstallBanner.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/QiyasCalculatorModal.tsx",
+      "target": "apps/web/src/features/shared/QiyasCalculatorModal.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/QuestionDrawingPad.tsx",
+      "target": "apps/web/src/features/questions/QuestionDrawingPad.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/QuizDetailsModal.tsx",
+      "target": "apps/web/src/features/quizzes/QuizDetailsModal.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/QuizGenerator.tsx",
+      "target": "apps/web/src/features/quizzes/QuizGenerator.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/results/ResultDonutChart.tsx",
+      "target": "apps/web/src/features/reports/results/ResultDonutChart.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/RichTextEditor.tsx",
+      "target": "apps/web/src/features/shared/RichTextEditor.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/RoleSwitcher.tsx",
+      "target": "apps/web/src/features/shared/RoleSwitcher.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/SearchModal.tsx",
+      "target": "apps/web/src/features/shared/SearchModal.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/ShareScorecard.tsx",
+      "target": "apps/web/src/features/shared/ShareScorecard.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/SimulatedTestExperience.tsx",
+      "target": "apps/web/src/features/exams/SimulatedTestExperience.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/SkillDetailsModal.tsx",
+      "target": "apps/web/src/features/questions/SkillDetailsModal.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/SmartLearningPath.tsx",
+      "target": "apps/web/src/features/learning/SmartLearningPath.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/StudentNextActionStrip.tsx",
+      "target": "apps/web/src/features/shared/StudentNextActionStrip.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/ThemeToggle.tsx",
+      "target": "apps/web/src/features/shared/ThemeToggle.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/ui/Card.tsx",
+      "target": "apps/web/src/features/shared/ui/Card.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/ui/EmptyState.tsx",
+      "target": "apps/web/src/features/shared/ui/EmptyState.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/ui/ProgressBar.tsx",
+      "target": "apps/web/src/features/reports/ui/ProgressBar.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/VideoModal.tsx",
+      "target": "apps/web/src/features/shared/VideoModal.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "contexts/AuthContext.tsx",
+      "target": "apps/web/src/features/auth/AuthContext.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "contexts/useNotificationStream.ts",
+      "target": "apps/web/src/features/notifications/useNotificationStream.ts",
+      "domain": "notifications",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/AdminDashboard.tsx",
+      "target": "apps/web/src/features/shared/admin/AdminDashboard.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "dashboards/admin/AdvancedCourseBuilder.tsx",
+      "target": "apps/web/src/features/courses/admin/AdvancedCourseBuilder.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/AiAssistantManager.tsx",
+      "target": "apps/web/src/features/ai/admin/AiAssistantManager.tsx",
+      "domain": "ai",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/AnnouncementAdsManager.tsx",
+      "target": "apps/web/src/features/notifications/admin/AnnouncementAdsManager.tsx",
+      "domain": "notifications",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/BackupManager.tsx",
+      "target": "apps/web/src/features/operations/admin/BackupManager.tsx",
+      "domain": "operations",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
+      "target": "apps/web/src/features/learning/admin/builders/UnifiedLessonBuilder.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/builders/UnifiedQuestionBuilder.tsx",
+      "target": "apps/web/src/features/questions/admin/builders/UnifiedQuestionBuilder.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/CourseBuilder.tsx",
+      "target": "apps/web/src/features/courses/admin/CourseBuilder.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/CoursesManager.tsx",
+      "target": "apps/web/src/features/courses/admin/CoursesManager.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/FinancialManager.tsx",
+      "target": "apps/web/src/features/payments/admin/FinancialManager.tsx",
+      "domain": "payments",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/FoundationManager.tsx",
+      "target": "apps/web/src/features/paths/admin/FoundationManager.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/GroupsManager.tsx",
+      "target": "apps/web/src/features/schools/admin/GroupsManager.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/HomepageManager.tsx",
+      "target": "apps/web/src/features/content/admin/HomepageManager.tsx",
+      "domain": "content",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/LessonsManager.tsx",
+      "target": "apps/web/src/features/learning/admin/LessonsManager.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/LibraryManager.tsx",
+      "target": "apps/web/src/features/learning/admin/LibraryManager.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/LiveSessionsManager.tsx",
+      "target": "apps/web/src/features/auth/admin/LiveSessionsManager.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/MembershipsManager.tsx",
+      "target": "apps/web/src/features/payments/admin/MembershipsManager.tsx",
+      "domain": "payments",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/MockExamManager.tsx",
+      "target": "apps/web/src/features/exams/admin/MockExamManager.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/NotificationsManager.tsx",
+      "target": "apps/web/src/features/notifications/admin/NotificationsManager.tsx",
+      "domain": "notifications",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/OperationsCommandCenter.tsx",
+      "target": "apps/web/src/features/operations/admin/OperationsCommandCenter.tsx",
+      "domain": "operations",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PathsManager.tsx",
+      "target": "apps/web/src/features/paths/admin/PathsManager.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PlatformFontsManager.tsx",
+      "target": "apps/web/src/features/shared/admin/PlatformFontsManager.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "dashboards/admin/PlatformIntegrationsManager.tsx",
+      "target": "apps/web/src/features/operations/admin/PlatformIntegrationsManager.tsx",
+      "domain": "operations",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PublicBarcodeTestsManager.tsx",
+      "target": "apps/web/src/features/exams/admin/PublicBarcodeTestsManager.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/QuestionBankManager.tsx",
+      "target": "apps/web/src/features/questions/admin/QuestionBankManager.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/QuizBuilder.tsx",
+      "target": "apps/web/src/features/quizzes/admin/QuizBuilder.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/QuizzesManager.tsx",
+      "target": "apps/web/src/features/quizzes/admin/QuizzesManager.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolPortalManager.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolPortalManager.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/accessCodeViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/accessCodeViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/contracts.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/contracts.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/dataAdapters.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/dataAdapters.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/EditNameModal.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/EditNameModal.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/exportHelpers.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/exportHelpers.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/importFileReaders.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/importFileReaders.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/importRowParsing.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/importRowParsing.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/packageAccessViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/packageAccessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/readinessViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/readinessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/relationshipViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/relationshipViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/rosterViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/rosterViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/schoolCardReadinessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolClassesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolClassOperatingCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolCommandCenterPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolHandoverReportSummary.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolImportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolImportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPackageCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPackageCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPackagesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPortfolioCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolPortfolioFilterPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolQuickSupervisorCard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsImportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsReportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolRelationsStatusPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolReportsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolSingleStudentPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolStudentRosterPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/workspaceViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SkillsManager.tsx",
+      "target": "apps/web/src/features/questions/admin/SkillsManager.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SkillsTreeManager.tsx",
+      "target": "apps/web/src/features/questions/admin/SkillsTreeManager.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SmartQuestionSelector.tsx",
+      "target": "apps/web/src/features/questions/admin/SmartQuestionSelector.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SubjectQuizzesPanel.tsx",
+      "target": "apps/web/src/features/quizzes/admin/SubjectQuizzesPanel.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SupervisorDashboard.tsx",
+      "target": "apps/web/src/features/schools/admin/SupervisorDashboard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SupervisorTestsManager.tsx",
+      "target": "apps/web/src/features/schools/admin/SupervisorTestsManager.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/TestAnalyticsReport.tsx",
+      "target": "apps/web/src/features/reports/admin/TestAnalyticsReport.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/UnifiedQuizBuilder.tsx",
+      "target": "apps/web/src/features/quizzes/admin/UnifiedQuizBuilder.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/UsersManager.tsx",
+      "target": "apps/web/src/features/users/admin/UsersManager.tsx",
+      "domain": "users",
+      "confidence": "candidate"
+    },
+    {
+      "source": "index.tsx",
+      "target": "apps/web/src/app/main.tsx",
+      "domain": "app",
+      "confidence": "explicit"
+    },
+    {
+      "source": "pages/Achievements.tsx",
+      "target": "apps/web/src/features/reports/Achievements.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/BarcodeTest.tsx",
+      "target": "apps/web/src/features/exams/BarcodeTest.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Blog.tsx",
+      "target": "apps/web/src/features/content/Blog.tsx",
+      "domain": "content",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/BookSession.tsx",
+      "target": "apps/web/src/features/auth/BookSession.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Cart.tsx",
+      "target": "apps/web/src/features/shared/Cart.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/CertificatePage.tsx",
+      "target": "apps/web/src/features/shared/CertificatePage.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/Courses.tsx",
+      "target": "apps/web/src/features/courses/Courses.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/CourseView.tsx",
+      "target": "apps/web/src/features/courses/CourseView.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Dashboard.tsx",
+      "target": "apps/web/src/features/shared/Dashboard.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/Favorites.tsx",
+      "target": "apps/web/src/features/users/Favorites.tsx",
+      "domain": "users",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/FlashcardsManager.tsx",
+      "target": "apps/web/src/features/learning/FlashcardsManager.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/ForgotPassword.tsx",
+      "target": "apps/web/src/features/auth/ForgotPassword.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/GenericPathPage.tsx",
+      "target": "apps/web/src/features/paths/GenericPathPage.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Home.tsx",
+      "target": "apps/web/src/features/shared/Home.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/Landing.tsx",
+      "target": "apps/web/src/features/shared/Landing.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/LiveSessionLobby.tsx",
+      "target": "apps/web/src/features/auth/LiveSessionLobby.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/LiveSessions.tsx",
+      "target": "apps/web/src/features/auth/LiveSessions.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/MockExams.tsx",
+      "target": "apps/web/src/features/exams/MockExams.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/MockExamStudentHub.tsx",
+      "target": "apps/web/src/features/exams/MockExamStudentHub.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/MyRequests.tsx",
+      "target": "apps/web/src/features/shared/MyRequests.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/NotFound.tsx",
+      "target": "apps/web/src/features/shared/NotFound.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/ParentApprovalsModal.tsx",
+      "target": "apps/web/src/features/schools/ParentApprovalsModal.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Plan.tsx",
+      "target": "apps/web/src/features/shared/Plan.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/Pricing.tsx",
+      "target": "apps/web/src/features/payments/Pricing.tsx",
+      "domain": "payments",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Profile.tsx",
+      "target": "apps/web/src/features/users/Profile.tsx",
+      "domain": "users",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/QA.tsx",
+      "target": "apps/web/src/features/shared/QA.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/Qudrat.tsx",
+      "target": "apps/web/src/features/paths/Qudrat.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/QudratSection.tsx",
+      "target": "apps/web/src/features/courses/QudratSection.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Quiz.tsx",
+      "target": "apps/web/src/features/quizzes/Quiz.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/QuizPage.tsx",
+      "target": "apps/web/src/features/quizzes/QuizPage.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Quizzes.tsx",
+      "target": "apps/web/src/features/quizzes/Quizzes.tsx",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports.tsx",
+      "target": "apps/web/src/features/reports/Reports.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/directedQuizAnalyticsViewModel.ts",
+      "target": "apps/web/src/features/quizzes/Reports/directedQuizAnalyticsViewModel.ts",
+      "domain": "quizzes",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/institutionalReportViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/institutionalReportViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/recommendationViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/recommendationViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/reportDomain.ts",
+      "target": "apps/web/src/features/reports/Reports/reportDomain.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/reportTypes.ts",
+      "target": "apps/web/src/features/reports/Reports/reportTypes.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedAnalyticsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedAnalyticsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedComparisonViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedComparisonViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedExportRowsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedExportRowsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedRemediationFallbackViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedRemediationFallbackViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedSkillReportViewModel.ts",
+      "target": "apps/web/src/features/questions/Reports/scopedSkillReportViewModel.ts",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/scopedStudentFocusViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/scopedStudentFocusViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentAnalyticsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentAnalyticsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentEvidenceViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentEvidenceViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentLearningLoopViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentLearningLoopViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentReadinessViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentReadinessViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentRemediationFallbackViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentRemediationFallbackViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentReportActionsViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentReportActionsViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentReportScopeViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentReportScopeViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/StudentSelectedSkillPanel.tsx",
+      "target": "apps/web/src/features/questions/Reports/StudentSelectedSkillPanel.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentSkillRowsViewModel.ts",
+      "target": "apps/web/src/features/questions/Reports/studentSkillRowsViewModel.ts",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/StudentSmartRemediationPanel.tsx",
+      "target": "apps/web/src/features/reports/Reports/StudentSmartRemediationPanel.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/StudentWeeklyPlanPanel.tsx",
+      "target": "apps/web/src/features/reports/Reports/StudentWeeklyPlanPanel.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Reports/studentWeeklyPlanViewModel.ts",
+      "target": "apps/web/src/features/reports/Reports/studentWeeklyPlanViewModel.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/ResetPassword.tsx",
+      "target": "apps/web/src/features/auth/ResetPassword.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Results.tsx",
+      "target": "apps/web/src/features/reports/Results.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/ReviewSession.tsx",
+      "target": "apps/web/src/features/auth/ReviewSession.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/StaticInfoPage.tsx",
+      "target": "apps/web/src/features/content/StaticInfoPage.tsx",
+      "domain": "content",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Step.tsx",
+      "target": "apps/web/src/features/shared/Step.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "pages/SubjectLearningPage.tsx",
+      "target": "apps/web/src/features/learning/SubjectLearningPage.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Tahsili.tsx",
+      "target": "apps/web/src/features/paths/Tahsili.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/TahsiliSubject.tsx",
+      "target": "apps/web/src/features/courses/TahsiliSubject.tsx",
+      "domain": "courses",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/VerifyEmail.tsx",
+      "target": "apps/web/src/features/auth/VerifyEmail.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "server/src/app.ts",
+      "target": "apps/api/src/app.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "target": "apps/api/src/app/bootstrap/bootstrapServer.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/registerGracefulShutdown.ts",
+      "target": "apps/api/src/app/bootstrap/registerGracefulShutdown.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/reportStartupFailure.ts",
+      "target": "apps/api/src/app/bootstrap/reportStartupFailure.ts",
+      "domain": "reports",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runStartupMaintenance.ts",
+      "target": "apps/api/src/app/bootstrap/runStartupMaintenance.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/config/db.ts",
+      "target": "apps/api/src/infrastructure/config/db.ts",
+      "domain": "infrastructure",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/config/env.ts",
+      "target": "apps/api/src/infrastructure/config/env.ts",
+      "domain": "infrastructure",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/config/redis.ts",
+      "target": "apps/api/src/infrastructure/config/redis.ts",
+      "domain": "infrastructure",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/constants/roles.ts",
+      "target": "apps/api/src/constants/roles.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/middleware/auth.ts",
+      "target": "apps/api/src/shared/http/middleware/auth.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/middleware/csrf.ts",
+      "target": "apps/api/src/shared/http/middleware/csrf.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/middleware/errorHandler.ts",
+      "target": "apps/api/src/shared/http/middleware/errorHandler.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/middleware/mongoSanitize.ts",
+      "target": "apps/api/src/shared/http/middleware/mongoSanitize.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/middleware/rateLimiters.ts",
+      "target": "apps/api/src/shared/http/middleware/rateLimiters.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/middleware/requestLogger.ts",
+      "target": "apps/api/src/shared/http/middleware/requestLogger.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
+      "source": "server/src/models/AccessCode.ts",
+      "target": "apps/api/src/modules/payments/infrastructure/persistence/AccessCode.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/AccessGrant.ts",
+      "target": "apps/api/src/modules/payments/infrastructure/persistence/AccessGrant.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Activity.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/Activity.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/AdminAuditLog.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/AdminAuditLog.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/AiInteraction.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/AiInteraction.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/AnnouncementAd.ts",
+      "target": "apps/api/src/modules/notifications/infrastructure/persistence/AnnouncementAd.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/B2BPackage.ts",
+      "target": "apps/api/src/modules/payments/infrastructure/persistence/B2BPackage.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/BackupActivity.ts",
+      "target": "apps/api/src/modules/operations/infrastructure/persistence/BackupActivity.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/BackupSnapshot.ts",
+      "target": "apps/api/src/modules/operations/infrastructure/persistence/BackupSnapshot.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Certificate.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/Certificate.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/ClientEvent.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/ClientEvent.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Course.ts",
+      "target": "apps/api/src/modules/courses/infrastructure/persistence/Course.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/DiscountCode.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/DiscountCode.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/DiscussionReply.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/DiscussionReply.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/DiscussionThread.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/DiscussionThread.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Group.ts",
+      "target": "apps/api/src/modules/schools/infrastructure/persistence/Group.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/HomepageSettings.ts",
+      "target": "apps/api/src/modules/content/infrastructure/persistence/HomepageSettings.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Lesson.ts",
+      "target": "apps/api/src/modules/learning/infrastructure/persistence/Lesson.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Level.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/Level.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/LibraryItem.ts",
+      "target": "apps/api/src/modules/learning/infrastructure/persistence/LibraryItem.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/LiveExamSession.ts",
+      "target": "apps/api/src/modules/auth/infrastructure/persistence/LiveExamSession.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/NotificationDelivery.ts",
+      "target": "apps/api/src/modules/notifications/infrastructure/persistence/NotificationDelivery.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/NotificationTemplate.ts",
+      "target": "apps/api/src/modules/notifications/infrastructure/persistence/NotificationTemplate.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Path.ts",
+      "target": "apps/api/src/modules/paths/infrastructure/persistence/Path.ts",
+      "domain": "paths",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PaymentRequest.ts",
+      "target": "apps/api/src/modules/payments/infrastructure/persistence/PaymentRequest.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PaymentSettings.ts",
+      "target": "apps/api/src/modules/payments/infrastructure/persistence/PaymentSettings.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PhoneOtp.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/PhoneOtp.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PlatformFontSettings.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/PlatformFontSettings.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PlatformIntegrationHistory.ts",
+      "target": "apps/api/src/modules/operations/infrastructure/persistence/PlatformIntegrationHistory.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PlatformIntegrationSettings.ts",
+      "target": "apps/api/src/modules/operations/infrastructure/persistence/PlatformIntegrationSettings.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PublicBarcodeSubmission.ts",
+      "target": "apps/api/src/modules/exams/infrastructure/persistence/PublicBarcodeSubmission.ts",
+      "domain": "exams",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/PublicBarcodeTest.ts",
+      "target": "apps/api/src/modules/exams/infrastructure/persistence/PublicBarcodeTest.ts",
+      "domain": "exams",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Question.ts",
+      "target": "apps/api/src/modules/questions/infrastructure/persistence/Question.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/QuestionAttempt.ts",
+      "target": "apps/api/src/modules/questions/infrastructure/persistence/QuestionAttempt.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Quiz.ts",
+      "target": "apps/api/src/modules/quizzes/infrastructure/persistence/Quiz.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/QuizResult.ts",
+      "target": "apps/api/src/modules/quizzes/infrastructure/persistence/QuizResult.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/ReviewCard.ts",
+      "target": "apps/api/src/modules/learning/infrastructure/persistence/ReviewCard.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Section.ts",
+      "target": "apps/api/src/modules/courses/infrastructure/persistence/Section.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Skill.ts",
+      "target": "apps/api/src/modules/questions/infrastructure/persistence/Skill.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/SkillProgress.ts",
+      "target": "apps/api/src/modules/questions/infrastructure/persistence/SkillProgress.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/StudyPlan.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/StudyPlan.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Subject.ts",
+      "target": "apps/api/src/modules/courses/infrastructure/persistence/Subject.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/Topic.ts",
+      "target": "apps/api/src/modules/learning/infrastructure/persistence/Topic.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/User.ts",
+      "target": "apps/api/src/modules/users/infrastructure/persistence/User.ts",
+      "domain": "users",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/auth/domain/auth-user.ts",
+      "target": "apps/api/src/modules/auth/domain/auth-user.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/learningContentSchemas.ts",
+      "target": "apps/api/src/modules/content/http/learningContentSchemas.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/platformIntegrationSchemas.ts",
+      "target": "apps/api/src/modules/content/http/platformIntegrationSchemas.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/platformPresentationSchemas.ts",
+      "target": "apps/api/src/modules/content/http/platformPresentationSchemas.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/schoolOperationsSchemas.ts",
+      "target": "apps/api/src/modules/content/http/schoolOperationsSchemas.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/http/studyPlanSchemas.ts",
+      "target": "apps/api/src/modules/content/http/studyPlanSchemas.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/notifications/domain/notification.types.ts",
+      "target": "apps/api/src/modules/notifications/domain/notification.types.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/notifications/http/openNotificationSseStream.ts",
+      "target": "apps/api/src/modules/notifications/http/openNotificationSseStream.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/queryUtilities.ts",
+      "target": "apps/api/src/modules/quizzes/http/queryUtilities.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "target": "apps/api/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "target": "apps/api/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/submissionSchemas.ts",
+      "target": "apps/api/src/modules/quizzes/http/submissionSchemas.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/presentation/questionPresentation.ts",
+      "target": "apps/api/src/modules/quizzes/presentation/questionPresentation.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "target": "apps/api/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/observability/sentry.ts",
+      "target": "apps/api/src/observability/sentry.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/queues/notificationQueue.ts",
+      "target": "apps/api/src/queues/notificationQueue.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/activity.routes.ts",
+      "target": "apps/api/src/modules/shared/http/activity.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "target": "apps/api/src/modules/ai/http/ai.routes.ts",
+      "domain": "ai",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "target": "apps/api/src/modules/auth/http/auth.routes.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/backup.routes.ts",
+      "target": "apps/api/src/modules/operations/http/backup.routes.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/certificates.routes.ts",
+      "target": "apps/api/src/modules/shared/http/certificates.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "target": "apps/api/src/modules/content/http/content.routes.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/course.routes.ts",
+      "target": "apps/api/src/modules/courses/http/course.routes.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/discussions.routes.ts",
+      "target": "apps/api/src/modules/shared/http/discussions.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/health.routes.ts",
+      "target": "apps/api/src/modules/operations/http/health.routes.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "target": "apps/api/src/modules/shared/http/index.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/leaderboard.routes.ts",
+      "target": "apps/api/src/modules/shared/http/leaderboard.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/live-exams.routes.ts",
+      "target": "apps/api/src/modules/exams/http/live-exams.routes.ts",
+      "domain": "exams",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/notification.routes.ts",
+      "target": "apps/api/src/modules/notifications/http/notification.routes.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/operations.routes.ts",
+      "target": "apps/api/src/modules/operations/http/operations.routes.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/parent.routes.ts",
+      "target": "apps/api/src/modules/schools/http/parent.routes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/payment.routes.ts",
+      "target": "apps/api/src/modules/payments/http/payment.routes.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/publicTests.routes.ts",
+      "target": "apps/api/src/modules/shared/http/publicTests.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "target": "apps/api/src/modules/quizzes/http/quiz.routes.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/quizResults.routes.ts",
+      "target": "apps/api/src/modules/quizzes/http/quizResults.routes.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/review.routes.ts",
+      "target": "apps/api/src/modules/learning/http/review.routes.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/search.routes.ts",
+      "target": "apps/api/src/modules/shared/http/search.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/seo.routes.ts",
+      "target": "apps/api/src/modules/shared/http/seo.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/taxonomy.routes.ts",
+      "target": "apps/api/src/modules/shared/http/taxonomy.routes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/auditLearningContent.ts",
+      "target": "apps/api/src/scripts/auditLearningContent.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/backfillLearningPlacementsApi.ts",
+      "target": "apps/api/src/scripts/backfillLearningPlacementsApi.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/backupLearningContent.ts",
+      "target": "apps/api/src/scripts/backupLearningContent.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/diagnoseCloudAccess.ts",
+      "target": "apps/api/src/scripts/diagnoseCloudAccess.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/e2e_mega_simulation.ts",
+      "target": "apps/api/src/scripts/e2e_mega_simulation.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/e2e_simulation.ts",
+      "target": "apps/api/src/scripts/e2e_simulation.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
+      "target": "apps/api/src/scripts/e2e_supervisor_directed_test.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/migrateQuizKind.ts",
+      "target": "apps/api/src/scripts/migrateQuizKind.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/repairCurrentLearningContent.ts",
+      "target": "apps/api/src/scripts/repairCurrentLearningContent.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "target": "apps/api/src/scripts/repairMissingCurrentCourseVisibility.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/restoreLearningContent.ts",
+      "target": "apps/api/src/scripts/restoreLearningContent.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedAdmin.ts",
+      "target": "apps/api/src/scripts/seedAdmin.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedCoursesViaApi.ts",
+      "target": "apps/api/src/scripts/seedCoursesViaApi.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedDemoUsers.ts",
+      "target": "apps/api/src/scripts/seedDemoUsers.ts",
+      "domain": "users",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedLearningInventoryApi.ts",
+      "target": "apps/api/src/scripts/seedLearningInventoryApi.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenario.ts",
+      "target": "apps/api/src/scripts/seedOperationalScenario.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedOperationalScenarioApi.ts",
+      "target": "apps/api/src/scripts/seedOperationalScenarioApi.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/seedPlatformData.ts",
+      "target": "apps/api/src/scripts/seedPlatformData.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/smokeOperationalJourneysApi.ts",
+      "target": "apps/api/src/scripts/smokeOperationalJourneysApi.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/server.ts",
+      "target": "apps/api/src/server.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/accessGrantService.ts",
+      "target": "apps/api/src/modules/payments/application/accessGrantService.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/adminAuditLog.ts",
+      "target": "apps/api/src/modules/shared/application/adminAuditLog.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/applyPurchaseToUser.ts",
+      "target": "apps/api/src/modules/users/application/applyPurchaseToUser.ts",
+      "domain": "users",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/ensureAdminAccount.ts",
+      "target": "apps/api/src/modules/shared/application/ensureAdminAccount.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/ensureSkillTaxonomy.ts",
+      "target": "apps/api/src/modules/questions/application/ensureSkillTaxonomy.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/learningBackup.ts",
+      "target": "apps/api/src/modules/learning/application/learningBackup.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/notificationProviders.ts",
+      "target": "apps/api/src/modules/notifications/application/notificationProviders.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/notificationService.ts",
+      "target": "apps/api/src/modules/notifications/application/notificationService.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/operationsAudit.ts",
+      "target": "apps/api/src/modules/operations/application/operationsAudit.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/operationsRepair.ts",
+      "target": "apps/api/src/modules/operations/application/operationsRepair.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/spacedRepetition.ts",
+      "target": "apps/api/src/modules/shared/application/spacedRepetition.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/visibility.ts",
+      "target": "apps/api/src/modules/shared/application/visibility.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/services/weakSkillsAnalysis.ts",
+      "target": "apps/api/src/modules/questions/application/weakSkillsAnalysis.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/sockets/index.ts",
+      "target": "apps/api/src/sockets/index.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/types/express.d.ts",
+      "target": "apps/api/src/types/express.d.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/utils/asyncHandler.ts",
+      "target": "apps/api/src/utils/asyncHandler.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/utils/authCookie.ts",
+      "target": "apps/api/src/utils/authCookie.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/utils/integrationSecretsCrypto.ts",
+      "target": "apps/api/src/utils/integrationSecretsCrypto.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/utils/jwt.ts",
+      "target": "apps/api/src/utils/jwt.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/utils/pagination.ts",
+      "target": "apps/api/src/utils/pagination.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/utils/quizResultSerialization.ts",
+      "target": "apps/api/src/utils/quizResultSerialization.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/adapter.ts",
+      "target": "apps/web/src/core/api/adapter.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/api.ts",
+      "target": "apps/web/src/core/api/api.ts",
+      "domain": "core-api",
+      "confidence": "explicit"
+    },
+    {
+      "source": "services/clientTelemetry.ts",
+      "target": "apps/web/src/core/api/clientTelemetry.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/geminiService.ts",
+      "target": "apps/web/src/core/api/geminiService.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/mockData.ts",
+      "target": "apps/web/src/core/api/mockData.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/useStore.ts",
+      "target": "apps/web/src/core/state/useStore.ts",
+      "domain": "core-state",
+      "confidence": "explicit"
+    },
+    {
+      "source": "types.ts",
+      "target": "apps/web/src/shared/types/domain.ts",
+      "domain": "shared",
+      "confidence": "explicit"
+    },
+    {
+      "source": "utils/appVersion.ts",
+      "target": "apps/web/src/shared/lib/appVersion.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/completeHumanE2ESimulation.ts",
+      "target": "apps/web/src/shared/lib/completeHumanE2ESimulation.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/courseScope.ts",
+      "target": "apps/web/src/shared/lib/courseScope.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/courseStats.ts",
+      "target": "apps/web/src/shared/lib/courseStats.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/devSession.ts",
+      "target": "apps/web/src/shared/lib/devSession.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/entityIds.ts",
+      "target": "apps/web/src/shared/lib/entityIds.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/exams/questionBankSource.ts",
+      "target": "apps/web/src/shared/lib/exams/questionBankSource.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/mockExam.ts",
+      "target": "apps/web/src/shared/lib/mockExam.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/normalizePathId.ts",
+      "target": "apps/web/src/shared/lib/normalizePathId.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/openExternalUrl.ts",
+      "target": "apps/web/src/shared/lib/openExternalUrl.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/platformFonts.ts",
+      "target": "apps/web/src/shared/lib/platformFonts.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/printPdf.ts",
+      "target": "apps/web/src/shared/lib/printPdf.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/questionHtml.ts",
+      "target": "apps/web/src/shared/lib/questionHtml.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/quizLearningPlacement.ts",
+      "target": "apps/web/src/shared/lib/quizLearningPlacement.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/quizLinks.ts",
+      "target": "apps/web/src/shared/lib/quizLinks.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/quizPlacement.ts",
+      "target": "apps/web/src/shared/lib/quizPlacement.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/quizPresentation.ts",
+      "target": "apps/web/src/shared/lib/quizPresentation.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/quizSettings.ts",
+      "target": "apps/web/src/shared/lib/quizSettings.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/sanitizeMojibakeArabic.ts",
+      "target": "apps/web/src/shared/lib/sanitizeMojibakeArabic.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/shareText.ts",
+      "target": "apps/web/src/shared/lib/shareText.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/simulateB2B.ts",
+      "target": "apps/web/src/shared/lib/simulateB2B.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/streak.ts",
+      "target": "apps/web/src/shared/lib/streak.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/videoLinks.ts",
+      "target": "apps/web/src/shared/lib/videoLinks.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/xlsxLoader.ts",
+      "target": "apps/web/src/shared/lib/xlsxLoader.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    }
+  ]
+}

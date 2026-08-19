@@ -2,9 +2,9 @@ import { readFile } from "node:fs/promises";
 
 const appSource = await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8");
 const sanitizerSource = await readFile(new URL("../server/src/middleware/mongoSanitize.ts", import.meta.url), "utf8");
-const securityChecklist = await readFile(new URL("../SECURITY_CHECKLIST.md", import.meta.url), "utf8");
-const readinessSource = await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
-const deploymentGuide = await readFile(new URL("../DEPLOYMENT_GUIDE.md", import.meta.url), "utf8");
+const securityChecklist = await readFile(new URL("../docs/archive_reports/SECURITY_CHECKLIST.md", import.meta.url), "utf8");
+const readinessSource = await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
+const deploymentGuide = await readFile(new URL("../docs/archive_reports/DEPLOYMENT_GUIDE.md", import.meta.url), "utf8");
 
 const checks = [];
 

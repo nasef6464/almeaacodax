@@ -10,6 +10,7 @@ const adapterSource = await readFile(new URL('../services/adapter.ts', import.me
 const storeSource = await readFile(new URL('../store/useStore.ts', import.meta.url), 'utf8');
 const serverTopicModelSource = await readFile(new URL('../server/src/models/Topic.ts', import.meta.url), 'utf8');
 const serverContentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
+const serverLearningSchemasSource = await readFile(new URL('../server/src/modules/content/http/learningContentSchemas.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -44,7 +45,7 @@ check('admin library item saves path, subject, main skill, sub-skills, and url',
 
 check('admin library readiness requires visible approved skill-linked file', () => {
   assertIncludes(libraryManagerSource, 'getLibraryReadinessMeta');
-  assertIncludes(libraryManagerSource, 'item.approvalStatus === \'approved\'');
+  assertIncludes(libraryManagerSource, "item.approvalStatus === 'approved'");
   assertIncludes(libraryManagerSource, 'Boolean(item.url?.trim())');
   assertIncludes(libraryManagerSource, 'Boolean(item.sectionId)');
   assertIncludes(libraryManagerSource, 'Boolean((item.skillIds || []).length)');
@@ -86,9 +87,9 @@ check('foundation admin links support files directly to topics like lessons and 
 
 check('foundation support links persist through server, adapter, and store reload', () => {
   assertIncludes(serverTopicModelSource, 'libraryItemIds: { type: [String], default: [] }');
-  assertIncludes(serverContentRoutesSource, 'libraryItemIds: z.array(z.string()).default([])');
-  assertIncludes(serverContentRoutesSource, 'const topicUpdateSchema = z.object({');
-  assertIncludes(serverContentRoutesSource, 'libraryItemIds: z.array(z.string()).optional()');
+  assertIncludes(serverLearningSchemasSource, 'libraryItemIds: z.array(z.string()).default([])');
+  assertIncludes(serverLearningSchemasSource, 'export const topicUpdateSchema = z.object({');
+  assertIncludes(serverLearningSchemasSource, 'libraryItemIds: z.array(z.string()).optional()');
   assertIncludes(serverContentRoutesSource, 'const payload = topicUpdateSchema.parse(req.body)');
   assertIncludes(adapterSource, 'libraryItemIds: Array.isArray(topic?.libraryItemIds) ? topic.libraryItemIds.map(String) : []');
   assertIncludes(storeSource, 'libraryItemIds: normalizeIdList(topic?.libraryItemIds)');
@@ -96,9 +97,9 @@ check('foundation support links persist through server, adapter, and store reloa
 });
 
 check('library paid/free and visibility updates do not reset missing file fields', () => {
-  assertIncludes(serverContentRoutesSource, 'const libraryUpdateSchema = z.object({');
-  assertIncludes(serverContentRoutesSource, 'showOnPlatform: z.boolean().optional()');
-  assertIncludes(serverContentRoutesSource, 'isLocked: z.boolean().optional()');
+  assertIncludes(serverLearningSchemasSource, 'export const libraryUpdateSchema = z.object({');
+  assertIncludes(serverLearningSchemasSource, 'showOnPlatform: z.boolean().optional()');
+  assertIncludes(serverLearningSchemasSource, 'isLocked: z.boolean().optional()');
   assertIncludes(serverContentRoutesSource, 'const payload = libraryUpdateSchema.parse(req.body)');
 });
 

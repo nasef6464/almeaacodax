@@ -9,9 +9,9 @@ const files = {
   app: await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8"),
   auth: await readFile(new URL("../server/src/middleware/auth.ts", import.meta.url), "utf8"),
   sockets: await readFile(new URL("../server/src/sockets/index.ts", import.meta.url), "utf8"),
-  securityChecklist: await readFile(new URL("../SECURITY_CHECKLIST.md", import.meta.url), "utf8"),
-  rbacMatrix: await readFile(new URL("../RBAC_MATRIX.md", import.meta.url), "utf8"),
-  report: await readFile(new URL("../06_07_SECURITY_RBAC_REPORT.md", import.meta.url), "utf8").catch(() => ""),
+  securityChecklist: await readFile(new URL("../docs/archive_reports/SECURITY_CHECKLIST.md", import.meta.url), "utf8"),
+  rbacMatrix: await readFile(new URL("../docs/archive_reports/RBAC_MATRIX.md", import.meta.url), "utf8"),
+  report: await readFile(new URL("../docs/archive_reports/06_07_SECURITY_RBAC_REPORT.md", import.meta.url), "utf8").catch(() => ""),
 };
 
 const checks = [];

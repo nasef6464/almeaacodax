@@ -7,8 +7,16 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const courseViewSource = read('pages/CourseView.tsx');
 const courseOverviewSource = read('components/CourseOverview.tsx');
 const dashboardSource = read('pages/Dashboard.tsx');
+const dashboardPathProgressPath = 'pages/Dashboard/pathProgressProjection.ts';
+const dashboardPathProgressSource = fs.existsSync(path.join(root, dashboardPathProgressPath))
+  ? read(dashboardPathProgressPath)
+  : dashboardSource;
 const quizzesSource = read('pages/Quizzes.tsx');
 const reportsSource = read('pages/Reports.tsx');
+const reportsScopePath = 'pages/Reports/studentReportScopeViewModel.ts';
+const reportsScopeSource = fs.existsSync(path.join(root, reportsScopePath))
+  ? read(reportsScopePath)
+  : reportsSource;
 
 const checks = [];
 const check = (name, fn) => checks.push({ name, fn });
@@ -50,9 +58,9 @@ check('locked lessons and paid enrollment open the purchase flow instead of gran
 });
 
 check('student path progress is scoped to enrolled paths and path-related exams', () => {
-  assertIncludes(dashboardSource, 'resolvePathProgress');
-  assertIncludes(dashboardSource, 'courseBelongsToPath');
-  assertIncludes(dashboardSource, '(result.skillsAnalysis || []).some((skill) => skill.pathId === path.id)');
+  assertIncludes(dashboardPathProgressSource, 'resolvePathProgress');
+  assertIncludes(dashboardPathProgressSource, 'courseBelongsToPath');
+  assertIncludes(dashboardPathProgressSource, '(result.skillsAnalysis || []).some((skill) => skill.pathId === path.id)');
   assertIncludes(dashboardSource, 'const enrolledPathSet = new Set(enrolledPaths ?? []);');
   assertIncludes(dashboardSource, 'storePaths.filter((path) => enrolledPathSet.has(path.id)');
   assertIncludes(dashboardSource, 'path.stats.examsCount');
@@ -70,9 +78,12 @@ check('student quizzes and attempts expose a path filter and visible path badge'
 check('student reports can be filtered by one enrolled path or all enrolled paths', () => {
   assertIncludes(reportsSource, 'selectedStudentPathId');
   assertIncludes(reportsSource, 'studentReportPathOptions');
-  assertIncludes(reportsSource, 'effectiveStudentPathIds');
   assertIncludes(reportsSource, 'studentPathScopedSkills');
   assertIncludes(reportsSource, 'كل مساراتي');
+  assertIncludes(reportsScopeSource, 'studentEnrolledPathIds');
+  assertIncludes(reportsScopeSource, 'effectiveStudentPathIds');
+  assertIncludes(reportsScopeSource, 'studentEnrolledPathIds.includes(path.id) || role !== Role.STUDENT');
+  assertIncludes(reportsScopeSource, 'aggregatedSkills.filter((skill) => skill.pathId && effectiveStudentPathIds.includes(skill.pathId))');
 });
 
 let failed = 0;

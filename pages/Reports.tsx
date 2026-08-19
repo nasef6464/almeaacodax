@@ -8,237 +8,66 @@ import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Role, type QuestionAttempt, type QuizResult } from '../types';
-import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
-import { matchesEntityId } from '../utils/entityIds';
 import { loadXlsx } from '../utils/xlsxLoader';
-
-interface ScopedAnalyticsOverview {
-    scope: {
-        role: string;
-        studentCount: number;
-        groupCount: number;
-        quizAttempts: number;
-        questionAttempts?: number;
-        earlyWeakSkillSignalCount?: number;
-        minSkillEvidence?: number;
-    };
-    weakestStudents: Array<{
-        id: string;
-        name: string;
-        averageScore: number;
-        attempts: number;
-        weakSkillCount: number;
-        earlyWeakSignalCount?: number;
-        schoolName?: string;
-        groupIds?: string[];
-        groupNames?: string[];
-        weakestSkills?: Array<{ skill: string; mastery: number; attempts?: number; isReliable?: boolean; evidenceThreshold?: number }>;
-        recommendedAction?: string;
-    }>;
-    weakestSkills: Array<{
-        skillId?: string;
-        skill: string;
-        section?: string;
-        mastery: number;
-        affectedStudents: number;
-        attempts: number;
-        isReliable?: boolean;
-        evidenceThreshold?: number;
-        recommendedAction?: string;
-    }>;
-    subjectSummaries: Array<{
-        subjectId?: string;
-        subjectName: string;
-        mastery: number;
-        weakStudents: number;
-    }>;
-    assignedFollowUps: Array<{
-        id: string;
-        title: string;
-        mode: 'regular' | 'saher' | 'central';
-        targetGroupIds?: string[];
-        targetUserIds?: string[];
-        dueDate?: string;
-    }>;
-}
-
-interface ScopedQuizResult {
-    id?: string;
-    _id?: string;
-    userId?: string;
-    quizId?: string;
-    studentName?: string;
-    studentEmail?: string;
-    studentGroupIds?: string[];
-    quizTitle: string;
-    score: number;
-    totalQuestions?: number;
-    correctAnswers?: number;
-    wrongAnswers?: number;
-    date?: string;
-    createdAt?: string;
-    skillsAnalysis?: Array<{ skill?: string; mastery?: number; status?: string }>;
-}
-
-interface StudentAggregatedSkill {
-    skill: string;
-    skillId?: string;
-    pathId?: string;
-    subjectName?: string;
-    sectionName?: string;
-    mastery: number;
-    attempts: number;
-    correctAttempts: number;
-    totalEvidence: number;
-    isReliable: boolean;
-    status: 'weak' | 'average' | 'strong';
-}
-
-type StudentReportPeriod = 'month' | 'quarter' | 'all';
-
-const roleScopeTitle: Record<string, string> = {
-    admin: 'نطاق المنصة بالكامل',
-    supervisor: 'نطاق المجموعات والمدرسة التابعة لك',
-    teacher: 'نطاق الطلاب المرتبطين بك',
-    parent: 'الأبناء المرتبطون بك',
-    student: 'نطاقك الشخصي',
-};
-
-const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
-const MIN_SKILL_EVIDENCE_COUNT = 3;
-
-const getReportItemTimestamp = (item: Pick<QuizResult, 'date'> & { createdAt?: string | number }) => {
-    const raw = item.date || item.createdAt;
-    if (typeof raw === 'number') return raw;
-    if (!raw) return 0;
-
-    const timestamp = new Date(raw).getTime();
-    return Number.isFinite(timestamp) ? timestamp : 0;
-};
-
-const getStudentPeriodStart = (period: StudentReportPeriod) => {
-    const now = new Date();
-    if (period === 'month') return new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-    if (period === 'quarter') return new Date(now.getFullYear(), now.getMonth() - 2, 1).getTime();
-    return 0;
-};
-
-const filterStudentReportPeriod = <T extends Pick<QuestionAttempt, 'date'> & { createdAt?: string | number }>(
-    items: T[],
-    period: StudentReportPeriod,
-) => {
-    if (period === 'all') return items;
-
-    const start = getStudentPeriodStart(period);
-    return items.filter((item) => {
-        const timestamp = getReportItemTimestamp(item);
-        return timestamp === 0 || timestamp >= start;
-    });
-};
-
-const studentReportPeriodLabels: Record<StudentReportPeriod, string> = {
-    month: 'هذا الشهر',
-    quarter: 'آخر 3 أشهر',
-    all: 'كل الفترات',
-};
-
-const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
-
-const buildSkillSessionLink = (skill?: { skill?: string; skillId?: string; subjectName?: string; sectionName?: string } | null) => {
-    if (!skill) return '/book-session';
-
-    const params = new URLSearchParams();
-    if (skill.skillId) params.set('skillId', skill.skillId);
-    if (skill.skill) params.set('skillName', displayText(skill.skill));
-    if (skill.subjectName) params.set('subjectName', displayText(skill.subjectName));
-    if (skill.sectionName) params.set('sectionName', displayText(skill.sectionName));
-    params.set('source', 'reports');
-
-    return `/book-session?${params.toString()}`;
-};
-
-const buildDirectedQuizManagerLink = (context?: {
-    pathId?: string;
-    subjectId?: string;
-    sectionId?: string;
-    skillId?: string;
-    targetUserId?: string;
-    targetGroupId?: string;
-}) => {
-    const params = new URLSearchParams({
-        tab: 'quizzes',
-        source: 'reports',
-        mode: 'central',
-    });
-
-    if (context?.pathId) params.set('pathId', context.pathId);
-    if (context?.subjectId) params.set('subjectId', context.subjectId);
-    if (context?.sectionId) params.set('sectionId', context.sectionId);
-    if (context?.skillId) params.set('skillId', context.skillId);
-    if (context?.targetUserId) params.set('targetUserId', context.targetUserId);
-    if (context?.targetGroupId) params.set('targetGroupId', context.targetGroupId);
-
-    return `/admin-dashboard?${params.toString()}`;
-};
-
-const getReportMasteryTone = (mastery: number) => {
-    if (mastery < 50) {
-        return {
-            label: 'ابدأ بها',
-            bg: 'bg-rose-50',
-            text: 'text-rose-700',
-            bar: 'bg-rose-500',
-            border: 'border-rose-100',
-        };
-    }
-
-    if (mastery < 75) {
-        return {
-            label: 'راجعها قريبًا',
-            bg: 'bg-amber-50',
-            text: 'text-amber-700',
-            bar: 'bg-amber-500',
-            border: 'border-amber-100',
-        };
-    }
-
-    return {
-        label: 'مطمئنة',
-        bg: 'bg-emerald-50',
-        text: 'text-emerald-700',
-        bar: 'bg-emerald-500',
-        border: 'border-emerald-100',
-    };
-};
-
-const scoreTone = (score: number) => {
-    if (score < 60) return 'text-rose-600 bg-rose-50 border-rose-100';
-    if (score < 80) return 'text-amber-600 bg-amber-50 border-amber-100';
-    return 'text-emerald-600 bg-emerald-50 border-emerald-100';
-};
-
-interface SkillRecommendation {
-    lessonTitle?: string;
-    lessonLink?: string;
-    lessonTopicTitle?: string;
-    foundationTopicLink?: string;
-    quizTitle?: string;
-    quizLink?: string;
-    resourceTitle?: string;
-    resourceUrl?: string;
-    subjectName?: string;
-    sectionName?: string;
-    actionText?: string;
-}
-
-interface SmartRemediationPlan {
-    title?: string;
-    summary?: string;
-    steps?: Array<{ day?: string; skill?: string; action?: string; check?: string }>;
-    parentNote?: string;
-}
+import {
+    MIN_SKILL_EVIDENCE_COUNT,
+    buildDirectedQuizManagerLink,
+    buildSkillSessionLink,
+    displayText,
+    filterStudentReportPeriod,
+    getReportMasteryTone,
+    getReportSkillKey,
+    roleScopeTitle,
+    scoreTone,
+    studentReportPeriodLabels,
+    type ScopedAnalyticsOverview,
+    type ScopedQuizResult,
+    type SkillRecommendation,
+    type SmartRemediationPlan,
+    type StudentAggregatedSkill,
+    type StudentReportPeriod,
+} from './Reports/reportDomain';
+import { buildSkillRecommendation } from './Reports/recommendationViewModel';
+import {
+    buildStudentAggregatedSkills,
+    buildStudentEvidenceSummary,
+    buildStudentPerformanceStats,
+    buildStudentSkillReadinessSummary,
+} from './Reports/studentAnalyticsViewModel';
+import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
+import { StudentWeeklyPlanPanel } from './Reports/StudentWeeklyPlanPanel';
+import { StudentSmartRemediationPanel } from './Reports/StudentSmartRemediationPanel';
+import { StudentSelectedSkillPanel } from './Reports/StudentSelectedSkillPanel';
+import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
+import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
+import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
+import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
+import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
+import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
+import { buildScopedRemediationFallback } from './Reports/scopedRemediationFallbackViewModel';
+import { buildScopedSkillsWorkbookRows, buildScopedStudentsWorkbookRows } from './Reports/scopedExportRowsViewModel';
+import { buildScopedFollowUpSummary, buildScopedInterventionPlan } from './Reports/scopedAnalyticsViewModel';
+import {
+    buildScopedAvailableGroups,
+    buildScopedGroupPerformanceRows,
+    buildScopedLatestResults,
+    buildScopedTeacherPerformanceRows,
+    filterScopedStudentsByGroup,
+    getStrongestScopedGroup,
+} from './Reports/scopedComparisonViewModel';
+import {
+    buildDirectedFollowUpOptions,
+    buildDirectedQuizAnalysisResults,
+    buildDirectedQuizSkillAnalysis,
+    buildDirectedQuizStudentAnalysis,
+    buildDirectedQuizSummary,
+    selectDirectedFollowUpQuiz,
+} from './Reports/directedQuizAnalyticsViewModel';
+import { buildInstitutionalReportHub, buildScopedLeadStudentSummary } from './Reports/institutionalReportViewModel';
+import { buildScopedStudentFocusCards } from './Reports/scopedStudentFocusViewModel';
+import { buildScopedSkillReportCards } from './Reports/scopedSkillReportViewModel';
 
 const getSkillRecommendation = (
     skill: { skill?: string; skillId?: string } | undefined,
@@ -248,117 +77,21 @@ const getSkillRecommendation = (
     libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
     questions: ReturnType<typeof useStore.getState>['questions'],
     topics: ReturnType<typeof useStore.getState>['topics'],
-): SkillRecommendation => {
-    if (!skill) return {};
+): SkillRecommendation =>
+    buildSkillRecommendation(skill, {
+        allSkills,
+        lessons,
+        quizzes,
+        libraryItems,
+        questions,
+        topics,
+        subjects: useStore.getState().subjects,
+        sections: useStore.getState().sections,
+    });
 
-    const resolvedSkill = skill.skillId
-        ? allSkills.find((item) => item.id === skill.skillId)
-        : allSkills.find((item) => displayText(item.name) === displayText(skill.skill));
+const studentLearningActionIcons: Record<StudentLearningActionIconKey, LucideIcon> = { checkCircle: CheckCircle, video: Video, fileText: FileText };
 
-    if (!resolvedSkill) return {};
-
-    const recommendedLesson = lessons.find(
-        (lesson) =>
-            lesson.skillIds?.includes(resolvedSkill.id) &&
-            lesson.showOnPlatform !== false &&
-            (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
-    );
-    const recommendedQuiz = quizzes.find((quiz) =>
-        quiz.showOnPlatform !== false &&
-        quiz.isPublished !== false &&
-        (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-        (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
-            quiz.skillIds?.includes(resolvedSkill.id))
-    );
-    const recommendedResource = libraryItems.find(
-        (item) =>
-            item.skillIds?.includes(resolvedSkill.id) &&
-            item.showOnPlatform !== false &&
-            (!item.approvalStatus || item.approvalStatus === 'approved'),
-    );
-    const recommendationPathId = resolvedSkill.pathId;
-    const recommendationSubjectId = resolvedSkill.subjectId;
-    const recommendationSectionId = resolvedSkill.sectionId;
-    const scoredFoundationTopics = recommendationPathId && recommendationSubjectId
-        ? topics
-            .filter((topic) =>
-                topic.pathId === recommendationPathId &&
-                topic.subjectId === recommendationSubjectId &&
-                topic.showOnPlatform !== false,
-            )
-            .map((topic) => {
-                const topicHasLesson = recommendedLesson
-                    ? (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId))
-                    : false;
-                const topicHasQuiz = recommendedQuiz
-                    ? (topic.quizIds || []).some((quizId) => matchesEntityId(recommendedQuiz, quizId))
-                    : false;
-                const topicMatchesSkill = matchesEntityId(topic, resolvedSkill.id);
-                const topicMatchesSection = Boolean(recommendationSectionId && topic.sectionId === recommendationSectionId);
-                const linkedContentScore =
-                    (topicHasLesson ? 60 : 0) +
-                    (topicHasQuiz ? 55 : 0) +
-                    (topicMatchesSkill ? 80 : 0) +
-                    (topicMatchesSection ? 35 : 0);
-
-                return {
-                    topic,
-                    score: linkedContentScore + (topic.parentId ? 4 : 0),
-                    topicHasLesson,
-                    topicHasQuiz,
-                    topicMatchesSkill,
-                    topicMatchesSection,
-                };
-            })
-            .filter((item) => item.score > 0)
-            .sort((a, b) => b.score - a.score)
-        : [];
-    const recommendedTopic = scoredFoundationTopics[0]?.topic;
-    const buildFoundationTopicLink = (content: 'lessons' | 'quizzes') =>
-        recommendationPathId && recommendationSubjectId
-            ? (() => {
-                const params = new URLSearchParams({ subject: recommendationSubjectId });
-                params.set('tab', 'skills');
-
-                if (recommendedTopic?.id) {
-                    params.set('topic', recommendedTopic.id);
-                    params.set('content', content);
-                }
-
-                return `/category/${recommendationPathId}?${params.toString()}`;
-            })()
-            : undefined;
-    const lessonLink = buildFoundationTopicLink('lessons');
-    const foundationTrainingLink = recommendedTopic
-        ? buildFoundationTopicLink('quizzes')
-        : undefined;
-    const foundationTopicLink = recommendedTopic
-        ? buildFoundationTopicLink('lessons')
-        : undefined;
-
-    return {
-        lessonTitle: displayText(recommendedLesson?.title),
-        lessonLink,
-        lessonTopicTitle: displayText(recommendedTopic?.title),
-        foundationTopicLink,
-        quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-        quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
-        resourceTitle: displayText(recommendedResource?.title),
-        resourceUrl: recommendedResource?.url,
-        subjectName: recommendationSubjectId ? displayText(useStore.getState().subjects.find((item) => item.id === recommendationSubjectId)?.name) : undefined,
-        sectionName: recommendationSectionId ? displayText(useStore.getState().sections.find((item) => item.id === recommendationSectionId)?.name) : undefined,
-        actionText:
-            recommendedLesson && recommendedQuiz
-                ? 'ابدأ بالشرح أولًا ثم نفّذ اختبارًا قصيرًا لقياس التحسن.'
-                : recommendedLesson
-                    ? 'هذه المهارة تحتاج مراجعة شرحها قبل أي تدريب إضافي.'
-                    : recommendedQuiz
-                        ? 'هذه المهارة جاهزة لتدريب علاجي مباشر عبر الاختبار المقترح.'
-                        : recommendedResource
-                            ? 'راجع الملف الداعم ثم ارجع لتكرار التدريب على نفس المهارة.'
-                            : 'أعد المحاولة عبر اختبار ساهر مخصص لهذه المهارة.',
-    };
-};
+const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };
 
 const Reports: React.FC = () => {
     const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user } = useStore();
@@ -437,491 +170,128 @@ const Reports: React.FC = () => {
     const studentReportDataCount = studentPeriodExamResults.length + studentPeriodQuestionAttempts.length;
 
     // Calculate Performance Analysis
-    const stats = useMemo(() => {
-        if (studentPeriodExamResults.length === 0) {
-            if (studentPeriodQuestionAttempts.length === 0) return null;
-
-            const answeredAttempts = studentPeriodQuestionAttempts.filter((attempt) => attempt.selectedOptionIndex >= 0);
-            const correctAttempts = answeredAttempts.filter((attempt) => attempt.isCorrect).length;
-            const averageScore = answeredAttempts.length > 0 ? Math.round((correctAttempts / answeredAttempts.length) * 100) : 0;
-
-            return {
-                averageScore,
-                bestSubject: { name: 'تدريبات الأسئلة', score: averageScore },
-                worstSubject: { name: 'تحتاج متابعة', score: averageScore },
-            };
-        }
-
-        const totalScore = studentPeriodExamResults.reduce((acc, curr) => acc + curr.score, 0);
-        const averageScore = Math.round(totalScore / studentPeriodExamResults.length);
-
-        // Group by quizTitle (as a proxy for subject)
-        const subjectScores: Record<string, { total: number, count: number }> = {};
-        studentPeriodExamResults.forEach(result => {
-            // Try to extract a general subject name from the quiz title (e.g., "اختبار الهندسة" -> "الهندسة")
-            const subjectName = displayText(result.quizTitle).replace('اختبار ', '').replace('الوحدة الأولى', 'أساسيات');
-            
-            if (!subjectScores[subjectName]) {
-                subjectScores[subjectName] = { total: 0, count: 0 };
-            }
-            subjectScores[subjectName].total += result.score;
-            subjectScores[subjectName].count += 1;
-        });
-
-        let bestSubject = { name: '-', score: 0 };
-        let worstSubject = { name: '-', score: 100 };
-
-        Object.entries(subjectScores).forEach(([name, data]) => {
-            const avg = data.total / data.count;
-            if (avg >= bestSubject.score) bestSubject = { name, score: Math.round(avg) };
-            if (avg <= worstSubject.score) worstSubject = { name, score: Math.round(avg) };
-        });
-
-        return { averageScore, bestSubject, worstSubject };
-    }, [studentPeriodExamResults, studentPeriodQuestionAttempts]);
+    const stats = useMemo(
+        () => buildStudentPerformanceStats(studentPeriodExamResults, studentPeriodQuestionAttempts),
+        [studentPeriodExamResults, studentPeriodQuestionAttempts],
+    );
 
     // Aggregate Skill Analysis
-    const aggregatedSkills = useMemo(() => {
-        const skillsMap: Record<string, { totalMastery: number, count: number, skillName: string; skillId?: string; pathId?: string; subjectId?: string; sectionId?: string }> = {};
-        
-        studentPeriodExamResults.forEach(result => {
-            if (result.skillsAnalysis) {
-                result.skillsAnalysis.forEach(skill => {
-                    const skillKey = skill.skillId || skill.skill;
-                    if (!skillsMap[skillKey]) {
-                        skillsMap[skillKey] = {
-                        totalMastery: 0,
-                        count: 0,
-                        skillName: skill.skill,
-                        skillId: skill.skillId,
-                            pathId: skill.pathId,
-                            subjectId: skill.subjectId,
-                            sectionId: skill.sectionId,
-                        };
-                    }
-                    skillsMap[skillKey].totalMastery += skill.mastery;
-                    skillsMap[skillKey].count += 1;
-                    if (!skillsMap[skillKey].skillId && skill.skillId) {
-                        skillsMap[skillKey].skillId = skill.skillId;
-                    }
-                    if (!skillsMap[skillKey].pathId && skill.pathId) skillsMap[skillKey].pathId = skill.pathId;
-                    if (!skillsMap[skillKey].subjectId && skill.subjectId) skillsMap[skillKey].subjectId = skill.subjectId;
-                    if (!skillsMap[skillKey].sectionId && skill.sectionId) skillsMap[skillKey].sectionId = skill.sectionId;
-                });
-            }
-        });
-
-        if (Object.keys(skillsMap).length === 0 && studentPeriodQuestionAttempts.length > 0) {
-            const questionById = new Map(questions.map((question) => [question.id, question]));
-            const skillById = new Map(skills.map((skill) => [skill.id, skill]));
-
-            studentPeriodQuestionAttempts.forEach((attempt) => {
-                const question = questionById.get(attempt.questionId);
-                const questionSkillIds = Array.isArray(question?.skillIds) ? question.skillIds : [];
-
-                questionSkillIds.forEach((skillId) => {
-                    const resolvedSkill = skillById.get(skillId);
-                    if (!resolvedSkill) return;
-
-                    const skillName = displayText(resolvedSkill.name);
-                    if (!skillName) return;
-
-                    if (!skillsMap[skillName]) {
-                        skillsMap[skillName] = { totalMastery: 0, count: 0, skillName, skillId: resolvedSkill.id, pathId: resolvedSkill.pathId, subjectId: resolvedSkill.subjectId, sectionId: resolvedSkill.sectionId };
-                    }
-
-                    skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0;
-                    skillsMap[skillName].count += 1;
-                });
-            });
-        }
-
-        return Object.entries(skillsMap).map(([skill, data]): StudentAggregatedSkill => {
-            const mastery = Math.round(data.totalMastery / data.count);
-            const resolvedSkill = data.skillId
-                ? skills.find((item) => item.id === data.skillId)
-                : skills.find((item) => displayText(item.name) === displayText(skill));
-            const pathId = data.pathId || resolvedSkill?.pathId;
-            const subjectName = resolvedSkill?.subjectId
-                ? displayText(subjects.find((subject) => subject.id === resolvedSkill.subjectId)?.name)
-                : undefined;
-            const sectionName = resolvedSkill?.sectionId
-                ? displayText(sections.find((section) => section.id === resolvedSkill.sectionId)?.name)
-                : undefined;
-
-            return {
-                skill: displayText(data.skillName || skill),
-                skillId: data.skillId,
-                pathId,
-                subjectName,
-                sectionName,
-                mastery,
-                attempts: data.count,
-                correctAttempts: Math.round((mastery / 100) * data.count),
-                totalEvidence: data.count,
-                isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT,
-                status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong'
-            };
-        }).sort((a, b) => a.mastery - b.mastery); // Sort by weakest first
-    }, [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects]);
-
-    const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
-    const studentEvidenceSummary = useMemo(() => {
-        const totalQuestions = aggregatedSkills.reduce((sum, skill) => sum + (skill.totalEvidence || skill.attempts || 0), 0);
-        const uniqueSkills = aggregatedSkills.length;
-        return { totalQuestions, uniqueSkills };
-    }, [aggregatedSkills]);
-    const studentEnrolledPathIds = useMemo(() => Array.from(new Set(enrolledPaths || [])).filter(Boolean), [enrolledPaths]);
-    const studentEnrolledPathLabels = useMemo(
-        () => studentEnrolledPathIds.map((pathId, index) => displayText(paths.find((path) => path.id === pathId)?.name) || `مسار مسجل ${index + 1}`),
-        [paths, studentEnrolledPathIds],
+    const aggregatedSkills = useMemo(
+        () => buildStudentAggregatedSkills({
+            examResults: studentPeriodExamResults,
+            questionAttempts: studentPeriodQuestionAttempts,
+            questions,
+            skills,
+            subjects,
+            sections,
+            minSkillEvidence: MIN_SKILL_EVIDENCE_COUNT,
+        }),
+        [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects],
     );
-    const studentReportPathOptions = useMemo(
-        () => paths.filter((path) => studentEnrolledPathIds.includes(path.id) || user.role !== Role.STUDENT),
-        [paths, studentEnrolledPathIds, user.role],
+
+    const studentEvidenceSummary = useMemo(
+        () => buildStudentEvidenceSummary(aggregatedSkills),
+        [aggregatedSkills],
     );
-    const effectiveStudentPathIds = selectedStudentPathId === 'all'
-        ? studentEnrolledPathIds
-        : [selectedStudentPathId].filter(Boolean);
-    const studentPathScopedSkills = useMemo(
-        () =>
-            effectiveStudentPathIds.length > 0
-                ? aggregatedSkills.filter((skill) => skill.pathId && effectiveStudentPathIds.includes(skill.pathId))
-                : aggregatedSkills,
-        [aggregatedSkills, effectiveStudentPathIds],
+    const {
+        weakestSkill, studentEnrolledPathIds, studentEnrolledPathLabels, studentReportPathOptions,
+        studentPathScopedSkills, reportBaseSkills, reliableAggregatedSkills, reliableWeakSkills,
+        reliableAverageSkills, earlyWeakSignals, focusedReportSkills, primaryReportSkill,
+        selectedReportSkill, studentTrackLabel, hasStudentTrackScope,
+    } = useMemo(
+        () => buildStudentReportScope({
+            aggregatedSkills,
+            paths,
+            enrolledPaths,
+            selectedStudentPathId,
+            selectedSkillKey,
+            role: user.role,
+        }),
+        [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, user.role],
     );
-    const reportBaseSkills = studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills;
-    const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
-    const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);
-    const reliableAverageSkills = reliableAggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75);
-    const earlyWeakSignals = reportBaseSkills.filter((skill) => skill.mastery < 50 && !skill.isReliable);
-    const focusedReportSkills = (
-        reliableWeakSkills.length > 0
-            ? [...reliableWeakSkills, ...reliableAverageSkills]
-            : reliableAggregatedSkills.length > 0
-                ? reliableAggregatedSkills
-                : reportBaseSkills
-    ).slice(0, 6);
-    const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
-    const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
-    const studentTrackLabel = studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '';
-    const hasStudentTrackScope = studentEnrolledPathIds.length > 0;
-    const skillReadinessSummary = useMemo(() => {
-        const weak = reportBaseSkills.filter((skill) => skill.mastery < 50 && skill.isReliable).length;
-        const early = reportBaseSkills.filter((skill) => skill.mastery < 50 && !skill.isReliable).length;
-        const average = reportBaseSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
-        const strong = reportBaseSkills.filter((skill) => skill.mastery >= 75).length;
-        const total = reportBaseSkills.length;
-
-        return {
-            weak,
-            early,
-            average,
-            strong,
-            total,
-            reliable: reliableAggregatedSkills.length,
-            minEvidence: MIN_SKILL_EVIDENCE_COUNT,
-            message:
-                weak > 0
-                    ? `ابدأ بـ ${weak} مهارة ضعفها مؤكد بعد ${MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر.`
-                    : average > 0
-                        ? `مستواك جيد، وراجع ${average} مهارة لتثبيت التحسن.`
-                        : early > 0
-                            ? `${early} مهارة بها إشارات أولية وتحتاج محاولات أكثر قبل الحكم.`
-                            : total > 0
-                                ? 'مؤشراتك مطمئنة. حافظ على التدريب القصير.'
-                            : 'ابدأ اختبارًا قصيرًا حتى تظهر خريطة مهاراتك.',
-        };
-    }, [reliableAggregatedSkills.length, reportBaseSkills]);
-    const studentWeeklyPlan = useMemo(() => {
-        const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
-
-        return focusedReportSkills.slice(0, 3).map((skill, index) => {
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
-
-            return {
-                day: dayLabels[index],
-                skillId: skill.skillId,
-                skill: displayText(skill.skill),
-                subjectName: displayText(skill.subjectName),
-                sectionName: displayText(skill.sectionName),
-                mastery: skill.mastery,
-                attempts: skill.attempts,
-                isReliable: skill.isReliable,
-                lessonTitle: recommendation.lessonTitle,
-                lessonLink: recommendation.lessonLink,
-                lessonTopicTitle: recommendation.lessonTopicTitle,
-                foundationTopicLink: recommendation.foundationTopicLink,
-                quizTitle: recommendation.quizTitle,
-                quizLink: recommendation.quizLink,
-                actionText:
-                    recommendation.actionText ||
-                    (skill.mastery < 50
-                        ? 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'
-                        : 'حل تدريبًا قصيرًا للتأكد من ثبات المستوى.'),
-            };
-        });
-    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
+    const skillReadinessSummary = useMemo(
+        () => buildStudentSkillReadinessSummary(
+            reportBaseSkills,
+            reliableAggregatedSkills.length,
+            MIN_SKILL_EVIDENCE_COUNT,
+        ),
+        [reliableAggregatedSkills.length, reportBaseSkills],
+    );
+    const studentWeeklyPlan = useMemo(
+        () => buildStudentWeeklyPlan(focusedReportSkills, {
+            allSkills: skills,
+            lessons,
+            quizzes,
+            libraryItems,
+            questions,
+            topics,
+            subjects,
+            sections,
+        }),
+        [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
+    );
     const studentTodayFocus = studentWeeklyPlan[0] || null;
-    const studentQuickActions = useMemo(() => {
-        if (!studentTodayFocus) {
-            return [
-                {
-                    title: 'ابدأ بقياس قصير',
-                    body: 'اختبار ساهر يحدد أول مهارة تحتاج تركيزًا.',
-                    label: 'اختبار ساهر',
-                    link: '/dashboard?tab=saher',
-                    Icon: CheckCircle,
-                    className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
-                },
-                {
-                    title: 'استعرض الشروح',
-                    body: 'افتح موضوع تأسيس مناسب بعد أول قياس.',
-                    label: 'الشروحات',
-                    link: '/courses',
-                    Icon: Video,
-                    className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
-                },
-                {
-                    title: 'حل تدريب قصير',
-                    body: 'تدريب سريع بعد ظهور المهارة الأضعف.',
-                    label: 'اختيار تدريب',
-                    link: '/my-quizzes',
-                    Icon: FileText,
-                    className: 'border-amber-100 bg-amber-50 text-amber-800',
-                },
-            ];
-        }
-
-        return [
-            {
-                title: 'راجع الشرح',
-                body: studentTodayFocus.lessonTitle
-                    ? displayText(studentTodayFocus.lessonTopicTitle || studentTodayFocus.lessonTitle)
-                    : 'أقرب شرح لهذه المهارة.',
-                label: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح الشرح' : 'استعراض الشروحات',
-                link: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
-                Icon: Video,
-                className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
-            },
-            {
-                title: 'حل تدريب قصير',
-                body: studentTodayFocus.quizTitle
-                    ? displayText(studentTodayFocus.quizTitle)
-                    : 'تدريب موجه على نفس المهارة.',
-                label: studentTodayFocus.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
-                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
-                Icon: FileText,
-                className: 'border-amber-100 bg-amber-50 text-amber-800',
-            },
-            {
-                title: 'أعد القياس',
-                body: 'اختبار قصير بعد الشرح والتدريب.',
-                label: 'قياس التحسن',
-                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
-                Icon: CheckCircle,
-                className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
-            },
-        ];
-    }, [studentTodayFocus]);
+    const studentQuickActions = useMemo(
+        () => buildStudentQuickActions(studentTodayFocus),
+        [studentTodayFocus],
+    );
     const studentTodayLearningLoop = useMemo(() => {
-        if (!studentTodayFocus) {
-            return {
-                skillName: 'ابدأ بقياس قصير',
-                mastery: 0,
-                evidenceLabel: 'لا توجد بيانات كافية بعد',
-                readinessLabel: 'قياس البداية',
-                steps: studentQuickActions.map((action, index) => ({
-                    ...action,
-                    step: index + 1,
-                })),
-            };
-        }
-
-        const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
-        const mastery = Number(studentTodayFocus.mastery || 0);
-        const evidenceLabel = studentTodayFocus.isReliable
-            ? `${studentTodayFocus.attempts} محاولات`
-            : `قراءة أولية من ${studentTodayFocus.attempts} محاولة`;
-        const readinessLabel = mastery >= 75
-            ? 'جاهز للتثبيت'
-            : mastery >= 50
-                ? 'راجع ثم قِس'
-                : 'ابدأ من الشرح';
+        const loop = buildStudentTodayLearningLoop(studentTodayFocus, studentQuickActions);
 
         return {
-            skillName,
-            mastery,
-            evidenceLabel,
-            readinessLabel,
-            steps: studentQuickActions.map((action, index) => ({
+            ...loop,
+            steps: loop.steps.map((action) => ({
                 ...action,
-                step: index + 1,
+                Icon: studentLearningActionIcons[action.iconKey],
             })),
         };
     }, [studentQuickActions, studentTodayFocus]);
     const studentReadinessDecision = useMemo(() => {
-        if (!isStudentView) return null;
-
-        if (!studentTodayFocus) {
-            return {
-                status: 'needsMeasurement' as const,
-                readyToAdvance: false,
-                badge: 'قرار الانتقال',
-                title: 'جاهز تنتقل؟ نحتاج قياس قصير أولًا',
-                body: 'حل اختبار ساهر قصير، وبعدها سنحدد المهارة التالية بوضوح.',
-                evidence: 'لا توجد بيانات كافية بعد',
-                actionLabel: 'ابدأ قياس قصير',
-                actionHref: '/dashboard?tab=saher',
-                cardClass: 'border-indigo-100 bg-indigo-50/80',
-                badgeClass: 'bg-indigo-600 text-white',
-                textClass: 'text-indigo-900',
-                Icon: Target,
-            };
-        }
-
-        const mastery = Number(studentTodayFocus.mastery || 0);
-        const readyToAdvance = mastery >= 75 && Boolean(studentTodayFocus.isReliable);
-        const needsPractice = mastery >= 50;
-        const skillName = displayText(studentTodayFocus.skill) || 'هذه المهارة';
-        const trainingHref = studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
-        const foundationHref = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
-
-        if (readyToAdvance) {
-            return {
-                status: 'readyToAdvance' as const,
-                readyToAdvance,
-                badge: 'جاهز للانتقال',
-                title: 'نعم، جاهز تنتقل بعد تثبيت قصير',
-                body: `مستواك في ${skillName} مطمئن. نفذ قياسًا قصيرًا للتثبيت ثم انتقل للمهارة التالية.`,
-                evidence: `${mastery}% من ${studentTodayFocus.attempts} محاولات`,
-                actionLabel: studentTodayFocus.quizLink ? 'اختبار تثبيت' : 'قياس قصير',
-                actionHref: trainingHref,
-                cardClass: 'border-emerald-100 bg-emerald-50/80',
-                badgeClass: 'bg-emerald-600 text-white',
-                textClass: 'text-emerald-900',
-                Icon: CheckCircle,
-            };
-        }
-
-        if (needsPractice) {
-            return {
-                status: 'needsPractice' as const,
-                readyToAdvance,
-                badge: 'راجع ثم قِس',
-                title: 'ليس بعد، تحتاج تدريبًا قصيرًا',
-                body: `ابدأ بتدريب على ${skillName} ثم أعد القياس. لا تحتاج أكثر من خطوة واحدة الآن.`,
-                evidence: studentTodayFocus.isReliable ? `${mastery}% من ${studentTodayFocus.attempts} محاولات` : `قراءة أولية ${mastery}%`,
-                actionLabel: studentTodayFocus.quizLink ? 'ابدأ التدريب' : 'اختيار تدريب',
-                actionHref: trainingHref,
-                cardClass: 'border-amber-100 bg-amber-50/80',
-                badgeClass: 'bg-amber-500 text-white',
-                textClass: 'text-amber-900',
-                Icon: FileText,
-            };
-        }
+        const decision = buildStudentReadinessDecision(isStudentView, studentTodayFocus);
+        if (!decision) return null;
 
         return {
-            status: 'needsRemediation' as const,
-            readyToAdvance,
-            badge: 'يحتاج علاج',
-            title: 'ليس الآن، ابدأ بموضوع التأسيس',
-            body: `افتح موضوع التأسيس المرتبط بـ ${skillName}، ثم حل تدريبًا قصيرًا وبعدها أعد القياس.`,
-            evidence: studentTodayFocus.isReliable ? `${mastery}% من ${studentTodayFocus.attempts} محاولات` : `قراءة أولية ${mastery}%`,
-            actionLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح موضوع التأسيس' : 'استعراض الشروح',
-            actionHref: foundationHref,
-            cardClass: 'border-rose-100 bg-rose-50/80',
-            badgeClass: 'bg-rose-600 text-white',
-            textClass: 'text-rose-900',
-            Icon: BookOpen,
+            ...decision,
+            Icon: studentReadinessIcons[decision.iconKey],
         };
     }, [isStudentView, studentTodayFocus]);
-    const compactStudentSkillRows = useMemo(() => {
-        return focusedReportSkills.slice(0, 5).map((skill) => {
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
-            const quizLink = recommendation.quizLink || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
-
-            return {
-                ...skill,
-                tone: getReportMasteryTone(skill.mastery),
-                lessonLink: recommendation.lessonLink || recommendation.foundationTopicLink || '/courses',
-                lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
-                quizLink,
-                quizLabel: recommendation.quizTitle || 'تدريب',
-                retestLink: quizLink,
-                evidenceLabel: skill.isReliable
-                    ? `${skill.correctAttempts}/${skill.totalEvidence} صحيح`
-                    : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence}`,
-            };
-        });
-    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
+    const compactStudentSkillRows = useMemo(
+        () => buildStudentSkillReportRows(focusedReportSkills, {
+            allSkills: skills,
+            lessons,
+            quizzes,
+            libraryItems,
+            questions,
+            topics,
+            subjects,
+            sections,
+        }),
+        [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
+    );
     const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 5);
-    const studentAdaptiveLearningBridge = useMemo(() => {
-        if (!studentTodayFocus) return null;
-
-        const skillParam = studentTodayFocus.skillId ? `?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '';
-
-        return {
-            skillName: displayText(studentTodayFocus.skill),
-            evidenceLine: studentTodayFocus.isReliable
-                ? `الحكم مؤكد من ${studentTodayFocus.attempts} محاولات على المهارة.`
-                : `هذه قراءة أولية من ${studentTodayFocus.attempts} محاولة وتحتاج قياسًا إضافيًا.`,
-            relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
-            adaptiveTrainingLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
-            smartPathLink: '/plan',
-            retestLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
-        };
-    }, [studentTodayFocus]);
-    const studentReportNextAction = useMemo(() => {
-        if (!isStudentView) return null;
-
-        if (studentTodayFocus) {
-            const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
-            const learningLink = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
-            const trainingLink = studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
-
-            return {
-                title: `ابدأ بـ ${skillName}`,
-                description: 'افتح موضوع التأسيس المرتبط، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.',
-                primaryLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح موضوع التأسيس' : 'استعراض الشروح',
-                primaryHref: learningLink,
-                secondaryLabel: 'تدريب قصير',
-                secondaryHref: trainingLink,
-                tone: studentTodayFocus.mastery < 50 ? 'rose' as const : 'amber' as const,
-            };
-        }
-
-        return {
-            title: 'ابدأ بقياس قصير',
-            description: 'حل اختبار ساهر أولًا، وبعدها سيظهر تقرير المهارات والخطة العلاجية تلقائيًا.',
-            primaryLabel: 'اختبار ساهر',
-            primaryHref: '/dashboard?tab=saher',
-            secondaryLabel: 'اختباراتي',
-            secondaryHref: '/my-quizzes',
-            tone: 'indigo' as const,
-        };
-    }, [isStudentView, studentTodayFocus]);
-    const studentFollowUpSummary = useMemo(() => {
-        if (!isStudentView || !hasStudentAnalytics) return '';
-
-        const weakest = focusedReportSkills[0];
-        const nextTwo = focusedReportSkills.slice(0, 2).map((skill) => displayText(skill.skill)).filter(Boolean);
-        const weaknessLabel = weakest?.isReliable ? 'ضعف مؤكد' : 'إشارة أولية';
-        const parts = [
-            `متوسطك الحالي ${stats?.averageScore || 0}%.`,
-            `الفترة: ${studentPeriodLabel}.`,
-            studentTrackLabel ? `المسار: ${studentTrackLabel}.` : 'اختر مسارك حتى نرتب التقارير والاختبارات حسبه.',
-            weakest ? `${weaknessLabel}: ${displayText(weakest.skill)} (${weakest.mastery}%) من ${weakest.attempts} محاولة.` : null,
-            nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
-            'الخطوة: إعادة تعلم قصيرة، تدريب تكيفي، ثم قياس داخل المسار الذكي.',
-        ].filter(Boolean);
-
-        return parts.join(' ');
-    }, [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentPeriodLabel, studentTrackLabel]);
+    const studentAdaptiveLearningBridge = useMemo(
+        () => buildStudentAdaptiveLearningBridge(studentTodayFocus),
+        [studentTodayFocus],
+    );
+    const studentReportNextAction = useMemo(
+        () => buildStudentReportNextAction(isStudentView, studentTodayFocus),
+        [isStudentView, studentTodayFocus],
+    );
+    const studentFollowUpSummary = useMemo(
+        () => buildStudentFollowUpSummary({
+            isStudentView,
+            hasStudentAnalytics,
+            focusedReportSkills,
+            averageScore: stats?.averageScore || 0,
+            studentPeriodLabel,
+            studentTrackLabel,
+        }),
+        [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentPeriodLabel, studentTrackLabel],
+    );
     const copyStudentSummary = async () => {
         if (!studentFollowUpSummary) return;
 
@@ -955,73 +325,19 @@ const Reports: React.FC = () => {
             });
             setSmartRemediation(response);
         } catch {
-            setSmartRemediation({
-                title: 'خطة علاجية قصيرة',
-                summary: 'ابدأ بأضعف مهارة، راجع شرحًا بسيطًا، ثم حل تدريبًا قصيرًا وأعد القياس.',
-                steps: focusedReportSkills.slice(0, 3).map((skill, index) => ({
-                    day: `اليوم ${index + 1}`,
-                    skill: [displayText(skill.subjectName), displayText(skill.sectionName), displayText(skill.skill)].filter(Boolean).join(' - '),
-                    action: skill.mastery < 50 ? 'راجع شرحًا قصيرًا ثم حل 5 أسئلة سهلة.' : 'حل تدريبًا متدرجًا ثم راجع الأخطاء.',
-                    check: 'أعد اختبارًا مصغرًا من 5 أسئلة على نفس المهارة.',
-                })),
-                parentNote: 'تابع التقدم بهدوء. المطلوب الآن خطوة صغيرة يوميًا وليس ضغطًا زائدًا.',
-            });
+            setSmartRemediation(buildStudentRemediationFallback(focusedReportSkills));
         } finally {
             setSmartRemediationLoading(false);
         }
     };
-    const scopedInterventionPlan = useMemo(() => {
-        if (!scopedAnalytics) return [];
-
-        const weakestScopedSkill = scopedAnalytics.weakestSkills[0];
-        const weakestScopedStudent = scopedAnalytics.weakestStudents[0];
-        const weakestScopedSubject = scopedAnalytics.subjectSummaries[0];
-
-        return [
-            {
-                title: 'ابدأ بالمهارة الأكثر احتياجًا',
-                label: weakestScopedSkill ? `${displayText(weakestScopedSkill.skill)} - ${weakestScopedSkill.mastery}%` : 'بانتظار بيانات مهارات أكثر',
-                body: weakestScopedSkill
-                    ? `وجّه شرحًا قصيرًا وتدريبًا علاجيًا للطلاب المتأثرين (${weakestScopedSkill.affectedStudents}) ثم أعد القياس باختبار قصير.`
-                    : 'بعد أول محاولات كافية، سيظهر هنا أكثر محور يحتاج تدخلًا.',
-                className: 'border-rose-100 bg-rose-50 text-rose-800',
-            },
-            {
-                title: 'تابع الطالب الأكثر احتياجًا',
-                label: weakestScopedStudent ? `${displayText(weakestScopedStudent.name)} - ${weakestScopedStudent.averageScore}%` : 'لا يوجد طالب يحتاج تدخلًا واضحًا',
-                body: weakestScopedStudent
-                    ? `ابدأ برسالة متابعة أو حصة قصيرة، وركّز على ${weakestScopedStudent.weakestSkills?.slice(0, 2).map((skill) => displayText(skill.skill)).join('، ') || 'المهارات الأضعف لديه'}.`
-                    : 'عند ظهور طلاب يحتاجون دعمًا سيقترح النظام أول طالب تبدأ به.',
-                className: 'border-amber-100 bg-amber-50 text-amber-800',
-            },
-            {
-                title: 'حوّلها لمسار تعلم تكيفي',
-                label: weakestScopedSubject ? `${displayText(weakestScopedSubject.subjectName)} - ${weakestScopedSubject.mastery}%` : 'اختر مادة للمتابعة',
-                body: weakestScopedSubject
-                    ? `أنشئ اختبار متابعة وتدريبًا تكيفيًا في هذه المادة للطلاب الضعاف (${weakestScopedSubject.weakStudents}) ثم اربطه بخطة إعادة تعلم.`
-                    : 'اربط الاختبارات بالمواد والمهارات حتى يظهر مسار إعادة التعلم تلقائيًا.',
-                className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
-            },
-        ];
-    }, [scopedAnalytics]);
-    const scopedFollowUpSummary = useMemo(() => {
-        if (!scopedAnalytics) return '';
-
-        const weakestScopedSkill = scopedAnalytics.weakestSkills[0];
-        const weakestScopedStudent = scopedAnalytics.weakestStudents[0];
-        const weakestScopedSubject = scopedAnalytics.subjectSummaries[0];
-        const parts = [
-            `نطاق المتابعة: ${roleScopeTitle[user.role] || 'النطاق الحالي'}.`,
-            `عدد الطلاب: ${scopedAnalytics.scope.studentCount}.`,
-            `محاولات الاختبار: ${scopedAnalytics.scope.quizAttempts}.`,
-            weakestScopedSkill ? `أضعف مهارة: ${displayText(weakestScopedSkill.skill)} (${weakestScopedSkill.mastery}%).` : null,
-            weakestScopedStudent ? `أول طالب للمتابعة: ${displayText(weakestScopedStudent.name)} (${weakestScopedStudent.averageScore}%).` : null,
-            weakestScopedSubject ? `المادة التي تحتاج تدخلًا: ${displayText(weakestScopedSubject.subjectName)} (${weakestScopedSubject.mastery}%).` : null,
-            'الإجراء المقترح: شرح قصير، تدريب علاجي، ثم اختبار قياس قصير.',
-        ].filter(Boolean);
-
-        return parts.join(' ');
-    }, [scopedAnalytics, user.role]);
+    const scopedInterventionPlan = useMemo(
+        () => buildScopedInterventionPlan(scopedAnalytics),
+        [scopedAnalytics],
+    );
+    const scopedFollowUpSummary = useMemo(
+        () => buildScopedFollowUpSummary(scopedAnalytics, user.role),
+        [scopedAnalytics, user.role],
+    );
     const copyScopedSummary = async () => {
         if (!scopedFollowUpSummary) return;
 
@@ -1066,17 +382,7 @@ const Reports: React.FC = () => {
             });
             setScopedSmartRemediation(response);
         } catch {
-            setScopedSmartRemediation({
-                title: 'خطة تدخل للنطاق الحالي',
-                summary: 'ابدأ بالمهارة الأكثر ضعفًا، وجه شرحًا قصيرًا، ثم اختبار متابعة لقياس التحسن.',
-                steps: skillPayload.slice(0, 3).map((skill, index) => ({
-                    day: `خطوة ${index + 1}`,
-                    skill: displayText(skill.skill),
-                    action: index === 0 ? 'أنشئ شرحًا أو حصة قصيرة لهذه المهارة.' : 'وجّه تدريبًا علاجيًا للطلاب المتأثرين.',
-                    check: 'أعد القياس باختبار قصير موجه لنفس المهارة.',
-                })),
-                parentNote: 'تابع الطلاب الضعاف بهدوء، واجعل التغذية الراجعة قصيرة وواضحة بعد كل محاولة.',
-            });
+            setScopedSmartRemediation(buildScopedRemediationFallback(skillPayload));
         }
 
         const leadStudent = scopedAnalytics.weakestStudents[0];
@@ -1106,158 +412,34 @@ const Reports: React.FC = () => {
     const scopedLeadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
     const scopedLeadSkill = scopedAnalytics?.weakestSkills?.[0] || null;
     const scopedLeadSubject = scopedAnalytics?.subjectSummaries?.[0] || null;
-    const scopedAvailableGroups = useMemo(() => {
-        const names = new Set<string>();
-        (scopedAnalytics?.weakestStudents || []).forEach((student) => {
-            (student.groupNames || []).forEach((name) => {
-                const normalized = displayText(name);
-                if (normalized) names.add(normalized);
-            });
-        });
-        return Array.from(names);
-    }, [scopedAnalytics?.weakestStudents]);
-    const scopedFilteredStudents = useMemo(() => {
-        if (!scopedAnalytics?.weakestStudents?.length) return [];
-        if (scopedGroupFilter === 'all') return scopedAnalytics.weakestStudents;
-        return scopedAnalytics.weakestStudents.filter((student) => (student.groupNames || []).some((name) => displayText(name) === scopedGroupFilter));
-    }, [scopedAnalytics?.weakestStudents, scopedGroupFilter]);
-    const scopedLatestResults = useMemo(() => {
-        if (!scopedResults.length) return [];
-        const filtered = scopedGroupFilter === 'all'
-            ? scopedResults
-            : scopedResults.filter((result) => {
-                const student = scopedFilteredStudents.find((item) => item.id === result.userId);
-                return !!student;
-            });
-        return filtered.slice(0, 6);
-    }, [scopedResults, scopedGroupFilter, scopedFilteredStudents]);
-    const scopedGroupPerformanceRows = useMemo(() => {
-        if (!scopedAnalytics) return [];
-
-        const groupNameById = new Map(groups.map((group) => [group.id, displayText(group.name) || group.id]));
-        const studentGroups = new Map<string, string[]>();
-        const rows = new Map<string, {
-            groupName: string;
-            scoreTotal: number;
-            attempts: number;
-            weakAttempts: number;
-            weakStudentIds: Set<string>;
-            studentIds: Set<string>;
-        }>();
-
-        const ensureRow = (groupName: string) => {
-            const safeGroupName = displayText(groupName) || 'مجموعة غير محددة';
-            const current = rows.get(safeGroupName);
-            if (current) return current;
-
-            const created = {
-                groupName: safeGroupName,
-                scoreTotal: 0,
-                attempts: 0,
-                weakAttempts: 0,
-                weakStudentIds: new Set<string>(),
-                studentIds: new Set<string>(),
-            };
-            rows.set(safeGroupName, created);
-            return created;
-        };
-
-        scopedAnalytics.weakestStudents.forEach((student) => {
-            const names = (student.groupNames || []).map(displayText).filter(Boolean);
-            const ids = (student.groupIds || []).map((groupId) => groupNameById.get(groupId) || groupId).filter(Boolean);
-            const resolvedNames = names.length ? names : ids;
-            if (!resolvedNames.length) return;
-
-            studentGroups.set(student.id, resolvedNames);
-            resolvedNames.forEach((groupName) => {
-                const row = ensureRow(groupName);
-                row.studentIds.add(student.id);
-                row.weakStudentIds.add(student.id);
-            });
-        });
-
-        scopedResults.forEach((result) => {
-            const directGroups = (result.studentGroupIds || []).map((groupId) => groupNameById.get(groupId) || groupId).filter(Boolean);
-            const resolvedGroups = directGroups.length ? directGroups : (result.userId ? studentGroups.get(result.userId) || [] : []);
-            const score = Number(result.score || 0);
-            const studentId = String(result.userId || result.studentEmail || result.studentName || '');
-
-            resolvedGroups.forEach((groupName) => {
-                const row = ensureRow(groupName);
-                row.scoreTotal += score;
-                row.attempts += 1;
-                if (score < 75) row.weakAttempts += 1;
-                if (studentId) row.studentIds.add(studentId);
-            });
-        });
-
-        return Array.from(rows.values())
-            .map((row) => ({
-                groupName: row.groupName,
-                averageScore: row.attempts ? Math.round(row.scoreTotal / row.attempts) : 0,
-                attempts: row.attempts,
-                weakAttempts: row.weakAttempts,
-                weakStudentCount: row.weakStudentIds.size,
-                studentCount: row.studentIds.size,
-            }))
-            .sort((a, b) => {
-                const weaknessScoreA = a.weakStudentCount * 10 + a.weakAttempts - a.averageScore;
-                const weaknessScoreB = b.weakStudentCount * 10 + b.weakAttempts - b.averageScore;
-                return weaknessScoreB - weaknessScoreA;
-            })
-            .slice(0, 8);
-    }, [groups, scopedAnalytics, scopedResults]);
+    const scopedAvailableGroups = useMemo(
+        () => buildScopedAvailableGroups(scopedAnalytics),
+        [scopedAnalytics],
+    );
+    const scopedFilteredStudents = useMemo(
+        () => filterScopedStudentsByGroup(scopedAnalytics, scopedGroupFilter),
+        [scopedAnalytics, scopedGroupFilter],
+    );
+    const scopedLatestResults = useMemo(
+        () => buildScopedLatestResults(scopedResults, scopedGroupFilter, scopedFilteredStudents),
+        [scopedResults, scopedGroupFilter, scopedFilteredStudents],
+    );
+    const scopedGroupPerformanceRows = useMemo(
+        () => buildScopedGroupPerformanceRows({ scopedAnalytics, scopedResults, groups }),
+        [groups, scopedAnalytics, scopedResults],
+    );
     const weakestScopedGroup = scopedGroupPerformanceRows[0] || null;
-    const strongestScopedGroup = useMemo(() => {
-        return [...scopedGroupPerformanceRows]
-            .filter((group) => group.attempts > 0)
-            .sort((a, b) => b.averageScore - a.averageScore || a.weakStudentCount - b.weakStudentCount)[0] || null;
-    }, [scopedGroupPerformanceRows]);
-    const scopedTeacherPerformanceRows = useMemo(() => {
-        if (!scopedAnalytics) return [];
-
-        const scopedGroupIds = new Set<string>([
-            ...scopedAnalytics.weakestStudents.flatMap((student) => student.groupIds || []),
-            ...scopedResults.flatMap((result) => result.studentGroupIds || []),
-        ]);
-        const scopedGroups = groups.filter((group) => scopedGroupIds.has(group.id));
-
-        return users
-            .filter((candidate) => candidate.role === Role.TEACHER)
-            .map((teacher) => {
-                const teacherGroupIds = new Set(
-                    scopedGroups
-                        .filter((group) => group.supervisorIds.includes(teacher.id) || (teacher.groupIds || []).includes(group.id))
-                        .map((group) => group.id),
-                );
-                const teacherResults = scopedResults.filter((result) =>
-                    (result.studentGroupIds || []).some((groupId) => teacherGroupIds.has(groupId)),
-                );
-                if (teacherGroupIds.size === 0 || teacherResults.length === 0) return null;
-
-                const weakStudentIds = new Set(
-                    teacherResults.filter((result) => Number(result.score || 0) < 70).map((result) => result.userId).filter(Boolean),
-                );
-                return {
-                    id: teacher.id,
-                    name: displayText(teacher.name) || displayText(teacher.email) || 'معلم',
-                    groupCount: teacherGroupIds.size,
-                    attempts: teacherResults.length,
-                    averageScore: Math.round(teacherResults.reduce((total, result) => total + Number(result.score || 0), 0) / teacherResults.length),
-                    weakStudentCount: weakStudentIds.size,
-                };
-            })
-            .filter((teacher): teacher is NonNullable<typeof teacher> => Boolean(teacher))
-            .sort((a, b) => a.averageScore - b.averageScore || b.weakStudentCount - a.weakStudentCount)
-            .slice(0, 8);
-    }, [groups, scopedAnalytics, scopedResults, users]);
+    const strongestScopedGroup = useMemo(
+        () => getStrongestScopedGroup(scopedGroupPerformanceRows),
+        [scopedGroupPerformanceRows],
+    );
+    const scopedTeacherPerformanceRows = useMemo(
+        () => buildScopedTeacherPerformanceRows({ scopedAnalytics, scopedResults, groups, users }),
+        [groups, scopedAnalytics, scopedResults, users],
+    );
     const directedFollowUpOptions = useMemo(
-        () => (scopedAnalytics?.assignedFollowUps || []).filter((quiz) => {
-            const mode = quiz.mode || 'regular';
-            const hasTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
-            return mode === 'central' || hasTargets;
-        }),
-        [scopedAnalytics?.assignedFollowUps],
+        () => buildDirectedFollowUpOptions(scopedAnalytics),
+        [scopedAnalytics],
     );
     useEffect(() => {
         if (selectedFollowUpQuizId === 'all') return;
@@ -1266,168 +448,48 @@ const Reports: React.FC = () => {
         }
     }, [directedFollowUpOptions, selectedFollowUpQuizId]);
     const selectedFollowUpQuiz = useMemo(
-        () => directedFollowUpOptions.find((quiz) => quiz.id === selectedFollowUpQuizId) || null,
+        () => selectDirectedFollowUpQuiz(directedFollowUpOptions, selectedFollowUpQuizId),
         [directedFollowUpOptions, selectedFollowUpQuizId],
     );
-    const directedQuizAnalysisResults = useMemo(() => {
-        if (!scopedResults.length) return [];
-
-        const targetQuizIds = selectedFollowUpQuizId === 'all'
-            ? new Set(directedFollowUpOptions.map((quiz) => quiz.id))
-            : new Set([selectedFollowUpQuizId]);
-        if (targetQuizIds.size === 0) return [];
-
-        return scopedResults.filter((result) => {
-            if (!result.quizId || !targetQuizIds.has(result.quizId)) return false;
-            if (scopedGroupFilter === 'all') return true;
-            const student = scopedFilteredStudents.find((item) => item.id === result.userId);
-            return !!student;
-        });
-    }, [directedFollowUpOptions, scopedFilteredStudents, scopedGroupFilter, scopedResults, selectedFollowUpQuizId]);
-    const directedQuizSkillAnalysis = useMemo(() => {
-        const skillMap = new Map<string, {
-            skill: string;
-            masterySum: number;
-            attempts: number;
-            affectedStudents: Set<string>;
-        }>();
-
-        directedQuizAnalysisResults.forEach((result) => {
-            (result.skillsAnalysis || []).forEach((skill) => {
-                const skillName = displayText(skill.skill);
-                if (!skillName) return;
-                const key = skillName;
-                const current = skillMap.get(key) || {
-                    skill: skillName,
-                    masterySum: 0,
-                    attempts: 0,
-                    affectedStudents: new Set<string>(),
-                };
-                const mastery = Number(skill.mastery || 0);
-                current.masterySum += mastery;
-                current.attempts += 1;
-                if (mastery < 75 && result.userId) {
-                    current.affectedStudents.add(String(result.userId));
-                }
-                skillMap.set(key, current);
-            });
-        });
-
-        return Array.from(skillMap.values())
-            .map((item) => ({
-                skill: item.skill,
-                mastery: Math.round(item.masterySum / Math.max(item.attempts, 1)),
-                attempts: item.attempts,
-                affectedStudents: item.affectedStudents.size,
-            }))
-            .sort((a, b) => a.mastery - b.mastery)
-            .slice(0, 8);
-    }, [directedQuizAnalysisResults]);
-    const directedQuizStudentAnalysis = useMemo(() => {
-        return directedQuizAnalysisResults
-            .map((result) => {
-                const weakSkills = (result.skillsAnalysis || [])
-                    .filter((skill) => Number(skill.mastery || 0) < 75)
-                    .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
-                    .slice(0, 3);
-
-                return {
-                    result,
-                    studentName: displayText(result.studentName || result.studentEmail) || 'طالب',
-                    score: Number(result.score || 0),
-                    weakSkills,
-                };
-            })
-            .sort((a, b) => a.score - b.score)
-            .slice(0, 12);
-    }, [directedQuizAnalysisResults]);
-    const directedQuizSummary = useMemo(() => {
-        const attempts = directedQuizAnalysisResults.length;
-        const averageScore = attempts
-            ? Math.round(directedQuizAnalysisResults.reduce((sum, result) => sum + Number(result.score || 0), 0) / attempts)
-            : 0;
-        const needsFollowUp = directedQuizAnalysisResults.filter((result) => Number(result.score || 0) < 75).length;
-        const weakestSkill = directedQuizSkillAnalysis[0] || null;
-
-        return {
-            attempts,
-            averageScore,
-            needsFollowUp,
-            weakestSkill,
-            title: selectedFollowUpQuiz ? displayText(selectedFollowUpQuiz.title) : 'كل الاختبارات الموجهة',
-        };
-    }, [directedQuizAnalysisResults, directedQuizSkillAnalysis, selectedFollowUpQuiz]);
+    const directedQuizAnalysisResults = useMemo(
+        () => buildDirectedQuizAnalysisResults({
+            scopedResults,
+            selectedFollowUpQuizId,
+            directedFollowUpOptions,
+            scopedGroupFilter,
+            scopedFilteredStudents,
+        }),
+        [directedFollowUpOptions, scopedFilteredStudents, scopedGroupFilter, scopedResults, selectedFollowUpQuizId],
+    );
+    const directedQuizSkillAnalysis = useMemo(
+        () => buildDirectedQuizSkillAnalysis(directedQuizAnalysisResults),
+        [directedQuizAnalysisResults],
+    );
+    const directedQuizStudentAnalysis = useMemo(
+        () => buildDirectedQuizStudentAnalysis(directedQuizAnalysisResults),
+        [directedQuizAnalysisResults],
+    );
+    const directedQuizSummary = useMemo(
+        () => buildDirectedQuizSummary(directedQuizAnalysisResults, directedQuizSkillAnalysis, selectedFollowUpQuiz),
+        [directedQuizAnalysisResults, directedQuizSkillAnalysis, selectedFollowUpQuiz],
+    );
     const showScopedAggregatedSections = scopedReportMode === 'combined' || scopedReportMode === 'aggregated';
     const showScopedIndividualSections = scopedReportMode === 'combined' || scopedReportMode === 'individual';
-    const scopedLeadStudentSummary = useMemo(() => {
-        if (!scopedLeadStudent) return '';
-
-        const weakSkillsText = scopedLeadStudent.weakestSkills?.slice(0, 2).map((skill) => `${displayText(skill.skill)} (${skill.mastery}%)`).join('، ');
-        return [
-            `ابدأ بمتابعة ${displayText(scopedLeadStudent.name)}.`,
-            `متوسطه الحالي ${scopedLeadStudent.averageScore}%.`,
-            weakSkillsText ? `أبرز المهارات: ${weakSkillsText}.` : null,
-            displayText(scopedLeadStudent.recommendedAction) ? `الإجراء المقترح: ${displayText(scopedLeadStudent.recommendedAction)}.` : 'الإجراء المقترح: شرح قصير ثم تدريب علاجي ثم إعادة قياس.',
-        ].filter(Boolean).join(' ');
-    }, [scopedLeadStudent]);
-    const institutionalReportHub = useMemo(() => {
-        if (user.role === Role.STUDENT || !scopedAnalytics) return null;
-
-        const roleLabel =
-            user.role === Role.ADMIN
-                ? 'مدير المنصة'
-                : user.role === Role.SUPERVISOR
-                    ? 'مشرف'
-                    : user.role === Role.TEACHER
-                        ? 'معلم'
-                        : 'ولي أمر';
-        const nextAction = scopedLeadSkill
-            ? `وجّه اختبار متابعة على ${displayText(scopedLeadSkill.skill)} للطلاب المتأثرين.`
-            : scopedLeadStudent
-                ? `ابدأ برسالة متابعة إلى ${displayText(scopedLeadStudent.name)}.`
-                : 'انتظر نتائج أكثر أو وجّه اختبارًا تشخيصيًا قصيرًا.';
-        const targetLine = scopedLeadStudent
-            ? `${displayText(scopedLeadStudent.name)} يحتاج متابعة بمتوسط ${scopedLeadStudent.averageScore}%.`
-            : scopedLeadSkill
-                ? `${scopedLeadSkill.affectedStudents} طلاب متأثرون بمهارة ${displayText(scopedLeadSkill.skill)}.`
-                : `${scopedAnalytics.scope.studentCount} طالب داخل النطاق.`;
-        const resolvedSkill = scopedLeadSkill?.skillId ? skills.find((skill) => skill.id === scopedLeadSkill.skillId) : undefined;
-        const followUpLink = user.role === Role.PARENT
-            ? '/dashboard?tab=reports'
-            : buildDirectedQuizManagerLink({
-                pathId: resolvedSkill?.pathId,
-                subjectId: resolvedSkill?.subjectId,
-                sectionId: resolvedSkill?.sectionId,
-                skillId: scopedLeadSkill?.skillId,
-                targetUserId: scopedLeadStudent?.id,
-            });
-        const studentsLink =
-            user.role === Role.ADMIN
-                ? '/admin-dashboard?tab=users'
-                : user.role === Role.SUPERVISOR
-                    ? '/admin-dashboard?tab=schools'
-                    : user.role === Role.TEACHER
-                        ? '/admin-dashboard?tab=quizzes'
-                        : '/dashboard?tab=reports';
-        const alertLink = user.role === Role.ADMIN ? '/admin-dashboard?tab=notifications' : '/reports';
-        const alertText = [
-            `تنبيه متابعة من منصة المئة - ${roleLabel}`,
-            targetLine,
-            scopedLeadSkill ? `أولوية المهارة: ${displayText(scopedLeadSkill.skill)} (${scopedLeadSkill.mastery}%).` : null,
-            scopedLeadSubject ? `المادة: ${displayText(scopedLeadSubject.subjectName)}.` : null,
-            'المطلوب: شرح قصير، تدريب علاجي، ثم اختبار قياس قصير.',
-        ].filter(Boolean).join('\n');
-
-        return {
-            roleLabel,
-            nextAction,
-            targetLine,
-            followUpLink,
-            studentsLink,
-            alertLink,
-            alertText,
-        };
-    }, [scopedAnalytics, scopedLeadSkill, scopedLeadStudent, scopedLeadSubject, skills, user.role]);
+    const scopedLeadStudentSummary = useMemo(
+        () => buildScopedLeadStudentSummary(scopedLeadStudent),
+        [scopedLeadStudent],
+    );
+    const institutionalReportHub = useMemo(
+        () => buildInstitutionalReportHub({
+            role: user.role,
+            scopedAnalytics,
+            scopedLeadSkill,
+            scopedLeadStudent,
+            scopedLeadSubject,
+            skills,
+        }),
+        [scopedAnalytics, scopedLeadSkill, scopedLeadStudent, scopedLeadSubject, skills, user.role],
+    );
     const copyInstitutionalAlert = async () => {
         if (!institutionalReportHub?.alertText) return;
 
@@ -1465,98 +527,36 @@ const Reports: React.FC = () => {
             setInterventionAlertSending(false);
         }
     };
-    const scopedSkillReportCards = useMemo(() => {
-        return (scopedAnalytics?.weakestSkills || []).slice(0, 4).map((skill) => {
-            const tone = skill.mastery < 50
-                ? {
-                    label: 'دعم عاجل',
-                    card: 'border-rose-100 bg-rose-50/70',
-                    text: 'text-rose-700',
-                    bar: 'bg-rose-500',
-                }
-                : {
-                    label: 'دعم قريب',
-                    card: 'border-amber-100 bg-amber-50/70',
-                    text: 'text-amber-700',
-                    bar: 'bg-amber-500',
-                };
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
-
-            return {
-                ...skill,
-                tone,
-                lessonLink: recommendation.lessonLink,
-                lessonTitle: recommendation.lessonTopicTitle || recommendation.lessonTitle,
-                quizLink: recommendation.quizLink,
-                quizTitle: recommendation.quizTitle,
-            };
-        });
-    }, [lessons, libraryItems, questions, quizzes, scopedAnalytics?.weakestSkills, skills, topics]);
-    const scopedStudentFocusCards = useMemo(() => {
-        return scopedFilteredStudents.slice(0, 4).map((student) => {
-            const topSkills = (student.weakestSkills || []).slice(0, 2);
-            const primarySkillName = topSkills[0]?.skill;
-            const resolvedSkill = primarySkillName
-                ? skills.find((skill) => displayText(skill.name) === displayText(primarySkillName))
-                : undefined;
-
-            return {
-                ...student,
-                topSkills,
-                followUpLink: buildDirectedQuizManagerLink({
-                    pathId: resolvedSkill?.pathId,
-                    subjectId: resolvedSkill?.subjectId,
-                    sectionId: resolvedSkill?.sectionId,
-                    skillId: resolvedSkill?.id,
-                    targetUserId: student.id,
-                    targetGroupId: student.groupIds?.[0],
-                }),
-                tone: student.averageScore < 50
-                    ? 'border-rose-100 bg-rose-50/70 text-rose-700'
-                    : 'border-amber-100 bg-amber-50/70 text-amber-700',
-            };
-        });
-    }, [scopedFilteredStudents, skills]);
+    const scopedSkillReportCards = useMemo(
+        () => buildScopedSkillReportCards(scopedAnalytics, {
+            allSkills: skills,
+            lessons,
+            quizzes,
+            libraryItems,
+            questions,
+            topics,
+            subjects,
+            sections,
+        }),
+        [lessons, libraryItems, questions, quizzes, scopedAnalytics, sections, skills, subjects, topics],
+    );
+    const scopedStudentFocusCards = useMemo(
+        () => buildScopedStudentFocusCards(scopedFilteredStudents, skills),
+        [scopedFilteredStudents, skills],
+    );
     const downloadScopedSkillsWorkbook = async () => {
         if (!scopedAnalytics?.weakestSkills?.length) return;
-
         const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
-        const rows = [
-            ['المهارة', 'المحور', 'نسبة الإتقان', 'طلاب متأثرون', 'محاولات', 'الإجراء المقترح', 'شرح / دعم', 'اختبار موجه'],
-            ...scopedSkillReportCards.map((skill) => [
-                displayText(skill.skill) || '-',
-                displayText(skill.section) || '-',
-                `${skill.mastery}%`,
-                skill.affectedStudents,
-                skill.attempts,
-                displayText(skill.recommendedAction) || 'شرح قصير ثم تدريب علاجي ثم اختبار متابعة.',
-                displayText(skill.lessonTitle) || '-',
-                displayText(skill.quizTitle) || '-',
-            ]),
-        ];
-
+        const rows = buildScopedSkillsWorkbookRows(scopedSkillReportCards);
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'skills-report');
         XLSX.writeFile(workbook, `skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
     const downloadScopedStudentsWorkbook = async () => {
         if (!scopedAnalytics?.weakestStudents?.length) return;
-
         const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
-        const rows = [
-            ['الطالب', 'المجموعات', 'متوسط الأداء', 'عدد المحاولات', 'مهارات تحتاج دعم', 'أبرز المهارات', 'الإجراء المقترح'],
-            ...scopedStudentFocusCards.map((student) => [
-                displayText(student.name) || '-',
-                student.groupNames?.length ? student.groupNames.map((name) => displayText(name)).join('، ') : '-',
-                `${student.averageScore}%`,
-                student.attempts,
-                student.weakSkillCount,
-                student.topSkills.length ? student.topSkills.map((skill) => `${displayText(skill.skill)} ${skill.mastery}%`).join('، ') : '-',
-                displayText(student.recommendedAction) || 'شرح قصير ثم تدريب موجه ثم قياس.',
-            ]),
-        ];
-
+        const rows = buildScopedStudentsWorkbookRows(scopedStudentFocusCards);
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'students-report');
         XLSX.writeFile(workbook, `students-performance-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
@@ -3208,6 +2208,9 @@ const Reports: React.FC = () => {
                                 ? `نركز الآن على: ${studentTrackLabel}.`
                                 : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
                         </p>
+                        <p className="mt-1 text-xs font-bold leading-5 text-gray-500">
+                            القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
+                        </p>
                         {studentReportPathOptions.length > 0 ? (
                             <select
                                 value={selectedStudentPathId}
@@ -3431,49 +2434,7 @@ const Reports: React.FC = () => {
                 </Card>
             ) : null}
 
-            {smartRemediation && isStudentReportFull ? (
-                <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-amber-50 via-white to-emerald-50">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700 shadow-sm">
-                                <Sparkles size={14} />
-                                خطة علاجية مولدة من أدائك
-                            </div>
-                            <h2 className="text-xl font-black text-gray-900">{displayText(smartRemediation.title) || 'خطة علاجية قصيرة'}</h2>
-                            <p className="mt-2 max-w-4xl text-sm leading-7 text-gray-600">
-                                {displayText(smartRemediation.summary) || 'ابدأ بأضعف مهارة، راجع شرحًا بسيطًا، ثم حل تدريبًا قصيرًا وأعد القياس.'}
-                            </p>
-                        </div>
-                        <Link to="/plan" className="self-start rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-700">
-                            تحويلها لخطة مذاكرة
-                        </Link>
-                    </div>
-
-                    <div className="mt-5 grid gap-3 md:grid-cols-3">
-                        {(smartRemediation.steps || []).slice(0, 3).map((step, index) => (
-                            <div key={`${step.day || index}-${step.skill || index}`} className="rounded-2xl border border-white bg-white/80 p-4 shadow-sm">
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">
-                                        {displayText(step.day) || `اليوم ${index + 1}`}
-                                    </span>
-                                    <CheckCircle size={18} className="text-emerald-500" />
-                                </div>
-                                <div className="mt-3 text-base font-black leading-7 text-gray-900">{displayText(step.skill) || 'مهارة تحتاج متابعة'}</div>
-                                <p className="mt-2 text-sm leading-7 text-gray-600">{displayText(step.action) || 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'}</p>
-                                <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
-                                    التحقق: {displayText(step.check) || 'أعد القياس بسؤال أو اختبار قصير.'}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {smartRemediation.parentNote ? (
-                        <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold leading-7 text-emerald-800">
-                            ملاحظة لولي الأمر: {displayText(smartRemediation.parentNote)}
-                        </div>
-                    ) : null}
-                </Card>
-            ) : null}
+            <StudentSmartRemediationPanel visible={isStudentReportFull} plan={smartRemediation} />
 
             {isStudentReportFull ? (
             <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
@@ -3625,112 +2586,16 @@ const Reports: React.FC = () => {
                 </div>
 
                 {selectedReportSkill ? (
-                    <div className="mt-5 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5">
-                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                            <div className="min-w-0">
-                                <div className="flex flex-wrap items-center gap-2 mb-3">
-                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">مقترحات لهذه المهارة</span>
-                                </div>
-                                <h3 className="text-lg font-black text-gray-900 break-words">{displayText(selectedReportSkill.skill)}</h3>
-                                <p className="mt-2 text-sm leading-7 text-gray-600">
-                                    اختر من المقترحات التالية ما يناسب وقتك الآن. الأفضل أن تبدأ بالشرح ثم تنتقل للتدريب.
-                                </p>
-                                <p className="mt-2 text-xs font-bold text-indigo-600">
-                                    يمكنك تغيير المقترحات بالضغط على أي مهارة من البطاقات بالأعلى.
-                                </p>
-                            </div>
-                            <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
-                                {selectedSkillRecommendation.lessonLink ? (
-                                    <Link to={selectedSkillRecommendation.lessonLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center gap-2">
-                                        <Video size={16} />
-                                        {selectedSkillRecommendation.lessonTopicTitle ? `درس: ${selectedSkillRecommendation.lessonTopicTitle}` : 'فيديو أو درس'}
-                                    </Link>
-                                ) : (
-                                    <Link to="/courses" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
-                                        <Video size={16} />
-                                        استعرض الشروح
-                                    </Link>
-                                )}
-                                {selectedSkillRecommendation.quizLink ? (
-                                    <Link to={selectedSkillRecommendation.quizLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center gap-2">
-                                        <FileText size={16} />
-                                        اختبار علاجي
-                                    </Link>
-                                ) : (
-                                    <Link to="/dashboard?tab=saher" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
-                                        <FileText size={16} />
-                                        ابحث عن اختبار
-                                    </Link>
-                                )}
-                                {selectedSkillRecommendation.resourceUrl ? (
-                                    <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
-                                        <BookOpen size={16} />
-                                        ملف داعم
-                                    </a>
-                                ) : null}
-                                <Link to={buildSkillSessionLink(selectedReportSkill)} className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center gap-2">
-                                    <Clock size={16} />
-                                    حجز حصة
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
+                    <StudentSelectedSkillPanel
+                        skill={selectedReportSkill}
+                        recommendation={selectedSkillRecommendation}
+                        sessionLink={buildSkillSessionLink(selectedReportSkill)}
+                    />
                 ) : null}
             </Card>
             ) : null}
 
-            {isStudentReportFull && studentWeeklyPlan.length > 0 ? (
-                <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-5">
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900">خطة أسبوعية صغيرة</h2>
-                            <p className="text-sm text-gray-500 mt-1">
-                                ثلاث خطوات خفيفة تبدأ من أضعف المهارات، مناسبة للمذاكرة اليومية وولي الأمر يقدر يتابعها بسهولة.
-                            </p>
-                        </div>
-                        <Link to="/plan" className="self-start rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100">
-                            افتح خطتي الدراسية
-                        </Link>
-                    </div>
-                    <div className="grid gap-3 md:grid-cols-3">
-                        {studentWeeklyPlan.map((item) => (
-                            <div key={`${item.day}-${item.skill}`} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{item.day}</span>
-                                    <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
-                                        {item.mastery}%
-                                    </span>
-                                </div>
-                                <div className="mt-3 font-black text-gray-900 leading-7 break-words">{item.skill}</div>
-                                {(item.subjectName || item.sectionName) ? (
-                                    <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-bold text-gray-500">
-                                        {item.subjectName ? <span className="rounded-full bg-white px-2 py-1">المادة: {displayText(item.subjectName)}</span> : null}
-                                        {item.sectionName ? <span className="rounded-full bg-white px-2 py-1">المهارة الرئيسية: {displayText(item.sectionName)}</span> : null}
-                                    </div>
-                                ) : null}
-                                <p className="mt-2 text-sm leading-7 text-gray-600">{displayText(item.actionText)}</p>
-                                <div className="mt-3 space-y-1 text-xs text-gray-500">
-                                    {item.lessonTitle ? <div>شرح مقترح: <span className="font-bold">{displayText(item.lessonTitle)}</span></div> : null}
-                                    {item.lessonTopicTitle ? <div>داخل موضوع: <span className="font-bold">{displayText(item.lessonTopicTitle)}</span></div> : null}
-                                    {item.quizTitle ? <div>تدريب مقترح: <span className="font-bold">{displayText(item.quizTitle)}</span></div> : null}
-                                </div>
-                                <div className="print-hide mt-4 grid gap-2">
-                                    {item.lessonLink ? (
-                                        <Link to={item.lessonLink} className="rounded-xl bg-indigo-600 px-3 py-2 text-center text-xs font-black text-white hover:bg-indigo-700">
-                                            فتح شرح اليوم
-                                        </Link>
-                                    ) : null}
-                                    {item.quizLink ? (
-                                        <Link to={item.quizLink} className="rounded-xl bg-amber-50 px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-100">
-                                            فتح تدريب اليوم
-                                        </Link>
-                                    ) : null}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
-            ) : null}
+            <StudentWeeklyPlanPanel visible={isStudentReportFull} items={studentWeeklyPlan} />
 
             </>
             )}

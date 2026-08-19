@@ -5010,5 +5010,7 @@ pm run smoke:operational PASS (71/71).
   - Live audit selector robustness fix is recorded in the following test commit.
 - Note:
   - `npm run smoke:role-pages-live` reported 18 PASS and 15 BLOCKED because role credentials for all optional roles were unavailable; it reported no failures.
+- Blockers:
+  - external blocker: 15 optional role cases in `smoke:role-pages-live` were BLOCKED because the corresponding role credentials were unavailable; no functional failures were reported.
 - Next exact task:
   1. Validate a real targeted barcode test with one supervisor, one group, and one student account in the next live data session.

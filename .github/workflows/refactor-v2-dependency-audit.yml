@@ -1,0 +1,116 @@
+name: Refactor V2 Dependency Audit
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'tools/refactor/dependency-audit-summary.mjs'
+      - '.github/workflows/refactor-v2-dependency-audit.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'tools/refactor/dependency-audit-summary.mjs'
+      - '.github/workflows/refactor-v2-dependency-audit.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refactor-v2-dependency-audit-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Root dependency audit — all dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --json > /tmp/root-all-audit.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-all /tmp/root-all-audit.json
+
+      - name: Root dependency audit — production only
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --omit=dev --json > /tmp/root-prod-audit.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-production /tmp/root-prod-audit.json
+
+      - name: API dependency audit — all dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm --prefix server audit --json > /tmp/server-all-audit.json || true
+          node tools/refactor/dependency-audit-summary.mjs server-all /tmp/server-all-audit.json
+
+      - name: API dependency audit — production only
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm --prefix server audit --omit=dev --json > /tmp/server-prod-audit.json || true
+          node tools/refactor/dependency-audit-summary.mjs server-production /tmp/server-prod-audit.json
+
+      - name: Install exact dependency trees for provenance
+        run: |
+          npm ci --ignore-scripts
+          npm --prefix server ci --ignore-scripts
+
+      - name: Explain root production blockers
+        shell: bash
+        run: |
+          set -uo pipefail
+          echo '===== ROOT PROVENANCE: ws ====='
+          npm explain ws || true
+          echo '===== ROOT PROVENANCE: protobufjs ====='
+          npm explain protobufjs || true
+
+      - name: Explain API production blockers
+        shell: bash
+        run: |
+          set -uo pipefail
+          echo '===== API PROVENANCE: @sentry/node ====='
+          npm --prefix server explain @sentry/node || true
+          echo '===== API PROVENANCE: ws ====='
+          npm --prefix server explain ws || true
+          echo '===== API PROVENANCE: socket.io-parser ====='
+          npm --prefix server explain socket.io-parser || true
+          echo '===== API PROVENANCE: ip-address ====='
+          npm --prefix server explain ip-address || true
+
+      - name: Confirm audit is read-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --porcelain -- package.json package-lock.json server/package.json server/package-lock.json)" ]; then
+            echo "Dependency audit modified package manifests or lockfiles; refusing read-only inventory." >&2
+            git status --short -- package.json package-lock.json server/package.json server/package-lock.json
+            exit 1
+          fi
+          echo "Dependency audit completed without modifying manifests or lockfiles."

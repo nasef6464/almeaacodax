@@ -1,0 +1,159 @@
+name: Refactor V2 Remediate Sentry Brace Expansion
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'server/src/config/sentry.ts'
+      - 'server/src/app.ts'
+      - 'scripts/smoke-sentry-runtime-contract.mjs'
+      - 'scripts/smoke-monitoring-contract.mjs'
+      - 'scripts/smoke-api-security-contract.mjs'
+      - 'scripts/smoke-runtime-source-contract.mjs'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-sentry-brace-expansion.yml'
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-remediate-sentry-brace-expansion-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-remediate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Record pre-remediation API production audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm --prefix server audit --omit=dev --json > /tmp/server-prod-before.json || true
+          node tools/refactor/dependency-audit-summary.mjs server-production-before /tmp/server-prod-before.json
+
+      - name: Update only Sentry-owned brace-expansion lock resolution
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp server/package.json /tmp/server-package.json.before
+          npm --prefix server update --package-lock-only brace-expansion
+          cmp --silent server/package.json /tmp/server-package.json.before || {
+            echo "server/package.json changed during lock-only remediation; refusing scope expansion." >&2
+            git diff -- server/package.json
+            exit 1
+          }
+          git diff --check -- server/package-lock.json
+
+      - name: Verify brace-expansion advisory is gone
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm --prefix server audit --omit=dev --json > /tmp/server-prod-after.json || true
+          node tools/refactor/dependency-audit-summary.mjs server-production-after /tmp/server-prod-after.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/server-prod-after.json brace-expansion
+
+      - name: Install exact frontend dependencies for repository contracts
+        run: npm ci
+
+      - name: Install exact remediated API dependencies
+        run: npm --prefix server ci
+
+      - name: Verify brace-expansion remains Sentry-owned
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRACE_EXPLAIN="$(npm --prefix server explain brace-expansion 2>&1 || true)"
+          printf '%s\n' "$BRACE_EXPLAIN"
+          printf '%s' "$BRACE_EXPLAIN" | grep -F 'minimatch@' >/dev/null || {
+            echo "brace-expansion is no longer resolved through minimatch; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
+          printf '%s' "$BRACE_EXPLAIN" | grep -F '@sentry/node@' >/dev/null || {
+            echo "brace-expansion is no longer resolved through @sentry/node; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
+
+      - name: API typecheck
+        run: npm run server:check
+
+      - name: API production build
+        run: npm run server:build
+
+      - name: Sentry runtime contract
+        run: npm run smoke:sentry-runtime
+
+      - name: Monitoring contract
+        run: npm run smoke:monitoring
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Confirm remediation scope
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHANGED="$(git diff --name-only)"
+          echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "Sentry brace-expansion tree is already clean; no lockfile remediation is required."
+            exit 0
+          fi
+          if [ "$CHANGED" != "server/package-lock.json" ]; then
+            echo "Sentry brace-expansion remediation must modify server/package-lock.json only." >&2
+            exit 1
+          fi
+
+      - name: Commit verified Sentry brace-expansion remediation
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add server/package-lock.json
+
+          if git diff --cached --quiet; then
+            echo "No Sentry brace-expansion lockfile remediation changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale remediation commit safely."
+            exit 0
+          fi
+
+          git commit -m "fix(deps): remediate sentry brace-expansion advisory"
+          git push origin HEAD:refactor/repository-v2-safe

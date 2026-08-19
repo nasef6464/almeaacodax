@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 const files = [
-  "PROJECT_STATUS.md",
-  "CODEX_HANDOFF.md",
+  "docs/archive_reports/PROJECT_STATUS.md",
+  "docs/archive_reports/CODEX_HANDOFF.md",
   "docs/SPARK_BATCH_LEDGER_AR.md",
   "docs/NEXT_SESSION_HANDOVER_AR.md",
 ];

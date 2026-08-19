@@ -18,8 +18,14 @@ const files = {
   questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
   liveQuestionEditorAudit: await read("scripts/live-question-editor-audit.mjs"),
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
+  questionPresentation: await read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   styles: await read("styles/main.css"),
 };
+
+const questionPresentationImport = 'import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";';
+const questionSummaryOwner = files.quizRoutes.includes(questionPresentationImport)
+  ? files.questionPresentation
+  : files.quizRoutes;
 
 const checks = [];
 
@@ -80,12 +86,13 @@ check("admin question bank shows image-only questions at a glance", () => {
 });
 
 check("question summary API keeps one inline media preview for admin lists", () => {
-  assertIncludes(files.quizRoutes, "const escapeHtml");
-  assertIncludes(files.quizRoutes, "const inlineMedia");
+  assertIncludes(questionSummaryOwner, "const escapeHtml");
+  assertIncludes(questionSummaryOwner, "const inlineMedia");
+  assertIncludes(questionSummaryOwner, "<img\\b[^>]*");
+  assertIncludes(questionSummaryOwner, "<svg\\b[\\s\\S]*?<\\/svg>");
+  assertIncludes(questionSummaryOwner, "<table\\b[\\s\\S]*?<\\/table>");
+  assertIncludes(questionSummaryOwner, "<p>${escapeHtml(summaryText)}</p>");
   assertIncludes(files.quizRoutes, "options correctOptionIndex explanation videoUrl");
-  assertIncludes(files.quizRoutes, "<img\\b[^>]*");
-  assertIncludes(files.quizRoutes, "<svg\\b[\\s\\S]*?<\\/svg>");
-  assertIncludes(files.quizRoutes, "<table\\b[\\s\\S]*?<\\/table>");
   assertIncludes(files.quizRoutes, "toQuestionSummaryText(item.text)");
 });
 

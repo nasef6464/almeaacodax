@@ -1,16 +1,6 @@
-import type { AppRole } from "../constants/roles.js";
+import type { AuthUser } from "../modules/auth/domain/auth-user.js";
 
-export interface AuthUser {
-  id: string;
-  email: string;
-  role: AppRole;
-  name: string;
-  schoolId?: string | null;
-  groupIds?: string[];
-  linkedStudentIds?: string[];
-  managedPathIds?: string[];
-  managedSubjectIds?: string[];
-}
+export type { AuthUser } from "../modules/auth/domain/auth-user.js";
 
 declare global {
   namespace Express {

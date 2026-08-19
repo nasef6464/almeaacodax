@@ -6,7 +6,28 @@ const files = {
   routes: await read("server/src/routes/content.routes.ts"),
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
-  schools: await read("dashboards/admin/SchoolsManager.tsx"),
+  schools: [
+  await read("dashboards/admin/SchoolsManager.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/readinessViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/schoolCardReadinessViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolWorkspaceControlsPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/relationshipViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/workspaceViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
+].join("\n"),
   store: await read("store/useStore.ts"),
   packageJson: await read("package.json"),
   schoolFromScratchAudit: await read("scripts/live-school-from-scratch-audit.mjs"),
@@ -76,7 +97,7 @@ check("school list cards expose next readiness action", () => {
   assertIncludes(files.schools, "cardReadinessActions");
   assertIncludes(files.schools, "nextCardAction");
   assertIncludes(files.schools, "الخطوة التالية");
-  assertIncludes(files.schools, "setActiveTab(action.tab)");
+  assertIncludes(files.schools, "onOpenTab(action.tab)");
 });
 
 check("school management can copy handover message", () => {
@@ -133,7 +154,7 @@ check("selected school has a real delete action", () => {
 check("school workspace exposes all guided setup panels", () => {
   assertIncludes(files.schools, 'data-testid="school-classes-panel"');
   assertIncludes(files.schools, 'data-testid="school-students-panel"');
-  assertIncludes(files.schools, 'data-testid="school-supervisors-panel"');
+  assertIncludes(files.schools, 'data-testid="school-wide-supervisors-panel"');
   assertIncludes(files.schools, 'data-testid="school-packages-panel"');
   assertIncludes(files.schools, 'data-testid="school-reports-panel"');
   assertIncludes(files.schools, 'data-testid="school-roster-panel"');
@@ -176,7 +197,9 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.store, "removeSupervisorFromGroupAsync: async");
   assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
   assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)");
-  assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, classroom.id)");
+  assertIncludes(files.schools, "onAssignSupervisor={handleAssignSchoolSupervisor}");
+  assertIncludes(files.schools, "onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}");
+  assertIncludes(files.schools, "onAssignSupervisor(value).finally");
   assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)");
   assertIncludes(files.schools, "rosterActionPending");
   assertIncludes(files.schools, "setActiveTab('relations')");
@@ -189,7 +212,7 @@ check("school student roster exposes direct removal actions", () => {
   assertIncludes(files.schools, "إزالة من المدرسة");
   assertIncludes(files.schools, "handleAssignStudentToClass(student.id, value)");
   assertIncludes(files.schools, "handleRemoveStudentScope(student.id, currentClass.id)");
-  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchool.id)");
+  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchoolId)");
   assertIncludes(files.schools, "rosterActionPending");
 });
 
@@ -256,20 +279,23 @@ check("school bulk import and relation uploads keep class membership singular", 
   const relationsRouteIndex = files.routes.indexOf('"/schools/:id/relations"');
   const relationCleanupIndex = files.routes.indexOf('await GroupModel.updateMany(\n          { type: "CLASS", parentId: schoolId }', relationsRouteIndex);
   const relationAddIndex = files.routes.indexOf("GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } })", relationsRouteIndex);
-  if (relationCleanupIndex < 0 || relationAddIndex < 0 || relationCleanupIndex > relationAddIndex) {
-    throw new Error("School relation upload must clear old class rosters before adding the student to the target class");
+  if (relationsRouteIndex < 0 || relationCleanupIndex < 0 || relationAddIndex < 0 || relationCleanupIndex > relationAddIndex) {
+    throw new Error("relations endpoint must clean old class memberships before adding the new class");
   }
 });
 
 check("school access codes attach students to the school roster", () => {
-  assertIncludes(files.authRoutes, '"/me/redeem-access-code"');
-  assertIncludes(files.authRoutes, "$set: { schoolId }");
-  assertIncludes(files.authRoutes, "$addToSet: { groupIds: schoolId }");
-  assertIncludes(files.authRoutes, "$addToSet: { studentIds: String(user.id || user._id) }");
-  assertIncludes(files.authRoutes, "totalStudents: schoolStudentCount");
+  assertIncludes(files.authRoutes, 'const schoolId = String(accessCode.schoolId || linkedPackage.schoolId || "").trim();');
+  assertIncludes(files.authRoutes, 'if (schoolId && String(user.role || "") === "student") {');
+  assertIncludes(files.authRoutes, 'UserModel.findByIdAndUpdate(user._id, {');
+  assertIncludes(files.authRoutes, '$set: { schoolId },');
+  assertIncludes(files.authRoutes, '$addToSet: { groupIds: schoolId },');
+  assertIncludes(files.authRoutes, 'GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {');
+  assertIncludes(files.authRoutes, '$addToSet: { studentIds: String(user.id || user._id) },');
+  assertIncludes(files.authRoutes, 'const schoolStudentCount = await UserModel.countDocuments({ schoolId, role: "student" });');
+  assertIncludes(files.authRoutes, '$set: { totalStudents: schoolStudentCount },');
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
-
-if (failed.length > 0) process.exit(1);
+if (failed.length) process.exit(1);

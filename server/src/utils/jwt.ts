@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
-import type { AuthUser } from "../types/express.js";
+import type { AuthUser } from "../modules/auth/domain/auth-user.js";
 
 export function signAccessToken(payload: AuthUser) {
   return jwt.sign(payload, env.JWT_SECRET, {

@@ -4,6 +4,7 @@ const files = {
   types: "types.ts",
   lessonModel: "server/src/models/Lesson.ts",
   contentRoutes: "server/src/routes/content.routes.ts",
+  learningSchemas: "server/src/modules/content/http/learningContentSchemas.ts",
   lessonBuilder: "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
   videoPlayer: "components/CustomVideoPlayer.tsx",
   videoModal: "components/VideoModal.tsx",
@@ -19,7 +20,11 @@ const checks = [
     "lesson contract keeps timed interactive questions",
     source.types.includes("interactiveQuestions?: InteractiveQuestion[]") &&
       source.lessonModel.includes("interactiveQuestions") &&
-      source.contentRoutes.includes("interactiveQuestions"),
+      source.learningSchemas.includes("interactiveQuestions: z") &&
+      source.learningSchemas.includes("timestamp: z.number().min(0)") &&
+      source.learningSchemas.includes("correctOptionIndex: z.number().min(0)") &&
+      source.contentRoutes.includes("sanitizeLessonPayload(lessonSchema.parse(req.body))") &&
+      source.contentRoutes.includes("sanitizeLessonPayload(lessonSchema.partial().parse(req.body))"),
   ],
   [
     "lesson builder can author timed video questions",

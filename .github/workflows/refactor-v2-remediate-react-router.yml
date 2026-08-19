@@ -1,0 +1,136 @@
+name: Refactor V2 Remediate React Router
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'package-lock.json'
+      - 'scripts/smoke-auth-frontend-contract.mjs'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-react-router.yml'
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-remediate-react-router-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-remediate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Record pre-remediation production audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --omit=dev --json > /tmp/root-prod-before.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-production-before /tmp/root-prod-before.json
+
+      - name: Update only React Router lock resolution
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp package.json /tmp/package.json.before
+          npm update --package-lock-only react-router-dom react-router
+          cmp --silent package.json /tmp/package.json.before || {
+            echo "package.json changed during lock-only remediation; refusing scope expansion." >&2
+            git diff -- package.json
+            exit 1
+          }
+          git diff --check -- package-lock.json
+
+      - name: Verify React Router advisories are gone
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --omit=dev --json > /tmp/root-prod-after.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-production-after /tmp/root-prod-after.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/root-prod-after.json react-router react-router-dom
+
+      - name: Install exact remediated frontend dependencies
+        run: npm ci
+
+      - name: Install unchanged API dependencies for repository typecheck
+        run: npm --prefix server ci
+
+      - name: Repository typecheck
+        run: npm run typecheck
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: Frontend live route contract without pre-deployment SHA assertion
+        run: npm run smoke:frontend
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Quiz client security contract
+        run: npm run smoke:quiz-client-security
+
+      - name: Authentication frontend contract
+        run: npm run smoke:auth-frontend
+
+      - name: Confirm remediation scope
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHANGED="$(git diff --name-only)"
+          echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "React Router is already clean; no lockfile remediation is required."
+            exit 0
+          fi
+          if [ "$CHANGED" != "package-lock.json" ]; then
+            echo "React Router remediation must modify package-lock.json only." >&2
+            exit 1
+          fi
+
+      - name: Commit verified React Router remediation
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add package-lock.json
+
+          if git diff --cached --quiet; then
+            echo "No React Router lockfile remediation changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale remediation commit safely."
+            exit 0
+          fi
+
+          git commit -m "fix(deps): remediate react router advisories"
+          git push origin HEAD:refactor/repository-v2-safe

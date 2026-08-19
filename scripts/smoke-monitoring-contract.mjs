@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 const appSource = await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8");
 const loggerSource = await readFile(new URL("../server/src/middleware/requestLogger.ts", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
-const guideSource = await readFile(new URL("../MONITORING_AND_LOGGING_GUIDE.md", import.meta.url), "utf8");
-const readinessSource = await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
+const guideSource = await readFile(new URL("../docs/archive_reports/MONITORING_AND_LOGGING_GUIDE.md", import.meta.url), "utf8");
+const readinessSource = await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
 
 const checks = [];
 

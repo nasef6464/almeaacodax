@@ -24,82 +24,13 @@ import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../servi
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { sm2 } from "../services/spacedRepetition.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
+import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
+import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
+import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
+import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
+import { buildRecommendedAction, buildResultSkillStatus, buildSkillRecommendation, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
+import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
 
-const questionBaseSchema = z.object({
-  id: z.string().optional(),
-  text: z.string().default(""),
-  options: z.array(z.string()).default([]),
-  correctOptionIndex: z.number().default(0),
-  explanation: z.string().optional(),
-  videoUrl: z.string().optional(),
-  imageUrl: z.string().optional(),
-  skillIds: z.array(z.string()).min(1),
-  pathId: z.string().min(1),
-  subject: z.string().min(1),
-  sectionId: z.string().optional(),
-  examType: z.enum(["qudurat", "tahsili", "general"]).optional().default("general"),
-  source: z.enum(["internal", "official_exam", "mock", "imported"]).optional().default("internal"),
-  year: z.number().int().min(1990).max(2100).nullable().optional(),
-  difficulty: z.enum(["Easy", "Medium", "Hard"]).default("Medium"),
-  type: z.enum(["mcq", "true_false", "essay"]).default("mcq"),
-  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
-  ownerId: z.string().optional(),
-  createdBy: z.string().optional(),
-  assignedTeacherId: z.string().optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
-  reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
-});
-
-const questionSchema = questionBaseSchema.refine(
-  (value) => value.text.trim().length > 0 || String(value.imageUrl || "").trim().length > 0,
-  {
-    message: "Question must include text or an image URL",
-    path: ["text"],
-  },
-);
-
-const questionListQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(80),
-  ids: z.string().trim().optional(),
-  pathId: z.string().trim().optional(),
-  subject: z.string().trim().optional(),
-  sectionId: z.string().trim().optional(),
-  skillId: z.string().trim().optional(),
-  examType: z.enum(["qudurat", "tahsili", "general"]).optional(),
-  source: z.enum(["internal", "official_exam", "mock", "imported"]).optional(),
-  year: z.coerce.number().int().min(1990).max(2100).optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  search: z.string().trim().max(120).optional(),
-  summary: z.coerce.boolean().default(false),
-  noTotal: z.coerce.boolean().default(false),
-  paginate: z.coerce.boolean().default(false),
-});
-
-const dashboardAnalyticsQuerySchema = z.object({
-  studentLimit: z.coerce.number().int().min(1).max(1000).default(500),
-  resultLimit: z.coerce.number().int().min(100).max(5000).default(2000),
-  attemptLimit: z.coerce.number().int().min(100).max(5000).default(3000),
-});
-
-const quizResultsListQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(50),
-  noTotal: z.coerce.boolean().default(false),
-  search: z.string().trim().max(120).optional(),
-  quizId: z.string().trim().max(120).optional(),
-  studentId: z.string().trim().max(120).optional(),
-  status: z.enum(["passed", "failed"]).optional(),
-  dateFrom: z.string().trim().optional(),
-  dateTo: z.string().trim().optional(),
-  sortBy: z.enum(["createdAt", "score", "quizTitle", "date"]).default("createdAt"),
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
-});
-
-const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
@@ -141,28 +72,12 @@ const clearQuizResultsCache = () => {
   quizResultsCache.clear();
 };
 
-const buildQuizResultsCacheKey = (
-  userId: string,
-  originalUrl: string,
-  includeReview: boolean,
-) => `${userId}:${includeReview ? "review" : "list"}:${originalUrl}`;
-
 const trimQuizResultsCacheIfNeeded = () => {
   if (quizResultsCache.size <= QUIZ_RESULTS_CACHE_MAX_ENTRIES) return;
   const firstKey = quizResultsCache.keys().next().value;
   if (firstKey) {
     quizResultsCache.delete(firstKey);
   }
-};
-
-const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const parseDateFilter = (value?: string) => {
-  const raw = String(value || "").trim();
-  if (!raw) return null;
-  const parsed = new Date(raw);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed;
 };
 
 const resolveAuthUserByAuthId = async (authId: string) =>
@@ -177,53 +92,6 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
     sectionId: query.sectionId || "",
     skillId: query.skillId || "",
   });
-
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-
-const toQuestionSummaryText = (value: unknown) => {
-  const raw = typeof value === "string" ? value : "";
-  const withoutDangerousBlocks = raw
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<script[\s\S]*?<\/script>/gi, " ");
-  const plain = withoutDangerousBlocks
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const summaryText = plain.length > QUESTION_SUMMARY_TEXT_LIMIT
-    ? `${plain.slice(0, QUESTION_SUMMARY_TEXT_LIMIT).trim()}...`
-    : plain;
-  const inlineMedia = withoutDangerousBlocks.match(/<img\b[^>]*\/?>|<svg\b[\s\S]*?<\/svg>|<table\b[\s\S]*?<\/table>/i)?.[0] || "";
-
-  if (inlineMedia) {
-    return `${summaryText ? `<p>${escapeHtml(summaryText)}</p>` : ""}${inlineMedia}`.trim();
-  }
-
-  return summaryText;
-};
-
-const sanitizeQuestionForLearner = (question: Record<string, any>) => {
-  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
-  return safeQuestion;
-};
-
-const isQuestionContentUsable = (question: any) => {
-  const hasText = String(question?.text || "").trim().length > 0;
-  const hasImage = String(question?.imageUrl || "").trim().length > 0;
-  if (!hasText && !hasImage) return false;
-
-  const type = String(question?.type || "mcq");
-  if (type === "mcq" || type === "true_false") {
-    return Array.isArray(question?.options) && question.options.length >= 2;
-  }
-  return true;
-};
 
 const validateQuizQuestionIntegrity = async (quizLike: any) => {
   const normalizedIds = uniqueStrings(getQuizQuestionIds(quizLike).map((value) => String(value || "").trim()).filter(Boolean));
@@ -277,69 +145,6 @@ const validateQuizQuestionIntegrity = async (quizLike: any) => {
       : "Cannot publish quiz: some referenced questions are missing or have incomplete content",
   };
 };
-
-const quizSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1),
-  description: z.string().optional(),
-  pathId: z.string().min(1),
-  subjectId: z.string().min(1),
-  sectionId: z.string().nullable().optional(),
-  type: z.enum(["quiz", "bank"]).default("quiz"),
-  // quizKind: التصنيف الموحد للاختبارات
-  quizKind: z.enum(["drill", "test", "mock"]).default("test"),
-  placement: z.enum(["training", "mock", "both"]).optional(),
-  showInTraining: z.boolean().optional(),
-  showInMock: z.boolean().optional(),
-  learningPlacements: z.array(z.object({
-    pathId: z.string().min(1),
-    subjectId: z.string().optional().default(""),
-    slot: z.enum(["training", "tests", "foundation", "course"]),
-    accessType: z.enum(["inherit", "free", "paid", "package"]).optional().default("inherit"),
-    isVisible: z.boolean().optional().default(true),
-    order: z.number().optional().default(0),
-    courseId: z.string().nullable().optional(),
-    lessonId: z.string().nullable().optional(),
-    topicId: z.string().nullable().optional(),
-    createdAt: z.number().optional(),
-    updatedAt: z.number().optional(),
-  })).optional(),
-  mode: z.enum(["regular", "saher", "central"]).default("regular"),
-  settings: z.record(z.any()).optional().default({}),
-  access: z.record(z.any()).optional().default({}),
-  questionIds: z.array(z.string()).default([]),
-  questions: z.array(z.any()).optional(),
-  mockExam: z.object({
-    enabled: z.boolean().default(false),
-    pathId: z.string().default(""),
-    qiyasCategory: z.enum(["qudrat", "tahsili"]).optional(),
-    isStrictSectionLock: z.boolean().optional(),
-    sections: z.array(z.object({
-      id: z.string().min(1),
-      title: z.string().min(1),
-      subjectId: z.string().optional().default(""),
-      questionIds: z.array(z.string()).default([]),
-      timeLimit: z.number().nullable().optional(),
-      order: z.number().optional(),
-      domain: z.enum(["quantitative", "verbal", "math", "physics", "chemistry", "biology", "general"]).optional(),
-    })).default([]),
-  }).optional(),
-  skillIds: z.array(z.string()).optional(),
-  targetGroupIds: z.array(z.string()).default([]),
-  targetUserIds: z.array(z.string()).default([]),
-  dueDate: z.string().nullable().optional(),
-  isPublished: z.boolean().default(false),
-  showOnPlatform: z.boolean().default(true),
-  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
-  ownerId: z.string().optional(),
-  createdBy: z.string().optional(),
-  assignedTeacherId: z.string().optional(),
-  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
-  approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
-  reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
-});
 
 const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T, fallbackType = "quiz") => {
   if (payload.access && typeof payload.access === "object") {
@@ -425,33 +230,6 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
     showInMock,
   };
 };
-
-const questionAttemptSchema = z.object({
-  questionId: z.string().min(1),
-  selectedOptionIndex: z.number().default(-1),
-  timeSpentSeconds: z.number().default(0),
-  date: z.string().optional(),
-});
-
-const quizSubmitSchema = z.object({
-  answers: z.record(z.coerce.number()).default({}),
-  timeSpentSeconds: z.number().min(0).default(0),
-  source: z.string().optional(),
-  // تحليل الأقسام من الـ Frontend (للمحاكيات) — اختياري، يُعاد حسابه server-side أيضاً
-  sectionResults: z
-    .array(
-      z.object({
-        sectionId:   z.string(),
-        sectionName: z.string().default(""),
-        total:       z.number().int().min(0).default(0),
-        correct:     z.number().int().min(0).default(0),
-        wrong:       z.number().int().min(0).default(0),
-        unanswered:  z.number().int().min(0).default(0),
-        score:       z.number().min(0).max(100).default(0),
-      }),
-    )
-    .optional(),
-});
 
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
@@ -746,37 +524,6 @@ const uniqueStrings = (values: Array<string | undefined | null>) =>
 const idOf = (item: any) => String(item?.id || item?._id || "");
 
 const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;
-
-const buildRecommendedAction = (mastery: number, attemptCount: number) => {
-  if (mastery < 45) {
-    return "خطة علاج عاجلة: شرح + تدريب + اختبار موجه";
-  }
-
-  if (mastery < 65) {
-    return attemptCount >= 3 ? "زيادة التدريب ثم اختبار ساهر علاجي" : "إضافة تدريب قصير ومتابعة الأداء";
-  }
-
-  return "تثبيت المهارة بتدريب خفيف وإعادة قياس لاحقًا";
-};
-
-const buildSkillStatus = (mastery: number) => {
-  if (mastery >= 90) return "mastered";
-  if (mastery >= 75) return "good";
-  if (mastery >= 50) return "average";
-  return "weak";
-};
-
-const buildResultSkillStatus = (mastery: number) => {
-  if (mastery >= 80) return "strong";
-  if (mastery >= 50) return "average";
-  return "weak";
-};
-
-const buildSkillRecommendation = (mastery: number) => {
-  if (mastery < 50) return "راجع شرحًا قصيرًا ثم حل تدريبًا موجّهًا على نفس المهارة";
-  if (mastery < 80) return "أداؤك قريب من الإتقان. زد التدريب قليلًا ثم أعد القياس";
-  return "أداء ممتاز. حافظ على المهارة بتدريب خفيف من وقت لآخر";
-};
 
 const matchesContentScope = (
   item: { contentTypes?: string[]; pathIds?: string[]; subjectIds?: string[] },
@@ -2524,7 +2271,7 @@ quizRouter.post(
     const hasQuestions = getQuizQuestionIds(payload).length > 0;
     const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : hasQuestions) : false;
     
-    if (willBePublished && hasQuestions) {
+    if (willBePublished) {
       const integrity = await validateQuizQuestionIntegrity(payload);
       if (!integrity.ok) {
         return res.status(StatusCodes.BAD_REQUEST).json({

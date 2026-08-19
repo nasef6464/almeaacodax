@@ -34,11 +34,11 @@ assertIncludes('server/src/routes/health.routes.ts', 'redisRateLimit');
 assertIncludes('server/src/routes/health.routes.ts', 'redisQueue');
 assertIncludes('server/src/routes/health.routes.ts', 'service: "The Hundred Platform API"');
 assertIncludes('server/src/middleware/requestLogger.ts', 'path.startsWith("/api/health/")');
-assertIncludes('DEPLOYMENT_GUIDE.md', '/api/health/live');
-assertIncludes('DEPLOYMENT_GUIDE.md', '/api/health/ready');
-assertIncludes('DEPLOYMENT_GUIDE.md', '/api/health/scale-ready');
-assertIncludes('PRODUCTION_READINESS_REPORT.md', 'Health Readiness Sprint - 2026-05-12');
-assertIncludes('PRODUCTION_READINESS_REPORT.md', 'Health Readiness Split - 2026-05-13');
+assertIncludes('docs/archive_reports/DEPLOYMENT_GUIDE.md', '/api/health/live');
+assertIncludes('docs/archive_reports/DEPLOYMENT_GUIDE.md', '/api/health/ready');
+assertIncludes('docs/archive_reports/DEPLOYMENT_GUIDE.md', '/api/health/scale-ready');
+assertIncludes('docs/archive_reports/PRODUCTION_READINESS_REPORT.md', 'Health Readiness Sprint - 2026-05-12');
+assertIncludes('docs/archive_reports/PRODUCTION_READINESS_REPORT.md', 'Health Readiness Split - 2026-05-13');
 assertIncludes('docs/SHIFT_HANDOFF_AR.md', 'Health Readiness Sprint - 2026-05-12');
 assertIncludes('docs/SHIFT_HANDOFF_AR.md', '/api/health/scale-ready');
 
