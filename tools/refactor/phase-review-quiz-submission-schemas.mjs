@@ -25,7 +25,7 @@ const checks = [
   ['question HTML security', 'npm', ['run', 'smoke:question-html-security']],
   ['my quizzes contract', 'npm', ['run', 'smoke:my-quizzes']],
   ['quiz access contract', 'npm', ['run', 'smoke:quiz-access']],
-  ['authentication security contract', 'npm', ['run', 'smoke:auth-security']],
+  ['authentication security contract', 'npm', ['run', 'smoke:auth-login-security']],
   ['API security contract', 'npm', ['run', 'smoke:api-security']],
   ['global student journey contract', 'npm', ['run', 'smoke:global-student-journey']],
   ['student learning journey contract', 'npm', ['run', 'smoke:student-learning-journey']],
