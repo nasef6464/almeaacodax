@@ -7,7 +7,7 @@ const files = {
   reset: await readFile(new URL("../pages/ResetPassword.tsx", import.meta.url), "utf8"),
   verify: await readFile(new URL("../pages/VerifyEmail.tsx", import.meta.url), "utf8"),
   api: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
-  readiness: await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
+  readiness: await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
 };
 
 const checks = [];
