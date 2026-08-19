@@ -16,6 +16,7 @@ const checks = [
   ['architecture contract', 'node', ['tools/refactor/architecture-gate.mjs']],
   ['module boundary contract', 'node', ['tools/refactor/module-boundary-gate.mjs']],
   ['quiz definition schema boundary', 'node', ['scripts/smoke-quiz-definition-schema-boundary-contract.mjs']],
+  ['quiz question/query schema boundary', 'node', ['scripts/smoke-quiz-question-query-schema-boundary-contract.mjs']],
   ['frontend performance contract', 'npm', ['run', 'smoke:performance']],
   ['quiz integrity guard', 'npm', ['run', 'smoke:quiz-integrity-guard']],
   ['quiz answer exposure', 'npm', ['run', 'smoke:quiz-answer-exposure']],
