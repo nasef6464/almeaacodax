@@ -39,7 +39,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
 
       - name: Record pre-remediation production audit
         shell: bash
@@ -73,7 +75,10 @@ jobs:
       - name: Install exact remediated frontend dependencies
         run: npm ci
 
-      - name: Frontend typecheck
+      - name: Install unchanged API dependencies for repository typecheck
+        run: npm --prefix server ci
+
+      - name: Repository typecheck
         run: npm run typecheck
 
       - name: Frontend production build
