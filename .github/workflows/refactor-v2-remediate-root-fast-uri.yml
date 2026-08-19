@@ -1,0 +1,180 @@
+name: Refactor V2 Remediate Root Fast URI
+
+on:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - 'scripts/smoke-performance-contract.mjs'
+      - 'scripts/smoke-deployment-cache-contract.mjs'
+      - 'scripts/smoke-route-loading-contract.mjs'
+      - 'scripts/smoke-runtime-source-contract.mjs'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-root-fast-uri.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - 'scripts/smoke-performance-contract.mjs'
+      - 'scripts/smoke-deployment-cache-contract.mjs'
+      - 'scripts/smoke-route-loading-contract.mjs'
+      - 'scripts/smoke-runtime-source-contract.mjs'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-root-fast-uri.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-remediate-root-fast-uri-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-remediate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Record pre-remediation root audits
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --json > /tmp/root-all-before.json || true
+          npm audit --omit=dev --json > /tmp/root-prod-before.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-all-before /tmp/root-all-before.json
+          node tools/refactor/dependency-audit-summary.mjs root-production-before /tmp/root-prod-before.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/root-prod-before.json fast-uri @babel/core
+
+      - name: Update only fast-uri lock resolution
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp package.json /tmp/package.json.before
+          npm update --package-lock-only fast-uri
+          cmp --silent package.json /tmp/package.json.before || {
+            echo "package.json changed during lock-only remediation; refusing scope expansion." >&2
+            git diff -- package.json
+            exit 1
+          }
+          git diff --check -- package-lock.json
+
+      - name: Verify fast-uri advisory is gone and production stays clean
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --json > /tmp/root-all-after.json || true
+          npm audit --omit=dev --json > /tmp/root-prod-after.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-all-after /tmp/root-all-after.json
+          node tools/refactor/dependency-audit-summary.mjs root-production-after /tmp/root-prod-after.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/root-all-after.json fast-uri
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/root-prod-after.json fast-uri @babel/core
+
+      - name: Install exact remediated frontend dependencies
+        run: npm ci
+
+      - name: Verify fast-uri remains AJV-owned
+        shell: bash
+        run: |
+          set -euo pipefail
+          FAST_URI_EXPLAIN="$(npm explain fast-uri 2>&1 || true)"
+          printf '%s\n' "$FAST_URI_EXPLAIN"
+          printf '%s' "$FAST_URI_EXPLAIN" | grep -F 'ajv@' >/dev/null || {
+            echo "fast-uri is no longer resolved through AJV; refusing unrelated transitive rewrite." >&2
+            exit 1
+          }
+          if grep -F '"fast-uri"' package.json >/dev/null; then
+            echo "fast-uri unexpectedly became a direct dependency." >&2
+            exit 1
+          fi
+
+      - name: Install unchanged API dependencies
+        run: npm --prefix server ci
+
+      - name: Repository typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm run server:check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm run server:build
+
+      - name: Frontend performance contract
+        run: npm run smoke:performance
+
+      - name: Deployment cache contract
+        run: npm run smoke:deployment-cache
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Confirm remediation scope
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHANGED="$(git diff --name-only)"
+          echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "Root fast-uri tree is already clean; no lockfile remediation is required."
+            exit 0
+          fi
+          if [ "$CHANGED" != "package-lock.json" ]; then
+            echo "Root fast-uri remediation must modify package-lock.json only." >&2
+            exit 1
+          fi
+
+      - name: Commit verified root fast-uri remediation
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add package-lock.json
+
+          if git diff --cached --quiet; then
+            echo "No root fast-uri lockfile remediation changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale remediation commit safely."
+            exit 0
+          fi
+
+          git commit -m "fix(deps): remediate root fast-uri advisory"
+          git push origin HEAD:refactor/repository-v2-safe
