@@ -74,6 +74,16 @@ check("Google OAuth return path rejects scheme-relative and malformed redirects"
   assertIncludes(files.auth, "candidate.includes(");
 });
 
+check("Google OAuth only links accounts after a verified email claim", () => {
+  assertIncludes(files.auth, "profile.email_verified !== true");
+  assertIncludes(files.auth, "step=email_unverified");
+  const verifiedGuardIndex = files.auth.indexOf("profile.email_verified !== true");
+  const accountLookupIndex = files.auth.indexOf("let user = await UserModel.findOne({ email });");
+  if (verifiedGuardIndex < 0 || accountLookupIndex < 0 || verifiedGuardIndex > accountLookupIndex) {
+    throw new Error("Google verified-email guard must run before local account lookup");
+  }
+});
+
 check("frontend warns users about password strength", () => {
   assertIncludes(files.header, "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.");
   assertIncludes(files.reset, "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.");

@@ -449,6 +449,9 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
   if (!email) {
     return res.redirect(`${fallbackRedirect}&step=email`);
   }
+  if (profile.email_verified !== true) {
+    return res.redirect(`${fallbackRedirect}&step=email_unverified`);
+  }
 
   let user = await UserModel.findOne({ email });
   if (!user) {
@@ -459,8 +462,8 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
       passwordHash: await bcrypt.hash(randomPassword, 10),
       role: "student",
       avatar: profile.picture || "",
-      emailVerified: Boolean(profile.email_verified),
-      emailVerifiedAt: profile.email_verified ? Date.now() : null,
+      emailVerified: true,
+      emailVerifiedAt: Date.now(),
     });
   } else {
     let touched = false;
@@ -468,7 +471,7 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
       user.avatar = profile.picture;
       touched = true;
     }
-    if (!user.emailVerified && profile.email_verified) {
+    if (!user.emailVerified) {
       user.emailVerified = true;
       user.emailVerifiedAt = Date.now();
       touched = true;
