@@ -1,34 +1,34 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-19T03:39:43.125Z",
-  "gitHead": "82165aeba69d7fed3e2a6661259436c5b0c2cce1",
+  "generatedAt": "2026-08-19T09:31:05.432Z",
+  "gitHead": "eac69b98ee23ef18ddc814108743a13e2322db99",
   "summary": {
-    "trackedFiles": 900,
-    "sourceFiles": 606,
-    "runtimeSourceFiles": 358,
-    "sourceLines": 154847,
-    "runtimeSourceLines": 125895,
+    "trackedFiles": 945,
+    "sourceFiles": 632,
+    "runtimeSourceFiles": 364,
+    "sourceLines": 156415,
+    "runtimeSourceLines": 125906,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
-    "runtimeRelativeImportEdges": 1174,
+    "runtimeRelativeImportEdges": 1180,
     "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 2,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 800,
+    "crossDomainImportEdges": 803,
     "hotspots400Lines": 82,
-    "migrationCandidates": 348
+    "migrationCandidates": 354
   },
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 497930,
-      "lines": 10356
+      "bytes": 497244,
+      "lines": 10338
     },
     "ci": {
-      "files": 7,
-      "bytes": 25034,
-      "lines": 733
+      "files": 26,
+      "bytes": 128251,
+      "lines": 3583
     },
     "web-source": {
       "files": 214,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 200,
-      "bytes": 3070475,
-      "lines": 77134
+      "bytes": 3317602,
+      "lines": 83991
     },
     "public-asset": {
       "files": 4,
@@ -51,24 +51,24 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 203,
-      "bytes": 1108797,
-      "lines": 24548
+      "files": 209,
+      "bytes": 1146390,
+      "lines": 25264
     },
     "api-support": {
       "files": 5,
-      "bytes": 137421,
-      "lines": 3795
+      "bytes": 137181,
+      "lines": 3783
     },
     "api-source": {
-      "files": 134,
-      "bytes": 1124795,
-      "lines": 30309
+      "files": 140,
+      "bytes": 1125557,
+      "lines": 30320
     },
     "tooling": {
-      "files": 53,
-      "bytes": 227669,
-      "lines": 4404
+      "files": 67,
+      "bytes": 267577,
+      "lines": 5245
     }
   },
   "domainStats": {
@@ -108,14 +108,14 @@
       "bytes": 299211
     },
     "questions": {
-      "files": 18,
-      "lines": 5937,
-      "bytes": 298420
+      "files": 21,
+      "lines": 6093,
+      "bytes": 304638
     },
     "quizzes": {
-      "files": 21,
-      "lines": 14206,
-      "bytes": 666329
+      "files": 24,
+      "lines": 14061,
+      "bytes": 660873
     },
     "exams": {
       "files": 11,
@@ -158,9 +158,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 119634,
-      "lines": 3145,
-      "sha256": "e3df96735cec1fd414fae91809c9eb7ea21dfb46a8dd30098c6ab0c2fc9a3206"
+      "bytes": 110057,
+      "lines": 2892,
+      "sha256": "aca756132ce5330d5764823c9dbddc8fe17c749b71b7997a76cec70899b6e2ed"
     },
     {
       "file": "server/src/routes/content.routes.ts",
@@ -6420,6 +6420,24 @@
     {
       "source": "server/src/routes/quiz.routes.ts",
       "sourceDomain": "quizzes",
+      "target": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/quizzes/presentation/questionPresentation.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
       "target": "server/src/services/adminAuditLog.ts",
       "targetDomain": "shared"
     },
@@ -8946,6 +8964,42 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/queryUtilities.ts",
+      "target": "apps/api/src/modules/quizzes/http/queryUtilities.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "target": "apps/api/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "target": "apps/api/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/submissionSchemas.ts",
+      "target": "apps/api/src/modules/quizzes/http/submissionSchemas.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/presentation/questionPresentation.ts",
+      "target": "apps/api/src/modules/quizzes/presentation/questionPresentation.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "target": "apps/api/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "domain": "schools",
@@ -9571,9 +9625,9 @@
       "file": ".github/workflows/refactor-v2-audit.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 2636,
-      "lines": 83,
-      "sha256": "32bd88c43541216f6e40054f5db3a7955d56f9ba455824605b5b84f1a8bac634"
+      "bytes": 2657,
+      "lines": 84,
+      "sha256": "4d463887581e53ad8b3a291e0f4716f05e6e30b55a9c0dd1f2436faa1c1ba665"
     },
     {
       "file": ".github/workflows/refactor-v2-baseline-repair.yml",
@@ -9592,6 +9646,14 @@
       "sha256": "87465047169107ed9296cd0bbcaf7af52cd59a0343925ba593bb290f103b4775"
     },
     {
+      "file": ".github/workflows/refactor-v2-dependency-audit.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 4057,
+      "lines": 117,
+      "sha256": "43c1d45364e6c3f80463dd22f6e9e261ea2cddbc6387c093189d6e0e8c1b9217"
+    },
+    {
       "file": ".github/workflows/refactor-v2-freeze-baseline.yml",
       "category": "ci",
       "domain": "shared",
@@ -9606,6 +9668,150 @@
       "bytes": 11780,
       "lines": 324,
       "sha256": "d131b8148da260fc1c58d2330e5cdd74459795f668b4b991265b1e24149880a9"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-quiz-definition-schema.yml",
+      "category": "ci",
+      "domain": "quizzes",
+      "bytes": 4022,
+      "lines": 111,
+      "sha256": "71f3367af6025645fdd69c91fbf43e5e4c8c5a35be1dd2ef3be05ec1489e212f"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-quiz-query-utilities.yml",
+      "category": "ci",
+      "domain": "quizzes",
+      "bytes": 4184,
+      "lines": 114,
+      "sha256": "5a7e0c95345e5d5ccedf4cc07de4ced07384e096af92c6c790a6ccb4a3e61b5b"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-quiz-question-presentation.yml",
+      "category": "ci",
+      "domain": "questions",
+      "bytes": 4688,
+      "lines": 120,
+      "sha256": "901e945f8b824bc9c067beb308e10e20302fa7189ef650ffc0fe0f4bfad23b66"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-quiz-question-query-schemas.yml",
+      "category": "ci",
+      "domain": "questions",
+      "bytes": 4098,
+      "lines": 111,
+      "sha256": "175954971f3caaf5623d0245f17ff4a18393a2bb00c2cfa716569be6a73c902b"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-quiz-skill-analytics.yml",
+      "category": "ci",
+      "domain": "questions",
+      "bytes": 4683,
+      "lines": 122,
+      "sha256": "7c8433c9f4092232fbf92f480f038c5996e7c26d57a045458652c95d0c6f9d17"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-quiz-submission-schemas.yml",
+      "category": "ci",
+      "domain": "quizzes",
+      "bytes": 4306,
+      "lines": 115,
+      "sha256": "22368eb5387fbb5232ca0120da0ae912c38b252a5e3ffd1432e351a75e0e2365"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-express-body-parser.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 6071,
+      "lines": 168,
+      "sha256": "ba3422076001793ec3a3121e5239b17dcda75d7adab2f38adb9a85885cad4952"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-express-rate-limit.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 6147,
+      "lines": 168,
+      "sha256": "ca6e1922ddd5073a9410a9ef1d0a2061b856958834ee1ea9c72c93a78163686d"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-google-genai.yml",
+      "category": "ci",
+      "domain": "ai",
+      "bytes": 6722,
+      "lines": 187,
+      "sha256": "6d7332639ab576ac6c97a07ada06d396ce8d0877c3fb96a8f69be2a896310f39"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-mongoose.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 5828,
+      "lines": 165,
+      "sha256": "dfce5a3f70e25406842b9ada6e72ee1f35fd6aa6ef23015b172da9c66d12e150"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-postcss.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 4952,
+      "lines": 151,
+      "sha256": "5252f452866c85869831ac5916eb8867f22bd7ca7ba933fedd8bae2d70dab335"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-react-router.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 5072,
+      "lines": 146,
+      "sha256": "81c559ce1b227e7cb5fc3ca813e38ab9360d2be4171138d63b00566869a8ab90"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-root-babel-core.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 6602,
+      "lines": 181,
+      "sha256": "b56467c674ff96e03bbad01a7b763d485a72381e1e72f1b0f5c3030e7a3870ff"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-root-brace-expansion.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 6408,
+      "lines": 176,
+      "sha256": "51a1d367ca4f7758ec499cbbf10b7600254dbe22d092f2d48de3cd7c2da63b0c"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-root-fast-uri.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 6538,
+      "lines": 181,
+      "sha256": "21ea7c84846c6350573f82ddf05a8233ef59af7c48d0b289ab9320fe0bb3edb9"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-sentry-brace-expansion.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 6391,
+      "lines": 174,
+      "sha256": "660da5edf524aade890dc0cd4ef45aa737cff7ac26523ba68645e0e4675bd5c8"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-socket-io.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 7610,
+      "lines": 195,
+      "sha256": "e9418f8d11f1c8d174fff313267708e47b06ea59bdc5415a3a04fd792434dfa4"
+    },
+    {
+      "file": ".github/workflows/refactor-v2-remediate-vite.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 4817,
+      "lines": 147,
+      "sha256": "897e587e204086d650e4ee0b6e3af53f062d0c3475d3cdaafa18ba8345edd238"
     },
     {
       "file": ".github/workflows/refactor-v2-reports-scoped-skill-report-executor.yml",
@@ -11347,17 +11553,17 @@
       "file": "docs/architecture/REFACTOR_V2_EXECUTION_LEDGER_CONTINUATION_2026-08-19_AR.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4814,
-      "lines": 90,
-      "sha256": "25b21e4cde244b4d8c0e759149a4e9d7db31d1b304f29278373d904319de7942"
+      "bytes": 10013,
+      "lines": 206,
+      "sha256": "40d165f7aaa1920b1bf8fe8908c516d30d309c00f7b88749798a96ace731a2fa"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_LATEST_CHECKPOINT_AR.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3543,
-      "lines": 73,
-      "sha256": "c71483935af1e6f4fbdd8b4e17b13655748090bca1bf9b88b01f522dacadec9f"
+      "bytes": 8494,
+      "lines": 169,
+      "sha256": "aa4da556c56da93bb48cf6b0e3c33ab1f2816d4102c51362f47a116139953b55"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_MASTER_PLAN_AR.md",
@@ -11397,15 +11603,15 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "090e3c9199b1fd1de2cc35a01bf3bf61524c933a2d175745b6918f588d44a88d"
+      "sha256": "56bdd54c92896c59a11a81426a21be46a2cb32021b5cc10484025929907bd6f3"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 442585,
-      "lines": 14738,
-      "sha256": "725446da66cd8bc5da3d91eddfb00b6c4e687be9f4dd7f1591a0960fc636363f"
+      "bytes": 511605,
+      "lines": 16740,
+      "sha256": "090784828fad94a7400172767199c866c8bf9adb7463fb807b5d07558468014f"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -11413,31 +11619,31 @@
       "domain": "shared",
       "bytes": 4055,
       "lines": 75,
-      "sha256": "53d4a3b0010a0ea9b212e1eddbbb93cf9887e04da50769fe494484a7fb9256c2"
+      "sha256": "256becd45ea729572f33f2fafa9cfe72574fad214f22ec7e9091bf93857dabda"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 57688,
-      "lines": 1737,
-      "sha256": "8ff30e76f356d31c540773b6e0c7fd83c0e1eb0dc68ec625753b60c7faec6ffe"
+      "bytes": 71829,
+      "lines": 2097,
+      "sha256": "81d06979d8066ea67410ad0766e21401f5df431147e889d92baf76bccdbfd7a7"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 151774,
-      "lines": 5771,
-      "sha256": "b7b233cd243f5cd80ac48c5ded858187a5704096f89c35c1fabd47308f824c47"
+      "bytes": 293612,
+      "lines": 9917,
+      "sha256": "db3b542224b53060fabc0d3af7a42719675852bd31c3ca69abd1720c1d37f749"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 27051,
-      "lines": 461,
-      "sha256": "33711003327cb80c2e81bf8dc04836ff8e59b0fccb27d5b13d3b2f6700c2206a"
+      "bytes": 39029,
+      "lines": 598,
+      "sha256": "06fea52863d2079d469020d12544522130bb55254b90ee96f6e56fc0cfe5450d"
     },
     {
       "file": "docs/archive_reports/01_FULL_AUDIT_REPORT.md",
@@ -12675,9 +12881,9 @@
       "file": "package-lock.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 354336,
-      "lines": 8405,
-      "sha256": "e5a9b45d0e22b228f242a4fd5dc8f2f8d70323f7b83f7655daa02965cad1a8a0"
+      "bytes": 353650,
+      "lines": 8387,
+      "sha256": "2c9a5ebc58a544b11a10bce5d50485031dab3012fbd5997e0f4088053ca60ac5"
     },
     {
       "file": "package.json",
@@ -13579,9 +13785,9 @@
       "file": "scripts/smoke-auth-frontend-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "auth",
-      "bytes": 2834,
+      "bytes": 2855,
       "lines": 75,
-      "sha256": "940826ca40bbb7008cd92fc08d3bf8d4a3fe479a43934b0ff39d45bfdee3d4af"
+      "sha256": "5afef3f62b1b1a366c88cb9952a161c12d05cdb229a54bbab305efd3e30545b6"
     },
     {
       "file": "scripts/smoke-auth-login-security-contract.mjs",
@@ -13851,9 +14057,9 @@
       "file": "scripts/smoke-database-index-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 6451,
+      "bytes": 6493,
       "lines": 114,
-      "sha256": "ad3cbfb52661664f461b7d899c2af96c82aecc5839f2b18306441336b79fe5b8"
+      "sha256": "a2b06898c06b85661df6b4dd3482f25b8836ed4c7691471d8fb04076450b8e0d"
     },
     {
       "file": "scripts/smoke-deployment-cache-contract.mjs",
@@ -14075,41 +14281,41 @@
       "file": "scripts/smoke-monitoring-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "operations",
-      "bytes": 3030,
+      "bytes": 3072,
       "lines": 78,
-      "sha256": "f9aabb045809f654e49bdecc8ed9103523b8c64371447b509afa1fa704a3120b"
+      "sha256": "7d8a9deac692fbc8801b9cb627b6b9067781eb652c6d3bdbbeacaac0f5c3a766"
     },
     {
       "file": "scripts/smoke-my-quizzes-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "quizzes",
-      "bytes": 5056,
-      "lines": 104,
-      "sha256": "b023e73bd880368211c7bb3ca84d2ce0c2393049e1e39970cc25525b10b9d3f7"
+      "bytes": 5501,
+      "lines": 108,
+      "sha256": "5a46ec84d46e523db0620e63503f3355b57a6b0537419aa2ccab9dd34538d8ca"
     },
     {
       "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 2467,
+      "bytes": 2530,
       "lines": 60,
-      "sha256": "86c5068481e526efd6e4110662ac651661f69491051b17bb11743d45c9d91594"
+      "sha256": "1e43a3534721fce6ae75b692673a2171f1e9f1c10b090c887477ef1761948c75"
     },
     {
       "file": "scripts/smoke-notification-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "notifications",
-      "bytes": 3869,
+      "bytes": 3932,
       "lines": 89,
-      "sha256": "7f7209e2890845681e5248d1afa8d3212e957b59756db106f22f16eef8a242e1"
+      "sha256": "beb0faae38104cefaa85608ee68720d7bf72ff5fece78b9b85314ffd6b39f40a"
     },
     {
       "file": "scripts/smoke-notification-phase10-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "notifications",
-      "bytes": 3717,
-      "lines": 89,
-      "sha256": "961e9c102e4134e8660b4a849d069cccaa9d464604c4df9c4d617b2f34b887d8"
+      "bytes": 3887,
+      "lines": 91,
+      "sha256": "a6610f3552eb0ac2fcec67655e8d65c410df2698fef22178c375db3545567fb7"
     },
     {
       "file": "scripts/smoke-operational-auto.mjs",
@@ -14171,9 +14377,9 @@
       "file": "scripts/smoke-performance-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 20600,
+      "bytes": 20623,
       "lines": 293,
-      "sha256": "0c89ac68bdc6d6aa6c2387d9adf4a48901eee651d6a50e5520f6c252eac901eb"
+      "sha256": "80b45e14af12d14ce3051b5c1b46a3dccd8351f6dcd0301ca4ff5d34306d48b6"
     },
     {
       "file": "scripts/smoke-platform-fonts-contract.mjs",
@@ -14235,9 +14441,9 @@
       "file": "scripts/smoke-question-html-security-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 11700,
-      "lines": 220,
-      "sha256": "96318684346786e1bed7a1e5d7d3f29d40ab62524f7b5e84bdcb5fdf4353be55"
+      "bytes": 12225,
+      "lines": 227,
+      "sha256": "a4899301140f39117de3391c91741d9a410bffba88bd64d3d0d8c9896508655d"
     },
     {
       "file": "scripts/smoke-quiz-access-contract.mjs",
@@ -14264,6 +14470,14 @@
       "sha256": "f1201586a9421baaff14f184957da4c6bc55b5a1f5d5959f3c2a5a46a09cd4c8"
     },
     {
+      "file": "scripts/smoke-quiz-definition-schema-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "quizzes",
+      "bytes": 5903,
+      "lines": 109,
+      "sha256": "aa14b9d0b1dbb38a3e21c653f597358130b138043ea74dcefcacd5c96d2da571"
+    },
+    {
       "file": "scripts/smoke-quiz-integrity-guard-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "quizzes",
@@ -14272,12 +14486,52 @@
       "sha256": "863c1a2f47fbc3dda0676d45bc1d71629260bc7614a0e343bf1812ad84581bd1"
     },
     {
+      "file": "scripts/smoke-quiz-query-utilities-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "quizzes",
+      "bytes": 4976,
+      "lines": 103,
+      "sha256": "206b6e903b85bef5226b88a094716ca19a8ac7dc2402d7f158660ad48270beab"
+    },
+    {
+      "file": "scripts/smoke-quiz-question-presentation-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "questions",
+      "bytes": 5437,
+      "lines": 106,
+      "sha256": "a9e9985b2797b3eb28c3bd287d4259e47eff27d721dd8f506554285b43cddc44"
+    },
+    {
+      "file": "scripts/smoke-quiz-question-query-schema-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "questions",
+      "bytes": 8659,
+      "lines": 161,
+      "sha256": "bfd85c3e0e3d8b348341814bad1204f963a4fa61d805e0e2f1e62ee4f7f705c9"
+    },
+    {
       "file": "scripts/smoke-quiz-results-route-order-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "quizzes",
       "bytes": 610,
       "lines": 21,
       "sha256": "f8a46ddd5c02cb5c40bc626a6b4f8f1977a74ec2b4f1631f1cef1da58717db94"
+    },
+    {
+      "file": "scripts/smoke-quiz-skill-analytics-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "questions",
+      "bytes": 6109,
+      "lines": 117,
+      "sha256": "a5edaadb5c3e1e1191293078650581561b16a7c2d75528d7bf73c3005e3c2312"
+    },
+    {
+      "file": "scripts/smoke-quiz-submission-schema-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "quizzes",
+      "bytes": 5052,
+      "lines": 107,
+      "sha256": "c7b37e952d8364d9555153c8cb1ba7c343e701939371be1fe505c9feeb3f6177"
     },
     {
       "file": "scripts/smoke-rbac-content-crud-scope-contract.mjs",
@@ -14739,9 +14993,9 @@
       "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 3589,
+      "bytes": 3652,
       "lines": 83,
-      "sha256": "b936c40a5504900bfa969fc745bd7b09be2f77a4b69d1b91bbd97da0d6344c6f"
+      "sha256": "eb80e420da7cb7671f25f6e0e157239253c2a95e456b96974918b57f2cc1d86f"
     },
     {
       "file": "scripts/smoke-sentry-live-proof-auto.mjs",
@@ -14907,9 +15161,9 @@
       "file": "server/package-lock.json",
       "category": "api-support",
       "domain": "payments",
-      "bytes": 132579,
-      "lines": 3625,
-      "sha256": "16983a9db881386e36dfb0c38d6f72c303444eb472aea77ecfcb1a14f9a47048"
+      "bytes": 132339,
+      "lines": 3613,
+      "sha256": "9be1ead6e03177ee79a6316061e19fc67627fdbb95f1f940e95beb84a0efcf3d"
     },
     {
       "file": "server/package.json",
@@ -15456,6 +15710,54 @@
       "sha256": "ef8d47964bfa9d7ea150bb7a2b687675832bf572fdb9028a27a03b94d139c9e0"
     },
     {
+      "file": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 1267,
+      "lines": 31,
+      "sha256": "09d52db1df2c08e5432e90b9c712d1e21e1c43ba29d426689834287674f9c093"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/queryUtilities.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 496,
+      "lines": 16,
+      "sha256": "491387fb0a6604b12237df777d2689d7c99837be721a78bc31a2e624988fe7ed"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 3325,
+      "lines": 76,
+      "sha256": "75da1ef137c00af434790b26f4aa2f108af520fd8a55b3a4b482365a1cebe125"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 2787,
+      "lines": 64,
+      "sha256": "904fa05058d1e10c4bca5c6696e9d49ebcf29c450966ba58f3d6203123cfdfcf"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/submissionSchemas.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 838,
+      "lines": 28,
+      "sha256": "8dfcc953a0715482005709246b6660b807f1e3002ec36f9e6be600fe8e079115"
+    },
+    {
+      "file": "server/src/modules/quizzes/presentation/questionPresentation.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 1626,
+      "lines": 49,
+      "sha256": "ac8c82c30991e236c80d55a03e5e9502e8a08bd4b80fa94de40c6b88483784ac"
+    },
+    {
       "file": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "category": "api-source",
       "domain": "schools",
@@ -15619,9 +15921,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 119634,
-      "lines": 3145,
-      "sha256": "e3df96735cec1fd414fae91809c9eb7ea21dfb46a8dd30098c6ab0c2fc9a3206"
+      "bytes": 110057,
+      "lines": 2892,
+      "sha256": "aca756132ce5330d5764823c9dbddc8fe17c749b71b7997a76cec70899b6e2ed"
     },
     {
       "file": "server/src/routes/quizResults.routes.ts",
@@ -16112,6 +16414,54 @@
       "sha256": "e79f6b7884df4115ea93d63c2db47ebde80bd092570f23207988bb2d6b01629b"
     },
     {
+      "file": "tools/refactor/apply-quiz-definition-schema.mjs",
+      "category": "tooling",
+      "domain": "quizzes",
+      "bytes": 2631,
+      "lines": 55,
+      "sha256": "6031401e5a41b6db32bf84cecc6099586f6404f5d069f603a57a223e53a0875b"
+    },
+    {
+      "file": "tools/refactor/apply-quiz-query-utilities.mjs",
+      "category": "tooling",
+      "domain": "quizzes",
+      "bytes": 2731,
+      "lines": 56,
+      "sha256": "e3eb26a48343cba9bf30e5222c42db4944382876e0595e3cad761f7b06233fc1"
+    },
+    {
+      "file": "tools/refactor/apply-quiz-question-presentation.mjs",
+      "category": "tooling",
+      "domain": "questions",
+      "bytes": 3193,
+      "lines": 68,
+      "sha256": "ea07c4b9150d996f5a4e2d94f52db99b01b9248011f09c2c12ffbcbb56fc202b"
+    },
+    {
+      "file": "tools/refactor/apply-quiz-question-query-schemas.mjs",
+      "category": "tooling",
+      "domain": "questions",
+      "bytes": 2653,
+      "lines": 56,
+      "sha256": "ee3e4dae91f307ecc6651861c7a8ed1ca42a0200a3970330eacbb7eeb46c478d"
+    },
+    {
+      "file": "tools/refactor/apply-quiz-skill-analytics.mjs",
+      "category": "tooling",
+      "domain": "questions",
+      "bytes": 2681,
+      "lines": 57,
+      "sha256": "bec2ea6af8dd55dfd8e54ca6d7793a9a171a44e8e7f0d4236bc0cd04a9abc757"
+    },
+    {
+      "file": "tools/refactor/apply-quiz-submission-schemas.mjs",
+      "category": "tooling",
+      "domain": "quizzes",
+      "bytes": 2543,
+      "lines": 57,
+      "sha256": "82aa2ea7d8c1656eaffe77e502e74570acd67d59a8ae22003929f118e4638ed5"
+    },
+    {
       "file": "tools/refactor/apply-reports-scoped-export-rows.mjs",
       "category": "tooling",
       "domain": "reports",
@@ -16240,12 +16590,28 @@
       "sha256": "8bf5e40e8cac7e0396524cb29343f17f82b2013b5214fcb19c3c9009be886d73"
     },
     {
+      "file": "tools/refactor/assert-audit-packages-clean.mjs",
+      "category": "tooling",
+      "domain": "payments",
+      "bytes": 1146,
+      "lines": 38,
+      "sha256": "3bccfe6daefbf93414ca6147ee98339973e12fef63a40e887e431c3db0656175"
+    },
+    {
       "file": "tools/refactor/baseline-repair.mjs",
       "category": "tooling",
       "domain": "shared",
       "bytes": 1648,
       "lines": 47,
       "sha256": "fab14c341bdf40583e700ce8c75b7557742506d92715c7dbc30763ba35deafe1"
+    },
+    {
+      "file": "tools/refactor/dependency-audit-summary.mjs",
+      "category": "tooling",
+      "domain": "shared",
+      "bytes": 2476,
+      "lines": 76,
+      "sha256": "c08e812fc38e8c74449a27743b5f872ef645670ba07749068bde0dec785895a7"
     },
     {
       "file": "tools/refactor/module-boundary-gate.mjs",
@@ -16294,6 +16660,54 @@
       "bytes": 3172,
       "lines": 55,
       "sha256": "9344bc4d5947d87b7379e6d4c096d23f1f3148314c0eee41063af43878e7eb45"
+    },
+    {
+      "file": "tools/refactor/phase-review-quiz-definition-schema.mjs",
+      "category": "tooling",
+      "domain": "quizzes",
+      "bytes": 3046,
+      "lines": 60,
+      "sha256": "995927bf46498e87451e894c1fcc9ff5633938221e0a4400fc6fbfa8694855fd"
+    },
+    {
+      "file": "tools/refactor/phase-review-quiz-query-utilities.mjs",
+      "category": "tooling",
+      "domain": "quizzes",
+      "bytes": 3750,
+      "lines": 67,
+      "sha256": "7bdecc5b08a70d991c4882d4e1ed18a1a27fee429f8e98a731ee059b9b052f5c"
+    },
+    {
+      "file": "tools/refactor/phase-review-quiz-question-presentation.mjs",
+      "category": "tooling",
+      "domain": "questions",
+      "bytes": 3385,
+      "lines": 63,
+      "sha256": "48e2de9068654cc722a1f78cf33ff9a3e681503d20505a166f53c003e8a5ccbf"
+    },
+    {
+      "file": "tools/refactor/phase-review-quiz-question-query-schemas.mjs",
+      "category": "tooling",
+      "domain": "questions",
+      "bytes": 2902,
+      "lines": 61,
+      "sha256": "ddabd9b16396382de8713355c3a4a4217ec2940f9f088666b9d86ff8e2765f74"
+    },
+    {
+      "file": "tools/refactor/phase-review-quiz-skill-analytics.mjs",
+      "category": "tooling",
+      "domain": "questions",
+      "bytes": 3523,
+      "lines": 65,
+      "sha256": "43271db08769efa4012e96e82b2a441a414f1226e56851f5393ceb540baad7a6"
+    },
+    {
+      "file": "tools/refactor/phase-review-quiz-submission-schemas.mjs",
+      "category": "tooling",
+      "domain": "quizzes",
+      "bytes": 3248,
+      "lines": 62,
+      "sha256": "bb520f6be7e73d2e29b7b3ad8500a030981e7dda26ee3a975c6bbaa633be2335"
     },
     {
       "file": "tools/refactor/phase-review-reports-directed-quiz-analytics.mjs",

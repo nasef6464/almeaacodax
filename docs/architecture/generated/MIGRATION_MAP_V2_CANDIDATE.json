@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-19T03:39:43.125Z",
-  "sourceGitHead": "82165aeba69d7fed3e2a6661259436c5b0c2cce1",
+  "generatedAt": "2026-08-19T09:31:05.432Z",
+  "sourceGitHead": "eac69b98ee23ef18ddc814108743a13e2322db99",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1502,6 +1502,42 @@
       "source": "server/src/modules/notifications/http/openNotificationSseStream.ts",
       "target": "apps/api/src/modules/notifications/http/openNotificationSseStream.ts",
       "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/queryUtilities.ts",
+      "target": "apps/api/src/modules/quizzes/http/queryUtilities.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "target": "apps/api/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "target": "apps/api/src/modules/quizzes/http/quizDefinitionSchema.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/submissionSchemas.ts",
+      "target": "apps/api/src/modules/quizzes/http/submissionSchemas.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/presentation/questionPresentation.ts",
+      "target": "apps/api/src/modules/quizzes/presentation/questionPresentation.ts",
+      "domain": "questions",
       "confidence": "review-required"
     },
     {

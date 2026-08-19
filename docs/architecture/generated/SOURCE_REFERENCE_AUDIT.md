@@ -2,12 +2,12 @@
 
 | Metric | Value |
 |---|---:|
-| Scripts/tool files scanned | 248 |
-| Scripts coupled to current frontend source paths | 137 |
-| Coupled source-path string references | 969 |
-| Distinct coupled source targets | 218 |
+| Scripts/tool files scanned | 268 |
+| Scripts coupled to current frontend source paths | 138 |
+| Coupled source-path string references | 970 |
+| Distinct coupled source targets | 219 |
 | Relative `new URL(..., import.meta.url)` targets checked | 270 |
-| Missing relative URL targets | 25 |
+| Missing relative URL targets | 11 |
 
 ## Why this matters
 
@@ -549,6 +549,7 @@ Many existing smoke/audit scripts validate source text directly. Runtime source 
 - `scripts/smoke-video-questions-contract.mjs` — 6 reference(s)
 - `scripts/smoke-xlsx-safety-contract.mjs` — 12 reference(s)
 - `tools/refactor/apply-content-learning-schemas.mjs` — 1 reference(s)
+- `tools/refactor/apply-quiz-question-query-schemas.mjs` — 1 reference(s)
 - `tools/refactor/apply-reports-scoped-export-rows.mjs` — 4 reference(s)
 - `tools/refactor/apply-reports-scoped-remediation-fallback.mjs` — 4 reference(s)
 - `tools/refactor/apply-reports-scoped-skill-report.mjs` — 25 reference(s)
@@ -572,26 +573,12 @@ Many existing smoke/audit scripts validate source text directly. Runtime source 
 
 - `scripts/smoke-auth-account-contract.mjs` -> `../AUTH_ACCOUNT_SECURITY.md` (resolved: `AUTH_ACCOUNT_SECURITY.md`)
 - `scripts/smoke-auth-account-contract.mjs` -> `../PRODUCTION_READINESS_REPORT.md` (resolved: `PRODUCTION_READINESS_REPORT.md`)
-- `scripts/smoke-auth-frontend-contract.mjs` -> `../PRODUCTION_READINESS_REPORT.md` (resolved: `PRODUCTION_READINESS_REPORT.md`)
-- `scripts/smoke-database-index-contract.mjs` -> `../DATABASE_REVIEW.md` (resolved: `DATABASE_REVIEW.md`)
-- `scripts/smoke-database-index-contract.mjs` -> `../PRODUCTION_READINESS_REPORT.md` (resolved: `PRODUCTION_READINESS_REPORT.md`)
 - `scripts/smoke-deployment-handover-phase19-contract.mjs` -> `../19_20_DEPLOYMENT_HANDOVER_REPORT.md` (resolved: `19_20_DEPLOYMENT_HANDOVER_REPORT.md`)
 - `scripts/smoke-deployment-handover-phase19-contract.mjs` -> `../DEPLOYMENT_GUIDE.md` (resolved: `DEPLOYMENT_GUIDE.md`)
 - `scripts/smoke-frontend-phase5-contract.mjs` -> `../05_FRONTEND_IMPLEMENTATION_REPORT.md` (resolved: `05_FRONTEND_IMPLEMENTATION_REPORT.md`)
 - `scripts/smoke-load-test-contract.mjs` -> `../LOAD_TEST_REPORT.md` (resolved: `LOAD_TEST_REPORT.md`)
-- `scripts/smoke-monitoring-contract.mjs` -> `../MONITORING_AND_LOGGING_GUIDE.md` (resolved: `MONITORING_AND_LOGGING_GUIDE.md`)
-- `scripts/smoke-monitoring-contract.mjs` -> `../PRODUCTION_READINESS_REPORT.md` (resolved: `PRODUCTION_READINESS_REPORT.md`)
-- `scripts/smoke-nosql-sanitizer-contract.mjs` -> `../SECURITY_CHECKLIST.md` (resolved: `SECURITY_CHECKLIST.md`)
-- `scripts/smoke-nosql-sanitizer-contract.mjs` -> `../PRODUCTION_READINESS_REPORT.md` (resolved: `PRODUCTION_READINESS_REPORT.md`)
-- `scripts/smoke-nosql-sanitizer-contract.mjs` -> `../DEPLOYMENT_GUIDE.md` (resolved: `DEPLOYMENT_GUIDE.md`)
-- `scripts/smoke-notification-contract.mjs` -> `../NOTIFICATION_SYSTEM_GUIDE.md` (resolved: `NOTIFICATION_SYSTEM_GUIDE.md`)
-- `scripts/smoke-notification-contract.mjs` -> `../WHATSAPP_INTEGRATION_GUIDE.md` (resolved: `WHATSAPP_INTEGRATION_GUIDE.md`)
-- `scripts/smoke-notification-contract.mjs` -> `../PRODUCTION_READINESS_REPORT.md` (resolved: `PRODUCTION_READINESS_REPORT.md`)
 - `scripts/smoke-production-ops-phase14-contract.mjs` -> `../14_15_16_PRODUCTION_OPS_REPORT.md` (resolved: `14_15_16_PRODUCTION_OPS_REPORT.md`)
 - `scripts/smoke-qa-phase17-contract.mjs` -> `../17_18_TESTING_REPORT.md` (resolved: `17_18_TESTING_REPORT.md`)
 - `scripts/smoke-qa-phase17-contract.mjs` -> `../TESTING_REPORT.md` (resolved: `TESTING_REPORT.md`)
 - `scripts/smoke-runtime-source-contract.mjs` -> `../services/firebaseSync.ts` (resolved: `services/firebaseSync.ts`)
 - `scripts/smoke-runtime-source-contract.mjs` -> `../services/firebase.ts` (resolved: `services/firebase.ts`)
-- `scripts/smoke-security-rbac-phase6-contract.mjs` -> `../SECURITY_CHECKLIST.md` (resolved: `SECURITY_CHECKLIST.md`)
-- `scripts/smoke-security-rbac-phase6-contract.mjs` -> `../RBAC_MATRIX.md` (resolved: `RBAC_MATRIX.md`)
-- `scripts/smoke-security-rbac-phase6-contract.mjs` -> `../06_07_SECURITY_RBAC_REPORT.md` (resolved: `06_07_SECURITY_RBAC_REPORT.md`)

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-19T03:39:43.947Z",
+  "generatedAt": "2026-08-19T09:31:06.345Z",
   "summary": {
-    "scannedScriptFiles": 248,
-    "sourceCoupledScripts": 137,
-    "sourceCoupledReferences": 969,
-    "sourceCoupledTargets": 218,
+    "scannedScriptFiles": 268,
+    "sourceCoupledScripts": 138,
+    "sourceCoupledReferences": 970,
+    "sourceCoupledTargets": 219,
     "relativeNewUrlTargets": 270,
-    "missingRelativeNewUrlTargets": 25
+    "missingRelativeNewUrlTargets": 11
   },
   "sourceCoupledScripts": [
     {
@@ -1706,7 +1706,7 @@
         {
           "value": "import { isStandaloneMockExam } from '../utils/mockExam'",
           "target": "import { isStandaloneMockExam } from '../utils/mockExam'",
-          "line": 82
+          "line": 86
         }
       ]
     },
@@ -2906,7 +2906,7 @@
         {
           "value": "styles/main.css",
           "target": "styles/main.css",
-          "line": 21
+          "line": 22
         }
       ]
     },
@@ -4926,6 +4926,16 @@
         {
           "value": "import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from \"../utils/integrationSecretsCrypto.js\";",
           "target": "import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from \"../utils/integrationSecretsCrypto.js\";",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "file": "tools/refactor/apply-quiz-question-query-schemas.mjs",
+      "references": [
+        {
+          "value": "import { createNotificationDeliveries } from \"../services/notificationService.js\";",
+          "target": "import { createNotificationDeliveries } from \"../services/notificationService.js\";",
           "line": 8
         }
       ]
@@ -9387,6 +9397,17 @@
       ]
     },
     {
+      "target": "import { createNotificationDeliveries } from \"../services/notificationService.js\";",
+      "references": 1,
+      "scriptCount": 1,
+      "scripts": [
+        {
+          "file": "tools/refactor/apply-quiz-question-query-schemas.mjs",
+          "references": 1
+        }
+      ]
+    },
+    {
       "target": "import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from \"../utils/integrationSecretsCrypto.js\";",
       "references": 1,
       "scriptCount": 1,
@@ -9775,24 +9796,6 @@
       "exists": false
     },
     {
-      "file": "scripts/smoke-auth-frontend-contract.mjs",
-      "value": "../PRODUCTION_READINESS_REPORT.md",
-      "resolved": "PRODUCTION_READINESS_REPORT.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-database-index-contract.mjs",
-      "value": "../DATABASE_REVIEW.md",
-      "resolved": "DATABASE_REVIEW.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-database-index-contract.mjs",
-      "value": "../PRODUCTION_READINESS_REPORT.md",
-      "resolved": "PRODUCTION_READINESS_REPORT.md",
-      "exists": false
-    },
-    {
       "file": "scripts/smoke-deployment-handover-phase19-contract.mjs",
       "value": "../19_20_DEPLOYMENT_HANDOVER_REPORT.md",
       "resolved": "19_20_DEPLOYMENT_HANDOVER_REPORT.md",
@@ -9814,54 +9817,6 @@
       "file": "scripts/smoke-load-test-contract.mjs",
       "value": "../LOAD_TEST_REPORT.md",
       "resolved": "LOAD_TEST_REPORT.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-monitoring-contract.mjs",
-      "value": "../MONITORING_AND_LOGGING_GUIDE.md",
-      "resolved": "MONITORING_AND_LOGGING_GUIDE.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-monitoring-contract.mjs",
-      "value": "../PRODUCTION_READINESS_REPORT.md",
-      "resolved": "PRODUCTION_READINESS_REPORT.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
-      "value": "../SECURITY_CHECKLIST.md",
-      "resolved": "SECURITY_CHECKLIST.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
-      "value": "../PRODUCTION_READINESS_REPORT.md",
-      "resolved": "PRODUCTION_READINESS_REPORT.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-nosql-sanitizer-contract.mjs",
-      "value": "../DEPLOYMENT_GUIDE.md",
-      "resolved": "DEPLOYMENT_GUIDE.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-notification-contract.mjs",
-      "value": "../NOTIFICATION_SYSTEM_GUIDE.md",
-      "resolved": "NOTIFICATION_SYSTEM_GUIDE.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-notification-contract.mjs",
-      "value": "../WHATSAPP_INTEGRATION_GUIDE.md",
-      "resolved": "WHATSAPP_INTEGRATION_GUIDE.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-notification-contract.mjs",
-      "value": "../PRODUCTION_READINESS_REPORT.md",
-      "resolved": "PRODUCTION_READINESS_REPORT.md",
       "exists": false
     },
     {
@@ -9892,24 +9847,6 @@
       "file": "scripts/smoke-runtime-source-contract.mjs",
       "value": "../services/firebase.ts",
       "resolved": "services/firebase.ts",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
-      "value": "../SECURITY_CHECKLIST.md",
-      "resolved": "SECURITY_CHECKLIST.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
-      "value": "../RBAC_MATRIX.md",
-      "resolved": "RBAC_MATRIX.md",
-      "exists": false
-    },
-    {
-      "file": "scripts/smoke-security-rbac-phase6-contract.mjs",
-      "value": "../06_07_SECURITY_RBAC_REPORT.md",
-      "resolved": "06_07_SECURITY_RBAC_REPORT.md",
       "exists": false
     }
   ]

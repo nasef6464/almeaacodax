@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-19T03:39:43.125Z",
-  "gitHead": "82165aeba69d7fed3e2a6661259436c5b0c2cce1",
+  "generatedAt": "2026-08-19T09:31:05.432Z",
+  "gitHead": "eac69b98ee23ef18ddc814108743a13e2322db99",
   "frontendRoutes": [
     "*",
     "/",
@@ -1841,7 +1841,7 @@
     "server/src/routes/parent.routes.ts": "2bc228ddad1e9ad4d134f352b5d841abf29b18d61353da661e838a3132fa8c93",
     "server/src/routes/payment.routes.ts": "c0670ef78ddfb66a5a34d082920b5b1b887a4fa6f085d2796e7381c83bab033a",
     "server/src/routes/publicTests.routes.ts": "1121a36ab9997024d801373f314c004ddb01612529b0047599f0eb58dd248ee2",
-    "server/src/routes/quiz.routes.ts": "e3df96735cec1fd414fae91809c9eb7ea21dfb46a8dd30098c6ab0c2fc9a3206",
+    "server/src/routes/quiz.routes.ts": "aca756132ce5330d5764823c9dbddc8fe17c749b71b7997a76cec70899b6e2ed",
     "server/src/routes/quizResults.routes.ts": "aac762b1086d354df842e9be44ec8549e6fcf6df49f61b0f86442b770a909712",
     "server/src/routes/review.routes.ts": "6dd3f20eb8beb4f864fb81e7efd7b5c53260402f4faec87ae1b5f6d4c8af56ff",
     "server/src/routes/search.routes.ts": "ffc0bec0a0985c5646c48f96574ff0b8790d12f16b930e173560807d4b47580b",
