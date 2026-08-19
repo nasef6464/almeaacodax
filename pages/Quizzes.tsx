@@ -84,7 +84,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const isAttemptsView = view === 'attempts';
 
   useEffect(() => {
-    if (user.role !== 'student' || isAttemptsView) return;
+    if (user.id === 'guest' || user.role !== 'student' || isAttemptsView) return;
     let cancelled = false;
     setAssignedBarcodeTestsLoading(true);
     api.listAssignedPublicBarcodeTests()
@@ -100,7 +100,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return () => {
       cancelled = true;
     };
-  }, [isAttemptsView, user.role]);
+  }, [isAttemptsView, user.id, user.role]);
 
   const totalQuizzes = examResults.length;
   const passedQuizzes = examResults.filter((quiz) => quiz.score >= 50).length;
@@ -775,7 +775,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
       {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
 
-      {user.role === 'student' && !isAttemptsView && (assignedBarcodeTestsLoading || assignedBarcodeTests.length > 0) ? (
+      {user.id !== 'guest' && user.role === 'student' && !isAttemptsView && (assignedBarcodeTestsLoading || assignedBarcodeTests.length > 0) ? (
         <section
           data-testid="student-assigned-barcode-tests"
           className="rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-sky-50 p-5 shadow-sm"
