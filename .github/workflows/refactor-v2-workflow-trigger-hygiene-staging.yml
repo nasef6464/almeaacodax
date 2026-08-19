@@ -1,0 +1,67 @@
+name: Refactor V2 Workflow Trigger Hygiene Staging
+
+on:
+  push:
+    branches:
+      - refactor/workflow-hygiene-staging
+    paths:
+      - '.github/workflows/refactor-v2-workflow-trigger-hygiene-staging.yml'
+      - 'tools/refactor/apply-workflow-trigger-hygiene.mjs'
+      - 'tools/refactor/phase-review-workflow-trigger-hygiene.mjs'
+      - 'scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-workflow-trigger-hygiene-staging-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact staging head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify pre-hygiene trigger state
+        run: node scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs
+
+      - name: Apply closed-workflow trigger hygiene
+        run: node tools/refactor/apply-workflow-trigger-hygiene.mjs
+
+      - name: Run trigger hygiene phase review
+        run: node tools/refactor/phase-review-workflow-trigger-hygiene.mjs
+
+      - name: Commit verified staging tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.sha }}"
+
+          if git diff --cached --quiet; then
+            echo "No verified workflow-trigger changes to commit."
+            exit 0
+          fi
+
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git fetch origin refactor/workflow-hygiene-staging
+          REMOTE_SHA="$(git rev-parse origin/refactor/workflow-hygiene-staging)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Staging branch moved from ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale commit safely."
+            exit 0
+          fi
+
+          git commit -m "ci(refactor): stage closed PR trigger retirement"
+          git push origin HEAD:refactor/workflow-hygiene-staging
