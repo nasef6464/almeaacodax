@@ -32,9 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      PUBLIC_UI_BASE_URL: http://127.0.0.1:4173
-      PUBLIC_UI_API_TARGET: https://almeaacodax-k2ux.onrender.com/api
-      PUBLIC_UI_AUDIT_RUN_ID: platform-v3-public-${{ github.run_id }}
       VITE_API_URL: /api
     steps:
       - name: Checkout exact recovery head
@@ -84,7 +81,11 @@ jobs:
           exit 1
 
       - name: Audit public and guarded UI routes
-        run: node scripts/live-public-ui-audit.mjs
+        run: >
+          node scripts/live-public-ui-audit.mjs
+          --base-url http://127.0.0.1:4173
+          --api-target https://almeaacodax-k2ux.onrender.com/api
+          --run-id platform-v3-public-${{ github.run_id }}
 
       - name: Upload public UI evidence
         if: always()
