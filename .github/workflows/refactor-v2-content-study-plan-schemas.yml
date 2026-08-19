@@ -1,19 +1,10 @@
 name: Refactor V2 Content Study Plan Schemas
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
-    paths:
-      - 'server/src/routes/content.routes.ts'
-      - 'server/src/modules/content/http/studyPlanSchemas.ts'
-      - 'scripts/smoke-content-study-plan-schema-boundary-contract.mjs'
-      - 'tools/refactor/apply-content-study-plan-schemas.mjs'
-      - 'tools/refactor/phase-review-content-study-plan-schemas.mjs'
-      - '.github/workflows/refactor-v2-content-study-plan-schemas.yml'
-  pull_request:
-    branches:
-      - main
     paths:
       - 'server/src/routes/content.routes.ts'
       - 'server/src/modules/content/http/studyPlanSchemas.ts'
