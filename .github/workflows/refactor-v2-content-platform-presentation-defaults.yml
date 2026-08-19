@@ -13,17 +13,6 @@ on:
       - 'tools/refactor/apply-content-platform-presentation-defaults.mjs'
       - 'tools/refactor/phase-review-content-platform-presentation-defaults.mjs'
       - '.github/workflows/refactor-v2-content-platform-presentation-defaults.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'server/src/routes/content.routes.ts'
-      - 'server/src/modules/content/presentation/platformPresentationDefaults.ts'
-      - 'scripts/smoke-homepage-hero-contract.mjs'
-      - 'scripts/smoke-content-platform-presentation-defaults-boundary-contract.mjs'
-      - 'tools/refactor/apply-content-platform-presentation-defaults.mjs'
-      - 'tools/refactor/phase-review-content-platform-presentation-defaults.mjs'
-      - '.github/workflows/refactor-v2-content-platform-presentation-defaults.yml'
 
 permissions:
   contents: write
