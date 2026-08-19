@@ -13,6 +13,10 @@ const dashboardPathProgressSource = fs.existsSync(path.join(root, dashboardPathP
   : dashboardSource;
 const quizzesSource = read('pages/Quizzes.tsx');
 const reportsSource = read('pages/Reports.tsx');
+const reportsScopePath = 'pages/Reports/studentReportScopeViewModel.ts';
+const reportsScopeSource = fs.existsSync(path.join(root, reportsScopePath))
+  ? read(reportsScopePath)
+  : reportsSource;
 
 const checks = [];
 const check = (name, fn) => checks.push({ name, fn });
@@ -74,9 +78,12 @@ check('student quizzes and attempts expose a path filter and visible path badge'
 check('student reports can be filtered by one enrolled path or all enrolled paths', () => {
   assertIncludes(reportsSource, 'selectedStudentPathId');
   assertIncludes(reportsSource, 'studentReportPathOptions');
-  assertIncludes(reportsSource, 'effectiveStudentPathIds');
   assertIncludes(reportsSource, 'studentPathScopedSkills');
   assertIncludes(reportsSource, 'كل مساراتي');
+  assertIncludes(reportsScopeSource, 'studentEnrolledPathIds');
+  assertIncludes(reportsScopeSource, 'effectiveStudentPathIds');
+  assertIncludes(reportsScopeSource, 'studentEnrolledPathIds.includes(path.id) || role !== Role.STUDENT');
+  assertIncludes(reportsScopeSource, 'aggregatedSkills.filter((skill) => skill.pathId && effectiveStudentPathIds.includes(skill.pathId))');
 });
 
 let failed = 0;
