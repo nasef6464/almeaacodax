@@ -2,11 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
-const BASE_URL = String(process.env.PUBLIC_UI_BASE_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
-const API_TARGET = String(process.env.PUBLIC_UI_API_TARGET || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
-const RUN_ID = process.env.PUBLIC_UI_AUDIT_RUN_ID || `public-ui-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+const BASE_URL = 'http://127.0.0.1:4173';
+const API_TARGET = 'https://almeaacodax-k2ux.onrender.com/api';
+const RUN_ID = 'branch-public-ui';
 const OUT_DIR = path.resolve('audit-artifacts', 'platform-v3-public-ui', RUN_ID);
-const PAGE_TIMEOUT_MS = Number(process.env.PUBLIC_UI_PAGE_TIMEOUT_MS || 30000);
+const PAGE_TIMEOUT_MS = 30000;
 const MOJIBAKE_PATTERN = /[\u00c3\u00d8\u00d9][^\n\r]{0,80}[\u00c3\u00d8\u00d9]/;
 
 const viewports = [
