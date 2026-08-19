@@ -4,8 +4,8 @@ const files = {
   auth: await readFile(new URL("../server/src/routes/auth.routes.ts", import.meta.url), "utf8"),
   user: await readFile(new URL("../server/src/models/User.ts", import.meta.url), "utf8"),
   api: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
-  guide: await readFile(new URL("../AUTH_ACCOUNT_SECURITY.md", import.meta.url), "utf8"),
-  readiness: await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
+  guide: await readFile(new URL("../docs/archive_reports/AUTH_ACCOUNT_SECURITY.md", import.meta.url), "utf8"),
+  readiness: await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
 };
 
 const checks = [];
