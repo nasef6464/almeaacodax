@@ -8,7 +8,8 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const checks = [
   ['types.ts', ['PlatformFontSettings', 'PlatformFontFamily', 'navigationFont', 'buttonColor']],
   ['server/src/models/PlatformFontSettings.ts', ['PlatformFontSettingsModel', 'navigationFont', 'buttonFont', 'bodyColor']],
-  ['server/src/routes/content.routes.ts', ['platform-font-settings', 'platformFontFamilySchema', 'navigationWeight', 'requireRole(["admin"])']],
+  ['server/src/routes/content.routes.ts', ['platform-font-settings', 'platformFontSettingsSchema.parse(req.body)', 'requireRole(["admin"])']],
+  ['server/src/modules/content/http/platformPresentationSchemas.ts', ['platformFontFamilySchema', 'navigationWeight', 'buttonWeight', 'platformFontSettingsSchema']],
   ['services/api.ts', ['getPlatformFontSettings', 'updatePlatformFontSettings']],
   ['utils/platformFonts.ts', ['DEFAULT_PLATFORM_FONT_SETTINGS', 'applyPlatformFontSettings', '--platform-font-body', '--platform-font-navigation', '--platform-font-button']],
   ['components/PlatformFontBootstrap.tsx', ['getPlatformFontSettings', 'PLATFORM_FONT_SETTINGS_UPDATED']],
@@ -27,4 +28,3 @@ for (const [file, needles] of checks) {
 }
 
 console.log('Platform fonts contract passed: advanced admin-managed global fonts are wired end to end.');
-
