@@ -12,6 +12,8 @@ on:
       - 'scripts/smoke-ai-config-bridge-contract.mjs'
       - 'scripts/smoke-integrations-runtime-contract.mjs'
       - 'scripts/smoke-monitoring-contract.mjs'
+      - 'docs/archive_reports/MONITORING_AND_LOGGING_GUIDE.md'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-google-genai.yml'
   pull_request:
@@ -25,6 +27,8 @@ on:
       - 'scripts/smoke-ai-config-bridge-contract.mjs'
       - 'scripts/smoke-integrations-runtime-contract.mjs'
       - 'scripts/smoke-monitoring-contract.mjs'
+      - 'docs/archive_reports/MONITORING_AND_LOGGING_GUIDE.md'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
       - 'tools/refactor/assert-audit-packages-clean.mjs'
       - '.github/workflows/refactor-v2-remediate-google-genai.yml'
 
