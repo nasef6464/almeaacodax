@@ -10,14 +10,6 @@ on:
       - 'tools/refactor/phase-review-workflow-trigger-hygiene.mjs'
       - 'scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs'
       - '.github/workflows/refactor-v2-workflow-trigger-hygiene.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'tools/refactor/apply-workflow-trigger-hygiene.mjs'
-      - 'tools/refactor/phase-review-workflow-trigger-hygiene.mjs'
-      - 'scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs'
-      - '.github/workflows/refactor-v2-workflow-trigger-hygiene.yml'
 
 permissions:
   contents: write

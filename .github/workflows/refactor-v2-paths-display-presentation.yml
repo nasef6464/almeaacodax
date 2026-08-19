@@ -12,16 +12,6 @@ on:
       - 'tools/refactor/apply-paths-display-presentation.mjs'
       - 'tools/refactor/phase-review-paths-display-presentation.mjs'
       - '.github/workflows/refactor-v2-paths-display-presentation.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'dashboards/admin/PathsManager.tsx'
-      - 'dashboards/admin/PathsManager/pathDisplayPresentation.tsx'
-      - 'scripts/smoke-paths-display-presentation-boundary-contract.mjs'
-      - 'tools/refactor/apply-paths-display-presentation.mjs'
-      - 'tools/refactor/phase-review-paths-display-presentation.mjs'
-      - '.github/workflows/refactor-v2-paths-display-presentation.yml'
 
 permissions:
   contents: write
