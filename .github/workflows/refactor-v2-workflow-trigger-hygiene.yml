@@ -1,0 +1,113 @@
+name: Refactor V2 Workflow Trigger Hygiene
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'tools/refactor/apply-workflow-trigger-hygiene.mjs'
+      - 'tools/refactor/phase-review-workflow-trigger-hygiene.mjs'
+      - 'scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs'
+      - '.github/workflows/refactor-v2-workflow-trigger-hygiene.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-workflow-trigger-hygiene-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify trigger hygiene state before apply
+        run: node scripts/smoke-refactor-workflow-trigger-hygiene-contract.mjs
+
+      - name: Apply closed-workflow trigger hygiene
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/apply-workflow-trigger-hygiene.mjs
+
+      - name: Run trigger hygiene phase review
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/phase-review-workflow-trigger-hygiene.mjs
+
+      - name: Commit verified trigger hygiene
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.sha }}"
+
+          if git diff --cached --quiet; then
+            echo "No verified workflow-trigger changes to commit."
+            exit 0
+          fi
+
+          for file in $(git diff --cached --name-only); do
+            case "$file" in
+              .github/workflows/refactor-v2-api-query-utilities.yml|\
+              .github/workflows/refactor-v2-content-platform-integration-defaults.yml|\
+              .github/workflows/refactor-v2-content-platform-presentation-defaults.yml|\
+              .github/workflows/refactor-v2-content-study-plan-schemas.yml|\
+              .github/workflows/refactor-v2-quiz-definition-schema.yml|\
+              .github/workflows/refactor-v2-quiz-query-utilities.yml|\
+              .github/workflows/refactor-v2-quiz-question-presentation.yml|\
+              .github/workflows/refactor-v2-quiz-question-query-schemas.yml|\
+              .github/workflows/refactor-v2-quiz-skill-analytics.yml|\
+              .github/workflows/refactor-v2-quiz-submission-schemas.yml|\
+              .github/workflows/refactor-v2-remediate-express-body-parser.yml|\
+              .github/workflows/refactor-v2-remediate-express-rate-limit.yml|\
+              .github/workflows/refactor-v2-remediate-google-genai.yml|\
+              .github/workflows/refactor-v2-remediate-mongoose.yml|\
+              .github/workflows/refactor-v2-remediate-postcss.yml|\
+              .github/workflows/refactor-v2-remediate-react-router.yml|\
+              .github/workflows/refactor-v2-remediate-root-babel-core.yml|\
+              .github/workflows/refactor-v2-remediate-root-brace-expansion.yml|\
+              .github/workflows/refactor-v2-remediate-root-fast-uri.yml|\
+              .github/workflows/refactor-v2-remediate-sentry-brace-expansion.yml|\
+              .github/workflows/refactor-v2-remediate-socket-io.yml|\
+              .github/workflows/refactor-v2-remediate-vite.yml|\
+              .github/workflows/refactor-v2-store-domain-helpers.yml) ;;
+              *) echo "Unexpected staged workflow file: $file" >&2; exit 1 ;;
+            esac
+          done
+
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale trigger-hygiene commit safely."
+            exit 0
+          fi
+
+          git commit -m "ci(refactor): retire closed PR phase triggers"
+          if git push origin HEAD:refactor/repository-v2-safe; then
+            echo "Verified workflow-trigger hygiene pushed successfully."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch advanced to ${NEW_REMOTE_SHA} during push; newer verification owns the save."
+            exit 0
+          fi
+
+          echo "Trigger-hygiene push failed while remote remained at verified head ${EXPECTED_SHA}." >&2
+          exit 1
