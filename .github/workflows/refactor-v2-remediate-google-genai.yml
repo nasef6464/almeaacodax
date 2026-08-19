@@ -62,13 +62,13 @@ jobs:
           npm audit --omit=dev --json > /tmp/root-prod-before.json || true
           node tools/refactor/dependency-audit-summary.mjs root-production-before /tmp/root-prod-before.json
 
-      - name: Update only Google GenAI lock resolution
+      - name: Update only GenAI-owned transitive lock resolutions
         if: github.actor != 'github-actions[bot]'
         shell: bash
         run: |
           set -euo pipefail
           cp package.json /tmp/package.json.before
-          npm update --package-lock-only @google/genai
+          npm update --package-lock-only ws protobufjs
           cmp --silent package.json /tmp/package.json.before || {
             echo "package.json changed during lock-only remediation; refusing scope expansion." >&2
             git diff -- package.json
@@ -95,6 +95,23 @@ jobs:
           npm explain ws || true
           echo '===== REMEDIATED PROVENANCE: protobufjs ====='
           npm explain protobufjs || true
+
+      - name: Verify remediated packages remain GenAI-owned
+        shell: bash
+        run: |
+          set -euo pipefail
+          WS_EXPLAIN="$(npm explain ws 2>&1 || true)"
+          PROTO_EXPLAIN="$(npm explain protobufjs 2>&1 || true)"
+          printf '%s\n' "$WS_EXPLAIN"
+          printf '%s\n' "$PROTO_EXPLAIN"
+          printf '%s' "$WS_EXPLAIN" | grep -F '@google/genai' >/dev/null || {
+            echo "ws is no longer resolved through @google/genai; refusing an unrelated transitive rewrite." >&2
+            exit 1
+          }
+          printf '%s' "$PROTO_EXPLAIN" | grep -F '@google/genai' >/dev/null || {
+            echo "protobufjs is no longer resolved through @google/genai; refusing an unrelated transitive rewrite." >&2
+            exit 1
+          }
 
       - name: Install unchanged API dependencies
         run: npm --prefix server ci
