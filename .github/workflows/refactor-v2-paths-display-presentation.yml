@@ -56,7 +56,7 @@ jobs:
       - name: Install API dependencies required by repository typecheck
         run: npm --prefix server ci
 
-      - name: Verify Paths display presentation boundary on source head
+      - name: Verify post-extraction Paths display presentation boundary
         run: node scripts/smoke-paths-display-presentation-boundary-contract.mjs
 
       - name: Repository typecheck on source head
