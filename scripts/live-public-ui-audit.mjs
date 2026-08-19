@@ -2,9 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
-const BASE_URL = process.env.PUBLIC_UI_BASE_URL || 'http://127.0.0.1:4173';
-const API_TARGET = process.env.PUBLIC_UI_API_TARGET || 'https://almeaacodax-k2ux.onrender.com/api';
-const RUN_ID = process.env.PUBLIC_UI_AUDIT_RUN_ID || 'branch-public-ui';
+const cliArgs = process.argv.slice(2);
+const readArg = (name, fallback) => {
+  const index = cliArgs.indexOf(name);
+  if (index < 0) return fallback;
+  const value = cliArgs[index + 1];
+  if (!value || value.startsWith('--')) {
+    throw new Error(`Missing value for ${name}`);
+  }
+  return value;
+};
+
+const BASE_URL = readArg('--base-url', 'http://127.0.0.1:4173');
+const API_TARGET = readArg('--api-target', 'https://almeaacodax-k2ux.onrender.com/api');
+const RUN_ID = readArg('--run-id', 'branch-public-ui');
 const OUT_DIR = path.resolve('audit-artifacts', 'platform-v3-public-ui', RUN_ID);
 const PAGE_TIMEOUT_MS = 30000;
 const MOJIBAKE_PATTERN = /[\u00c3\u00d8\u00d9][^\n\r]{0,80}[\u00c3\u00d8\u00d9]/;
