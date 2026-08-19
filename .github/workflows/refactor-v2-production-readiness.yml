@@ -1,0 +1,221 @@
+name: Refactor V2 Production Readiness Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'server/src/**'
+      - 'services/api.ts'
+      - 'App.tsx'
+      - 'pages/GenericPathPage.tsx'
+      - 'pages/CourseView.tsx'
+      - 'components/LearningSection.tsx'
+      - 'components/PaymentModal.tsx'
+      - 'deploy/**'
+      - 'Dockerfile.frontend'
+      - 'Dockerfile.backend'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - '.env.example'
+      - '.env.production.example'
+      - 'server/.env.example'
+      - 'server/.env.production.example'
+      - 'docs/ENVIRONMENT.md'
+      - 'docs/SHIFT_HANDOFF_AR.md'
+      - 'docs/archive_reports/DEPLOYMENT_GUIDE.md'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
+      - 'docs/archive_reports/PROJECT_STATUS.md'
+      - 'docs/archive_reports/CODEX_HANDOFF.md'
+      - 'docs/SPARK_BATCH_LEDGER_AR.md'
+      - 'docs/NEXT_SESSION_HANDOVER_AR.md'
+      - 'scripts/smoke-production-audit-contract.mjs'
+      - 'scripts/smoke-production-hardening-contract.mjs'
+      - 'scripts/smoke-real-usage-readiness-contract.mjs'
+      - 'scripts/smoke-health-readiness-contract.mjs'
+      - 'scripts/smoke-handover-blockers-contract.mjs'
+      - 'scripts/smoke-monitoring-contract.mjs'
+      - 'scripts/smoke-database-index-contract.mjs'
+      - 'scripts/smoke-notification-contract.mjs'
+      - 'scripts/smoke-notification-phase10-contract.mjs'
+      - 'scripts/smoke-sentry-runtime-contract.mjs'
+      - 'scripts/smoke-auth-account-contract.mjs'
+      - 'scripts/smoke-auth-frontend-contract.mjs'
+      - 'scripts/smoke-auth-login-security-contract.mjs'
+      - 'scripts/smoke-auth-cookie-contract.mjs'
+      - 'scripts/smoke-csrf-contract.mjs'
+      - 'scripts/smoke-api-security-contract.mjs'
+      - 'scripts/smoke-nosql-sanitizer-contract.mjs'
+      - 'scripts/smoke-deployment-cache-contract.mjs'
+      - 'scripts/smoke-load-test-contract.mjs'
+      - 'scripts/smoke-runtime-source-contract.mjs'
+      - '.github/workflows/refactor-v2-production-readiness.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'server/package.json'
+      - 'server/package-lock.json'
+      - 'server/src/**'
+      - 'services/api.ts'
+      - 'App.tsx'
+      - 'pages/GenericPathPage.tsx'
+      - 'pages/CourseView.tsx'
+      - 'components/LearningSection.tsx'
+      - 'components/PaymentModal.tsx'
+      - 'deploy/**'
+      - 'Dockerfile.frontend'
+      - 'Dockerfile.backend'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - '.env.example'
+      - '.env.production.example'
+      - 'server/.env.example'
+      - 'server/.env.production.example'
+      - 'docs/ENVIRONMENT.md'
+      - 'docs/SHIFT_HANDOFF_AR.md'
+      - 'docs/archive_reports/**'
+      - 'docs/SPARK_BATCH_LEDGER_AR.md'
+      - 'docs/NEXT_SESSION_HANDOVER_AR.md'
+      - 'scripts/smoke-production-*.mjs'
+      - 'scripts/smoke-real-usage-readiness-contract.mjs'
+      - 'scripts/smoke-health-readiness-contract.mjs'
+      - 'scripts/smoke-handover-blockers-contract.mjs'
+      - 'scripts/smoke-monitoring-contract.mjs'
+      - 'scripts/smoke-database-index-contract.mjs'
+      - 'scripts/smoke-notification*.mjs'
+      - 'scripts/smoke-sentry-runtime-contract.mjs'
+      - 'scripts/smoke-auth-*.mjs'
+      - 'scripts/smoke-csrf-contract.mjs'
+      - 'scripts/smoke-api-security-contract.mjs'
+      - 'scripts/smoke-nosql-sanitizer-contract.mjs'
+      - 'scripts/smoke-deployment-cache-contract.mjs'
+      - 'scripts/smoke-load-test-contract.mjs'
+      - 'scripts/smoke-runtime-source-contract.mjs'
+      - '.github/workflows/refactor-v2-production-readiness.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refactor-v2-production-readiness-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm --prefix server run check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm --prefix server run build
+
+      - name: Production audit contract
+        run: npm run smoke:production-audit
+
+      - name: Production hardening contract
+        run: npm run smoke:production-hardening
+
+      - name: Real usage readiness contract
+        run: npm run smoke:real-usage-readiness
+
+      - name: Health readiness contract
+        run: npm run smoke:health-readiness
+
+      - name: Deployment cache contract
+        run: npm run smoke:deployment-cache
+
+      - name: Load-test contract
+        run: npm run smoke:load-tests
+
+      - name: Monitoring contract
+        run: npm run smoke:monitoring
+
+      - name: Database contract
+        run: npm run smoke:database
+
+      - name: Notification contract
+        run: npm run smoke:notifications
+
+      - name: Notification Phase 10 contract
+        run: npm run smoke:notification-phase10
+
+      - name: Sentry runtime contract
+        run: npm run smoke:sentry-runtime
+
+      - name: Auth account contract
+        run: npm run smoke:auth-account
+
+      - name: Auth frontend contract
+        run: npm run smoke:auth-frontend
+
+      - name: Auth login security contract
+        run: npm run smoke:auth-login-security
+
+      - name: Auth cookie contract
+        run: npm run smoke:auth-cookie
+
+      - name: CSRF contract
+        run: npm run smoke:csrf
+
+      - name: API security contract
+        run: npm run smoke:api-security
+
+      - name: NoSQL sanitizer contract
+        run: npm run smoke:nosql-sanitizer
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Handover blockers contract
+        run: npm run smoke:handover-blockers
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Confirm readiness gate is read-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git diff --quiet; then
+            echo 'Production readiness gate modified tracked files:' >&2
+            git diff --name-only >&2
+            exit 1
+          fi
+          echo 'Production readiness gate remained read-only.'
