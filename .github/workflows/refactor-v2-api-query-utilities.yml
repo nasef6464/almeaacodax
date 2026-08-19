@@ -13,17 +13,6 @@ on:
       - 'tools/refactor/apply-api-query-utilities.mjs'
       - 'tools/refactor/phase-review-api-query-utilities.mjs'
       - '.github/workflows/refactor-v2-api-query-utilities.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'services/api.ts'
-      - 'services/apiQueryUtilities.ts'
-      - 'scripts/smoke-frontend-phase5-contract.mjs'
-      - 'scripts/smoke-api-query-utilities-boundary-contract.mjs'
-      - 'tools/refactor/apply-api-query-utilities.mjs'
-      - 'tools/refactor/phase-review-api-query-utilities.mjs'
-      - '.github/workflows/refactor-v2-api-query-utilities.yml'
 
 permissions:
   contents: write
