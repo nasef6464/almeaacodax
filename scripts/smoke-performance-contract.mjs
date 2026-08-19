@@ -168,7 +168,7 @@ assertNotIncludes('services/api.ts', 'const productionApiBaseUrl = "https://alme
 assertNotIncludes('services/api.ts', 'runtimeHostname === "almeaacodax.vercel.app" || runtimeHostname.endsWith(".vercel.app")');
 assertIncludes('services/api.ts', 'summary?: boolean');
 assertIncludes('services/api.ts', 'noTotal?: boolean');
-assertIncludes('server/src/routes/quiz.routes.ts', 'limit: z.coerce.number().int().min(1).max(100).default(80)');
+assertIncludes('server/src/modules/quizzes/http/questionQuerySchemas.ts', 'limit: z.coerce.number().int().min(1).max(100).default(80)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'res.setHeader("X-Total-Count", String(total));');
 assertIncludes('server/src/routes/quiz.routes.ts', 'if (query.summary) {');
 assertIncludes('server/src/routes/quiz.routes.ts', 'toQuestionSummaryText(item.text)');
