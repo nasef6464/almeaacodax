@@ -8,8 +8,10 @@ const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes
 const lineCount = (source) => source.split(/\r?\n/).length;
 const schemaImport = 'import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";';
 const quizDefinitionImport = 'import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";';
+const submissionSchemaImport = 'import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";';
 const delegated = routeSource.includes(schemaImport);
 const quizDefinitionDelegated = routeSource.includes(quizDefinitionImport);
+const submissionSchemasDelegated = routeSource.includes(submissionSchemaImport);
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -110,12 +112,26 @@ check('quiz definition ownership handoff is explicit when delegated by a later p
   }
 });
 
-check('quiz business rules and submission schemas remain route-owned', () => {
+check('submission schema ownership handoff is explicit when delegated by a later phase', () => {
+  for (const declaration of ['const questionAttemptSchema = z.object({', 'const quizSubmitSchema = z.object({']) {
+    assert.equal(
+      routeSource.includes(declaration),
+      !submissionSchemasDelegated,
+      `${submissionSchemasDelegated ? 'delegated' : 'route-owned'} submission ownership mismatch for ${declaration}`,
+    );
+  }
+  if (submissionSchemasDelegated) {
+    assert.equal(routeSource.split(submissionSchemaImport).length - 1, 1, 'submission schema import must be singular');
+    assert.ok(routeSource.includes('questionAttemptSchema.parse(req.body)'), 'question-attempt parser call must remain route-owned');
+    assert.ok(routeSource.includes('quizSubmitSchema.parse(req.body)'), 'quiz-submit parser call must remain route-owned');
+  }
+});
+
+check('quiz business rules and submission behavior remain route-owned', () => {
   for (const fragment of [
     'const validateQuizQuestionIntegrity = async',
     'const normalizeQuizPlacementPayload =',
-    'const questionAttemptSchema = z.object({',
-    'const quizSubmitSchema = z.object({',
+    'const assertQuizWindowIsOpen =',
     'const canSubmitQuiz = async',
     'QuizResultModel.create({',
   ]) assert.ok(routeSource.includes(fragment), `quiz route lost business ownership: ${fragment}`);
@@ -136,6 +152,7 @@ console.log(JSON.stringify({
   status: failed.length ? 'FAIL' : 'PASS',
   delegated,
   quizDefinitionDelegated,
+  submissionSchemasDelegated,
   routeLines: lineCount(routeSource),
   schemaLines: lineCount(schemaSource),
   checks,

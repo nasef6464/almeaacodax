@@ -7,7 +7,9 @@ const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.rout
 const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/http/quizDefinitionSchema.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
 const schemaImport = 'import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";';
+const submissionSchemaImport = 'import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";';
 const delegated = routeSource.includes(schemaImport);
+const submissionSchemasDelegated = routeSource.includes(submissionSchemaImport);
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -55,13 +57,30 @@ check('delegated quiz definition import is singular and before route-local behav
   assert.ok(importIndex >= 0 && behaviorIndex >= 0 && importIndex < behaviorIndex, 'quiz definition import must stay with transport imports');
 });
 
-check('quiz normalization, integrity, submission and persistence remain route-owned', () => {
+check('submission schema ownership handoff is explicit when delegated by a later phase', () => {
+  for (const declaration of ['const questionAttemptSchema = z.object({', 'const quizSubmitSchema = z.object({']) {
+    assert.equal(
+      routeSource.includes(declaration),
+      !submissionSchemasDelegated,
+      `${submissionSchemasDelegated ? 'delegated' : 'route-owned'} submission ownership mismatch for ${declaration}`,
+    );
+  }
+  if (submissionSchemasDelegated) {
+    assert.equal(routeSource.split(submissionSchemaImport).length - 1, 1, 'submission schema import must be singular');
+    assert.ok(routeSource.includes('questionAttemptSchema.parse(req.body)'), 'question-attempt parser call must remain route-owned');
+    assert.ok(routeSource.includes('quizSubmitSchema.parse(req.body)'), 'quiz-submit parser call must remain route-owned');
+    assert.ok(routeSource.includes('payload: z.infer<typeof quizSubmitSchema>'), 'quiz submit inferred payload type must remain route-owned');
+  }
+});
+
+check('quiz normalization, integrity, submission behavior and persistence remain route-owned', () => {
   for (const fragment of [
     'const normalizeQuizPlacementPayload = <T extends Record<string, any>>',
     'const validateQuizQuestionIntegrity = async',
-    'const questionAttemptSchema = z.object({',
-    'const quizSubmitSchema = z.object({',
+    'const assertQuizWindowIsOpen =',
     'const canSubmitQuiz = async',
+    'QuestionAttemptModel.create({',
+    'QuizResultModel.create({',
     'QuizModel.create({',
     'QuizModel.findOneAndUpdate(',
   ]) assert.ok(routeSource.includes(fragment), `quiz route lost behavior ownership: ${fragment}`);
@@ -81,6 +100,7 @@ console.log(JSON.stringify({
   phase: 'quiz-definition-schema-boundary',
   status: failed.length ? 'FAIL' : 'PASS',
   delegated,
+  submissionSchemasDelegated,
   routeLines: lineCount(routeSource),
   schemaLines: lineCount(schemaSource),
   checks,
