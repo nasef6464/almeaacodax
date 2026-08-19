@@ -1,20 +1,10 @@
 name: Refactor V2 Quiz Query Utilities
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - refactor/repository-v2-safe
-    paths:
-      - 'server/src/routes/quiz.routes.ts'
-      - 'server/src/modules/quizzes/http/queryUtilities.ts'
-      - 'scripts/smoke-quiz-query-utilities-boundary-contract.mjs'
-      - 'scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs'
-      - 'tools/refactor/apply-quiz-query-utilities.mjs'
-      - 'tools/refactor/phase-review-quiz-query-utilities.mjs'
-      - '.github/workflows/refactor-v2-quiz-query-utilities.yml'
-  pull_request:
-    branches:
-      - main
     paths:
       - 'server/src/routes/quiz.routes.ts'
       - 'server/src/modules/quizzes/http/queryUtilities.ts'
