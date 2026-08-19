@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - develop/platform-v3-recovery
-    paths:
-      - tools/recovery/apply-payment-evidence-repair.mjs
-      - .github/workflows/platform-v3-payment-evidence-repair.yml
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -17,7 +18,7 @@ concurrency:
 
 jobs:
   repair:
-    if: github.event.head_commit.message == 'ci(platform-v3): add payment evidence repair executor'
+    if: github.actor != 'github-actions[bot]' && ((github.event_name == 'pull_request' && github.head_ref == 'develop/platform-v3-recovery') || (github.event_name == 'push' && github.ref_name == 'develop/platform-v3-recovery') || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -55,6 +56,8 @@ jobs:
           fi
       - name: Commit verified repair
         shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
           if git diff --quiet; then
@@ -62,8 +65,8 @@ jobs:
             exit 0
           fi
           remote_sha="$(git ls-remote origin refs/heads/develop/platform-v3-recovery | awk '{print $1}')"
-          if [ "$remote_sha" != "$GITHUB_SHA" ]; then
-            echo "Branch moved from $GITHUB_SHA to $remote_sha; refusing stale auto-commit."
+          if [ "$remote_sha" != "$EXPECTED_SHA" ]; then
+            echo "Branch moved from $EXPECTED_SHA to $remote_sha; refusing stale auto-commit."
             exit 1
           fi
           git config user.name "almeaa-recovery-bot"
