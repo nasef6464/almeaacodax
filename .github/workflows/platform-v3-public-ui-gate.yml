@@ -1,0 +1,114 @@
+name: Platform V3 Public UI Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+    paths:
+      - 'App.tsx'
+      - 'pages/**'
+      - 'components/**'
+      - 'contexts/**'
+      - 'services/**'
+      - 'store/**'
+      - 'utils/**'
+      - 'styles/**'
+      - 'index.html'
+      - 'vite.config.ts'
+      - 'scripts/live-public-ui-audit.mjs'
+      - '.github/workflows/platform-v3-public-ui-gate.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'App.tsx'
+      - 'pages/**'
+      - 'components/**'
+      - 'contexts/**'
+      - 'services/**'
+      - 'store/**'
+      - 'utils/**'
+      - 'styles/**'
+      - 'index.html'
+      - 'vite.config.ts'
+      - 'scripts/live-public-ui-audit.mjs'
+      - '.github/workflows/platform-v3-public-ui-gate.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-v3-public-ui-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  public-ui-live:
+    name: Branch public UI — desktop + mobile
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PUBLIC_UI_BASE_URL: http://127.0.0.1:4173
+      PUBLIC_UI_API_TARGET: https://almeaacodax-k2ux.onrender.com/api
+      PUBLIC_UI_AUDIT_RUN_ID: platform-v3-public-${{ github.run_id }}
+      VITE_API_URL: /api
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: Build branch frontend with same-origin API bridge path
+        run: npm run build
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start built frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/platform-v3-preview.log 2>&1 &
+          echo $! > /tmp/platform-v3-preview.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              echo "Branch preview is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/platform-v3-preview.log || true
+          echo "Branch preview failed to start." >&2
+          exit 1
+
+      - name: Audit public and guarded UI routes
+        run: node scripts/live-public-ui-audit.mjs
+
+      - name: Upload public UI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-v3-public-ui-${{ github.run_id }}
+          path: audit-artifacts/platform-v3-public-ui/platform-v3-public-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop built frontend
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/platform-v3-preview.pid ]; then
+            kill "$(cat /tmp/platform-v3-preview.pid)" 2>/dev/null || true
+          fi
