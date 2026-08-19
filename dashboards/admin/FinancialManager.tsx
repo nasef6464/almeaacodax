@@ -417,7 +417,12 @@ export const FinancialManager: React.FC = () => {
     const reviewRequest = async (request: PaymentRequest, status: 'approved' | 'rejected') => {
         setRequestActionLoading(request.id);
         try {
-            await api.reviewPaymentRequest(request.id, { status, reviewerNotes: '' });
+            const approvalEvidence = status === 'approved' ? buildApprovalEvidence(request) : undefined;
+            await api.reviewPaymentRequest(request.id, {
+                status,
+                reviewerNotes: '',
+                ...(approvalEvidence ? { approvalEvidence } : {}),
+            });
             setFeedback(`تم ${status === 'approved' ? 'اعتماد' : 'رفض'} الطلب بنجاح`);
             setPaymentRequests(prev => prev.map(r => r.id === request.id ? { ...r, status } : r));
         } catch (err: any) {
