@@ -26,6 +26,7 @@ import { sm2 } from "../services/spacedRepetition.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
+import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
@@ -290,33 +291,6 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
     showInMock,
   };
 };
-
-const questionAttemptSchema = z.object({
-  questionId: z.string().min(1),
-  selectedOptionIndex: z.number().default(-1),
-  timeSpentSeconds: z.number().default(0),
-  date: z.string().optional(),
-});
-
-const quizSubmitSchema = z.object({
-  answers: z.record(z.coerce.number()).default({}),
-  timeSpentSeconds: z.number().min(0).default(0),
-  source: z.string().optional(),
-  // تحليل الأقسام من الـ Frontend (للمحاكيات) — اختياري، يُعاد حسابه server-side أيضاً
-  sectionResults: z
-    .array(
-      z.object({
-        sectionId:   z.string(),
-        sectionName: z.string().default(""),
-        total:       z.number().int().min(0).default(0),
-        correct:     z.number().int().min(0).default(0),
-        wrong:       z.number().int().min(0).default(0),
-        unanswered:  z.number().int().min(0).default(0),
-        score:       z.number().min(0).max(100).default(0),
-      }),
-    )
-    .optional(),
-});
 
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
