@@ -25,6 +25,17 @@
 - CSRF token endpoint يعمل ويصدر cookie.
 - لا Runtime Errors ظهرت في فحص Vercel الأخير.
 
+## تقدم Recovery Gate
+- Core build + architecture: PASS على آخر جولة مكتملة قبل إصلاح شراء الدورة.
+- Student + assessment regression: PASS.
+- Auth + security regression: PASS.
+- Production readiness contracts: PASS.
+- تم اكتشاف أثر قديم لمسار تقرير `PACKAGE_COURSE_SPLIT_REPORT.md` بعد إعادة التنظيم وتصحيح العقد إلى `docs/archive_reports/PACKAGE_COURSE_SPLIT_REPORT.md`.
+- تم اكتشاف خلل وظيفي في فصل شراء الدورة عن الباقة: عند وجود باقة مطابقة كان `CourseOverview` يحوّل طلب شراء الدورة إلى شراء باقة.
+- تم إصلاح الخلل في commit `64a665e28626b41b21b55d7c529fc5209f643d14`: شراء الدورة يظل `type="course"` و`purchaseType: 'course'`، والباقات تظل مسارًا منفصلًا.
+- الإصلاح المباشر اجتاز عقد فصل package/course، عقد الدفع، حماية tampering، frontend typecheck، API typecheck، وfrontend production build قبل الـcommit.
+- الجولة التالية من Recovery/Safety Gate يجب أن تعمل على head جديد صادر من تحديث بشري/توثيقي لأن GitHub لا يعيد تشغيل سلسلة workflows تلقائيًا من commit صادر عن GitHub Actions.
+
 ## مصفوفة الاستعادة الوظيفية
 
 ### 1. Production / Infrastructure
@@ -98,10 +109,12 @@
 - [x] Anonymous auth protection basic check
 - [x] Admin API anonymous protection basic check
 - [x] CSRF token availability
+- [x] Contract-level authentication / CSRF / API security / NoSQL sanitizer checks
+- [x] Contract-level quiz integrity / answer exposure checks
+- [x] Contract-level payment tampering checks
 - [ ] Role-based access live checks
-- [ ] Quiz answer exposure live check
+- [ ] Quiz answer exposure live check with authenticated student
 - [ ] Session/logout/reload behavior
-- [ ] Payment/access tampering checks
 - [ ] School scope isolation live check
 
 ## ترتيب التنفيذ
