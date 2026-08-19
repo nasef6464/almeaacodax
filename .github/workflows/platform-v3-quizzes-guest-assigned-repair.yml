@@ -1,0 +1,111 @@
+name: Platform V3 Quizzes Guest Assigned Repair
+
+on:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+    paths:
+      - .github/workflows/platform-v3-quizzes-guest-assigned-repair.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-quizzes-guest-assigned-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Guard guest assigned-tests request
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact recovery branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop/platform-v3-recovery
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Apply exact guest guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const quizzesPath = 'pages/Quizzes.tsx';
+          let quizzes = fs.readFileSync(quizzesPath, 'utf8');
+
+          const effectOld = "    if (user.role !== 'student' || isAttemptsView) return;";
+          const effectNew = "    if (user.id === 'guest' || user.role !== 'student' || isAttemptsView) return;";
+          if ((quizzes.match(new RegExp(effectOld.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&'), 'g')) || []).length !== 1) {
+            throw new Error('Expected exactly one assigned-tests effect guard');
+          }
+          quizzes = quizzes.replace(effectOld, effectNew);
+
+          const depsOld = "  }, [isAttemptsView, user.role]);";
+          const depsNew = "  }, [isAttemptsView, user.id, user.role]);";
+          if ((quizzes.match(new RegExp(depsOld.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&'), 'g')) || []).length !== 1) {
+            throw new Error('Expected exactly one assigned-tests dependency list');
+          }
+          quizzes = quizzes.replace(depsOld, depsNew);
+
+          const renderOld = "      {user.role === 'student' && !isAttemptsView && (assignedBarcodeTestsLoading || assignedBarcodeTests.length > 0) ? (";
+          const renderNew = "      {user.id !== 'guest' && user.role === 'student' && !isAttemptsView && (assignedBarcodeTestsLoading || assignedBarcodeTests.length > 0) ? (";
+          if ((quizzes.match(new RegExp(renderOld.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&'), 'g')) || []).length !== 1) {
+            throw new Error('Expected exactly one assigned-tests render guard');
+          }
+          quizzes = quizzes.replace(renderOld, renderNew);
+          fs.writeFileSync(quizzesPath, quizzes);
+
+          const contractPath = 'scripts/smoke-barcode-public-tests-contract.mjs';
+          let contract = fs.readFileSync(contractPath, 'utf8');
+          const contractOld = '    studentSource.includes("listAssignedPublicBarcodeTests") &&\n    studentSource.includes("اختبارات مباشرة موجهة لك"),';
+          const contractNew = '    studentSource.includes("listAssignedPublicBarcodeTests") &&\n    studentSource.includes("user.id === \'guest\'") &&\n    studentSource.includes("user.id !== \'guest\'") &&\n    studentSource.includes("اختبارات مباشرة موجهة لك"),';
+          if (!contract.includes(contractOld)) {
+            throw new Error('Barcode contract insertion point changed');
+          }
+          contract = contract.replace(contractOld, contractNew);
+          fs.writeFileSync(contractPath, contract);
+          NODE
+
+      - name: Verify barcode contract
+        run: npm run smoke:barcode-public-tests
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 2
+          test "${changed[0]}" = "pages/Quizzes.tsx"
+          test "${changed[1]}" = "scripts/smoke-barcode-public-tests-contract.mjs"
+
+      - name: Commit verified repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$GITHUB_SHA"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pages/Quizzes.tsx scripts/smoke-barcode-public-tests-contract.mjs
+          git commit -m "fix(quizzes): skip assigned tests for guest"
+          git push origin HEAD:develop/platform-v3-recovery
