@@ -54,8 +54,8 @@ jobs:
         run: node tools/refactor/architecture-gate.mjs
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
-      - name: Frontend strict route smoke
-        run: npm run smoke:frontend:strict
+      # smoke:frontend:strict intentionally stays out of PR CI because it verifies
+      # the currently deployed production commit. It belongs to post-deploy verification.
       - name: Route loading contract
         run: npm run smoke:route-loading
       - name: Runtime source contract
