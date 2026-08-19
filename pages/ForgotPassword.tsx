@@ -71,7 +71,7 @@ const ForgotPassword: React.FC = () => {
           </button>
         </form>
 
-        <Link to="/" className="mt-5 block text-center text-sm font-bold text-gray-500 hover:text-emerald-600">
+        <Link to="/login" className="mt-5 block text-center text-sm font-bold text-gray-500 hover:text-emerald-600">
           تذكرت كلمة المرور؟ سجل الدخول
         </Link>
       </section>

@@ -20,10 +20,14 @@ const Cart: React.FC = () => {
   const location = useLocation();
   const isCheckoutPage = location.pathname === '/checkout';
 
-  const total = useMemo(
-    () => cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0),
-    [cartItems],
-  );
+  const totalsByCurrency = useMemo(() => {
+    const totals = new Map<string, number>();
+    cartItems.forEach((item) => {
+      const currency = String(item.currency || 'SAR').trim() || 'SAR';
+      totals.set(currency, (totals.get(currency) || 0) + Number(item.price || 0));
+    });
+    return Array.from(totals.entries()).map(([currency, amount]) => ({ currency, amount }));
+  }, [cartItems]);
 
   const confirmRemoveItem = (item: CartItem) => {
     const confirmed = window.confirm(`هل تريد حذف "${item.title}" من السلة؟ يمكنك إضافته مرة أخرى لاحقًا.`);
@@ -106,18 +110,28 @@ const Cart: React.FC = () => {
       </div>
 
       <div className="mt-5 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between gap-4">
           <span className="text-sm font-bold text-gray-500">إجمالي السلة</span>
-          <span className="text-xl font-black text-indigo-700">{total} SAR</span>
+          <div className="space-y-1 text-left">
+            {totalsByCurrency.map(({ currency, amount }) => (
+              <div key={currency} className="text-xl font-black text-indigo-700">{amount} {currency}</div>
+            ))}
+          </div>
         </div>
-        {isCheckoutPage ? (
+        {isCheckoutPage && cartItems.length === 1 ? (
           <button
             type="button"
+            data-testid="checkout-single-item-pay"
             onClick={() => setActiveItem(cartItems[0] || null)}
             className="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700"
           >
             إتمام الدفع الآن
           </button>
+        ) : null}
+        {isCheckoutPage && cartItems.length > 1 ? (
+          <div data-testid="checkout-multi-item-note" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm font-bold leading-6 text-amber-800">
+            الدفع يتم لكل عنصر بشكل مستقل. استخدم زر «شراء الآن» أمام كل عنصر لإنشاء طلبه بالسعر والعملة الصحيحة.
+          </div>
         ) : null}
       </div>
 
