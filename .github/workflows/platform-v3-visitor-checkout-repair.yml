@@ -1,0 +1,131 @@
+name: Platform V3 Visitor Checkout Repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-visitor-checkout-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-visitor-checkout-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Clarify multi-item checkout and auth return
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Apply exact visitor journey repairs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const cartPath = 'pages/Cart.tsx';
+          let cart = fs.readFileSync(cartPath, 'utf8');
+
+          const totalOld = `  const total = useMemo(\n    () => cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0),\n    [cartItems],\n  );`;
+          const totalNew = `  const totalsByCurrency = useMemo(() => {\n    const totals = new Map<string, number>();\n    cartItems.forEach((item) => {\n      const currency = String(item.currency || 'SAR').trim() || 'SAR';\n      totals.set(currency, (totals.get(currency) || 0) + Number(item.price || 0));\n    });\n    return Array.from(totals.entries()).map(([currency, amount]) => ({ currency, amount }));\n  }, [cartItems]);`;
+          if (cart.split(totalOld).length - 1 !== 1) throw new Error('Cart total block changed');
+          cart = cart.replace(totalOld, totalNew);
+
+          const summaryOld = `      <div className="mt-5 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">\n        <div className="flex items-center justify-between">\n          <span className="text-sm font-bold text-gray-500">إجمالي السلة</span>\n          <span className="text-xl font-black text-indigo-700">{total} SAR</span>\n        </div>\n        {isCheckoutPage ? (\n          <button\n            type="button"\n            onClick={() => setActiveItem(cartItems[0] || null)}\n            className="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700"\n          >\n            إتمام الدفع الآن\n          </button>\n        ) : null}\n      </div>`;
+          const summaryNew = `      <div className="mt-5 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">\n        <div className="flex items-start justify-between gap-4">\n          <span className="text-sm font-bold text-gray-500">إجمالي السلة</span>\n          <div className="space-y-1 text-left">\n            {totalsByCurrency.map(({ currency, amount }) => (\n              <div key={currency} className="text-xl font-black text-indigo-700">{amount} {currency}</div>\n            ))}\n          </div>\n        </div>\n        {isCheckoutPage && cartItems.length === 1 ? (\n          <button\n            type="button"\n            data-testid="checkout-single-item-pay"\n            onClick={() => setActiveItem(cartItems[0] || null)}\n            className="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700"\n          >\n            إتمام الدفع الآن\n          </button>\n        ) : null}\n        {isCheckoutPage && cartItems.length > 1 ? (\n          <div data-testid="checkout-multi-item-note" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm font-bold leading-6 text-amber-800">\n            الدفع يتم لكل عنصر بشكل مستقل. استخدم زر «شراء الآن» أمام كل عنصر لإنشاء طلبه بالسعر والعملة الصحيحة.\n          </div>\n        ) : null}\n      </div>`;
+          if (cart.split(summaryOld).length - 1 !== 1) throw new Error('Cart checkout summary block changed');
+          cart = cart.replace(summaryOld, summaryNew);
+          fs.writeFileSync(cartPath, cart);
+
+          const forgotPath = 'pages/ForgotPassword.tsx';
+          let forgot = fs.readFileSync(forgotPath, 'utf8');
+          const forgotOld = `        <Link to="/" className="mt-5 block text-center text-sm font-bold text-gray-500 hover:text-emerald-600">\n          تذكرت كلمة المرور؟ سجل الدخول\n        </Link>`;
+          const forgotNew = `        <Link to="/login" className="mt-5 block text-center text-sm font-bold text-gray-500 hover:text-emerald-600">\n          تذكرت كلمة المرور؟ سجل الدخول\n        </Link>`;
+          if (forgot.split(forgotOld).length - 1 !== 1) throw new Error('Forgot-password login link changed');
+          forgot = forgot.replace(forgotOld, forgotNew);
+          fs.writeFileSync(forgotPath, forgot);
+
+          const contractPath = 'scripts/smoke-public-open-items-contract.mjs';
+          let contract = fs.readFileSync(contractPath, 'utf8');
+          const contractOld = `includes('pages/Cart.tsx', 'إتمام الدفع الآن');\nincludes('pages/Cart.tsx', 'شراء الآن');`;
+          const contractNew = `includes('pages/Cart.tsx', 'إتمام الدفع الآن');\nincludes('pages/Cart.tsx', 'شراء الآن');\nincludes('pages/Cart.tsx', 'totalsByCurrency');\nincludes('pages/Cart.tsx', 'checkout-single-item-pay');\nincludes('pages/Cart.tsx', 'checkout-multi-item-note');\nincludes('pages/Cart.tsx', 'الدفع يتم لكل عنصر بشكل مستقل');\nincludes('pages/ForgotPassword.tsx', 'to="/login"');`;
+          if (contract.split(contractOld).length - 1 !== 1) throw new Error('Public open-items contract insertion point changed');
+          contract = contract.replace(contractOld, contractNew);
+          fs.writeFileSync(contractPath, contract);
+          NODE
+
+      - name: Public open-items contract
+        run: npm run smoke:public-open-items
+
+      - name: Payment package contract
+        run: npm run smoke:payment-package
+
+      - name: Payment tampering contract
+        run: npm run smoke:payment-tampering
+
+      - name: Membership pricing contract
+        run: npm run smoke:membership-pricing
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm --prefix server run check
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: API production build
+        run: npm --prefix server run build
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 3
+          test "${changed[0]}" = "pages/Cart.tsx"
+          test "${changed[1]}" = "pages/ForgotPassword.tsx"
+          test "${changed[2]}" = "scripts/smoke-public-open-items-contract.mjs"
+
+      - name: Commit verified visitor repair
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pages/Cart.tsx pages/ForgotPassword.tsx scripts/smoke-public-open-items-contract.mjs
+          git commit -m "fix(visitor): clarify checkout and login return"
+          git push origin HEAD:develop/platform-v3-recovery
