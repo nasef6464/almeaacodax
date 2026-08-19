@@ -33,9 +33,20 @@ check("csrf middleware defines cookie/header contract and safe methods", () => {
   assertIncludes(csrfMiddlewareSource, "Invalid CSRF token");
 });
 
-check("csrf guard is enabled for API routes", () => {
+check("csrf guard is enabled for API and compatibility auth routes", () => {
   assertIncludes(appSource, "import { csrfGuard } from \"./middleware/csrf.js\"");
   assertIncludes(appSource, "app.use(\"/api\", csrfGuard)");
+  assertIncludes(appSource, "app.use(\"/auth\", csrfGuard)");
+});
+
+check("compatibility auth alias keeps API-equivalent request protections", () => {
+  assertIncludes(appSource, 'app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }))');
+  for (const route of ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"]) {
+    assertIncludes(appSource, route);
+  }
+  assertIncludes(appSource, '"/auth/me/redeem-access-code"');
+  assertIncludes(appSource, "authRateLimiter");
+  assertIncludes(appSource, "sensitiveActionRateLimiter");
 });
 
 check("auth route exposes csrf token endpoint", () => {

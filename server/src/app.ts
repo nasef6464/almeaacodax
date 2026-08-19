@@ -69,14 +69,29 @@ export function createApp() {
   );
   app.use(compression());
   app.use(requestLogger);
-  app.use("/api/auth", express.json({ limit: "100kb" }));
+  app.use(["/api/auth", "/auth"], express.json({ limit: "100kb" }));
   app.use(globalRateLimiter);
   app.use(
-    ["/api/auth/login", "/api/auth/register", "/api/auth/forgot-password", "/api/auth/reset-password"],
+    [
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/auth/forgot-password",
+      "/api/auth/reset-password",
+      "/auth/login",
+      "/auth/register",
+      "/auth/forgot-password",
+      "/auth/reset-password",
+    ],
     authRateLimiter,
   );
   app.use(
-    ["/api/quizzes/*/submit", "/api/ai/*", "/api/payments/*", "/api/auth/me/redeem-access-code"],
+    [
+      "/api/quizzes/*/submit",
+      "/api/ai/*",
+      "/api/payments/*",
+      "/api/auth/me/redeem-access-code",
+      "/auth/me/redeem-access-code",
+    ],
     sensitiveActionRateLimiter,
   );
   app.use(["/api/quizzes", "/api/payments", "/api/ai"], express.json({ limit: "1mb" }));
@@ -84,6 +99,7 @@ export function createApp() {
   app.use(rejectUnsafeMongoKeys);
   app.use(cookieParser());
   app.use("/api", csrfGuard);
+  app.use("/auth", csrfGuard);
 
   app.get("/", (_req, res) => {
     res.json({
