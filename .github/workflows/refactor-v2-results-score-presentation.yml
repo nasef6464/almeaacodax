@@ -56,7 +56,7 @@ jobs:
       - name: Install API dependencies required by repository typecheck
         run: npm --prefix server ci
 
-      - name: Verify Results score presentation boundary on source head
+      - name: Verify post-extraction Results score presentation boundary
         run: node scripts/smoke-results-score-presentation-boundary-contract.mjs
 
       - name: Repository typecheck on source head
