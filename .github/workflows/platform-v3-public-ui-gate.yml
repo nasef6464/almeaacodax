@@ -1,4 +1,5 @@
 name: Platform V3 Public UI Gate
+# Visitor audit covers route rendering plus read-only interactive journeys on desktop and mobile.
 
 on:
   workflow_dispatch:
