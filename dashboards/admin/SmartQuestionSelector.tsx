@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw } from "lucide-react";
+import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw, ChevronRight, ChevronLeft } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { Question } from "../../types";
 import { api } from "../../services/api";
+import { assessmentQuestionSource } from "../../utils/exams/assessmentQuestionSource";
 
 type SelectionMode = "manual" | "skills" | "smart";
 type Difficulty = "all" | "Easy" | "Medium" | "Hard";
@@ -22,107 +23,25 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   Medium: "bg-amber-100 text-amber-700 border-amber-200",
   Hard: "bg-rose-100 text-rose-700 border-rose-200",
 };
+const CLIENT_PAGE_SIZE = 100;
 
 export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   pathId, subjectId, selectedIds, onChange, maxQuestions = 100,
 }) => {
   const { skills, sections, subjects } = useStore();
 
-  // ── حالة الأسئلة المُجلبة من API ──────────────────────────────────────────
+  // ── Canonical question-source state ───────────────────────────────────────
   const [apiQuestions, setApiQuestions] = useState<Question[]>([]);
+  const [hydratedSelectedQuestions, setHydratedSelectedQuestions] = useState<Question[]>([]);
+  const [missingSelectedIds, setMissingSelectedIds] = useState<string[]>([]);
+  const [duplicateSelectedIds, setDuplicateSelectedIds] = useState<string[]>([]);
+  const [selectionHydrationError, setSelectionHydrationError] = useState("");
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [totalAvailable, setTotalAvailable] = useState(0);
   const [selectedSectionId, setSelectedSectionId] = useState("");
-
-  const fetchRef = useRef<AbortController | null>(null);
-
-  // ── جلب الأسئلة من السيرفر عند تغيير pathId / subjectId ──────────────────
-  useEffect(() => {
-    if (!pathId) {
-      setApiQuestions([]);
-      setTotalAvailable(0);
-      return;
-    }
-
-    // إلغاء أي طلب سابق
-    if (fetchRef.current) fetchRef.current.abort();
-    fetchRef.current = new AbortController();
-
-    setLoadingQuestions(true);
-    setLoadError("");
-
-    const params: Record<string, string | number> = { pathId, limit: 300, page: 1 };
-    if (subjectId) params.subject = subjectId;
-
-    api.getQuestions(params as any)
-      .then((res: any) => {
-        const list: Question[] = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.questions)
-            ? res.questions
-            : Array.isArray(res?.data)
-              ? res.data
-              : [];
-        setApiQuestions(list);
-        setTotalAvailable(res?.total ?? res?.totalCount ?? list.length);
-        setLoadError("");
-      })
-      .catch((err: any) => {
-        if (err?.name === "AbortError") return;
-        setLoadError("تعذر تحميل الأسئلة. حاول مجدداً.");
-        setApiQuestions([]);
-      })
-      .finally(() => setLoadingQuestions(false));
-
-    return () => fetchRef.current?.abort();
-  }, [pathId, subjectId]);
-
-  // ── جلب إضافي عند تحديد قسم (sectionId) — يضمن ظهور كل أسئلة القسم حتى لو تجاوزت الـ300 ──
-  useEffect(() => {
-    if (!pathId || !selectedSectionId) return;
-
-    const params: Record<string, string | number> = { pathId, sectionId: selectedSectionId, limit: 300, page: 1 };
-    if (subjectId) params.subject = subjectId;
-
-    api.getQuestions(params as any)
-      .then((res: any) => {
-        const list: Question[] = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.questions)
-            ? res.questions
-            : Array.isArray(res?.data)
-              ? res.data
-              : [];
-        if (list.length === 0) return;
-        setApiQuestions((prev) => {
-          const map = new Map<string, Question>();
-          prev.forEach((q) => map.set(q.id, q));
-          list.forEach((q) => map.set(q.id, q));
-          return Array.from(map.values());
-        });
-      })
-      .catch(() => { /* silent — main fetch already handles errors */ });
-  }, [pathId, subjectId, selectedSectionId]);
-
-
-
-  // ── بناء خريطة API + Store لضمان الأسئلة المختارة مسبقاً تظهر دائماً ─────
-  const storeQuestions = useStore((s) => s.questions);
-  const allQuestionsMap = useMemo(() => {
-    const map = new Map<string, Question>();
-    // الأسئلة من Store (تشمل المختارة سابقاً)
-    storeQuestions.forEach((q) => map.set(q.id, q));
-    // تطغى عليها أسئلة API (أحدث)
-    apiQuestions.forEach((q) => map.set(q.id, q));
-    return map;
-  }, [storeQuestions, apiQuestions]);
-
-  // ── الأسئلة المختارة: من الخريطة المجمعة لضمان ظهورها حتى لو لم تكن في صفحة الفلتر ──
-  const selectedQuestions = useMemo(
-    () => selectedIds.map((id) => allQuestionsMap.get(id)).filter(Boolean) as Question[],
-    [selectedIds, allQuestionsMap],
-  );
+  const [refreshKey, setRefreshKey] = useState(0);
+  const requestGenerationRef = useRef(0);
 
   const [mode, setMode] = useState<SelectionMode>("manual");
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,8 +53,103 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [smartError, setSmartError] = useState("");
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [manualPage, setManualPage] = useState(1);
+  const selectedSkillKey = useMemo(() => [...selectedSkillIds].sort().join("|"), [selectedSkillIds]);
 
-  // ── الفلترة تعمل على أسئلة API المُجلبة ────────────────────────────────────
+  // ── تحميل النطاق الحالي من المصدر القانوني بدون حد 300/1000 صامت ─────────
+  useEffect(() => {
+    const generation = ++requestGenerationRef.current;
+
+    if (!pathId) {
+      setApiQuestions([]);
+      setTotalAvailable(0);
+      setLoadError("");
+      setLoadingQuestions(false);
+      return;
+    }
+
+    setLoadingQuestions(true);
+    setLoadError("");
+
+    void assessmentQuestionSource
+      .loadAll({
+        pathId,
+        subjectId,
+        sectionId: selectedSectionId || undefined,
+        approvalStatus: 'approved',
+      })
+      .then((result) => {
+        if (generation !== requestGenerationRef.current) return;
+        setApiQuestions(result.questions);
+        setTotalAvailable(result.total);
+        setLoadError("");
+      })
+      .catch((error) => {
+        if (generation !== requestGenerationRef.current) return;
+        setApiQuestions([]);
+        setTotalAvailable(0);
+        setLoadError(error instanceof Error ? error.message : "تعذر تحميل الأسئلة. حاول مجدداً.");
+      })
+      .finally(() => {
+        if (generation === requestGenerationRef.current) setLoadingQuestions(false);
+      });
+  }, [pathId, subjectId, selectedSectionId, refreshKey]);
+
+  // ── Hydrate المختارة بالـIDs مباشرة؛ لا تعتمد على Store أو الصفحة الحالية ─
+  const selectedHydrationKey = useMemo(
+    () => selectedIds.map(String).filter(Boolean).sort().join("\u0001"),
+    [selectedIds],
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    if (!selectedHydrationKey) {
+      setHydratedSelectedQuestions([]);
+      setMissingSelectedIds([]);
+      setDuplicateSelectedIds([]);
+      setSelectionHydrationError("");
+      return () => {
+        active = false;
+      };
+    }
+
+    setSelectionHydrationError("");
+    void assessmentQuestionSource
+      .hydrateByIds(selectedIds)
+      .then((result) => {
+        if (!active) return;
+        setHydratedSelectedQuestions(result.questions);
+        setMissingSelectedIds(result.missingIds);
+        setDuplicateSelectedIds(result.duplicateIds);
+      })
+      .catch((error) => {
+        if (!active) return;
+        setHydratedSelectedQuestions([]);
+        setMissingSelectedIds([]);
+        setDuplicateSelectedIds([]);
+        setSelectionHydrationError(error instanceof Error ? error.message : "تعذر التحقق من الأسئلة المختارة.");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [selectedHydrationKey]);
+
+  // ── خريطة المصدر الحالي + hydrate المختارة؛ الـAPI هو مصدر الحقيقة ────────
+  const allQuestionsMap = useMemo(() => {
+    const map = new Map<string, Question>();
+    apiQuestions.forEach((q) => map.set(q.id, q));
+    hydratedSelectedQuestions.forEach((q) => map.set(q.id, q));
+    return map;
+  }, [apiQuestions, hydratedSelectedQuestions]);
+
+  const selectedQuestions = useMemo(
+    () => selectedIds.map((id) => allQuestionsMap.get(id)).filter(Boolean) as Question[],
+    [selectedIds, allQuestionsMap],
+  );
+
+  // ── الفلترة تعمل على كامل النطاق الذي تم تحميله عبر pagination ─────────────
   const filteredQuestions = useMemo(() => {
     let result = apiQuestions;
     if (mode === "skills" && selectedSkillIds.length > 0)
@@ -143,9 +157,22 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     if (searchTerm.trim())
       result = result.filter((q) => (q.text || "").toLowerCase().includes(searchTerm.toLowerCase()));
     if (difficulty !== "all") result = result.filter((q) => q.difficulty === difficulty);
-    if (selectedSectionId) result = result.filter((q) => q.sectionId === selectedSectionId);
     return result;
-  }, [apiQuestions, mode, selectedSkillIds, searchTerm, difficulty, selectedSectionId]);
+  }, [apiQuestions, mode, selectedSkillIds, searchTerm, difficulty]);
+
+  const totalManualPages = Math.max(1, Math.ceil(filteredQuestions.length / CLIENT_PAGE_SIZE));
+  const visibleFilteredQuestions = useMemo(() => {
+    const start = (manualPage - 1) * CLIENT_PAGE_SIZE;
+    return filteredQuestions.slice(start, start + CLIENT_PAGE_SIZE);
+  }, [filteredQuestions, manualPage]);
+
+  useEffect(() => {
+    setManualPage(1);
+  }, [mode, searchTerm, difficulty, selectedSectionId, selectedHydrationKey, selectedSkillKey]);
+
+  useEffect(() => {
+    if (manualPage > totalManualPages) setManualPage(totalManualPages);
+  }, [manualPage, totalManualPages]);
 
   // ── الأقسام والمهارات المتاحة للمسار ──────────────────────────────────────
   const pathSubjectIds = useMemo(() => {
@@ -165,6 +192,10 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     if (selectedIds.includes(id)) onChange(selectedIds.filter((sid) => sid !== id));
     else if (selectedIds.length < maxQuestions) onChange([...selectedIds, id]);
   }, [selectedIds, onChange, maxQuestions]);
+
+  const removeSelectedAt = useCallback((index: number) => {
+    onChange(selectedIds.filter((_, selectedIndex) => selectedIndex !== index));
+  }, [selectedIds, onChange]);
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
@@ -197,23 +228,8 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     }
   };
 
-  // ── إعادة الجلب يدوياً ────────────────────────────────────────────────────
   const handleRefetch = () => {
-    setApiQuestions([]);
-    setLoadingQuestions(true);
-    setLoadError("");
-    const params: Record<string, string | number> = { pathId, limit: 300, page: 1 };
-    if (subjectId) params.subject = subjectId;
-    api.getQuestions(params as any)
-      .then((res: any) => {
-        const list: Question[] = Array.isArray(res) ? res
-          : Array.isArray(res?.questions) ? res.questions
-            : Array.isArray(res?.data) ? res.data : [];
-        setApiQuestions(list);
-        setTotalAvailable(res?.total ?? res?.totalCount ?? list.length);
-      })
-      .catch(() => setLoadError("تعذر تحميل الأسئلة."))
-      .finally(() => setLoadingQuestions(false));
+    setRefreshKey((value) => value + 1);
   };
 
   return (
@@ -234,21 +250,18 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           ))}
         </div>
 
-        {/* تنبيه: لم يتم اختيار مسار */}
         {!pathId && (
           <div className="py-6 text-center text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-xl font-bold">
             ⚠️ اختر المسار أولاً لتظهر الأسئلة
           </div>
         )}
 
-        {/* حالة التحميل */}
         {loadingQuestions && (
           <div className="py-6 text-center text-xs text-indigo-600 flex items-center justify-center gap-2 font-bold">
             <Loader2 size={16} className="animate-spin"/> جارٍ تحميل الأسئلة...
           </div>
         )}
 
-        {/* خطأ في التحميل */}
         {loadError && !loadingQuestions && (
           <div className="flex items-center justify-between bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
             <span className="text-xs font-bold text-rose-600 flex items-center gap-1">
@@ -261,15 +274,13 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           </div>
         )}
 
-        {/* معلومة عدد الأسئلة المتاحة */}
         {!loadingQuestions && !loadError && pathId && apiQuestions.length > 0 && (
           <div className="flex items-center justify-between text-[11px] text-gray-400 font-bold px-1">
-            <span>{filteredQuestions.length} سؤال ظاهر</span>
-            <span>{totalAvailable} متاح في المسار</span>
+            <span>{filteredQuestions.length} مطابق للفلاتر</span>
+            <span>{totalAvailable} متاح في النطاق الحالي</span>
           </div>
         )}
 
-        {/* وضع ذكي */}
         {mode === "smart" && (
           <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-3">
             <div className="grid grid-cols-2 gap-3">
@@ -309,7 +320,6 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           </div>
         )}
 
-        {/* فلاتر يدوي / مهارات */}
         {mode !== "smart" && !loadingQuestions && (
           <div className="space-y-2">
             <div className="relative">
@@ -345,38 +355,52 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           </div>
         )}
 
-        {/* قائمة الأسئلة */}
         {mode !== "smart" && !loadingQuestions && pathId && (
-          <div className="overflow-y-auto space-y-1.5 max-h-64 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
-            {filteredQuestions.length === 0
-              ? (
-                <div className="py-6 text-center text-xs text-gray-400">
-                  <BarChart2 size={24} className="mx-auto mb-2 opacity-30"/>
-                  <p className="font-bold">
-                    {apiQuestions.length === 0
-                      ? "لا توجد أسئلة في هذا المسار بعد"
-                      : "لا توجد أسئلة تطابق الفلتر"}
-                  </p>
-                </div>
-              )
-              : filteredQuestions.slice(0, 100).map((q) => {
-                  const isSelected = selectedIds.includes(q.id);
-                  const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 100);
-                  return (
-                    <button key={q.id} type="button" onClick={() => toggleQuestion(q.id)}
-                      disabled={!isSelected && selectedIds.length >= maxQuestions}
-                      className={`w-full text-right px-3 py-2.5 rounded-lg border flex items-start gap-2 text-xs transition-all ${isSelected ? "bg-indigo-50 border-indigo-300 text-indigo-900" : "bg-white border-gray-100 text-gray-700 hover:border-indigo-200 disabled:opacity-40"}`}>
-                      <CheckCircle2 size={14} className={`shrink-0 mt-0.5 ${isSelected ? "text-indigo-600" : "text-gray-300"}`}/>
-                      <span className="flex-1 line-clamp-2 font-medium leading-relaxed">{plainText || "—"}</span>
-                      {q.difficulty && (
-                        <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
-                          {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })
-            }
+          <div className="space-y-2">
+            <div className="overflow-y-auto space-y-1.5 max-h-64 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
+              {filteredQuestions.length === 0
+                ? (
+                  <div className="py-6 text-center text-xs text-gray-400">
+                    <BarChart2 size={24} className="mx-auto mb-2 opacity-30"/>
+                    <p className="font-bold">
+                      {apiQuestions.length === 0
+                        ? "لا توجد أسئلة في هذا النطاق بعد"
+                        : "لا توجد أسئلة تطابق الفلتر"}
+                    </p>
+                  </div>
+                )
+                : visibleFilteredQuestions.map((q) => {
+                    const isSelected = selectedIds.includes(q.id);
+                    const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 100);
+                    return (
+                      <button key={q.id} type="button" onClick={() => toggleQuestion(q.id)}
+                        disabled={!isSelected && selectedIds.length >= maxQuestions}
+                        className={`w-full text-right px-3 py-2.5 rounded-lg border flex items-start gap-2 text-xs transition-all ${isSelected ? "bg-indigo-50 border-indigo-300 text-indigo-900" : "bg-white border-gray-100 text-gray-700 hover:border-indigo-200 disabled:opacity-40"}`}>
+                        <CheckCircle2 size={14} className={`shrink-0 mt-0.5 ${isSelected ? "text-indigo-600" : "text-gray-300"}`}/>
+                        <span className="flex-1 line-clamp-2 font-medium leading-relaxed">{plainText || "—"}</span>
+                        {q.difficulty && (
+                          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
+                            {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })
+              }
+            </div>
+            {totalManualPages > 1 && (
+              <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 px-1">
+                <button type="button" onClick={() => setManualPage((page) => Math.max(1, page - 1))} disabled={manualPage <= 1}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
+                  <ChevronRight size={12}/> السابق
+                </button>
+                <span>صفحة {manualPage} من {totalManualPages}</span>
+                <button type="button" onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))} disabled={manualPage >= totalManualPages}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
+                  التالي <ChevronLeft size={12}/>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -399,13 +423,35 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
         <div className="w-full bg-gray-100 rounded-full h-1.5">
           <div className="bg-indigo-500 h-1.5 rounded-full transition-all" style={{ width: `${Math.min(100, (selectedIds.length / maxQuestions) * 100)}%` }}/>
         </div>
+
+        {(missingSelectedIds.length > 0 || duplicateSelectedIds.length > 0 || selectionHydrationError) && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-800 space-y-1">
+            {selectionHydrationError && <p>تعذر التحقق من بعض الأسئلة المختارة: {selectionHydrationError}</p>}
+            {missingSelectedIds.length > 0 && <p>{missingSelectedIds.length} سؤال مختار غير موجود/غير متاح حاليًا. لن يتم إخفاؤه بصمت.</p>}
+            {duplicateSelectedIds.length > 0 && <p>تم اكتشاف IDs مكررة في الاختيار القديم: {duplicateSelectedIds.length}</p>}
+          </div>
+        )}
+
         <div className="overflow-y-auto space-y-1.5 max-h-80 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
-          {selectedQuestions.length === 0
+          {selectedIds.length === 0
             ? <div className="py-10 text-center text-xs text-gray-400"><BarChart2 size={28} className="mx-auto mb-2 opacity-30"/><p className="font-bold">لم تختر أسئلة بعد</p></div>
-            : selectedQuestions.map((q, index) => {
+            : selectedIds.map((id, index) => {
+                const q = allQuestionsMap.get(id);
+                if (!q) {
+                  return (
+                    <div key={`${id}-${index}`} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-amber-200 bg-amber-50 text-xs">
+                      <AlertCircle size={13} className="text-amber-600 shrink-0"/>
+                      <span className="text-gray-400 font-mono text-[10px] w-5 shrink-0">{index + 1}</span>
+                      <span className="flex-1 font-bold text-amber-800 line-clamp-1">سؤال غير متاح حاليًا — {id}</span>
+                      <button type="button" onClick={() => removeSelectedAt(index)}
+                        className="shrink-0 text-amber-500 hover:text-rose-500 transition-colors"><X size={13}/></button>
+                    </div>
+                  );
+                }
+
                 const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
                 return (
-                  <div key={q.id} draggable
+                  <div key={`${q.id}-${index}`} draggable
                     onDragStart={(e) => { setDraggedId(q.id); e.dataTransfer.effectAllowed = "move"; }}
                     onDragOver={(e) => { e.preventDefault(); setDragOverId(q.id); }}
                     onDrop={(e) => handleDrop(e, q.id)}
@@ -419,7 +465,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                         {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
                       </span>
                     )}
-                    <button type="button" onClick={() => onChange(selectedIds.filter((id) => id !== q.id))}
+                    <button type="button" onClick={() => removeSelectedAt(index)}
                       className="shrink-0 text-gray-300 hover:text-rose-500 transition-colors"><X size={13}/></button>
                   </div>
                 );
