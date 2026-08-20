@@ -1,11 +1,14 @@
 import { readFile } from 'node:fs/promises';
 
+const canonicalSource = await readFile(new URL('../utils/exams/assessmentQuestionSource.ts', import.meta.url), 'utf8');
 const helperSource = await readFile(new URL('../utils/exams/questionBankSource.ts', import.meta.url), 'utf8').catch(() => '');
-const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilder.tsx', import.meta.url), 'utf8');
-const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeTestsManager.tsx', import.meta.url), 'utf8');
-const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8');
-const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
-const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const smartSelectorSource = await readFile(new URL('../dashboards/admin/SmartQuestionSelector.tsx', import.meta.url), 'utf8');
+const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilder.tsx', import.meta.url), 'utf8').catch(() => '');
+const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeTestsManager.tsx', import.meta.url), 'utf8').catch(() => '');
+const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8').catch(() => '');
+const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8').catch(() => '');
+const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8').catch(() => '');
+const querySchemaSource = await readFile(new URL('../server/src/modules/quizzes/http/questionQuerySchemas.ts', import.meta.url), 'utf8').catch(() => '');
 
 const checks = [];
 
@@ -26,14 +29,56 @@ function assertNotIncludes(source, fragment, message) {
   if (source.includes(fragment)) throw new Error(message || `Unexpected fragment: ${fragment}`);
 }
 
-check('shared exam question source reads approved questions from the real paginated API', () => {
-  assertIncludes(helperSource, 'api.getQuestionsPaginated');
+check('canonical assessment question source owns paginated API access', () => {
+  assertIncludes(canonicalSource, 'client.getQuestionsPaginated');
+  assertIncludes(canonicalSource, "approvalStatus: request.approvalStatus ?? 'approved'");
+  assertIncludes(canonicalSource, 'const MAX_PAGE_LIMIT = 100');
+  assertIncludes(querySchemaSource, 'max(100)');
+});
+
+check('canonical source can traverse the full scope without a fixed page-count cap', () => {
+  assertIncludes(canonicalSource, 'async loadAll');
+  assertIncludes(canonicalSource, 'while (true)');
+  assertIncludes(canonicalSource, 'result.page >= result.totalPages');
+  assertNotIncludes(canonicalSource, 'MAX_PAGES');
+});
+
+check('canonical source hydrates selected IDs in chunks and reports missing/duplicates', () => {
+  assertIncludes(canonicalSource, 'async hydrateByIds');
+  assertIncludes(canonicalSource, 'HYDRATE_CHUNK_SIZE');
+  assertIncludes(canonicalSource, "ids: idsChunk.join(',')");
+  assertIncludes(canonicalSource, 'missingIds');
+  assertIncludes(canonicalSource, 'duplicateIds');
+});
+
+check('legacy exam question-bank helper delegates to the canonical source', () => {
+  assertIncludes(helperSource, "from './assessmentQuestionSource'");
+  assertIncludes(helperSource, 'assessmentQuestionSource.loadAll');
   assertIncludes(helperSource, "approvalStatus: 'approved'");
-  assertIncludes(helperSource, 'pathId: filters.pathId');
-  assertIncludes(helperSource, 'subject: filters.subjectId');
-  assertIncludes(helperSource, 'sectionId: filters.sectionId');
-  assertIncludes(helperSource, 'skillId: filters.skillId');
-  assertIncludes(helperSource, 'search: filters.search');
+  assertNotIncludes(helperSource, 'api.getQuestionsPaginated');
+  assertNotIncludes(helperSource, 'MAX_PAGES');
+});
+
+check('SmartQuestionSelector uses canonical source and never assumes first 300 questions', () => {
+  assertIncludes(smartSelectorSource, 'assessmentQuestionSource');
+  assertIncludes(smartSelectorSource, '.loadAll({');
+  assertIncludes(smartSelectorSource, '.hydrateByIds(selectedIds)');
+  assertNotIncludes(smartSelectorSource, 'limit: 300');
+  assertNotIncludes(smartSelectorSource, 'api.getQuestions(');
+  assertNotIncludes(smartSelectorSource, 'storeQuestions');
+});
+
+check('SmartQuestionSelector preserves access to all filtered questions with client paging', () => {
+  assertIncludes(smartSelectorSource, 'CLIENT_PAGE_SIZE = 100');
+  assertIncludes(smartSelectorSource, 'visibleFilteredQuestions');
+  assertIncludes(smartSelectorSource, 'totalManualPages');
+  assertNotIncludes(smartSelectorSource, 'filteredQuestions.slice(0, 100)');
+});
+
+check('SmartQuestionSelector surfaces selected-question integrity diagnostics', () => {
+  assertIncludes(smartSelectorSource, 'missingSelectedIds');
+  assertIncludes(smartSelectorSource, 'duplicateSelectedIds');
+  assertIncludes(smartSelectorSource, 'سؤال غير متاح حاليًا');
 });
 
 for (const [name, source] of [
@@ -41,7 +86,7 @@ for (const [name, source] of [
   ['barcode tests manager', barcodeSource],
   ['mock exam manager', mockSource],
 ]) {
-  check(`${name} uses the shared API-backed question source`, () => {
+  check(`${name} uses the compatibility API-backed question source`, () => {
     assertIncludes(source, 'useExamQuestionBank');
     assertIncludes(source, 'questionBankQuestions');
     assertNotIncludes(source, 'questions.filter((question)', `${name} must not filter the useStore question snapshot`);
@@ -67,6 +112,7 @@ check('directed exam entry opens an unsaved normalized draft instead of persisti
 check('directed exam entry opens the builder form immediately', () => {
   assertIncludes(quizBuilderSource, 'useState(Boolean(initialMode || initialQuizId))');
 });
+
 check('normal quiz builder blocks saving without question ids', () => {
   assertIncludes(quizBuilderSource, 'if ((currentQuiz.questionIds || []).length === 0)');
   assertIncludes(quizBuilderSource, 'لا يمكن حفظ الاختبار بدون أسئلة.');
