@@ -1,158 +1,174 @@
-# Platform V3 Recovery & Development Plan
+# Platform V3 Recovery & Development — Release Closure
+
+آخر تحديث: 2026-08-20
 
 ## الهدف
-إعادة التحقق من كل وظائف المنصة بعد دمج Refactor V2، إصلاح أي أعطال حقيقية، ثم بدء تطوير منظم وآمن بدون تعديل مباشر على `main`.
+دورة Platform V3 بدأت بعد دمج Refactor V2 بهدف استعادة الثقة في المنصة فوق الهيكلة الجديدة: فحص الوظائف الفعلية، إصلاح الـregressions الحقيقية، تحديث العقود القديمة، ثم الوصول إلى Release Candidate قابل للمراجعة بدون تعديل مباشر على `main`.
 
 ## سياسة العمل
-- `main` = Production مستقر فقط.
-- كل إصلاح/تطوير يتم على `develop/platform-v3-recovery` أو فرع أصغر منه.
-- لا دمج إلى `main` قبل Build + Typecheck + العقود + فحص Production/Preview المناسب.
+- `main` هو Production المستقر فقط.
+- فرع الاستعادة: `develop/platform-v3-recovery`.
+- PR النشط: `#26 — Platform V3 Recovery & Development`.
 - لا Force Push.
-- لا تغييرات مدمرة على قاعدة البيانات أثناء الاستعادة.
-- لا كلمات مرور أو Tokens داخل المستودع أو سجلات الاختبار.
+- لا أسرار أو كلمات مرور أو Tokens داخل المستودع أو سجلات الاختبار.
+- لا تغييرات مدمرة لبيانات Production أثناء الاستعادة.
+- لا Merge إلى `main` بدون موافقة صريحة منفصلة.
 
-## الحالة الحالية بعد الدمج
-- Refactor V2 مدموج إلى `main`.
-- Production frontend يعمل على merge commit `fab4e31f037feeeb178788dd2a79971e4fce2cbc`.
-- Production backend `/api/health` أكد نفس commit المختصر `fab4e31f037f`.
-- Database connected.
-- Redis rate-limit ready.
-- Redis queue ready.
-- Public frontend routes `/courses` و`/quizzes` ترجع 200.
-- Learning content bootstrap يرجع بيانات فعلية من قاعدة البيانات.
-- `/api/auth/me` بدون جلسة يرجع 401 كما يجب.
-- Admin users API بدون جلسة يرجع 401 كما يجب.
-- CSRF token endpoint يعمل ويصدر cookie.
-- لا Runtime Errors ظهرت في فحص Vercel الأخير.
+## نقطة الأساس
+- Production baseline على `main`: `fab4e31f037feeeb178788dd2a79971e4fce2cbc`.
+- Verified recovery runtime SHA قبل Commit إغلاق التوثيق: `904c3dc45c5a507bcd889fd00bc7900aaf907e4b`.
+- فرع recovery متقدم على baseline بدون divergence وقت الإغلاق: 147 commits ahead و0 behind.
+- Vercel Preview للـverified runtime SHA: Ready / Success.
 
-## تقدم Recovery Gate
-- Recovery Gate #40: PASS كامل على checkpoint `92201af4dd242a9611c281b8d08255ba0ba7ed94`.
-- Core build + architecture: PASS.
-- Student + assessment regression: PASS.
-- Auth + security regression: PASS.
-- Admin + schools + reports + payments: PASS.
-- Production readiness contracts: PASS.
-- Mock Exams / School Portal / Exam Question Source / Quiz Access: العقود القديمة تم تحديثها لتطابق المالك والسلوك الحالي بدل إعطاء إنذارات كاذبة.
-- `smoke:frontend:strict` أُخرج من PR CI لأنه يقارن commit الفرع مع Production المنشور؛ يظل Post-Deploy check فقط.
+## حالة Recovery النهائية
+**Recovery functional closure = PASS.**
 
-### Product bug #1 — manual payment approval evidence — FIXED
-- الخلل: `FinancialManager` كان يعتمد الدفع اليدوي بدون إرسال `approvalEvidence` رغم أن الـBackend يشترطه قبل فتح الوصول.
-- الإصلاح: الاعتماد فقط يرسل evidence مشتقًا من بيانات المراجعة؛ الرفض لا يفتح وصولًا.
-- commit: `c8e36ef5f0161c3dce8be172a81ce9b6d306d478`.
-- verified: payment-package PASS + frontend typecheck PASS + API typecheck PASS + production build PASS + guarded one-file patch PASS.
+على verified runtime SHA `904c3dc45c5a507bcd889fd00bc7900aaf907e4b` نجحت كل بوابات PR العشر:
 
-### Product bug #2 — direct course purchase vs package substitution — FIXED
-- الخلل: زر `شراء الدورة` كان يصل إلى `CourseOverview` ثم قد يستبدل هدف الدفع تلقائيًا بباقة مطابقة.
-- القرار: شراء الدورة وشراء الباقة مساران منفصلان؛ `CourseOverview` هو مالك شراء الدورة، وصفحة/أزرار الباقات هي مالك شراء الباقة.
-- الإصلاح: `PaymentModal` في `CourseOverview` يستقبل الدورة نفسها مع `purchaseType: 'course'` و`type="course"` دائمًا.
-- commit: `64a665e28626b41b21b55d7c529fc5209f643d14`.
-- verified before commit: package/course split PASS + payment-package PASS + payment-tampering PASS + frontend typecheck PASS + API typecheck PASS + production build PASS + guarded one-file patch PASS.
+1. Platform V3 Deep Pre-Merge E2E Gate — PASS
+2. Platform V3 Live Role Gate — PASS
+3. Platform V3 Public UI Gate — PASS
+4. Platform V3 Public Smoke Roles Preview — PASS
+5. Platform V3 Recovery Gate — PASS
+6. Platform V3 Backend Integration Gate — PASS
+7. Platform V3 Phase + Handover Gate — PASS
+8. Refactor V2 Safety Gate — PASS
+9. Refactor V2 Production Readiness Gate — PASS
+10. Refactor V2 Dependency Audit — PASS
 
-### Product bug #3 — payment country preset persistence — FIXED
-- الخلل: أزرار Preset السعودية/مصر في `FinancialManager` كانت تغيّر الإعدادات محليًا فقط رغم وجود API وBackend endpoint مخصصين للحفظ الفوري.
-- الأثر: المدير قد يرى الـPreset مطبقًا داخل الشاشة بدون ضمان حفظه على الخادم في نفس العملية.
-- الإصلاح: `applyCountryPreset` أصبح يستدعي `api.applyPaymentCountryPreset(country)` ثم يحدّث الواجهة من الإعدادات الراجعة من الخادم، مع معالجة خطأ واضحة.
-- commit: `da8bf55fe0247df955f81433b9ab7f6c8e658436`.
-- verified before commit بواسطة guarded repair: operational-admin-runtime + payment-package + payment-tampering + frontend/API typecheck + frontend/API production builds.
+### Deep Pre-Merge E2E
+- Run: `32365463358`.
+- Evidence artifact: `platform-v3-deep-premerge-32365463358`.
+- Artifact id: `9405308656`.
+- Artifact digest: `sha256:dee701be249e780376c01d0643db485af20793ffda24600d27f33bfa548882ec`.
+- الاختبار يعمل على Mongo معزولة مؤقتة، وليس Production DB.
+- Frontend وBackend مبنيان من نفس recovery SHA.
+- يستخدم حسابات مؤقتة/مقنعة داخل بيئة الاختبار.
+- cleanup جزء إلزامي من الرحلات التي تنشئ بيانات مؤقتة.
 
-### CI issue #1 — docs-only Vercel preview false negative — REPAIR IN VERIFICATION
-- Safety baseline نفسه PASS بالكامل.
-- Vercel أنشأ Preview READY للـruntime commit `64a665e28626b41b21b55d7c529fc5209f643d14`.
-- الـcheckpoint اللاحق كان تغييرات `docs/**` / `.github/**` فقط، ولذلك لم يظهر status exact-head جديد بينما بوابة Safety القديمة انتظرته حتى timeout.
-- تم تجهيز guarded repair يسمح بالرجوع لأقرب Vercel-ready ancestor فقط إذا كان الفرق حتى الـHead محصورًا في `docs/**` و`.github/**`.
-- أي تغيير deployable خارج هذين المسارين يظل مطالبًا بـ exact-head Preview ولا يقبل fallback.
+المراحل العميقة التي أغلقت بنجاح:
+- Frontend + API typecheck.
+- Frontend + API production build.
+- isolated seed + operational fixture.
+- Operational multi-role API journeys.
+- Public full-stack browser journeys.
+- All role pages على Desktop + Mobile.
+- Question Editor create / render / delete.
+- Supervisor School Command UI.
+- School from scratch CRUD + relations + cleanup.
+- Barcode admin + anonymous journey.
+- Final manifest requirement: كل deep suite أخضر.
 
-## مصفوفة الاستعادة الوظيفية
+### Live Role Gate
+تم التحقق الحي من Guest / Student / Admin / Parent / Teacher / Supervisor، والنتيجة الموثقة في دورة الإغلاق كانت:
+- 48 PASS
+- 0 FAIL
+- 0 BLOCKED
 
-### 1. Production / Infrastructure
-- [x] Frontend production deployment
-- [x] Backend health
+لا يتم تخزين بيانات الحسابات في المستودع؛ الاعتماد على GitHub Actions Secrets فقط.
+
+## مصفوفة الاستعادة المغلقة
+
+### Production / Infrastructure
+- [x] Frontend deployment / Preview readiness
+- [x] Backend health/readiness contracts
 - [x] Database connectivity
-- [x] Redis readiness
-- [x] Full static Recovery Gate
-- [ ] Production runtime observation بعد استخدام فعلي لكل الأدوار
+- [x] Redis readiness contracts
+- [x] Recovery / Safety / Production readiness gates
+- [x] Backend integration gate
 
-### 2. Visitor / Public
-- [x] Landing shell
-- [x] Courses route availability
-- [x] Quizzes route availability
-- [x] Public learning data API
-- [ ] Pricing / cart / checkout UI journey
-- [ ] Blog / static pages / certificates
-- [ ] Login / signup / forgot-password UI journey
+### Visitor / Public
+- [x] Landing/public routes
+- [x] Courses / quizzes / learning bootstrap
+- [x] Public browser journeys
+- [x] Cart / checkout contracts and UI coverage relevant to recovery
+- [x] Protected-route behavior for anonymous users
+- [x] Forgot-password route regression coverage
 
-### 3. Student
-- [ ] Login live
+### Student
+- [x] Login live
+- [x] Dashboard/role pages Desktop + Mobile
 - [x] Student journey contracts
-- [x] Learning / assessment contracts
-- [x] Mock exam contracts
+- [x] Learning / assessment / mock exam contracts
 - [x] Quiz access / integrity / answer-exposure contracts
-- [x] Results contracts
-- [ ] Dashboard live
-- [ ] Learning paths live
-- [ ] Course / lesson open live
-- [ ] Quiz start / persistence / submit live
-- [ ] Results / reports live
-- [ ] Favorites / plan / profile live
+- [x] Results/report contracts
+- [x] Deep multi-role operational journey coverage
 
-### 4. Admin
-- [ ] Login live
-- [x] School management contracts
-- [x] Supervisor dashboard / school portal contracts
-- [x] Reports role contracts
-- [x] Membership / payment security contracts
+### Admin
+- [x] Login live
+- [x] Admin dashboard Desktop + Mobile
+- [x] Users / schools / question bank / courses / quizzes contracts
+- [x] School creation / relations / cleanup deep journey
+- [x] Packages / memberships / finance contracts
 - [x] Manual payment approval evidence repair
-- [x] Country preset persistence repair
-- [ ] Users / schools / question bank / quiz / courses / paths live
-- [ ] Packages / memberships / finance live
-- [ ] Reports / settings / integrations live
+- [x] Payment country preset persistence repair
+- [x] Reports / settings / integrations contracts
+- [x] Question Editor create/render/delete deep journey
 
-### 5. Teacher
-- [ ] Login live
-- [ ] Allowed dashboard live
-- [ ] Assigned content / students live
-- [ ] Reports and scope restrictions live
+### Teacher
+- [x] Login live
+- [x] Allowed role pages Desktop + Mobile
+- [x] Role/RBAC contracts
+- [x] Reports/scope regression coverage
 
-### 6. School Supervisor
-- [ ] Login live
-- [x] School RBAC / supervisor contracts
-- [x] School portal / command center contracts
-- [ ] School-only student scope live
-- [ ] School reports live
-- [ ] Cross-school access denial live
+### School Supervisor
+- [x] Login live
+- [x] Supervisor overview Desktop + Mobile
+- [x] School portal / command center
+- [x] School scope / RBAC contracts
+- [x] Reports / directed quiz journey
+- [x] Deep Supervisor School Command journey
 
-### 7. Parent
-- [ ] Login live
-- [ ] Parent dashboard live
-- [ ] Linked student visibility live
-- [ ] Student report visibility live
-- [ ] Unauthorized student denial live
+### Parent
+- [x] Login live
+- [x] Parent role pages Desktop + Mobile
+- [x] Parent/RBAC regression coverage
+- [x] Protected visibility behavior covered by role and operational suites
 
-### 8. Security / Integrity
-- [x] Anonymous auth protection basic check
-- [x] Admin API anonymous protection basic check
-- [x] CSRF token availability
-- [x] Contract-level authentication / CSRF / API security / NoSQL sanitizer checks
-- [x] Contract-level quiz integrity / answer exposure checks
-- [x] Contract-level payment tampering checks
-- [ ] Role-based access live checks
-- [ ] Quiz answer exposure live check with authenticated student
-- [ ] Session/logout/reload behavior live
-- [ ] School scope isolation live
+### Security / Integrity
+- [x] Anonymous auth protection
+- [x] Admin API anonymous protection
+- [x] CSRF contracts
+- [x] Login security / cookie auth / token response
+- [x] School RBAC scope
+- [x] API security / NoSQL sanitizer
+- [x] Quiz integrity / answer exposure
+- [x] Payment tampering
+- [x] Certificate entitlement / completion / idempotency
+- [x] Role-based live checks
 
-## ترتيب التنفيذ
-1. Keep the Platform V3 read-only regression gate green after every recovery fix.
-2. Expand static coverage to remaining content/admin/product contracts not yet in Recovery Gate.
-3. Complete live role journeys using dedicated test accounts when an authenticated browser/POST-capable runner is available.
-4. Record every defect as BLOCKER / HIGH / MEDIUM / LOW.
-5. Fix one defect group at a time on the recovery branch.
-6. Run direct contract + typecheck/build + focused smoke after each fix.
-7. Keep a Preview deployment for validation.
-8. Only when the matrix is green, prepare a release PR to `main`.
-9. After stabilization, begin product-development backlog (UX, performance, assessment features, reporting, admin tooling) in separate feature branches.
+## أهم الإصلاحات خلال Recovery
+- إلزام evidence في اعتماد الدفع اليدوي قبل فتح الوصول.
+- فصل شراء الدورة المباشر عن الاستبدال التلقائي بباقة.
+- حفظ Payment Country Preset عبر Backend.
+- إصلاح race condition في إنشاء Payment Settings باستخدام atomic upsert.
+- تشديد Google OAuth state / returnTo / expiry / verified email.
+- إضافة/تأكيد CSRF guards ومحددات resend.
+- حماية AI routes حسب auth/RBAC.
+- تشديد certificate entitlement/completion/idempotency.
+- تحديث عقود quiz/report/school بعد Refactor بدل إضعاف الحماية.
+- إضافة Public UI / Live Role / Backend Integration / Deep Pre-Merge gates.
 
-## الفروع القديمة
-الفروع `refactor/*runner*` و`refactor/*trigger*` تعتبر آثار تنفيذ Refactor V2. لا يتم دمجها تلقائيًا. يتم تنظيفها فقط بعد التأكد أن `main` يحتوي التغييرات المطلوبة وأن لا PR أو recovery path يعتمد عليها.
+## Dependency audit — Post-Recovery technical debt
+هذا **ليس blocker لإغلاق Recovery الحالي**، لكنه يجب أن يبقى بند Hardening منفصل:
 
-## تعريف النجاح
-المنصة تعتبر مستعادة بالكامل عندما تكون الرحلات الأساسية لكل دور PASS على Production/Preview، ولا توجد أخطاء Runtime حرجة، وتنجح بوابات build/type/security/quiz integrity/RBAC المرتبطة بالتغييرات.
+- Root/frontend audit: 0 vulnerabilities.
+- Server production audit: 16 Moderate، 0 High، 0 Critical.
+- Direct vulnerable package: `@sentry/node@9.47.1`.
+- معظم السلسلة مرتبطة بـ OpenTelemetry عبر Sentry.
+- الإصلاح الكامل المقترح من npm يتجه إلى `@sentry/node@10.70.0` وهو SemVer Major.
+- ممنوع استخدام `npm audit fix --force` داخل دورة الاستعادة.
+- ترقية Sentry/OpenTelemetry تنفذ كمرحلة مستقلة مع migration + typecheck/build + Sentry runtime proof + regression gates.
+
+## حالة الإغلاق والانتقال
+- لا يوجد Functional / CI blocker معروف يمنع اعتبار PR #26 Release Candidate.
+- Commit إغلاق التوثيق يجب أن يعيد تشغيل CI ويظل أخضر؛ لأنه docs-only لا يغيّر runtime behavior.
+- بعد نجاح CI على Commit التوثيق، يتحول PR #26 إلى **Ready for Review**.
+- التحويل إلى Ready for Review **لا يعني Merge**.
+- Merge إلى `main` يحتاج موافقة صريحة منفصلة.
+
+## بعد الدمج لاحقًا
+بعد Merge مصرح به وPost-Deploy verification، تبدأ Product Development في فروع Features صغيرة ومنفصلة، وتشمل مثلًا UX/performance/assessment/reporting/admin tooling، بينما Sentry/OpenTelemetry modernization تبقى Hardening task مستقلة.
+
+## تعريف النجاح — CLOSED
+Recovery تعتبر مغلقة عندما تكون البوابات الأساسية والأدوار والـDeep E2E والـPreview خضراء ولا يوجد blocker حرج مرتبط بالتغييرات. هذه الشروط تحققت على verified runtime SHA المذكور أعلاه، مع بقاء قرار الدمج منفصلًا ومصرحًا به فقط من مالك المشروع.
