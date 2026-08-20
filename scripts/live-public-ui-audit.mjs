@@ -413,6 +413,7 @@ const visitorJourneys = [
     name: 'invalid-certificate-fails-safely',
     run: async (page) => {
       await gotoJourneyPage(page, `/certificate/platform-v3-public-invalid-${RUN_ID}`);
+      await page.getByText(/تعذر تحميل الشهادة|الشهادة غير موجودة/).waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });
       const body = await page.locator('body').innerText();
       assertJourney(/تعذر تحميل الشهادة|الشهادة غير موجودة/.test(body), 'invalid certificate did not show the safe not-found state');
       assertJourney(!/Application error|Internal Server Error|Something went wrong/i.test(body), 'invalid certificate caused an application crash');
