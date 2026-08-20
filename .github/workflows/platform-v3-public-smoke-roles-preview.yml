@@ -5,8 +5,6 @@ on:
     branches:
       - main
     types: [opened, synchronize, reopened]
-    paths:
-      - .github/workflows/platform-v3-public-smoke-roles-preview.yml
 
 permissions:
   contents: read
@@ -18,12 +16,14 @@ concurrency:
 jobs:
   verify:
     if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
-    name: Student + teacher + supervisor + parent on exact preview
+    name: Student + teacher + supervisor + parent on exact local build
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      UI_AUDIT_BASE_URL: https://almeaacodax-q0gm9q3oz-nasefs-projects-18e6bdb1.vercel.app
+      UI_AUDIT_BASE_URL: http://127.0.0.1:4173
       UI_AUDIT_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
+      UI_AUDIT_API_BRIDGE: "1"
+      VITE_API_URL: /api
       ROLE_PAGES_AUDIT_RUN_ID: platform-v3-public-smoke-roles-${{ github.run_id }}
     steps:
       - name: Checkout exact recovery branch
@@ -40,6 +40,27 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Typecheck frontend
+        run: npm run typecheck
+
+      - name: Build exact recovery frontend
+        run: npm run build
+
+      - name: Start exact recovery frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/platform-v3-role-preview.log 2>&1 &
+          echo $! > /tmp/platform-v3-role-preview.pid
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/platform-v3-role-preview.log || true
+          exit 1
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
@@ -122,3 +143,11 @@ jobs:
           path: audit-artifacts/ui-audit-exhaustive/platform-v3-public-smoke-roles-${{ github.run_id }}/
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Stop exact recovery frontend
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/platform-v3-role-preview.pid ]; then
+            kill "$(cat /tmp/platform-v3-role-preview.pid)" 2>/dev/null || true
+          fi

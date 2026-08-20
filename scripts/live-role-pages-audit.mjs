@@ -8,6 +8,8 @@ const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().t
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
+const BASE_ORIGIN = new URL(BASE_URL);
+const USE_API_BRIDGE = process.env.UI_AUDIT_API_BRIDGE === "1" || ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
   { name: "mobile", width: 390, height: 844 },
@@ -97,6 +99,46 @@ function safeName(input) {
   return String(input || "").replace(/[^a-zA-Z0-9_-]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 100) || "root";
 }
 
+async function installApiBridge(context) {
+  if (!USE_API_BRIDGE) return;
+
+  await context.route("**/api/**", async (route) => {
+    const request = route.request();
+    const originalUrl = new URL(request.url());
+    const apiIndex = originalUrl.pathname.indexOf("/api/");
+    if (apiIndex < 0) return route.continue();
+
+    const apiPath = originalUrl.pathname.slice(apiIndex + 4);
+    const targetUrl = `${API_BASE_URL}${apiPath}${originalUrl.search}`;
+    const headers = { ...request.headers() };
+    delete headers.host;
+    delete headers.origin;
+    delete headers.referer;
+    delete headers["content-length"];
+
+    try {
+      const response = await fetch(targetUrl, {
+        method: request.method(),
+        headers,
+        body: ["GET", "HEAD"].includes(request.method()) ? undefined : request.postDataBuffer() || undefined,
+        redirect: "manual",
+      });
+      const responseHeaders = Object.fromEntries(response.headers.entries());
+      delete responseHeaders["content-encoding"];
+      delete responseHeaders["content-length"];
+      delete responseHeaders["transfer-encoding"];
+      await route.fulfill({
+        status: response.status,
+        headers: responseHeaders,
+        body: Buffer.from(await response.arrayBuffer()),
+      });
+    } catch (error) {
+      console.error(`API bridge failed for ${targetUrl}:`, error instanceof Error ? error.message : String(error));
+      await route.abort("failed");
+    }
+  });
+}
+
 async function login(page, role) {
   if (role.role === "guest") return { ok: true, skipped: true };
   if (!role.email || !role.password) return { ok: false, reason: "missing credentials" };
@@ -119,7 +161,7 @@ async function login(page, role) {
   const user = payload?.user;
   if (!authCookie || !user?.email || !user?.role) return { ok: false, reason: "api login missing session" };
 
-  await page.context().addCookies([
+  const authCookies = [
     {
       name: "almeaa_access_token",
       value: authCookie,
@@ -129,7 +171,18 @@ async function login(page, role) {
       secure: true,
       sameSite: "None",
     },
-  ]);
+  ];
+  if (USE_API_BRIDGE) {
+    authCookies.push({
+      name: "almeaa_access_token",
+      value: authCookie,
+      url: BASE_ORIGIN.origin,
+      httpOnly: true,
+      secure: BASE_ORIGIN.protocol === "https:",
+      sameSite: "Lax",
+    });
+  }
+  await page.context().addCookies(authCookies);
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.evaluate((backendUser) => {
     sessionStorage.setItem(
@@ -272,6 +325,7 @@ try {
       locale: "ar-SA",
       ignoreHTTPSErrors: process.env.UI_AUDIT_IGNORE_HTTPS_ERRORS === "1",
     });
+    await installApiBridge(context);
     const page = await context.newPage();
     const loginResult = await login(page, role);
     loginResults.push({ role: role.role, ok: loginResult.ok, skipped: loginResult.skipped || false, reason: loginResult.reason || "" });
