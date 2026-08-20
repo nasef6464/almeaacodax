@@ -7,7 +7,7 @@ const demoUsers = [
   {
     name: "adminnasef",
     email: "nasef64@gmail.com",
-    password: "Nn@0120110367",
+    passwordEnv: "DEMO_ADMIN_PASSWORD",
     role: "admin",
     subscription: {
       plan: "premium",
@@ -21,7 +21,7 @@ const demoUsers = [
   {
     name: "سارة المعلمة",
     email: "teacher@example.com",
-    password: "Teacher@123",
+    passwordEnv: "DEMO_TEACHER_PASSWORD",
     role: "teacher",
     subscription: {
       plan: "premium",
@@ -35,7 +35,7 @@ const demoUsers = [
   {
     name: "علي الطالب",
     email: "student@example.com",
-    password: "Student@123",
+    passwordEnv: "DEMO_STUDENT_PASSWORD",
     role: "student",
     subscription: {
       plan: "premium",
@@ -49,7 +49,7 @@ const demoUsers = [
   {
     name: "أحمد المشرف",
     email: "supervisor@example.com",
-    password: "Supervisor@123",
+    passwordEnv: "DEMO_SUPERVISOR_PASSWORD",
     role: "supervisor",
     subscription: {
       plan: "premium",
@@ -63,7 +63,7 @@ const demoUsers = [
   {
     name: "خالد ولي الأمر",
     email: "parent@example.com",
-    password: "Parent@123",
+    passwordEnv: "DEMO_PARENT_PASSWORD",
     role: "parent",
     subscription: {
       plan: "free",
@@ -80,29 +80,49 @@ async function seedDemoUsers() {
   await connectToDatabase();
 
   try {
-    for (const user of demoUsers) {
-      const passwordHash = await bcrypt.hash(user.password, 10);
-      await UserModel.findOneAndUpdate(
-        { email: user.email.toLowerCase() },
-        {
-          name: user.name,
-          email: user.email.toLowerCase(),
-          passwordHash,
-          role: user.role,
-          isActive: true,
-          subscription: user.subscription,
-          enrolledCourses: user.enrolledCourses,
-          enrolledPaths: user.enrolledPaths,
-          completedLessons: user.completedLessons,
-        },
-        {
-          upsert: true,
-          new: true,
-          setDefaultsOnInsert: true,
-        },
-      );
+    const preparedUsers = [];
 
-      console.log(`Seeded ${user.role}: ${user.email.toLowerCase()}`);
+    for (const user of demoUsers) {
+      const email = user.email.toLowerCase();
+      const existing = await UserModel.findOne({ email }).select("_id").lean();
+      const password = existing ? "" : String(process.env[user.passwordEnv] || "").trim();
+
+      if (!existing && !password) {
+        throw new Error(`${user.passwordEnv} is required to create missing demo user ${email}`);
+      }
+
+      preparedUsers.push({ user, email, existing, password });
+    }
+
+    for (const { user, email, existing, password } of preparedUsers) {
+      const profileFields = {
+        name: user.name,
+        email,
+        role: user.role,
+        isActive: true,
+        subscription: user.subscription,
+        enrolledCourses: user.enrolledCourses,
+        enrolledPaths: user.enrolledPaths,
+        completedLessons: user.completedLessons,
+      };
+
+      if (existing) {
+        await UserModel.updateOne(
+          { _id: existing._id },
+          {
+            $set: profileFields,
+          },
+        );
+        console.log(`Updated ${user.role} without changing password: ${email}`);
+        continue;
+      }
+
+      const passwordHash = await bcrypt.hash(password, 10);
+      await UserModel.create({
+        ...profileFields,
+        passwordHash,
+      });
+      console.log(`Created ${user.role}: ${email}`);
     }
 
     const student = await UserModel.findOne({ email: "student@example.com" });

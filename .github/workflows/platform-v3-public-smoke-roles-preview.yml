@@ -24,6 +24,14 @@ jobs:
       UI_AUDIT_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
       VITE_API_URL: /api
       ROLE_PAGES_AUDIT_RUN_ID: platform-v3-public-smoke-roles-${{ github.run_id }}
+      ROLE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      ROLE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+      ROLE_TEACHER_EMAIL: ${{ secrets.ROLE_TEACHER_EMAIL }}
+      ROLE_TEACHER_PASSWORD: ${{ secrets.ROLE_TEACHER_PASSWORD }}
+      ROLE_SUPERVISOR_EMAIL: ${{ secrets.ROLE_SUPERVISOR_EMAIL }}
+      ROLE_SUPERVISOR_PASSWORD: ${{ secrets.ROLE_SUPERVISOR_PASSWORD }}
+      ROLE_PARENT_EMAIL: ${{ secrets.ROLE_PARENT_EMAIL }}
+      ROLE_PARENT_PASSWORD: ${{ secrets.ROLE_PARENT_PASSWORD }}
     steps:
       - name: Checkout exact recovery branch
         uses: actions/checkout@v4
@@ -69,33 +77,31 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Load and mask public smoke-role credentials from seed
+      - name: Resolve secret-backed role-smoke availability
+        id: role_creds
         shell: bash
         run: |
           set -euo pipefail
-          node <<'NODE'
-          const fs = require('node:fs');
-          const source = fs.readFileSync('server/src/scripts/seedOperationalScenarioApi.ts', 'utf8');
-          const targets = {
-            STUDENT: 'student.a@almeaa.local',
-            TEACHER: 'teacher.quant@almeaa.local',
-            SUPERVISOR: 'supervisor.group@almeaa.local',
-            PARENT: 'parent.a@almeaa.local',
-          };
-          const envLines = [];
-          for (const [role, email] of Object.entries(targets)) {
-            const escaped = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const match = source.match(new RegExp(`email:\\s*["']${escaped}["'][\\s\\S]{0,240}?password:\\s*["']([^"']+)["']`));
-            if (!match) throw new Error(`Missing public smoke seed for ${role}`);
-            const password = match[1];
-            console.log(`::add-mask::${password}`);
-            envLines.push(`ROLE_${role}_EMAIL=${email}`);
-            envLines.push(`ROLE_${role}_PASSWORD=${password}`);
-          }
-          fs.appendFileSync(process.env.GITHUB_ENV, `${envLines.join('\n')}\n`);
-          NODE
+          ready=true
+          for role in STUDENT TEACHER SUPERVISOR PARENT; do
+            email_var="ROLE_${role}_EMAIL"
+            pass_var="ROLE_${role}_PASSWORD"
+            if [ -z "${!email_var:-}" ] || [ -z "${!pass_var:-}" ]; then
+              echo "${role}: secure credentials not configured"
+              ready=false
+            else
+              echo "${role}: secure credentials configured"
+            fi
+          done
+          echo "ready=$ready" >> "$GITHUB_OUTPUT"
+          if [ "$ready" = "true" ]; then
+            echo "Secret-backed authenticated role smoke is enabled."
+          else
+            echo "::warning::Authenticated role smoke is BLOCKED because one or more GitHub Secret credential pairs are missing. Repository seed passwords are intentionally not used. Run Platform V3 Live Role Gate with secure secrets before merge."
+          fi
 
       - name: Run existing live-role browser audit
+        if: steps.role_creds.outputs.ready == 'true'
         id: role_audit
         shell: bash
         run: |
@@ -105,7 +111,8 @@ jobs:
           echo "audit_exit=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Require all public smoke roles green and admin only blocked
+      - name: Require all secret-backed public smoke roles green and admin only blocked
+        if: steps.role_creds.outputs.ready == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -139,8 +146,19 @@ jobs:
           console.log(JSON.stringify({ total: report.total, pass, fail: report.fail, blocked: report.blocked, adminBlocked: adminEntries.length }, null, 2));
           NODE
 
+      - name: Record secure role-smoke blocker
+        if: steps.role_creds.outputs.ready != 'true'
+        shell: bash
+        run: |
+          {
+            echo "### Authenticated role smoke: BLOCKED"
+            echo ""
+            echo "This PR no longer reads demo passwords from repository seed files."
+            echo "Configure the ROLE_* GitHub Secrets and rerun this check, or run Platform V3 Live Role Gate before merge."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload role evidence
-        if: always()
+        if: always() && steps.role_creds.outputs.ready == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: platform-v3-public-smoke-roles-${{ github.run_id }}
