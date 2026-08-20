@@ -68,6 +68,8 @@ function extractCollection(payload, key) {
   return [];
 }
 
+const resolveEntityId = (item) => String(item?.id || item?._id || '').trim();
+
 const dynamicDiscovery = {
   status: 'WARN',
   pathCandidates: 0,
@@ -99,16 +101,24 @@ async function addDynamicPublicRoutes() {
     dynamicDiscovery.pathCandidates = paths.length;
     dynamicDiscovery.courseCandidates = courses.length;
 
-    const firstPath = paths.find((item) => item?.id && item?.showOnPlatform !== false);
-    const firstCourse = courses.find((item) => item?.id && item?.showOnPlatform !== false && item?.isPackage !== true);
+    const firstPath = paths.find((item) => resolveEntityId(item) && item?.showOnPlatform !== false && item?.isActive !== false);
+    const firstCourse = courses.find((item) =>
+      resolveEntityId(item) &&
+      item?.showOnPlatform !== false &&
+      item?.isPublished !== false &&
+      (!item?.approvalStatus || item.approvalStatus === 'approved') &&
+      item?.isPackage !== true
+    );
+    const firstPathId = resolveEntityId(firstPath);
+    const firstCourseId = resolveEntityId(firstCourse);
 
-    if (firstPath?.id) {
-      const path = `/category/${encodeURIComponent(firstPath.id)}`;
+    if (firstPathId) {
+      const path = `/category/${encodeURIComponent(firstPathId)}`;
       routes.push({ path, expect: 'public' });
       dynamicDiscovery.addedRoutes.push(path);
     }
-    if (firstCourse?.id) {
-      const path = `/course/${encodeURIComponent(firstCourse.id)}`;
+    if (firstCourseId) {
+      const path = `/course/${encodeURIComponent(firstCourseId)}`;
       routes.push({ path, expect: 'public' });
       dynamicDiscovery.addedRoutes.push(path);
     }
@@ -344,7 +354,8 @@ const visitorJourneys = [
       await start.click();
       await page.waitForTimeout(500);
       assertJourney(page.url().includes('/login') || page.url().includes('auth=login'), 'pricing free membership did not navigate to login');
-      assertJourney(await page.locator('input[type="password"]').count() > 0, 'login form did not open after pricing CTA');
+      await page.locator('#smart-login-form').waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });
+      assertJourney(await page.locator('#smart-login-input').isVisible(), 'login identity input did not open after pricing CTA');
     },
   },
   {
@@ -368,7 +379,8 @@ const visitorJourneys = [
       await loginLink.click();
       await page.waitForTimeout(500);
       assertJourney(page.url().includes('/login') || page.url().includes('auth=login'), 'forgot-password link did not navigate to login');
-      assertJourney(await page.locator('input[type="password"]').count() > 0, 'login form did not open from forgot-password');
+      await page.locator('#smart-login-form').waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });
+      assertJourney(await page.locator('#smart-login-input').isVisible(), 'login identity input did not open from forgot-password');
     },
   },
   {
@@ -393,8 +405,8 @@ const visitorJourneys = [
       await pay.waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });
       assertJourney(await page.locator('[data-testid="checkout-multi-item-note"]').count() === 0, 'single-item checkout showed multi-item guidance');
       await pay.click();
-      await page.getByText('الاشتراك في الدورة', { exact: true }).waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });
-      assertJourney(await page.getByText('ملخص طلب الشراء', { exact: true }).count() > 0, 'payment decision summary did not render');
+      await page.getByRole('button', { name: 'متابعة الشراء' }).waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });
+      assertJourney(await page.getByText('محتوى مدفوع', { exact: true }).count() > 0, 'payment intro state did not render');
     },
   },
   {
