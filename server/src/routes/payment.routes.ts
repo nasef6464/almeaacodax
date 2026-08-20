@@ -299,13 +299,12 @@ const sanitizeSettingsForPublic = (settings: any) => ({
 const getPaymentWebhookSecret = (settings: any) =>
   String(process.env.PAYMENT_WEBHOOK_SECRET || settings.webhookSecret || "").trim();
 
-const getOrCreateSettings = async () => {
-  let settings = await PaymentSettingsModel.findOne({ key: "default" });
-  if (!settings) {
-    settings = await PaymentSettingsModel.create({ key: "default", ...defaultSettings });
-  }
-  return settings;
-};
+const getOrCreateSettings = async () =>
+  PaymentSettingsModel.findOneAndUpdate(
+    { key: "default" },
+    { $setOnInsert: { key: "default", ...defaultSettings } },
+    { new: true, upsert: true, setDefaultsOnInsert: true },
+  );
 
 const isPaymentMethodEnabled = (settings: any, method: "card" | "transfer" | "wallet") =>
   Boolean(settings?.[method]?.enabled);

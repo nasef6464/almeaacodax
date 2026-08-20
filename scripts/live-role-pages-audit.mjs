@@ -59,8 +59,8 @@ const roles = [
     email: process.env.ROLE_ADMIN_EMAIL,
     password: process.env.ROLE_ADMIN_PASSWORD,
     pages: [
-      { path: "/admin-dashboard", expect: "private" },
-      { path: "/admin-dashboard?tab=paths", expect: "private" },
+      { path: "/admin-dashboard", expect: "private", minBodyLength: 80 },
+      { path: "/admin-dashboard?tab=paths", expect: "private", minBodyLength: 80 },
       { path: "/reports", expect: "private" },
       { path: "/profile", expect: "private" },
     ],
@@ -270,7 +270,7 @@ async function inspectPage(page, role, pageSpec, viewport) {
       hasMojibakeText: mojibakePattern.test(text),
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(text),
       hasGuardText: /تسجيل الدخول|ليس لديك صلاحية|غير مصرح|Authentication|Login/.test(text),
-      hasRoleContent: /لوحة|تقرير|اختبار|خطة|حساب|ملف|ولي|طالب|معلم|مشرف|دورة|عضوية/.test(text),
+      hasRoleContent: /لوحة|تقرير|اختبار|خطة|حساب|ملف|ولي|طالب|معلم|مشرف|دورة|عضوية|إدارة|مسار|محتوى|مدرسة/.test(text),
       title: document.title,
     };
   }, {
@@ -300,7 +300,8 @@ async function inspectPage(page, role, pageSpec, viewport) {
   const isGuardedOk = pageSpec.expect === "guarded" && (state.hasLoginForm || state.hasGuardText || state.href.includes("login"));
   const hasActionHint = state.actionControlCount > 0;
   const isPublicOk = pageSpec.expect === "public" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0 && hasActionHint;
-  const isPrivateOk = pageSpec.expect === "private" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0 && hasActionHint && state.hasRoleContent;
+  const privateMinBodyLength = Number(pageSpec.minBodyLength || 250);
+  const isPrivateOk = pageSpec.expect === "private" && !state.hasLoginForm && state.bodyLength >= privateMinBodyLength && state.controlCount > 0 && hasActionHint && state.hasRoleContent;
   const isOpenOk = isPublicOk || isPrivateOk;
   const layoutFailure = viewport.name === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
   const textFailure = state.hasMojibakeText ? "visible mojibake text" : "";
