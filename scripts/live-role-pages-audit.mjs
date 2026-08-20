@@ -8,9 +8,9 @@ const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().t
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
-const LOADING_TIMEOUT_MS = Number(process.env.UI_AUDIT_LOADING_TIMEOUT_MS || 10000);
+const LOADING_TIMEOUT_MS = 10000;
 const BASE_ORIGIN = new URL(BASE_URL);
-const USE_API_BRIDGE = process.env.UI_AUDIT_API_BRIDGE === "1" || ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
+const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
   { name: "mobile", width: 390, height: 844 },
