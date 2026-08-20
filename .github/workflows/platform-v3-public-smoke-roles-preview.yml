@@ -1,0 +1,124 @@
+name: Platform V3 Public Smoke Roles Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-public-smoke-roles-preview.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-v3-public-smoke-roles-preview
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Student + teacher + supervisor + parent on exact preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      UI_AUDIT_BASE_URL: https://almeaacodax-q0gm9q3oz-nasefs-projects-18e6bdb1.vercel.app
+      UI_AUDIT_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
+      ROLE_PAGES_AUDIT_RUN_ID: platform-v3-public-smoke-roles-${{ github.run_id }}
+    steps:
+      - name: Checkout exact recovery branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Load and mask public smoke-role credentials from seed
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const source = fs.readFileSync('server/src/scripts/seedOperationalScenarioApi.ts', 'utf8');
+          const targets = {
+            STUDENT: 'student.a@almeaa.local',
+            TEACHER: 'teacher.quant@almeaa.local',
+            SUPERVISOR: 'supervisor.group@almeaa.local',
+            PARENT: 'parent.a@almeaa.local',
+          };
+          const envLines = [];
+          for (const [role, email] of Object.entries(targets)) {
+            const escaped = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const match = source.match(new RegExp(`email:\\s*["']${escaped}["'][\\s\\S]{0,240}?password:\\s*["']([^"']+)["']`));
+            if (!match) throw new Error(`Missing public smoke seed for ${role}`);
+            const password = match[1];
+            console.log(`::add-mask::${password}`);
+            envLines.push(`ROLE_${role}_EMAIL=${email}`);
+            envLines.push(`ROLE_${role}_PASSWORD=${password}`);
+          }
+          fs.appendFileSync(process.env.GITHUB_ENV, `${envLines.join('\n')}\n`);
+          NODE
+
+      - name: Run existing live-role browser audit
+        id: role_audit
+        shell: bash
+        run: |
+          set +e
+          npm run smoke:role-pages-live
+          code=$?
+          echo "audit_exit=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Require all public smoke roles green and admin only blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const runId = process.env.ROLE_PAGES_AUDIT_RUN_ID;
+          const reportPath = path.join('audit-artifacts', 'ui-audit-exhaustive', runId, 'role-pages-audit.json');
+          const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+          const required = ['guest', 'student', 'teacher', 'supervisor', 'parent'];
+          const loginByRole = new Map(report.loginResults.map((item) => [item.role, item]));
+          for (const role of required) {
+            const login = loginByRole.get(role);
+            if (!login?.ok) throw new Error(`${role} login is not green: ${login?.reason || 'missing result'}`);
+            const entries = report.results.filter((item) => item.role === role);
+            if (!entries.length) throw new Error(`${role} has no page results`);
+            const bad = entries.filter((item) => item.status !== 'PASS');
+            if (bad.length) throw new Error(`${role} has ${bad.length} non-PASS page result(s)`);
+          }
+          const adminLogin = loginByRole.get('admin');
+          if (adminLogin?.ok || adminLogin?.reason !== 'missing credentials') {
+            throw new Error(`admin must be the only intentionally blocked credential set, got: ${JSON.stringify(adminLogin)}`);
+          }
+          const adminEntries = report.results.filter((item) => item.role === 'admin');
+          if (!adminEntries.length || adminEntries.some((item) => item.status !== 'BLOCKED')) {
+            throw new Error('admin page entries are not exclusively BLOCKED');
+          }
+          const failures = report.results.filter((item) => item.status === 'FAIL');
+          if (failures.length) throw new Error(`live role audit reported ${failures.length} FAIL result(s)`);
+          const pass = report.results.filter((item) => item.status === 'PASS').length;
+          console.log(JSON.stringify({ total: report.total, pass, fail: report.fail, blocked: report.blocked, adminBlocked: adminEntries.length }, null, 2));
+          NODE
+
+      - name: Upload role evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-v3-public-smoke-roles-${{ github.run_id }}
+          path: audit-artifacts/ui-audit-exhaustive/platform-v3-public-smoke-roles-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 14
