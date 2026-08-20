@@ -55,6 +55,9 @@ jobs:
       - name: Canonical assessment classification contract
         run: node scripts/smoke-assessment-classification-contract.mjs
 
+      - name: Assessment settings compatibility contract
+        run: node scripts/smoke-assessment-settings-contract.mjs
+
       - name: Assessment definition boundary contract
         run: node scripts/smoke-assessment-definition-boundary-contract.mjs
 
