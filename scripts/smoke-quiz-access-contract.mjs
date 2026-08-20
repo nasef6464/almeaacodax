@@ -141,13 +141,10 @@ check('path model supports separate subject, mock exam, and package cards', () =
   assertIncludes(typeSource, 'settings?: PathDisplaySettings');
 });
 
-check('admin can choose which path cards appear to students', () => {
-  assertIncludes(pathsManagerSource, 'showSubjectCards: true');
-  assertIncludes(pathsManagerSource, 'showMockExamCard: true');
-  assertIncludes(pathsManagerSource, 'showPackageCard: true');
-  assertIncludes(pathsManagerSource, 'newPathShowSubjectCards');
-  assertIncludes(pathsManagerSource, 'newPathShowMockExamCard');
-  assertIncludes(pathsManagerSource, 'newPathShowPackageCard');
+check('admin can choose which path cards appear to students with visible-by-default controls', () => {
+  assertIncludes(pathsManagerSource, 'const [newPathShowSubjectCards, setNewPathShowSubjectCards] = useState(true)');
+  assertIncludes(pathsManagerSource, 'const [newPathShowMockExamCard, setNewPathShowMockExamCard] = useState(true)');
+  assertIncludes(pathsManagerSource, 'const [newPathShowPackageCard, setNewPathShowPackageCard] = useState(true)');
   assertIncludes(pathsManagerSource, 'setNewPathShowSubjectCards');
   assertIncludes(pathsManagerSource, 'setNewPathShowMockExamCard');
   assertIncludes(pathsManagerSource, 'setNewPathShowPackageCard');

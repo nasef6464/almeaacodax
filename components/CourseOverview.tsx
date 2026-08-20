@@ -62,11 +62,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [isFavorite, setIsFavorite] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
     const [coursePurchaseNotice, setCoursePurchaseNotice] = useState('');
-    const { user, enrolledCourses, enrolledPaths, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
+    const { user, enrolledCourses, enrolledPaths, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess } = useStore();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const favoriteStorageKey = `course-overview-favorites:${String(user?.id || 'guest')}`;
-    const matchedCoursePackage = getMatchingPackage('courses', course.pathId || course.category, course.subjectId || course.subject);
     const isGuestUser = !user?.email || user.id === 'guest';
     const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
     const canShowQuizInCourse = (quiz: (typeof quizzes)[number]) =>
@@ -1065,25 +1064,8 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             <PaymentModal
                 isOpen={showPaymentModal}
                 onClose={() => setShowPaymentModal(false)}
-                item={
-                    matchedCoursePackage
-                        ? {
-                            id: matchedCoursePackage.id,
-                            packageId: matchedCoursePackage.id,
-                            purchaseType: 'package',
-                            title: matchedCoursePackage.name,
-                            description: `هذه الباقة تفتح الدورات والاختبارات المرتبطة بـ ${course.subject || course.category}.`,
-                            contentTypes: matchedCoursePackage.contentTypes,
-                            pathIds: matchedCoursePackage.pathIds,
-                            subjectIds: matchedCoursePackage.subjectIds,
-                            includedCourseIds: matchedCoursePackage.courseIds,
-                            courseIds: matchedCoursePackage.courseIds,
-                            price: course.price,
-                            currency: course.currency,
-                        }
-                        : course
-                }
-                type={matchedCoursePackage ? 'package' : 'course'}
+                item={{ ...course, purchaseType: 'course' }}
+                type="course"
             />
         </div>
     );

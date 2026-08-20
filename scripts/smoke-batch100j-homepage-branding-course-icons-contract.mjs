@@ -36,8 +36,10 @@ assertIncludes(homepageModel, 'tertiaryCtaLabel: { type: String, default: "" }',
 assertIncludes(homepageModel, 'titleHighlightColor: { type: String, default: "" }', "homepage model stores title color");
 
 const contentRoutes = read("server/src/routes/content.routes.ts");
-assertIncludes(contentRoutes, "tertiaryCtaLabel: z.string().optional()", "homepage update validates third button label");
-assertIncludes(contentRoutes, "titleHighlightColor: z.string().optional()", "homepage update validates title color");
+const presentationSchemas = read("server/src/modules/content/http/platformPresentationSchemas.ts");
+assertIncludes(contentRoutes, "homepageSettingsSchema", "homepage route uses extracted presentation schema");
+assertIncludes(presentationSchemas, "tertiaryCtaLabel: z.string().optional()", "homepage update validates third button label");
+assertIncludes(presentationSchemas, "titleHighlightColor: z.string().optional()", "homepage update validates title color");
 
 const homepageManager = read("dashboards/admin/HomepageManager.tsx");
 assertIncludes(homepageManager, "لون الشارة", "admin can edit homepage badge color");

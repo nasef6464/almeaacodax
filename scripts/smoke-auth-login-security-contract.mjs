@@ -50,6 +50,40 @@ check("successful login and password reset clear failed login state", () => {
   assertIncludes(files.auth, "user.loginLockedUntil = null");
 });
 
+check("Google OAuth binds state to a short-lived browser cookie", () => {
+  assertIncludes(files.auth, 'GOOGLE_OAUTH_STATE_COOKIE_NAME = "almeaa_google_oauth_state"');
+  assertIncludes(files.auth, "GOOGLE_OAUTH_STATE_TTL_MS = 10 * 60 * 1000");
+  assertIncludes(files.auth, "nonce: createSecureToken()");
+  assertIncludes(files.auth, "res.cookie(GOOGLE_OAUTH_STATE_COOKIE_NAME, hashToken(state)");
+  assertIncludes(files.auth, 'sameSite: "lax" as const');
+  assertIncludes(files.auth, "httpOnly: true");
+});
+
+check("Google OAuth callback verifies, expires, and clears state before token exchange", () => {
+  assertIncludes(files.auth, "timingSafeEqual");
+  assertIncludes(files.auth, "expectedStateHash");
+  assertIncludes(files.auth, "timingSafeStringEqual(actualStateHash, expectedStateHash)");
+  assertIncludes(files.auth, "now - issuedAt > GOOGLE_OAUTH_STATE_TTL_MS");
+  assertIncludes(files.auth, "res.clearCookie(GOOGLE_OAUTH_STATE_COOKIE_NAME");
+  assertIncludes(files.auth, "step=state_expired");
+});
+
+check("Google OAuth return path rejects scheme-relative and malformed redirects", () => {
+  assertIncludes(files.auth, "normalizeOAuthReturnTo");
+  assertIncludes(files.auth, 'candidate.startsWith("//")');
+  assertIncludes(files.auth, "candidate.includes(");
+});
+
+check("Google OAuth only links accounts after a verified email claim", () => {
+  assertIncludes(files.auth, "profile.email_verified !== true");
+  assertIncludes(files.auth, "step=email_unverified");
+  const verifiedGuardIndex = files.auth.indexOf("profile.email_verified !== true");
+  const accountLookupIndex = files.auth.indexOf("let user = await UserModel.findOne({ email });");
+  if (verifiedGuardIndex < 0 || accountLookupIndex < 0 || verifiedGuardIndex > accountLookupIndex) {
+    throw new Error("Google verified-email guard must run before local account lookup");
+  }
+});
+
 check("frontend warns users about password strength", () => {
   assertIncludes(files.header, "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.");
   assertIncludes(files.reset, "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.");

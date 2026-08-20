@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
 
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
-const handover = await readFile(new URL("../19_20_DEPLOYMENT_HANDOVER_REPORT.md", import.meta.url), "utf8");
-const deploymentGuide = await readFile(new URL("../DEPLOYMENT_GUIDE.md", import.meta.url), "utf8");
+const handover = await readFile(new URL("../docs/archive_reports/19_20_DEPLOYMENT_HANDOVER_REPORT.md", import.meta.url), "utf8");
+const deploymentGuide = await readFile(new URL("../docs/archive_reports/DEPLOYMENT_GUIDE.md", import.meta.url), "utf8");
 const docsDeployment = await readFile(new URL("../docs/DEPLOYMENT.md", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
 

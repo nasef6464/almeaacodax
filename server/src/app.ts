@@ -70,13 +70,39 @@ export function createApp() {
   app.use(compression());
   app.use(requestLogger);
   app.use("/api/auth", express.json({ limit: "100kb" }));
+  const authAliasJsonParser = express.json({ limit: "100kb" });
+  app.use((req, res, next) => {
+    const pathname = req.path || "";
+    if (pathname === "/auth" || pathname.startsWith("/auth/")) {
+      authAliasJsonParser(req, res, next);
+      return;
+    }
+    next();
+  });
   app.use(globalRateLimiter);
   app.use(
-    ["/api/auth/login", "/api/auth/register", "/api/auth/forgot-password", "/api/auth/reset-password"],
+    [
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/auth/forgot-password",
+      "/api/auth/reset-password",
+      "/auth/login",
+      "/auth/register",
+      "/auth/forgot-password",
+      "/auth/reset-password",
+    ],
     authRateLimiter,
   );
   app.use(
-    ["/api/quizzes/*/submit", "/api/ai/*", "/api/payments/*", "/api/auth/me/redeem-access-code"],
+    [
+      "/api/quizzes/*/submit",
+      "/api/ai/*",
+      "/api/payments/*",
+      "/api/auth/me/redeem-access-code",
+      "/auth/me/redeem-access-code",
+      "/api/auth/email/resend-verification",
+      "/auth/email/resend-verification",
+    ],
     sensitiveActionRateLimiter,
   );
   app.use(["/api/quizzes", "/api/payments", "/api/ai"], express.json({ limit: "1mb" }));

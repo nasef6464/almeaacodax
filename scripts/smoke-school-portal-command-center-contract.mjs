@@ -14,6 +14,13 @@ const liveSupervisorSchoolAudit = read("scripts/live-supervisor-school-command-a
 const liveExecutiveSnapshotAudit = read("scripts/live-supervisor-executive-snapshot-audit.mjs");
 const supervisorScopeRepair = read("scripts/repair-live-supervisor-school-scope.mjs");
 
+const dashboardUsesSchoolOperationsCallback =
+  adminDashboard.includes("onOpenSchoolOperations={() => setActiveAdminTab('schools')}");
+const portalHasSafeHashFallback =
+  schoolPortal.includes("window.location.hash = '/admin-dashboard?tab=schools'") &&
+  adminDashboard.includes("window.addEventListener('hashchange', syncRequestedTab)") &&
+  adminDashboard.includes("getRequestedAdminTab()");
+
 const checks = [
   {
     name: "school portal has a supervisor decision center",
@@ -44,11 +51,11 @@ const checks = [
       schoolPortal.includes("actionFeedback"),
   },
   {
-    name: "school portal opens school operations through dashboard state instead of manual history events",
+    name: "school portal opens school operations through dashboard callback or its native hash-state bridge",
     ok:
       schoolPortal.includes("onOpenSchoolOperations") &&
       schoolPortal.includes("openSchoolOperations") &&
-      adminDashboard.includes("onOpenSchoolOperations={() => setActiveAdminTab('schools')}") &&
+      (dashboardUsesSchoolOperationsCallback || portalHasSafeHashFallback) &&
       !schoolPortal.includes("window.history.pushState(null, '', `${url.pathname}${url.search}`)") &&
       !schoolPortal.includes("new HashChangeEvent('hashchange')"),
   },

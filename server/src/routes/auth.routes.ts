@@ -1,6 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import { z } from "zod";
@@ -19,7 +19,7 @@ import { createNotificationDeliveries } from "../services/notificationService.js
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
-import { issueCsrfToken } from "../middleware/csrf.js";
+import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -165,6 +165,28 @@ const WHATSAPP_OTP_MAX_PER_15_MIN = 3;
 const GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
+const GOOGLE_OAUTH_STATE_COOKIE_NAME = "almeaa_google_oauth_state";
+const GOOGLE_OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+const googleOAuthStateCookieOptions = {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax" as const,
+  secure: env.NODE_ENV === "production",
+};
+
+const normalizeOAuthReturnTo = (value: unknown) => {
+  const candidate = typeof value === "string" ? value.trim() : "/";
+  if (!candidate.startsWith("/") || candidate.startsWith("//") || candidate.includes("\\") || /[\r\n]/.test(candidate)) {
+    return "/";
+  }
+  return candidate;
+};
+
+const timingSafeStringEqual = (left: string, right: string) => {
+  const leftBuffer = Buffer.from(left, "utf8");
+  const rightBuffer = Buffer.from(right, "utf8");
+  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
+};
 
 function isLoginLocked(user: any) {
   return typeof user.loginLockedUntil === "number" && user.loginLockedUntil > Date.now();
@@ -218,6 +240,7 @@ const ensureGoogleOAuthEnabled = (res: any) => {
 };
 
 export const authRouter = Router();
+authRouter.use(csrfGuard);
 
 const shouldExposeTokenInAuthResponse = env.NODE_ENV !== "production";
 
@@ -320,10 +343,15 @@ authRouter.get(
   asyncHandler(async (req, res) => {
     if (!ensureGoogleOAuthEnabled(res)) return;
     const statePayload = {
-      returnTo: typeof req.query.returnTo === "string" ? req.query.returnTo : "/",
+      returnTo: normalizeOAuthReturnTo(req.query.returnTo),
       ts: Date.now(),
+      nonce: createSecureToken(),
     };
     const state = Buffer.from(JSON.stringify(statePayload), "utf8").toString("base64url");
+    res.cookie(GOOGLE_OAUTH_STATE_COOKIE_NAME, hashToken(state), {
+      ...googleOAuthStateCookieOptions,
+      maxAge: GOOGLE_OAUTH_STATE_TTL_MS,
+    });
     const params = new URLSearchParams({
       client_id: env.GOOGLE_CLIENT_ID,
       redirect_uri: env.GOOGLE_REDIRECT_URI,
@@ -346,20 +374,40 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
   const oauthError = typeof req.query.error === "string" ? req.query.error : "";
 
   const fallbackRedirect = `${env.CLIENT_URL}/#/login?oauth_error=google`;
+  const expectedStateHash = String(req.cookies?.[GOOGLE_OAUTH_STATE_COOKIE_NAME] || "").trim();
+  res.clearCookie(GOOGLE_OAUTH_STATE_COOKIE_NAME, googleOAuthStateCookieOptions);
+
   if (oauthError || !code) {
     return res.redirect(fallbackRedirect);
   }
 
+  const actualStateHash = stateRaw ? hashToken(stateRaw) : "";
+  if (!stateRaw || !expectedStateHash || !timingSafeStringEqual(actualStateHash, expectedStateHash)) {
+    return res.redirect(`${fallbackRedirect}&step=state`);
+  }
+
   let returnTo = "/";
-  if (stateRaw) {
-    try {
-      const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as { returnTo?: string };
-      if (parsed?.returnTo && parsed.returnTo.startsWith("/")) {
-        returnTo = parsed.returnTo;
-      }
-    } catch {
-      returnTo = "/";
+  try {
+    const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as {
+      returnTo?: unknown;
+      ts?: unknown;
+      nonce?: unknown;
+    };
+    const issuedAt = Number(parsed.ts || 0);
+    const nonce = String(parsed.nonce || "");
+    const now = Date.now();
+    const stateExpired =
+      !Number.isFinite(issuedAt) ||
+      issuedAt <= 0 ||
+      issuedAt > now + 60_000 ||
+      now - issuedAt > GOOGLE_OAUTH_STATE_TTL_MS ||
+      nonce.length < 32;
+    if (stateExpired) {
+      return res.redirect(`${fallbackRedirect}&step=state_expired`);
     }
+    returnTo = normalizeOAuthReturnTo(parsed.returnTo);
+  } catch {
+    return res.redirect(`${fallbackRedirect}&step=state_payload`);
   }
 
   const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
@@ -402,6 +450,9 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
   if (!email) {
     return res.redirect(`${fallbackRedirect}&step=email`);
   }
+  if (profile.email_verified !== true) {
+    return res.redirect(`${fallbackRedirect}&step=email_unverified`);
+  }
 
   let user = await UserModel.findOne({ email });
   if (!user) {
@@ -412,8 +463,8 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
       passwordHash: await bcrypt.hash(randomPassword, 10),
       role: "student",
       avatar: profile.picture || "",
-      emailVerified: Boolean(profile.email_verified),
-      emailVerifiedAt: profile.email_verified ? Date.now() : null,
+      emailVerified: true,
+      emailVerifiedAt: Date.now(),
     });
   } else {
     let touched = false;
@@ -421,7 +472,7 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
       user.avatar = profile.picture;
       touched = true;
     }
-    if (!user.emailVerified && profile.email_verified) {
+    if (!user.emailVerified) {
       user.emailVerified = true;
       user.emailVerifiedAt = Date.now();
       touched = true;

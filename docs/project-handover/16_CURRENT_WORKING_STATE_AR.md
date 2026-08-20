@@ -1,253 +1,189 @@
 # حالة العمل الحالية وتسليم الاستكمال
 
-آخر تحديث: 2026-05-14  
-الفرع النشط: `complete-platform-production-v1`  
-آخر نسخة مرفوعة وقت كتابة هذا الملف: `338a96e`  
-رابط الواجهة الإنتاجية: `https://almeaacodax.vercel.app/`  
-رابط API الإنتاجي المستخدم في الواجهة: `https://almeaacodax-k2ux.onrender.com/api`  
-مستودع GitHub: `https://github.com/nasef6464/almeaacodax.git`
+آخر تحديث: 2026-08-20  
+مرجع عقد التسليم السابق المحفوظ للتوافق: 2026-08-19  
+Production branch: `main`  
+فرع Release Candidate: `develop/platform-v3-recovery`  
+PR النشط: `#26 — Platform V3 Recovery & Development`  
+Production baseline: `fab4e31f037feeeb178788dd2a79971e4fce2cbc`  
+Verified recovery runtime SHA قبل إغلاق التوثيق: `904c3dc45c5a507bcd889fd00bc7900aaf907e4b`  
+Final closure head بعد توثيق الإغلاق والعقد: `56117f3ab6dd0d1691f784d8abb9cbb7f08d6dff`  
+Frontend Production: `https://almeaacodax.vercel.app/`  
+Backend API: `https://almeaacodax-k2ux.onrender.com/api`  
+Repository: `https://github.com/nasef6464/almeaacodax.git`
 
-هذا الملف هو نقطة البداية لأي حساب Codex أو مطور جديد. اقرأه قبل لمس الكود.
+هذا الملف هو نقطة البداية لأي مطور أو Agent يستكمل المشروع بعد دورة Platform V3 Recovery. الخطة الحالية المفصلة: `docs/PLATFORM_V3_RECOVERY_PLAN_AR.md`.
 
-## طريقة العمل المتفق عليها
+## الحالة الآن
 
-1. لا تغيّر شكل الموقع أو الخطوط أو الألوان إلا بطلب واضح من صاحب المشروع.
-2. أي دفعة يجب أن تكون محددة، مكتملة، ومغلقة بفحص.
-3. قبل التعديل اقرأ الملفات المرتبطة ولا تعتمد على التخمين.
-4. بعد التعديل شغل الفحص المناسب ثم `typecheck` ثم البناء.
-5. بعد الرفع افحص الإنتاج على `almeaacodax.vercel.app` وليس المحلي فقط.
-6. استخدم المتصفح الداخلي للفحص البصري بعد كل دفعة واجهة.
-7. لا تطبع أي أسرار أو مفاتيح في المحادثة أو الملفات.
-8. لا تستخدم `git reset --hard` أو أي حذف واسع بدون إذن صريح.
+**Platform V3 Recovery أغلقت وظيفيًا وأصبحت Release Candidate.**
 
-## آخر الدفعات المنجزة
+تم التحقق على final closure head `56117f3ab6dd0d1691f784d8abb9cbb7f08d6dff` من:
+- 10/10 PR workflows = SUCCESS.
+- Deep Pre-Merge E2E = SUCCESS على Mongo معزولة.
+- Live Role Gate = SUCCESS لجميع الأدوار المطلوبة.
+- Public UI Gate = SUCCESS.
+- Backend Integration Gate = SUCCESS.
+- Recovery / Safety / Production Readiness / Handover gates = SUCCESS.
+- Vercel Preview = Ready / Success.
+- لا Review Threads أو Reviews معلقة وقت الإغلاق.
 
-هذه آخر الدفعات التي أغلقتها ورفعتها:
+Deep E2E run: `32372698925`  
+Evidence artifact: `platform-v3-deep-premerge-32372698925` (`9407997063`).  
+Artifact digest: `sha256:e18efdac40d6fd2f54d283d0b52a5c296ec88e47c4a65c87024cb9c7f9f4fd95`.
 
-| Commit | الدفعة | ماذا أضافت |
-|---|---|---|
-| `338a96e` | خطة متابعة الفصول في بوابة المشرف | جدول يوضح أولوية كل فصل، متوسط الأداء، عدد الطلاب المحتاجين متابعة، والإجراء التالي، مع تصدير Excel وشيت داخل تقرير المشرف |
-| `90c2074` | نسخ رسالة تسليم المدرسة | زر داخل إدارة المدارس لنسخ رسالة جاهزة للإدارة مع إشعار نجاح |
-| `10846fb` | إجراءات جاهزية المدرسة على البطاقات | بطاقات المدارس تعرض الخطوة التالية وتفتح التبويب المناسب مباشرة |
-| `8096f00` | ملخص المشرف الأسبوعي | ملخص تنفيذي وخطة أسبوعية للمشرف داخل بوابة المدرسة |
-| `cee74a4` | ملف تسليم المدرسة | ملف Excel للتسليم يشمل خطة التشغيل، checklist للمشرف، ورسالة جاهزة |
-| `713b828` | مركز جاهزية تشغيل المدرسة | فحص قبل التسليم: فصول، مشرفون، باقات، أكواد، وطلاب بلا ولي أمر |
-| `1d2dd7c` | تدفقات بوابة المدرسة | أدوات يومية للمشرف: تقرير، اختبار موجه، رسالة، وتصدير قائمة متابعة |
-| `0790355` | تحسين بوابة المدرسة ومعاينة الإعلانات | ربط الإعلان بمعاينة مباشرة وتحسين تشغيل بوابة المدرسة |
-| `3c41b20` | مركز تقارير وإشراف مدرسي | مركز إداري يخدم التعاقد مع المدارس: متابعة، تقارير، وتوجيه إجراءات |
-| `9a94582` | تقوية إدارة المدارس | تحسين سير المدارس، الفصول، المشرفين، الباقات، والأكواد |
-| `2a46b4f` | لوحة المشرف | دعم مشرف المدرسة أو عدة مجموعات من نفس الحساب |
-| `30603a3` | الإعلانات المتقدمة | إعدادات متقدمة للإعلانات والروابط والمعاينة |
+## القاعدة الأساسية
 
-## ما تم بقوة حتى الآن
+- `main` هو خط الإنتاج المستقر فقط.
+- لا يتم التطوير مباشرة على `main`.
+- لا Force Push.
+- لا أسرار أو كلمات مرور أو Tokens داخل الملفات أو logs.
+- لا Merge إلى `main` بدون موافقة صريحة مستقلة.
+- Ready for Review لا يساوي موافقة على Merge.
+- الحسابات التجريبية الحالية تظل متاحة للاختبارات؛ لا تغيّر/تعطّل بيانات اعتمادها ضمن مهام أخرى بدون تفويض مستقل.
 
-- فصل الباقات عن الدورات في السلوك: الباقات تعرض كاختيار شراء مستقل، والدورة تبقى منتجًا مستقلًا يمكن شراؤه من مكانها.
-- تحسين سرعة الفتح على الإنتاج عبر إزالة انتظار bootstrap الثقيل قدر الإمكان وتحسين smoke الإنتاج.
-- إضافة حراسة إنتاجية تمنع نشر نسخة غير متوقعة: `smoke:frontend` يتحقق من commit المنشور.
-- تحسين إدارة المدارس والفصول والمشرفين لخدمة المدارس.
-- دعم المشرف كمدير مدرسة أو مسؤول عن فصل/عدة فصول من نفس الحساب.
-- إضافة تقارير ومخرجات Excel للمشرف والمدرسة.
-- تحسين الإعلانات لتكون قابلة للمعاينة والروابط.
-- إضافة تقارير أدوار للطالب، ولي الأمر، المشرف، المعلم، والمدير.
-- تقوية أجزاء أمنية سابقة: منع فتح مباشر للمحتوى، حماية quiz client/security، وفصل الدفع عن الفتح المباشر.
-- إضافة تقارير المراحل من `01_FULL_AUDIT_REPORT.md` حتى `19_20_DEPLOYMENT_HANDOVER_REPORT.md`.
+## ما أغلقته دورة Platform V3
 
-## مشاكل واجهتنا أثناء العمل
+### Build / Architecture
+- Frontend/API typecheck.
+- Frontend/API production builds.
+- Architecture snapshot + immutable contract + boundaries/runtime contracts.
 
-- حصل كسر بصري سابق عند نقل Tailwind من CDN إلى build؛ تم الرجوع لمسار أكثر أمانًا. قاعدة مهمة: لا تلمس `index.html` أو CSS العام بدون فحص بصري فوري.
-- صاحب المشروع لاحظ بطءًا في الإنتاج. تم تحسين جزء من bootstrap والتحميل، لكن قابلية 10,000 طالب لا تُثبت إلا باختبار ضغط حقيقي مع Redis وRender instances وMongo Atlas tier مناسب.
-- بعض صفحات الإدارة تحتاج جلسة مدير حقيقية للفحص البصري الكامل. إذا لم تكن الجلسة مديرًا، رابط `#/admin-dashboard` قد يعيدك للواجهة العامة أو لا يظهر الإدارة.
-- بعض ملفات التسليم القديمة قد تظهر بترميز غريب في PowerShell، لكن ملفات الكود نفسها تعمل. عند التوثيق العربي استخدم UTF-8 ولا تعتمد على نسخ PowerShell إذا ظهر Mojibake.
+### Student / Assessment
+- Student journeys.
+- Mock exams.
+- Quiz source/access/integrity/answer exposure.
+- Results and certificate integrity.
 
-## ما يزال موجودًا ويحتاج استكمالًا
+### Auth / Security
+- Login security.
+- Cookie/session/token contracts.
+- CSRF.
+- API security + NoSQL sanitizer.
+- School RBAC scope.
+- AI route auth/RBAC.
+- OAuth state hardening.
 
-الأولوية التالية المقترحة:
+### Admin / Schools / Finance
+- School management/import/portal/command center.
+- Supervisor dashboard and scope contracts.
+- Reports roles.
+- Packages/memberships/payments.
+- Manual payment approval evidence.
+- Payment country preset persistence.
+- Atomic Payment Settings initialization to remove first-run race.
+- Admin CRUD/data-integrity/question-bank/course-linkage contracts.
 
-1. فحص بصري حقيقي من حساب مدير وحساب مشرف وحساب طالب على الإنتاج.
-2. اختبار كامل لتبويب المدارس داخل الإدارة: إنشاء مدرسة، إضافة فصل، ربط مشرف، ربط طالب، إنشاء باقة، إنشاء كود، تحميل تقرير.
-3. إكمال دورة الدفع الحقيقية: مزود دفع مناسب لمصر والسعودية، webhook، وAccessGrant ذري.
-4. تفعيل Redis إنتاجيًا للـ rate limit وBullMQ وSocket.IO عند الحاجة للتوسع.
-5. اختبار ضغط حقيقي باستخدام scripts الموجودة في `load-tests`.
-6. مراجعة تخزين token طويل المدى في الواجهة والتحول المرحلي إلى cookie strategy عند اكتمال الخطة.
-7. تنظيف أي بقايا Firebase fallback إذا ثبت أن MongoDB هو المصدر الوحيد.
-8. مراجعة SEO النهائية بعد استقرار الروابط.
+### Deep isolated E2E
+- Operational multi-role API journeys.
+- Public full-stack browser journeys.
+- All role pages Desktop + Mobile.
+- Question Editor create/render/delete.
+- Supervisor School Command UI.
+- School-from-scratch CRUD + relations + deterministic cleanup.
+- Barcode admin + anonymous journey.
+- Final manifest fails closed unless every deep suite is green.
 
-## ربط GitHub / Vercel / Render
+## الأدوار التي تم التحقق منها
 
-### GitHub
+Platform V3 Live Role Gate شمل:
+- Guest
+- Student
+- Admin
+- Parent
+- Teacher
+- Supervisor
 
-- المستودع: `https://github.com/nasef6464/almeaacodax.git`
-- الفرع الذي نعمل عليه: `complete-platform-production-v1`
-- يتم الدفع أيضًا إلى `main` لأن Vercel مربوط غالبًا بفرع `main`.
-- أوامر الرفع المستخدمة:
+النتيجة الموثقة في دورة الإغلاق: 48 PASS / 0 FAIL / 0 BLOCKED.
 
-```bash
-git push origin complete-platform-production-v1
-git push origin complete-platform-production-v1:main
-```
+لا تخزن credentials في المستودع. استخدم GitHub Actions Secrets الموجودة.
 
-### Vercel
+## البوابات التي يجب الحفاظ عليها
 
-- رابط الواجهة: `https://almeaacodax.vercel.app/`
-- البناء: `npm run build`
-- المتغير المهم للواجهة عند الحاجة:
+- Platform V3 Deep Pre-Merge E2E Gate
+- Platform V3 Live Role Gate
+- Platform V3 Public UI Gate
+- Platform V3 Public Smoke Roles Preview
+- Platform V3 Recovery Gate
+- Platform V3 Backend Integration Gate
+- Platform V3 Phase + Handover Gate
+- Refactor V2 Safety Gate
+- Refactor V2 Production Readiness Gate
+- Refactor V2 Dependency Audit
 
-```bash
-VITE_API_URL=https://almeaacodax-k2ux.onrender.com/api
-```
+## Infrastructure / Environment anchors
 
-الواجهة تحتوي fallback إنتاجي في `services/api.ts` يشير إلى:
+### Frontend / Vercel
+- `VITE_API_URL`
 
-```text
-https://almeaacodax-k2ux.onrender.com/api
-```
+### API / Render
+- `MONGODB_URI`
 
-### Render
+### Redis / scale readiness
+- `REDIS_URL`
 
-- رابط API المستخدم: `https://almeaacodax-k2ux.onrender.com/api`
-- فحص الصحة:
+احتفظ بالقيم السرية خارج GitHub files؛ هذه أسماء متغيرات فقط.
 
-```text
-https://almeaacodax-k2ux.onrender.com/api/health/live
-https://almeaacodax-k2ux.onrender.com/api/health/ready
-```
+## ما لا يزال مفتوحًا كـTechnical Debt وليس Recovery Blocker
 
-- بناء السيرفر: `npm --prefix server run build`
-- تشغيل السيرفر: `npm --prefix server run start`
+### Sentry / OpenTelemetry dependency modernization
+- Root/frontend: 0 vulnerabilities.
+- Server production: 16 Moderate، 0 High، 0 Critical.
+- Direct vulnerable dependency: `@sentry/node@9.47.1`.
+- npm يقترح مسارًا يصل إلى `@sentry/node@10.70.0` وهو Major.
+- `npm audit fix --force` ممنوع في دورة الاستعادة.
+- نفّذ الترقية في Feature/Hardening branch منفصل مع migration واختبارات Sentry runtime.
 
-متغيرات Render الأساسية، بدون قيم أسرار:
+### GitHub Actions maintenance
+توجد تحذيرات runner بأن بعض Actions التي تستهدف Node 20 يتم تشغيلها على Node 24. هذا Maintenance لاحق، وليس blocker للـRelease Candidate الحالي.
 
-```bash
-NODE_ENV=production
-PORT=4000
-CLIENT_URL=https://almeaacodax.vercel.app
-CORS_ALLOWED_ORIGINS=https://almeaacodax.vercel.app
-MONGODB_URI=<MongoDB Atlas connection string>
-JWT_SECRET=<long random secret, at least 32 chars recommended>
-JWT_EXPIRES_IN=7d
-ADMIN_NAME=<admin display name>
-ADMIN_EMAIL=<admin email>
-ADMIN_PASSWORD=<strong password>
-REDIS_URL=<managed redis url, required for high scale>
-REDIS_KEY_PREFIX=almeaa
-RATE_LIMIT_REDIS_ENABLED=true
-NOTIFICATION_QUEUE_ENABLED=true
-NOTIFICATION_QUEUE_CONCURRENCY=5
-```
+## طريقة الاستكمال الآمنة
 
-متغيرات اختيارية حسب المزود:
-
-```bash
-EMAIL_PROVIDER=console|resend|http
-EMAIL_FROM=<verified sender>
-RESEND_API_KEY=<secret>
-EMAIL_WEBHOOK_URL=<provider webhook>
-EMAIL_WEBHOOK_TOKEN=<secret>
-WHATSAPP_PROVIDER=console|whatsapp_cloud|http
-WHATSAPP_ACCESS_TOKEN=<secret>
-WHATSAPP_PHONE_NUMBER_ID=<id>
-WHATSAPP_WEBHOOK_URL=<provider webhook>
-WHATSAPP_WEBHOOK_TOKEN=<secret>
-AI_PROVIDER=none|gemini|openrouter|deepseek|qwen|openai|ollama|lmstudio
-OPENAI_API_KEY=<secret if used>
-GEMINI_API_KEY=<secret if used>
-SENTRY_DSN=<optional>
-```
-
-### MongoDB Atlas
-
-- `MONGODB_URI` يجب أن يكون مضبوطًا في Render فقط وليس في الواجهة.
-- إعدادات pooling موجودة في `server/src/config/env.ts` و`server/src/config/db.ts`.
-- القيم الافتراضية الحالية:
+إذا كانت المهمة إصلاحًا قبل الدمج ومرتبطة مباشرة بالـRelease Candidate:
 
 ```bash
-MONGODB_MAX_POOL_SIZE=30
-MONGODB_MIN_POOL_SIZE=2
-MONGODB_SERVER_SELECTION_TIMEOUT_MS=5000
-MONGODB_SOCKET_TIMEOUT_MS=45000
-MONGODB_MAX_IDLE_TIME_MS=60000
+git fetch origin
+git switch develop/platform-v3-recovery
+git pull --ff-only origin develop/platform-v3-recovery
 ```
 
-للضغط العالي، راجع هذه القيم بعد اختبار حقيقي وليس بالتخمين.
-
-## أوامر الفحص المهمة
-
-بعد أي تعديل عام:
+إذا كانت Feature جديدة بعد دمج Release Candidate لاحقًا:
 
 ```bash
+git switch main
+git pull --ff-only origin main
+git switch -c feature/<short-feature-name>
+```
+
+الحد الأدنى المعتاد بعد تغيير runtime code:
+
+```bash
+npm ci
+npm --prefix server ci
 npm run typecheck
+npm run server:check
 npm run build
-npm --prefix server run build
-npm run smoke:frontend
+npm run server:build
 ```
 
-لفحص محور المدارس والمشرفين:
+ثم شغّل الـcontract/smoke الأقرب للتغيير. لا تعتمد على Build وحده.
 
-```bash
-npm run smoke:school-management
-npm run smoke:admin-school-command
-npm run smoke:school-portal-command
-```
+## قواعد PR #26
 
-لفحص الأداء والإنتاج:
+- بعد Commit إغلاق التوثيق وإعادة CI بنجاح، يتحول من Draft إلى Ready for Review.
+- لا Merge تلقائيًا.
+- أي Merge يحتاج موافقة صريحة مستقلة.
+- إذا ظهر فشل جديد على Commit التوثيق، حدده أولًا: bug حقيقي أم docs/contract mismatch؛ لا تجعل الاختبار أخضر بإضعاف الحماية.
 
-```bash
-npm run smoke:performance
-npm run smoke:production-speed
-npm run smoke:frontend
-```
+## Post-Merge checklist — فقط بعد Merge مصرح به
 
-لفحص الدفع والباقات:
+1. تأكد من deployment على `main`.
+2. شغّل/راجع Post-Deploy smoke.
+3. تحقق من frontend + backend health/readiness.
+4. راقب Runtime/Sentry لفترة مناسبة.
+5. لا تغيّر حسابات الاختبار الحالية ضمن عملية النشر.
+6. ابدأ Features الجديدة في فروع منفصلة.
 
-```bash
-npm run smoke:package-course-split
-npm run smoke:payment-package
-npm run smoke:payment-providers
-```
+## الخلاصة
 
-لفحص الاختبارات والأمان:
-
-```bash
-npm run smoke:quiz-access
-npm run smoke:quiz-client-security
-npm run smoke:api-security
-```
-
-## بروتوكول الفحص البصري
-
-1. افتح الإنتاج دائمًا:
-
-```text
-https://almeaacodax.vercel.app/?v=<commit>_<batch_name>_<timestamp>#/
-```
-
-2. افحص على الأقل:
-
-```text
-/
-/#/category/p_1777779639431?subject=sub_1777779748206&tab=courses
-/#/reports
-/#/admin-dashboard
-```
-
-3. لو لم تكن الجلسة مديرًا، سجّل ذلك بوضوح ولا تدّعي أن لوحة الإدارة تم فحصها بصريًا بالكامل.
-4. لا تعتمد على المحلي وحده؛ صاحب المشروع يراجع Vercel.
-
-## ملاحظات مهمة للدفعة التالية
-
-- الدفعة المناسبة التالية ليست إضافة شكل جديد، بل فحص كامل لتبويب المدارس من حساب مدير حقيقي وتثبيت أي زر لا يعمل.
-- إن لم تتوفر جلسة مدير داخل المتصفح الداخلي، اعمل فحصًا برمجيًا وSmoke، واذكر أن الفحص البصري الإداري يحتاج تسجيل دخول مدير.
-- لا توسع لوحة المشرف بكلام كثير؛ المطلوب إمكانيات كبيرة بعرض بسيط.
-- أي تحسين جديد في الإدارة يجب أن يخدم التعاقد مع المدارس: متابعة الطلاب، تقارير مجمعة وفردية، تصدير، توجيه اختبار، ومراسلة.
-
-## حالة التسليم الآن
-
-المشروع ليس “جاهزًا نظريًا لـ 10,000 طالب” بمجرد الكود. الكود أصبح أقرب وأكثر تنظيمًا، لكن الاعتماد الحقيقي يحتاج:
-
-- Redis مفعل في الإنتاج.
-- Render backend بعدة instances عند الحاجة.
-- MongoDB Atlas tier مناسب ومراقب.
-- اختبار ضغط موثق.
-- مراقبة أخطاء وإشعارات.
-
-حتى الآن يمكن اعتباره مناسبًا لتجارب أصغر ومراحل إطلاق تدريجية بعد فحص الحسابات الحقيقية والبيانات الحالية.
+الحالة الحالية هي **Release Candidate verified** وليست مرحلة Recovery غير مكتملة. المتبقي قبل `main` هو مراجعة PR وقرار Merge صريح فقط، مع إبقاء Sentry/OpenTelemetry modernization كعمل Hardening منفصل بعد الاستقرار.

@@ -84,7 +84,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const isAttemptsView = view === 'attempts';
 
   useEffect(() => {
-    if (user.role !== 'student' || isAttemptsView) return;
+    if (user.id === 'guest' || user.role !== 'student' || isAttemptsView) return;
     let cancelled = false;
     setAssignedBarcodeTestsLoading(true);
     api.listAssignedPublicBarcodeTests()
@@ -100,7 +100,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return () => {
       cancelled = true;
     };
-  }, [isAttemptsView, user.role]);
+  }, [isAttemptsView, user.id, user.role]);
 
   const totalQuizzes = examResults.length;
   const passedQuizzes = examResults.filter((quiz) => quiz.score >= 50).length;
@@ -774,6 +774,62 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       </header>
 
       {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
+
+      {user.id !== 'guest' && user.role === 'student' && !isAttemptsView && (assignedBarcodeTestsLoading || assignedBarcodeTests.length > 0) ? (
+        <section
+          data-testid="student-assigned-barcode-tests"
+          className="rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-sky-50 p-5 shadow-sm"
+        >
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-black text-gray-900">اختبارات مباشرة موجهة لك</h2>
+              <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
+                اختبارات QR أو باركود أرسلها لك المعلم أو المشرف مباشرة.
+              </p>
+            </div>
+            <span className="self-start rounded-full bg-white px-3 py-1 text-xs font-black text-cyan-700 shadow-sm sm:self-auto">
+              {assignedBarcodeTestsLoading ? 'جاري التحديث…' : String(assignedBarcodeTests.length) + ' اختبار'}
+            </span>
+          </div>
+
+          {assignedBarcodeTestsLoading ? (
+            <div className="rounded-xl border border-cyan-100 bg-white/80 px-4 py-5 text-sm font-bold text-gray-500">
+              جاري تحميل الاختبارات الموجهة…
+            </div>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2">
+              {assignedBarcodeTests.map((test) => (
+                <div key={test.id || test.slug} className="rounded-xl border border-cyan-100 bg-white p-4 shadow-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="font-black text-gray-900">{test.title}</div>
+                      {test.description ? (
+                        <p className="mt-1 line-clamp-2 text-xs font-bold leading-5 text-gray-500">{test.description}</p>
+                      ) : null}
+                    </div>
+                    <span className="shrink-0 rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-black text-cyan-700">
+                      {test.testKind === 'mock' ? 'محاكي' : 'مباشر'}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-bold text-gray-500">
+                    {typeof test.questionCount === 'number' ? <span>{test.questionCount} سؤال</span> : null}
+                    {test.settings?.timeLimit ? <span>{test.settings.timeLimit} دقيقة</span> : null}
+                  </div>
+
+                  <Link
+                    to={'/barcode-test/' + encodeURIComponent(test.slug)}
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-cyan-800"
+                  >
+                    <Target size={16} />
+                    دخول الاختبار
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      ) : null}
 
       {/* Directed Tests (Exam Hall) Section */}
       {!isAttemptsView && user.role === 'student' && directedQuizzes.length > 0 && (

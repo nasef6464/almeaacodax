@@ -10,7 +10,7 @@ const manager = read('dashboards/admin/FinancialManager.tsx');
 const settingsModel = read('server/src/models/PaymentSettings.ts');
 const requestModel = read('server/src/models/PaymentRequest.ts');
 const routes = read('server/src/routes/payment.routes.ts');
-const report = read('PAYMENT_PROVIDER_READINESS_REPORT.md');
+const report = read('docs/archive_reports/PAYMENT_PROVIDER_READINESS_REPORT.md');
 
 const checks = [];
 const check = (name, fn) => checks.push({ name, fn });

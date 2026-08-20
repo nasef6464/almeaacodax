@@ -3,9 +3,10 @@ import { readFile } from "node:fs/promises";
 const healthRoutes = await readFile(new URL("../server/src/routes/health.routes.ts", import.meta.url), "utf8");
 const redisConfig = await readFile(new URL("../server/src/config/redis.ts", import.meta.url), "utf8");
 const envConfig = await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8");
-const serverSource = await readFile(new URL("../server/src/server.ts", import.meta.url), "utf8");
+const bootstrapServer = await readFile(new URL("../server/src/app/bootstrap/bootstrapServer.ts", import.meta.url), "utf8");
+const gracefulShutdown = await readFile(new URL("../server/src/app/bootstrap/registerGracefulShutdown.ts", import.meta.url), "utf8");
 const queueSource = await readFile(new URL("../server/src/queues/notificationQueue.ts", import.meta.url), "utf8");
-const report = await readFile(new URL("../14_15_16_PRODUCTION_OPS_REPORT.md", import.meta.url), "utf8");
+const report = await readFile(new URL("../docs/archive_reports/14_15_16_PRODUCTION_OPS_REPORT.md", import.meta.url), "utf8");
 
 const checks = [];
 
@@ -53,12 +54,14 @@ check("Redis is required in production when scale features are enabled", () => {
 });
 
 check("server shuts down HTTP, queues, Redis, and MongoDB cleanly", () => {
-  assertIncludes(serverSource, 'process.once("SIGTERM"');
-  assertIncludes(serverSource, 'process.once("SIGINT"');
-  assertIncludes(serverSource, "server.close");
-  assertIncludes(serverSource, "closeNotificationQueue()");
-  assertIncludes(serverSource, "closeRedisClients()");
-  assertIncludes(serverSource, "mongoose.connection.close(false)");
+  assertIncludes(bootstrapServer, 'import { registerGracefulShutdown } from "./registerGracefulShutdown.js"');
+  assertIncludes(bootstrapServer, "registerGracefulShutdown(server)");
+  assertIncludes(gracefulShutdown, 'process.once("SIGTERM"');
+  assertIncludes(gracefulShutdown, 'process.once("SIGINT"');
+  assertIncludes(gracefulShutdown, "server.close");
+  assertIncludes(gracefulShutdown, "closeNotificationQueue()");
+  assertIncludes(gracefulShutdown, "closeRedisClients()");
+  assertIncludes(gracefulShutdown, "mongoose.connection.close(false)");
   assertIncludes(queueSource, "export async function closeNotificationQueue()");
   assertIncludes(redisConfig, "export async function closeRedisClients()");
 });

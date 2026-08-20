@@ -147,6 +147,8 @@ addCheck(
   "student quiz center exposes assigned barcode tests",
   studentSource.includes('data-testid="student-assigned-barcode-tests"') &&
     studentSource.includes("listAssignedPublicBarcodeTests") &&
+    studentSource.includes("user.id === 'guest'") &&
+    studentSource.includes("user.id !== 'guest'") &&
     studentSource.includes("اختبارات مباشرة موجهة لك"),
   "targeted barcode tests must be discoverable inside the student test center",
 );

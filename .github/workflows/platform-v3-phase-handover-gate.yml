@@ -1,0 +1,61 @@
+name: Platform V3 Phase + Handover Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-v3-phase-handover-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  CI: "true"
+
+jobs:
+  cross-phase-handover:
+    name: Cross-phase + handover regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: API phase 4 contract
+        run: npm run smoke:api-phase4
+      - name: Frontend phase 5 contract
+        run: npm run smoke:frontend-phase5
+      - name: Security and RBAC phase 6 contract
+        run: npm run smoke:security-rbac-phase6
+      - name: Exam and payment phase 8 contract
+        run: npm run smoke:exam-payment-phase8
+      - name: Dashboards phase 11 contract
+        run: npm run smoke:dashboards-phase11
+      - name: Production ops phase 14 contract
+        run: npm run smoke:production-ops-phase14
+      - name: QA phase 17 contract
+        run: npm run smoke:qa-phase17
+      - name: Deployment handover phase 19 contract
+        run: npm run smoke:deployment-handover-phase19
+      - name: Current handover contract
+        run: npm run smoke:handover-current
+      - name: Full handover gate suite
+        run: npm run smoke:handover:all

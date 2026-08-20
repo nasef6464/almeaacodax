@@ -46,8 +46,21 @@ check("request id is generated, returned, and logged", () => {
 
 check("sensitive API routes have smaller body limits", () => {
   assertIncludes(appSource, 'app.use("/api/auth", express.json({ limit: "100kb" }));');
+  assertIncludes(appSource, 'const authAliasJsonParser = express.json({ limit: "100kb" });');
+  assertIncludes(appSource, 'pathname === "/auth" || pathname.startsWith("/auth/")');
   assertIncludes(appSource, 'app.use(["/api/quizzes", "/api/payments", "/api/ai"], express.json({ limit: "1mb" }));');
   assertIncludes(appSource, 'app.use(express.json({ limit: "5mb" }));');
+});
+
+check("email verification resend is protected from notification flooding", () => {
+  assertIncludes(appSource, '"/api/auth/email/resend-verification"');
+  assertIncludes(appSource, '"/auth/email/resend-verification"');
+  const limiterIndex = appSource.indexOf("sensitiveActionRateLimiter");
+  const canonicalIndex = appSource.indexOf('"/api/auth/email/resend-verification"');
+  const aliasIndex = appSource.indexOf('"/auth/email/resend-verification"');
+  if (limiterIndex < 0 || canonicalIndex < 0 || aliasIndex < 0) {
+    throw new Error("Verification resend limiter coverage is incomplete");
+  }
 });
 
 check("production errors do not leak server details", () => {

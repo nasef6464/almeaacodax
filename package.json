@@ -40,6 +40,7 @@
         "smoke:course-builder": "node scripts/smoke-course-builder-contract.mjs",
         "smoke:course-visibility": "node scripts/smoke-course-visibility-contract.mjs",
         "smoke:course-quiz-context": "node scripts/smoke-course-quiz-context-contract.mjs",
+        "smoke:certificate-integrity": "node scripts/smoke-certificate-integrity-contract.mjs",
         "smoke:curriculum-import-scope": "node scripts/smoke-curriculum-import-scope-guard-contract.mjs",
         "smoke:video-questions": "node scripts/smoke-video-questions-contract.mjs",
         "smoke:package-revenue": "node scripts/smoke-package-revenue-contract.mjs",

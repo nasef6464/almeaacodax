@@ -1,0 +1,149 @@
+name: Platform V3 Live Role Gate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-v3-live-role-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  role-pages-live:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery')
+    name: All authenticated roles — desktop + mobile
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      UI_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'http://127.0.0.1:4173' || 'https://almeaacodax.vercel.app' }}
+      UI_AUDIT_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
+      VITE_API_URL: /api
+      ROLE_PAGES_AUDIT_RUN_ID: platform-v3-live-${{ github.run_id }}
+      ROLE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      ROLE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+      ROLE_ADMIN_EMAIL: ${{ secrets.ROLE_ADMIN_EMAIL }}
+      ROLE_ADMIN_PASSWORD: ${{ secrets.ROLE_ADMIN_PASSWORD }}
+      ROLE_PARENT_EMAIL: ${{ secrets.ROLE_PARENT_EMAIL }}
+      ROLE_PARENT_PASSWORD: ${{ secrets.ROLE_PARENT_PASSWORD }}
+      ROLE_TEACHER_EMAIL: ${{ secrets.ROLE_TEACHER_EMAIL }}
+      ROLE_TEACHER_PASSWORD: ${{ secrets.ROLE_TEACHER_PASSWORD }}
+      ROLE_SUPERVISOR_EMAIL: ${{ secrets.ROLE_SUPERVISOR_EMAIL }}
+      ROLE_SUPERVISOR_PASSWORD: ${{ secrets.ROLE_SUPERVISOR_PASSWORD }}
+    steps:
+      - name: Checkout exact tested revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Typecheck frontend
+        run: npm run typecheck
+
+      - name: Build exact tested frontend
+        run: npm run build
+
+      - name: Start exact recovery frontend for PR audit
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/platform-v3-live-role-preview.log 2>&1 &
+          echo $! > /tmp/platform-v3-live-role-preview.pid
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/platform-v3-live-role-preview.log || true
+          exit 1
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Require all secure role credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=false
+          for role in STUDENT ADMIN PARENT TEACHER SUPERVISOR; do
+            email_var="ROLE_${role}_EMAIL"
+            pass_var="ROLE_${role}_PASSWORD"
+            if [ -n "${!email_var:-}" ] && [ -n "${!pass_var:-}" ]; then
+              echo "${role}: credentials configured"
+            else
+              echo "${role}: credentials missing"
+              missing=true
+            fi
+          done
+          if [ "$missing" = "true" ]; then
+            echo "::error::All five ROLE_* credential pairs are required for the live role gate."
+            exit 1
+          fi
+
+      - name: Run authenticated role-page audit
+        run: npm run smoke:role-pages-live
+
+      - name: Require every role and page green
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const runId = process.env.ROLE_PAGES_AUDIT_RUN_ID;
+          const reportPath = path.join('audit-artifacts', 'ui-audit-exhaustive', runId, 'role-pages-audit.json');
+          const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+          const required = ['guest', 'student', 'admin', 'parent', 'teacher', 'supervisor'];
+          const loginByRole = new Map(report.loginResults.map((item) => [item.role, item]));
+          for (const role of required) {
+            const login = loginByRole.get(role);
+            if (!login?.ok) throw new Error(`${role} login is not green: ${login?.reason || 'missing result'}`);
+            const entries = report.results.filter((item) => item.role === role);
+            if (!entries.length) throw new Error(`${role} has no page results`);
+            const bad = entries.filter((item) => item.status !== 'PASS');
+            if (bad.length) throw new Error(`${role} has ${bad.length} non-PASS page result(s)`);
+          }
+          if (report.fail !== 0 || report.blocked !== 0) {
+            throw new Error(`role audit is not fully green: fail=${report.fail}, blocked=${report.blocked}`);
+          }
+          const pass = report.results.filter((item) => item.status === 'PASS').length;
+          console.log(JSON.stringify({ total: report.total, pass, fail: report.fail, blocked: report.blocked }, null, 2));
+          NODE
+
+      - name: Upload role audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-v3-live-role-audit-${{ github.run_id }}
+          path: audit-artifacts/ui-audit-exhaustive/platform-v3-live-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop exact recovery frontend
+        if: always() && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          if [ -f /tmp/platform-v3-live-role-preview.pid ]; then
+            kill "$(cat /tmp/platform-v3-live-role-preview.pid)" 2>/dev/null || true
+          fi

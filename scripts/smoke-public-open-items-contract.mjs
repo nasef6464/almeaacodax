@@ -39,6 +39,11 @@ includes('pages/StaticInfoPage.tsx', "title: 'الشروط والأحكام'");
 includes('pages/Blog.tsx', 'aria-label={`فتح المقال ${entry.title}`}');
 includes('pages/Cart.tsx', 'إتمام الدفع الآن');
 includes('pages/Cart.tsx', 'شراء الآن');
+includes('pages/Cart.tsx', 'totalsByCurrency');
+includes('pages/Cart.tsx', 'checkout-single-item-pay');
+includes('pages/Cart.tsx', 'checkout-multi-item-note');
+includes('pages/Cart.tsx', 'الدفع يتم لكل عنصر بشكل مستقل');
+includes('pages/ForgotPassword.tsx', 'to="/login"');
 includes('pages/QuizPage.tsx', 'التالي');
 includes('pages/QuizPage.tsx', 'السابق');
 

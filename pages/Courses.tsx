@@ -150,8 +150,8 @@ const Courses: React.FC = () => {
             </div>
 
             {/* Tabs */}
-            <div className="border-b border-gray-200">
-                <div className="flex gap-6">
+            <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain border-b border-gray-200">
+                <div className="flex w-max min-w-full gap-3 sm:gap-6">
                     <TabButton 
                         label="الدورات الملتحق بها" 
                         count={filteredCourses.length} 

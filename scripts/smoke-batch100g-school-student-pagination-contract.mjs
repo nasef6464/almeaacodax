@@ -3,6 +3,10 @@ import path from "node:path";
 
 const root = process.cwd();
 const schoolsManager = readFileSync(path.join(root, "dashboards", "admin", "SchoolsManager.tsx"), "utf8");
+const schoolStudentRosterPanel = readFileSync(
+  path.join(root, "dashboards", "admin", "SchoolsManager", "SchoolStudentRosterPanel.tsx"),
+  "utf8",
+);
 
 const checks = [];
 
@@ -37,6 +41,11 @@ check("school student table no longer hard-caps results at the first 80 records"
     "visibleSchoolStudents.slice(0, 80)",
     "School student list still hides records beyond the first 80.",
   );
+  assertNotIncludes(
+    schoolStudentRosterPanel,
+    "visibleSchoolStudents.slice(0, 80)",
+    "Extracted school roster panel still hides records beyond the first 80.",
+  );
 });
 
 check("school student table has explicit pagination state and derived page rows", () => {
@@ -45,6 +54,8 @@ check("school student table has explicit pagination state and derived page rows"
   assertIncludes(schoolsManager, "pagedVisibleSchoolStudents");
   assertIncludes(schoolsManager, "schoolStudentTotalPages");
   assertIncludes(schoolsManager, "setSchoolStudentPage");
+  assertIncludes(schoolStudentRosterPanel, "pagedVisibleSchoolStudents");
+  assertIncludes(schoolStudentRosterPanel, "schoolStudentTotalPages");
 });
 
 check("student search and class filters reset the page safely", () => {
@@ -54,11 +65,13 @@ check("student search and class filters reset the page safely", () => {
 });
 
 check("pagination UI communicates visible range and provides previous/next controls", () => {
-  assertIncludes(schoolsManager, "schoolStudentStartIndex");
-  assertIncludes(schoolsManager, "schoolStudentEndIndex");
-  assertIncludes(schoolsManager, "schoolStudentTotalPages > 1");
-  assertIncludes(schoolsManager, "السابق");
-  assertIncludes(schoolsManager, "التالي");
+  assertIncludes(schoolStudentRosterPanel, "schoolStudentStartIndex");
+  assertIncludes(schoolStudentRosterPanel, "schoolStudentEndIndex");
+  assertIncludes(schoolStudentRosterPanel, "schoolStudentTotalPages > 1");
+  assertIncludes(schoolStudentRosterPanel, "السابق");
+  assertIncludes(schoolStudentRosterPanel, "التالي");
+  assertIncludes(schoolStudentRosterPanel, "safeSchoolStudentPage <= 1");
+  assertIncludes(schoolStudentRosterPanel, "safeSchoolStudentPage >= schoolStudentTotalPages");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
