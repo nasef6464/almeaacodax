@@ -15,6 +15,7 @@ const readArg = (name, fallback) => {
 
 const BASE_URL = readArg('--base-url', 'http://127.0.0.1:4173');
 const API_TARGET = readArg('--api-target', 'https://almeaacodax-k2ux.onrender.com/api');
+const API_TARGET_ORIGIN = new URL(API_TARGET).origin;
 const RUN_ID = readArg('--run-id', 'branch-public-ui');
 const OUT_DIR = path.resolve('audit-artifacts', 'platform-v3-public-ui', RUN_ID);
 const PAGE_TIMEOUT_MS = 30000;
@@ -134,6 +135,7 @@ async function installApiBridge(context) {
   await context.route('**/api/**', async (route) => {
     const request = route.request();
     const originalUrl = new URL(request.url());
+    if (originalUrl.origin === API_TARGET_ORIGIN) return route.continue();
     const apiIndex = originalUrl.pathname.indexOf('/api/');
     if (apiIndex < 0) return route.continue();
 
