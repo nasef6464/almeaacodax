@@ -25,6 +25,7 @@ export interface AssessmentClassification {
  * - placement: mock و showInMock لا يعنيان محاكيًا حقيقيًا؛ هما حقول legacy للظهور.
  * - mode: central هو directed delivery، وmode: saher هو self delivery.
  * - البيانات القديمة التي لا تملك quizKind تبقى مدعومة بدون Migration فورية.
+ * - استنتاج quizKind للبيانات القديمة يحافظ على قواعد النظام السابقة لتقليل مخاطر regression.
  */
 export const resolveAssessmentClassification = (quiz: Partial<Quiz>): AssessmentClassification => {
   const explicitQuizKind = quiz.quizKind;
@@ -37,11 +38,7 @@ export const resolveAssessmentClassification = (quiz: Partial<Quiz>): Assessment
     quizKind = 'drill';
   } else if (explicitQuizKind === 'test') {
     quizKind = 'test';
-  } else if (
-    quiz.type === 'bank' ||
-    quiz.placement === 'training' ||
-    (quiz.showInTraining === true && quiz.showInMock === false)
-  ) {
+  } else if (quiz.type === 'bank' || quiz.placement === 'training') {
     quizKind = 'drill';
   } else {
     // Legacy quiz/placement=mock/both are normal exams unless mockExam.enabled proves otherwise.
