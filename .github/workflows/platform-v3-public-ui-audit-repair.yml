@@ -1,0 +1,109 @@
+name: Platform V3 Public UI Audit Repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/platform-v3-public-ui-audit-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-public-ui-audit-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery'
+    name: Repair visitor audit assertions only
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact recovery head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Repair exact audit assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/live-public-ui-audit.mjs';
+          let source = fs.readFileSync(file, 'utf8');
+
+          const replaceOnce = (before, after, label) => {
+            const count = source.split(before).length - 1;
+            if (count !== 1) throw new Error(`${label}: expected one anchor, found ${count}`);
+            source = source.replace(before, after);
+          };
+
+          replaceOnce(
+            `function extractCollection(payload, key) {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.[key])) return payload[key];\n  if (Array.isArray(payload?.items)) return payload.items;\n  if (Array.isArray(payload?.data)) return payload.data;\n  if (Array.isArray(payload?.data?.[key])) return payload.data[key];\n  if (Array.isArray(payload?.data?.items)) return payload.data.items;\n  return [];\n}\n\nconst dynamicDiscovery = {`,
+            `function extractCollection(payload, key) {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.[key])) return payload[key];\n  if (Array.isArray(payload?.items)) return payload.items;\n  if (Array.isArray(payload?.data)) return payload.data;\n  if (Array.isArray(payload?.data?.[key])) return payload.data[key];\n  if (Array.isArray(payload?.data?.items)) return payload.data.items;\n  return [];\n}\n\nconst resolveEntityId = (item) => String(item?.id || item?._id || '').trim();\n\nconst dynamicDiscovery = {`,
+            'dynamic id helper',
+          );
+
+          replaceOnce(
+            `    const firstPath = paths.find((item) => item?.id && item?.showOnPlatform !== false);\n    const firstCourse = courses.find((item) => item?.id && item?.showOnPlatform !== false && item?.isPackage !== true);\n\n    if (firstPath?.id) {\n      const path = \`/category/\${encodeURIComponent(firstPath.id)}\`;\n      routes.push({ path, expect: 'public' });\n      dynamicDiscovery.addedRoutes.push(path);\n    }\n    if (firstCourse?.id) {\n      const path = \`/course/\${encodeURIComponent(firstCourse.id)}\`;\n      routes.push({ path, expect: 'public' });\n      dynamicDiscovery.addedRoutes.push(path);\n    }`,
+            `    const firstPath = paths.find((item) => resolveEntityId(item) && item?.showOnPlatform !== false && item?.isActive !== false);\n    const firstCourse = courses.find((item) =>\n      resolveEntityId(item) &&\n      item?.showOnPlatform !== false &&\n      item?.isPublished !== false &&\n      (!item?.approvalStatus || item.approvalStatus === 'approved') &&\n      item?.isPackage !== true\n    );\n    const firstPathId = resolveEntityId(firstPath);\n    const firstCourseId = resolveEntityId(firstCourse);\n\n    if (firstPathId) {\n      const path = \`/category/\${encodeURIComponent(firstPathId)}\`;\n      routes.push({ path, expect: 'public' });\n      dynamicDiscovery.addedRoutes.push(path);\n    }\n    if (firstCourseId) {\n      const path = \`/course/\${encodeURIComponent(firstCourseId)}\`;\n      routes.push({ path, expect: 'public' });\n      dynamicDiscovery.addedRoutes.push(path);\n    }`,
+            'dynamic route selection',
+          );
+
+          replaceOnce(
+            `      assertJourney(await page.locator('input[type="password"]').count() > 0, 'login form did not open after pricing CTA');`,
+            `      await page.locator('#smart-login-form').waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });\n      assertJourney(await page.locator('#smart-login-input').isVisible(), 'login identity input did not open after pricing CTA');`,
+            'pricing login assertion',
+          );
+
+          replaceOnce(
+            `      assertJourney(await page.locator('input[type="password"]').count() > 0, 'login form did not open from forgot-password');`,
+            `      await page.locator('#smart-login-form').waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });\n      assertJourney(await page.locator('#smart-login-input').isVisible(), 'login identity input did not open from forgot-password');`,
+            'forgot login assertion',
+          );
+
+          replaceOnce(
+            `      await page.getByText('الاشتراك في الدورة', { exact: true }).waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });\n      assertJourney(await page.getByText('ملخص طلب الشراء', { exact: true }).count() > 0, 'payment decision summary did not render');`,
+            `      await page.getByRole('button', { name: 'متابعة الشراء' }).waitFor({ state: 'visible', timeout: PAGE_TIMEOUT_MS });\n      assertJourney(await page.getByText('محتوى مدفوع', { exact: true }).count() > 0, 'payment intro state did not render');`,
+            'single checkout payment assertion',
+          );
+
+          fs.writeFileSync(file, source);
+          NODE
+
+      - name: Validate audit syntax and anchors
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/live-public-ui-audit.mjs
+          grep -Fq "#smart-login-form" scripts/live-public-ui-audit.mjs
+          grep -Fq "متابعة الشراء" scripts/live-public-ui-audit.mjs
+          grep -Fq "resolveEntityId" scripts/live-public-ui-audit.mjs
+
+      - name: Confirm narrow diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = "scripts/live-public-ui-audit.mjs"
+
+      - name: Commit verified audit repair
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin develop/platform-v3-recovery
+          test "$(git rev-parse origin/develop/platform-v3-recovery)" = "$EXPECTED_HEAD"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/live-public-ui-audit.mjs
+          git commit -m "test(recovery): align visitor audit with real UI steps"
+          git push origin HEAD:develop/platform-v3-recovery
