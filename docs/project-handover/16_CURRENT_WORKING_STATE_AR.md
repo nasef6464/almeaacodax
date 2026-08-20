@@ -7,6 +7,7 @@ Production branch: `main`
 PR النشط: `#26 — Platform V3 Recovery & Development`  
 Production baseline: `fab4e31f037feeeb178788dd2a79971e4fce2cbc`  
 Verified recovery runtime SHA قبل إغلاق التوثيق: `904c3dc45c5a507bcd889fd00bc7900aaf907e4b`  
+Final closure head بعد توثيق الإغلاق والعقد: `56117f3ab6dd0d1691f784d8abb9cbb7f08d6dff`  
 Frontend Production: `https://almeaacodax.vercel.app/`  
 Backend API: `https://almeaacodax-k2ux.onrender.com/api`  
 Repository: `https://github.com/nasef6464/almeaacodax.git`
@@ -17,7 +18,7 @@ Repository: `https://github.com/nasef6464/almeaacodax.git`
 
 **Platform V3 Recovery أغلقت وظيفيًا وأصبحت Release Candidate.**
 
-تم التحقق على recovery runtime SHA `904c3dc45c5a507bcd889fd00bc7900aaf907e4b` من:
+تم التحقق على final closure head `56117f3ab6dd0d1691f784d8abb9cbb7f08d6dff` من:
 - 10/10 PR workflows = SUCCESS.
 - Deep Pre-Merge E2E = SUCCESS على Mongo معزولة.
 - Live Role Gate = SUCCESS لجميع الأدوار المطلوبة.
@@ -26,10 +27,10 @@ Repository: `https://github.com/nasef6464/almeaacodax.git`
 - Recovery / Safety / Production Readiness / Handover gates = SUCCESS.
 - Vercel Preview = Ready / Success.
 - لا Review Threads أو Reviews معلقة وقت الإغلاق.
-- recovery كان 147 commits ahead و0 behind من baseline وقت التحقق النهائي.
 
-Deep E2E run: `32365463358`  
-Evidence artifact: `platform-v3-deep-premerge-32365463358` (`9405308656`).
+Deep E2E run: `32372698925`  
+Evidence artifact: `platform-v3-deep-premerge-32372698925` (`9407997063`).  
+Artifact digest: `sha256:e18efdac40d6fd2f54d283d0b52a5c296ec88e47c4a65c87024cb9c7f9f4fd95`.
 
 ## القاعدة الأساسية
 
