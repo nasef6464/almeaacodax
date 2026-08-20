@@ -19,8 +19,8 @@ type CsrfContext = {
   cookie: string;
 };
 
-const API_BASE = String(process.env.BACKEND_INTEGRATION_BASE_URL || `http://127.0.0.1:${env.PORT}/api`).replace(/\/+$/, "");
-const RUN_MARKER = String(process.env.GITHUB_RUN_ID || Date.now()).replace(/[^a-zA-Z0-9_-]/g, "");
+const API_BASE = `http://127.0.0.1:${env.PORT}/api`;
+const RUN_MARKER = `${Date.now().toString(36)}-${randomBytes(6).toString("hex")}`;
 const COURSE_ID = `platform-v3-integration-course-${RUN_MARKER}`;
 const LESSON_IDS = [`platform-v3-integration-lesson-a-${RUN_MARKER}`, `platform-v3-integration-lesson-b-${RUN_MARKER}`];
 
