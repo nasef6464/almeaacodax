@@ -1,16 +1,17 @@
 # حالة العمل الحالية وتسليم الاستكمال
 
 آخر تحديث: 2026-08-20  
+مرجع عقد التسليم السابق المحفوظ للتوافق: 2026-08-19  
 Production branch: `main`  
 فرع Release Candidate: `develop/platform-v3-recovery`  
-PR: `#26 — Platform V3 Recovery & Development`  
+PR النشط: `#26 — Platform V3 Recovery & Development`  
 Production baseline: `fab4e31f037feeeb178788dd2a79971e4fce2cbc`  
 Verified recovery runtime SHA قبل إغلاق التوثيق: `904c3dc45c5a507bcd889fd00bc7900aaf907e4b`  
 Frontend Production: `https://almeaacodax.vercel.app/`  
 Backend API: `https://almeaacodax-k2ux.onrender.com/api`  
 Repository: `https://github.com/nasef6464/almeaacodax.git`
 
-هذا الملف هو نقطة البداية لأي مطور أو Agent يستكمل المشروع بعد دورة Platform V3 Recovery.
+هذا الملف هو نقطة البداية لأي مطور أو Agent يستكمل المشروع بعد دورة Platform V3 Recovery. الخطة الحالية المفصلة: `docs/PLATFORM_V3_RECOVERY_PLAN_AR.md`.
 
 ## الحالة الآن
 
@@ -32,11 +33,11 @@ Evidence artifact: `platform-v3-deep-premerge-32365463358` (`9405308656`).
 
 ## القاعدة الأساسية
 
-- `main` خط الإنتاج المستقر فقط.
-- لا تطوير مباشر على `main`.
+- `main` هو خط الإنتاج المستقر فقط.
+- لا يتم التطوير مباشرة على `main`.
 - لا Force Push.
-- لا Secrets أو كلمات مرور أو Tokens داخل الملفات أو logs.
-- لا Merge إلى `main` بدون أمر صريح منفصل.
+- لا أسرار أو كلمات مرور أو Tokens داخل الملفات أو logs.
+- لا Merge إلى `main` بدون موافقة صريحة مستقلة.
 - Ready for Review لا يساوي موافقة على Merge.
 - الحسابات التجريبية الحالية تظل متاحة للاختبارات؛ لا تغيّر/تعطّل بيانات اعتمادها ضمن مهام أخرى بدون تفويض مستقل.
 
@@ -84,7 +85,7 @@ Evidence artifact: `platform-v3-deep-premerge-32365463358` (`9405308656`).
 
 ## الأدوار التي تم التحقق منها
 
-Live Role Gate شمل:
+Platform V3 Live Role Gate شمل:
 - Guest
 - Student
 - Admin
@@ -96,6 +97,32 @@ Live Role Gate شمل:
 
 لا تخزن credentials في المستودع. استخدم GitHub Actions Secrets الموجودة.
 
+## البوابات التي يجب الحفاظ عليها
+
+- Platform V3 Deep Pre-Merge E2E Gate
+- Platform V3 Live Role Gate
+- Platform V3 Public UI Gate
+- Platform V3 Public Smoke Roles Preview
+- Platform V3 Recovery Gate
+- Platform V3 Backend Integration Gate
+- Platform V3 Phase + Handover Gate
+- Refactor V2 Safety Gate
+- Refactor V2 Production Readiness Gate
+- Refactor V2 Dependency Audit
+
+## Infrastructure / Environment anchors
+
+### Frontend / Vercel
+- `VITE_API_URL`
+
+### API / Render
+- `MONGODB_URI`
+
+### Redis / scale readiness
+- `REDIS_URL`
+
+احتفظ بالقيم السرية خارج GitHub files؛ هذه أسماء متغيرات فقط.
+
 ## ما لا يزال مفتوحًا كـTechnical Debt وليس Recovery Blocker
 
 ### Sentry / OpenTelemetry dependency modernization
@@ -103,7 +130,7 @@ Live Role Gate شمل:
 - Server production: 16 Moderate، 0 High، 0 Critical.
 - Direct vulnerable dependency: `@sentry/node@9.47.1`.
 - npm يقترح مسارًا يصل إلى `@sentry/node@10.70.0` وهو Major.
-- لا تستخدم `npm audit fix --force`.
+- `npm audit fix --force` ممنوع في دورة الاستعادة.
 - نفّذ الترقية في Feature/Hardening branch منفصل مع migration واختبارات Sentry runtime.
 
 ### GitHub Actions maintenance
@@ -139,19 +166,6 @@ npm run server:build
 ```
 
 ثم شغّل الـcontract/smoke الأقرب للتغيير. لا تعتمد على Build وحده.
-
-## بوابات يجب الحفاظ عليها
-
-- Platform V3 Deep Pre-Merge E2E Gate
-- Platform V3 Live Role Gate
-- Platform V3 Public UI Gate
-- Platform V3 Public Smoke Roles Preview
-- Platform V3 Recovery Gate
-- Platform V3 Backend Integration Gate
-- Platform V3 Phase + Handover Gate
-- Refactor V2 Safety Gate
-- Refactor V2 Production Readiness Gate
-- Refactor V2 Dependency Audit
 
 ## قواعد PR #26
 
