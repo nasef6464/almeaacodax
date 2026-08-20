@@ -23,6 +23,11 @@ export type AssessmentQuestionPage = {
   hasNext: boolean;
 };
 
+export type AssessmentQuestionCollection = {
+  questions: Question[];
+  total: number;
+};
+
 export type AssessmentQuestionHydration = {
   questions: Question[];
   missingIds: string[];
@@ -54,8 +59,10 @@ export type AssessmentQuestionSourceClient = {
   }) => Promise<QuestionPageResponse>;
 };
 
-const DEFAULT_PAGE_LIMIT = 100;
-const HYDRATE_CHUNK_SIZE = 100;
+// Must stay aligned with questionListQuerySchema.limit.max(100) on the API.
+const MAX_PAGE_LIMIT = 100;
+const DEFAULT_PAGE_LIMIT = MAX_PAGE_LIMIT;
+const HYDRATE_CHUNK_SIZE = MAX_PAGE_LIMIT;
 
 export const normalizeAssessmentQuestion = (value: unknown): Question => {
   const question = (value || {}) as Record<string, unknown>;
@@ -111,7 +118,7 @@ export const createAssessmentQuestionSource = (client: AssessmentQuestionSourceC
    */
   async searchPage(request: AssessmentQuestionPageRequest = {}): Promise<AssessmentQuestionPage> {
     const page = Math.max(1, Number(request.page || 1));
-    const limit = Math.max(1, Math.min(200, Number(request.limit || DEFAULT_PAGE_LIMIT)));
+    const limit = Math.max(1, Math.min(MAX_PAGE_LIMIT, Number(request.limit || DEFAULT_PAGE_LIMIT)));
     const response = await client.getQuestionsPaginated({
       page,
       limit,
@@ -128,10 +135,40 @@ export const createAssessmentQuestionSource = (client: AssessmentQuestionSourceC
       .filter((question) => Boolean(question.id));
     const total = Number(response?.pagination?.total ?? questions.length);
     const resolvedPage = Math.max(1, Number(response?.pagination?.page ?? page));
-    const totalPages = Math.max(1, Number(response?.pagination?.totalPages ?? Math.ceil(total / limit) || 1));
+    const totalPages = Math.max(1, Number(response?.pagination?.totalPages ?? (Math.ceil(total / limit) || 1)));
     const hasNext = Boolean(response?.pagination?.hasNext ?? resolvedPage < totalPages);
 
     return { questions, total, page: resolvedPage, totalPages, hasNext };
+  },
+
+  /**
+   * Compatibility collection loader for runtime callers that still expect the
+   * whole current scope in memory. It follows server pagination until the end,
+   * with no fixed page-count cap. New large-bank UIs should prefer searchPage().
+   */
+  async loadAll(request: AssessmentQuestionFilters = {}): Promise<AssessmentQuestionCollection> {
+    const byId = new Map<string, Question>();
+    let requestedPage = 1;
+    let total = 0;
+
+    while (true) {
+      const result = await this.searchPage({ ...request, page: requestedPage, limit: MAX_PAGE_LIMIT });
+      result.questions.forEach((question) => byId.set(question.id, question));
+      total = result.total;
+
+      if (!result.hasNext || result.page >= result.totalPages) break;
+
+      const nextPage = result.page + 1;
+      // Defensive guard against a malformed pagination response returning the
+      // same/previous page forever. This is not a bank-size cap.
+      if (nextPage <= requestedPage) break;
+      requestedPage = nextPage;
+    }
+
+    return {
+      questions: Array.from(byId.values()),
+      total,
+    };
   },
 
   /**
