@@ -33,7 +33,8 @@ export const quizSchema = z.object({
   mockExam: z.object({
     enabled: z.boolean().default(false),
     pathId: z.string().default(""),
-    qiyasCategory: z.enum(["qudrat", "tahsili"]).optional(),
+    qiyasCategory: z.enum(["qudrat", "tahsili", "specialized"]).optional(),
+    targetScore: z.number().min(0).max(100).optional(),
     isStrictSectionLock: z.boolean().optional(),
     sections: z.array(z.object({
       id: z.string().min(1),
@@ -43,6 +44,7 @@ export const quizSchema = z.object({
       timeLimit: z.number().nullable().optional(),
       order: z.number().optional(),
       domain: z.enum(["quantitative", "verbal", "math", "physics", "chemistry", "biology", "general"]).optional(),
+      isStrictSectionLock: z.boolean().optional(),
     })).default([]),
   }).optional(),
   skillIds: z.array(z.string()).optional(),
