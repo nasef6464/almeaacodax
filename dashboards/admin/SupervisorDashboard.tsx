@@ -41,6 +41,8 @@ import { LiveSessionsManager } from './LiveSessionsManager';
 import { SupervisorTestsManager } from './SupervisorTestsManager';
 import { StudentIntelligenceProfile } from './StudentIntelligenceProfile';
 import { SupervisorOverviewPanel } from './SupervisorOverviewPanel';
+import { ClassSkillsMapPanel } from './ClassSkillsMapPanel';
+import { ClassReportPanel } from './ClassReportPanel';
 
 type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests' | 'live-monitoring';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
@@ -1036,7 +1038,19 @@ export const SupervisorDashboard: React.FC = () => {
               <p className="mt-1 text-sm text-gray-500">خريطة توضيحية لنسبة تمكن الطلاب من مهارات المنهج داخل نطاق إشرافك</p>
             </div>
 
+            {/* مصفوفة طالب × مهارة */}
+            <ClassSkillsMapPanel
+              students={supervisorScopeSummary.allStudentsList}
+              groupSnapshots={supervisorScopeSummary.groupSnapshots}
+              onSelectStudent={(id) => setSelectedStudentId(id)}
+            />
+
+            <div className="border-t border-gray-100 pt-4">
+              <h3 className="text-sm font-black text-gray-700 mb-4">تفصيل المهارات حسب مستوى التمكن</h3>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
               
               {/* Critical Skills Column */}
               <div className="rounded-2xl border border-rose-100 bg-rose-50/20 p-5 shadow-xs space-y-4">
@@ -1133,12 +1147,24 @@ export const SupervisorDashboard: React.FC = () => {
         {/* ===== REPORTS TAB ===== */}
         {activeTab === 'reports' && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h1 className="text-2xl font-black text-gray-900">تقارير أداء فصول المدرسة والتحصيل</h1>
-                <p className="mt-1 text-sm text-gray-500">تحليل مقارن للمستويات الدراسية والفصول للمشرفين</p>
-              </div>
+            {/* تقرير الفصل الجديد */}
+            <ClassReportPanel
+              students={supervisorScopeSummary.allStudentsList}
+              groupSnapshots={supervisorScopeSummary.groupSnapshots}
+              overallAverage={supervisorScopeSummary.averageScore}
+              onSelectStudent={(id) => setSelectedStudentId(id)}
+              onExportCSV={exportScopeDataToCSV}
+              onPrint={handlePrint}
+            />
+
+            <div className="border-t border-gray-100 pt-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h1 className="text-2xl font-black text-gray-900">تقارير أداء فصول المدرسة والتحصيل</h1>
+                  <p className="mt-1 text-sm text-gray-500">تحليل مقارن للمستويات الدراسية والفصول للمشرفين</p>
+                </div>
               <div className="flex items-center gap-2 print:hidden">
+
                 <button
                   onClick={() => window.print()}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold text-sm hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
@@ -1360,8 +1386,11 @@ export const SupervisorDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
+            </div>{/* close border-t wrapper */}
           </div>
         )}
+
+
 
         {/* ===== STUDENT DETAILS SLIDING DRAWER / MODAL ===== */}
         {activeStudentDetails && (
