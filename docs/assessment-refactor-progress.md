@@ -33,7 +33,35 @@
 
 ---
 
-## A1 — Canonical Assessment Contract: IN PROGRESS
+## إصلاح G2 — تطبيق randomizeOptions في runner الطالب: ✅ مكتمل (commit: f973d219)
+
+### الملفات المُعدَّلة: `pages/QuizPage.tsx`
+
+**التغييرات:**
+1. **`questionShuffleMap`** (useMemo جديد):
+   - يُبنى مرة واحدة من `quizQuestions` عند بدء الاختبار.
+   - Seed ثابت من `question.id` (Fisher-Yates) → نفس الترتيب في كل re-render للطالب نفسه.
+   - إذا `randomizeOptions = false/undefined` → يُرجع `null` (لا تكلفة على الاختبارات الحالية).
+
+2. **`currentDisplayOptions`** (useMemo جديد):
+   - `[{text, originalIndex}]` مرتّبة حسب الخلط للسؤال الحالي.
+   - إذا لا خلط → `originalIndex === displayIndex` (لا تغيير في السلوك).
+
+3. **`handleOptionSelect(displayIndex)`**:
+   - يُترجم `displayIndex → originalIndex` قبل الحفظ في `selectedOptions`.
+   - `correctAnswersCount` يظل دقيقاً (يقارن `selectedOptions[id] === correctOptionIndex`).
+
+4. **JSX الخيارات**:
+   - يعرض `currentDisplayOptions` بدل `currentQuestion.options`.
+   - `key={originalIndex}` (ثابت) و`selected-state` يقارن `originalIndex`.
+
+**التوافق العكسي:**
+- الاختبارات التي لا تُفعّل `randomizeOptions` → لا يتغير شيء (map = null).
+- `correctAnswersCount`, `wrongAnswersCount`, `sectionResults`, `skillsAnalysis` → لا تعديل (تعتمد على `selectedOptions` الذي يحفظ `originalIndex`).
+
+---
+
+
 
 ### تم في هذا Batch
 
