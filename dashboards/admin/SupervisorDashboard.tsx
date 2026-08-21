@@ -39,6 +39,8 @@ import { Role } from '../../types';
 import { LiveSessionsManager } from './LiveSessionsManager';
 
 import { SupervisorTestsManager } from './SupervisorTestsManager';
+import { StudentIntelligenceProfile } from './StudentIntelligenceProfile';
+import { SupervisorOverviewPanel } from './SupervisorOverviewPanel';
 
 type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests' | 'live-monitoring';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
@@ -617,10 +619,63 @@ export const SupervisorDashboard: React.FC = () => {
           </div>
         )}
 
+        {/* ===== STUDENT INTELLIGENCE PROFILE OVERLAY ===== */}
+        {selectedStudentId && activeStudentDetails && (
+          <StudentIntelligenceProfile
+            student={activeStudentDetails}
+            classAverage={
+              supervisorScopeSummary.groupSnapshots.find(
+                (g) => g.id === activeStudentDetails.classId,
+              )?.average ?? supervisorScopeSummary.averageScore
+            }
+            classTotalStudents={
+              supervisorScopeSummary.groupSnapshots.find(
+                (g) => g.id === activeStudentDetails.classId,
+              )?.studentCount ?? supervisorScopeSummary.studentCount
+            }
+            onClose={() => setSelectedStudentId(null)}
+            onSendAlert={() => {
+              setSelectedStudentId(null);
+              void sendStudentFollowUpAlert(activeStudentDetails);
+            }}
+            onAssignTest={() => {
+              setSelectedStudentId(null);
+              openStudentQuiz(activeStudentDetails.id);
+            }}
+          />
+        )}
+
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
+            {/* لوحة النظرة العامة الجديدة */}
+            <SupervisorOverviewPanel
+              primarySchoolName={supervisorScopeSummary.primarySchoolName}
+              scopeTypeName={supervisorScopeSummary.scopeTypeName}
+              studentCount={supervisorScopeSummary.studentCount}
+              groupCount={supervisorScopeSummary.groupCount}
+              averageScore={supervisorScopeSummary.averageScore}
+              weakStudentsCount={supervisorScopeSummary.weakStudentsCount}
+              improvedStudentsCount={supervisorScopeSummary.improvedStudentsCount}
+              declinedCount={supervisorScopeSummary.declinedCount}
+              inactiveCount={supervisorScopeSummary.inactiveCount}
+              resultCount={supervisorScopeSummary.resultCount}
+              pendingFollowUpCount={supervisorScopeSummary.pendingFollowUpCount}
+              weakestSkills={supervisorScopeSummary.weakestSkills}
+              groupSnapshots={supervisorScopeSummary.groupSnapshots}
+              topStudents={supervisorScopeSummary.allStudentsList.filter((s) => s.average >= 85).slice(0, 5)}
+              urgentStudents={supervisorScopeSummary.allStudentsList.filter((s) => s.status === 'danger').slice(0, 5)}
+              bestClass={supervisorScopeSummary.bestClass}
+              weakestClass={supervisorScopeSummary.weakestClass}
+              onGoToStudents={() => setActiveTab('students')}
+              onGoToTests={() => setActiveTab('tests')}
+              onGoToSkills={() => setActiveTab('skills')}
+              onSelectStudent={(id) => setSelectedStudentId(id)}
+            />
+
+            {/* ── الباقي من محتوى overview الأصلي ── */}
             <div className="rounded-3xl bg-gradient-to-r from-indigo-900 to-indigo-950 p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.15),transparent)]"></div>
               <div className="relative z-10">
                 <h1 className="text-3xl font-black">مرحباً بك، {user.name}</h1>
@@ -947,6 +1002,8 @@ export const SupervisorDashboard: React.FC = () => {
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex gap-1 justify-center">
+                            <button onClick={() => setSelectedStudentId(s.id)} title="بطاقة الطالب الذكية"
+                              className="rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-700 transition-colors shadow-xs">بطاقة</button>
                             <button onClick={() => openStudentReport(s.id)} title="تقرير الطالب التفصيلي"
                               className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-gray-800 transition-colors shadow-xs">تقرير</button>
                             <button onClick={() => openStudentQuiz(s.id)} title="تعيين اختبار علاجي"
@@ -959,6 +1016,7 @@ export const SupervisorDashboard: React.FC = () => {
                         </td>
                       </tr>
                     ))}
+
                   </tbody>
                 </table>
               </div>
