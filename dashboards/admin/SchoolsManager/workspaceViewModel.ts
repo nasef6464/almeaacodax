@@ -1,7 +1,8 @@
 import type { AccessCode, B2BPackage, Group, User } from '../../../types';
 import type { SchoolReport } from './contracts';
 
-export type SchoolWorkspaceTab = 'overview' | 'packages' | 'relations' | 'import' | 'reports';
+export type SchoolWorkspaceTab = 'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports';
+
 export type SaveVerificationState = 'idle' | 'saving' | 'verifying' | 'success' | 'error' | null;
 
 export interface SchoolWorkspaceReadinessCheck {

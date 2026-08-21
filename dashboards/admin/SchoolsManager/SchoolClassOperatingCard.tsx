@@ -136,31 +136,58 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
             </div>
 
             <div className="grid grid-cols-1 gap-3">
-                <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-2">المشرف المسؤول</label>
+                {/* ── المشرف المسؤول ── */}
+                <div className={`rounded-xl border p-3 ${classSupervisors.length === 0 ? 'border-amber-200 bg-amber-50' : 'border-emerald-100 bg-emerald-50'}`}>
+                    <div className="flex items-center justify-between mb-2">
+                        <label className={`text-xs font-black ${classSupervisors.length === 0 ? 'text-amber-800' : 'text-emerald-800'}`}>
+                            {classSupervisors.length === 0 ? '⚠️ لا يوجد مشرف للفصل' : `✅ مشرفو الفصل (${classSupervisors.length})`}
+                        </label>
+                    </div>
+
+                    {classSupervisors.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                            {classSupervisors.map((currentUser) => (
+                                <button
+                                    key={currentUser.id}
+                                    type="button"
+                                    data-testid="school-remove-class-supervisor"
+                                    onClick={() => onRemoveSupervisor(currentUser)}
+                                    disabled={Boolean(rosterActionPending)}
+                                    className="flex items-center gap-1.5 rounded-full bg-white border border-emerald-200 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:border-red-200 hover:bg-red-50 hover:text-red-700 transition-colors"
+                                    title="اضغط لإزالة المشرف"
+                                >
+                                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-black text-emerald-700">
+                                        {currentUser.name?.charAt(0) || '؟'}
+                                    </span>
+                                    {currentUser.name} ×
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
                     <select
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                         defaultValue=""
                         onChange={(event) => {
                             const target = event.currentTarget;
                             const value = event.target.value;
                             if (!value) return;
-                            void onAssignSupervisor(value).finally(() => {
-                                target.value = '';
-                            });
+                            void onAssignSupervisor(value).finally(() => { target.value = ''; });
                         }}
                         disabled={Boolean(rosterActionPending)}
                     >
-                        <option value="">إضافة مشرف للفصل</option>
+                        <option value="">إسناد مشرف موجود للفصل...</option>
                         {availableSupervisors.map((currentUser) => (
                             <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
                         ))}
                     </select>
-                    {availableSupervisors.length === 0 && (
-                        <p className="mt-2 text-xs font-bold leading-6 text-amber-700">
-                            لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.
+
+                    {availableSupervisors.length === 0 && classSupervisors.length === 0 && (
+                        <p className="mt-1.5 text-xs text-amber-700">
+                            لا توجد حسابات مشرفين متاحة — أنشئ مشرفاً جديداً أدناه
                         </p>
                     )}
+
                     <button
                         type="button"
                         data-testid="school-class-create-supervisor"
@@ -170,24 +197,9 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
                         <UserPlus size={14} />
                         إنشاء مشرف جديد لهذا الفصل
                     </button>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                        {classSupervisors.length === 0 ? (
-                            <span className="text-xs text-gray-400">لا يوجد مشرف مرتبط بهذا الفصل.</span>
-                        ) : classSupervisors.map((currentUser) => (
-                            <button
-                                key={currentUser.id}
-                                type="button"
-                                data-testid="school-remove-class-supervisor"
-                                onClick={() => onRemoveSupervisor(currentUser)}
-                                disabled={Boolean(rosterActionPending)}
-                                className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
-                            >
-                                {currentUser.name} ×
-                            </button>
-                        ))}
-                    </div>
                 </div>
 
+                {/* ── الدورات المخصصة ── */}
                 <div>
                     <label className="block text-xs font-bold text-gray-600 mb-2">الدورات المخصصة</label>
                     <select
@@ -221,5 +233,6 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
                 </div>
             </div>
         </div>
+
     );
 };

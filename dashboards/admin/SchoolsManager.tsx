@@ -36,6 +36,8 @@ import { SchoolSingleStudentPanel } from './SchoolsManager/SchoolSingleStudentPa
 import { SchoolWideSupervisorsPanel } from './SchoolsManager/SchoolWideSupervisorsPanel';
 import { SchoolOverviewOperationsPanel } from './SchoolsManager/SchoolOverviewOperationsPanel';
 import { SchoolCommandCenterPanel } from './SchoolsManager/SchoolCommandCenterPanel';
+import { SchoolDashboardPanel } from './SchoolsManager/SchoolDashboardPanel';
+
 import { SchoolPortfolioFilterPanel } from './SchoolsManager/SchoolPortfolioFilterPanel';
 import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 import type {
@@ -124,7 +126,8 @@ export const SchoolsManager: React.FC = () => {
 
     const [selectedSchool, setSelectedSchool] = useState<Group | null>(null);
     const [activeSchoolActionsId, setActiveSchoolActionsId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'packages' | 'relations' | 'import' | 'reports'>('overview');
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports'>('dashboard');
+
     const [schoolSearch, setSchoolSearch] = useState('');
     const [schoolListMode, setSchoolListMode] = useState<'active' | 'needs_setup' | 'ready' | 'all'>('active');
     const [newSchoolName, setNewSchoolName] = useState('');
@@ -153,7 +156,7 @@ export const SchoolsManager: React.FC = () => {
     const [saveVerificationState, setSaveVerificationState] = useState<'idle' | 'saving' | 'verifying' | 'success' | 'error'>('idle');
     const [saveVerificationMessage, setSaveVerificationMessage] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
-    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>(null);
+    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'dashboard' | 'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>(null);
     const [isSingleStudentOpen, setIsSingleStudentOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -2165,7 +2168,54 @@ export const SchoolsManager: React.FC = () => {
                 />
 
                 <div className="flex-1 w-full flex flex-col min-h-0 relative">
+                    {/* ── تبويبات المدرسة ── */}
+                    <div className="flex gap-1 mb-4 overflow-x-auto bg-white rounded-2xl border border-gray-100 p-1.5 shadow-sm">
+                        {([
+                            { id: 'dashboard', label: '🏠 نظرة عامة' },
+                            { id: 'overview', label: '🏫 الفصول والطلاب' },
+                            { id: 'import', label: '📥 استيراد' },
+                            { id: 'relations', label: '🤝 المشرفون' },
+                            { id: 'packages', label: '📦 الباقات' },
+                            { id: 'reports', label: '📊 التقارير' },
+                        ] as const).map((tab) => (
+                            <button
+                                key={tab.id}
+                                type="button"
+                                onClick={() => {
+                                    setManagementError(null);
+                                    setManagementNotice(null);
+                                    setActiveTab(tab.id as typeof activeTab);
+                                    setExpandedSchoolStep(tab.id === 'dashboard' ? null : tab.id as any);
+                                }}
+                                className={`shrink-0 rounded-xl px-4 py-2 text-sm font-bold transition-colors whitespace-nowrap ${
+                                    activeTab === tab.id
+                                        ? 'bg-indigo-600 text-white shadow-sm'
+                                        : 'text-gray-600 hover:bg-gray-100'
+                                }`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+                        {/* ── لوحة التحكم — أول تبويب ── */}
+                        {activeTab === 'dashboard' && (
+                            <SchoolDashboardPanel
+                                school={selectedSchool}
+                                schoolClasses={schoolClasses}
+                                schoolStudents={schoolStudents}
+                                supervisors={supervisors}
+                                activePackages={activeSchoolPackages}
+                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                onGoToClasses={() => { setActiveTab('overview'); setExpandedSchoolStep('overview'); }}
+                                onGoToStudents={() => { setActiveTab('overview'); setExpandedSchoolStep('overview'); }}
+                                onGoToPackages={() => { setActiveTab('packages'); setExpandedSchoolStep('packages'); }}
+                                onGoToImport={() => { setActiveTab('import'); setExpandedSchoolStep('import'); }}
+                                onAddClass={() => void handleCreateSingleClass()}
+                            />
+                        )}
+
                         {activeTab === 'overview' && (
                             <div data-testid="school-classes-panel" className="space-y-8">
                                 <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
@@ -2212,6 +2262,7 @@ export const SchoolsManager: React.FC = () => {
                         )}
                     </div>
                 </div>
+
 
                 <SchoolCommandCenterPanel
                     readinessStatusLabel={readinessStatusLabel}
