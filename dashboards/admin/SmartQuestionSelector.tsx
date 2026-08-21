@@ -174,19 +174,27 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     if (manualPage > totalManualPages) setManualPage(totalManualPages);
   }, [manualPage, totalManualPages]);
 
-  // ── الأقسام والمهارات المتاحة للمسار ──────────────────────────────────────
-  const pathSubjectIds = useMemo(() => {
-    return new Set(subjects.filter((s) => s.pathId === pathId).map((s) => s.id));
-  }, [subjects, pathId]);
+  // ── الأقسام والمهارات المتاحة للمادة المختارة داخل المسار ─────────────────
+  const scopedSubjectIds = useMemo(() => {
+    if (subjectId) return new Set([subjectId]);
+    return new Set(subjects.filter((subject) => subject.pathId === pathId).map((subject) => subject.id));
+  }, [subjects, pathId, subjectId]);
 
   const availableSections = useMemo(
-    () => sections.filter((s) => pathSubjectIds.has(s.subjectId)),
-    [sections, pathSubjectIds],
+    () => sections.filter((section) => scopedSubjectIds.has(section.subjectId)),
+    [sections, scopedSubjectIds],
   );
   const availableSkills = useMemo(() => {
-    if (!selectedSectionId) return skills.filter((s) => pathSubjectIds.has(s.subjectId));
-    return skills.filter((s) => pathSubjectIds.has(s.subjectId) && s.sectionId === selectedSectionId);
-  }, [skills, pathSubjectIds, selectedSectionId]);
+    if (!selectedSectionId) return skills.filter((skill) => scopedSubjectIds.has(skill.subjectId));
+    return skills.filter((skill) => scopedSubjectIds.has(skill.subjectId) && skill.sectionId === selectedSectionId);
+  }, [skills, scopedSubjectIds, selectedSectionId]);
+
+  useEffect(() => {
+    if (!selectedSectionId) return;
+    if (availableSections.some((section) => section.id === selectedSectionId)) return;
+    setSelectedSectionId("");
+    setSelectedSkillIds([]);
+  }, [availableSections, selectedSectionId]);
 
   const toggleQuestion = useCallback((id: string) => {
     if (selectedIds.includes(id)) onChange(selectedIds.filter((sid) => sid !== id));
