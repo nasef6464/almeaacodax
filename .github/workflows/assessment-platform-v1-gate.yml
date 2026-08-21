@@ -67,6 +67,9 @@ jobs:
       - name: Unified exam question-source contract
         run: npm run smoke:exam-question-source
 
+      - name: Builder subject-scope contract
+        run: node scripts/smoke-assessment-builder-subject-scope-contract.mjs
+
       - name: Quiz access contract
         run: npm run smoke:quiz-access
 
