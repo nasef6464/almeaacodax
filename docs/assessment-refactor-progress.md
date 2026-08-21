@@ -8,7 +8,7 @@
 
 ---
 
-## المرحلة الحالية
+## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
 
 ### A0 — Audit V2: COMPLETE for current baseline
 تم تحديث `docs/assessment-system-code-audit.md` بحيث لا يعيد معالجة Bugs تم إصلاحها بالفعل.
