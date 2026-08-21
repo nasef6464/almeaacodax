@@ -27,7 +27,7 @@ export const loadExamQuestionBank = async (filters: ExamQuestionBankFilters) =>
     sectionId: filters.sectionId,
     skillId: filters.skillId,
     search: filters.search,
-    approvalStatus: 'approved',
+    // لا نُرسل approvalStatus — Backend يُطبق الصلاحيات حسب دور المستخدم تلقائياً
   });
 
 export const useExamQuestionBank = (filters: ExamQuestionBankFilters) => {

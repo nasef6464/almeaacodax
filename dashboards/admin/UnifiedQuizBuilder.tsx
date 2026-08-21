@@ -133,7 +133,12 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [showAnswers, setShowAnswers] = useState<boolean>(editingQuiz?.settings?.showAnswers ?? (editingQuiz?.settings as any)?.showCorrectAnswers ?? true);
   const [showExplanations, setShowExplanations] = useState<boolean>((editingQuiz?.settings as any)?.showExplanations ?? true);
   const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(editingQuiz?.settings?.randomizeQuestions ?? (editingQuiz?.settings as any)?.shuffleQuestions ?? false);
-  const [shuffleOptions, setShuffleOptions] = useState<boolean>((editingQuiz?.settings as any)?.shuffleOptions ?? false);
+  // قراءة: randomizeOptions هو الاسم القانوني، shuffleOptions هو legacy fallback
+  const [shuffleOptions, setShuffleOptions] = useState<boolean>(
+    (editingQuiz?.settings as any)?.randomizeOptions ??
+    (editingQuiz?.settings as any)?.shuffleOptions ??
+    false
+  );
 
   // Step 4
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? []);
@@ -251,6 +256,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           showAnswers,
           showExplanations,
           randomizeQuestions: shuffleQuestions,
+          // randomizeOptions هو الاسم القانوني في Quiz model / assessmentSettings.ts
+          // shuffleOptions مُبقى للقراءة من البيانات القديمة (legacy read compatibility)
+          randomizeOptions: shuffleOptions,
           shuffleOptions,
         } as any,
         access: { type: accessType === "package" ? "paid" : accessType } as any,

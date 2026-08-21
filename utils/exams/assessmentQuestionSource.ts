@@ -127,7 +127,7 @@ export const createAssessmentQuestionSource = (client: AssessmentQuestionSourceC
       sectionId: request.sectionId,
       skillId: request.skillId,
       search: request.search,
-      approvalStatus: request.approvalStatus ?? 'approved',
+      approvalStatus: request.approvalStatus,
     });
 
     const questions = (Array.isArray(response?.data) ? response.data : [])

@@ -646,7 +646,7 @@ export const QuizPage: React.FC = () => {
   const passingScore = quiz?.settings?.passingScore ?? 50;
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
-  const activeOptionLayout = 'horizontal' as const;
+  const activeOptionLayout = ((quiz?.settings as any)?.optionLayout as 'horizontal' | 'auto' | undefined) ?? 'horizontal';
   const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
   const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;

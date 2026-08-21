@@ -1,6 +1,6 @@
 # Assessment Platform V1 — Progress Ledger
 
-**آخر تحديث:** 20 أغسطس 2026  
+**آخر تحديث:** 21 أغسطس 2026  
 **Active branch:** `develop/assessment-platform-v1`  
 **Base:** `main` @ `7b666fe50d00766ce16f4b3f42d91edd659ffa12`
 

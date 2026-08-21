@@ -71,12 +71,15 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     setLoadingQuestions(true);
     setLoadError("");
 
+    // لا نُرسل approvalStatus هنا — Backend يحدد الرؤية حسب دور المستخدم تلقائياً:
+    // - Admin/Supervisor/Teacher: يرون جميع الأسئلة في نطاقهم بما فيها Draft و Pending.
+    // - إرسال approvalStatus: 'approved' صراحةً كان يُخفي الأسئلة غير المعتمدة عن Admin
+    //   عند بناء الاختبار، وهو سلوك غير مقصود يمنع إضافة الأسئلة الجديدة.
     void assessmentQuestionSource
       .loadAll({
         pathId,
         subjectId,
         sectionId: selectedSectionId || undefined,
-        approvalStatus: 'approved',
       })
       .then((result) => {
         if (generation !== requestGenerationRef.current) return;
