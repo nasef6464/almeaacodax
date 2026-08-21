@@ -23,6 +23,8 @@ import { isStandaloneMockExam } from '../utils/mockExam';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
 import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';
+import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
+
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -1687,8 +1689,21 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             ))}
         </div>
 
+        {/* ===== مهامي من المشرف ===== */}
+        {user.role === Role.STUDENT && assignedQuizzes.length > 0 && (
+          <SupervisorTasksStrip
+            assignedQuizzes={assignedQuizzes}
+            examResults={examResults}
+            userId={user.id}
+            onStartQuiz={(quizId) => {
+              window.location.assign(`/quiz/${quizId}`);
+            }}
+          />
+        )}
+
         {/* Student Tools: Parent Code & Notifications */}
         {user.role === Role.STUDENT && (
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm transition-all hover:shadow-md cursor-pointer" onClick={() => setShowCalculator(true)}>
                 <div className="flex items-center gap-4">
