@@ -1,4 +1,9 @@
 import { Quiz } from '../types';
+import {
+  isAssessmentMock,
+  isAssessmentPractice,
+  resolveCanonicalQuizKind,
+} from './assessmentClassification';
 
 type QuizPlacementSource = Pick<Quiz, 'type' | 'placement' | 'showInTraining' | 'showInMock'>;
 
@@ -19,6 +24,13 @@ export const isTrainingQuiz = (quiz: QuizPlacementSource) => {
   return quiz.type === 'bank';
 };
 
+/**
+ * Legacy placement visibility helper.
+ *
+ * IMPORTANT: هذا لا يعني أن الاختبار محاكي حقيقي. الاسم محفوظ للتوافق مع
+ * الاستدعاءات القديمة التي تقصد "يظهر في مساحة الاختبارات".
+ * استخدم isTrueMockExam/resolveAssessmentClassification لتحديد المحاكي الحقيقي.
+ */
 export const isMockQuiz = (quiz: QuizPlacementSource) => {
   if (typeof quiz.showInMock === 'boolean') return quiz.showInMock;
   if (quiz.placement) return quiz.placement === 'mock' || quiz.placement === 'both';
@@ -26,31 +38,19 @@ export const isMockQuiz = (quiz: QuizPlacementSource) => {
 };
 
 /**
- * يحدد ما إذا كان الاختبار محاكيًا حقيقيًا (على غرار قياس) بأقسام
+ * يحدد ما إذا كان الاختبار محاكيًا حقيقيًا (على غرار قياس) بأقسام.
+ * المصدر القانوني الآن هو assessmentClassification.ts.
  */
-export const isTrueMockExam = (quiz: Partial<Quiz>) => {
-  return quiz.quizKind === 'mock' || quiz.mockExam?.enabled === true;
-};
+export const isTrueMockExam = (quiz: Partial<Quiz>) => isAssessmentMock(quiz);
 
-export const isDrill = (quiz: Partial<Quiz>) => {
-  return quiz.quizKind === 'drill';
-};
+export const isDrill = (quiz: Partial<Quiz>) => isAssessmentPractice(quiz);
 
 /**
  * يستنتج quizKind من الحقول القديمة للاختبارات التي لا تملك quizKind صريحاً.
  * يستخدم للتوافق العكسي عند فتح اختبارات قديمة في UnifiedQuizBuilder.
  */
-export const inferQuizKind = (quiz: Partial<Quiz>): NonNullable<Quiz['quizKind']> => {
-  // إذا كان quizKind موجوداً فعلاً فأرجعه مباشرة
-  if (quiz.quizKind) return quiz.quizKind;
-  // محاكي حقيقي
-  if (quiz.mockExam?.enabled === true) return 'mock';
-  // تدريب (bank / training placement)
-  if (quiz.type === 'bank' || quiz.placement === 'training') return 'drill';
-  // اختبار عادي هو الافتراضي
-  return 'test';
-};
-
+export const inferQuizKind = (quiz: Partial<Quiz>): NonNullable<Quiz['quizKind']> =>
+  resolveCanonicalQuizKind(quiz);
 
 export const getQuizPlacementLabel = (quiz: QuizPlacementSource) => {
   const training = isTrainingQuiz(quiz);

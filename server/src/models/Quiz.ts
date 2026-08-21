@@ -52,6 +52,10 @@ const quizSchema = new Schema(
       passingScore: { type: Number, default: 60 },
       timeLimit: { type: Number, default: 60 },
       randomizeQuestions: { type: Boolean, default: true },
+      // Canonical V1 field. No default yet so legacy values can be resolved explicitly.
+      randomizeOptions: { type: Boolean, default: undefined },
+      // Legacy builder compatibility. Canonical readers must prefer randomizeOptions when both exist.
+      shuffleOptions: { type: Boolean, default: undefined },
       showProgressBar: { type: Boolean, default: true },
       requireAnswerBeforeNext: { type: Boolean, default: false },
       allowQuestionReview: { type: Boolean, default: true },

@@ -646,9 +646,56 @@ export const QuizPage: React.FC = () => {
   const passingScore = quiz?.settings?.passingScore ?? 50;
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
-  const activeOptionLayout = 'horizontal' as const;
+  const activeOptionLayout = ((quiz?.settings as any)?.optionLayout as 'horizontal' | 'auto' | undefined) ?? 'horizontal';
   const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
   const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
+
+  // ── G2: خلط خيارات الإجابة (randomizeOptions) ────────────────────────────
+  // يُبنى مرة واحدة عند تحميل الأسئلة فقط (يعتمد على quizQuestions كـkey).
+  // questionShuffleMap: Map<questionId, number[]>
+  //   القيمة: مصفوفة originalIndices مرتّبة حسب ترتيب العرض.
+  //   مثال: [2, 0, 1] يعني: عرض option[2] أولاً، ثم option[0]، ثم option[1].
+  // إذا كان randomizeOptions = false أو undefined → null (نعرض الخيارات بترتيبها الأصلي).
+  const questionShuffleMap = useMemo<Map<string, number[]> | null>(() => {
+    const shouldRandomize = (quiz?.settings as any)?.randomizeOptions === true;
+    if (!shouldRandomize || quizQuestions.length === 0) return null;
+
+    const map = new Map<string, number[]>();
+    for (const question of quizQuestions) {
+      const count = question.options?.length ?? 0;
+      if (count <= 1) {
+        // سؤال بخيار واحد أو بدون خيارات: لا خلط
+        map.set(question.id, Array.from({ length: count }, (_, i) => i));
+        continue;
+      }
+      // Fisher-Yates shuffle بـseed بسيط من questionId حتى يكون ثابتاً بين re-renders
+      const indices = Array.from({ length: count }, (_, i) => i);
+      // نحرص على أن الـseed يختلف بين الأسئلة فيستخدم question.id بدل Math.random
+      let seedVal = question.id.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+      for (let i = indices.length - 1; i > 0; i--) {
+        seedVal = (seedVal * 1664525 + 1013904223) & 0xffffffff;
+        const j = Math.abs(seedVal) % (i + 1);
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      map.set(question.id, indices);
+    }
+    return map;
+  // يُعاد الحساب فقط عند تغيير الأسئلة أو تغيير إعداد randomizeOptions
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizQuestions, (quiz?.settings as any)?.randomizeOptions]);
+
+  // الخيارات المعروضة للسؤال الحالي (مخلوطة أو أصلية)
+  const currentDisplayOptions = useMemo<{ text: string; originalIndex: number }[]>(() => {
+    if (!currentQuestion) return [];
+    const indices = questionShuffleMap?.get(currentQuestion.id);
+    if (!indices) {
+      return (currentQuestion.options || []).map((text, i) => ({ text, originalIndex: i }));
+    }
+    return indices.map((originalIndex) => ({
+      text: currentQuestion.options[originalIndex] ?? '',
+      originalIndex,
+    }));
+  }, [currentQuestion, questionShuffleMap]);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
   const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
@@ -707,10 +754,14 @@ export const QuizPage: React.FC = () => {
     return `/quiz?${params.toString()}`;
   };
 
-  const handleOptionSelect = (optionIndex: number) => {
+  const handleOptionSelect = (displayIndex: number) => {
     if (isFinished || !currentQuestion) return;
+    // عند تفعيل randomizeOptions، الـdisplayIndex يشير لموقع الخيار في الشاشة.
+    // نحوّله إلى originalIndex (الترتيب الأصلي في question.options)
+    // حتى تظل المقارنة مع correctOptionIndex صحيحة دون أي تغيير في منطق التصحيح.
+    const originalIndex = currentDisplayOptions[displayIndex]?.originalIndex ?? displayIndex;
     setSelectedOptions((prev) => {
-      const next = { ...prev, [currentQuestion.id]: optionIndex };
+      const next = { ...prev, [currentQuestion.id]: originalIndex };
       api.updateLiveExamProgress({
         quizId: quiz?.id || '',
         answeredQuestions: Object.keys(next).length,
@@ -720,8 +771,8 @@ export const QuizPage: React.FC = () => {
     });
     recordQuestionAttempt({
       questionId: currentQuestion.id.toString(),
-      selectedOptionIndex: optionIndex,
-      isCorrect: optionIndex === currentQuestion.correctOptionIndex,
+      selectedOptionIndex: originalIndex,
+      isCorrect: originalIndex === currentQuestion.correctOptionIndex,
       timeSpentSeconds: 0,
       date: new Date().toISOString(),
     });
@@ -1304,25 +1355,25 @@ export const QuizPage: React.FC = () => {
               )}
 
               <div className={`grid ${optionGridClass} gap-2`}>
-                {currentQuestion?.options.map((option, index) => (
+                {currentDisplayOptions.map((displayOption, displayIndex) => (
                   <button
-                    key={index}
-                    onClick={() => handleOptionSelect(index)}
+                    key={displayOption.originalIndex}
+                    onClick={() => handleOptionSelect(displayIndex)}
                     className={`${optionButtonHeightClass} w-full px-2 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-1.5 shadow-sm ${
-                      selectedOptions[currentQuestion.id] === index
+                      selectedOptions[currentQuestion.id] === displayOption.originalIndex
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
                     }`}
                   >
                     <span className={`flex-1 text-xs sm:text-sm font-bold leading-5 text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
-                      <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
+                      <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
                     </span>
                     <div className="flex items-center shrink-0">
                       <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${
-                        selectedOptions[currentQuestion.id] === index ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
+                        selectedOptions[currentQuestion.id] === displayOption.originalIndex ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
                       }`}>
                         <div className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full ${
-                          selectedOptions[currentQuestion.id] === index ? 'bg-indigo-600' : 'bg-transparent'
+                          selectedOptions[currentQuestion.id] === displayOption.originalIndex ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
                     </div>

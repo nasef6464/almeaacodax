@@ -133,7 +133,12 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [showAnswers, setShowAnswers] = useState<boolean>(editingQuiz?.settings?.showAnswers ?? (editingQuiz?.settings as any)?.showCorrectAnswers ?? true);
   const [showExplanations, setShowExplanations] = useState<boolean>((editingQuiz?.settings as any)?.showExplanations ?? true);
   const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(editingQuiz?.settings?.randomizeQuestions ?? (editingQuiz?.settings as any)?.shuffleQuestions ?? false);
-  const [shuffleOptions, setShuffleOptions] = useState<boolean>((editingQuiz?.settings as any)?.shuffleOptions ?? false);
+  // قراءة: randomizeOptions هو الاسم القانوني، shuffleOptions هو legacy fallback
+  const [shuffleOptions, setShuffleOptions] = useState<boolean>(
+    (editingQuiz?.settings as any)?.randomizeOptions ??
+    (editingQuiz?.settings as any)?.shuffleOptions ??
+    false
+  );
 
   // Step 4
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? []);
@@ -225,7 +230,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
   // ── Validation ────────────────────────────────────────────────────────────
   const stepValid = [
-    title.trim().length > 0 && pathId.length > 0,
+    title.trim().length > 0 && pathId.length > 0 && subjectId.length > 0,
     kind === "mock" ? mockSections.every((s) => s.questionIds.length > 0) : questionIds.length > 0,
     true,
     isAdmin || targetGroupIds.length > 0 || targetUserIds.length > 0,
@@ -251,6 +256,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           showAnswers,
           showExplanations,
           randomizeQuestions: shuffleQuestions,
+          // randomizeOptions هو الاسم القانوني في Quiz model / assessmentSettings.ts
+          // shuffleOptions مُبقى للقراءة من البيانات القديمة (legacy read compatibility)
+          randomizeOptions: shuffleOptions,
           shuffleOptions,
         } as any,
         access: { type: accessType === "package" ? "paid" : accessType } as any,
@@ -427,11 +435,11 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-600 mb-1 block">المادة</label>
+                  <label className="text-xs font-bold text-gray-600 mb-1 block">المادة *</label>
                   <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)}
                     disabled={!pathId}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-indigo-400 disabled:opacity-50">
-                    <option value="">كل المواد</option>
+                    <option value="">اختر المادة</option>
                     {availableSubjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
                 </div>

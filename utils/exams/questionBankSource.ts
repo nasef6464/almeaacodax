@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { api } from '../../services/api';
 import { Question } from '../../types';
+import { assessmentQuestionSource } from './assessmentQuestionSource';
 
 export const EXAM_QUESTION_BANK_EMPTY_MESSAGE =
   'لا توجد أسئلة مطابقة لهذا المسار/المادة/القسم. راجع الفلاتر أو تصنيف الأسئلة.';
@@ -14,71 +14,21 @@ export type ExamQuestionBankFilters = {
   enabled?: boolean;
 };
 
-type QuestionBankPage = {
-  data?: unknown[];
-  pagination?: {
-    total?: number;
-    page?: number;
-    totalPages?: number;
-    hasNext?: boolean;
-  };
-};
-
-const PAGE_LIMIT = 100;
-const MAX_PAGES = 10;
-
-const normalizeQuestion = (value: unknown): Question => {
-  const question = (value || {}) as Record<string, unknown>;
-  return {
-    ...question,
-    id: String(question.id || question._id || ''),
-    text: String(question.text || ''),
-    options: Array.isArray(question.options) ? question.options.map(String) : [],
-    correctOptionIndex: Number(question.correctOptionIndex ?? 0),
-    explanation: question.explanation ? String(question.explanation) : '',
-    videoUrl: question.videoUrl ? String(question.videoUrl) : undefined,
-    imageUrl: question.imageUrl ? String(question.imageUrl) : undefined,
-    skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
-    pathId: question.pathId ? String(question.pathId) : undefined,
-    subject: String(question.subject || ''),
-    sectionId: question.sectionId ? String(question.sectionId) : undefined,
-    difficulty: (question.difficulty || 'Medium') as Question['difficulty'],
-    type: (question.type || 'mcq') as Question['type'],
-  } as Question;
-};
-
-export const loadExamQuestionBank = async (filters: ExamQuestionBankFilters) => {
-  const questions = new Map<string, Question>();
-  let page = 1;
-  let total = 0;
-  let hasNext = true;
-
-  while (hasNext && page <= MAX_PAGES) {
-    const response = (await api.getQuestionsPaginated({
-      page,
-      limit: PAGE_LIMIT,
-      pathId: filters.pathId,
-      subject: filters.subjectId,
-      sectionId: filters.sectionId,
-      skillId: filters.skillId,
-      search: filters.search,
-      approvalStatus: 'approved',
-    })) as QuestionBankPage;
-
-    const items = Array.isArray(response?.data) ? response.data : [];
-    items.map(normalizeQuestion).filter((question) => question.id).forEach((question) => questions.set(question.id, question));
-
-    total = Number(response?.pagination?.total ?? questions.size);
-    const totalPages = Math.max(1, Number(response?.pagination?.totalPages || 1));
-    hasNext = Boolean(response?.pagination?.hasNext) && page < totalPages;
-    page += 1;
-  }
-
-  return {
-    questions: Array.from(questions.values()),
-    total,
-  };
-};
+/**
+ * Legacy compatibility adapter.
+ * Runtime callers keep the same API while the real fetching/pagination logic
+ * lives in assessmentQuestionSource. Remove this wrapper only after all callers
+ * migrate to paginated source APIs directly.
+ */
+export const loadExamQuestionBank = async (filters: ExamQuestionBankFilters) =>
+  assessmentQuestionSource.loadAll({
+    pathId: filters.pathId,
+    subjectId: filters.subjectId,
+    sectionId: filters.sectionId,
+    skillId: filters.skillId,
+    search: filters.search,
+    // لا نُرسل approvalStatus — Backend يُطبق الصلاحيات حسب دور المستخدم تلقائياً
+  });
 
 export const useExamQuestionBank = (filters: ExamQuestionBankFilters) => {
   const [questions, setQuestions] = useState<Question[]>([]);
