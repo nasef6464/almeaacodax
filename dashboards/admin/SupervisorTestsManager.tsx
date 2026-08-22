@@ -12,6 +12,7 @@ import { MockExamManager } from './MockExamManager';
 import { api } from '../../services/api';
 import { isTrueMockExam } from '../../utils/quizPlacement';
 import { QuizAssignWidget } from './QuizAssignWidget';
+import { AssignedTestDetailPanel } from './AssignedTestDetailPanel';
 
 type ViewMode = 'list' | 'create' | 'create_normal' | 'create_mock' | 'analytics' | 'compare';
 // drill = تدريبات | test = اختبارات عادية | mock = محاكيات قياس
@@ -28,6 +29,8 @@ export const SupervisorTestsManager: React.FC = () => {
   const [tabFilter, setTabFilter] = useState<TabFilter>('all');
   /** ID الاختبار المفتوح في QuizAssignWidget */
   const [assignWidgetQuizId, setAssignWidgetQuizId] = useState<string | null>(null);
+  /** ID الاختبار المفتوح في AssignedTestDetailPanel */
+  const [detailPanelQuizId, setDetailPanelQuizId] = useState<string | null>(null);
 
   // ── Scope ─────────────────────────────────────────────────────────────────
   const scopedGroupIds = useMemo(() => {
@@ -538,6 +541,13 @@ export const SupervisorTestsManager: React.FC = () => {
               {/* Action Buttons */}
               <div className="flex gap-2 mb-3">
                 <button
+                  onClick={() => setDetailPanelQuizId(q.id)}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-violet-200 bg-violet-50 text-violet-700 font-bold hover:bg-violet-100 transition-all text-xs shadow-sm"
+                >
+                  <BarChart size={14} />
+                  تحليل مفصّل
+                </button>
+                <button
                   onClick={() => setAssignWidgetQuizId(q.id)}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 transition-all text-xs shadow-sm"
                 >
@@ -652,6 +662,37 @@ export const SupervisorTestsManager: React.FC = () => {
               </div>
             </div>
           </div>
+        );
+      })()}
+      {/* ── AssignedTestDetailPanel Overlay ────────────────────────────── */}
+      {detailPanelQuizId && (() => {
+        const quizWithStats = quizzesWithStats.find((q) => q.id === detailPanelQuizId);
+        if (!quizWithStats) return null;
+        const targetStudentList = quizWithStats.stats.targetStudentIds.map((id) => {
+          const group = groups.find((g) => (g.studentIds || []).includes(id) && scopedGroupIds.has(g.id));
+          return { id, name: id, groupName: group?.name };
+        });
+        return (
+          <AssignedTestDetailPanel
+            quizId={quizWithStats.id}
+            quizTitle={quizWithStats.title}
+            quizKind={quizWithStats.quizKind}
+            totalQuestions={quizWithStats.questionIds?.length ?? 0}
+            passingScore={quizWithStats.settings?.passingScore ?? 60}
+            dueDate={quizWithStats.dueDate}
+            targetStudents={targetStudentList}
+            results={quizWithStats.stats.results}
+            onClose={() => setDetailPanelQuizId(null)}
+            onRemindAbsent={async (absentIds) => {
+              await api.sendNotifications({
+                title: 'تذكير بأداء الاختبار',
+                body: `نذكرك بضرورة أداء الاختبار: ${quizWithStats.title}`,
+                channels: ['in_app'],
+                userIds: absentIds,
+                variables: { link: '/dashboard?tab=quizzes' },
+              });
+            }}
+          />
         );
       })()}
 
