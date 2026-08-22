@@ -51,6 +51,7 @@ export const quizSchema = z.object({
   targetGroupIds: z.array(z.string()).default([]),
   targetUserIds: z.array(z.string()).default([]),
   dueDate: z.string().nullable().optional(),
+  supervisorMessage: z.string().nullable().optional(),
   isPublished: z.boolean().default(false),
   showOnPlatform: z.boolean().default(true),
   ownerType: z.enum(["platform", "teacher", "school"]).optional(),

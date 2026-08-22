@@ -639,6 +639,7 @@ export const SupervisorTestsManager: React.FC = () => {
                       targetGroupIds: config.targetGroupIds,
                       targetUserIds: config.targetUserIds.length > 0 ? config.targetUserIds : undefined,
                       dueDate: config.dueDate,
+                      supervisorMessage: config.message || null,
                     });
                     if (config.targetUserIds.length + config.targetGroupIds.length > 0) {
                       const targetStudentIds = [

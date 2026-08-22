@@ -122,7 +122,7 @@ const ActionButton: React.FC<{
 };
 
 export const SupervisorDashboard: React.FC = () => {
-  const { user, groups, users, examResults, quizzes, hydrateUsers, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
+  const { user, groups, users, examResults, quizzes, updateQuiz, hydrateUsers, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
   const [activeTab, setActiveTab] = useState<SupervisorTab>('overview');
   const [studentTab, setStudentTab] = useState<StudentSubTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -139,6 +139,8 @@ export const SupervisorDashboard: React.FC = () => {
   const [liveExams, setLiveExams] = useState<any[]>([]);
   /** طالب مفتوح له QuizAssignWidget (إرسال اختبار فردي) */
   const [assignToStudentId, setAssignToStudentId] = useState<string | null>(null);
+  /** الاختبار المختار في overlay الإرسال الفردي */
+  const [pickedQuizId, setPickedQuizId] = useState<string>('');
 
   useEffect(() => {
     let timer: number;
@@ -1743,6 +1745,9 @@ export const SupervisorDashboard: React.FC = () => {
         const scopedGroupsList = groups
           .filter((g) => (user.groupIds || []).includes(g.id) || g.supervisorIds?.includes(user.id))
           .map((g) => ({ id: g.id, name: g.name, studentIds: g.studentIds }));
+        // اختبارات المشرف المنشورة فقط
+        const supervisorQuizzes = quizzes.filter((q) => q.isPublished);
+        const pickedQuiz = supervisorQuizzes.find((q) => q.id === pickedQuizId);
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -1752,32 +1757,59 @@ export const SupervisorDashboard: React.FC = () => {
                   <h3 className="text-base font-black">{student?.name || assignToStudentId}</h3>
                   {studentGroup && <p className="text-xs opacity-70">{studentGroup.name}</p>}
                 </div>
-                <button type="button" onClick={() => setAssignToStudentId(null)}
+                <button type="button" onClick={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
                   <span className="text-white font-black text-lg">✕</span>
                 </button>
               </div>
-              <div className="p-5 max-h-[80vh] overflow-y-auto">
-                <QuizAssignWidget
-                  quizId=""
-                  quizTitle="اختر اختباراً من قائمة الاختبارات"
-                  scopedGroups={scopedGroupsList}
-                  scopedStudents={[{ id: assignToStudentId, name: student?.name || assignToStudentId, groupId: studentGroup?.id }]}
-                  existingConfig={{ targetUserIds: [assignToStudentId], targetGroupIds: [] }}
-                  hideAccessType={true}
-                  confirmLabel="إرسال للطالب"
-                  onCancel={() => setAssignToStudentId(null)}
-                  onAssign={async (config) => {
-                    const { api: apiService } = await import('../../services/api');
-                    await apiService.sendNotifications({
-                      title: 'اختبار جديد من مشرفك',
-                      body: config.message || 'تم تكليفك باختبار جديد',
-                      channels: ['in_app'],
-                      userIds: [assignToStudentId],
-                      variables: { link: '/dashboard?tab=quizzes' },
-                    });
-                  }}
-                />
+              <div className="p-5 max-h-[80vh] overflow-y-auto space-y-3">
+                {/* اختيار الاختبار */}
+                <div>
+                  <label className="text-xs font-black text-gray-700 mb-1.5 block">اختر الاختبار</label>
+                  <select
+                    value={pickedQuizId}
+                    onChange={(e) => setPickedQuizId(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  >
+                    <option value="">— اختر اختباراً —</option>
+                    {supervisorQuizzes.map((q) => (
+                      <option key={q.id} value={q.id}>{q.title}</option>
+                    ))}
+                  </select>
+                </div>
+                {pickedQuiz && (
+                  <QuizAssignWidget
+                    quizId={pickedQuiz.id}
+                    quizTitle={pickedQuiz.title}
+                    quizKind={pickedQuiz.quizKind as 'drill' | 'test' | 'mock' | undefined}
+                    scopedGroups={scopedGroupsList}
+                    scopedStudents={[{ id: assignToStudentId, name: student?.name || assignToStudentId, groupId: studentGroup?.id }]}
+                    existingConfig={{ targetUserIds: [assignToStudentId], targetGroupIds: [] }}
+                    hideAccessType={true}
+                    confirmLabel="إرسال للطالب"
+                    onCancel={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
+                    onAssign={async (config) => {
+                      await updateQuiz(pickedQuiz.id, {
+                        targetUserIds: [
+                          ...(pickedQuiz.targetUserIds || []).filter((id) => id !== assignToStudentId),
+                          assignToStudentId,
+                        ],
+                        dueDate: config.dueDate,
+                        supervisorMessage: config.message || null,
+                      });
+                      const { api: apiService } = await import('../../services/api');
+                      await apiService.sendNotifications({
+                        title: 'اختبار جديد من مشرفك',
+                        body: config.message || `تم تكليفك باختبار: ${pickedQuiz.title}`,
+                        channels: ['in_app'],
+                        userIds: [assignToStudentId],
+                        variables: { link: '/dashboard?tab=quizzes' },
+                      });
+                      setAssignToStudentId(null);
+                      setPickedQuizId('');
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>

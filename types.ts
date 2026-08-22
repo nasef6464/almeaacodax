@@ -485,6 +485,7 @@ export interface Quiz extends ContentWorkflow {
     targetGroupIds?: string[];
     targetUserIds?: string[];
     dueDate?: string;
+    supervisorMessage?: string | null;
 }
 
 export interface PublicBarcodeTestConfig {
