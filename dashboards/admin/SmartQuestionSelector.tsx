@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw, ChevronRight, ChevronLeft } from "lucide-react";
+import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw, ChevronRight, ChevronLeft, Eye } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { Question } from "../../types";
 import { api } from "../../services/api";
@@ -54,6 +54,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [manualPage, setManualPage] = useState(1);
+  const [hoveredQuestionId, setHoveredQuestionId] = useState<string | null>(null);
   const selectedSkillKey = useMemo(() => [...selectedSkillIds].sort().join("|"), [selectedSkillIds]);
 
   // ── تحميل النطاق الحالي من المصدر القانوني بدون حد 300/1000 صامت ─────────
@@ -243,9 +244,21 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     setRefreshKey((value) => value + 1);
   };
 
+  // ── مشتق: السؤال المعروض في لوحة المعاينة ─────────────────────────────────
+  const previewQuestion: Question | null = useMemo(() => {
+    if (hoveredQuestionId) return allQuestionsMap.get(hoveredQuestionId) ?? null;
+    if (selectedIds.length > 0) return allQuestionsMap.get(selectedIds[selectedIds.length - 1]) ?? null;
+    return null;
+  }, [hoveredQuestionId, selectedIds, allQuestionsMap]);
+
+  const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'ه', 'و'];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {/* اللوحة اليسرى */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+      {/* ══════════════════════════════════════════════
+          اللوحة اليسرى: الفلاتر + قائمة الأسئلة
+      ══════════════════════════════════════════════ */}
       <div className="flex flex-col gap-3">
         {/* أزرار الطريقة */}
         <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
@@ -368,7 +381,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
         {mode !== "smart" && !loadingQuestions && pathId && (
           <div className="space-y-2">
-            <div className="overflow-y-auto space-y-1.5 max-h-64 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
+            <div className="overflow-y-auto space-y-1.5 max-h-72 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
               {filteredQuestions.length === 0
                 ? (
                   <div className="py-6 text-center text-xs text-gray-400">
@@ -382,13 +395,23 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                 )
                 : visibleFilteredQuestions.map((q) => {
                     const isSelected = selectedIds.includes(q.id);
-                    const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 100);
+                    const isHovered = hoveredQuestionId === q.id;
+                    const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
                     return (
-                      <button key={q.id} type="button" onClick={() => toggleQuestion(q.id)}
+                      <button key={q.id} type="button"
+                        onClick={() => { toggleQuestion(q.id); setHoveredQuestionId(q.id); }}
+                        onMouseEnter={() => setHoveredQuestionId(q.id)}
                         disabled={!isSelected && selectedIds.length >= maxQuestions}
-                        className={`w-full text-right px-3 py-2.5 rounded-lg border flex items-start gap-2 text-xs transition-all ${isSelected ? "bg-indigo-50 border-indigo-300 text-indigo-900" : "bg-white border-gray-100 text-gray-700 hover:border-indigo-200 disabled:opacity-40"}`}>
+                        className={`w-full text-right px-3 py-2.5 rounded-lg border flex items-start gap-2 text-xs transition-all ${
+                          isHovered
+                            ? "border-indigo-400 bg-indigo-50/80 shadow-sm"
+                            : isSelected
+                            ? "bg-indigo-50 border-indigo-300 text-indigo-900"
+                            : "bg-white border-gray-100 text-gray-700 hover:border-indigo-200 disabled:opacity-40"
+                        }`}>
                         <CheckCircle2 size={14} className={`shrink-0 mt-0.5 ${isSelected ? "text-indigo-600" : "text-gray-300"}`}/>
                         <span className="flex-1 line-clamp-2 font-medium leading-relaxed">{plainText || "—"}</span>
+                        {isHovered && <Eye size={12} className="shrink-0 mt-0.5 text-indigo-400"/>}
                         {q.difficulty && (
                           <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
                             {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
@@ -416,7 +439,90 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
         )}
       </div>
 
-      {/* اللوحة اليمنى: المختارة */}
+      {/* ══════════════════════════════════════════════
+          اللوحة الوسطى: معاينة السؤال المحدد
+      ══════════════════════════════════════════════ */}
+      <div className="hidden lg:flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <Eye size={14} className="text-indigo-500"/>
+          <h4 className="text-sm font-black text-gray-700">معاينة السؤال</h4>
+          {previewQuestion && (
+            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${DIFFICULTY_COLORS[previewQuestion.difficulty] || "border-gray-200 text-gray-400"}`}>
+              {DIFFICULTY_LABELS[previewQuestion.difficulty] || previewQuestion.difficulty}
+            </span>
+          )}
+        </div>
+
+        <div className="flex-1 overflow-y-auto rounded-2xl border border-gray-100 bg-white p-4 shadow-sm min-h-[420px]">
+          {!previewQuestion ? (
+            <div className="h-full flex flex-col items-center justify-center text-center text-gray-300 gap-3">
+              <Eye size={36} className="opacity-30"/>
+              <p className="text-xs font-bold">مرّر على سؤال من القائمة<br/>لتظهر المعاينة هنا</p>
+            </div>
+          ) : (
+            <div className="space-y-4 text-right" dir="rtl">
+              {/* نص السؤال */}
+              <div
+                className="text-sm font-bold text-gray-900 leading-relaxed border-r-4 border-indigo-400 pr-3"
+                dangerouslySetInnerHTML={{ __html: previewQuestion.text || "—" }}
+              />
+
+              {/* صورة السؤال */}
+              {previewQuestion.imageUrl && (
+                <img
+                  src={previewQuestion.imageUrl}
+                  alt="صورة السؤال"
+                  className="max-w-full rounded-xl border border-gray-100 shadow-sm max-h-40 object-contain"
+                />
+              )}
+
+              {/* الخيارات */}
+              {previewQuestion.options && previewQuestion.options.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-[11px] font-black text-gray-400 uppercase tracking-wide">الخيارات</p>
+                  {previewQuestion.options.map((opt, idx) => {
+                    const isCorrect = idx === previewQuestion.correctOptionIndex;
+                    return (
+                      <div key={idx}
+                        className={`flex items-start gap-2.5 px-3 py-2.5 rounded-xl border text-xs transition-all ${
+                          isCorrect
+                            ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                            : "bg-gray-50 border-gray-100 text-gray-600"
+                        }`}>
+                        <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                          isCorrect ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-500"
+                        }`}>
+                          {OPTION_LETTERS[idx] || String(idx + 1)}
+                        </span>
+                        <span
+                          className="flex-1 leading-relaxed font-medium"
+                          dangerouslySetInnerHTML={{ __html: opt || "—" }}
+                        />
+                        {isCorrect && (
+                          <CheckCircle2 size={14} className="shrink-0 mt-0.5 text-emerald-500"/>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* الشرح */}
+              {previewQuestion.explanation && (
+                <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
+                  <p className="text-[11px] font-black text-amber-700 mb-1">💡 الشرح</p>
+                  <div
+                    className="text-xs text-amber-800 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: previewQuestion.explanation }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-black text-gray-900">
