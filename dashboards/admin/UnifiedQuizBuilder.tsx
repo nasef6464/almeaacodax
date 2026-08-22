@@ -625,17 +625,15 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
-                      <Lock size={14} />نوع الوصول
+                      <Lock size={14} />نوع الوصول الافتراضي
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {(["free", "paid", "package"] as const).map((t) => (
-                        <button key={t} type="button" onClick={() => setAccessType(t)}
-                          className={`py-2.5 rounded-xl border-2 text-xs font-black transition-all ${
-                            accessType === t ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-600 border-gray-200 hover:border-indigo-400"
-                          }`}>
-                          {t === "free" ? "🆓 مجاني" : t === "paid" ? "💳 مدفوع" : "📦 باقة"}
-                        </button>
-                      ))}
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-3 space-y-1">
+                      <p className="text-xs font-black text-indigo-800 flex items-center gap-1.5">
+                        💡 السعر يُحدَّد من مكان العرض
+                      </p>
+                      <p className="text-[11px] text-indigo-600 leading-relaxed">
+                        الاختبار محتوى مستقل. المجانية أو الدفع تُحدَّد عند إضافته لدورة أو إرساله لمجموعة أو طالب.
+                      </p>
                     </div>
                   </div>
                   <div>
