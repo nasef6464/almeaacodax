@@ -43,6 +43,7 @@ import { StudentIntelligenceProfile } from './StudentIntelligenceProfile';
 import { SupervisorOverviewPanel } from './SupervisorOverviewPanel';
 import { ClassSkillsMapPanel } from './ClassSkillsMapPanel';
 import { ClassReportPanel } from './ClassReportPanel';
+import { QuizAssignWidget } from './QuizAssignWidget';
 
 type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests' | 'live-monitoring';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
@@ -136,6 +137,8 @@ export const SupervisorDashboard: React.FC = () => {
   const [showPrincipalReport, setShowPrincipalReport] = useState(false);
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
   const [liveExams, setLiveExams] = useState<any[]>([]);
+  /** طالب مفتوح له QuizAssignWidget (إرسال اختبار فردي) */
+  const [assignToStudentId, setAssignToStudentId] = useState<string | null>(null);
 
   useEffect(() => {
     let timer: number;
@@ -642,7 +645,7 @@ export const SupervisorDashboard: React.FC = () => {
             }}
             onAssignTest={() => {
               setSelectedStudentId(null);
-              openStudentQuiz(activeStudentDetails.id);
+              setAssignToStudentId(activeStudentDetails.id);
             }}
           />
         )}
@@ -1732,6 +1735,54 @@ export const SupervisorDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+      {/* ── QuizAssignWidget — إرسال اختبار لطالب فردي ─────────────────── */}
+      {assignToStudentId && (() => {
+        const student = supervisorScopeSummary.allStudentsList.find((s) => s.id === assignToStudentId);
+        const studentGroup = groups.find((g) => (g.studentIds || []).includes(assignToStudentId));
+        const scopedGroupsList = groups
+          .filter((g) => (user.groupIds || []).includes(g.id) || g.supervisorIds?.includes(user.id))
+          .map((g) => ({ id: g.id, name: g.name, studentIds: g.studentIds }));
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-4 text-white flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold opacity-80">إرسال اختبار لطالب</p>
+                  <h3 className="text-base font-black">{student?.name || assignToStudentId}</h3>
+                  {studentGroup && <p className="text-xs opacity-70">{studentGroup.name}</p>}
+                </div>
+                <button type="button" onClick={() => setAssignToStudentId(null)}
+                  className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+                  <span className="text-white font-black text-lg">✕</span>
+                </button>
+              </div>
+              <div className="p-5 max-h-[80vh] overflow-y-auto">
+                <QuizAssignWidget
+                  quizId=""
+                  quizTitle="اختر اختباراً من قائمة الاختبارات"
+                  scopedGroups={scopedGroupsList}
+                  scopedStudents={[{ id: assignToStudentId, name: student?.name || assignToStudentId, groupId: studentGroup?.id }]}
+                  existingConfig={{ targetUserIds: [assignToStudentId], targetGroupIds: [] }}
+                  hideAccessType={true}
+                  confirmLabel="إرسال للطالب"
+                  onCancel={() => setAssignToStudentId(null)}
+                  onAssign={async (config) => {
+                    const { api: apiService } = await import('../../services/api');
+                    await apiService.sendNotifications({
+                      title: 'اختبار جديد من مشرفك',
+                      body: config.message || 'تم تكليفك باختبار جديد',
+                      channels: ['in_app'],
+                      userIds: [assignToStudentId],
+                      variables: { link: '/dashboard?tab=quizzes' },
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       </div>
     </DashboardLayout>
