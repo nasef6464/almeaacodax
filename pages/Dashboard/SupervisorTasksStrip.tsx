@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   AlertCircle, CheckCircle2, ChevronRight,
   ClipboardList, Clock, PlayCircle,
@@ -14,8 +14,7 @@ interface Quiz {
   targetUserIds?: string[];
   isPublished?: boolean;
   createdBy?: string;
-  startDate?: string;
-  endDate?: string;
+  dueDate?: string | null;     // ✅ اسم الحقل الصحيح من types.ts
   supervisorMessage?: string;
 }
 
@@ -34,14 +33,9 @@ interface SupervisorTasksStripProps {
 }
 
 // ── Helper ─────────────────────────────────────────────────────────────────────
-function isExpired(endDate?: string): boolean {
-  if (!endDate) return false;
-  return new Date(endDate).getTime() < Date.now();
-}
-
-function isPending(startDate?: string): boolean {
-  if (!startDate) return false;
-  return new Date(startDate).getTime() > Date.now();
+function isExpired(dueDate?: string | null): boolean {
+  if (!dueDate) return false;
+  return new Date(dueDate).getTime() < Date.now();
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────────
@@ -58,8 +52,7 @@ export const SupervisorTasksStrip: React.FC<SupervisorTasksStripProps> = ({
       );
       const attemptsUsed = results.length;
       const maxAttempts = quiz.settings?.maxAttempts ?? 999;
-      const expired = isExpired(quiz.endDate);
-      const pending = isPending(quiz.startDate);
+      const expired = isExpired(quiz.dueDate);
       const done = attemptsUsed >= maxAttempts;
 
       let statusLabel: string;
@@ -69,10 +62,6 @@ export const SupervisorTasksStrip: React.FC<SupervisorTasksStripProps> = ({
       if (expired) {
         statusLabel = 'انتهى الوقت';
         statusColor = 'text-gray-400';
-        canStart = false;
-      } else if (pending) {
-        statusLabel = 'لم يبدأ بعد';
-        statusColor = 'text-amber-600';
         canStart = false;
       } else if (done && attemptsUsed > 0) {
         statusLabel = `مكتمل ✓ (${bestResult?.score ?? 0}%)`;
@@ -103,7 +92,7 @@ export const SupervisorTasksStrip: React.FC<SupervisorTasksStripProps> = ({
         done,
         attemptsUsed,
         bestScore: bestResult?.score ?? null,
-        endDate: quiz.endDate,
+        dueDate: quiz.dueDate,
         supervisorMessage: quiz.supervisorMessage,
       };
     });
@@ -182,9 +171,9 @@ export const SupervisorTasksStrip: React.FC<SupervisorTasksStripProps> = ({
                   <span className={`text-[11px] font-black ${task.statusColor}`}>
                     {task.statusLabel}
                   </span>
-                  {task.endDate && !task.done && !task.expired && (
+                  {task.dueDate && !task.done && !task.expired && (
                     <span className="text-[11px] text-gray-400">
-                      ينتهي: {new Date(task.endDate).toLocaleDateString('ar-SA')}
+                      ينتهي: {new Date(task.dueDate).toLocaleDateString('ar-SA')}
                     </span>
                   )}
                 </div>
