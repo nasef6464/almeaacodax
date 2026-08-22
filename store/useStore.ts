@@ -1844,19 +1844,24 @@ export const useStore = create<AppState>()(
 
             // Taxonomy Actions
             addPath: (path) => {
-                api.createPath(path).catch(console.error);
-                set((state) => ({
-                    paths: [...state.paths, path]
-                }));
+                set((state) => ({ paths: [...state.paths, path] }));
+                api.createPath(path)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addPath failed:', err);
+                        // Rollback optimistic update
+                        set((state) => ({ paths: state.paths.filter(p => p.id !== path.id) }));
+                    });
             },
             updatePath: (pathId, data) => {
-                api.updatePath(pathId, data).catch(console.error);
                 set((state) => ({
                     paths: state.paths.map(p => p.id === pathId ? { ...p, ...data } : p)
                 }));
+                api.updatePath(pathId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updatePath failed:', err); });
             },
             deletePath: (pathId) => {
-                api.deletePath(pathId).catch(console.error);
                 set((state) => ({
                     paths: state.paths.filter(p => p.id !== pathId),
                     subjects: state.subjects.filter(s => s.pathId !== pathId),
@@ -1867,6 +1872,9 @@ export const useStore = create<AppState>()(
                     }),
                     skills: state.skills.filter(skill => skill.pathId !== pathId)
                 }));
+                api.deletePath(pathId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deletePath failed:', err); });
             },
             addLevel: (level) => {
                 api.createLevel(level).catch(console.error);

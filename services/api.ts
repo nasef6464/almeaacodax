@@ -307,6 +307,11 @@ export const api = {
     clearPublicCache("content-bootstrap:learning:core");
     clearPublicCache("content-bootstrap:minimal");
   },
+  /** يمسح كاش bootstrap التصنيفات حتى يُجلب المسار/المادة الجديدة عند إعادة التحميل */
+  clearTaxonomyBootstrapCache: () => {
+    clearPublicCache("taxonomy-bootstrap:full");
+    clearPublicCache("taxonomy-bootstrap:core");
+  },
   health: () => request<{ status: string; database: string; timestamp: string }>("/health"),
   login: (email: string, password: string) =>
     request<{ token?: string; user: unknown }>("/auth/login", {
