@@ -11,6 +11,7 @@ import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { MockExamManager } from './MockExamManager';
 import { api } from '../../services/api';
 import { isTrueMockExam } from '../../utils/quizPlacement';
+import { QuizAssignWidget } from './QuizAssignWidget';
 
 type ViewMode = 'list' | 'create' | 'create_normal' | 'create_mock' | 'analytics' | 'compare';
 // drill = تدريبات | test = اختبارات عادية | mock = محاكيات قياس
@@ -25,6 +26,8 @@ export const SupervisorTestsManager: React.FC = () => {
   const [notifiedQuizId, setNotifiedQuizId] = useState<string | null>(null);
   const [selectedQuizzesForComparison, setSelectedQuizzesForComparison] = useState<string[]>([]);
   const [tabFilter, setTabFilter] = useState<TabFilter>('all');
+  /** ID الاختبار المفتوح في QuizAssignWidget */
+  const [assignWidgetQuizId, setAssignWidgetQuizId] = useState<string | null>(null);
 
   // ── Scope ─────────────────────────────────────────────────────────────────
   const scopedGroupIds = useMemo(() => {
@@ -535,14 +538,11 @@ export const SupervisorTestsManager: React.FC = () => {
               {/* Action Buttons */}
               <div className="flex gap-2 mb-3">
                 <button
-                  onClick={() => {
-                    setReassignQuizId(q.id);
-                    setReassignGroupIds(q.targetGroupIds || []);
-                  }}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-bold hover:bg-gray-100 hover:text-indigo-600 transition-all text-xs shadow-sm"
+                  onClick={() => setAssignWidgetQuizId(q.id)}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 transition-all text-xs shadow-sm"
                 >
                   <RefreshCw size={14} />
-                  إعادة تكليف
+                  توجيه / إعادة تكليف
                 </button>
 
                 {q.stats.participationRate < 100 && q.stats.totalTargetStudents > 0 && (
@@ -593,6 +593,68 @@ export const SupervisorTestsManager: React.FC = () => {
           ))
         )}
       </div>
+
+      {/* ── QuizAssignWidget Overlay ──────────────────────────────────────── */}
+      {assignWidgetQuizId && (() => {
+        const quiz = quizzes.find((q) => q.id === assignWidgetQuizId);
+        if (!quiz) return null;
+        const scopedGroupsList = groups
+          .filter((g) => scopedGroupIds.has(g.id))
+          .map((g) => ({ id: g.id, name: g.name, studentIds: g.studentIds }));
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-4 text-white flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold opacity-80">توجيه اختبار</p>
+                  <h3 className="text-base font-black">{quiz.title}</h3>
+                </div>
+                <button type="button" onClick={() => setAssignWidgetQuizId(null)}
+                  className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+                  <X size={18}/>
+                </button>
+              </div>
+              <div className="p-5 max-h-[80vh] overflow-y-auto">
+                <QuizAssignWidget
+                  quizId={quiz.id}
+                  quizTitle={quiz.title}
+                  quizKind={quiz.quizKind}
+                  scopedGroups={scopedGroupsList}
+                  existingConfig={{ targetGroupIds: quiz.targetGroupIds || [] }}
+                  hideAccessType={true}
+                  confirmLabel="توجيه للطلاب"
+                  onCancel={() => setAssignWidgetQuizId(null)}
+                  onAssign={async (config) => {
+                    await updateQuiz(quiz.id, {
+                      targetGroupIds: config.targetGroupIds,
+                      targetUserIds: config.targetUserIds.length > 0 ? config.targetUserIds : undefined,
+                      dueDate: config.dueDate,
+                    });
+                    if (config.targetUserIds.length + config.targetGroupIds.length > 0) {
+                      const targetStudentIds = [
+                        ...config.targetUserIds,
+                        ...groups
+                          .filter((g) => config.targetGroupIds.includes(g.id))
+                          .flatMap((g) => g.studentIds || []),
+                      ];
+                      if (targetStudentIds.length > 0) {
+                        await api.sendNotifications({
+                          title: 'اختبار جديد من مشرفك',
+                          body: config.message || `تم تكليفك باختبار: ${quiz.title}`,
+                          channels: ['in_app'],
+                          userIds: targetStudentIds,
+                          variables: { link: '/dashboard?tab=quizzes' },
+                        });
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
     </div>
   );
 };
