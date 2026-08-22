@@ -1877,19 +1877,23 @@ export const useStore = create<AppState>()(
                     .catch((err) => { console.error('deletePath failed:', err); });
             },
             addLevel: (level) => {
-                api.createLevel(level).catch(console.error);
-                set((state) => ({
-                    levels: [...state.levels, level]
-                }));
+                set((state) => ({ levels: [...state.levels, level] }));
+                api.createLevel(level)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addLevel failed:', err);
+                        set((state) => ({ levels: state.levels.filter(l => l.id !== level.id) }));
+                    });
             },
             updateLevel: (levelId, data) => {
-                api.updateLevel(levelId, data).catch(console.error);
                 set((state) => ({
                     levels: state.levels.map(l => l.id === levelId ? { ...l, ...data } : l)
                 }));
+                api.updateLevel(levelId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateLevel failed:', err); });
             },
             deleteLevel: (levelId) => {
-                api.deleteLevel(levelId).catch(console.error);
                 set((state) => ({
                     levels: state.levels.filter(l => l.id !== levelId),
                     subjects: state.subjects.filter(s => s.levelId !== levelId),
@@ -1902,21 +1906,28 @@ export const useStore = create<AppState>()(
                         return subject?.levelId !== levelId;
                     })
                 }));
+                api.deleteLevel(levelId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteLevel failed:', err); });
             },
             addSubject: (subject) => {
-                api.createSubject(subject).catch(console.error);
-                set((state) => ({
-                    subjects: [...state.subjects, subject]
-                }));
+                set((state) => ({ subjects: [...state.subjects, subject] }));
+                api.createSubject(subject)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addSubject failed:', err);
+                        set((state) => ({ subjects: state.subjects.filter(s => s.id !== subject.id) }));
+                    });
             },
             updateSubject: (subjectId, data) => {
-                api.updateSubject(subjectId, data).catch(console.error);
                 set((state) => ({
                     subjects: state.subjects.map(s => s.id === subjectId ? { ...s, ...data } : s)
                 }));
+                api.updateSubject(subjectId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateSubject failed:', err); });
             },
             deleteSubject: (subjectId) => {
-                api.deleteSubject(subjectId).catch(console.error);
                 set((state) => ({
                     subjects: state.subjects.filter(s => s.id !== subjectId),
                     sections: state.sections.filter(sec => sec.subjectId !== subjectId),
@@ -1934,21 +1945,30 @@ export const useStore = create<AppState>()(
                         quiz.subjectId === subjectId ? { ...quiz, sectionId: undefined, skillIds: [] } : quiz
                     )
                 }));
+                api.deleteSubject(subjectId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteSubject failed:', err); });
             },
             addSection: (section) => {
-                api.createSection(section).catch(console.error);
                 set((state) => ({
                     sections: [...state.sections.filter(existingSection => existingSection.id !== section.id), section]
                 }));
+                api.createSection(section)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addSection failed:', err);
+                        set((state) => ({ sections: state.sections.filter(s => s.id !== section.id) }));
+                    });
             },
             updateSection: (sectionId, data) => {
-                api.updateSection(sectionId, data).catch(console.error);
                 set((state) => ({
                     sections: state.sections.map(section => section.id === sectionId ? { ...section, ...data } : section)
                 }));
+                api.updateSection(sectionId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateSection failed:', err); });
             },
             deleteSection: (sectionId) => {
-                api.deleteSection(sectionId).catch(console.error);
                 set((state) => ({
                     sections: state.sections.filter(section => section.id !== sectionId),
                     skills: state.skills.filter(skill => skill.sectionId !== sectionId),
@@ -1959,25 +1979,34 @@ export const useStore = create<AppState>()(
                         question.sectionId === sectionId ? { ...question, sectionId: undefined } : question
                     )
                 }));
+                api.deleteSection(sectionId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteSection failed:', err); });
             },
 
             // Skill Actions
             createSkill: (skill) => {
-                api.createSkill(skill).catch(console.error);
                 set((state) => ({
                     skills: [...state.skills.filter(existingSkill => existingSkill.id !== skill.id), skill]
                 }));
+                api.createSkill(skill)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('createSkill failed:', err);
+                        set((state) => ({ skills: state.skills.filter(s => s.id !== skill.id) }));
+                    });
             },
 
             updateSkill: (skillId, data) => {
-                api.updateSkill(skillId, data).catch(console.error);
                 set((state) => ({
                     skills: state.skills.map(s => s.id === skillId ? { ...s, ...data } : s)
                 }));
+                api.updateSkill(skillId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateSkill failed:', err); });
             },
 
             deleteSkill: (skillId) => {
-                api.deleteSkill(skillId).catch(console.error);
                 set((state) => ({
                     skills: state.skills.filter(s => s.id !== skillId),
                     lessons: state.lessons.map(lesson => ({
@@ -1997,6 +2026,9 @@ export const useStore = create<AppState>()(
                         skillIds: (quiz.skillIds || []).filter(id => id !== skillId)
                     }))
                 }));
+                api.deleteSkill(skillId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteSkill failed:', err); });
             },
 
             linkSkillToLesson: (skillId, lessonId) => set((state) => ({
