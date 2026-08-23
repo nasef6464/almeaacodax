@@ -66,6 +66,9 @@ export const PathsManager: React.FC = () => {
   const [newPathShowSubjectCards, setNewPathShowSubjectCards] = useState(true);
   const [newPathShowMockExamCard, setNewPathShowMockExamCard] = useState(true);
   const [newPathShowPackageCard, setNewPathShowPackageCard] = useState(true);
+  /** حالة حفظ المسار الجديد */
+  const [pathSaving, setPathSaving] = useState(false);
+  const [pathSaveError, setPathSaveError] = useState('');
 
   const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<any>(null);
@@ -307,9 +310,10 @@ export const PathsManager: React.FC = () => {
     }
   };
 
-  const handleAddPath = () => {
+  const handleAddPath = async () => {
     if (!newPathName.trim()) return;
-    
+    setPathSaveError('');
+
     if (editingPath) {
       useStore.getState().updatePath(editingPath.id, {
         name: newPathName.trim(),
@@ -347,10 +351,18 @@ export const PathsManager: React.FC = () => {
           showPackageCard: newPathShowPackageCard,
         },
       };
-      
-      useStore.getState().addPath(newPath);
+
+      setPathSaving(true);
+      try {
+        await useStore.getState().addPath(newPath);
+      } catch (err: any) {
+        setPathSaveError(err?.message || 'فشل حفظ المسار. تحقق من الاتصال بالخادم وأعد المحاولة.');
+        setPathSaving(false);
+        return; // أبقِ النافذة مفتوحة وأظهر الخطأ
+      }
+      setPathSaving(false);
     }
-    
+
     setEditingPath(null);
     setNewPathName('');
     setNewPathColor('indigo');
@@ -359,8 +371,8 @@ export const PathsManager: React.FC = () => {
     setNewPathIconStyle('default');
     setNewPathParentId('');
     setNewPathDesc('');
-    setNewPathShowInNavbar(false);
-    setNewPathIsActive(false);
+    setNewPathShowInNavbar(true);
+    setNewPathIsActive(true);
     setNewPathShowSubjectCards(true);
     setNewPathShowMockExamCard(true);
     setNewPathShowPackageCard(true);
@@ -1083,13 +1095,22 @@ export const PathsManager: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-                <button type="button" onClick={() => { setIsPathModalOpen(false); setEditingPath(null); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
-                  إلغاء
-                </button>
-                <button type="button" onClick={handleAddPath} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors">
-                  {editingPath ? 'حفظ التعديلات' : 'إضافة'}
-                </button>
+              <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-2">
+                {pathSaveError && (
+                  <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2">
+                    <AlertTriangle size={16} className="text-red-500 shrink-0" />
+                    <p className="text-sm font-bold text-red-700">{pathSaveError}</p>
+                  </div>
+                )}
+                <div className="flex justify-end gap-3">
+                  <button type="button" onClick={() => { setIsPathModalOpen(false); setEditingPath(null); setPathSaveError(''); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
+                    إلغاء
+                  </button>
+                  <button type="button" onClick={handleAddPath} disabled={pathSaving} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
+                    {pathSaving && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                    {editingPath ? 'حفظ التعديلات' : pathSaving ? 'جاري الحفظ...' : 'إضافة'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

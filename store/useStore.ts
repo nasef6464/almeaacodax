@@ -171,7 +171,7 @@ interface AppState {
     deleteAccessCodeAsync: (id: string) => Promise<void>;
 
     // Taxonomy Actions
-    addPath: (path: CategoryPath) => void;
+    addPath: (path: CategoryPath) => Promise<void>;
     updatePath: (pathId: string, data: Partial<CategoryPath>) => void;
     deletePath: (pathId: string) => void;
     addLevel: (level: import('../types').CategoryLevel) => void;
@@ -1845,12 +1845,13 @@ export const useStore = create<AppState>()(
             // Taxonomy Actions
             addPath: (path) => {
                 set((state) => ({ paths: [...state.paths, path] }));
-                api.createPath(path)
+                return api.createPath(path)
                     .then(() => { api.clearTaxonomyBootstrapCache(); })
-                    .catch((err) => {
+                    .catch((err: Error) => {
                         console.error('addPath failed:', err);
                         // Rollback optimistic update
                         set((state) => ({ paths: state.paths.filter(p => p.id !== path.id) }));
+                        throw err; // re-throw so caller (PathsManager) can show error
                     });
             },
             updatePath: (pathId, data) => {
