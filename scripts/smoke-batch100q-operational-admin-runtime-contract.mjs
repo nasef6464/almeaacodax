@@ -21,6 +21,14 @@ function assertAllIncludes(file, needles) {
   }
 }
 
+function assertAllIncludesSource(source, needles, label) {
+  for (const needle of needles) {
+    if (!source.includes(needle)) {
+      throw new Error(`${label} is missing ${needle}`);
+    }
+  }
+}
+
 assertAllIncludes("App.tsx", [
   "import { PwaInstallBanner } from './components/PwaInstallBanner';",
   "<PwaInstallBanner />",
@@ -110,11 +118,14 @@ assertAllIncludes("server/src/services/notificationService.ts", [
   "recipientPhone: item.recipientPhone",
 ]);
 
-assertAllIncludes("services/api.ts", [
+assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/paymentsApi.ts")}`, [
   "applyPaymentCountryPreset: (country: \"SA\" | \"EG\"",
   "getPaymentRequestsSummary: (token?: string | null)",
   "paymentCountry?: string | \"all\"",
   "paymentMethod?: string | \"all\"",
+], "payments api facade/source");
+
+assertAllIncludes("services/api.ts", [
   "/notifications/admin/test-delivery",
   "getTaxonomyBootstrap: (phase: \"full\" | \"core\" = \"full\")",
 ]);

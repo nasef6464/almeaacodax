@@ -25,6 +25,16 @@ function assertAllIncludes(file, entries) {
   });
 }
 
+function assertAllIncludesSource(source, entries, label) {
+  entries.forEach((entry) => {
+    const needle = typeof entry === "string" ? entry : entry.needle;
+    const entryLabel = typeof entry === "string" ? entry : entry.label;
+    if (!source.includes(needle)) {
+      throw new Error(`${label} is missing ${entryLabel}`);
+    }
+  });
+}
+
 assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "toggleActionsMenu",
   "Delete user",
@@ -104,10 +114,10 @@ assertAllIncludes("dashboards/admin/FinancialManager.tsx", [
   "api.reviewPaymentRequest(request.id, {",
 ]);
 
-assertAllIncludes("services/api.ts", [
+assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/paymentsApi.ts")}`, [
   "reviewPaymentRequest: (id: string, payload: unknown, token?: string | null)",
   "`/payments/requests/${id}/review`",
-]);
+], "payments api facade/source");
 
 assertAllIncludes("server/src/routes/payment.routes.ts", [
   "\"/requests/:id/review\"",

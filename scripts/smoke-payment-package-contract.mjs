@@ -15,7 +15,7 @@ const courseRoutesSource = read('server/src/routes/course.routes.ts');
 const typesSource = read('types.ts');
 const pathsManagerSource = read('dashboards/admin/PathsManager.tsx');
 const financialManagerSource = read('dashboards/admin/FinancialManager.tsx');
-const apiSource = read('services/api.ts');
+const apiSource = `${read('services/api.ts')}\n${read('services/apiGroups/paymentsApi.ts')}`;
 const discountModelSource = read('server/src/models/DiscountCode.ts');
 const backupSource = read('server/src/services/learningBackup.ts');
 
