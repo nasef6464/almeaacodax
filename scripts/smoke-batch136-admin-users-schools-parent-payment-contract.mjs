@@ -46,11 +46,11 @@ assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "const linkedStudent = linkableStudents.find((student) => student.id === studentId);",
 ]);
 
-assertAllIncludes("services/api.ts", [
+assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/authApi.ts")}`, [
   "deleteAdminUser: (id: string, token?: string | null)",
   "`/auth/admin/users/${id}`",
   "method: \"DELETE\"",
-]);
+], "auth api facade/source");
 
 assertAllIncludes("server/src/routes/auth.routes.ts", [
   "authRouter.delete(",
