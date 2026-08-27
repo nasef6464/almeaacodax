@@ -6,6 +6,15 @@ const root = process.cwd();
 const storeFile = 'store/useStore.ts';
 const helpersFile = 'store/storeDomainHelpers.ts';
 const storeSource = fs.readFileSync(path.join(root, storeFile), 'utf8').replace(/\r\n/g, '\n');
+const compositionFiles = [
+  storeFile,
+  'store/slices/accessEnrollmentSlice.ts',
+  'store/slices/learningProgressSlice.ts',
+];
+const compositionSource = compositionFiles
+  .filter((file) => fs.existsSync(path.join(root, file)))
+  .map((file) => fs.readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n'))
+  .join('\n');
 const helpersExists = fs.existsSync(path.join(root, helpersFile));
 const helpersSource = helpersExists ? fs.readFileSync(path.join(root, helpersFile), 'utf8').replace(/\r\n/g, '\n') : '';
 const lineCount = (source) => source.split(/\r?\n/).length;
@@ -134,7 +143,7 @@ check('useStore still consumes delegated behavior at the same call sites', () =>
     'isPublicPackageAvailable(',
     'isRegisteredUser(',
     'resolveEntityId(',
-  ]) assert.ok(storeSource.includes(fragment), `useStore lost helper consumption: ${fragment}`);
+  ]) assert.ok(compositionSource.includes(fragment), `store composition lost helper consumption: ${fragment}`);
 });
 
 check('delegated helper module stays pure and bounded', () => {

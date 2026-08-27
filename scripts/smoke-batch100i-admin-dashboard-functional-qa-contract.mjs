@@ -27,7 +27,10 @@ const advancedBuilder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 const simpleBuilder = read("dashboards/admin/CourseBuilder.tsx");
 const homepageManager = read("dashboards/admin/HomepageManager.tsx");
 const landing = read("pages/Landing.tsx");
-const api = read("services/api.ts");
+const api = [
+  read("services/api.ts"),
+  read("services/apiGroups/questionsApi.ts"),
+].join("\n");
 const coursePlayer = read("components/CoursePlayer.tsx");
 const courseView = read("pages/CourseView.tsx");
 const questionBankManager = read("dashboards/admin/QuestionBankManager.tsx");

@@ -9,6 +9,7 @@ const add = (name, ok, detail = "") => checks.push({ name, ok, detail });
 
 const learningSection = read("components/LearningSection.tsx");
 const store = read("store/useStore.ts");
+const learningProgressSlice = read("store/slices/learningProgressSlice.ts");
 const api = read("services/api.ts");
 const authRoutes = read("server/src/routes/auth.routes.ts");
 
@@ -24,9 +25,10 @@ add(
 );
 add(
   "Marking a lesson complete syncs completed lessons to the account",
-  store.includes("completedLessons: nextCompletedLessons") &&
-    store.includes("api.updateMyPreferences") &&
-    store.includes("completedLessons: nextCompletedLessons"),
+  store.includes("createLearningProgressSlice") &&
+    learningProgressSlice.includes("completedLessons: nextCompletedLessons") &&
+    learningProgressSlice.includes("api.updateMyPreferences") &&
+    learningProgressSlice.includes("completedLessons: nextCompletedLessons"),
 );
 add(
   "Client preferences API accepts completed lessons",

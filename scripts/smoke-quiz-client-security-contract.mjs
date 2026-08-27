@@ -4,7 +4,10 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const [apiSource, storeSource, quizPageSource, hardeningSmokeSource] = await Promise.all([
   read("services/api.ts"),
-  read("store/useStore.ts"),
+  Promise.all([
+    read("store/useStore.ts"),
+    read("store/slices/learningInteractionsSlice.ts"),
+  ]).then((parts) => parts.join("\n")),
   read("pages/QuizPage.tsx"),
   read("scripts/smoke-production-hardening-contract.mjs"),
 ]);

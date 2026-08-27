@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 
 const files = {
   api: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
+  coursesApi: await readFile(new URL("../services/apiGroups/coursesApi.ts", import.meta.url), "utf8"),
+  quizzesApi: await readFile(new URL("../services/apiGroups/quizzesApi.ts", import.meta.url), "utf8"),
   apiQueryUtilities: await readFile(new URL("../services/apiQueryUtilities.ts", import.meta.url), "utf8"),
   adapter: await readFile(new URL("../services/adapter.ts", import.meta.url), "utf8"),
   authContext: await readFile(new URL("../contexts/AuthContext.tsx", import.meta.url), "utf8"),
@@ -26,9 +28,11 @@ check("api client keeps paginated backend responses compatible with existing pag
   assertIncludes(files.apiQueryUtilities, "export interface PaginationOptions");
   assertIncludes(files.api, 'withQuery("/auth/admin/users"');
   assertIncludes(files.api, 'withQuery("/payments/requests"');
-  assertIncludes(files.api, 'withQuery("/courses"');
-  assertIncludes(files.api, 'withQuery("/quizzes"');
-  assertIncludes(files.api, 'withQuery("/quizzes/results"');
+  assertIncludes(files.api, "createCoursesApi(request");
+  assertIncludes(files.coursesApi, 'withQuery("/courses"');
+  assertIncludes(files.api, "createQuizzesApi(request");
+  assertIncludes(files.quizzesApi, 'withQuery("/quizzes"');
+  assertIncludes(files.quizzesApi, 'withQuery("/quizzes/results"');
 });
 
 check("adapter still normalizes course and quiz arrays after API compatibility layer", () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
     BookOpen,
     Building2,
@@ -20,10 +20,10 @@ import {
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { AccessCode, AnnouncementAd, B2BPackage, Group, Lesson, LibraryItem, PackageContentType, Role, StudyPlan, Topic, User } from '../../types';
+import { AnnouncementAd, B2BPackage, Group, Lesson, LibraryItem, PackageContentType, Role, StudyPlan, Topic, User } from '../../types';
 import { api } from '../../services/api';
 import { parseImportFile, parseRelationFile } from './SchoolsManager/importFileReaders';
-import { getDuplicateImportEmails } from './SchoolsManager/importRowParsing';
+import { getDuplicateImportEmails, getDuplicateImportEmailsError } from './SchoolsManager/importRowParsing';
 import { EditNameModal } from './SchoolsManager/EditNameModal';
 import { SchoolImportPanel } from './SchoolsManager/SchoolImportPanel';
 import { SchoolPackagesPanel } from './SchoolsManager/SchoolPackagesPanel';
@@ -42,38 +42,30 @@ import { SchoolPortfolioFilterPanel } from './SchoolsManager/SchoolPortfolioFilt
 import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 import type {
     AccessCodesListResponse,
-    AccessCodesPagination,
     AdminUserPayload,
     ContentBootstrapPayload,
     ImportResponse,
-    ImportRow,
-    ImportSummary,
     RelationCredential,
-    RelationImportRow,
     RelationImportSummary,
     RelationResponse,
-    SchoolReport,
 } from './SchoolsManager/contracts';
 import {
-    buildStoreGroup,
     buildStoreUser,
     generateTemporaryPassword,
     loadSchoolAdminUsers,
+    mergeAdminUsersById,
+    mergeGroupsById,
     mergeUsersById,
+    normalizeStoreGroups,
 } from './SchoolsManager/dataAdapters';
 import {
-    createCsvDownload,
     createWorkbookDownload,
-    createXlsxDownload,
-    escapeHtml,
     openPrintWindow,
-    renderPrintTable,
 } from './SchoolsManager/exportHelpers';
 import {
     buildSchoolPortfolioRows,
     filterSchoolPortfolioRows,
     getSchoolOperationalSnapshot as calculateSchoolOperationalSnapshot,
-    getStudentsForSchool,
     summarizeSchoolPortfolio,
 } from './SchoolsManager/readinessViewModel';
 import { SchoolPortfolioCard } from './SchoolsManager/SchoolPortfolioCard';
@@ -82,6 +74,48 @@ import { SchoolLaunchBoardPanel } from './SchoolsManager/SchoolLaunchBoardPanel'
 import { buildSchoolRelationshipViewModel } from './SchoolsManager/relationshipViewModel';
 import { buildSchoolWorkspaceViewModel } from './SchoolsManager/workspaceViewModel';
 import { buildSchoolRosterViewModel } from './SchoolsManager/rosterViewModel';
+import {
+    buildSchoolAccessCode,
+    buildSchoolAccessCodeListQuery,
+    getSchoolAccessCodeCreationError,
+    normalizeAccessCodesPagination,
+    normalizePagedAccessCodes,
+    resolveSelectedAccessCodePackageId,
+} from './SchoolsManager/accessCodeService';
+import { buildSchoolClassReportSheets } from './SchoolsManager/classReportService';
+import { buildBulkClassGroups, filterNewClassNames, parseBulkClassNames } from './SchoolsManager/classService';
+import { copyTextToClipboard } from './SchoolsManager/clipboardService';
+import { buildQuickSupervisorPayload, buildSingleStudentImportRow } from './SchoolsManager/draftPayloadService';
+import { getErrorMessage } from './SchoolsManager/errorMessageService';
+import { buildNewClassGroup, buildNewSchoolGroup } from './SchoolsManager/groupFactory';
+import {
+    buildSchoolGapReportSheets,
+    buildSchoolHandoverReportSheets,
+    buildSchoolPackagesReportSheets,
+    buildSchoolPerformanceReportSheets,
+    buildSchoolPortfolioReadinessSheets,
+    buildSchoolRelationsReportSheets,
+    downloadSchoolImportTemplate,
+    downloadSchoolRelationCredentials,
+    downloadSchoolRelationsTemplate,
+    downloadSchoolRoster,
+    downloadStudentImportCredentials,
+} from './SchoolsManager/importExportService';
+import { buildClassPrintReportHtml, buildSchoolPrintReportHtml } from './SchoolsManager/printReportService';
+import {
+    addCourseIdToSelectedSchool,
+    buildSelectedSchoolData,
+    removeCourseIdFromSelectedSchool,
+} from './SchoolsManager/selectedSchoolDataService';
+import { useEditNameModalState } from './SchoolsManager/useEditNameModalState';
+import { useAutoDismissMessage } from './SchoolsManager/useAutoDismissMessage';
+import { useSchoolAccessCodeState } from './SchoolsManager/useSchoolAccessCodeState';
+import { useSchoolListState } from './SchoolsManager/useSchoolListState';
+import { useSchoolManagementUiState } from './SchoolsManager/useSchoolManagementUiState';
+import { useSchoolReportState } from './SchoolsManager/useSchoolReportState';
+import { useSchoolRosterFilters } from './SchoolsManager/useSchoolRosterFilters';
+import { useSchoolSelectionState } from './SchoolsManager/useSchoolSelectionState';
+import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDrafts';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -124,120 +158,136 @@ export const SchoolsManager: React.FC = () => {
         hydrateContentBootstrap,
     } = useStore();
 
-    const [selectedSchool, setSelectedSchool] = useState<Group | null>(null);
-    const [activeSchoolActionsId, setActiveSchoolActionsId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports'>('dashboard');
+    const {
+        selectedSchool,
+        setSelectedSchool,
+        activeSchoolActionsId,
+        toggleSchoolActions,
+        closeSchoolActions,
+    } = useSchoolSelectionState();
+    const {
+        activeTab,
+        setActiveTab,
+        managementError,
+        setManagementError,
+        managementNotice,
+        setManagementNotice,
+        schoolActionPending,
+        setSchoolActionPending,
+        packageActionPending,
+        setPackageActionPending,
+        accessCodeActionPending,
+        setAccessCodeActionPending,
+        rosterActionPending,
+        setRosterActionPending,
+        saveVerificationState,
+        setSaveVerificationState,
+        saveVerificationMessage,
+        setSaveVerificationMessage,
+        isDeleteSchoolConfirmOpen,
+        setIsDeleteSchoolConfirmOpen,
+        expandedSchoolStep,
+        setExpandedSchoolStep,
+        clearManagementFeedback,
+    } = useSchoolManagementUiState();
+    const {
+        schoolSearch,
+        setSchoolSearch,
+        schoolListMode,
+        setSchoolListMode,
+        newSchoolName,
+        setNewSchoolName,
+    } = useSchoolListState();
+    const {
+        selectedPackageIdForCode,
+        setSelectedPackageIdForCode,
+        copiedCodeId,
+        setCopiedCodeId,
+        newCodeMaxUses,
+        setNewCodeMaxUses,
+        newCodeDurationDays,
+        setNewCodeDurationDays,
+        pagedAccessCodes,
+        setPagedAccessCodes,
+        pagedAccessCodesPagination,
+        setPagedAccessCodesPagination,
+        isLoadingPagedAccessCodes,
+        setIsLoadingPagedAccessCodes,
+        pagedAccessCodesError,
+        setPagedAccessCodesError,
+        resetPagedAccessCodes,
+    } = useSchoolAccessCodeState();
+    const {
+        schoolReport,
+        isLoadingReport,
+        reportError,
+        clearSchoolReport,
+        loadSchoolReport,
+    } = useSchoolReportState();
+    const {
+        studentSearch,
+        setStudentSearch,
+        selectedClassFilter,
+        setSelectedClassFilter,
+        schoolStudentPage,
+        setSchoolStudentPage,
+        schoolStudentPageSize,
+        resetSchoolRosterFilters,
+    } = useSchoolRosterFilters();
 
-    const [schoolSearch, setSchoolSearch] = useState('');
-    const [schoolListMode, setSchoolListMode] = useState<'active' | 'needs_setup' | 'ready' | 'all'>('active');
-    const [newSchoolName, setNewSchoolName] = useState('');
-    const [isImporting, setIsImporting] = useState(false);
-    const [importRows, setImportRows] = useState<ImportRow[]>([]);
-    const [importSummary, setImportSummary] = useState<ImportSummary | null>(null);
-    const [importCredentials, setImportCredentials] = useState<ImportResponse['credentials']>([]);
-    const [importError, setImportError] = useState<string | null>(null);
-    const [relationRows, setRelationRows] = useState<RelationImportRow[]>([]);
-    const [relationSummary, setRelationSummary] = useState<RelationImportSummary | null>(null);
-    const [relationCredentials, setRelationCredentials] = useState<RelationCredential[]>([]);
-    const [relationError, setRelationError] = useState<string | null>(null);
-    const [isApplyingRelations, setIsApplyingRelations] = useState(false);
-    const [createMissingRelationUsers, setCreateMissingRelationUsers] = useState(true);
-    const [schoolReport, setSchoolReport] = useState<SchoolReport | null>(null);
-    const [isLoadingReport, setIsLoadingReport] = useState(false);
-    const [reportError, setReportError] = useState<string | null>(null);
-    const [selectedPackageIdForCode, setSelectedPackageIdForCode] = useState('');
-    const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
-    const [managementError, setManagementError] = useState<string | null>(null);
-    const [managementNotice, setManagementNotice] = useState<string | null>(null);
-    const [schoolActionPending, setSchoolActionPending] = useState<string | null>(null);
-    const [packageActionPending, setPackageActionPending] = useState<string | null>(null);
-    const [accessCodeActionPending, setAccessCodeActionPending] = useState<string | null>(null);
-    const [rosterActionPending, setRosterActionPending] = useState<string | null>(null);
-    const [saveVerificationState, setSaveVerificationState] = useState<'idle' | 'saving' | 'verifying' | 'success' | 'error'>('idle');
-    const [saveVerificationMessage, setSaveVerificationMessage] = useState<string | null>(null);
-    const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
-    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'dashboard' | 'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>(null);
-    const [isSingleStudentOpen, setIsSingleStudentOpen] = useState(false);
-    const [studentSearch, setStudentSearch] = useState('');
-    const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
-    const [schoolStudentPage, setSchoolStudentPage] = useState(1);
-    const schoolStudentPageSize = 80;
-    const [newCodeMaxUses, setNewCodeMaxUses] = useState('50');
-    const [newCodeDurationDays, setNewCodeDurationDays] = useState('30');
-    const [bulkClassNames, setBulkClassNames] = useState('');
-    const [singleStudent, setSingleStudent] = useState({ name: '', email: '', className: '', password: '' });
-    const [quickSupervisor, setQuickSupervisor] = useState({ name: '', email: '', password: '', targetGroupId: '' });
-    const [pagedAccessCodes, setPagedAccessCodes] = useState<Array<{
-        id: string;
-        code: string;
-        schoolId: string;
-        packageId: string;
-        maxUses: number;
-        currentUses: number;
-        expiresAt: number;
-        createdAt: number;
-    }>>([]);
-    const [pagedAccessCodesPagination, setPagedAccessCodesPagination] = useState<AccessCodesPagination | null>(null);
-    const [isLoadingPagedAccessCodes, setIsLoadingPagedAccessCodes] = useState(false);
-    const [pagedAccessCodesError, setPagedAccessCodesError] = useState<string | null>(null);
+    const {
+        editNameModalState,
+        setEditNameModalState,
+        closeEditNameModal,
+    } = useEditNameModalState();
+    const {
+        isImporting,
+        setIsImporting,
+        importError,
+        setImportError,
+        importRows,
+        setImportRows,
+        importSummary,
+        setImportSummary,
+        importCredentials,
+        setImportCredentials,
+        relationError,
+        setRelationError,
+        isApplyingRelations,
+        setIsApplyingRelations,
+        createMissingRelationUsers,
+        setCreateMissingRelationUsers,
+        relationRows,
+        setRelationRows,
+        relationSummary,
+        setRelationSummary,
+        relationCredentials,
+        setRelationCredentials,
+        bulkClassNames,
+        setBulkClassNames,
+        isSingleStudentOpen,
+        setIsSingleStudentOpen,
+        singleStudent,
+        setSingleStudent,
+        quickSupervisor,
+        setQuickSupervisor,
+        resetWorkspaceDrafts,
+    } = useSchoolWorkspaceDrafts();
 
-    const [editNameModalState, setEditNameModalState] = useState<{
-        isOpen: boolean;
-        title: string;
-        initialValue: string;
-        onSave: (newName: string) => Promise<void>;
-    }>({
-        isOpen: false,
-        title: '',
-        initialValue: '',
-        onSave: async () => {},
-    });
-
-    useEffect(() => {
-        if (managementNotice) {
-            const timer = setTimeout(() => setManagementNotice(null), 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [managementNotice]);
-
-    useEffect(() => {
-        if (managementError) {
-            const timer = setTimeout(() => setManagementError(null), 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [managementError]);
+    useAutoDismissMessage(managementNotice, setManagementNotice);
+    useAutoDismissMessage(managementError, setManagementError);
     const hasLoadedSchoolRosterUsersRef = useRef(false);
 
     const resetSchoolWorkspaceState = () => {
-        setImportRows([]);
-        setImportSummary(null);
-        setImportCredentials([]);
-        setImportError(null);
-        setRelationRows([]);
-        setRelationSummary(null);
-        setRelationCredentials([]);
-        setRelationError(null);
-        setIsSingleStudentOpen(false);
-        setSingleStudent({ name: '', email: '', className: '', password: '' });
-        setQuickSupervisor({ name: '', email: '', password: '', targetGroupId: '' });
-        setManagementError(null);
-        setManagementNotice(null);
+        resetWorkspaceDrafts();
+        clearManagementFeedback();
         setSaveVerificationState(null);
-        setStudentSearch('');
-        setSelectedClassFilter('all');
+        resetSchoolRosterFilters();
     };
 
     useEffect(() => {
         resetSchoolWorkspaceState();
     }, [selectedSchool?.id]);
-
-    const toggleSchoolActions = (schoolId: string) => {
-        setActiveSchoolActionsId((current) => (current === schoolId ? null : schoolId));
-    };
-
-    const closeSchoolActions = () => {
-        setActiveSchoolActionsId(null);
-    };
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
@@ -281,38 +331,10 @@ export const SchoolsManager: React.FC = () => {
     const schoolPortfolioSummary = summarizeSchoolPortfolio(schoolPortfolioRows);
 
     const exportSchoolPortfolioReadiness = () => {
-        createWorkbookDownload('schools-portfolio-readiness.xlsx', [
-            {
-                name: 'portfolio-summary',
-                rows: [
-                    ['البند', 'القيمة'],
-                    ['عدد المدارس', schoolPortfolioRows.length],
-                    ['جاهزة للبيع/التسليم', schoolPortfolioSummary.ready],
-                    ['قريبة من التسليم', schoolPortfolioSummary.nearReady],
-                    ['تحتاج تجهيز', schoolPortfolioSummary.needsSetup],
-                    ['إجمالي الطلاب', schoolPortfolioSummary.totalStudents],
-                    ['الباقات النشطة', schoolPortfolioSummary.totalActivePackages],
-                    ['أولوية المتابعة', schoolPortfolioSummary.nextPriority?.school.name || 'لا توجد'],
-                ],
-            },
-            {
-                name: 'schools-readiness',
-                rows: [
-                    ['المدرسة', 'الحالة', 'درجة الجاهزية', 'الفصول', 'الطلاب', 'المشرفون', 'الباقات النشطة', 'الأكواد الصالحة', 'الخطوة التالية'],
-                    ...schoolPortfolioRows.map((row) => [
-                        row.school.name,
-                        row.status,
-                        `${row.readinessScore}/${row.readinessTotal}`,
-                        row.classCount,
-                        row.studentCount,
-                        row.supervisorCount,
-                        row.activePackageCount,
-                        row.activeCodeCount,
-                        row.nextAction?.hint || 'مراجعة تقرير التسليم',
-                    ]),
-                ],
-            },
-        ]);
+        createWorkbookDownload('schools-portfolio-readiness.xlsx', buildSchoolPortfolioReadinessSheets({
+            schoolPortfolioRows,
+            schoolPortfolioSummary,
+        }));
         setManagementNotice('تم تجهيز ملف جاهزية محفظة المدارس للتنزيل.');
         setManagementError(null);
     };
@@ -374,7 +396,7 @@ export const SchoolsManager: React.FC = () => {
             hydrateUsers(mergeUsersById(users, adminUsersResponse));
         }
 
-        const freshGroups = (bootstrap.groups || []).map(buildStoreGroup).filter((group) => group.id && group.name);
+        const freshGroups = normalizeStoreGroups(bootstrap.groups);
         const freshSchool = freshGroups.find((group) => group.id === schoolId && group.type === 'SCHOOL');
         if (!freshSchool) {
             throw new Error('فشل التحقق: لم ترجع المدرسة من الخادم بعد الحفظ.');
@@ -404,9 +426,10 @@ export const SchoolsManager: React.FC = () => {
         try {
             await refreshSchoolWorkspace(selectedSchool.id, 'manual');
         } catch (error) {
+            const message = getErrorMessage(error, 'فشل الحفظ أو التحقق من البيانات.');
             setSaveVerificationState('error');
-            setSaveVerificationMessage(error instanceof Error ? error.message : 'فشل الحفظ أو التحقق من البيانات.');
-            setManagementError(error instanceof Error ? error.message : 'فشل الحفظ أو التحقق من البيانات.');
+            setSaveVerificationMessage(message);
+            setManagementError(message);
         }
     };
 
@@ -416,7 +439,7 @@ export const SchoolsManager: React.FC = () => {
         }
 
         void refreshSchoolWorkspace(selectedSchool.id).catch((error) => {
-            setManagementError(error instanceof Error ? error.message : 'تعذر تحديث بيانات المدرسة من الخادم.');
+            setManagementError(getErrorMessage(error, 'تعذر تحديث بيانات المدرسة من الخادم.'));
         });
     }, [selectedSchool?.id, user.role]);
 
@@ -425,28 +448,16 @@ export const SchoolsManager: React.FC = () => {
             return;
         }
 
-        const nextUsersById = new Map(users.map((currentUser) => [currentUser.id, currentUser]));
-        incomingUsers.map(buildStoreUser).forEach((incomingUser) => {
-            if (incomingUser.id) {
-                nextUsersById.set(incomingUser.id, incomingUser);
-            }
-        });
-        hydrateUsers(Array.from(nextUsersById.values()));
+        hydrateUsers(mergeAdminUsersById(users, incomingUsers));
     };
 
     const mergeSchoolGroups = (incomingGroups: Group[] | undefined) => {
-        if (!incomingGroups?.length) {
-            return;
-        }
-
-        const normalizedGroups = incomingGroups.map(buildStoreGroup).filter((group) => group.id && group.name);
+        const normalizedGroups = normalizeStoreGroups(incomingGroups);
         if (!normalizedGroups.length) {
             return;
         }
 
-        const nextGroupsById = new Map(groups.map((group) => [group.id, group]));
-        normalizedGroups.forEach((group) => nextGroupsById.set(group.id, group));
-        hydrateContentBootstrap({ groups: Array.from(nextGroupsById.values()) });
+        hydrateContentBootstrap({ groups: mergeGroupsById(groups, normalizedGroups) });
 
         if (selectedSchool) {
             const updatedSelectedSchool = normalizedGroups.find((group) => group.id === selectedSchool.id);
@@ -456,30 +467,16 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
-    const loadSchoolReport = async (schoolId: string) => {
-        setIsLoadingReport(true);
-        setReportError(null);
-        try {
-            const response = await api.getSchoolReport(schoolId) as SchoolReport;
-            setSchoolReport(response);
-        } catch (error) {
-            setReportError(error instanceof Error ? error.message : 'تعذر تحميل تقرير المدرسة الآن.');
-        } finally {
-            setIsLoadingReport(false);
-        }
-    };
-
     useEffect(() => {
         if (!selectedSchool) {
-            setSchoolReport(null);
-            setReportError(null);
+            clearSchoolReport();
             return;
         }
 
         if (activeTab === 'reports') {
             void loadSchoolReport(selectedSchool.id);
         }
-    }, [activeTab, selectedSchool]);
+    }, [activeTab, clearSchoolReport, loadSchoolReport, selectedSchool]);
 
     useEffect(() => {
         if (!selectedSchool) {
@@ -487,11 +484,12 @@ export const SchoolsManager: React.FC = () => {
             return;
         }
 
-        const packages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id && pkg.status === 'active');
         setSelectedPackageIdForCode((current) => (
-            packages.some((pkg) => pkg.id === current)
-                ? current
-                : (packages[0]?.id || '')
+            resolveSelectedAccessCodePackageId({
+                schoolId: selectedSchool.id,
+                packages: b2bPackages,
+                currentPackageId: current,
+            })
         ));
     }, [selectedSchool, b2bPackages]);
 
@@ -502,10 +500,7 @@ export const SchoolsManager: React.FC = () => {
     useEffect(() => {
         let cancelled = false;
         if (!selectedSchool || activeTab !== 'packages') {
-            setPagedAccessCodes([]);
-            setPagedAccessCodesPagination(null);
-            setPagedAccessCodesError(null);
-            setIsLoadingPagedAccessCodes(false);
+            resetPagedAccessCodes();
             return () => {
                 cancelled = true;
             };
@@ -515,47 +510,18 @@ export const SchoolsManager: React.FC = () => {
         setPagedAccessCodesError(null);
         void (async () => {
             try {
-                const response = await api.getAccessCodes({
-                    schoolId: selectedSchool.id,
-                    page: 1,
-                    limit: 100,
-                    sortBy: 'createdAt',
-                    sortOrder: 'desc',
-                }) as AccessCodesListResponse;
+                const response = await api.getAccessCodes(
+                    buildSchoolAccessCodeListQuery(selectedSchool.id),
+                ) as AccessCodesListResponse;
 
                 if (cancelled) return;
-                const incoming = Array.isArray(response?.data) ? response.data : [];
-                setPagedAccessCodes(
-                    incoming.map((code) => ({
-                        id: String(code.id || code._id || ''),
-                        code: String(code.code || ''),
-                        schoolId: String(code.schoolId || ''),
-                        packageId: String(code.packageId || ''),
-                        maxUses: Number(code.maxUses || 0),
-                        currentUses: Number(code.currentUses || 0),
-                        expiresAt: Number(code.expiresAt || 0),
-                        createdAt: Number(code.createdAt || 0),
-                    })).filter((code) => code.id && code.schoolId),
-                );
-
-                const pagination = response?.pagination || {};
-                if (typeof pagination.page === 'number' && typeof pagination.limit === 'number') {
-                    setPagedAccessCodesPagination({
-                        total: Number(pagination.total || 0),
-                        page: pagination.page,
-                        limit: pagination.limit,
-                        totalPages: Number(pagination.totalPages || 1),
-                        hasNext: Boolean(pagination.hasNext),
-                        hasPrev: Boolean(pagination.hasPrev),
-                    });
-                } else {
-                    setPagedAccessCodesPagination(null);
-                }
+                setPagedAccessCodes(normalizePagedAccessCodes(response));
+                setPagedAccessCodesPagination(normalizeAccessCodesPagination(response));
             } catch (error) {
                 if (cancelled) return;
                 setPagedAccessCodes([]);
                 setPagedAccessCodesPagination(null);
-                setPagedAccessCodesError(error instanceof Error ? error.message : 'تعذّر تحميل أكواد التفعيل المرقّمة.');
+                setPagedAccessCodesError(getErrorMessage(error, 'تعذّر تحميل أكواد التفعيل المرقّمة.'));
             } finally {
                 if (!cancelled) {
                     setIsLoadingPagedAccessCodes(false);
@@ -575,19 +541,10 @@ export const SchoolsManager: React.FC = () => {
             return;
         }
 
-        const newSchool: Group = {
-            id: `school_${Date.now()}`,
+        const newSchool = buildNewSchoolGroup({
             name,
-            type: 'SCHOOL',
             ownerId: user.id,
-            supervisorIds: [],
-            studentIds: [],
-            courseIds: [],
-            createdAt: Date.now(),
-            totalStudents: 0,
-            totalSupervisors: 0,
-            totalCourses: 0,
-        };
+        });
 
         setSchoolActionPending('create-school');
         setSaveVerificationState('saving');
@@ -604,9 +561,10 @@ export const SchoolsManager: React.FC = () => {
             setSelectedSchool(verifiedSchool);
             setActiveTab('overview');
         } catch (error) {
+            const message = getErrorMessage(error, 'تعذر إنشاء المدرسة الآن.');
             setSaveVerificationState('error');
-            setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر إنشاء المدرسة الآن.');
-            setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء المدرسة الآن.');
+            setSaveVerificationMessage(message);
+            setManagementError(message);
         } finally {
             setSchoolActionPending(null);
         }
@@ -615,25 +573,14 @@ export const SchoolsManager: React.FC = () => {
     const handleCreateBulkClasses = async () => {
         if (!selectedSchool) return;
 
-        const classNames = Array.from(new Set<string>(
-            bulkClassNames
-                .split(/\r?\n|،|,/)
-                .map((name) => name.trim())
-                .filter(Boolean),
-        ));
+        const classNames = parseBulkClassNames(bulkClassNames);
 
         if (classNames.length === 0) {
             setManagementError('اكتب اسم فصل واحد على الأقل، ويمكنك فصل الأسماء بسطر جديد أو فاصلة.');
             return;
         }
 
-        const existingNames = new Set(
-            classes
-                .filter((group) => group.parentId === selectedSchool.id)
-                .map((group) => group.name.trim().toLowerCase()),
-        );
-        const now = Date.now();
-        const namesToCreate = classNames.filter((name) => !existingNames.has(name.toLowerCase()));
+        const namesToCreate = filterNewClassNames(classNames, classes, selectedSchool.id);
 
         if (namesToCreate.length === 0) {
             setManagementError('كل الفصول المكتوبة موجودة بالفعل داخل هذه المدرسة.');
@@ -646,20 +593,11 @@ export const SchoolsManager: React.FC = () => {
         setManagementError(null);
         setManagementNotice(null);
         try {
-            await Promise.all(namesToCreate.map((name, index) => createGroupAsync({
-                id: `class_${now}_${index}`,
-                name,
-                type: 'CLASS',
-                parentId: selectedSchool.id,
+            await Promise.all(buildBulkClassGroups({
+                classNames: namesToCreate,
+                schoolId: selectedSchool.id,
                 ownerId: user.id,
-                supervisorIds: [],
-                studentIds: [],
-                courseIds: [],
-                createdAt: now + index,
-                totalStudents: 0,
-                totalSupervisors: 0,
-                totalCourses: 0,
-            })));
+            }).map((classGroup) => createGroupAsync(classGroup)));
 
             await refreshSchoolWorkspace(selectedSchool.id);
             setBulkClassNames('');
@@ -667,68 +605,25 @@ export const SchoolsManager: React.FC = () => {
             setSaveVerificationMessage('تم الحفظ والتأكد من الفصول من الخادم.');
             setManagementNotice(`تم إنشاء ${namesToCreate.length} فصل/فصول والتأكد من حفظها.`);
         } catch (error) {
+            const message = getErrorMessage(error, 'تعذر إنشاء الفصول الآن.');
             setSaveVerificationState('error');
-            setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر إنشاء الفصول الآن.');
-            setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء الفصول الآن.');
+            setSaveVerificationMessage(message);
+            setManagementError(message);
         } finally {
             setSchoolActionPending(null);
         }
     };
 
     const downloadTemplate = () => {
-        createXlsxDownload('school-import-template.xlsx', [
-            ['اسم الطالب', 'البريد الإلكتروني', 'اسم الفصل', 'كلمة المرور'],
-            ['طالب تجريبي', 'student1@example.com', 'فصل أ', 'Nn@123456'],
-            ['طالبة تجريبية', 'student2@example.com', 'فصل ب', ''],
-        ]);
+        downloadSchoolImportTemplate();
     };
 
     const downloadRelationsTemplate = () => {
-        createWorkbookDownload('school-relations-template.xlsx', [
-            {
-                name: 'relations',
-                rows: [
-                    ['بريد الطالب', 'بريد ولي الأمر', 'اسم ولي الأمر', 'بريد المشرف', 'اسم المشرف', 'اسم الفصل'],
-                    ['student1@example.com', 'parent1@example.com', 'ولي أمر تجريبي', 'supervisor1@example.com', 'مشرف تجريبي', 'فصل أ'],
-                    ['student2@example.com', 'parent1@example.com', 'ولي أمر تجريبي', '', '', 'فصل ب'],
-                ],
-            },
-            {
-                name: 'notes',
-                rows: [
-                    ['ملاحظة', 'القيمة'],
-                    ['الطلاب', 'يجب أن تكون حساباتهم موجودة داخل المدرسة قبل تنفيذ الربط.'],
-                    ['أولياء الأمور والمشرفون', 'هذه الدفعة تربط الحسابات الموجودة فقط، والحسابات الناقصة تظهر في التقرير.'],
-                    ['الفصل', 'اكتب اسم الفصل كما هو داخل المدرسة، واتركه فارغا إذا كان الطالب مرتبطا بالفعل.'],
-                ],
-            },
-        ]);
+        downloadSchoolRelationsTemplate();
     };
 
     const downloadCredentials = () => {
-        if (!importCredentials.length) {
-            return;
-        }
-
-        createCsvDownload('school-students-credentials.csv', [
-            ['name', 'email', 'password', 'className'],
-            ...importCredentials.map((row) => [row.name, row.email, row.password, row.className || '']),
-        ]);
-    };
-
-    const downloadSchoolRoster = (school: Group, schoolStudents: User[], schoolClasses: Group[]) => {
-        createXlsxDownload(`${school.name}-students-roster.xlsx`, [
-            ['اسم الطالب', 'البريد الإلكتروني', 'الفصل', 'الحالة'],
-            ...schoolStudents.map((student) => {
-                const classroomName = schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id))?.name || '';
-                return [
-                    student.name,
-                    student.email || '',
-                    classroomName,
-                    student.isActive === false ? 'موقوف' : 'نشط',
-                ];
-            }),
-        ]);
+        downloadStudentImportCredentials(importCredentials);
     };
 
     const handleImportFile = async (file: File) => {
@@ -746,7 +641,7 @@ export const SchoolsManager: React.FC = () => {
             setImportRows(rows);
         } catch (error) {
             setImportRows([]);
-            setImportError(error instanceof Error ? error.message : 'تعذر قراءة الملف. استخدم CSV أو TSV.');
+            setImportError(getErrorMessage(error, 'تعذر قراءة الملف. استخدم CSV أو TSV.'));
         }
     };
 
@@ -765,39 +660,12 @@ export const SchoolsManager: React.FC = () => {
             setRelationRows(rows);
         } catch (error) {
             setRelationRows([]);
-            setRelationError(error instanceof Error ? error.message : 'تعذر قراءة ملف الربط. استخدم Excel أو CSV أو TSV.');
+            setRelationError(getErrorMessage(error, 'تعذر قراءة ملف الربط. استخدم Excel أو CSV أو TSV.'));
         }
     };
 
     const downloadRelationCredentials = () => {
-        if (!relationCredentials.length) {
-            return;
-        }
-
-        createWorkbookDownload('school-created-accounts.xlsx', [
-            {
-                name: 'created-accounts',
-                rows: [
-                    ['الدور', 'الاسم', 'البريد الإلكتروني', 'كلمة المرور المؤقتة', 'مرتبط بـ'],
-                    ...relationCredentials.map((credential) => [
-                        credential.role === Role.PARENT ? 'ولي أمر' : 'مشرف',
-                        credential.name,
-                        credential.email,
-                        credential.password,
-                        credential.linkedTo,
-                    ]),
-                ],
-            },
-            {
-                name: 'handover-notes',
-                rows: [
-                    ['تعليمات التسليم', 'القيمة'],
-                    ['الملف حساس', 'لا ترسله في مجموعة عامة، وسلمه لمسؤول المدرسة فقط.'],
-                    ['كلمات المرور', 'اطلب من المستخدمين تغيير كلمة المرور بعد أول دخول عندما تتوفر هذه الخاصية.'],
-                    ['المتابعة', 'بعد التسليم راجع تقرير الربط للتأكد من عدم وجود حسابات ناقصة.'],
-                ],
-            },
-        ]);
+        downloadSchoolRelationCredentials(relationCredentials);
     };
 
     const handleStartImport = async () => {
@@ -805,9 +673,9 @@ export const SchoolsManager: React.FC = () => {
             return;
         }
 
-        const duplicateEmails = getDuplicateImportEmails(importRows);
-        if (duplicateEmails.length > 0) {
-            setImportError(`يوجد بريد مكرر داخل الملف: ${duplicateEmails.slice(0, 3).join(', ')}${duplicateEmails.length > 3 ? '...' : ''}. صحح الملف ثم ارفعه مرة أخرى.`);
+        const duplicateEmailError = getDuplicateImportEmailsError(importRows);
+        if (duplicateEmailError) {
+            setImportError(duplicateEmailError);
             return;
         }
 
@@ -830,9 +698,10 @@ export const SchoolsManager: React.FC = () => {
             setSaveVerificationState('success');
             setSaveVerificationMessage('تم الحفظ والتأكد من ظهور الطلاب من الخادم.');
         } catch (error) {
+            const message = getErrorMessage(error, 'تعذر استيراد الطلاب الآن.');
             setSaveVerificationState('error');
-            setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر استيراد الطلاب الآن.');
-            setImportError(error instanceof Error ? error.message : 'تعذر استيراد الطلاب الآن.');
+            setSaveVerificationMessage(message);
+            setImportError(message);
         } finally {
             setIsImporting(false);
         }
@@ -841,14 +710,9 @@ export const SchoolsManager: React.FC = () => {
     const handleAddSingleStudent = async () => {
         if (!selectedSchool) return;
 
-        const name = singleStudent.name.trim();
-        const email = singleStudent.email.trim().toLowerCase();
-        if (!name || !email) {
-            setImportError('اكتب اسم الطالب والبريد الإلكتروني قبل الإضافة.');
-            return;
-        }
-        if (!singleStudent.className.trim()) {
-            setImportError('اختر فصل الطالب قبل الإضافة حتى تبقى المدرسة مرتبة والتقارير واضحة.');
+        const studentPayload = buildSingleStudentImportRow(singleStudent);
+        if (!studentPayload.ok) {
+            setImportError(studentPayload.error);
             return;
         }
 
@@ -858,12 +722,7 @@ export const SchoolsManager: React.FC = () => {
         setImportError(null);
         try {
             const response = await api.importSchoolStudents(selectedSchool.id, {
-                rows: [{
-                    name,
-                    email,
-                    className: singleStudent.className.trim() || undefined,
-                    password: singleStudent.password.trim() || undefined,
-                }],
+                rows: [studentPayload.row],
             }) as ImportResponse;
             setImportSummary(response.summary);
             setImportCredentials(response.credentials);
@@ -879,9 +738,10 @@ export const SchoolsManager: React.FC = () => {
             setSaveVerificationState('success');
             setSaveVerificationMessage('تم الحفظ والتأكد من ظهور الطالب من الخادم.');
         } catch (error) {
+            const message = getErrorMessage(error, 'تعذر إضافة الطالب الآن.');
             setSaveVerificationState('error');
-            setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر إضافة الطالب الآن.');
-            setImportError(error instanceof Error ? error.message : 'تعذر إضافة الطالب الآن.');
+            setSaveVerificationMessage(message);
+            setImportError(message);
         } finally {
             setIsImporting(false);
         }
@@ -889,7 +749,7 @@ export const SchoolsManager: React.FC = () => {
 
     const handleCopyCode = async (code: string, codeId: string) => {
         try {
-            await navigator.clipboard.writeText(code);
+            await copyTextToClipboard(code);
             setCopiedCodeId(codeId);
             window.setTimeout(() => setCopiedCodeId((current) => (current === codeId ? null : current)), 1800);
         } catch (error) {
@@ -898,10 +758,29 @@ export const SchoolsManager: React.FC = () => {
     };
 
     if (selectedSchool) {
-        const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id);
-        const schoolCodes = accessCodes.filter((code) => code.schoolId === selectedSchool.id);
-        const schoolClasses = classes.filter((group) => group.parentId === selectedSchool.id);
-        const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses, students);
+        const {
+            schoolPackages,
+            schoolCodes,
+            schoolClasses,
+            schoolScopeGroups,
+            schoolStudents,
+            schoolCourses,
+            activeSchoolPackages,
+            activeSchoolCodes,
+            tableSchoolCodes,
+            selectedPackageForCode,
+            totalSeats,
+            usedSeats,
+        } = buildSelectedSchoolData({
+            selectedSchool,
+            b2bPackages,
+            accessCodes,
+            classes,
+            students,
+            publishedCourses,
+            pagedAccessCodes,
+            selectedPackageIdForCode,
+        });
         const {
             schoolSupervisors,
             schoolLevelSupervisors,
@@ -919,13 +798,6 @@ export const SchoolsManager: React.FC = () => {
             supervisors,
             parents,
         });
-        const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
-        const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
-        const activeSchoolCodes = schoolCodes.filter((code) => code.expiresAt > Date.now());
-        const tableSchoolCodes = pagedAccessCodes.length > 0 ? pagedAccessCodes : schoolCodes;
-        const selectedPackageForCode = schoolPackages.find((pkg) => pkg.id === selectedPackageIdForCode);
-        const totalSeats = activeSchoolPackages.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
-        const usedSeats = schoolCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
         const {
             visibleSchoolStudents,
             schoolStudentTotalPages,
@@ -966,16 +838,16 @@ export const SchoolsManager: React.FC = () => {
             setSchoolActionPending('delete-school');
             setManagementError(null);
             setManagementNotice(null);
-        try {
-            await deleteGroupAsync(selectedSchool.id);
-            api.clearContentBootstrapCache();
-            const bootstrap = await api.getContentBootstrapFresh();
-            hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
-            setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
-            setIsDeleteSchoolConfirmOpen(false);
-            setSelectedSchool(null);
+            try {
+                await deleteGroupAsync(selectedSchool.id);
+                api.clearContentBootstrapCache();
+                const bootstrap = await api.getContentBootstrapFresh();
+                hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
+                setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
+                setIsDeleteSchoolConfirmOpen(false);
+                setSelectedSchool(null);
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر حذف المدرسة الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر حذف المدرسة الآن.'));
             } finally {
                 setSchoolActionPending(null);
             }
@@ -988,34 +860,27 @@ export const SchoolsManager: React.FC = () => {
             setManagementError(null);
             setManagementNotice(null);
             try {
-                await createGroupAsync({
-                    id: `class_${now}`,
+                await createGroupAsync(buildNewClassGroup({
                     name: `فصل جديد - ${selectedSchool.name}`,
-                    type: 'CLASS',
                     parentId: selectedSchool.id,
                     ownerId: user.id,
-                    supervisorIds: [],
-                    studentIds: [],
-                    courseIds: [],
-                    createdAt: now,
-                    totalStudents: 0,
-                    totalSupervisors: 0,
-                    totalCourses: 0,
-                });
+                    now,
+                }));
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setSaveVerificationState('success');
                 setSaveVerificationMessage('تم الحفظ والتأكد من الفصل من الخادم.');
                 setManagementNotice(notice);
             } catch (error) {
+                const message = getErrorMessage(error, 'تعذر إنشاء الفصل الآن.');
                 setSaveVerificationState('error');
-                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر إنشاء الفصل الآن.');
-                setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء الفصل الآن.');
+                setSaveVerificationMessage(message);
+                setManagementError(message);
             } finally {
                 setSchoolActionPending(null);
             }
         };
         const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {
-            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === groupId);
+            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
             const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
             setRosterActionPending(`supervisor-assign-${groupId}-${supervisorId}`);
             setManagementError(null);
@@ -1029,15 +894,16 @@ export const SchoolsManager: React.FC = () => {
                 setSaveVerificationMessage('تم ربط المشرف والتأكد من حفظ النطاق.');
                 setManagementNotice(`تم حفظ ربط ${targetSupervisor?.name || 'المشرف'} على ${targetGroup?.name || 'النطاق المحدد'}.`);
             } catch (error) {
+                const message = getErrorMessage(error, 'تعذر ربط المشرف الآن.');
                 setSaveVerificationState('error');
-                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر ربط المشرف الآن.');
-                setManagementError(error instanceof Error ? error.message : 'تعذر ربط المشرف الآن.');
+                setSaveVerificationMessage(message);
+                setManagementError(message);
             } finally {
                 setRosterActionPending(null);
             }
         };
         const handleRemoveSchoolSupervisor = async (supervisorId: string, groupId: string) => {
-            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === groupId);
+            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
             const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
             setRosterActionPending(`supervisor-remove-${groupId}-${supervisorId}`);
             setManagementError(null);
@@ -1051,9 +917,10 @@ export const SchoolsManager: React.FC = () => {
                 setSaveVerificationMessage('تم إزالة ربط المشرف والتأكد من حفظ النطاق.');
                 setManagementNotice(`تم حفظ إزالة ${targetSupervisor?.name || 'المشرف'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
             } catch (error) {
+                const message = getErrorMessage(error, 'تعذر إزالة المشرف الآن.');
                 setSaveVerificationState('error');
-                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر إزالة المشرف الآن.');
-                setManagementError(error instanceof Error ? error.message : 'تعذر إزالة المشرف الآن.');
+                setSaveVerificationMessage(message);
+                setManagementError(message);
             } finally {
                 setRosterActionPending(null);
             }
@@ -1087,14 +954,14 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice(`تم حفظ نقل ${targetStudent?.name || 'الطالب'} إلى ${targetClass?.name || 'الفصل المحدد'}.`);
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر نقل الطالب الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر نقل الطالب الآن.'));
             } finally {
                 setRosterActionPending(null);
             }
         };
         const handleRemoveStudentScope = async (studentId: string, groupId: string) => {
             const targetStudent = schoolStudents.find((student) => student.id === studentId);
-            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === groupId);
+            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
             setRosterActionPending(`student-remove-${groupId}-${studentId}`);
             setManagementError(null);
             setManagementNotice(null);
@@ -1103,44 +970,39 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice(`تم حفظ إخراج ${targetStudent?.name || 'الطالب'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر إخراج الطالب الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر إخراج الطالب الآن.'));
             } finally {
                 setRosterActionPending(null);
             }
         };
         const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
-            const name = quickSupervisor.name.trim();
-            const email = quickSupervisor.email.trim().toLowerCase();
-            const targetGroupId = quickSupervisor.targetGroupId || fallbackGroupId || selectedSchool.id;
-            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === targetGroupId);
-
-            if (!name || !email) {
-                setManagementError('اكتب اسم المشرف وبريده قبل الإنشاء أو الربط.');
+            const supervisorPayload = buildQuickSupervisorPayload(
+                quickSupervisor,
+                selectedSchool,
+                schoolClasses,
+                fallbackGroupId,
+            );
+            if (!supervisorPayload.ok) {
+                setManagementError(supervisorPayload.error);
                 setManagementNotice(null);
                 return;
             }
 
-            if (!targetGroup) {
-                setManagementError('اختر نطاق المشرف: المدرسة كاملة أو فصل محدد.');
-                setManagementNotice(null);
-                return;
-            }
+            const existingSupervisor = supervisors.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === supervisorPayload.email);
+            const password = supervisorPayload.passwordDraft || generateTemporaryPassword();
 
-            const existingSupervisor = supervisors.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === email);
-            const password = quickSupervisor.password.trim() || generateTemporaryPassword();
-
-            setRosterActionPending(`supervisor-quick-${targetGroupId}`);
+            setRosterActionPending(`supervisor-quick-${supervisorPayload.targetGroupId}`);
             try {
                 let supervisor = existingSupervisor;
 
                 if (!supervisor) {
                     const response = await api.createAdminUser({
-                        name,
-                        email,
+                        name: supervisorPayload.name,
+                        email: supervisorPayload.email,
                         password,
                         role: Role.SUPERVISOR,
                         schoolId: selectedSchool.id,
-                        groupIds: [targetGroupId],
+                        groupIds: [supervisorPayload.targetGroupId],
                     }) as { user?: AdminUserPayload };
 
                     if (!response.user) {
@@ -1151,7 +1013,7 @@ export const SchoolsManager: React.FC = () => {
                     addUser(supervisor);
                 }
 
-                await assignSupervisorToGroupAsync(supervisor.id, targetGroupId);
+                await assignSupervisorToGroupAsync(supervisor.id, supervisorPayload.targetGroupId);
 
                 await refreshSchoolWorkspace(selectedSchool.id);
 
@@ -1159,11 +1021,11 @@ export const SchoolsManager: React.FC = () => {
                 setManagementError(null);
                 setManagementNotice(
                     existingSupervisor
-                        ? `تم ربط ${supervisor.name} على نطاق ${targetGroup.name}.`
-                        : `تم إنشاء وربط ${supervisor.name} على نطاق ${targetGroup.name}. كلمة المرور المؤقتة: ${password}`,
+                        ? `تم ربط ${supervisor.name} على نطاق ${supervisorPayload.targetGroup.name}.`
+                        : `تم إنشاء وربط ${supervisor.name} على نطاق ${supervisorPayload.targetGroup.name}. كلمة المرور المؤقتة: ${password}`,
                 );
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء أو ربط المشرف الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر إنشاء أو ربط المشرف الآن.'));
                 setManagementNotice(null);
             } finally {
                 setRosterActionPending(null);
@@ -1178,7 +1040,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice('تم حفظ الباقة المدرسية وربطها بالمدرسة بعد التحقق من الخادم.');
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر حفظ الباقة المدرسية الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر حفظ الباقة المدرسية الآن.'));
             } finally {
                 setPackageActionPending(null);
             }
@@ -1192,7 +1054,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice('تم حفظ تعديل الباقة المدرسية بعد التحقق من الخادم.');
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر حفظ تعديل الباقة المدرسية الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر حفظ تعديل الباقة المدرسية الآن.'));
             } finally {
                 setPackageActionPending(null);
             }
@@ -1206,7 +1068,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice('تم حذف الباقة المدرسية وأكوادها المرتبطة بعد التحقق من الخادم.');
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الباقة المدرسية الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر حذف الباقة المدرسية الآن.'));
             } finally {
                 setPackageActionPending(null);
             }
@@ -1220,7 +1082,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice('تم إيقاف كل باقات المدرسة بعد تأكيد الحفظ من الخادم.');
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر إيقاف كل الباقات الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر إيقاف كل الباقات الآن.'));
             } finally {
                 setPackageActionPending(null);
             }
@@ -1229,32 +1091,23 @@ export const SchoolsManager: React.FC = () => {
             setManagementError(null);
             setManagementNotice(null);
 
-            if (activeSchoolPackages.length === 0) {
-                setManagementError('يجب وجود باقة نشطة قبل توليد كود تفعيل.');
+            const accessCodeCreationError = getSchoolAccessCodeCreationError({
+                activeSchoolPackages,
+                selectedPackageIdForCode,
+                selectedPackageForCode,
+            });
+            if (accessCodeCreationError) {
+                setManagementError(accessCodeCreationError);
                 return;
             }
 
-            if (!selectedPackageIdForCode) {
-                setManagementError('اختر الباقة النشطة التي سيعمل عليها كود التفعيل أولًا.');
-                return;
-            }
-
-            if (!selectedPackageForCode || selectedPackageForCode.status !== 'active') {
-                setManagementError('لا يمكن توليد كود على باقة موقوفة. فعّل الباقة أو اختر باقة نشطة.');
-                return;
-            }
-
-            const now = Date.now();
-            const accessCode: AccessCode = {
-                id: `code_${now}`,
-                code: `${selectedSchool.name.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+            const accessCode = buildSchoolAccessCode({
+                schoolName: selectedSchool.name,
                 schoolId: selectedSchool.id,
                 packageId: selectedPackageIdForCode,
-                maxUses: Math.max(1, Number(newCodeMaxUses) || 50),
-                currentUses: 0,
-                expiresAt: now + Math.max(1, Number(newCodeDurationDays) || 30) * 24 * 60 * 60 * 1000,
-                createdAt: now,
-            };
+                maxUses: newCodeMaxUses,
+                durationDays: newCodeDurationDays,
+            });
 
             setAccessCodeActionPending(`create-${accessCode.id}`);
             try {
@@ -1262,7 +1115,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice('تم توليد كود التفعيل وحفظه بعد التحقق من الخادم.');
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر توليد كود التفعيل الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر توليد كود التفعيل الآن.'));
             } finally {
                 setAccessCodeActionPending(null);
             }
@@ -1277,7 +1130,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 setManagementNotice('تم حذف كود التفعيل بعد التحقق من الخادم.');
             } catch (error) {
-                setManagementError(error instanceof Error ? error.message : 'تعذر حذف كود التفعيل الآن.');
+                setManagementError(getErrorMessage(error, 'تعذر حذف كود التفعيل الآن.'));
             } finally {
                 setAccessCodeActionPending(null);
             }
@@ -1325,265 +1178,69 @@ export const SchoolsManager: React.FC = () => {
             isApplyingRelations,
         });
         const copySchoolHandoverMessage = async () => {
-            try {
-                await navigator.clipboard.writeText(schoolHandoverMessage);
-            } catch {
-                const textarea = document.createElement('textarea');
-                textarea.value = schoolHandoverMessage;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                textarea.remove();
-            }
+            await copyTextToClipboard(schoolHandoverMessage, { useTextareaFallback: true });
             setManagementNotice('تم نسخ رسالة تسليم المدرسة للإدارة.');
             setManagementError(null);
         };
         const downloadSchoolGapReport = () => {
-            createWorkbookDownload(`${selectedSchool.name}-readiness-gaps.xlsx`, [
-                {
-                    name: 'launch-summary',
-                    rows: [
-                        ['البند', 'القيمة'],
-                        ['اسم المدرسة', selectedSchool.name],
-                        ['حالة الجاهزية', readinessStatusLabel],
-                        ['درجة الجاهزية', `${readinessScore}/${readinessChecks.length}`],
-                        ['الخطوة التالية', readinessNextStep],
-                        ['طلاب بلا فصل', studentsWithoutClass.length],
-                        ['طلاب بلا ولي أمر', studentsWithoutParent.length],
-                        ['مشرفون بلا فصل محدد', supervisorsWithoutClass.length],
-                    ],
-                },
-                {
-                    name: 'warnings',
-                    rows: [
-                        ['الملاحظة'],
-                        ...(operationalWarnings.length ? operationalWarnings : ['لا توجد ملاحظات تشغيلية حرجة.']).map((warning) => [warning]),
-                    ],
-                },
-                {
-                    name: 'students-without-class',
-                    rows: [
-                        ['الطالب', 'البريد', 'الحالة'],
-                        ...studentsWithoutClass.map((student) => [
-                            student.name,
-                            student.email || '',
-                            student.isActive === false ? 'موقوف' : 'نشط',
-                        ]),
-                    ],
-                },
-                {
-                    name: 'students-without-parent',
-                    rows: [
-                        ['الطالب', 'البريد', 'الفصل'],
-                        ...studentsWithoutParent.map((student) => [
-                            student.name,
-                            student.email || '',
-                            schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id))?.name || 'بدون فصل',
-                        ]),
-                    ],
-                },
-                {
-                    name: 'supervisors',
-                    rows: [
-                        ['الاسم', 'البريد', 'الدور', 'النطاق'],
-                        ...schoolSupervisors.map((currentUser) => [
-                            currentUser.name,
-                            currentUser.email || '',
-                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
-                            (currentUser.groupIds || [])
-                                .map((groupId) => groups.find((group) => group.id === groupId)?.name || groupId)
-                                .join(' | ') || selectedSchool.name,
-                        ]),
-                    ],
-                },
-            ]);
+            createWorkbookDownload(`${selectedSchool.name}-readiness-gaps.xlsx`, buildSchoolGapReportSheets({
+                selectedSchool,
+                readinessStatusLabel,
+                readinessScore,
+                readinessChecks,
+                readinessNextStep,
+                operationalWarnings,
+                studentsWithoutClass,
+                studentsWithoutParent,
+                supervisorsWithoutClass,
+                schoolClasses,
+                schoolSupervisors,
+                groups,
+            }));
         };
         const downloadSchoolHandover = () => {
-            createWorkbookDownload(`${selectedSchool.name}-handover.xlsx`, [
-                {
-                    name: 'summary',
-                    rows: [
-                        ['البند', 'القيمة'],
-                        ['اسم المدرسة', selectedSchool.name],
-                        ['حالة الجاهزية', `${readinessScore}/${readinessChecks.length}`],
-                        ['إجمالي الطلاب', schoolStudents.length],
-                        ['الفصول', schoolClasses.length],
-                        ['المشرفون والمعلمون', schoolSupervisors.length],
-                        ['الباقات النشطة', activeSchoolPackages.length],
-                        ['الأكواد الصالحة', activeSchoolCodes.length],
-                        ['المقاعد المتاحة', totalSeats],
-                        ['المقاعد المستخدمة', usedSeats],
-                    ],
-                },
-                {
-                    name: 'readiness',
-                    rows: [
-                        ['الفحص', 'الحالة', 'ملاحظة'],
-                        ...readinessChecks.map((check) => [check.label, check.isReady ? 'جاهز' : 'يحتاج استكمال', check.hint]),
-                    ],
-                },
-                {
-                    name: 'launch-plan',
-                    rows: [
-                        ['المرحلة', 'الإجراء', 'الملاحظة'],
-                        ...schoolLaunchPlan,
-                    ],
-                },
-                {
-                    name: 'supervisor-checklist',
-                    rows: [
-                        ['البند', 'الحالة'],
-                        ...supervisorHandoverChecklist,
-                    ],
-                },
-                {
-                    name: 'handover-message',
-                    rows: [
-                        ['رسالة جاهزة للإدارة'],
-                        ...schoolHandoverMessage.split('\n').map((line) => [line]),
-                    ],
-                },
-                {
-                    name: 'classes',
-                    rows: [
-                        ['اسم الفصل', 'عدد الطلاب', 'عدد المشرفين', 'عدد الدورات'],
-                        ...schoolClasses.map((classroom) => [
-                            classroom.name,
-                            classroom.studentIds.length,
-                            classroom.supervisorIds.length,
-                            classroom.courseIds.length,
-                        ]),
-                    ],
-                },
-                {
-                    name: 'students',
-                    rows: [
-                        ['اسم الطالب', 'البريد الإلكتروني', 'الفصل', 'الحالة'],
-                        ...schoolStudents.map((student) => {
-                            const classroomName = schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id))?.name || 'بدون فصل';
-                            return [student.name, student.email || '', classroomName, student.isActive === false ? 'موقوف' : 'نشط'];
-                        }),
-                    ],
-                },
-                {
-                    name: 'packages',
-                    rows: [
-                        ['اسم الباقة', 'الحالة', 'نوع الوصول', 'أقصى عدد طلاب', 'أنواع المحتوى', 'المسارات', 'المواد'],
-                        ...schoolPackages.map((pkg) => [
-                            pkg.name,
-                            pkg.status === 'active' ? 'نشطة' : 'موقوفة',
-                            pkg.type === 'free_access' ? 'وصول مجاني' : 'خصم',
-                            pkg.maxStudents || 0,
-                            (pkg.contentTypes || []).join(' | '),
-                            (pkg.pathIds || []).map((pathId) => paths.find((path) => path.id === pathId)?.name || pathId).join(' | ') || 'كل المسارات',
-                            (pkg.subjectIds || []).map((subjectId) => subjects.find((subject) => subject.id === subjectId)?.name || subjectId).join(' | ') || 'كل المواد',
-                        ]),
-                    ],
-                },
-                {
-                    name: 'access-codes',
-                    rows: [
-                        ['الكود', 'الباقة', 'الاستخدام', 'أقصى استخدام', 'تاريخ الانتهاء', 'الحالة'],
-                        ...schoolCodes.map((code) => [
-                            code.code,
-                            schoolPackages.find((pkg) => pkg.id === code.packageId)?.name || code.packageId,
-                            code.currentUses || 0,
-                            code.maxUses || 0,
-                            new Date(code.expiresAt).toLocaleDateString('ar-SA'),
-                            code.expiresAt > Date.now() ? 'صالح' : 'منتهي',
-                        ]),
-                    ],
-                },
-                {
-                    name: 'supervisors',
-                    rows: [
-                        ['الاسم', 'البريد', 'الدور'],
-                        ...schoolSupervisors.map((currentUser) => [
-                            currentUser.name,
-                            currentUser.email || '',
-                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
-                        ]),
-                    ],
-                },
-            ]);
+            createWorkbookDownload(`${selectedSchool.name}-handover.xlsx`, buildSchoolHandoverReportSheets({
+                selectedSchool,
+                readinessScore,
+                readinessChecks,
+                schoolStudents,
+                schoolClasses,
+                schoolSupervisors,
+                activeSchoolPackages,
+                activeSchoolCodes,
+                schoolPackages,
+                schoolCodes,
+                totalSeats,
+                usedSeats,
+                schoolLaunchPlan,
+                supervisorHandoverChecklist,
+                schoolHandoverMessage,
+                paths,
+                subjects,
+            }));
         };
 
         const downloadSchoolPerformanceReport = () => {
             if (!schoolReport) return;
 
-            createWorkbookDownload(`${selectedSchool.name}-performance-report.xlsx`, [
-                {
-                    name: 'summary',
-                    rows: [
-                        ['البند', 'القيمة'],
-                        ['اسم المدرسة', schoolReport.school.name],
-                        ['إجمالي الطلاب', schoolReport.metrics.totalStudents],
-                        ['الطلاب النشطون', schoolReport.metrics.activeStudents],
-                        ['عدد الفصول', schoolReport.metrics.totalClasses],
-                        ['الباقات النشطة', schoolReport.metrics.activePackages],
-                        ['الأكواد النشطة', schoolReport.metrics.activeCodes],
-                        ['محاولات الاختبار', schoolReport.metrics.quizAttempts],
-                        ['متوسط الأداء', `${schoolReport.metrics.averageScore}%`],
-                    ],
-                },
-                {
-                    name: 'weak-skills',
-                    rows: [
-                        ['المهارة', 'المادة', 'المهارة الرئيسية', 'عدد المحاولات', 'نسبة الإتقان', 'الأولوية'],
-                        ...schoolReport.weakestSkills.map((item) => {
-                            const subjectName = subjects.find((subject) => subject.id === item.subjectId)?.name || '';
-                            const sectionName = sections.find((section) => section.id === item.sectionId)?.name || '';
-                            return [
-                                item.skill,
-                                subjectName,
-                                sectionName,
-                                item.attempts,
-                                `${item.mastery}%`,
-                                item.mastery < 50 ? 'خطة علاجية عاجلة' : 'متابعة وتدريب إضافي',
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'classes',
-                    rows: [
-                        ['الفصل', 'عدد الطلاب', 'عدد المشرفين', 'محاولات الاختبار', 'متوسط الأداء', 'التوصية'],
-                        ...schoolReport.classSummaries.map((classroom) => [
-                            classroom.name,
-                            classroom.studentCount,
-                            classroom.supervisorCount,
-                            classroom.quizAttempts,
-                            `${classroom.averageScore}%`,
-                            classroom.averageScore < 50 ? 'متابعة قريبة وخطة علاجية' : classroom.averageScore < 70 ? 'تدريبات داعمة' : 'مستوى مطمئن',
-                        ]),
-                    ],
-                },
-            ]);
+            createWorkbookDownload(`${selectedSchool.name}-performance-report.xlsx`, buildSchoolPerformanceReportSheets({
+                schoolReport,
+                subjects,
+                sections,
+            }));
         };
 
         const handleAssignCourseToSchool = (courseId: string) => {
             assignCourseToGroup(courseId, selectedSchool.id);
             setSelectedSchool((current) =>
-                current
-                    ? {
-                          ...current,
-                          courseIds: current.courseIds.includes(courseId)
-                              ? current.courseIds
-                              : [...current.courseIds, courseId],
-                      }
-                    : current,
+                current ? addCourseIdToSelectedSchool(current, courseId) : current,
             );
         };
 
         const handleRemoveCourseFromSchool = (courseId: string) => {
             removeCourseFromGroup(courseId, selectedSchool.id);
             setSelectedSchool((current) =>
-                current
-                    ? {
-                          ...current,
-                          courseIds: current.courseIds.filter((id) => id !== courseId),
-                      }
-                    : current,
+                current ? removeCourseIdFromSelectedSchool(current, courseId) : current,
             );
         };
 
@@ -1606,9 +1263,10 @@ export const SchoolsManager: React.FC = () => {
                         setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
                         setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
                     } catch (error) {
+                        const message = getErrorMessage(error, 'تعذر تعديل اسم الفصل الآن.');
                         setSaveVerificationState('error');
-                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
-                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم الفصل الآن.');
+                        setSaveVerificationMessage(message);
+                        setManagementError(message);
                         throw error;
                     } finally {
                         setSchoolActionPending(null);
@@ -1632,9 +1290,10 @@ export const SchoolsManager: React.FC = () => {
                 setSaveVerificationMessage('تم حذف الفصل والتأكد منه من الخادم.');
                 setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
             } catch (error) {
+                const message = getErrorMessage(error, 'تعذر حذف الفصل الآن.');
                 setSaveVerificationState('error');
-                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
-                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الفصل الآن.');
+                setSaveVerificationMessage(message);
+                setManagementError(message);
             } finally {
                 setSchoolActionPending(null);
             }
@@ -1647,119 +1306,34 @@ export const SchoolsManager: React.FC = () => {
         };
 
         const downloadClassReport = (classroom: Group) => {
-            const classStudents = schoolStudents.filter((student) => (
-                classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id)
-            ));
-            const classSupervisors = supervisors.filter((currentUser) => (
-                classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id)
-            ));
-            const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
-            const classSummary = schoolReport?.classSummaries.find((item) => item.id === classroom.id || item.name === classroom.name);
-            const studentsWithoutLinkedParent = classStudents.filter((student) => (
-                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
-            ));
-
-            createWorkbookDownload(`${selectedSchool.name}-${classroom.name}-class-report.xlsx`, [
-                {
-                    name: 'summary',
-                    rows: [
-                        ['البند', 'القيمة'],
-                        ['المدرسة', selectedSchool.name],
-                        ['الفصل', classroom.name],
-                        ['عدد الطلاب', classStudents.length],
-                        ['عدد المشرفين', classSupervisors.length],
-                        ['عدد الدورات', classCourses.length],
-                        ['طلاب بلا ولي أمر', studentsWithoutLinkedParent.length],
-                        ['محاولات الاختبار', classSummary?.quizAttempts || 0],
-                        ['متوسط الأداء', classSummary ? `${classSummary.averageScore}%` : 'لا توجد بيانات كافية'],
-                        ['التوصية', !classSummary ? 'ابدأ بجمع نتائج من الطلاب' : classSummary.averageScore < 50 ? 'متابعة قريبة وخطة علاجية' : classSummary.averageScore < 70 ? 'تدريبات داعمة' : 'مستوى مطمئن'],
-                    ],
-                },
-                {
-                    name: 'students',
-                    rows: [
-                        ['اسم الطالب', 'البريد', 'الحالة', 'أولياء الأمور', 'ملاحظة'],
-                        ...classStudents.map((student) => {
-                            const studentParents = parents.filter((parent) => (parent.linkedStudentIds || []).includes(student.id));
-                            return [
-                                student.name,
-                                student.email || '',
-                                student.isActive === false ? 'موقوف' : 'نشط',
-                                studentParents.map((parent) => parent.name).join(' | ') || 'لا يوجد',
-                                studentParents.length ? 'جاهز للمتابعة' : 'يحتاج ربط ولي أمر',
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'supervisors',
-                    rows: [
-                        ['الاسم', 'البريد', 'الدور'],
-                        ...classSupervisors.map((currentUser) => [
-                            currentUser.name,
-                            currentUser.email || '',
-                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
-                        ]),
-                    ],
-                },
-                {
-                    name: 'courses',
-                    rows: [
-                        ['الدورة', 'الحالة'],
-                        ...classCourses.map((course) => [course.title, course.isPublished === false ? 'غير منشورة' : 'منشورة']),
-                    ],
-                },
-            ]);
+            createWorkbookDownload(`${selectedSchool.name}-${classroom.name}-class-report.xlsx`, buildSchoolClassReportSheets({
+                selectedSchool,
+                classroom,
+                schoolStudents,
+                supervisors,
+                publishedCourses,
+                schoolReport,
+                parents,
+            }));
         };
 
         const printSchoolReport = () => {
-            const warnings = operationalWarnings.length ? operationalWarnings : ['لا توجد ملاحظات تشغيلية حرجة.'];
-            const printedAt = new Date().toLocaleString('ar-SA');
-            const bodyHtml = `
-                <section class="hero">
-                    <p class="muted">تقرير جاهزية وتشغيل المدرسة</p>
-                    <h1>${escapeHtml(selectedSchool.name)}</h1>
-                    <p class="muted">تم إنشاء التقرير في ${escapeHtml(printedAt)}</p>
-                </section>
-                <section class="metrics">
-                    <div class="metric"><span>جاهزية التشغيل</span><strong>${readinessScore}/${readinessChecks.length}</strong></div>
-                    <div class="metric"><span>الطلاب</span><strong>${schoolStudents.length}</strong></div>
-                    <div class="metric"><span>الفصول</span><strong>${schoolClasses.length}</strong></div>
-                    <div class="metric"><span>الباقات النشطة</span><strong>${activeSchoolPackages.length}</strong></div>
-                    <div class="metric"><span>أكواد فعالة</span><strong>${activeSchoolCodes.length}</strong></div>
-                    <div class="metric"><span>المقاعد المتاحة</span><strong>${totalSeats}</strong></div>
-                    <div class="metric"><span>المقاعد المستخدمة</span><strong>${usedSeats}</strong></div>
-                    <div class="metric"><span>المشرفون</span><strong>${schoolSupervisors.length}</strong></div>
-                </section>
-                <h2>فحص الجاهزية</h2>
-                ${renderPrintTable(
-                    ['الفحص', 'الحالة', 'ملاحظة'],
-                    readinessChecks.map((check) => [check.label, check.isReady ? 'جاهز' : 'يحتاج استكمال', check.hint]),
-                )}
-                <h2>الفصول</h2>
-                ${renderPrintTable(
-                    ['الفصل', 'الطلاب', 'المشرفون', 'الدورات'],
-                    schoolClasses.map((classroom) => [
-                        classroom.name,
-                        schoolStudents.filter((student) => classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id)).length,
-                        supervisors.filter((currentUser) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id)).length,
-                        classroom.courseIds.length,
-                    ]),
-                )}
-                <h2>الباقات والأكواد</h2>
-                ${renderPrintTable(
-                    ['الباقة', 'الحالة', 'نوع الوصول', 'حد الطلاب', 'الأكواد'],
-                    schoolPackages.map((pkg) => [
-                        pkg.name,
-                        pkg.status === 'active' ? 'نشطة' : 'موقوفة',
-                        pkg.type === 'free_access' ? 'وصول مجاني' : `خصم ${pkg.discountPercentage || 0}%`,
-                        pkg.maxStudents || 0,
-                        schoolCodes.filter((code) => code.packageId === pkg.id).length,
-                    ]),
-                )}
-                <h2>ملاحظات تشغيلية</h2>
-                ${renderPrintTable(['الملاحظة'], warnings.map((warning) => [warning]))}
-            `;
+            const bodyHtml = buildSchoolPrintReportHtml({
+                selectedSchool,
+                readinessChecks,
+                readinessScore,
+                schoolStudents,
+                schoolClasses,
+                activeSchoolPackages,
+                activeSchoolCodes,
+                totalSeats,
+                usedSeats,
+                schoolSupervisors,
+                supervisors,
+                schoolPackages,
+                schoolCodes,
+                operationalWarnings,
+            });
 
             if (!openPrintWindow(`${selectedSchool.name} - تقرير المدرسة`, bodyHtml)) {
                 setManagementError('تعذر فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى.');
@@ -1767,63 +1341,15 @@ export const SchoolsManager: React.FC = () => {
         };
 
         const printClassReport = (classroom: Group) => {
-            const classStudents = schoolStudents.filter((student) => (
-                classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id)
-            ));
-            const classSupervisors = supervisors.filter((currentUser) => (
-                classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id)
-            ));
-            const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
-            const classSummary = schoolReport?.classSummaries.find((item) => item.id === classroom.id || item.name === classroom.name);
-            const studentsWithoutLinkedParent = classStudents.filter((student) => (
-                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
-            ));
-            const printedAt = new Date().toLocaleString('ar-SA');
-            const bodyHtml = `
-                <section class="hero">
-                    <p class="muted">تقرير فصل داخل المدرسة</p>
-                    <h1>${escapeHtml(classroom.name)}</h1>
-                    <p class="muted">${escapeHtml(selectedSchool.name)} - ${escapeHtml(printedAt)}</p>
-                </section>
-                <section class="metrics">
-                    <div class="metric"><span>الطلاب</span><strong>${classStudents.length}</strong></div>
-                    <div class="metric"><span>المشرفون</span><strong>${classSupervisors.length}</strong></div>
-                    <div class="metric"><span>الدورات</span><strong>${classCourses.length}</strong></div>
-                    <div class="metric"><span>طلاب بلا ولي أمر</span><strong>${studentsWithoutLinkedParent.length}</strong></div>
-                    <div class="metric"><span>محاولات الاختبار</span><strong>${classSummary?.quizAttempts || 0}</strong></div>
-                    <div class="metric"><span>متوسط الأداء</span><strong>${classSummary ? `${classSummary.averageScore}%` : '-'}</strong></div>
-                </section>
-                <h2>الطلاب</h2>
-                ${renderPrintTable(
-                    ['الطالب', 'البريد', 'الحالة', 'أولياء الأمور', 'ملاحظة'],
-                    classStudents.map((student) => {
-                        const studentParents = parents.filter((parent) => (parent.linkedStudentIds || []).includes(student.id));
-                        return [
-                            student.name,
-                            student.email || '',
-                            student.isActive === false ? 'موقوف' : 'نشط',
-                            studentParents.map((parent) => parent.name).join(' | ') || 'لا يوجد',
-                            studentParents.length ? 'جاهز للمتابعة' : 'يحتاج ربط ولي أمر',
-                        ];
-                    }),
-                )}
-                <h2>المشرفون والدورات</h2>
-                ${renderPrintTable(
-                    ['النوع', 'الاسم', 'تفصيل'],
-                    [
-                        ...classSupervisors.map((currentUser) => [
-                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
-                            currentUser.name,
-                            currentUser.email || '',
-                        ]),
-                        ...classCourses.map((course) => [
-                            'دورة',
-                            course.title,
-                            course.isPublished === false ? 'غير منشورة' : 'منشورة',
-                        ]),
-                    ],
-                )}
-            `;
+            const bodyHtml = buildClassPrintReportHtml({
+                selectedSchool,
+                classroom,
+                schoolStudents,
+                supervisors,
+                publishedCourses,
+                schoolReport,
+                parents,
+            });
 
             if (!openPrintWindow(`${selectedSchool.name} - ${classroom.name}`, bodyHtml)) {
                 setManagementError('تعذر فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى.');
@@ -1831,145 +1357,31 @@ export const SchoolsManager: React.FC = () => {
         };
 
         const downloadPackagesReport = () => {
-            createWorkbookDownload(`${selectedSchool.name}-packages-and-codes.xlsx`, [
-                {
-                    name: 'packages',
-                    rows: [
-                        ['اسم الباقة', 'الحالة', 'نوع الوصول', 'المعلم/المدرب', 'نسبة المعلم', 'حد الطلاب', 'الدورات', 'أنواع المحتوى', 'المسارات', 'المواد', 'توصية'],
-                        ...schoolPackages.map((pkg) => {
-                            const packageCodes = schoolCodes.filter((code) => code.packageId === pkg.id);
-                            const packageTeacher = teachers.find((teacher) => teacher.id === pkg.assignedTeacherId);
-                            return [
-                                pkg.name,
-                                pkg.status === 'active' ? 'نشطة' : 'موقوفة',
-                                pkg.type === 'free_access' ? 'وصول مجاني' : `خصم ${pkg.discountPercentage || 0}%`,
-                                packageTeacher?.name || 'غير محدد',
-                                pkg.revenueSharePercentage != null ? `${pkg.revenueSharePercentage}%` : 'غير محددة',
-                                pkg.maxStudents || 0,
-                                pkg.courseIds.length,
-                                (pkg.contentTypes || []).join(' | ') || 'all',
-                                (pkg.pathIds || []).map((pathId) => paths.find((path) => path.id === pathId)?.name || pathId).join(' | ') || 'كل المسارات',
-                                (pkg.subjectIds || []).map((subjectId) => subjects.find((subject) => subject.id === subjectId)?.name || subjectId).join(' | ') || 'كل المواد',
-                                pkg.status !== 'active'
-                                    ? 'موقوفة ولا يفضل توليد أكواد جديدة عليها'
-                                    : packageCodes.length === 0
-                                        ? 'ولّد كود تفعيل قبل التسليم'
-                                        : 'جاهزة للتسليم',
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'access-codes',
-                    rows: [
-                        ['الكود', 'الباقة', 'حالة الباقة', 'الاستخدام', 'أقصى استخدام', 'تاريخ الانتهاء', 'حالة الكود'],
-                        ...schoolCodes.map((code) => {
-                            const pkg = schoolPackages.find((item) => item.id === code.packageId);
-                            return [
-                                code.code,
-                                pkg?.name || code.packageId,
-                                pkg?.status === 'active' ? 'نشطة' : 'موقوفة/غير معروفة',
-                                code.currentUses || 0,
-                                code.maxUses || 0,
-                                new Date(code.expiresAt).toLocaleDateString('ar-SA'),
-                                code.expiresAt > Date.now() ? 'صالح' : 'منتهي',
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'readiness',
-                    rows: [
-                        ['الفحص', 'القيمة', 'ملاحظة'],
-                        ['الباقات النشطة', activeSchoolPackages.length, activeSchoolPackages.length ? 'جيد' : 'فعّل باقة واحدة على الأقل'],
-                        ['الأكواد الصالحة', activeSchoolCodes.length, activeSchoolCodes.length ? 'جاهز للتوزيع' : 'ولّد كود تفعيل صالح'],
-                        ['المقاعد النشطة', totalSeats, totalSeats ? 'مرتبطة بالباقات النشطة فقط' : 'راجع سعة الباقات'],
-                        ['الاستخدام الحالي', usedSeats, usedSeats >= totalSeats && totalSeats > 0 ? 'راجع المقاعد المتبقية' : 'ضمن السعة'],
-                    ],
-                },
-            ]);
+            createWorkbookDownload(`${selectedSchool.name}-packages-and-codes.xlsx`, buildSchoolPackagesReportSheets({
+                schoolPackages,
+                schoolCodes,
+                activeSchoolPackages,
+                activeSchoolCodes,
+                teachers,
+                paths,
+                subjects,
+                totalSeats,
+                usedSeats,
+            }));
         };
 
         const downloadRelationsReport = () => {
-            createWorkbookDownload(`${selectedSchool.name}-relations-report.xlsx`, [
-                {
-                    name: 'summary',
-                    rows: [
-                        ['البند', 'القيمة'],
-                        ['اسم المدرسة', selectedSchool.name],
-                        ['إجمالي الطلاب', schoolStudents.length],
-                        ['أولياء الأمور المرتبطون', schoolParentUsers.length],
-                        ['المشرفون والمعلمون', schoolSupervisors.length],
-                        ['طلاب بلا ولي أمر', studentsWithoutParent.length],
-                        ['طلاب بلا فصل', studentsWithoutClass.length],
-                        ['مشرفون بلا فصل محدد', supervisorsWithoutClass.length],
-                    ],
-                },
-                {
-                    name: 'students',
-                    rows: [
-                        ['اسم الطالب', 'بريد الطالب', 'الفصل', 'أولياء الأمور', 'حالة الربط'],
-                        ...schoolStudents.map((student) => {
-                            const studentParents = parents.filter((parent) => (parent.linkedStudentIds || []).includes(student.id));
-                            const classroomName = schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id))?.name || 'بدون فصل';
-                            return [
-                                student.name,
-                                student.email || '',
-                                classroomName,
-                                studentParents.map((parent) => parent.name).join(' | ') || 'لا يوجد',
-                                studentParents.length > 0 ? 'مرتبط' : 'يحتاج ولي أمر',
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'parents',
-                    rows: [
-                        ['اسم ولي الأمر', 'البريد', 'عدد الطلاب', 'الطلاب المرتبطون', 'بريد الطلاب'],
-                        ...schoolParentUsers.map((parent) => {
-                            const linkedStudents = schoolStudents.filter((student) => (parent.linkedStudentIds || []).includes(student.id));
-                            return [
-                                parent.name,
-                                parent.email || '',
-                                linkedStudents.length,
-                                linkedStudents.map((student) => student.name).join(' | '),
-                                linkedStudents.map((student) => student.email || '').join(' | '),
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'supervisors',
-                    rows: [
-                        ['اسم المشرف', 'البريد', 'الدور', 'النطاق'],
-                        ...schoolSupervisors.map((currentUser) => {
-                            const scopes = [
-                                selectedSchool.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(selectedSchool.id)
-                                    ? selectedSchool.name
-                                    : '',
-                                ...schoolClasses
-                                    .filter((classroom) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id))
-                                    .map((classroom) => classroom.name),
-                            ].filter(Boolean);
-                            return [
-                                currentUser.name,
-                                currentUser.email || '',
-                                currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
-                                scopes.join(' | ') || 'بدون نطاق واضح',
-                            ];
-                        }),
-                    ],
-                },
-                {
-                    name: 'missing',
-                    rows: [
-                        ['النوع', 'الاسم', 'البريد', 'ملاحظة'],
-                        ...studentsWithoutParent.map((student) => ['طالب بلا ولي أمر', student.name, student.email || '', 'اربط ولي أمر من تبويب الربط']),
-                        ...studentsWithoutClass.map((student) => ['طالب بلا فصل', student.name, student.email || '', 'حدد فصل الطالب من تبويب النظرة العامة أو ملف الربط']),
-                        ...supervisorsWithoutClass.map((currentUser) => ['مشرف بلا فصل', currentUser.name, currentUser.email || '', 'يمكن إبقاؤه على مستوى المدرسة أو ربطه بفصل محدد']),
-                    ],
-                },
-            ]);
+            createWorkbookDownload(`${selectedSchool.name}-relations-report.xlsx`, buildSchoolRelationsReportSheets({
+                selectedSchool,
+                schoolStudents,
+                schoolClasses,
+                schoolParentUsers,
+                schoolSupervisors,
+                parents,
+                studentsWithoutParent,
+                studentsWithoutClass,
+                supervisorsWithoutClass,
+            }));
         };
 
         const handleApplyRelationImport = async () => {
@@ -2013,7 +1425,7 @@ export const SchoolsManager: React.FC = () => {
                 await refreshSchoolWorkspace(selectedSchool.id);
                 await loadSchoolReport(selectedSchool.id);
             } catch (error) {
-                setRelationError(error instanceof Error ? error.message : 'تعذر تنفيذ الربط وإنشاء الحسابات الآن.');
+                setRelationError(getErrorMessage(error, 'تعذر تنفيذ الربط وإنشاء الحسابات الآن.'));
             } finally {
                 setIsApplyingRelations(false);
                 if (createdCredentials.length) {
@@ -2042,9 +1454,10 @@ export const SchoolsManager: React.FC = () => {
                         setSaveVerificationMessage('تم حفظ اسم المدرسة والتأكد منه من الخادم.');
                         setManagementNotice('تم حفظ اسم المدرسة بعد التحقق من الخادم.');
                     } catch (error) {
+                        const message = getErrorMessage(error, 'تعذر تعديل اسم المدرسة الآن.');
                         setSaveVerificationState('error');
-                        setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
-                        setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
+                        setSaveVerificationMessage(message);
+                        setManagementError(message);
                         throw error;
                     } finally {
                         setSchoolActionPending(null);
@@ -2753,7 +2166,7 @@ export const SchoolsManager: React.FC = () => {
                 isOpen={editNameModalState.isOpen}
                 title={editNameModalState.title}
                 initialValue={editNameModalState.initialValue}
-                onClose={() => setEditNameModalState(prev => ({ ...prev, isOpen: false }))}
+                onClose={closeEditNameModal}
                 onSave={editNameModalState.onSave}
             />
         </div>

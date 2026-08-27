@@ -25,12 +25,12 @@ assertIncludes(
   'PaginationOptions must support scoped subjectId so learning pages can request the exact subject.',
 );
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/coursesApi.ts',
   'query.pathId || "all-paths"',
   'Public course cache key must include pathId to avoid returning stale unscoped course lists.',
 );
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/coursesApi.ts',
   'query.subjectId || "all-subjects"',
   'Public course cache key must include subjectId to avoid returning stale unscoped course lists.',
 );

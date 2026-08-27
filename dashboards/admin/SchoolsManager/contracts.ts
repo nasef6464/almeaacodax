@@ -46,6 +46,30 @@ export type QuickSupervisorDraft = {
     targetGroupId: string;
 };
 
+export type SingleStudentDraft = {
+    name: string;
+    email: string;
+    className: string;
+    password: string;
+};
+
+export type SchoolWorkspaceTab = 'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports';
+
+export type SchoolListMode = 'active' | 'needs_setup' | 'ready' | 'all';
+
+export type SchoolWorkspaceStep = SchoolWorkspaceTab | null;
+
+export type SchoolStudentClassFilter = 'all' | 'unassigned' | string;
+
+export type SaveVerificationState = 'idle' | 'saving' | 'verifying' | 'success' | 'error' | null;
+
+export type EditNameModalState = {
+    isOpen: boolean;
+    title: string;
+    initialValue: string;
+    onSave: (newName: string) => Promise<void>;
+};
+
 export type ImportRow = {
     name: string;
     email: string;
@@ -143,6 +167,17 @@ export type AccessCodesPagination = {
     totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
+};
+
+export type PagedAccessCode = {
+    id: string;
+    code: string;
+    schoolId: string;
+    packageId: string;
+    maxUses: number;
+    currentUses: number;
+    expiresAt: number;
+    createdAt: number;
 };
 
 export type AccessCodesListResponse = {

@@ -15,6 +15,13 @@ import {
     packageMatchesScope,
     resolveEntityId,
 } from './storeDomainHelpers';
+import { createAccessEnrollmentSlice } from './slices/accessEnrollmentSlice';
+import { createAnnouncementAdsSlice } from './slices/announcementAdsSlice';
+import { createCartSlice } from './slices/cartSlice';
+import { createLearningInteractionsSlice } from './slices/learningInteractionsSlice';
+import { createLearningProgressSlice } from './slices/learningProgressSlice';
+import { createLibraryItemsSlice } from './slices/libraryItemsSlice';
+import { createStudyPlansSlice } from './slices/studyPlansSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -218,32 +225,7 @@ export const useStore = create<AppState>()(
             skills: [],
             nestedSkills: [],
             libraryItems: [],
-            addLibraryItem: (item) => {
-                const normalizedItem = {
-                    ...item,
-                    showOnPlatform: typeof item.showOnPlatform === 'boolean' ? item.showOnPlatform : false,
-                };
-                api.createLibraryItem(normalizedItem).catch(console.error);
-                set((state) => ({ libraryItems: [normalizedItem, ...state.libraryItems] }));
-            },
-            updateLibraryItem: (id, item) => {
-                api.updateLibraryItem(id, item).catch(console.error);
-                set((state) => ({
-                    libraryItems: state.libraryItems.map(i => i.id === id ? { ...i, ...item } : i)
-                }));
-            },
-            deleteLibraryItem: (id) => {
-                api.deleteLibraryItem(id).catch(console.error);
-                set((state) => ({
-                    libraryItems: state.libraryItems.filter(i => i.id !== id),
-                    topics: state.topics.map((topic) => {
-                        if (!topic.libraryItemIds?.includes(id)) return topic;
-                        const nextLibraryItemIds = topic.libraryItemIds.filter((itemId) => itemId !== id);
-                        api.updateTopic(topic.id, { libraryItemIds: nextLibraryItemIds }).catch(console.error);
-                        return { ...topic, libraryItemIds: nextLibraryItemIds };
-                    })
-                }));
-            },
+            ...createLibraryItemsSlice<AppState>(set, api),
             enrolledCourses: [],
             enrolledPaths: [],
             completedLessons: [],
@@ -415,346 +397,25 @@ export const useStore = create<AppState>()(
                   : state.studyPlans,
             })),
 
-            hydrateExamResults: (results) => set((state) => ({
-                examResults: mergeQuizResultsForStore(
-                    state.examResults,
-                    Array.isArray(results) ? results : [],
-                    state.user?.id,
-                ),
-            })),
+            ...createLearningProgressSlice<AppState>(set, get, api, { mergeQuizResultsForStore, shouldSyncUserToApi }),
 
-            hydrateQuestionAttempts: (attempts) => set(() => ({
-                questionAttempts: (Array.isArray(attempts) ? attempts : [])
-                    .map((attempt: any) => ({
-                        questionId: String(attempt?.questionId || ''),
-                        selectedOptionIndex: Number(attempt?.selectedOptionIndex ?? -1),
-                        isCorrect: Boolean(attempt?.isCorrect),
-                        timeSpentSeconds: Number(attempt?.timeSpentSeconds ?? 0),
-                        date: String(attempt?.date || attempt?.createdAt || new Date().toISOString()),
-                    }))
-                    .filter((attempt) => attempt.questionId)
-            })),
+            ...createLearningInteractionsSlice<AppState>(set, get, api, { shouldSyncUserToApi }),
 
-            hydrateSkillProgress: (items) => set(() => ({
-                skillProgress: (Array.isArray(items) ? items : [])
-                    .map((item: any) => ({
-                        ...item,
-                        id: String(item?.id || item?._id || ''),
-                        userId: String(item?.userId || ''),
-                        skillId: String(item?.skillId || ''),
-                        skill: String(item?.skill || ''),
-                        mastery: Number(item?.mastery || 0),
-                        attempts: Number(item?.attempts || 0),
-                    }))
-                    .filter((item: SkillProgress) => item.userId && item.skillId)
-            })),
-
-            enrollCourse: (courseId) => {
-                if (get().enrolledCourses.includes(courseId)) return;
-
-                set((current) => ({
-                    enrolledCourses: [...current.enrolledCourses, courseId],
-                }));
-            },
-
-            redeemAccessCode: async (code) => {
-                const response = await api.redeemAccessCode({ code }) as { user?: any };
-                const backendUser = response?.user;
-                if (!backendUser) {
-                    return;
-                }
-
-                set((state) => ({
-                    user: {
-                        ...state.user,
-                        subscription: {
-                            ...state.user.subscription,
-                            plan: backendUser?.subscription?.plan ?? state.user.subscription?.plan ?? 'free',
-                            expiresAt: backendUser?.subscription?.expiresAt ?? state.user.subscription?.expiresAt,
-                            purchasedCourses: Array.isArray(backendUser?.subscription?.purchasedCourses)
-                                ? backendUser.subscription.purchasedCourses.map(String)
-                                : state.user.subscription?.purchasedCourses || [],
-                            purchasedPackages: Array.isArray(backendUser?.subscription?.purchasedPackages)
-                                ? backendUser.subscription.purchasedPackages.map(String)
-                                : state.user.subscription?.purchasedPackages || [],
-                        },
-                    },
-                    enrolledCourses: Array.isArray(backendUser?.enrolledCourses)
-                        ? backendUser.enrolledCourses.map(String)
-                        : state.enrolledCourses,
-                }));
-            },
-
-            enrollPath: (pathId) => set((state) => {
-                if (state.enrolledPaths?.includes(pathId)) return state;
-                const nextEnrolledPaths = [...(state.enrolledPaths || []), pathId];
-                if (shouldSyncUserToApi(state.user)) {
-                    api.updateMyPreferences({
-                        favorites: state.favorites,
-                        reviewLater: state.reviewLater,
-                        enrolledPaths: nextEnrolledPaths,
-                    }).catch(console.error);
-                }
-                return {
-                    enrolledPaths: nextEnrolledPaths
-                };
+            ...createAccessEnrollmentSlice<AppState>(set, get, api, {
+                getUserSchoolIds,
+                isPublicPackageAvailable,
+                isRegisteredUser,
+                packageMatchesScope,
+                shouldSyncUserToApi,
             }),
 
-            unenrollPath: (pathId) => set((state) => {
-                const nextEnrolledPaths = (state.enrolledPaths || []).filter(id => id !== pathId);
-                if (shouldSyncUserToApi(state.user)) {
-                    api.updateMyPreferences({
-                        favorites: state.favorites,
-                        reviewLater: state.reviewLater,
-                        enrolledPaths: nextEnrolledPaths,
-                    }).catch(console.error);
-                }
-                return {
-                    enrolledPaths: nextEnrolledPaths
-                };
-            }),
-
-            markLessonComplete: (lessonId, courseId, lessonTitle) => {
-                const state = get();
-                if (state.completedLessons.includes(lessonId)) return;
-                const nextCompletedLessons = [...state.completedLessons, lessonId];
-                
-                const newActivity: Activity = {
-                    id: Date.now().toString(),
-                    type: 'lesson_complete',
-                    title: `أكملت درس: ${lessonTitle}`,
-                    date: new Date().toISOString(),
-                    link: `/course/${courseId}`
-                };
-
-                if (shouldSyncUserToApi(state.user)) {
-                    api.updateMyPreferences({
-                        favorites: state.favorites,
-                        reviewLater: state.reviewLater,
-                        enrolledPaths: state.enrolledPaths,
-                        completedLessons: nextCompletedLessons,
-                    }).catch(console.error);
-                }
-
-                set((state) => ({
-                    completedLessons: nextCompletedLessons,
-                    recentActivity: [newActivity, ...state.recentActivity].slice(0, 10) // Keep last 10
-                }));
-            },
-
-            saveExamResult: (result) => {
-                const state = get();
-                const newActivity: Activity = {
-                    id: Date.now().toString(),
-                    type: 'quiz_complete',
-                    title: `أنهيت اختبار: ${result.quizTitle} بنتيجة ${result.score}%`,
-                    date: new Date().toISOString(),
-                    link: `/results`
-                };
-
-                set((state) => ({
-                    examResults: mergeQuizResultsForStore(state.examResults, [result], state.user?.id),
-                    recentActivity: [newActivity, ...state.recentActivity].slice(0, 10)
-                }));
-            },
-
-            recordQuestionAttempt: (attempt) => {
-                const state = get();
-                if (shouldSyncUserToApi(state.user)) {
-                    const { isCorrect: _localOnly, ...serverAttempt } = attempt;
-                    api.createQuestionAttempt(serverAttempt).catch(console.error);
-                }
-                set((state) => ({
-                    questionAttempts: [...state.questionAttempts, attempt].slice(-500)
-                }));
-            },
-
-            toggleFavorite: (questionId) => set((state) => ({
-                favorites: (() => {
-                    const nextFavorites = state.favorites.includes(questionId)
-                        ? state.favorites.filter(id => id !== questionId)
-                        : [...state.favorites, questionId];
-
-                    if (shouldSyncUserToApi(state.user)) {
-                        api.updateMyPreferences({
-                            favorites: nextFavorites,
-                            reviewLater: state.reviewLater,
-                        }).catch(console.error);
-                    }
-
-                    return nextFavorites;
-                })()
-            })),
-
-            toggleReviewLater: (questionId) => set((state) => ({
-                reviewLater: (() => {
-                    const nextReviewLater = state.reviewLater.includes(questionId)
-                        ? state.reviewLater.filter(id => id !== questionId)
-                        : [...state.reviewLater, questionId];
-
-                    if (shouldSyncUserToApi(state.user)) {
-                        api.updateMyPreferences({
-                            favorites: state.favorites,
-                            reviewLater: nextReviewLater,
-                        }).catch(console.error);
-                    }
-
-                    return nextReviewLater;
-                })()
-            })),
-
-            addActivity: (activity) => {
-                const state = get();
-                const newActivity = { ...activity, id: Date.now().toString(), date: new Date().toISOString() };
-                
-                set((state) => ({
-                    recentActivity: [
-                        newActivity,
-                        ...state.recentActivity
-                    ].slice(0, 10)
-                }));
-            },
-            addToCart: (item) => set((state) => {
-                const normalized: CartItem = {
-                    ...item,
-                    id: String(item?.id || ''),
-                    title: String(item?.title || ''),
-                    type: item?.type || 'course',
-                    price: Number(item?.price || 0),
-                    currency: String(item?.currency || 'SAR'),
-                };
-
-                if (!normalized.id || !normalized.title) {
-                    return state;
-                }
-
-                const nextItems = state.cartItems.filter(
-                    (existing) => !(existing.id === normalized.id && existing.type === normalized.type),
-                );
-
-                return { cartItems: [...nextItems, normalized] };
-            }),
-            removeFromCart: (itemId, itemType) => set((state) => ({
-                cartItems: state.cartItems.filter((item) => {
-                    if (item.id !== itemId) return true;
-                    if (!itemType) return false;
-                    return item.type !== itemType;
-                }),
-            })),
-            clearCart: () => set(() => ({ cartItems: [] })),
-            cartCount: () => {
-                const state = get();
-                return state.cartItems.length;
-            },
-
-            checkAccess: (contentId, isPremiumContent) => {
-                const state = get();
-                if (!isPremiumContent) return true;
-                if (!isRegisteredUser(state.user)) return false;
-                if (state.user.subscription.plan === 'premium') return true;
-                if (state.enrolledCourses.includes(contentId)) return true;
-                if (state.user.subscription.purchasedCourses.includes(contentId)) return true;
-                if (state.user.subscription.purchasedPackages.includes(contentId)) return true;
-                return false;
-            },
-            hasScopedPackageAccess: (contentType, pathId, subjectId) => {
-                const state = get();
-                if (!isRegisteredUser(state.user)) return false;
-                if (state.user.subscription.plan === 'premium') return true;
-
-                const purchasedPackageIds = new Set(state.user.subscription?.purchasedPackages || []);
-                const hasDirectPackage = state.b2bPackages.some((pkg) => purchasedPackageIds.has(pkg.id) && packageMatchesScope(pkg, contentType, pathId, subjectId));
-                if (hasDirectPackage) {
-                    return true;
-                }
-
-                const hasPublicPathPackage = state.courses.some((course) => {
-                    if (!isPublicPackageAvailable(course) || !purchasedPackageIds.has(course.id)) {
-                        return false;
-                    }
-
-                    const packagePathId = course.pathId || course.category;
-                    const packageSubjectId = course.subjectId || course.subject;
-                    const packageContentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['all'];
-                    const matchesType = packageContentTypes.includes('all') || packageContentTypes.includes(contentType);
-                    const matchesPath = !pathId || !packagePathId || packagePathId === pathId;
-                    const matchesSubject = !subjectId || !packageSubjectId || packageSubjectId === subjectId;
-
-                    return matchesType && matchesPath && matchesSubject;
-                });
-                if (hasPublicPathPackage) {
-                    return true;
-                }
-
-                const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || [], state.user.schoolId);
-                if (schoolIds.size === 0) {
-                    return false;
-                }
-
-                return state.b2bPackages.some((pkg) => schoolIds.has(pkg.schoolId) && packageMatchesScope(pkg, contentType, pathId, subjectId));
-            },
-            getMatchingPackage: (contentType, pathId, subjectId) => {
-                const state = get();
-                const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || [], state.user.schoolId);
-                if (schoolIds.size === 0) {
-                    return null;
-                }
-
-                const prioritizedPackages = [...state.b2bPackages]
-                    .filter((pkg) => schoolIds.has(pkg.schoolId) && packageMatchesScope(pkg, contentType, pathId, subjectId))
-                    .sort((a, b) => {
-                        const aSpecificity = (a.subjectIds?.length || 0) * 4 + (a.pathIds?.length || 0) * 2 + (a.contentTypes?.includes('all') ? 0 : 1);
-                        const bSpecificity = (b.subjectIds?.length || 0) * 4 + (b.pathIds?.length || 0) * 2 + (b.contentTypes?.includes('all') ? 0 : 1);
-                        return bSpecificity - aSpecificity;
-                    });
-
-                return prioritizedPackages[0] || null;
-            },
+            ...createCartSlice<AppState>(set, get),
 
             changeRole: (role) => set((state) => ({
                 user: { ...state.user, role }
             })),
 
-            createStudyPlan: (plan) => {
-                api.createStudyPlan(plan).catch(console.error);
-                set((state) => ({
-                    studyPlans: [
-                        plan,
-                        ...state.studyPlans.filter(existingPlan => existingPlan.id !== plan.id)
-                    ]
-                }));
-            },
-
-            updateStudyPlan: (planId, data) => {
-                const updatedAt = Date.now();
-                api.updateStudyPlan(planId, { ...data, updatedAt }).catch(console.error);
-                set((state) => ({
-                    studyPlans: state.studyPlans.map(plan =>
-                        plan.id === planId
-                            ? { ...plan, ...data, updatedAt }
-                            : plan
-                    )
-                }));
-            },
-
-            deleteStudyPlan: (planId) => {
-                api.deleteStudyPlan(planId).catch(console.error);
-                set((state) => ({
-                    studyPlans: state.studyPlans.filter(plan => plan.id !== planId)
-                }));
-            },
-
-            archiveStudyPlan: (planId) => {
-                const updatedAt = Date.now();
-                api.updateStudyPlan(planId, { status: 'archived', updatedAt }).catch(console.error);
-                set((state) => ({
-                    studyPlans: state.studyPlans.map(plan =>
-                        plan.id === planId
-                            ? { ...plan, status: 'archived', updatedAt }
-                            : plan
-                    )
-                }));
-            },
+            ...createStudyPlansSlice<AppState>(set, api),
 
             addUser: (user) => set((state) => ({
                 users: [...state.users, user]
@@ -1772,44 +1433,7 @@ export const useStore = create<AppState>()(
                     accessCodes: state.accessCodes.filter(code => code.packageId !== id)
                 }));
             },
-            createAnnouncementAd: (ad) => set((state) => {
-                const normalizedAd: AnnouncementAd = {
-                    ...ad,
-                    audience: ad.audience || 'all',
-                    displayMode: ad.displayMode || 'modal',
-                    frequency: ad.frequency || 'session',
-                    imageFit: ad.imageFit || 'cover',
-                    delaySeconds: Math.max(0, Math.min(30, Number(ad.delaySeconds ?? 0))),
-                    isActive: ad.isActive !== false,
-                    priority: Number(ad.priority ?? 0),
-                    createdAt: ad.createdAt || Date.now(),
-                    updatedAt: Date.now(),
-                };
-                api.createAnnouncementAd(normalizedAd).catch(console.error);
-                return {
-                    announcementAds: [...state.announcementAds, normalizedAd].sort((a, b) => a.priority - b.priority),
-                };
-            }),
-            updateAnnouncementAd: (id, data) => set((state) => {
-                const normalizedData: Partial<AnnouncementAd> = {
-                    ...data,
-                    ...(data.priority !== undefined ? { priority: Number(data.priority) } : {}),
-                    ...(data.delaySeconds !== undefined ? { delaySeconds: Math.max(0, Math.min(30, Number(data.delaySeconds || 0))) } : {}),
-                    updatedAt: Date.now(),
-                };
-                api.updateAnnouncementAd(id, normalizedData).catch(console.error);
-                return {
-                    announcementAds: state.announcementAds
-                        .map((ad) => (ad.id === id ? { ...ad, ...normalizedData } : ad))
-                        .sort((a, b) => a.priority - b.priority),
-                };
-            }),
-            deleteAnnouncementAd: (id) => set((state) => {
-                api.deleteAnnouncementAd(id).catch(console.error);
-                return {
-                    announcementAds: state.announcementAds.filter((ad) => ad.id !== id),
-                };
-            }),
+            ...createAnnouncementAdsSlice<AppState>(set, api),
             createAccessCode: (code) => set((state) => {
                 api.createAccessCode(code).catch(console.error);
                 return {

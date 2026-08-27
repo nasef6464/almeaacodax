@@ -4,7 +4,10 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const files = {
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
-  api: await read("services/api.ts"),
+  api: [
+    await read("services/api.ts"),
+    await read("services/apiGroups/quizzesApi.ts"),
+  ].join("\n"),
   dashboard: await read("pages/Dashboard.tsx"),
   reports: await read("pages/Reports.tsx"),
 };

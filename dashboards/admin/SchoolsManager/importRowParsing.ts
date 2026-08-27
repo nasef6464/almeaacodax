@@ -124,3 +124,12 @@ export const getDuplicateImportEmails = (rows: ImportRow[]) => {
 
     return Array.from(duplicates);
 };
+
+export const getDuplicateImportEmailsError = (rows: ImportRow[]) => {
+    const duplicateEmails = getDuplicateImportEmails(rows);
+    if (!duplicateEmails.length) {
+        return null;
+    }
+
+    return `يوجد بريد مكرر داخل الملف: ${duplicateEmails.slice(0, 3).join(', ')}${duplicateEmails.length > 3 ? '...' : ''}. صحح الملف ثم ارفعه مرة أخرى.`;
+};

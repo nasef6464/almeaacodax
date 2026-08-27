@@ -16,6 +16,8 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolLaunchBoardPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/relationshipViewModel.ts"),
   await read("dashboards/admin/SchoolsManager/workspaceViewModel.ts"),
+  await read("dashboards/admin/SchoolsManager/clipboardService.ts"),
+  await read("dashboards/admin/SchoolsManager/importExportService.ts"),
   await read("dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx"),
@@ -28,7 +30,10 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
 ].join("\n"),
-  store: await read("store/useStore.ts"),
+  store: [
+    await read("store/useStore.ts"),
+    await read("store/slices/accessEnrollmentSlice.ts"),
+  ].join("\n"),
   packageJson: await read("package.json"),
   schoolFromScratchAudit: await read("scripts/live-school-from-scratch-audit.mjs"),
 };
@@ -102,7 +107,8 @@ check("school list cards expose next readiness action", () => {
 
 check("school management can copy handover message", () => {
   assertIncludes(files.schools, "copySchoolHandoverMessage");
-  assertIncludes(files.schools, "navigator.clipboard.writeText(schoolHandoverMessage)");
+  assertIncludes(files.schools, "copyTextToClipboard(schoolHandoverMessage");
+  assertIncludes(files.schools, "navigator.clipboard.writeText(text)");
   assertIncludes(files.schools, "managementNotice");
   assertIncludes(files.schools, "نسخ رسالة التسليم");
 });

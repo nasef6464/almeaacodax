@@ -77,6 +77,17 @@ export const mergeUsersById = (currentUsers: User[], incomingUsers: User[]): Use
     return Array.from(usersById.values());
 };
 
+export const mergeAdminUsersById = (
+    currentUsers: User[],
+    incomingUsers: AdminUserPayload[] | undefined,
+): User[] => {
+    if (!incomingUsers?.length) {
+        return currentUsers;
+    }
+
+    return mergeUsersById(currentUsers, incomingUsers.map(buildStoreUser));
+};
+
 export const buildStoreGroup = (group: Group & { _id?: string; createdAt?: number | string }): Group => ({
     ...group,
     id: String(group.id || group._id || ''),
@@ -87,6 +98,24 @@ export const buildStoreGroup = (group: Group & { _id?: string; createdAt?: numbe
     courseIds: Array.isArray(group.courseIds) ? group.courseIds.map(String) : [],
     createdAt: typeof group.createdAt === 'number' ? group.createdAt : Date.parse(String(group.createdAt || '')) || Date.now(),
 });
+
+export const normalizeStoreGroups = (incomingGroups: Array<Group & { _id?: string; createdAt?: number | string }> | undefined): Group[] => (
+    incomingGroups || []
+).map(buildStoreGroup).filter((group) => group.id && group.name);
+
+export const mergeGroupsById = (
+    currentGroups: Group[],
+    incomingGroups: Array<Group & { _id?: string; createdAt?: number | string }> | undefined,
+): Group[] => {
+    const normalizedGroups = normalizeStoreGroups(incomingGroups);
+    if (!normalizedGroups.length) {
+        return currentGroups;
+    }
+
+    const groupsById = new Map(currentGroups.map((group) => [group.id, group]));
+    normalizedGroups.forEach((group) => groupsById.set(group.id, group));
+    return Array.from(groupsById.values());
+};
 
 export const generateTemporaryPassword = () => {
     const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';

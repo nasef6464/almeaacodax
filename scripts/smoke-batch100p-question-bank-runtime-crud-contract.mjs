@@ -17,27 +17,27 @@ const assertMatches = (path, pattern, message) => {
 };
 
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/questionsApi.ts',
   'getQuestionsPaginated',
   'Question bank must keep using the paginated question helper.',
 );
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/questionsApi.ts',
   'paginate: true',
   'Question bank pagination helper must send paginate=true.',
 );
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/questionsApi.ts',
   'createQuestion: (payload: unknown',
   'Question API client must expose createQuestion.',
 );
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/questionsApi.ts',
   'updateQuestion: (id: string',
   'Question API client must expose updateQuestion.',
 );
 assertIncludes(
-  'services/api.ts',
+  'services/apiGroups/questionsApi.ts',
   'deleteQuestion: (id: string',
   'Question API client must expose deleteQuestion.',
 );

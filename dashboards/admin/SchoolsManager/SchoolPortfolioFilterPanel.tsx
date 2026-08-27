@@ -1,7 +1,6 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-
-export type SchoolListMode = 'active' | 'needs_setup' | 'ready' | 'all';
+import type { SchoolListMode } from './contracts';
 
 interface SchoolPortfolioFilterPanelProps {
     schoolSearch: string;

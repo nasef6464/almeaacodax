@@ -29,7 +29,11 @@ const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
 const contentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
-const apiSource = await readFile(new URL('../services/api.ts', import.meta.url), 'utf8');
+const apiSource = [
+  await readFile(new URL('../services/api.ts', import.meta.url), 'utf8'),
+  await readFile(new URL('../services/apiGroups/quizzesApi.ts', import.meta.url), 'utf8'),
+].join('\n');
+const studyPlansApiSource = await readFile(new URL('../services/apiGroups/studyPlansApi.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -281,8 +285,9 @@ check('staff scoped reports keep intervention plan, summary, and smart remediati
   assertIncludes(reportsSource, 'const skillPayload = scopedAnalytics.weakestSkills.slice(0, 5)');
   assertIncludes(reportsSource, 'api.createInterventionStudyPlan');
   assertIncludes(reportsSource, 'تم إنشاء خطة علاج داخل حساب الطالب المحدد');
-  assertIncludes(apiSource, 'createInterventionStudyPlan');
-  assertIncludes(apiSource, '"/content/study-plans/intervention"');
+  assertIncludes(apiSource, 'createStudyPlansApi');
+  assertIncludes(studyPlansApiSource, 'createInterventionStudyPlan');
+  assertIncludes(studyPlansApiSource, '"/content/study-plans/intervention"');
   assertIncludes(contentRoutesSource, '"/study-plans/intervention"');
   assertIncludes(contentRoutesSource, 'requireRole(["admin", "supervisor", "teacher"])');
   assertIncludes(contentRoutesSource, 'userId: studentId');
