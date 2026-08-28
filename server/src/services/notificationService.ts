@@ -18,6 +18,7 @@ type NotificationRecipient = {
 };
 
 type CreateNotificationInput = {
+  campaignId?: string;
   templateKey?: string;
   title?: string;
   subject?: string;
@@ -98,7 +99,7 @@ async function resolveMessage(input: CreateNotificationInput) {
 export async function createNotificationDeliveries(input: CreateNotificationInput) {
   const recipients = await resolveRecipients(input);
   const message = await resolveMessage(input);
-  const campaignId = randomUUID();
+  const campaignId = input.campaignId || randomUUID();
   const now = Date.now();
 
   if (!recipients.length) {

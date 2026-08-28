@@ -69,6 +69,7 @@
         "smoke:database": "node scripts/smoke-database-index-contract.mjs",
         "smoke:notifications": "node scripts/smoke-notification-contract.mjs",
         "smoke:notification-realtime": "node scripts/smoke-notification-realtime-contract.mjs",
+        "smoke:weekly-parent-report": "node scripts/smoke-weekly-parent-report-scheduler-contract.mjs",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
         "smoke:auth-account": "node scripts/smoke-auth-account-contract.mjs",
