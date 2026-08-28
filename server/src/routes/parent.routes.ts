@@ -25,44 +25,50 @@ parentRouter.get(
       return res.json({ children: [], summary: { count: 0, weakSkills: 0 } });
     }
 
-    const [students, weeklyResults, latestResults] = await Promise.all([
+    const [students, weeklySummaries, latestResults] = await Promise.all([
       UserModel.find({ $or: [{ id: { $in: linkedStudentIds } }, { _id: { $in: linkedStudentIds } }] })
         .select("id _id name enrolledCourses completedLessons")
         .lean(),
-      QuizResultModel.find({
-        userId: { $in: linkedStudentIds },
-        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-      })
-        .select("userId timeSpentSeconds score skillsAnalysis createdAt")
-        .sort({ createdAt: -1 })
-        .lean(),
-      QuizResultModel.find({ userId: { $in: linkedStudentIds } })
-        .select("userId score skillsAnalysis createdAt")
-        .sort({ createdAt: -1 })
-        .lean(),
+      QuizResultModel.aggregate([
+        {
+          $match: {
+            userId: { $in: linkedStudentIds },
+            createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+          },
+        },
+        {
+          $group: {
+            _id: "$userId",
+            weeklyStudySeconds: { $sum: { $ifNull: ["$timeSpentSeconds", 0] } },
+          },
+        },
+      ]),
+      QuizResultModel.aggregate([
+        { $match: { userId: { $in: linkedStudentIds } } },
+        { $sort: { createdAt: -1, _id: -1 } },
+        {
+          $group: {
+            _id: "$userId",
+            score: { $first: "$score" },
+            skillsAnalysis: { $first: "$skillsAnalysis" },
+          },
+        },
+      ]),
     ]);
 
-    const weeklyByUser = new Map<string, any[]>();
-    for (const row of weeklyResults as any[]) {
-      const key = String(row.userId || "");
-      const current = weeklyByUser.get(key) || [];
-      current.push(row);
-      weeklyByUser.set(key, current);
-    }
+    const weeklyByUser = new Map<string, number>(
+      (weeklySummaries as any[]).map((row) => [String(row._id || ""), Number(row.weeklyStudySeconds || 0)]),
+    );
 
-    const latestByUser = new Map<string, any>();
-    for (const row of latestResults as any[]) {
-      const key = String(row.userId || "");
-      if (!latestByUser.has(key)) latestByUser.set(key, row);
-    }
+    const latestByUser = new Map<string, any>(
+      (latestResults as any[]).map((row) => [String(row._id || ""), row]),
+    );
 
     const children = (students as any[]).map((student) => {
       const sid = String(student.id || student._id || "");
-      const weekly = weeklyByUser.get(sid) || [];
+      const weeklyStudySeconds = weeklyByUser.get(sid) || 0;
       const latest = latestByUser.get(sid);
-      const weeklyStudyMinutes = Math.round(
-        weekly.reduce((sum, item) => sum + Number(item.timeSpentSeconds || 0), 0) / 60,
-      );
+      const weeklyStudyMinutes = Math.round(weeklyStudySeconds / 60);
       const weakSkills = Array.from(
         new Set(
           (latest?.skillsAnalysis || [])
