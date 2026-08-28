@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { AppRole } from "../constants/roles.js";
 import type { NotificationChannel } from "../modules/notifications/domain/notification.types.js";
+import { publishInAppNotificationEvents } from "../modules/notifications/infrastructure/notificationRealtime.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
 import { UserModel } from "../models/User.js";
@@ -129,6 +130,20 @@ export async function createNotificationDeliveries(input: CreateNotificationInpu
   );
 
   const inserted = await NotificationDeliveryModel.insertMany(docs, { ordered: false });
+  const inAppEvents = inserted
+    .filter((item) => item.channel === "in_app")
+    .map((item) => {
+      const rawItem = item as any;
+      return {
+        recipientUserId: String(rawItem.recipientUserId),
+        id: String(rawItem.id),
+        title: String(rawItem.title || ""),
+        body: String(rawItem.body || ""),
+        createdAt: rawItem.createdAt ? new Date(rawItem.createdAt).toISOString() : new Date(now).toISOString(),
+        readAt: null,
+      };
+    });
+  await publishInAppNotificationEvents(inAppEvents);
   return {
     campaignId,
     created: docs.length,

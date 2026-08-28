@@ -3,6 +3,7 @@ import { createApp } from "../../app.js";
 import { connectToDatabase } from "../../config/db.js";
 import { env } from "../../config/env.js";
 import { startWeeklyParentReportSchedule } from "../../modules/reports/application/startWeeklyParentReportSchedule.js";
+import { startNotificationRealtime } from "../../modules/notifications/infrastructure/notificationRealtime.js";
 import { startNotificationWorkers } from "../../queues/notificationQueue.js";
 import { createSocketServer } from "../../sockets/index.js";
 import { registerGracefulShutdown } from "./registerGracefulShutdown.js";
@@ -18,6 +19,7 @@ export async function bootstrapServer() {
   const app = createApp();
   const server = createServer(app);
   createSocketServer(server);
+  startNotificationRealtime();
   startNotificationWorkers();
   registerGracefulShutdown(server);
 

@@ -1,15 +1,15 @@
 import type { Request, Response } from "express";
 import { NotificationDeliveryModel } from "../../../models/NotificationDelivery.js";
+import { subscribeToNotificationEvents } from "../infrastructure/notificationRealtime.js";
 
 /**
  * Transport adapter for the existing notification SSE contract.
  *
- * This deliberately preserves the current Mongo polling behaviour while
- * removing it from the route-composition file. A later scalability change can
- * replace the data source with Redis/pub-sub behind this stable HTTP adapter
- * without changing /api/notifications/stream or the client event names.
+ * The stream keeps the public HTTP contract stable while receiving new events
+ * through the shared realtime bridge. Mongo is used once for the initial unread
+ * count; it is not polled per connection.
  */
-export function openNotificationSseStream(req: Request, res: Response) {
+export async function openNotificationSseStream(req: Request, res: Response) {
   const userId = String(req.authUser!.id);
 
   res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
@@ -23,56 +23,28 @@ export function openNotificationSseStream(req: Request, res: Response) {
     res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   };
 
-  sendEvent("connected", { userId, ts: Date.now() });
-
-  let lastCheckedAt = Date.now();
-  let lastUnreadCount = -1;
-
-  const poll = async () => {
-    if (res.writableEnded) return;
-    try {
-      const newNotifications = await NotificationDeliveryModel.find({
-        recipientUserId: userId,
-        channel: "in_app",
-        status: "sent",
-        createdAt: { $gt: new Date(lastCheckedAt) },
-      })
-        .sort({ createdAt: -1 })
-        .limit(5)
-        .lean();
-
-      if (newNotifications.length > 0) {
-        for (const notification of newNotifications.reverse()) {
-          sendEvent("notification", notification);
-        }
-        lastCheckedAt = Date.now();
-      }
-
-      const unreadCount = await NotificationDeliveryModel.countDocuments({
-        recipientUserId: userId,
-        channel: "in_app",
-        status: "sent",
-        readAt: { $exists: false },
-      });
-      if (unreadCount !== lastUnreadCount) {
-        sendEvent("unread_count", { count: unreadCount });
-        lastUnreadCount = unreadCount;
-      }
-    } catch {
-      // Preserve the current best-effort stream behaviour: a polling failure
-      // must not terminate an otherwise healthy SSE connection.
-    }
-  };
-
-  const pollInterval = setInterval(poll, 10_000);
+  const unsubscribe = subscribeToNotificationEvents(userId, (event) => sendEvent("notification", event));
   const keepAlive = setInterval(() => {
     if (!res.writableEnded) res.write(": keepalive\n\n");
   }, 30_000);
 
   req.on("close", () => {
-    clearInterval(pollInterval);
+    unsubscribe();
     clearInterval(keepAlive);
   });
 
-  void poll();
+  sendEvent("connected", { userId, ts: Date.now() });
+
+  try {
+    const unreadCount = await NotificationDeliveryModel.countDocuments({
+      recipientUserId: userId,
+      channel: "in_app",
+      status: "sent",
+      readAt: { $exists: false },
+    });
+    sendEvent("unread_count", { count: unreadCount });
+  } catch {
+    // A failed initial count must not terminate the best-effort stream.
+  }
+
 }

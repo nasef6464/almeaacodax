@@ -1,7 +1,13 @@
 import { Redis, type Redis as RedisClient } from "ioredis";
 import { env } from "./env.js";
 
-type RedisPurpose = "rate-limit" | "socket-pub" | "socket-sub" | "queue";
+type RedisPurpose =
+  | "rate-limit"
+  | "socket-pub"
+  | "socket-sub"
+  | "queue"
+  | "notification-realtime-pub"
+  | "notification-realtime-sub";
 
 const clients = new Map<string, RedisClient>();
 const DEFAULT_REDIS_HEALTH_TIMEOUT_MS = 800;
