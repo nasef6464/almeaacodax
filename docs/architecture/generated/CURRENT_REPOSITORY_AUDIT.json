@@ -1,23 +1,23 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-27T18:38:24.235Z",
-  "gitHead": "1ae7e8d971816a2e2c2d9cd781ded27d752a29ce",
+  "generatedAt": "2026-08-28T12:27:21.236Z",
+  "gitHead": "91b4e3ba1990f218f081276dbc7255f6e7cc6bd5",
   "summary": {
-    "trackedFiles": 1063,
-    "sourceFiles": 722,
-    "runtimeSourceFiles": 423,
-    "sourceLines": 165335,
-    "runtimeSourceLines": 131258,
+    "trackedFiles": 1066,
+    "sourceFiles": 725,
+    "runtimeSourceFiles": 426,
+    "sourceLines": 165620,
+    "runtimeSourceLines": 131543,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
-    "runtimeRelativeImportEdges": 1295,
-    "unresolvedRuntimeRelativeImports": 1,
+    "runtimeRelativeImportEdges": 1299,
+    "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 2,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 860,
+    "crossDomainImportEdges": 862,
     "hotspots400Lines": 83,
-    "migrationCandidates": 413
+    "migrationCandidates": 416
   },
   "categoryStats": {
     "support": {
@@ -31,9 +31,9 @@
       "lines": 5898
     },
     "web-source": {
-      "files": 269,
-      "bytes": 5157166,
-      "lines": 99691
+      "files": 272,
+      "bytes": 5164931,
+      "lines": 99976
     },
     "source-other": {
       "files": 10,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 210,
-      "bytes": 3477028,
-      "lines": 87076
+      "bytes": 3515961,
+      "lines": 88232
     },
     "public-asset": {
       "files": 4,
@@ -93,14 +93,14 @@
       "bytes": 388493
     },
     "schools": {
-      "files": 80,
-      "lines": 17165,
-      "bytes": 862472
+      "files": 81,
+      "lines": 17359,
+      "bytes": 868693
     },
     "paths": {
-      "files": 9,
-      "lines": 4864,
-      "bytes": 270266
+      "files": 11,
+      "lines": 4955,
+      "bytes": 271778
     },
     "payments": {
       "files": 13,
@@ -110,7 +110,7 @@
     "questions": {
       "files": 24,
       "lines": 6725,
-      "bytes": 336904
+      "bytes": 336936
     },
     "quizzes": {
       "files": 26,
@@ -182,9 +182,9 @@
       "file": "dashboards/admin/PathsManager.tsx",
       "category": "web-source",
       "domain": "paths",
-      "bytes": 129020,
-      "lines": 2275,
-      "sha256": "d80fdb8faddd7f6de77e222173072fe4805d706991128ff48db6e9a62a3bb507"
+      "bytes": 126125,
+      "lines": 2238,
+      "sha256": "abad67b21b806c5953e5a122e093f1229eb869658abf6f453451efb54857d96c"
     },
     {
       "file": "pages/Dashboard.tsx",
@@ -198,9 +198,9 @@
       "file": "dashboards/admin/SchoolsManager.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 107499,
-      "lines": 2175,
-      "sha256": "4cf441c8d0e1501af986e94b5ab2cb5da80b04220292e5d4e01bd6f842cdbfcd"
+      "bytes": 107620,
+      "lines": 2176,
+      "sha256": "baaad669563f708ffb4d20773740894936fff7a9c289e20ce1b6ab97060d53c5"
     },
     {
       "file": "dashboards/admin/FinancialManager.tsx",
@@ -2638,12 +2638,7 @@
     "WHATSAPP_WEBHOOK_TOKEN",
     "WHATSAPP_WEBHOOK_URL"
   ],
-  "unresolvedRelativeImports": [
-    {
-      "file": "services/api.ts",
-      "specifier": "./apiGroups/taxonomyContentApi"
-    }
-  ],
+  "unresolvedRelativeImports": [],
   "nonRuntimeUnresolvedRelativeImports": [
     {
       "file": "scripts/audit-school-integrity.mjs",
@@ -7607,6 +7602,12 @@
       "targetDomain": "schools"
     },
     {
+      "source": "services/api.ts",
+      "sourceDomain": "shared",
+      "target": "services/apiGroups/taxonomyContentApi.ts",
+      "targetDomain": "schools"
+    },
+    {
       "source": "services/apiGroups/authApi.ts",
       "sourceDomain": "auth",
       "target": "services/apiQueryUtilities.ts",
@@ -7639,6 +7640,12 @@
     {
       "source": "services/apiGroups/quizzesApi.ts",
       "sourceDomain": "quizzes",
+      "target": "services/apiQueryUtilities.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "services/apiGroups/taxonomyContentApi.ts",
+      "sourceDomain": "schools",
       "target": "services/apiQueryUtilities.ts",
       "targetDomain": "shared"
     },
@@ -8229,6 +8236,18 @@
     {
       "source": "dashboards/admin/PathsManager/pathDisplayPresentation.tsx",
       "target": "apps/web/src/features/paths/admin/PathsManager/pathDisplayPresentation.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PathsManager/pathReadiness.ts",
+      "target": "apps/web/src/features/paths/admin/PathsManager/pathReadiness.ts",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PathsManager/pathsManagerUrlState.ts",
+      "target": "apps/web/src/features/paths/admin/PathsManager/pathsManagerUrlState.ts",
       "domain": "paths",
       "confidence": "candidate"
     },
@@ -10051,6 +10070,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "services/apiGroups/taxonomyContentApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/taxonomyContentApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
       "source": "services/apiQueryUtilities.ts",
       "target": "apps/web/src/core/api/apiQueryUtilities.ts",
       "domain": "core-api",
@@ -11246,9 +11271,9 @@
       "file": "dashboards/admin/PathsManager.tsx",
       "category": "web-source",
       "domain": "paths",
-      "bytes": 129020,
-      "lines": 2275,
-      "sha256": "d80fdb8faddd7f6de77e222173072fe4805d706991128ff48db6e9a62a3bb507"
+      "bytes": 126125,
+      "lines": 2238,
+      "sha256": "abad67b21b806c5953e5a122e093f1229eb869658abf6f453451efb54857d96c"
     },
     {
       "file": "dashboards/admin/PathsManager/pathDisplayPresentation.tsx",
@@ -11257,6 +11282,22 @@
       "bytes": 1651,
       "lines": 42,
       "sha256": "1c9cf0dfe4ac168c8f191fd3208837df441af816b239bd01d5da61a92057c224"
+    },
+    {
+      "file": "dashboards/admin/PathsManager/pathReadiness.ts",
+      "category": "web-source",
+      "domain": "paths",
+      "bytes": 3356,
+      "lines": 103,
+      "sha256": "c6545f1b2b6e235ce6f05c1fdaadb565858c367d10c675865f6d0a5d23fea674"
+    },
+    {
+      "file": "dashboards/admin/PathsManager/pathsManagerUrlState.ts",
+      "category": "web-source",
+      "domain": "paths",
+      "bytes": 1051,
+      "lines": 25,
+      "sha256": "eee14854bfb31bf236edc8c46fe9f59f46b5eeb1c58f9bcc481736391f894df6"
     },
     {
       "file": "dashboards/admin/PlatformFontsManager.tsx",
@@ -11326,9 +11367,9 @@
       "file": "dashboards/admin/SchoolsManager.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 107499,
-      "lines": 2175,
-      "sha256": "4cf441c8d0e1501af986e94b5ab2cb5da80b04220292e5d4e01bd6f842cdbfcd"
+      "bytes": 107620,
+      "lines": 2176,
+      "sha256": "baaad669563f708ffb4d20773740894936fff7a9c289e20ce1b6ab97060d53c5"
     },
     {
       "file": "dashboards/admin/SchoolsManager/EditNameModal.tsx",
@@ -12744,31 +12785,31 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "5b1dec67e3f81d5489ccb361634be5937ca957b4bd16ec204938e63c9d6130d2"
+      "sha256": "7ce5153749c0f907c834c836b5f69651d005edb585239fa622025cc3a8ba79f7"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 550875,
-      "lines": 17915,
-      "sha256": "b38c766a16a7cf0a299710e98984041ebc2f7d156707598c9025ebab53edb19a"
+      "bytes": 580061,
+      "lines": 18807,
+      "sha256": "b109cc95d1af2ce4009f2920a3e06ebd995c99100fd76aaf1faee4e347d2fee0"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4060,
+      "bytes": 4076,
       "lines": 75,
-      "sha256": "d807a4c37b3361a87766e1416a2cb35bc4a5af348158e66e38344de20dcbe977"
+      "sha256": "86469d21106a8ebc24619ff418039d21200ede20c8915e28e651579fe8020b7d"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 76503,
-      "lines": 2223,
-      "sha256": "b4e645813d5ca22af70b03714fc179303c284b4d9648c39e54e49f3e4d27002b"
+      "bytes": 86234,
+      "lines": 2487,
+      "sha256": "94419c8c1741035f1fbd9f6d888f796a78fe400979cb71d85bef33ac3f2b8163"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -17646,9 +17687,9 @@
       "file": "services/apiGroups/accessCodesApi.ts",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 2253,
+      "bytes": 2285,
       "lines": 76,
-      "sha256": "030870ce4ea4359d81de1c2b5703315c58ddeb3a98cce921434f26274724f406"
+      "sha256": "4ba62f7fa19020d89d61ff86726b09a22613262daf006cd8af48c350e9ebdb8b"
     },
     {
       "file": "services/apiGroups/aiApi.ts",
@@ -17718,9 +17759,9 @@
       "file": "services/apiGroups/questionsApi.ts",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 1943,
+      "bytes": 1975,
       "lines": 71,
-      "sha256": "b9de5494573b0a9280218b9c78fba69613b9018325c37b178a6a46d3e0399670"
+      "sha256": "4001264977f0c10293ff09b833a17b709ad18dcae48749931426cc3fd80466d5"
     },
     {
       "file": "services/apiGroups/quizzesApi.ts",
@@ -17737,6 +17778,14 @@
       "bytes": 1267,
       "lines": 48,
       "sha256": "f3196836170f557aa314b43341935b5846e7b675042b1d7ade046f3b4d0314eb"
+    },
+    {
+      "file": "services/apiGroups/taxonomyContentApi.ts",
+      "category": "web-source",
+      "domain": "schools",
+      "bytes": 6068,
+      "lines": 193,
+      "sha256": "f28b312dda76339d364a2e6c1228210ab454b4357b5b69d58c169edb830f9961"
     },
     {
       "file": "services/apiQueryUtilities.ts",

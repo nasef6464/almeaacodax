@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-27T18:38:24.235Z",
-  "sourceGitHead": "1ae7e8d971816a2e2c2d9cd781ded27d752a29ce",
+  "generatedAt": "2026-08-28T12:27:21.236Z",
+  "sourceGitHead": "91b4e3ba1990f218f081276dbc7255f6e7cc6bd5",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -415,6 +415,18 @@
     {
       "source": "dashboards/admin/PathsManager/pathDisplayPresentation.tsx",
       "target": "apps/web/src/features/paths/admin/PathsManager/pathDisplayPresentation.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PathsManager/pathReadiness.ts",
+      "target": "apps/web/src/features/paths/admin/PathsManager/pathReadiness.ts",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/PathsManager/pathsManagerUrlState.ts",
+      "target": "apps/web/src/features/paths/admin/PathsManager/pathsManagerUrlState.ts",
       "domain": "paths",
       "confidence": "candidate"
     },
@@ -2233,6 +2245,12 @@
     {
       "source": "services/apiGroups/studyPlansApi.ts",
       "target": "apps/web/src/core/api/apiGroups/studyPlansApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/taxonomyContentApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/taxonomyContentApi.ts",
       "domain": "core-api",
       "confidence": "review-required"
     },

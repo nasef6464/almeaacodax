@@ -1,26 +1,26 @@
 # Current Repository Architecture Audit
 
-Generated from commit `1ae7e8d971816a2e2c2d9cd781ded27d752a29ce` using the TypeScript AST for imports and route extraction.
+Generated from commit `91b4e3ba1990f218f081276dbc7255f6e7cc6bd5` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1063 |
-| Source files (including scripts/tooling) | 722 |
-| Runtime source files | 423 |
-| Source lines | 165,335 |
-| Runtime source lines | 131,258 |
+| Tracked files | 1066 |
+| Source files (including scripts/tooling) | 725 |
+| Runtime source files | 426 |
+| Source lines | 165,620 |
+| Runtime source lines | 131,543 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |
-| Runtime relative import edges | 1295 |
-| Unresolved runtime relative imports | 1 |
+| Runtime relative import edges | 1299 |
+| Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 2 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 860 |
+| Cross-domain runtime import edges | 862 |
 | Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 413 |
+| Candidate migration-map entries | 416 |
 
 ## Largest runtime source hotspots
 
@@ -29,9 +29,9 @@ Generated from commit `1ae7e8d971816a2e2c2d9cd781ded27d752a29ce` using the TypeS
 | `server/src/routes/quiz.routes.ts` | 2892 | 112948 | quizzes |
 | `server/src/routes/content.routes.ts` | 2628 | 100806 | content |
 | `pages/Reports.tsx` | 2607 | 187317 | reports |
-| `dashboards/admin/PathsManager.tsx` | 2275 | 129020 | paths |
+| `dashboards/admin/PathsManager.tsx` | 2238 | 126125 | paths |
 | `pages/Dashboard.tsx` | 2195 | 132224 | shared |
-| `dashboards/admin/SchoolsManager.tsx` | 2175 | 107499 | schools |
+| `dashboards/admin/SchoolsManager.tsx` | 2176 | 107620 | schools |
 | `dashboards/admin/FinancialManager.tsx` | 2135 | 144154 | payments |
 | `pages/Results.tsx` | 2090 | 106586 | reports |
 | `dashboards/admin/AdminDashboard.tsx` | 2079 | 125644 | shared |
