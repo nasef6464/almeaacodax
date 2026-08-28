@@ -25,7 +25,7 @@
 
 ## P0-00 — PWA/authenticated API cache safety
 
-- Status: COMPLETED on `refactor/modular-platform-safe`, code commit `3150eb67`.
+- Status: COMPLETED on `refactor/modular-platform-safe`, code commit `81aaee59`.
 - Changed: removed broad Workbox runtime caching for `/api/*` from `vite.config.ts`.
 - Preserved: HTML navigation cache, immutable assets, explicit public application cache in `services/api.ts`, URLs/API behavior, and authenticated request flow.
 - Added: deployment cache contract assertions preventing broad API cache regression.
