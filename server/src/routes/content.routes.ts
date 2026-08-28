@@ -161,10 +161,10 @@ const buildOwnedDocumentQuery = (
 const getScopedOperationalData = async (authUser?: { id: string; role: string; schoolId?: string | null }) => {
   if (authUser?.role === "admin") {
     const [groups, b2bPackages, accessCodes, announcementAds] = await Promise.all([
-      GroupModel.find().sort({ createdAt: -1 }),
-      B2BPackageModel.find().sort({ createdAt: -1 }),
-      AccessCodeModel.find().sort({ createdAt: -1 }),
-      AnnouncementAdModel.find().sort({ priority: 1, createdAt: -1 }),
+      GroupModel.find().sort({ createdAt: -1 }).lean(),
+      B2BPackageModel.find().sort({ createdAt: -1 }).lean(),
+      AccessCodeModel.find().sort({ createdAt: -1 }).lean(),
+      AnnouncementAdModel.find().sort({ priority: 1, createdAt: -1 }).lean(),
     ]);
 
     return { groups, b2bPackages, accessCodes, announcementAds };

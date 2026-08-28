@@ -72,6 +72,7 @@
         "smoke:weekly-parent-report": "node scripts/smoke-weekly-parent-report-scheduler-contract.mjs",
         "smoke:parent-progress-bounded": "node scripts/smoke-parent-progress-bounded-read-contract.mjs",
         "smoke:content-operations-bootstrap": "node scripts/smoke-content-operations-bootstrap-contract.mjs",
+        "smoke:operations-read-memory": "node scripts/smoke-operations-read-memory-contract.mjs",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
         "smoke:auth-account": "node scripts/smoke-auth-account-contract.mjs",
