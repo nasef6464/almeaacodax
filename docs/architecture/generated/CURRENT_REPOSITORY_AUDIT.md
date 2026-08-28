@@ -1,15 +1,15 @@
 # Current Repository Architecture Audit
 
-Generated from commit `057dee2af7312a6db054a8002e4687e534f3a98b` using the TypeScript AST for imports and route extraction.
+Generated from commit `8620b20b9d6a3ca6137502383823a6bb731c4eff` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1081 |
-| Source files (including scripts/tooling) | 732 |
+| Tracked files | 1082 |
+| Source files (including scripts/tooling) | 733 |
 | Runtime source files | 429 |
-| Source lines | 165,998 |
+| Source lines | 166,021 |
 | Runtime source lines | 131,792 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
@@ -27,7 +27,7 @@ Generated from commit `057dee2af7312a6db054a8002e4687e534f3a98b` using the TypeS
 | File | Lines | Bytes | Domain candidate |
 |---|---:|---:|---|
 | `server/src/routes/quiz.routes.ts` | 2892 | 112948 | quizzes |
-| `server/src/routes/content.routes.ts` | 2629 | 100966 | content |
+| `server/src/routes/content.routes.ts` | 2629 | 100989 | content |
 | `pages/Reports.tsx` | 2607 | 187317 | reports |
 | `dashboards/admin/PathsManager.tsx` | 2238 | 126125 | paths |
 | `pages/Dashboard.tsx` | 2195 | 132224 | shared |

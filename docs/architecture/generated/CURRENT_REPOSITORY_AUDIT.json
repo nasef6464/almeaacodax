@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T16:44:04.878Z",
-  "gitHead": "057dee2af7312a6db054a8002e4687e534f3a98b",
+  "generatedAt": "2026-08-28T16:53:46.486Z",
+  "gitHead": "8620b20b9d6a3ca6137502383823a6bb731c4eff",
   "summary": {
-    "trackedFiles": 1081,
-    "sourceFiles": 732,
+    "trackedFiles": 1082,
+    "sourceFiles": 733,
     "runtimeSourceFiles": 429,
-    "sourceLines": 165998,
+    "sourceLines": 166021,
     "runtimeSourceLines": 131792,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
@@ -22,8 +22,8 @@
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 507230,
-      "lines": 10343
+      "bytes": 507328,
+      "lines": 10344
     },
     "ci": {
       "files": 44,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 218,
-      "bytes": 3554012,
-      "lines": 88897
+      "bytes": 3555512,
+      "lines": 88915
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 227,
-      "bytes": 1276660,
-      "lines": 27594
+      "files": 228,
+      "bytes": 1278175,
+      "lines": 27617
     },
     "api-support": {
       "files": 5,
@@ -62,7 +62,7 @@
     },
     "api-source": {
       "files": 147,
-      "bytes": 1172634,
+      "bytes": 1172650,
       "lines": 31125
     },
     "tooling": {
@@ -140,12 +140,12 @@
     "operations": {
       "files": 17,
       "lines": 11300,
-      "bytes": 496271
+      "bytes": 496264
     },
     "content": {
       "files": 10,
       "lines": 4913,
-      "bytes": 220085
+      "bytes": 220108
     },
     "users": {
       "files": 8,
@@ -166,9 +166,9 @@
       "file": "server/src/routes/content.routes.ts",
       "category": "api-source",
       "domain": "content",
-      "bytes": 100966,
+      "bytes": 100989,
       "lines": 2629,
-      "sha256": "6eec1040cec21f317af29da029a7edf2a27bbce7165f43005ae58a3fa0436a5f"
+      "sha256": "0726e62fc2a6a7499f2968779e41f6fec762c7bd7a1b67e55b19aa2764b6b64a"
     },
     {
       "file": "pages/Reports.tsx",
@@ -518,9 +518,9 @@
       "file": "server/src/routes/operations.routes.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 33779,
+      "bytes": 33772,
       "lines": 810,
-      "sha256": "2b6d4dbf25dc7faeb5699bf56e045b171d47d2e213d48669eff44b5270d7ce38"
+      "sha256": "cf1eadb1725c1db6dfc04f1d8903724fc418b4ba146eb5c905f998b4172b1660"
     },
     {
       "file": "dashboards/admin/FoundationManager.tsx",
@@ -12683,9 +12683,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 2956,
+      "bytes": 2972,
       "lines": 36,
-      "sha256": "36dc0713958ca6f89e3c0759200a5cb953604c8010a72d712a4881af20944e4e"
+      "sha256": "d074fd30a7ce9dca61190cd706eb69ce00609e51e86a91815910449c5d8241b3"
     },
     {
       "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
@@ -12755,9 +12755,9 @@
       "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 5837,
-      "lines": 68,
-      "sha256": "b69138b484b5b0244e3a82aab7824de8f7d587cb86de1834d0d7c525a5f13e15"
+      "bytes": 7045,
+      "lines": 78,
+      "sha256": "5205c0183f0e3847aeec6013f8a9714b29565ed4eb83962585e3a9fb08015a6d"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12909,15 +12909,15 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "c88ab6f822be90bd0de356202676c0101471b6187be12d356621545addc25215"
+      "sha256": "a963d0fdc373fea0edcda1dadaefe7d30c5411ff2a7df0d14ccf87790a7f8250"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 587847,
-      "lines": 19028,
-      "sha256": "42ccf608a622c6424f5af659868cd2ce9a296c5dd4c4ec4adfc80236b5580d4b"
+      "bytes": 588123,
+      "lines": 19036,
+      "sha256": "6f792e7caf9dbfd3124c68678f9ccedf2035aa3e09a536f8722e6f2e8e12da9e"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12925,7 +12925,7 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "6c59765829f4ccac7e3f090070d908dbea426c63f286f89ffe9cf80a089951a7"
+      "sha256": "5e3e0c46dc4bf98f1ea5890a2edd8d451726e900ffaa35c8ec525c70e4954914"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -12933,7 +12933,7 @@
       "domain": "shared",
       "bytes": 87678,
       "lines": 2523,
-      "sha256": "4c04bdf576c9ad1146107d525bcb382885901a85463656acf8e410e6dcd0440b"
+      "sha256": "c32e96a2bcc741489a1bf16fad14def3bba9f14db96a3217810d9213189e708b"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -14219,9 +14219,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 14208,
-      "lines": 183,
-      "sha256": "02d50cf46dd4f3f8c1c601d558a16eb6d1edbb875d0ce906dbb359dd4e896949"
+      "bytes": 14306,
+      "lines": 184,
+      "sha256": "24a2058dfc6b21c35753eeecc31d0f0999d33408a54fe46aeeeef66a7d103d75"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -15766,6 +15766,14 @@
       "bytes": 1609,
       "lines": 54,
       "sha256": "4fb7b4f3615bbf6714382e9b9299957d9113d588ec4b900a07d93961a93660af"
+    },
+    {
+      "file": "scripts/smoke-operations-read-memory-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "operations",
+      "bytes": 1515,
+      "lines": 23,
+      "sha256": "e6821d1265d0574f687f28b5d3ea10985eb3ade3611089ec8e6a894a64314f3e"
     },
     {
       "file": "scripts/smoke-package-course-split-contract.mjs",
@@ -17355,9 +17363,9 @@
       "file": "server/src/routes/content.routes.ts",
       "category": "api-source",
       "domain": "content",
-      "bytes": 100966,
+      "bytes": 100989,
       "lines": 2629,
-      "sha256": "6eec1040cec21f317af29da029a7edf2a27bbce7165f43005ae58a3fa0436a5f"
+      "sha256": "0726e62fc2a6a7499f2968779e41f6fec762c7bd7a1b67e55b19aa2764b6b64a"
     },
     {
       "file": "server/src/routes/course.routes.ts",
@@ -17419,9 +17427,9 @@
       "file": "server/src/routes/operations.routes.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 33779,
+      "bytes": 33772,
       "lines": 810,
-      "sha256": "2b6d4dbf25dc7faeb5699bf56e045b171d47d2e213d48669eff44b5270d7ce38"
+      "sha256": "cf1eadb1725c1db6dfc04f1d8903724fc418b4ba146eb5c905f998b4172b1660"
     },
     {
       "file": "server/src/routes/parent.routes.ts",

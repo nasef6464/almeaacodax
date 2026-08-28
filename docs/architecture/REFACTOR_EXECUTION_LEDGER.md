@@ -61,7 +61,16 @@
 - Added: `smoke:content-operations-bootstrap` contract (4/4).
 - Tests: content operations 4/4; student learning journey 7/7; reports role 20/20; school portal 16/16; school scope 4/4; notification realtime 4/4; weekly scheduler 4/4; parent bounded-read 4/4; typecheck/server check/server build/frontend build/repository audit/architecture gate PASS.
 - Known limitation: this removes unnecessary learning payload from the school-management path; taxonomy full bootstrap and operations status still need separate bounded-read work. Scale/load certification remains unproven.
-- Next: P0-03C taxonomy/operations bounded read selection.
+- Next: P0-03C operations read-memory optimization.
+
+## P0-03C — Operations read-memory optimization
+
+- Status: COMPLETED in `8620b20b` on `refactor/modular-platform-safe`.
+- Changed: admin operational bootstrap queries and the existing operations status read contract now use lean/plain documents; added `smoke:operations-read-memory` to protect the memory-oriented boundary and explicit projections.
+- Preserved: response shapes, route URLs/methods, admin authorization, operational scope, sorting, cache behavior, and all database schema semantics.
+- Tests: operations read-memory 4/4; student learning journey 7/7; reports role 20/20; school portal 16/16; school scope 4/4; typecheck/server check/server build/frontend build/repository audit/architecture gate PASS.
+- Known limitation: `.lean()` reduces Mongoose document overhead but does not by itself paginate the underlying collections. Taxonomy payload adjacency and true production load certification remain open.
+- Next: inspect taxonomy bootstrap skill-adjacency payloads and choose one additive contract-preserving boundary.
 
 ## P0-02 — Distributed weekly parent-report scheduling
 
