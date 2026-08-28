@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Phase 0 — Control Plane & Fresh Baseline
-- Current batch: P0-00 PWA/authenticated API cache safety completed
+- Current batch: P0-01 notification realtime fan-out completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed/pushed commit: `81aaee59`
+- Last completed/pushed commit: `3150eb67` (code); control-plane checkpoint follows
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: Fresh repository audit PASS; architecture gate PASS; unresolved runtime imports 0; runtime cycles 0; P0-00 focused gates PASS
+- Current gates: typecheck PASS; server check/build PASS; frontend build PASS; architecture gate PASS; route/runtime smoke PASS; notification realtime contract PASS; unresolved runtime imports 0; runtime cycles 0
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: inspect notification SSE client/server contract, delivery indexes, Redis configuration, queue lifecycle, and focused smoke coverage before implementing P0-01
+- Next exact action: inspect weekly parent report scheduling, existing queue/Redis lifecycle, lock/idempotency contracts, and focused smoke coverage before implementing P0-02
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/modules/notifications/http/openNotificationSseStream.ts`, notification routes/service/queue, notification model/indexes, frontend notification consumers, relevant smoke contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -32,4 +32,4 @@
 
 ## نقطة التسليم الحالية
 
-تم تثبيت Control Plane في `4f206b0f` ثم تحديثه في `e0617d4e`. أُنجز P0-00 ورُفع في `81aaee59` على فرع `refactor/modular-platform-safe` بإزالة Workbox API cache العام مع الحفاظ على cache التطبيق العام الصريح. لم تتغير Database أو RBAC أو scoring أو payments أو URLs/API contracts.
+تم تثبيت Control Plane في `4f206b0f` ثم تحديثه في `e0617d4e`. أُنجز P0-00 ورُفع في `81aaee59` بإزالة Workbox API cache العام مع الحفاظ على cache التطبيق العام الصريح. ثم أُنجز P0-01 في `3150eb67` باستبدال polling الخاص بـSSE بجسر Redis/local fan-out مع إبقاء endpoint وأسماء الأحداث والعقود الحالية. لم تتغير Database أو RBAC أو scoring أو payments أو URLs/API contracts.
