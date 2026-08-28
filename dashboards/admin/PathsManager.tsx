@@ -19,6 +19,7 @@ import { isMaterialQuizCandidate } from '../../utils/mockExam';
 import { isQuizVisibleInLearningSlot } from '../../utils/quizLearningPlacement';
 import { getPathIcon, getSubjectIcon, resolveColor, resolvePathDisplaySettings } from './PathsManager/pathDisplayPresentation';
 import { buildPathReadinessSummary } from './PathsManager/pathReadiness';
+import { resolvePathsManagerUrlState } from './PathsManager/pathsManagerUrlState';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
@@ -37,20 +38,15 @@ const isSelectedForSubjectLearningSlot = (quiz: any, subject: any, slot: 'traini
 
 export const PathsManager: React.FC = () => {
   const { paths, levels, subjects, courses, questions, lessons, quizzes, libraryItems, topics, addCourse, updateCourse, deleteCourse } = useStore();
-  const initialQuery = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : window.location.search);
-  const [selectedPathId, setSelectedPathId] = useState<string | null>(initialQuery.get('path') || null);
+  const initialUrlState = resolvePathsManagerUrlState();
+  const [selectedPathId, setSelectedPathId] = useState<string | null>(initialUrlState.selectedPathId);
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialQuery.get('subject') || null);
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialUrlState.selectedSubjectId);
   
   // Tabs for Path Overview
   const [pathTab, setPathTab] = useState<'levels' | 'subjects' | 'packages' | 'settings'>('subjects');
   // Tabs for Subject Workspace
-  const requestedSubjectTab = initialQuery.get('subjectTab') || initialQuery.get('courseTab') || initialQuery.get('workspace');
-  const [subjectTab, setSubjectTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library' | 'settings'>(
-    ['courses', 'skills', 'questions', 'exams', 'library', 'settings'].includes(requestedSubjectTab || '')
-      ? requestedSubjectTab as 'courses' | 'skills' | 'questions' | 'exams' | 'library' | 'settings'
-      : 'courses',
-  );
+  const [subjectTab, setSubjectTab] = useState(initialUrlState.subjectTab);
 
   // Modals state
   const [isPathModalOpen, setIsPathModalOpen] = useState(false);
