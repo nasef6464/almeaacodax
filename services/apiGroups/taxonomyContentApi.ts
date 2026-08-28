@@ -27,7 +27,7 @@ export const createTaxonomyContentApi = (
     bootstrapCacheTtlMs,
   }: TaxonomyContentDependencies,
 ) => ({
-  getTaxonomyBootstrap: (phase: "full" | "core" = "full") =>
+  getTaxonomyBootstrap: (phase: "full" | "compact" | "core" = "full") =>
     requestCached<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>(
       withQuery("/taxonomy/bootstrap", { phase }),
       `taxonomy-bootstrap:${phase}`,

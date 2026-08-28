@@ -72,7 +72,7 @@ export const taxonomyRouter = Router();
 const TAXONOMY_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
 const TAXONOMY_SEED_CHECK_TTL_MS = 5 * 60 * 1000;
 const TAXONOMY_PUBLIC_CACHE_CONTROL = "public, max-age=60, stale-while-revalidate=120";
-const taxonomyBootstrapPhaseSchema = z.enum(["full", "core"]).default("full");
+const taxonomyBootstrapPhaseSchema = z.enum(["full", "compact", "core"]).default("full");
 
 type TaxonomyBootstrapPayload = {
   paths: unknown[];
@@ -82,8 +82,8 @@ type TaxonomyBootstrapPayload = {
   skills: unknown[];
 };
 
-let publicTaxonomyBootstrapCache = new Map<"core" | "full", { expiresAt: number; payload: TaxonomyBootstrapPayload }>();
-let publicTaxonomyBootstrapPromises = new Map<"core" | "full", Promise<TaxonomyBootstrapPayload>>();
+let publicTaxonomyBootstrapCache = new Map<"core" | "compact" | "full", { expiresAt: number; payload: TaxonomyBootstrapPayload }>();
+let publicTaxonomyBootstrapPromises = new Map<"core" | "compact" | "full", Promise<TaxonomyBootstrapPayload>>();
 const publicTaxonomyBootstrapPromise = publicTaxonomyBootstrapPromises;
 let skillTaxonomySeedCheckedAt = 0;
 let skillTaxonomySeedPromise: Promise<unknown> | null = null;
@@ -114,7 +114,7 @@ const ensureSkillTaxonomyIfStale = async () => {
   await skillTaxonomySeedPromise;
 };
 
-const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "full") => {
+const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "compact" | "full") => {
   const paths = await PathModel.find({ isActive: { $ne: false } })
     .select("id name color icon iconUrl iconStyle showInNavbar showInHome isActive parentPathId description settings createdAt")
     .sort({ createdAt: 1 })
@@ -141,15 +141,19 @@ const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "full") => {
     phase === "core"
       ? []
       : visiblePathIds.length > 0 && visibleSubjectIds.length > 0 && visibleSectionIds.length > 0
-      ? await SkillModel.find({
-          pathId: { $in: visiblePathIds },
-          subjectId: { $in: visibleSubjectIds },
-          sectionId: { $in: visibleSectionIds },
-        })
-          .select("id pathId subjectId sectionId name description lessonIds questionIds createdAt")
-          .sort({ createdAt: 1 })
-          .lean()
-      : [];
+        ? await SkillModel.find({
+            pathId: { $in: visiblePathIds },
+            subjectId: { $in: visibleSubjectIds },
+            sectionId: { $in: visibleSectionIds },
+          })
+            .select(
+              phase === "compact"
+                ? "id pathId subjectId sectionId name description createdAt"
+                : "id pathId subjectId sectionId name description lessonIds questionIds createdAt",
+            )
+            .sort({ createdAt: 1 })
+            .lean()
+        : [];
 
   return {
     paths,
@@ -160,7 +164,7 @@ const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "full") => {
   };
 };
 
-const getPublicTaxonomyBootstrapPayload = async (phase: "core" | "full") => {
+const getPublicTaxonomyBootstrapPayload = async (phase: "core" | "compact" | "full") => {
   const cachedEntry = publicTaxonomyBootstrapCache.get(phase);
   if (cachedEntry && cachedEntry.expiresAt > Date.now()) {
     return { payload: cachedEntry.payload, cache: "hit" as const };

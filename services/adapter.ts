@@ -452,7 +452,7 @@ export const adapter = {
     return null;
   },
 
-  async getTaxonomyBootstrap(phase: "full" | "core" = "full") {
+  async getTaxonomyBootstrap(phase: "full" | "compact" | "core" = "full") {
     if (!USE_REAL_API) {
       return {
         paths: [],
