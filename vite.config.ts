@@ -63,14 +63,10 @@ export default defineConfig(() => {
                   cacheName: `pages-cache-${appVersion}`,
                 },
               },
-              {
-                urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
-                handler: 'NetworkFirst',
-                options: {
-                  cacheName: 'api-cache',
-                  networkTimeoutSeconds: 3,
-                },
-              },
+              // API responses are intentionally not cached by the service worker.
+              // Public read caching is owned by the explicit requestCached API
+              // helper, while authenticated responses must always reach the API
+              // with the current user/session scope.
             ],
           },
         }),

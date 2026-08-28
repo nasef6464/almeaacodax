@@ -23,5 +23,13 @@
 | P1-02 | Assessment backend boundary map | PLANNED | ownership/contracts قبل extraction |
 | P1-03 | Student result-to-skill loop | PLANNED | evidence-backed recommendation/content links |
 
-كل Batch له Commit منفصل ولا يجمع Structural وProduct وDB migration.
+## P0-00 — PWA/authenticated API cache safety
 
+- Status: COMPLETED on `refactor/modular-platform-safe`, pending commit/push.
+- Changed: removed broad Workbox runtime caching for `/api/*` from `vite.config.ts`.
+- Preserved: HTML navigation cache, immutable assets, explicit public application cache in `services/api.ts`, URLs/API behavior, and authenticated request flow.
+- Added: deployment cache contract assertions preventing broad API cache regression.
+- Tests: typecheck PASS; frontend build PASS; `smoke:deployment-cache` PASS; `smoke:route-loading` PASS; `smoke:runtime-source` PASS; architecture gate PASS.
+- Next: P0-01 notification fan-out inspection.
+
+كل Batch له Commit منفصل ولا يجمع Structural وProduct وDB migration.

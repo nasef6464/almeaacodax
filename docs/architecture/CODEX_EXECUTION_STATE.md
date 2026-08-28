@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Phase 0 — Control Plane & Fresh Baseline
-- Current batch: Final Plan V3 handoff completed; next is safe-branch verification then P0-00 inspection
-- Current branch: `main`
+- Current batch: P0-00 PWA/authenticated API cache safety completed
+- Current branch: `refactor/modular-platform-safe`
 - Last completed/pushed commit: `31aeecbd`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`
-- Current gates: Fresh repository audit PASS; architecture gate PASS; unresolved runtime imports 0; runtime cycles 0
+- Current gates: Fresh repository audit PASS; architecture gate PASS; unresolved runtime imports 0; runtime cycles 0; P0-00 focused gates PASS
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: verify the safe refactor branch strategy, then inspect PWA/authenticated API caching for P0-00; after that inspect notification SSE contracts for P0-01
+- Next exact action: inspect notification SSE client/server contract, delivery indexes, Redis configuration, queue lifecycle, and focused smoke coverage before implementing P0-01
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/modules/notifications/http/openNotificationSseStream.ts`, notification routes/service/queue, notification model/indexes, frontend notification consumers, relevant smoke contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -32,4 +32,4 @@
 
 ## نقطة التسليم الحالية
 
-تم تثبيت Control Plane في commit `4f206b0f`. لا يوجد تغيير كود وظيفي في هذه النقطة. الدفعة التالية تبدأ بفحص تعاقد الإشعارات قبل أي تعديل، وتبقى Database وRBAC وscoring وpayments خارج النطاق.
+تم تثبيت Control Plane في commit `4f206b0f` ثم تحديثه في `e0617d4e`. أُنجز P0-00 على فرع `refactor/modular-platform-safe` بإزالة Workbox API cache العام مع الحفاظ على cache التطبيق العام الصريح. لم تتغير Database أو RBAC أو scoring أو payments أو URLs/API contracts.
