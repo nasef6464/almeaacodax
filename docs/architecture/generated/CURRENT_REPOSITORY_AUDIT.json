@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T16:35:52.781Z",
-  "gitHead": "f14a957648264aab6738f26ddd9bad935f4cf93e",
+  "generatedAt": "2026-08-28T16:44:04.878Z",
+  "gitHead": "057dee2af7312a6db054a8002e4687e534f3a98b",
   "summary": {
-    "trackedFiles": 1080,
-    "sourceFiles": 731,
+    "trackedFiles": 1081,
+    "sourceFiles": 732,
     "runtimeSourceFiles": 429,
-    "sourceLines": 165965,
-    "runtimeSourceLines": 131777,
+    "sourceLines": 165998,
+    "runtimeSourceLines": 131792,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
@@ -22,8 +22,8 @@
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 507120,
-      "lines": 10342
+      "bytes": 507230,
+      "lines": 10343
     },
     "ci": {
       "files": 44,
@@ -32,8 +32,8 @@
     },
     "web-source": {
       "files": 272,
-      "bytes": 5164931,
-      "lines": 99976
+      "bytes": 5165433,
+      "lines": 99990
     },
     "source-other": {
       "files": 10,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 218,
-      "bytes": 3552529,
-      "lines": 88878
+      "bytes": 3554012,
+      "lines": 88897
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 226,
-      "bytes": 1275513,
-      "lines": 27576
+      "files": 227,
+      "bytes": 1276660,
+      "lines": 27594
     },
     "api-support": {
       "files": 5,
@@ -62,8 +62,8 @@
     },
     "api-source": {
       "files": 147,
-      "bytes": 1172474,
-      "lines": 31124
+      "bytes": 1172634,
+      "lines": 31125
     },
     "tooling": {
       "files": 84,
@@ -74,8 +74,8 @@
   "domainStats": {
     "shared": {
       "files": 118,
-      "lines": 24798,
-      "bytes": 1114944
+      "lines": 24799,
+      "bytes": 1114997
     },
     "notifications": {
       "files": 17,
@@ -94,8 +94,8 @@
     },
     "schools": {
       "files": 83,
-      "lines": 17488,
-      "bytes": 872241
+      "lines": 17501,
+      "bytes": 872690
     },
     "paths": {
       "files": 11,
@@ -144,8 +144,8 @@
     },
     "content": {
       "files": 10,
-      "lines": 4912,
-      "bytes": 219925
+      "lines": 4913,
+      "bytes": 220085
     },
     "users": {
       "files": 8,
@@ -166,9 +166,9 @@
       "file": "server/src/routes/content.routes.ts",
       "category": "api-source",
       "domain": "content",
-      "bytes": 100806,
-      "lines": 2628,
-      "sha256": "761d2e1a4d6958e6be5979340879bb536ef80234f38409fa528264e151499218"
+      "bytes": 100966,
+      "lines": 2629,
+      "sha256": "6eec1040cec21f317af29da029a7edf2a27bbce7165f43005ae58a3fa0436a5f"
     },
     {
       "file": "pages/Reports.tsx",
@@ -198,9 +198,9 @@
       "file": "dashboards/admin/SchoolsManager.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 107620,
+      "bytes": 107630,
       "lines": 2176,
-      "sha256": "baaad669563f708ffb4d20773740894936fff7a9c289e20ce1b6ab97060d53c5"
+      "sha256": "649b531aca4718d4c4acb1415b47fd773e084507369d25fddd059f403e43b192"
     },
     {
       "file": "dashboards/admin/FinancialManager.tsx",
@@ -502,9 +502,9 @@
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 29387,
-      "lines": 854,
-      "sha256": "7005a1c46fe8ead9d8c70f1f74f1e727785df4e0d82d9dd3e5861f5ed42aef38"
+      "bytes": 29440,
+      "lines": 855,
+      "sha256": "df203103cf10f2c40ac916c08340d764d2ae5da9e2421287ac3ace6bae8c79ed"
     },
     {
       "file": "dashboards/admin/SkillsTreeManager.tsx",
@@ -11427,9 +11427,9 @@
       "file": "dashboards/admin/SchoolsManager.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 107620,
+      "bytes": 107630,
       "lines": 2176,
-      "sha256": "baaad669563f708ffb4d20773740894936fff7a9c289e20ce1b6ab97060d53c5"
+      "sha256": "649b531aca4718d4c4acb1415b47fd773e084507369d25fddd059f403e43b192"
     },
     {
       "file": "dashboards/admin/SchoolsManager/EditNameModal.tsx",
@@ -12683,9 +12683,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 2991,
+      "bytes": 2956,
       "lines": 36,
-      "sha256": "6faf81b0c9767a4d87bbe3d3269bd7eb12de83b6862817fe62ed8306c642a281"
+      "sha256": "36dc0713958ca6f89e3c0759200a5cb953604c8010a72d712a4881af20944e4e"
     },
     {
       "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
@@ -12755,9 +12755,9 @@
       "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4595,
-      "lines": 57,
-      "sha256": "8d3a6ce07587cc6f9bb3f9504b043acb4e2842641125a3af98b1643b4b0e68f4"
+      "bytes": 5837,
+      "lines": 68,
+      "sha256": "b69138b484b5b0244e3a82aab7824de8f7d587cb86de1834d0d7c525a5f13e15"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12909,15 +12909,15 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "c639b1de8fc3608d22b59603022e327b95f9fdb789ca255cb3efe5283067176a"
+      "sha256": "c88ab6f822be90bd0de356202676c0101471b6187be12d356621545addc25215"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 587571,
-      "lines": 19020,
-      "sha256": "9cc50387da8878af33bce2d7ddadb8bff18b4c103fe714251d538c7f97667a46"
+      "bytes": 587847,
+      "lines": 19028,
+      "sha256": "42ccf608a622c6424f5af659868cd2ce9a296c5dd4c4ec4adfc80236b5580d4b"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12925,7 +12925,7 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "e65d99bde35964ee67d7ced4fdcf4f6e34baaff211c145cd11a498a5c500cee0"
+      "sha256": "6c59765829f4ccac7e3f090070d908dbea426c63f286f89ffe9cf80a089951a7"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -12933,7 +12933,7 @@
       "domain": "shared",
       "bytes": 87678,
       "lines": 2523,
-      "sha256": "d78d1892bde9f7af7ab7b4324540622c7116ae66db0c9624ff26ba34d180a195"
+      "sha256": "4c04bdf576c9ad1146107d525bcb382885901a85463656acf8e410e6dcd0440b"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -14219,9 +14219,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 14098,
-      "lines": 182,
-      "sha256": "f04226dbd667dc1550a404f2eb172463feb33ecc989c71e87dc04b849c50f26c"
+      "bytes": 14208,
+      "lines": 183,
+      "sha256": "02d50cf46dd4f3f8c1c601d558a16eb6d1edbb875d0ce906dbb359dd4e896949"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -15350,6 +15350,14 @@
       "bytes": 5661,
       "lines": 132,
       "sha256": "fab40e7a9c1328fe7b2d2f1fb94afc65374679fc6e7a63b5f31540e330254e6a"
+    },
+    {
+      "file": "scripts/smoke-content-operations-bootstrap-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "content",
+      "bytes": 1147,
+      "lines": 18,
+      "sha256": "32bd8709f94b2fde899942694ef25c2878a0d83a64db33da52346de638b58944"
     },
     {
       "file": "scripts/smoke-content-platform-integration-defaults-boundary-contract.mjs",
@@ -17347,9 +17355,9 @@
       "file": "server/src/routes/content.routes.ts",
       "category": "api-source",
       "domain": "content",
-      "bytes": 100806,
-      "lines": 2628,
-      "sha256": "761d2e1a4d6958e6be5979340879bb536ef80234f38409fa528264e151499218"
+      "bytes": 100966,
+      "lines": 2629,
+      "sha256": "6eec1040cec21f317af29da029a7edf2a27bbce7165f43005ae58a3fa0436a5f"
     },
     {
       "file": "server/src/routes/course.routes.ts",
@@ -17851,9 +17859,9 @@
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 29387,
-      "lines": 854,
-      "sha256": "7005a1c46fe8ead9d8c70f1f74f1e727785df4e0d82d9dd3e5861f5ed42aef38"
+      "bytes": 29440,
+      "lines": 855,
+      "sha256": "df203103cf10f2c40ac916c08340d764d2ae5da9e2421287ac3ace6bae8c79ed"
     },
     {
       "file": "services/apiGroups/accessCodesApi.ts",
@@ -17955,9 +17963,9 @@
       "file": "services/apiGroups/taxonomyContentApi.ts",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 6068,
-      "lines": 193,
-      "sha256": "f28b312dda76339d364a2e6c1228210ab454b4357b5b69d58c169edb830f9961"
+      "bytes": 6507,
+      "lines": 206,
+      "sha256": "72e995705e8f120ba9fdc971531e1945c591aaa628b976b48d419fa605bf286f"
     },
     {
       "file": "services/apiQueryUtilities.ts",

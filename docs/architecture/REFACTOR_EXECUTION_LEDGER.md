@@ -51,7 +51,17 @@
 - Added: `smoke:parent-progress-bounded` contract (4/4).
 - Tests: parent bounded-read 4/4; student learning journey 7/7; reports role 20/20; school scope 4/4; notification realtime 4/4; weekly scheduler 4/4; typecheck/server check/server build/frontend build/repository audit/architecture gate PASS.
 - Known limitation: this closes only the parent progress hotspot. Taxonomy/content bootstrap and operations status remain candidates for P0-03B; scale/load certification is not claimed.
-- Next: inspect and bound the next bootstrap/status read without changing its response contract.
+- Next: inspect and bound taxonomy bootstrap or operations status without changing its response contract.
+
+## P0-03B — Operations-only content bootstrap
+
+- Status: COMPLETED in `057dee2a` on `refactor/modular-platform-safe`.
+- Changed: added the additive `scope=operations` mode to `/api/content/bootstrap`; it returns the existing payload shape while skipping topics, lessons, library items, and study plans. The admin `SchoolsManager` now uses this mode for school refresh/verification calls.
+- Preserved: existing `scope=full` and `scope=learning` behavior, response keys, school operational data, auth/scope rules, cache invalidation, and public route/API contracts.
+- Added: `smoke:content-operations-bootstrap` contract (4/4).
+- Tests: content operations 4/4; student learning journey 7/7; reports role 20/20; school portal 16/16; school scope 4/4; notification realtime 4/4; weekly scheduler 4/4; parent bounded-read 4/4; typecheck/server check/server build/frontend build/repository audit/architecture gate PASS.
+- Known limitation: this removes unnecessary learning payload from the school-management path; taxonomy full bootstrap and operations status still need separate bounded-read work. Scale/load certification remains unproven.
+- Next: P0-03C taxonomy/operations bounded read selection.
 
 ## P0-02 — Distributed weekly parent-report scheduling
 

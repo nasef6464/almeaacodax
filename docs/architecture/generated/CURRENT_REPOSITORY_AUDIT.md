@@ -1,16 +1,16 @@
 # Current Repository Architecture Audit
 
-Generated from commit `f14a957648264aab6738f26ddd9bad935f4cf93e` using the TypeScript AST for imports and route extraction.
+Generated from commit `057dee2af7312a6db054a8002e4687e534f3a98b` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1080 |
-| Source files (including scripts/tooling) | 731 |
+| Tracked files | 1081 |
+| Source files (including scripts/tooling) | 732 |
 | Runtime source files | 429 |
-| Source lines | 165,965 |
-| Runtime source lines | 131,777 |
+| Source lines | 165,998 |
+| Runtime source lines | 131,792 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |
@@ -27,11 +27,11 @@ Generated from commit `f14a957648264aab6738f26ddd9bad935f4cf93e` using the TypeS
 | File | Lines | Bytes | Domain candidate |
 |---|---:|---:|---|
 | `server/src/routes/quiz.routes.ts` | 2892 | 112948 | quizzes |
-| `server/src/routes/content.routes.ts` | 2628 | 100806 | content |
+| `server/src/routes/content.routes.ts` | 2629 | 100966 | content |
 | `pages/Reports.tsx` | 2607 | 187317 | reports |
 | `dashboards/admin/PathsManager.tsx` | 2238 | 126125 | paths |
 | `pages/Dashboard.tsx` | 2195 | 132224 | shared |
-| `dashboards/admin/SchoolsManager.tsx` | 2176 | 107620 | schools |
+| `dashboards/admin/SchoolsManager.tsx` | 2176 | 107630 | schools |
 | `dashboards/admin/FinancialManager.tsx` | 2135 | 144154 | payments |
 | `pages/Results.tsx` | 2090 | 106586 | reports |
 | `dashboards/admin/AdminDashboard.tsx` | 2079 | 125644 | shared |
