@@ -360,7 +360,7 @@ export const SchoolsManager: React.FC = () => {
         try {
             api.clearContentBootstrapCache();
             const [bootstrap, loadedUsers] = await Promise.all([
-                api.getContentBootstrapFresh(),
+                api.getOperationalBootstrapFresh(),
                 loadSchoolAdminUsers(),
             ]);
             hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
@@ -387,7 +387,7 @@ export const SchoolsManager: React.FC = () => {
 
         api.clearContentBootstrapCache();
         const [bootstrap, adminUsersResponse] = await Promise.all([
-            api.getContentBootstrapFresh(),
+            api.getOperationalBootstrapFresh(),
             user.role === Role.ADMIN ? loadSchoolAdminUsers() : Promise.resolve(null),
         ]);
 
@@ -842,7 +842,7 @@ export const SchoolsManager: React.FC = () => {
             try {
                 await deleteGroupAsync(selectedSchool.id);
                 api.clearContentBootstrapCache();
-                const bootstrap = await api.getContentBootstrapFresh();
+                const bootstrap = await api.getOperationalBootstrapFresh();
                 hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
                 setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
                 setIsDeleteSchoolConfirmOpen(false);

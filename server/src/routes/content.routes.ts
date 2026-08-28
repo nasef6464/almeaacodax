@@ -82,7 +82,7 @@ type PublicContentBootstrapPayload = {
 };
 type ContentBootstrapCachePayload = PublicContentBootstrapPayload;
 type ContentBootstrapCacheEntry = { expiresAt: number; payload: ContentBootstrapCachePayload };
-const contentBootstrapScopeSchema = z.enum(["full", "learning"]).default("full");
+const contentBootstrapScopeSchema = z.enum(["full", "learning", "operations"]).default("full");
 const contentBootstrapPhaseSchema = z.enum(["full", "core"]).default("full");
 let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
 let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
@@ -805,11 +805,12 @@ contentRouter.get(
     const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
     const requestedPhase = contentBootstrapPhaseSchema.parse(req.query.phase);
     const canUseFullScope = isStaffRole(req.authUser?.role);
-    const scope = requestedScope === "full" && !canUseFullScope ? "learning" : requestedScope;
+    const scope = requestedScope !== "learning" && !canUseFullScope ? "learning" : requestedScope;
     const phase = scope === "learning" ? requestedPhase : "full";
     const isLearningCore = scope === "learning" && phase === "core";
+    const isOperationsOnly = scope === "operations";
     const includeOperationalData = scope !== "learning";
-    const includeStudyPlans = scope !== "learning" && phase === "full";
+    const includeStudyPlans = !isOperationsOnly && scope !== "learning" && phase === "full";
     const isNonStaffAuthedLearning = Boolean(req.authUser) && !canUseFullScope && scope === "learning";
     const canUseSharedCache = !req.authUser || isNonStaffAuthedLearning;
     const cacheKey = canUseSharedCache ? `scope:${scope}:phase:${phase}:shared-learning` : "";
@@ -853,9 +854,9 @@ contentRouter.get(
       const finalLibraryFilter = canSeeAllContent ? libraryFilter : scopeFilterToActivePaths(libraryFilter, activePathIds);
 
       const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
-        TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
-        isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
-        isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
+        isOperationsOnly ? Promise.resolve([]) : TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
+        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
+        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
         includeOperationalData
           ? getScopedOperationalData(req.authUser)
           : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),

@@ -316,6 +316,7 @@ export const api = {
     clearPublicCache("content-bootstrap:learning:full");
     clearPublicCache("content-bootstrap:learning:core");
     clearPublicCache("content-bootstrap:minimal");
+    clearPublicCache("content-bootstrap:operations");
   },
   /** يمسح كاش bootstrap التصنيفات حتى يُجلب المسار/المادة الجديدة عند إعادة التحميل */
   clearTaxonomyBootstrapCache: () => {
