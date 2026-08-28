@@ -30,6 +30,7 @@ const landing = read("pages/Landing.tsx");
 const api = [
   read("services/api.ts"),
   read("services/apiGroups/questionsApi.ts"),
+  read("services/apiGroups/taxonomyContentApi.ts"),
 ].join("\n");
 const coursePlayer = read("components/CoursePlayer.tsx");
 const courseView = read("pages/CourseView.tsx");

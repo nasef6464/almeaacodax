@@ -311,7 +311,10 @@ export const PathsManager: React.FC = () => {
   };
 
   const handleAddPath = async () => {
-    if (!newPathName.trim()) return;
+    if (!newPathName.trim()) {
+      setPathSaveError('يرجى إدخال اسم المسار أولاً.');
+      return;
+    }
     setPathSaveError('');
 
     if (editingPath) {

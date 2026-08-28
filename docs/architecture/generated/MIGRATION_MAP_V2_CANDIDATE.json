@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-19T09:31:05.432Z",
-  "sourceGitHead": "eac69b98ee23ef18ddc814108743a13e2322db99",
+  "generatedAt": "2026-08-27T18:38:24.235Z",
+  "sourceGitHead": "1ae7e8d971816a2e2c2d9cd781ded27d752a29ce",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -173,6 +173,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "components/results/resultScorePresentation.ts",
+      "target": "apps/web/src/features/reports/results/resultScorePresentation.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
       "source": "components/RichTextEditor.tsx",
       "target": "apps/web/src/features/shared/RichTextEditor.tsx",
       "domain": "shared",
@@ -287,6 +293,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/AssignedTestDetailPanel.tsx",
+      "target": "apps/web/src/features/shared/admin/AssignedTestDetailPanel.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "dashboards/admin/BackupManager.tsx",
       "target": "apps/web/src/features/operations/admin/BackupManager.tsx",
       "domain": "operations",
@@ -301,6 +313,18 @@
     {
       "source": "dashboards/admin/builders/UnifiedQuestionBuilder.tsx",
       "target": "apps/web/src/features/questions/admin/builders/UnifiedQuestionBuilder.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/ClassReportPanel.tsx",
+      "target": "apps/web/src/features/reports/admin/ClassReportPanel.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/ClassSkillsMapPanel.tsx",
+      "target": "apps/web/src/features/questions/admin/ClassSkillsMapPanel.tsx",
       "domain": "questions",
       "confidence": "candidate"
     },
@@ -389,6 +413,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/PathsManager/pathDisplayPresentation.tsx",
+      "target": "apps/web/src/features/paths/admin/PathsManager/pathDisplayPresentation.tsx",
+      "domain": "paths",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/PlatformFontsManager.tsx",
       "target": "apps/web/src/features/shared/admin/PlatformFontsManager.tsx",
       "domain": "shared",
@@ -410,6 +440,12 @@
       "source": "dashboards/admin/QuestionBankManager.tsx",
       "target": "apps/web/src/features/questions/admin/QuestionBankManager.tsx",
       "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/QuizAssignWidget.tsx",
+      "target": "apps/web/src/features/quizzes/admin/QuizAssignWidget.tsx",
+      "domain": "quizzes",
       "confidence": "candidate"
     },
     {
@@ -437,8 +473,32 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/accessCodeService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/accessCodeService.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/accessCodeViewModel.ts",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/accessCodeViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/classReportService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/classReportService.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/classService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/classService.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/clipboardService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/clipboardService.ts",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -455,14 +515,38 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/draftPayloadService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/draftPayloadService.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/EditNameModal.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/EditNameModal.tsx",
       "domain": "schools",
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/errorMessageService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/errorMessageService.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/exportHelpers.ts",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/exportHelpers.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/groupFactory.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/groupFactory.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/importExportService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/importExportService.ts",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -481,6 +565,12 @@
     {
       "source": "dashboards/admin/SchoolsManager/packageAccessViewModel.ts",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/packageAccessViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/printReportService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/printReportService.ts",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -505,6 +595,12 @@
     {
       "source": "dashboards/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolAccessCodesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolAccessFlowHint.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolAccessFlowHint.tsx",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -535,6 +631,12 @@
     {
       "source": "dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolCoursesPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/SchoolDashboardPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/SchoolDashboardPanel.tsx",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -653,6 +755,66 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/selectedSchoolDataService.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/selectedSchoolDataService.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useAutoDismissMessage.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useAutoDismissMessage.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useEditNameModalState.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useEditNameModalState.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolAccessCodeState.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolAccessCodeState.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolListState.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolListState.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolManagementUiState.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolManagementUiState.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolReportState.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolReportState.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolRosterFilters.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolRosterFilters.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolSelectionState.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolSelectionState.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SchoolsManager/useSchoolWorkspaceDrafts.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolWorkspaceDrafts.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/workspaceViewModel.ts",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/workspaceViewModel.ts",
       "domain": "schools",
@@ -677,6 +839,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/StudentIntelligenceProfile.tsx",
+      "target": "apps/web/src/features/users/admin/StudentIntelligenceProfile.tsx",
+      "domain": "users",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SubjectQuizzesPanel.tsx",
       "target": "apps/web/src/features/quizzes/admin/SubjectQuizzesPanel.tsx",
       "domain": "quizzes",
@@ -685,6 +853,12 @@
     {
       "source": "dashboards/admin/SupervisorDashboard.tsx",
       "target": "apps/web/src/features/schools/admin/SupervisorDashboard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/SupervisorOverviewPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/SupervisorOverviewPanel.tsx",
       "domain": "schools",
       "confidence": "candidate"
     },
@@ -771,6 +945,18 @@
       "target": "apps/web/src/features/shared/Dashboard.tsx",
       "domain": "shared",
       "confidence": "review-required"
+    },
+    {
+      "source": "pages/Dashboard/pathProgressProjection.ts",
+      "target": "apps/web/src/features/reports/Dashboard/pathProgressProjection.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "pages/Dashboard/SupervisorTasksStrip.tsx",
+      "target": "apps/web/src/features/schools/Dashboard/SupervisorTasksStrip.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
     },
     {
       "source": "pages/Favorites.tsx",
@@ -1493,6 +1679,18 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/content/integrations/platformIntegrationDefaults.ts",
+      "target": "apps/api/src/modules/content/integrations/platformIntegrationDefaults.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/content/presentation/platformPresentationDefaults.ts",
+      "target": "apps/api/src/modules/content/presentation/platformPresentationDefaults.ts",
+      "domain": "content",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/notifications/domain/notification.types.ts",
       "target": "apps/api/src/modules/notifications/domain/notification.types.ts",
       "domain": "notifications",
@@ -1703,6 +1901,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/backendIntegrationGate.ts",
+      "target": "apps/api/src/scripts/backendIntegrationGate.ts",
+      "domain": "operations",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/backfillLearningPlacementsApi.ts",
       "target": "apps/api/src/scripts/backfillLearningPlacementsApi.ts",
       "domain": "learning",
@@ -1742,6 +1946,12 @@
       "source": "server/src/scripts/migrateQuizKind.ts",
       "target": "apps/api/src/scripts/migrateQuizKind.ts",
       "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/prepareDeepPreMergeUsers.ts",
+      "target": "apps/api/src/scripts/prepareDeepPreMergeUsers.ts",
+      "domain": "users",
       "confidence": "review-required"
     },
     {
@@ -1955,6 +2165,84 @@
       "confidence": "explicit"
     },
     {
+      "source": "services/apiGroups/accessCodesApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/accessCodesApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/aiApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/aiApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/announcementAdsApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/announcementAdsApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/authApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/authApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/coursesApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/coursesApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/learningSupportApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/learningSupportApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/libraryItemsApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/libraryItemsApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/operationsApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/operationsApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/paymentsApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/paymentsApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/questionsApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/questionsApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/quizzesApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/quizzesApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiGroups/studyPlansApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/studyPlansApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
+      "source": "services/apiQueryUtilities.ts",
+      "target": "apps/web/src/core/api/apiQueryUtilities.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
       "source": "services/clientTelemetry.ts",
       "target": "apps/web/src/core/api/clientTelemetry.ts",
       "domain": "core-api",
@@ -1973,6 +2261,54 @@
       "confidence": "review-required"
     },
     {
+      "source": "store/slices/accessEnrollmentSlice.ts",
+      "target": "apps/web/src/core/state/slices/accessEnrollmentSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/slices/announcementAdsSlice.ts",
+      "target": "apps/web/src/core/state/slices/announcementAdsSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/slices/cartSlice.ts",
+      "target": "apps/web/src/core/state/slices/cartSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/slices/learningInteractionsSlice.ts",
+      "target": "apps/web/src/core/state/slices/learningInteractionsSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/slices/learningProgressSlice.ts",
+      "target": "apps/web/src/core/state/slices/learningProgressSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/slices/libraryItemsSlice.ts",
+      "target": "apps/web/src/core/state/slices/libraryItemsSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/slices/studyPlansSlice.ts",
+      "target": "apps/web/src/core/state/slices/studyPlansSlice.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
+      "source": "store/storeDomainHelpers.ts",
+      "target": "apps/web/src/core/state/storeDomainHelpers.ts",
+      "domain": "core-state",
+      "confidence": "review-required"
+    },
+    {
       "source": "store/useStore.ts",
       "target": "apps/web/src/core/state/useStore.ts",
       "domain": "core-state",
@@ -1987,6 +2323,18 @@
     {
       "source": "utils/appVersion.ts",
       "target": "apps/web/src/shared/lib/appVersion.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/assessmentClassification.ts",
+      "target": "apps/web/src/shared/lib/assessmentClassification.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/assessmentSettings.ts",
+      "target": "apps/web/src/shared/lib/assessmentSettings.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -2017,6 +2365,12 @@
     {
       "source": "utils/entityIds.ts",
       "target": "apps/web/src/shared/lib/entityIds.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/exams/assessmentQuestionSource.ts",
+      "target": "apps/web/src/shared/lib/exams/assessmentQuestionSource.ts",
       "domain": "shared",
       "confidence": "review-required"
     },

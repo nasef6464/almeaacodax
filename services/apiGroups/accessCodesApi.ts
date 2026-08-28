@@ -32,9 +32,9 @@ export interface AccessCodeRedemptionsQuery {
   sortOrder?: "asc" | "desc";
 }
 
-const toQueryString = (params?: Record<string, unknown>) => {
+const toQueryString = <T extends object>(params?: T | null) => {
   const searchParams = new URLSearchParams();
-  for (const [key, value] of Object.entries(params || {})) {
+  for (const [key, value] of Object.entries((params || {}) as Record<string, unknown>)) {
     if (value !== undefined && value !== null && String(value).trim()) {
       searchParams.set(key, String(value));
     }

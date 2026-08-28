@@ -15,6 +15,7 @@ import { createOperationsApi } from './apiGroups/operationsApi';
 import { createPaymentsApi } from './apiGroups/paymentsApi';
 import { createQuestionsApi } from './apiGroups/questionsApi';
 import { createQuizzesApi } from './apiGroups/quizzesApi';
+import { createTaxonomyContentApi } from './apiGroups/taxonomyContentApi';
 import { createStudyPlansApi } from './apiGroups/studyPlansApi';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
@@ -378,162 +379,14 @@ export const api = {
       token,
     }),
   ...createPaymentsApi(request),
-  getTaxonomyBootstrap: (phase: "full" | "core" = "full") =>
-    requestCached<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>(
-      withQuery("/taxonomy/bootstrap", { phase }),
-      `taxonomy-bootstrap:${phase}`,
-      BOOTSTRAP_CACHE_TTL_MS,
-    ),
-  createPath: (payload: unknown, token?: string | null) =>
-    request<unknown>("/taxonomy/paths", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
-  updatePath: (id: string, payload: unknown, token?: string | null) =>
-    request<unknown>(`/taxonomy/paths/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
-  deletePath: (id: string, token?: string | null) =>
-    request<void>(`/taxonomy/paths/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-  createLevel: (payload: unknown, token?: string | null) =>
-    request<unknown>("/taxonomy/levels", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
-  updateLevel: (id: string, payload: unknown, token?: string | null) =>
-    request<unknown>(`/taxonomy/levels/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
-  deleteLevel: (id: string, token?: string | null) =>
-    request<void>(`/taxonomy/levels/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-  createSubject: (payload: unknown, token?: string | null) =>
-    request<unknown>("/taxonomy/subjects", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
-  updateSubject: (id: string, payload: unknown, token?: string | null) =>
-    request<unknown>(`/taxonomy/subjects/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
-  deleteSubject: (id: string, token?: string | null) =>
-    request<void>(`/taxonomy/subjects/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-  createSection: (payload: unknown, token?: string | null) =>
-    request<unknown>("/taxonomy/sections", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
-  updateSection: (id: string, payload: unknown, token?: string | null) =>
-    request<unknown>(`/taxonomy/sections/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
-  deleteSection: (id: string, token?: string | null) =>
-    request<void>(`/taxonomy/sections/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-  createSkill: (payload: unknown, token?: string | null) =>
-    request<unknown>("/taxonomy/skills", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
-  updateSkill: (id: string, payload: unknown, token?: string | null) =>
-    request<unknown>(`/taxonomy/skills/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
-  deleteSkill: (id: string, token?: string | null) =>
-    request<void>(`/taxonomy/skills/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-  getContentBootstrap: () =>
-    requestCached<{
-      topics: unknown[];
-      lessons: unknown[];
-      libraryItems: unknown[];
-      groups: unknown[];
-      b2bPackages: unknown[];
-      accessCodes: unknown[];
-      announcementAds: unknown[];
-      studyPlans: unknown[];
-    }>(withQuery("/content/bootstrap", { scope: "full" }), "content-bootstrap:full", BOOTSTRAP_CACHE_TTL_MS),
-  getContentBootstrapFresh: () => {
-    clearPublicCache("content-bootstrap:full");
-    return request<{
-      topics: unknown[];
-      lessons: unknown[];
-      libraryItems: unknown[];
-      groups: unknown[];
-      b2bPackages: unknown[];
-      accessCodes: unknown[];
-      announcementAds: unknown[];
-      studyPlans: unknown[];
-    }>(withQuery("/content/bootstrap", { scope: "full" }), { cache: "no-store" });
-  },
-  getContentBootstrapByScope: (scope: "full" | "learning" = "full", phase: "full" | "core" = "full") =>
-    requestCached<{
-      topics: unknown[];
-      lessons: unknown[];
-      libraryItems: unknown[];
-      groups: unknown[];
-      b2bPackages: unknown[];
-      accessCodes: unknown[];
-      announcementAds: unknown[];
-      studyPlans: unknown[];
-    }>(withQuery("/content/bootstrap", { scope, phase }), `content-bootstrap:${scope}:${phase}`, BOOTSTRAP_CACHE_TTL_MS),
-  getContentBootstrapMinimal: () =>
-    requestCached<{
-      topics: unknown[];
-      lessons: unknown[];
-      libraryItems: unknown[];
-      groups: unknown[];
-      b2bPackages: unknown[];
-      accessCodes: unknown[];
-      announcementAds: unknown[];
-      studyPlans: unknown[];
-    }>("/content/bootstrap/minimal", "content-bootstrap:minimal", BOOTSTRAP_CACHE_TTL_MS),
-  getHomepageSettings: (token?: string | null) =>
-    token
-      ? request<unknown>("/content/homepage-settings", {
-          token,
-          cache: "no-store",
-        })
-      : requestCached<unknown>("/content/homepage-settings", "homepage-settings", PUBLIC_CACHE_TTL_MS),
-  getPublicAnnouncementAds: () =>
-    requestCached<{ announcementAds: unknown[] }>("/content/announcement-ads", "announcement-ads", PUBLIC_CACHE_TTL_MS),
-  updateHomepageSettings: async (payload: unknown, token?: string | null) => {
-    const response = await request<unknown>("/content/homepage-settings", {
-      method: "PATCH",
-      body: payload,
-      token,
-    });
-    clearPublicCache("homepage-settings");
-    writePublicCache("homepage-settings", response, PUBLIC_CACHE_TTL_MS);
-    return response;
-  },
+  ...createTaxonomyContentApi({
+    requestCached,
+    request,
+    clearPublicCache,
+    writePublicCache,
+    publicCacheTtlMs: PUBLIC_CACHE_TTL_MS,
+    bootstrapCacheTtlMs: BOOTSTRAP_CACHE_TTL_MS,
+  }),
   getPlatformFontSettings: (token?: string | null) =>
     request<unknown>("/content/platform-font-settings", {
       token,

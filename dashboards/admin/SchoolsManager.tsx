@@ -391,12 +391,13 @@ export const SchoolsManager: React.FC = () => {
             user.role === Role.ADMIN ? loadSchoolAdminUsers() : Promise.resolve(null),
         ]);
 
-        hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
+        const contentBootstrap = bootstrap as ContentBootstrapPayload;
+        hydrateContentBootstrap(contentBootstrap);
         if (adminUsersResponse && Array.isArray(adminUsersResponse)) {
             hydrateUsers(mergeUsersById(users, adminUsersResponse));
         }
 
-        const freshGroups = normalizeStoreGroups(bootstrap.groups);
+        const freshGroups = normalizeStoreGroups(contentBootstrap.groups);
         const freshSchool = freshGroups.find((group) => group.id === schoolId && group.type === 'SCHOOL');
         if (!freshSchool) {
             throw new Error('فشل التحقق: لم ترجع المدرسة من الخادم بعد الحفظ.');
@@ -712,7 +713,7 @@ export const SchoolsManager: React.FC = () => {
 
         const studentPayload = buildSingleStudentImportRow(singleStudent);
         if (!studentPayload.ok) {
-            setImportError(studentPayload.error);
+            setImportError((studentPayload as { ok: false; error: string }).error);
             return;
         }
 
@@ -983,7 +984,7 @@ export const SchoolsManager: React.FC = () => {
                 fallbackGroupId,
             );
             if (!supervisorPayload.ok) {
-                setManagementError(supervisorPayload.error);
+                setManagementError((supervisorPayload as { ok: false; error: string }).error);
                 setManagementNotice(null);
                 return;
             }

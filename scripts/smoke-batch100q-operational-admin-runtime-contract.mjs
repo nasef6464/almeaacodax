@@ -118,15 +118,14 @@ assertAllIncludes("server/src/services/notificationService.ts", [
   "recipientPhone: item.recipientPhone",
 ]);
 
-assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/paymentsApi.ts")}`, [
+assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/paymentsApi.ts")}\n${read("services/apiGroups/taxonomyContentApi.ts")}`, [
   "applyPaymentCountryPreset: (country: \"SA\" | \"EG\"",
   "getPaymentRequestsSummary: (token?: string | null)",
   "paymentCountry?: string | \"all\"",
   "paymentMethod?: string | \"all\"",
 ], "payments api facade/source");
 
-assertAllIncludes("services/api.ts", [
-  "/notifications/admin/test-delivery",
+assertAllIncludes("services/apiGroups/taxonomyContentApi.ts", [
   "getTaxonomyBootstrap: (phase: \"full\" | \"core\" = \"full\")",
 ]);
 
