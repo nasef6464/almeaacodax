@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T12:27:21.236Z",
-  "sourceGitHead": "91b4e3ba1990f218f081276dbc7255f6e7cc6bd5",
+  "generatedAt": "2026-08-28T16:14:42.305Z",
+  "sourceGitHead": "0172947a2d04dd68e736bc5eb8b5111f683956b7",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1715,6 +1715,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "target": "apps/api/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
       "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
       "domain": "questions",
@@ -1751,8 +1757,20 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
+      "target": "apps/api/src/modules/reports/application/runWeeklyParentReportBatch.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "target": "apps/api/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
+      "target": "apps/api/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
       "domain": "schools",
       "confidence": "review-required"
     },

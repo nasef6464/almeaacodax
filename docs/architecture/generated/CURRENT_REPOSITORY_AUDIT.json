@@ -1,29 +1,29 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T12:27:21.236Z",
-  "gitHead": "91b4e3ba1990f218f081276dbc7255f6e7cc6bd5",
+  "generatedAt": "2026-08-28T16:14:42.305Z",
+  "gitHead": "0172947a2d04dd68e736bc5eb8b5111f683956b7",
   "summary": {
-    "trackedFiles": 1066,
-    "sourceFiles": 725,
-    "runtimeSourceFiles": 426,
-    "sourceLines": 165620,
-    "runtimeSourceLines": 131543,
+    "trackedFiles": 1079,
+    "sourceFiles": 730,
+    "runtimeSourceFiles": 429,
+    "sourceLines": 165940,
+    "runtimeSourceLines": 131771,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
-    "runtimeRelativeImportEdges": 1299,
+    "runtimeRelativeImportEdges": 1310,
     "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 2,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 862,
+    "crossDomainImportEdges": 869,
     "hotspots400Lines": 83,
-    "migrationCandidates": 416
+    "migrationCandidates": 419
   },
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 506816,
-      "lines": 10339
+      "bytes": 507015,
+      "lines": 10341
     },
     "ci": {
       "files": 44,
@@ -37,13 +37,13 @@
     },
     "source-other": {
       "files": 10,
-      "bytes": 23682,
-      "lines": 681
+      "bytes": 23699,
+      "lines": 677
     },
     "documentation": {
-      "files": 210,
-      "bytes": 3515961,
-      "lines": 88232
+      "files": 218,
+      "bytes": 3544367,
+      "lines": 88685
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 223,
-      "bytes": 1269671,
-      "lines": 27465
+      "files": 225,
+      "bytes": 1274441,
+      "lines": 27557
     },
     "api-support": {
       "files": 5,
@@ -61,9 +61,9 @@
       "lines": 3783
     },
     "api-source": {
-      "files": 144,
-      "bytes": 1165284,
-      "lines": 30886
+      "files": 147,
+      "bytes": 1172444,
+      "lines": 31118
     },
     "tooling": {
       "files": 84,
@@ -74,13 +74,13 @@
   "domainStats": {
     "shared": {
       "files": 118,
-      "lines": 24790,
-      "bytes": 1114409
+      "lines": 24798,
+      "bytes": 1114944
     },
     "notifications": {
-      "files": 16,
-      "lines": 2775,
-      "bytes": 120785
+      "files": 17,
+      "lines": 2872,
+      "bytes": 123909
     },
     "courses": {
       "files": 18,
@@ -93,9 +93,9 @@
       "bytes": 388493
     },
     "schools": {
-      "files": 81,
-      "lines": 17359,
-      "bytes": 868693
+      "files": 83,
+      "lines": 17482,
+      "bytes": 872211
     },
     "paths": {
       "files": 11,
@@ -5582,6 +5582,12 @@
     {
       "source": "server/src/app/bootstrap/bootstrapServer.ts",
       "sourceDomain": "shared",
+      "target": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "sourceDomain": "shared",
       "target": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "targetDomain": "schools"
     },
@@ -5590,6 +5596,18 @@
       "sourceDomain": "shared",
       "target": "server/src/queues/notificationQueue.ts",
       "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/app/bootstrap/registerGracefulShutdown.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/app/bootstrap/registerGracefulShutdown.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
+      "targetDomain": "schools"
     },
     {
       "source": "server/src/app/bootstrap/registerGracefulShutdown.ts",
@@ -5640,22 +5658,46 @@
       "targetDomain": "shared"
     },
     {
-      "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "source": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/config/redis.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/NotificationDelivery.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
       "sourceDomain": "schools",
       "target": "server/src/models/QuizResult.ts",
       "targetDomain": "quizzes"
     },
     {
-      "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
       "sourceDomain": "schools",
       "target": "server/src/models/User.ts",
       "targetDomain": "users"
     },
     {
-      "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
       "sourceDomain": "schools",
       "target": "server/src/services/notificationService.ts",
       "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/config/redis.ts",
+      "targetDomain": "shared"
     },
     {
       "source": "server/src/queues/notificationQueue.ts",
@@ -9536,6 +9578,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "target": "apps/api/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
       "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
       "domain": "questions",
@@ -9572,8 +9620,20 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
+      "target": "apps/api/src/modules/reports/application/runWeeklyParentReportBatch.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "target": "apps/api/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
+      "target": "apps/api/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
       "domain": "schools",
       "confidence": "review-required"
     },
@@ -12612,12 +12672,44 @@
       "sha256": "8718d36a60867b062570fa9d9109496bc68f41e2c044442c66ce690189e87426"
     },
     {
+      "file": "docs/architecture/CHANGE_MAP.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 1582,
+      "lines": 24,
+      "sha256": "f1d4f2d6d964c875d543f3d497fbd4346b97dfa29cfc05aa1b3bc84d283a9d80"
+    },
+    {
+      "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 2855,
+      "lines": 36,
+      "sha256": "538e14e46416f3983ee16d3331ce0c9f37a24032608e1369949f803486bef437"
+    },
+    {
+      "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 2485,
+      "lines": 45,
+      "sha256": "4d2664194f544b7a3896ea7e6749918a101c32dd865c2882c56248518bed5285"
+    },
+    {
       "file": "docs/architecture/CURRENT_REFACTOR_STATUS_AR.md",
       "category": "documentation",
       "domain": "shared",
       "bytes": 4526,
       "lines": 89,
       "sha256": "2a956a9052fad899591eb2afe4340cd058eabc29c9c83f6b35cc816f3d66693f"
+    },
+    {
+      "file": "docs/architecture/DATA_ACCESS_MAP.md",
+      "category": "documentation",
+      "domain": "payments",
+      "bytes": 2179,
+      "lines": 28,
+      "sha256": "e71a68dd7c130ad20e19f225c362d7e3140b633f8887bcd9c82738b5e65fe377"
     },
     {
       "file": "docs/architecture/DEPLOYMENT_STAGE_GATE_AR.md",
@@ -12628,12 +12720,44 @@
       "sha256": "a257df4da81edb58072fbde11a67efb06c0852aa9e7b95e38bcbe77a062f3041"
     },
     {
+      "file": "docs/architecture/FINAL_MASTER_PLAN_V3_AR.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 6492,
+      "lines": 114,
+      "sha256": "5ee03f9b5762c7ac2815df9c58b3452f3102427c9550a5f8b892e3ad5bad20de"
+    },
+    {
+      "file": "docs/architecture/MASTER_ARCHITECTURE_PLAN.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 4989,
+      "lines": 65,
+      "sha256": "dcae6fccf82b889c39df783678fb2f28dcb35df6a3d748fcd466d841f6ea95b3"
+    },
+    {
+      "file": "docs/architecture/MODULE_CATALOG.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 2301,
+      "lines": 28,
+      "sha256": "f59c3234dbbc9f0c49aae171972756f882dc2e0ffba1b7199126a0d7e9dbd3c3"
+    },
+    {
       "file": "docs/architecture/PROJECT_MAP.md",
       "category": "documentation",
       "domain": "shared",
       "bytes": 10036,
       "lines": 232,
       "sha256": "06485302c4ab007473dc2947413ab02ef6179b9b1cbf430e0bf819d050f733e3"
+    },
+    {
+      "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 3160,
+      "lines": 46,
+      "sha256": "2bc33b1ccb9080d236bef7e803743c0f39a498a8920a063ffd808514c080f5d4"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12785,15 +12909,15 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "7ce5153749c0f907c834c836b5f69651d005edb585239fa622025cc3a8ba79f7"
+      "sha256": "372293a019fa089c687e457bb5ee164ce14cd341ec1798df3d4e85bf964410ce"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 580061,
-      "lines": 18807,
-      "sha256": "b109cc95d1af2ce4009f2920a3e06ebd995c99100fd76aaf1faee4e347d2fee0"
+      "bytes": 581760,
+      "lines": 18856,
+      "sha256": "fb306d008d632717b6e6cd73568421f9440861b970282e14d428d096be436510"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12801,15 +12925,15 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "86469d21106a8ebc24619ff418039d21200ede20c8915e28e651579fe8020b7d"
+      "sha256": "af2617952e13597109b39a88499d2e3aeaafbf89a62d826aca6b16cf4eafef3d"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 86234,
-      "lines": 2487,
-      "sha256": "94419c8c1741035f1fbd9f6d888f796a78fe400979cb71d85bef33ac3f2b8163"
+      "bytes": 86898,
+      "lines": 2505,
+      "sha256": "469cdf372c4030c26735e9ecb35a79271ca1df2e8c32c576380946332b2a9858"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -14095,9 +14219,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 13794,
-      "lines": 179,
-      "sha256": "5f836d6288b04abb255c0a9098675b8cfebbccb260706c9218ab77d1c46a1a27"
+      "bytes": 13993,
+      "lines": 181,
+      "sha256": "97459a8308c74ae27766b20ad5810d6903d7a4e9c6952b635a903c3c78123348"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -15367,9 +15491,9 @@
       "file": "scripts/smoke-deployment-cache-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 1578,
-      "lines": 34,
-      "sha256": "65015d66140781fb6dbffc1e04c7e7444829deea4fb88111c5cdf50a047610af"
+      "bytes": 1932,
+      "lines": 37,
+      "sha256": "48b86d3a107c0291c4be19060cf0af48eb32f8714decc51c1b6bbe38626b00fd"
     },
     {
       "file": "scripts/smoke-deployment-handover-phase19-contract.mjs",
@@ -15618,6 +15742,14 @@
       "bytes": 3977,
       "lines": 91,
       "sha256": "d4c3398255f8e98805b2b80f61b6ff000a3964332c2d828c1d38a452a80ba0a9"
+    },
+    {
+      "file": "scripts/smoke-notification-realtime-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "notifications",
+      "bytes": 2229,
+      "lines": 44,
+      "sha256": "55b03a616908a81b26ae5a7b7342df09bc34a81a13b85ab199775bf104ab01b3"
     },
     {
       "file": "scripts/smoke-operational-auto.mjs",
@@ -16420,6 +16552,14 @@
       "sha256": "09b6581dea6638aa25243604aecf19047d819e22f902977f66b488e2ed00f7a0"
     },
     {
+      "file": "scripts/smoke-weekly-parent-report-scheduler-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "schools",
+      "bytes": 2187,
+      "lines": 45,
+      "sha256": "8b156be248ceda2ba2446a1aa254db50c9768c92471333e76fe6f91b03e03b84"
+    },
+    {
       "file": "scripts/smoke-xlsx-safety-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
@@ -16519,17 +16659,17 @@
       "file": "server/src/app/bootstrap/bootstrapServer.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 1163,
-      "lines": 31,
-      "sha256": "3832f3e920cec162d4d391580ea02c50d1de07ecf664791aca7923e054ad7fef"
+      "bytes": 1303,
+      "lines": 33,
+      "sha256": "2fbfe992a2a2172a97f3082ef2187eff3c843bb31566cc0efb9640e81a774c01"
     },
     {
       "file": "server/src/app/bootstrap/registerGracefulShutdown.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 1682,
-      "lines": 58,
-      "sha256": "c76834d027d4791f9becbc8715d519adc75fece59b976a0b00995a1747cd0ac6"
+      "bytes": 1987,
+      "lines": 62,
+      "sha256": "d2eca610767d76af81e0d2c6221bd6a6de760d8ff891aee0c48bb657f6ce82ef"
     },
     {
       "file": "server/src/app/bootstrap/reportStartupFailure.ts",
@@ -16567,9 +16707,9 @@
       "file": "server/src/config/redis.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 3190,
-      "lines": 127,
-      "sha256": "4adc8fd914b0abbc8c1089d557d723f42983abf0bd888007dfb2e9fb0ad68828"
+      "bytes": 3263,
+      "lines": 133,
+      "sha256": "8382b52506cd0e82cfcf2211fc4170d9615941cbd0076b4510e38ced056fa768"
     },
     {
       "file": "server/src/constants/roles.ts",
@@ -17055,9 +17195,17 @@
       "file": "server/src/modules/notifications/http/openNotificationSseStream.ts",
       "category": "api-source",
       "domain": "notifications",
-      "bytes": 2607,
-      "lines": 79,
-      "sha256": "324c0327c0b37b2a021b01a539934cf279621bc69b91beb8dd2d690b3b4194ad"
+      "bytes": 1757,
+      "lines": 51,
+      "sha256": "1a8b9800f61bca2662c58c3a96ae423e231294775a6be3ba652613aa79327fcb"
+    },
+    {
+      "file": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
+      "category": "api-source",
+      "domain": "notifications",
+      "bytes": 3292,
+      "lines": 109,
+      "sha256": "b0faed0f747cce7905ff12af9c8b7b51e6a7e26ae0967fbcd312238701f0651a"
     },
     {
       "file": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
@@ -17108,12 +17256,28 @@
       "sha256": "2bcd1cd205ace325cb8983cf3b9fda0c82bbfa9096027bc24998ac1ae7382dbe"
     },
     {
+      "file": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
+      "category": "api-source",
+      "domain": "schools",
+      "bytes": 3793,
+      "lines": 99,
+      "sha256": "5514980123b69e54dbe5ec0244a8680e2c1affa0beac330bb75a5f01e284c8a7"
+    },
+    {
       "file": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 3393,
-      "lines": 75,
-      "sha256": "f77e395b2b7260e10edbba8844bfc3ddf1f0c12491a9dfe29760aff38b572816"
+      "bytes": 190,
+      "lines": 6,
+      "sha256": "8f7af081b4d81c1fe3a41680a9f6c5576f1ec58fa5577339aace378b684ef7ca"
+    },
+    {
+      "file": "server/src/modules/reports/infrastructure/weeklyParentReportQueue.ts",
+      "category": "api-source",
+      "domain": "schools",
+      "bytes": 2928,
+      "lines": 93,
+      "sha256": "75921d18a8bde794d5aa19227aeb1880eb632939f4cd5e222fe0b2216edfbca6"
     },
     {
       "file": "server/src/observability/sentry.ts",
@@ -17551,9 +17715,9 @@
       "file": "server/src/services/notificationService.ts",
       "category": "api-source",
       "domain": "notifications",
-      "bytes": 6935,
-      "lines": 214,
-      "sha256": "53ccbdea052c5f5639fb98080e77455e07cb930648be0282155f0d40ed0b92be"
+      "bytes": 7617,
+      "lines": 230,
+      "sha256": "455fa6fd8aa9d46a3a17ed721173123a2c8e8a09b4b101f18c6267fde6ff3b1c"
     },
     {
       "file": "server/src/services/operationsAudit.ts",
@@ -18847,9 +19011,9 @@
       "file": "vite.config.ts",
       "category": "source-other",
       "domain": "shared",
-      "bytes": 3573,
-      "lines": 131,
-      "sha256": "0157201b2ee8446d6e4a3b86a8ea53d8d4cf3ec708ea6ced09b26f3c373c0616"
+      "bytes": 3590,
+      "lines": 127,
+      "sha256": "564d91966bebfb75edb1c43d2d6c4c32203d3e908614db18392510a84ec3c360"
     }
   ]
 }

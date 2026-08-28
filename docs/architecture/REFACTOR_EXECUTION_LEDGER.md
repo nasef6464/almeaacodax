@@ -17,8 +17,8 @@
 | Batch | النطاق | الحالة | شرط الخروج |
 |---|---|---|---|
 | P0-01 | Notification event fan-out | COMPLETED | نفس SSE contract، isolation tests، Redis path |
-| P0-02 | Weekly report distributed scheduling | NEXT | queue، lock، idempotency، retry، no duplicate send |
-| P0-03 | Bootstrap and unbounded reads | PLANNED | scoped/paginated endpoints وpayload budget |
+| P0-02 | Weekly report distributed scheduling | COMPLETED | queue، lock، idempotency، retry، no duplicate send |
+| P0-03 | Bootstrap and unbounded reads | NEXT | scoped/paginated endpoints وpayload budget |
 | P1-01 | PWA API cache classification | PLANNED | allowlist public/safe فقط |
 | P1-02 | Assessment backend boundary map | PLANNED | ownership/contracts قبل extraction |
 | P1-03 | Student result-to-skill loop | PLANNED | evidence-backed recommendation/content links |
@@ -41,5 +41,16 @@
 - Tests: `smoke:notification-realtime` PASS (4/4); `smoke:notifications` PASS; `typecheck` PASS; `server:check` PASS; `server:build` PASS; `build` PASS; `architecture-gate` PASS; `smoke:route-loading` PASS; `smoke:runtime-source` PASS.
 - Known limitation: realtime delivery is not load-certified yet; Redis availability and multi-instance behavior require staging/load verification in a later gate.
 - Next: P0-02 weekly report distributed scheduling.
+
+## P0-02 — Distributed weekly parent-report scheduling
+
+- Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
+- Changed: replaced the process-local hourly timer with a BullMQ Job Scheduler using `0 8 * * 0` and `Asia/Riyadh`; added a shared worker with concurrency 1 and retry/backoff; extracted report generation into an application service.
+- Idempotency: derives the previous Sunday key at job execution time and uses the existing notification `campaignId` to skip a parent already delivered for that week. Partial failures remain visible to BullMQ retries; completed parents are skipped safely.
+- Preserved: existing bootstrap facade, report calculation and Arabic notification content, parent recipient selection, notification APIs, persisted schema semantics, and all public/API/RBAC/payment/quiz contracts.
+- Added: focused scheduler contract `smoke:weekly-parent-report`; graceful shutdown closes the report worker and queue.
+- Tests: weekly scheduler contract PASS (4/4); typecheck PASS; server check PASS; server build PASS; frontend build PASS; repository audit PASS; architecture gate PASS; route/runtime/security/quiz-integrity smoke PASS.
+- Known limitation: the scheduler requires the already-supported Redis/BullMQ production configuration; P0-03 still must bound high-volume parent/report reads, and no production load certification has been claimed.
+- Next: P0-03 bootstrap and unbounded reads.
 
 كل Batch له Commit منفصل ولا يجمع Structural وProduct وDB migration.
