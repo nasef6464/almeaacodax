@@ -3,8 +3,8 @@
 - Current phase: Phase 0 — Control Plane & Fresh Baseline
 - Current batch: P0-00 PWA/authenticated API cache safety completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed/pushed commit: `31aeecbd`
-- Latest control-plane commits: `4f206b0f`, `31aeecbd`
+- Last completed/pushed commit: `81aaee59`
+- Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: Fresh repository audit PASS; architecture gate PASS; unresolved runtime imports 0; runtime cycles 0; P0-00 focused gates PASS
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
 - Next exact action: inspect notification SSE client/server contract, delivery indexes, Redis configuration, queue lifecycle, and focused smoke coverage before implementing P0-01
@@ -32,4 +32,4 @@
 
 ## نقطة التسليم الحالية
 
-تم تثبيت Control Plane في commit `4f206b0f` ثم تحديثه في `e0617d4e`. أُنجز P0-00 على فرع `refactor/modular-platform-safe` بإزالة Workbox API cache العام مع الحفاظ على cache التطبيق العام الصريح. لم تتغير Database أو RBAC أو scoring أو payments أو URLs/API contracts.
+تم تثبيت Control Plane في `4f206b0f` ثم تحديثه في `e0617d4e`. أُنجز P0-00 ورُفع في `81aaee59` على فرع `refactor/modular-platform-safe` بإزالة Workbox API cache العام مع الحفاظ على cache التطبيق العام الصريح. لم تتغير Database أو RBAC أو scoring أو payments أو URLs/API contracts.
