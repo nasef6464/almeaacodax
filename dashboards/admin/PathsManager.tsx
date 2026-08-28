@@ -18,6 +18,7 @@ import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 import { isQuizVisibleInLearningSlot } from '../../utils/quizLearningPlacement';
 import { getPathIcon, getSubjectIcon, resolveColor, resolvePathDisplaySettings } from './PathsManager/pathDisplayPresentation';
+import { buildPathReadinessSummary } from './PathsManager/pathReadiness';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
@@ -247,50 +248,16 @@ export const PathsManager: React.FC = () => {
         ...(subjectWorkspaceTotals.review > 0 ? [`${subjectWorkspaceTotals.review} عنصر يحتاج مراجعة قبل أن يكون واضحًا للطالب`] : []),
       ]
     : [];
-  const getPathReadinessSummary = (pathId: string) => {
-    const scopedSubjects = subjects.filter((subject: any) => subject.pathId === pathId);
-    const subjectIds = new Set(scopedSubjects.map((subject: any) => subject.id));
-    const scopedCourses = courses.filter((course: any) => (course.pathId || course.category) === pathId && !course.isPackage);
-    const scopedPackages = courses.filter((course: any) => (course.pathId || course.category) === pathId && course.isPackage);
-    const scopedTopics = topics.filter((topic: any) => topic.pathId === pathId || subjectIds.has(topic.subjectId));
-    const scopedLessons = lessons.filter((lesson: any) => lesson.pathId === pathId || subjectIds.has(lesson.subjectId));
-    const scopedQuizzes = quizzes.filter((quiz: any) => quiz.pathId === pathId || subjectIds.has(quiz.subjectId));
-    const scopedLibrary = libraryItems.filter((item: any) => item.pathId === pathId || subjectIds.has(item.subjectId));
-
-    const rows = [
-      {
-        total: scopedCourses.length,
-        visible: scopedCourses.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
-      },
-      {
-        total: scopedPackages.length,
-        visible: scopedPackages.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
-      },
-      {
-        total: scopedTopics.length,
-        visible: scopedTopics.filter((item: any) => item.showOnPlatform !== false).length,
-      },
-      {
-        total: scopedLessons.length,
-        visible: scopedLessons.filter((item: any) => item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
-      },
-      {
-        total: scopedQuizzes.length,
-        visible: scopedQuizzes.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
-      },
-      {
-        total: scopedLibrary.length,
-        visible: scopedLibrary.filter((item: any) => item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
-      },
-    ];
-
-    const total = rows.reduce((sum, row) => sum + row.total, 0);
-    const visible = rows.reduce((sum, row) => sum + row.visible, 0);
-    const hidden = rows.reduce((sum, row) => sum + Math.max(row.total - row.visible, 0), 0);
-    const visiblePackages = scopedPackages.filter((pkg: Course) => isPublicPackageVisible(pkg)).length;
-
-    return { total, visible, hidden, subjects: scopedSubjects.length, packages: visiblePackages };
-  };
+  const getPathReadinessSummary = (pathId: string) =>
+    buildPathReadinessSummary({
+      pathId,
+      subjects,
+      courses,
+      topics,
+      lessons,
+      quizzes,
+      libraryItems,
+    });
 
   const handlePreviewPath = (pathId: string, e: React.MouseEvent) => {
     e.stopPropagation();
