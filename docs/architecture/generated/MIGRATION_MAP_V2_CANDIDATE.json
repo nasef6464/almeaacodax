@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T16:14:42.305Z",
-  "sourceGitHead": "0172947a2d04dd68e736bc5eb8b5111f683956b7",
+  "generatedAt": "2026-08-28T16:35:52.781Z",
+  "sourceGitHead": "f14a957648264aab6738f26ddd9bad935f4cf93e",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {

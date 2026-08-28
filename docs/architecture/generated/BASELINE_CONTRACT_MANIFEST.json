@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T16:14:42.305Z",
-  "gitHead": "0172947a2d04dd68e736bc5eb8b5111f683956b7",
+  "generatedAt": "2026-08-28T16:35:52.781Z",
+  "gitHead": "f14a957648264aab6738f26ddd9bad935f4cf93e",
   "frontendRoutes": [
     "*",
     "/",
@@ -1838,7 +1838,7 @@
     "server/src/routes/live-exams.routes.ts": "abd4d0cb425f3deaaa14201e8b424c92bd7fa1c47e92e5ba07eb279844a09956",
     "server/src/routes/notification.routes.ts": "9a4d2dbf2bb0ae6551db7dd5f365b4f401927c186fc5cf7121a9f87dccf5be21",
     "server/src/routes/operations.routes.ts": "2b6d4dbf25dc7faeb5699bf56e045b171d47d2e213d48669eff44b5270d7ce38",
-    "server/src/routes/parent.routes.ts": "2bc228ddad1e9ad4d134f352b5d841abf29b18d61353da661e838a3132fa8c93",
+    "server/src/routes/parent.routes.ts": "4eac770b4337f0a00af2f274cfb1139c00c52eddcb373ea19cfda3286579777f",
     "server/src/routes/payment.routes.ts": "23351c757af125aad3f72f0e03e1a4a7a1fa702260dc06f4e81b7054648af8a4",
     "server/src/routes/publicTests.routes.ts": "c8e49f8bab6056c8e4cbb8836e512105924862bb80a18ad53f1da6710292a0b3",
     "server/src/routes/quiz.routes.ts": "2e686b9e6df26c0274fbb3d7cda83db1928dd7fa2995957817d239918fc2becc",

@@ -1,16 +1,16 @@
 # Current Repository Architecture Audit
 
-Generated from commit `0172947a2d04dd68e736bc5eb8b5111f683956b7` using the TypeScript AST for imports and route extraction.
+Generated from commit `f14a957648264aab6738f26ddd9bad935f4cf93e` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1079 |
-| Source files (including scripts/tooling) | 730 |
+| Tracked files | 1080 |
+| Source files (including scripts/tooling) | 731 |
 | Runtime source files | 429 |
-| Source lines | 165,940 |
-| Runtime source lines | 131,771 |
+| Source lines | 165,965 |
+| Runtime source lines | 131,777 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |

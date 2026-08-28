@@ -18,7 +18,7 @@
 |---|---|---|---|
 | P0-01 | Notification event fan-out | COMPLETED | نفس SSE contract، isolation tests، Redis path |
 | P0-02 | Weekly report distributed scheduling | COMPLETED | queue، lock، idempotency، retry، no duplicate send |
-| P0-03 | Bootstrap and unbounded reads | NEXT | scoped/paginated endpoints وpayload budget |
+| P0-03 | Bootstrap and unbounded reads | IN PROGRESS | scoped/paginated endpoints وpayload budget |
 | P1-01 | PWA API cache classification | PLANNED | allowlist public/safe فقط |
 | P1-02 | Assessment backend boundary map | PLANNED | ownership/contracts قبل extraction |
 | P1-03 | Student result-to-skill loop | PLANNED | evidence-backed recommendation/content links |
@@ -41,6 +41,17 @@
 - Tests: `smoke:notification-realtime` PASS (4/4); `smoke:notifications` PASS; `typecheck` PASS; `server:check` PASS; `server:build` PASS; `build` PASS; `architecture-gate` PASS; `smoke:route-loading` PASS; `smoke:runtime-source` PASS.
 - Known limitation: realtime delivery is not load-certified yet; Redis availability and multi-instance behavior require staging/load verification in a later gate.
 - Next: P0-02 weekly report distributed scheduling.
+
+## P0-03A — Parent progress bounded reads
+
+- Status: COMPLETED in `f14a9576` on `refactor/modular-platform-safe`.
+- Changed: `GET /api/parent/children-progress` now uses Mongo aggregation for weekly study seconds and the latest result per child instead of loading all weekly and historical result documents into Node memory.
+- Preserved: endpoint URL/method, auth and parent role guard, child scope, response fields (`children`, `summary`, `weeklyStudyMinutes`, `lastQuizScore`, `weakSkills`), and scoring/skill interpretation.
+- Query/index alignment: uses the existing `QuizResult` `userId + createdAt` index shape; no schema or migration change.
+- Added: `smoke:parent-progress-bounded` contract (4/4).
+- Tests: parent bounded-read 4/4; student learning journey 7/7; reports role 20/20; school scope 4/4; notification realtime 4/4; weekly scheduler 4/4; typecheck/server check/server build/frontend build/repository audit/architecture gate PASS.
+- Known limitation: this closes only the parent progress hotspot. Taxonomy/content bootstrap and operations status remain candidates for P0-03B; scale/load certification is not claimed.
+- Next: inspect and bound the next bootstrap/status read without changing its response contract.
 
 ## P0-02 — Distributed weekly parent-report scheduling
 
