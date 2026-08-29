@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T17:02:13.986Z",
-  "gitHead": "82618370bfb50bafb0c1568aeb54449704018760",
+  "generatedAt": "2026-08-29T05:05:34.116Z",
+  "gitHead": "23fa7544ea5617066858767db1977dc30597f1b7",
   "frontendRoutes": [
     "*",
     "/",
@@ -1822,7 +1822,7 @@
     "WHATSAPP_WEBHOOK_URL"
   ],
   "routeSourceHashes": {
-    "App.tsx": "d21f48e62b3636f5b3208c45e494fdcaa2dc8ea98fb1282da7fc7e3bd7eab588",
+    "App.tsx": "8c8e58800e50063cb8b67e52ba94352c0a17f0f0917373792a06d743f6dbcda8",
     "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
     "server/src/routes/activity.routes.ts": "522578ef4164ea3a67160e4c8f0eff2290e06d273142785d341f28e5bbe15dd2",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",

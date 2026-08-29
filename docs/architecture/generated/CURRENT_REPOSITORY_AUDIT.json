@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T17:02:13.986Z",
-  "gitHead": "82618370bfb50bafb0c1568aeb54449704018760",
+  "generatedAt": "2026-08-29T05:05:34.116Z",
+  "gitHead": "23fa7544ea5617066858767db1977dc30597f1b7",
   "summary": {
-    "trackedFiles": 1082,
-    "sourceFiles": 733,
+    "trackedFiles": 1083,
+    "sourceFiles": 734,
     "runtimeSourceFiles": 429,
-    "sourceLines": 166025,
+    "sourceLines": 166046,
     "runtimeSourceLines": 131796,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
@@ -22,8 +22,8 @@
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 507414,
-      "lines": 10345
+      "bytes": 507581,
+      "lines": 10347
     },
     "ci": {
       "files": 44,
@@ -32,7 +32,7 @@
     },
     "web-source": {
       "files": 272,
-      "bytes": 5165459,
+      "bytes": 5165473,
       "lines": 99990
     },
     "source-other": {
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 218,
-      "bytes": 3556977,
-      "lines": 88932
+      "bytes": 3558406,
+      "lines": 88941
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 228,
-      "bytes": 1278175,
-      "lines": 27617
+      "files": 229,
+      "bytes": 1279482,
+      "lines": 27638
     },
     "api-support": {
       "files": 5,
@@ -75,7 +75,7 @@
     "shared": {
       "files": 118,
       "lines": 24803,
-      "bytes": 1115232
+      "bytes": 1115246
     },
     "notifications": {
       "files": 17,
@@ -470,9 +470,9 @@
       "file": "App.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 40785,
+      "bytes": 40799,
       "lines": 996,
-      "sha256": "d21f48e62b3636f5b3208c45e494fdcaa2dc8ea98fb1282da7fc7e3bd7eab588"
+      "sha256": "8c8e58800e50063cb8b67e52ba94352c0a17f0f0917373792a06d743f6dbcda8"
     },
     {
       "file": "dashboards/admin/OperationsCommandCenter.tsx",
@@ -10787,9 +10787,9 @@
       "file": "App.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 40785,
+      "bytes": 40799,
       "lines": 996,
-      "sha256": "d21f48e62b3636f5b3208c45e494fdcaa2dc8ea98fb1282da7fc7e3bd7eab588"
+      "sha256": "8c8e58800e50063cb8b67e52ba94352c0a17f0f0917373792a06d743f6dbcda8"
     },
     {
       "file": "Dockerfile.backend",
@@ -12683,9 +12683,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3133,
+      "bytes": 3254,
       "lines": 36,
-      "sha256": "d152fa6b147a76c6345e17feaabc6863fff8123552dffc05c80f10e77438b67e"
+      "sha256": "29822a2ad57e49f4a64807fcc9577366dcdad64c435dc880678eab303520c2dc"
     },
     {
       "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
@@ -12755,9 +12755,9 @@
       "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 8076,
-      "lines": 87,
-      "sha256": "e6e814c95aeec526b58090da8b81fb70390312a6bc58fac0723b170633ef4c3c"
+      "bytes": 9384,
+      "lines": 96,
+      "sha256": "e769a80bb52d4582bcff6e0a757c0df11f19804818600f4afc55d89cf5ada977"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12909,7 +12909,7 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "60a62c9e38ad10e0527c87a3f1f63bda05704275df819695a3381875c532c935"
+      "sha256": "2a0f75ec8d0882c8a23abd8bffc3d08f6b53d54624d51dd480a47aa3c4506041"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
@@ -12917,7 +12917,7 @@
       "domain": "shared",
       "bytes": 588396,
       "lines": 19044,
-      "sha256": "617fe0b2ca075ff614c74ec45638f2c53d218f65735ec0d8cedabe9ff371cbc1"
+      "sha256": "92b6007ee3315aef17d8c06f957a9bbc1be9051865009cd9c417d5f2edbde73b"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12925,7 +12925,7 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "618d9e558cab1ce8b2e9f6460c4c97564fbffec19cd54a685a94cabda582456d"
+      "sha256": "d40886e3ed4858cea998b68b8c61b05d39ca361baac9298afa71cc690aec6bb6"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -12933,7 +12933,7 @@
       "domain": "shared",
       "bytes": 87678,
       "lines": 2523,
-      "sha256": "71336bf6f2b213205a82d6ed464024592a71e25de10ed23e8cc58da462840331"
+      "sha256": "d4d94b28598321d93f24ee0d528bd4eb680c090adc6fdb4f9ac1a5a88cdca1fe"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -14219,9 +14219,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 14392,
-      "lines": 185,
-      "sha256": "011a99942312c6ff967fb7e015269c8534db2fec5b3b4b5edb76a456e748967d"
+      "bytes": 14559,
+      "lines": 187,
+      "sha256": "f48126c0069b0c83aa8c0af272a0fd64d7bb3035b4490b0591fc1e9c618c7be8"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -16558,6 +16558,14 @@
       "bytes": 2621,
       "lines": 70,
       "sha256": "ff309034867c16422bea8c92ae3ace2c331a8eb36ab5d402fe7d008d59277c7c"
+    },
+    {
+      "file": "scripts/smoke-taxonomy-compact-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 1307,
+      "lines": 21,
+      "sha256": "1515d4f671b4a03b6581f4b9e14080fdf98df86370c21c0ca29c6bddd936b192"
     },
     {
       "file": "scripts/smoke-typography-contract.mjs",

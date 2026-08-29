@@ -81,6 +81,15 @@
 - Known limitation: this reduces client payload for the learner path but does not prove production latency or database throughput at scale. Administrative full taxonomy remains intentionally complete for authoring until it has a dedicated paginated UI contract.
 - Next: P0-04 runtime/query/payload measurement baseline for high-volume reads.
 
+## P0-04 — Runtime/query/payload measurement baseline
+
+- Status: COMPLETED in the current checkpoint after `23fa7544` on `refactor/modular-platform-safe`.
+- Changed: added `scripts/measure-read-baseline.mjs` with an explicit-target safety gate, bounded sequential sampling, and measurements for status, duration, payload bytes, and existing cache headers. Added `docs/architecture/RUNTIME_READ_BASELINE.md` and a source contract for reproducibility.
+- Preserved: no product/runtime behavior, database schema, API contracts, authentication, or production configuration changed. The harness performs no request unless the operator supplies `ALMEAA_MEASURE_BASE_URL`.
+- Tests: read-baseline plan PASS; read-baseline contract 5/5; typecheck/server check/server build/frontend build/architecture gate/student/report/school smoke PASS.
+- Known limitation: this is instrumentation and a low-impact baseline harness, not a load test. Production capacity for 80k questions, 20–30k users, hundreds of thousands of attempts, images, videos, and reports remains `NOT PROVEN` until an authorized staging benchmark supplies raw metrics.
+- Next: select an authorized staging benchmark window and prepare dataset/concurrency budgets across learner, assessment, reports, notifications, and school operations.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
