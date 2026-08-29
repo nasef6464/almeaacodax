@@ -78,6 +78,7 @@
         "smoke:assessment-side-effects": "node scripts/smoke-assessment-side-effects-contract.mjs",
     "smoke:assessment-question-selection": "node scripts/smoke-assessment-question-selection-contract.mjs",
     "smoke:assessment-workflow": "node scripts/smoke-assessment-workflow-contract.mjs",
+    "smoke:assessment-publication": "node scripts/smoke-assessment-publication-policy-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",

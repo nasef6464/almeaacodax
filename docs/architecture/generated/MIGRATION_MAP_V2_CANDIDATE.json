@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T06:00:10.026Z",
-  "sourceGitHead": "b110ace0a4d5edff7463f377f360f301e06bae3c",
+  "generatedAt": "2026-08-29T06:08:29.770Z",
+  "sourceGitHead": "dfd16ad6f8f80bf0a2fc8476bedd89b0ea8ba58d",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1729,6 +1729,12 @@
     {
       "source": "server/src/modules/quizzes/application/quizPlacement.ts",
       "target": "apps/api/src/modules/quizzes/application/quizPlacement.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizPublicationPolicy.ts",
+      "target": "apps/api/src/modules/quizzes/application/quizPublicationPolicy.ts",
       "domain": "quizzes",
       "confidence": "review-required"
     },

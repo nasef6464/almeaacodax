@@ -32,6 +32,7 @@ import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/qu
 import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";
 import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../modules/quizzes/application/quizWorkflow.js";
+import { resolveQuizPublicationState } from "../modules/quizzes/application/quizPublicationPolicy.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1847,9 +1848,12 @@ quizRouter.post(
     await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const isPowerRole = req.authUser?.role === "admin" || req.authUser?.role === "supervisor";
     const hasQuestions = getQuizQuestionIds(payload).length > 0;
-    const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : hasQuestions) : false;
+    const willBePublished = resolveQuizPublicationState({
+      role: req.authUser?.role,
+      requestedPublished: payload.isPublished,
+      hasQuestions,
+    });
     
     if (willBePublished) {
       const integrity = await validateQuizQuestionIntegrity(payload);
@@ -1872,7 +1876,7 @@ quizRouter.post(
       id: quizId,
       _id: quizId,
       ...workflowDefaults,
-      approvalStatus: isPowerRole
+      approvalStatus: req.authUser?.role === "admin" || req.authUser?.role === "supervisor"
         ? payload.approvalStatus || "approved"
         : workflowDefaults.approvalStatus,
       isPublished: willBePublished,

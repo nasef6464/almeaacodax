@@ -135,6 +135,15 @@
 - Known limitation: publication decision, inline-question persistence, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map quiz publication decision/policy into the next compatible application boundary without changing scoring, persistence, or authorization semantics.
 
+## 2A-06 — Quiz publication policy boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted `isQuizPowerRole` and `resolveQuizPublicationState` into `server/src/modules/quizzes/application/quizPublicationPolicy.ts`; the create route delegates the publication decision while retaining integrity validation, authorization, persistence, and scoring orchestration.
+- Preserved: admin/supervisor publication authority, teacher/student non-publication behavior, explicit `isPublished` handling, question-count default, route URLs/methods, database schema, and RBAC behavior.
+- Tests: assessment publication 4/4; workflow 3/3; question selection 5/5; quiz integrity 4/4; auth/API security PASS; server check/build; repository audit; architecture gate PASS.
+- Known limitation: inline-question persistence, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map inline-question creation orchestration into a compatible questions/quiz application boundary without changing persistence or authorization semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
