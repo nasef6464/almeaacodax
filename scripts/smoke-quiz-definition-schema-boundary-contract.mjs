@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/http/quizDefinitionSchema.ts'), 'utf8').replace(/\r\n/g, '\n');
+const placementSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizPlacement.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
 const schemaImport = 'import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";';
 const submissionSchemaImport = 'import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";';
@@ -49,6 +50,13 @@ check('quiz definition ownership is exclusive after delegation while staging rem
   assert.equal(routeSource.includes('const quizSchema = z.object({'), !delegated, 'quiz definition ownership mismatch');
 });
 
+check('quiz placement ownership is delegated without changing route call sites', () => {
+  assert.ok(routeSource.includes('import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";'));
+  assert.ok(!routeSource.includes('const normalizeQuizPlacementPayload ='));
+  assert.ok(placementSource.includes('export function normalizeQuizPlacementPayload'));
+  assert.ok(placementSource.includes('showInTraining') && placementSource.includes('showInMock'));
+});
+
 check('delegated quiz definition import is singular and before route-local behavior', () => {
   if (!delegated) return;
   assert.equal(routeSource.split(schemaImport).length - 1, 1, 'quiz definition import must be singular');
@@ -73,9 +81,8 @@ check('submission schema ownership handoff is explicit when delegated by a later
   }
 });
 
-check('quiz normalization, integrity, submission behavior and persistence remain route-owned', () => {
+check('quiz integrity, submission behavior and persistence remain route-owned while placement is delegated', () => {
   for (const fragment of [
-    'const normalizeQuizPlacementPayload = <T extends Record<string, any>>',
     'const assertQuizWindowIsOpen =',
     'const canSubmitQuiz = async',
     'QuestionAttemptModel.create({',

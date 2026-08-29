@@ -129,11 +129,12 @@ check('submission schema ownership handoff is explicit when delegated by a later
 
 check('quiz business rules and submission behavior remain route-owned', () => {
   for (const fragment of [
-    'const normalizeQuizPlacementPayload =',
     'const assertQuizWindowIsOpen =',
     'const canSubmitQuiz = async',
     'QuizResultModel.create({',
   ]) assert.ok(routeSource.includes(fragment), `quiz route lost business ownership: ${fragment}`);
+  assert.ok(routeSource.includes('normalizeQuizPlacementPayload(quizSchema.parse(req.body))'), 'quiz placement call site was lost');
+  assert.ok(routeSource.includes('application/quizPlacement.js'), 'quiz placement application import was lost');
 });
 
 check('question/query schema module stays transport-only and bounded', () => {

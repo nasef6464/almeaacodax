@@ -108,6 +108,15 @@
 - Known limitation: definition normalization, selection, publish orchestration, session/attempt, and scoring remain separate future boundaries. No production load certification is claimed.
 - Next: map quiz definition normalization and publish orchestration into the next compatible application boundary without changing scoring or persistence semantics.
 
+## 2A-03 — Quiz placement normalization boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted pure `normalizeQuizPlacementPayload` logic into `server/src/modules/quizzes/application/quizPlacement.ts`; create/update routes retain parser calls and delegate placement/type derivation through the application boundary.
+- Preserved: public route URLs/methods, parser behavior, `quizKind`, `type`, `placement`, `showInTraining`, `showInMock`, legacy placement-field inference, public/all access normalization, mock defaults, publish checks, and persistence/scoring semantics.
+- Tests: quiz definition boundary PASS; quiz query-schema boundary PASS; quiz integrity 4/4; assessment side-effects 6/6; server check/server build; repository audit; architecture gate PASS.
+- Known limitation: definition parser ownership, selection, publish orchestration, sessions/attempts, and scoring remain separate future boundaries. No production load certification is claimed.
+- Next: map quiz definition parser/publish orchestration into the next compatible application boundary without changing scoring or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
