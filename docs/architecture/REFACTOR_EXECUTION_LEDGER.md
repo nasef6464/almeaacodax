@@ -72,6 +72,15 @@
 - Known limitation: `.lean()` reduces Mongoose document overhead but does not by itself paginate the underlying collections. Taxonomy payload adjacency and true production load certification remain open.
 - Next: inspect taxonomy bootstrap skill-adjacency payloads and choose one additive contract-preserving boundary.
 
+## P0-03D — Compact learner taxonomy bootstrap
+
+- Status: COMPLETED in `082ab527` on `refactor/modular-platform-safe`.
+- Changed: added the additive `phase=compact` variant for the public taxonomy bootstrap. It preserves paths, levels, subjects, sections, and skill identity/classification, but excludes each skill's `lessonIds` and `questionIds` adjacency arrays. Learning routes use `core` first, then this compact variant; staff still receive the existing `full` response for authoring tools.
+- Preserved: `/api/taxonomy/bootstrap` URL/method and existing `core`/`full` semantics, response top-level shape, visibility rules, cache partitioning, staff authorization, store normalization defaults, database schema, and all quiz/assessment contracts.
+- Tests: taxonomy compact 5/5; student learning journey 7/7; reports role 20/20; school portal 16/16; school scope 4/4; typecheck/server check/server build/frontend build/repository audit/architecture gate PASS.
+- Known limitation: this reduces client payload for the learner path but does not prove production latency or database throughput at scale. Administrative full taxonomy remains intentionally complete for authoring until it has a dedicated paginated UI contract.
+- Next: P0-04 runtime/query/payload measurement baseline for high-volume reads.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

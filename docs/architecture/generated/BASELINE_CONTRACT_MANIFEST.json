@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T16:53:46.486Z",
-  "gitHead": "8620b20b9d6a3ca6137502383823a6bb731c4eff",
+  "generatedAt": "2026-08-28T17:02:13.986Z",
+  "gitHead": "82618370bfb50bafb0c1568aeb54449704018760",
   "frontendRoutes": [
     "*",
     "/",
@@ -1822,7 +1822,7 @@
     "WHATSAPP_WEBHOOK_URL"
   ],
   "routeSourceHashes": {
-    "App.tsx": "4661449c937b15286974dee96b19301b83d3e28679e2890e8a0f22230acb25a7",
+    "App.tsx": "d21f48e62b3636f5b3208c45e494fdcaa2dc8ea98fb1282da7fc7e3bd7eab588",
     "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
     "server/src/routes/activity.routes.ts": "522578ef4164ea3a67160e4c8f0eff2290e06d273142785d341f28e5bbe15dd2",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
@@ -1846,6 +1846,6 @@
     "server/src/routes/review.routes.ts": "6dd3f20eb8beb4f864fb81e7efd7b5c53260402f4faec87ae1b5f6d4c8af56ff",
     "server/src/routes/search.routes.ts": "ffc0bec0a0985c5646c48f96574ff0b8790d12f16b930e173560807d4b47580b",
     "server/src/routes/seo.routes.ts": "5040a1d8a8f69879b9e978b57663b62e478559dc80ad73db1ac830752e604554",
-    "server/src/routes/taxonomy.routes.ts": "3ba014308b181d95fb4eb41d197b914baefc40a01c737302221d8f30bc0aeea8"
+    "server/src/routes/taxonomy.routes.ts": "af6df72df71d192f8a442f33ffa773ebc5e89ac98582c788920ebad0b183073d"
   }
 }
