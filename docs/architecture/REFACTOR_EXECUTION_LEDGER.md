@@ -90,6 +90,15 @@
 - Known limitation: this is instrumentation and a low-impact baseline harness, not a load test. Production capacity for 80k questions, 20–30k users, hundreds of thousands of attempts, images, videos, and reports remains `NOT PROVEN` until an authorized staging benchmark supplies raw metrics.
 - Next: select an authorized staging benchmark window and prepare dataset/concurrency budgets across learner, assessment, reports, notifications, and school operations.
 
+## 2A-01 — Quiz submission side-effects boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted quiz-submission side effects into `server/src/modules/quizzes/application/quizSubmissionSideEffects.ts`: skill-progress updates from results and question attempts, spaced-repetition review-card upserts, and non-critical result notifications. `quiz.routes.ts` now delegates to the module while retaining route orchestration and the compatibility facade.
+- Preserved: quiz submit URL/method, authentication and directed-quiz checks, max-attempt behavior, time-window checks, question ordering, scoring, skill analysis, result snapshot, idempotent submission key, response serialization, notification wording, and persisted schema semantics.
+- Tests: assessment side-effects 6/6; quiz integrity 4/4; auth login security 9/9; API security 6/6; student learning journey 7/7; reports role 20/20; school scope 4/4; school portal 16/16; typecheck/server check/server build/architecture gate PASS.
+- Known limitation: definition/selection/publish, session/attempt, and scoring boundaries remain in the legacy route and are intentionally separate future batches. No production load certification is claimed.
+- Next: map quiz definition, question selection, and publish validation into the next compatible application boundary without changing scoring or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

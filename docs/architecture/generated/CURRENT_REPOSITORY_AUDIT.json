@@ -1,29 +1,29 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T05:20:30.414Z",
-  "gitHead": "71875c150b1c7a69b0af8b9a054d6ebaf1c4b849",
+  "generatedAt": "2026-08-29T05:30:52.006Z",
+  "gitHead": "afaebc7e98e728b48e158eb7e1c83fcf1f8d346a",
   "summary": {
-    "trackedFiles": 1086,
-    "sourceFiles": 736,
-    "runtimeSourceFiles": 429,
-    "sourceLines": 166182,
+    "trackedFiles": 1088,
+    "sourceFiles": 738,
+    "runtimeSourceFiles": 430,
+    "sourceLines": 166202,
     "runtimeSourceLines": 131796,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
-    "runtimeRelativeImportEdges": 1310,
+    "runtimeRelativeImportEdges": 1314,
     "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 2,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 869,
+    "crossDomainImportEdges": 872,
     "hotspots400Lines": 83,
-    "migrationCandidates": 419
+    "migrationCandidates": 420
   },
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 507581,
-      "lines": 10347
+      "bytes": 507681,
+      "lines": 10348
     },
     "ci": {
       "files": 44,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 219,
-      "bytes": 3563256,
-      "lines": 89038
+      "bytes": 3564367,
+      "lines": 89027
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 231,
-      "bytes": 1284825,
-      "lines": 27774
+      "files": 232,
+      "bytes": 1286356,
+      "lines": 27794
     },
     "api-support": {
       "files": 5,
@@ -61,8 +61,8 @@
       "lines": 3783
     },
     "api-source": {
-      "files": 147,
-      "bytes": 1172871,
+      "files": 148,
+      "bytes": 1173354,
       "lines": 31129
     },
     "tooling": {
@@ -113,9 +113,9 @@
       "bytes": 336936
     },
     "quizzes": {
-      "files": 26,
+      "files": 27,
       "lines": 14549,
-      "bytes": 698250
+      "bytes": 698733
     },
     "exams": {
       "files": 11,
@@ -158,9 +158,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 112948,
-      "lines": 2892,
-      "sha256": "2e686b9e6df26c0274fbb3d7cda83db1928dd7fa2995957817d239918fc2becc"
+      "bytes": 105499,
+      "lines": 2712,
+      "sha256": "6923840a19745a4cb6cdd31e5cb0fe5ac2ceeaeda937ee200c2b05045392f8fa"
     },
     {
       "file": "server/src/routes/content.routes.ts",
@@ -5664,6 +5664,42 @@
       "targetDomain": "shared"
     },
     {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/ReviewCard.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/SkillProgress.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/notificationService.ts",
+      "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/spacedRepetition.ts",
+      "targetDomain": "shared"
+    },
+    {
       "source": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
       "sourceDomain": "schools",
       "target": "server/src/models/NotificationDelivery.ts",
@@ -6560,12 +6596,6 @@
     {
       "source": "server/src/routes/quiz.routes.ts",
       "sourceDomain": "quizzes",
-      "target": "server/src/models/ReviewCard.ts",
-      "targetDomain": "learning"
-    },
-    {
-      "source": "server/src/routes/quiz.routes.ts",
-      "sourceDomain": "quizzes",
       "target": "server/src/models/Section.ts",
       "targetDomain": "courses"
     },
@@ -6621,18 +6651,6 @@
       "source": "server/src/routes/quiz.routes.ts",
       "sourceDomain": "quizzes",
       "target": "server/src/services/adminAuditLog.ts",
-      "targetDomain": "shared"
-    },
-    {
-      "source": "server/src/routes/quiz.routes.ts",
-      "sourceDomain": "quizzes",
-      "target": "server/src/services/notificationService.ts",
-      "targetDomain": "notifications"
-    },
-    {
-      "source": "server/src/routes/quiz.routes.ts",
-      "sourceDomain": "quizzes",
-      "target": "server/src/services/spacedRepetition.ts",
       "targetDomain": "shared"
     },
     {
@@ -9587,6 +9605,12 @@
       "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
       "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
       "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "target": "apps/api/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "domain": "quizzes",
       "confidence": "review-required"
     },
     {
@@ -12683,9 +12707,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3412,
+      "bytes": 3638,
       "lines": 36,
-      "sha256": "cd7442394e2b0f70df76c7f85c95ae926b55f2d0424f037361d4e890678a955c"
+      "sha256": "46c2e8fb1f7ea459fed34de60aa242e97168677cb087dd84d2f573eb495808dd"
     },
     {
       "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
@@ -12739,9 +12763,9 @@
       "file": "docs/architecture/MODULE_CATALOG.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 2301,
-      "lines": 28,
-      "sha256": "f59c3234dbbc9f0c49aae171972756f882dc2e0ffba1b7199126a0d7e9dbd3c3"
+      "bytes": 2374,
+      "lines": 27,
+      "sha256": "d922a060a482eb79d34b11977ffe27e70c40686b64ade49a18c545cb4419419d"
     },
     {
       "file": "docs/architecture/PROJECT_MAP.md",
@@ -12755,9 +12779,9 @@
       "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 10681,
-      "lines": 105,
-      "sha256": "31ee0aee47485550d1775d63801517d0e8490abdee8bb563946cff59045b790c"
+      "bytes": 12105,
+      "lines": 114,
+      "sha256": "66a1b605c5447d30eb765a5f06b345559b93741ce384d9ded47f77697dafd295"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12915,17 +12939,17 @@
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 49832,
-      "lines": 1855,
-      "sha256": "545b2af551539856ab44a13f2c01e780809cdeaeb388ce27dacf54167d99b161"
+      "bytes": 49737,
+      "lines": 1852,
+      "sha256": "075513cdc41fd07d863a607b9764e986cd799ed7efc6675207446c07774a4d65"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 589527,
-      "lines": 19079,
-      "sha256": "cbb167b79b03e5b52620ec45495b8fc3b09ceb25f548ae838fdfbb1d4d3b4868"
+      "bytes": 589010,
+      "lines": 19063,
+      "sha256": "6b061ecfdcf243a09560cae72795d427ee08345fe76fb22fca760813a531ca3f"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12933,7 +12957,7 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "951921a6009297f0262fef03dbdade5d87d758b996c2b99d2a716418d1237023"
+      "sha256": "8fc27328555bfec85512c5056f83d24f3c352067eb8f2b67cda92b119e209c4d"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -12941,7 +12965,7 @@
       "domain": "shared",
       "bytes": 87678,
       "lines": 2523,
-      "sha256": "98c251ca04fac5c35834edd26c6c3ef00ae82d3b071cdefcb7b336c6b9efbae6"
+      "sha256": "cf41a19bd40f76bb5ba560ceb6e820d3d8f81afe2d0468b79c38550d5cb6caac"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -14227,9 +14251,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 14559,
-      "lines": 187,
-      "sha256": "f48126c0069b0c83aa8c0af272a0fd64d7bb3035b4490b0591fc1e9c618c7be8"
+      "bytes": 14659,
+      "lines": 188,
+      "sha256": "f9e1ece6e3e51161658727507349bc667faa097ff6604130f7781aefecbe6aca"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -15174,6 +15198,14 @@
       "bytes": 5046,
       "lines": 135,
       "sha256": "9065c86b1e0a236de608103241b72738f664c4aeee3a67517e0f2f86cd2a6c71"
+    },
+    {
+      "file": "scripts/smoke-assessment-side-effects-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 1531,
+      "lines": 20,
+      "sha256": "bed46e508f9812bb29ed73093100bb7db21dcb336b51b93adf44a97ff1540d39"
     },
     {
       "file": "scripts/smoke-auth-account-contract.mjs",
@@ -17272,6 +17304,14 @@
       "sha256": "cb44a5fafcf49086b5ff3c8fe7adbeb58aaeed14aacce2535ccbead36161b363"
     },
     {
+      "file": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 7932,
+      "lines": 180,
+      "sha256": "c0639d85ad79e1ae6396bb930b34b666953c335295373600979ac1fdeee97652"
+    },
+    {
       "file": "server/src/modules/quizzes/http/queryUtilities.ts",
       "category": "api-source",
       "domain": "quizzes",
@@ -17491,9 +17531,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 112948,
-      "lines": 2892,
-      "sha256": "2e686b9e6df26c0274fbb3d7cda83db1928dd7fa2995957817d239918fc2becc"
+      "bytes": 105499,
+      "lines": 2712,
+      "sha256": "6923840a19745a4cb6cdd31e5cb0fe5ac2ceeaeda937ee200c2b05045392f8fa"
     },
     {
       "file": "server/src/routes/quizResults.routes.ts",

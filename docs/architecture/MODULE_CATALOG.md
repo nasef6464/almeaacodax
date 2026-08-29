@@ -6,7 +6,7 @@
 | schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolPortalManager`, school routes | Extraction in progress |
 | curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Boundary started |
 | questions | bank/authoring/types/import/search | report presentation | QuestionBankManager, question routes | Boundary pending |
-| assessments | definition/assignment/session/attempt/scoring/result | payment provider | quiz routes, QuizPage, Results | Highest product priority |
+| assessments | definition/assignment/session/attempt/scoring/result | payment provider | quiz routes, QuizPage, Results, `server/src/modules/quizzes/application/quizSubmissionSideEffects.ts` | Boundary extraction started |
 | learning | lessons/topics/player/library/progress | school authorization | learning pages/content routes | Mixed legacy |
 | courses | catalog/builder/enrollment/linkage | low-level media storage | course builders/API groups | Mixed legacy |
 | reports | result views/student/class/school/skill/export | write-side scoring | Reports, Results, report routes | View-model extraction started |
@@ -24,4 +24,3 @@
 - HTTP: auth → validation → use case → response mapping.
 - `shared` محايد فعليًا؛ لا business rules.
 - compatibility facades تبقى حتى يثبت عدم وجود callers.
-
