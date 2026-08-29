@@ -1,23 +1,23 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T05:30:52.006Z",
-  "gitHead": "afaebc7e98e728b48e158eb7e1c83fcf1f8d346a",
+  "generatedAt": "2026-08-29T05:37:28.861Z",
+  "gitHead": "5bf304913ed0db6d66f395eef0ae43f96e7d143b",
   "summary": {
-    "trackedFiles": 1088,
-    "sourceFiles": 738,
-    "runtimeSourceFiles": 430,
-    "sourceLines": 166202,
-    "runtimeSourceLines": 131796,
+    "trackedFiles": 1089,
+    "sourceFiles": 739,
+    "runtimeSourceFiles": 431,
+    "sourceLines": 166237,
+    "runtimeSourceLines": 131829,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
-    "runtimeRelativeImportEdges": 1314,
+    "runtimeRelativeImportEdges": 1317,
     "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 2,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 872,
+    "crossDomainImportEdges": 873,
     "hotspots400Lines": 83,
-    "migrationCandidates": 420
+    "migrationCandidates": 421
   },
   "categoryStats": {
     "support": {
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 219,
-      "bytes": 3564367,
-      "lines": 89027
+      "bytes": 3566770,
+      "lines": 89091
     },
     "public-asset": {
       "files": 4,
@@ -52,8 +52,8 @@
     },
     "test-or-ops-script": {
       "files": 232,
-      "bytes": 1286356,
-      "lines": 27794
+      "bytes": 1286786,
+      "lines": 27796
     },
     "api-support": {
       "files": 5,
@@ -61,9 +61,9 @@
       "lines": 3783
     },
     "api-source": {
-      "files": 148,
-      "bytes": 1173354,
-      "lines": 31129
+      "files": 149,
+      "bytes": 1174842,
+      "lines": 31162
     },
     "tooling": {
       "files": 84,
@@ -108,14 +108,14 @@
       "bytes": 312604
     },
     "questions": {
-      "files": 24,
-      "lines": 6725,
-      "bytes": 336936
+      "files": 25,
+      "lines": 6810,
+      "bytes": 340113
     },
     "quizzes": {
       "files": 27,
-      "lines": 14549,
-      "bytes": 698733
+      "lines": 14497,
+      "bytes": 697044
     },
     "exams": {
       "files": 11,
@@ -158,9 +158,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 105499,
-      "lines": 2712,
-      "sha256": "6923840a19745a4cb6cdd31e5cb0fe5ac2ceeaeda937ee200c2b05045392f8fa"
+      "bytes": 103810,
+      "lines": 2660,
+      "sha256": "98ecfcac6356064f530fb0e553a8b4d0aa125152a7e2b69fc3a7f0534c8087b3"
     },
     {
       "file": "server/src/routes/content.routes.ts",
@@ -6638,6 +6638,12 @@
     {
       "source": "server/src/routes/quiz.routes.ts",
       "sourceDomain": "quizzes",
+      "target": "server/src/modules/quizzes/application/quizQuestionIntegrity.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
       "target": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
       "targetDomain": "questions"
     },
@@ -9604,6 +9610,12 @@
     {
       "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
       "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizQuestionIntegrity.ts",
+      "target": "apps/api/src/modules/quizzes/application/quizQuestionIntegrity.ts",
       "domain": "questions",
       "confidence": "review-required"
     },
@@ -12941,15 +12953,15 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "075513cdc41fd07d863a607b9764e986cd799ed7efc6675207446c07774a4d65"
+      "sha256": "5cd90279c9ca92b212fdb5185d64e1bd01c27b1903580a04fef60bda4abcf121"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 589010,
-      "lines": 19063,
-      "sha256": "6b061ecfdcf243a09560cae72795d427ee08345fe76fb22fca760813a531ca3f"
+      "bytes": 591159,
+      "lines": 19121,
+      "sha256": "dba18e53fb9bddb89a1992abe2ba52038a0304fbf804d9882bbcd8c49eb26a89"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12957,15 +12969,15 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "8fc27328555bfec85512c5056f83d24f3c352067eb8f2b67cda92b119e209c4d"
+      "sha256": "556d6294db97f1038ab425d1c555ce2c715b56078c150ef1281120298aa268c1"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 87678,
-      "lines": 2523,
-      "sha256": "cf41a19bd40f76bb5ba560ceb6e820d3d8f81afe2d0468b79c38550d5cb6caac"
+      "bytes": 87932,
+      "lines": 2529,
+      "sha256": "19392a108a0f26763fcdf210be030c599cf301b915574f8d4b47ff0bc804ef2b"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -15987,17 +15999,17 @@
       "file": "scripts/smoke-quiz-definition-schema-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "quizzes",
-      "bytes": 6011,
-      "lines": 109,
-      "sha256": "f459e3e76ba854c6c8468875e77a67c65eaadb9fc16d50afe1b217f1f53aa1c5"
+      "bytes": 5971,
+      "lines": 108,
+      "sha256": "bd381db8f6a1ba1e5b17f4e97bbe424641c7829853a932ab3a4267fc99c60f81"
     },
     {
       "file": "scripts/smoke-quiz-integrity-guard-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "quizzes",
-      "bytes": 2250,
-      "lines": 54,
-      "sha256": "2a70c5cdb323ea4ba07bd5a20b58342c760717915abdd9c66fca4eeb93d98b28"
+      "bytes": 2413,
+      "lines": 56,
+      "sha256": "df5158bfd07a4f331275fc314b172ee76a2a7f55aab97b7ab4dc76909eac57de"
     },
     {
       "file": "scripts/smoke-quiz-query-utilities-boundary-contract.mjs",
@@ -16011,17 +16023,17 @@
       "file": "scripts/smoke-quiz-question-presentation-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 5542,
-      "lines": 106,
-      "sha256": "f302c400ccfc8efddf52635f0302f4abd05ff671a57b84d155a68aa1d0fc480d"
+      "bytes": 5903,
+      "lines": 108,
+      "sha256": "e6a0f9b0dbbe0d1159450bdcb930e251089004b5ba8c05173fe5a6418f98f0c3"
     },
     {
       "file": "scripts/smoke-quiz-question-query-schema-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 8819,
-      "lines": 161,
-      "sha256": "1fcaab480dbd3f13fe9218b34df711bf8b12690494d01a29c761f14bcbb5c6ab"
+      "bytes": 8765,
+      "lines": 160,
+      "sha256": "0c4c5db229f2c7ec3b2295c27fcee9da726eadb05e1de610923eddd3f28fd28c"
     },
     {
       "file": "scripts/smoke-quiz-results-route-order-contract.mjs",
@@ -17304,6 +17316,14 @@
       "sha256": "cb44a5fafcf49086b5ff3c8fe7adbeb58aaeed14aacce2535ccbead36161b363"
     },
     {
+      "file": "server/src/modules/quizzes/application/quizQuestionIntegrity.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 3177,
+      "lines": 85,
+      "sha256": "80cc5595b30faf86ca0d9e577617142a203789652203712aeafdccf55340efa0"
+    },
+    {
       "file": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
       "category": "api-source",
       "domain": "quizzes",
@@ -17531,9 +17551,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 105499,
-      "lines": 2712,
-      "sha256": "6923840a19745a4cb6cdd31e5cb0fe5ac2ceeaeda937ee200c2b05045392f8fa"
+      "bytes": 103810,
+      "lines": 2660,
+      "sha256": "98ecfcac6356064f530fb0e553a8b4d0aa125152a7e2b69fc3a7f0534c8087b3"
     },
     {
       "file": "server/src/routes/quizResults.routes.ts",

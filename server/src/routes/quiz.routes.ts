@@ -28,6 +28,7 @@ import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryT
 import { buildRecommendedAction, buildResultSkillStatus, buildSkillRecommendation, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
 import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -90,59 +91,6 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
     sectionId: query.sectionId || "",
     skillId: query.skillId || "",
   });
-
-const validateQuizQuestionIntegrity = async (quizLike: any) => {
-  const normalizedIds = uniqueStrings(getQuizQuestionIds(quizLike).map((value) => String(value || "").trim()).filter(Boolean));
-  if (normalizedIds.length === 0) {
-    return {
-      ok: false,
-      totalReferenced: 0,
-      resolved: 0,
-      missingIds: [] as string[],
-      invalidContentIds: [] as string[],
-      message: "Cannot publish a quiz without valid questions",
-    };
-  }
-
-  const questions = await QuestionModel.find(buildDocumentsByIdsQuery(normalizedIds))
-    .select("id text imageUrl options type")
-    .lean();
-  const byCanonicalId = new Map<string, any>();
-
-  questions.forEach((question: any) => {
-    const canonicalId = String(question.id || question._id);
-    byCanonicalId.set(canonicalId, question);
-    const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
-    if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
-      byCanonicalId.set(withoutCopySuffix, question);
-    }
-  });
-
-  const missingIds: string[] = [];
-  const invalidContentIds: string[] = [];
-  normalizedIds.forEach((id) => {
-    const resolved = byCanonicalId.get(id) || byCanonicalId.get(id.replace(/_copy(?:_\d+)?$/i, ""));
-    if (!resolved) {
-      missingIds.push(id);
-      return;
-    }
-    if (!isQuestionContentUsable(resolved)) {
-      invalidContentIds.push(id);
-    }
-  });
-
-  const ok = missingIds.length === 0 && invalidContentIds.length === 0;
-  return {
-    ok,
-    totalReferenced: normalizedIds.length,
-    resolved: normalizedIds.length - missingIds.length,
-    missingIds,
-    invalidContentIds,
-    message: ok
-      ? "ok"
-      : "Cannot publish quiz: some referenced questions are missing or have incomplete content",
-  };
-};
 
 const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T, fallbackType = "quiz") => {
   if (payload.access && typeof payload.access === "object") {

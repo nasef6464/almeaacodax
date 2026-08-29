@@ -28,7 +28,7 @@ check('quiz definition transport semantics are preserved', () => {
     'accessType: z.enum(["inherit", "free", "paid", "package"]).optional().default("inherit")',
     'mode: z.enum(["regular", "saher", "central"]).default("regular")',
     'questionIds: z.array(z.string()).default([])',
-    'qiyasCategory: z.enum(["qudrat", "tahsili"]).optional()',
+    'qiyasCategory: z.enum(["qudrat", "tahsili", "specialized"]).optional()',
     'domain: z.enum(["quantitative", "verbal", "math", "physics", "chemistry", "biology", "general"]).optional()',
     'targetGroupIds: z.array(z.string()).default([])',
     'targetUserIds: z.array(z.string()).default([])',
@@ -76,7 +76,6 @@ check('submission schema ownership handoff is explicit when delegated by a later
 check('quiz normalization, integrity, submission behavior and persistence remain route-owned', () => {
   for (const fragment of [
     'const normalizeQuizPlacementPayload = <T extends Record<string, any>>',
-    'const validateQuizQuestionIntegrity = async',
     'const assertQuizWindowIsOpen =',
     'const canSubmitQuiz = async',
     'QuestionAttemptModel.create({',

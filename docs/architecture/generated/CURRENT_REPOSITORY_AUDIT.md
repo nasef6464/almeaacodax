@@ -1,32 +1,32 @@
 # Current Repository Architecture Audit
 
-Generated from commit `afaebc7e98e728b48e158eb7e1c83fcf1f8d346a` using the TypeScript AST for imports and route extraction.
+Generated from commit `5bf304913ed0db6d66f395eef0ae43f96e7d143b` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1088 |
-| Source files (including scripts/tooling) | 738 |
-| Runtime source files | 430 |
-| Source lines | 166,202 |
-| Runtime source lines | 131,796 |
+| Tracked files | 1089 |
+| Source files (including scripts/tooling) | 739 |
+| Runtime source files | 431 |
+| Source lines | 166,237 |
+| Runtime source lines | 131,829 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |
-| Runtime relative import edges | 1314 |
+| Runtime relative import edges | 1317 |
 | Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 2 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 872 |
+| Cross-domain runtime import edges | 873 |
 | Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 420 |
+| Candidate migration-map entries | 421 |
 
 ## Largest runtime source hotspots
 
 | File | Lines | Bytes | Domain candidate |
 |---|---:|---:|---|
-| `server/src/routes/quiz.routes.ts` | 2712 | 105499 | quizzes |
+| `server/src/routes/quiz.routes.ts` | 2660 | 103810 | quizzes |
 | `server/src/routes/content.routes.ts` | 2629 | 100989 | content |
 | `pages/Reports.tsx` | 2607 | 187317 | reports |
 | `dashboards/admin/PathsManager.tsx` | 2238 | 126125 | paths |
