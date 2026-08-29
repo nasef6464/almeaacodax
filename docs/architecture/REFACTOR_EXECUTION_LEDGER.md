@@ -162,6 +162,15 @@
 - Known limitation: update document assembly, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map quiz update document assembly into the next compatible application boundary without changing database semantics or API contracts.
 
+## 2A-09 — Quiz update document boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted pure `buildQuizUpdateDocument` into `server/src/modules/quizzes/application/quizUpdateDocument.ts`; update route delegates payload/skill-field composition before workflow sanitization.
+- Preserved: normalized payload fields, optional skill replacement semantics, workflow sanitization, publication integrity validation, `findOneAndUpdate` persistence, route URLs/methods, database schema, and RBAC behavior.
+- Tests: update-document 4/4; definition-document 4/4; publication 4/4; inline-question 4/4; workflow 3/3; selection 5/5; integrity 4/4; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; typecheck/server check/build/frontend build; repository audit; architecture gate PASS.
+- Known limitation: validation-state composition, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map quiz validation-state composition into the next compatible application boundary without changing integrity, persistence, or API contracts.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

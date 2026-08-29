@@ -35,6 +35,7 @@ import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../modules/quizzes/
 import { resolveQuizPublicationState } from "../modules/quizzes/application/quizPublicationPolicy.js";
 import { processInlineQuestions } from "../modules/quizzes/application/quizInlineQuestions.js";
 import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
+import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1871,10 +1872,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     : undefined;
   const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
   const sanitizedPayload = sanitizeWorkflowUpdate(
-    {
-      ...normalizedPayload,
-      ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
-    } as Record<string, unknown>,
+    buildQuizUpdateDocument(normalizedPayload as Record<string, unknown>, resolvedSkillIds),
     req.authUser!,
     { respectPublished: true },
   );
