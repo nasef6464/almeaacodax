@@ -146,7 +146,7 @@
 
 ## 2A-07 — Inline-question creation boundary
 
-- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Status: COMPLETED in `a2db9f33` on `refactor/modular-platform-safe`.
 - Changed: extracted inline-question normalization and creation orchestration into `server/src/modules/quizzes/application/quizInlineQuestions.ts`; the route supplies the existing `QuestionModel.create` adapter and remains responsible for authorization and attaching IDs to the quiz.
 - Preserved: string-reference handling, existing-ID handling, generated IDs, option normalization, default text/type, path/subject fallback, owner metadata, sequential creation order, route URLs/methods, database schema, and RBAC behavior.
 - Tests: assessment inline-question contract 4/4; publication 4/4; workflow 3/3; question selection 5/5; integrity 4/4; typecheck; server check/build; frontend build; repository audit; architecture gate PASS.
