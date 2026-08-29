@@ -5,7 +5,7 @@ const script = await read("scripts/measure-read-baseline.mjs");
 const runbook = await read("docs/architecture/RUNTIME_READ_BASELINE.md");
 
 const checks = [
-  ["baseline requires an explicit target URL", script.includes("ALMEAA_MEASURE_BASE_URL") && script.includes("Missing ALMEAA_MEASURE_BASE_URL")],
+  ["baseline requires an explicit target URL", script.includes('getArgument("--base-url")') && script.includes("Missing --base-url")],
   ["baseline defaults to a small bounded request count", script.includes("const DEFAULT_REQUESTS = 3") && script.includes("const MAX_REQUESTS = 20")],
   ["baseline measures latency and payload bytes", script.includes("p95DurationMs") && script.includes("maxBytes")],
   ["baseline covers learner bootstrap and catalog reads", script.includes("taxonomy-compact") && script.includes("content-learning-core") && script.includes("courses-first-page")],

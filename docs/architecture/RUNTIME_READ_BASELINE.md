@@ -26,16 +26,13 @@ npm run measure:read-baseline:plan
 Run it only against a local or staging environment that you are authorized to measure:
 
 ```powershell
-$env:ALMEAA_MEASURE_BASE_URL = "http://localhost:5000"
-node scripts/measure-read-baseline.mjs
+node scripts/measure-read-baseline.mjs --base-url http://localhost:5000
 ```
 
 Optional bounded settings:
 
 ```powershell
-$env:ALMEAA_MEASURE_REQUESTS = "5" # max 20
-$env:ALMEAA_MEASURE_TIMEOUT_MS = "15000" # max 60000
-node scripts/measure-read-baseline.mjs
+node scripts/measure-read-baseline.mjs --base-url http://localhost:5000 --requests 5 --timeout-ms 15000
 ```
 
 لا تشغّل الأداة ضد الإنتاج أثناء الذروة أو كبديل عن اختبار تحميل معتمد. أي قياس إنتاجي يحتاج نافذة تشغيل وموافقة واضحة وخطة مراقبة وrollback.

@@ -19,17 +19,22 @@ const formatPlan = () => ({
   requestsPerEndpoint: DEFAULT_REQUESTS,
   concurrency: 1,
   endpoints: endpointPlan,
-  usage: "ALMEAA_MEASURE_BASE_URL=https://staging.example.com node scripts/measure-read-baseline.mjs",
+  usage: "node scripts/measure-read-baseline.mjs --base-url https://staging.example.com",
 });
+
+const getArgument = (name) => {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? String(process.argv[index + 1] || "").trim() : "";
+};
 
 if (process.argv.includes("--plan")) {
   console.log(JSON.stringify(formatPlan(), null, 2));
   process.exit(0);
 }
 
-const rawBaseUrl = String(process.env.ALMEAA_MEASURE_BASE_URL || "").trim();
+const rawBaseUrl = getArgument("--base-url");
 if (!rawBaseUrl) {
-  console.error("Missing ALMEAA_MEASURE_BASE_URL. Run with --plan to review the safe endpoint plan first.");
+  console.error("Missing --base-url. Run with --plan to review the safe endpoint plan first.");
   process.exit(2);
 }
 
@@ -38,8 +43,8 @@ if (!["http:", "https:"].includes(baseUrl.protocol)) {
   throw new Error("ALMEAA_MEASURE_BASE_URL must use http or https.");
 }
 
-const requestsPerEndpoint = asBoundedInteger(process.env.ALMEAA_MEASURE_REQUESTS, DEFAULT_REQUESTS, MAX_REQUESTS);
-const timeoutMs = asBoundedInteger(process.env.ALMEAA_MEASURE_TIMEOUT_MS, DEFAULT_TIMEOUT_MS, 60_000);
+const requestsPerEndpoint = asBoundedInteger(getArgument("--requests"), DEFAULT_REQUESTS, MAX_REQUESTS);
+const timeoutMs = asBoundedInteger(getArgument("--timeout-ms"), DEFAULT_TIMEOUT_MS, 60_000);
 
 const percentile = (sorted, ratio) => {
   if (!sorted.length) return 0;

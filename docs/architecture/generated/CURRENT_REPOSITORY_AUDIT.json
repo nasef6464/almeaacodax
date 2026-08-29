@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T05:05:34.116Z",
-  "gitHead": "23fa7544ea5617066858767db1977dc30597f1b7",
+  "generatedAt": "2026-08-29T05:20:30.414Z",
+  "gitHead": "71875c150b1c7a69b0af8b9a054d6ebaf1c4b849",
   "summary": {
-    "trackedFiles": 1083,
-    "sourceFiles": 734,
+    "trackedFiles": 1086,
+    "sourceFiles": 736,
     "runtimeSourceFiles": 429,
-    "sourceLines": 166046,
+    "sourceLines": 166182,
     "runtimeSourceLines": 131796,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
@@ -41,9 +41,9 @@
       "lines": 677
     },
     "documentation": {
-      "files": 218,
-      "bytes": 3558406,
-      "lines": 88941
+      "files": 219,
+      "bytes": 3563256,
+      "lines": 89038
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 229,
-      "bytes": 1279482,
-      "lines": 27638
+      "files": 231,
+      "bytes": 1284825,
+      "lines": 27774
     },
     "api-support": {
       "files": 5,
@@ -12683,9 +12683,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3254,
+      "bytes": 3412,
       "lines": 36,
-      "sha256": "29822a2ad57e49f4a64807fcc9577366dcdad64c435dc880678eab303520c2dc"
+      "sha256": "cd7442394e2b0f70df76c7f85c95ae926b55f2d0424f037361d4e890678a955c"
     },
     {
       "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
@@ -12755,9 +12755,9 @@
       "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 9384,
-      "lines": 96,
-      "sha256": "e769a80bb52d4582bcff6e0a757c0df11f19804818600f4afc55d89cf5ada977"
+      "bytes": 10681,
+      "lines": 105,
+      "sha256": "31ee0aee47485550d1775d63801517d0e8490abdee8bb563946cff59045b790c"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12872,6 +12872,14 @@
       "sha256": "f532ff6965bc8f82f524d2bce044eb97c50a7ebaabccf0e04f6daf457e9289cd"
     },
     {
+      "file": "docs/architecture/RUNTIME_READ_BASELINE.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 2169,
+      "lines": 50,
+      "sha256": "46e29a5c9be07e39f1cdcae07e3cba24f3a2cc4577111a5ed190542012e939dc"
+    },
+    {
       "file": "docs/architecture/USESTORE_SLICE_CANDIDATES.md",
       "category": "documentation",
       "domain": "shared",
@@ -12907,17 +12915,17 @@
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 49737,
-      "lines": 1852,
-      "sha256": "2a0f75ec8d0882c8a23abd8bffc3d08f6b53d54624d51dd480a47aa3c4506041"
+      "bytes": 49832,
+      "lines": 1855,
+      "sha256": "545b2af551539856ab44a13f2c01e780809cdeaeb388ce27dacf54167d99b161"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 588396,
-      "lines": 19044,
-      "sha256": "92b6007ee3315aef17d8c06f957a9bbc1be9051865009cd9c417d5f2edbde73b"
+      "bytes": 589527,
+      "lines": 19079,
+      "sha256": "cbb167b79b03e5b52620ec45495b8fc3b09ceb25f548ae838fdfbb1d4d3b4868"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12925,7 +12933,7 @@
       "domain": "shared",
       "bytes": 4076,
       "lines": 75,
-      "sha256": "d40886e3ed4858cea998b68b8c61b05d39ca361baac9298afa71cc690aec6bb6"
+      "sha256": "951921a6009297f0262fef03dbdade5d87d758b996c2b99d2a716418d1237023"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -12933,7 +12941,7 @@
       "domain": "shared",
       "bytes": 87678,
       "lines": 2523,
-      "sha256": "d4d94b28598321d93f24ee0d528bd4eb680c090adc6fdb4f9ac1a5a88cdca1fe"
+      "sha256": "98c251ca04fac5c35834edd26c6c3ef00ae82d3b071cdefcb7b336c6b9efbae6"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -15000,6 +15008,14 @@
       "sha256": "5eabaee610d6d9430909a6fc14dbb399f2a50587bfcffa8bba7add497ec6ce12"
     },
     {
+      "file": "scripts/measure-read-baseline.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 4068,
+      "lines": 117,
+      "sha256": "4f4f53ba25e2c86739c52e0de3a62bbed1ef6412940ffaef6d37052ab6f666d4"
+    },
+    {
       "file": "scripts/repair-live-supervisor-school-scope.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
@@ -16014,6 +16030,14 @@
       "bytes": 2227,
       "lines": 59,
       "sha256": "ed1c2331d2def894885010a51c81437bbde30893f9800dc37f7cf7a3aee8a0a3"
+    },
+    {
+      "file": "scripts/smoke-read-baseline-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 1275,
+      "lines": 19,
+      "sha256": "67049c3f7bb56aa70e08f2a0fe6a19471ade7407665a5fd0fe82ae1079335cb3"
     },
     {
       "file": "scripts/smoke-real-usage-readiness-contract.mjs",
