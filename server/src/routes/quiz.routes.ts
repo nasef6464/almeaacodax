@@ -30,6 +30,7 @@ import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modul
 import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
 import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";
+import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -193,24 +194,6 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
-};
-
-const resolveQuizSkillIds = async (questionIds: string[]) => {
-  if (questionIds.length === 0) {
-    return [];
-  }
-
-  const questions = await QuestionModel.find({ id: { $in: questionIds } }).select("skillIds");
-  return [...new Set(questions.flatMap((question) => question.skillIds || []).filter(Boolean))];
-};
-
-const getQuizQuestionIds = (quiz: any) => {
-  const mockSections = Array.isArray(quiz?.mockExam?.sections) ? quiz.mockExam.sections : [];
-  const mockQuestionIds = quiz?.mockExam?.enabled === true
-    ? mockSections.flatMap((section: any) => Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [])
-    : [];
-  const regularQuestionIds = Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String) : [];
-  return uniqueStrings((mockQuestionIds.length > 0 ? mockQuestionIds : regularQuestionIds).filter(Boolean));
 };
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {

@@ -117,6 +117,15 @@
 - Known limitation: definition parser ownership, selection, publish orchestration, sessions/attempts, and scoring remain separate future boundaries. No production load certification is claimed.
 - Next: map quiz definition parser/publish orchestration into the next compatible application boundary without changing scoring or persistence semantics.
 
+## 2A-04 — Quiz question selection boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted `getQuizQuestionIds` and `resolveQuizSkillIds` into `server/src/modules/quizzes/application/quizQuestionSelection.ts`; the route now delegates question identity/skill resolution while retaining HTTP, persistence, and scoring orchestration.
+- Preserved: mock-section precedence, regular-question fallback, duplicate normalization, skill lookup semantics, question order, route URLs/methods, quiz publish/update behavior, submission behavior, and database schema.
+- Tests: assessment question selection 5/5; quiz integrity 4/4; definition/query boundaries PASS; assessment side-effects 6/6; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; server check/build/repository audit/architecture gate PASS.
+- Known limitation: definition parser/publish orchestration, sessions/attempts, and scoring remain separate future boundaries. No production load certification is claimed.
+- Next: map quiz definition parser/publish orchestration into the next compatible application boundary without changing scoring or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

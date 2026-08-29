@@ -76,6 +76,7 @@
         "smoke:taxonomy-compact": "node scripts/smoke-taxonomy-compact-contract.mjs",
         "smoke:read-baseline": "node scripts/smoke-read-baseline-contract.mjs",
         "smoke:assessment-side-effects": "node scripts/smoke-assessment-side-effects-contract.mjs",
+        "smoke:assessment-question-selection": "node scripts/smoke-assessment-question-selection-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
