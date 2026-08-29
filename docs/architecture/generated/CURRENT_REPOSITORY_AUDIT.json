@@ -1,29 +1,29 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T06:08:29.770Z",
-  "gitHead": "dfd16ad6f8f80bf0a2fc8476bedd89b0ea8ba58d",
+  "generatedAt": "2026-08-29T10:38:29.356Z",
+  "gitHead": "ca632e5aa3d94f45765c53b249ea7258ef90c562",
   "summary": {
-    "trackedFiles": 1096,
-    "sourceFiles": 746,
-    "runtimeSourceFiles": 435,
-    "sourceLines": 166374,
-    "runtimeSourceLines": 131850,
+    "trackedFiles": 1098,
+    "sourceFiles": 748,
+    "runtimeSourceFiles": 436,
+    "sourceLines": 166431,
+    "runtimeSourceLines": 131860,
     "frontendRoutes": 49,
     "backendRouteEntries": 236,
     "routerMounts": 25,
-    "runtimeRelativeImportEdges": 1322,
+    "runtimeRelativeImportEdges": 1323,
     "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 2,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 874,
+    "crossDomainImportEdges": 875,
     "hotspots400Lines": 83,
-    "migrationCandidates": 425
+    "migrationCandidates": 426
   },
   "categoryStats": {
     "support": {
       "files": 70,
-      "bytes": 507978,
-      "lines": 10351
+      "bytes": 508080,
+      "lines": 10352
     },
     "ci": {
       "files": 44,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 219,
-      "bytes": 3575819,
-      "lines": 89230
+      "bytes": 3578068,
+      "lines": 89267
     },
     "public-asset": {
       "files": 4,
@@ -51,9 +51,9 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 235,
-      "bytes": 1293506,
-      "lines": 27912
+      "files": 236,
+      "bytes": 1295843,
+      "lines": 27959
     },
     "api-support": {
       "files": 5,
@@ -61,9 +61,9 @@
       "lines": 3783
     },
     "api-source": {
-      "files": 153,
-      "bytes": 1175671,
-      "lines": 31183
+      "files": 154,
+      "bytes": 1175993,
+      "lines": 31193
     },
     "tooling": {
       "files": 84,
@@ -108,14 +108,14 @@
       "bytes": 312604
     },
     "questions": {
-      "files": 26,
-      "lines": 6831,
-      "bytes": 341175
+      "files": 27,
+      "lines": 6883,
+      "bytes": 342945
     },
     "quizzes": {
       "files": 30,
-      "lines": 14497,
-      "bytes": 696811
+      "lines": 14455,
+      "bytes": 695363
     },
     "exams": {
       "files": 11,
@@ -174,9 +174,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 97569,
-      "lines": 2476,
-      "sha256": "27602634aba5b96131222cc418646d2e73ff2e1cc084ff2d2a5ff538fbba4cf4"
+      "bytes": 96121,
+      "lines": 2434,
+      "sha256": "bb803f0d373690c4fa1b33200c2666d021827d26b1c144267da95f1471d005bb"
     },
     {
       "file": "dashboards/admin/PathsManager.tsx",
@@ -6638,6 +6638,12 @@
     {
       "source": "server/src/routes/quiz.routes.ts",
       "sourceDomain": "quizzes",
+      "target": "server/src/modules/quizzes/application/quizInlineQuestions.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/quiz.routes.ts",
+      "sourceDomain": "quizzes",
       "target": "server/src/modules/quizzes/application/quizQuestionIntegrity.ts",
       "targetDomain": "questions"
     },
@@ -9616,6 +9622,12 @@
     {
       "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
       "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizInlineQuestions.ts",
+      "target": "apps/api/src/modules/quizzes/application/quizInlineQuestions.ts",
       "domain": "questions",
       "confidence": "review-required"
     },
@@ -12749,9 +12761,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3921,
+      "bytes": 4004,
       "lines": 36,
-      "sha256": "ecbf621d1c9ee6f4dfd0e838b1bfb66142ea7e63edc2b14f60f758857f9b5306"
+      "sha256": "ba59a32bc6a86f2ebc2b98d7a9891cc6952a5ff5e4da5c56f65be19269018611"
     },
     {
       "file": "docs/architecture/CURRENT_ARCHITECTURE_STATE.md",
@@ -12821,9 +12833,9 @@
       "file": "docs/architecture/REFACTOR_EXECUTION_LEDGER.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 17042,
-      "lines": 150,
-      "sha256": "346b8822445794a008dee70f239f1ffb2cf4565c56a4407bf1757c80d097ae99"
+      "bytes": 18165,
+      "lines": 159,
+      "sha256": "63387c305a7b3e1a9203c63daa9037513b4e277f7c306bbd54146930de063914"
     },
     {
       "file": "docs/architecture/REFACTOR_V2_API_QUERY_CHECKPOINT_2026-08-19_AR.md",
@@ -12983,15 +12995,15 @@
       "domain": "shared",
       "bytes": 49737,
       "lines": 1852,
-      "sha256": "87105361546e45a18397d832dfcffe36226ab4da71974ab93990b1e44305799e"
+      "sha256": "8ad94b9c70a1062b933d623528388c0019082ef168c845172307bc9747f242a4"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 594035,
-      "lines": 19200,
-      "sha256": "cbc41657fad94af4f5a1618960a9b68558d79dbd843070a71a146c7935c10d74"
+      "bytes": 594832,
+      "lines": 19222,
+      "sha256": "ee4d95e743cd51a39b2e339eba95a8812f97b418f18c19d1e974848b46818532"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -12999,15 +13011,15 @@
       "domain": "shared",
       "bytes": 4075,
       "lines": 75,
-      "sha256": "ff2f10983378887b55a7c22638dcd8eec19657400636a8667a88900c52f47e3d"
+      "sha256": "da32214b43e88b5c8877c772a965fbdee30d566e2f649ee48f7196148d277788"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 88886,
-      "lines": 2553,
-      "sha256": "f0f8091d118526cc50c7a0e3a896c5719c19bbd3ddf4b522906e7a48c2bffe0d"
+      "bytes": 89132,
+      "lines": 2559,
+      "sha256": "3f8cdf28b832519b5d0117045c085e75930cbb6e704d27b3963d6b1a69fde3c8"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -14293,9 +14305,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 14956,
-      "lines": 191,
-      "sha256": "d726e71d821359839505b1bf713457a6ee243185f4a3c8554da1a649569a218e"
+      "bytes": 15058,
+      "lines": 192,
+      "sha256": "08755a257961cab159e9529938dc771e954d7958f758cc312fffa3e8d487d5d2"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -15232,6 +15244,14 @@
       "bytes": 3028,
       "lines": 99,
       "sha256": "dd9a352ba01a0677c07fecc5cf8888bd2b6e9a10637c83b1d9c76f5486280170"
+    },
+    {
+      "file": "scripts/smoke-assessment-inline-question-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "questions",
+      "bytes": 2337,
+      "lines": 47,
+      "sha256": "2bae2f6f35ee364239cca83d886bde2abdcc0b2d3330728ce060683c7bdb7f53"
     },
     {
       "file": "scripts/smoke-assessment-publication-policy-contract.mjs",
@@ -17370,6 +17390,14 @@
       "sha256": "cb44a5fafcf49086b5ff3c8fe7adbeb58aaeed14aacce2535ccbead36161b363"
     },
     {
+      "file": "server/src/modules/quizzes/application/quizInlineQuestions.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 1770,
+      "lines": 52,
+      "sha256": "f02387415cda44ad205626248e6bc6d61fd596f35bf10d99d45e7d18161462ae"
+    },
+    {
       "file": "server/src/modules/quizzes/application/quizPlacement.ts",
       "category": "api-source",
       "domain": "quizzes",
@@ -17637,9 +17665,9 @@
       "file": "server/src/routes/quiz.routes.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 97569,
-      "lines": 2476,
-      "sha256": "27602634aba5b96131222cc418646d2e73ff2e1cc084ff2d2a5ff538fbba4cf4"
+      "bytes": 96121,
+      "lines": 2434,
+      "sha256": "bb803f0d373690c4fa1b33200c2666d021827d26b1c144267da95f1471d005bb"
     },
     {
       "file": "server/src/routes/quizResults.routes.ts",

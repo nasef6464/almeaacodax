@@ -33,6 +33,7 @@ import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/qu
 import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../modules/quizzes/application/quizWorkflow.js";
 import { resolveQuizPublicationState } from "../modules/quizzes/application/quizPublicationPolicy.js";
+import { processInlineQuestions } from "../modules/quizzes/application/quizInlineQuestions.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1680,50 +1681,6 @@ quizRouter.get(
   }),
 );
 
-const processInlineQuestions = async (questions: any[], pathId: string, subjectId: string, authUser: any) => {
-  if (!Array.isArray(questions) || questions.length === 0) return [];
-  const createdIds: string[] = [];
-
-  for (const q of questions) {
-    if (typeof q === "string") {
-      createdIds.push(q);
-      continue;
-    }
-    if (q && typeof q === "object") {
-      if (q.id && !q.text && !q.options) {
-        createdIds.push(String(q.id));
-        continue;
-      }
-      const qId = String(q.id || `q_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
-      const formattedOptions = Array.isArray(q.options)
-        ? q.options.map((opt: any, idx: number) => {
-            if (typeof opt === "string") return { id: `opt_${idx}`, text: opt, isCorrect: idx === 0 };
-            return {
-              id: String(opt.id || `opt_${idx}`),
-              text: String(opt.text || opt.title || ""),
-              isCorrect: Boolean(opt.isCorrect),
-            };
-          })
-        : [];
-
-      const createdQuestion = await QuestionModel.create({
-        id: qId,
-        _id: qId,
-        text: String(q.text || q.title || "سؤال جديد"),
-        type: q.type || "multiple_choice",
-        pathId: String(q.pathId || pathId || "").trim(),
-        subjectId: String(q.subjectId || subjectId || "").trim(),
-        options: formattedOptions,
-        explanation: String(q.explanation || ""),
-        ownerId: String(authUser?.id || ""),
-        createdBy: String(authUser?.id || ""),
-      });
-      createdIds.push(String(createdQuestion.id || createdQuestion._id || ""));
-    }
-  }
-  return createdIds;
-};
-
 quizRouter.get(
   "/results/latest",
   requireAuth,
@@ -1840,7 +1797,7 @@ quizRouter.post(
     }
 
     if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
-      const inlineQuestionIds = await processInlineQuestions(req.body.questions, payload.pathId, payload.subjectId, req.authUser);
+      const inlineQuestionIds = await processInlineQuestions(req.body.questions, payload.pathId, payload.subjectId, req.authUser, (document) => QuestionModel.create(document));
       payload.questionIds = uniqueStrings([...(payload.questionIds || []), ...inlineQuestionIds]);
     }
 
@@ -1899,7 +1856,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
   if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
     const nextPathId = String(payload.pathId || existing.pathId || "").trim();
     const nextSubjectId = String(payload.subjectId || existing.subjectId || "").trim();
-    const inlineQuestionIds = await processInlineQuestions(req.body.questions, nextPathId, nextSubjectId, req.authUser);
+    const inlineQuestionIds = await processInlineQuestions(req.body.questions, nextPathId, nextSubjectId, req.authUser, (document) => QuestionModel.create(document));
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
     payload.questionIds = uniqueStrings([...existingQuestionIds, ...(payload.questionIds || []), ...inlineQuestionIds]);
   }
@@ -1967,6 +1924,7 @@ quizRouter.post(
       String(existing.pathId || ""),
       String(existing.subjectId || ""),
       req.authUser,
+      (document) => QuestionModel.create(document),
     );
 
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];

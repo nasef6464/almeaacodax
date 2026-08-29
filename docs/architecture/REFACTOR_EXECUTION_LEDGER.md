@@ -144,6 +144,15 @@
 - Known limitation: inline-question persistence, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map inline-question creation orchestration into a compatible questions/quiz application boundary without changing persistence or authorization semantics.
 
+## 2A-07 — Inline-question creation boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted inline-question normalization and creation orchestration into `server/src/modules/quizzes/application/quizInlineQuestions.ts`; the route supplies the existing `QuestionModel.create` adapter and remains responsible for authorization and attaching IDs to the quiz.
+- Preserved: string-reference handling, existing-ID handling, generated IDs, option normalization, default text/type, path/subject fallback, owner metadata, sequential creation order, route URLs/methods, database schema, and RBAC behavior.
+- Tests: assessment inline-question contract 4/4; publication 4/4; workflow 3/3; question selection 5/5; integrity 4/4; typecheck; server check/build; frontend build; repository audit; architecture gate PASS.
+- Known limitation: quiz-definition assembly, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map quiz-definition assembly and persistence orchestration into the next compatible application boundary without changing database semantics or API contracts.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
