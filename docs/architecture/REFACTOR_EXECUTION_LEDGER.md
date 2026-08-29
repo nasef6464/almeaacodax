@@ -153,6 +153,15 @@
 - Known limitation: quiz-definition assembly, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map quiz-definition assembly and persistence orchestration into the next compatible application boundary without changing database semantics or API contracts.
 
+## 2A-08 — Quiz definition document boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted pure `buildQuizCreateDocument` into `server/src/modules/quizzes/application/quizDefinitionDocument.ts`; the route still owns validation, authorization, integrity checks, and `QuizModel.create` persistence.
+- Preserved: field precedence, generated IDs, workflow metadata, approval status, publication state, platform visibility default, skill IDs, route URLs/methods, database schema, and RBAC behavior.
+- Tests: definition-document 4/4; publication 4/4; inline-question 4/4; workflow 3/3; selection 5/5; integrity 4/4; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; typecheck/server check/build/frontend build; repository audit; architecture gate PASS.
+- Known limitation: update document assembly, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map quiz update document assembly into the next compatible application boundary without changing database semantics or API contracts.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

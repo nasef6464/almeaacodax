@@ -34,6 +34,7 @@ import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/appl
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../modules/quizzes/application/quizWorkflow.js";
 import { resolveQuizPublicationState } from "../modules/quizzes/application/quizPublicationPolicy.js";
 import { processInlineQuestions } from "../modules/quizzes/application/quizInlineQuestions.js";
+import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1828,18 +1829,14 @@ quizRouter.post(
     }
 
     const quizId = String(payload.id || `quiz_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
-    const created = await QuizModel.create({
-      ...payload,
-      id: quizId,
-      _id: quizId,
-      ...workflowDefaults,
-      approvalStatus: req.authUser?.role === "admin" || req.authUser?.role === "supervisor"
-        ? payload.approvalStatus || "approved"
-        : workflowDefaults.approvalStatus,
-      isPublished: willBePublished,
-      showOnPlatform: typeof payload.showOnPlatform === "boolean" ? payload.showOnPlatform : false,
-      skillIds: resolvedSkillIds,
-    });
+    const created = await QuizModel.create(buildQuizCreateDocument({
+      payload,
+      quizId,
+      workflowDefaults,
+      isPowerRole: req.authUser?.role === "admin" || req.authUser?.role === "supervisor",
+      resolvedSkillIds,
+      willBePublished,
+    }));
     res.status(StatusCodes.CREATED).json(created);
   }),
 );

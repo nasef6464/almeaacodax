@@ -34,7 +34,7 @@ check('publication policy does not own persistence or authorization', () => {
 });
 
 check('create route retains publication integrity and persistence orchestration', () => {
-  for (const fragment of ['if (willBePublished)', 'validateQuizQuestionIntegrity(payload)', 'QuizModel.create({', 'isPublished: willBePublished']) {
+  for (const fragment of ['if (willBePublished)', 'validateQuizQuestionIntegrity(payload)', 'QuizModel.create(buildQuizCreateDocument({']) {
     assert.ok(routeSource.includes(fragment), `create route lost ${fragment}`);
   }
 });
