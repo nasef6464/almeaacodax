@@ -171,6 +171,15 @@
 - Known limitation: validation-state composition, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map quiz validation-state composition into the next compatible application boundary without changing integrity, persistence, or API contracts.
 
+## 2A-10 — Quiz validation-state boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted pure `buildQuizValidationState` into `server/src/modules/quizzes/application/quizValidationState.ts`; the route still owns sanitization, integrity validation, persistence, and response mapping.
+- Preserved: merge precedence of existing, normalized, and sanitized fields; publication integrity behavior; `findOneAndUpdate` persistence; route URLs/methods; database schema; and RBAC behavior.
+- Tests: validation-state 4/4; update-document 4/4; definition-document 4/4; publication 4/4; inline-question 4/4; integrity 4/4; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; typecheck/server check/build/frontend build; repository audit; architecture gate PASS.
+- Known limitation: session/attempt preparation, submission, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map quiz session/attempt preparation into the next compatible application boundary without changing submission, scoring, or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

@@ -82,6 +82,7 @@
     "smoke:assessment-inline-question": "node scripts/smoke-assessment-inline-question-contract.mjs",
     "smoke:assessment-definition-document": "node scripts/smoke-assessment-definition-document-contract.mjs",
     "smoke:assessment-update-document": "node scripts/smoke-assessment-update-document-contract.mjs",
+    "smoke:assessment-validation-state": "node scripts/smoke-assessment-validation-state-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",

@@ -36,6 +36,7 @@ import { resolveQuizPublicationState } from "../modules/quizzes/application/quiz
 import { processInlineQuestions } from "../modules/quizzes/application/quizInlineQuestions.js";
 import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
+import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1876,11 +1877,11 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     req.authUser!,
     { respectPublished: true },
   );
-  const nextQuizState = {
-    ...existing.toObject(),
-    ...normalizedPayload,
-    ...sanitizedPayload,
-  };
+  const nextQuizState = buildQuizValidationState(
+    existing.toObject() as Record<string, unknown>,
+    normalizedPayload as Record<string, unknown>,
+    sanitizedPayload,
+  );
   if (nextQuizState.isPublished === true) {
     const integrity = await validateQuizQuestionIntegrity(nextQuizState);
     if (!integrity.ok) {
