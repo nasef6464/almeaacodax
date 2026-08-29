@@ -39,6 +39,7 @@ import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpda
 import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
 import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
 import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
+import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1990,22 +1991,8 @@ quizRouter.post(
     const submissionKey = buildSubmissionKey(req.authUser!.id, quizId, attemptNumber);
     const questionIds = getQuizQuestionIds(quiz);
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
-    const questionById = new Map<string, any>();
-    questions.forEach((question) => {
-      const canonicalId = String(question.id || question._id);
-      questionById.set(canonicalId, question);
-      const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
-      if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
-        questionById.set(withoutCopySuffix, question);
-      }
-    });
-
-    const orderedQuestions = questionIds
-      .map((questionId) => {
-        const id = String(questionId);
-        return questionById.get(id) || questionById.get(id.replace(/_copy(?:_\d+)?$/i, ""));
-      })
-      .filter(Boolean);
+    const questionById = buildQuizQuestionLookup(questions);
+    const orderedQuestions = resolveOrderedQuizQuestions(questionIds, questions);
 
     if (orderedQuestions.length === 0) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Quiz has no valid questions" });

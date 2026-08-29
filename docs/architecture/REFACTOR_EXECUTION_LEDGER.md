@@ -198,6 +198,15 @@
 - Known limitation: question-resolution context, sessions, and high-volume attempt/result load certification remain future work. No production load certification is claimed.
 - Next: map quiz submission question-resolution context into the next compatible application boundary without changing submission, scoring, or persistence semantics.
 
+## 2A-13 — Quiz submission question-resolution boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted `buildQuizQuestionLookup` and `resolveOrderedQuizQuestions` into `server/src/modules/quizzes/application/quizSubmissionQuestions.ts`; the route retains the database query, scoring loop, result persistence, and post-submission side effects.
+- Preserved: canonical-ID lookup, `_copy` suffix fallback, quiz question order, question-by-ID map passed to side effects, empty-question protection, route URLs/methods, database schema, submission behavior, and scoring semantics.
+- Tests: submission-question resolution 4/4; attempt-context 4/4; quiz integrity 4/4; student journey 7/7; auth/API security PASS; repository audit; architecture gate PASS; typecheck/server build and frontend build executed without errors.
+- Known limitation: scoring summary, sessions, and high-volume attempt/result load certification remain future work. No production load certification is claimed.
+- Next: map quiz submission scoring summary into the next compatible application boundary without changing submission, scoring, or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

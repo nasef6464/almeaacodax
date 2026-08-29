@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T11:19:01.229Z",
-  "sourceGitHead": "91678b4d298b100b788a37a69a4144950122038f",
+  "generatedAt": "2026-08-29T16:20:03.499Z",
+  "sourceGitHead": "fb8bdf797b5c2539410614e0a23f316da880bfc5",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1771,6 +1771,12 @@
     {
       "source": "server/src/modules/quizzes/application/quizQuestionSelection.ts",
       "target": "apps/api/src/modules/quizzes/application/quizQuestionSelection.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizSubmissionQuestions.ts",
+      "target": "apps/api/src/modules/quizzes/application/quizSubmissionQuestions.ts",
       "domain": "questions",
       "confidence": "review-required"
     },
