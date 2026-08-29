@@ -155,7 +155,7 @@
 
 ## 2A-08 — Quiz definition document boundary
 
-- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Status: COMPLETED in `81d3df1e` on `refactor/modular-platform-safe`.
 - Changed: extracted pure `buildQuizCreateDocument` into `server/src/modules/quizzes/application/quizDefinitionDocument.ts`; the route still owns validation, authorization, integrity checks, and `QuizModel.create` persistence.
 - Preserved: field precedence, generated IDs, workflow metadata, approval status, publication state, platform visibility default, skill IDs, route URLs/methods, database schema, and RBAC behavior.
 - Tests: definition-document 4/4; publication 4/4; inline-question 4/4; workflow 3/3; selection 5/5; integrity 4/4; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; typecheck/server check/build/frontend build; repository audit; architecture gate PASS.

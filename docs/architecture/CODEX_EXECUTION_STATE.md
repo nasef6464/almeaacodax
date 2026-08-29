@@ -3,7 +3,7 @@
 - Current phase: Phase 2A — Assessment Backend Boundaries
 - Current batch: 2A-11 question-attempt document boundary completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed/pushed commit: `a2db9f33` (code); control-plane checkpoint follows
+- Last completed/pushed commit: `81d3df1e` (code); control-plane checkpoint follows
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: typecheck PASS; server check/build PASS; frontend build PASS; repository audit PASS; architecture gate PASS; route/runtime/security/quiz/auth/API/student/report/school smoke PASS; assessment side-effects, notification realtime, weekly scheduler, parent bounded-read, operations bootstrap, operations read-memory, compact taxonomy, and read-baseline contracts PASS; unresolved runtime imports 0; runtime cycles 0
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
