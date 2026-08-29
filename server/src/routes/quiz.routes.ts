@@ -38,6 +38,7 @@ import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefi
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
 import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
 import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
+import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -104,17 +105,6 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
 
-const getQuizMaxAttempts = (quiz: any) => {
-  const value = Number(quiz?.settings?.maxAttempts ?? 1);
-  return Number.isFinite(value) && value > 0 ? Math.floor(value) : 1;
-};
-
-const getQuizPassingScore = (quiz: any) => {
-  const value = Number(quiz?.settings?.passingScore ?? 60);
-  if (!Number.isFinite(value)) return 60;
-  return Math.min(100, Math.max(0, value));
-};
-
 const assertQuizWindowIsOpen = (
   quiz: any,
   payload: z.infer<typeof quizSubmitSchema>,
@@ -145,9 +135,6 @@ const assertQuizWindowIsOpen = (
 
   return { ok: true };
 };
-
-const buildSubmissionKey = (userId: string, quizId: string, attemptNumber: number) =>
-  `quiz-submit:${userId}:${quizId}:attempt:${attemptNumber}`;
 
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {

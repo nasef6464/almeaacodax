@@ -1,26 +1,26 @@
 # Current Repository Architecture Audit
 
-Generated from commit `5007758350a7528e3abf748139c749101bb68924` using the TypeScript AST for imports and route extraction.
+Generated from commit `91678b4d298b100b788a37a69a4144950122038f` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1106 |
-| Source files (including scripts/tooling) | 756 |
-| Runtime source files | 440 |
-| Source lines | 166,665 |
-| Runtime source lines | 131,920 |
+| Tracked files | 1108 |
+| Source files (including scripts/tooling) | 758 |
+| Runtime source files | 441 |
+| Source lines | 166,713 |
+| Runtime source lines | 131,921 |
 | Frontend route literals | 49 |
 | Backend HTTP route entries | 236 |
 | Router mount points | 25 |
-| Runtime relative import edges | 1327 |
+| Runtime relative import edges | 1328 |
 | Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 2 |
 | Runtime dependency cycles | 0 |
 | Cross-domain runtime import edges | 876 |
 | Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 430 |
+| Candidate migration-map entries | 431 |
 
 ## Largest runtime source hotspots
 
@@ -28,7 +28,7 @@ Generated from commit `5007758350a7528e3abf748139c749101bb68924` using the TypeS
 |---|---:|---:|---|
 | `server/src/routes/content.routes.ts` | 2629 | 100989 | content |
 | `pages/Reports.tsx` | 2607 | 187317 | reports |
-| `server/src/routes/quiz.routes.ts` | 2427 | 96050 | quizzes |
+| `server/src/routes/quiz.routes.ts` | 2414 | 95648 | quizzes |
 | `dashboards/admin/PathsManager.tsx` | 2238 | 126125 | paths |
 | `pages/Dashboard.tsx` | 2195 | 132224 | shared |
 | `dashboards/admin/SchoolsManager.tsx` | 2176 | 107630 | schools |

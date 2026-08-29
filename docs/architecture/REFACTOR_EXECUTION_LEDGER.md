@@ -189,6 +189,15 @@
 - Known limitation: submission attempt-context, sessions, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map quiz submission attempt-context preparation into the next compatible application boundary without changing submission, scoring, or persistence semantics.
 
+## 2A-12 — Quiz attempt-context boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted `getQuizMaxAttempts`, `getQuizPassingScore`, and `buildSubmissionKey` into `server/src/modules/quizzes/application/quizAttemptContext.ts`; the submission route retains attempt counting, limit enforcement, question resolution, scoring, and persistence orchestration.
+- Preserved: default/max-attempt normalization, score clamping, idempotency key format, attempt numbering, route URLs/methods, database schema, submission behavior, and scoring semantics.
+- Tests: attempt-context 4/4; question-attempt 4/4; validation-state 4/4; update-document 4/4; publication 4/4; inline-question 4/4; integrity 4/4; reports 20/20; typecheck/server check/build/frontend build; repository audit; architecture gate PASS.
+- Known limitation: question-resolution context, sessions, and high-volume attempt/result load certification remain future work. No production load certification is claimed.
+- Next: map quiz submission question-resolution context into the next compatible application boundary without changing submission, scoring, or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
