@@ -137,7 +137,7 @@
 
 ## 2A-06 — Quiz publication policy boundary
 
-- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Status: COMPLETED in `3014a2c4` on `refactor/modular-platform-safe`.
 - Changed: extracted `isQuizPowerRole` and `resolveQuizPublicationState` into `server/src/modules/quizzes/application/quizPublicationPolicy.ts`; the create route delegates the publication decision while retaining integrity validation, authorization, persistence, and scoring orchestration.
 - Preserved: admin/supervisor publication authority, teacher/student non-publication behavior, explicit `isPublished` handling, question-count default, route URLs/methods, database schema, and RBAC behavior.
 - Tests: assessment publication 4/4; workflow 3/3; question selection 5/5; quiz integrity 4/4; auth/API security PASS; server check/build; repository audit; architecture gate PASS.
