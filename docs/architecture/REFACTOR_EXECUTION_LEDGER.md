@@ -110,7 +110,7 @@
 
 ## 2A-03 — Quiz placement normalization boundary
 
-- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Status: COMPLETED in `7dd90ec5` on `refactor/modular-platform-safe`.
 - Changed: extracted pure `normalizeQuizPlacementPayload` logic into `server/src/modules/quizzes/application/quizPlacement.ts`; create/update routes retain parser calls and delegate placement/type derivation through the application boundary.
 - Preserved: public route URLs/methods, parser behavior, `quizKind`, `type`, `placement`, `showInTraining`, `showInMock`, legacy placement-field inference, public/all access normalization, mock defaults, publish checks, and persistence/scoring semantics.
 - Tests: quiz definition boundary PASS; quiz query-schema boundary PASS; quiz integrity 4/4; assessment side-effects 6/6; server check/server build; repository audit; architecture gate PASS.
