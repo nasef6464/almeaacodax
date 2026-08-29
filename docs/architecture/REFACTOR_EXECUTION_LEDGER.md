@@ -200,7 +200,7 @@
 
 ## 2A-13 — Quiz submission question-resolution boundary
 
-- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Status: COMPLETED in `7256a7fe` on `refactor/modular-platform-safe`.
 - Changed: extracted `buildQuizQuestionLookup` and `resolveOrderedQuizQuestions` into `server/src/modules/quizzes/application/quizSubmissionQuestions.ts`; the route retains the database query, scoring loop, result persistence, and post-submission side effects.
 - Preserved: canonical-ID lookup, `_copy` suffix fallback, quiz question order, question-by-ID map passed to side effects, empty-question protection, route URLs/methods, database schema, submission behavior, and scoring semantics.
 - Tests: submission-question resolution 4/4; attempt-context 4/4; quiz integrity 4/4; student journey 7/7; auth/API security PASS; repository audit; architecture gate PASS; typecheck/server build and frontend build executed without errors.
