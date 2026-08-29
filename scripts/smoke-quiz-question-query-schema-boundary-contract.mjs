@@ -129,7 +129,6 @@ check('submission schema ownership handoff is explicit when delegated by a later
 
 check('quiz business rules and submission behavior remain route-owned', () => {
   for (const fragment of [
-    'const validateQuizQuestionIntegrity = async',
     'const normalizeQuizPlacementPayload =',
     'const assertQuizWindowIsOpen =',
     'const canSubmitQuiz = async',

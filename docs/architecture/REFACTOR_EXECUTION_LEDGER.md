@@ -99,6 +99,15 @@
 - Known limitation: definition/selection/publish, session/attempt, and scoring boundaries remain in the legacy route and are intentionally separate future batches. No production load certification is claimed.
 - Next: map quiz definition, question selection, and publish validation into the next compatible application boundary without changing scoring or persistence semantics.
 
+## 2A-02 — Quiz question integrity boundary
+
+- Status: COMPLETED in `2f8a3170` on `refactor/modular-platform-safe`.
+- Changed: extracted question-reference/content validation into `server/src/modules/quizzes/application/quizQuestionIntegrity.ts`. Create/update publish checks and admin integrity report/repair now reuse the application boundary; the route remains responsible for HTTP response mapping and truncating diagnostic IDs where required.
+- Preserved: missing/invalid question detection, copy-suffix resolution, usability rules, publish error messages/statuses, integrity report and repair behavior, route URLs/methods, authorization, database schema, scoring, and quiz submission behavior.
+- Tests: quiz integrity 4/4; quiz question presentation boundary PASS; quiz definition boundary PASS; quiz query-schema boundary PASS; assessment side-effects 6/6; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; server check/build and architecture gate PASS.
+- Known limitation: definition normalization, selection, publish orchestration, session/attempt, and scoring remain separate future boundaries. No production load certification is claimed.
+- Next: map quiz definition normalization and publish orchestration into the next compatible application boundary without changing scoring or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
