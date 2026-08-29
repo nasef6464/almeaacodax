@@ -37,6 +37,7 @@ import { processInlineQuestions } from "../modules/quizzes/application/quizInlin
 import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
 import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
+import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1638,17 +1639,13 @@ quizRouter.post(
     const selectedOptionIndex = Number(payload.selectedOptionIndex);
     const isCorrect =
       selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
-    const created = await QuestionAttemptModel.create({
-      ...payload,
+    const created = await QuestionAttemptModel.create(buildQuestionAttemptDocument({
+      payload,
       selectedOptionIndex,
       isCorrect,
       userId: req.authUser!.id,
-      date: payload.date || new Date().toISOString(),
-      pathId: String(question?.pathId || ""),
-      subjectId: String(question?.subject || ""),
-      sectionId: String(question?.sectionId || ""),
-      skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
-    });
+      question,
+    }));
     await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);
 
     res.status(StatusCodes.CREATED).json(created);

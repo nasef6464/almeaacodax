@@ -180,6 +180,15 @@
 - Known limitation: session/attempt preparation, submission, and scoring remain future boundaries. No production load certification is claimed.
 - Next: map quiz session/attempt preparation into the next compatible application boundary without changing submission, scoring, or persistence semantics.
 
+## 2A-11 — Question-attempt document boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted pure `buildQuestionAttemptDocument` into `server/src/modules/quizzes/application/questionAttemptDocument.ts`; the route still owns question lookup, correctness calculation, `QuestionAttemptModel.create`, and skill-progress side effects.
+- Preserved: attempt payload, selected index, correctness value, user/date metadata, question path/subject/section/skills mapping, route URLs/methods, database schema, and scoring behavior.
+- Tests: question-attempt document 4/4; validation-state 4/4; update-document 4/4; publication 4/4; inline-question 4/4; integrity 4/4; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; typecheck/server check/build/frontend build; repository audit; architecture gate PASS.
+- Known limitation: submission attempt-context, sessions, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map quiz submission attempt-context preparation into the next compatible application boundary without changing submission, scoring, or persistence semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

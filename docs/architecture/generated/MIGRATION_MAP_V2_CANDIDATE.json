@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T11:01:43.855Z",
-  "sourceGitHead": "b9477f7e2b4299947272b39ae9b1590ec0643a96",
+  "generatedAt": "2026-08-29T11:11:11.606Z",
+  "sourceGitHead": "5007758350a7528e3abf748139c749101bb68924",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1723,6 +1723,12 @@
     {
       "source": "server/src/modules/quizzes/analytics/skillAnalytics.ts",
       "target": "apps/api/src/modules/quizzes/analytics/skillAnalytics.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/questionAttemptDocument.ts",
+      "target": "apps/api/src/modules/quizzes/application/questionAttemptDocument.ts",
       "domain": "questions",
       "confidence": "review-required"
     },
