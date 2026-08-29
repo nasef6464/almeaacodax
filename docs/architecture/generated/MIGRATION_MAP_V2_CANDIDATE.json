@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-29T05:50:58.420Z",
-  "sourceGitHead": "b10b9081a308407aeac7f44857fe1b0c91dc3f74",
+  "generatedAt": "2026-08-29T06:00:10.026Z",
+  "sourceGitHead": "b110ace0a4d5edff7463f377f360f301e06bae3c",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1747,6 +1747,12 @@
     {
       "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
       "target": "apps/api/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/quizWorkflow.ts",
+      "target": "apps/api/src/modules/quizzes/application/quizWorkflow.ts",
       "domain": "quizzes",
       "confidence": "review-required"
     },

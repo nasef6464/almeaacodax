@@ -126,6 +126,15 @@
 - Known limitation: definition parser/publish orchestration, sessions/attempts, and scoring remain separate future boundaries. No production load certification is claimed.
 - Next: map quiz definition parser/publish orchestration into the next compatible application boundary without changing scoring or persistence semantics.
 
+## 2A-05 — Quiz workflow boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: extracted `getWorkflowDefaults` and `sanitizeWorkflowUpdate` into `server/src/modules/quizzes/application/quizWorkflow.ts`; create/update flows now delegate workflow ownership and publication sanitization while the route retains HTTP, authorization, persistence, and scoring orchestration.
+- Preserved: admin/supervisor/teacher/default ownership metadata, approval transitions, publication restrictions, timestamps, route URLs/methods, database schema, scoring, and RBAC behavior.
+- Tests: assessment workflow 3/3; assessment question selection 5/5; quiz integrity 4/4; definition/query boundaries PASS; student journey 7/7; reports 20/20; school scope 4/4; school portal 16/16; auth/API security PASS; frontend build; server check/build; repository audit; architecture gate PASS.
+- Known limitation: publication decision, inline-question persistence, sessions/attempts, and scoring remain future boundaries. No production load certification is claimed.
+- Next: map quiz publication decision/policy into the next compatible application boundary without changing scoring, persistence, or authorization semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
