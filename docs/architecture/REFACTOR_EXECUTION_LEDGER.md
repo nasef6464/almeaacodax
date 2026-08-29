@@ -92,7 +92,7 @@
 
 ## 2A-01 — Quiz submission side-effects boundary
 
-- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Status: COMPLETED in `3651e0ec` on `refactor/modular-platform-safe`.
 - Changed: extracted quiz-submission side effects into `server/src/modules/quizzes/application/quizSubmissionSideEffects.ts`: skill-progress updates from results and question attempts, spaced-repetition review-card upserts, and non-critical result notifications. `quiz.routes.ts` now delegates to the module while retaining route orchestration and the compatibility facade.
 - Preserved: quiz submit URL/method, authentication and directed-quiz checks, max-attempt behavior, time-window checks, question ordering, scoring, skill analysis, result snapshot, idempotent submission key, response serialization, notification wording, and persisted schema semantics.
 - Tests: assessment side-effects 6/6; quiz integrity 4/4; auth login security 9/9; API security 6/6; student learning journey 7/7; reports role 20/20; school scope 4/4; school portal 16/16; typecheck/server check/server build/architecture gate PASS.
