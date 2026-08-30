@@ -48,6 +48,7 @@ import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/applicatio
 import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
+import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -113,37 +114,6 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
 
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
-
-const assertQuizWindowIsOpen = (
-  quiz: any,
-  payload: z.infer<typeof quizSubmitSchema>,
-): { ok: true } | { ok: false; status: number; message: string } => {
-  const dueDateRaw = String(quiz?.dueDate || "").trim();
-  if (dueDateRaw) {
-    const dueDateMs = Date.parse(dueDateRaw);
-    if (Number.isFinite(dueDateMs) && Date.now() > dueDateMs) {
-      return {
-        ok: false,
-        status: StatusCodes.FORBIDDEN,
-        message: "Quiz submission deadline has passed",
-      };
-    }
-  }
-
-  const timeLimitMinutes = Number(quiz?.settings?.timeLimit ?? 0);
-  if (Number.isFinite(timeLimitMinutes) && timeLimitMinutes > 0) {
-    const allowedSeconds = Math.ceil(timeLimitMinutes * 60) + 60;
-    if (payload.timeSpentSeconds > allowedSeconds) {
-      return {
-        ok: false,
-        status: StatusCodes.REQUEST_TIMEOUT,
-        message: "Quiz time limit exceeded",
-      };
-    }
-  }
-
-  return { ok: true };
-};
 
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {
@@ -1974,7 +1944,10 @@ quizRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
 
-    const quizWindow = assertQuizWindowIsOpen(quiz, payload);
+    const quizWindow = assertQuizSubmissionWindow({
+      quiz,
+      timeSpentSeconds: payload.timeSpentSeconds,
+    });
     if (quizWindow.ok === false) {
       return res.status(quizWindow.status).json({ message: quizWindow.message });
     }
