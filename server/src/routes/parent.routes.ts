@@ -240,7 +240,7 @@ parentRouter.post(
 parentRouter.post(
   "/weekly-report/trigger-all",
   requireAuth,
-  requireRole(["admin", "parent"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const parents = await UserModel.find({
       role: "parent",

@@ -410,6 +410,22 @@ async function main() {
     });
     expectStatus("parent cannot generate staff AI question", parentQuestion, 403);
 
+    const parentGlobalWeeklyReport = await jsonRequest("/parent/weekly-report/trigger-all", {
+      method: "POST",
+      token: tokens.get("parent"),
+      csrf,
+      body: {},
+    });
+    expectStatus("parent cannot trigger reports for every guardian", parentGlobalWeeklyReport, 403);
+
+    const parentUnverifiedStudentLink = await jsonRequest("/auth/parent/link-student", {
+      method: "POST",
+      token: tokens.get("parent"),
+      csrf,
+      body: { nationalId: "1234567890" },
+    });
+    expectStatus("parent cannot link a student without verified guardianship", parentUnverifiedStudentLink, 403);
+
     for (const role of ["teacher", "supervisor", "admin"] as Role[]) {
       const result = await jsonRequest("/ai/question", {
         method: "POST",
