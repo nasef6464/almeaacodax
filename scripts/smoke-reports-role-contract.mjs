@@ -298,9 +298,13 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'authUser.role === "admin"');
   assertIncludes(quizRoutesSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
   assertIncludes(quizRoutesSource, 'const resolveSupervisorSchoolReportScope = async');
-  assertIncludes(quizRoutesSource, 'GroupModel.find({ type: "SCHOOL", supervisorIds: String(authUser.id || authUser._id || "") })');
+  assertIncludes(quizRoutesSource, 'GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") })');
+  assertIncludes(quizRoutesSource, '.filter((group: any) => group.type === "SCHOOL")');
+  assertIncludes(quizRoutesSource, '...directlySupervisedGroups.map((group: any) => String(group.id || group._id || ""))');
   assertIncludes(quizRoutesSource, 'const childScopedGroups = scopedSchoolIds.length');
   assertIncludes(quizRoutesSource, 'scopeFilters.push({ schoolId: { $in: scopedSchoolIds } })');
+  assertIncludes(quizRoutesSource, 'const scopedStudentIds = students.map((student) => idOf(student));');
+  assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
   assertIncludes(quizRoutesSource, 'authUser.role === "parent"');
   assertIncludes(quizRoutesSource, 'linkedStudentIds');
   assertIncludes(quizRoutesSource, 'matchesManagedScope');

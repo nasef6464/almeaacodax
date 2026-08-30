@@ -36,6 +36,7 @@ const credentials = new Map<Role, { email: string; password: string }>();
 const tokens = new Map<Role, string>();
 const userIds = new Map<Role, string>();
 const groupIds = new Map<"school" | "class" | "siblingClass" | "outsideSchool", string>();
+const scopeStudentIds = new Map<"assigned" | "sibling", string>();
 
 function pass(label: string) {
   console.log(`PASS ${label}`);
@@ -180,11 +181,28 @@ async function seedIsolatedUsers() {
     studentIds: [],
   });
   groupIds.set("outsideSchool", String(outsideSchool._id));
+  const siblingStudent = await UserModel.create({
+    name: "Platform V3 integration sibling student",
+    email: `platform-v3-sibling-student-${RUN_MARKER}@example.invalid`,
+    passwordHash: await bcrypt.hash(randomBytes(24).toString("base64url"), 10),
+    role: "student",
+    isActive: true,
+    emailVerified: true,
+    emailVerifiedAt: Date.now(),
+    schoolId,
+    groupIds: [String(siblingClass._id)],
+    linkedStudentIds: [],
+    enrolledCourses: [],
+    completedLessons: [],
+  });
+  scopeStudentIds.set("assigned", studentId);
+  scopeStudentIds.set("sibling", String(siblingStudent._id));
   await Promise.all([
     UserModel.updateOne({ _id: studentId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
     UserModel.updateOne({ _id: supervisorId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
     UserModel.updateOne({ _id: classSupervisorId }, { $set: { groupIds: [schoolClassId] } }),
     GroupModel.updateOne({ _id: schoolClass._id }, { $addToSet: { supervisorIds: classSupervisorId } }),
+    GroupModel.updateOne({ _id: siblingClass._id }, { $addToSet: { studentIds: String(siblingStudent._id) } }),
     UserModel.updateOne(
       { _id: teacherId },
       { $set: { managedPathIds: [ASSESSMENT_PATH_ID], managedSubjectIds: [ASSESSMENT_SUBJECT_ID] } },
@@ -365,7 +383,8 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   const classId = groupIds.get("class");
   const siblingClassId = groupIds.get("siblingClass");
   const outsideSchoolId = groupIds.get("outsideSchool");
-  assert.ok(schoolId && classId && siblingClassId && outsideSchoolId, "isolated school scope fixtures missing");
+  const siblingStudentId = scopeStudentIds.get("sibling");
+  assert.ok(schoolId && classId && siblingClassId && outsideSchoolId && siblingStudentId, "isolated school scope fixtures missing");
 
   const schoolSupervisorOutsideReport = await jsonRequest(`/content/schools/${outsideSchoolId}/report`, {
     token: tokens.get("supervisor"),
@@ -392,6 +411,32 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
     body: { name: "Platform V3 integration class updated by assigned supervisor" },
   });
   expectStatus("class supervisor manages only the assigned class", classSupervisorOwnClass, 200);
+
+  const classSupervisorScopedResults = await jsonRequest("/quizzes/results/scoped?limit=10", {
+    token: tokens.get("classSupervisor"),
+  });
+  expectStatus("class supervisor reaches scoped results", classSupervisorScopedResults, 200);
+  assert.equal(classSupervisorScopedResults.body?.scope?.studentCount, 1, "class supervisor result scope included a sibling class");
+  pass("class supervisor result scope excludes sibling-class students");
+
+  const classSupervisorOutsideTarget = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("classSupervisor"),
+    csrf,
+    body: {
+      id: `${SUPERVISOR_QUIZ_ID}-class-outside`,
+      title: "Platform V3 class supervisor outside target",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      mode: "central",
+      questionIds: [ASSESSMENT_QUESTION_ID],
+      targetUserIds: [siblingStudentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+    },
+  });
+  expectStatus("class supervisor cannot target a sibling-class student", classSupervisorOutsideTarget, 403);
 }
 
 async function main() {

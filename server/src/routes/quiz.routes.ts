@@ -518,20 +518,19 @@ const resolveSupervisorSchoolReportScope = async (authUser: any) => {
   }
 
   const managedGroupIds = uniqueStrings((authUser.groupIds || []).map(String));
-  const [seedGroups, directSupervisedSchools] = await Promise.all([
+  const [seedGroups, directlySupervisedGroups] = await Promise.all([
     managedGroupIds.length
       ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type").lean()
       : Promise.resolve([]),
-    GroupModel.find({ type: "SCHOOL", supervisorIds: String(authUser.id || authUser._id || "") }).select("id _id").lean(),
+    GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") }).select("id _id parentId type").lean(),
   ]);
 
   const scopedSchoolIds = uniqueStrings([
     authUser.schoolId ? String(authUser.schoolId) : undefined,
-    ...directSupervisedSchools.map((group: any) => String(group.id || group._id || "")),
+    ...directlySupervisedGroups
+      .filter((group: any) => group.type === "SCHOOL")
+      .map((group: any) => String(group.id || group._id || "")),
     ...seedGroups.filter((group: any) => group.type === "SCHOOL").map((group: any) => String(group.id || group._id || "")),
-    ...seedGroups
-      .filter((group: any) => group.type === "CLASS" || group.type === "PRIVATE_GROUP")
-      .map((group: any) => String(group.parentId || "")),
   ]);
 
   const childScopedGroups = scopedSchoolIds.length
@@ -542,7 +541,7 @@ const resolveSupervisorSchoolReportScope = async (authUser: any) => {
     schoolIds: scopedSchoolIds,
     groupIds: uniqueStrings([
       ...managedGroupIds,
-      ...directSupervisedSchools.map((group: any) => String(group.id || group._id || "")),
+      ...directlySupervisedGroups.map((group: any) => String(group.id || group._id || "")),
       ...childScopedGroups.map((group: any) => String(group.id || group._id || "")),
     ]),
   };
@@ -1703,13 +1702,27 @@ quizRouter.get(
       });
     }
 
-    // جلب جميع محاولات هذا المحاكي التي تحتوي على sectionResults
-    const results = await QuizResultModel.find({
+    const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
+    if (!authUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    const { students } = authUser.role === "admin"
+      ? { students: [] as any[] }
+      : await resolveScopedStudents(authUser, { limit: 1000 });
+    const scopedStudentIds = students.map((student) => idOf(student));
+
+    // Scope aggregate input to the same authoritative student relationship used
+    // by school reports; never aggregate every attempt for a supervisor request.
+    const results = authUser.role === "admin" || scopedStudentIds.length
+      ? await QuizResultModel.find({
       quizId,
+      ...(authUser.role === "admin" ? {} : { userId: { $in: scopedStudentIds } }),
       sectionResults: { $exists: true, $ne: [] },
     })
       .select("sectionResults score passed")
-      .lean();
+      .lean()
+      : [];
 
     const totalAttempts = results.length;
 
