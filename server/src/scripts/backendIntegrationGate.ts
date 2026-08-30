@@ -7,6 +7,7 @@ import { UserModel } from "../models/User.js";
 import { CourseModel } from "../models/Course.js";
 import { CertificateModel } from "../models/Certificate.js";
 import { PathModel } from "../models/Path.js";
+import { GroupModel } from "../models/Group.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "parent" | "admin";
 
@@ -28,6 +29,8 @@ const ASSESSMENT_PATH_ID = `platform-v3-integration-path-${RUN_MARKER}`;
 const ASSESSMENT_SUBJECT_ID = `platform-v3-integration-subject-${RUN_MARKER}`;
 const ASSESSMENT_QUESTION_ID = `platform-v3-integration-question-${RUN_MARKER}`;
 const ASSESSMENT_QUIZ_ID = `platform-v3-integration-quiz-${RUN_MARKER}`;
+const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
+const SUPERVISOR_QUIZ_ID = `platform-v3-integration-supervisor-quiz-${RUN_MARKER}`;
 
 const credentials = new Map<Role, { email: string; password: string }>();
 const tokens = new Map<Role, string>();
@@ -127,7 +130,10 @@ async function seedIsolatedUsers() {
 
   const studentId = userIds.get("student");
   const parentId = userIds.get("parent");
-  assert.ok(studentId && parentId, "isolated user ids were not created");
+  const adminId = userIds.get("admin");
+  const teacherId = userIds.get("teacher");
+  const supervisorId = userIds.get("supervisor");
+  assert.ok(studentId && parentId && adminId && teacherId && supervisorId, "isolated user ids were not created");
   await UserModel.updateOne({ _id: parentId }, { $set: { linkedStudentIds: [studentId] } });
 
   await PathModel.create({
@@ -135,6 +141,32 @@ async function seedIsolatedUsers() {
     name: "Platform V3 integration assessment path",
     isActive: true,
   });
+
+  const school = await GroupModel.create({
+    name: "Platform V3 integration school",
+    type: "SCHOOL",
+    ownerId: adminId,
+    supervisorIds: [supervisorId],
+    studentIds: [studentId],
+  });
+  const schoolId = String(school._id);
+  const schoolClass = await GroupModel.create({
+    name: "Platform V3 integration class",
+    type: "CLASS",
+    parentId: schoolId,
+    ownerId: supervisorId,
+    supervisorIds: [supervisorId],
+    studentIds: [studentId],
+  });
+  const schoolClassId = String(schoolClass._id);
+  await Promise.all([
+    UserModel.updateOne({ _id: studentId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
+    UserModel.updateOne({ _id: supervisorId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
+    UserModel.updateOne(
+      { _id: teacherId },
+      { $set: { managedPathIds: [ASSESSMENT_PATH_ID], managedSubjectIds: [ASSESSMENT_SUBJECT_ID] } },
+    ),
+  ]);
 
   await CourseModel.create({
     _id: COURSE_ID,
@@ -247,6 +279,63 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("assessment max-attempt guard rejects repeat submission", repeatedSubmission, 409);
 }
 
+async function runScopedCreatorJourney(csrf: CsrfContext) {
+  const studentId = userIds.get("student");
+  assert.ok(studentId, "target student id missing for scoped creator checks");
+
+  const teacherDraft = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: TEACHER_QUIZ_ID,
+      title: "Platform V3 teacher scoped draft",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      questionIds: [ASSESSMENT_QUESTION_ID],
+      isPublished: true,
+    },
+  });
+  expectStatus("teacher creates a quiz inside managed scope", teacherDraft, 201);
+  assert.equal(teacherDraft.body?.isPublished, false, "teacher draft bypassed publication review");
+  assert.equal(teacherDraft.body?.approvalStatus, "pending_review", "teacher draft bypassed approval workflow");
+
+  const teacherOutsideScope = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: `${TEACHER_QUIZ_ID}-outside`,
+      title: "Platform V3 teacher outside scope",
+      pathId: `platform-v3-integration-outside-path-${RUN_MARKER}`,
+      subjectId: `platform-v3-integration-outside-subject-${RUN_MARKER}`,
+      questionIds: [ASSESSMENT_QUESTION_ID],
+    },
+  });
+  expectStatus("teacher cannot create a quiz outside managed scope", teacherOutsideScope, 403);
+
+  const supervisorQuiz = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: {
+      id: SUPERVISOR_QUIZ_ID,
+      title: "Platform V3 supervisor directed assessment",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      mode: "central",
+      questionIds: [ASSESSMENT_QUESTION_ID],
+      targetUserIds: [studentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+    },
+  });
+  expectStatus("supervisor creates an assessment for an in-scope student", supervisorQuiz, 201);
+  assert.equal(supervisorQuiz.body?.mode, "central", "supervisor assessment lost central mode");
+  assert.equal(supervisorQuiz.body?.approvalStatus, "approved", "supervisor assessment was not approved by workflow");
+}
+
 async function main() {
   assert.equal(env.NODE_ENV, "test", "Backend integration gate requires NODE_ENV=test");
   assert.ok(
@@ -283,6 +372,7 @@ async function main() {
     }
 
     await runAssessmentJourney(csrf);
+    await runScopedCreatorJourney(csrf);
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);
