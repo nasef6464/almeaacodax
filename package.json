@@ -101,6 +101,7 @@
     "smoke:quiz-progress-draft": "node scripts/smoke-quiz-progress-draft-contract.mjs",
     "smoke:quiz-submission-authority": "node scripts/smoke-quiz-submission-authority-contract.mjs",
     "smoke:quiz-section-reset": "node scripts/smoke-quiz-section-reset-contract.mjs",
+    "smoke:learning-canonical-entry": "node scripts/smoke-learning-canonical-entry-contract.mjs",
     "smoke:content-learning-resource-url": "node scripts/smoke-content-learning-resource-url-contract.mjs",
     "smoke:content-bootstrap-request": "node scripts/smoke-content-bootstrap-request-contract.mjs",
     "smoke:content-bootstrap-visibility": "node scripts/smoke-content-bootstrap-visibility-contract.mjs",
