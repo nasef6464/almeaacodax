@@ -32,6 +32,7 @@ import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
 import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content/http/studyPlanSchemas.js";
 import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
+import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
@@ -781,15 +782,21 @@ contentRouter.get(
     const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
     const requestedPhase = contentBootstrapPhaseSchema.parse(req.query.phase);
     const canUseFullScope = isStaffRole(req.authUser?.role);
-    const scope = requestedScope !== "learning" && !canUseFullScope ? "learning" : requestedScope;
-    const phase = scope === "learning" ? requestedPhase : "full";
-    const isLearningCore = scope === "learning" && phase === "core";
-    const isOperationsOnly = scope === "operations";
-    const includeOperationalData = scope !== "learning";
-    const includeStudyPlans = !isOperationsOnly && scope !== "learning" && phase === "full";
-    const isNonStaffAuthedLearning = Boolean(req.authUser) && !canUseFullScope && scope === "learning";
-    const canUseSharedCache = !req.authUser || isNonStaffAuthedLearning;
-    const cacheKey = canUseSharedCache ? `scope:${scope}:phase:${phase}:shared-learning` : "";
+    const {
+      scope,
+      phase,
+      isLearningCore,
+      isOperationsOnly,
+      includeOperationalData,
+      includeStudyPlans,
+      canUseSharedCache,
+      cacheKey,
+    } = resolveContentBootstrapRequest({
+      requestedScope,
+      requestedPhase,
+      canUseFullScope,
+      isAuthenticated: Boolean(req.authUser),
+    });
     const cachedEntry = cacheKey ? contentBootstrapCache.get(cacheKey) : null;
     if (cachedEntry && cachedEntry.expiresAt > Date.now()) {
       res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
