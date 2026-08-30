@@ -1,11 +1,11 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: extracted supervisor and managed-content scope policies from reports
+- Current batch: isolated the supervisor report-scope resolver behind an application boundary and group persistence adapter
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `1c37e48d` (extract managed content scope policy); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `5ce8b0eb` (isolate supervisor report-scope resolver); isolated assessment CI gate is `a6ad996c`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, server check, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
+- Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved
 - Deferred test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied assessment acceptance matrix. Do not begin its HTTP/E2E expansion until the current structural batch is closed.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
@@ -14,6 +14,18 @@
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
 - Delivery rule: after each green Batch, update this file, create a focused commit, push, and refresh the latest ZIP without including secrets, `.env`, `.git`, dependencies, or build artifacts.
+
+## Batch 2A-15 — Supervisor report scope resolver
+
+- Scope: moved supervisor report-scope orchestration out of `quiz.routes.ts`; the route delegates to an application resolver, while GroupModel reads are isolated in a quizzes infrastructure adapter.
+- Changed files: `server/src/modules/quizzes/application/quizSupervisorReportScope.ts`, `server/src/modules/quizzes/infrastructure/quizSupervisorScopeRepository.ts`, `server/src/routes/quiz.routes.ts`, and the focused reports-role smoke contract.
+- Preserved contracts: all existing HTTP paths/methods, Group and User persistence semantics, school-wide versus class-only supervisor isolation, RBAC, scoring, and result/report response behavior.
+- Tests: `smoke:reports-role` PASS 20/20; `smoke:quiz-access` PASS 18/18; `smoke:quiz-integrity-guard` PASS 4/4; architecture gate PASS; `git diff --check` PASS.
+- Gates blocked: `server:check` and `server:build` cannot locate local `tsc`; no API service or Mongo integration gate was started.
+- Commit: `5ce8b0eb` `refactor(quizzes): isolate supervisor report scope resolver`.
+- Push: not performed; no push authorization was supplied. This worktree is detached because `refactor/modular-platform-safe` is checked out by `C:/ALMEAA MAY - codax`; attach/cherry-pick this commit there before pushing.
+- Risks: HTTP-level cross-school/cross-class rejection remains unproven locally without the isolated Mongo test environment.
+- Next exact action: with authorization, attach `5ce8b0eb` to the safe branch and run the isolated backend CI gate; then add only bounded cross-school and cross-class rejection cases. Do not begin timer/session extraction or any schema/RBAC/scoring/route change.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
