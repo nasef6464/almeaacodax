@@ -207,6 +207,15 @@
 - Known limitation: scoring summary, sessions, and high-volume attempt/result load certification remain future work. No production load certification is claimed.
 - Next: map quiz submission scoring summary into the next compatible application boundary without changing submission, scoring, or persistence semantics.
 
+## 2A-14 — Quiz submission result-composition boundaries
+
+- Status: COMPLETED in focused commits `d1ea2fbf`, `41cea103`, `9b8ba9f7`, `626a8575`, `aa94a49f`, and `301e11c0` on `refactor/modular-platform-safe`.
+- Changed: extracted pure submission-answer review/skill aggregation, score summary, skill analysis, mock-section results, immutable quiz snapshot, and result-document composition into `server/src/modules/quizzes/application/`. The route still resolves the authenticated user and directed scope, reads persistence models, enforces attempt limits, calls `QuizResultModel.create`, translates duplicate-key conflicts, invokes side effects, clears the result cache, and serializes the response.
+- Preserved: `POST /api/quizzes/:id/submit`, auth/RBAC and directed-quiz checks, time-window and max-attempt behavior, question order/copy fallback, score and passing calculations, question-review/result/snapshot field semantics, idempotency key/conflict behavior, side effects, response serialization, Mongo schema, and all route/API URLs.
+- Tests: answer-review, score-summary, skills-analysis, section-results, snapshot, result-document, and question-resolution contracts PASS; `server:check` and `server:build` PASS; route loading, runtime source, quiz integrity, auth-login security, and API security contracts PASS.
+- Known limitation: current frontend dependency installation on this host did not finish, so this batch does not claim a fresh frontend typecheck/build, repository audit, or architecture-gate run. No production load certification is claimed.
+- Next: map directed-quiz submission authorization and attempt orchestration only after preserving every existing RBAC and attempt-limit contract.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
