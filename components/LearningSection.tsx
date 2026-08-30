@@ -454,6 +454,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             api.getCourses({ pathId: category, subjectId: subject, limit: 100 }),
             api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 }),
         ]).then(([coursesResult, quizzesResult]) => {
+            // hydrateCourses/hydrateQuizzes replace the shared collections. Ignore an
+            // older route response so it cannot overwrite the currently viewed scope.
+            if (scopedLearningBootstrapRef.current !== scopeKey) return;
+
             if (coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) && coursesResult.value.length > 0) {
                 const mergedCourses = new Map<string, any>();
                 [...courses, ...(coursesResult.value as any[])].forEach((course) => {
