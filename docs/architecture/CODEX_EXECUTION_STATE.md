@@ -7,7 +7,7 @@
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, server check/build, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: inventory unique runtime responsibilities in `MockExamManager` and `QuizBuilder`; select one proven shared concern only, without deleting a builder, changing routes/schema/RBAC/scoring, or building a new assessment entity.
+- Next exact action: inspect dynamic/lazy entry points for `QuizBuilder` legacy; choose a deprecation or regression-testing decision only after proving all runtime callers and unique behavior. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files

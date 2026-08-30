@@ -102,6 +102,19 @@
 
 ---
 
+## حصر المنشئين قبل التوحيد — مكتمل بالتدقيق (لا تغيير كود)
+
+- `UnifiedQuizBuilder` هو المسار الموحد الفعلي في Quizzes/Subject/Supervisor/Lesson.
+- `MockExamManager` ما زال runtime path في Admin وSupervisor ويحمل سياسات أقسام وتوجيه ومعاينة فريدة؛ لا يحذف.
+- لم يجد البحث المستهدف مستدعيًا مباشرًا لـ`QuizBuilder` legacy، لكنه يبقى حتى يُثبت inventory لـlazy/dynamic imports والصلاحية الوظيفية.
+- لم يُنفذ extraction لأن دوال الحفظ ليست تكرارًا محايدًا: نقلها الآن سيغير سياسة النشر/التوجيه بدل فصل concern معماري.
+
+### التالي
+
+افحص entry points الديناميكية للـ`QuizBuilder` legacy ثم قرر freeze/deprecation فقط عند إثبات callers=0 ووجود regression coverage. بديل ذو أولوية إنتاجية: API integration tests متعددة الأدوار لمسارات الإنشاء/النشر/التسليم.
+
+---
+
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
 
 ### A0 — Audit V2: COMPLETE for current baseline

@@ -100,6 +100,16 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 | 6. النسخ والتحليلات | revision model وتحليلات موحدة | خطة migration قابلة لإعادة التشغيل | historical result consistency |
 | 7. تنظيف legacy | إزالة بعد proof callers=0 وtelemetry/tests | rollback documented | لا حذف قبل إثبات الاستخدام صفر |
 
+## تحديث حصر المنشئين — 30 أغسطس 2026
+
+| المنشئ | runtime callers المثبتة | وظائف فريدة مثبتة | القرار الحالي |
+|---|---|---|---|
+| `UnifiedQuizBuilder` | `QuizzesManager` و`SubjectQuizzesPanel` و`SupervisorTestsManager` و`UnifiedLessonBuilder` | normal/mock wizard، settings canonical، question selector، learning placements | المسار الموحد الأساسي؛ لا يوسّع في هذه الدفعة |
+| `MockExamManager` | `AdminDashboard` و`SupervisorTestsManager` | أقسام قياس، smart pick للأقسام، توجيه مدرسة/فصل، معاينة محاكي، وضع regular/mocked legacy | مستخدم فعليًا؛ لا يحذف ولا ينقل قبل فصل concern محدد مع regression |
+| `QuizBuilder` | لم يجد البحث المستهدف import أو JSX runtime caller؛ التعريف فقط | منشئ normal legacy مع AI generation وdirected draft settings | لا يحذف بناءً على البحث وحده؛ يلزم inventory للـlazy/dynamic entry وقرار deprecation منفصل |
+
+لا يوجد extraction مشترك صغير يحقق فائدة أعلى من مخاطره الآن: `MockExamManager.saveExam` يملك policy نشر/استهداف تختلف عن `UnifiedQuizBuilder.handleSave`. النقل الشكلي سيخلط product policy مع refactor. المسار الصحيح التالي هو إثبات entry points للـ`QuizBuilder` legacy أو إضافة API integration tests للصلاحيات؛ لا حذف ولا دمج للمنشئين في هذه المرحلة.
+
 ## بوابة التنفيذ التالية
 
 **تحديث `f2835634`:** حُسمت مشكلة scale المثبتة في `SmartQuestionSelector`: كان يستدعي `loadAll` ثم يصفّي محليًا؛ صار يستدعي `searchPage` بحد 100 وفلاتر API (`skillIds` و`difficulty` وsection/search). بقيت hydration للأسئلة المختارة بالـIDs مستقلة، لذا لا تختفي الاختيارات عند تغيير الفلاتر. لا توجد مشكلة حرجة أخرى مثبتة في هذا التدقيق؛ المرحلة التالية بعد قرار مستقل هي اختبار API حي للصلاحيات أو حصر وظائف المنشئات الفريدة، لا توحيد المنشئ أو تغيير schema/API/RBAC أو `ExamAssignment`.
