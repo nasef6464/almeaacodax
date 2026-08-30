@@ -440,6 +440,9 @@ export const QuizPage: React.FC = () => {
     setShowFinishDialog(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
+    setSectionTimeLeft(null);
+    setQuestionTimeSpent({});
+    setLockedSectionIds(new Set());
 
     const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (resolveQuizSettings(foundQuiz).timeLimit || 0);
     const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
@@ -1073,6 +1076,11 @@ export const QuizPage: React.FC = () => {
     setDraftRestored(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
+    setQuestionTimeSpent({});
+    setLockedSectionIds(new Set());
+    const firstMockSection = getMockExamSections(quiz)[0];
+    const firstSectionTimeLimit = Number(firstMockSection?.timeLimit || 0);
+    setSectionTimeLeft(firstSectionTimeLimit > 0 ? firstSectionTimeLimit * 60 : null);
     const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0);
     setTimeLeft(effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
