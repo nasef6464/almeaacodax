@@ -243,6 +243,15 @@
 - Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
 - Next: audit the remaining submission orchestration and select only a bounded, contract-preserving extraction.
 
+## 2A-18 — Quiz submission window-policy boundary
+
+- Status: COMPLETED in `c107c8c8` on `refactor/modular-platform-safe`.
+- Changed: extracted deadline and time-limit evaluation into `quizSubmissionWindow.ts`; the route parses the request and maps the existing status/message response.
+- Preserved: due-date parsing, current-time comparison, 60-second grace interval, forbidden/request-timeout status codes and messages, `POST /api/quizzes/:id/submit`, RBAC, scoring, persistence, and all route/API contracts.
+- Tests: submission-window contract PASS; attempt-context contract PASS; API security 6/6; `server:check` PASS.
+- Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
+- Next: audit access-policy dependencies and select only a bounded, contract-preserving extraction.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
