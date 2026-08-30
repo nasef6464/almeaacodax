@@ -39,6 +39,7 @@ const DUPLICATE_QUESTION_QUIZ_ID = `platform-v3-integration-duplicate-question-q
 const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
+const TEACHER_QUESTION_ID = `platform-v3-integration-teacher-question-${RUN_MARKER}`;
 const SUPERVISOR_QUIZ_ID = `platform-v3-integration-supervisor-quiz-${RUN_MARKER}`;
 
 const credentials = new Map<Role, { email: string; password: string }>();
@@ -528,6 +529,39 @@ async function runMockAssessmentJourney(csrf: CsrfContext) {
 async function runScopedCreatorJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for scoped creator checks");
+
+  const teacherQuestion = await jsonRequest("/quizzes/questions", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: TEACHER_QUESTION_ID,
+      text: "Platform V3 teacher scoped question",
+      options: ["Wrong", "Correct"],
+      correctOptionIndex: 1,
+      pathId: ASSESSMENT_PATH_ID,
+      subject: ASSESSMENT_SUBJECT_ID,
+      type: "mcq",
+    },
+  });
+  expectStatus("teacher creates a question inside managed scope", teacherQuestion, 201);
+  assert.equal(teacherQuestion.body?.approvalStatus, "pending_review", "teacher question bypassed approval workflow");
+
+  const teacherOutsideQuestionScope = await jsonRequest("/quizzes/questions", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: `${TEACHER_QUESTION_ID}-outside`,
+      text: "Platform V3 teacher outside scoped question",
+      options: ["Wrong", "Correct"],
+      correctOptionIndex: 1,
+      pathId: `platform-v3-integration-outside-path-${RUN_MARKER}`,
+      subject: `platform-v3-integration-outside-subject-${RUN_MARKER}`,
+      type: "mcq",
+    },
+  });
+  expectStatus("teacher cannot create a question outside managed scope", teacherOutsideQuestionScope, 403);
 
   const teacherDraft = await jsonRequest("/quizzes", {
     method: "POST",
