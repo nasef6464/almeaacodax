@@ -2,12 +2,16 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const server = await read("server/src/routes/content.routes.ts");
+const operationalData = await read("server/src/modules/content/infrastructure/contentBootstrapOperationalData.ts");
 const api = await read("services/apiGroups/taxonomyContentApi.ts");
 const schools = await read("dashboards/admin/SchoolsManager.tsx");
 
 const checks = [
   ["operations scope is explicitly supported", server.includes('z.enum(["full", "learning", "operations"])')],
   ["operations scope skips learning content reads", server.includes("isOperationsOnly ? Promise.resolve([])")],
+  ["bootstrap delegates scoped operational reads", server.includes("getScopedContentBootstrapOperationalData(req.authUser)")],
+  ["operational reader preserves role-scoped query branches", operationalData.includes('authUser?.role === "admin"') && operationalData.includes('user.role === "supervisor"') && operationalData.includes('user.role === "parent"')],
+  ["operational reader preserves public announcement limit", operationalData.includes("PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8") && operationalData.includes("getPublicAnnouncementAds")],
   ["operations scope preserves operational response shape", api.includes("getOperationalBootstrapFresh") && api.includes('scope: "operations"')],
   ["schools manager uses operational bootstrap", schools.includes("api.getOperationalBootstrapFresh()") && !schools.includes("api.getContentBootstrapFresh()")],
 ];

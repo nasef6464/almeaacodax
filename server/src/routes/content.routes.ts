@@ -36,6 +36,7 @@ import { resolveContentBootstrapRequest } from "../modules/content/application/c
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
 import { resolveContentBootstrapCache } from "../modules/content/application/contentBootstrapCache.js";
+import { getScopedContentBootstrapOperationalData } from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
@@ -49,7 +50,6 @@ const buildDocumentQuery = (value: string) => {
 
 const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
 const CONTENT_BOOTSTRAP_MINIMAL_CACHE_TTL_MS = 3 * 60 * 1000;
-const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
 type PublicContentBootstrapPayload = {
   topics: unknown[];
   lessons: unknown[];
@@ -122,90 +122,6 @@ const buildOwnedDocumentQuery = (
   }
 
   return { $and: [baseQuery, { $or: ownershipConditions }] };
-};
-
-const getScopedOperationalData = async (authUser?: { id: string; role: string; schoolId?: string | null }) => {
-  if (authUser?.role === "admin") {
-    const [groups, b2bPackages, accessCodes, announcementAds] = await Promise.all([
-      GroupModel.find().sort({ createdAt: -1 }).lean(),
-      B2BPackageModel.find().sort({ createdAt: -1 }).lean(),
-      AccessCodeModel.find().sort({ createdAt: -1 }).lean(),
-      AnnouncementAdModel.find().sort({ priority: 1, createdAt: -1 }).lean(),
-    ]);
-
-    return { groups, b2bPackages, accessCodes, announcementAds };
-  }
-
-  if (!authUser) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT)
-      .lean();
-    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
-  }
-
-  const user = await UserModel.findById(authUser.id).select("schoolId groupIds linkedStudentIds role");
-  if (!user) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT);
-    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
-  }
-
-  const managedGroups =
-    user.role === "teacher" || user.role === "supervisor"
-      ? await GroupModel.find({
-          $or: [
-            { ownerId: authUser.id },
-            { supervisorIds: authUser.id },
-            ...(authUser.schoolId ? [{ parentId: authUser.schoolId }, { _id: authUser.schoolId }, { id: authUser.schoolId }] : []),
-          ],
-        }).select("id _id parentId type")
-      : [];
-
-  const linkedStudents =
-    user.role === "parent" && Array.isArray(user.linkedStudentIds) && user.linkedStudentIds.length
-      ? await UserModel.find(buildDocumentsByIdsQuery(user.linkedStudentIds.map(String))).select("schoolId groupIds")
-      : [];
-
-  const seedGroupIds = uniqueStrings([
-    String(user.schoolId || ""),
-    ...(user.groupIds || []).map(String),
-    ...managedGroups.flatMap((group) => [String(group.id || group._id), String(group.parentId || "")]),
-    ...linkedStudents.flatMap((student) => [String(student.schoolId || ""), ...(student.groupIds || []).map(String)]),
-  ]);
-
-  if (seedGroupIds.length === 0) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT);
-    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
-  }
-
-  const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(seedGroupIds)).sort({ createdAt: -1 });
-  const schoolIds = uniqueStrings([
-    String(user.schoolId || ""),
-    ...linkedStudents.map((student) => String(student.schoolId || "")),
-    ...seedGroups
-      .filter((group) => group.type === "SCHOOL")
-      .map((group) => String(group.id || group._id)),
-    ...seedGroups.map((group) => String(group.parentId || "")),
-  ]);
-  const visibleGroupIds = uniqueStrings([...seedGroupIds, ...schoolIds]);
-  const groups = visibleGroupIds.length
-    ? await GroupModel.find(buildDocumentsByIdsQuery(visibleGroupIds)).sort({ createdAt: -1 })
-    : [];
-  const [b2bPackages, accessCodes, announcementAds] = await Promise.all([
-    schoolIds.length ? B2BPackageModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 }) : Promise.resolve([]),
-    user.role === "supervisor" && schoolIds.length
-      ? AccessCodeModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 })
-      : Promise.resolve([]),
-    AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT),
-  ]);
-
-  return { groups, b2bPackages, accessCodes, announcementAds };
 };
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
@@ -797,7 +713,7 @@ contentRouter.get(
         isOperationsOnly || isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
         isOperationsOnly || isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
         includeOperationalData
-          ? getScopedOperationalData(req.authUser)
+          ? getScopedContentBootstrapOperationalData(req.authUser)
           : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),
         includeStudyPlans && req.authUser
           ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean()
