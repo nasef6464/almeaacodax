@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: corrected the parent-linking fail-closed runtime path found by the isolated CI gate
+- Current batch: corrected the teacher-question fixture to satisfy the required question contract in isolated CI
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `00caa945` (fail closed for parent student linking); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `15fa3b95` (satisfy teacher question fixture contract); isolated assessment CI gate is `a6ad996c`
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
-- Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. The isolated CI gate ran against `95db526c` and reached the real HTTP harness, but exposed a `500` on its fail-closed parent-link route; the route fix is in `00caa945` and awaits the next isolated CI run.
+- Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. The isolated CI gate reached the real HTTP harness on `ce4f089d`; the parent-link `500` is fixed in `00caa945`, and the next failure was a missing required fixture field fixed in `15fa3b95`; the automatic isolated run is pending.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness now covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, and missing or invalid published-question rejection without persistence. Their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
 - Next exact action: inspect the isolated backend CI gate configuration and, if it starts only isolated dependencies, run it to obtain runtime proof for normal/mock journeys and missing/invalid-question rejection. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
@@ -158,6 +158,17 @@
 - Commit: `00caa945` `fix(auth): fail closed for parent student linking`.
 - Push: pending the paired documentation commit.
 - Next exact action: inspect the automatic isolated CI result for this commit; if green, record it as runtime evidence for the assessment roadmap and then continue the deferred E2E design without using production accounts.
+
+## Batch 2T-08 — Teacher question fixture contract correction
+
+- Scope: completed the teacher question fixture with its required skill reference so the isolated HTTP journey reaches managed-scope authorization rather than schema rejection.
+- Changed files: `server/src/scripts/backendIntegrationGate.ts`.
+- Preserved contracts: question API schema, teacher managed-content policy, approval workflow, RBAC, Mongo schema, and production data.
+- Tests: `smoke:auth-login-security` PASS 9/9; `smoke:api-security` PASS 6/6; `smoke:assessment-question-selection` PASS 10/10; `git diff --check` PASS.
+- Runtime evidence: the automatic isolated Mongo CI run is pending after this push; no local API, Mongo instance, or production system was started.
+- Commit: `15fa3b95` `test(assessments): satisfy teacher question fixture contract`.
+- Push: code pushed; documentation commit pending.
+- Next exact action: inspect the isolated CI result and record the real HTTP status before extending the acceptance matrix.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
