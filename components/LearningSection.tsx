@@ -14,6 +14,7 @@ import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 import { getCourseAudienceCount } from '../utils/courseStats';
 import { api } from '../services/api';
+import { normalizeLearningTab, type LearningTab } from '../utils/learningSpaceTabs';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
 const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
@@ -28,32 +29,6 @@ interface LearningSectionProps {
     title?: string;
     colorTheme?: 'indigo' | 'amber' | 'emerald' | 'purple' | 'rose';
 }
-
-type LearningTab = 'courses' | 'skills' | 'banks' | 'tests' | 'library';
-
-const learningTabAliases: Record<string, LearningTab> = {
-    courses: 'courses',
-    course: 'courses',
-    skills: 'skills',
-    foundation: 'skills',
-    topics: 'skills',
-    banks: 'banks',
-    bank: 'banks',
-    training: 'banks',
-    trainings: 'banks',
-    tests: 'tests',
-    test: 'tests',
-    quizzes: 'tests',
-    quiz: 'tests',
-    library: 'library',
-    files: 'library',
-    support: 'library',
-};
-
-const normalizeLearningTab = (value?: string | null): LearningTab | null => {
-    if (!value) return null;
-    return learningTabAliases[value.toLowerCase()] || null;
-};
 
 const themePaletteMap: Record<string, { base: string; soft: string; border: string; text: string }> = {
     indigo: { base: '#4f46e5', soft: '#e0e7ff', border: '#c7d2fe', text: '#4338ca' },
