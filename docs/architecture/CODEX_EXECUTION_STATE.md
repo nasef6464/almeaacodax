@@ -1,15 +1,15 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Assessment runner hardening, learning-space consolidation, and content bootstrap closure
-- Current batch: subject workspace vocabulary aligned with the student assessment journey
+- Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
+- Current batch: immediate parent/guardian authorization hardening
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `a2524f8b` (subject assessment vocabulary); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `19366279` (fail closed for unverified parent actions); isolated assessment CI gate is `a6ad996c`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, server check, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
-- Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
+- Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved
 - Deferred test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied assessment acceptance matrix. Do not begin its HTTP/E2E expansion until the current structural batch is closed.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: obtain authorization to push or manually run the isolated assessment CI gate, then inspect its runtime output. After that, revisit `LearningSection` render/modal ownership only with a bounded domain component and explicit callback contract. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
+- Next exact action: obtain authorization to push or manually run the isolated backend CI gate, then inspect its runtime output. Afterwards, add bounded cross-school and cross-class HTTP rejection cases to the same isolated gate. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
