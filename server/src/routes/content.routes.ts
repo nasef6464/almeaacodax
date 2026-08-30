@@ -35,6 +35,7 @@ import { sanitizeLessonResourcePayload } from "../modules/content/domain/learnin
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
+import { resolveContentBootstrapCache } from "../modules/content/application/contentBootstrapCache.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
@@ -785,25 +786,6 @@ contentRouter.get(
       canUseFullScope,
       isAuthenticated: Boolean(req.authUser),
     });
-    const cachedEntry = cacheKey ? contentBootstrapCache.get(cacheKey) : null;
-    if (cachedEntry && cachedEntry.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
-      res.setHeader("X-Content-Cache", "hit");
-      res.setHeader("X-Content-Scope", scope);
-      res.setHeader("X-Content-Phase", phase);
-      return res.json(cachedEntry.payload);
-    }
-
-    const pendingPromise = cacheKey ? contentBootstrapPromises.get(cacheKey) : null;
-    if (pendingPromise) {
-      const payload = await pendingPromise;
-      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
-      res.setHeader("X-Content-Cache", "shared");
-      res.setHeader("X-Content-Scope", scope);
-      res.setHeader("X-Content-Phase", phase);
-      return res.json(payload);
-    }
-
     const loadBootstrapPayload = async (): Promise<PublicContentBootstrapPayload> => {
       const canSeeAllContent = isStaffRole(req.authUser?.role);
       const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
@@ -831,25 +813,18 @@ contentRouter.get(
       });
     };
 
-    const payloadPromise = loadBootstrapPayload();
-    const payload = canUseSharedCache
-      ? await (() => {
-          if (!cacheKey) return payloadPromise;
-          const inflight = payloadPromise.finally(() => {
-            contentBootstrapPromises.delete(cacheKey);
-          });
-          contentBootstrapPromises.set(cacheKey, inflight);
-          return inflight;
-        })()
-      : await payloadPromise;
+    const { payload, cacheStatus } = await resolveContentBootstrapCache({
+      cacheKey,
+      canUseSharedCache,
+      cache: contentBootstrapCache,
+      pending: contentBootstrapPromises,
+      ttlMs: CONTENT_BOOTSTRAP_CACHE_TTL_MS,
+      load: loadBootstrapPayload,
+    });
 
-    if (canUseSharedCache && cacheKey) {
-      contentBootstrapCache.set(cacheKey, {
-        expiresAt: Date.now() + CONTENT_BOOTSTRAP_CACHE_TTL_MS,
-        payload,
-      });
+    if (cacheStatus) {
       res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
-      res.setHeader("X-Content-Cache", "miss");
+      res.setHeader("X-Content-Cache", cacheStatus);
     }
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
