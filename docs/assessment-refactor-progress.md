@@ -74,6 +74,34 @@
 
 ---
 
+## مصدر بنك الأسئلة — Pagination عند المصدر: مكتمل (commit: `f2835634`)
+
+### ما ثبت
+
+- المنشئات المتبقية لا تستخدم Store كسجل حقيقة لبنك الأسئلة؛ تستخدم `assessmentQuestionSource` أو wrapper التوافقي `questionBankSource`.
+- `SmartQuestionSelector` كان الاستثناء على مستوى التوسع: يستدعي `loadAll` عبر كل صفحات النطاق ثم يصفّي في المتصفح.
+- API كان يعلن `skillIds` و`difficulty` في query schema لكنه لا يطبقهما في filter الفعلي.
+
+### التعديل
+
+- selector صار يستخدم `searchPage` بحجم 100، مع pagination/filtering في API.
+- أُضيف تطبيق `skillIds` (OR داخل المهارات المحددة) و`difficulty` في route القائم، مع توسيع type للعميل والمصدر المشترك.
+- hydration للأسئلة المختارة بقيت `hydrateByIds`؛ لا تفقد edit flows اختيارات خارج الصفحة الحالية.
+- حدّثت contract قديمًا ليعكس ownership الحالي للـside effects وعدم فرض `approved` على staff question-bank visibility.
+
+### الاختبارات
+
+- `smoke:exam-question-source`: PASS (21/21).
+- `smoke:assessment-question-selection`: PASS (5/5).
+- `smoke:mock-exams`: PASS (10/10).
+- `server:check`, `server:build`, `architecture-gate`: PASS.
+
+### التالي
+
+لا تغيّر منشئًا آخر قبل حصر الوظائف الفريدة في `MockExamManager` و`QuizBuilder` واختيار concern واحد فقط. كما يظل اختبار API حي متعدد الأدوار مطلوبًا قبل أي ادعاء إنتاجي كامل للصلاحيات.
+
+---
+
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
 
 ### A0 — Audit V2: COMPLETE for current baseline
