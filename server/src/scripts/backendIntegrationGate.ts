@@ -36,7 +36,7 @@ const credentials = new Map<Role, { email: string; password: string }>();
 const tokens = new Map<Role, string>();
 const userIds = new Map<Role, string>();
 const groupIds = new Map<"school" | "class" | "siblingClass" | "outsideSchool", string>();
-const scopeStudentIds = new Map<"assigned" | "sibling", string>();
+const scopeStudentIds = new Map<"assigned" | "sibling" | "outsideSchool", string>();
 
 function pass(label: string) {
   console.log(`PASS ${label}`);
@@ -195,8 +195,23 @@ async function seedIsolatedUsers() {
     enrolledCourses: [],
     completedLessons: [],
   });
+  const outsideSchoolStudent = await UserModel.create({
+    name: "Platform V3 integration outside-school student",
+    email: `platform-v3-outside-school-student-${RUN_MARKER}@example.invalid`,
+    passwordHash: await bcrypt.hash(randomBytes(24).toString("base64url"), 10),
+    role: "student",
+    isActive: true,
+    emailVerified: true,
+    emailVerifiedAt: Date.now(),
+    schoolId: String(outsideSchool._id),
+    groupIds: [],
+    linkedStudentIds: [],
+    enrolledCourses: [],
+    completedLessons: [],
+  });
   scopeStudentIds.set("assigned", studentId);
   scopeStudentIds.set("sibling", String(siblingStudent._id));
+  scopeStudentIds.set("outsideSchool", String(outsideSchoolStudent._id));
   await Promise.all([
     UserModel.updateOne({ _id: studentId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
     UserModel.updateOne({ _id: supervisorId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
@@ -384,7 +399,8 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   const siblingClassId = groupIds.get("siblingClass");
   const outsideSchoolId = groupIds.get("outsideSchool");
   const siblingStudentId = scopeStudentIds.get("sibling");
-  assert.ok(schoolId && classId && siblingClassId && outsideSchoolId && siblingStudentId, "isolated school scope fixtures missing");
+  const outsideSchoolStudentId = scopeStudentIds.get("outsideSchool");
+  assert.ok(schoolId && classId && siblingClassId && outsideSchoolId && siblingStudentId && outsideSchoolStudentId, "isolated school scope fixtures missing");
 
   const schoolSupervisorOutsideReport = await jsonRequest(`/content/schools/${outsideSchoolId}/report`, {
     token: tokens.get("supervisor"),
@@ -437,6 +453,25 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
     },
   });
   expectStatus("class supervisor cannot target a sibling-class student", classSupervisorOutsideTarget, 403);
+
+  const schoolSupervisorOutsideTarget = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: {
+      id: `${SUPERVISOR_QUIZ_ID}-school-outside`,
+      title: "Platform V3 school supervisor outside target",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      mode: "central",
+      questionIds: [ASSESSMENT_QUESTION_ID],
+      targetUserIds: [outsideSchoolStudentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+    },
+  });
+  expectStatus("school supervisor cannot target another school's student", schoolSupervisorOutsideTarget, 403);
 }
 
 async function main() {
