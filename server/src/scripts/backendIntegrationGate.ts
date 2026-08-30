@@ -9,6 +9,7 @@ import { CertificateModel } from "../models/Certificate.js";
 import { PathModel } from "../models/Path.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
+import { QuizResultModel } from "../models/QuizResult.js";
 import { QuestionModel } from "../models/Question.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
@@ -36,6 +37,7 @@ const MISSING_QUESTION_ID = `platform-v3-integration-missing-question-${RUN_MARK
 const INVALID_QUESTION_QUIZ_ID = `platform-v3-integration-invalid-question-quiz-${RUN_MARKER}`;
 const INVALID_QUESTION_ID = `platform-v3-integration-invalid-question-${RUN_MARKER}`;
 const DUPLICATE_QUESTION_QUIZ_ID = `platform-v3-integration-duplicate-question-quiz-${RUN_MARKER}`;
+const HISTORICAL_RESULT_QUIZ_ID = `platform-v3-integration-historical-result-quiz-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
@@ -421,6 +423,34 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("assessment max-attempt guard rejects repeat submission", repeatedSubmission, 409);
 }
 
+async function runHistoricalResultJourney() {
+  const studentId = userIds.get("student");
+  assert.ok(studentId, "target student id missing for historical result");
+
+  await QuizResultModel.create({
+    userId: studentId,
+    quizId: HISTORICAL_RESULT_QUIZ_ID,
+    quizTitle: "Platform V3 historical assessment result",
+    score: 75,
+    totalQuestions: 4,
+    correctAnswers: 3,
+    wrongAnswers: 1,
+    unanswered: 0,
+    timeSpent: "08:00",
+    date: "2025-01-01T00:00:00.000Z",
+    skillsAnalysis: [],
+  });
+
+  const historicalResults = await jsonRequest(`/quizzes/results?quizId=${HISTORICAL_RESULT_QUIZ_ID}`, {
+    token: tokens.get("student"),
+  });
+  expectStatus("student reads historical result without snapshot fields", historicalResults, 200);
+  const historical = historicalResults.body?.results?.[0];
+  assert.equal(historical?.quizId, HISTORICAL_RESULT_QUIZ_ID, "historical result quiz id changed");
+  assert.equal(historical?.score, 75, "historical result score changed");
+  assert.equal(historical?.timeSpent, "08:00", "historical result time changed");
+}
+
 async function runMockAssessmentJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for mock assessment");
@@ -735,6 +765,7 @@ async function main() {
     }
 
     await runAssessmentJourney(csrf);
+    await runHistoricalResultJourney();
     await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
