@@ -20,7 +20,7 @@ concurrency:
 jobs:
   isolated-backend-integration:
     if: github.event_name != 'pull_request' || (github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery')
-    name: Auth + RBAC + AI + certificates on isolated Mongo
+    name: Auth + RBAC + assessments + AI + certificates on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:

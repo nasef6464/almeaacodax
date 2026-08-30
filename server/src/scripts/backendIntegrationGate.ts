@@ -6,8 +6,9 @@ import { env } from "../config/env.js";
 import { UserModel } from "../models/User.js";
 import { CourseModel } from "../models/Course.js";
 import { CertificateModel } from "../models/Certificate.js";
+import { PathModel } from "../models/Path.js";
 
-type Role = "student" | "teacher" | "supervisor" | "parent" | "admin";
+type Role = "student" | "outsider" | "teacher" | "supervisor" | "parent" | "admin";
 
 type JsonResult = {
   status: number;
@@ -23,9 +24,14 @@ const API_BASE = `http://127.0.0.1:${env.PORT}/api`;
 const RUN_MARKER = `${Date.now().toString(36)}-${randomBytes(6).toString("hex")}`;
 const COURSE_ID = `platform-v3-integration-course-${RUN_MARKER}`;
 const LESSON_IDS = [`platform-v3-integration-lesson-a-${RUN_MARKER}`, `platform-v3-integration-lesson-b-${RUN_MARKER}`];
+const ASSESSMENT_PATH_ID = `platform-v3-integration-path-${RUN_MARKER}`;
+const ASSESSMENT_SUBJECT_ID = `platform-v3-integration-subject-${RUN_MARKER}`;
+const ASSESSMENT_QUESTION_ID = `platform-v3-integration-question-${RUN_MARKER}`;
+const ASSESSMENT_QUIZ_ID = `platform-v3-integration-quiz-${RUN_MARKER}`;
 
 const credentials = new Map<Role, { email: string; password: string }>();
 const tokens = new Map<Role, string>();
+const userIds = new Map<Role, string>();
 
 function pass(label: string) {
   console.log(`PASS ${label}`);
@@ -97,8 +103,7 @@ async function getCsrf(): Promise<CsrfContext> {
 }
 
 async function seedIsolatedUsers() {
-  const roles: Role[] = ["student", "teacher", "supervisor", "parent", "admin"];
-  const userIds = new Map<Role, string>();
+  const roles: Role[] = ["student", "outsider", "teacher", "supervisor", "parent", "admin"];
 
   for (const role of roles) {
     const password = randomBytes(24).toString("base64url");
@@ -109,7 +114,7 @@ async function seedIsolatedUsers() {
       name: `Platform V3 ${role}`,
       email,
       passwordHash: await bcrypt.hash(password, 10),
-      role,
+      role: role === "outsider" ? "student" : role,
       isActive: true,
       emailVerified: true,
       emailVerifiedAt: Date.now(),
@@ -124,6 +129,12 @@ async function seedIsolatedUsers() {
   const parentId = userIds.get("parent");
   assert.ok(studentId && parentId, "isolated user ids were not created");
   await UserModel.updateOne({ _id: parentId }, { $set: { linkedStudentIds: [studentId] } });
+
+  await PathModel.create({
+    _id: ASSESSMENT_PATH_ID,
+    name: "Platform V3 integration assessment path",
+    isActive: true,
+  });
 
   await CourseModel.create({
     _id: COURSE_ID,
@@ -146,7 +157,7 @@ async function seedIsolatedUsers() {
     ],
   });
 
-  pass("isolated users and certifiable course seeded");
+  pass("isolated users, assessment path, and certifiable course seeded");
 }
 
 async function loginRole(role: Role, csrf: CsrfContext) {
@@ -159,9 +170,81 @@ async function loginRole(role: Role, csrf: CsrfContext) {
     body: credential,
   });
   expectStatus(`${role} login`, result, 200);
-  assert.equal(result.body?.user?.role, role, `${role}: login returned wrong role`);
+  assert.equal(result.body?.user?.role, role === "outsider" ? "student" : role, `${role}: login returned wrong role`);
   assert.equal(typeof result.body?.token, "string", `${role}: test-mode bearer token missing`);
   tokens.set(role, result.body.token);
+}
+
+async function runAssessmentJourney(csrf: CsrfContext) {
+  const studentId = userIds.get("student");
+  assert.ok(studentId, "target student id missing");
+
+  const question = await jsonRequest("/quizzes/questions", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: ASSESSMENT_QUESTION_ID,
+      text: "What is 2 + 2?",
+      options: ["3", "4"],
+      correctOptionIndex: 1,
+      explanation: "2 + 2 = 4",
+      skillIds: [`platform-v3-integration-skill-${RUN_MARKER}`],
+      pathId: ASSESSMENT_PATH_ID,
+      subject: ASSESSMENT_SUBJECT_ID,
+      approvalStatus: "approved",
+    },
+  });
+  expectStatus("admin creates an approved assessment question", question, 201);
+
+  const quiz = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: ASSESSMENT_QUIZ_ID,
+      title: "Platform V3 directed assessment",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      quizKind: "test",
+      mode: "central",
+      questionIds: [ASSESSMENT_QUESTION_ID],
+      targetUserIds: [studentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+      settings: { maxAttempts: 1, passingScore: 60 },
+    },
+  });
+  expectStatus("admin creates a published directed assessment", quiz, 201);
+  assert.equal(quiz.body?.id, ASSESSMENT_QUIZ_ID, "created assessment id mismatch");
+  assert.equal(quiz.body?.isPublished, true, "admin assessment was not published");
+
+  const outsiderSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("outsider"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("outside student cannot submit directed assessment", outsiderSubmission, 403);
+
+  const acceptedSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("targeted student submits directed assessment", acceptedSubmission, 201);
+  assert.equal(acceptedSubmission.body?.score, 100, "assessment scoring did not preserve the correct answer");
+  assert.equal(acceptedSubmission.body?.quizSnapshot?.quizKind, "test", "assessment result snapshot missing quiz kind");
+
+  const repeatedSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("assessment max-attempt guard rejects repeat submission", repeatedSubmission, 409);
 }
 
 async function main() {
@@ -195,9 +278,11 @@ async function main() {
     expectStatus("login without CSRF is rejected", noCsrfLogin, 403);
     assert.equal(noCsrfLogin.body?.code, "CSRF_TOKEN_INVALID", "login without CSRF returned unexpected error code");
 
-    for (const role of ["student", "teacher", "supervisor", "parent", "admin"] as Role[]) {
+    for (const role of ["student", "outsider", "teacher", "supervisor", "parent", "admin"] as Role[]) {
       await loginRole(role, csrf);
     }
+
+    await runAssessmentJourney(csrf);
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);
