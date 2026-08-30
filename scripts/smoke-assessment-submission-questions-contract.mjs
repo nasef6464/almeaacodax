@@ -25,7 +25,7 @@ check('question order and copy-suffix fallback remain explicit', () => {
 });
 
 check('route retains question query and submission scoring ownership', () => {
-  for (const fragment of ['QuestionModel.find(buildDocumentsByIdsQuery(questionIds))', 'if (orderedQuestions.length === 0)', 'const questionReview = orderedQuestions.map', 'QuizResultModel.create({']) {
+  for (const fragment of ['QuestionModel.find(buildDocumentsByIdsQuery(questionIds))', 'if (orderedQuestions.length === 0)', 'buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers })', 'QuizResultModel.create({']) {
     assert.ok(routeSource.includes(fragment), `submission route lost ${fragment}`);
   }
 });

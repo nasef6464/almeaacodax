@@ -45,6 +45,7 @@ import { buildQuizSubmissionSectionResults } from "../modules/quizzes/applicatio
 import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quizSubmissionSnapshot.js";
 import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/quizSubmissionAnswerReview.js";
 import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
+import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2035,8 +2036,6 @@ quizRouter.post(
       passingScore,
     });
     const { totalQuestions, score, passed } = scoreSummary;
-    const timeSpentMinutes = Math.max(0, Math.round(payload.timeSpentSeconds / 60));
-
     // ── تحليل الأداء لكل قسم (للمحاكيات فقط) ─────────────────────────────
     const sectionResults = buildQuizSubmissionSectionResults({
       quiz,
@@ -2051,26 +2050,25 @@ quizRouter.post(
     let result;
     try {
       result = await QuizResultModel.create({
-        userId: req.authUser!.id,
-        quizId,
-        quizTitle: String(quiz.title || "اختبار"),
-        score,
-        passed,
-        attemptNumber,
-        source: payload.source || "",
-        totalQuestions,
-        correctAnswers,
-        wrongAnswers,
-        unanswered,
-        timeSpentSeconds: payload.timeSpentSeconds,
-        timeSpent: timeSpentMinutes > 0 ? `${timeSpentMinutes} دقيقة` : "أقل من دقيقة",
-        date: new Date().toISOString(),
-        skillsAnalysis,
-        questionReview,
-        // حفظ sectionResults فقط إذا كانت موجودة (للمحاكيات)
-        ...(sectionResults ? { sectionResults } : {}),
-        submissionKey,
-        quizSnapshot,
+        ...buildQuizSubmissionResultDocument({
+          userId: req.authUser!.id,
+          quizId,
+          quizTitle: String(quiz.title || "اختبار"),
+          score,
+          passed,
+          attemptNumber,
+          source: payload.source || "",
+          totalQuestions,
+          correctAnswers,
+          wrongAnswers,
+          unanswered,
+          timeSpentSeconds: payload.timeSpentSeconds,
+          skillsAnalysis,
+          questionReview,
+          sectionResults,
+          submissionKey,
+          quizSnapshot,
+        }),
       });
     } catch (error: any) {
       if (error?.code === 11000) {

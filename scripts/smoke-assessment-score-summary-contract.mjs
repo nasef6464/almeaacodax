@@ -24,8 +24,8 @@ check('score math and result fields remain explicit', () => {
   }
 });
 
-check('route retains review, persistence, and side-effect ownership', () => {
-  for (const fragment of ['const questionReview = orderedQuestions.map', 'const skillsAnalysis = Array.from(skillStats.entries())', 'QuizResultModel.create({', 'passed,', 'await runQuizSubmissionSideEffects({']) {
+check('route retains composition, persistence, and side-effect ownership', () => {
+  for (const fragment of ['buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers })', 'buildQuizSubmissionSkillsAnalysis({', 'QuizResultModel.create({', 'passed,', 'await runQuizSubmissionSideEffects({']) {
     assert.ok(routeSource.includes(fragment), `submission route lost ${fragment}`);
   }
 });
