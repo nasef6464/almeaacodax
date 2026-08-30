@@ -41,6 +41,7 @@ import { buildQuestionAttemptDocument } from "../modules/quizzes/application/que
 import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
 import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
 import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
+import { buildQuizSubmissionSectionResults } from "../modules/quizzes/application/quizSubmissionSectionResults.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2084,45 +2085,11 @@ quizRouter.post(
     const timeSpentMinutes = Math.max(0, Math.round(payload.timeSpentSeconds / 60));
 
     // ── تحليل الأداء لكل قسم (للمحاكيات فقط) ─────────────────────────────
-    const mockSections: any[] = (quiz as any).mockExam?.sections || [];
-    const sectionResults =
-      (quiz as any).mockExam?.enabled && mockSections.length > 0
-        ? mockSections.map((section: any) => {
-            const sectionQuestionIds = new Set<string>((section.questionIds || []).map(String));
-            const sectionQs = orderedQuestions.filter((q: any) =>
-              sectionQuestionIds.has(String(q.id || q._id)),
-            );
-            const secTotal = sectionQs.length;
-            const secCorrect = sectionQs.filter((q: any) => {
-              const qId = String(q.id || q._id);
-              const rawSelected = payload.answers[qId];
-              const selectedOptionIndex =
-                typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
-              return selectedOptionIndex === Number(q.correctOptionIndex ?? 0);
-            }).length;
-            const secWrong = sectionQs.filter((q: any) => {
-              const qId = String(q.id || q._id);
-              const rawSelected = payload.answers[qId];
-              const selectedOptionIndex =
-                typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
-              return (
-                selectedOptionIndex !== undefined &&
-                selectedOptionIndex !== Number(q.correctOptionIndex ?? 0)
-              );
-            }).length;
-            const secUnanswered = secTotal - secCorrect - secWrong;
-            const secScore = secTotal > 0 ? Math.round((secCorrect / secTotal) * 100) : 0;
-            return {
-              sectionId:   String(section.id || section._id || ""),
-              sectionName: String(section.title || section.name || ""),
-              total:       secTotal,
-              correct:     secCorrect,
-              wrong:       secWrong,
-              unanswered:  secUnanswered,
-              score:       secScore,
-            };
-          })
-        : undefined;
+    const sectionResults = buildQuizSubmissionSectionResults({
+      quiz,
+      orderedQuestions,
+      answers: payload.answers,
+    });
 
     // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
     // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً

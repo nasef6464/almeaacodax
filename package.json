@@ -87,6 +87,7 @@
     "smoke:assessment-attempt-context": "node scripts/smoke-assessment-attempt-context-contract.mjs",
     "smoke:assessment-submission-questions": "node scripts/smoke-assessment-submission-questions-contract.mjs",
     "smoke:assessment-score-summary": "node scripts/smoke-assessment-score-summary-contract.mjs",
+    "smoke:assessment-section-results": "node scripts/smoke-assessment-section-results-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
