@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Phase 2B — Content Backend Boundaries
-- Current batch: 2B-05 content bootstrap cache-lifecycle boundary completed
+- Current batch: 2B-06 scoped operational-data reader boundary completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `712f53fc` (bootstrap cache lifecycle); control-plane checkpoint pending
+- Last completed commit: `b289ab94` (scoped operational-data reader); control-plane checkpoint pending
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: focused 2A submission contracts PASS; server check/build PASS; route/runtime/security/quiz/auth/API smoke PASS; repository audit and architecture gate PASS. Frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install; unresolved runtime imports 0; runtime cycles 0
+- Current gates: focused content operations bootstrap contract PASS (7/7); server check/build PASS; architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: audit the remaining scoped operational-data reads and choose the next bounded extraction without changing content responses, operations scope, or RBAC semantics
+- Next exact action: close the Phase 2B checkpoint, then resume the planned quiz definition create/update/publication boundaries; the assessment-system audit supplied by the user remains deferred until this phase is closed.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files

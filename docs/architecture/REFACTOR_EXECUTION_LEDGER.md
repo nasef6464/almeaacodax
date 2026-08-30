@@ -297,6 +297,15 @@
 - Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
 - Next: audit scoped operational-data reads and select only a bounded, response-contract-preserving extraction.
 
+## 2B-06 — Content bootstrap scoped operational-data reader boundary
+
+- Status: COMPLETED in the current checkpoint on `refactor/modular-platform-safe`.
+- Changed: moved the `/api/content/bootstrap` scoped operational-data reader into `modules/content/infrastructure/contentBootstrapOperationalData.ts`; the route now only decides whether operational data is included and composes the response.
+- Preserved: admin full reads; public active-announcement limit; teacher/supervisor managed-group scope; parent linked-student scope; supervisor-only access-code exposure; all queries, sorting, `.lean()` choices, response keys, `/api/content/bootstrap`, RBAC semantics, and persisted schema.
+- Tests: content operations bootstrap contract PASS (7/7); `server:check` PASS; `server:build` PASS; architecture gate PASS.
+- Known limitation: `node tools/refactor/repository-audit.mjs` cannot start because the incomplete root dependency install cannot resolve its `typescript` package; frontend typecheck/build are still blocked by that same incomplete root install (including missing `lucide-react`). No failure is attributed to this extraction.
+- Next: close the Phase 2B checkpoint, then resume the planned quiz definition create/update/publication boundaries without changing public API, RBAC, or database semantics.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
