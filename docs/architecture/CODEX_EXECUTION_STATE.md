@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment critical-code audit
-- Current batch: assessment legacy-builder runtime inventory completed
+- Current batch: assessment isolated HTTP integration coverage added
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `645cff42` (legacy-builder inventory guard); question-bank source pagination is `f2835634`
+- Last completed commit: `55a8548a` (directed assessment HTTP journey); legacy-builder inventory guard is `645cff42`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, server check/build, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: design focused API integration coverage for create/publish/access/submit across admin, supervisor, teacher, and student roles. Do not delete a builder or change routes/schema/RBAC/scoring.
+- Next exact action: run the assessment HTTP journey in its isolated CI Mongo environment; then add supervisor/teacher scope cases only after seeding their real school/group topology. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
