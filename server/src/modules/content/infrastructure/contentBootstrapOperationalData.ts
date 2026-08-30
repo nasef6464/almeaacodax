@@ -5,7 +5,7 @@ import { B2BPackageModel } from "../../../models/B2BPackage.js";
 import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
 
-const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
+export const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
 
 type AuthUser = { id: string; role: string; schoolId?: string | null };
 

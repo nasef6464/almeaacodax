@@ -36,7 +36,10 @@ import { resolveContentBootstrapRequest } from "../modules/content/application/c
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
 import { resolveContentBootstrapCache } from "../modules/content/application/contentBootstrapCache.js";
-import { getScopedContentBootstrapOperationalData } from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
+import {
+  getScopedContentBootstrapOperationalData,
+  PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT,
+} from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
