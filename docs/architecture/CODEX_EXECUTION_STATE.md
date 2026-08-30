@@ -1,19 +1,32 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: added the isolated cross-school directed-assessment rejection case to the acceptance harness
+- Current batch: added the two-section mock assessment journey to the isolated acceptance harness
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `73d8b5ff` (cover cross-school directed scope rejection); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `6c58ceb9` (cover two-section mock assessment journey); isolated assessment CI gate is `a6ad996c`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved
-- Deferred test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied assessment acceptance matrix. The structural batch is closed; acceptance cases may be added to the isolated harness, but their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
+- Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness now covers the normal directed journey, bounded cross-school/class rejection, and a two-section mock journey. Their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: obtain authorization to manually run the isolated backend CI gate and inspect its runtime output. The harness now includes bounded cross-school and cross-class directed-target rejection cases. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
+- Next exact action: obtain authorization to manually run the isolated backend CI gate and inspect its runtime output for both normal and two-section mock journeys. The harness includes bounded cross-school and cross-class directed-target rejection cases. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
 - Delivery rule: after each green Batch, update this file, create a focused commit, push, and refresh the latest ZIP without including secrets, `.env`, `.git`, dependencies, or build artifacts.
+
+## Batch 2T-01 — Two-section mock assessment acceptance journey
+
+- Scope: extended the existing isolated HTTP harness with a published, directed mock assessment containing two independently scored sections.
+- Changed files: `server/src/scripts/backendIntegrationGate.ts`.
+- Preserved contracts: all quiz routes and payload formats, persisted schemas, assignment/access policy, scoring, section-result response shape, and RBAC.
+- Coverage: admin creates a second approved question and publishes a two-section mock; an outside student is rejected; the targeted student submits mixed answers; the stored result preserves mock snapshot and two per-section scores; admin reads section analytics.
+- Tests: `smoke:reports-role` PASS 20/20; `smoke:quiz-access` PASS 18/18; `smoke:quiz-integrity-guard` PASS 4/4; architecture gate PASS; `git diff --check` PASS.
+- Gates blocked: the new HTTP journey has not run because local `server/node_modules` is incomplete and no isolated Mongo service was started; `server:check`/`server:build` therefore remain environment-blocked.
+- Commit: `6c58ceb9` `test(assessment): cover two-section mock journey`.
+- Push: not performed; no push or CI-dispatch authorization was supplied.
+- Risks: route-level smoke contracts do not prove this journey at runtime; CI must run the isolated Mongo harness before it can count as acceptance evidence.
+- Next exact action: manually dispatch the isolated backend CI gate (or authorize a push that triggers it), inspect the result, then proceed to the Playwright subset from the roadmap.
 
 ## Batch 2A-15 — Supervisor report scope resolver
 
