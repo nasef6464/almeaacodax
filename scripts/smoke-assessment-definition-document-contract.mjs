@@ -20,6 +20,7 @@ check('quiz create document builder is delegated', () => {
 check('create document contract preserves field precedence', () => {
   for (const fragment of [
     '...payload,',
+    'questionIds: uniqueQuestionIds(payload.questionIds),',
     'id: quizId,',
     '_id: quizId,',
     '...workflowDefaults,',
@@ -40,6 +41,11 @@ check('definition document builder stays pure and bounded', () => {
     assert.ok(!moduleSource.includes(forbidden), `definition document must not include ${forbidden}`);
   }
   assert.ok(moduleSource.split(/\r?\n/).length <= 35, 'quizDefinitionDocument.ts exceeded 35 lines');
+});
+
+check('create document normalizes duplicate question references before persistence', () => {
+  assert.ok(moduleSource.includes('const uniqueQuestionIds'), 'definition document must own canonical question ids');
+  assert.ok(moduleSource.includes('new Set(values.filter'), 'definition document must remove duplicate question ids');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

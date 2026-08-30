@@ -35,6 +35,7 @@ const MISSING_QUESTION_QUIZ_ID = `platform-v3-integration-missing-question-quiz-
 const MISSING_QUESTION_ID = `platform-v3-integration-missing-question-${RUN_MARKER}`;
 const INVALID_QUESTION_QUIZ_ID = `platform-v3-integration-invalid-question-quiz-${RUN_MARKER}`;
 const INVALID_QUESTION_ID = `platform-v3-integration-invalid-question-${RUN_MARKER}`;
+const DUPLICATE_QUESTION_QUIZ_ID = `platform-v3-integration-duplicate-question-quiz-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
@@ -370,6 +371,27 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("published assessment with invalid question content is rejected", invalidQuestionQuiz, 400);
   assert.equal(invalidQuestionQuiz.body?.integrity?.invalidContentIds?.includes(INVALID_QUESTION_ID), true, "invalid question id was not reported");
   assert.equal(await QuizModel.countDocuments({ id: INVALID_QUESTION_QUIZ_ID }), 0, "invalid-question assessment was saved");
+
+  const duplicateQuestionQuiz = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: DUPLICATE_QUESTION_QUIZ_ID,
+      title: "Platform V3 assessment with duplicate question references",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      quizKind: "test",
+      mode: "central",
+      questionIds: [ASSESSMENT_QUESTION_ID, ASSESSMENT_QUESTION_ID],
+      targetUserIds: [studentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+    },
+  });
+  expectStatus("published assessment normalizes duplicate question references", duplicateQuestionQuiz, 201);
+  assert.deepEqual(duplicateQuestionQuiz.body?.questionIds, [ASSESSMENT_QUESTION_ID], "duplicate question reference was persisted");
 
   const outsiderSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
     method: "POST",

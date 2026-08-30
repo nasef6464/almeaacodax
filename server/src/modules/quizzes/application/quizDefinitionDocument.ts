@@ -1,3 +1,7 @@
+const uniqueQuestionIds = (values: unknown) => Array.isArray(values)
+  ? [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))]
+  : [];
+
 export const buildQuizCreateDocument = ({
   payload,
   quizId,
@@ -14,6 +18,7 @@ export const buildQuizCreateDocument = ({
   willBePublished: boolean;
 }) => ({
   ...payload,
+  questionIds: uniqueQuestionIds(payload.questionIds),
   id: quizId,
   _id: quizId,
   ...workflowDefaults,

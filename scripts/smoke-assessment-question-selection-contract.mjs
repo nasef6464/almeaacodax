@@ -16,6 +16,7 @@ const checks = [
   ["isolated HTTP gate rejects and does not save missing-question assessments", integrationGate.includes("published assessment with a missing question is rejected") && integrationGate.includes("MISSING_QUESTION_ID") && integrationGate.includes("QuizModel.countDocuments({ id: MISSING_QUESTION_QUIZ_ID })")],
   ["integrity guard rejects unusable published question content", integrity.includes("invalidContentIds.push(id)") && integrity.includes("Cannot publish quiz: some referenced questions are missing or have incomplete content")],
   ["isolated HTTP gate rejects and does not save invalid-question assessments", integrationGate.includes("published assessment with invalid question content is rejected") && integrationGate.includes("INVALID_QUESTION_ID") && integrationGate.includes("QuizModel.countDocuments({ id: INVALID_QUESTION_QUIZ_ID })")],
+  ["isolated HTTP gate preserves a single canonical duplicate question reference", integrationGate.includes("published assessment normalizes duplicate question references") && integrationGate.includes("DUPLICATE_QUESTION_QUIZ_ID") && integrationGate.includes("duplicate question reference was persisted")],
 ];
 
 const failed = checks.filter(([, passed]) => !passed);
