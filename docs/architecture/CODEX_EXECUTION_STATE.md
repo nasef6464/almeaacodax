@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Phase 2A — Assessment Backend Boundaries
-- Current batch: 2A-14 quiz submission result-composition boundaries completed
+- Current batch: 2A-15 quiz submission directed-scope boundary completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `301e11c0` (result document); control-plane checkpoint pending
+- Last completed commit: `c6baa474` (directed scope); control-plane checkpoint pending
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: focused 2A-14 submission contracts PASS; server check/build PASS; route/runtime/security/quiz/auth/API smoke PASS. Frontend dependency reinstall is locally incomplete, so current-run frontend typecheck/build and repository/architecture gates remain pending; unresolved runtime imports 0; runtime cycles 0
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: map directed-quiz submission authorization and attempt orchestration into the next compatible boundary without changing submission, scoring, persistence, or RBAC semantics
+- Next exact action: map submission attempt-limit preparation into the next compatible boundary without changing submission, scoring, persistence, or RBAC semantics
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files

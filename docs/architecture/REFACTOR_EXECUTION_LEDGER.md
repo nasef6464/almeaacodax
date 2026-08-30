@@ -216,6 +216,15 @@
 - Known limitation: current frontend dependency installation on this host did not finish, so this batch does not claim a fresh frontend typecheck/build, repository audit, or architecture-gate run. No production load certification is claimed.
 - Next: map directed-quiz submission authorization and attempt orchestration only after preserving every existing RBAC and attempt-limit contract.
 
+## 2A-15 — Quiz submission directed-scope boundary
+
+- Status: COMPLETED in `c6baa474` on `refactor/modular-platform-safe`.
+- Changed: extracted pure target-group/user normalization and the exact group-membership-check predicate into `quizSubmissionDirectedScope.ts`. The route retains `GroupModel.findOne`, the forbidden response, and the surrounding authentication/authorization flow.
+- Preserved: staff bypass, explicitly-targeted-user behavior, target group ID query shape, Mongo membership verification, forbidden status/message, `POST /api/quizzes/:id/submit`, all RBAC semantics, persisted schema, and route/API contracts.
+- Tests: directed-scope contract PASS; auth-login security 9/9; API security 6/6; `server:check` PASS.
+- Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
+- Next: isolate attempt-limit preparation only after proving the existing count/query and conflict semantics remain unchanged.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
