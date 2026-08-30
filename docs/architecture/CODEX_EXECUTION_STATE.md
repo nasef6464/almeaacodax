@@ -1,7 +1,7 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: recorded the first green isolated HTTP acceptance evidence for the assessment harness
+- Current batch: enabled the isolated full-stack Playwright gate on the safe branch
 - Current branch: `refactor/modular-platform-safe`
 - Last completed code commit: `15fa3b95` (satisfy teacher question fixture contract); isolated assessment CI gate passed at `038544cc` (run `33336856128`)
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
@@ -176,6 +176,16 @@
 - Evidence: workflow run `33336856128` passed on commit `038544cc`; its assessment paths covered normal directed submission/repeat rejection, missing/invalid/duplicate question handling, two-section mock submission and partial update, teacher managed scope, and school/class audience isolation.
 - Constraints: the runner generated ephemeral CI secrets and used only `mongodb://127.0.0.1` in the CI container; no production credentials, API, database, or local service were used.
 - Remaining work: roadmap Playwright journeys, historical-result compatibility evidence, scale testing, and only product-approved ownership-policy changes.
+
+## Batch 2T-10 — Safe-branch isolated E2E eligibility
+
+- Scope: enabled the existing deep full-stack E2E workflow for `refactor/modular-platform-safe`.
+- Changed files: `.github/workflows/platform-v3-deep-premerge-e2e-gate.yml`.
+- Preserved contracts: no application route, RBAC, schema, or production deployment behavior changed.
+- Evidence: the workflow uses temporary Mongo, starts the exact branch API/frontend in CI, and runs its Playwright-backed UI audits without production writes.
+- Tests: architecture gate PASS; `git diff --check` PASS.
+- Commit: `5e30cfe4` `ci(assessment): run isolated E2E gate on safe branch`.
+- Next exact action: inspect the automatic deep E2E result and classify any failing journey against the roadmap.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
