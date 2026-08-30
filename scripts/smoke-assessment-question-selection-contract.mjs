@@ -14,6 +14,8 @@ const checks = [
   ["route keeps question persistence and scoring orchestration", route.includes("QuestionModel.find(buildDocumentsByIdsQuery(questionIds))") && route.includes("QuizResultModel.create({")],
   ["integrity guard rejects missing published question references", integrity.includes("missingIds.push(id)") && integrity.includes("Cannot publish quiz: some referenced questions are missing")],
   ["isolated HTTP gate rejects and does not save missing-question assessments", integrationGate.includes("published assessment with a missing question is rejected") && integrationGate.includes("MISSING_QUESTION_ID") && integrationGate.includes("QuizModel.countDocuments({ id: MISSING_QUESTION_QUIZ_ID })")],
+  ["integrity guard rejects unusable published question content", integrity.includes("invalidContentIds.push(id)") && integrity.includes("Cannot publish quiz: some referenced questions are missing or have incomplete content")],
+  ["isolated HTTP gate rejects and does not save invalid-question assessments", integrationGate.includes("published assessment with invalid question content is rejected") && integrationGate.includes("INVALID_QUESTION_ID") && integrationGate.includes("QuizModel.countDocuments({ id: INVALID_QUESTION_QUIZ_ID })")],
 ];
 
 const failed = checks.filter(([, passed]) => !passed);

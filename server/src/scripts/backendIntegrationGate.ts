@@ -9,6 +9,7 @@ import { CertificateModel } from "../models/Certificate.js";
 import { PathModel } from "../models/Path.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
+import { QuestionModel } from "../models/Question.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -32,6 +33,8 @@ const ASSESSMENT_QUESTION_ID = `platform-v3-integration-question-${RUN_MARKER}`;
 const ASSESSMENT_QUIZ_ID = `platform-v3-integration-quiz-${RUN_MARKER}`;
 const MISSING_QUESTION_QUIZ_ID = `platform-v3-integration-missing-question-quiz-${RUN_MARKER}`;
 const MISSING_QUESTION_ID = `platform-v3-integration-missing-question-${RUN_MARKER}`;
+const INVALID_QUESTION_QUIZ_ID = `platform-v3-integration-invalid-question-quiz-${RUN_MARKER}`;
+const INVALID_QUESTION_ID = `platform-v3-integration-invalid-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
@@ -291,6 +294,16 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   });
   expectStatus("admin creates an approved assessment question", question, 201);
 
+  await QuestionModel.create({
+    id: INVALID_QUESTION_ID,
+    text: "",
+    options: [],
+    subject: ASSESSMENT_SUBJECT_ID,
+    pathId: ASSESSMENT_PATH_ID,
+    type: "mcq",
+    approvalStatus: "approved",
+  });
+
   const quiz = await jsonRequest("/quizzes", {
     method: "POST",
     token: tokens.get("admin"),
@@ -335,6 +348,28 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("published assessment with a missing question is rejected", missingQuestionQuiz, 400);
   assert.equal(missingQuestionQuiz.body?.integrity?.missingIds?.includes(MISSING_QUESTION_ID), true, "missing question id was not reported");
   assert.equal(await QuizModel.countDocuments({ id: MISSING_QUESTION_QUIZ_ID }), 0, "missing-question assessment was saved");
+
+  const invalidQuestionQuiz = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: INVALID_QUESTION_QUIZ_ID,
+      title: "Platform V3 assessment with invalid question content",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      quizKind: "test",
+      mode: "central",
+      questionIds: [INVALID_QUESTION_ID],
+      targetUserIds: [studentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+    },
+  });
+  expectStatus("published assessment with invalid question content is rejected", invalidQuestionQuiz, 400);
+  assert.equal(invalidQuestionQuiz.body?.integrity?.invalidContentIds?.includes(INVALID_QUESTION_ID), true, "invalid question id was not reported");
+  assert.equal(await QuizModel.countDocuments({ id: INVALID_QUESTION_QUIZ_ID }), 0, "invalid-question assessment was saved");
 
   const outsiderSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
     method: "POST",
