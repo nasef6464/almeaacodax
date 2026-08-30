@@ -1,10 +1,46 @@
 # Assessment Platform V1 — Progress Ledger
 
-**آخر تحديث:** 21 أغسطس 2026  
-**Active branch:** `develop/assessment-platform-v1`  
-**Base:** `main` @ `7b666fe50d00766ce16f4b3f42d91edd659ffa12`
+**آخر تحديث:** 30 أغسطس 2026  
+**Active branch:** `refactor/modular-platform-safe`  
+**Base:** HEAD الحالي على الفرع؛ لا تعتمد على SHA تاريخي.
 
 > الفرع هو مصدر الحقيقة للـHEAD الحالي. لا تعتمد على SHA ثابت هنا بعد كل Commit.
+
+---
+
+## تدقيق 2026-08-30 وإصلاح A-001 — مكتمل (commit: `d31debe3`)
+
+### ما تم إثباته أولًا
+
+- لم تُعد معالجة فرضيات الحفظ الوهمي أو المعرفات المحلية: `addQuestion` و`addQuiz`/`updateQuiz` تنتظر API وتعيد كيان الخادم.
+- النتائج تحتفظ بـ`quizSnapshot` و`submissionKey`، وsubmit يجمع أسئلة أقسام المحاكي عبر `getQuizQuestionIds`.
+- ثبتت مشكلة detail response للمحاكي: كان `GET /api/quizzes/:id` يحل root `questionIds` فقط، بينما `UnifiedQuizBuilder` يحفظ محاكياته الجديدة مع IDs داخل الأقسام فقط.
+
+### التعديل
+
+- `server/src/routes/quiz.routes.ts`: endpoint التفاصيل صار يستخدم `getQuizQuestionIds(quiz)`، وهو resolver القائم نفسه الذي يحافظ على ترتيب الأسئلة ويجعل أسئلة أقسام المحاكي مصدر الحقيقة.
+- `scripts/smoke-assessment-detail-question-resolution-contract.mjs`: اختبار مباشر لحالات normal وmock والـlegacy root IDs.
+- `package.json`: أمر `smoke:assessment-detail-question-resolution`.
+
+### العقود المحفوظة
+
+- لا تغيير في URL أو method أو response keys أو schema أو RBAC أو scoring.
+- الاختبار العادي ما زال يستخدم IDs الجذرية؛ المحاكي يأخذ IDs الأقسام فقط عندما تكون موجودة.
+- لا migration ولا حذف لأي builder أو كيان.
+
+### الاختبارات المنفذة
+
+- `smoke:assessment-detail-question-resolution`: PASS (4/4).
+- `smoke:mock-exams`: PASS (10/10).
+- `smoke:quiz-integrity-guard`: PASS (4/4).
+- `smoke:quiz-access`: PASS (18/18).
+- `server:check` و`server:build`: PASS.
+- `architecture-gate`: PASS.
+- `repository-audit`: تعذّر قبل التحليل لأن تثبيت الحزم الجذري غير مكتمل ولا يحل package `typescript`؛ لا يُنسب ذلك للتعديل.
+
+### التالي
+
+**A-002 فقط:** وصل `resolveAssessmentSettings` و`toCanonicalAssessmentSettingsPayload` إلى مسارات القراءة/الكتابة المعنية بعد حصر callers، مع compatibility للبيانات القديمة واختبار runner. لا تبدأ توحيد المنشئ أو `ExamAssignment` أو migration للـplacement.
 
 ---
 
