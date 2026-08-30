@@ -5,7 +5,7 @@
 - Current branch: `refactor/modular-platform-safe`
 - Last completed commit: `c107c8c8` (submission window); control-plane checkpoint pending
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: focused 2A-14 submission contracts PASS; server check/build PASS; route/runtime/security/quiz/auth/API smoke PASS. Frontend dependency reinstall is locally incomplete, so current-run frontend typecheck/build and repository/architecture gates remain pending; unresolved runtime imports 0; runtime cycles 0
+- Current gates: focused 2A submission contracts PASS; server check/build PASS; route/runtime/security/quiz/auth/API smoke PASS; repository audit and architecture gate PASS. Frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install; unresolved runtime imports 0; runtime cycles 0
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
 - Next exact action: audit the remaining quiz access-policy dependencies and choose the next bounded extraction without changing submission, scoring, persistence, or RBAC semantics
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work

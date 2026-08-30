@@ -222,7 +222,7 @@
 - Changed: extracted pure target-group/user normalization and the exact group-membership-check predicate into `quizSubmissionDirectedScope.ts`. The route retains `GroupModel.findOne`, the forbidden response, and the surrounding authentication/authorization flow.
 - Preserved: staff bypass, explicitly-targeted-user behavior, target group ID query shape, Mongo membership verification, forbidden status/message, `POST /api/quizzes/:id/submit`, all RBAC semantics, persisted schema, and route/API contracts.
 - Tests: directed-scope contract PASS; auth-login security 9/9; API security 6/6; `server:check` PASS.
-- Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
+- Known limitation: frontend dependency installation was incomplete on this host when this batch ran; a later repository-audit and architecture-gate verification is recorded in 2A-18.
 - Next: isolate attempt-limit preparation only after proving the existing count/query and conflict semantics remain unchanged.
 
 ## 2A-16 — Quiz submission attempt-state boundary
@@ -249,7 +249,7 @@
 - Changed: extracted deadline and time-limit evaluation into `quizSubmissionWindow.ts`; the route parses the request and maps the existing status/message response.
 - Preserved: due-date parsing, current-time comparison, 60-second grace interval, forbidden/request-timeout status codes and messages, `POST /api/quizzes/:id/submit`, RBAC, scoring, persistence, and all route/API contracts.
 - Tests: submission-window contract PASS; attempt-context contract PASS; API security 6/6; `server:check` PASS.
-- Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
+- Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate now PASS; no frontend failure is attributed to this batch.
 - Next: audit access-policy dependencies and select only a bounded, contract-preserving extraction.
 
 ## P0-02 — Distributed weekly parent-report scheduling
