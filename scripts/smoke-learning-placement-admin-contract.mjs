@@ -43,6 +43,12 @@ check('subject workspace summary counts only explicitly selected training and te
   );
 });
 
+check('subject workspace uses the same assessment vocabulary as its regular-test panel', () => {
+  assertIncludes(pathsManagerSource, "title: 'الاختبارات'");
+  assertIncludes(pathsManagerSource, '<SubjectQuizzesPanel subjectId={currentSubject?.id || \'\'} kind="test" />');
+  assertNotIncludes(pathsManagerSource, "title: 'المحاكي'");
+});
+
 check('learning admin defaults to selected-only but can add from the central repository', () => {
   assertIncludes(quizzesManagerSource, "const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>(filterType ? 'visible' : 'all')");
   assertIncludes(quizzesManagerSource, "if (learningSlotFilter === 'visible' && !isVisibleHere) return false");

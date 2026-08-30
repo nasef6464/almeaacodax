@@ -214,7 +214,7 @@ export const PathsManager: React.FC = () => {
         },
         {
           id: 'exams' as const,
-          title: 'المحاكي',
+          title: 'الاختبارات',
           tab: 'exams' as const,
           total: subjectScopedContent.tests.length,
           visible: subjectScopedContent.tests.filter(isPublishedForLearner).length,
