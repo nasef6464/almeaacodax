@@ -270,6 +270,15 @@
 - Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
 - Next: audit bootstrap payload composition and select only a bounded, response-contract-preserving extraction.
 
+## 2B-03 — Content bootstrap visibility-filter boundary
+
+- Status: COMPLETED in `15dace85` on `refactor/modular-platform-safe`.
+- Changed: extracted learner/staff bootstrap visibility filters and active-path fallback composition into `contentBootstrapVisibility.ts`; the route still obtains active paths and runs the same model queries.
+- Preserved: staff full visibility, learner `showOnPlatform` and approval gates, active-path scope and missing/empty/null path fallback, operations behavior, response shape, `/api/content/bootstrap`, RBAC, and persistence semantics.
+- Tests: bootstrap-visibility contract PASS; content operations bootstrap 4/4; course visibility 3/3; `server:check` PASS.
+- Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
+- Next: audit bootstrap payload composition/cache lifecycle and select only a bounded, response-contract-preserving extraction.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.

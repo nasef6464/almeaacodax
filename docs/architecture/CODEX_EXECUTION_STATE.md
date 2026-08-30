@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Phase 2B — Content Backend Boundaries
-- Current batch: 2B-02 content bootstrap request-policy boundary completed
+- Current batch: 2B-03 content bootstrap visibility-filter boundary completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `43e498f6` (bootstrap request policy); control-plane checkpoint pending
+- Last completed commit: `15dace85` (bootstrap visibility filters); control-plane checkpoint pending
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: focused 2A submission contracts PASS; server check/build PASS; route/runtime/security/quiz/auth/API smoke PASS; repository audit and architecture gate PASS. Frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install; unresolved runtime imports 0; runtime cycles 0
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: audit content bootstrap payload composition and choose the next bounded extraction without changing content responses, operations scope, or RBAC semantics
+- Next exact action: audit content bootstrap payload composition and cache lifecycle, then choose the next bounded extraction without changing content responses, operations scope, or RBAC semantics
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
