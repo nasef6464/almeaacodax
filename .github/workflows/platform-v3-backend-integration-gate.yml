@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - develop/platform-v3-recovery
+      - refactor/modular-platform-safe
   pull_request:
     branches:
       - main
@@ -19,7 +20,7 @@ concurrency:
 
 jobs:
   isolated-backend-integration:
-    if: github.event_name != 'pull_request' || (github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery')
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe'
     name: Auth + RBAC + assessments + AI + certificates on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 20
