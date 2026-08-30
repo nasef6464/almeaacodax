@@ -261,6 +261,15 @@
 - Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
 - Next: audit content bootstrap composition and select only a bounded, response-contract-preserving extraction.
 
+## 2B-02 — Content bootstrap request-policy boundary
+
+- Status: COMPLETED in `43e498f6` on `refactor/modular-platform-safe`.
+- Changed: extracted scope/phase normalization, inclusion flags, and shared-cache eligibility/key derivation into `contentBootstrapRequest.ts`; the route retains query parsing, cache reads/writes, HTTP headers, data queries, and response mapping.
+- Preserved: non-staff coercion to learning scope, staff full/operations access, `learning/core` behavior, operations-only skips, study-plan inclusion, shared-cache partitioning, `/api/content/bootstrap` URL/method, response shape, and RBAC semantics.
+- Tests: bootstrap-request contract PASS; content operations bootstrap 4/4; course visibility 3/3; `server:check` PASS.
+- Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
+- Next: audit bootstrap payload composition and select only a bounded, response-contract-preserving extraction.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
