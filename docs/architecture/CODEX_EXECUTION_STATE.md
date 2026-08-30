@@ -1,14 +1,14 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: added invalid published-question-content rejection to the isolated acceptance harness
+- Current batch: normalized duplicate published-question references in the isolated acceptance harness
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `a5956306` (reject invalid published question content); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `173c2bd8` (normalize duplicate question references); isolated assessment CI gate is `a6ad996c`
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved
-- Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness now covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, and missing or invalid published-question rejection without persistence. Their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
+- Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness now covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, and missing or invalid published-question rejection without persistence. Their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
 - Next exact action: inspect the isolated backend CI gate configuration and, if it starts only isolated dependencies, run it to obtain runtime proof for normal/mock journeys and missing/invalid-question rejection. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
@@ -124,6 +124,18 @@
 - Push: pending the paired documentation commit.
 - Risks: the assertion remains a harness case until it passes on the isolated Mongo gate; local server TypeScript check/build remain unavailable because `tsc` is absent.
 - Next exact action: inspect the isolated backend CI gate configuration and run it only if it uses an isolated Mongo dependency; otherwise continue the next bounded acceptance case without starting production-connected services.
+
+## Batch 2T-05 — Duplicate published-question reference normalization
+
+- Scope: normalized root `questionIds` in the pure quiz-create document builder and added an isolated HTTP harness case proving a published definition with the same question reference twice stores one canonical reference.
+- Changed files: `server/src/modules/quizzes/application/quizDefinitionDocument.ts`, `server/src/scripts/backendIntegrationGate.ts`, `scripts/smoke-assessment-definition-document-contract.mjs`, and `scripts/smoke-assessment-question-selection-contract.mjs`.
+- Preserved contracts: existing `/quizzes` POST path and payload, response shape, publication/integrity policy, question selection, RBAC, Mongo schema, scoring, and production data. Duplicate references now preserve the intended single-question semantics rather than changing scoring or question content.
+- Tests: `smoke:assessment-definition-document` PASS 5/5; `smoke:assessment-question-selection` PASS 10/10; `smoke:quiz-integrity-guard` PASS 4/4; architecture gate PASS; `git diff --check` PASS.
+- Runtime evidence: deferred; no API service, Mongo instance, CI gate, or production system was started.
+- Commit: `173c2bd8` `test(assessments): normalize duplicate question references`.
+- Push: pending the paired documentation commit.
+- Risks: the HTTP assertion remains a harness case until it passes on the isolated Mongo gate; local server TypeScript check/build remain unavailable because `tsc` is absent.
+- Next exact action: cover owner-scope rejection for question references only after proving the existing ownership policy on the route; do not change its RBAC or persistence semantics speculatively.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
