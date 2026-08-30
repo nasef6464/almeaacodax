@@ -33,6 +33,7 @@ import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesList
 import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content/http/studyPlanSchemas.js";
 import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
+import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
@@ -78,20 +79,6 @@ const clearContentBootstrapCache = () => {
   contentBootstrapMinimalCache = null;
   contentBootstrapMinimalPromise = null;
 };
-
-const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter: T, activePathIds: string[], pathField = "pathId") => ({
-  $and: [
-    baseFilter,
-    {
-      $or: [
-        { [pathField]: { $in: activePathIds } },
-        { [pathField]: { $exists: false } },
-        { [pathField]: "" },
-        { [pathField]: null },
-      ],
-    },
-  ],
-});
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
@@ -818,23 +805,9 @@ contentRouter.get(
 
     const loadBootstrapPayload = async (): Promise<PublicContentBootstrapPayload> => {
       const canSeeAllContent = isStaffRole(req.authUser?.role);
-      const lessonFilter = isStaffRole(req.authUser?.role)
-        ? {}
-        : {
-            showOnPlatform: { $ne: false },
-            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-          };
-      const topicFilter = isStaffRole(req.authUser?.role) ? {} : { showOnPlatform: { $ne: false } };
-      const libraryFilter = isStaffRole(req.authUser?.role)
-        ? {}
-        : {
-            showOnPlatform: { $ne: false },
-            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-          };
       const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
-      const finalTopicFilter = canSeeAllContent ? topicFilter : scopeFilterToActivePaths(topicFilter, activePathIds);
-      const finalLessonFilter = canSeeAllContent ? lessonFilter : scopeFilterToActivePaths(lessonFilter, activePathIds);
-      const finalLibraryFilter = canSeeAllContent ? libraryFilter : scopeFilterToActivePaths(libraryFilter, activePathIds);
+      const { finalTopicFilter, finalLessonFilter, finalLibraryFilter } =
+        buildContentBootstrapVisibilityFilters({ canSeeAllContent, activePathIds });
 
       const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
         isOperationsOnly ? Promise.resolve([]) : TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
