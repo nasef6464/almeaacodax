@@ -8,6 +8,7 @@ import { CourseModel } from "../models/Course.js";
 import { CertificateModel } from "../models/Certificate.js";
 import { PathModel } from "../models/Path.js";
 import { GroupModel } from "../models/Group.js";
+import { QuizModel } from "../models/Quiz.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -29,6 +30,8 @@ const ASSESSMENT_PATH_ID = `platform-v3-integration-path-${RUN_MARKER}`;
 const ASSESSMENT_SUBJECT_ID = `platform-v3-integration-subject-${RUN_MARKER}`;
 const ASSESSMENT_QUESTION_ID = `platform-v3-integration-question-${RUN_MARKER}`;
 const ASSESSMENT_QUIZ_ID = `platform-v3-integration-quiz-${RUN_MARKER}`;
+const MISSING_QUESTION_QUIZ_ID = `platform-v3-integration-missing-question-quiz-${RUN_MARKER}`;
+const MISSING_QUESTION_ID = `platform-v3-integration-missing-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN_MARKER}`;
 const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
@@ -310,6 +313,28 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("admin creates a published directed assessment", quiz, 201);
   assert.equal(quiz.body?.id, ASSESSMENT_QUIZ_ID, "created assessment id mismatch");
   assert.equal(quiz.body?.isPublished, true, "admin assessment was not published");
+
+  const missingQuestionQuiz = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: MISSING_QUESTION_QUIZ_ID,
+      title: "Platform V3 assessment with a missing question",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      quizKind: "test",
+      mode: "central",
+      questionIds: [MISSING_QUESTION_ID],
+      targetUserIds: [studentId],
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+    },
+  });
+  expectStatus("published assessment with a missing question is rejected", missingQuestionQuiz, 400);
+  assert.equal(missingQuestionQuiz.body?.integrity?.missingIds?.includes(MISSING_QUESTION_ID), true, "missing question id was not reported");
+  assert.equal(await QuizModel.countDocuments({ id: MISSING_QUESTION_QUIZ_ID }), 0, "missing-question assessment was saved");
 
   const outsiderSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
     method: "POST",
