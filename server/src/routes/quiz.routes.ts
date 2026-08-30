@@ -50,6 +50,7 @@ import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 import { appendSchoolWideChildGroups, buildSupervisorDirectScope } from "../modules/quizzes/application/quizSupervisorScope.js";
+import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -479,29 +480,6 @@ const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   return false;
 };
 
-const matchesManagedScope = (
-  gap: any,
-  managedPathIds: Set<string>,
-  managedSubjectIds: Set<string>,
-) => {
-  if (managedPathIds.size === 0 && managedSubjectIds.size === 0) {
-    return true;
-  }
-
-  const gapSubjectId = String(gap?.subjectId || "");
-  const gapPathId = String(gap?.pathId || "");
-
-  if (managedSubjectIds.size > 0 && gapSubjectId && managedSubjectIds.has(gapSubjectId)) {
-    return true;
-  }
-
-  if (managedPathIds.size > 0 && gapPathId && managedPathIds.has(gapPathId)) {
-    return true;
-  }
-
-  return false;
-};
-
 const toSafeDate = (value?: string) => {
   if (!value) return undefined;
   const date = new Date(value);
@@ -594,22 +572,6 @@ const resolveScopedStudents = async (authUser: any, options?: { limit?: number }
   ]);
 
   return { students, totalStudents, isTruncated: totalStudents > students.length, managedPathIds, managedSubjectIds };
-};
-
-const filterResultsByManagedScope = (
-  results: any[],
-  role: string,
-  managedPathIds: Set<string>,
-  managedSubjectIds: Set<string>,
-) => {
-  if (role !== "teacher" || (managedPathIds.size === 0 && managedSubjectIds.size === 0)) {
-    return results;
-  }
-
-  return results.filter((result) => {
-    const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-    return skills.some((gap: any) => matchesManagedScope(gap, managedPathIds, managedSubjectIds));
-  });
 };
 
 export const quizRouter = Router();
@@ -1003,7 +965,7 @@ quizRouter.get(
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
       quizResults = quizResults.filter((result) => {
         const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-        return skills.some((gap: any) => matchesManagedScope(gap, managedPathIds, managedSubjectIds));
+        return skills.some((gap: any) => matchesManagedContentScope(gap, managedPathIds, managedSubjectIds));
       });
     }
 
@@ -1012,7 +974,7 @@ quizRouter.get(
       : [];
 
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
-      questionAttempts = questionAttempts.filter((attempt) => matchesManagedScope(attempt, managedPathIds, managedSubjectIds));
+      questionAttempts = questionAttempts.filter((attempt) => matchesManagedContentScope(attempt, managedPathIds, managedSubjectIds));
     }
 
     const attemptSkillIds = uniqueStrings(questionAttempts.flatMap((attempt) => (attempt.skillIds || []).map(String)));
@@ -1084,7 +1046,7 @@ quizRouter.get(
         results.forEach((result) => {
           const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
             authUser.role === "teacher"
-              ? matchesManagedScope(gap, managedPathIds, managedSubjectIds)
+              ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
               : true,
           );
           skills.forEach((gap: any) => {
@@ -1176,7 +1138,7 @@ quizRouter.get(
     quizResults.forEach((result) => {
       const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
         authUser.role === "teacher"
-          ? matchesManagedScope(gap, managedPathIds, managedSubjectIds)
+          ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
           : true,
       );
       skills.forEach((gap: any) => {
@@ -1262,7 +1224,7 @@ quizRouter.get(
     quizResults.forEach((result) => {
       const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
         authUser.role === "teacher"
-          ? matchesManagedScope(gap, managedPathIds, managedSubjectIds)
+          ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
           : true,
       );
       skills.forEach((gap: any) => {
@@ -1528,7 +1490,7 @@ quizRouter.get(
             ...scopedFilter,
           }))
       : 0;
-    results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
+    results = filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds);
 
     return res.json({
       scope: {

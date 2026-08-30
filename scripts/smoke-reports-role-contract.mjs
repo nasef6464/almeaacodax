@@ -313,7 +313,8 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
   assertIncludes(quizRoutesSource, 'authUser.role === "parent"');
   assertIncludes(quizRoutesSource, 'linkedStudentIds');
-  assertIncludes(quizRoutesSource, 'matchesManagedScope');
+  assertIncludes(quizRoutesSource, 'matchesManagedContentScope');
+  assertIncludes(quizRoutesSource, 'filterResultsByManagedContentScope');
   assertIncludes(quizRoutesSource, 'const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
   assertIncludes(quizRoutesSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
   assertIncludes(quizRoutesSource, 'earlyWeakSkillSignalCount');
