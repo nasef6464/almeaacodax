@@ -86,7 +86,7 @@ check('authorization, pagination and school workflow logic remain route-owned', 
     'const buildScopedGroupCreatePayload = async (',
     'const hasSchoolIdManagementScope = async (',
     'const assertSchoolManagementScope = async (',
-    'const resolveAccessCodeSchoolsForSupervisor = async (',
+    'const resolveSupervisorManagementScope = async (',
     'const normalizeAccessCodeResponse = (code: any) => ({',
     'const buildPaginationMeta = (total: number, page: number, limit: number) => {',
   ]) assert.ok(routeSource.includes(fragment), `route lost operational ownership: ${fragment}`);

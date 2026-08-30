@@ -229,28 +229,43 @@ const normalizeAccessCodeResponse = (code: any) => ({
   createdAt: Number(code.createdAt || 0),
 });
 
-const resolveAccessCodeSchoolsForSupervisor = async (authUser: { id: string }) => {
+type SupervisorManagementScope = {
+  schoolIds: string[];
+  classIds: string[];
+};
+
+const resolveSupervisorManagementScope = async (authUser: { id: string }): Promise<SupervisorManagementScope> => {
   const user = await UserModel.findById(authUser.id).select("schoolId groupIds role").lean();
   if (!user) {
-    return [] as string[];
+    return { schoolIds: [], classIds: [] };
   }
 
   const managedGroupIds = uniqueStrings([...(user.groupIds || []).map(String)]);
-  const [seedGroups, directSupervisedSchools] = await Promise.all([
+  const [seedGroups, directlySupervisedGroups] = await Promise.all([
     managedGroupIds.length
       ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type")
       : Promise.resolve([]),
-    GroupModel.find({ type: "SCHOOL", supervisorIds: authUser.id }).select("id _id"),
+    GroupModel.find({ supervisorIds: authUser.id }).select("id _id parentId type"),
   ]);
 
   const schoolIds = uniqueStrings([
     String(user.schoolId || ""),
-    ...directSupervisedSchools.map((group) => String(group.id || group._id)),
+    ...directlySupervisedGroups
+      .filter((group) => group.type === "SCHOOL")
+      .map((group) => String(group.id || group._id)),
     ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
-    ...seedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
+  ]);
+  const classIds = uniqueStrings([
+    ...directlySupervisedGroups
+      .filter((group) => group.type === "CLASS")
+      .map((group) => String(group.id || group._id)),
+    ...seedGroups.filter((group) => group.type === "CLASS").map((group) => String(group.id || group._id)),
   ]);
 
-  return uniqueStrings(schoolIds.filter(Boolean));
+  return {
+    schoolIds: schoolIds.filter(Boolean),
+    classIds: classIds.filter(Boolean),
+  };
 };
 
 const assertSchoolManagementScope = async (
@@ -266,8 +281,8 @@ const assertSchoolManagementScope = async (
     return false;
   }
 
-  const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-  if (scopedSchoolIds.includes(schoolId)) {
+  const { schoolIds } = await resolveSupervisorManagementScope({ id: authUser.id });
+  if (schoolIds.includes(schoolId)) {
     return true;
   }
 
@@ -313,11 +328,14 @@ const hasGroupManagementScope = async (
   }
 
   if (authUser.role === "supervisor") {
-    const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-    if (String(group.type || "") === "SCHOOL" && scopedSchoolIds.includes(groupId)) {
+    const { schoolIds, classIds } = await resolveSupervisorManagementScope({ id: authUser.id });
+    if (String(group.type || "") === "SCHOOL" && schoolIds.includes(groupId)) {
       return true;
     }
-    if (scopedSchoolIds.includes(parentId)) {
+    if (schoolIds.includes(parentId)) {
+      return true;
+    }
+    if (classIds.includes(groupId) || classIds.includes(parentId)) {
       return true;
     }
   }
@@ -333,8 +351,8 @@ const hasSchoolIdManagementScope = async (
     return true;
   }
 
-  const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-  return scopedSchoolIds.includes(String(schoolId || ""));
+  const { schoolIds } = await resolveSupervisorManagementScope({ id: authUser.id });
+  return schoolIds.includes(String(schoolId || ""));
 };
 
 type GroupCreatePayload = z.infer<typeof groupSchema>;
@@ -393,21 +411,8 @@ const buildScopedGroupCreatePayload = async (
     };
   }
 
-  const parentSchoolId =
-    parentGroup.type === "SCHOOL"
-      ? String(parentGroup.id || parentGroup._id || "")
-      : String(parentGroup.parentId || "");
-
-  if (!parentSchoolId) {
-    return {
-      ok: false,
-      statusCode: StatusCodes.BAD_REQUEST,
-      message: "Parent school could not be resolved",
-    };
-  }
-
-  const canCreateUnderSchool = await hasSchoolIdManagementScope(authUser, parentSchoolId);
-  if (!canCreateUnderSchool) {
+  const canManageParentGroup = await hasGroupManagementScope(authUser, parentGroup as any);
+  if (!canManageParentGroup) {
     return {
       ok: false,
       statusCode: StatusCodes.FORBIDDEN,
@@ -1700,7 +1705,7 @@ contentRouter.get(
     let scopedSchoolIds: string[] | null = null;
 
     if (authUser.role === "supervisor") {
-      scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      scopedSchoolIds = (await resolveSupervisorManagementScope({ id: authUser.id })).schoolIds;
       if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
       }
@@ -1778,7 +1783,7 @@ contentRouter.get(
     let scopedSchoolIds: string[] | null = null;
 
     if (authUser.role === "supervisor") {
-      scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      scopedSchoolIds = (await resolveSupervisorManagementScope({ id: authUser.id })).schoolIds;
       if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
       }

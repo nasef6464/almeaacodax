@@ -9,7 +9,7 @@ import { CertificateModel } from "../models/Certificate.js";
 import { PathModel } from "../models/Path.js";
 import { GroupModel } from "../models/Group.js";
 
-type Role = "student" | "outsider" | "teacher" | "supervisor" | "parent" | "admin";
+type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
 type JsonResult = {
   status: number;
@@ -35,6 +35,7 @@ const SUPERVISOR_QUIZ_ID = `platform-v3-integration-supervisor-quiz-${RUN_MARKER
 const credentials = new Map<Role, { email: string; password: string }>();
 const tokens = new Map<Role, string>();
 const userIds = new Map<Role, string>();
+const groupIds = new Map<"school" | "class" | "siblingClass" | "outsideSchool", string>();
 
 function pass(label: string) {
   console.log(`PASS ${label}`);
@@ -106,7 +107,7 @@ async function getCsrf(): Promise<CsrfContext> {
 }
 
 async function seedIsolatedUsers() {
-  const roles: Role[] = ["student", "outsider", "teacher", "supervisor", "parent", "admin"];
+  const roles: Role[] = ["student", "outsider", "teacher", "supervisor", "classSupervisor", "parent", "admin"];
 
   for (const role of roles) {
     const password = randomBytes(24).toString("base64url");
@@ -117,7 +118,7 @@ async function seedIsolatedUsers() {
       name: `Platform V3 ${role}`,
       email,
       passwordHash: await bcrypt.hash(password, 10),
-      role: role === "outsider" ? "student" : role,
+      role: role === "outsider" ? "student" : role === "classSupervisor" ? "supervisor" : role,
       isActive: true,
       emailVerified: true,
       emailVerifiedAt: Date.now(),
@@ -133,7 +134,8 @@ async function seedIsolatedUsers() {
   const adminId = userIds.get("admin");
   const teacherId = userIds.get("teacher");
   const supervisorId = userIds.get("supervisor");
-  assert.ok(studentId && parentId && adminId && teacherId && supervisorId, "isolated user ids were not created");
+  const classSupervisorId = userIds.get("classSupervisor");
+  assert.ok(studentId && parentId && adminId && teacherId && supervisorId && classSupervisorId, "isolated user ids were not created");
   await UserModel.updateOne({ _id: parentId }, { $set: { linkedStudentIds: [studentId] } });
 
   await PathModel.create({
@@ -150,6 +152,7 @@ async function seedIsolatedUsers() {
     studentIds: [studentId],
   });
   const schoolId = String(school._id);
+  groupIds.set("school", schoolId);
   const schoolClass = await GroupModel.create({
     name: "Platform V3 integration class",
     type: "CLASS",
@@ -159,9 +162,29 @@ async function seedIsolatedUsers() {
     studentIds: [studentId],
   });
   const schoolClassId = String(schoolClass._id);
+  groupIds.set("class", schoolClassId);
+  const siblingClass = await GroupModel.create({
+    name: "Platform V3 integration sibling class",
+    type: "CLASS",
+    parentId: schoolId,
+    ownerId: adminId,
+    supervisorIds: [],
+    studentIds: [],
+  });
+  groupIds.set("siblingClass", String(siblingClass._id));
+  const outsideSchool = await GroupModel.create({
+    name: "Platform V3 integration outside school",
+    type: "SCHOOL",
+    ownerId: adminId,
+    supervisorIds: [],
+    studentIds: [],
+  });
+  groupIds.set("outsideSchool", String(outsideSchool._id));
   await Promise.all([
     UserModel.updateOne({ _id: studentId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
     UserModel.updateOne({ _id: supervisorId }, { $set: { schoolId, groupIds: [schoolClassId] } }),
+    UserModel.updateOne({ _id: classSupervisorId }, { $set: { groupIds: [schoolClassId] } }),
+    GroupModel.updateOne({ _id: schoolClass._id }, { $addToSet: { supervisorIds: classSupervisorId } }),
     UserModel.updateOne(
       { _id: teacherId },
       { $set: { managedPathIds: [ASSESSMENT_PATH_ID], managedSubjectIds: [ASSESSMENT_SUBJECT_ID] } },
@@ -202,7 +225,8 @@ async function loginRole(role: Role, csrf: CsrfContext) {
     body: credential,
   });
   expectStatus(`${role} login`, result, 200);
-  assert.equal(result.body?.user?.role, role === "outsider" ? "student" : role, `${role}: login returned wrong role`);
+  const expectedRole = role === "outsider" ? "student" : role === "classSupervisor" ? "supervisor" : role;
+  assert.equal(result.body?.user?.role, expectedRole, `${role}: login returned wrong role`);
   assert.equal(typeof result.body?.token, "string", `${role}: test-mode bearer token missing`);
   tokens.set(role, result.body.token);
 }
@@ -336,6 +360,40 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   assert.equal(supervisorQuiz.body?.approvalStatus, "approved", "supervisor assessment was not approved by workflow");
 }
 
+async function runSchoolScopeJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school");
+  const classId = groupIds.get("class");
+  const siblingClassId = groupIds.get("siblingClass");
+  const outsideSchoolId = groupIds.get("outsideSchool");
+  assert.ok(schoolId && classId && siblingClassId && outsideSchoolId, "isolated school scope fixtures missing");
+
+  const schoolSupervisorOutsideReport = await jsonRequest(`/content/schools/${outsideSchoolId}/report`, {
+    token: tokens.get("supervisor"),
+  });
+  expectStatus("school supervisor cannot read another school's report", schoolSupervisorOutsideReport, 403);
+
+  const classSupervisorSchoolReport = await jsonRequest(`/content/schools/${schoolId}/report`, {
+    token: tokens.get("classSupervisor"),
+  });
+  expectStatus("class supervisor cannot read the whole school report", classSupervisorSchoolReport, 403);
+
+  const classSupervisorSiblingClass = await jsonRequest(`/content/groups/${siblingClassId}`, {
+    method: "PATCH",
+    token: tokens.get("classSupervisor"),
+    csrf,
+    body: { name: "Unauthorized sibling class update" },
+  });
+  expectStatus("class supervisor cannot manage a sibling class", classSupervisorSiblingClass, 403);
+
+  const classSupervisorOwnClass = await jsonRequest(`/content/groups/${classId}`, {
+    method: "PATCH",
+    token: tokens.get("classSupervisor"),
+    csrf,
+    body: { name: "Platform V3 integration class updated by assigned supervisor" },
+  });
+  expectStatus("class supervisor manages only the assigned class", classSupervisorOwnClass, 200);
+}
+
 async function main() {
   assert.equal(env.NODE_ENV, "test", "Backend integration gate requires NODE_ENV=test");
   assert.ok(
@@ -367,12 +425,13 @@ async function main() {
     expectStatus("login without CSRF is rejected", noCsrfLogin, 403);
     assert.equal(noCsrfLogin.body?.code, "CSRF_TOKEN_INVALID", "login without CSRF returned unexpected error code");
 
-    for (const role of ["student", "outsider", "teacher", "supervisor", "parent", "admin"] as Role[]) {
+    for (const role of ["student", "outsider", "teacher", "supervisor", "classSupervisor", "parent", "admin"] as Role[]) {
       await loginRole(role, csrf);
     }
 
     await runAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
+    await runSchoolScopeJourney(csrf);
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);
