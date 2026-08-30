@@ -25,7 +25,7 @@ import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySch
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
-import { buildRecommendedAction, buildResultSkillStatus, buildSkillRecommendation, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
+import { buildRecommendedAction, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
 import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
@@ -44,6 +44,7 @@ import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/
 import { buildQuizSubmissionSectionResults } from "../modules/quizzes/application/quizSubmissionSectionResults.js";
 import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quizSubmissionSnapshot.js";
 import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/quizSubmissionAnswerReview.js";
+import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2017,24 +2018,12 @@ quizRouter.post(
     const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview } =
       buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
 
-    const skillsAnalysis = Array.from(skillStats.entries()).map(([skillId, stats]) => {
-      const skill = skillById.get(skillId);
-      const mastery = Math.round((stats.correct / Math.max(stats.total, 1)) * 100);
-      const status = buildResultSkillStatus(mastery);
-      const subjectId = String(skill?.subjectId || quiz.subjectId || "");
-      const sectionId = String(skill?.sectionId || quiz.sectionId || "");
-
-      return {
-        skillId,
-        pathId: String(skill?.pathId || quiz.pathId || ""),
-        subjectId,
-        sectionId,
-        skill: String(skill?.name || "مهارة غير مسماة"),
-        mastery,
-        status,
-        recommendation: buildSkillRecommendation(mastery),
-        section: sectionNameById.get(sectionId) || subjectNameById.get(subjectId) || "",
-      };
+    const skillsAnalysis = buildQuizSubmissionSkillsAnalysis({
+      skillStats,
+      skillById,
+      quiz,
+      subjectNameById,
+      sectionNameById,
     });
 
     const passingScore = getQuizPassingScore(quiz);
