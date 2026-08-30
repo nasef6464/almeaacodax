@@ -9,6 +9,8 @@ import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
+import { resolveAssessmentSettings } from '../utils/assessmentSettings';
+import { getDefaultQuizSettings } from '../utils/quizSettings';
 
 interface QuestionThreadItem {
   id: string;
@@ -30,6 +32,15 @@ interface SavedQuizPageProgress {
 }
 
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
+const resolveQuizSettings = (quiz?: Quiz | null) =>
+  resolveAssessmentSettings(
+    quiz?.settings,
+    getDefaultQuizSettings({
+      type: quiz?.type || 'quiz',
+      mode: quiz?.mode || 'regular',
+      mockExam: quiz?.mockExam?.enabled === true,
+    }),
+  );
 const resolveQuizPackageContentType = (quiz: Quiz, source?: string): PackageContentType => {
   if (source === 'mock-exam' || quiz.mockExam?.enabled === true) return 'mockExams';
   if (source === 'training' || source === 'foundation') return 'banks';
@@ -174,8 +185,8 @@ export const QuizPage: React.FC = () => {
   const shouldReturnToSourceAfterFinish =
     Boolean(safeReturnTo) &&
     (searchParams.get('returnOnFinish') === '1' ||
-      quiz?.settings?.returnToSourceOnFinish === true ||
-      quiz?.settings?.showResultsReport === false);
+      resolveQuizSettings(quiz).returnToSourceOnFinish === true ||
+      resolveQuizSettings(quiz).showResultsReport === false);
   const returnLabel = useMemo(() => {
     if (sourceParam === 'foundation') return 'العودة لموضوع التأسيس';
     if (sourceParam === 'training') return 'العودة للتدريب';
@@ -437,7 +448,7 @@ export const QuizPage: React.FC = () => {
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
 
-    const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (foundQuiz.settings?.timeLimit || 0);
+    const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (resolveQuizSettings(foundQuiz).timeLimit || 0);
     const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
     const progressKey = `${QUIZ_PAGE_PROGRESS_PREFIX}${foundQuiz.id}`;
     let savedProgress: SavedQuizPageProgress | null = null;
@@ -463,7 +474,7 @@ export const QuizPage: React.FC = () => {
     const canRestoreProgress = savedQuestionOrder.length === loadedQuestions.length && loadedQuestions.length > 0;
     const nextQuestions = canRestoreProgress
       ? savedQuestionOrder
-      : foundQuiz.settings?.randomizeQuestions === false
+      : resolveQuizSettings(foundQuiz).randomizeQuestions === false
         ? loadedQuestions
         : shuffleQuestions(loadedQuestions);
 
@@ -642,11 +653,12 @@ export const QuizPage: React.FC = () => {
     [quizQuestions, selectedOptions]
   );
 
+  const quizSettings = useMemo(() => resolveQuizSettings(quiz), [quiz]);
   const finalScore = Math.round((correctAnswersCount / Math.max(quizQuestions.length, 1)) * 100);
-  const passingScore = quiz?.settings?.passingScore ?? 50;
-  const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
+  const passingScore = quizSettings.passingScore;
+  const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
-  const activeOptionLayout = ((quiz?.settings as any)?.optionLayout as 'horizontal' | 'auto' | undefined) ?? 'horizontal';
+  const activeOptionLayout = quizSettings.optionLayout ?? 'horizontal';
   const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
   const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
 
@@ -657,7 +669,7 @@ export const QuizPage: React.FC = () => {
   //   مثال: [2, 0, 1] يعني: عرض option[2] أولاً، ثم option[0]، ثم option[1].
   // إذا كان randomizeOptions = false أو undefined → null (نعرض الخيارات بترتيبها الأصلي).
   const questionShuffleMap = useMemo<Map<string, number[]> | null>(() => {
-    const shouldRandomize = (quiz?.settings as any)?.randomizeOptions === true;
+    const shouldRandomize = quizSettings.randomizeOptions === true;
     if (!shouldRandomize || quizQuestions.length === 0) return null;
 
     const map = new Map<string, number[]>();
@@ -682,7 +694,7 @@ export const QuizPage: React.FC = () => {
     return map;
   // يُعاد الحساب فقط عند تغيير الأسئلة أو تغيير إعداد randomizeOptions
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quizQuestions, (quiz?.settings as any)?.randomizeOptions]);
+  }, [quizQuestions, quizSettings.randomizeOptions]);
 
   // الخيارات المعروضة للسؤال الحالي (مخلوطة أو أصلية)
   const currentDisplayOptions = useMemo<{ text: string; originalIndex: number }[]>(() => {
@@ -696,13 +708,13 @@ export const QuizPage: React.FC = () => {
       originalIndex,
     }));
   }, [currentQuestion, questionShuffleMap]);
-  const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
-  const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
+  const shouldShowQuestionReview = quizSettings.allowQuestionReview !== false;
+  const shouldShowProgressBar = quizSettings.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
   const activeProgressPercentage = Math.round(((currentQuestionIndex + 1) / Math.max(quizQuestions.length, 1)) * 100);
   const reviewQuestionCount = quizQuestions.filter((question) => reviewLater.includes(question.id)).length;
   const isNextBlocked =
-    quiz?.settings?.requireAnswerBeforeNext === true &&
+    quizSettings.requireAnswerBeforeNext === true &&
     currentQuestion &&
     selectedOptions[currentQuestion.id] === undefined;
 
@@ -739,7 +751,7 @@ export const QuizPage: React.FC = () => {
     params.set('mode', 'self');
     params.set('autostart', '1');
     params.set('questionCount', String(Math.max(quizQuestions.length, 10)));
-    params.set('timeLimit', String(quiz?.settings?.timeLimit || 30));
+    params.set('timeLimit', String(quizSettings.timeLimit || 30));
     params.set('difficulty', focusWeakSkills ? 'Medium' : (quizQuestions[0]?.difficulty || 'Medium'));
 
     if (quiz?.pathId) params.set('pathId', quiz.pathId);
@@ -1073,7 +1085,7 @@ export const QuizPage: React.FC = () => {
     setDraftRestored(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
-    const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0);
+    const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0);
     setTimeLeft(effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1628,7 +1640,7 @@ export const QuizPage: React.FC = () => {
               </div>
             </div>
 
-            {quiz.settings.showAnswers && (
+            {quizSettings.showAnswers && (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <h3 className="text-xl font-bold text-gray-800 mb-6">مراجعة الإجابات</h3>
                 <div className="space-y-8">
@@ -1677,7 +1689,7 @@ export const QuizPage: React.FC = () => {
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';
-                                if (quiz.settings.showAnswers) {
+                                if (quizSettings.showAnswers) {
                                   if (optionIndex === question.correctOptionIndex) {
                                     bgClass = 'bg-emerald-50 border-emerald-200 text-emerald-700';
                                     helperLabel = 'الإجابة الصحيحة';
@@ -1707,7 +1719,7 @@ export const QuizPage: React.FC = () => {
                               })}
                             </div>
 
-                            {(quiz.settings.showExplanations || question.videoUrl) && (
+                            {(quizSettings.showExplanations || question.videoUrl) && (
                               <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100 space-y-3">
                                 {question.explanation && (
                                   <div>

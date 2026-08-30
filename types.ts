@@ -393,6 +393,14 @@ export interface QuizSettings {
     passingScore: number; // percentage
     timeLimit?: number; // in minutes
     randomizeQuestions?: boolean;
+    /** Canonical option-order setting. */
+    randomizeOptions?: boolean;
+    /** @deprecated Read-only compatibility alias for historical assessments. */
+    showCorrectAnswers?: boolean;
+    /** @deprecated Read-only compatibility alias for historical assessments. */
+    shuffleQuestions?: boolean;
+    /** @deprecated Read-only compatibility alias for historical assessments. */
+    shuffleOptions?: boolean;
     showProgressBar?: boolean;
     requireAnswerBeforeNext?: boolean;
     allowQuestionReview?: boolean;

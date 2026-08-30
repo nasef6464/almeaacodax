@@ -8,6 +8,7 @@ import { useStore } from "../../store/useStore";
 import { Quiz } from "../../types";
 import { SmartQuestionSelector } from "./SmartQuestionSelector";
 import { getDefaultQuizSettings } from "../../utils/quizSettings";
+import { resolveAssessmentSettings, toCanonicalAssessmentSettingsPayload } from "../../utils/assessmentSettings";
 import { api } from "../../services/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -127,18 +128,14 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
   // Step 3
   const defaults = getDefaultQuizSettings({ type: "quiz" });
-  const [timeLimit, setTimeLimit] = useState<number>((editingQuiz?.settings as any)?.timeLimit ?? (defaults as any)?.timeLimit ?? 0);
-  const [maxAttempts, setMaxAttempts] = useState<number>((editingQuiz?.settings as any)?.maxAttempts ?? 1);
-  const [passingScore, setPassingScore] = useState<number>((editingQuiz?.settings as any)?.passingScore ?? 60);
-  const [showAnswers, setShowAnswers] = useState<boolean>(editingQuiz?.settings?.showAnswers ?? (editingQuiz?.settings as any)?.showCorrectAnswers ?? true);
-  const [showExplanations, setShowExplanations] = useState<boolean>((editingQuiz?.settings as any)?.showExplanations ?? true);
-  const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(editingQuiz?.settings?.randomizeQuestions ?? (editingQuiz?.settings as any)?.shuffleQuestions ?? false);
-  // قراءة: randomizeOptions هو الاسم القانوني، shuffleOptions هو legacy fallback
-  const [shuffleOptions, setShuffleOptions] = useState<boolean>(
-    (editingQuiz?.settings as any)?.randomizeOptions ??
-    (editingQuiz?.settings as any)?.shuffleOptions ??
-    false
-  );
+  const initialSettings = resolveAssessmentSettings(editingQuiz?.settings, defaults);
+  const [timeLimit, setTimeLimit] = useState<number>(initialSettings.timeLimit ?? 0);
+  const [maxAttempts, setMaxAttempts] = useState<number>(initialSettings.maxAttempts);
+  const [passingScore, setPassingScore] = useState<number>(initialSettings.passingScore);
+  const [showAnswers, setShowAnswers] = useState<boolean>(initialSettings.showAnswers);
+  const [showExplanations, setShowExplanations] = useState<boolean>(initialSettings.showExplanations);
+  const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(initialSettings.randomizeQuestions ?? false);
+  const [shuffleOptions, setShuffleOptions] = useState<boolean>(initialSettings.randomizeOptions ?? false);
 
   // Step 4
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? []);
@@ -248,7 +245,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         subjectId,
         quizKind: kind,
         questionIds: kind === "mock" ? [] : questionIds,
-        settings: {
+        settings: toCanonicalAssessmentSettingsPayload({
           ...defaults,
           timeLimit,
           maxAttempts,
@@ -256,11 +253,8 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           showAnswers,
           showExplanations,
           randomizeQuestions: shuffleQuestions,
-          // randomizeOptions هو الاسم القانوني في Quiz model / assessmentSettings.ts
-          // shuffleOptions مُبقى للقراءة من البيانات القديمة (legacy read compatibility)
           randomizeOptions: shuffleOptions,
-          shuffleOptions,
-        } as any,
+        }, defaults),
         access: { type: accessType === "package" ? "paid" : accessType } as any,
         mode: editingQuiz?.mode ?? initialMode,
         skillIds: editingQuiz?.skillIds ?? initialSkillIds ?? [],
