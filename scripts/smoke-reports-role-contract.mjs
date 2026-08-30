@@ -27,6 +27,7 @@ const reportsSource = [
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizSupervisorScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorScope.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
 const contentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
 const apiSource = [
@@ -299,9 +300,14 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
   assertIncludes(quizRoutesSource, 'const resolveSupervisorSchoolReportScope = async');
   assertIncludes(quizRoutesSource, 'GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") })');
-  assertIncludes(quizRoutesSource, '.filter((group: any) => group.type === "SCHOOL")');
-  assertIncludes(quizRoutesSource, '...directlySupervisedGroups.map((group: any) => String(group.id || group._id || ""))');
-  assertIncludes(quizRoutesSource, 'const childScopedGroups = scopedSchoolIds.length');
+  assertIncludes(quizRoutesSource, 'buildSupervisorDirectScope({');
+  assertIncludes(quizRoutesSource, 'appendSchoolWideChildGroups(directScope, childScopedGroups)');
+  assertIncludes(quizSupervisorScopeSource, 'Separates explicit school-wide authority from class/private-group authority.');
+  assertIncludes(quizSupervisorScopeSource, '.filter((group) => group.type === "SCHOOL")');
+  if (quizSupervisorScopeSource.includes('.map((group) => String(group.parentId')) {
+    throw new Error('Class/private-group scope must not be promoted to parent school scope');
+  }
+  assertIncludes(quizRoutesSource, 'const childScopedGroups = directScope.schoolIds.length');
   assertIncludes(quizRoutesSource, 'scopeFilters.push({ schoolId: { $in: scopedSchoolIds } })');
   assertIncludes(quizRoutesSource, 'const scopedStudentIds = students.map((student) => idOf(student));');
   assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');

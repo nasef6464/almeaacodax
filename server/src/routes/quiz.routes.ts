@@ -49,6 +49,7 @@ import { buildQuizSubmissionResultDocument } from "../modules/quizzes/applicatio
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
+import { appendSchoolWideChildGroups, buildSupervisorDirectScope } from "../modules/quizzes/application/quizSupervisorScope.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -525,26 +526,18 @@ const resolveSupervisorSchoolReportScope = async (authUser: any) => {
     GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") }).select("id _id parentId type").lean(),
   ]);
 
-  const scopedSchoolIds = uniqueStrings([
-    authUser.schoolId ? String(authUser.schoolId) : undefined,
-    ...directlySupervisedGroups
-      .filter((group: any) => group.type === "SCHOOL")
-      .map((group: any) => String(group.id || group._id || "")),
-    ...seedGroups.filter((group: any) => group.type === "SCHOOL").map((group: any) => String(group.id || group._id || "")),
-  ]);
+  const directScope = buildSupervisorDirectScope({
+    schoolId: authUser.schoolId,
+    managedGroupIds,
+    seedGroups,
+    directlySupervisedGroups,
+  });
 
-  const childScopedGroups = scopedSchoolIds.length
-    ? await GroupModel.find({ parentId: { $in: scopedSchoolIds }, type: { $in: ["CLASS", "PRIVATE_GROUP"] } }).select("id _id").lean()
+  const childScopedGroups = directScope.schoolIds.length
+    ? await GroupModel.find({ parentId: { $in: directScope.schoolIds }, type: { $in: ["CLASS", "PRIVATE_GROUP"] } }).select("id _id").lean()
     : [];
 
-  return {
-    schoolIds: scopedSchoolIds,
-    groupIds: uniqueStrings([
-      ...managedGroupIds,
-      ...directlySupervisedGroups.map((group: any) => String(group.id || group._id || "")),
-      ...childScopedGroups.map((group: any) => String(group.id || group._id || "")),
-    ]),
-  };
+  return appendSchoolWideChildGroups(directScope, childScopedGroups);
 };
 
 const buildScopedStudentFilter = async (authUser: any) => {
