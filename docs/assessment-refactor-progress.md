@@ -164,6 +164,12 @@
 - إعادة الاختبار أو تحميل اختبار جديد لا يرث الأقسام المقفلة أو وقت أسئلة المحاولة السابقة، ويبدأ مؤقت القسم الأول مجددًا.
 - `smoke:quiz-section-reset` (2/2)، و`mock-exams` (10/10)، و`quiz-progress-draft` (5/5)، و`quiz-submission-authority` (3/3)، و`architecture-gate`: PASS.
 
+## تفعيل بوابة HTTP المعزولة على فرع العمل (commit: `a6ad996c`)
+
+- كان workflow `Platform V3 Backend Integration Gate` مقصورًا تلقائيًا على `develop/platform-v3-recovery` وPR تاريخي محدد، لذلك لم تكن رحلة الاختبارات الجديدة ستعمل عند دفع فرع العمل الحالي.
+- أصبح يعمل على push أو PR من `refactor/modular-platform-safe` فقط، مع بقاء Mongo وsecrets المؤقتة والعزل كما هي.
+- فحص typecheck للـharness وعقد workflow trigger hygiene: PASS. لم يُنفذ GitHub Actions بعد؛ يحتاج push أو تشغيل يدوي من صاحب المستودع.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
