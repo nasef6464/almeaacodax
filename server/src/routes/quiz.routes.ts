@@ -42,6 +42,7 @@ import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../
 import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
 import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
 import { buildQuizSubmissionSectionResults } from "../modules/quizzes/application/quizSubmissionSectionResults.js";
+import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quizSubmissionSnapshot.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2093,19 +2094,7 @@ quizRouter.post(
 
     // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
     // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً
-    const quizSnapshot = {
-      title:          String(quiz.title || ""),
-      mode:           String((quiz as any).mode || "regular"),
-      quizKind:       String((quiz as any).quizKind || "test"),
-      passingScore,
-      targetGroupIds: uniqueStrings((quiz.targetGroupIds || []).map(String)),
-      targetUserIds:  uniqueStrings((quiz.targetUserIds  || []).map(String)),
-      dueDate:        String((quiz as any).dueDate || "") || null,
-      pathId:         String(quiz.pathId || ""),
-      subjectId:      String(quiz.subjectId || ""),
-      totalQuestions,
-      snapshotAt:     Date.now(),
-    };
+    const quizSnapshot = buildQuizSubmissionSnapshot({ quiz, passingScore, totalQuestions });
 
     let result;
     try {
