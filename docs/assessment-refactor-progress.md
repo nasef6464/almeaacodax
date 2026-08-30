@@ -183,6 +183,12 @@
 - أضيف حارس `scopeKey` قبل أي hydration؛ الاستجابة غير المطابقة للنطاق الحالي تُهمل فقط، من دون تغيير URLs أو API أو صلاحيات أو قواعد المحتوى.
 - `smoke:learning-scoped-bootstrap` (2/2)، و`smoke:learning-canonical-entry` (3/3)، و`architecture-gate`: PASS.
 
+## استعادة عقد bootstrap للمحتوى — مكتمل (commit: `118f39d7`)
+
+- كشف فحص الخادم أن route الـminimal content bootstrap كان يستخدم حدّ إعلانات عام بلا تعريف بعد فصل ownership إلى `contentBootstrapOperationalData`.
+- أصبح الثابت مُصدّرًا من وحدة البنية التحتية المالكة ويُستورد في route، بلا تكرار للقيمة وبلا تغيير query أو الاستجابة.
+- تم تحديث `smoke:performance` ليختبر وحدات visibility/cache الجديدة بدل الاعتماد على مواضع قبل الفصل؛ `smoke:performance` و`smoke:learning-scoped-bootstrap` و`server:check` و`architecture-gate`: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
