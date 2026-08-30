@@ -34,6 +34,7 @@ import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content
 import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
+import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
@@ -821,8 +822,13 @@ contentRouter.get(
           : Promise.resolve([]),
       ]);
 
-      const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
-      return { topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans };
+      return buildContentBootstrapPayload({
+        topics,
+        lessons,
+        libraryItems,
+        operationalData,
+        studyPlans,
+      });
     };
 
     const payloadPromise = loadBootstrapPayload();

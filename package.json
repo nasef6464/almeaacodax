@@ -98,6 +98,7 @@
     "smoke:content-learning-resource-url": "node scripts/smoke-content-learning-resource-url-contract.mjs",
     "smoke:content-bootstrap-request": "node scripts/smoke-content-bootstrap-request-contract.mjs",
     "smoke:content-bootstrap-visibility": "node scripts/smoke-content-bootstrap-visibility-contract.mjs",
+    "smoke:content-bootstrap-payload": "node scripts/smoke-content-bootstrap-payload-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
