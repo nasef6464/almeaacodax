@@ -1,13 +1,13 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment critical-code audit
-- Current batch: A-001 mock detail question-resolution completed
+- Current batch: A-002 canonical assessment-settings compatibility completed
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `d31debe3` (mock detail question resolution); control-plane checkpoint pending
+- Last completed commit: `b4cef107` (canonical assessment-settings compatibility); control-plane checkpoint pending
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: assessment detail question-resolution 4/4, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, server check/build, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
+- Current gates: assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, server check/build, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
-- Next exact action: audit and implement A-002 assessment-settings canonical reader/writer compatibility as a separate bounded batch; do not change routes, schema semantics, RBAC, or scoring.
+- Next exact action: audit remaining question-source callers and prove any Store-limited behavior before extraction; do not change routes, schema semantics, RBAC, scoring, or build a new assessment entity.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files

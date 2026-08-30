@@ -44,6 +44,36 @@
 
 ---
 
+## إصلاح A-002 — Canonical settings consumption: مكتمل (commit: `b4cef107`)
+
+### التعديل
+
+- `types.ts`: إعلان canonical `randomizeOptions` وaliases التاريخية كحقول read-compatibility موثقة.
+- `UnifiedQuizBuilder.tsx`: يقرأ `resolveAssessmentSettings` ويكتب `toCanonicalAssessmentSettingsPayload`؛ لم يعد يرسل `shuffleOptions` في payload جديد.
+- `QuizPage.tsx`: كل سلوك الإعدادات المؤثر في الطالب (الوقت، ترتيب الأسئلة/الخيارات، العرض، المراجعة، النتيجة) يقرأ resolver موحدًا.
+- `scripts/smoke-assessment-settings-consumption-contract.mjs`: يثبت aliases وprecedence وcanonical writer واستهلاك builder/runner.
+
+### العقود المحفوظة
+
+- aliases القديمة مقبولة للقراءة فقط ولا تُحذف من السجلات التاريخية.
+- canonical field يتقدم دائمًا عندما توجد القيمتان.
+- لا تغيير API أو Mongo schema semantics أو RBAC أو scoring أو URLs.
+
+### الاختبارات
+
+- `smoke:assessment-settings-consumption`: PASS (5/5).
+- `smoke:quiz-answer-exposure`: PASS (5/5).
+- `smoke:mock-exams`: PASS (10/10).
+- `server:check`, `server:build`, `architecture-gate`: PASS.
+- `npm run smoke:assessment-settings`: غير موجود أصلًا في `package.json`؛ لا يُعد فشلًا في المنتج.
+- frontend typecheck/build لا يُعلن Green في هذا الجهاز بسبب تثبيت الجذر غير المكتمل (`lucide-react`/package resolution).
+
+### التالي
+
+لا تبدأ تغييرًا معماريًا آخر بلا تدقيق محدد. المرشح التالي من الخطة: حصر callers المتبقية لمصدر الأسئلة وإثبات ما إذا كانت تعتمد Store محدودًا قبل أي نقل.
+
+---
+
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
 
 ### A0 — Audit V2: COMPLETE for current baseline

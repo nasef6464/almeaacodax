@@ -9,10 +9,10 @@
 
 النظام ليس إعادة بناء مطلوبة: معظم ضمانات المرحلة الحرجة موجودة في الكود الحالي. عمليات إنشاء السؤال والاختبار تنتظر API وتعيد كيان الخادم، Submission يحتفظ بـsnapshot و`submissionKey`، وRunner يجلب أسئلة الأقسام للمحاكي بالـIDs. كما أن Backend يتحقق من الاستهداف قبل التسليم.
 
-أثبت التدقيق مشكلتين؛ عولجت الأولى في commit `d31debe3`، والثانية بقيت للدفعة التالية:
+أثبت التدقيق مشكلتين؛ عولجتا في commits منفصلة (`d31debe3` و`b4cef107`):
 
 1. **[FIXED]** كان `GET /api/quizzes/:id` يحل فقط `quiz.questionIds` ولا يجمع `mockExam.sections[].questionIds`. أصبح يستخدم `getQuizQuestionIds(quiz)`، واختبار العقد يغطي المحاكي ذي root IDs الفارغة.
-2. طبقة canonical settings (`utils/assessmentSettings.ts`) توثق aliases القديمة وتختبرها، لكنها لا تُستهلك في `UnifiedQuizBuilder` أو `QuizPage`. لذلك يمكن لسجل تاريخي يحوي `showCorrectAnswers` أو `shuffleQuestions` فقط أن يُقرأ بصورة مختلفة بين الشاشات، رغم وجود resolver مخصص لمنع ذلك.
+2. **[FIXED]** كانت طبقة canonical settings (`utils/assessmentSettings.ts`) غير مستهلكة في `UnifiedQuizBuilder` أو `QuizPage`. صارا يستخدمان resolver واحدًا للقراءة، والمنشئ يكتب canonical payload بلا aliases قديمة.
 
 أعلى خطر معماري متبقٍ هو تعدد المنشئات ومصادر قرار التصنيف/الإعدادات، لا فقد نتائج حالي مثبت. لا يوجد في هذا التدقيق دليل يبرر إنشاء `ExamAssignment` أو حذف أي منشئ أو migration واسعة.
 
@@ -52,7 +52,7 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 | ID | الوصف والدليل | إعادة الإنتاج | الأثر/الخطورة | الحل المحدود واختبار القبول |
 |---|---|---|---|---|
 | A-001 | **FIXED في `d31debe3`.** كان `quiz.routes.ts` في `GET /:id` يبني IDs من `quiz.questionIds` فقط؛ `UnifiedQuizBuilder.handleSave` يكتب `questionIds: []` عندما `kind === "mock"` ويضع IDs في sections. | أنشئ محاكيًا من Unified Builder، احفظه، ثم اطلب `GET /api/quizzes/:id`: حقل `mockExam.sections` يحتوي IDs لكن `questions` فارغة. | كان معاينة/API consumer لا يحصل على أسئلة المحاكي؛ **عالية**. Runner كان ينجو لأنه يحل sections محليًا. | استُبدل resolver بـ`getQuizQuestionIds(quiz)`؛ `smoke:assessment-detail-question-resolution` يغطي normal وmock وlegacy root IDs. |
-| A-002 | `utils/assessmentSettings.ts` يعرّف `resolveAssessmentSettings` و`toCanonicalAssessmentSettingsPayload` مع aliases، لكن بحث callers يثبت عدم استهلاكهما. `UnifiedQuizBuilder` يقرأ aliases يدويًا ويكتب `shuffleOptions` مجددًا؛ `QuizPage` يقرأ canonical مباشرة. | سجل تاريخي settings يحتوي `showCorrectAnswers:false` بلا `showAnswers` أو `shuffleQuestions:false` بلا `randomizeQuestions`; افتحه ثم شغّله أو حدّثه. السلوك قد يختلف عن resolver القانوني. | compatibility غير موحدة واحتمال تبدل إعدادات قديمة؛ **عالية** لنتائج/مراجعة الطالب، دون دليل على فقد بيانات حية. | اعتماد resolver للقراءة وcanonical payload للكتابة في المسارات المحددة، مع عدم حذف aliases من البيانات القديمة واختبار precedence/runner. |
+| A-002 | **FIXED في `b4cef107`.** كان `resolveAssessmentSettings` و`toCanonicalAssessmentSettingsPayload` غير مستهلكين. | سجل تاريخي settings يحتوي `showCorrectAnswers:false` بلا `showAnswers` أو `shuffleQuestions:false` بلا `randomizeQuestions`. | كان compatibility غير موحدًا؛ **عالية** لنتائج/مراجعة الطالب، دون دليل على فقد بيانات حية. | builder/runner يستعملان resolver، والكتابة الجديدة canonical فقط؛ smoke يثبت aliases وprecedence واستهلاك المسارات. |
 
 ## E. توافق العقود
 
@@ -61,9 +61,9 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 | نوع المحتوى | `quizKind` + `mockExam.enabled` | `quizKind`, `mockExam` | كلاهما | كلاهما | متوافق مع legacy classification؛ لا تستخدم `placement=mock` كدليل |
 | أسئلة normal | `questionIds` | `questionIds` | `questionIds` | root IDs | متوافق |
 | أسئلة mock | `mockExam.sections[].questionIds` | يقبل ويحفظ الأقسام | الأقسام | `flattenMockExamQuestionIds` | متوافق في runner/submit/GET details بعد A-001 |
-| عرض الإجابات | `showAnswers` + legacy read يدوي في builder | `settings` record | `showAnswers` | `showAnswers` مباشر | **غير متوافق بالكامل** مع aliases (A-002) |
-| ترتيب الأسئلة | `randomizeQuestions` + legacy read يدوي | record | canonical field | canonical field | يحتاج resolver موحد (A-002) |
-| ترتيب الخيارات | `randomizeOptions` + `shuffleOptions` legacy | record | كلاهما | `randomizeOptions` | writer ما زال يرسل alias؛ يحتاج canonical write (A-002) |
+| عرض الإجابات | resolver canonical + legacy read | `settings` record | `showAnswers` | resolver canonical | متوافق بعد A-002 |
+| ترتيب الأسئلة | resolver canonical + legacy read | record | canonical field | resolver canonical | متوافق بعد A-002 |
+| ترتيب الخيارات | `randomizeOptions` canonical + legacy read | record | كلاهما | resolver canonical | متوافق بعد A-002؛ writer لا يرسل alias |
 | option layout | `optionLayout` | record | enum | `optionLayout` | متوافق في code الحالي |
 | mock config | sections/category/target/lock | Zod يقبلها | Model يحفظها | sections/locks | متوافق في الحدود المفحوصة |
 
@@ -92,7 +92,7 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 
 | المرحلة | الهدف/الملفات | Migration/Rollback | الاختبارات وشروط القبول |
 |---|---|---|---|
-| 1. إصلاحات حرجة مثبتة | A-001 مكتمل؛ A-002 في settings readers/writers | additive، لا migration؛ revert commits يعيد السلوك السابق | mock detail يعرض sections/questions؛ aliases القديمة تعمل؛ canonical يفوز |
+| 1. إصلاحات حرجة مثبتة | A-001 وA-002 مكتملان | additive، لا migration؛ revert commits يعيد السلوك السابق | mock detail يعرض sections/questions؛ aliases القديمة تعمل؛ canonical يفوز |
 | 2. مصدر الأسئلة | نقل callers المتبقية إلى `assessmentQuestionSource`، مع pagination/hydrate diagnostics | compatibility adapter يبقى | search/hydrate/selected preservation، لا تحميل unbounded في UI جديد |
 | 3. توحيد العقود | schema settings صريح تدريجيًا ومصفوفة round-trip | dual-read؛ لا حذف alias قبل تقرير بيانات | builder → API → Mongo → reload → runner |
 | 4. غلاف المنشئ | استخراج مكونات مشتركة دون حذف `MockExamManager`/`QuizBuilder` | no migration | caller inventory وregression لكل منشئ |
@@ -102,4 +102,4 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 
 ## بوابة التنفيذ التالية
 
-الدفعة التالية المسموح بها هي **A-002 فقط**: وصل resolver الإعدادات القانوني إلى مسارات القراءة/الكتابة المعنية مع اختبار compatibility. لا تخلطها مع توحيد المنشئ أو تغيير schema/API/RBAC أو `ExamAssignment`.
+لا توجد مشكلة حرجة أخرى مثبتة في هذا التدقيق. المرحلة التالية بعد قرار منفصل هي توحيد مصدر الأسئلة في callers المتبقية، أو إضافة اختبار API حي متعدد المستخدمين للصلاحيات؛ لا تخلطها مع توحيد المنشئ أو تغيير schema/API/RBAC أو `ExamAssignment`.
