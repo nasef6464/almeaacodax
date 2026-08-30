@@ -47,6 +47,7 @@ import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/
 import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
 import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
+import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2009,17 +2010,19 @@ quizRouter.post(
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Quiz has no valid questions" });
     }
 
-    const skillIds = uniqueStrings(orderedQuestions.flatMap((question) => (question.skillIds || []).map(String)));
+    const skillIds = getQuizSubmissionSkillIds(orderedQuestions);
     const [skills, subjects, sections] = await Promise.all([
-      skillIds.length ? SkillModel.find(buildDocumentsByIdsQuery(skillIds)) : [],
+      skillIds.length
+        ? SkillModel.find(buildDocumentsByIdsQuery(skillIds))
+        : [],
       SubjectModel.find(),
       SectionModel.find(),
     ]);
-    const skillById = new Map<string, any>(
-      skills.map((skill: any) => [String(skill.id || skill._id), skill] as [string, any]),
-    );
-    const subjectNameById = new Map(subjects.map((subject) => [String(subject.id || subject._id), String(subject.name || "")]));
-    const sectionNameById = new Map(sections.map((section) => [String(section.id || section._id), String(section.name || "")]));
+    const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({
+      skills,
+      subjects,
+      sections,
+    });
 
     const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview } =
       buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
