@@ -176,6 +176,13 @@
 - لا يوجد import أو lazy/dynamic entry لصفحة `SubjectLearningPage` في مصدر التطبيق الحالي؛ بقيت للـcompatibility ولا تُحذف اعتمادًا على هذا الدليل وحده.
 - `smoke:learning-canonical-entry`: PASS (3/3)، و`architecture-gate`: PASS. الخطوة التالية هي حصر طلبات `LearningSection` قبل أي توحيد أو نقل.
 
+## تحميل مساحة التعلّم بحسب النطاق — إصلاح سباق الاستجابات (commit: `66d639a7`)
+
+- التحميل الحي يطلب `/courses` و`/quizzes` بحسب `pathId + subjectId` وبحد واضح `100`؛ endpoint الخادم يدعم pagination حتى 200، لكن هذا العرض الحالي لا يملك واجهة pagination فلا يجوز ادعاء معالجة التوسع أو رفع الحد بلا قرار UX.
+- كان `hydrateCourses` و`hydrateQuizzes` يستبدلان collection المخزّن كليًا؛ بعد انتقال سريع بين مادتين كان من الممكن لاستجابة النطاق القديم أن تصل متأخرة وتكتب فوق بيانات النطاق المفتوح.
+- أضيف حارس `scopeKey` قبل أي hydration؛ الاستجابة غير المطابقة للنطاق الحالي تُهمل فقط، من دون تغيير URLs أو API أو صلاحيات أو قواعد المحتوى.
+- `smoke:learning-scoped-bootstrap` (2/2)، و`smoke:learning-canonical-entry` (3/3)، و`architecture-gate`: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
