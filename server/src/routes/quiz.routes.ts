@@ -51,6 +51,7 @@ import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
 import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
+import { buildQuizReportStudentScope } from "../modules/quizzes/application/quizReportStudentScope.js";
 import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
@@ -494,48 +495,7 @@ const resolveSupervisorSchoolReportScope = async (authUser: any) => {
 };
 
 const buildScopedStudentFilter = async (authUser: any) => {
-  const managedPathIds = new Set<string>((authUser.managedPathIds || []).map(String));
-  const managedSubjectIds = new Set<string>((authUser.managedSubjectIds || []).map(String));
-
-  if (authUser.role === "admin") {
-    return { filter: { role: "student" }, managedPathIds, managedSubjectIds };
-  }
-
-  if (authUser.role === "teacher" || authUser.role === "supervisor") {
-    const supervisorScope = await resolveSupervisorSchoolReportScope(authUser);
-    const allowedGroupIds = new Set(supervisorScope.groupIds);
-    const scopedSchoolIds = supervisorScope.schoolIds;
-    const scopeFilters: Record<string, unknown>[] = [];
-
-    if (allowedGroupIds.size > 0) {
-      scopeFilters.push({ groupIds: { $in: Array.from(allowedGroupIds) } });
-    }
-    if (scopedSchoolIds.length > 0) {
-      scopeFilters.push({ schoolId: { $in: scopedSchoolIds } });
-    }
-
-    return {
-      filter: scopeFilters.length ? { role: "student", $or: scopeFilters } : { role: "student", _id: { $exists: false } },
-      managedPathIds,
-      managedSubjectIds,
-    };
-  }
-
-  if (authUser.role === "parent") {
-    const linkedStudentIds = uniqueStrings((authUser.linkedStudentIds || []).map(String));
-    const studentIdentityFilter = linkedStudentIds.length ? buildDocumentsByIdsQuery(linkedStudentIds) : { _id: { $exists: false } };
-    return {
-      filter: { role: "student", ...studentIdentityFilter },
-      managedPathIds,
-      managedSubjectIds,
-    };
-  }
-
-  return {
-    filter: { role: "student", ...buildDocumentQuery(String(authUser.id || authUser._id || "")) },
-    managedPathIds,
-    managedSubjectIds,
-  };
+  return buildQuizReportStudentScope(authUser, resolveSupervisorSchoolReportScope);
 };
 
 const resolveScopedStudents = async (authUser: any, options?: { limit?: number }) => {
