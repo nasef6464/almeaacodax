@@ -195,6 +195,12 @@
 - تُعرض المفردات الجديدة تدريجيًا عبر adapter: `skills → foundation` و`banks → practice` و`tests → assessments`؛ لا تغير في URLs أو `SubjectSettings` أو `PackageContentType` أو placements المخزنة.
 - أضيفت مرادفات deep links الجديدة (`practice`, `assessments`) مع بقاء القديمة، ويحرسها `smoke:learning-tabs` (3/3) إلى جانب عقدي المدخل والتحميل وبوابة المعمارية: PASS.
 
+## تطابق مساحة المادة الإدارية مع رحلة الطالب — مكتمل (commit: `a2524f8b`)
+
+- تبويب `tests` في مساحة المادة يعرض اختبارات المادة العادية فقط؛ `SubjectQuizzesPanel` يستبعد المحاكيات الحقيقية صراحة.
+- صُححت التسمية في الملخص من “المحاكي” إلى “الاختبارات” لتتطابق مع التبويب ورحلة الطالب، بينما تبقى المحاكيات في مدير/صفحة المحاكيات.
+- `smoke:learning-placement-admin` (6/6)، و`learning-tabs` (3/3)، و`learning-canonical-entry` (3/3)، و`architecture-gate`: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)

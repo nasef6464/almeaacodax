@@ -1,9 +1,9 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, and content bootstrap closure
-- Current batch: stable learning tab vocabulary centralized behind a compatibility adapter
+- Current batch: subject workspace vocabulary aligned with the student assessment journey
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `2b121135` (stable learning tab vocabulary); isolated assessment CI gate is `a6ad996c`
+- Last completed commit: `a2524f8b` (subject assessment vocabulary); isolated assessment CI gate is `a6ad996c`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, server check, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
