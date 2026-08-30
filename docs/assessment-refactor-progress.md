@@ -102,16 +102,23 @@
 
 ---
 
-## حصر المنشئين قبل التوحيد — مكتمل بالتدقيق (لا تغيير كود)
+## حصر المنشئين قبل التوحيد — مكتمل بالتدقيق (commit: `645cff42`)
 
 - `UnifiedQuizBuilder` هو المسار الموحد الفعلي في Quizzes/Subject/Supervisor/Lesson.
 - `MockExamManager` ما زال runtime path في Admin وSupervisor ويحمل سياسات أقسام وتوجيه ومعاينة فريدة؛ لا يحذف.
-- لم يجد البحث المستهدف مستدعيًا مباشرًا لـ`QuizBuilder` legacy، لكنه يبقى حتى يُثبت inventory لـlazy/dynamic imports والصلاحية الوظيفية.
+- لم يجد فحص imports أو lazy/dynamic في نقاط الدخول الحالية مستدعيًا لـ`QuizBuilder` legacy؛ أضيف `smoke:assessment-legacy-builder-inventory` لحماية هذه النتيجة. يبقى الملف للتوافق، ولا يمثل ذلك تصريحًا بالحذف أو إثباتًا لعدم استعمال إنتاجي غير مرئي في المصدر.
 - لم يُنفذ extraction لأن دوال الحفظ ليست تكرارًا محايدًا: نقلها الآن سيغير سياسة النشر/التوجيه بدل فصل concern معماري.
 
 ### التالي
 
-افحص entry points الديناميكية للـ`QuizBuilder` legacy ثم قرر freeze/deprecation فقط عند إثبات callers=0 ووجود regression coverage. بديل ذو أولوية إنتاجية: API integration tests متعددة الأدوار لمسارات الإنشاء/النشر/التسليم.
+تم اختيار **freeze موثق** للـ`QuizBuilder` legacy، بلا deprecation runtime أو حذف. الأولوية التالية: API integration tests متعددة الأدوار لمسارات الإنشاء/النشر/التسليم.
+
+### التحقق
+
+- `smoke:assessment-legacy-builder-inventory`: PASS (3/3).
+- `smoke:mock-exams`: PASS (10/10).
+- `smoke:assessment-settings-consumption`: PASS (5/5).
+- `server:check`, `server:build`, `architecture-gate`: PASS.
 
 ---
 

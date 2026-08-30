@@ -25,7 +25,7 @@
 | `server/src/routes/quiz.routes.ts` | HTTP: تعريف، أسئلة، وصول، submit، نتائج | `/api/quizzes` | Models/application helpers | جميع الأدوار | hotspot، لا تغيير routes الآن |
 | `UnifiedQuizBuilder.tsx` | منشئ normal/mock المشترك | شاشات الإدارة/المشرف | store ثم API | admin/teacher/supervisor | مستخدم |
 | `MockExamManager.tsx` | منشئ/إدارة محاكيات قائم | لوحة الإدارة/المشرف | store + question source | staff | مستخدم؛ لا يحذف |
-| `QuizBuilder.tsx` | منشئ legacy | callers قائمة | store ثم API | staff | موجود؛ لا دليل كافٍ لحذفه |
+| `QuizBuilder.tsx` | منشئ legacy | لا يوجد import أو lazy/dynamic caller ضمن entry points الحالية | store ثم API | staff | موجود للتوافق؛ مرشح للتجميد فقط، لا للحذف |
 | `assessmentQuestionSource.ts` | بحث paginated وhydrate بالـIDs | adapters/builders | `/api/quizzes/questions` | staff | المصدر القانوني القابل لإعادة الاستخدام |
 | `questionBankSource.ts` | compatibility hook فوق المصدر | callers legacy | `assessmentQuestionSource` | staff | مستخدم كواجهة توافق |
 | `QuizPage.tsx` | رحلة الطالب normal/mock وتحميل أسئلة النطاق | `#/quiz/:id` | store + API questions | الطالب | يستعمل section IDs ويعالج options order |
@@ -106,9 +106,9 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 |---|---|---|---|
 | `UnifiedQuizBuilder` | `QuizzesManager` و`SubjectQuizzesPanel` و`SupervisorTestsManager` و`UnifiedLessonBuilder` | normal/mock wizard، settings canonical، question selector، learning placements | المسار الموحد الأساسي؛ لا يوسّع في هذه الدفعة |
 | `MockExamManager` | `AdminDashboard` و`SupervisorTestsManager` | أقسام قياس، smart pick للأقسام، توجيه مدرسة/فصل، معاينة محاكي، وضع regular/mocked legacy | مستخدم فعليًا؛ لا يحذف ولا ينقل قبل فصل concern محدد مع regression |
-| `QuizBuilder` | لم يجد البحث المستهدف import أو JSX runtime caller؛ التعريف فقط | منشئ normal legacy مع AI generation وdirected draft settings | لا يحذف بناءً على البحث وحده؛ يلزم inventory للـlazy/dynamic entry وقرار deprecation منفصل |
+| `QuizBuilder` | فحص مباشر للـimports وفحص lazy/dynamic في entry points (`App` وواجهات الإدارة/المشرف/الدرس) لم يجد caller؛ التعريف فقط | منشئ normal legacy مع AI generation وdirected draft settings | يبقى للتوافق؛ مرشح للتجميد فقط. `smoke:assessment-legacy-builder-inventory` يمنع إعادة ربطه بلا قرار صريح، ولا يثبت صلاحية حذفه |
 
-لا يوجد extraction مشترك صغير يحقق فائدة أعلى من مخاطره الآن: `MockExamManager.saveExam` يملك policy نشر/استهداف تختلف عن `UnifiedQuizBuilder.handleSave`. النقل الشكلي سيخلط product policy مع refactor. المسار الصحيح التالي هو إثبات entry points للـ`QuizBuilder` legacy أو إضافة API integration tests للصلاحيات؛ لا حذف ولا دمج للمنشئين في هذه المرحلة.
+لا يوجد extraction مشترك صغير يحقق فائدة أعلى من مخاطره الآن: `MockExamManager.saveExam` يملك policy نشر/استهداف تختلف عن `UnifiedQuizBuilder.handleSave`. النقل الشكلي سيخلط product policy مع refactor. أثبت فحص entry points عدم وجود ربط حي معروف للـ`QuizBuilder` legacy، لكنه ليس telemetry إنتاجية؛ لذلك لا حذف ولا دمج للمنشئين في هذه المرحلة. المسار التالي ذو الأولوية: API integration tests متعددة الأدوار للصلاحيات.
 
 ## بوابة التنفيذ التالية
 
