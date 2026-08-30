@@ -29,6 +29,8 @@ const ASSESSMENT_PATH_ID = `platform-v3-integration-path-${RUN_MARKER}`;
 const ASSESSMENT_SUBJECT_ID = `platform-v3-integration-subject-${RUN_MARKER}`;
 const ASSESSMENT_QUESTION_ID = `platform-v3-integration-question-${RUN_MARKER}`;
 const ASSESSMENT_QUIZ_ID = `platform-v3-integration-quiz-${RUN_MARKER}`;
+const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN_MARKER}`;
+const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
 const SUPERVISOR_QUIZ_ID = `platform-v3-integration-supervisor-quiz-${RUN_MARKER}`;
 
@@ -336,6 +338,99 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("assessment max-attempt guard rejects repeat submission", repeatedSubmission, 409);
 }
 
+async function runMockAssessmentJourney(csrf: CsrfContext) {
+  const studentId = userIds.get("student");
+  assert.ok(studentId, "target student id missing for mock assessment");
+
+  const secondQuestion = await jsonRequest("/quizzes/questions", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: MOCK_ASSESSMENT_QUESTION_ID,
+      text: "What is 3 + 3?",
+      options: ["5", "6"],
+      correctOptionIndex: 1,
+      explanation: "3 + 3 = 6",
+      skillIds: [`platform-v3-integration-mock-skill-${RUN_MARKER}`],
+      pathId: ASSESSMENT_PATH_ID,
+      subject: ASSESSMENT_SUBJECT_ID,
+      approvalStatus: "approved",
+    },
+  });
+  expectStatus("admin creates a second mock assessment question", secondQuestion, 201);
+
+  const mockQuiz = await jsonRequest("/quizzes", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: MOCK_ASSESSMENT_QUIZ_ID,
+      title: "Platform V3 two-section mock assessment",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      quizKind: "mock",
+      mode: "central",
+      isPublished: true,
+      showOnPlatform: true,
+      access: { type: "free" },
+      settings: { maxAttempts: 1, passingScore: 60 },
+      targetUserIds: [studentId],
+      mockExam: {
+        enabled: true,
+        isStrictSectionLock: true,
+        sections: [
+          {
+            id: `platform-v3-integration-mock-section-a-${RUN_MARKER}`,
+            title: "Mock section A",
+            questionIds: [ASSESSMENT_QUESTION_ID],
+            timeLimit: 15,
+            order: 1,
+            isStrictSectionLock: true,
+          },
+          {
+            id: `platform-v3-integration-mock-section-b-${RUN_MARKER}`,
+            title: "Mock section B",
+            questionIds: [MOCK_ASSESSMENT_QUESTION_ID],
+            timeLimit: 15,
+            order: 2,
+            isStrictSectionLock: true,
+          },
+        ],
+      },
+    },
+  });
+  expectStatus("admin creates a published two-section mock assessment", mockQuiz, 201);
+  assert.equal(mockQuiz.body?.quizKind, "mock", "mock assessment lost its quiz kind");
+  assert.equal(mockQuiz.body?.mockExam?.sections?.length, 2, "mock assessment did not retain both sections");
+
+  const outsiderSubmission = await jsonRequest(`/quizzes/${MOCK_ASSESSMENT_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("outsider"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1, [MOCK_ASSESSMENT_QUESTION_ID]: 0 }, timeSpentSeconds: 30, source: "mock-exam" },
+  });
+  expectStatus("outside student cannot submit directed mock assessment", outsiderSubmission, 403);
+
+  const acceptedSubmission = await jsonRequest(`/quizzes/${MOCK_ASSESSMENT_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1, [MOCK_ASSESSMENT_QUESTION_ID]: 0 }, timeSpentSeconds: 30, source: "mock-exam" },
+  });
+  expectStatus("targeted student submits two-section mock assessment", acceptedSubmission, 201);
+  assert.equal(acceptedSubmission.body?.quizSnapshot?.quizKind, "mock", "mock result snapshot missing quiz kind");
+  assert.equal(acceptedSubmission.body?.sectionResults?.length, 2, "mock result missing section results");
+  assert.equal(acceptedSubmission.body?.sectionResults?.[0]?.score, 100, "first mock section score is incorrect");
+  assert.equal(acceptedSubmission.body?.sectionResults?.[1]?.score, 0, "second mock section score is incorrect");
+
+  const sectionAnalytics = await jsonRequest(`/quizzes/results/section-analytics/${MOCK_ASSESSMENT_QUIZ_ID}`, {
+    token: tokens.get("admin"),
+  });
+  expectStatus("admin reads mock section analytics from stored result", sectionAnalytics, 200);
+  assert.equal(sectionAnalytics.body?.sections?.length, 2, "mock section analytics did not return both sections");
+}
+
 async function runScopedCreatorJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for scoped creator checks");
@@ -510,6 +605,7 @@ async function main() {
     }
 
     await runAssessmentJourney(csrf);
+    await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
 
