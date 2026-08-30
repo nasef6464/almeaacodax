@@ -170,6 +170,12 @@
 - أصبح يعمل على push أو PR من `refactor/modular-platform-safe` فقط، مع بقاء Mongo وsecrets المؤقتة والعزل كما هي.
 - فحص typecheck للـharness وعقد workflow trigger hygiene: PASS. لم يُنفذ GitHub Actions بعد؛ يحتاج push أو تشغيل يدوي من صاحب المستودع.
 
+## حصر مدخل مساحة التعلم — مكتمل بالتدقيق (commit: `579e0d4b`)
+
+- المسار الحي للفئات هو `GenericPathPage → LearningSection` على `/category/:pathId`.
+- لا يوجد import أو lazy/dynamic entry لصفحة `SubjectLearningPage` في مصدر التطبيق الحالي؛ بقيت للـcompatibility ولا تُحذف اعتمادًا على هذا الدليل وحده.
+- `smoke:learning-canonical-entry`: PASS (3/3)، و`architecture-gate`: PASS. الخطوة التالية هي حصر طلبات `LearningSection` قبل أي توحيد أو نقل.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
