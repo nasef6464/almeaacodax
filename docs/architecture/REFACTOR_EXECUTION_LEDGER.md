@@ -234,6 +234,15 @@
 - Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
 - Next: map submission request read-model context only after preserving lookup/query ordering and all result fields.
 
+## 2A-17 — Quiz submission read-model-context boundary
+
+- Status: COMPLETED in `a692fd61` on `refactor/modular-platform-safe`.
+- Changed: extracted submission skill-ID derivation and skill/subject/section display-map construction into `quizSubmissionReadModelContext.ts`. The route retains the same parallel model queries and passes the resulting maps into existing skills analysis.
+- Preserved: skill-ID de-duplication, copy/order-independent lookup inputs, query ordering, empty-skill behavior, display fallback fields, submission response/result semantics, route/API contracts, RBAC, scoring, and database schema.
+- Tests: read-model-context contract PASS; skills-analysis contract PASS; result-document contract PASS; `server:check` PASS.
+- Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
+- Next: audit the remaining submission orchestration and select only a bounded, contract-preserving extraction.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
