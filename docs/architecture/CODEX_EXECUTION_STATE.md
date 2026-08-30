@@ -1,16 +1,16 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: added missing published-question rejection to the isolated acceptance harness
+- Current batch: added invalid published-question-content rejection to the isolated acceptance harness
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `33447aee` (reject missing published question references); isolated assessment CI gate is `a6ad996c`
-- Last remote delivery: pushed through `c03ca9ea` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
+- Last completed code commit: `a5956306` (reject invalid published question content); isolated assessment CI gate is `a6ad996c`
+- Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved
-- Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness now covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, and missing published-question rejection without persistence. Their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
+- Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness now covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, and missing or invalid published-question rejection without persistence. Their runtime proof remains deferred until the isolated CI/Mongo gate is authorized and run.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: obtain authorization to manually run the isolated backend CI gate and inspect its runtime output for normal and two-section mock journeys, partial-definition preservation, and missing-question rejection. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
+- Next exact action: inspect the isolated backend CI gate configuration and, if it starts only isolated dependencies, run it to obtain runtime proof for normal/mock journeys and missing/invalid-question rejection. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -112,6 +112,18 @@
 - Push: not performed.
 - Risks: the assertion remains a harness case until it passes on the isolated Mongo gate; local server TypeScript check/build remain unavailable because `tsc` is absent.
 - Next exact action: authorize and run the isolated backend CI gate, inspect its result, then continue the next bounded acceptance case from the roadmap.
+
+## Batch 2T-04 — Invalid published-question content rejection
+
+- Scope: added an isolated HTTP harness case for an existing legacy-style question record whose content is unusable for an MCQ assessment; publishing a quiz that references it must return `400`, report the invalid ID, and leave no quiz document persisted.
+- Changed files: `server/src/scripts/backendIntegrationGate.ts` and `scripts/smoke-assessment-question-selection-contract.mjs`.
+- Preserved contracts: existing `/quizzes` POST path and payload, publication/integrity policy, question ownership and selection, directed audience semantics, RBAC, Mongo schema, scoring, and production data.
+- Tests: `smoke:assessment-question-selection` PASS 9/9; `smoke:quiz-integrity-guard` PASS 4/4; `smoke:assessment-directed-scope` PASS 4/4; architecture gate PASS; `git diff --check` PASS.
+- Runtime evidence: deferred; no API service, Mongo instance, CI gate, or production system was started.
+- Commit: `a5956306` `test(assessments): reject invalid published question content`.
+- Push: pending the paired documentation commit.
+- Risks: the assertion remains a harness case until it passes on the isolated Mongo gate; local server TypeScript check/build remain unavailable because `tsc` is absent.
+- Next exact action: inspect the isolated backend CI gate configuration and run it only if it uses an isolated Mongo dependency; otherwise continue the next bounded acceptance case without starting production-connected services.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
