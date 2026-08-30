@@ -288,6 +288,15 @@
 - Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
 - Next: audit bootstrap cache lifecycle and select only a bounded, response-contract-preserving extraction.
 
+## 2B-05 — Content bootstrap cache-lifecycle boundary
+
+- Status: COMPLETED in `712f53fc` on `refactor/modular-platform-safe`.
+- Changed: extracted shared bootstrap cache hit/shared/miss lifecycle into `contentBootstrapCache.ts`; the route retains cache-control and diagnostic headers plus HTTP response mapping.
+- Preserved: cache TTL, cache key partitioning, in-flight promise de-duplication and cleanup, hit/shared/miss headers, non-shared staff behavior, payload shape, `/api/content/bootstrap`, RBAC, and persistence semantics.
+- Tests: bootstrap-cache contract PASS; bootstrap-payload contract PASS; content operations bootstrap 4/4; `server:check` PASS.
+- Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
+- Next: audit scoped operational-data reads and select only a bounded, response-contract-preserving extraction.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
