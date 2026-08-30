@@ -28,6 +28,8 @@ const reportsSource = [
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const quizSupervisorScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorScope.ts', import.meta.url), 'utf8');
+const quizSupervisorReportScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorReportScope.ts', import.meta.url), 'utf8');
+const quizSupervisorScopeRepositorySource = await readFile(new URL('../server/src/modules/quizzes/infrastructure/quizSupervisorScopeRepository.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
 const contentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
 const apiSource = [
@@ -299,15 +301,18 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'authUser.role === "admin"');
   assertIncludes(quizRoutesSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
   assertIncludes(quizRoutesSource, 'const resolveSupervisorSchoolReportScope = async');
-  assertIncludes(quizRoutesSource, 'GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") })');
-  assertIncludes(quizRoutesSource, 'buildSupervisorDirectScope({');
-  assertIncludes(quizRoutesSource, 'appendSchoolWideChildGroups(directScope, childScopedGroups)');
+  assertIncludes(quizRoutesSource, 'resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository)');
+  assertIncludes(quizSupervisorReportScopeSource, 'without promoting a class-level supervisor to school-wide access');
+  assertIncludes(quizSupervisorReportScopeSource, 'repository.findDirectlySupervisedGroups');
+  assertIncludes(quizSupervisorReportScopeSource, 'repository.findSchoolWideChildGroups(directScope.schoolIds)');
+  assertIncludes(quizSupervisorScopeRepositorySource, 'GroupModel.find({ supervisorIds: supervisorId })');
+  assertIncludes(quizSupervisorScopeRepositorySource, 'type: { $in: ["CLASS", "PRIVATE_GROUP"] }');
   assertIncludes(quizSupervisorScopeSource, 'Separates explicit school-wide authority from class/private-group authority.');
   assertIncludes(quizSupervisorScopeSource, '.filter((group) => group.type === "SCHOOL")');
   if (quizSupervisorScopeSource.includes('.map((group) => String(group.parentId')) {
     throw new Error('Class/private-group scope must not be promoted to parent school scope');
   }
-  assertIncludes(quizRoutesSource, 'const childScopedGroups = directScope.schoolIds.length');
+  assertIncludes(quizSupervisorReportScopeSource, 'const schoolWideChildGroups = await repository.findSchoolWideChildGroups(directScope.schoolIds);');
   assertIncludes(quizRoutesSource, 'scopeFilters.push({ schoolId: { $in: scopedSchoolIds } })');
   assertIncludes(quizRoutesSource, 'const scopedStudentIds = students.map((student) => idOf(student));');
   assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');

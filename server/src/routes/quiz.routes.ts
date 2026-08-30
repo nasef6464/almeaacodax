@@ -49,8 +49,9 @@ import { buildQuizSubmissionResultDocument } from "../modules/quizzes/applicatio
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
-import { appendSchoolWideChildGroups, buildSupervisorDirectScope } from "../modules/quizzes/application/quizSupervisorScope.js";
 import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
+import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
+import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -489,33 +490,7 @@ const toSafeDate = (value?: string) => {
 const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActive role";
 
 const resolveSupervisorSchoolReportScope = async (authUser: any) => {
-  if (authUser.role !== "supervisor") {
-    return {
-      schoolIds: uniqueStrings(authUser.schoolId ? [String(authUser.schoolId)] : []),
-      groupIds: uniqueStrings((authUser.groupIds || []).map(String)),
-    };
-  }
-
-  const managedGroupIds = uniqueStrings((authUser.groupIds || []).map(String));
-  const [seedGroups, directlySupervisedGroups] = await Promise.all([
-    managedGroupIds.length
-      ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type").lean()
-      : Promise.resolve([]),
-    GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") }).select("id _id parentId type").lean(),
-  ]);
-
-  const directScope = buildSupervisorDirectScope({
-    schoolId: authUser.schoolId,
-    managedGroupIds,
-    seedGroups,
-    directlySupervisedGroups,
-  });
-
-  const childScopedGroups = directScope.schoolIds.length
-    ? await GroupModel.find({ parentId: { $in: directScope.schoolIds }, type: { $in: ["CLASS", "PRIVATE_GROUP"] } }).select("id _id").lean()
-    : [];
-
-  return appendSchoolWideChildGroups(directScope, childScopedGroups);
+  return resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository);
 };
 
 const buildScopedStudentFilter = async (authUser: any) => {
