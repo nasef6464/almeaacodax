@@ -92,6 +92,7 @@
     "smoke:assessment-answer-review": "node scripts/smoke-assessment-answer-review-contract.mjs",
     "smoke:assessment-skills-analysis": "node scripts/smoke-assessment-skills-analysis-contract.mjs",
     "smoke:assessment-result-document": "node scripts/smoke-assessment-result-document-contract.mjs",
+    "smoke:assessment-directed-scope": "node scripts/smoke-assessment-directed-scope-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",

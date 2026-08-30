@@ -46,6 +46,7 @@ import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quiz
 import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/quizSubmissionAnswerReview.js";
 import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
 import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
+import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1945,26 +1946,25 @@ quizRouter.post(
     // ── Security: re-validate group membership from DB for directed quizzes ──
     // JWT claims (authUser.groupIds) could be stale or spoofed, so we
     // look up actual group membership directly from GroupModel.
-    const targetGroupIds = uniqueStrings((quiz.targetGroupIds || []).map(String));
-    const targetUserIds  = uniqueStrings((quiz.targetUserIds  || []).map(String));
-    const isDirectedQuiz = targetGroupIds.length > 0 || targetUserIds.length > 0;
-    if (isDirectedQuiz && !isStaffRole(authUser.role)) {
-      const userId = String(authUser.id || authUser._id || "");
-      const isExplicitUser = targetUserIds.includes(userId);
-      if (!isExplicitUser && targetGroupIds.length > 0) {
-        // Verify the student genuinely belongs to at least one targeted group from DB
-        // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
-        const matchingGroup = await GroupModel.findOne({
-          $and: [
-            buildDocumentsByIdsQuery(targetGroupIds),
-            { studentIds: userId },
-          ],
-        }).select("_id").lean();
-        if (!matchingGroup) {
-          return res.status(StatusCodes.FORBIDDEN).json({
-            message: "This quiz is not assigned to you",
-          });
-        }
+    const userId = String(authUser.id || authUser._id || "");
+    const directedScope = buildQuizSubmissionDirectedScope({
+      quiz,
+      userId,
+      isStaff: isStaffRole(authUser.role),
+    });
+    if (directedScope.requiresGroupMembershipCheck) {
+      // Verify the student genuinely belongs to at least one targeted group from DB
+      // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
+      const matchingGroup = await GroupModel.findOne({
+        $and: [
+          buildDocumentsByIdsQuery(directedScope.targetGroupIds),
+          { studentIds: userId },
+        ],
+      }).select("_id").lean();
+      if (!matchingGroup) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          message: "This quiz is not assigned to you",
+        });
       }
     }
 
