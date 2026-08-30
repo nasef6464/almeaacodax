@@ -1,9 +1,9 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: extracted the question-attempt skill-gap read model from report analytics
+- Current batch: completed consistent routing of analytics attempt gaps through the extracted read model
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `af27eba8` (extract question-attempt gap read model); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `3894ee46` (use extracted attempt gap read model consistently); isolated assessment CI gate is `a6ad996c`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved
@@ -37,6 +37,18 @@
 - Commit: `7b66c16f` `refactor(reports): isolate role-bound student scope`.
 - Push: not performed. This worktree remains detached because `refactor/modular-platform-safe` is checked out by `C:/ALMEAA MAY - codax`; attach/cherry-pick `5ce8b0eb`, `031fd755`, and `7b66c16f` there before pushing.
 - Risks: runtime HTTP rejection evidence for cross-school and cross-class attempts remains pending the isolated Mongo test environment.
+- Next exact action: with authorization, attach the pending commits to the safe branch and run the isolated backend CI gate; then add only bounded cross-school and cross-class rejection cases. Do not begin timer/session extraction or any schema/RBAC/scoring/route change.
+
+## Batch 2A-18 — Consistent attempt-gap read-model use
+
+- Scope: replaced the two remaining analytics references to the former local `buildAttemptGaps` converter with `buildQuizReportAttemptGaps`.
+- Changed files: `server/src/routes/quiz.routes.ts` and `scripts/smoke-reports-role-contract.mjs`.
+- Preserved contracts: analytics endpoint URL and response fields, question-attempt skill/subject/section enrichment, mastery calculation, evidence threshold, role scopes, RBAC, scoring, and Mongo schema.
+- Tests: `smoke:reports-role` PASS 20/20; `smoke:quiz-access` PASS 18/18; `smoke:quiz-integrity-guard` PASS 4/4; architecture gate PASS; `git diff --check` PASS.
+- Gates blocked: server TypeScript check/build remain unavailable because local `tsc` is absent; no API service or Mongo integration gate was started.
+- Commit: `3894ee46` `fix(reports): use extracted attempt gap read model`.
+- Push: not performed. This worktree remains detached; attach/cherry-pick pending commits onto `refactor/modular-platform-safe` from its owning worktree before pushing.
+- Risks: cross-school/cross-class HTTP rejection evidence remains pending the isolated Mongo test environment.
 - Next exact action: with authorization, attach the pending commits to the safe branch and run the isolated backend CI gate; then add only bounded cross-school and cross-class rejection cases. Do not begin timer/session extraction or any schema/RBAC/scoring/route change.
 
 ## Batch 2A-17 — Question-attempt gap read model
