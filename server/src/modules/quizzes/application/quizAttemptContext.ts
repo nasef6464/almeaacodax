@@ -11,3 +11,26 @@ export const getQuizPassingScore = (quiz: any) => {
 
 export const buildSubmissionKey = (userId: string, quizId: string, attemptNumber: number) =>
   `quiz-submit:${userId}:${quizId}:attempt:${attemptNumber}`;
+
+export const buildQuizSubmissionAttemptState = ({
+  userId,
+  quizId,
+  previousAttempts,
+  maxAttempts,
+}: {
+  userId: string;
+  quizId: string;
+  previousAttempts: number;
+  maxAttempts: number;
+}) => {
+  if (previousAttempts >= maxAttempts) {
+    return { isLimitReached: true as const };
+  }
+
+  const attemptNumber = previousAttempts + 1;
+  return {
+    isLimitReached: false as const,
+    attemptNumber,
+    submissionKey: buildSubmissionKey(userId, quizId, attemptNumber),
+  };
+};

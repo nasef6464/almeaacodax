@@ -12,10 +12,10 @@ const check = (name, assertion) => {
 };
 
 check('attempt context helpers are delegated', () => {
-  assert.ok(routeSource.includes('import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";'));
+  assert.ok(routeSource.includes('import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";'));
   assert.ok(!routeSource.includes('const getQuizMaxAttempts ='));
   assert.ok(!routeSource.includes('const getQuizPassingScore ='));
-  assert.ok(!routeSource.includes('const buildSubmissionKey ='));
+  assert.ok(!routeSource.includes('const buildQuizSubmissionAttemptState ='));
 });
 
 check('attempt limits, passing score, and idempotency key semantics remain explicit', () => {
@@ -25,11 +25,13 @@ check('attempt limits, passing score, and idempotency key semantics remain expli
     'quiz?.settings?.passingScore ?? 60',
     'Math.min(100, Math.max(0, value))',
     '`quiz-submit:${userId}:${quizId}:attempt:${attemptNumber}`',
+    'previousAttempts >= maxAttempts',
+    'isLimitReached: true as const',
   ]) assert.ok(moduleSource.includes(fragment), `attempt context missing ${fragment}`);
 });
 
 check('submission route retains attempt-limit and idempotency orchestration', () => {
-  for (const fragment of ['const maxAttempts = getQuizMaxAttempts(quiz)', 'const attemptNumber = previousAttempts + 1', 'const submissionKey = buildSubmissionKey(req.authUser!.id, quizId, attemptNumber)', 'const passingScore = getQuizPassingScore(quiz)']) {
+  for (const fragment of ['const maxAttempts = getQuizMaxAttempts(quiz)', 'const attemptState = buildQuizSubmissionAttemptState({', 'if (attemptState.isLimitReached)', 'const { attemptNumber, submissionKey } = attemptState;', 'const passingScore = getQuizPassingScore(quiz)']) {
     assert.ok(routeSource.includes(fragment), `submission route lost ${fragment}`);
   }
 });
@@ -38,7 +40,7 @@ check('attempt context module stays pure and bounded', () => {
   for (const forbidden of ['express', 'mongoose', 'Router(', 'req.', 'res.', 'QuizModel', 'QuestionModel', 'QuestionAttemptModel', 'requireRole', 'process.env']) {
     assert.ok(!moduleSource.includes(forbidden), `attempt context must not include ${forbidden}`);
   }
-  assert.ok(moduleSource.split(/\r?\n/).length <= 35, 'quizAttemptContext.ts exceeded 35 lines');
+  assert.ok(moduleSource.split(/\r?\n/).length <= 60, 'quizAttemptContext.ts exceeded 60 lines');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

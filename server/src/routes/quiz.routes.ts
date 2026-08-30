@@ -38,7 +38,7 @@ import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefi
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
 import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
 import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
-import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
+import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
 import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
 import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
 import { buildQuizSubmissionSectionResults } from "../modules/quizzes/application/quizSubmissionSectionResults.js";
@@ -1985,7 +1985,13 @@ quizRouter.post(
       quizId,
     });
 
-    if (previousAttempts >= maxAttempts) {
+    const attemptState = buildQuizSubmissionAttemptState({
+      userId: req.authUser!.id,
+      quizId,
+      previousAttempts,
+      maxAttempts,
+    });
+    if (attemptState.isLimitReached) {
       return res.status(StatusCodes.CONFLICT).json({
         message: "Quiz attempt limit reached",
         maxAttempts,
@@ -1993,8 +1999,7 @@ quizRouter.post(
       });
     }
 
-    const attemptNumber = previousAttempts + 1;
-    const submissionKey = buildSubmissionKey(req.authUser!.id, quizId, attemptNumber);
+    const { attemptNumber, submissionKey } = attemptState;
     const questionIds = getQuizQuestionIds(quiz);
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
     const questionById = buildQuizQuestionLookup(questions);
