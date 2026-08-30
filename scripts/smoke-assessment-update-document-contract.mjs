@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizUpdateDocument.ts'), 'utf8').replace(/\r\n/g, '\n');
+const integrationGateSource = fs.readFileSync(path.join(root, 'server/src/scripts/backendIntegrationGate.ts'), 'utf8').replace(/\r\n/g, '\n');
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -34,6 +35,19 @@ check('update document builder stays pure and bounded', () => {
     assert.ok(!moduleSource.includes(forbidden), `update document must not include ${forbidden}`);
   }
   assert.ok(moduleSource.split(/\r?\n/).length <= 20, 'quizUpdateDocument.ts exceeded 20 lines');
+});
+
+check('isolated HTTP gate preserves mock definitions on partial updates', () => {
+  for (const fragment of [
+    'admin partial update preserves existing mock assessment definition',
+    'body: { title: "Platform V3 two-section mock assessment updated" }',
+    'partialMockUpdate.body?.settings?.maxAttempts, 1',
+    'partialMockUpdate.body?.mockExam?.enabled, true',
+    'partialMockUpdate.body?.mockExam?.sections?.length, 2',
+    'partialMockUpdate.body?.mockExam?.sections?.[1]?.questionIds?.[0], MOCK_ASSESSMENT_QUESTION_ID',
+  ]) {
+    assert.ok(integrationGateSource.includes(fragment), `isolated mock update gate missing ${fragment}`);
+  }
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

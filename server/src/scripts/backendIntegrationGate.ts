@@ -404,6 +404,18 @@ async function runMockAssessmentJourney(csrf: CsrfContext) {
   assert.equal(mockQuiz.body?.quizKind, "mock", "mock assessment lost its quiz kind");
   assert.equal(mockQuiz.body?.mockExam?.sections?.length, 2, "mock assessment did not retain both sections");
 
+  const partialMockUpdate = await jsonRequest(`/quizzes/${MOCK_ASSESSMENT_QUIZ_ID}`, {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { title: "Platform V3 two-section mock assessment updated" },
+  });
+  expectStatus("admin partial update preserves existing mock assessment definition", partialMockUpdate, 200);
+  assert.equal(partialMockUpdate.body?.settings?.maxAttempts, 1, "partial mock update dropped max-attempt settings");
+  assert.equal(partialMockUpdate.body?.mockExam?.enabled, true, "partial mock update disabled the mock definition");
+  assert.equal(partialMockUpdate.body?.mockExam?.sections?.length, 2, "partial mock update dropped mock sections");
+  assert.equal(partialMockUpdate.body?.mockExam?.sections?.[1]?.questionIds?.[0], MOCK_ASSESSMENT_QUESTION_ID, "partial mock update changed selected questions");
+
   const outsiderSubmission = await jsonRequest(`/quizzes/${MOCK_ASSESSMENT_QUIZ_ID}/submit`, {
     method: "POST",
     token: tokens.get("outsider"),
