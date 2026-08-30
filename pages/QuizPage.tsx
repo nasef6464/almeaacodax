@@ -1013,10 +1013,12 @@ export const QuizPage: React.FC = () => {
     };
 
     let resultAttemptDate = result.date;
+    let submissionSucceeded = false;
 
     try {
       if (isDevSessionUser(user)) {
         saveExamResult(result);
+        submissionSucceeded = true;
       } else {
         const serverResult = await api.submitQuiz(quiz.id, {
           answers: selectedOptions,
@@ -1033,12 +1035,17 @@ export const QuizPage: React.FC = () => {
         };
         resultAttemptDate = savedServerResult.date || result.date;
         hydrateExamResults([savedServerResult, ...examResults]);
+        submissionSucceeded = true;
       }
     } catch (error) {
-      console.error('Unable to submit quiz on server, saving local result instead:', error);
-      saveExamResult(result);
+      console.error('Unable to submit quiz on server; keeping local progress for a retry:', error);
+      showQuizStatus('تعذر إرسال النتيجة. تم الاحتفاظ بتقدمك لإعادة المحاولة.', 'info');
     } finally {
       setIsSubmittingResult(false);
+    }
+
+    if (!submissionSucceeded) {
+      return;
     }
 
     if (typeof window !== 'undefined') {
