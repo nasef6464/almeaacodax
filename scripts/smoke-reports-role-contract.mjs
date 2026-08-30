@@ -30,6 +30,7 @@ const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.route
 const quizSupervisorScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorScope.ts', import.meta.url), 'utf8');
 const quizSupervisorReportScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorReportScope.ts', import.meta.url), 'utf8');
 const quizReportStudentScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportStudentScope.ts', import.meta.url), 'utf8');
+const quizReportAttemptGapsSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportAttemptGaps.ts', import.meta.url), 'utf8');
 const quizSupervisorScopeRepositorySource = await readFile(new URL('../server/src/modules/quizzes/infrastructure/quizSupervisorScopeRepository.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
 const contentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
@@ -322,6 +323,9 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizReportStudentScopeSource, 'linkedStudentIds');
   assertIncludes(quizRoutesSource, 'matchesManagedContentScope');
   assertIncludes(quizRoutesSource, 'filterResultsByManagedContentScope');
+  assertIncludes(quizRoutesSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');
+  assertIncludes(quizReportAttemptGapsSource, 'Converts one persisted question attempt into the report');
+  assertIncludes(quizReportAttemptGapsSource, 'mastery: attempt.isCorrect ? 100 : 0');
   assertIncludes(quizRoutesSource, 'const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
   assertIncludes(quizRoutesSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
   assertIncludes(quizRoutesSource, 'earlyWeakSkillSignalCount');

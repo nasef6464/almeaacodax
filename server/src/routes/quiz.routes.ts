@@ -52,6 +52,7 @@ import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizS
 import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
 import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
 import { buildQuizReportStudentScope } from "../modules/quizzes/application/quizReportStudentScope.js";
+import { buildQuizReportAttemptGaps } from "../modules/quizzes/application/quizReportAttemptGaps.js";
 import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
@@ -935,25 +936,6 @@ quizRouter.get(
       attemptsByStudent.set(key, bucket);
     });
 
-    const buildAttemptGaps = (attempt: any) =>
-      (Array.isArray(attempt.skillIds) ? attempt.skillIds : [])
-        .map((skillId: unknown) => {
-          const resolvedSkill = skillById.get(String(skillId));
-          if (!resolvedSkill) return null;
-
-          return {
-            skillId: String(resolvedSkill.id || resolvedSkill._id || skillId),
-            skill: String(resolvedSkill.name || "مهارة غير مسماة"),
-            pathId: String(resolvedSkill.pathId || attempt.pathId || ""),
-            subjectId: String(resolvedSkill.subjectId || attempt.subjectId || ""),
-            sectionId: String(resolvedSkill.sectionId || attempt.sectionId || ""),
-            subjectName: subjectNameById.get(String(resolvedSkill.subjectId || attempt.subjectId || "")) || "",
-            section: sectionNameById.get(String(resolvedSkill.sectionId || attempt.sectionId || "")) || String(resolvedSkill.sectionId || attempt.sectionId || ""),
-            mastery: attempt.isCorrect ? 100 : 0,
-          };
-        })
-        .filter(Boolean);
-
     const resultsByStudent = new Map<string, any[]>();
     quizResults.forEach((result) => {
       const key = String(result.userId || "");
@@ -1000,7 +982,7 @@ quizRouter.get(
         });
 
         granularAttempts.forEach((attempt) => {
-          buildAttemptGaps(attempt).forEach((gap: any) => {
+          buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
             const mastery = Number(gap?.mastery || 0);
             if (mastery >= 75) return;
             const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
