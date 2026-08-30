@@ -113,3 +113,11 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 ## بوابة التنفيذ التالية
 
 **تحديث `f2835634`:** حُسمت مشكلة scale المثبتة في `SmartQuestionSelector`: كان يستدعي `loadAll` ثم يصفّي محليًا؛ صار يستدعي `searchPage` بحد 100 وفلاتر API (`skillIds` و`difficulty` وsection/search). بقيت hydration للأسئلة المختارة بالـIDs مستقلة، لذا لا تختفي الاختيارات عند تغيير الفلاتر. لا توجد مشكلة حرجة أخرى مثبتة في هذا التدقيق؛ المرحلة التالية بعد قرار مستقل هي اختبار API حي للصلاحيات أو حصر وظائف المنشئات الفريدة، لا توحيد المنشئ أو تغيير schema/API/RBAC أو `ExamAssignment`.
+
+## تدقيق Runner timer/session — 30 أغسطس 2026
+
+- `QuizPage.tsx` يشغّل global timer وsection timer وper-question tracking محليًا، ثم يرسل `timeSpentSeconds` عند `POST /api/quizzes/:id/submit`.
+- الخادم يطبق `assertQuizSubmissionWindow` ويمنع القيمة التي تتجاوز `settings.timeLimit + 60s`، لكنه لا يملك بدء/انقضاء محاولة server-authoritative.
+- `LiveExamSession` و`/api/live-exams/*` يسجلان بدء الجلسة وتقدم الإجابات ونهايتها لمتابعة المشرف؛ لا يملكان answer state أو clock أو enforcement للتسليم.
+
+**القرار:** لا extraction للمؤقت في هذه الدفعة ولا ادعاء integrity زمني مكتمل. تحويل session إلى مصدر وقت/محاولة يحتاج design additive منفصلًا (Session/Attempt) مع قرار منتج ومهاجرة وrollback؛ ذلك خارج refactor الحالي. يمكن فصل utilities محلية مستقلة فقط، كما تم مع مسودة التقدم.

@@ -143,6 +143,11 @@
 - `smoke:quiz-progress-draft`: PASS (5/5)، ويغطي round-trip، JSON الفاسد، حذف مسودة اختبار محدد، واستهلاك الـRunner للواجهة الجديدة.
 - `smoke:assessment-settings-consumption` (5/5)، و`smoke:quiz-answer-exposure` (5/5)، و`architecture-gate`: PASS. لا تعلن frontend typecheck/build خضراء في هذا الجهاز بسبب تثبيت الجذر الناقص.
 
+### تدقيق المؤقت والجلسة
+
+- التأكيد الحالي: مؤقت الـRunner محلي، و`LiveExamSession` متابعة تقدم لا محاولة موثقة زمنيًا من الخادم، وbackend يفرض حدًا أعلى للوقت المرسل فقط.
+- لم يُنقل هذا concern؛ فصله دون تصميم Session/Attempt سيخفي فجوة integrity بدل حلها. الدليل والقرار موثقان في `assessment-system-code-audit.md`.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
