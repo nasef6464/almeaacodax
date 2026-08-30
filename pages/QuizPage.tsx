@@ -11,6 +11,12 @@ import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { resolveAssessmentSettings } from '../utils/assessmentSettings';
 import { getDefaultQuizSettings } from '../utils/quizSettings';
+import {
+  readQuizProgressDraft,
+  removeQuizProgressDraft,
+  type SavedQuizPageProgress,
+  writeQuizProgressDraft,
+} from '../utils/quizProgressDraft';
 
 interface QuestionThreadItem {
   id: string;
@@ -20,17 +26,6 @@ interface QuestionThreadItem {
 }
 
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
-const QUIZ_PAGE_PROGRESS_PREFIX = 'almeaa-quiz-progress:';
-
-interface SavedQuizPageProgress {
-  quizId: string;
-  questionIds: string[];
-  selectedOptions: Record<string, number>;
-  currentQuestionIndex: number;
-  timeLeft: number | null;
-  savedAt: string;
-}
-
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
 const resolveQuizSettings = (quiz?: Quiz | null) =>
   resolveAssessmentSettings(
@@ -450,18 +445,7 @@ export const QuizPage: React.FC = () => {
 
     const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (resolveQuizSettings(foundQuiz).timeLimit || 0);
     const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
-    const progressKey = `${QUIZ_PAGE_PROGRESS_PREFIX}${foundQuiz.id}`;
-    let savedProgress: SavedQuizPageProgress | null = null;
-
-    if (typeof window !== 'undefined') {
-      try {
-        const rawProgress = window.localStorage.getItem(progressKey);
-        savedProgress = rawProgress ? (JSON.parse(rawProgress) as SavedQuizPageProgress) : null;
-      } catch (error) {
-        console.warn('Unable to restore quiz progress draft:', error);
-        window.localStorage.removeItem(progressKey);
-      }
-    }
+    const savedProgress = readQuizProgressDraft(foundQuiz.id);
 
     const savedQuestionOrder =
       savedProgress?.quizId === foundQuiz.id &&
@@ -520,7 +504,7 @@ export const QuizPage: React.FC = () => {
       savedAt: new Date().toISOString(),
     };
 
-    window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
+    writeQuizProgressDraft(draft);
   }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, isFinished, isSubmittingResult]);
 
   useEffect(() => {
@@ -857,8 +841,7 @@ export const QuizPage: React.FC = () => {
       savedAt: new Date().toISOString(),
     };
 
-    window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
-    return true;
+    return writeQuizProgressDraft(draft);
   };
 
   const showQuizStatus = (message: string, tone: 'success' | 'info' = 'success') => {
@@ -1061,7 +1044,7 @@ export const QuizPage: React.FC = () => {
     }
 
     if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`);
+      removeQuizProgressDraft(quiz.id);
       setDraftRestored(false);
     }
 
@@ -1077,7 +1060,7 @@ export const QuizPage: React.FC = () => {
     if (!quiz) return;
 
     if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`);
+      removeQuizProgressDraft(quiz.id);
     }
     setSelectedOptions({});
     setCurrentQuestionIndex(0);
