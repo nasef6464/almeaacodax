@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const canonicalSource = await readFile(new URL('../utils/exams/assessmentQuestionSource.ts', import.meta.url), 'utf8');
 const helperSource = await readFile(new URL('../utils/exams/questionBankSource.ts', import.meta.url), 'utf8').catch(() => '');
 const smartSelectorSource = await readFile(new URL('../dashboards/admin/SmartQuestionSelector.tsx', import.meta.url), 'utf8');
+const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
 const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilder.tsx', import.meta.url), 'utf8').catch(() => '');
 const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeTestsManager.tsx', import.meta.url), 'utf8').catch(() => '');
 const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8').catch(() => '');
@@ -151,6 +152,12 @@ check('quiz submission result response delegates non-critical side effects', () 
   assertIncludes(quizRoutesSource, 'import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt }');
   assertIncludes(quizRoutesSource, 'await runQuizSubmissionSideEffects({');
   assertIncludes(quizRoutesSource, 'return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));');
+});
+
+check('runner hydrates missing quiz questions through the chunked canonical source', () => {
+  assertIncludes(quizPageSource, "from '../utils/exams/assessmentQuestionSource'");
+  assertIncludes(quizPageSource, 'assessmentQuestionSource.hydrateByIds(missingIds)');
+  assertNotIncludes(quizPageSource, 'limit: Math.min(Math.max(missingIds.length, 20), 200)');
 });
 
 for (const item of checks) {

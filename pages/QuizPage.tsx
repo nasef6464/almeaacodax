@@ -11,6 +11,7 @@ import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { resolveAssessmentSettings } from '../utils/assessmentSettings';
 import { getDefaultQuizSettings } from '../utils/quizSettings';
+import { assessmentQuestionSource } from '../utils/exams/assessmentQuestionSource';
 import {
   readQuizProgressDraft,
   removeQuizProgressDraft,
@@ -302,11 +303,8 @@ export const QuizPage: React.FC = () => {
     setIsResolvingScopedQuestions(true);
     const run = async () => {
       try {
-        const fetched = await api.getQuestions({
-          ids: missingIds.join(','),
-          limit: Math.min(Math.max(missingIds.length, 20), 200),
-          noTotal: true,
-        }) as Question[];
+        const hydration = await assessmentQuestionSource.hydrateByIds(missingIds);
+        const fetched = hydration.questions;
         if (cancelled || !Array.isArray(fetched) || fetched.length === 0) return;
         setQuizScopedQuestions((prev) => {
           const merged = [...prev, ...fetched];
