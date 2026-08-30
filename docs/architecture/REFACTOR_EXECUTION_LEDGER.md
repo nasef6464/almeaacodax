@@ -252,6 +252,15 @@
 - Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate now PASS; no frontend failure is attributed to this batch.
 - Next: audit access-policy dependencies and select only a bounded, contract-preserving extraction.
 
+## 2B-01 — Content learning-resource URL policy boundary
+
+- Status: COMPLETED in `cf5118f3` on `refactor/modular-platform-safe`.
+- Changed: centralized learning-resource URL cleanup and lesson URL-field normalization in `modules/content/domain/learningResourceUrl.ts`. Both content lesson writes and operations media-readiness checks use the same policy.
+- Preserved: malformed URL repair rules, YouTube URL normalization, `videoUrl`/`meetingUrl`/`recordingUrl`/`fileUrl` update behavior, lesson parser call sites, operations media readiness, content/operations route URLs, RBAC, and persistence schema.
+- Tests: learning-resource URL contract PASS; content learning-schema boundary PASS; video-question contract 8/8; `server:check` PASS.
+- Known limitation: frontend typecheck/build both reach the same missing `lucide-react` dependency in the incomplete local install. Repository audit and architecture gate PASS before this bounded content extraction; no frontend failure is attributed to it.
+- Next: audit content bootstrap composition and select only a bounded, response-contract-preserving extraction.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
