@@ -127,3 +127,9 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 - كان `QuizPage` يطلب الأسئلة المفقودة مباشرةً مع `limit` قد يصل إلى 200، بينما schema للخادم يحدد الحد الأقصى عند 100؛ تتعطل إعادة hydration للاختبار الكبير عندما تتجاوز الأسئلة المفقودة هذا الحد.
 - أصبح الـRunner يستخدم `assessmentQuestionSource.hydrateByIds(missingIds)` الذي يقسم الطلبات إلى chunks عند 100، يحافظ على ترتيب IDs، ولا يفرض approval filter على تعريف قديم.
 - `smoke:exam-question-source` يثبت المسار الجديد؛ لا تغيير في API أو RBAC أو scoring أو قواعد visibility.
+
+## إصلاح سلطة نتيجة Runner — مكتمل (`4320a86c`)
+
+- كان فشل `api.submitQuiz` في session حقيقية يقود إلى `saveExamResult(result)` محليًا ثم الانتقال للتقرير، ما يسمح بعرض نتيجة غير مؤكدة من الخادم عند رفض التسليم أو انقطاع الشبكة.
+- أصبح حفظ النتيجة المحلية مقصورًا على `isDevSessionUser` الصريح. في session حقيقية، عند الفشل يبقى draft محفوظًا وتظهر رسالة إعادة محاولة؛ لا يزال التقرير الرسمي يعتمد على نتيجة الخادم فقط.
+- `smoke:quiz-submission-authority` يثبت المسار، مع بقاء عقود عدم كشف الإجابات وسلامة النشر خضراء.

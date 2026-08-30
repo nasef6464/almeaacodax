@@ -153,6 +153,12 @@
 - استبدل طلب الـRunner المباشر الذي قد يمرر `limit=200` بـ`assessmentQuestionSource.hydrateByIds` المقطّع عند 100.
 - `smoke:exam-question-source`: PASS (22/22)، و`assessment-question-selection` (5/5)، و`mock-exams` (10/10)، و`quiz-progress-draft` (5/5)، و`architecture-gate`: PASS.
 
+### Runner server-result authority — مكتمل (commit: `4320a86c`)
+
+- عند فشل submit الحقيقي لا ينشئ الـRunner نتيجة محلية ولا ينتقل إلى التقرير؛ يحتفظ بمسودة التقدم ليتاح retry.
+- وضع التطوير فقط يحتفظ بمسار النتيجة المحلية المتعمد.
+- `smoke:quiz-submission-authority` (3/3)، و`quiz-answer-exposure` (5/5)، و`quiz-integrity-guard` (4/4)، و`architecture-gate`: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
