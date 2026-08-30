@@ -40,6 +40,7 @@ import { buildQuizValidationState } from "../modules/quizzes/application/quizVal
 import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
 import { buildSubmissionKey, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
 import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
+import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2071,9 +2072,15 @@ quizRouter.post(
       };
     });
 
-    const totalQuestions = orderedQuestions.length;
-    const score = Math.round((correctAnswers / Math.max(totalQuestions, 1)) * 100);
     const passingScore = getQuizPassingScore(quiz);
+    const scoreSummary = buildQuizSubmissionScoreSummary({
+      correctAnswers,
+      wrongAnswers,
+      unanswered,
+      totalQuestions: orderedQuestions.length,
+      passingScore,
+    });
+    const { totalQuestions, score, passed } = scoreSummary;
     const timeSpentMinutes = Math.max(0, Math.round(payload.timeSpentSeconds / 60));
 
     // ── تحليل الأداء لكل قسم (للمحاكيات فقط) ─────────────────────────────
@@ -2140,7 +2147,7 @@ quizRouter.post(
         quizId,
         quizTitle: String(quiz.title || "اختبار"),
         score,
-        passed: score >= passingScore,
+        passed,
         attemptNumber,
         source: payload.source || "",
         totalQuestions,
