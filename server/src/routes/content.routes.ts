@@ -31,33 +31,9 @@ import { announcementAdSchema, announcementAdUpdateSchema, homepageSettingsSchem
 import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
 import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content/http/studyPlanSchemas.js";
+import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
 
-const sanitizeVideoUrl = (rawUrl?: string | null) => {
-  if (!rawUrl) return "";
-
-  let trimmedUrl = rawUrl.trim().replace(/^['"]|['"]$/g, "");
-  if (!trimmedUrl) return "";
-
-  trimmedUrl = trimmedUrl
-    .replace(/^https?:\/\/https?:\/\//i, "https://")
-    .replace(/^https?:\/\/:\/\//i, "https://")
-    .replace(/^:\/\//, "https://")
-    .replace(/^\/\//, "https://");
-
-  if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
-    return `https://${trimmedUrl}`;
-  }
-
-  return trimmedUrl;
-};
-
-const sanitizeLessonPayload = <T extends { videoUrl?: string; meetingUrl?: string; recordingUrl?: string; fileUrl?: string }>(payload: T): T => ({
-  ...payload,
-  ...(payload.videoUrl !== undefined ? { videoUrl: sanitizeVideoUrl(payload.videoUrl) } : {}),
-  ...(payload.meetingUrl !== undefined ? { meetingUrl: sanitizeVideoUrl(payload.meetingUrl) } : {}),
-  ...(payload.recordingUrl !== undefined ? { recordingUrl: sanitizeVideoUrl(payload.recordingUrl) } : {}),
-  ...(payload.fileUrl !== undefined ? { fileUrl: sanitizeVideoUrl(payload.fileUrl) } : {}),
-});
+const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {

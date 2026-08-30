@@ -21,6 +21,7 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { env } from "../config/env.js";
 import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
 import { captureSentryMessage, isSentryEnabled } from "../observability/sentry.js";
+import { sanitizeLearningResourceUrl } from "../modules/content/domain/learningResourceUrl.js";
 
 export const operationsRouter = Router();
 
@@ -53,28 +54,9 @@ const isVisibleContent = (item: any) =>
   item?.isPublished !== false &&
   (!item?.approvalStatus || item.approvalStatus === "approved");
 
-const sanitizeVideoUrl = (rawUrl?: string | null) => {
-  if (!rawUrl) return "";
-
-  let trimmedUrl = rawUrl.trim().replace(/^['"]|['"]$/g, "");
-  if (!trimmedUrl) return "";
-
-  trimmedUrl = trimmedUrl
-    .replace(/^https?:\/\/https?:\/\//i, "https://")
-    .replace(/^https?:\/\/:\/\//i, "https://")
-    .replace(/^:\/\//, "https://")
-    .replace(/^\/\//, "https://");
-
-  if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
-    return `https://${trimmedUrl}`;
-  }
-
-  return trimmedUrl;
-};
-
 const hasPlayableLessonMedia = (lesson: any) =>
   Boolean(
-    sanitizeVideoUrl(lesson?.videoUrl) ||
+    sanitizeLearningResourceUrl(lesson?.videoUrl) ||
       String(lesson?.fileUrl || "").trim() ||
       String(lesson?.content || "").trim() ||
       String(lesson?.recordingUrl || "").trim(),

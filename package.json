@@ -95,6 +95,7 @@
     "smoke:assessment-directed-scope": "node scripts/smoke-assessment-directed-scope-contract.mjs",
     "smoke:assessment-read-model-context": "node scripts/smoke-assessment-read-model-context-contract.mjs",
     "smoke:assessment-submission-window": "node scripts/smoke-assessment-submission-window-contract.mjs",
+    "smoke:content-learning-resource-url": "node scripts/smoke-content-learning-resource-url-contract.mjs",
         "measure:read-baseline:plan": "node scripts/measure-read-baseline.mjs --plan",
         "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
         "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
