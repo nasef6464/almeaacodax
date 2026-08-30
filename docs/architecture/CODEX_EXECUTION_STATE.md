@@ -1,7 +1,7 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: enabled the isolated full-stack Playwright gate on the safe branch
+- Current batch: recorded green full-stack E2E evidence on the safe branch
 - Current branch: `refactor/modular-platform-safe`
 - Last completed code commit: `15fa3b95` (satisfy teacher question fixture contract); isolated assessment CI gate passed at `038544cc` (run `33336856128`)
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
@@ -186,6 +186,13 @@
 - Tests: architecture gate PASS; `git diff --check` PASS.
 - Commit: `5e30cfe4` `ci(assessment): run isolated E2E gate on safe branch`.
 - Next exact action: inspect the automatic deep E2E result and classify any failing journey against the roadmap.
+
+## Batch 2T-11 — Full-stack E2E acceptance evidence
+
+- Scope: the safe-branch deep E2E gate completed on isolated Mongo, API, frontend, and Chromium.
+- Evidence: GitHub Actions run `33337019142` passed for commit `1c4f9478`, including operational API journeys, public UI, desktop/mobile role pages, question-editor, supervisor-school, school CRUD, and public-test journeys.
+- Constraints: all accounts and credentials were ephemeral and masked in CI; production services and local services were not used.
+- Remaining scope: the assessment roadmap still requires focused historical-result compatibility evidence and scale certification; this run is strong E2E evidence, not a substitute for those distinct requirements.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
