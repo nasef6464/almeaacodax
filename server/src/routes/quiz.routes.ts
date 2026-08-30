@@ -1629,7 +1629,7 @@ quizRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
 
-    const questionIds = Array.isArray(quiz.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+    const questionIds = getQuizQuestionIds(quiz);
     let questions: any[] = [];
     if (questionIds.length > 0) {
       const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();

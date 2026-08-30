@@ -95,6 +95,7 @@
     "smoke:assessment-directed-scope": "node scripts/smoke-assessment-directed-scope-contract.mjs",
     "smoke:assessment-read-model-context": "node scripts/smoke-assessment-read-model-context-contract.mjs",
     "smoke:assessment-submission-window": "node scripts/smoke-assessment-submission-window-contract.mjs",
+    "smoke:assessment-detail-question-resolution": "node scripts/smoke-assessment-detail-question-resolution-contract.mjs",
     "smoke:content-learning-resource-url": "node scripts/smoke-content-learning-resource-url-contract.mjs",
     "smoke:content-bootstrap-request": "node scripts/smoke-content-bootstrap-request-contract.mjs",
     "smoke:content-bootstrap-visibility": "node scripts/smoke-content-bootstrap-visibility-contract.mjs",
