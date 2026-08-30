@@ -1,7 +1,7 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: recorded green full-stack E2E evidence on the safe branch
+- Current batch: added historical quiz-result read compatibility coverage
 - Current branch: `refactor/modular-platform-safe`
 - Last completed code commit: `15fa3b95` (satisfy teacher question fixture contract); isolated assessment CI gate passed at `038544cc` (run `33336856128`)
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
@@ -193,6 +193,16 @@
 - Evidence: GitHub Actions run `33337019142` passed for commit `1c4f9478`, including operational API journeys, public UI, desktop/mobile role pages, question-editor, supervisor-school, school CRUD, and public-test journeys.
 - Constraints: all accounts and credentials were ephemeral and masked in CI; production services and local services were not used.
 - Remaining scope: the assessment roadmap still requires focused historical-result compatibility evidence and scale certification; this run is strong E2E evidence, not a substitute for those distinct requirements.
+
+## Batch 2T-12 — Historical result read compatibility
+
+- Scope: added an isolated HTTP fixture representing an older result without snapshot or mock-section fields, and verified the student results endpoint preserves its legacy score, time, and quiz identity.
+- Changed files: `server/src/scripts/backendIntegrationGate.ts`.
+- Preserved contracts: result API URL and response semantics, student RBAC, Mongo schema, scoring, and production data. No migration or backfill was added.
+- Tests: `smoke:quiz-integrity-guard` PASS 4/4; `smoke:assessment-question-selection` PASS 10/10; `git diff --check` PASS.
+- Runtime evidence: the next automatic isolated backend gate will execute this HTTP case on temporary Mongo.
+- Commit: `a6cc1dba` `test(reports): preserve historical quiz result reads`.
+- Next exact action: inspect the isolated CI result, then scope a bounded scale-evidence plan without claiming production-scale certification.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
