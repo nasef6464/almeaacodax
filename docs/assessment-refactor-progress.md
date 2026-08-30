@@ -136,6 +136,15 @@
 
 ---
 
+## Runner — فصل حفظ مسودة التقدم: مكتمل (commit: `0c934318`)
+
+- نُقل حفظ/قراءة/حذف مسودة الطالب من `QuizPage.tsx` إلى `utils/quizProgressDraft.ts`.
+- المفتاح القديم `almeaa-quiz-progress:<quizId>` وبنية المسودة وترتيب استعادة الأسئلة بقيت متوافقة؛ لم يتغير التصحيح أو الوصول أو الإرسال أو مؤقت الاختبار.
+- `smoke:quiz-progress-draft`: PASS (5/5)، ويغطي round-trip، JSON الفاسد، حذف مسودة اختبار محدد، واستهلاك الـRunner للواجهة الجديدة.
+- `smoke:assessment-settings-consumption` (5/5)، و`smoke:quiz-answer-exposure` (5/5)، و`architecture-gate`: PASS. لا تعلن frontend typecheck/build خضراء في هذا الجهاز بسبب تثبيت الجذر الناقص.
+
+---
+
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
 
 ### A0 — Audit V2: COMPLETE for current baseline
