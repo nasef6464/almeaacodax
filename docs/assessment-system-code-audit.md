@@ -121,3 +121,9 @@ Builder → store.addQuiz/updateQuiz → API POST/PATCH /api/quizzes
 - `LiveExamSession` و`/api/live-exams/*` يسجلان بدء الجلسة وتقدم الإجابات ونهايتها لمتابعة المشرف؛ لا يملكان answer state أو clock أو enforcement للتسليم.
 
 **القرار:** لا extraction للمؤقت في هذه الدفعة ولا ادعاء integrity زمني مكتمل. تحويل session إلى مصدر وقت/محاولة يحتاج design additive منفصلًا (Session/Attempt) مع قرار منتج ومهاجرة وrollback؛ ذلك خارج refactor الحالي. يمكن فصل utilities محلية مستقلة فقط، كما تم مع مسودة التقدم.
+
+## إصلاح Runner question hydration — مكتمل (`6584d1de`)
+
+- كان `QuizPage` يطلب الأسئلة المفقودة مباشرةً مع `limit` قد يصل إلى 200، بينما schema للخادم يحدد الحد الأقصى عند 100؛ تتعطل إعادة hydration للاختبار الكبير عندما تتجاوز الأسئلة المفقودة هذا الحد.
+- أصبح الـRunner يستخدم `assessmentQuestionSource.hydrateByIds(missingIds)` الذي يقسم الطلبات إلى chunks عند 100، يحافظ على ترتيب IDs، ولا يفرض approval filter على تعريف قديم.
+- `smoke:exam-question-source` يثبت المسار الجديد؛ لا تغيير في API أو RBAC أو scoring أو قواعد visibility.

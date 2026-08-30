@@ -148,6 +148,11 @@
 - التأكيد الحالي: مؤقت الـRunner محلي، و`LiveExamSession` متابعة تقدم لا محاولة موثقة زمنيًا من الخادم، وbackend يفرض حدًا أعلى للوقت المرسل فقط.
 - لم يُنقل هذا concern؛ فصله دون تصميم Session/Attempt سيخفي فجوة integrity بدل حلها. الدليل والقرار موثقان في `assessment-system-code-audit.md`.
 
+### Runner question hydration — مكتمل (commit: `6584d1de`)
+
+- استبدل طلب الـRunner المباشر الذي قد يمرر `limit=200` بـ`assessmentQuestionSource.hydrateByIds` المقطّع عند 100.
+- `smoke:exam-question-source`: PASS (22/22)، و`assessment-question-selection` (5/5)، و`mock-exams` (10/10)، و`quiz-progress-draft` (5/5)، و`architecture-gate`: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
