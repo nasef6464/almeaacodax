@@ -326,6 +326,9 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');
   assertIncludes(quizReportAttemptGapsSource, 'Converts one persisted question attempt into the report');
   assertIncludes(quizReportAttemptGapsSource, 'mastery: attempt.isCorrect ? 100 : 0');
+  if (quizRoutesSource.includes('buildAttemptGaps(')) {
+    throw new Error('Analytics must use the extracted question-attempt gap read model consistently');
+  }
   assertIncludes(quizRoutesSource, 'const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
   assertIncludes(quizRoutesSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
   assertIncludes(quizRoutesSource, 'earlyWeakSkillSignalCount');

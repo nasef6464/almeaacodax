@@ -1082,7 +1082,7 @@ quizRouter.get(
     });
 
     questionAttempts.forEach((attempt) => {
-      buildAttemptGaps(attempt).forEach((gap: any) => {
+      buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
         const mastery = Number(gap?.mastery || 0);
         if (mastery >= 75) return;
 
@@ -1165,7 +1165,7 @@ quizRouter.get(
     });
 
     questionAttempts.forEach((attempt) => {
-      buildAttemptGaps(attempt).forEach((gap: any) => {
+      buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
         if (!gap?.subjectId) return;
         const key = String(gap.subjectId);
         const current = subjectMap.get(key) || {
