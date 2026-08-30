@@ -43,6 +43,7 @@ import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules
 import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
 import { buildQuizSubmissionSectionResults } from "../modules/quizzes/application/quizSubmissionSectionResults.js";
 import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quizSubmissionSnapshot.js";
+import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/quizSubmissionAnswerReview.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -2013,46 +2014,8 @@ quizRouter.post(
     const subjectNameById = new Map(subjects.map((subject) => [String(subject.id || subject._id), String(subject.name || "")]));
     const sectionNameById = new Map(sections.map((section) => [String(section.id || section._id), String(section.name || "")]));
 
-    let correctAnswers = 0;
-    let wrongAnswers = 0;
-    let unanswered = 0;
-    const skillStats = new Map<string, { total: number; correct: number }>();
-
-    const questionReview = orderedQuestions.map((question) => {
-      const questionId = String(question.id || question._id);
-      const rawSelected = payload.answers[questionId];
-      const selectedOptionIndex = typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
-      const isCorrect = selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
-
-      if (selectedOptionIndex === undefined) {
-        unanswered += 1;
-      } else if (isCorrect) {
-        correctAnswers += 1;
-      } else {
-        wrongAnswers += 1;
-      }
-
-      (question.skillIds || []).map(String).filter(Boolean).forEach((skillId: string) => {
-        const current = skillStats.get(skillId) || { total: 0, correct: 0 };
-        current.total += 1;
-        if (isCorrect) {
-          current.correct += 1;
-        }
-        skillStats.set(skillId, current);
-      });
-
-      return {
-        questionId,
-        text: String(question.text || ""),
-        options: Array.isArray(question.options) ? question.options.map(String) : [],
-        correctOptionIndex: Number(question.correctOptionIndex ?? 0),
-        selectedOptionIndex,
-        explanation: question.explanation || "",
-        videoUrl: question.videoUrl || "",
-        imageUrl: question.imageUrl || "",
-        isCorrect,
-      };
-    });
+    const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview } =
+      buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
 
     const skillsAnalysis = Array.from(skillStats.entries()).map(([skillId, stats]) => {
       const skill = skillById.get(skillId);
