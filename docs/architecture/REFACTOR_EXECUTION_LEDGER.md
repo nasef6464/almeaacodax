@@ -225,6 +225,15 @@
 - Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
 - Next: isolate attempt-limit preparation only after proving the existing count/query and conflict semantics remain unchanged.
 
+## 2A-16 — Quiz submission attempt-state boundary
+
+- Status: COMPLETED in `c0681673` on `refactor/modular-platform-safe`.
+- Changed: added `buildQuizSubmissionAttemptState` to the existing attempt-context module. The route still executes the unchanged `QuizResultModel.countDocuments` query and maps the same conflict response; the pure boundary only decides whether the limit is reached and derives the next attempt number/idempotency key.
+- Preserved: max-attempt normalization, count query (`userId` + `quizId`), `409` message and fields, attempt numbering, idempotency-key format, route/API contracts, RBAC, scoring, and database schema.
+- Tests: attempt-context contract PASS; directed-scope contract PASS; quiz integrity 4/4; `server:check` PASS.
+- Known limitation: frontend dependency installation remains incomplete on this host, so current-run frontend typecheck/build and repository/architecture gates remain pending.
+- Next: map submission request read-model context only after preserving lookup/query ordering and all result fields.
+
 ## P0-02 — Distributed weekly parent-report scheduling
 
 - Status: COMPLETED in `0172947a` on `refactor/modular-platform-safe`.
