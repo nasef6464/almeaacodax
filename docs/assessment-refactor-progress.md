@@ -189,6 +189,12 @@
 - أصبح الثابت مُصدّرًا من وحدة البنية التحتية المالكة ويُستورد في route، بلا تكرار للقيمة وبلا تغيير query أو الاستجابة.
 - تم تحديث `smoke:performance` ليختبر وحدات visibility/cache الجديدة بدل الاعتماد على مواضع قبل الفصل؛ `smoke:performance` و`smoke:learning-scoped-bootstrap` و`server:check` و`architecture-gate`: PASS.
 
+## مفردات مساحة التعلّم والتوافق مع الروابط — مكتمل (commit: `2b121135`)
+
+- أصبحت قيم الرابط التاريخية `courses/skills/banks/tests/library` مملوكة في `utils/learningSpaceTabs.ts` بدل بقائها داخل شاشة التعلّم الكبيرة.
+- تُعرض المفردات الجديدة تدريجيًا عبر adapter: `skills → foundation` و`banks → practice` و`tests → assessments`؛ لا تغير في URLs أو `SubjectSettings` أو `PackageContentType` أو placements المخزنة.
+- أضيفت مرادفات deep links الجديدة (`practice`, `assessments`) مع بقاء القديمة، ويحرسها `smoke:learning-tabs` (3/3) إلى جانب عقدي المدخل والتحميل وبوابة المعمارية: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)

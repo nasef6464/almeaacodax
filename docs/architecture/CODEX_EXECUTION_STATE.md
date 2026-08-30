@@ -1,11 +1,11 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Assessment runner hardening, learning-entry audit, and content bootstrap closure
-- Current batch: content bootstrap ownership and performance contract repaired
+- Current phase: Assessment runner hardening, learning-space consolidation, and content bootstrap closure
+- Current batch: stable learning tab vocabulary centralized behind a compatibility adapter
 - Current branch: `refactor/modular-platform-safe`
-- Last completed commit: `118f39d7` (content bootstrap limit ownership); isolated assessment CI gate is `a6ad996c`
+- Last completed commit: `2b121135` (stable learning tab vocabulary); isolated assessment CI gate is `a6ad996c`
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, performance contract, server check, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
+- Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, server check, and architecture gate PASS. Repository audit is presently blocked before analysis because the incomplete root install cannot resolve `typescript`; frontend typecheck/build remain blocked by the same incomplete root install (`lucide-react`).
 - Open blockers: Scale certification not proven; production secrets must be rotated outside the repository; no destructive DB/RBAC decision authorized
 - Next exact action: obtain authorization to push or manually run the isolated assessment CI gate, then inspect its runtime output. After that, revisit `LearningSection` render/modal ownership only with a bounded domain component and explicit callback contract. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
