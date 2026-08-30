@@ -1,9 +1,9 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: normalized duplicate published-question references in the isolated acceptance harness
+- Current batch: added teacher question managed-scope coverage to the isolated acceptance harness
 - Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `173c2bd8` (normalize duplicate question references); isolated assessment CI gate is `a6ad996c`
+- Last completed code commit: `7a0efb99` (cover teacher question scope); isolated assessment CI gate is `a6ad996c`
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
@@ -136,6 +136,17 @@
 - Push: pending the paired documentation commit.
 - Risks: the HTTP assertion remains a harness case until it passes on the isolated Mongo gate; local server TypeScript check/build remain unavailable because `tsc` is absent.
 - Next exact action: cover owner-scope rejection for question references only after proving the existing ownership policy on the route; do not change its RBAC or persistence semantics speculatively.
+
+## Batch 2T-06 — Teacher question managed-scope coverage
+
+- Scope: added isolated HTTP harness coverage showing a teacher can create a question inside the configured path/subject scope with the existing pending-review workflow, and is rejected outside that scope.
+- Changed files: `server/src/scripts/backendIntegrationGate.ts`.
+- Preserved contracts: existing `/quizzes/questions` POST route and payload, teacher managed-content policy, approval workflow, RBAC, Mongo schema, and production data.
+- Tests: `smoke:assessment-question-selection` PASS 10/10; `smoke:quiz-integrity-guard` PASS 4/4; `smoke:quiz-access` PASS 18/18; architecture gate PASS; `git diff --check` PASS.
+- Runtime evidence: deferred; no API service, Mongo instance, CI gate, or production system was started.
+- Commit: `7a0efb99` `test(assessments): cover teacher question scope`.
+- Push: pending the paired documentation commit.
+- Next exact action: add an ownership-reference case only after a product-compatible policy is identified; do not invent a new question-to-quiz ownership restriction.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
