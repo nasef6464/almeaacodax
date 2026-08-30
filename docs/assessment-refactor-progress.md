@@ -159,6 +159,11 @@
 - وضع التطوير فقط يحتفظ بمسار النتيجة المحلية المتعمد.
 - `smoke:quiz-submission-authority` (3/3)، و`quiz-answer-exposure` (5/5)، و`quiz-integrity-guard` (4/4)، و`architecture-gate`: PASS.
 
+### Runner mock section reset — مكتمل (commit: `4f6b2800`)
+
+- إعادة الاختبار أو تحميل اختبار جديد لا يرث الأقسام المقفلة أو وقت أسئلة المحاولة السابقة، ويبدأ مؤقت القسم الأول مجددًا.
+- `smoke:quiz-section-reset` (2/2)، و`mock-exams` (10/10)، و`quiz-progress-draft` (5/5)، و`quiz-submission-authority` (3/3)، و`architecture-gate`: PASS.
+
 ---
 
 ## المرحلة الحالية — إصلاحات حرجة: ✅ مكتملة (commit: ac9ea5c1)
