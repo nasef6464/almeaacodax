@@ -126,12 +126,12 @@
 
 - وُسّعت `server/src/scripts/backendIntegrationGate.ts`، وهي harness قائم يشغّل HTTP حقيقيًا على Mongo محلي معزول داخل CI، بدل إضافة test framework أو الاتصال ببيئة تشغيلية.
 - تنشئ الرحلة مسارًا نشطًا وسؤالًا معتمدًا واختبارًا مركزيًا موجّهًا؛ ثم تثبت أن الطالب خارج الاستهداف يُرفض، وأن الطالب المستهدف يسلّم إجابة صحيحة وتُحفظ `quizSnapshot`، وأن حد المحاولات يمنع الإرسال المتكرر.
-- يشمل تسجيل دخول الأدوار القائمة ويضيف طالبًا معزولًا ثانيًا لغرض اختبار العزل فقط. لا يغير API أو RBAC أو schema أو scoring.
+- تجهز مدرسة وفصلًا معزولين وتتحقق من أن المشرف ينشئ فقط لطالب داخل نطاقه، وأن المعلم ينشئ داخل المسار/المادة المعيّنة كمسودة pending review ويُرفض خارج نطاقه. لا يغير ذلك API أو RBAC أو schema أو scoring.
 
 ### حالة التحقق
 
 - typecheck الدقيق للـharness وفق أمر CI: PASS.
-- `smoke:quiz-access` (18/18) و`smoke:quiz-integrity-guard` (4/4) و`smoke:assessment-detail-question-resolution` (4/4): PASS.
+- `smoke:assessment-workflow` (3/3) و`smoke:assessment-publication` (4/4) و`smoke:quiz-access` (18/18) و`smoke:quiz-integrity-guard` (4/4) و`smoke:assessment-detail-question-resolution` (4/4): PASS.
 - التنفيذ HTTP الكامل **لم يُشغّل محليًا**: يتطلب Mongo وخادم API تحت متغيرات `NODE_ENV=test` وقاعدة CI مخصصة، ولذلك تركته لبوابة CI المعزولة ولا توجد دعوى PASS حتى تعمل هناك.
 
 ---
