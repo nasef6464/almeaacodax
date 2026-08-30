@@ -6,6 +6,8 @@ export type AssessmentQuestionFilters = {
   subjectId?: string;
   sectionId?: string;
   skillId?: string;
+  skillIds?: string[];
+  difficulty?: Question['difficulty'];
   search?: string;
   approvalStatus?: string;
 };
@@ -53,6 +55,8 @@ export type AssessmentQuestionSourceClient = {
     subject?: string;
     sectionId?: string;
     skillId?: string;
+    skillIds?: string;
+    difficulty?: string;
     search?: string;
     approvalStatus?: string;
     noTotal?: boolean;
@@ -126,6 +130,8 @@ export const createAssessmentQuestionSource = (client: AssessmentQuestionSourceC
       subject: request.subjectId,
       sectionId: request.sectionId,
       skillId: request.skillId,
+      skillIds: request.skillIds?.join(','),
+      difficulty: request.difficulty,
       search: request.search,
       approvalStatus: request.approvalStatus,
     });

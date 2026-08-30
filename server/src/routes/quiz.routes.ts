@@ -708,6 +708,11 @@ quizRouter.get(
     if (query.subject) scopeFilter.subject = query.subject;
     if (query.sectionId) scopeFilter.sectionId = query.sectionId;
     if (query.skillId) scopeFilter.skillIds = query.skillId;
+    if (query.skillIds) {
+      const skillIds = uniqueStrings(query.skillIds.split(",").map((item) => item.trim()));
+      if (skillIds.length > 0) scopeFilter.skillIds = { $in: skillIds };
+    }
+    if (query.difficulty) scopeFilter.difficulty = query.difficulty;
     if (query.examType) scopeFilter.examType = query.examType;
     if (query.source) scopeFilter.source = query.source;
     if (typeof query.year === "number") scopeFilter.year = query.year;
