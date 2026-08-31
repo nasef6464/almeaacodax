@@ -6,7 +6,7 @@
 | schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolPortalManager`, school routes | Extraction in progress |
 | curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Boundary started |
 | questions | bank/authoring/types/import/search | report presentation | QuestionBankManager, question routes | Boundary pending |
-| assessments | definition/assignment/session/attempt/scoring/result | payment provider | quiz routes, QuizPage, Results, `server/src/modules/quizzes/application/quizSubmissionSideEffects.ts` | Boundary extraction started |
+| assessments | definition/versioning, distribution, attempts/responses, submission, scoring, results, assessment-specific analytics | payment provider، long-term cross-assessment reports | compatibility facades in quiz routes/QuizPage/Results; `server/src/modules/quizzes/application/assessment*` | PARTIAL — additive versions/results, controlled mirror, and bounded reconciliation exist; legacy facades remain authoritative |
 | learning | lessons/topics/player/library/progress | school authorization | learning pages/content routes | Mixed legacy |
 | courses | catalog/builder/enrollment/linkage | low-level media storage | course builders/API groups | Mixed legacy |
 | reports | result views/student/class/school/skill/export | write-side scoring | Reports, Results, report routes | View-model extraction started |

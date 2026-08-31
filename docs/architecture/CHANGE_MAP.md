@@ -5,6 +5,10 @@
 | شاشة نتيجة الطالب | `pages/Results.tsx` و`components/results/` | quiz route مباشرة |
 | شكل score/mastery | `components/results/resultScorePresentation.ts` | Database |
 | تصحيح الاختبار | assessment scoring backend | React state |
+| نسخة تعريف اختبار منشور | `server/src/modules/quizzes/application/assessmentDefinitionReadAdapter.ts` و`assessmentVersionRepository.ts` | تغيير وثيقة Quiz التاريخية |
+| انعكاس نتيجة جديدة للنموذج additive | `assessmentSubmissionMirror.ts` و`dualWriteAssessmentSubmission.ts` | إنشاء `QuizResult` مباشرة أو تغيير response للطالب |
+| فحص/إصلاح اختلاف mirror | `assessmentMirrorReconciliation.ts` | تعديل `QuizResult` أو scoring |
+| جرد backfill تاريخي | `assessmentLegacyBackfillInventory.ts` | تشغيل كتابة migration على بيانات تشغيلية |
 | Timer/Runner | `pages/QuizPage.tsx` وrunner components | Reports |
 | بنك الأسئلة/البحث | `QuestionBankManager` وquestions API | generic shared |
 | نوع سؤال جديد | assessment/question type contract | switch موزع |
@@ -20,4 +24,3 @@
 ## Contract قبل النقل
 
 قبل أي نقل: سجل callers، API/route contract، state contract، smoke contracts، ثم انقل concern واحدًا مع facade واختبارات.
-
