@@ -1,17 +1,17 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Phase 5 assessment-data evolution — result-only historical backfill and opt-in compatible reads for direct result detail/lists are verified on isolated Mongo; reporting aggregates remain legacy by design
-- Current batch: `5G-01` — complete Phase 5 verification ledger and map remaining reporting/analytics read surfaces without changing their authoritative legacy semantics
+- Current phase: Phase 5 assessment-data evolution — result-only historical backfill and opt-in compatible reads for all direct result detail/list surfaces are verified on isolated Mongo; reporting aggregates remain legacy by design
+- Current batch: `5G-01` — complete Phase 5 verification ledger for reporting/analytics read surfaces without changing their authoritative legacy semantics
 - Current branch: `codex/assessment-data-evolution`
-- Current implementation HEAD (before this state-record commit): `3030cb8b07d35ceaec929a9df7d52f070ac8d454` (`feat(assessments): batch compatible result list reads`)
-- Last completed Phase 5 code commits: `3030cb8b` adds bounded compatible list reads; `7be63b94` adds the reversible per-assessment reader control; `56d3c144` preserves independent rollout controls on partial quiz PATCH; `12cb5018` completes the isolated historical fixture.
-- Last implementation delivery: pushed through `3030cb8b` to `origin/codex/assessment-data-evolution`; isolated backend CI `33411718907` succeeded. This state record is committed and pushed separately; generated audit artifacts and ZIP exports remain intentionally excluded.
+- Current implementation HEAD (before this state-record commit): `ff3e0f678cb5abb64b088e3246b8c3a0dde7bd51` (`feat(assessments): batch legacy result route reads`)
+- Last completed Phase 5 code commits: `ff3e0f67` adds bounded reads to the legacy direct list routes; `3030cb8b` adds bounded compatible list reads; `7be63b94` adds the reversible per-assessment reader control.
+- Last implementation delivery: pushed through `ff3e0f67` to `origin/codex/assessment-data-evolution`; isolated backend CI `33412140613` succeeded. This state record is committed and pushed separately; generated audit artifacts and ZIP exports remain intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, direct dual-write recovery proof, controlled runtime mirror, bounded reconciliation, read-only inventory, result-only backfill, rollback to legacy, and opt-in single-result reader cutover (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`, `33377161555`, `33377661059`, `33377975143`, `33378321696`, `33407725338`, `33408950515`, `33409276297`, `33411114387`). The latest run proves legacy-default read, explicit enable, explicit rollback, preservation of mirror control during partial PATCH, compatible projection, and missing-additive fallback. Local frontend typecheck, server typecheck/build, fresh repository audit, architecture gate, route/runtime/quiz/auth/API/security/school-RBAC smoke gates are PASS. Fresh audit reports 83 hotspots (budget 83), zero unresolved runtime imports, and zero dependency cycles. Do not claim production-scale certification or a completed historical backfill.
 - Open blockers: the authorized historical scope is result-only, with an explicit data-completeness marker. No historical `AssessmentAttempt`, `AssessmentResponse`, or authoritative historical definition may be reconstructed because their source data is not complete. No existing production assessment is opted in; production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, and historical-result reads. Backend run `33337500677` and full-stack E2E run `33337500695` both passed on isolated Mongo at commit `55e0ea5d`. The remaining evidence is a focused UI mapping for the five named assessment journeys and a bounded scale validation; neither is a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the additive protocol. Result-only backfill and an opt-in single-result reader control are authorized only on isolated evidence; no production opt-in is authorized.
-- Next exact action: finish the Phase 5 verification ledger for reporting/analytics readers and verify that they remain intentionally legacy read models; do not add an N+1 lookup, reconstruct attempts/responses/definitions, opt in production assessments, change scoring/RBAC/API contracts, or delete legacy records.
+- Next exact action: finish the Phase 5 verification ledger for reporting/analytics readers and verify that they remain intentionally legacy aggregates; do not add an N+1 lookup, reconstruct attempts/responses/definitions, opt in production assessments, change scoring/RBAC/API contracts, or delete legacy records.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -384,6 +384,14 @@
 - Tests: server typecheck, strict harness check, architecture gate, and isolated backend integration `33411718907` PASS; the HTTP journey proves both student and admin lists use an enabled projection.
 - Commit: `3030cb8b` `feat(assessments): batch compatible result list reads`.
 - Next exact action: verify remaining reporting/analytics reads are intentional legacy aggregates before closing Phase 5 verification.
+
+## Batch 5F-04 — Legacy direct-list compatibility surface
+
+- Scope: applied the same bounded two-query compatibility lookup to `/quizzes/results` and `/quizzes/results/scoped`, which are direct result payload APIs despite their legacy route ownership.
+- Preserved contracts: paths, pagination, cache semantics, RBAC/scoping, scoring, legacy-default behavior, and all aggregate/report readers.
+- Tests: isolated backend integration `33412140613` PASS, including the legacy direct-list route reading an enabled compatibility projection.
+- Commit: `ff3e0f67` `feat(assessments): batch legacy result route reads`.
+- Next exact action: classify aggregate/report reads as intentional legacy projections and close the Phase 5 verification ledger without a production activation.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
