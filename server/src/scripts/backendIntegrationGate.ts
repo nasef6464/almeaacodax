@@ -458,7 +458,7 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("assessment max-attempt guard rejects repeat submission", repeatedSubmission, 409);
 }
 
-async function runHistoricalResultJourney() {
+async function runHistoricalResultJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for historical result");
 
@@ -1045,7 +1045,7 @@ async function main() {
 
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();
-    await runHistoricalResultJourney();
+    await runHistoricalResultJourney(csrf);
     await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
