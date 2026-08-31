@@ -495,6 +495,15 @@ async function runHistoricalResultJourney(csrf: CsrfContext) {
 
   await QuizModel.updateOne({ id: ASSESSMENT_QUIZ_ID }, { $set: { "assessmentData.resultReaderMode": "compatibility" } });
 
+  await QuizModel.create({
+    _id: HISTORICAL_RESULT_QUIZ_ID,
+    id: HISTORICAL_RESULT_QUIZ_ID,
+    title: "Platform V3 historical reader-control fixture",
+    pathId: ASSESSMENT_PATH_ID,
+    subjectId: ASSESSMENT_SUBJECT_ID,
+    assessmentData: { resultReaderMode: "compatibility" },
+  });
+
   const historicalResult = await QuizResultModel.create({
     userId: studentId,
     quizId: HISTORICAL_RESULT_QUIZ_ID,
