@@ -24,6 +24,7 @@ import {
 import { dualWriteAssessmentSubmission } from "../modules/quizzes/application/dualWriteAssessmentSubmission.js";
 import { reconcileAssessmentMirrorAudits } from "../modules/quizzes/application/assessmentMirrorReconciliation.js";
 import { inventoryLegacyAssessmentResults } from "../modules/quizzes/application/assessmentLegacyBackfillInventory.js";
+import { backfillHistoricalAssessmentResults } from "../modules/quizzes/application/assessmentResultOnlyBackfill.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -506,6 +507,24 @@ async function runHistoricalResultJourney() {
   assert.equal(compatibleDetail.body?.result?.score, 76, "compatible result projection was not read");
   assert.equal(compatibleDetail.body?.result?.userId, studentId, "compatible result changed the legacy owner");
   assert.deepEqual(reconcileAssessmentResult(historicalResult.toObject(), compatibleAssessmentResult.toObject()), []);
+
+  const resultOnlyLegacy = await QuizResultModel.create({
+    userId: studentId, quizId: `${HISTORICAL_RESULT_QUIZ_ID}-result-only`, quizTitle: "Result-only historical fixture",
+    score: 50, passed: false, totalQuestions: 2, correctAnswers: 1, wrongAnswers: 1, unanswered: 0,
+  });
+  const dryRun = await backfillHistoricalAssessmentResults({ limit: 100 });
+  assert.equal(dryRun.mode, "dry-run", "historical result backfill defaulted to writes");
+  assert.equal(await AssessmentResultModel.countDocuments({ legacyQuizResultId: String(resultOnlyLegacy._id) }), 0, "result-only dry-run wrote an assessment result");
+  const applied = await backfillHistoricalAssessmentResults({ limit: 100, execute: true });
+  assert.ok(applied.created >= 1, "result-only backfill did not create a pending historical result");
+  const resultOnly = await AssessmentResultModel.findOne({ legacyQuizResultId: String(resultOnlyLegacy._id) }).lean();
+  assert.equal(resultOnly?.dataCompleteness, "result_only", "historical result completeness was not explicit");
+  assert.equal(resultOnly?.source, "legacy_backfill", "historical result source was not explicit");
+  assert.equal(resultOnly?.attemptId, undefined, "result-only backfill invented an attempt");
+  assert.equal(resultOnly?.assessmentVersionId, undefined, "result-only backfill invented a definition version");
+  const retry = await backfillHistoricalAssessmentResults({ limit: 100, execute: true });
+  assert.equal(retry.created, 0, "result-only backfill retry was not idempotent");
+  pass("historical result-only backfill is explicit, idempotent, and does not invent attempt data");
 }
 
 async function runAssessmentDualWritePrimitiveJourney() {
