@@ -43,6 +43,7 @@ import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 import type {
     AccessCodesListResponse,
     AdminUserPayload,
+    ContentBootstrapPayload,
     ImportResponse,
     RelationCredential,
     RelationImportSummary,
