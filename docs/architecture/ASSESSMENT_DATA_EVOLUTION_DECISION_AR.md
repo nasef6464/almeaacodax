@@ -72,3 +72,13 @@ dual-write أو قراءة إنتاجية تعتمد عليها. يجب أن ي�
 `AssessmentAttempt` أو `AssessmentResponse` أو `AssessmentVersion` تاريخية من
 تخمينات. يظل `QuizResult` أصل الحقيقة وتكون الكتابة dry-run افتراضيًا ومحدودة
 بالـcursor؛ لا يشمل القرار أي cutover أو حذف للـlegacy.
+
+## قرار cutover قارئ النتيجة المفردة — 2026-08-31
+
+يُسمح بتحكم additive قابل للرجوع لكل اختبار في
+`assessmentData.resultReaderMode`: القيمة الافتراضية `legacy`، والقيمة
+`compatibility` تقرأ فقط الإسقاط المتوافق للـ`AssessmentResult` المرتبط عند
+وجوده. عدم وجود الإسقاط أو إرجاع العلم إلى `legacy` يعيد نفس قراءة
+`QuizResult` القديمة فورًا. لا يفعّل هذا القرار أي اختبار إنتاجي، ولا يوسّع
+القارئ إلى قوائم النتائج، ولا يغير scoring أو RBAC أو عقد HTTP. يحافظ PATCH
+الجزئي على `mirrorSubmissions` ولا يبدله ضمنًا.
