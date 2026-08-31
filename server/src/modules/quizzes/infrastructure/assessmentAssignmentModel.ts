@@ -40,6 +40,7 @@ const assessmentAssignmentSchema = new Schema(
 );
 
 assessmentAssignmentSchema.index({ assessmentVersionId: 1, status: 1, createdAt: -1 });
+assessmentAssignmentSchema.index({ assessmentId: 1, assessmentVersionId: 1 }, { unique: true });
 assessmentAssignmentSchema.index({ "audience.userIds": 1, status: 1, createdAt: -1 });
 assessmentAssignmentSchema.index({ "audience.groupIds": 1, status: 1, createdAt: -1 });
 
