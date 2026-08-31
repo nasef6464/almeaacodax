@@ -54,6 +54,8 @@ import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScop
 import { buildQuizReportStudentScope } from "../modules/quizzes/application/quizReportStudentScope.js";
 import { buildQuizReportAttemptGaps } from "../modules/quizzes/application/quizReportAttemptGaps.js";
 import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
+import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
+import { findLatestPublishedAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1499,11 +1501,15 @@ quizRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const documentQuery = buildDocumentQuery(req.params.id);
-    const quiz = await QuizModel.findOne(documentQuery).lean();
+    const legacyQuiz = await QuizModel.findOne(documentQuery).lean();
 
-    if (!quiz) {
+    if (!legacyQuiz) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
+
+    const assessmentId = String(legacyQuiz.id || legacyQuiz._id || "");
+    const version = assessmentId ? await findLatestPublishedAssessmentVersion(assessmentId) : null;
+    const quiz = resolveAssessmentDefinitionRead(legacyQuiz, version);
 
     const questionIds = getQuizQuestionIds(quiz);
     let questions: any[] = [];

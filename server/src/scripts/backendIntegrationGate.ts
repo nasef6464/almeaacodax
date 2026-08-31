@@ -336,6 +336,20 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   assert.equal(quiz.body?.id, ASSESSMENT_QUIZ_ID, "created assessment id mismatch");
   assert.equal(quiz.body?.isPublished, true, "admin assessment was not published");
 
+  await AssessmentVersionModel.create({
+    assessmentId: ASSESSMENT_QUIZ_ID,
+    version: 1,
+    definition: { ...quiz.body, title: "Platform V3 immutable assessment version" },
+    publishedBy: userIds.get("admin"),
+  });
+  const versionedDetail = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
+    token: tokens.get("student"),
+  });
+  expectStatus("assessment definition reads its immutable version when present", versionedDetail, 200);
+  assert.equal(versionedDetail.body?.id, ASSESSMENT_QUIZ_ID, "versioned definition changed assessment identity");
+  assert.equal(versionedDetail.body?.title, "Platform V3 immutable assessment version", "versioned definition was not read");
+  assert.equal(versionedDetail.body?.questions?.length, 1, "versioned definition did not resolve its legacy questions");
+
   const missingQuestionQuiz = await jsonRequest("/quizzes", {
     method: "POST",
     token: tokens.get("admin"),

@@ -268,6 +268,18 @@
 - Risks: success remains unproven until the exact commit's isolated workflow completes.
 - Next exact action: push this trigger update, wait for the generated Actions run, and record its exact result before beginning the compatibility adapter.
 
+## Batch 5B-01 — Versioned definition read adapter
+
+- Scope: added a definition-read adapter for `GET /api/quizzes/:id`. It uses the latest immutable published version when present and returns the complete legacy quiz document unchanged when none exists.
+- Changed files: `server/src/modules/quizzes/application/assessmentDefinitionReadAdapter.ts`, `server/src/modules/quizzes/infrastructure/assessmentVersionRepository.ts`, `server/src/routes/quiz.routes.ts`, and `server/src/scripts/backendIntegrationGate.ts`.
+- Preserved contracts: HTTP path/method/response identity, legacy question lookup and learner sanitization, `QuizResult`, submission/scoring, RBAC, Mongo schema semantics, and all write paths. No version is written by any production route in this batch.
+- Tests: `server:check`, integration-harness TypeScript check, and `git diff --check` PASS locally. The harness now verifies that an isolated immutable version overrides only its definition while retaining the assessment ID and legacy questions.
+- Gates: pending automatic isolated CI run on the exact pushed commit.
+- Commit: pending.
+- Push: pending.
+- Risks: result-read fallback, version creation, and dual-write remain separate batches; this adapter is read-only and falls back to the legacy document.
+- Next exact action: push and inspect the isolated HTTP run. If it passes, add the matching result-read adapter before considering dual-write.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
