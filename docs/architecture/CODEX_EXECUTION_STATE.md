@@ -251,10 +251,10 @@
 - Preserved contracts: the harness only calls `createIndexes()` after its local-CI Mongo guard passes. It creates no assessment documents and changes no API route, legacy read/write path, live session, RBAC, scoring, or production data.
 - Tests: integration-harness TypeScript check, `server:check`, and `git diff --check` PASS locally.
 - Gates: CI execution is pending. The harness refuses any Mongo URI except its disposable localhost CI database; no local Mongo/Docker runtime exists in this workspace.
-- Commit: pending.
-- Push: pending.
+- Commit: `b6e10fc1` `test(assessments): dry run additive indexes in CI`.
+- Push: pushed to `origin/codex/assessment-data-evolution`.
 - Risks: actual index behavior is not declared verified until the isolated CI run passes on this exact commit.
-- Next exact action: push this commit and dispatch `Platform V3 Backend Integration Gate` against this branch; inspect the run before beginning any adapter.
+- Next exact action: a repository administrator must dispatch `Platform V3 Backend Integration Gate` for `codex/assessment-data-evolution` (or grant Actions dispatch permission to the authenticated account). The current `gh workflow run` request was rejected with `403 Must have admin rights to Repository`; inspect the successful run before beginning any adapter.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
