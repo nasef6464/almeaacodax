@@ -208,6 +208,7 @@ jobs:
       - name: All role pages desktop + mobile on isolated stack
         id: roles
         continue-on-error: true
+        timeout-minutes: 10
         env:
           ROLE_PAGES_AUDIT_RUN_ID: deep-premerge-roles-${{ github.run_id }}
         run: node scripts/live-role-pages-audit.mjs
@@ -215,6 +216,7 @@ jobs:
       - name: Question editor create/render/delete journey
         id: question_editor
         continue-on-error: true
+        timeout-minutes: 10
         env:
           QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
         run: node scripts/live-question-editor-audit.mjs
@@ -222,6 +224,7 @@ jobs:
       - name: Supervisor school command UI journey
         id: supervisor_school
         continue-on-error: true
+        timeout-minutes: 10
         env:
           SUPERVISOR_SCHOOL_AUDIT_RUN_ID: deep-premerge-supervisor-school-${{ github.run_id }}
         run: node scripts/live-supervisor-school-command-audit.mjs
@@ -229,6 +232,7 @@ jobs:
       - name: School from scratch CRUD + relations + cleanup
         id: school_from_scratch
         continue-on-error: true
+        timeout-minutes: 10
         env:
           SCHOOL_FROM_SCRATCH_RUN_ID: deep-premerge-school-${{ github.run_id }}
         run: node scripts/live-school-from-scratch-audit.mjs
@@ -236,6 +240,7 @@ jobs:
       - name: Barcode public-test admin + anonymous journey
         id: barcode
         continue-on-error: true
+        timeout-minutes: 10
         env:
           BARCODE_LIVE_AUDIT_RUN_ID: deep-premerge-barcode-${{ github.run_id }}
         run: node scripts/live-barcode-public-tests-audit.mjs
