@@ -244,6 +244,18 @@
 - Risks: the models alone are deliberately inert until an adapter is designed and verified; this prevents a partial migration from changing learner behavior.
 - Next exact action: run the additive model/index dry run on a disposable Mongo database, then introduce a compatibility adapter with legacy fallback in a separate batch.
 
+## Batch 5A-02 — Isolated additive index dry run
+
+- Scope: extended the existing isolated-Mongo backend integration harness to create the new assessment-model indexes and assert their compound uniqueness before its HTTP journeys run.
+- Changed files: `server/src/scripts/backendIntegrationGate.ts`.
+- Preserved contracts: the harness only calls `createIndexes()` after its local-CI Mongo guard passes. It creates no assessment documents and changes no API route, legacy read/write path, live session, RBAC, scoring, or production data.
+- Tests: integration-harness TypeScript check, `server:check`, and `git diff --check` PASS locally.
+- Gates: CI execution is pending. The harness refuses any Mongo URI except its disposable localhost CI database; no local Mongo/Docker runtime exists in this workspace.
+- Commit: pending.
+- Push: pending.
+- Risks: actual index behavior is not declared verified until the isolated CI run passes on this exact commit.
+- Next exact action: push this commit and dispatch `Platform V3 Backend Integration Gate` against this branch; inspect the run before beginning any adapter.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:

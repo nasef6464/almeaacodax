@@ -11,6 +11,11 @@ import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { QuestionModel } from "../models/Question.js";
+import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
+import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
+import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
+import { AssessmentResultModel } from "../modules/quizzes/infrastructure/assessmentResultModel.js";
+import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -741,6 +746,50 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   expectStatus("school supervisor cannot target another school's student", schoolSupervisorOutsideTarget, 403);
 }
 
+type MongoIndex = {
+  key: Record<string, unknown>;
+  unique?: boolean;
+};
+
+function assertMongoIndex(
+  indexes: MongoIndex[],
+  key: Record<string, 1 | -1>,
+  unique: boolean,
+  label: string,
+) {
+  const matched = indexes.some((index) =>
+    Object.entries(key).every(([field, direction]) => index.key[field] === direction) &&
+    Object.keys(index.key).length === Object.keys(key).length &&
+    Boolean(index.unique) === unique,
+  );
+  assert.equal(matched, true, `${label}: required additive index was not created`);
+}
+
+async function runAssessmentDataEvolutionAdditiveDryRun() {
+  const models = [
+    AssessmentVersionModel,
+    AssessmentAssignmentModel,
+    AssessmentAttemptModel,
+    AssessmentResponseModel,
+    AssessmentResultModel,
+  ];
+
+  await Promise.all(models.map((model) => model.createIndexes()));
+
+  const [versionIndexes, attemptIndexes, responseIndexes, resultIndexes] = await Promise.all([
+    AssessmentVersionModel.collection.indexes() as Promise<MongoIndex[]>,
+    AssessmentAttemptModel.collection.indexes() as Promise<MongoIndex[]>,
+    AssessmentResponseModel.collection.indexes() as Promise<MongoIndex[]>,
+    AssessmentResultModel.collection.indexes() as Promise<MongoIndex[]>,
+  ]);
+
+  assertMongoIndex(versionIndexes, { assessmentId: 1, version: 1 }, true, "assessment version");
+  assertMongoIndex(attemptIndexes, { assignmentId: 1, studentId: 1, attemptNumber: 1 }, true, "assessment attempt");
+  assertMongoIndex(responseIndexes, { attemptId: 1, questionId: 1 }, true, "assessment response");
+  assertMongoIndex(resultIndexes, { attemptId: 1 }, true, "assessment result");
+  pass("assessment additive models and indexes dry run");
+}
+
 async function main() {
   assert.equal(env.NODE_ENV, "test", "Backend integration gate requires NODE_ENV=test");
   assert.ok(
@@ -754,6 +803,7 @@ async function main() {
   await mongoose.connect(env.MONGODB_URI);
 
   try {
+    await runAssessmentDataEvolutionAdditiveDryRun();
     await seedIsolatedUsers();
 
     const live = await jsonRequest("/health/live");
