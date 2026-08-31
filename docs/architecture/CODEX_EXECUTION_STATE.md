@@ -1,17 +1,17 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Phase 5 assessment-data evolution — dual-write evidence is proven; controlled runtime integration remains pending
-- Current batch: `5C-02` — design an opt-in, rollback-safe post-legacy mirror for eligible assigned/mock submissions only
+- Current phase: Phase 5 assessment-data evolution — controlled, opt-in post-legacy mirror is live in code; reconciliation operations remain pending
+- Current batch: `5D-01` — add bounded reconciliation discovery and repair dry-run evidence for mirror audit rows
 - Current branch: `codex/assessment-data-evolution`
-- Current HEAD: `2f383e3ab4c46163ccfce49800bdef1b6d618a09` (`test(assessments): prove dual-write recovery semantics`)
-- Last completed code commit: `2f383e3a` (direct isolated proof of the idempotent persistence and reconciliation-repair primitives; still not imported by a production write route)
-- Last remote delivery: pushed through `2f383e3a` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
+- Current HEAD: `4f12a3272c40c65d1ba9ee8e8e99e654f12c4e47` (`feat(assessments): mirror eligible legacy submissions safely`)
+- Last completed code commit: `4f12a327` (a default-off, opt-in post-legacy mirror for directed/mock assessments; legacy remains authoritative)
+- Last remote delivery: pushed through `4f12a327` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, and current direct dual-write proof (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`, `33377161555`). The latest run proves legacy-success/new-failure containment, idempotent retry, response uniqueness, reconciliation detection, and repair without changing legacy data. Local `server:check`, integration-harness typecheck, and `smoke:quiz-integrity-guard` are PASS. Earlier full frontend and architecture evidence remains valid pre-Phase-5 but has not yet been rerun on `2f383e3a`; do not claim a complete Phase-5 gate from those earlier runs.
-- Open blockers: no production route is connected to the new write primitive; a controlled eligibility and rollback policy is required before that changes. Production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
+- Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, direct dual-write recovery proof, and controlled runtime mirror (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`, `33377161555`, `33377661059`). The latest run proves a real HTTP 201 retains its legacy result while the eligible mirror creates its additive projection and audit row. Local `server:check`, integration-harness typecheck, and `smoke:quiz-integrity-guard` are PASS. Earlier full frontend and architecture evidence remains valid pre-Phase-5 but has not yet been rerun on `4f12a327`; do not claim a complete Phase-5 gate from those earlier runs.
+- Open blockers: no existing production assessment is opted in; reconciliation discovery is still only per-record and has no bounded operational dry-run. Production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, and historical-result reads. Backend run `33337500677` and full-stack E2E run `33337500695` both passed on isolated Mongo at commit `55e0ea5d`. The remaining evidence is a focused UI mapping for the five named assessment journeys and a bounded scale validation; neither is a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: establish a default-off, configuration-free-to-enable policy and a post-legacy-submission adapter restricted to assigned/mock assessments. It must preserve the existing 201 response when the mirror fails, retain diagnosable reconciliation evidence, and be covered by isolated HTTP tests before any rollout setting is enabled. Do not start a backfill, change scoring/RBAC/API contracts, or delete legacy records.
+- Next exact action: add a bounded reconciliation discovery/repair dry-run that consumes `AssessmentMirrorAudit` rows and linked legacy/additive results without modifying either by default. Prove cursor/batch limits, mismatch reporting, and an explicit repair mode on isolated Mongo before considering a backfill. Do not opt in production assessments, start a backfill, change scoring/RBAC/API contracts, or delete legacy records.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -310,6 +310,17 @@
 - Push: pushed to `origin/codex/assessment-data-evolution`.
 - Risks: production routing remains deliberately absent. The next batch needs an explicitly default-off eligibility/rollback policy and an HTTP proof that mirror failure does not replace a successful legacy 201 response.
 - Next exact action: implement and test the controlled post-legacy mirror for eligible assigned/mock assessments only; do not enable it in any environment, backfill, cut over reads, or delete legacy data.
+
+## Batch 5C-02 — Controlled post-legacy assessment mirror
+
+- Scope: added a default-off `assessmentData.mirrorSubmissions` opt-in to assessment definitions, restricted to directed or mock assessments. After the existing `QuizResult` commits, the mirror writes the additive projection and a dedicated audit row; it records and contains mirror failure without changing the legacy HTTP response.
+- Changed files: `Quiz.ts`, `quizDefinitionSchema.ts`, `assessmentSubmissionMirror.ts`, `assessmentMirrorAuditModel.ts`, `quiz.routes.ts`, and the isolated harness.
+- Preserved contracts: legacy submission/scoring/RBAC/response behavior remains authoritative. Existing quizzes remain opt-out. No existing production record was enabled, no backfill or reader cutover was run, and no legacy document is deleted or updated by reconciliation.
+- Tests: `smoke:quiz-integrity-guard` 4/4, API typecheck/build, harness typecheck, and `Platform V3 Backend Integration Gate` `33377661059` PASS. The HTTP journey asserts a directed opt-in submission returns the normal legacy 201, creates exactly one linked additive result, and emits a completed mirror audit row.
+- Commit: `4f12a327` `feat(assessments): mirror eligible legacy submissions safely`.
+- Push: pushed to `origin/codex/assessment-data-evolution`.
+- Risks: the route-level failure containment is structurally enforced and direct primitive failure is tested, but an operational bounded reconciler is still needed before any rollout of opt-in definitions. No capacity claim is made.
+- Next exact action: add a cursor/batch-limited reconciliation discovery dry-run and an explicit repair mode, both isolated and idempotent, before considering backfill.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
