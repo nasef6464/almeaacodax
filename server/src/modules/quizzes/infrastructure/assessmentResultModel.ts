@@ -6,9 +6,9 @@ import mongoose, { Schema } from "mongoose";
  */
 const assessmentResultSchema = new Schema(
   {
-    attemptId: { type: String, required: function () { return this.dataCompleteness !== "result_only"; }, unique: true, sparse: true, index: true, trim: true },
-    assignmentId: { type: String, required: function () { return this.dataCompleteness !== "result_only"; }, index: true, trim: true },
-    assessmentVersionId: { type: String, required: function () { return this.dataCompleteness !== "result_only"; }, index: true, trim: true },
+    attemptId: { type: String, required: function (this: { dataCompleteness?: string }): boolean { return this.dataCompleteness !== "result_only"; }, unique: true, sparse: true, index: true, trim: true },
+    assignmentId: { type: String, required: function (this: { dataCompleteness?: string }): boolean { return this.dataCompleteness !== "result_only"; }, index: true, trim: true },
+    assessmentVersionId: { type: String, required: function (this: { dataCompleteness?: string }): boolean { return this.dataCompleteness !== "result_only"; }, index: true, trim: true },
     studentId: { type: String, required: true, index: true, trim: true },
     legacyQuizResultId: { type: String, default: undefined, unique: true, sparse: true, index: true },
     compatibilityProjection: { type: Schema.Types.Mixed, default: undefined },
