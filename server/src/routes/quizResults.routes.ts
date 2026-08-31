@@ -6,6 +6,8 @@ import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
+import { resolveAssessmentResultRead } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { findAssessmentResultByLegacyId } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
 
 const quizResultsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -129,8 +131,10 @@ quizResultsRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz result not found" });
     }
 
+    const assessmentResult = await findAssessmentResultByLegacyId(String((result as any).id || (result as any)._id));
+    const compatibleResult = resolveAssessmentResultRead(result as any, assessmentResult);
     const authUser = req.authUser!;
-    const ownerId = String((result as any).userId || "");
+    const ownerId = String((compatibleResult as any).userId || "");
     const isAdmin = authUser.role === "admin";
     if (!isAdmin && ownerId !== String(authUser.id)) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You can only access your own result" });
@@ -138,7 +142,7 @@ quizResultsRouter.get(
 
     const analysis = await analyzeWeakSkillsFromQuizResult(result);
     return res.json({
-      result: serializeQuizResultForLearner(result),
+      result: serializeQuizResultForLearner(compatibleResult),
       analysis,
     });
   }),

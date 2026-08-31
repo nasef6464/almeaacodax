@@ -11,6 +11,7 @@ const assessmentResultSchema = new Schema(
     assessmentVersionId: { type: String, required: true, index: true, trim: true },
     studentId: { type: String, required: true, index: true, trim: true },
     legacyQuizResultId: { type: String, default: undefined, unique: true, sparse: true, index: true },
+    compatibilityProjection: { type: Schema.Types.Mixed, default: undefined },
     score: { type: Number, required: true, min: 0, max: 100 },
     totalQuestions: { type: Number, required: true, min: 0 },
     correctAnswers: { type: Number, required: true, min: 0 },

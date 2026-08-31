@@ -280,6 +280,14 @@
 - Risks: result-read fallback, version creation, and dual-write remain separate batches; this adapter is read-only and falls back to the legacy document.
 - Next exact action: add the matching result-read adapter with legacy fallback before considering dual-write.
 
+## Batch 5B-02 — Result compatibility read adapter
+
+- Scope: detail reads can consume an optional `AssessmentResult.compatibilityProjection` linked to a legacy result while preserving legacy identity and owner authorization; absent projection falls back exactly to `QuizResult`.
+- Changed files: assessment-result model, result read adapter/repository, and `quizResults.routes.ts`.
+- Tests: `server:check` and `git diff --check` PASS locally.
+- Gates: pending isolated HTTP CI.
+- Next exact action: push and verify the isolated run before designing dual-write.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
