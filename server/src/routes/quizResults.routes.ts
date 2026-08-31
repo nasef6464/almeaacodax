@@ -6,10 +6,10 @@ import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
-import { resolveAssessmentResultRead } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
-import { findAssessmentResultByLegacyId } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
+import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
 import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
-import { findAssessmentResultReaderMode } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
+import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 
 const quizResultsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -90,6 +90,16 @@ const buildSort = (query: z.infer<typeof quizResultsQuerySchema>) => {
   return sort;
 };
 
+const resolveResultListReads = async (results: Record<string, unknown>[]) => {
+  const legacyIds = results.map((result) => String(result.id || result._id || "")).filter(Boolean);
+  const quizIds = results.map((result) => String(result.quizId || "")).filter(Boolean);
+  const [assessmentResultsByLegacyId, readerModesByQuizId] = await Promise.all([
+    findAssessmentResultsByLegacyIds(legacyIds),
+    findAssessmentResultReaderModes(quizIds),
+  ]);
+  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
+};
+
 export const quizResultsRouter = Router();
 
 quizResultsRouter.get(
@@ -115,7 +125,7 @@ quizResultsRouter.get(
     ]);
 
     return res.json({
-      data: serializeQuizResultsForLearner(data),
+      data: serializeQuizResultsForLearner(await resolveResultListReads(data as Record<string, unknown>[])),
       pagination: buildPaginationPayload(page, limit, total),
     });
   }),
@@ -172,7 +182,7 @@ quizResultsRouter.get(
     ]);
 
     return res.json({
-      data: serializeQuizResultsForLearner(data),
+      data: serializeQuizResultsForLearner(await resolveResultListReads(data as Record<string, unknown>[])),
       pagination: buildPaginationPayload(page, limit, total),
     });
   }),

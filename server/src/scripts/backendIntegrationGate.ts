@@ -482,6 +482,12 @@ async function runHistoricalResultJourney(csrf: CsrfContext) {
   const compatibilityReaderDetail = await jsonRequest(`/quiz-results/${directedLegacyResult._id}`, { token: tokens.get("student") });
   expectStatus("enabled assessment reads compatibility projection", compatibilityReaderDetail, 200);
   assert.equal(compatibilityReaderDetail.body?.result?.quizTitle, "Platform V3 compatibility reader projection", "enabled reader did not use the additive projection");
+  const compatibilityReaderList = await jsonRequest(`/quiz-results/my?quizId=${ASSESSMENT_QUIZ_ID}`, { token: tokens.get("student") });
+  expectStatus("enabled assessment reads compatibility projection in student list", compatibilityReaderList, 200);
+  assert.ok(compatibilityReaderList.body?.data?.some((item: any) => item.quizTitle === "Platform V3 compatibility reader projection"), "student list did not use the additive projection");
+  const compatibilityAdminList = await jsonRequest(`/admin/quiz-results?quizId=${ASSESSMENT_QUIZ_ID}`, { token: tokens.get("admin") });
+  expectStatus("enabled assessment reads compatibility projection in admin list", compatibilityAdminList, 200);
+  assert.ok(compatibilityAdminList.body?.data?.some((item: any) => item.quizTitle === "Platform V3 compatibility reader projection"), "admin list did not use the additive projection");
 
   const disableCompatibilityReader = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
     method: "PATCH", token: tokens.get("admin"), csrf,
