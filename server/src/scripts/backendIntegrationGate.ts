@@ -22,6 +22,7 @@ import {
   repairAssessmentResultFromLegacy,
 } from "../modules/quizzes/application/assessmentResultReconciliation.js";
 import { dualWriteAssessmentSubmission } from "../modules/quizzes/application/dualWriteAssessmentSubmission.js";
+import { reconcileAssessmentMirrorAudits } from "../modules/quizzes/application/assessmentMirrorReconciliation.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -571,6 +572,27 @@ async function runAssessmentDualWritePrimitiveJourney() {
   assert.deepEqual(reconcileAssessmentResult(partialLegacyResult.toObject(), repaired.toObject()), [], "reconciliation repair did not restore legacy parity");
   assert.equal(await QuizResultModel.countDocuments({ _id: partialLegacyResult._id }), 1, "reconciliation repair altered the legacy submission");
   pass("assessment reconciliation detects and repairs a new-model divergence without changing legacy data");
+
+  await AssessmentMirrorAuditModel.create({
+    legacyQuizResultId: String(partialLegacyResult._id),
+    assessmentId: ASSESSMENT_QUIZ_ID,
+    submissionKey: partialLegacyResult.submissionKey,
+    status: "completed",
+  });
+  await AssessmentResultModel.findByIdAndUpdate(repairedAfterRetry._id, { $set: { score: 0 } });
+  const dryRun = await reconcileAssessmentMirrorAudits({ limit: 100 });
+  const dryRunItem = dryRun.items.find((item) => item.legacyQuizResultId === String(partialLegacyResult._id));
+  assert.deepEqual(dryRunItem, {
+    auditId: dryRunItem?.auditId,
+    legacyQuizResultId: String(partialLegacyResult._id),
+    status: "mismatch",
+    differences: ["score"],
+  }, "reconciliation dry-run did not report the divergence without repair");
+  const repairRun = await reconcileAssessmentMirrorAudits({ limit: 100, repair: true });
+  assert.equal(repairRun.items.find((item) => item.legacyQuizResultId === String(partialLegacyResult._id))?.status, "repaired", "explicit reconciliation repair did not repair the divergence");
+  const idempotentRepairRun = await reconcileAssessmentMirrorAudits({ limit: 100, repair: true });
+  assert.equal(idempotentRepairRun.items.find((item) => item.legacyQuizResultId === String(partialLegacyResult._id))?.status, "consistent", "reconciliation repair was not idempotent");
+  pass("assessment mirror reconciliation is bounded, dry-run-safe, and explicitly repairable");
 }
 
 async function runMockAssessmentJourney(csrf: CsrfContext) {
