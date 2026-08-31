@@ -522,6 +522,14 @@ async function runHistoricalResultJourney() {
   assert.equal(resultOnly?.source, "legacy_backfill", "historical result source was not explicit");
   assert.equal(resultOnly?.attemptId, undefined, "result-only backfill invented an attempt");
   assert.equal(resultOnly?.assessmentVersionId, undefined, "result-only backfill invented a definition version");
+  const resultOnlyDetail = await jsonRequest(`/quiz-results/${resultOnlyLegacy._id}`, { token: tokens.get("student") });
+  expectStatus("student reads result-only historical compatibility projection", resultOnlyDetail, 200);
+  assert.equal(resultOnlyDetail.body?.result?.score, 50, "result-only compatibility read changed the legacy score");
+  await AssessmentResultModel.deleteOne({ _id: resultOnly?._id });
+  const rollbackDetail = await jsonRequest(`/quiz-results/${resultOnlyLegacy._id}`, { token: tokens.get("student") });
+  expectStatus("student falls back to legacy result after compatibility rollback", rollbackDetail, 200);
+  assert.equal(rollbackDetail.body?.result?.score, 50, "legacy fallback changed the historical score");
+  await backfillHistoricalAssessmentResults({ limit: 100, execute: true });
   const retry = await backfillHistoricalAssessmentResults({ limit: 100, execute: true });
   assert.equal(retry.created, 0, "result-only backfill retry was not idempotent");
   pass("historical result-only backfill is explicit, idempotent, and does not invent attempt data");
