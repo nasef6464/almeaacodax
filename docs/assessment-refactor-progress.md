@@ -1,7 +1,7 @@
 # Assessment Platform V1 — Progress Ledger
 
-**آخر تحديث:** 30 أغسطس 2026  
-**Active branch:** `refactor/modular-platform-safe`  
+**آخر تحديث:** 30 أغسطس 2026
+**Active branch:** `refactor/modular-platform-safe`
 **Base:** HEAD الحالي على الفرع؛ لا تعتمد على SHA تاريخي.
 
 > الفرع هو مصدر الحقيقة للـHEAD الحالي. لا تعتمد على SHA ثابت هنا بعد كل Commit.

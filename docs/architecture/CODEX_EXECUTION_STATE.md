@@ -220,6 +220,18 @@
 - Freeze: `MODULAR_PLATFORM_RELEASE_CANDIDATE_FREEZE_AR.md` records the policy and limits. No PR or merge was created automatically.
 - Next exact action: await explicit merge approval only.
 
+## Batch RC-01 — Release-candidate documentation hygiene
+
+- Scope: removed whitespace-only errors from the assessment and schools evidence documents during the final candidate comparison.
+- Changed files: `docs/architecture/SCHOOLS_RBAC_AUDIT_AR.md`, `docs/assessment-refactor-progress.md`, and `docs/assessment-system-code-audit.md`.
+- Preserved contracts: runtime code, routes, API payloads, schemas, RBAC, scoring, configuration, and CI workflows are untouched.
+- Tests: `git diff --check` PASS for the working-tree batch; the previously frozen CI evidence remains unchanged because this batch is documentation-only.
+- Gates: no runtime gate rerun is required for this whitespace-only documentation correction; final PR/merge remains subject to the frozen candidate evidence.
+- Commit: pending.
+- Push: pending explicit release delivery.
+- Risks: no functional behavior was altered.
+- Next exact action: commit this documentation-only correction, push the release-candidate branch, create the approved PR, and merge after the final compare.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
