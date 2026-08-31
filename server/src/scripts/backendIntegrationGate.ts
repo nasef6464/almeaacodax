@@ -446,7 +446,7 @@ async function runHistoricalResultJourney() {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for historical result");
 
-  await QuizResultModel.create({
+  const historicalResult = await QuizResultModel.create({
     userId: studentId,
     quizId: HISTORICAL_RESULT_QUIZ_ID,
     quizTitle: "Platform V3 historical assessment result",
@@ -468,6 +468,27 @@ async function runHistoricalResultJourney() {
   assert.equal(historical?.quizId, HISTORICAL_RESULT_QUIZ_ID, "historical result quiz id changed");
   assert.equal(historical?.score, 75, "historical result score changed");
   assert.equal(historical?.timeSpent, "08:00", "historical result time changed");
+
+  await AssessmentResultModel.create({
+    attemptId: `platform-v3-integration-compatible-result-${RUN_MARKER}`,
+    assignmentId: `platform-v3-integration-assignment-${RUN_MARKER}`,
+    assessmentVersionId: `platform-v3-integration-version-${RUN_MARKER}`,
+    studentId,
+    legacyQuizResultId: String(historicalResult._id),
+    score: 75,
+    totalQuestions: 4,
+    correctAnswers: 3,
+    wrongAnswers: 1,
+    unanswered: 0,
+    passed: true,
+    compatibilityProjection: { quizTitle: "Platform V3 compatible historical result", score: 76 },
+  });
+  const compatibleDetail = await jsonRequest(`/quiz-results/${historicalResult._id}`, {
+    token: tokens.get("student"),
+  });
+  expectStatus("student reads compatible assessment result projection", compatibleDetail, 200);
+  assert.equal(compatibleDetail.body?.result?.score, 76, "compatible result projection was not read");
+  assert.equal(compatibleDetail.body?.result?.userId, studentId, "compatible result changed the legacy owner");
 }
 
 async function runMockAssessmentJourney(csrf: CsrfContext) {
