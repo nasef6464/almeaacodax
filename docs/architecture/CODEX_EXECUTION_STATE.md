@@ -227,7 +227,7 @@
 - Preserved contracts: runtime code, routes, API payloads, schemas, RBAC, scoring, configuration, and CI workflows are untouched.
 - Tests: `git diff --check` PASS for the working-tree batch; the previously frozen CI evidence remains unchanged because this batch is documentation-only.
 - Gates: no runtime gate rerun is required for this whitespace-only documentation correction; final PR/merge remains subject to the frozen candidate evidence.
-- Commit: pending.
+- Commit: `c0939874` `docs(release): clean candidate evidence formatting`.
 - Push: pending explicit release delivery.
 - Risks: no functional behavior was altered.
 - Next exact action: commit this documentation-only correction, push the release-candidate branch, create the approved PR, and merge after the final compare.
@@ -239,7 +239,7 @@
 - Preserved contracts: no route, API payload, legacy `QuizResult` read/write, `LiveExamSession`, schema migration, backfill, RBAC, scoring, or frontend behavior changed. The new models are not imported by a production request path.
 - Tests: `server:check`, `server:build`, root `typecheck`, root `build`, `repository-audit`, `architecture-gate`, `smoke:route-loading`, `smoke:runtime-source`, `smoke:quiz-integrity-guard`, `smoke:auth-login-security`, `smoke:api-security`, `smoke:rbac-school-scope`, and `git diff --check` PASS.
 - Gates: isolated-Mongo additive migration dry run is intentionally pending. It is mandatory before any adapter, dual-write, backfill, or live reader work; no production or shared database was contacted.
-- Commit: pending.
+- Commit: `68c446bc` `feat(assessments): add additive evolution models`.
 - Push: pending.
 - Risks: the models alone are deliberately inert until an adapter is designed and verified; this prevents a partial migration from changing learner behavior.
 - Next exact action: run the additive model/index dry run on a disposable Mongo database, then introduce a compatibility adapter with legacy fallback in a separate batch.
