@@ -18,7 +18,7 @@
 | عقود المصدر | `smoke:assessment-*` و`smoke:quiz-*` | تحرس الملكية والشكل؛ لا تثبت HTTP/UI فعليًا. |
 | سلامة المنشئ والـrunner | question selection، settings consumption، mock sections، server-result authority | تغطية مركزة، لا تغطي كل الأدوار والواجهات. |
 | HTTP حقيقي معزول | `server/src/scripts/backendIntegrationGate.ts` وworkflow `platform-v3-backend-integration-gate.yml` | نجح على Mongo مؤقت في run `33337500677` عند `55e0ea5d`، ويشمل النتائج التاريخية؛ لا يثبت سعة الإنتاج. |
-| واجهة متصفح | workflow `platform-v3-deep-premerge-e2e-gate.yml` | نجح على API/واجهة/Chromium معزولة في run `33337500695` عند `55e0ea5d`؛ يلزم ربط أدلته صراحةً بالرحلات الخمس أدناه. |
+| واجهة متصفح | workflow `platform-v3-deep-premerge-e2e-gate.yml` | نجح على API/واجهة/Chromium معزولة في run `33437577018` عند `af8ea80a` (وكذلك `33337500695` عند `55e0ea5d`)؛ يلزم ربط أدلته صراحةً بالرحلات الخمس أدناه. |
 
 ## حالة القبول عند مرشح الإصدار
 

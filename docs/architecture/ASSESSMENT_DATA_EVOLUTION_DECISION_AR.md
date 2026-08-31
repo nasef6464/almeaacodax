@@ -79,6 +79,24 @@ dual-write أو قراءة إنتاجية تعتمد عليها. يجب أن ي�
 `assessmentData.resultReaderMode`: القيمة الافتراضية `legacy`، والقيمة
 `compatibility` تقرأ فقط الإسقاط المتوافق للـ`AssessmentResult` المرتبط عند
 وجوده. عدم وجود الإسقاط أو إرجاع العلم إلى `legacy` يعيد نفس قراءة
-`QuizResult` القديمة فورًا. لا يفعّل هذا القرار أي اختبار إنتاجي، ولا يوسّع
-القارئ إلى قوائم النتائج، ولا يغير scoring أو RBAC أو عقد HTTP. يحافظ PATCH
+`QuizResult` القديمة فورًا. لا يفعّل هذا القرار أي اختبار إنتاجي، ولا يغير
+scoring أو RBAC أو عقد HTTP. يحافظ PATCH
 الجزئي على `mirrorSubmissions` ولا يبدله ضمنًا.
+
+## سجل حدود قارئ النتائج المباشر — 2026-08-31
+
+يغطي القارئ المتوافق القابل للرجوع أسطح payload النتيجة المباشر التالية فقط:
+`/quiz-results/:id`، `/quiz-results/my`، `/admin/quiz-results`،
+`/quizzes/results`، `/quizzes/results/scoped`، و`/quizzes/results/latest`.
+القوائم تستخدم lookupين محدودين بالصفحة (modes ثم projections) ولا تعمل
+استعلامًا لكل صف؛ `latest` نتيجة مفردة فيجوز له lookup واحد بعد اختيار سجل
+الـlegacy. في كل الحالات يسبق authorization/scoping الـlegacy أي projection
+متوافق، و`legacy` هو الافتراضي والرجوع الفوري.
+
+لا تدخل `/analytics/overview`، section analytics، parent/school/leaderboard،
+weekly notifications، سياق AI، أو operational counters في هذا القارئ. هذه
+قارئات aggregates/metrics تعتمد على حقول تاريخية مثل `skillsAnalysis` ووقت
+المحاولة وتجميعات score، ولا يكفي `compatibilityProjection` result-only
+لجعلها authoritative. تبقى على `QuizResult` إلى أن يثبت Batch منفصل read model
+مقاس مع parity وRBAC/rollback خاصين به؛ هذا ليس استثناءً مؤقتًا ولا تصريحًا
+بالـcutover أو backfill جديد.
