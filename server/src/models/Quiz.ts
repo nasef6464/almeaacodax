@@ -43,6 +43,9 @@ const quizSchema = new Schema(
       default: [],
     },
     mode: { type: String, enum: ["regular", "saher", "central"], default: "regular" },
+    assessmentData: {
+      mirrorSubmissions: { type: Boolean, default: false },
+    },
     settings: {
       showExplanations: { type: Boolean, default: true },
       showAnswers: { type: Boolean, default: true },

@@ -56,6 +56,7 @@ import { buildQuizReportAttemptGaps } from "../modules/quizzes/application/quizR
 import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
 import { findLatestPublishedAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
+import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1957,6 +1958,15 @@ quizRouter.post(
       }
       throw error;
     }
+
+    // Legacy QuizResult is committed first and stays authoritative. The
+    // mirror is opt-in and failure-contained, so this cannot turn an accepted
+    // legacy submission into a failed HTTP response.
+    await mirrorAssessmentSubmissionAfterLegacyResult({
+      quiz,
+      legacyResult: result,
+      answers: payload.answers,
+    });
 
     await runQuizSubmissionSideEffects({
       requestId: req.requestId,

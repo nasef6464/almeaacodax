@@ -16,6 +16,7 @@ import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assess
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 import { AssessmentResultModel } from "../modules/quizzes/infrastructure/assessmentResultModel.js";
 import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
+import { AssessmentMirrorAuditModel } from "../modules/quizzes/infrastructure/assessmentMirrorAuditModel.js";
 import {
   reconcileAssessmentResult,
   repairAssessmentResultFromLegacy,
@@ -334,6 +335,7 @@ async function runAssessmentJourney(csrf: CsrfContext) {
       isPublished: true,
       showOnPlatform: true,
       access: { type: "free" },
+      assessmentData: { mirrorSubmissions: true },
       settings: { maxAttempts: 1, passingScore: 60 },
     },
   });
@@ -437,6 +439,12 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   expectStatus("targeted student submits directed assessment", acceptedSubmission, 201);
   assert.equal(acceptedSubmission.body?.score, 100, "assessment scoring did not preserve the correct answer");
   assert.equal(acceptedSubmission.body?.quizSnapshot?.quizKind, "test", "assessment result snapshot missing quiz kind");
+  const acceptedLegacyResult = await QuizResultModel.findOne({ userId: studentId, quizId: ASSESSMENT_QUIZ_ID }).lean();
+  assert.ok(acceptedLegacyResult, "legacy result missing after accepted assessment submission");
+  assert.equal(await AssessmentResultModel.countDocuments({ legacyQuizResultId: String(acceptedLegacyResult._id) }), 1, "opted-in directed assessment was not mirrored after legacy submission");
+  const mirrorAudit = await AssessmentMirrorAuditModel.findOne({ legacyQuizResultId: String(acceptedLegacyResult._id) }).lean();
+  assert.equal(mirrorAudit?.status, "completed", "successful assessment mirror was not auditable");
+  pass("eligible assessment mirrors only after preserving the legacy HTTP submission");
 
   const repeatedSubmission = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}/submit`, {
     method: "POST",
@@ -881,6 +889,7 @@ async function runAssessmentDataEvolutionAdditiveDryRun() {
     AssessmentAttemptModel,
     AssessmentResponseModel,
     AssessmentResultModel,
+    AssessmentMirrorAuditModel,
   ];
 
   await Promise.all(models.map((model) => model.createIndexes()));
