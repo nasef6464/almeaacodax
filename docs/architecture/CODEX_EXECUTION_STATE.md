@@ -256,6 +256,18 @@
 - Risks: actual index behavior is not declared verified until the isolated CI run passes on this exact commit.
 - Next exact action: a repository administrator must dispatch `Platform V3 Backend Integration Gate` for `codex/assessment-data-evolution` (or grant Actions dispatch permission to the authenticated account). The current `gh workflow run` request was rejected with `403 Must have admin rights to Repository`; inspect the successful run before beginning any adapter.
 
+## Batch 5A-03 — Automatic isolated-CI trigger
+
+- Scope: allowed the existing backend integration workflow to run automatically on pushes to the Phase 5 branch, avoiding the unavailable manual-dispatch permission.
+- Changed files: `.github/workflows/platform-v3-backend-integration-gate.yml`.
+- Preserved contracts: no runtime code, API, database, RBAC, scoring, production deployment, or workflow job definition changed; only the push branch allowlist gained this explicitly named development branch.
+- Tests: `git diff --check` PASS.
+- Gates: pending automatic GitHub Actions run after push. The same job still provisions its own Mongo 7 service and uses a locally guarded disposable database name.
+- Commit: pending.
+- Push: pending.
+- Risks: success remains unproven until the exact commit's isolated workflow completes.
+- Next exact action: push this trigger update, wait for the generated Actions run, and record its exact result before beginning the compatibility adapter.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:

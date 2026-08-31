@@ -6,6 +6,7 @@ on:
     branches:
       - develop/platform-v3-recovery
       - refactor/modular-platform-safe
+      - codex/assessment-data-evolution
   pull_request:
     branches:
       - main
