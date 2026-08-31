@@ -8,6 +8,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
 import { resolveAssessmentResultRead } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
 import { findAssessmentResultByLegacyId } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
+import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
+import { findAssessmentResultReaderMode } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 
 const quizResultsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -131,14 +133,18 @@ quizResultsRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz result not found" });
     }
 
-    const assessmentResult = await findAssessmentResultByLegacyId(String((result as any).id || (result as any)._id));
-    const compatibleResult = resolveAssessmentResultRead(result as any, assessmentResult);
     const authUser = req.authUser!;
-    const ownerId = String((compatibleResult as any).userId || "");
+    const ownerId = String((result as any).userId || "");
     const isAdmin = authUser.role === "admin";
     if (!isAdmin && ownerId !== String(authUser.id)) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You can only access your own result" });
     }
+
+    const readerMode = await findAssessmentResultReaderMode(String((result as any).quizId || ""));
+    const assessmentResult = shouldReadAssessmentCompatibilityProjection(readerMode)
+      ? await findAssessmentResultByLegacyId(String((result as any).id || (result as any)._id))
+      : null;
+    const compatibleResult = resolveAssessmentResultRead(result as any, assessmentResult);
 
     const analysis = await analyzeWeakSkillsFromQuizResult(result);
     return res.json({

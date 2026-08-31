@@ -462,6 +462,39 @@ async function runHistoricalResultJourney() {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for historical result");
 
+  const directedLegacyResult = await QuizResultModel.findOne({ userId: studentId, quizId: ASSESSMENT_QUIZ_ID }).lean();
+  assert.ok(directedLegacyResult, "directed legacy result missing for reader cutover");
+  await AssessmentResultModel.updateOne(
+    { legacyQuizResultId: String(directedLegacyResult._id) },
+    { $set: { compatibilityProjection: { quizTitle: "Platform V3 compatibility reader projection" } } },
+  );
+  const defaultReaderDetail = await jsonRequest(`/quiz-results/${directedLegacyResult._id}`, { token: tokens.get("student") });
+  expectStatus("legacy reader remains the default before compatibility cutover", defaultReaderDetail, 200);
+  assert.notEqual(defaultReaderDetail.body?.result?.quizTitle, "Platform V3 compatibility reader projection", "default reader used the additive projection");
+
+  const enableCompatibilityReader = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
+    method: "PATCH", token: tokens.get("admin"), csrf,
+    body: { assessmentData: { resultReaderMode: "compatibility" } },
+  });
+  expectStatus("admin enables per-assessment compatibility result reader", enableCompatibilityReader, 200);
+  assert.equal(enableCompatibilityReader.body?.assessmentData?.mirrorSubmissions, true, "reader update changed the existing mirror control");
+  assert.equal(enableCompatibilityReader.body?.assessmentData?.resultReaderMode, "compatibility", "reader mode was not persisted");
+  const compatibilityReaderDetail = await jsonRequest(`/quiz-results/${directedLegacyResult._id}`, { token: tokens.get("student") });
+  expectStatus("enabled assessment reads compatibility projection", compatibilityReaderDetail, 200);
+  assert.equal(compatibilityReaderDetail.body?.result?.quizTitle, "Platform V3 compatibility reader projection", "enabled reader did not use the additive projection");
+
+  const disableCompatibilityReader = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
+    method: "PATCH", token: tokens.get("admin"), csrf,
+    body: { assessmentData: { resultReaderMode: "legacy" } },
+  });
+  expectStatus("admin rolls back per-assessment result reader", disableCompatibilityReader, 200);
+  assert.equal(disableCompatibilityReader.body?.assessmentData?.mirrorSubmissions, true, "reader rollback changed the existing mirror control");
+  const rolledBackReaderDetail = await jsonRequest(`/quiz-results/${directedLegacyResult._id}`, { token: tokens.get("student") });
+  expectStatus("legacy response returns after reader rollback", rolledBackReaderDetail, 200);
+  assert.notEqual(rolledBackReaderDetail.body?.result?.quizTitle, "Platform V3 compatibility reader projection", "reader rollback still used the additive projection");
+
+  await QuizModel.updateOne({ id: ASSESSMENT_QUIZ_ID }, { $set: { "assessmentData.resultReaderMode": "compatibility" } });
+
   const historicalResult = await QuizResultModel.create({
     userId: studentId,
     quizId: HISTORICAL_RESULT_QUIZ_ID,
@@ -509,7 +542,7 @@ async function runHistoricalResultJourney() {
   assert.deepEqual(reconcileAssessmentResult(historicalResult.toObject(), compatibleAssessmentResult.toObject()), []);
 
   const resultOnlyLegacy = await QuizResultModel.create({
-    userId: studentId, quizId: `${HISTORICAL_RESULT_QUIZ_ID}-result-only`, quizTitle: "Result-only historical fixture",
+    userId: studentId, quizId: ASSESSMENT_QUIZ_ID, quizTitle: "Result-only historical fixture",
     score: 50, passed: false, totalQuestions: 2, correctAnswers: 1, wrongAnswers: 1, unanswered: 0,
   });
   const dryRun = await backfillHistoricalAssessmentResults({ limit: 100 });
