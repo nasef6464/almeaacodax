@@ -1,17 +1,17 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Phase 5 assessment-data evolution — read adapters, reconciliation evidence, and an inert dual-write primitive
-- Current batch: `5C-01` — prove the dual-write primitive's success, retry, partial-failure, and repair semantics before any runtime wiring
+- Current phase: Phase 5 assessment-data evolution — dual-write evidence is proven; controlled runtime integration remains pending
+- Current batch: `5C-02` — design an opt-in, rollback-safe post-legacy mirror for eligible assigned/mock submissions only
 - Current branch: `codex/assessment-data-evolution`
-- Current HEAD: `3a964c81e8c60c079d2fa4c31dc566c4e84a52cb` (`feat(assessments): add idempotent dual-write primitive`)
-- Last completed code commit: `3a964c81` (an inert, idempotent persistence primitive; it is not imported by any production write route)
-- Last remote delivery: pushed through `3a964c81` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
+- Current HEAD: `2f383e3ab4c46163ccfce49800bdef1b6d618a09` (`test(assessments): prove dual-write recovery semantics`)
+- Last completed code commit: `2f383e3a` (direct isolated proof of the idempotent persistence and reconciliation-repair primitives; still not imported by a production write route)
+- Last remote delivery: pushed through `2f383e3a` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, and current HEAD (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`). Local `server:check` and `server:build` are PASS. Earlier full frontend and architecture evidence remains valid pre-Phase-5 but has not yet been rerun on `3a964c81`; do not claim a complete Phase-5 gate from those earlier runs.
-- Open blockers: the dual-write primitive has no direct isolated HTTP proof for success/retry/partial failure/repair and must not be connected to a production write path; production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
+- Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, and current direct dual-write proof (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`, `33377161555`). The latest run proves legacy-success/new-failure containment, idempotent retry, response uniqueness, reconciliation detection, and repair without changing legacy data. Local `server:check`, integration-harness typecheck, and `smoke:quiz-integrity-guard` are PASS. Earlier full frontend and architecture evidence remains valid pre-Phase-5 but has not yet been rerun on `2f383e3a`; do not claim a complete Phase-5 gate from those earlier runs.
+- Open blockers: no production route is connected to the new write primitive; a controlled eligibility and rollback policy is required before that changes. Production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, and historical-result reads. Backend run `33337500677` and full-stack E2E run `33337500695` both passed on isolated Mongo at commit `55e0ea5d`. The remaining evidence is a focused UI mapping for the five named assessment journeys and a bounded scale validation; neither is a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: add isolated, direct evidence for the inert dual-write primitive: success, idempotent retry, duplicate-submission protection, legacy-success/new-failure containment, retry after a partial failure, reconciliation detection/repair, and legacy fallback. Do not connect it to `POST /api/quizzes/:id/submit`, start a backfill, change scoring/RBAC/API contracts, or delete legacy records.
+- Next exact action: establish a default-off, configuration-free-to-enable policy and a post-legacy-submission adapter restricted to assigned/mock assessments. It must preserve the existing 201 response when the mirror fails, retain diagnosable reconciliation evidence, and be covered by isolated HTTP tests before any rollout setting is enabled. Do not start a backfill, change scoring/RBAC/API contracts, or delete legacy records.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -288,6 +288,28 @@
 - Tests: `server:check` and `git diff --check` PASS locally.
 - Gates: pending isolated HTTP CI.
 - Next exact action: push and verify the isolated run before designing dual-write.
+
+## Batch 5B-03 — Result-reader CI confirmation and reconciliation evidence
+
+- Scope: verified the result compatibility projection through the isolated HTTP harness and added a pure parity detector for linked legacy and additive results.
+- Changed files: `assessmentResultReadAdapter`, `assessmentResultRepository`, `quizResults.routes.ts`, `assessmentResultReconciliation.ts`, and the isolated harness.
+- Preserved contracts: result detail URL/shape and owner authorization remain legacy-compatible; no submission write path, RBAC, scoring, or legacy document changed.
+- Tests: `Platform V3 Backend Integration Gate` `33365337318` (reader) and `33365711034` (parity fixture) PASS on isolated Mongo.
+- Commit: `59be802d`, `bbd2d916`, and `717f5b0b`.
+- Push: pushed to `origin/codex/assessment-data-evolution`.
+- Risks: this proves only a linked compatibility projection and fixture parity; it is not a backfill or runtime dual-write.
+- Next exact action: prove the inert writer's success and failure recovery before route integration.
+
+## Batch 5C-01 — Dual-write recovery semantics on isolated Mongo
+
+- Scope: added direct isolated-Mongo proof for the inert post-legacy mirror: success, idempotent retry, response uniqueness, failure after a successful legacy result, retry repair, divergence detection, and reconciliation repair.
+- Changed files: `dualWriteAssessmentSubmission.ts`, `assessmentResultReconciliation.ts`, and `backendIntegrationGate.ts`.
+- Preserved contracts: `POST /api/quizzes/:id/submit` does not import the primitive; its scoring, RBAC, legacy `QuizResult` write, status code, and response are unchanged. The repair updates only the additive result projection and never mutates `QuizResult`, attempt ownership, assignment, or version.
+- Tests: local `server:check`, isolated harness typecheck, `smoke:quiz-integrity-guard` 4/4, and `Platform V3 Backend Integration Gate` `33377161555` PASS (Mongo 7, API build, real HTTP server and suite).
+- Commit: `2f383e3a` `test(assessments): prove dual-write recovery semantics`.
+- Push: pushed to `origin/codex/assessment-data-evolution`.
+- Risks: production routing remains deliberately absent. The next batch needs an explicitly default-off eligibility/rollback policy and an HTTP proof that mirror failure does not replace a successful legacy 201 response.
+- Next exact action: implement and test the controlled post-legacy mirror for eligible assigned/mock assessments only; do not enable it in any environment, backfill, cut over reads, or delete legacy data.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
