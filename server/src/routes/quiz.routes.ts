@@ -1712,6 +1712,16 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
   }
 
+  // `assessmentData` contains independent rollout controls. PATCHing one must
+  // not silently reset another (for example, reader cutover must not disable
+  // an already-approved post-legacy mirror).
+  if (payload.assessmentData) {
+    payload.assessmentData = {
+      ...((existing.toObject() as Record<string, any>).assessmentData || {}),
+      ...payload.assessmentData,
+    };
+  }
+
   if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
     const nextPathId = String(payload.pathId || existing.pathId || "").trim();
     const nextSubjectId = String(payload.subjectId || existing.subjectId || "").trim();
