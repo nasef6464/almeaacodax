@@ -63,3 +63,12 @@
 بوابة الدفعة الأولى: models وفهارس additive فقط، مع عدم وجود route أو
 dual-write أو قراءة إنتاجية تعتمد عليها. يجب أن يثبت dry run معزول قبل كتابة
 أي بيانات جديدة.
+
+## قرار backfill نتيجة-only — 2026-08-31
+
+بعد إثبات أن بعض السجلات التاريخية لا تحمل إجابات أو تعريف اختبار كامل، يكون
+المسموح تاريخيًا هو إنشاء `AssessmentResult` فقط مع
+`dataCompleteness=result_only` و`source=legacy_backfill`. لا تنشأ
+`AssessmentAttempt` أو `AssessmentResponse` أو `AssessmentVersion` تاريخية من
+تخمينات. يظل `QuizResult` أصل الحقيقة وتكون الكتابة dry-run افتراضيًا ومحدودة
+بالـcursor؛ لا يشمل القرار أي cutover أو حذف للـlegacy.

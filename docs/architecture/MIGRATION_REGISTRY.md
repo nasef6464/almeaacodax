@@ -9,4 +9,4 @@
 | ASSESSMENT-5B | definition/result dual-read adapters | PARTIAL | legacy Quiz/QuizResult مع fallback | العودة للـlegacy reader | version/result projection اختُبرا في Mongo معزول |
 | ASSESSMENT-5C | post-legacy dual-write mirror | PARTIAL | `QuizResult` يبقى authoritative | opt-out في `assessmentData.mirrorSubmissions` | opt-in فقط لموجه/محاكي؛ audit/reconciliation موجودان |
 | ASSESSMENT-5D | reconciliation | VERIFIED (isolated) | `AssessmentMirrorAudit` + linked records | dry-run افتراضي؛ repair additive-only | لا يعدّل legacy result |
-| ASSESSMENT-5E | historical result inventory | VERIFIED (isolated) | `QuizResult` cursor + checksum | read-only، لا writes | backfill الحقيقي NOT STARTED؛ يلزم policy لمعالجة غياب إجابات تاريخية كاملة |
+| ASSESSMENT-5E | historical result-only backfill | VERIFIED (isolated) | `QuizResult` cursor + compatibility projection | dry-run default؛ idempotent upsert؛ legacy لا يكتب | لا Attempt/Response/Version تاريخية؛ لم يُشغّل على production |
