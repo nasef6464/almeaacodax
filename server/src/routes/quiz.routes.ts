@@ -57,12 +57,25 @@ import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
 import { findLatestPublishedAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
+import { resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
+import { findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
 const QUIZ_RESULTS_CACHE_TTL_MS = 5 * 1000;
 const QUIZ_RESULTS_CACHE_MAX_ENTRIES = 300;
+
+const resolveCompatibleQuizResultList = async (results: Record<string, unknown>[]) => {
+  const legacyIds = results.map((result) => String(result.id || result._id || "")).filter(Boolean);
+  const quizIds = results.map((result) => String(result.quizId || "")).filter(Boolean);
+  const [assessmentResultsByLegacyId, readerModesByQuizId] = await Promise.all([
+    findAssessmentResultsByLegacyIds(legacyIds),
+    findAssessmentResultReaderModes(quizIds),
+  ]);
+  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
+};
 
 let publicQuizListCache:
   | {
@@ -1315,7 +1328,7 @@ quizRouter.get(
     if (projection) {
       resultsQuery.select(projection);
     }
-    const items = serializeQuizResultsForLearner(await resultsQuery.lean());
+    const items = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await resultsQuery.lean() as Record<string, unknown>[]));
     const total = query.noTotal
       ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
       : await QuizResultModel.countDocuments(filter);
@@ -1400,7 +1413,7 @@ quizRouter.get(
       if (projection) {
         scopedResultsQuery.select(projection);
       }
-      results = serializeQuizResultsForLearner(await scopedResultsQuery.lean());
+      results = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await scopedResultsQuery.lean() as Record<string, unknown>[]));
     }
     const total = selectedStudentIds.length
       ? (query.noTotal
