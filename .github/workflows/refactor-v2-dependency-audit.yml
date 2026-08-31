@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - refactor/repository-v2-safe
+      - refactor/modular-platform-safe
     paths:
       - 'package.json'
       - 'package-lock.json'
