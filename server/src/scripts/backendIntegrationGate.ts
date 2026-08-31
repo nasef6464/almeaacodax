@@ -23,6 +23,7 @@ import {
 } from "../modules/quizzes/application/assessmentResultReconciliation.js";
 import { dualWriteAssessmentSubmission } from "../modules/quizzes/application/dualWriteAssessmentSubmission.js";
 import { reconcileAssessmentMirrorAudits } from "../modules/quizzes/application/assessmentMirrorReconciliation.js";
+import { inventoryLegacyAssessmentResults } from "../modules/quizzes/application/assessmentLegacyBackfillInventory.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -593,6 +594,22 @@ async function runAssessmentDualWritePrimitiveJourney() {
   const idempotentRepairRun = await reconcileAssessmentMirrorAudits({ limit: 100, repair: true });
   assert.equal(idempotentRepairRun.items.find((item) => item.legacyQuizResultId === String(partialLegacyResult._id))?.status, "consistent", "reconciliation repair was not idempotent");
   pass("assessment mirror reconciliation is bounded, dry-run-safe, and explicitly repairable");
+
+  const [legacyCountBeforeInventory, projectionCountBeforeInventory] = await Promise.all([
+    QuizResultModel.countDocuments(),
+    AssessmentResultModel.countDocuments(),
+  ]);
+  const firstInventory = await inventoryLegacyAssessmentResults({ limit: 1 });
+  assert.equal(firstInventory.mode, "dry-run", "legacy inventory unexpectedly entered write mode");
+  assert.equal(firstInventory.processed, 1, "legacy inventory did not honor its batch limit");
+  assert.ok(firstInventory.nextAfterId, "bounded legacy inventory did not return a cursor");
+  const secondInventory = await inventoryLegacyAssessmentResults({ afterId: firstInventory.nextAfterId!, limit: 100 });
+  assert.ok(secondInventory.processed >= 1, "legacy inventory cursor did not advance to the next batch");
+  const stableInventory = await inventoryLegacyAssessmentResults({ limit: 1 });
+  assert.equal(stableInventory.checksum, firstInventory.checksum, "legacy inventory checksum is not stable for the same dry-run page");
+  assert.equal(await QuizResultModel.countDocuments(), legacyCountBeforeInventory, "legacy inventory wrote QuizResult data");
+  assert.equal(await AssessmentResultModel.countDocuments(), projectionCountBeforeInventory, "legacy inventory wrote additive result data");
+  pass("legacy assessment backfill inventory is bounded, cursor-based, and read-only");
 }
 
 async function runMockAssessmentJourney(csrf: CsrfContext) {
