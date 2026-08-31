@@ -690,6 +690,18 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   assert.equal(classSupervisorScopedResults.body?.scope?.studentCount, 1, "class supervisor result scope included a sibling class");
   pass("class supervisor result scope excludes sibling-class students");
 
+  const classSupervisorMockAnalytics = await jsonRequest(
+    `/quizzes/results/section-analytics/${MOCK_ASSESSMENT_QUIZ_ID}`,
+    { token: tokens.get("classSupervisor") },
+  );
+  expectStatus("class supervisor reads mock section analytics inside assigned class", classSupervisorMockAnalytics, 200);
+  assert.equal(classSupervisorMockAnalytics.body?.sections?.length, 2, "class supervisor mock analytics lost sections");
+  assert.equal(
+    classSupervisorMockAnalytics.body?.sections?.[0]?.attempts,
+    1,
+    "class supervisor mock analytics did not remain scoped to assigned student attempts",
+  );
+
   const classSupervisorOutsideTarget = await jsonRequest("/quizzes", {
     method: "POST",
     token: tokens.get("classSupervisor"),
