@@ -175,6 +175,7 @@ jobs:
         run: npm --prefix server run smoke:operational:api
 
       - name: Install Chromium
+        timeout-minutes: 10
         run: npx playwright install --with-deps chromium
 
       - name: Start exact branch frontend
