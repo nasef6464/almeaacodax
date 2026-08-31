@@ -195,6 +195,7 @@ jobs:
 
       - name: Bounded isolated read-scale validation
         id: isolated_scale
+        timeout-minutes: 5
         run: node scripts/run-isolated-scale-validation.mjs --base-url http://127.0.0.1:4010 --output audit-artifacts/deep-premerge/isolated-scale.json
 
       - name: Public full-stack journeys on isolated API
