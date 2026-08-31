@@ -113,6 +113,14 @@ check("school management can copy handover message", () => {
   assertIncludes(files.schools, "نسخ رسالة التسليم");
 });
 
+check("relation imports lock repeated execution until the authoritative refresh completes", () => {
+  assertIncludes(files.schools, "const handleApplyRelationImport = async () => {");
+  assertIncludes(files.schools, "if (isApplyingRelations) return;");
+  assertIncludes(files.schools, "setIsApplyingRelations(true);");
+  assertIncludes(files.schools, "api.applySchoolRelations(selectedSchool.id");
+  assertIncludes(files.schools, "} finally {\n                setIsApplyingRelations(false);");
+});
+
 check("school list has portfolio readiness command center", () => {
   assertIncludes(files.schools, "schoolPortfolioRows");
   assertIncludes(files.schools, "schoolPortfolioSummary");

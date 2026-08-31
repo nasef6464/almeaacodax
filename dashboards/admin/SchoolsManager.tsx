@@ -45,8 +45,6 @@ import type {
     AdminUserPayload,
     ContentBootstrapPayload,
     ImportResponse,
-    RelationCredential,
-    RelationImportSummary,
     RelationResponse,
 } from './SchoolsManager/contracts';
 import {
@@ -1325,26 +1323,13 @@ export const SchoolsManager: React.FC = () => {
         };
 
         const handleApplyRelationImport = async () => {
+            if (isApplyingRelations) return;
             if (!relationRows.length) {
                 setRelationError('ارفع ملف الربط أولا ثم راجع الصفوف قبل التنفيذ.');
                 return;
             }
 
-            const nextSummary: RelationImportSummary = {
-                rows: relationRows.length,
-                createdParents: 0,
-                createdSupervisors: 0,
-                linkedParents: 0,
-                linkedSupervisors: 0,
-                assignedClasses: 0,
-                missingStudents: 0,
-                missingParents: 0,
-                missingSupervisors: 0,
-                missingClasses: 0,
-                skippedRows: 0,
-            };
-            const createdCredentials: RelationCredential[] = [];
-
+            setIsApplyingRelations(true);
             try {
                 const response = await api.applySchoolRelations(selectedSchool.id, {
                     rows: relationRows,
@@ -1368,9 +1353,6 @@ export const SchoolsManager: React.FC = () => {
                 setRelationError(getErrorMessage(error, 'تعذر تنفيذ الربط وإنشاء الحسابات الآن.'));
             } finally {
                 setIsApplyingRelations(false);
-                if (createdCredentials.length) {
-                    void refreshUsers();
-                }
             }
         };
 
