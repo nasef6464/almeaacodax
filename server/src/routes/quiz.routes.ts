@@ -1556,7 +1556,7 @@ quizRouter.get(
 
     const readerMode = await findAssessmentResultReaderMode(String(item.quizId || ""));
     const assessmentResult = shouldReadAssessmentCompatibilityProjection(readerMode)
-      ? await findAssessmentResultByLegacyId(String(item.id || item._id))
+      ? await findAssessmentResultByLegacyId(String(item._id))
       : null;
     return res.json(serializeQuizResultForLearner(resolveAssessmentResultRead(item as Record<string, unknown>, assessmentResult)));
   }),
