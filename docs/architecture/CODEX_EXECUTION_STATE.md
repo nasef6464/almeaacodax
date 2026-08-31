@@ -1,16 +1,16 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: release-candidate freeze completed after isolated assessment, scale, E2E, readiness, and dependency evidence
-- Current branch: `refactor/modular-platform-safe`
-- Last completed code commit: `15fa3b95` (satisfy teacher question fixture contract); isolated assessment CI gate passed at `038544cc` (run `33336856128`)
-- Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
+- Current phase: Phase 5 assessment-data evolution — additive foundation and isolated-index evidence
+- Current batch: `5A-02` — CI-only additive Mongo index dry run awaiting an authorized workflow dispatch
+- Current branch: `codex/assessment-data-evolution`
+- Last completed code commit: `b6e10fc1` (run additive assessment-index dry run in the isolated backend harness); local evidence recorded in `256f8d05`
+- Last remote delivery: pushed through `256f8d05` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
-- Open blockers: production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None of these is silently treated as closed by the release candidate.
+- Open blockers: isolated-Mongo CI dispatch and PR creation are unavailable to the authenticated GitHub account (`403 Must have admin rights`); production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, and historical-result reads. Backend run `33337500677` and full-stack E2E run `33337500695` both passed on isolated Mongo at commit `55e0ea5d`. The remaining evidence is a focused UI mapping for the five named assessment journeys and a bounded scale validation; neither is a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: wait for explicit owner approval to create a PR/merge the frozen candidate. Do not extract timer/session, delete builders, or change routes/schema/RBAC/scoring while frozen.
+- Next exact action: a repository administrator must dispatch `Platform V3 Backend Integration Gate` for `codex/assessment-data-evolution` (and enable PR creation for the authenticated account). Do not start an adapter, dual-write, backfill, timer/session cutover, or legacy-file deletion until that isolated run passes.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
