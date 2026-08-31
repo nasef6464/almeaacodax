@@ -1,17 +1,17 @@
 # ALMEAA — Codex Execution State
 
-- Current phase: Phase 5 assessment-data evolution — controlled, opt-in post-legacy mirror is live in code; reconciliation operations remain pending
-- Current batch: `5D-01` — add bounded reconciliation discovery and repair dry-run evidence for mirror audit rows
+- Current phase: Phase 5 assessment-data evolution — controlled mirror and bounded reconciliation are proven; backfill dry-run remains pending
+- Current batch: `5E-01` — design a no-write, cursor-bounded legacy-result backfill inventory and checkpoint protocol
 - Current branch: `codex/assessment-data-evolution`
-- Current HEAD: `4f12a3272c40c65d1ba9ee8e8e99e654f12c4e47` (`feat(assessments): mirror eligible legacy submissions safely`)
-- Last completed code commit: `4f12a327` (a default-off, opt-in post-legacy mirror for directed/mock assessments; legacy remains authoritative)
-- Last remote delivery: pushed through `4f12a327` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
+- Current HEAD: `40a275b3f152fe29b9e901e9717f16302a65b92a` (`feat(assessments): add bounded mirror reconciliation`)
+- Last completed code commit: `40a275b3` (bounded audit reconciliation, dry-run by default and explicit/idempotent repair only for additive projections)
+- Last remote delivery: pushed through `40a275b3` to `origin/codex/assessment-data-evolution`; generated audit artifacts and ZIP exports remain intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
-- Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, direct dual-write recovery proof, and controlled runtime mirror (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`, `33377161555`, `33377661059`). The latest run proves a real HTTP 201 retains its legacy result while the eligible mirror creates its additive projection and audit row. Local `server:check`, integration-harness typecheck, and `smoke:quiz-integrity-guard` are PASS. Earlier full frontend and architecture evidence remains valid pre-Phase-5 but has not yet been rerun on `4f12a327`; do not claim a complete Phase-5 gate from those earlier runs.
-- Open blockers: no existing production assessment is opted in; reconciliation discovery is still only per-record and has no bounded operational dry-run. Production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
+- Current gates: the automatic isolated-Mongo backend integration gate has passed for the additive models, definition reader, result reader, reconciliation fixture, direct dual-write recovery proof, controlled runtime mirror, and bounded reconciliation (`33364720313`, `33365058231`, `33365337318`, `33365515059`, `33365711034`, `33365912688`, `33377161555`, `33377661059`, `33377975143`). The latest run proves cursor-bounded mismatch discovery is no-write by default and explicit repair is idempotent and does not modify legacy results. Local `server:check` and integration-harness typecheck are PASS. Earlier full frontend and architecture evidence remains valid pre-Phase-5 but has not yet been rerun on `40a275b3`; do not claim a complete Phase-5 gate from those earlier runs.
+- Open blockers: no existing production assessment is opted in; no legacy result backfill inventory/dry-run, persisted watermark, or production-scale certification exists. Production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None is silently treated as closed.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, and historical-result reads. Backend run `33337500677` and full-stack E2E run `33337500695` both passed on isolated Mongo at commit `55e0ea5d`. The remaining evidence is a focused UI mapping for the five named assessment journeys and a bounded scale validation; neither is a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: add a bounded reconciliation discovery/repair dry-run that consumes `AssessmentMirrorAudit` rows and linked legacy/additive results without modifying either by default. Prove cursor/batch limits, mismatch reporting, and an explicit repair mode on isolated Mongo before considering a backfill. Do not opt in production assessments, start a backfill, change scoring/RBAC/API contracts, or delete legacy records.
+- Next exact action: add a no-write legacy-result backfill inventory/dry-run with a bounded cursor protocol and stable counts/checksum evidence. It must not create additive records or mutate legacy results; any real backfill remains a separate, explicitly authorized batch after dry-run evidence. Do not opt in production assessments, change scoring/RBAC/API contracts, or delete legacy records.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -321,6 +321,17 @@
 - Push: pushed to `origin/codex/assessment-data-evolution`.
 - Risks: the route-level failure containment is structurally enforced and direct primitive failure is tested, but an operational bounded reconciler is still needed before any rollout of opt-in definitions. No capacity claim is made.
 - Next exact action: add a cursor/batch-limited reconciliation discovery dry-run and an explicit repair mode, both isolated and idempotent, before considering backfill.
+
+## Batch 5D-01 — Bounded mirror reconciliation
+
+- Scope: added a cursor-based reconciler for `AssessmentMirrorAudit` rows. It inspects at most 100 records per invocation, reports missing legacy/additive records and field differences, and defaults to no-write. An explicit repair mode repairs only linked additive result projections and is idempotent on repeat.
+- Changed files: `assessmentMirrorReconciliation.ts` and the isolated harness.
+- Preserved contracts: no HTTP route, learner response, legacy `QuizResult`, scoring, RBAC, or backfill behavior changed. Dry-run writes nothing; repair never changes legacy submissions, attempts, assignments, or versions.
+- Tests: API typecheck/build, harness typecheck, and `Platform V3 Backend Integration Gate` `33377975143` PASS. The isolated Mongo journey proves mismatch discovery, explicit repair, and the following repair pass reporting `consistent`.
+- Commit: `40a275b3` `feat(assessments): add bounded mirror reconciliation`.
+- Push: pushed to `origin/codex/assessment-data-evolution`.
+- Risks: reconciliation presently covers mirror audit rows, not the historical legacy corpus; it supplies evidence and repair capability, not a backfill.
+- Next exact action: implement a no-write, cursor-bounded legacy result inventory/dry-run with reproducible counts/checksum evidence before deciding on a real backfill.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
