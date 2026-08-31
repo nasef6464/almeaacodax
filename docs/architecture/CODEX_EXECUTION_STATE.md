@@ -232,6 +232,18 @@
 - Risks: no functional behavior was altered.
 - Next exact action: commit this documentation-only correction, push the release-candidate branch, create the approved PR, and merge after the final compare.
 
+## Batch 5A-01 — Additive assessment evolution foundation
+
+- Scope: recorded the delegated product decisions for Phase 5 and introduced isolated persistence models for immutable versions, assignments, server-owned attempts, saved responses, and finalized results.
+- Changed files: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` and `server/src/modules/quizzes/infrastructure/assessment{Version,Assignment,Attempt,Response,Result}Model.ts`.
+- Preserved contracts: no route, API payload, legacy `QuizResult` read/write, `LiveExamSession`, schema migration, backfill, RBAC, scoring, or frontend behavior changed. The new models are not imported by a production request path.
+- Tests: `server:check`, `server:build`, root `typecheck`, root `build`, `repository-audit`, `architecture-gate`, `smoke:route-loading`, `smoke:runtime-source`, `smoke:quiz-integrity-guard`, `smoke:auth-login-security`, `smoke:api-security`, `smoke:rbac-school-scope`, and `git diff --check` PASS.
+- Gates: isolated-Mongo additive migration dry run is intentionally pending. It is mandatory before any adapter, dual-write, backfill, or live reader work; no production or shared database was contacted.
+- Commit: pending.
+- Push: pending.
+- Risks: the models alone are deliberately inert until an adapter is designed and verified; this prevents a partial migration from changing learner behavior.
+- Next exact action: run the additive model/index dry run on a disposable Mongo database, then introduce a compatibility adapter with legacy fallback in a separate batch.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
