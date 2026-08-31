@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | Questions + image references | 80k–500k+ | filters/skill/type/search | server pagination، projection، indexes، media خارج Mongo | PARTIAL |
 | Quiz/Assessment definitions | آلاف | builder/access/assignment | `AssessmentVersion` immutable additive؛ reader يرجع للـlegacy عند الغياب؛ النسخ التاريخية لا تعدّل | PARTIAL |
-| Attempts/Responses/Results | ملايين | student result/report/submit | `submissionKey` idempotency، response per attempt/question، mirror opt-in للموجه/المحاكي، cursor-bounded reconciliation؛ لا backfill تاريخي بعد | PARTIAL — isolated Mongo proven, production scale NOT PROVEN |
+| Attempts/Responses/Results | ملايين | student result/report/submit | `submissionKey` idempotency، response per attempt/question، mirror opt-in للموجه/المحاكي، cursor-bounded reconciliation؛ direct result reads batch-load compatible projections behind per-assessment rollback flag؛ historical backfill result-only only | PARTIAL — isolated Mongo proven, production scale NOT PROVEN |
 | Skills/mastery | ملايين تاريخيًا | student/class skill trend | projections/read models بعد benchmark | NOT PROVEN |
 | Courses/Lessons/Videos | مئات المناهج وعشرات آلاف الفيديو | catalog/player/progress | route-scoped loading، CDN/storage adapter | PARTIAL |
 | Users/Groups/Memberships | آلاف/مئات المدارس | scope/roster/report | pagination؛ تقييم arrays الكبيرة | PARTIAL |
