@@ -557,6 +557,9 @@ async function runHistoricalResultJourney(csrf: CsrfContext) {
   expectStatus("student reads compatible assessment result projection", compatibleDetail, 200);
   assert.equal(compatibleDetail.body?.result?.score, 76, "compatible result projection was not read");
   assert.equal(compatibleDetail.body?.result?.userId, studentId, "compatible result changed the legacy owner");
+  const compatibleLatest = await jsonRequest("/quizzes/results/latest", { token: tokens.get("student") });
+  expectStatus("student reads compatible latest-result projection", compatibleLatest, 200);
+  assert.equal(compatibleLatest.body?.score, 76, "latest-result route did not use the compatible projection");
   assert.deepEqual(reconcileAssessmentResult(historicalResult.toObject(), compatibleAssessmentResult.toObject()), []);
 
   const resultOnlyLegacy = await QuizResultModel.create({

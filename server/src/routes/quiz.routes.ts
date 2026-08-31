@@ -57,9 +57,10 @@ import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
 import { findLatestPublishedAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
-import { resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
-import { findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
-import { findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
+import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
+import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
+import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -1547,13 +1548,17 @@ quizRouter.get(
   "/results/latest",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const item = await QuizResultModel.findOne({ userId: req.authUser!.id }).sort({ createdAt: -1 });
+    const item = await QuizResultModel.findOne({ userId: req.authUser!.id }).sort({ createdAt: -1 }).lean();
 
     if (!item) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "No quiz results found" });
     }
 
-    return res.json(serializeQuizResultForLearner(item));
+    const readerMode = await findAssessmentResultReaderMode(String(item.quizId || ""));
+    const assessmentResult = shouldReadAssessmentCompatibilityProjection(readerMode)
+      ? await findAssessmentResultByLegacyId(String(item.id || item._id))
+      : null;
+    return res.json(serializeQuizResultForLearner(resolveAssessmentResultRead(item as Record<string, unknown>, assessmentResult)));
   }),
 );
 
