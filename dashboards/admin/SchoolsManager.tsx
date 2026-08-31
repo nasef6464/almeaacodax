@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
     BookOpen,
     Building2,
@@ -116,6 +116,7 @@ import { useSchoolReportState } from './SchoolsManager/useSchoolReportState';
 import { useSchoolRosterFilters } from './SchoolsManager/useSchoolRosterFilters';
 import { useSchoolSelectionState } from './SchoolsManager/useSchoolSelectionState';
 import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDrafts';
+import { useSchoolRosterBootstrap } from './SchoolsManager/useSchoolRosterBootstrap';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -276,7 +277,12 @@ export const SchoolsManager: React.FC = () => {
 
     useAutoDismissMessage(managementNotice, setManagementNotice);
     useAutoDismissMessage(managementError, setManagementError);
-    const hasLoadedSchoolRosterUsersRef = useRef(false);
+    const { refreshUsers } = useSchoolRosterBootstrap({
+        role: user.role,
+        users,
+        hydrateUsers,
+        hydrateContentBootstrap,
+    });
 
     const resetSchoolWorkspaceState = () => {
         resetWorkspaceDrafts();
@@ -338,46 +344,6 @@ export const SchoolsManager: React.FC = () => {
         setManagementNotice('تم تجهيز ملف جاهزية محفظة المدارس للتنزيل.');
         setManagementError(null);
     };
-
-    const refreshUsers = async () => {
-        if (user.role !== Role.ADMIN) {
-            return;
-        }
-
-        try {
-            const loadedUsers = await loadSchoolAdminUsers();
-            hydrateUsers(mergeUsersById(users, loadedUsers));
-        } catch (error) {
-            console.warn('Failed to refresh users after school updates:', error);
-        }
-    };
-
-    const refreshSchoolListData = async () => {
-        if (user.role !== Role.ADMIN) {
-            return;
-        }
-
-        try {
-            api.clearContentBootstrapCache();
-            const [bootstrap, loadedUsers] = await Promise.all([
-                api.getOperationalBootstrapFresh(),
-                loadSchoolAdminUsers(),
-            ]);
-            hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
-            hydrateUsers(mergeUsersById(users, loadedUsers));
-        } catch (error) {
-            console.warn('Failed to refresh school list data:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (user.role !== Role.ADMIN || hasLoadedSchoolRosterUsersRef.current) {
-            return;
-        }
-
-        hasLoadedSchoolRosterUsersRef.current = true;
-        void refreshSchoolListData();
-    }, [user.role]);
 
     const refreshSchoolWorkspace = async (schoolId: string, mode: 'silent' | 'manual' = 'silent') => {
         if (mode === 'manual') {
