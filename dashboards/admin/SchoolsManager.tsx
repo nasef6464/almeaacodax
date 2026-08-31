@@ -43,7 +43,6 @@ import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 import type {
     AccessCodesListResponse,
     AdminUserPayload,
-    ContentBootstrapPayload,
     ImportResponse,
     RelationCredential,
     RelationImportSummary,
@@ -52,10 +51,8 @@ import type {
 import {
     buildStoreUser,
     generateTemporaryPassword,
-    loadSchoolAdminUsers,
     mergeAdminUsersById,
     mergeGroupsById,
-    mergeUsersById,
     normalizeStoreGroups,
 } from './SchoolsManager/dataAdapters';
 import {
@@ -117,6 +114,7 @@ import { useSchoolRosterFilters } from './SchoolsManager/useSchoolRosterFilters'
 import { useSchoolSelectionState } from './SchoolsManager/useSchoolSelectionState';
 import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDrafts';
 import { useSchoolRosterBootstrap } from './SchoolsManager/useSchoolRosterBootstrap';
+import { useSchoolWorkspaceRefresh } from './SchoolsManager/useSchoolWorkspaceRefresh';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -283,6 +281,17 @@ export const SchoolsManager: React.FC = () => {
         hydrateUsers,
         hydrateContentBootstrap,
     });
+    const { refreshSchoolWorkspace } = useSchoolWorkspaceRefresh({
+        role: user.role,
+        users,
+        activeTab,
+        hydrateUsers,
+        hydrateContentBootstrap,
+        setSelectedSchool,
+        loadSchoolReport,
+        setSaveVerificationState,
+        setSaveVerificationMessage,
+    });
 
     const resetSchoolWorkspaceState = () => {
         resetWorkspaceDrafts();
@@ -343,43 +352,6 @@ export const SchoolsManager: React.FC = () => {
         }));
         setManagementNotice('تم تجهيز ملف جاهزية محفظة المدارس للتنزيل.');
         setManagementError(null);
-    };
-
-    const refreshSchoolWorkspace = async (schoolId: string, mode: 'silent' | 'manual' = 'silent') => {
-        if (mode === 'manual') {
-            setSaveVerificationState('verifying');
-            setSaveVerificationMessage('جاري التحقق من البيانات المحفوظة...');
-        }
-
-        api.clearContentBootstrapCache();
-        const [bootstrap, adminUsersResponse] = await Promise.all([
-            api.getOperationalBootstrapFresh(),
-            user.role === Role.ADMIN ? loadSchoolAdminUsers() : Promise.resolve(null),
-        ]);
-
-        const contentBootstrap = bootstrap as ContentBootstrapPayload;
-        hydrateContentBootstrap(contentBootstrap);
-        if (adminUsersResponse && Array.isArray(adminUsersResponse)) {
-            hydrateUsers(mergeUsersById(users, adminUsersResponse));
-        }
-
-        const freshGroups = normalizeStoreGroups(contentBootstrap.groups);
-        const freshSchool = freshGroups.find((group) => group.id === schoolId && group.type === 'SCHOOL');
-        if (!freshSchool) {
-            throw new Error('فشل التحقق: لم ترجع المدرسة من الخادم بعد الحفظ.');
-        }
-
-        setSelectedSchool(freshSchool);
-        if (activeTab === 'reports') {
-            await loadSchoolReport(freshSchool.id);
-        }
-
-        if (mode === 'manual') {
-            setSaveVerificationState('success');
-            setSaveVerificationMessage('تم الحفظ والتأكد من البيانات من الخادم.');
-        }
-
-        return freshSchool;
     };
 
     const handleSaveAndVerifySchool = async () => {

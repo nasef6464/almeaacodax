@@ -6,6 +6,7 @@ const operationalData = await read("server/src/modules/content/infrastructure/co
 const api = await read("services/apiGroups/taxonomyContentApi.ts");
 const schools = await read("dashboards/admin/SchoolsManager.tsx");
 const schoolRosterBootstrap = await read("dashboards/admin/SchoolsManager/useSchoolRosterBootstrap.ts");
+const schoolWorkspaceRefresh = await read("dashboards/admin/SchoolsManager/useSchoolWorkspaceRefresh.ts");
 
 const checks = [
   ["operations scope is explicitly supported", server.includes('z.enum(["full", "learning", "operations"])')],
@@ -15,6 +16,7 @@ const checks = [
   ["operational reader preserves public announcement limit", operationalData.includes("PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8") && operationalData.includes("getPublicAnnouncementAds")],
   ["operations scope preserves operational response shape", api.includes("getOperationalBootstrapFresh") && api.includes('scope: "operations"')],
   ["schools manager uses operational bootstrap", schoolRosterBootstrap.includes("api.getOperationalBootstrapFresh()") && !schoolRosterBootstrap.includes("api.getContentBootstrapFresh()") && schools.includes("useSchoolRosterBootstrap")],
+  ["school workspace refresh owns server verification", schoolWorkspaceRefresh.includes("api.getOperationalBootstrapFresh()") && schoolWorkspaceRefresh.includes("api.clearContentBootstrapCache()") && schoolWorkspaceRefresh.includes("loadSchoolAdminUsers()") && schools.includes("useSchoolWorkspaceRefresh")],
 ];
 const failed = checks.filter(([, passed]) => !passed);
 for (const [name, passed] of checks) console.log(`${passed ? "PASS" : "FAIL"} ${name}`);
