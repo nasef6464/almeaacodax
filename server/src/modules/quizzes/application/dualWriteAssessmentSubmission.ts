@@ -4,7 +4,21 @@ import { AssessmentResponseModel } from "../infrastructure/assessmentResponseMod
 import { AssessmentResultModel } from "../infrastructure/assessmentResultModel.js";
 import { AssessmentVersionModel } from "../infrastructure/assessmentVersionModel.js";
 
-export const dualWriteAssessmentSubmission = async ({ quiz, legacyResult, answers }: any) => {
+type DualWriteDependencies = {
+  upsertResponse?: (input: {
+    attemptId: string;
+    questionId: string;
+    studentId: string;
+    answer: unknown;
+  }) => Promise<unknown>;
+};
+
+export const dualWriteAssessmentSubmission = async ({
+  quiz,
+  legacyResult,
+  answers,
+  dependencies,
+}: any & { dependencies?: DualWriteDependencies }) => {
   const assessmentId = String(quiz.id || quiz._id);
   const version = await AssessmentVersionModel.findOneAndUpdate(
     { assessmentId, version: 1 },
@@ -21,7 +35,22 @@ export const dualWriteAssessmentSubmission = async ({ quiz, legacyResult, answer
     { $setOnInsert: { assignmentId: String(assignment._id), assessmentVersionId: String(version._id), studentId: String(legacyResult.userId), attemptNumber: legacyResult.attemptNumber, status: "submitted", submittedAt: legacyResult.createdAt || new Date(), submissionKey: legacyResult.submissionKey } },
     { new: true, upsert: true },
   );
-  await Promise.all(Object.entries(answers || {}).map(([questionId, answer]) => AssessmentResponseModel.findOneAndUpdate({ attemptId: String(attempt._id), questionId }, { $set: { studentId: String(legacyResult.userId), answer, savedAt: new Date() } }, { upsert: true })));
+  const upsertResponse = dependencies?.upsertResponse || ((input: {
+    attemptId: string;
+    questionId: string;
+    studentId: string;
+    answer: unknown;
+  }) => AssessmentResponseModel.findOneAndUpdate(
+    { attemptId: input.attemptId, questionId: input.questionId },
+    { $set: { studentId: input.studentId, answer: input.answer, savedAt: new Date() } },
+    { upsert: true },
+  ));
+  await Promise.all(Object.entries(answers || {}).map(([questionId, answer]) => upsertResponse({
+    attemptId: String(attempt._id),
+    questionId,
+    studentId: String(legacyResult.userId),
+    answer,
+  })));
   return AssessmentResultModel.findOneAndUpdate(
     { legacyQuizResultId: String(legacyResult._id) },
     { $setOnInsert: { attemptId: String(attempt._id), assignmentId: String(assignment._id), assessmentVersionId: String(version._id), studentId: String(legacyResult.userId), legacyQuizResultId: String(legacyResult._id), score: legacyResult.score, totalQuestions: legacyResult.totalQuestions, correctAnswers: legacyResult.correctAnswers, wrongAnswers: legacyResult.wrongAnswers, unanswered: legacyResult.unanswered, passed: legacyResult.passed, sectionResults: legacyResult.sectionResults || [], compatibilityProjection: legacyResult } },

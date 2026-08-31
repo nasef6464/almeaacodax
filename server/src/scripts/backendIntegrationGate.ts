@@ -16,7 +16,11 @@ import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assess
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 import { AssessmentResultModel } from "../modules/quizzes/infrastructure/assessmentResultModel.js";
 import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
-import { reconcileAssessmentResult } from "../modules/quizzes/application/assessmentResultReconciliation.js";
+import {
+  reconcileAssessmentResult,
+  repairAssessmentResultFromLegacy,
+} from "../modules/quizzes/application/assessmentResultReconciliation.js";
+import { dualWriteAssessmentSubmission } from "../modules/quizzes/application/dualWriteAssessmentSubmission.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -494,6 +498,73 @@ async function runHistoricalResultJourney() {
   assert.deepEqual(reconcileAssessmentResult(historicalResult.toObject(), compatibleAssessmentResult.toObject()), []);
 }
 
+async function runAssessmentDualWritePrimitiveJourney() {
+  const studentId = userIds.get("student");
+  assert.ok(studentId, "target student id missing for dual-write primitive");
+  const quiz = await QuizModel.findOne({ id: ASSESSMENT_QUIZ_ID }).lean();
+  const legacyResult = await QuizResultModel.findOne({ userId: studentId, quizId: ASSESSMENT_QUIZ_ID }).lean();
+  assert.ok(quiz, "assessment quiz missing for dual-write primitive");
+  assert.ok(legacyResult, "legacy submission missing for dual-write primitive");
+
+  const answers = { [ASSESSMENT_QUESTION_ID]: 1 };
+  const firstResult = await dualWriteAssessmentSubmission({ quiz, legacyResult, answers });
+  const retriedResult = await dualWriteAssessmentSubmission({ quiz, legacyResult, answers });
+  assert.equal(String(firstResult._id), String(retriedResult._id), "dual-write retry created a second assessment result");
+  assert.equal(await AssessmentAttemptModel.countDocuments({ submissionKey: legacyResult.submissionKey }), 1, "dual-write retry created a second attempt");
+  assert.equal(await AssessmentResultModel.countDocuments({ legacyQuizResultId: String(legacyResult._id) }), 1, "dual-write retry created a second result");
+  const persistedAttempt = await AssessmentAttemptModel.findOne({ submissionKey: legacyResult.submissionKey }).lean();
+  assert.ok(persistedAttempt, "dual-write attempt was not persisted");
+  assert.equal(await AssessmentResponseModel.countDocuments({ attemptId: String(persistedAttempt._id) }), 1, "dual-write retry duplicated a response");
+  pass("assessment dual-write primitive is idempotent after a legacy submission");
+
+  const partialLegacyResult = await QuizResultModel.create({
+    userId: studentId,
+    quizId: ASSESSMENT_QUIZ_ID,
+    quizTitle: "Platform V3 partial dual-write fixture",
+    score: 100,
+    passed: true,
+    totalQuestions: 1,
+    correctAnswers: 1,
+    wrongAnswers: 0,
+    unanswered: 0,
+    attemptNumber: 2,
+    submissionKey: `platform-v3-partial-dual-write-${RUN_MARKER}`,
+  });
+  const newWriteFailure = new Error("isolated response persistence failure");
+  await assert.rejects(
+    () => dualWriteAssessmentSubmission({
+      quiz,
+      legacyResult: partialLegacyResult.toObject(),
+      answers,
+      dependencies: { upsertResponse: async () => { throw newWriteFailure; } },
+    }),
+    newWriteFailure,
+  );
+  assert.ok(await QuizResultModel.exists({ _id: partialLegacyResult._id }), "new-write failure altered the successful legacy submission");
+  assert.equal(await AssessmentResultModel.countDocuments({ legacyQuizResultId: String(partialLegacyResult._id) }), 0, "partial new write finalized a result after response failure");
+  const repairedAfterRetry = await dualWriteAssessmentSubmission({
+    quiz,
+    legacyResult: partialLegacyResult.toObject(),
+    answers,
+  });
+  assert.equal(String(repairedAfterRetry.legacyQuizResultId), String(partialLegacyResult._id), "retry did not repair the partial new write");
+  assert.equal(await AssessmentAttemptModel.countDocuments({ submissionKey: partialLegacyResult.submissionKey }), 1, "partial-write retry created a duplicate attempt");
+  pass("assessment dual-write failure preserves legacy submission and retry repairs the new projection");
+
+  const divergent = await AssessmentResultModel.findByIdAndUpdate(
+    repairedAfterRetry._id,
+    { $set: { score: 0, compatibilityProjection: { score: 0 } } },
+    { new: true },
+  ).lean();
+  assert.ok(divergent, "failed to create isolated reconciliation divergence");
+  assert.deepEqual(reconcileAssessmentResult(partialLegacyResult.toObject(), divergent), ["score"], "reconciliation did not detect the isolated divergence");
+  const repaired = await repairAssessmentResultFromLegacy(partialLegacyResult.toObject(), divergent);
+  assert.ok(repaired, "reconciliation repair did not return an assessment result");
+  assert.deepEqual(reconcileAssessmentResult(partialLegacyResult.toObject(), repaired.toObject()), [], "reconciliation repair did not restore legacy parity");
+  assert.equal(await QuizResultModel.countDocuments({ _id: partialLegacyResult._id }), 1, "reconciliation repair altered the legacy submission");
+  pass("assessment reconciliation detects and repairs a new-model divergence without changing legacy data");
+}
+
 async function runMockAssessmentJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
   assert.ok(studentId, "target student id missing for mock assessment");
@@ -865,6 +936,7 @@ async function main() {
     }
 
     await runAssessmentJourney(csrf);
+    await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney();
     await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
