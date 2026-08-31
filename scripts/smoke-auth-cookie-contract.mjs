@@ -2,11 +2,12 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [cookieSource, authRoutesSource, authMiddlewareSource, apiSource, authContextSource] = await Promise.all([
+const [cookieSource, authRoutesSource, authMiddlewareSource, apiSource, authApiSource, authContextSource] = await Promise.all([
   read("server/src/utils/authCookie.ts"),
   read("server/src/routes/auth.routes.ts"),
   read("server/src/middleware/auth.ts"),
   read("services/api.ts"),
+  read("services/apiGroups/authApi.ts"),
   read("contexts/AuthContext.tsx"),
 ]);
 
@@ -58,8 +59,8 @@ check("auth middleware accepts bearer token or cookie token", () => {
 check("frontend sends credentials and clears client profile on logout (cookie-first)", () => {
   assertIncludes(apiSource, 'credentials: "include"');
   assertIncludes(apiSource, 'VITE_AUTH_COOKIE_FIRST !== "false"');
-  assertIncludes(apiSource, "logout: () =>");
-  assertIncludes(apiSource, 'request<void>("/auth/logout"');
+  assertIncludes(authApiSource, "logout: () =>");
+  assertIncludes(authApiSource, 'request<void>("/auth/logout"');
   assertIncludes(authContextSource, "await api.logout()");
   assertIncludes(authContextSource, "sessionStorage.removeItem(SESSION_STORAGE_KEY)");
 });
