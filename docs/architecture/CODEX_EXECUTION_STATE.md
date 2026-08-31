@@ -1,16 +1,16 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Assessment runner hardening, learning-space consolidation, content bootstrap closure, and schools RBAC audit
-- Current batch: confirmed the green isolated CI evidence for historical-result compatibility and prepared the bounded scale-validation phase
+- Current batch: release-candidate freeze completed after isolated assessment, scale, E2E, readiness, and dependency evidence
 - Current branch: `refactor/modular-platform-safe`
 - Last completed code commit: `15fa3b95` (satisfy teacher question fixture contract); isolated assessment CI gate passed at `038544cc` (run `33336856128`)
 - Last remote delivery: pushed through `d1054f4c` to `origin/refactor/modular-platform-safe`; generated audit artifacts and ZIP exports were intentionally excluded.
 - Latest control-plane commits: `4f206b0f`, `31aeecbd`, `e0617d4e`
 - Current gates: legacy builder inventory 3/3, exam question source 21/21, assessment question selection 5/5, assessment detail resolution 4/4, assessment settings consumption 5/5, mock exams 10/10, quiz integrity 4/4, quiz access 18/18, quiz answer exposure 5/5, learning scoped bootstrap 2/2, learning tabs 3/3, performance contract, reports role 20/20, quiz access 18/18, quiz integrity 4/4, and architecture gate PASS. The current local server TypeScript check/build remain blocked because `server/node_modules/.bin/tsc` is absent even after a clean install attempt; do not treat this as a source failure. Repository audit and frontend typecheck/build remain blocked by the incomplete root install (`typescript`/`lucide-react`).
-- Open blockers: production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved.
+- Open blockers: production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved. None of these is silently treated as closed by the release candidate.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, and historical-result reads. Backend run `33337500677` and full-stack E2E run `33337500695` both passed on isolated Mongo at commit `55e0ea5d`. The remaining evidence is a focused UI mapping for the five named assessment journeys and a bounded scale validation; neither is a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the required additive migration protocol. No schema/backfill work is authorized until its product decisions are answered.
-- Next exact action: implement and run a bounded, isolated scale-validation gate against read-only/public learner paths, then record its threshold, exact commit, and limits. Do not extract timer/session until an additive Session/Attempt design is approved. Do not delete a builder or change routes/schema/RBAC/scoring.
+- Next exact action: wait for explicit owner approval to create a PR/merge the frozen candidate. Do not extract timer/session, delete builders, or change routes/schema/RBAC/scoring while frozen.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: `server/src/routes/quiz.routes.ts` create/update publish slices, `server/src/modules/quizzes/http/quizDefinitionSchema.ts`, and focused definition contracts
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -211,6 +211,14 @@
 - Result: the historical result endpoint preserves legacy score, duration, and quiz identity without requiring a snapshot or mock section fields. This closes the historical-read evidence item in the assessment roadmap.
 - Limits: the broad E2E gate is evidence for the isolated stack, but it does not by itself label each of the five roadmap UI journeys; production-scale capacity remains unproven.
 - Next exact action: add bounded isolated scale validation and a focused UI-to-roadmap evidence map; do not use production credentials, databases, or load targets.
+
+## Batch 2T-14 — Release candidate evidence and freeze
+
+- Frozen runtime head: `e92ba9c8c07f3958c3b0285aa0daad78834e17c4`.
+- Evidence: Backend Integration `33355971164`, Deep E2E `33355971110`, Production Readiness `33355971089`, and Dependency Audit `33355789094` all succeeded on the safe branch. Deep E2E includes the bounded isolated read-scale validation.
+- Compare: `main` at `e0617d4e` is an ancestor; architecture and module-boundary gates passed with routes/API/env contracts, zero unresolved runtime imports, and zero cycles preserved.
+- Freeze: `MODULAR_PLATFORM_RELEASE_CANDIDATE_FREEZE_AR.md` records the policy and limits. No PR or merge was created automatically.
+- Next exact action: await explicit merge approval only.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
