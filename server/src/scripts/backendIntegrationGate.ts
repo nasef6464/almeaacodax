@@ -16,6 +16,7 @@ import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assess
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 import { AssessmentResultModel } from "../modules/quizzes/infrastructure/assessmentResultModel.js";
 import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
+import { reconcileAssessmentResult } from "../modules/quizzes/application/assessmentResultReconciliation.js";
 
 type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
 
@@ -451,6 +452,7 @@ async function runHistoricalResultJourney() {
     quizId: HISTORICAL_RESULT_QUIZ_ID,
     quizTitle: "Platform V3 historical assessment result",
     score: 75,
+    passed: true,
     totalQuestions: 4,
     correctAnswers: 3,
     wrongAnswers: 1,
@@ -469,7 +471,7 @@ async function runHistoricalResultJourney() {
   assert.equal(historical?.score, 75, "historical result score changed");
   assert.equal(historical?.timeSpent, "08:00", "historical result time changed");
 
-  await AssessmentResultModel.create({
+  const compatibleAssessmentResult = await AssessmentResultModel.create({
     attemptId: `platform-v3-integration-compatible-result-${RUN_MARKER}`,
     assignmentId: `platform-v3-integration-assignment-${RUN_MARKER}`,
     assessmentVersionId: `platform-v3-integration-version-${RUN_MARKER}`,
@@ -489,6 +491,7 @@ async function runHistoricalResultJourney() {
   expectStatus("student reads compatible assessment result projection", compatibleDetail, 200);
   assert.equal(compatibleDetail.body?.result?.score, 76, "compatible result projection was not read");
   assert.equal(compatibleDetail.body?.result?.userId, studentId, "compatible result changed the legacy owner");
+  assert.deepEqual(reconcileAssessmentResult(historicalResult.toObject(), compatibleAssessmentResult.toObject()), []);
 }
 
 async function runMockAssessmentJourney(csrf: CsrfContext) {
