@@ -274,11 +274,11 @@
 - Changed files: `server/src/modules/quizzes/application/assessmentDefinitionReadAdapter.ts`, `server/src/modules/quizzes/infrastructure/assessmentVersionRepository.ts`, `server/src/routes/quiz.routes.ts`, and `server/src/scripts/backendIntegrationGate.ts`.
 - Preserved contracts: HTTP path/method/response identity, legacy question lookup and learner sanitization, `QuizResult`, submission/scoring, RBAC, Mongo schema semantics, and all write paths. No version is written by any production route in this batch.
 - Tests: `server:check`, integration-harness TypeScript check, and `git diff --check` PASS locally. The harness now verifies that an isolated immutable version overrides only its definition while retaining the assessment ID and legacy questions.
-- Gates: pending automatic isolated CI run on the exact pushed commit.
-- Commit: pending.
-- Push: pending.
+- Gates: `Platform V3 Backend Integration Gate` run `33365058231` PASS on `dc15f04f` with Mongo 7, API build, harness typecheck, ready API, and real HTTP journey all green.
+- Commit: `dc15f04f` `feat(assessments): read immutable definition versions`.
+- Push: pushed to `origin/codex/assessment-data-evolution`.
 - Risks: result-read fallback, version creation, and dual-write remain separate batches; this adapter is read-only and falls back to the legacy document.
-- Next exact action: push and inspect the isolated HTTP run. If it passes, add the matching result-read adapter before considering dual-write.
+- Next exact action: add the matching result-read adapter with legacy fallback before considering dual-write.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
