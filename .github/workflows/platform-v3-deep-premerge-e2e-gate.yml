@@ -202,6 +202,7 @@ jobs:
       - name: Public full-stack journeys on isolated API
         id: public_ui
         continue-on-error: true
+        timeout-minutes: 10
         run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id deep-premerge-public-${{ github.run_id }}
 
       - name: All role pages desktop + mobile on isolated stack
