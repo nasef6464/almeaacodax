@@ -192,6 +192,10 @@ jobs:
           cat audit-artifacts/deep-premerge/frontend.log || true
           exit 1
 
+      - name: Bounded isolated read-scale validation
+        id: isolated_scale
+        run: node scripts/run-isolated-scale-validation.mjs --base-url http://127.0.0.1:4010 --output audit-artifacts/deep-premerge/isolated-scale.json
+
       - name: Public full-stack journeys on isolated API
         id: public_ui
         continue-on-error: true
@@ -244,6 +248,7 @@ jobs:
             echo "- Database: isolated Mongo service for GitHub run $GITHUB_RUN_ID"
             echo "- Production writes: none"
             echo "- Operational API: ${{ steps.operational.outcome }}"
+            echo "- Bounded isolated read scale: ${{ steps.isolated_scale.outcome }}"
             echo "- Public UI: ${{ steps.public_ui.outcome }}"
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
@@ -271,6 +276,7 @@ jobs:
           check "API startup" "${{ steps.start_api.outcome }}"
           check "Operational multi-role API" "${{ steps.operational.outcome }}"
           check "Frontend startup" "${{ steps.start_frontend.outcome }}"
+          check "Bounded isolated read scale" "${{ steps.isolated_scale.outcome }}"
           check "Public full-stack UI" "${{ steps.public_ui.outcome }}"
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"

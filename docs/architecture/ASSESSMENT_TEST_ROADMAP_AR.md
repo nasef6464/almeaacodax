@@ -17,8 +17,8 @@
 | --- | --- | --- |
 | عقود المصدر | `smoke:assessment-*` و`smoke:quiz-*` | تحرس الملكية والشكل؛ لا تثبت HTTP/UI فعليًا. |
 | سلامة المنشئ والـrunner | question selection، settings consumption، mock sections، server-result authority | تغطية مركزة، لا تغطي كل الأدوار والواجهات. |
-| HTTP حقيقي معزول | `server/src/scripts/backendIntegrationGate.ts` وworkflow `platform-v3-backend-integration-gate.yml` | مهيأ للتشغيل على CI؛ لم تثبت نتيجته على HEAD قبل push/dispatch. |
-| واجهة متصفح | Playwright موجود وworkflows live/preview موجودة | ليس بعد E2E معزولًا ثابتًا لمصفوفة الاختبارات كاملة. |
+| HTTP حقيقي معزول | `server/src/scripts/backendIntegrationGate.ts` وworkflow `platform-v3-backend-integration-gate.yml` | نجح على Mongo مؤقت في run `33337500677` عند `55e0ea5d`، ويشمل النتائج التاريخية؛ لا يثبت سعة الإنتاج. |
+| واجهة متصفح | workflow `platform-v3-deep-premerge-e2e-gate.yml` | نجح على API/واجهة/Chromium معزولة في run `33337500695` عند `55e0ea5d`؛ يلزم ربط أدلته صراحةً بالرحلات الخمس أدناه. |
 
 ## ترتيب التنفيذ بعد الدفعة الحالية
 
@@ -53,7 +53,7 @@
 4. معلم/مشرف يوجّه اختبارًا داخل النطاق؛ المستهدف يراه والخارجي لا يراه ولا يستطيع فتحه عبر الرابط.
 5. تحديث تعريف قديم لا يفقد settings أو mock sections أو selected questions خارج الصفحة الأولى.
 
-بوابة الخروج: لقطات/مخرجات E2E مرتبطة بالـcommit وبدون أسرار أو حسابات إنتاجية.
+بوابة الخروج: لقطات/مخرجات E2E مرتبطة بالـcommit وبدون أسرار أو حسابات إنتاجية، مع خريطة صريحة تربط كل رحلة من الخمس بدليلها أو باستثناء موثق.
 
 ### 4. النتائج والتحليلات والتوافق التاريخي
 
@@ -61,7 +61,7 @@
 - التحليل العادي والـmock يفرّقان بين الإجمالي وsection/skill بلا تغيير نتائج سابقة.
 - اختبار rollback منطقي: تعريفات/نتائج سابقة قابلة للقراءة قبل أي migration additive.
 
-بوابة الخروج: API integration + E2E + عينة بيانات تاريخية معزولة تمر كلها.
+بوابة الخروج: API integration + E2E + عينة بيانات تاريخية معزولة تمر كلها. HTTP التاريخي نجح في `33337500677`؛ يبقى توثيق خريطة E2E المركزة والتحقق المحدود من الأداء/التوسع.
 
 ## قواعد تشغيل غير قابلة للتفاوض
 

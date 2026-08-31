@@ -59,6 +59,7 @@
         "smoke:xlsx-safety": "node scripts/smoke-xlsx-safety-contract.mjs",
         "smoke:deployment-cache": "node scripts/smoke-deployment-cache-contract.mjs",
         "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
+        "validate:isolated-read-scale": "node scripts/run-isolated-scale-validation.mjs",
         "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
         "smoke:ai-config-bridge": "node scripts/smoke-ai-config-bridge-contract.mjs",
         "smoke:admin-memberships-ai-closure": "node scripts/smoke-admin-memberships-ai-closure-contract.mjs",
