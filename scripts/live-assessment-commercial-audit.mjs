@@ -52,6 +52,10 @@ async function login(context, account) {
     return { ok: true, user: payload.user };
   }, { apiBaseUrl: API_BASE_URL, ...account });
   if (!result.ok) throw new Error(`Login failed (${result.status}): ${result.message}`);
+  // The page was opened before the cookie/session profile was established.
+  // Reload so AuthContext and the persisted store hydrate from the new session
+  // before any role-scoped catalog assertions run.
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
   return { page, user: result.user };
 }
 
