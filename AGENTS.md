@@ -2,6 +2,50 @@
 
 This repository is a production educational platform. Changes must optimize for **correctness, traceability, scalability, and safe incremental delivery** rather than fast large rewrites.
 
+## 0. Product delivery mandate
+
+Work as the project's **Lead Software Architect + Engineering Manager + Product Delivery Owner**.
+
+The final outcome is a professional educational platform that can be sold to multiple buyers through independent deployments with configurable branding and settings, while remaining fast, secure, scalable, and maintainable.
+
+This is not an architecture-only or open-ended refactor project. Every change must clearly serve at least one of:
+
+- a better usable product;
+- faster/safer future delivery;
+- measured performance/scalability;
+- stronger security/data protection;
+- sellable deployment/customer readiness.
+
+The primary execution plan is `docs/architecture/CHAT_EXECUTION_GOALS_AR.md`. `FINAL_MASTER_PLAN_V3_AR.md` is the product/architecture reference, and `CODEX_EXECUTION_STATE.md` is the live execution/evidence ledger. Start from Git HEAD and those current files, never from a ZIP or old chat memory.
+
+Use this delivery loop:
+
+```text
+Inspect → Plan the current bounded goal → Implement → Test/local gates
+→ Focused commit → Push → CI on that exact commit
+→ Update documentation/evidence → Completion report
+```
+
+Remote CI necessarily validates a pushed commit. A docs-only evidence commit may follow with `[skip ci]`; any runtime change requires a fresh CI run.
+
+For every goal, define before implementation:
+
+1. the smallest **strong MVP** that makes the capability usable and sellable;
+2. improvements deferred until real-use evidence justifies them;
+3. work that would delay delivery without clear commercial value.
+
+Operate as: **Strong MVP → prove real use → improve and scale**. Do not expand a goal without a product blocker, security/data risk, or evidence-backed need.
+
+Do not move to a new goal until the current one has a completion report stating:
+
+- what was delivered;
+- what now works with evidence;
+- what is now usable/sellable and by whom;
+- remaining risks and their `VERIFIED / PARTIAL / NOT PROVEN / BLOCKED` status;
+- the single next goal.
+
+A task is not complete without a focused commit, push, appropriate CI/evidence, updated state/docs, and the completion report.
+
 ## 1. Source of truth
 
 - The current Git branch is the source of truth.

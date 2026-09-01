@@ -2,6 +2,7 @@
 
 - Current phase: Product Delivery Gate 1 — Assessment Commercial Closure
 - Primary execution plan: `docs/architecture/CHAT_EXECUTION_GOALS_AR.md` — Sellable Strong MVP → Prove Real Use → Improve and Scale. `FINAL_MASTER_PLAN_V3_AR.md` remains the product/architecture reference.
+- Permanent delivery rule: `AGENTS.md` now requires product-value filtering, bounded goal scope, local gates, focused commit/push, remote CI on the exact commit, documentation/evidence update, and a commercial completion report before moving to the next goal.
 - Current batch: `ACC-02` — normal + directed commercial journey; ACC-01 evidence/fixture map is complete, and the focused audit is being re-run with a fresh post-assignment learner session
 - Current branch: `codex/assessment-data-evolution`
 - Current implementation HEAD (before this planning batch): `26f615e13fbc2658ef68c03e4d5c6f68d6752dd1` (`refactor(schools): isolate bulk class creation`)

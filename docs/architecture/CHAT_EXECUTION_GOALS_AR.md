@@ -62,6 +62,8 @@ Sellable Strong MVP → Prove Real Use → Improve and Scale
 لا تغير API/RBAC/Scoring/Payments ولا تنفذ production cutover/dual-write أو historical reconstruction دون قرار صريح.
 ```
 
+تسلسل التسليم الفعلي: `Inspect → Plan → Implement → Test/local gates → Commit → Push → CI على نفس commit → Update Documentation → Completion Report`. لا يمكن للـCI البعيد أن يثبت كودًا غير موجود في commit؛ لذلك يأتي بعد push، ولا يُغلق الهدف إلا بعد نتيجته.
+
 ---
 
 ## الهدف 1 — إغلاق Assessment كمنتج تجاري مستقل
