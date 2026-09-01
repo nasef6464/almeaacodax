@@ -471,6 +471,18 @@ export const QuizPage: React.FC = () => {
         quizTitle: foundQuiz.title || 'اختبار',
         totalQuestions: nextQuestions.length,
       }).catch((err: any) => console.warn('Failed to start live exam session:', err));
+      api.getLiveExamSession(foundQuiz.id).then((serverProgress: any) => {
+        const serverAnswers = serverProgress?.answers;
+        if (!serverAnswers || typeof serverAnswers !== 'object') return;
+        const allowed = new Set(nextQuestions.map((question) => question.id));
+        setSelectedOptions((current) => ({
+          ...current,
+          ...Object.fromEntries(Object.entries(serverAnswers).filter(([questionId, value]) =>
+            allowed.has(questionId) && Number.isInteger(Number(value)) && Number(value) >= 0,
+          )),
+        }));
+        setDraftRestored(true);
+      }).catch((err: any) => console.warn('Failed to restore server progress:', err));
     }
     setDraftRestored(canRestoreProgress);
 
