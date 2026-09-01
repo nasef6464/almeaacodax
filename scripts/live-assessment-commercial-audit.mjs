@@ -105,11 +105,18 @@ async function main() {
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId(`assessment-builder-target-group-${targetGroup.id || targetGroup._id}`).check();
     await admin.page.screenshot({ path: path.join(OUT_DIR, "admin-directed-builder.png"), fullPage: true });
+    const createResponsePromise = admin.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/quizzes"),
+      { timeout: 30000 },
+    );
     await admin.page.getByTestId("assessment-builder-save").click();
+    const createResponse = await createResponsePromise;
+    const createdFromWrite = await createResponse.json().catch(() => ({}));
+    if (!createResponse.ok()) throw new Error(`Builder create failed (${createResponse.status()}): ${createdFromWrite?.message || ""}`);
     await admin.page.getByTestId("assessment-builder").waitFor({ state: "detached", timeout: 30000 });
 
     const quizzesResponse = await api(admin.page, "/quizzes?limit=300");
-    const created = listOf(quizzesResponse.payload, "quizzes").find((quiz) => quiz.title === marker);
+    const created = listOf(quizzesResponse.payload, "quizzes").find((quiz) => quiz.title === marker) || createdFromWrite;
     createdQuizId = String(created?.id || created?._id || "");
     if (!createdQuizId) throw new Error("Published assessment was not returned by the API after builder save.");
 
