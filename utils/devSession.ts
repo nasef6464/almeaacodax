@@ -13,7 +13,6 @@ export const isDevSessionUser = (user?: DevSessionUserLike | null) => {
   if (!user) return false;
   return (
     isDevSessionToken(user.token) ||
-    (typeof user.id === 'string' && user.id.startsWith('dev-')) ||
-    (typeof user.email === 'string' && user.email.endsWith('@almeaa.local'))
+    (typeof user.id === 'string' && user.id.startsWith('dev-'))
   );
 };
