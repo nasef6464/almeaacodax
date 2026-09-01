@@ -246,11 +246,14 @@ check("school roster assignments stay server-backed and refresh the authoritativ
 
 check("selected-school class lifecycle stays server-backed and refreshes authoritatively", () => {
   assertIncludes(files.schools, "createSchoolClassLifecycleActions");
+  assertIncludes(files.schools, "createSchoolClassRenameAction");
   assertIncludes(files.schools, "createGroupAsync(buildNewClassGroup");
   assertIncludes(files.schools, "deleteGroupAsync(classroom.id)");
+  assertIncludes(files.schools, "updateGroupAsync(classroom.id, { name: newName.trim() })");
   assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
   assertIncludes(files.schools, "create-class");
   assertIncludes(files.schools, "delete-class-${classroom.id}");
+  assertIncludes(files.schools, "rename-class-${classroom.id}");
 });
 
 check("school package commands stay server-backed and refresh authoritatively", () => {

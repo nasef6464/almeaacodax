@@ -16,6 +16,18 @@ type SchoolClassLifecycleActionsInput = {
     setSaveVerificationMessage: (value: string) => void;
 };
 
+type SchoolClassRenameActionInput = {
+    selectedSchool: Group;
+    classroom: Group;
+    updateGroupAsync: (groupId: string, data: Partial<Group>) => Promise<unknown>;
+    refreshSchoolWorkspace: (schoolId: string) => Promise<unknown>;
+    setSchoolActionPending: (value: string | null) => void;
+    setManagementError: (value: string | null) => void;
+    setManagementNotice: (value: string | null) => void;
+    setSaveVerificationState: (value: SaveVerificationState) => void;
+    setSaveVerificationMessage: (value: string) => void;
+};
+
 export const createSchoolClassLifecycleActions = ({
     selectedSchool,
     ownerId,
@@ -84,4 +96,39 @@ export const createSchoolClassLifecycleActions = ({
         handleCreateSingleClass,
         handleDeleteClass,
     };
+};
+
+export const createSchoolClassRenameAction = ({
+    selectedSchool,
+    classroom,
+    updateGroupAsync,
+    refreshSchoolWorkspace,
+    setSchoolActionPending,
+    setManagementError,
+    setManagementNotice,
+    setSaveVerificationState,
+    setSaveVerificationMessage,
+}: SchoolClassRenameActionInput) => async (newName: string) => {
+    if (!newName.trim() || newName.trim() === classroom.name) return;
+
+    setSchoolActionPending(`rename-class-${classroom.id}`);
+    setSaveVerificationState('saving');
+    setSaveVerificationMessage('جاري حفظ اسم الفصل...');
+    setManagementError(null);
+    setManagementNotice(null);
+    try {
+        await updateGroupAsync(classroom.id, { name: newName.trim() });
+        await refreshSchoolWorkspace(selectedSchool.id);
+        setSaveVerificationState('success');
+        setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
+        setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
+    } catch (error) {
+        const message = getErrorMessage(error, 'تعذر تعديل اسم الفصل الآن.');
+        setSaveVerificationState('error');
+        setSaveVerificationMessage(message);
+        setManagementError(message);
+        throw error;
+    } finally {
+        setSchoolActionPending(null);
+    }
 };
