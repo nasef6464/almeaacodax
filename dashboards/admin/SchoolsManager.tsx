@@ -115,6 +115,7 @@ import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDra
 import { useSchoolRosterBootstrap } from './SchoolsManager/useSchoolRosterBootstrap';
 import { useSchoolWorkspaceRefresh } from './SchoolsManager/useSchoolWorkspaceRefresh';
 import { createSchoolRosterAssignmentActions } from './SchoolsManager/schoolRosterAssignmentActions';
+import { createSchoolClassLifecycleActions } from './SchoolsManager/schoolClassLifecycleActions';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -791,33 +792,21 @@ export const SchoolsManager: React.FC = () => {
                 setSchoolActionPending(null);
             }
         };
-        const handleCreateSingleClass = async (notice = 'تم إنشاء فصل جديد. يمكنك تغيير اسمه وربط الطلاب والمشرفين من بطاقة الفصل.') => {
-            const now = Date.now();
-            setSchoolActionPending('create-class');
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري حفظ الفصل...');
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await createGroupAsync(buildNewClassGroup({
-                    name: `فصل جديد - ${selectedSchool.name}`,
-                    parentId: selectedSchool.id,
-                    ownerId: user.id,
-                    now,
-                }));
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم الحفظ والتأكد من الفصل من الخادم.');
-                setManagementNotice(notice);
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر إنشاء الفصل الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setSchoolActionPending(null);
-            }
-        };
+        const {
+            handleCreateSingleClass,
+            handleDeleteClass,
+        } = createSchoolClassLifecycleActions({
+            selectedSchool,
+            ownerId: user.id,
+            createGroupAsync,
+            deleteGroupAsync,
+            refreshSchoolWorkspace,
+            setSchoolActionPending,
+            setManagementError,
+            setManagementNotice,
+            setSaveVerificationState,
+            setSaveVerificationMessage,
+        });
         const {
             handleAssignSchoolSupervisor,
             handleRemoveSchoolSupervisor,
@@ -1158,29 +1147,6 @@ export const SchoolsManager: React.FC = () => {
             });
         };
 
-        const handleDeleteClass = async (classroom: Group) => {
-            if (!window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) return;
-
-            setSchoolActionPending(`delete-class-${classroom.id}`);
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري حذف الفصل...');
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await deleteGroupAsync(classroom.id);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم حذف الفصل والتأكد منه من الخادم.');
-                setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر حذف الفصل الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setSchoolActionPending(null);
-            }
-        };
 
         const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {
             if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {

@@ -30,6 +30,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
+  await read("dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts"),
 ].join("\n"),
   store: [
     await read("store/useStore.ts"),
@@ -240,6 +241,15 @@ check("school roster assignments stay server-backed and refresh the authoritativ
   assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
   assertIncludes(files.schools, "supervisor-assign-${groupId}-${supervisorId}");
   assertIncludes(files.schools, "student-remove-${groupId}-${studentId}");
+});
+
+check("selected-school class lifecycle stays server-backed and refreshes authoritatively", () => {
+  assertIncludes(files.schools, "createSchoolClassLifecycleActions");
+  assertIncludes(files.schools, "createGroupAsync(buildNewClassGroup");
+  assertIncludes(files.schools, "deleteGroupAsync(classroom.id)");
+  assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
+  assertIncludes(files.schools, "create-class");
+  assertIncludes(files.schools, "delete-class-${classroom.id}");
 });
 
 check("school workspace avoids duplicate operating blocks", () => {
