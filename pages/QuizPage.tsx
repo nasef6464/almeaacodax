@@ -475,12 +475,12 @@ export const QuizPage: React.FC = () => {
         const serverAnswers = serverProgress?.answers;
         if (!serverAnswers || typeof serverAnswers !== 'object') return;
         const allowed = new Set(nextQuestions.map((question) => question.id));
-        setSelectedOptions((current) => ({
-          ...current,
-          ...Object.fromEntries(Object.entries(serverAnswers).filter(([questionId, value]) =>
-            allowed.has(questionId) && Number.isInteger(Number(value)) && Number(value) >= 0,
-          )),
-        }));
+        const restoredAnswers: Record<string, number> = Object.fromEntries(
+          Object.entries(serverAnswers)
+            .filter(([questionId, value]) => allowed.has(questionId) && Number.isInteger(Number(value)) && Number(value) >= 0)
+            .map(([questionId, value]) => [questionId, Number(value)]),
+        );
+        setSelectedOptions((current) => ({ ...current, ...restoredAnswers }));
         setDraftRestored(true);
       }).catch((err: any) => console.warn('Failed to restore server progress:', err));
     }
