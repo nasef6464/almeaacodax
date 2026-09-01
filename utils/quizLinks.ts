@@ -13,27 +13,28 @@ export const isSafeInternalRoute = (target?: string) => {
   return target.startsWith('/') && !target.startsWith('//');
 };
 
-export const buildQuizRouteWithContext = (quizId: string, context: QuizRouteContext = {}) => {
+export const buildQuizRouteWithContext = (quizId: string, context: QuizRouteContext | null = {}) => {
+  const safeContext = context || {};
   const params = new URLSearchParams();
 
-  if (isSafeInternalRoute(context.returnTo)) {
-    params.set('returnTo', context.returnTo as string);
+  if (isSafeInternalRoute(safeContext.returnTo)) {
+    params.set('returnTo', safeContext.returnTo as string);
   }
 
-  if (context.source) {
-    params.set('source', context.source);
+  if (safeContext.source) {
+    params.set('source', safeContext.source);
   }
 
-  if (context.returnOnFinish) {
+  if (safeContext.returnOnFinish) {
     params.set('returnOnFinish', '1');
   }
 
-  if (context.courseId) {
-    params.set('courseId', context.courseId);
+  if (safeContext.courseId) {
+    params.set('courseId', safeContext.courseId);
   }
 
-  if (context.courseLessonId) {
-    params.set('courseLessonId', context.courseLessonId);
+  if (safeContext.courseLessonId) {
+    params.set('courseLessonId', safeContext.courseLessonId);
   }
 
   const query = params.toString();
