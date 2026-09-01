@@ -119,10 +119,22 @@ export const createSchoolRosterAssignmentActions = ({
         }
     };
 
+    const confirmRemoveSchoolWideSupervisor = (currentUser: User) => {
+        if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) return;
+        void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
+    };
+
+    const confirmRemoveClassSupervisor = (classroom: Group, currentUser: User) => {
+        if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) return;
+        void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
+    };
+
     return {
         handleAssignSchoolSupervisor,
         handleRemoveSchoolSupervisor,
         handleAssignStudentToClass,
         handleRemoveStudentScope,
+        confirmRemoveSchoolWideSupervisor,
+        confirmRemoveClassSupervisor,
     };
 };

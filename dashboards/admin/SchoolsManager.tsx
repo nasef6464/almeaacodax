@@ -813,6 +813,8 @@ export const SchoolsManager: React.FC = () => {
             handleRemoveSchoolSupervisor,
             handleAssignStudentToClass,
             handleRemoveStudentScope,
+            confirmRemoveSchoolWideSupervisor,
+            confirmRemoveClassSupervisor,
         } = createSchoolRosterAssignmentActions({
             selectedSchool,
             schoolScopeGroups,
@@ -846,13 +848,6 @@ export const SchoolsManager: React.FC = () => {
             setManagementError,
             setManagementNotice,
         });
-        const handleRemoveSchoolWideSupervisor = (currentUser: User) => {
-            if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
-                return;
-            }
-            void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
-        };
-
         const focusQuickSupervisorEntry = (targetGroupId: string, targetGroupName: string) => {
             setQuickSupervisor((current) => ({ ...current, targetGroupId }));
             setManagementNotice(`تم اختيار ${targetGroupName}. اكتب بيانات المشرف ثم اضغط إنشاء/ربط المشرف.`);
@@ -1096,12 +1091,6 @@ export const SchoolsManager: React.FC = () => {
             });
         };
 
-
-        const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {
-            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
-                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
-            }
-        };
 
         const downloadClassReport = (classroom: Group) => {
             createWorkbookDownload(`${selectedSchool.name}-${classroom.name}-class-report.xlsx`, buildSchoolClassReportSheets({
@@ -1561,7 +1550,7 @@ export const SchoolsManager: React.FC = () => {
                                     rosterActionPending={rosterActionPending}
                                     onOpenSupervisorEntry={() => focusQuickSupervisorEntry(selectedSchool.id, selectedSchool.name)}
                                     onAssignSupervisor={(value) => handleAssignSchoolSupervisor(value, selectedSchool.id)}
-                                    onRemoveSupervisor={handleRemoveSchoolWideSupervisor}
+                                    onRemoveSupervisor={confirmRemoveSchoolWideSupervisor}
                                 />
 
                                 <SchoolCoursesPanel
@@ -1597,7 +1586,7 @@ export const SchoolsManager: React.FC = () => {
                                 onOpenPackages={() => setActiveTab('packages')}
                                 onAssignSupervisor={handleAssignSchoolSupervisor}
                                 onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
-                                onRemoveSupervisor={handleRemoveClassSupervisor}
+                                onRemoveSupervisor={confirmRemoveClassSupervisor}
                                 onAssignCourse={assignCourseToGroup}
                                 onRemoveCourse={removeCourseFromGroup}
                             />
