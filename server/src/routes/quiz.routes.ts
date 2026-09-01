@@ -826,6 +826,21 @@ quizRouter.get(
       req.authUser && !isStaffRole(req.authUser.role)
         ? await resolveAuthUserByAuthId(String(req.authUser.id || ""))
         : req.authUser;
+    // Group membership is authoritative in Group.studentIds for legacy and
+    // school-managed users; hydrate it before applying directed catalog
+    // filtering so an assigned learner is not hidden from the UI.
+    let learnerAudienceForCatalog = learnerAudienceUser;
+    if (learnerAudienceUser && !isStaffRole(learnerAudienceUser.role)) {
+      const learnerId = String(learnerAudienceUser.id || learnerAudienceUser._id || "");
+      if (learnerId) {
+        const learnerGroups = await GroupModel.find({ studentIds: learnerId }).select("id _id").lean();
+        const membershipGroupIds = learnerGroups.map((group: any) => String(group.id || group._id || ""));
+        learnerAudienceForCatalog = {
+          ...(typeof learnerAudienceUser.toObject === "function" ? learnerAudienceUser.toObject() : learnerAudienceUser),
+          groupIds: uniqueStrings([...(learnerAudienceUser.groupIds || []), ...membershipGroupIds]),
+        };
+      }
+    }
     const requestedPathId = typeof req.query.pathId === "string" ? req.query.pathId.trim() : "";
     const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
     const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
@@ -902,7 +917,7 @@ quizRouter.get(
 
       safeItems = items.filter(
         (quiz: any) =>
-          isQuizTargetedToLearner(quiz, learnerAudienceUser) &&
+          isQuizTargetedToLearner(quiz, learnerAudienceForCatalog) &&
           getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
       );
     }
