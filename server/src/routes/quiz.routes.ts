@@ -435,6 +435,47 @@ const isQuizTargetedToLearner = (quiz: any, user?: any) => {
   );
 };
 
+/**
+ * Directed assessments must protect their definition as well as submission.
+ * The client-side catalog is only a convenience layer; this check reloads the
+ * learner and verifies group membership from the database before questions
+ * can be returned from a direct URL.
+ */
+const resolveDirectedQuizReadAccess = async (quiz: any, authUser?: any) => {
+  const targetUserIds = uniqueStrings(quiz.targetUserIds || []);
+  const targetGroupIds = uniqueStrings(quiz.targetGroupIds || []);
+  if (targetUserIds.length === 0 && targetGroupIds.length === 0) {
+    return { allowed: true as const };
+  }
+
+  if (!authUser) {
+    return { allowed: false as const, status: StatusCodes.UNAUTHORIZED };
+  }
+
+  const user = await resolveAuthUserByAuthId(String(authUser.id || ""));
+  if (!user) {
+    return { allowed: false as const, status: StatusCodes.UNAUTHORIZED };
+  }
+  if (isStaffRole(user.role)) {
+    return { allowed: true as const };
+  }
+
+  const userId = String(user.id || user._id || "");
+  if (targetUserIds.includes(userId)) {
+    return { allowed: true as const };
+  }
+  if (targetGroupIds.length === 0) {
+    return { allowed: false as const, status: StatusCodes.FORBIDDEN };
+  }
+
+  const matchingGroup = await GroupModel.findOne({
+    $and: [buildDocumentsByIdsQuery(targetGroupIds), { studentIds: userId }],
+  }).select("_id").lean();
+  return matchingGroup
+    ? { allowed: true as const }
+    : { allowed: false as const, status: StatusCodes.FORBIDDEN };
+};
+
 const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   if (isStaffRole(user.role)) {
     return true;
@@ -1520,6 +1561,15 @@ quizRouter.get(
 
     if (!legacyQuiz) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+    }
+
+    const directedReadAccess = await resolveDirectedQuizReadAccess(legacyQuiz, req.authUser);
+    if (!directedReadAccess.allowed) {
+      return res.status(directedReadAccess.status).json({
+        message: directedReadAccess.status === StatusCodes.UNAUTHORIZED
+          ? "Authentication required"
+          : "This quiz is not assigned to you",
+      });
     }
 
     const assessmentId = String(legacyQuiz.id || legacyQuiz._id || "");

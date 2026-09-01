@@ -40,6 +40,8 @@ interface SessionUser {
   displayName: string;
   photoURL: string;
   role: BackendRole;
+  groupIds?: string[];
+  schoolId?: string | null;
   token?: string;
 }
 
@@ -130,6 +132,8 @@ const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
   displayName: user.name,
   photoURL: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
   role: user.role,
+  groupIds: Array.isArray(user.groupIds) ? user.groupIds.map(String) : [],
+  schoolId: user.schoolId ?? null,
 });
 
 const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAuthUser | null) => {
@@ -150,8 +154,8 @@ const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAut
       points: backendUser?.points ?? existing.points,
       badges: backendUser?.badges ?? existing.badges,
       isActive: backendUser?.isActive ?? existing.isActive,
-      schoolId: backendUser?.schoolId ?? existing.schoolId,
-      groupIds: backendUser?.groupIds ?? existing.groupIds,
+      schoolId: backendUser?.schoolId ?? sessionUser.schoolId ?? existing.schoolId,
+      groupIds: backendUser?.groupIds ?? sessionUser.groupIds ?? existing.groupIds,
       linkedStudentIds: backendUser?.linkedStudentIds ?? existing.linkedStudentIds,
       managedPathIds: backendUser?.managedPathIds ?? existing.managedPathIds,
       managedSubjectIds: backendUser?.managedSubjectIds ?? existing.managedSubjectIds,

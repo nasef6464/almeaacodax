@@ -360,6 +360,14 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   assert.equal(versionedDetail.body?.title, "Platform V3 immutable assessment version", "versioned definition was not read");
   assert.equal(versionedDetail.body?.questions?.length, 1, "versioned definition did not resolve its legacy questions");
 
+  const outsiderDefinition = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
+    token: tokens.get("outsider"),
+  });
+  expectStatus("outside student cannot read directed assessment definition", outsiderDefinition, 403);
+
+  const anonymousDefinition = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`);
+  expectStatus("anonymous user cannot read directed assessment definition", anonymousDefinition, 401);
+
   const missingQuestionQuiz = await jsonRequest("/quizzes", {
     method: "POST",
     token: tokens.get("admin"),

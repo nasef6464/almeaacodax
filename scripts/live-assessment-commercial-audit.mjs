@@ -45,6 +45,8 @@ async function login(context, account) {
     sessionStorage.setItem("the-hundred-auth-profile", JSON.stringify({
       id: String(payload.user.id || payload.user._id || payload.user.email), email: payload.user.email,
       displayName: payload.user.name, photoURL: payload.user.avatar || "", role: payload.user.role,
+      groupIds: Array.isArray(payload.user.groupIds) ? payload.user.groupIds.map(String) : [],
+      schoolId: payload.user.schoolId || null,
     }));
     if (csrfBody?.csrfToken) sessionStorage.setItem("almeaa:csrf-token", csrfBody.csrfToken);
     return { ok: true, user: payload.user };
