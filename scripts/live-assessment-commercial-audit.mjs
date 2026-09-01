@@ -71,7 +71,7 @@ function listOf(payload, key) {
 async function main() {
   const browser = await chromium.launch({ headless: true });
   const adminContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
-  const studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
+  let studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   const outsiderContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   const errors = [];
   let createdQuizId = "";
@@ -120,22 +120,27 @@ async function main() {
     createdQuizId = String(created?.id || created?._id || "");
     if (!createdQuizId) throw new Error("Published assessment was not returned by the API after builder save.");
 
-    await student.page.goto(`${BASE_URL}/my-quizzes`, { waitUntil: "networkidle", timeout: 60000 });
-    await student.page.getByTestId("student-directed-tests").waitFor({ timeout: 30000 });
-    await student.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
-    await student.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
-    await student.page.getByTestId("quiz-answer-option-0").click();
-    await student.page.getByTestId("quiz-finish-button").click();
-    await student.page.getByTestId("quiz-finish-confirm").click();
-    await student.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
-    await student.page.screenshot({ path: path.join(OUT_DIR, "student-result.png"), fullPage: true });
+    // Start a fresh learner session after assignment so the evidence proves the
+    // server-backed bootstrap, not stale state loaded before the quiz existed.
+    await studentContext.close();
+    studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
+    const freshStudent = await login(studentContext, credentials.student);
+    await freshStudent.page.goto(`${BASE_URL}/my-quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await freshStudent.page.getByTestId("student-directed-tests").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
+    await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("quiz-answer-option-0").click();
+    await freshStudent.page.getByTestId("quiz-finish-button").click();
+    await freshStudent.page.getByTestId("quiz-finish-confirm").click();
+    await freshStudent.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
+    await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-result.png"), fullPage: true });
 
     await outsider.page.goto(`${BASE_URL}/quiz/${createdQuizId}`, { waitUntil: "networkidle", timeout: 60000 });
     const outsiderState = await outsider.page.evaluate(() => ({
       canSeeQuestion: Boolean(document.querySelector('[data-testid="quiz-answer-option-0"]')),
       body: document.body.innerText || "",
     }));
-    const resultResponse = await api(student.page, "/quiz-results/my?limit=50");
+    const resultResponse = await api(freshStudent.page, "/quiz-results/my?limit=50");
     const hasServerResult = listOf(resultResponse.payload, "results").some((result) => String(result.quizId || "") === createdQuizId);
     const checks = [
       ["builder created a published directed definition", Boolean(created?.isPublished) && (created.targetGroupIds || []).map(String).includes(String(targetGroup.id || targetGroup._id))],
