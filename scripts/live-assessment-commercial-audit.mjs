@@ -174,7 +174,9 @@ async function main() {
     const failed = checks.filter(([, ok]) => !ok);
     const summary = { generatedAt: new Date().toISOString(), marker, createdQuizId, checks: checks.map(([name, ok]) => ({ name, ok })), errors };
     fs.writeFileSync(path.join(OUT_DIR, "SUMMARY.json"), JSON.stringify(summary, null, 2));
-    if (failed.length) throw new Error(failed.map(([name]) => name).join("; "));
+    if (failed.length) {
+      throw new Error(`${failed.map(([name]) => name).join("; ")} :: ${JSON.stringify({ resultResponse, runnerBody: (await freshStudent.page.locator("body").innerText().catch(() => "")).slice(0, 1200) })}`);
+    }
     console.log(`PASS assessment commercial audit: ${createdQuizId}`);
   } catch (error) {
     fs.writeFileSync(path.join(OUT_DIR, "FAILURE.txt"), String(error?.stack || error));
