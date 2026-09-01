@@ -125,7 +125,10 @@ async function main() {
     await studentContext.close();
     studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
     const freshStudent = await login(studentContext, credentials.student);
-    await freshStudent.page.goto(`${BASE_URL}/my-quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    // `/quizzes` is the learner's available-assessments catalog. `/my-quizzes`
+    // is intentionally the completed-attempt history and must not be used to
+    // prove that a newly directed assessment is discoverable.
+    await freshStudent.page.goto(`${BASE_URL}/quizzes`, { waitUntil: "networkidle", timeout: 60000 });
     await freshStudent.page.getByTestId("student-directed-tests").waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
