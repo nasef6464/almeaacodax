@@ -62,6 +62,24 @@ router.post("/start", requireAuth, async (req, res) => {
 });
 
 // Update progress
+router.get("/session/:quizId", requireAuth, async (req, res) => {
+  try {
+    const userId = String(req.authUser!.id);
+    const quizId = String(req.params.quizId);
+    const session = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" }).lean();
+    if (!session) return res.json({ session: null, answers: {} });
+    const responses = session.assessmentAttemptId
+      ? await AssessmentResponseModel.find({ attemptId: session.assessmentAttemptId, studentId: userId }).select("questionId answer").lean()
+      : [];
+    const answers = Object.fromEntries(responses.map((response: any) => [String(response.questionId), response.answer]));
+    return res.json({ session, answers });
+  } catch (error) {
+    console.error("Error reading live exam session:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update progress
 router.post("/progress", requireAuth, async (req, res) => {
   try {
     const { quizId, answeredQuestions, totalQuestions, answers } = req.body;
