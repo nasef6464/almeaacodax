@@ -141,7 +141,7 @@ async function main() {
       body: (document.body.innerText || "").slice(0, 1200),
     })).catch(() => null);
     if (!catalogDiagnostics?.hasDirectedSection) {
-      const visibleCatalog = await api(freshStudent.page, "/quizzes?limit=300");
+      const visibleCatalog = await api(freshStudent.page, "/quizzes?limit=200");
       throw new Error(`Directed assessment missing from learner catalog: ${JSON.stringify({ catalog: visibleCatalog.payload, diagnostics: catalogDiagnostics })}`);
     }
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
