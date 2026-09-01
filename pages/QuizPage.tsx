@@ -763,6 +763,7 @@ export const QuizPage: React.FC = () => {
         quizId: quiz?.id || '',
         answeredQuestions: Object.keys(next).length,
         totalQuestions: quizQuestions.length,
+        answers: next,
       }).catch((err: any) => console.warn('Failed to update live exam progress:', err));
       return next;
     });

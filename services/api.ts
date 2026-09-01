@@ -837,7 +837,7 @@ export const api = {
       body: payload,
       token,
     }),
-  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number }, token?: string | null) =>
+  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number; answers?: Record<string, unknown> }, token?: string | null) =>
     request<{ success: boolean }>("/live-exams/progress", {
       method: "POST",
       body: payload,
