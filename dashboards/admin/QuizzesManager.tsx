@@ -727,6 +727,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             تصدير الجاهزية
           </button>
           <button
+            data-testid="assessment-manager-create"
             onClick={handleCreateNew}
             className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >

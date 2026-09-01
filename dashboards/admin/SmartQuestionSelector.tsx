@@ -244,7 +244,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'ه', 'و'];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div data-testid="assessment-question-selector" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
       {/* ══════════════════════════════════════════════
           اللوحة اليسرى: الفلاتر + قائمة الأسئلة
@@ -338,7 +338,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           <div className="space-y-2">
             <div className="relative">
               <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+              <input data-testid="assessment-question-search" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="ابحث في السؤال..." dir="rtl"
                 className="w-full pr-9 pl-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"/>
             </div>
@@ -386,7 +386,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                     const isHovered = hoveredQuestionId === q.id;
                     const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
                     return (
-                      <button key={q.id} type="button"
+                      <button key={q.id} type="button" data-testid={`assessment-question-select-${q.id}`}
                         onClick={() => { toggleQuestion(q.id); setHoveredQuestionId(q.id); }}
                         onMouseEnter={() => setHoveredQuestionId(q.id)}
                         disabled={!isSelected && selectedIds.length >= maxQuestions}

@@ -75,6 +75,20 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 دليل الخروج: matrix بلا خانة مجهولة، وأول فجوة تنفيذ محددة. هذا هو أول Batch بعد `PLAN-01`.
 
+#### خريطة الأدلة المجمدة — 2026-09-01
+
+| الرحلة | UI public entry | API/نموذج الحقيقة | الدليل القائم | الحالة/الفجوة |
+|---|---|---|---|---|
+| 1. إنشاء عادي واختيار/نشر | `QuizzesManager` → `UnifiedQuizBuilder` → `SmartQuestionSelector` | `POST /quizzes`؛ `QuizModel` مع `AssessmentVersion` compatibility projection | `backendIntegrationGate.ts` يثبت integrity والنشر/القراءة HTTP | `PARTIAL`: لم يكن هناك E2E يثبت الـwizard أو الاختيار من UI. أضيف `live-assessment-commercial-audit.mjs` وselectors مستقرة. |
+| 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history مثبتة HTTP معزولًا | `PARTIAL`: audit الجديد يثبت runner وserver-result؛ next action/history التفصيلي يبقى ACC-04. |
+| 3. محاكي متعدد الأقسام | `UnifiedQuizBuilder(kind=mock)` → `QuizPage` | `QuizModel.mockExam`، `QuizResult.sectionResults`، models additive للجلسات/المحاولات | `backendIntegrationGate.ts` يثبت mock/scoring | `PARTIAL`: start/resume/autosave/failure safety غير مثبتة؛ هي أول فجوة ACC-03. |
+| 4. توجيه داخل النطاق | step 4 في `UnifiedQuizBuilder` → `student-directed-tests` → direct runner | `targetGroupIds/targetUserIds`، access policy في quiz routes و`QuizModel` | cross-school/class rejection مثبت HTTP | `PARTIAL`: audit الجديد يثبت target UI/submission ورفض outsider للرابط، مع fixture admin/student/parent المعزول. |
+| 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | compatibility/version preservation مثبت HTTP | `PARTIAL`: pagination + edit UI + version-read acceptance لم تثبت؛ تدخل ACC-04. |
+
+**Fixture map:** تستخدم بوابة CI المعزولة مستخدمي `ROLE_ADMIN` و`ROLE_STUDENT` و`ROLE_PARENT`، وسؤالًا approved scoped من API ومجموعة فعلية للطالب من `GET /auth/me` و`GET /content/bootstrap?scope=full`. لا تُنشأ أو تُحذف أي بيانات خارج Mongo المعزول؛ الـassessment المؤقت يُحذف في `finally`.
+
+**أول فجوة حقيقية:** لم يكن هناك دليل تشغيل متصل يربط Builder/selector/assignment/runner/result في نفس التغيير. ليست فجوة API أو scoring؛ لذلك ACC-02 يبدأ بهذا الـaudit دون تعديل العقود أو قواعد الأعمال.
+
 ### ACC-02 — Normal + directed sellable journey
 
 رحلتان في Batch واحدة مترابطة:

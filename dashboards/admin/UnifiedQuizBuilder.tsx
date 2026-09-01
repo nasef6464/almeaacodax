@@ -322,7 +322,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div data-testid="assessment-builder" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
 
         {/* Header */}
@@ -383,7 +383,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                       const cfg = KIND_CONFIG[k];
                       const isActive = kind === k;
                       return (
-                        <button key={k} type="button" onClick={() => setKind(k)}
+                        <button key={k} type="button" data-testid={`assessment-builder-kind-${k}`} onClick={() => setKind(k)}
                           className={`flex flex-col items-start gap-2 p-4 rounded-2xl border-2 transition-all text-right ${isActive ? cfg.activeCls : cfg.passiveCls + " hover:opacity-80"}`}>
                           <div className="flex items-center gap-2">{cfg.icon}<span className="font-black text-sm">{cfg.label}</span></div>
                           <p className={`text-xs leading-relaxed ${isActive ? "text-white/80" : "opacity-70"}`}>{cfg.desc}</p>
@@ -410,19 +410,19 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="text-xs font-bold text-gray-600 mb-1 block">العنوان *</label>
-                  <input value={title} onChange={(e) => setTitle(e.target.value)}
+                  <input data-testid="assessment-builder-title" value={title} onChange={(e) => setTitle(e.target.value)}
                     placeholder="مثال: اختبار وحدة الاستعارة..." dir="rtl"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-bold focus:outline-none focus:border-indigo-400" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="text-xs font-bold text-gray-600 mb-1 block">الوصف (اختياري)</label>
-                  <textarea value={description} onChange={(e) => setDescription(e.target.value)}
+                  <textarea data-testid="assessment-builder-description" value={description} onChange={(e) => setDescription(e.target.value)}
                     rows={2} dir="rtl"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 resize-none" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-600 mb-1 block">المسار *</label>
-                  <select value={pathId} onChange={(e) => { setPathId(e.target.value); setSubjectId(""); }}
+                  <select data-testid="assessment-builder-path" value={pathId} onChange={(e) => { setPathId(e.target.value); setSubjectId(""); }}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-indigo-400">
                     <option value="">اختر المسار</option>
                     {availablePaths.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -430,7 +430,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-600 mb-1 block">المادة *</label>
-                  <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)}
+                  <select data-testid="assessment-builder-subject" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}
                     disabled={!pathId}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-indigo-400 disabled:opacity-50">
                     <option value="">اختر المادة</option>
@@ -599,7 +599,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto border border-gray-100 rounded-xl p-3 bg-gray-50">
                   {availableGroups.map((g) => (
                     <label key={g.id} className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white rounded-lg transition-all">
-                      <input type="checkbox" checked={targetGroupIds.includes(g.id)}
+                      <input data-testid={`assessment-builder-target-group-${g.id}`} type="checkbox" checked={targetGroupIds.includes(g.id)}
                         onChange={(e) => {
                           if (e.target.checked) setTargetGroupIds([...targetGroupIds, g.id]);
                           else setTargetGroupIds(targetGroupIds.filter((id) => id !== g.id));
@@ -660,7 +660,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 <label className="text-xs font-black text-gray-700 mb-1 flex items-center gap-1.5">
                   <Calendar size={14} />تاريخ انتهاء (اختياري)
                 </label>
-                <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)}
+                  <input data-testid="assessment-builder-due-date" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)}
                   className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 bg-white" />
               </div>
 
@@ -682,7 +682,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               {/* Admin: show on platform */}
               {isAdmin && (
                 <label className="flex items-center gap-3 cursor-pointer p-3 border border-gray-100 rounded-2xl bg-gray-50">
-                  <input type="checkbox" checked={showOnPlatform} onChange={(e) => setShowOnPlatform(e.target.checked)}
+                  <input data-testid="assessment-builder-show-on-platform" type="checkbox" checked={showOnPlatform} onChange={(e) => setShowOnPlatform(e.target.checked)}
                     className="w-5 h-5 text-indigo-600 rounded border-gray-300" />
                   <div>
                     <p className="text-sm font-black text-gray-800">إظهار على المنصة العامة</p>
@@ -714,7 +714,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               </button>
             )}
             {step < 4 ? (
-              <button type="button" onClick={() => setStep((s) => (s + 1) as WizardStep)}
+              <button type="button" data-testid="assessment-builder-next" onClick={() => setStep((s) => (s + 1) as WizardStep)}
                 disabled={!stepValid[step - 1]}
                 className={`flex items-center gap-1.5 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   stepValid[step - 1] ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -722,7 +722,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 التالي <ChevronLeft size={16} />
               </button>
             ) : (
-              <button type="button" onClick={handleSave}
+              <button type="button" data-testid="assessment-builder-save" onClick={handleSave}
                 disabled={saving || !stepValid[3]}
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50">
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}

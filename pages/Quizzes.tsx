@@ -863,6 +863,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               return (
                 <Link
                   key={quiz.id}
+                  data-testid={`student-directed-test-${quiz.id}`}
                   to={route}
                   className="rounded-xl border border-white bg-white p-5 transition-all hover:border-indigo-300 hover:shadow-md group flex flex-col"
                 >

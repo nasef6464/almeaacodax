@@ -221,6 +221,14 @@ jobs:
           QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
         run: node scripts/live-question-editor-audit.mjs
 
+      - name: Assessment normal and directed commercial journey
+        id: assessment_commercial
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID: deep-premerge-assessment-${{ github.run_id }}
+        run: node scripts/live-assessment-commercial-audit.mjs
+
       - name: Supervisor school command UI journey
         id: supervisor_school
         continue-on-error: true
@@ -261,6 +269,7 @@ jobs:
             echo "- Public UI: ${{ steps.public_ui.outcome }}"
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
+            echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
             echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
             echo "- School from scratch: ${{ steps.school_from_scratch.outcome }}"
             echo "- Barcode public test: ${{ steps.barcode.outcome }}"
@@ -289,6 +298,7 @@ jobs:
           check "Public full-stack UI" "${{ steps.public_ui.outcome }}"
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"
+          check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
           check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
           check "School from scratch" "${{ steps.school_from_scratch.outcome }}"
           check "Barcode public test" "${{ steps.barcode.outcome }}"
