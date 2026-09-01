@@ -141,8 +141,13 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       if (hasExplicitTargets) {
         const userGroups = user.groupIds || [];
         const userTargeted = (quiz.targetUserIds || []).length === 0 || (quiz.targetUserIds || []).includes(user.id);
+        // The authenticated catalog is already audience-filtered by the API.
+        // Some legacy sessions do not hydrate groupIds into the client profile;
+        // do not hide a server-authorized assignment in that case. When local
+        // membership is present, retain the defensive mismatch rejection.
         const groupTargeted =
           (quiz.targetGroupIds || []).length === 0 ||
+          userGroups.length === 0 ||
           (quiz.targetGroupIds || []).some((groupId) => userGroups.includes(groupId));
 
         if (!userTargeted || !groupTargeted) return false;
