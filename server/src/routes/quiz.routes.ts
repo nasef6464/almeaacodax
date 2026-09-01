@@ -831,13 +831,14 @@ quizRouter.get(
     // filtering so an assigned learner is not hidden from the UI.
     let learnerAudienceForCatalog = learnerAudienceUser;
     if (learnerAudienceUser && !isStaffRole(learnerAudienceUser.role)) {
-      const learnerId = String(learnerAudienceUser.id || learnerAudienceUser._id || "");
+      const learnerRecord = learnerAudienceUser as any;
+      const learnerId = String(learnerRecord.id || learnerRecord._id || "");
       if (learnerId) {
         const learnerGroups = await GroupModel.find({ studentIds: learnerId }).select("id _id").lean();
         const membershipGroupIds = learnerGroups.map((group: any) => String(group.id || group._id || ""));
         learnerAudienceForCatalog = {
-          ...(typeof learnerAudienceUser.toObject === "function" ? learnerAudienceUser.toObject() : learnerAudienceUser),
-          groupIds: uniqueStrings([...(learnerAudienceUser.groupIds || []), ...membershipGroupIds]),
+          ...(typeof learnerRecord.toObject === "function" ? learnerRecord.toObject() : learnerRecord),
+          groupIds: uniqueStrings([...(learnerRecord.groupIds || []), ...membershipGroupIds]),
         };
       }
     }
