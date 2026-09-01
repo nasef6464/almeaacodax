@@ -1,7 +1,7 @@
 # ALMEAA — Codex Execution State
 
 - Current phase: Product Delivery Gate 1 — Assessment Commercial Closure
-- Current batch: `ACC-02` — normal + directed commercial journey; ACC-01 evidence/fixture map is complete and the isolated CI evidence is pending for this implementation batch
+- Current batch: `ACC-02` — normal + directed commercial journey; ACC-01 evidence/fixture map is complete, and the focused audit is being re-run after correcting its create-response evidence capture
 - Current branch: `codex/assessment-data-evolution`
 - Current implementation HEAD (before this planning batch): `26f615e13fbc2658ef68c03e4d5c6f68d6752dd1` (`refactor(schools): isolate bulk class creation`)
 - Branch relation: local HEAD and `origin/codex/assessment-data-evolution` are synchronized (`0 behind / 0 ahead`) before this documentation batch. Existing generated audit modifications and ZIP/text files are excluded from this batch.
@@ -13,7 +13,7 @@
 - Open blockers: the authorized historical scope is result-only, with an explicit data-completeness marker. No historical `AssessmentAttempt`, `AssessmentResponse`, or authoritative historical definition may be reconstructed because their source data is not complete. No existing production assessment is opted in; production-scale certification is not proven; production secrets must be rotated outside the repository; self-service parent/student linking remains disabled until a verified-consent product decision is approved.
 - Assessment test execution: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md` records the user-supplied acceptance matrix. The structural batch is closed; the isolated harness covers the normal directed journey, bounded cross-school/class rejection, a two-section mock journey, partial mock-definition preservation, duplicate-reference normalization, missing/invalid published-question rejection, teacher managed-question scope, historical-result reads, and the latest-result compatible reader. Backend run `33437577025` and full-stack E2E run `33437577018` both passed on isolated Mongo at commit `af8ea80a`. The remaining evidence is a focused UI mapping for the five named assessment journeys; the bounded CI read-scale check is not a production-scale certification.
 - Phase 5 decision: `docs/architecture/ASSESSMENT_DATA_EVOLUTION_DECISION_AR.md` records the current result/session boundary and the additive protocol. Result-only backfill and an opt-in single-result reader control are authorized only on isolated evidence; no production opt-in is authorized.
-- Next exact action: inspect the CI result for the focused `Assessment normal and directed commercial journey`. If green, record ACC-02 as `VERIFIED` and proceed directly to ACC-03 mock session/resume/failure safety. Do not reconstruct attempts/responses/definitions, opt in production assessments, change scoring/RBAC/API contracts, or delete legacy records.
+- Next exact action: inspect the new CI run after `7d6bf781`. If the focused `Assessment normal and directed commercial journey` and aggregate Deep Gate are green, record ACC-02 as `VERIFIED` and proceed directly to ACC-03 mock session/resume/failure safety. Do not reconstruct attempts/responses/definitions, opt in production assessments, change scoring/RBAC/API contracts, or delete legacy records.
 - Plan handoff: read `docs/architecture/FINAL_MASTER_PLAN_V3_AR.md` before any new work
 - Files in next scope: assessment public entry points and acceptance evidence only: `docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md`, `pages/QuizPage.tsx`, builder/assignment entry points, Results surfaces, quiz compatibility routes, and `server/src/modules/quizzes/`; no implementation change until the matrix identifies the first vertical gap
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
@@ -40,6 +40,14 @@
 - CI wiring: the Deep Pre-Merge E2E workflow runs the new audit against its isolated API/Chromium stack and makes it a required green suite. The audit fails closed without explicitly supplied isolated `UI_AUDIT_BASE_URL` and `UI_AUDIT_API_BASE_URL`.
 - Local checks: `node --check scripts/live-assessment-commercial-audit.mjs`, `npm run typecheck`, `npm run server:check`, `npm run build`, `npm run smoke:quiz-integrity-guard` (4/4), `npm run smoke:assessment-directed-scope` (4/4), `npm run smoke:assessment-question-selection` (10/10), `node tools/refactor/architecture-gate.mjs`, and `git diff --check` all PASS.
 - Excluded: pre-existing generated audit files, ZIP exports, and `claude_prompt.txt` remain unstaged/unmodified by this batch.
+- CI correction evidence: Backend Integration `33493106346` passed on `ae27f014`. Deep run `33493106288` passed typecheck/build/API/scale/public/role/question-editor/schools/barcode, but its focused Assessment suite outcome failed because the audit queried the paginated list to rediscover the newly created definition and did not find it. The Builder POST itself completed and the modal closed. Commit `7d6bf781` now captures and validates the authoritative `POST /api/quizzes` response directly, with the list read retained only as secondary evidence; this is an audit correction, not a product/API/RBAC/scoring change. Re-run pending.
+
+## Product-owner handoff — sequential chat goals
+
+- Added `docs/architecture/CHAT_EXECUTION_GOALS_AR.md` after comparing the owner/ChatGPT report with Git HEAD and the current product-delivery plan.
+- Decision: no new roadmap is required. The report's core direction is already represented by Gates 1–6; duplicating the master plan would create competing truth.
+- Product impact: the owner now has six self-contained prompts to send one at a time: Assessment, Learning Space, School MVP, Results/Reports, White-label, then Questions/Curriculum/Courses/Operations.
+- Control: each prompt carries an explicit exit criterion, exclusions, evidence requirement, and next goal. A later goal must not start merely because a chat ended.
 
 ## Batch 2T-01 — Two-section mock assessment acceptance journey
 
