@@ -79,7 +79,6 @@ import {
     resolveSelectedAccessCodePackageId,
 } from './SchoolsManager/accessCodeService';
 import { buildSchoolClassReportSheets } from './SchoolsManager/classReportService';
-import { buildBulkClassGroups, filterNewClassNames, parseBulkClassNames } from './SchoolsManager/classService';
 import { copyTextToClipboard } from './SchoolsManager/clipboardService';
 import { buildQuickSupervisorPayload, buildSingleStudentImportRow } from './SchoolsManager/draftPayloadService';
 import { getErrorMessage } from './SchoolsManager/errorMessageService';
@@ -115,7 +114,7 @@ import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDra
 import { useSchoolRosterBootstrap } from './SchoolsManager/useSchoolRosterBootstrap';
 import { useSchoolWorkspaceRefresh } from './SchoolsManager/useSchoolWorkspaceRefresh';
 import { createSchoolRosterAssignmentActions } from './SchoolsManager/schoolRosterAssignmentActions';
-import { createSchoolClassLifecycleActions, createSchoolClassRenameAction } from './SchoolsManager/schoolClassLifecycleActions';
+import { createSchoolBulkClassCreationAction, createSchoolClassLifecycleActions, createSchoolClassRenameAction } from './SchoolsManager/schoolClassLifecycleActions';
 import { createSchoolPackageActions } from './SchoolsManager/schoolPackageActions';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
@@ -511,49 +510,6 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
-    const handleCreateBulkClasses = async () => {
-        if (!selectedSchool) return;
-
-        const classNames = parseBulkClassNames(bulkClassNames);
-
-        if (classNames.length === 0) {
-            setManagementError('اكتب اسم فصل واحد على الأقل، ويمكنك فصل الأسماء بسطر جديد أو فاصلة.');
-            return;
-        }
-
-        const namesToCreate = filterNewClassNames(classNames, classes, selectedSchool.id);
-
-        if (namesToCreate.length === 0) {
-            setManagementError('كل الفصول المكتوبة موجودة بالفعل داخل هذه المدرسة.');
-            return;
-        }
-
-        setSchoolActionPending('create-classes');
-        setSaveVerificationState('saving');
-        setSaveVerificationMessage('جاري حفظ الفصول...');
-        setManagementError(null);
-        setManagementNotice(null);
-        try {
-            await Promise.all(buildBulkClassGroups({
-                classNames: namesToCreate,
-                schoolId: selectedSchool.id,
-                ownerId: user.id,
-            }).map((classGroup) => createGroupAsync(classGroup)));
-
-            await refreshSchoolWorkspace(selectedSchool.id);
-            setBulkClassNames('');
-            setSaveVerificationState('success');
-            setSaveVerificationMessage('تم الحفظ والتأكد من الفصول من الخادم.');
-            setManagementNotice(`تم إنشاء ${namesToCreate.length} فصل/فصول والتأكد من حفظها.`);
-        } catch (error) {
-            const message = getErrorMessage(error, 'تعذر إنشاء الفصول الآن.');
-            setSaveVerificationState('error');
-            setSaveVerificationMessage(message);
-            setManagementError(message);
-        } finally {
-            setSchoolActionPending(null);
-        }
-    };
 
     const downloadTemplate = () => {
         downloadSchoolImportTemplate();
@@ -801,6 +757,20 @@ export const SchoolsManager: React.FC = () => {
             ownerId: user.id,
             createGroupAsync,
             deleteGroupAsync,
+            refreshSchoolWorkspace,
+            setSchoolActionPending,
+            setManagementError,
+            setManagementNotice,
+            setSaveVerificationState,
+            setSaveVerificationMessage,
+        });
+        const handleCreateBulkClasses = createSchoolBulkClassCreationAction({
+            selectedSchool,
+            ownerId: user.id,
+            classes,
+            bulkClassNames,
+            setBulkClassNames,
+            createGroupAsync,
             refreshSchoolWorkspace,
             setSchoolActionPending,
             setManagementError,

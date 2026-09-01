@@ -2,6 +2,7 @@ import type { Group } from '../../../types';
 import type { SaveVerificationState } from './contracts';
 import { getErrorMessage } from './errorMessageService';
 import { buildNewClassGroup } from './groupFactory';
+import { buildBulkClassGroups, filterNewClassNames, parseBulkClassNames } from './classService';
 
 type SchoolClassLifecycleActionsInput = {
     selectedSchool: Group;
@@ -26,6 +27,12 @@ type SchoolClassRenameActionInput = {
     setManagementNotice: (value: string | null) => void;
     setSaveVerificationState: (value: SaveVerificationState) => void;
     setSaveVerificationMessage: (value: string) => void;
+};
+
+type SchoolBulkClassCreationActionInput = Omit<SchoolClassLifecycleActionsInput, 'deleteGroupAsync'> & {
+    classes: Group[];
+    bulkClassNames: string;
+    setBulkClassNames: (value: string) => void;
 };
 
 export const createSchoolClassLifecycleActions = ({
@@ -128,6 +135,55 @@ export const createSchoolClassRenameAction = ({
         setSaveVerificationMessage(message);
         setManagementError(message);
         throw error;
+    } finally {
+        setSchoolActionPending(null);
+    }
+};
+
+export const createSchoolBulkClassCreationAction = ({
+    selectedSchool,
+    ownerId,
+    classes,
+    bulkClassNames,
+    setBulkClassNames,
+    createGroupAsync,
+    refreshSchoolWorkspace,
+    setSchoolActionPending,
+    setManagementError,
+    setManagementNotice,
+    setSaveVerificationState,
+    setSaveVerificationMessage,
+}: SchoolBulkClassCreationActionInput) => async () => {
+    const classNames = parseBulkClassNames(bulkClassNames);
+    if (classNames.length === 0) {
+        setManagementError('اكتب اسم فصل واحد على الأقل، ويمكنك فصل الأسماء بسطر جديد أو فاصلة.');
+        return;
+    }
+
+    const namesToCreate = filterNewClassNames(classNames, classes, selectedSchool.id);
+    if (namesToCreate.length === 0) {
+        setManagementError('كل الفصول المكتوبة موجودة بالفعل داخل هذه المدرسة.');
+        return;
+    }
+
+    setSchoolActionPending('create-classes');
+    setSaveVerificationState('saving');
+    setSaveVerificationMessage('جاري حفظ الفصول...');
+    setManagementError(null);
+    setManagementNotice(null);
+    try {
+        await Promise.all(buildBulkClassGroups({ classNames: namesToCreate, schoolId: selectedSchool.id, ownerId })
+            .map((classGroup) => createGroupAsync(classGroup)));
+        await refreshSchoolWorkspace(selectedSchool.id);
+        setBulkClassNames('');
+        setSaveVerificationState('success');
+        setSaveVerificationMessage('تم الحفظ والتأكد من الفصول من الخادم.');
+        setManagementNotice(`تم إنشاء ${namesToCreate.length} فصل/فصول والتأكد من حفظها.`);
+    } catch (error) {
+        const message = getErrorMessage(error, 'تعذر إنشاء الفصول الآن.');
+        setSaveVerificationState('error');
+        setSaveVerificationMessage(message);
+        setManagementError(message);
     } finally {
         setSchoolActionPending(null);
     }
