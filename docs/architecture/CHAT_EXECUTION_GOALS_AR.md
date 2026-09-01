@@ -1,6 +1,17 @@
-# ALMEAA — أهداف التنفيذ الجاهزة للنسخ في المحادثات
+# ALMEAA — خطة التنفيذ الرئيسية وأهداف المحادثات
 
-> هذا الملف مخصص لك كمالك للمنتج: انسخ **هدفًا واحدًا فقط** إلى محادثة Codex، وبعد إغلاقه وتحديث Git والحالة انتقل إلى الهدف التالي. ليس هذا الملف خطة بديلة؛ مصدر الحقيقة يظل Git HEAD ثم `FINAL_MASTER_PLAN_V3_AR.md` و`CODEX_EXECUTION_STATE.md`.
+> هذه هي **خطة التنفيذ الرئيسية** من الآن. استخدم `FINAL_MASTER_PLAN_V3_AR.md` كمرجع رؤية/معمار وحدود، و`CODEX_EXECUTION_STATE.md` كسجل الحالة والدليل. يظل Git HEAD الحقيقة الأولى. انسخ **هدفًا واحدًا فقط**، وبعد إغلاقه انتقل إلى التالي.
+
+## طريقة البناء التجارية
+
+```text
+Sellable Strong MVP → Prove Real Use → Improve and Scale
+```
+
+- `Sellable Strong MVP`: أقل نطاق متكامل يحل مشكلة مشتري حقيقي بأمان وجودة، وليس prototype هشًا.
+- `Prove Real Use`: رحلة مستخدم فعلية + API + persistence + RBAC + حالات الفشل، ثم commit وCI.
+- `Improve and Scale`: تحسينات مبنية على دليل استخدام/حمل، لا توقعات أو تجميل معماري.
+- لا يتوسع Goal إلا بسبب فجوة تمنع الاستخدام/البيع، أو خطر أمان/بيانات، أو دليل تشغيل يثبت الحاجة.
 
 ## نتيجة تحليل التقرير المرفق
 
@@ -18,6 +29,18 @@
 3. لا تعتمد ردًا يقول “تم” من دون commit مدفوع وCI ودليل إغلاق مناسب.
 4. إذا انتهت المحادثة قبل الهدف، أعد إرسال **الهدف نفسه**؛ لا تنتقل للهدف التالي.
 5. أي حذف بيانات أو migration مدمرة أو تغيير RBAC/Scoring/Payments يحتاج قرارك الصريح.
+6. قبل بدء أي Batch داخل Goal، صنّفه بوضوح: `MVP الآن` أو `مؤجل` أو `لا قيمة تجارية الآن`.
+
+## تقرير إغلاق إلزامي لكل Goal
+
+لا يعتبر Goal مغلقًا دون ملف/قسم تقرير يحتوي:
+
+- **ماذا أصبح يعمل:** الرحلات والقدرات المثبتة وروابط الأدلة.
+- **ماذا أصبح قابلًا للبيع:** من المشتري/المستخدم، وما القيمة التي يستطيع استخدامها الآن.
+- **ما تم تأجيله:** تحسينات لا تمنع البيع، مع سبب التأجيل وشرط إعادتها للأولوية.
+- **ما المخاطر المتبقية:** `PARTIAL / NOT PROVEN / BLOCKED` والمالك أو قرار التشغيل المطلوب.
+- **ما الهدف التالي:** هدف واحد فقط، ولماذا هو أعلى قيمة تالية.
+- **التسليم:** changed files، commits، push، CI، وتأثير العقود/البيانات/الرجوع.
 
 ## القواعد المشتركة لكل هدف
 
@@ -52,6 +75,18 @@
 
 النطاق الإلزامي:
 Definition, Builder, Question Selection, Assignment, Runner, Sessions, Attempts, Responses, Scoring, Results, Analytics.
+
+Sellable MVP الآن:
+- مدير/معلم ينشئ وينشر ويوجه اختبارًا عاديًا أو محاكيًا.
+- الطالب المستهدف يبدأ ويحفظ ويستكمل ويرسل بأمان، والخارجي يُرفض.
+- التصحيح والنتيجة الأساسية والتحليل الضروري من الخادم، مع history متوافق.
+- حالات الوقت/المحاولات/loading/error/retry وعدم تكرار النتيجة مثبتة.
+
+مؤجل بعد إثبات الاستخدام:
+- production cutover للنماذج additive، dashboards تحليل متقدم، proctoring متقدم، question types غير لازمة لأول مشترٍ، وشهادة حمل production-like.
+
+لا قيمة تجارية واضحة الآن:
+- حذف Quiz/QuizResult legacy، إعادة بناء تاريخ ناقص، microservice للاختبارات، أو تفكيك QuizPage/route لمجرد الحجم.
 
 ترتيب الإغلاق:
 ACC-01 evidence/fixture map — أغلقه فقط وفق الحالة الحالية.
@@ -88,6 +123,16 @@ ACC-05 completion report.
 Path → Level/Stage → Subject → Learning Space
 وداخل المادة: Courses, Foundation, Practice, Assessments, Library.
 
+Sellable MVP الآن:
+- نقطة دخول واحدة مفهومة للمادة، navigation ثابت، والمحتوى الأساسي يظهر في موضعه الصحيح.
+- رحلة طالب ومدير كاملة مع mobile/RTL وحالات loading/error/empty/success.
+
+مؤجل بعد إثبات الاستخدام:
+- personalization متقدم، توصيات AI، search موحد واسع، offline/native app، وإعادة تصميم بصري شامل.
+
+لا قيمة تجارية واضحة الآن:
+- نقل كل ملفات frontend إلى بنية جديدة، إعادة تسمية كل routes، أو إنشاء content graph عام قبل الحاجة.
+
 افحص أولًا public routes وGenericPathPage وLearningSection وSubjectLearningPage والـloaders/callers، ثم اختر canonical runtime واحدًا تدريجيًا مع compatibility للروابط الحالية. لا تخلط Learning Space مع Course Definition أو Assessment Definition؛ هما محتوى مستقل يُعرض داخله.
 
 أغلق رحلة فعلية: طالب يدخل المسار ثم المادة، يتعلم/يتدرب/يختبر ويرجع لنقطة واضحة، ومدير يعرف من أين يضيف كل نوع محتوى. أثبت desktop/mobile وRTL وloading/error/empty/success، ومنع التحميل العالمي غير المحدود.
@@ -113,6 +158,16 @@ Path → Level/Stage → Subject → Learning Space
 
 النطاق التجاري:
 Schools, Classes, Students, Teachers, Supervisors, Parents, Permissions, credentials/access, Excel import, package/path/course assignment, basic student/class/school reports.
+
+Sellable MVP الآن:
+- مدرسة تُنشأ من الصفر، فصول ومستخدمون وعلاقات وصلاحيات ودخول وتعيين محتوى وتقرير أساسي.
+- كل دور ينجز عمله اليومي من واجهة واضحة ضمن نطاقه فقط.
+
+مؤجل بعد إثبات الاستخدام:
+- SIS integrations، SSO متعدد المزودين، workflows موافقات متقدمة، billing مدرسي معقد، وautomation غير لازمة لأول تشغيل.
+
+لا قيمة تجارية واضحة الآن:
+- تفكيك SchoolsManager لمجرد الأسطر، إعادة تصميم schema للعلاقات دون migration business case، أو multi-tenant مركزي.
 
 نفذ vertical journeys من مدرسة فارغة حتى تسليم حسابات الدخول والاستخدام والتقرير. راجع كل زر ظاهر عبر UI→API→DB→RBAC مع loading/error/success. أثبت عزل Platform Admin وSchool Supervisor وClass Supervisor وTeacher وParent وStudent ببيانات مستخدمين حقيقية معزولة.
 
@@ -140,6 +195,16 @@ Schools, Classes, Students, Teachers, Supervisors, Parents, Permissions, credent
 Result = قراءة محاولة واحدة وقرارها ومراجعتها والخطوة التالية.
 Report = تحليل تاريخي عبر محاولات/طلاب/فصول/مدارس.
 
+Sellable MVP الآن:
+- Result واضح للطالب، وتقارير طالب/فصل/مدرسة قابلة للتصدير ومتوافقة مع الصلاحيات.
+- progress/weakness قابلة للفهم واتخاذ إجراء تعليمي منها.
+
+مؤجل بعد إثبات الاستخدام:
+- predictive analytics، BI خارجي، preaggregation واسع، scheduled reports متقدمة، وcustom report builder.
+
+لا قيمة تجارية واضحة الآن:
+- data warehouse أو event platform قبل قياس الحجم، أو تغيير scoring لإرضاء العرض، أو dashboards تجميلية بلا قرار قابل للتنفيذ.
+
 أغلق المنتج الأول: Student Report, Class Report, School Report, progress, weakness analysis, PDF export, Excel export. حافظ على scoring write path ولا تنقل business rules إلى presentation. افحص RBAC وquery shape وpagination وN+1 قبل إضافة cache أو preaggregation.
 
 معيار الإغلاق:
@@ -162,6 +227,16 @@ Report = تحليل تاريخي عبر محاولات/طلاب/فصول/مدا�
 ابدأ Product Gate 5: ProductConfig / White-label Foundation.
 
 نموذج البيع الحالي: deployment + database + domain مستقل لكل مشتري، ويمكن أن يحتوي عدة مدارس. لا تنشئ multi-tenancy شاملًا أو tenantId بلا قرار منتج.
+
+Sellable MVP الآن:
+- اسم/شعار/ألوان/navigation/features/settings/providers من config validated.
+- نسخة عميل ثانية تُبنى وتنشر من config فقط مع دليل تشغيل ورجوع.
+
+مؤجل بعد إثبات الاستخدام:
+- self-service theme marketplace، per-school branding داخل deployment، extension SDK عام، وmulti-tenant SaaS control plane.
+
+لا قيمة تجارية واضحة الآن:
+- fork للـCore، if customerName، theme engine معقد، أو نقل كل الإعدادات القديمة دفعة واحدة.
 
 نفذ ProductConfig موحدًا لاسم المنتج والشعار والألوان والدومين والتنقل والميزات والسياسات والموفرين. امنع if customerName ونسخ الـCore. لا ترسل أسرار providers إلى frontend، وضع validation وdefaults وcache invalidation واضحًا.
 
@@ -191,6 +266,16 @@ Report = تحليل تاريخي عبر محاولات/طلاب/فصول/مدا�
 3. Courses: فصل Learning Product عن Package/Commerce Product.
 4. Operations: storage/media, queues/jobs, observability, backup/restore, security/release checklist.
 5. Production-like load certification على staging مفوض فقط؛ لا ادعاء أرقام قبل تقرير قابل للإعادة.
+
+Sellable MVP الآن:
+- بنك أسئلة ومنهج ودورات ووسائط قابلة للإدارة والاستهلاك، وتشغيل يمكن مراقبته ونسخه احتياطيًا واستعادته.
+- release checklist ودليل تثبيت/نشر/نسخة عميل قابلة للتكرار.
+
+مؤجل بعد إثبات الاستخدام:
+- AI/ads/affiliate/BNPL/SCORM/integrations المتقدمة/native mobile وأي scale optimization بلا benchmark.
+
+لا قيمة تجارية واضحة الآن:
+- microservices، data lake، إعادة كتابة store/API بالكامل، أو منصة extensions عامة قبل وجود طلب عميل مثبت.
 
 لا تنفذ composition refactor واسعًا؛ استخرج API/store/admin shell فقط عندما يغلق vertical slice حقيقيًا.
 
