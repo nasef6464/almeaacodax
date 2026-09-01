@@ -99,6 +99,8 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 دليل الخروج: Playwright + isolated HTTP على نفس commit، مع DB assertions وRBAC rejection.
 
+**الحالة:** `VERIFIED` على commit `48a66358`. Backend Integration CI `33565698452` وDeep Pre-Merge E2E CI `33565698390` نجحا على نفس الـHEAD. أثبت الـaudit إنشاء Builder واختيار سؤال ونشر/توجيه، ظهور الاختبار للهدف، الإرسال والتصحيح وقراءة `QuizResult` من الخادم، ورفض outsider للرابط المباشر. الحفظ/الاستكمال والمحاكي متعدد الأقسام موثقون كفجوات ACC-03، والنتائج/التوافق التاريخي التفصيلي في ACC-04.
+
 ### ACC-03 — Mock session, resume and failure safety
 
 1. محاكي متعدد الأقسام مع وقت وقفل انتقال وسياسة انتهاء موثقة.
