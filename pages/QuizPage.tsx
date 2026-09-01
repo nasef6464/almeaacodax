@@ -1444,7 +1444,6 @@ export const QuizPage: React.FC = () => {
             <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50'} flex flex-wrap items-center justify-center gap-2 border-t p-3 sm:justify-between`}>
               <button
                 type="button"
-                data-testid="quiz-finish-cancel"
                 data-testid="quiz-prev-button"
                 onClick={handlePrev}
                 disabled={currentQuestionIndex === 0}
@@ -1814,7 +1813,7 @@ export const QuizPage: React.FC = () => {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 type="button"
-                data-testid="quiz-finish-confirm"
+                data-testid="quiz-finish-cancel"
                 onClick={() => setShowFinishDialog(false)}
                 className="rounded-xl bg-rose-500 px-5 py-3 font-black text-white transition-colors hover:bg-rose-600"
               >
@@ -1822,6 +1821,7 @@ export const QuizPage: React.FC = () => {
               </button>
               <button
                 type="button"
+                data-testid="quiz-finish-confirm"
                 onClick={() => {
                   setShowFinishDialog(false);
                   handleFinish();
