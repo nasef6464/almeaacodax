@@ -29,6 +29,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
 ].join("\n"),
   store: [
     await read("store/useStore.ts"),
@@ -228,6 +229,17 @@ check("school student roster exposes direct removal actions", () => {
   assertIncludes(files.schools, "handleRemoveStudentScope(student.id, currentClass.id)");
   assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchoolId)");
   assertIncludes(files.schools, "rosterActionPending");
+});
+
+check("school roster assignments stay server-backed and refresh the authoritative workspace", () => {
+  assertIncludes(files.schools, "createSchoolRosterAssignmentActions");
+  assertIncludes(files.schools, "assignSupervisorToGroupAsync");
+  assertIncludes(files.schools, "removeSupervisorFromGroupAsync");
+  assertIncludes(files.schools, "assignStudentToGroupAsync");
+  assertIncludes(files.schools, "removeStudentFromGroupAsync");
+  assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
+  assertIncludes(files.schools, "supervisor-assign-${groupId}-${supervisorId}");
+  assertIncludes(files.schools, "student-remove-${groupId}-${studentId}");
 });
 
 check("school workspace avoids duplicate operating blocks", () => {

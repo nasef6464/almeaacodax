@@ -114,6 +114,7 @@ import { useSchoolSelectionState } from './SchoolsManager/useSchoolSelectionStat
 import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDrafts';
 import { useSchoolRosterBootstrap } from './SchoolsManager/useSchoolRosterBootstrap';
 import { useSchoolWorkspaceRefresh } from './SchoolsManager/useSchoolWorkspaceRefresh';
+import { createSchoolRosterAssignmentActions } from './SchoolsManager/schoolRosterAssignmentActions';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -817,52 +818,28 @@ export const SchoolsManager: React.FC = () => {
                 setSchoolActionPending(null);
             }
         };
-        const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {
-            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
-            const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
-            setRosterActionPending(`supervisor-assign-${groupId}-${supervisorId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري ربط المشرف وحفظ النطاق...');
-            try {
-                await assignSupervisorToGroupAsync(supervisorId, groupId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم ربط المشرف والتأكد من حفظ النطاق.');
-                setManagementNotice(`تم حفظ ربط ${targetSupervisor?.name || 'المشرف'} على ${targetGroup?.name || 'النطاق المحدد'}.`);
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر ربط المشرف الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setRosterActionPending(null);
-            }
-        };
-        const handleRemoveSchoolSupervisor = async (supervisorId: string, groupId: string) => {
-            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
-            const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
-            setRosterActionPending(`supervisor-remove-${groupId}-${supervisorId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري إزالة ربط المشرف وحفظ النطاق...');
-            try {
-                await removeSupervisorFromGroupAsync(supervisorId, groupId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم إزالة ربط المشرف والتأكد من حفظ النطاق.');
-                setManagementNotice(`تم حفظ إزالة ${targetSupervisor?.name || 'المشرف'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر إزالة المشرف الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setRosterActionPending(null);
-            }
-        };
+        const {
+            handleAssignSchoolSupervisor,
+            handleRemoveSchoolSupervisor,
+            handleAssignStudentToClass,
+            handleRemoveStudentScope,
+        } = createSchoolRosterAssignmentActions({
+            selectedSchool,
+            schoolScopeGroups,
+            schoolStudents,
+            schoolClasses,
+            supervisors,
+            assignSupervisorToGroupAsync,
+            removeSupervisorFromGroupAsync,
+            assignStudentToGroupAsync,
+            removeStudentFromGroupAsync,
+            refreshSchoolWorkspace,
+            setRosterActionPending,
+            setManagementError,
+            setManagementNotice,
+            setSaveVerificationState,
+            setSaveVerificationMessage,
+        });
         const handleRemoveSchoolWideSupervisor = (currentUser: User) => {
             if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
                 return;
@@ -880,38 +857,6 @@ export const SchoolsManager: React.FC = () => {
                 const nameInput = document.querySelector<HTMLInputElement>('[data-testid="school-relations-supervisor-name"]');
                 nameInput?.focus();
             }, 120);
-        };
-        const handleAssignStudentToClass = async (studentId: string, classId: string) => {
-            const targetStudent = schoolStudents.find((student) => student.id === studentId);
-            const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
-            setRosterActionPending(`student-assign-${classId}-${studentId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await assignStudentToGroupAsync(studentId, classId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice(`تم حفظ نقل ${targetStudent?.name || 'الطالب'} إلى ${targetClass?.name || 'الفصل المحدد'}.`);
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر نقل الطالب الآن.'));
-            } finally {
-                setRosterActionPending(null);
-            }
-        };
-        const handleRemoveStudentScope = async (studentId: string, groupId: string) => {
-            const targetStudent = schoolStudents.find((student) => student.id === studentId);
-            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
-            setRosterActionPending(`student-remove-${groupId}-${studentId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await removeStudentFromGroupAsync(studentId, groupId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice(`تم حفظ إخراج ${targetStudent?.name || 'الطالب'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر إخراج الطالب الآن.'));
-            } finally {
-                setRosterActionPending(null);
-            }
         };
         const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
             const supervisorPayload = buildQuickSupervisorPayload(
