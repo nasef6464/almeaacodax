@@ -131,6 +131,11 @@ async function main() {
     await studentContext.close();
     studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
     const freshStudent = await login(studentContext, credentials.student);
+    const browserErrors = [];
+    freshStudent.page.on("pageerror", (error) => browserErrors.push(`pageerror:${error.message}`));
+    freshStudent.page.on("console", (message) => {
+      if (message.type() === "error") browserErrors.push(`console:${message.text()}`);
+    });
     // `/quizzes` is the learner's available-assessments catalog. `/my-quizzes`
     // is intentionally the completed-attempt history and must not be used to
     // prove that a newly directed assessment is discoverable.
@@ -142,7 +147,7 @@ async function main() {
     })).catch(() => null);
     if (!catalogDiagnostics?.hasDirectedSection) {
       const visibleCatalog = await api(freshStudent.page, "/quizzes?limit=200");
-      throw new Error(`Directed assessment missing from learner catalog: ${JSON.stringify({ catalog: visibleCatalog.payload, diagnostics: catalogDiagnostics })}`);
+      throw new Error(`Directed assessment missing from learner catalog: ${JSON.stringify({ catalog: visibleCatalog.payload, diagnostics: { ...catalogDiagnostics, browserErrors } })}`);
     }
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
