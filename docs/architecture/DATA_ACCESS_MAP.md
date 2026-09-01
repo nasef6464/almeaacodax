@@ -12,6 +12,7 @@
 | Users/Groups/Memberships | آلاف/مئات المدارس | scope/roster/report | pagination؛ تقييم arrays الكبيرة | PARTIAL |
 | Notifications | نمو مستمر | unread/me/stream | indexed delivery، Redis fan-out، no per-user Mongo polling | P0 |
 | Reports/Exports | ثقيلة ومتكررة | school/class/student/export | queue + cached/preaggregated read models عند ثبوت الحاجة | NOT PROVEN |
+| ProductConfig | سجل صغير لكل deployment | bootstrap/branding/features/providers | config validated ومحدود؛ لا أسرار provider داخل payload frontend؛ cache مع invalidation واضح | NOT PROVEN |
 
 ## أسلوب مراجعة أي Query
 
@@ -24,3 +25,11 @@
 - لا تخزين صور أو فيديو Binary داخل Mongo.
 - لا Cache لبيانات authenticated عامة بلا تصنيف scope.
 - لا Migration لعلاقات arrays قبل backfill/dual-read/dual-write/rollback.
+
+## قرار التنفيذ الحالي — 2026-09-01
+
+- Phase 5 مغلقة عند حد آمن معزول فقط: controlled mirror وreconciliation وrollback مثبتة، لكن `legacy` يظل الافتراضي ولا يوجد production opt-in.
+- لا يُعاد بناء `AssessmentAttempt` أو `AssessmentResponse` أو تعريف تاريخي من `QuizResult` ناقص؛ backfill التاريخي المسموح result-only بعلامة completeness.
+- مرحلة Assessment Commercial Closure التالية تبدأ بإثبات الرحلات والـfailure/retry/resume، لا بتوسيع cutover أو تشغيل migration.
+- School MVP يجب أن يثبت العلاقات والـscope بقراءات paginated/bounded؛ لا يُعتبر نجاح واجهة واحدة دليلًا على persistence أو RBAC.
+- Reports تبقى قراءة تاريخية مستقلة عن result write path، وأي cache/preaggregation يحتاج benchmark وrollback/invalidation contract.

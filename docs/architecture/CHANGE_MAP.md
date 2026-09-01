@@ -13,14 +13,18 @@
 | بنك الأسئلة/البحث | `QuestionBankManager` وquestions API | generic shared |
 | نوع سؤال جديد | assessment/question type contract | switch موزع |
 | صفحة الفصل والطلاب | `dashboards/admin/SchoolsManager/` | `useStore` مباشرة |
+| إنشاء/حذف/إعادة تسمية فصل أو إنشاء فصول جماعيًا | `dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts` | إعادة منطق orchestration إلى `SchoolsManager.tsx` |
 | تقدم المسار | `pages/Dashboard/pathProgressProjection.ts` | تعديل التقرير |
 | التقارير | Reports/Results view-models وreports backend | result write path |
 | الإشعارات والبث | notification module + SSE adapter + queue | إضافة polling جديد |
 | الدفع والوصول | payments routes/services/policies | UI unlock فقط |
 | اسم/ألوان/شعار العميل | ProductConfig/branding | Search/Replace شامل |
+| Feature أو provider خاص بعميل | ProductConfig feature/policy/provider adapter | `if customerName` أو fork للـCore |
 | تخزين الفيديو والصور | media/storage adapter | Binary داخل Mongo |
 | مهمة مجدولة | operations/queue/scheduler | `setInterval` داخل route |
 
 ## Contract قبل النقل
 
 قبل أي نقل: سجل callers، API/route contract، state contract، smoke contracts، ثم انقل concern واحدًا مع facade واختبارات.
+
+الأولوية بعد إغلاق checkpoint المدارس الحالي هي سد فجوة Product Gate، لا استخراج concern إضافي لمجرد تقليل حجم ملف. راجع `FINAL_MASTER_PLAN_V3_AR.md` قبل اختيار موضع التغيير.

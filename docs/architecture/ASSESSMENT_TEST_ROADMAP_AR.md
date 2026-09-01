@@ -1,93 +1,145 @@
-# خارطة اختبار نظام الاختبارات — تنفيذ مؤجل ومنظم
+# خارطة قبول وإغلاق Assessment Commercial Module
 
-## الغرض والنطاق
+> آخر تحديث: 2026-09-01. هذه الخارطة هي بوابة Gate 1 في `FINAL_MASTER_PLAN_V3_AR.md`. هدفها إنهاء وحدة اختبارات قابلة للبيع، لا زيادة smokes أو تقسيم ملفات بلا أثر منتج.
 
-هذه الخارطة تحوّل وثيقة تدقيق نظام الاختبارات التي قدمها مالك المشروع إلى بوابات تحقق قابلة للتنفيذ. لا تنشئ نظام اختبارات جديدًا، ولا تغيّر routes أو Mongo schema أو RBAC أو scoring. تنفيذها يبدأ فقط بعد إغلاق دفعة الفصل البنيوي الحالية ومرور بواباتها.
+## النطاق
 
-النموذجان اللذان تُبنى عليهما المصفوفة هما:
+```text
+Assessment
+├─ Definition
+├─ Builder
+├─ Question Selection
+├─ Assignment
+├─ Runner
+├─ Sessions
+├─ Attempts
+├─ Responses
+├─ Scoring
+├─ Results
+└─ Analytics
+```
 
-- **عادي:** تدريب أو اختبار مادة/مهارة ضمن رحلة الطالب العادية.
-- **محاكي:** أقسام متعددة، وقت وقواعد انتقال/إغلاق وتحليل لكل قسم.
+النماذج الوظيفية:
 
-أما الاختبار الموجّه فهو **توزيع** لا نوع ثالث: نفس تعريف الاختبار، مع جمهور وسياسة وقت/محاولات منفصلة.
+- **عادي/تدريب:** اختبار مادة أو مهارة ضمن رحلة الطالب.
+- **محاكي:** أقسام متعددة ووقت وقواعد انتقال وتحليل قسم.
+- **موجّه:** توزيع Definition عادي أو محاكي إلى جمهور وسياسة وقت/محاولات؛ ليس نوع تعريف ثالثًا.
+
+لا تغيّر هذه الخارطة route URLs أو API payloads أو Mongo semantics أو RBAC أو scoring. `Quiz` و`QuizResult` يبقيان compatibility facades حتى cutover مستقل معتمد.
+
+## مقياس الدليل
+
+| الحالة | الاستخدام هنا |
+|---|---|
+| `VERIFIED` | HTTP/E2E/persistence/RBAC مناسب مثبت على commit وبيئة معزولة |
+| `PARTIAL` | توجد تغطية حقيقية لكن رحلة أو طبقة لازمة ناقصة |
+| `NOT PROVEN` | الكود أو الفكرة موجودان بلا دليل قبول كافٍ |
+| `BLOCKED` | يحتاج قرار مالك أو staging أو وصولًا خارجيًا |
+
+smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
+
+## مصفوفة الإغلاق الحالية
+
+| Capability | الحالة | الدليل الحالي | فجوة الخروج |
+|---|---|---|---|
+| Definition/versioning | `PARTIAL` | definition adapter و`AssessmentVersion` واختبارات نشر/قراءة معزولة | رحلة UI تثبت create/edit/publish/version preservation |
+| Builder | `PARTIAL` | guards واختبارات عامة وواجهات قائمة | E2E مخصص للإنشاء/المعاينة/النشر ورسائل validation |
+| Question Selection | `PARTIAL` | missing/invalid/duplicate normalization ونطاق المعلم مثبت HTTP | UI pagination/selection preservation في الرحلة الخامسة |
+| Assignment/access | `PARTIAL` | directed access ورفض cross-school/class مثبت HTTP | UI موجه كامل، limit/window/error states |
+| Runner | `PARTIAL` | submit authority وE2E عام | رحلة عادي + محاكي مخصصة، refresh/reconnect وloading/error states |
+| Sessions | `NOT PROVEN` كجلسة خادمية مكتملة | `LiveExamSession` مراقبة فقط؛ foundation additive موجود | server start/resume/expiry/section lock policy مثبتة |
+| Attempts | `PARTIAL` | model/foundation وidempotent submission mirror معزول | lifecycle جديد للمحاولات الموجهة/المحاكي دون production opt-in |
+| Responses | `PARTIAL` | model/foundation additive | autosave/retry/resume persistence معزول وعدم فقد الإجابة |
+| Scoring | `VERIFIED` للعقد legacy الحالي | server-result authority وHTTP/CI guards | parity فقط عند أي reader/write migration؛ لا تغيير policy |
+| Results | `PARTIAL` | compatible direct readers وhistorical fallback وrollback مثبتة معزولًا | focused UI result/history، والقارئ الجديد ليس production default |
+| Analytics | `PARTIAL` | section analytics/scoped reports مثبتة في harness | فصل Result/Report وstudent/class/school evidence وexports |
 
 ## الدليل الموجود الآن
 
-| الطبقة | الدليل الحالي | حدّه |
-| --- | --- | --- |
-| عقود المصدر | `smoke:assessment-*` و`smoke:quiz-*` | تحرس الملكية والشكل؛ لا تثبت HTTP/UI فعليًا. |
-| سلامة المنشئ والـrunner | question selection، settings consumption، mock sections، server-result authority | تغطية مركزة، لا تغطي كل الأدوار والواجهات. |
-| HTTP حقيقي معزول | `server/src/scripts/backendIntegrationGate.ts` وworkflow `platform-v3-backend-integration-gate.yml` | نجح على Mongo مؤقت في run `33337500677` عند `55e0ea5d`، ويشمل النتائج التاريخية؛ لا يثبت سعة الإنتاج. |
-| واجهة متصفح | workflow `platform-v3-deep-premerge-e2e-gate.yml` | نجح على API/واجهة/Chromium معزولة في run `33437577018` عند `af8ea80a` (وكذلك `33337500695` عند `55e0ea5d`)؛ يلزم ربط أدلته صراحةً بالرحلات الخمس أدناه. |
+| الطبقة | الدليل | الحد |
+|---|---|---|
+| عقود المصدر | `smoke:assessment-*` و`smoke:quiz-*` | guards مساعدة؛ لا تثبت رحلة مستخدم |
+| HTTP معزول | `server/src/scripts/backendIntegrationGate.ts` وتشغيلات CI المسجلة في `CODEX_EXECUTION_STATE.md` | يثبت normal/directed/mock/scoping/history/mirror/reconciliation/rollback على Mongo مؤقت، لا production scale |
+| E2E معزول عام | `platform-v3-deep-premerge-e2e-gate.yml`؛ آخر HEAD مدرسي `26f615e1` نجح في `33465513152` | يثبت سلامة المنصة العامة، لا يربط الرحلات الخمس بندًا بندًا |
+| قراءة ضغط محدودة | bounded CI read checks | ليست شهادة Render/Atlas أو 100/500/1000 مستخدم |
 
-## حالة القبول عند مرشح الإصدار
+## خطة التنفيذ السريعة
 
-هذه حالة أدلة، وليست ادعاءً بأن كل سيناريو في المنتج اجتاز E2E. لا تُستبدل كلمة **مثبت** هنا إلا بتشغيل قابل للمراجعة على بيئة Mongo معزولة.
+لن نفتح Refactor مستقل لكل جزء. كل Batch التالية تغلق رحلة رأسية وتجمع UI + API + persistence + RBAC + حالات الواجهة.
 
-| مجال القبول | الحالة | الدليل والحد |
-| --- | --- | --- |
-| تعريف عادي موجّه، وصول الطالب المستهدف، منع الخارجي، وحد المحاولات | **مثبت HTTP** | `33337500677` على `55e0ea5d` عبر `backendIntegrationGate.ts`. |
-| محاكي من قسمين، نتائج الأقسام، وتحليل القسم | **مثبت HTTP** | نفس التشغيل المعزول؛ لا يثبت استكمال محاولة بعد refresh. |
-| رفض توجيه مشرف الفصل لطالب فصل شقيق ورفض مشرف المدرسة لطالب مدرسة أخرى | **مثبت HTTP** | نفس harness على Mongo مؤقت؛ يثبت RBAC الحالي ولا يضيف سياسة جديدة. |
-| سؤال مفقود أو غير صالح أو مكرر، ونطاق سؤال المعلم | **مثبت HTTP** | نفس harness؛ لا توجد سياسة "ملكية سؤال" إضافية معتمدة يمكن اختراعها كاختبار. |
-| قراءة نتيجة تاريخية بلا `quizSnapshot` أو نتائج أقسام | **مثبت HTTP** | نفس التشغيل؛ يثبت توافق القراءة فقط، لا migration أو backfill. |
-| تحكم قارئ نتيجة مفردة: legacy افتراضي، enable، rollback، وfallback عند غياب الإسقاط | **مثبت HTTP** | `33411114387` على `12cb5018` في Mongo معزول؛ لا يشمل قوائم النتائج أو تفعيل production. |
-| واجهة الاختبارات الخمس المحددة أدناه، خطوة بخطوة | **غير مثبتة كرحلات مخصصة** | E2E العام مرّ في `33337500695`، لكنه ليس بديلًا عن script/لقطات تربط كل رحلة اختبار بعينها. |
-| قراءة متزامنة محدودة | **مثبت CI محدود** | مرشح الإصدار `e92ba9c8` في `33355971110`: 25 worker ومسارات قراءة فقط؛ ليس قياس Render/Atlas أو شهادة سعة إنتاج. |
-| سعة الإنتاج 100/500/1000 مستخدم أو أعلى | **غير مثبتة** | تتطلب staging شبيهًا بالإنتاج ومراقبة وقرارًا تشغيليًا مستقلًا؛ يمنع تشغيلها ضد الإنتاج ضمن هذه الخارطة. |
+### ACC-01 — Evidence freeze and fixture map
 
-## ترتيب التنفيذ بعد الدفعة الحالية
+- تثبيت fixtures deterministic: admin، teacher، school/class supervisor، target/outside students، school/class/path/subject.
+- ربط كل خطوة في الرحلات الخمس بالـselector/API/model/evidence الحالي.
+- عدم كتابة test جديد لما هو مثبت بالفعل.
 
-### 1. تثبيت baseline والـfixtures
+دليل الخروج: matrix بلا خانة مجهولة، وأول فجوة تنفيذ محددة. هذا هو أول Batch بعد `PLAN-01`.
 
-- بيانات معزولة deterministic: مدير، معلم، مشرف، طالب مستهدف، طالب خارج الجمهور، مدرسة/فصل/مجموعة ومسار/مادة.
-- تعريف عادي منشور، تعريف محاكي بأقسام، وتعريف موجّه لكل منهما بلا نسخ لمحتوى الأسئلة.
-- إثبات أن إنشاء/تحديث/قراءة نتيجة قديمة لا يغير semantics المخزنة.
+### ACC-02 — Normal + directed sellable journey
 
-بوابة الخروج: `server:check` و`server:build` و`architecture-gate` وHarness HTTP الحالي أخضر على CI.
+رحلتان في Batch واحدة مترابطة:
 
-### 2. API integration — مصدر الحقيقة والصلاحيات
+1. Admin/teacher ينشئ تعريفًا عاديًا، يختار أسئلة عبر الصفحات، يعاين وينشر.
+2. يوجه الاختبار داخل النطاق؛ target يراه ويبدأ ويرسل، outsider لا يراه ولا يفتحه بالرابط.
+3. النتيجة من الخادم، history صحيح، limit/window ورسائل loading/error/success ظاهرة.
 
-إضافة اختبارات HTTP معزولة إلى harness القائم، لا إلى smoke نصي جديد:
+دليل الخروج: Playwright + isolated HTTP على نفس commit، مع DB assertions وRBAC rejection.
 
-- المدير: إنشاء/تحديث/نشر عادي ومحاكي، ثم قراءة الطالب المسموح فقط.
-- المعلم/المشرف: إنشاء داخل النطاق فقط، حفظ مسودة/مراجعة حسب السياسة، ورفض scope خارج مدرسته/فصله/مادته.
-- التوجيه: الجمهور المستهدف يقبل، الطالب الخارجي يرفض، وإعادة الإرسال ضمن السياسة ترفض أو تتبع limit الموثق.
-- الأسئلة: تكرار، سؤال مفقود، سؤال غير صالح، وسؤال خارج نطاق المالك؛ لا حفظ صامت.
-- المحاكي: sections، السؤال لكل قسم، الوقت، قفل القسم، و`sectionResults` في النتيجة.
-- النتيجة: server هو المرجع، snapshot محفوظ، لا كشف للإجابة قبل سماح policy، وسجل المحاولات تاريخي متوافق.
+### ACC-03 — Mock session, resume and failure safety
 
-بوابة الخروج: نجاح HTTP فعلي على Mongo معزول؛ لا يكفي typecheck للـharness.
+1. محاكي متعدد الأقسام مع وقت وقفل انتقال وسياسة انتهاء موثقة.
+2. server-started attempt للمحاكي/الموجه، autosave response، refresh/reconnect، retry آمن.
+3. فشل الكتابة الجديدة لا يكرر legacy result؛ reconciliation يكتشف الفجوة؛ rollback يعيد القراءة القديمة.
 
-### 3. Playwright E2E — الرحلات الحرجة
+دليل الخروج: failure injection + retry/idempotency + resume E2E/HTTP على Mongo معزول. لا production dual-write.
 
-تشغيلها على preview أو بيئة محلية معزولة وبحسابات غير إنتاجية:
+### ACC-04 — Results, analytics and historical compatibility
 
-1. مدير ينشئ تدريبًا، يختار أسئلة، يعاين، وينشره في المادة.
-2. طالب يبدأ التدريب من صفحة المادة، يرسل، ثم يرى نتيجة الخادم والعودة الصحيحة.
-3. مدير ينشئ محاكيًا متعدد الأقسام؛ الطالب يتنقل وفق الوقت والقفل ويرى النتيجة الإجمالية/القسمية.
-4. معلم/مشرف يوجّه اختبارًا داخل النطاق؛ المستهدف يراه والخارجي لا يراه ولا يستطيع فتحه عبر الرابط.
-5. تحديث تعريف قديم لا يفقد settings أو mock sections أو selected questions خارج الصفحة الأولى.
+- Result لمحاولة واحدة: summary/review/skills/history/next action.
+- Analytics/Reports: section/skill/student scope بلا تغيير scoring.
+- تعريف/نتيجة legacy ناقصة تظل قابلة للقراءة.
+- direct readers enable/fallback/rollback، مع bounded queries ومنع N+1.
 
-بوابة الخروج: لقطات/مخرجات E2E مرتبطة بالـcommit وبدون أسرار أو حسابات إنتاجية، مع خريطة صريحة تربط كل رحلة من الخمس بدليلها أو باستثناء موثق.
+دليل الخروج: parity/RBAC/history E2E + HTTP، وquery evidence مناسب.
 
-قرار الدفعة التالية: قبل اعتبار مرشح الإصدار مغلقًا تمامًا، يختار المالك أحد مسارين واضحين: تنفيذ E2E مخصص لهذه الرحلات الخمس على CI المعزول، أو اعتماد الاستثناء صراحةً عند فتح PR. لا تُنشأ رحلة محلية متصلة ببيئة حقيقية ولا تُستعمل حسابات إنتاجية.
+### ACC-05 — Assessment completion report
 
-### 4. النتائج والتحليلات والتوافق التاريخي
+لا كود جديد. يجمع:
 
-- النتائج للطالب، الصف، المدرسة، والمالك تتبع RBAC على الخادم.
-- التحليل العادي والـmock يفرّقان بين الإجمالي وsection/skill بلا تغيير نتائج سابقة.
-- اختبار rollback منطقي: تعريفات/نتائج سابقة قابلة للقراءة قبل أي migration additive.
+- كل Capability وحالتها النهائية.
+- Changed files/architecture/product impact.
+- test runs وCI URLs وcommit range.
+- dual-write/reconciliation/rollback outcome.
+- المخاطر والاستثناءات والـproduction opt-in decision.
 
-بوابة الخروج: API integration + E2E + عينة بيانات تاريخية معزولة تمر كلها. HTTP التاريخي نجح في `33337500677`؛ يبقى توثيق خريطة E2E المركزة والتحقق المحدود من الأداء/التوسع.
+لا تُغلق Gate 1 إذا بقيت Capability أساسية `NOT PROVEN` أو رحلة حرجة `PARTIAL` بلا استثناء صريح.
 
-## قواعد تشغيل غير قابلة للتفاوض
+## الرحلات الخمس الإلزامية
 
-- لا تشغيل اختبارات live ضد production، ولا استخدام بيانات أو أسرار حقيقية.
-- لا تحويل smoke النصي إلى دليل runtime؛ يبقى guard مساعدًا فقط.
-- كل دفعة اختبار تُنفذ في commit مستقل بعد تغييرها الوظيفي، وتُربط بالـworkflow المعزول بدل تكرار البنية.
-- لا تنفيذ Session/Attempt migration أو backfill قبل قرار additive/dual-read-write وخطة rollback معتمدة.
+1. مدير ينشئ تدريبًا، يختار أسئلة، يعاين وينشره في المادة.
+2. طالب يبدأ من Learning Space، يرسل، يرى نتيجة الخادم والعودة/next action.
+3. مدير ينشئ محاكيًا متعدد الأقسام؛ الطالب يلتزم بالوقت والقفل ويرى الإجمالي والأقسام.
+4. معلم/مشرف يوجه داخل النطاق؛ المستهدف يقبل والخارجي يرفض في UI والرابط المباشر.
+5. تحديث تعريف منشور ينشئ version ويحافظ على settings/sections/selected questions خارج الصفحة الأولى.
 
-## معيار الإغلاق
+## بوابة كل Batch
 
-لا يُعلن اكتمال اختبار نظام الاختبارات إلا عندما تمر بوابات HTTP المعزولة وE2E المحددة أعلاه على نفس commit، مع تقرير يوضح التغطية والاستثناءات الفعلية.
+- Typecheck/build/server checks المناسبة.
+- Focused smoke contracts كحارس مساعد.
+- HTTP حقيقي على Mongo معزول عندما يمس backend/data.
+- Playwright معزول عندما يمس رحلة UI.
+- Architecture gate و`git diff --check`.
+- CI على نفس commit قبل رفع الحالة إلى `VERIFIED`.
+
+## قواعد غير قابلة للتفاوض
+
+- لا live test أو load test ضد production، ولا حسابات أو أسرار حقيقية.
+- لا production opt-in للـmirror أو compatible reader ضمن هذه الخارطة.
+- لا historical `AssessmentAttempt/Response/Version` reconstruction من بيانات ناقصة.
+- لا تغيير scoring/RBAC/API contract لصناعة اختبار أخضر.
+- لا session migration أو legacy retirement بلا قرار منفصل وخطة rollback.
+- اختبار السعة الحقيقي `BLOCKED` حتى تتوفر staging شبيهة بالإنتاج وتفويض تشغيلي.
+
+## معيار الإغلاق التجاري
+
+Assessment يصبح قابلًا للبيع عندما تمر الرحلات الخمس على نفس release candidate، ويثبت كل مسار UI + API + persistence + RBAC + failure states، ويصدر ACC-05. النجاح المعزول لا يساوي production cutover أو scale certification.

@@ -1,8 +1,26 @@
 # قرار معماري: تطور بيانات الاختبارات والمحاولات
 
+> آخر تحديث تنفيذي: 2026-09-01. هذا السجل يحدد حدود بيانات Gate 1 ولا يصرح بتشغيل migration أو dual-write في production.
+
+## ملخص إغلاق Phase 5 عند الحد الآمن
+
+| القدرة | الحالة | القرار |
+|---|---|---|
+| Additive models/indexes | `VERIFIED` معزولًا | `AssessmentVersion/Assignment/Attempt/Response/Result` foundations موجودة من دون استبدال legacy |
+| Definition/result adapters | `VERIFIED` معزولًا | fallback إلى legacy إلزامي |
+| Controlled dual write/mirror | `VERIFIED` معزولًا | opt-in فقط؛ لا assessment إنتاجي مفعّل |
+| Failure/retry/idempotency | `PARTIAL` | direct dual-write recovery مثبت؛ resume/autosave/session failure journey ضمن `ACC-03` |
+| Reconciliation | `VERIFIED` معزولًا | cursor-bounded ولا يصلح السجلات بصمت |
+| Historical backfill | `VERIFIED` لنتيجة-only معزولة | لا attempt/response/version reconstruction |
+| Rollback/read fallback | `VERIFIED` معزولًا | `legacy` هو الافتراضي والرجوع الفوري محفوظ |
+| Production cutover | `NOT PROVEN` وغير مصرح | يحتاج Gate 1 مكتملة وقرار تشغيل منفصل |
+| Production scale | `BLOCKED` | يحتاج staging شبيهة بالإنتاج وتفويض load test |
+
+بناءً على ذلك، Phase 5 **مغلقة كمرحلة تأسيس وانتقال آمن فقط** وليست إعلانًا بأن النموذج الجديد أصبح مصدر الحقيقة في production. العمل التالي هو Assessment Commercial Closure في `ASSESSMENT_TEST_ROADMAP_AR.md`، وبالأخص الرحلات المخصصة وfailure/retry/resume.
+
 ## الحالة المعتمدة
 
-هذا قرار تصميم لـPhase 5، وليس migration معتمدًا للتنفيذ الآن.
+هذا قرار تصميم وتنفيذ additive لـPhase 5، وليس migration أو production cutover معتمدًا.
 
 - `QuizResult` هو سجل التسليم المكتمل الحالي: يحمل `attemptNumber` و`submissionKey` وsnapshot وsection results عند وجودها.
 - المسار `POST /api/quizzes/:id/submit` يبني رقم المحاولة من النتائج السابقة، ويمنع تكرار نفس الرقم عبر `submissionKey` فريد؛ لذلك إعادة الإرسال المتزامنة لا تنشئ نتيجتين لنفس المحاولة.
@@ -33,7 +51,7 @@
 | Cutover | قارئ جديد افتراضي feature-flagged | مراقبة واختبار rollback | إعادة flag للقديم |
 | Retirement | حذف القديم بعد telemetry ومدة احتفاظ معتمدة | caller proof + product signoff | نسخة/خطة استعادة موثقة |
 
-## قرارات مطلوبة قبل البدء
+## قرارات مطلوبة قبل أي cutover أو توسيع للنطاق
 
 - هل استكمال المحاولة مطلوب لكل الاختبارات أم للمحاكيات/التكليفات فقط؟
 - هل الوقت يبدأ عند أول فتح أم عبر موعد تكليف؟ وما سياسة انقطاع الشبكة؟
@@ -41,7 +59,7 @@
 - ما سياسة إعادة الإرسال والتصحيح اليدوي والمراجعة بعد انتهاء الوقت؟
 - ما retention المطلوب للمحاولات والإجابات والـsnapshots؟
 
-إلى أن تُعتمد هذه القرارات لا توجد هجرة schema أو backfill أو تحويل لـ`LiveExamSession` إلى مصدر حقيقة.
+التفويضات المحدودة أدناه سمحت ببناء وإثبات foundations وresult-only backfill معزولًا. لا توجد هجرة إنتاجية أو تحويل لـ`LiveExamSession` إلى مصدر حقيقة، وأي سياسة غير محسومة تنفذ أولًا داخل `ACC-03` كدليل معزول قبل طلب قرار تشغيل.
 
 ## قرارات المالك المفوَّضة — 2026-08-31
 
@@ -100,3 +118,11 @@ weekly notifications، سياق AI، أو operational counters في هذا ال�
 لجعلها authoritative. تبقى على `QuizResult` إلى أن يثبت Batch منفصل read model
 مقاس مع parity وRBAC/rollback خاصين به؛ هذا ليس استثناءً مؤقتًا ولا تصريحًا
 بالـcutover أو backfill جديد.
+
+## قرار السرعة والنطاق — 2026-09-01
+
+- لا نفتح Phase 5 إضافية ولا نعيد بناء models مثبتة؛ نستخدم foundations الحالية لإغلاق رحلات المنتج.
+- `ACC-01` يحصر الدليل والfixtures، ثم `ACC-02` يغلق العادي والموجه في vertical slice واحد.
+- `ACC-03` هو المكان الوحيد المسموح فيه حاليًا بتوسيع session/attempt/response behavior، وعلى Mongo معزول وfeature controls قابلة للرجوع.
+- `ACC-04` يغلق result/analytics/history من دون نقل aggregates إلى النموذج الجديد لمجرد التوحيد.
+- أي production opt-in أو cutover أو retirement يظل قرارًا منفصلًا بعد ACC-05، ولا يُفهم ضمنًا من نجاح CI.
