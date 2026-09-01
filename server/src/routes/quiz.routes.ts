@@ -835,7 +835,7 @@ quizRouter.get(
       const learnerId = String(learnerRecord.id || learnerRecord._id || "");
       if (learnerId) {
         const learnerGroups = await GroupModel.find({ studentIds: learnerId }).select("id _id").lean();
-        const membershipGroupIds = learnerGroups.map((group: any) => String(group.id || group._id || ""));
+        const membershipGroupIds = learnerGroups.flatMap((group: any) => [group.id, group._id].filter(Boolean).map(String));
         learnerAudienceForCatalog = {
           ...(typeof learnerRecord.toObject === "function" ? learnerRecord.toObject() : learnerRecord),
           groupIds: uniqueStrings([...(learnerRecord.groupIds || []), ...membershipGroupIds]),

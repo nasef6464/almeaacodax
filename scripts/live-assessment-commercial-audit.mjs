@@ -135,7 +135,15 @@ async function main() {
     // is intentionally the completed-attempt history and must not be used to
     // prove that a newly directed assessment is discoverable.
     await freshStudent.page.goto(`${BASE_URL}/quizzes`, { waitUntil: "networkidle", timeout: 60000 });
-    await freshStudent.page.getByTestId("student-directed-tests").waitFor({ timeout: 30000 });
+    const catalogDiagnostics = await freshStudent.page.evaluate(() => ({
+      user: window.__ALMEAA_DEBUG_USER__ || null,
+      hasDirectedSection: Boolean(document.querySelector('[data-testid="student-directed-tests"]')),
+      body: (document.body.innerText || "").slice(0, 1200),
+    })).catch(() => null);
+    if (!catalogDiagnostics?.hasDirectedSection) {
+      const visibleCatalog = await api(freshStudent.page, "/quizzes?limit=300");
+      throw new Error(`Directed assessment missing from learner catalog: ${JSON.stringify({ catalog: visibleCatalog.payload, diagnostics: catalogDiagnostics })}`);
+    }
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("quiz-answer-option-0").click();
