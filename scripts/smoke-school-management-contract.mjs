@@ -31,6 +31,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
   await read("dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts"),
+  await read("dashboards/admin/SchoolsManager/schoolPackageActions.ts"),
 ].join("\n"),
   store: [
     await read("store/useStore.ts"),
@@ -250,6 +251,17 @@ check("selected-school class lifecycle stays server-backed and refreshes authori
   assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
   assertIncludes(files.schools, "create-class");
   assertIncludes(files.schools, "delete-class-${classroom.id}");
+});
+
+check("school package commands stay server-backed and refresh authoritatively", () => {
+  assertIncludes(files.schools, "createSchoolPackageActions");
+  assertIncludes(files.schools, "createB2BPackageAsync(pkg)");
+  assertIncludes(files.schools, "updateB2BPackageAsync(packageId, data)");
+  assertIncludes(files.schools, "deleteB2BPackageAsync(packageId)");
+  assertIncludes(files.schools, "await Promise.all(schoolPackages.map");
+  assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
+  assertIncludes(files.schools, "create-${pkg.id}");
+  assertIncludes(files.schools, "expire-all");
 });
 
 check("school workspace avoids duplicate operating blocks", () => {
