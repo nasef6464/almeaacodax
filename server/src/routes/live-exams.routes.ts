@@ -2,6 +2,11 @@ import express from "express";
 import { requireAuth } from "../middleware/auth.js";
 import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
+import { QuizModel } from "../models/Quiz.js";
+import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
+import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
+import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
+import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 
 const router = express.Router();
 
@@ -16,16 +21,35 @@ router.post("/start", requireAuth, async (req, res) => {
     const userId = req.authUser!.id;
     const userName = (req.authUser as any).name || "طالب";
 
-    // Upsert an active session (in case they refresh)
+    const quiz = await QuizModel.findOne({ $or: [{ id: String(quizId) }, ...(String(quizId).match(/^[a-f\d]{24}$/i) ? [{ _id: quizId }] : [])] }).lean();
+    let assessmentAttemptId: string | undefined;
+    if (quiz) {
+      const version = await AssessmentVersionModel.findOneAndUpdate(
+        { assessmentId: String(quiz.id || quiz._id), version: 1 },
+        { $setOnInsert: { definition: quiz, publishedBy: String(quiz.createdBy || "system"), status: "published" } },
+        { new: true, upsert: true },
+      );
+      const assignment = await AssessmentAssignmentModel.findOneAndUpdate(
+        { assessmentId: String(quiz.id || quiz._id), assessmentVersionId: String(version._id) },
+        { $setOnInsert: { audience: { groupIds: quiz.targetGroupIds || [], userIds: quiz.targetUserIds || [] }, maxAttempts: Number(quiz.settings?.maxAttempts || 1), createdBy: String(quiz.createdBy || "system") } },
+        { new: true, upsert: true },
+      );
+      const existingAttempt = await AssessmentAttemptModel.findOne({ assignmentId: String(assignment._id), studentId: String(userId), status: "in_progress" }).sort({ attemptNumber: -1 });
+      const attempt = existingAttempt || await AssessmentAttemptModel.create({
+        assignmentId: String(assignment._id), assessmentVersionId: String(version._id), studentId: String(userId),
+        attemptNumber: (await AssessmentAttemptModel.countDocuments({ assignmentId: String(assignment._id), studentId: String(userId) })) + 1,
+        status: "in_progress", expiresAt: quiz.settings?.timeLimit ? new Date(Date.now() + Number(quiz.settings.timeLimit) * 60000) : undefined,
+      });
+      assessmentAttemptId = String(attempt._id);
+    }
+
+    // Upsert an active session (in case they refresh), preserving start time
+    // and progress so refresh/resume is idempotent.
     const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
       {
-        studentName: userName,
-        quizTitle: quizTitle || "اختبار",
-        totalQuestions: totalQuestions || 0,
-        answeredQuestions: 0,
-        progress: 0,
-        startTime: new Date(),
+        $set: { studentName: userName, quizTitle: quizTitle || "اختبار", totalQuestions: totalQuestions || 0, ...(assessmentAttemptId ? { assessmentAttemptId } : {}) },
+        $setOnInsert: { answeredQuestions: 0, progress: 0, startTime: new Date(), status: "active" },
       },
       { new: true, upsert: true }
     );
@@ -40,15 +64,26 @@ router.post("/start", requireAuth, async (req, res) => {
 // Update progress
 router.post("/progress", requireAuth, async (req, res) => {
   try {
-    const { quizId, answeredQuestions, totalQuestions } = req.body;
+    const { quizId, answeredQuestions, totalQuestions, answers } = req.body;
     const userId = req.authUser!.id;
 
     const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
-    await LiveExamSessionModel.findOneAndUpdate(
+    const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
-      { answeredQuestions, totalQuestions, progress }
+      { $set: { answeredQuestions, totalQuestions, progress } },
+      { new: true },
     );
+
+    if (session?.assessmentAttemptId && answers && typeof answers === "object") {
+      await Promise.all(Object.entries(answers).map(([questionId, answer]) =>
+        AssessmentResponseModel.findOneAndUpdate(
+          { attemptId: session.assessmentAttemptId, questionId },
+          { $set: { studentId: String(userId), answer, savedAt: new Date() } },
+          { upsert: true },
+        ),
+      ));
+    }
 
     res.json({ success: true });
   } catch (error) {
