@@ -68,6 +68,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
   const adminContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   const studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
+  let managerContext;
   let mockQuizId = "";
   let temporaryQuestionId = "";
   try {
@@ -177,10 +178,16 @@ async function main() {
     await student.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
     const results = await api(student.page, "/quiz-results/my?limit=50");
     const result = listOf(results.payload, "results").find((item) => String(item.quizId || "") === mockQuizId);
-    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
-    await admin.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).click();
-    await admin.page.getByTestId("assessment-mock-section-analytics").waitFor({ timeout: 30000 });
-    await admin.page.waitForFunction(
+    // The builder remains mounted in the original admin context and its global
+    // quiz snapshot predates this write. A fresh authenticated context proves
+    // that a manager loading the product after student completion can see both
+    // the persisted definition and its section analytics.
+    managerContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
+    const manager = await login(managerContext, credentials.admin);
+    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await manager.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).click();
+    await manager.page.getByTestId("assessment-mock-section-analytics").waitFor({ timeout: 30000 });
+    await manager.page.waitForFunction(
       () => document.querySelectorAll('[data-testid^="assessment-mock-section-analytics-row-"]').length >= 2,
       { timeout: 30000 },
     );
@@ -196,6 +203,7 @@ async function main() {
     if (failed.length) throw new Error(`Mock session checks failed: ${failed.map(([name]) => name).join("; ")} :: ${JSON.stringify({ result, resumed })}`);
     console.log(`PASS assessment mock session audit: ${mockQuizId}`);
   } finally {
+    await managerContext?.close();
     if (mockQuizId) {
       const cleanup = await login(adminContext, credentials.admin);
       await api(cleanup.page, `/quizzes/${encodeURIComponent(mockQuizId)}`, { method: "DELETE" }).catch(() => {});
