@@ -42,8 +42,8 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 | Capability | الحالة | الدليل الحالي | فجوة الخروج |
 |---|---|---|---|
-| Definition/versioning | `PARTIAL` | create/published-version ثم PATCH/version 2 وحفظ السؤال والإعداد وقراءة الطالب HTTP على `46eae178` | رحلة UI تثبت edit/reload/publish/version preservation |
-| Builder | `PARTIAL` | guards واختبارات عامة وواجهات قائمة | E2E مخصص للإنشاء/المعاينة/النشر ورسائل validation |
+| Definition/versioning | `VERIFIED` ضمن MVP المعزول | Manager UI create/publish/edit/reload، version 1→2، حفظ السؤال والإعداد وقراءة الطالب على `038255fb` | لا production cutover أو historical reconstruction |
+| Builder | `VERIFIED` ضمن MVP المعزول | Deep audit ينشئ/ينشر ويعيد فتح تعريف موجّه عبر `UnifiedQuizBuilder` على `038255fb` | validation edge states غير الأساسية تؤجل وفق الاستخدام |
 | Question Selection | `PARTIAL` | missing/invalid/duplicate normalization ونطاق المعلم مثبت HTTP | UI pagination/selection preservation في الرحلة الخامسة |
 | Assignment/access | `PARTIAL` | directed access ورفض cross-school/class مثبت HTTP | UI موجه كامل، limit/window/error states |
 | Runner | `VERIFIED` للرحلات العادي/الموجّه/المحاكي المعزولة | Deep E2E وBackend CI على `47dabd68` | loading/error تفصيلي ونتيجة/history يدخلان ACC-04 |
