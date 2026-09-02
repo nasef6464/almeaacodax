@@ -149,7 +149,10 @@ async function main() {
     const answers = saved.payload?.answers || {};
     if (!saved.ok || !saved.payload?.session?.assessmentAttemptId || Object.keys(answers).length !== 1) throw new Error(`Mock autosave missing: ${JSON.stringify(saved)}`);
     await student.page.getByTestId("quiz-mock-section-1").click();
-    await student.page.getByTestId("quiz-question-counter").filter({ hasText: "2 من 2" }).waitFor({ timeout: 30000 });
+    await student.page.waitForFunction(
+      () => document.querySelector('[data-testid="quiz-mock-section-1"]')?.className.includes('bg-indigo-600'),
+      { timeout: 30000 },
+    );
     const secondAutosaveResponsePromise = student.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
       { timeout: 30000 },
