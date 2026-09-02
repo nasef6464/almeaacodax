@@ -21,6 +21,16 @@
 - Explicitly out of scope: database schema migration, RBAC changes, scoring/payment changes, route/API URL changes, broad frontend move, deleting legacy files
 - Delivery rule: after each green Batch, update this file, create a focused commit, push, and refresh the latest ZIP without including secrets, `.env`, `.git`, dependencies, or build artifacts.
 
+## Batch LSB-01 — Scoped Learning Space failure and retry state
+
+- Status: `VERIFIED` for the first Subject Learning Space product gap.
+- Scope: the canonical runtime remains `GenericPathPage` → `LearningSection`; `SubjectLearningPage` has no application route/import and is retained only as an uncalled compatibility artifact. Existing `/category/:pathId`, legacy subject redirects, and stable learning-tab URLs remain unchanged.
+- Product fix: the bounded per-subject Courses/Quizzes bootstrap now exposes a loading state and a visible Arabic error with an in-place retry when both scoped reads fail. It preserves the currently displayed content, rejects late responses from another scope, and never falls back to a global reload.
+- MVP boundary: one subject entry with Path → Level → Subject → Courses/Foundation/Practice/Assessments/Library, bounded scoped reads, and failure recovery. Deferred: advanced personalization, AI recommendations, broad search, offline/native, and visual redesign. No commercial value now: moving all frontend files or renaming routes.
+- Evidence: local `smoke:learning-canonical-entry`, `smoke:learning-scoped-bootstrap`, `smoke:learning-tabs`, `typecheck`, and `git diff --check` passed. Exact commit `a254ea7d` passed Backend Integration [33690011174](https://github.com/nasef6464/almeaacodax/actions/runs/33690011174) and Deep Pre-Merge E2E [33690011175](https://github.com/nasef6464/almeaacodax/actions/runs/33690011175).
+- Boundaries preserved: no API/RBAC/scoring/payment/schema change, no global unbounded content read, and no production test or data write.
+- Next exact action: add an isolated Learning Space UI/API/data audit to the Deep gate; current generic Deep success does not itself prove the student/manager Learning Space journey.
+
 ## Batch ACC-02 — Normal + directed commercial journey closure
 
 - Status: `VERIFIED` on isolated release candidate `48a66358`.
