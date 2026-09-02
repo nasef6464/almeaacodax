@@ -138,7 +138,13 @@ async function main() {
     await student.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await student.page.getByTestId("quiz-mock-section-0").waitFor();
     await student.page.getByTestId("quiz-mock-section-1").waitFor();
+    const autosaveResponsePromise = student.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
+      { timeout: 30000 },
+    );
     await student.page.getByTestId("quiz-answer-option-0").click();
+    const autosaveResponse = await autosaveResponsePromise;
+    if (!autosaveResponse.ok()) throw new Error(`Mock autosave request failed (${autosaveResponse.status()})`);
     const saved = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
     const answers = saved.payload?.answers || {};
     if (!saved.ok || !saved.payload?.session?.assessmentAttemptId || Object.keys(answers).length !== 1) throw new Error(`Mock autosave missing: ${JSON.stringify(saved)}`);
