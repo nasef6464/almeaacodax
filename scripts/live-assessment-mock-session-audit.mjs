@@ -161,8 +161,14 @@ async function main() {
     await student.page.getByTestId("quiz-answer-option-0").click();
     const secondAutosaveResponse = await secondAutosaveResponsePromise;
     if (!secondAutosaveResponse.ok()) throw new Error(`Mock second autosave request failed (${secondAutosaveResponse.status()})`);
-    const afterSecondAnswer = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
-    const allAnswers = afterSecondAnswer.payload?.answers || {};
+    let afterSecondAnswer;
+    let allAnswers = {};
+    for (let retry = 0; retry < 10; retry += 1) {
+      afterSecondAnswer = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
+      allAnswers = afterSecondAnswer.payload?.answers || {};
+      if (Object.keys(allAnswers).length === 2) break;
+      await student.page.waitForTimeout(250);
+    }
     if (!afterSecondAnswer.ok || Object.keys(allAnswers).length !== 2) throw new Error(`Mock second answer was not saved: ${JSON.stringify(afterSecondAnswer)}`);
     const retryPayload = { quizId: mockQuizId, answeredQuestions: 2, totalQuestions: 2, answers: { ...allAnswers } };
     const [retryOne, retryTwo] = await Promise.all([
