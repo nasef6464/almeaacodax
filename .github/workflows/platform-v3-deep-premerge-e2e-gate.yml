@@ -233,6 +233,14 @@ jobs:
           QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
         run: node scripts/live-question-editor-audit.mjs
 
+      - name: Student Learning Space desktop + mobile journey
+        id: student_learning
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          STUDENT_LEARNING_AUDIT_RUN_ID: deep-premerge-student-learning-${{ github.run_id }}
+        run: node scripts/live-student-learning-deep-audit.mjs
+
       - name: Assessment normal and directed commercial journey
         id: assessment_commercial
         continue-on-error: true
@@ -289,6 +297,7 @@ jobs:
             echo "- Public UI: ${{ steps.public_ui.outcome }}"
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
+            echo "- Student Learning Space: ${{ steps.student_learning.outcome }}"
             echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
             echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
             echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
@@ -319,6 +328,7 @@ jobs:
           check "Public full-stack UI" "${{ steps.public_ui.outcome }}"
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"
+          check "Student Learning Space" "${{ steps.student_learning.outcome }}"
           check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
           check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
           check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
