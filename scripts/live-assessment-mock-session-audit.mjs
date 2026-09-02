@@ -120,8 +120,12 @@ async function main() {
     await admin.page.getByTestId("assessment-builder-subject").selectOption(String(firstQuestion.subject || firstQuestion.subjectId));
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId("assessment-builder-mock-section-tab-0").click();
+    await admin.page.getByTestId("assessment-question-search").fill(String(firstQuestion.id || firstQuestion._id));
+    await admin.page.getByTestId(`assessment-question-select-${firstQuestion.id || firstQuestion._id}`).waitFor({ timeout: 30000 });
     await admin.page.getByTestId(`assessment-question-select-${firstQuestion.id || firstQuestion._id}`).click();
     await admin.page.getByTestId("assessment-builder-mock-section-tab-1").click();
+    await admin.page.getByTestId("assessment-question-search").fill(String(secondQuestion.id || secondQuestion._id));
+    await admin.page.getByTestId(`assessment-question-select-${secondQuestion.id || secondQuestion._id}`).waitFor({ timeout: 30000 });
     await admin.page.getByTestId(`assessment-question-select-${secondQuestion.id || secondQuestion._id}`).click();
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId("assessment-builder-next").click();
