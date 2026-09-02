@@ -25,6 +25,13 @@ check('late scoped responses cannot replace the current shared collections', () 
   assert.ok(source.indexOf('if (scopedLearningBootstrapRef.current !== scopeKey) return;') < source.indexOf('hydrateQuizzes(Array.from(mergedQuizzes.values()))'));
 });
 
+check('scoped loading failure is visible and retryable without a global reload', () => {
+  assert.ok(source.includes("useState<'idle' | 'loading' | 'ready' | 'error'>('idle')"));
+  assert.ok(source.includes("setScopedBootstrapState(coursesResult.status === 'rejected' && quizzesResult.status === 'rejected' ? 'error' : 'ready')"));
+  assert.ok(source.includes('retryScopedLearningBootstrap'));
+  assert.ok(source.includes('تعذر تحديث الدورات والاختبارات لهذه المادة الآن'));
+});
+
 const failures = checks.filter((checkResult) => !checkResult.passed);
 for (const result of checks) {
   console.log(`${result.passed ? 'PASS' : 'FAIL'} ${result.name}${result.message ? `: ${result.message}` : ''}`);
