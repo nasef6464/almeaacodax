@@ -48,6 +48,10 @@ jobs:
       # audits in a short window. Keep production's default throttling intact
       # while preventing fixture authentication from masking product evidence.
       RATE_LIMIT_AUTH_LIMIT: "500"
+      # The sequential isolated browser suites also exercise sensitive public
+      # actions from one loopback address. This is CI-only and keeps the
+      # production-sensitive limit unchanged.
+      RATE_LIMIT_SENSITIVE_LIMIT: "2000"
       NOTIFICATION_QUEUE_ENABLED: "false"
       GOOGLE_OAUTH_ENABLED: "false"
       DEV_LOCAL_ADMIN_BYPASS: "false"
