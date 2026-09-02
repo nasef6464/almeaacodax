@@ -537,7 +537,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                   <Clock size={14} className="text-indigo-500" />المدة الزمنية
                 </label>
                 <div className="flex items-center gap-3">
-                  <input type="number" min={0} value={timeLimit} onChange={(e) => setTimeLimit(Number(e.target.value))}
+                  <input data-testid="assessment-builder-time-limit" type="number" min={0} value={timeLimit} onChange={(e) => setTimeLimit(Number(e.target.value))}
                     className="w-24 text-center font-black text-lg border border-gray-200 rounded-xl py-2 focus:outline-none focus:border-indigo-400" />
                   <span className="text-sm text-gray-600 font-bold">دقيقة (0 = بلا حد)</span>
                 </div>

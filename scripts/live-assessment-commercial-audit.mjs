@@ -126,6 +126,58 @@ async function main() {
     createdQuizId = String(created?.id || created?._id || "");
     if (!createdQuizId) throw new Error("Published assessment was not returned by the API after builder save.");
 
+    // Journey 5: reopen the published definition through the manager facade,
+    // preserve the existing selection, update one setting, then reopen after
+    // reload. This proves the real edit UI and the immutable-version read path.
+    const editedTitle = `${marker} (edited)`;
+    await admin.page.reload({ waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.getByTestId(`assessment-manager-edit-${createdQuizId}`).click();
+    await admin.page.getByTestId("assessment-builder").waitFor();
+    await admin.page.getByTestId("assessment-builder-title").fill(editedTitle);
+    await admin.page.getByTestId("assessment-builder-next").click();
+    const selectedQuestion = admin.page.getByTestId(`assessment-question-select-${question.id || question._id}`);
+    await selectedQuestion.waitFor({ timeout: 30000 });
+    if (!await selectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+      throw new Error("Published edit did not restore the selected question in the Builder.");
+    }
+    await admin.page.getByTestId("assessment-builder-next").click();
+    await admin.page.getByTestId("assessment-builder-time-limit").fill("45");
+    await admin.page.getByTestId("assessment-builder-next").click();
+    const editResponsePromise = admin.page.waitForResponse(
+      (response) => response.request().method() === "PATCH" && new URL(response.url()).pathname.endsWith(`/api/quizzes/${createdQuizId}`),
+      { timeout: 30000 },
+    );
+    await admin.page.getByTestId("assessment-builder-save").click();
+    const editResponse = await editResponsePromise;
+    const editedFromWrite = await editResponse.json().catch(() => ({}));
+    if (!editResponse.ok()) throw new Error(`Builder edit failed (${editResponse.status()}): ${editedFromWrite?.message || ""}`);
+    await admin.page.getByTestId("assessment-builder").waitFor({ state: "detached", timeout: 30000 });
+
+    await admin.page.reload({ waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.getByTestId(`assessment-manager-edit-${createdQuizId}`).click();
+    await admin.page.getByTestId("assessment-builder-title").waitFor();
+    if (await admin.page.getByTestId("assessment-builder-title").inputValue() !== editedTitle) {
+      throw new Error("Published edit did not restore the updated title after manager reload.");
+    }
+    await admin.page.getByTestId("assessment-builder-next").click();
+    const restoredQuestion = admin.page.getByTestId(`assessment-question-select-${question.id || question._id}`);
+    await restoredQuestion.waitFor({ timeout: 30000 });
+    if (!await restoredQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+      throw new Error("Published edit did not preserve the selected question after manager reload.");
+    }
+    await admin.page.getByTestId("assessment-builder-next").click();
+    if (await admin.page.getByTestId("assessment-builder-time-limit").inputValue() !== "45") {
+      throw new Error("Published edit did not preserve the updated time limit after manager reload.");
+    }
+    await admin.page.getByRole("button", { name: "إلغاء" }).click();
+    const versionedDefinition = await api(admin.page, `/quizzes/${createdQuizId}`);
+    if (!versionedDefinition.ok || versionedDefinition.payload?.title !== editedTitle
+      || !Array.isArray(versionedDefinition.payload?.questionIds)
+      || !versionedDefinition.payload.questionIds.map(String).includes(String(question.id || question._id))
+      || Number(versionedDefinition.payload?.settings?.timeLimit) !== 45) {
+      throw new Error(`Versioned definition did not retain the published UI edit: ${JSON.stringify(versionedDefinition.payload)}`);
+    }
+
     // Start a fresh learner session after assignment so the evidence proves the
     // server-backed bootstrap, not stale state loaded before the quiz existed.
     await studentContext.close();
@@ -204,6 +256,7 @@ async function main() {
     }
     const checks = [
       ["builder created a published directed definition", Boolean(created?.isPublished) && (created.targetGroupIds || []).map(String).includes(String(targetGroup.id || targetGroup._id))],
+      ["published manager edit preserves selection/settings after reload", versionedDefinition.payload?.title === editedTitle],
       ["target sees directed test in UI", true],
       ["target submits through runner", hasServerResult],
       ["fresh result page restores learner-safe answer review", true],
