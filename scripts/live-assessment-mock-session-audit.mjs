@@ -99,7 +99,7 @@ async function main() {
           options: ["غير صحيح", "صحيح"],
           correctOptionIndex: 1,
           explanation: "سؤال مؤقت لدليل الجلسة المعزولة.",
-          skillIds: [],
+          skillIds: [String(firstQuestion.skillIds?.[0] || `assessment-mock-skill-${Date.now()}`)],
           pathId: firstQuestion.pathId,
           subject: firstQuestion.subject || firstQuestion.subjectId,
           approvalStatus: "approved",
