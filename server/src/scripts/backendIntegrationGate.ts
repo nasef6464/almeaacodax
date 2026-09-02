@@ -860,6 +860,12 @@ async function runMockAssessmentJourney(csrf: CsrfContext) {
   assert.equal(acceptedSubmission.body?.sectionResults?.[0]?.score, 100, "first mock section score is incorrect");
   assert.equal(acceptedSubmission.body?.sectionResults?.[1]?.score, 0, "second mock section score is incorrect");
 
+  const learnerMockResults = await jsonRequest(`/quiz-results/my?quizId=${MOCK_ASSESSMENT_QUIZ_ID}`, {
+    token: tokens.get("student"),
+  });
+  expectStatus("student reads mock section results from the result list", learnerMockResults, 200);
+  assert.equal(learnerMockResults.body?.data?.[0]?.sectionResults?.length, 2, "learner result list omitted mock section results");
+
   const sectionAnalytics = await jsonRequest(`/quizzes/results/section-analytics/${MOCK_ASSESSMENT_QUIZ_ID}`, {
     token: tokens.get("admin"),
   });

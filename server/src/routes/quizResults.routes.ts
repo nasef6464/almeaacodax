@@ -47,7 +47,7 @@ const buildPaginationPayload = (page: number, limit: number, total: number) => {
 };
 
 const buildResultProjection =
-  "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt";
+  "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
 
 const buildFilter = (query: z.infer<typeof quizResultsQuerySchema>, userId?: string) => {
   const filter: Record<string, unknown> = {};
