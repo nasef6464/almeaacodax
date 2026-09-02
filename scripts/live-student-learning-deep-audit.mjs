@@ -112,7 +112,8 @@ async function resolveJourneyTargets() {
       placementItem.subjectId === TARGET_SUBJECT_ID &&
       placementItem.isVisible !== false
     );
-    return visible(item) && refs.length > 0 && refs.every((ref) => questionById.has(ref) || questionById.has(stripCopySuffix(ref))) && (linked || placement || item.pathId === TARGET_PATH_ID || item.subjectId === TARGET_SUBJECT_ID);
+    const directSubjectScope = item.pathId === TARGET_PATH_ID && item.subjectId === TARGET_SUBJECT_ID;
+    return visible(item) && refs.length > 0 && refs.every((ref) => questionById.has(ref) || questionById.has(stripCopySuffix(ref))) && (linked || placement || directSubjectScope);
   });
 
   return {
