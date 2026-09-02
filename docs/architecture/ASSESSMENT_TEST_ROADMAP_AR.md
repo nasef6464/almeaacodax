@@ -51,7 +51,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 | Attempts | `VERIFIED` ضمن الـMVP المعزول | lifecycle موجّه/محاكي، retry idempotent وfinalization/reconciliation مثبتة | لا production opt-in |
 | Responses | `VERIFIED` ضمن الـMVP المعزول | autosave ثم resume لإجابتين وretry آمن مثبتان | لا reconstruction تاريخي لبيانات ناقصة |
 | Scoring | `VERIFIED` للعقد legacy الحالي | server-result authority وHTTP/CI guards | parity فقط عند أي reader/write migration؛ لا تغيير policy |
-| Results | `PARTIAL` | compatible direct readers وhistorical fallback وrollback مثبتة معزولًا | focused UI result/history، والقارئ الجديد ليس production default |
+| Results | `PARTIAL` | compatible direct readers وhistorical fallback وrollback، وfresh result/review UI على `5dfe7209` مثبتة معزولًا | history التفصيلي وحالات legacy الناقصة أمام UI؛ القارئ الجديد ليس production default |
 | Analytics | `PARTIAL` | section analytics/scoped reports مثبتة في harness | فصل Result/Report وstudent/class/school evidence وexports |
 
 ## الدليل الموجود الآن
@@ -80,7 +80,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 | الرحلة | UI public entry | API/نموذج الحقيقة | الدليل القائم | الحالة/الفجوة |
 |---|---|---|---|---|
 | 1. إنشاء عادي واختيار/نشر | `QuizzesManager` → `UnifiedQuizBuilder` → `SmartQuestionSelector` | `POST /quizzes`؛ `QuizModel` مع `AssessmentVersion` compatibility projection | `backendIntegrationGate.ts` يثبت integrity والنشر/القراءة HTTP | `PARTIAL`: لم يكن هناك E2E يثبت الـwizard أو الاختيار من UI. أضيف `live-assessment-commercial-audit.mjs` وselectors مستقرة. |
-| 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history مثبتة HTTP معزولًا | `PARTIAL`: audit الجديد يثبت runner وserver-result؛ next action/history التفصيلي يبقى ACC-04. |
+| 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` → `Results.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history مثبتة HTTP معزولًا وfresh review E2E على `5dfe7209` | `PARTIAL`: النتيجة ومراجعة المحاولة الجديدة مثبتتان؛ history التفصيلي والتحليلات يبقيان ACC-04. |
 | 3. محاكي متعدد الأقسام | `UnifiedQuizBuilder(kind=mock)` → `QuizPage` | `QuizModel.mockExam`، `QuizResult.sectionResults`، models additive للجلسات/المحاولات | Backend + Deep E2E على `47dabd68` | `VERIFIED` للـMVP المعزول: start/resume/autosave/retry/expiry ونتيجة قسمين. |
 | 4. توجيه داخل النطاق | step 4 في `UnifiedQuizBuilder` → `student-directed-tests` → direct runner | `targetGroupIds/targetUserIds`، access policy في quiz routes و`QuizModel` | cross-school/class rejection مثبت HTTP | `PARTIAL`: audit الجديد يثبت target UI/submission ورفض outsider للرابط، مع fixture admin/student/parent المعزول. |
 | 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | compatibility/version preservation مثبت HTTP | `PARTIAL`: pagination + edit UI + version-read acceptance لم تثبت؛ تدخل ACC-04. |
@@ -119,6 +119,8 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 - direct readers enable/fallback/rollback، مع bounded queries ومنع N+1.
 
 دليل الخروج: parity/RBAC/history E2E + HTTP، وquery evidence مناسب.
+
+**الحالة:** `PARTIAL`. أول فجوة UI كانت أن صفحة النتائج بعد reload تعرض الملخص بلا مراجعة الإجابات، رغم أن endpoint التفصيلي الآمن موجود. commit `5dfe7209` يجلب تفصيل المحاولة المحددة فقط باسم المالك ويُبقي الصف التاريخي الناقص ملخصًا قابلاً للقراءة بلا اختراع review. Backend Integration CI `33667130693` وDeep Pre-Merge E2E CI `33667130828` نجحا على نفس الـHEAD، والأخير يثبت submit ثم fresh Results page ثم فتح "مراجعة الحلول". التحليلات وhistory/legacy UI الشامل لم يُغلقا بعد.
 
 ### ACC-05 — Assessment completion report
 
