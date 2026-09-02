@@ -1,14 +1,57 @@
 import express from "express";
+import mongoose from "mongoose";
 import { requireAuth } from "../middleware/auth.js";
 import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
+import { UserModel } from "../models/User.js";
+import { isStaffRole } from "../services/visibility.js";
 import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
 import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
 import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 
 const router = express.Router();
+
+const buildDocumentsByIdsQuery = (values: string[]) => {
+  const ids = [...new Set(values.map(String).filter(Boolean))];
+  const objectIds = ids
+    .filter((id) => mongoose.Types.ObjectId.isValid(id))
+    .map((id) => new mongoose.Types.ObjectId(id));
+  return objectIds.length ? { $or: [{ _id: { $in: objectIds } }, { id: { $in: ids } }] } : { id: { $in: ids } };
+};
+
+/**
+ * A live-session endpoint must not become a side door around directed quiz
+ * access. Reload group membership from Mongo rather than trusting the client
+ * or token snapshot, matching the definition/submission boundary.
+ */
+const canStartDirectedQuiz = async (quiz: any, authUser: { id: string; role: string }) => {
+  if (isStaffRole(authUser.role)) return true;
+
+  const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
+  const targetGroupIds = Array.from(new Set<string>((quiz.targetGroupIds || []).map(String)));
+  if (targetUserIds.size === 0 && targetGroupIds.length === 0) return true;
+
+  const learner = await (mongoose.Types.ObjectId.isValid(authUser.id)
+    ? UserModel.findById(authUser.id)
+    : UserModel.findOne({ id: authUser.id }))
+    .select("_id id")
+    .lean();
+  if (!learner) return false;
+
+  const learnerId = String((learner as any).id || learner._id);
+  if (targetUserIds.has(learnerId)) return true;
+  if (targetGroupIds.length === 0) return false;
+
+  return Boolean(
+    await GroupModel.findOne({
+      $and: [buildDocumentsByIdsQuery(targetGroupIds), { studentIds: learnerId }],
+    })
+      .select("_id")
+      .lean(),
+  );
+};
 
 const saveAssessmentResponse = async (attemptId: string, studentId: string, questionId: string, answer: unknown) => {
   const filter = { attemptId, questionId };
@@ -37,6 +80,9 @@ router.post("/start", requireAuth, async (req, res) => {
     const quiz = await QuizModel.findOne({ $or: [{ id: String(quizId) }, ...(String(quizId).match(/^[a-f\d]{24}$/i) ? [{ _id: quizId }] : [])] }).lean();
     let assessmentAttemptId: string | undefined;
     if (quiz) {
+      if (!(await canStartDirectedQuiz(quiz, { id: String(userId), role: String(req.authUser!.role || "") }))) {
+        return res.status(403).json({ error: "Not authorized to start this assessment" });
+      }
       const version = await AssessmentVersionModel.findOneAndUpdate(
         { assessmentId: String(quiz.id || quiz._id), version: 1 },
         { $setOnInsert: { definition: quiz, publishedBy: String(quiz.createdBy || "system"), status: "published" } },

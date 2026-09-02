@@ -368,6 +368,64 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   const anonymousDefinition = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`);
   expectStatus("anonymous user cannot read directed assessment definition", anonymousDefinition, 401);
 
+  const outsiderLiveStart = await jsonRequest("/live-exams/start", {
+    method: "POST",
+    token: tokens.get("outsider"),
+    csrf,
+    body: { quizId: ASSESSMENT_QUIZ_ID, quizTitle: "Directed assessment", totalQuestions: 1 },
+  });
+  expectStatus("outside student cannot start a directed assessment session", outsiderLiveStart, 403);
+
+  const targetLiveStart = await jsonRequest("/live-exams/start", {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { quizId: ASSESSMENT_QUIZ_ID, quizTitle: "Directed assessment", totalQuestions: 1 },
+  });
+  expectStatus("targeted student starts a directed assessment session", targetLiveStart, 200);
+  const liveAttemptId = String(targetLiveStart.body?.assessmentAttemptId || "");
+  assert.ok(liveAttemptId, "directed live session did not create an assessment attempt");
+
+  const savedProgress = await Promise.all(
+    Array.from({ length: 2 }, () =>
+      jsonRequest("/live-exams/progress", {
+        method: "POST",
+        token: tokens.get("student"),
+        csrf,
+        body: {
+          quizId: ASSESSMENT_QUIZ_ID,
+          answeredQuestions: 1,
+          totalQuestions: 1,
+          answers: { [ASSESSMENT_QUESTION_ID]: 1 },
+        },
+      }),
+    ),
+  );
+  savedProgress.forEach((result) => expectStatus("live assessment progress retry is accepted", result, 200));
+  assert.equal(
+    await AssessmentResponseModel.countDocuments({ attemptId: liveAttemptId, questionId: ASSESSMENT_QUESTION_ID }),
+    1,
+    "live progress retry created duplicate assessment responses",
+  );
+  const resumedLiveSession = await jsonRequest(`/live-exams/session/${ASSESSMENT_QUIZ_ID}`, { token: tokens.get("student") });
+  expectStatus("student resumes an active directed assessment session", resumedLiveSession, 200);
+  assert.equal(resumedLiveSession.body?.answers?.[ASSESSMENT_QUESTION_ID], 1, "live session did not restore the saved answer");
+  assert.equal(String(resumedLiveSession.body?.session?.assessmentAttemptId || ""), liveAttemptId, "live session resume changed the attempt");
+
+  await AssessmentAttemptModel.updateOne({ _id: liveAttemptId }, { $set: { expiresAt: new Date(Date.now() - 1_000) } });
+  const expiredProgress = await jsonRequest("/live-exams/progress", {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { quizId: ASSESSMENT_QUIZ_ID, answeredQuestions: 1, totalQuestions: 1, answers: { [ASSESSMENT_QUESTION_ID]: 0 } },
+  });
+  expectStatus("expired assessment session rejects further progress", expiredProgress, 409);
+  const expiredAttempt = await AssessmentAttemptModel.findById(liveAttemptId).lean();
+  assert.equal(expiredAttempt?.status, "expired", "expired assessment attempt was not closed");
+  const expiredSession = await jsonRequest(`/live-exams/session/${ASSESSMENT_QUIZ_ID}`, { token: tokens.get("student") });
+  expectStatus("expired assessment session is no longer resumable", expiredSession, 200);
+  assert.equal(expiredSession.body?.session, null, "expired live session remained resumable");
+
   const missingQuestionQuiz = await jsonRequest("/quizzes", {
     method: "POST",
     token: tokens.get("admin"),
