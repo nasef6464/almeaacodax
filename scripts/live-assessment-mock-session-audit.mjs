@@ -161,7 +161,7 @@ async function main() {
     const saved = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
     const answers = saved.payload?.answers || {};
     if (!saved.ok || !saved.payload?.session?.assessmentAttemptId || Object.keys(answers).length !== 1) throw new Error(`Mock autosave missing: ${JSON.stringify(saved)}`);
-    const firstQuestionCounter = await student.page.getByTestId("quiz-question-counter").textContent();
+    const firstQuestionText = await student.page.locator(".question-html").first().textContent();
     await student.page.getByTestId("quiz-mock-section-1").click();
     await student.page.waitForFunction(
       () => document.querySelector('[data-testid="quiz-mock-section-1"]')?.className.includes('bg-indigo-600'),
@@ -171,8 +171,8 @@ async function main() {
     // Without this wait a fast browser can click the same question twice and
     // make an otherwise valid autosave look like a duplicate-write defect.
     await student.page.waitForFunction(
-      (previousCounter) => document.querySelector('[data-testid="quiz-question-counter"]')?.textContent !== previousCounter,
-      firstQuestionCounter,
+      (previousQuestion) => document.querySelector('.question-html')?.textContent !== previousQuestion,
+      firstQuestionText,
       { timeout: 30000 },
     );
     const secondAutosaveResponsePromise = student.page.waitForResponse(

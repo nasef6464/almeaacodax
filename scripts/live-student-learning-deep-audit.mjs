@@ -4,6 +4,7 @@ import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
 const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
+const API_ORIGIN = new URL(API_BASE_URL);
 const RUN_ID = process.env.STUDENT_LEARNING_AUDIT_RUN_ID || `student-learning-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
@@ -137,26 +138,28 @@ async function resolveJourneyTargets() {
 }
 
 async function seedBrowserSession(context, page, session) {
+  // The audit runs both against the deployed cross-site API and the isolated
+  // loopback stack. Scope cookies to the configured API origin so the latter
+  // does not silently fall back to an unauthenticated student journey.
+  const cookieScope = {
+    url: API_ORIGIN.origin,
+    secure: API_ORIGIN.protocol === "https:",
+    sameSite: API_ORIGIN.protocol === "https:" ? "None" : "Lax",
+  };
   await context.addCookies([
     {
       name: "almeaa_access_token",
       value: session.authCookie,
-      domain: "almeaacodax-k2ux.onrender.com",
-      path: "/",
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      ...cookieScope,
     },
     ...(session.csrfCookie
       ? [
           {
             name: "almeaa_csrf_token",
             value: session.csrfCookie,
-            domain: "almeaacodax-k2ux.onrender.com",
-            path: "/",
             httpOnly: false,
-            secure: true,
-            sameSite: "None",
+            ...cookieScope,
           },
         ]
       : []),
