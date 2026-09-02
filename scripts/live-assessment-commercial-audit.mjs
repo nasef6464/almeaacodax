@@ -277,18 +277,31 @@ async function main() {
     if (!savedSession.ok || !savedSession.payload?.session?.assessmentAttemptId || savedAnswerIds.length !== 1) {
       throw new Error(`Autosave session evidence missing: ${JSON.stringify(savedSession)}`);
     }
+    await freshStudent.page.getByTestId("quiz-next-button").click();
+    const secondAutosaveResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByTestId("quiz-answer-option-0").click();
+    const secondAutosaveResponse = await secondAutosaveResponsePromise;
+    if (!secondAutosaveResponse.ok()) throw new Error(`Second autosave request failed (${secondAutosaveResponse.status()})`);
+    const completedAnswersSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
+    const completedAnswers = completedAnswersSession.payload?.answers || {};
+    if (!completedAnswersSession.ok || Object.keys(completedAnswers).length !== 2) {
+      throw new Error(`Second answer session evidence missing: ${JSON.stringify(completedAnswersSession)}`);
+    }
     const retryProgressPayload = {
       quizId: createdQuizId,
-      answeredQuestions: savedAnswerIds.length,
+      answeredQuestions: Object.keys(completedAnswers).length,
       totalQuestions: 2,
-      answers: savedAnswers,
+      answers: completedAnswers,
     };
     const [firstRetry, secondRetry] = await Promise.all([
       api(freshStudent.page, "/live-exams/progress", { method: "POST", body: JSON.stringify(retryProgressPayload) }),
       api(freshStudent.page, "/live-exams/progress", { method: "POST", body: JSON.stringify(retryProgressPayload) }),
     ]);
     const resumedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
-    if (!firstRetry.ok || !secondRetry.ok || String(resumedSession.payload?.session?.assessmentAttemptId || "") !== String(savedSession.payload.session.assessmentAttemptId) || JSON.stringify(resumedSession.payload?.answers || {}) !== JSON.stringify(savedAnswers)) {
+    if (!firstRetry.ok || !secondRetry.ok || String(resumedSession.payload?.session?.assessmentAttemptId || "") !== String(savedSession.payload.session.assessmentAttemptId) || JSON.stringify(resumedSession.payload?.answers || {}) !== JSON.stringify(completedAnswers)) {
       throw new Error(`Retry/resume session evidence failed: ${JSON.stringify({ firstRetry, secondRetry, savedSession, resumedSession })}`);
     }
     await freshStudent.page.getByTestId("quiz-finish-button").click();

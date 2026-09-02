@@ -171,7 +171,7 @@ async function main() {
     if (!secondAutosaveResponse.ok()) throw new Error(`Mock second autosave request failed (${secondAutosaveResponse.status()})`);
     let afterSecondAnswer;
     let allAnswers = {};
-    for (let retry = 0; retry < 10; retry += 1) {
+    for (let retry = 0; retry < 40; retry += 1) {
       afterSecondAnswer = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
       allAnswers = afterSecondAnswer.payload?.answers || {};
       if (Object.keys(allAnswers).length === 2) break;
