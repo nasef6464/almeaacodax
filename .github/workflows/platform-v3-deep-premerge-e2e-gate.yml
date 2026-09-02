@@ -44,6 +44,10 @@ jobs:
       MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_platform_v3_deep_${{ github.run_id }}
       REDIS_URL: ""
       RATE_LIMIT_REDIS_ENABLED: "false"
+      # The isolated suite intentionally logs in several independent roles and
+      # audits in a short window. Keep production's default throttling intact
+      # while preventing fixture authentication from masking product evidence.
+      RATE_LIMIT_AUTH_LIMIT: "500"
       NOTIFICATION_QUEUE_ENABLED: "false"
       GOOGLE_OAUTH_ENABLED: "false"
       DEV_LOCAL_ADMIN_BYPASS: "false"

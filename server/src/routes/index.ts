@@ -20,6 +20,7 @@ import { searchRouter } from "./search.routes.js";
 import { parentRouter } from "./parent.routes.js";
 import { activityRouter } from "./activity.routes.js";
 import { publicTestsRouter } from "./publicTests.routes.js";
+import liveExamsRouter from "./live-exams.routes.js";
 
 export const apiRouter = Router();
 
@@ -29,6 +30,7 @@ apiRouter.use("/taxonomy", taxonomyRouter);
 apiRouter.use("/content", contentRouter);
 apiRouter.use("/courses", courseRouter);
 apiRouter.use("/quizzes", quizRouter);
+apiRouter.use("/live-exams", liveExamsRouter);
 apiRouter.use("/payments", paymentRouter);
 apiRouter.use("/ai", aiRouter);
 apiRouter.use("/operations", operationsRouter);

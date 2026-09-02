@@ -69,6 +69,7 @@ async function main() {
   const adminContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   const studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   let mockQuizId = "";
+  let temporaryQuestionId = "";
   try {
     const admin = await login(adminContext, credentials.admin);
     const student = await login(studentContext, credentials.student);
@@ -79,10 +80,34 @@ async function main() {
     ]);
     const questions = listOf(questionsResponse.payload, "questions");
     const firstQuestion = questions.find((question) => question.pathId && (question.subject || question.subjectId));
-    const secondQuestion = questions.find((question) => String(question.id || question._id) !== String(firstQuestion?.id || firstQuestion?._id) && String(question.pathId) === String(firstQuestion?.pathId) && String(question.subject || question.subjectId) === String(firstQuestion?.subject || firstQuestion?.subjectId));
+    let secondQuestion = questions.find((question) => String(question.id || question._id) !== String(firstQuestion?.id || firstQuestion?._id) && String(question.pathId) === String(firstQuestion?.pathId) && String(question.subject || question.subjectId) === String(firstQuestion?.subject || firstQuestion?.subjectId));
     const groupIds = new Set([...(student.user.groupIds || []), ...(studentMe.payload?.groupIds || []), ...(studentMe.payload?.user?.groupIds || [])].map(String));
     const targetGroup = listOf(bootstrapResponse.payload, "groups").find((group) => groupIds.has(String(group.id || group._id)));
-    if (!questionsResponse.ok || !firstQuestion || !secondQuestion || !targetGroup) throw new Error("Fixture lacks two approved questions in one scope or a target student group.");
+    if (!questionsResponse.ok || !firstQuestion || !targetGroup) throw new Error("Fixture lacks an approved scoped question or a target student group.");
+
+    // The isolated operational fixture deliberately stays small. When it has
+    // only one approved question in this scope, create a second approved
+    // question through the public admin contract so each mock section remains
+    // genuinely distinct.
+    if (!secondQuestion) {
+      temporaryQuestionId = `assessment-mock-question-${Date.now()}`;
+      const createdQuestion = await api(admin.page, "/quizzes/questions", {
+        method: "POST",
+        body: JSON.stringify({
+          id: temporaryQuestionId,
+          text: `Mock lifecycle verification question ${temporaryQuestionId}`,
+          options: ["غير صحيح", "صحيح"],
+          correctOptionIndex: 1,
+          explanation: "سؤال مؤقت لدليل الجلسة المعزولة.",
+          skillIds: [],
+          pathId: firstQuestion.pathId,
+          subject: firstQuestion.subject || firstQuestion.subjectId,
+          approvalStatus: "approved",
+        }),
+      });
+      if (!createdQuestion.ok) throw new Error(`Could not create second mock fixture question: ${JSON.stringify(createdQuestion)}`);
+      secondQuestion = createdQuestion.payload;
+    }
 
     const marker = `assessment-mock-session-${Date.now()}`;
     await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
@@ -146,6 +171,7 @@ async function main() {
     if (mockQuizId) {
       const cleanup = await login(adminContext, credentials.admin);
       await api(cleanup.page, `/quizzes/${encodeURIComponent(mockQuizId)}`, { method: "DELETE" }).catch(() => {});
+      if (temporaryQuestionId) await api(cleanup.page, `/quizzes/questions/${encodeURIComponent(temporaryQuestionId)}`, { method: "DELETE" }).catch(() => {});
     }
     await browser.close();
   }
