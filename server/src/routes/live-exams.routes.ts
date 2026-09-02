@@ -35,6 +35,16 @@ router.post("/start", requireAuth, async (req, res) => {
         { new: true, upsert: true },
       );
       const existingAttempt = await AssessmentAttemptModel.findOne({ assignmentId: String(assignment._id), studentId: String(userId), status: "in_progress" }).sort({ attemptNumber: -1 });
+      if (!existingAttempt) {
+        const attemptsUsed = await AssessmentAttemptModel.countDocuments({
+          assignmentId: String(assignment._id),
+          studentId: String(userId),
+          status: { $in: ["submitted", "expired"] },
+        });
+        if (attemptsUsed >= Number(assignment.maxAttempts || 1)) {
+          return res.status(409).json({ error: "Assessment attempt limit reached", maxAttempts: assignment.maxAttempts, attemptsUsed });
+        }
+      }
       const attempt = existingAttempt || await AssessmentAttemptModel.create({
         assignmentId: String(assignment._id), assessmentVersionId: String(version._id), studentId: String(userId),
         attemptNumber: (await AssessmentAttemptModel.countDocuments({ assignmentId: String(assignment._id), studentId: String(userId) })) + 1,
@@ -116,10 +126,16 @@ router.post("/end", requireAuth, async (req, res) => {
     const { quizId } = req.body;
     const userId = req.authUser!.id;
 
-    await LiveExamSessionModel.findOneAndUpdate(
+    const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
       { status: "completed", progress: 100 }
     );
+    if (session?.assessmentAttemptId) {
+      await AssessmentAttemptModel.findOneAndUpdate(
+        { _id: session.assessmentAttemptId, studentId: String(userId), status: "in_progress" },
+        { status: "submitted", submittedAt: new Date() },
+      );
+    }
 
     res.json({ success: true });
   } catch (error) {

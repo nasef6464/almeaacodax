@@ -921,8 +921,6 @@ export const QuizPage: React.FC = () => {
     if (!quiz) return;
     setIsSubmittingResult(true);
 
-    api.endLiveExam({ quizId: quiz.id }).catch((err: any) => console.warn('Failed to end live exam:', err));
-
     const skillStats: Record<string, { total: number; correct: number }> = {};
     quizQuestions.forEach((question) => {
       const isCorrect = selectedOptions[question.id] === question.correctOptionIndex;
@@ -1063,6 +1061,10 @@ export const QuizPage: React.FC = () => {
     if (!submissionSucceeded) {
       return;
     }
+
+    // Close the server-backed session only after the result is accepted. If
+    // submission fails, the active session remains resumable and retry-safe.
+    api.endLiveExam({ quizId: quiz.id }).catch((err: any) => console.warn('Failed to end live exam:', err));
 
     if (typeof window !== 'undefined') {
       removeQuizProgressDraft(quiz.id);
