@@ -179,6 +179,24 @@ export const GenericPathPage: React.FC = () => {
             return;
         }
 
+        // Legacy subject deep links predate the level query parameter. Keep
+        // them usable by resolving the subject's owning level before falling
+        // back to the level picker; this preserves the canonical Learning
+        // Space instead of silently dropping the requested subject.
+        if (!selectedLevelId && selectedSubjectId) {
+            const resolvedSubjectId = resolveSubjectId(selectedSubjectId);
+            const subject = resolvedSubjectId
+                ? pathSubjects.find((item) => item.id === resolvedSubjectId)
+                : null;
+            const owningLevelId = subject?.levelId && pathLevels.some((level) => level.id === subject.levelId)
+                ? subject.levelId
+                : null;
+            if (owningLevelId) {
+                updateUrl(owningLevelId, resolvedSubjectId, true);
+                return;
+            }
+        }
+
         if (!selectedLevelId && pathLevels.length === 1) {
             updateUrl(pathLevels[0].id, null, true);
             return;

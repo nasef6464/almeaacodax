@@ -41,6 +41,11 @@ check('GenericPathPage composes the current learning runtime', () => {
   assert.ok(genericPathPageSource.includes("import { LearningSection } from '../components/LearningSection'"));
   assert.ok(genericPathPageSource.includes('<LearningSection category={path.id}'));
 });
+check('legacy subject deep links resolve their owning level instead of dropping the subject', () => {
+  assert.ok(genericPathPageSource.includes('Legacy subject deep links predate the level query parameter.'));
+  assert.ok(genericPathPageSource.includes('const owningLevelId = subject?.levelId'));
+  assert.ok(genericPathPageSource.includes('updateUrl(owningLevelId, resolvedSubjectId, true)'));
+});
 check('legacy subject page is retained without an application import or lazy entry', () => {
   assert.ok(subjectLearningSource.includes('export const SubjectLearningPage'));
   const callers = sourceFiles
