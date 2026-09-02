@@ -189,7 +189,14 @@ async function main() {
       body: document.body.innerText || "",
     }));
     const resultResponse = await api(freshStudent.page, "/quiz-results/my?limit=50");
-    const hasServerResult = listOf(resultResponse.payload, "results").some((result) => String(result.quizId || "") === createdQuizId);
+    const serverResult = listOf(resultResponse.payload, "results").find((result) => String(result.quizId || "") === createdQuizId);
+    const hasServerResult = Boolean(serverResult);
+    if (!serverResult?.date) throw new Error(`Server result is missing its attempt date: ${JSON.stringify(resultResponse)}`);
+    await freshStudent.page.goto(`${BASE_URL}/results?attempt=${encodeURIComponent(String(serverResult.date))}`, { waitUntil: "networkidle", timeout: 60000 });
+    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول" });
+    await reviewButton.waitFor({ timeout: 30000 });
+    await reviewButton.click();
+    await freshStudent.page.getByRole("heading", { name: "مراجعة الحلول" }).waitFor({ timeout: 30000 });
     let completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
     for (let retry = 0; completedSession.payload?.session && retry < 10; retry += 1) {
       await freshStudent.page.waitForTimeout(250);
@@ -199,6 +206,7 @@ async function main() {
       ["builder created a published directed definition", Boolean(created?.isPublished) && (created.targetGroupIds || []).map(String).includes(String(targetGroup.id || targetGroup._id))],
       ["target sees directed test in UI", true],
       ["target submits through runner", hasServerResult],
+      ["fresh result page restores learner-safe answer review", true],
       ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
       ["accepted submission closes the resumable session", !completedSession.payload?.session],
       ["outsider cannot open direct URL", !outsiderState.canSeeQuestion],

@@ -27,6 +27,7 @@ import { VideoModal } from '../components/VideoModal';
 import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
 import { ShareScorecard } from '../components/ShareScorecard';
 import { useStore } from '../store/useStore';
+import { api } from '../services/api';
 import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
@@ -257,10 +258,11 @@ const Results: React.FC = () => {
   const [copiedSummary, setCopiedSummary] = React.useState(false);
   const [sharedSummary, setSharedSummary] = React.useState(false);
   const [resultDepth, setResultDepth] = React.useState<'simple' | 'full'>('simple');
+  const [loadedResultDetail, setLoadedResultDetail] = React.useState<QuizResult | null>(null);
 
   const requestedAttempt = searchParams.get('attempt');
   const requestedView = searchParams.get('view');
-  const latestResult = React.useMemo(() => {
+  const listedResult = React.useMemo(() => {
     if (!requestedAttempt) return examResults[0];
 
     const decodedAttempt = decodeURIComponent(requestedAttempt);
@@ -270,6 +272,36 @@ const Results: React.FC = () => {
       examResults[0]
     );
   }, [examResults, requestedAttempt]);
+
+  const listedResultId = String((listedResult as (QuizResult & { id?: string; _id?: string }) | undefined)?.id
+    || (listedResult as (QuizResult & { id?: string; _id?: string }) | undefined)?._id
+    || '');
+
+  React.useEffect(() => {
+    let active = true;
+    setLoadedResultDetail(null);
+
+    if (!listedResultId || (listedResult?.questionReview?.length || 0) > 0) {
+      return () => { active = false; };
+    }
+
+    api.getQuizResultDetails(listedResultId)
+      .then((response) => {
+        if (!active || !response?.result) return;
+        setLoadedResultDetail(response.result as QuizResult);
+      })
+      .catch(() => {
+        // Historical rows can intentionally lack review data. Keep the list
+        // result usable rather than turning the whole result screen into an error.
+      });
+
+    return () => { active = false; };
+  }, [listedResult?.questionReview?.length, listedResultId]);
+
+  const latestResult = React.useMemo(() => {
+    if (!listedResult) return undefined;
+    return loadedResultDetail ? { ...listedResult, ...loadedResultDetail } : listedResult;
+  }, [listedResult, loadedResultDetail]);
 
   React.useEffect(() => {
     if (requestedView === 'review' || requestedView === 'history' || requestedView === 'analysis') {
