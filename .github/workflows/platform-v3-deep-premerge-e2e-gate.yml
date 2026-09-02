@@ -44,6 +44,10 @@ jobs:
       MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_platform_v3_deep_${{ github.run_id }}
       REDIS_URL: ""
       RATE_LIMIT_REDIS_ENABLED: "false"
+      # The isolated full-stack suite makes more than the production global
+      # per-IP budget from one loopback address. Keep production defaults
+      # intact; this only prevents one audit from rate-limiting the next.
+      RATE_LIMIT_GLOBAL_LIMIT: "5000"
       # The isolated suite intentionally logs in several independent roles and
       # audits in a short window. Keep production's default throttling intact
       # while preventing fixture authentication from masking product evidence.
