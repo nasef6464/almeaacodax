@@ -42,7 +42,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 | Capability | الحالة | الدليل الحالي | فجوة الخروج |
 |---|---|---|---|
-| Definition/versioning | `PARTIAL` | definition adapter و`AssessmentVersion` واختبارات نشر/قراءة معزولة | رحلة UI تثبت create/edit/publish/version preservation |
+| Definition/versioning | `PARTIAL` | create/published-version ثم PATCH/version 2 وحفظ السؤال والإعداد وقراءة الطالب HTTP على `46eae178` | رحلة UI تثبت edit/reload/publish/version preservation |
 | Builder | `PARTIAL` | guards واختبارات عامة وواجهات قائمة | E2E مخصص للإنشاء/المعاينة/النشر ورسائل validation |
 | Question Selection | `PARTIAL` | missing/invalid/duplicate normalization ونطاق المعلم مثبت HTTP | UI pagination/selection preservation في الرحلة الخامسة |
 | Assignment/access | `PARTIAL` | directed access ورفض cross-school/class مثبت HTTP | UI موجه كامل، limit/window/error states |
@@ -83,7 +83,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 | 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` → `Results.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history مثبتة HTTP معزولًا وfresh review E2E على `5dfe7209` | `PARTIAL`: النتيجة ومراجعة المحاولة الجديدة مثبتتان؛ history التفصيلي والتحليلات يبقيان ACC-04. |
 | 3. محاكي متعدد الأقسام | `UnifiedQuizBuilder(kind=mock)` → `QuizPage` → manager preview | `QuizModel.mockExam`، `QuizResult.sectionResults`، models additive للجلسات/المحاولات | Backend + Deep E2E على `47dabd68` و`9bf273f1` | `VERIFIED` للـMVP المعزول: start/resume/autosave/retry/expiry ونتيجة قسمين؛ ومدير مستقل يرى المحاكي الحديث وتحليل أقسامه بعد reload. |
 | 4. توجيه داخل النطاق | step 4 في `UnifiedQuizBuilder` → `student-directed-tests` → direct runner | `targetGroupIds/targetUserIds`، access policy في quiz routes و`QuizModel` | cross-school/class rejection مثبت HTTP | `PARTIAL`: audit الجديد يثبت target UI/submission ورفض outsider للرابط، مع fixture admin/student/parent المعزول. |
-| 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | compatibility/version preservation مثبت HTTP | `PARTIAL`: pagination + edit UI + version-read acceptance لم تثبت؛ تدخل ACC-04. |
+| 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | Backend `33680376925` يثبت version 1 ثم PATCH/version 2 وحفظ السؤال/الإعداد وقراءة الطالب | `PARTIAL`: pagination + edit UI/reload acceptance لم تثبت؛ تدخل ACC-04. |
 
 **Fixture map:** تستخدم بوابة CI المعزولة مستخدمي `ROLE_ADMIN` و`ROLE_STUDENT` و`ROLE_PARENT`، وسؤالًا approved scoped من API ومجموعة فعلية للطالب من `GET /auth/me` و`GET /content/bootstrap?scope=full`. لا تُنشأ أو تُحذف أي بيانات خارج Mongo المعزول؛ الـassessment المؤقت يُحذف في `finally`.
 
@@ -120,7 +120,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 دليل الخروج: parity/RBAC/history E2E + HTTP، وquery evidence مناسب.
 
-**الحالة:** `PARTIAL`. أول فجوة UI كانت أن صفحة النتائج بعد reload تعرض الملخص بلا مراجعة الإجابات، رغم أن endpoint التفصيلي الآمن موجود. commit `5dfe7209` يجلب تفصيل المحاولة المحددة فقط باسم المالك ويُبقي الصف التاريخي الناقص ملخصًا قابلاً للقراءة بلا اختراع review. Backend Integration CI `33667130693` وDeep Pre-Merge E2E CI `33667130828` نجحا على نفس الـHEAD، والأخير يثبت submit ثم fresh Results page ثم فتح "مراجعة الحلول". إضافةً إلى ذلك، commit `9bf273f1` مع Backend `33678273932` وDeep `33678274167` يثبت أن مديرًا في جلسة مستقلة يرى محاكيًا حديثًا بعد reload ثم يقرأ تحليل القسمين بعد تسليم الطالب؛ يحافظ adapter على `quizKind` ويجعل audit انتظار النتيجة المثبتة محدودًا بدل سباق زمني. history/legacy UI الشامل وتحليلات student/class/school وexports لم تُغلق بعد.
+**الحالة:** `PARTIAL`. أول فجوة UI كانت أن صفحة النتائج بعد reload تعرض الملخص بلا مراجعة الإجابات، رغم أن endpoint التفصيلي الآمن موجود. commit `5dfe7209` يجلب تفصيل المحاولة المحددة فقط باسم المالك ويُبقي الصف التاريخي الناقص ملخصًا قابلاً للقراءة بلا اختراع review. Backend Integration CI `33667130693` وDeep Pre-Merge E2E CI `33667130828` نجحا على نفس الـHEAD، والأخير يثبت submit ثم fresh Results page ثم فتح "مراجعة الحلول". إضافةً إلى ذلك، commit `9bf273f1` مع Backend `33678273932` وDeep `33678274167` يثبت أن مديرًا في جلسة مستقلة يرى محاكيًا حديثًا بعد reload ثم يقرأ تحليل القسمين بعد تسليم الطالب؛ يحافظ adapter على `quizKind` ويجعل audit انتظار النتيجة المثبتة محدودًا بدل سباق زمني. وأثبت `46eae178` مع Backend `33680376925` وDeep `33680376880` أن النشر ينشئ version 1 وأن PATCH لمنشور ينشئ version 2 يحفظ السؤال والإعداد وتقرأه رحلة الطالب. لا تزال edit UI/reload وpagination للاختيار، وhistory/legacy UI الشامل وتحليلات student/class/school وexports غير مغلقة.
 
 ### ACC-05 — Assessment completion report
 
