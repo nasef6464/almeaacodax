@@ -510,6 +510,9 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   assert.equal(acceptedSubmission.body?.quizSnapshot?.quizKind, "test", "assessment result snapshot missing quiz kind");
   const acceptedLegacyResult = await QuizResultModel.findOne({ userId: studentId, quizId: ASSESSMENT_QUIZ_ID }).lean();
   assert.ok(acceptedLegacyResult, "legacy result missing after accepted assessment submission");
+  const submittedLiveAttempt = await AssessmentAttemptModel.findById(liveAttemptId).lean();
+  assert.equal(submittedLiveAttempt?.submissionKey, acceptedLegacyResult.submissionKey, "legacy submit did not finalize the existing live attempt");
+  assert.equal(submittedLiveAttempt?.status, "submitted", "legacy submit did not finalize the existing live attempt status");
   assert.equal(await AssessmentResultModel.countDocuments({ legacyQuizResultId: String(acceptedLegacyResult._id) }), 1, "opted-in directed assessment was not mirrored after legacy submission");
   const mirrorAudit = await AssessmentMirrorAuditModel.findOne({ legacyQuizResultId: String(acceptedLegacyResult._id) }).lean();
   assert.equal(mirrorAudit?.status, "completed", "successful assessment mirror was not auditable");

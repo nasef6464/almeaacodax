@@ -30,11 +30,41 @@ export const dualWriteAssessmentSubmission = async ({
     { $setOnInsert: { audience: { groupIds: quiz.targetGroupIds || [], userIds: quiz.targetUserIds || [] }, maxAttempts: Number(quiz.settings?.maxAttempts || 1), createdBy: String(quiz.createdBy || "system") } },
     { new: true, upsert: true },
   );
-  const attempt = await AssessmentAttemptModel.findOneAndUpdate(
-    { submissionKey: legacyResult.submissionKey },
-    { $setOnInsert: { assignmentId: String(assignment._id), assessmentVersionId: String(version._id), studentId: String(legacyResult.userId), attemptNumber: legacyResult.attemptNumber, status: "submitted", submittedAt: legacyResult.createdAt || new Date(), submissionKey: legacyResult.submissionKey } },
-    { new: true, upsert: true },
-  );
+  const attemptContext = {
+    assignmentId: String(assignment._id),
+    assessmentVersionId: String(version._id),
+    studentId: String(legacyResult.userId),
+    attemptNumber: Number(legacyResult.attemptNumber || 1),
+  };
+
+  // A runner can create the lifecycle attempt before the legacy submit route
+  // commits its result. Reuse that exact attempt, including an expired/ended
+  // one, rather than colliding with its canonical student+assignment number.
+  // The submission key remains the idempotency key for retried final submits.
+  let attempt = legacyResult.submissionKey
+    ? await AssessmentAttemptModel.findOne({ submissionKey: legacyResult.submissionKey })
+    : null;
+  if (!attempt) {
+    attempt = await AssessmentAttemptModel.findOneAndUpdate(
+      attemptContext,
+      { $set: { status: "submitted", submittedAt: legacyResult.createdAt || new Date(), submissionKey: legacyResult.submissionKey } },
+      { new: true },
+    );
+  }
+  if (!attempt) {
+    try {
+      attempt = await AssessmentAttemptModel.create({
+        ...attemptContext,
+        status: "submitted",
+        submittedAt: legacyResult.createdAt || new Date(),
+        submissionKey: legacyResult.submissionKey,
+      });
+    } catch (error: any) {
+      if (error?.code !== 11000 || !legacyResult.submissionKey) throw error;
+      attempt = await AssessmentAttemptModel.findOne({ submissionKey: legacyResult.submissionKey });
+      if (!attempt) throw error;
+    }
+  }
   const upsertResponse = dependencies?.upsertResponse || ((input: {
     attemptId: string;
     questionId: string;
