@@ -81,6 +81,7 @@ async function main() {
   const outsiderContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   const errors = [];
   let createdQuizId = "";
+  const createdQuestionIds = [];
   try {
     const admin = await login(adminContext, credentials.admin);
     const student = await login(studentContext, credentials.student);
@@ -98,6 +99,43 @@ async function main() {
     const targetGroup = groups.find((group) => studentGroupIds.has(String(group.id || group._id)));
     if (!questionsResponse.ok || !question || !targetGroup) throw new Error("Isolated fixture map lacks an approved scoped question or the target student's group.");
 
+    // The product selector intentionally uses bounded pages. Create a
+    // disposable 101-question fixture in the isolated database so this audit
+    // proves a manager can retain selections from both pages without loading a
+    // whole question bank into the browser.
+    const fixtureSkillId = Array.isArray(question.skillIds) ? question.skillIds[0] : "";
+    if (!fixtureSkillId) throw new Error("Isolated fixture question lacks a skill required for pagination coverage.");
+    for (let index = 0; index < 101; index += 1) {
+      const id = `${marker}-question-${String(index).padStart(3, "0")}`;
+      const response = await api(admin.page, "/quizzes/questions", {
+        method: "POST",
+        body: JSON.stringify({
+          id,
+          text: `${marker} pagination question ${index + 1}`,
+          options: ["أ", "ب", "ج", "د"],
+          correctOptionIndex: 0,
+          skillIds: [String(fixtureSkillId)],
+          pathId: String(question.pathId),
+          subject: String(question.subject || question.subjectId),
+          sectionId: question.sectionId ? String(question.sectionId) : undefined,
+          difficulty: "Medium",
+          type: "mcq",
+          approvalStatus: "approved",
+        }),
+      });
+      if (!response.ok) throw new Error(`Pagination fixture question ${index + 1} failed (${response.status}).`);
+      createdQuestionIds.push(id);
+    }
+    const [firstFixturePage, secondFixturePage] = await Promise.all([
+      api(admin.page, `/quizzes/questions?search=${encodeURIComponent(marker)}&pathId=${encodeURIComponent(String(question.pathId))}&subject=${encodeURIComponent(String(question.subject || question.subjectId))}&page=1&limit=100`),
+      api(admin.page, `/quizzes/questions?search=${encodeURIComponent(marker)}&pathId=${encodeURIComponent(String(question.pathId))}&subject=${encodeURIComponent(String(question.subject || question.subjectId))}&page=2&limit=100`),
+    ]);
+    const firstPageQuestion = listOf(firstFixturePage.payload, "questions")[0];
+    const secondPageQuestion = listOf(secondFixturePage.payload, "questions")[0];
+    if (!firstFixturePage.ok || !secondFixturePage.ok || !firstPageQuestion?.id || !secondPageQuestion?.id) {
+      throw new Error("Pagination fixture did not yield two bounded question pages.");
+    }
+
     await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
     await admin.page.getByTestId("assessment-manager-create").click();
     await admin.page.getByTestId("assessment-builder").waitFor();
@@ -106,7 +144,15 @@ async function main() {
     await admin.page.getByTestId("assessment-builder-path").selectOption(String(question.pathId));
     await admin.page.getByTestId("assessment-builder-subject").selectOption(String(question.subject || question.subjectId));
     await admin.page.getByTestId("assessment-builder-next").click();
-    await admin.page.getByTestId(`assessment-question-select-${question.id || question._id}`).click();
+    const questionSearch = admin.page.getByTestId("assessment-question-search");
+    await questionSearch.fill(marker);
+    await admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`).waitFor({ timeout: 30000 });
+    await admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`).click();
+    await admin.page.getByTestId("assessment-question-page-next").click();
+    await admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`).waitFor({ timeout: 30000 });
+    await admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`).click();
+    await admin.page.getByTestId(`assessment-selected-question-${firstPageQuestion.id}`).waitFor({ timeout: 30000 });
+    await admin.page.getByTestId(`assessment-selected-question-${secondPageQuestion.id}`).waitFor({ timeout: 30000 });
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId(`assessment-builder-target-group-${targetGroup.id || targetGroup._id}`).check();
@@ -135,10 +181,17 @@ async function main() {
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-title").fill(editedTitle);
     await admin.page.getByTestId("assessment-builder-next").click();
-    const selectedQuestion = admin.page.getByTestId(`assessment-question-select-${question.id || question._id}`);
+    await admin.page.getByTestId("assessment-question-search").fill(marker);
+    const selectedQuestion = admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`);
     await selectedQuestion.waitFor({ timeout: 30000 });
     if (!await selectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
       throw new Error("Published edit did not restore the selected question in the Builder.");
+    }
+    await admin.page.getByTestId("assessment-question-page-next").click();
+    const secondSelectedQuestion = admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`);
+    await secondSelectedQuestion.waitFor({ timeout: 30000 });
+    if (!await secondSelectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+      throw new Error("Published edit did not retain the second-page selected question in the Builder.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId("assessment-builder-time-limit").fill("45");
@@ -160,10 +213,17 @@ async function main() {
       throw new Error("Published edit did not restore the updated title after manager reload.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
-    const restoredQuestion = admin.page.getByTestId(`assessment-question-select-${question.id || question._id}`);
+    await admin.page.getByTestId("assessment-question-search").fill(marker);
+    const restoredQuestion = admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`);
     await restoredQuestion.waitFor({ timeout: 30000 });
     if (!await restoredQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
       throw new Error("Published edit did not preserve the selected question after manager reload.");
+    }
+    await admin.page.getByTestId("assessment-question-page-next").click();
+    const restoredSecondQuestion = admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`);
+    await restoredSecondQuestion.waitFor({ timeout: 30000 });
+    if (!await restoredSecondQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+      throw new Error("Published edit did not preserve the second-page question after manager reload.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
     if (await admin.page.getByTestId("assessment-builder-time-limit").inputValue() !== "45") {
@@ -173,7 +233,8 @@ async function main() {
     const versionedDefinition = await api(admin.page, `/quizzes/${createdQuizId}`);
     if (!versionedDefinition.ok || versionedDefinition.payload?.title !== editedTitle
       || !Array.isArray(versionedDefinition.payload?.questionIds)
-      || !versionedDefinition.payload.questionIds.map(String).includes(String(question.id || question._id))
+      || !versionedDefinition.payload.questionIds.map(String).includes(String(firstPageQuestion.id))
+      || !versionedDefinition.payload.questionIds.map(String).includes(String(secondPageQuestion.id))
       || Number(versionedDefinition.payload?.settings?.timeLimit) !== 45) {
       throw new Error(`Versioned definition did not retain the published UI edit: ${JSON.stringify(versionedDefinition.payload)}`);
     }
@@ -219,7 +280,7 @@ async function main() {
     const retryProgressPayload = {
       quizId: createdQuizId,
       answeredQuestions: savedAnswerIds.length,
-      totalQuestions: 1,
+      totalQuestions: 2,
       answers: savedAnswers,
     };
     const [firstRetry, secondRetry] = await Promise.all([
@@ -276,9 +337,10 @@ async function main() {
     fs.writeFileSync(path.join(OUT_DIR, "FAILURE.txt"), String(error?.stack || error));
     throw error;
   } finally {
-    if (createdQuizId) {
+    if (createdQuizId || createdQuestionIds.length > 0) {
       const cleanupPage = (await login(adminContext, credentials.admin)).page;
-      await api(cleanupPage, `/quizzes/${createdQuizId}`, { method: "DELETE" }).catch(() => {});
+      if (createdQuizId) await api(cleanupPage, `/quizzes/${createdQuizId}`, { method: "DELETE" }).catch(() => {});
+      await Promise.all(createdQuestionIds.map((id) => api(cleanupPage, `/quizzes/questions/${encodeURIComponent(id)}`, { method: "DELETE" }).catch(() => {})));
     }
     await browser.close();
   }

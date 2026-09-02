@@ -412,12 +412,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
             </div>
             {totalManualPages > 1 && (
               <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 px-1">
-                <button type="button" onClick={() => setManualPage((page) => Math.max(1, page - 1))} disabled={manualPage <= 1}
+                <button type="button" data-testid="assessment-question-page-previous" onClick={() => setManualPage((page) => Math.max(1, page - 1))} disabled={manualPage <= 1}
                   className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
                   <ChevronRight size={12}/> السابق
                 </button>
                 <span>صفحة {manualPage} من {totalManualPages}</span>
-                <button type="button" onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))} disabled={manualPage >= totalManualPages}
+                <button type="button" data-testid="assessment-question-page-next" onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))} disabled={manualPage >= totalManualPages}
                   className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
                   التالي <ChevronLeft size={12}/>
                 </button>
@@ -556,7 +556,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
                 const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
                 return (
-                  <div key={`${q.id}-${index}`} draggable
+                  <div key={`${q.id}-${index}`} data-testid={`assessment-selected-question-${q.id}`} draggable
                     onDragStart={(e) => { setDraggedId(q.id); e.dataTransfer.effectAllowed = "move"; }}
                     onDragOver={(e) => { e.preventDefault(); setDragOverId(q.id); }}
                     onDrop={(e) => handleDrop(e, q.id)}
