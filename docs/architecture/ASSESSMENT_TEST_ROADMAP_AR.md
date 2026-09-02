@@ -44,15 +44,15 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 |---|---|---|---|
 | Definition/versioning | `VERIFIED` ضمن MVP المعزول | Manager UI create/publish/edit/reload، version 1→2، حفظ السؤال والإعداد وقراءة الطالب على `038255fb` | لا production cutover أو historical reconstruction |
 | Builder | `VERIFIED` ضمن MVP المعزول | Deep audit ينشئ/ينشر ويعيد فتح تعريف موجّه عبر `UnifiedQuizBuilder` على `038255fb` | validation edge states غير الأساسية تؤجل وفق الاستخدام |
-| Question Selection | `PARTIAL` | missing/invalid/duplicate normalization ونطاق المعلم مثبت HTTP | UI pagination/selection preservation في الرحلة الخامسة |
-| Assignment/access | `PARTIAL` | directed access ورفض cross-school/class مثبت HTTP | UI موجه كامل، limit/window/error states |
+| Question Selection | `VERIFIED` ضمن MVP المعزول | 101 fixture مؤقت، اختيار من الصفحة 1 و2، نشر ثم edit/reload يحفظ الاختيارين في Deep `33688377731` على `d2298993` | filtering/import bulk UX مؤجل وفق الاستخدام |
+| Assignment/access | `VERIFIED` ضمن MVP المعزول | directed target UI/submission ورفض outsider/direct URL، مع guards HTTP للنطاق | limit/window/error presentation التفصيلي مؤجل وفق الاستخدام |
 | Runner | `VERIFIED` للرحلات العادي/الموجّه/المحاكي المعزولة | Deep E2E وBackend CI على `47dabd68` | loading/error تفصيلي ونتيجة/history يدخلان ACC-04 |
 | Sessions | `VERIFIED` ضمن الـMVP المعزول | server start/resume/expiry ورفض التقدم بعد الانتهاء مثبتان | لا ادعاء production-scale أو production cutover |
 | Attempts | `VERIFIED` ضمن الـMVP المعزول | lifecycle موجّه/محاكي، retry idempotent وfinalization/reconciliation مثبتة | لا production opt-in |
 | Responses | `VERIFIED` ضمن الـMVP المعزول | autosave ثم resume لإجابتين وretry آمن مثبتان | لا reconstruction تاريخي لبيانات ناقصة |
 | Scoring | `VERIFIED` للعقد legacy الحالي | server-result authority وHTTP/CI guards | parity فقط عند أي reader/write migration؛ لا تغيير policy |
-| Results | `PARTIAL` | compatible direct readers وhistorical fallback وrollback، وfresh result/review UI على `5dfe7209` مثبتة معزولًا | history التفصيلي وحالات legacy الناقصة أمام UI؛ القارئ الجديد ليس production default |
-| Analytics | `PARTIAL` | section analytics/scoped reports HTTP، ومدير مستقل يفتح محاكيًا حديثًا ويرى تحليل القسمين في UI على `9bf273f1` | فصل Result/Report وstudent/class/school evidence وexports |
+| Results | `VERIFIED` ضمن MVP المعزول | fresh result/review، summary آمن للصف التاريخي الناقص، وقرّاء compatibility bounded/rollback | history بصري شامل لكل شكل legacy مؤجل؛ القارئ الجديد ليس production default |
+| Analytics | `VERIFIED` للـMVP الأساسي | تحليل section/skill scoped، manager section analytics، وSkill Progress/weakness actions | student/class/school reports وexports منفصلة إلى Goal Results/Reports |
 
 ## الدليل الموجود الآن
 
@@ -60,7 +60,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 |---|---|---|
 | عقود المصدر | `smoke:assessment-*` و`smoke:quiz-*` | guards مساعدة؛ لا تثبت رحلة مستخدم |
 | HTTP معزول | `server/src/scripts/backendIntegrationGate.ts` وتشغيلات CI المسجلة في `CODEX_EXECUTION_STATE.md` | يثبت normal/directed/mock/scoping/history/mirror/reconciliation/rollback على Mongo مؤقت، لا production scale |
-| E2E معزول عام | `platform-v3-deep-premerge-e2e-gate.yml`؛ آخر HEAD مدرسي `26f615e1` نجح في `33465513152` | يثبت سلامة المنصة العامة، لا يربط الرحلات الخمس بندًا بندًا |
+| E2E معزول عام | `platform-v3-deep-premerge-e2e-gate.yml`؛ `d2298993` نجح في `33688377731` | يثبت الرحلات الخمس، autosave/resume/retry، وبقية سلامة المنصة على Mongo معزول |
 | قراءة ضغط محدودة | bounded CI read checks | ليست شهادة Render/Atlas أو 100/500/1000 مستخدم |
 
 ## خطة التنفيذ السريعة
@@ -79,13 +79,13 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 | الرحلة | UI public entry | API/نموذج الحقيقة | الدليل القائم | الحالة/الفجوة |
 |---|---|---|---|---|
-| 1. إنشاء عادي واختيار/نشر | `QuizzesManager` → `UnifiedQuizBuilder` → `SmartQuestionSelector` | `POST /quizzes`؛ `QuizModel` مع `AssessmentVersion` compatibility projection | `backendIntegrationGate.ts` يثبت integrity والنشر/القراءة HTTP | `PARTIAL`: لم يكن هناك E2E يثبت الـwizard أو الاختيار من UI. أضيف `live-assessment-commercial-audit.mjs` وselectors مستقرة. |
-| 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` → `Results.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history مثبتة HTTP معزولًا وfresh review E2E على `5dfe7209` | `PARTIAL`: النتيجة ومراجعة المحاولة الجديدة مثبتتان؛ history التفصيلي والتحليلات يبقيان ACC-04. |
+| 1. إنشاء عادي واختيار/نشر | `QuizzesManager` → `UnifiedQuizBuilder` → `SmartQuestionSelector` | `POST /quizzes`؛ `QuizModel` مع `AssessmentVersion` compatibility projection | Deep `33688377731`: 101 fixture، اختيار page 1+2، publish/edit/reload | `VERIFIED` للـMVP المعزول. |
+| 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` → `Results.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history HTTP وfresh review E2E؛ Deep `33688377731` | `VERIFIED` للـMVP المعزول؛ exhaustive legacy visual variants مؤجلة. |
 | 3. محاكي متعدد الأقسام | `UnifiedQuizBuilder(kind=mock)` → `QuizPage` → manager preview | `QuizModel.mockExam`، `QuizResult.sectionResults`، models additive للجلسات/المحاولات | Backend + Deep E2E على `47dabd68` و`9bf273f1` | `VERIFIED` للـMVP المعزول: start/resume/autosave/retry/expiry ونتيجة قسمين؛ ومدير مستقل يرى المحاكي الحديث وتحليل أقسامه بعد reload. |
-| 4. توجيه داخل النطاق | step 4 في `UnifiedQuizBuilder` → `student-directed-tests` → direct runner | `targetGroupIds/targetUserIds`، access policy في quiz routes و`QuizModel` | cross-school/class rejection مثبت HTTP | `PARTIAL`: audit الجديد يثبت target UI/submission ورفض outsider للرابط، مع fixture admin/student/parent المعزول. |
-| 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | Backend `33680376925` يثبت version 1 ثم PATCH/version 2 وحفظ السؤال/الإعداد وقراءة الطالب | `PARTIAL`: pagination + edit UI/reload acceptance لم تثبت؛ تدخل ACC-04. |
+| 4. توجيه داخل النطاق | step 4 في `UnifiedQuizBuilder` → `student-directed-tests` → direct runner | `targetGroupIds/targetUserIds`، access policy في quiz routes و`QuizModel` | target UI/submission ورفض outsider/direct URL في Deep؛ cross-school/class rejection HTTP | `VERIFIED` للـMVP المعزول. |
+| 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | page 1+2 selection ثم publish/edit/reload وversion reader في Deep `33688377731` | `VERIFIED` للـMVP المعزول. |
 
-**Fixture map:** تستخدم بوابة CI المعزولة مستخدمي `ROLE_ADMIN` و`ROLE_STUDENT` و`ROLE_PARENT`، وسؤالًا approved scoped من API ومجموعة فعلية للطالب من `GET /auth/me` و`GET /content/bootstrap?scope=full`. لا تُنشأ أو تُحذف أي بيانات خارج Mongo المعزول؛ الـassessment المؤقت يُحذف في `finally`.
+**Fixture map:** تستخدم بوابة CI المعزولة مستخدمي `ROLE_ADMIN` و`ROLE_STUDENT` و`ROLE_PARENT`، ومجموعة فعلية للطالب من `GET /auth/me` و`GET /content/bootstrap?scope=full`. ينشئ audit الرحلة التجارية 101 سؤالًا approved scoped لإثبات الصفحة الثانية، وينظفها مع الـassessment المؤقت في `finally`. لا تُنشأ أو تُحذف أي بيانات خارج Mongo المعزول.
 
 **أول فجوة حقيقية:** لم يكن هناك دليل تشغيل متصل يربط Builder/selector/assignment/runner/result في نفس التغيير. ليست فجوة API أو scoring؛ لذلك ACC-02 يبدأ بهذا الـaudit دون تعديل العقود أو قواعد الأعمال.
 
@@ -120,7 +120,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 
 دليل الخروج: parity/RBAC/history E2E + HTTP، وquery evidence مناسب.
 
-**الحالة:** `PARTIAL`. أول فجوة UI كانت أن صفحة النتائج بعد reload تعرض الملخص بلا مراجعة الإجابات، رغم أن endpoint التفصيلي الآمن موجود. commit `5dfe7209` يجلب تفصيل المحاولة المحددة فقط باسم المالك ويُبقي الصف التاريخي الناقص ملخصًا قابلاً للقراءة بلا اختراع review. Backend Integration CI `33667130693` وDeep Pre-Merge E2E CI `33667130828` نجحا على نفس الـHEAD، والأخير يثبت submit ثم fresh Results page ثم فتح "مراجعة الحلول". إضافةً إلى ذلك، commit `9bf273f1` مع Backend `33678273932` وDeep `33678274167` يثبت أن مديرًا في جلسة مستقلة يرى محاكيًا حديثًا بعد reload ثم يقرأ تحليل القسمين بعد تسليم الطالب؛ يحافظ adapter على `quizKind` ويجعل audit انتظار النتيجة المثبتة محدودًا بدل سباق زمني. وأثبت `46eae178` مع Backend `33680376925` وDeep `33680376880` أن النشر ينشئ version 1 وأن PATCH لمنشور ينشئ version 2 يحفظ السؤال والإعداد وتقرأه رحلة الطالب. لا تزال edit UI/reload وpagination للاختيار، وhistory/legacy UI الشامل وتحليلات student/class/school وexports غير مغلقة.
+**الحالة:** `VERIFIED` للـStrong MVP المعزول. `5dfe7209` يثبت fresh result/review آمنًا، و`9bf273f1` يثبت manager section analytics، و`46eae178` يثبت version 1→2. وأغلق `d2298993` على Backend `33688377700` وDeep `33688377731` اختيار page 1+2، publish/edit/reload، normal/directed، وmock resume/retry. كما راجعنا الحلقة الموجودة Question → Skill → Result → Skill Analysis → Recommendation → Learning Content: `skillIds` مطلوبة، submission/side effects يثبتان `skillsAnalysis` و`SkillProgress`، وResults يطابق المهارة الضعيفة مع درس/فيديو/مورد/quiz منشور أو إعادة تقييم. نقر كل نوع محتوى توصية في E2E واحد، التاريخ البصري الشامل، وstudent/class/school exports هي `PARTIAL` Future Improvements وليست مانع MVP.
 
 ### ACC-05 — Assessment completion report
 
