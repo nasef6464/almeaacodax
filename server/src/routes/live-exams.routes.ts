@@ -97,6 +97,21 @@ router.post("/progress", requireAuth, async (req, res) => {
 
     const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
+    const activeSession = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" });
+    if (activeSession?.assessmentAttemptId) {
+      const attempt = await AssessmentAttemptModel.findById(activeSession.assessmentAttemptId).select("status expiresAt").lean();
+      if (attempt && (attempt.status !== "in_progress" || (attempt.expiresAt && attempt.expiresAt.getTime() <= Date.now()))) {
+        await Promise.all([
+          AssessmentAttemptModel.findOneAndUpdate(
+            { _id: activeSession.assessmentAttemptId, studentId: String(userId), status: "in_progress" },
+            { status: "expired", submittedAt: new Date() },
+          ),
+          LiveExamSessionModel.updateOne({ _id: activeSession._id, status: "active" }, { status: "completed", progress: 100 }),
+        ]);
+        return res.status(409).json({ error: "Assessment session expired" });
+      }
+    }
+
     const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
       { $set: { answeredQuestions, totalQuestions, progress } },
@@ -125,6 +140,21 @@ router.post("/end", requireAuth, async (req, res) => {
   try {
     const { quizId } = req.body;
     const userId = req.authUser!.id;
+
+    const activeSession = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" });
+    if (activeSession?.assessmentAttemptId) {
+      const attempt = await AssessmentAttemptModel.findById(activeSession.assessmentAttemptId).select("status expiresAt").lean();
+      if (attempt && (attempt.status !== "in_progress" || (attempt.expiresAt && attempt.expiresAt.getTime() <= Date.now()))) {
+        await Promise.all([
+          AssessmentAttemptModel.findOneAndUpdate(
+            { _id: activeSession.assessmentAttemptId, studentId: String(userId), status: "in_progress" },
+            { status: "expired", submittedAt: new Date() },
+          ),
+          LiveExamSessionModel.updateOne({ _id: activeSession._id, status: "active" }, { status: "completed", progress: 100 }),
+        ]);
+        return res.status(409).json({ error: "Assessment session expired" });
+      }
+    }
 
     const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
