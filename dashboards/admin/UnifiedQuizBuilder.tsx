@@ -444,7 +444,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 <div className="border border-violet-100 rounded-2xl p-4 space-y-3 bg-violet-50/30">
                   <div className="flex items-center justify-between">
                     <h4 className="font-black text-sm text-gray-900">أقسام المحاكي</h4>
-                    <button type="button"
+                    <button type="button" data-testid="assessment-builder-mock-add-section"
                       onClick={() => setMockSections((prev) => [
                         ...prev,
                         { id: crypto.randomUUID(), title: `قسم ${prev.length + 1}`, subjectId: "", questionIds: [], timeLimit: 30, order: prev.length, domain: "general" },
@@ -456,10 +456,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                   {mockSections.map((sec, idx) => (
                     <div key={sec.id} className="flex items-center gap-2 bg-white rounded-xl border border-violet-100 p-3">
                       <span className="text-xs font-mono text-gray-400 w-5 shrink-0">{idx + 1}</span>
-                      <input value={sec.title}
+                      <input data-testid={`assessment-builder-mock-section-title-${idx}`} value={sec.title}
                         onChange={(e) => setMockSections((prev) => prev.map((s, i) => i === idx ? { ...s, title: e.target.value } : s))}
                         className="flex-1 text-sm font-bold border-0 outline-none bg-transparent" dir="rtl" />
-                      <input type="number" min={5} max={180} value={sec.timeLimit ?? 30}
+                      <input data-testid={`assessment-builder-mock-section-time-${idx}`} type="number" min={5} max={180} value={sec.timeLimit ?? 30}
                         onChange={(e) => setMockSections((prev) => prev.map((s, i) => i === idx ? { ...s, timeLimit: Number(e.target.value) } : s))}
                         className="w-16 text-center text-xs border border-gray-200 rounded-lg py-1 focus:outline-none" title="الوقت بالدقيقة" />
                       <span className="text-xs text-gray-400 shrink-0">د</span>
@@ -483,7 +483,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 <div>
                   <div className="flex gap-1 border-b border-gray-100 mb-4 overflow-x-auto">
                     {mockSections.map((sec, idx) => (
-                      <button key={sec.id} type="button" onClick={() => setActiveSectionIdx(idx)}
+                      <button key={sec.id} type="button" data-testid={`assessment-builder-mock-section-tab-${idx}`} onClick={() => setActiveSectionIdx(idx)}
                         className={`shrink-0 px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${
                           activeSectionIdx === idx ? "border-violet-600 text-violet-700" : "border-transparent text-gray-500"
                         }`}>

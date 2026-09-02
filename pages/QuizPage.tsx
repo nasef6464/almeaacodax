@@ -1286,13 +1286,14 @@ export const QuizPage: React.FC = () => {
             <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl border p-3 shadow-sm`}>
               <div className="mb-2 text-xs font-black text-gray-500">أقسام الاختبار المحاكي</div>
               <div className="flex gap-2 overflow-x-auto pb-1">
-                {mockExamSectionSummaries.map((section) => {
+                {mockExamSectionSummaries.map((section, sectionIndex) => {
                   const isActive = currentMockExamSection?.id === section.id;
                   const isLocked = lockedSectionIds.has(section.id);
                   return (
                     <button
                       key={section.id}
                       type="button"
+                      data-testid={`quiz-mock-section-${sectionIndex}`}
                       disabled={isLocked}
                       title={isLocked ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه' : undefined}
                       onClick={() => {

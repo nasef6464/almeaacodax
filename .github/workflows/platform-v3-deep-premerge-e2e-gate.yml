@@ -229,6 +229,14 @@ jobs:
           ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID: deep-premerge-assessment-${{ github.run_id }}
         run: node scripts/live-assessment-commercial-audit.mjs
 
+      - name: Assessment mock session resume and retry journey
+        id: assessment_mock_session
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          ASSESSMENT_MOCK_SESSION_AUDIT_RUN_ID: deep-premerge-assessment-mock-${{ github.run_id }}
+        run: node scripts/live-assessment-mock-session-audit.mjs
+
       - name: Supervisor school command UI journey
         id: supervisor_school
         continue-on-error: true
@@ -270,6 +278,7 @@ jobs:
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
             echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
+            echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
             echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
             echo "- School from scratch: ${{ steps.school_from_scratch.outcome }}"
             echo "- Barcode public test: ${{ steps.barcode.outcome }}"
@@ -299,6 +308,7 @@ jobs:
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"
           check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
+          check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
           check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
           check "School from scratch" "${{ steps.school_from_scratch.outcome }}"
           check "Barcode public test" "${{ steps.barcode.outcome }}"
