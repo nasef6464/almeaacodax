@@ -55,7 +55,7 @@ import { buildQuizReportStudentScope } from "../modules/quizzes/application/quiz
 import { buildQuizReportAttemptGaps } from "../modules/quizzes/application/quizReportAttemptGaps.js";
 import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
-import { findLatestPublishedAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
+import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
 import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
 import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
@@ -1783,6 +1783,13 @@ quizRouter.post(
       resolvedSkillIds,
       willBePublished,
     }));
+    if (created.isPublished) {
+      await publishAssessmentVersion({
+        assessmentId: String(created.id || created._id),
+        definition: created.toObject(),
+        publishedBy: String(req.authUser!.id),
+      });
+    }
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
@@ -1851,6 +1858,13 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     }
   }
   const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
+  if (updated?.isPublished) {
+    await publishAssessmentVersion({
+      assessmentId: String(updated.id || updated._id),
+      definition: updated.toObject(),
+      publishedBy: String(req.authUser!.id),
+    });
+  }
   return res.json(updated);
 });
 
