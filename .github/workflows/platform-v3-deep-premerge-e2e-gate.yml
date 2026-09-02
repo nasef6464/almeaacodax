@@ -233,14 +233,6 @@ jobs:
           QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
         run: node scripts/live-question-editor-audit.mjs
 
-      - name: Student Learning Space desktop + mobile journey
-        id: student_learning
-        continue-on-error: true
-        timeout-minutes: 12
-        env:
-          STUDENT_LEARNING_AUDIT_RUN_ID: deep-premerge-student-learning-${{ github.run_id }}
-        run: node scripts/live-student-learning-deep-audit.mjs
-
       - name: Assessment normal and directed commercial journey
         id: assessment_commercial
         continue-on-error: true
@@ -256,6 +248,16 @@ jobs:
         env:
           ASSESSMENT_MOCK_SESSION_AUDIT_RUN_ID: deep-premerge-assessment-mock-${{ github.run_id }}
         run: node scripts/live-assessment-mock-session-audit.mjs
+
+      - name: Student Learning Space desktop + mobile journey
+        id: student_learning
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          STUDENT_LEARNING_AUDIT_RUN_ID: deep-premerge-student-learning-${{ github.run_id }}
+          SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
+          SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
+        run: node scripts/live-student-learning-deep-audit.mjs
 
       - name: Supervisor school command UI journey
         id: supervisor_school
