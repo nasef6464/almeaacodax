@@ -190,8 +190,17 @@ async function main() {
     await student.page.getByTestId("quiz-finish-button").click();
     await student.page.getByTestId("quiz-finish-confirm").click();
     await student.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
-    const results = await api(student.page, "/quiz-results/my?limit=50");
-    const result = listOf(results.payload, "results").find((item) => String(item.quizId || "") === mockQuizId);
+    // Closing the confirmation dialog starts an asynchronous server submission.
+    // Read the persisted result with a short bounded poll, rather than racing
+    // the write and falsely classifying a complete mock as an empty result.
+    let result;
+    let results;
+    for (let retry = 0; retry < 20; retry += 1) {
+      results = await api(student.page, "/quiz-results/my?limit=50");
+      result = listOf(results.payload, "results").find((item) => String(item.quizId || "") === mockQuizId);
+      if (Array.isArray(result?.sectionResults) && result.sectionResults.length >= 2) break;
+      await student.page.waitForTimeout(250);
+    }
     // The manager catalog was loaded after publication. Opening its preview
     // now must fetch current, authorization-scoped analytics after completion.
     await manager.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).click();
@@ -209,7 +218,7 @@ async function main() {
     ];
     fs.writeFileSync(path.join(OUT_DIR, "SUMMARY.json"), JSON.stringify({ mockQuizId, checks: checks.map(([name, ok]) => ({ name, ok })) }, null, 2));
     const failed = checks.filter(([, ok]) => !ok);
-    if (failed.length) throw new Error(`Mock session checks failed: ${failed.map(([name]) => name).join("; ")} :: ${JSON.stringify({ result, resumed })}`);
+    if (failed.length) throw new Error(`Mock session checks failed: ${failed.map(([name]) => name).join("; ")} :: ${JSON.stringify({ result, results, resumed })}`);
     console.log(`PASS assessment mock session audit: ${mockQuizId}`);
   } finally {
     await managerContext?.close();
