@@ -46,10 +46,10 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 | Builder | `PARTIAL` | guards واختبارات عامة وواجهات قائمة | E2E مخصص للإنشاء/المعاينة/النشر ورسائل validation |
 | Question Selection | `PARTIAL` | missing/invalid/duplicate normalization ونطاق المعلم مثبت HTTP | UI pagination/selection preservation في الرحلة الخامسة |
 | Assignment/access | `PARTIAL` | directed access ورفض cross-school/class مثبت HTTP | UI موجه كامل، limit/window/error states |
-| Runner | `PARTIAL` | submit authority وE2E عام | رحلة عادي + محاكي مخصصة، refresh/reconnect وloading/error states |
-| Sessions | `NOT PROVEN` كجلسة خادمية مكتملة | `LiveExamSession` مراقبة فقط؛ foundation additive موجود | server start/resume/expiry/section lock policy مثبتة |
-| Attempts | `PARTIAL` | model/foundation وidempotent submission mirror معزول | lifecycle جديد للمحاولات الموجهة/المحاكي دون production opt-in |
-| Responses | `PARTIAL` | model/foundation additive | autosave/retry/resume persistence معزول وعدم فقد الإجابة |
+| Runner | `VERIFIED` للرحلات العادي/الموجّه/المحاكي المعزولة | Deep E2E وBackend CI على `47dabd68` | loading/error تفصيلي ونتيجة/history يدخلان ACC-04 |
+| Sessions | `VERIFIED` ضمن الـMVP المعزول | server start/resume/expiry ورفض التقدم بعد الانتهاء مثبتان | لا ادعاء production-scale أو production cutover |
+| Attempts | `VERIFIED` ضمن الـMVP المعزول | lifecycle موجّه/محاكي، retry idempotent وfinalization/reconciliation مثبتة | لا production opt-in |
+| Responses | `VERIFIED` ضمن الـMVP المعزول | autosave ثم resume لإجابتين وretry آمن مثبتان | لا reconstruction تاريخي لبيانات ناقصة |
 | Scoring | `VERIFIED` للعقد legacy الحالي | server-result authority وHTTP/CI guards | parity فقط عند أي reader/write migration؛ لا تغيير policy |
 | Results | `PARTIAL` | compatible direct readers وhistorical fallback وrollback مثبتة معزولًا | focused UI result/history، والقارئ الجديد ليس production default |
 | Analytics | `PARTIAL` | section analytics/scoped reports مثبتة في harness | فصل Result/Report وstudent/class/school evidence وexports |
@@ -81,7 +81,7 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 |---|---|---|---|---|
 | 1. إنشاء عادي واختيار/نشر | `QuizzesManager` → `UnifiedQuizBuilder` → `SmartQuestionSelector` | `POST /quizzes`؛ `QuizModel` مع `AssessmentVersion` compatibility projection | `backendIntegrationGate.ts` يثبت integrity والنشر/القراءة HTTP | `PARTIAL`: لم يكن هناك E2E يثبت الـwizard أو الاختيار من UI. أضيف `live-assessment-commercial-audit.mjs` وselectors مستقرة. |
 | 2. طالب يبدأ ويرسل ويرى النتيجة | `pages/Quizzes.tsx` / Learning Space → `QuizPage.tsx` | `POST /quizzes/:id/submit` → `QuizResultModel` ثم controlled Assessment mirror | submit/scoring/history مثبتة HTTP معزولًا | `PARTIAL`: audit الجديد يثبت runner وserver-result؛ next action/history التفصيلي يبقى ACC-04. |
-| 3. محاكي متعدد الأقسام | `UnifiedQuizBuilder(kind=mock)` → `QuizPage` | `QuizModel.mockExam`، `QuizResult.sectionResults`، models additive للجلسات/المحاولات | `backendIntegrationGate.ts` يثبت mock/scoring | `PARTIAL`: start/resume/autosave/failure safety غير مثبتة؛ هي أول فجوة ACC-03. |
+| 3. محاكي متعدد الأقسام | `UnifiedQuizBuilder(kind=mock)` → `QuizPage` | `QuizModel.mockExam`، `QuizResult.sectionResults`، models additive للجلسات/المحاولات | Backend + Deep E2E على `47dabd68` | `VERIFIED` للـMVP المعزول: start/resume/autosave/retry/expiry ونتيجة قسمين. |
 | 4. توجيه داخل النطاق | step 4 في `UnifiedQuizBuilder` → `student-directed-tests` → direct runner | `targetGroupIds/targetUserIds`، access policy في quiz routes و`QuizModel` | cross-school/class rejection مثبت HTTP | `PARTIAL`: audit الجديد يثبت target UI/submission ورفض outsider للرابط، مع fixture admin/student/parent المعزول. |
 | 5. تحديث المنشور وحفظ الاختيار/الإعدادات | edit facade `QuizzesManager` → `UnifiedQuizBuilder` | `PATCH /quizzes/:id`، `AssessmentVersion` وlegacy facade | compatibility/version preservation مثبت HTTP | `PARTIAL`: pagination + edit UI + version-read acceptance لم تثبت؛ تدخل ACC-04. |
 
@@ -108,6 +108,8 @@ smoke نصي أو typecheck وحده لا يرفع Capability إلى `VERIFIED`.
 3. فشل الكتابة الجديدة لا يكرر legacy result؛ reconciliation يكتشف الفجوة؛ rollback يعيد القراءة القديمة.
 
 دليل الخروج: failure injection + retry/idempotency + resume E2E/HTTP على Mongo معزول. لا production dual-write.
+
+**الحالة:** `VERIFIED` على commit `47dabd68`. Backend Integration CI `33665523965` وDeep Pre-Merge E2E CI `33665524038` نجحا على نفس الـHEAD. يثبت الـHTTP harness رفض outsider لبدء الاختبار الموجّه، إنشاء أو استعادة المحاولة، حفظ الإجابات بالتزامن، منع الحفظ بعد انتهاء الجلسة، ثم إغلاق المحاولة المتزامن مع legacy submission من دون نتيجة مكررة. ويثبت Playwright إنشاء محاكي بقسمين من Builder، حفظ إجابتين، استئنافهما، retry آمن، الإرسال، وظهور `sectionResults` في قائمة نتائج الطالب. لا production dual-write أو historical reconstruction أو production opt-in ضمن هذا الدليل.
 
 ### ACC-04 — Results, analytics and historical compatibility
 
