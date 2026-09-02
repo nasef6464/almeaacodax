@@ -151,7 +151,13 @@ async function main() {
     }
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
+    const autosaveResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
+      { timeout: 30000 },
+    );
     await freshStudent.page.getByTestId("quiz-answer-option-0").click();
+    const autosaveResponse = await autosaveResponsePromise;
+    if (!autosaveResponse.ok()) throw new Error(`Autosave request failed (${autosaveResponse.status()})`);
     const savedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
     const savedAnswers = savedSession.payload?.answers || {};
     const savedAnswerIds = Object.keys(savedAnswers);
