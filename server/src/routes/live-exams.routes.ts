@@ -10,6 +10,19 @@ import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/asses
 
 const router = express.Router();
 
+const saveAssessmentResponse = async (attemptId: string, studentId: string, questionId: string, answer: unknown) => {
+  const filter = { attemptId, questionId };
+  const update = { $set: { studentId, answer, savedAt: new Date() } };
+  try {
+    await AssessmentResponseModel.findOneAndUpdate(filter, update, { upsert: true });
+  } catch (error: any) {
+    // Two delivery retries can race before the unique index observes the first
+    // insert. The canonical key is still one response per attempt/question.
+    if (error?.code !== 11000) throw error;
+    await AssessmentResponseModel.updateOne(filter, update);
+  }
+};
+
 /**
  * STUDENT ENDPOINTS
  */
@@ -120,11 +133,7 @@ router.post("/progress", requireAuth, async (req, res) => {
 
     if (session?.assessmentAttemptId && answers && typeof answers === "object") {
       await Promise.all(Object.entries(answers).map(([questionId, answer]) =>
-        AssessmentResponseModel.findOneAndUpdate(
-          { attemptId: session.assessmentAttemptId, questionId },
-          { $set: { studentId: String(userId), answer, savedAt: new Date() } },
-          { upsert: true },
-        ),
+        saveAssessmentResponse(String(session.assessmentAttemptId), String(userId), questionId, answer),
       ));
     }
 

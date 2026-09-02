@@ -152,6 +152,26 @@ async function main() {
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("quiz-answer-option-0").click();
+    const savedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
+    const savedAnswers = savedSession.payload?.answers || {};
+    const savedAnswerIds = Object.keys(savedAnswers);
+    if (!savedSession.ok || !savedSession.payload?.session?.assessmentAttemptId || savedAnswerIds.length !== 1) {
+      throw new Error(`Autosave session evidence missing: ${JSON.stringify(savedSession)}`);
+    }
+    const retryProgressPayload = {
+      quizId: createdQuizId,
+      answeredQuestions: savedAnswerIds.length,
+      totalQuestions: 1,
+      answers: savedAnswers,
+    };
+    const [firstRetry, secondRetry] = await Promise.all([
+      api(freshStudent.page, "/live-exams/progress", { method: "POST", body: JSON.stringify(retryProgressPayload) }),
+      api(freshStudent.page, "/live-exams/progress", { method: "POST", body: JSON.stringify(retryProgressPayload) }),
+    ]);
+    const resumedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
+    if (!firstRetry.ok || !secondRetry.ok || String(resumedSession.payload?.session?.assessmentAttemptId || "") !== String(savedSession.payload.session.assessmentAttemptId) || JSON.stringify(resumedSession.payload?.answers || {}) !== JSON.stringify(savedAnswers)) {
+      throw new Error(`Retry/resume session evidence failed: ${JSON.stringify({ firstRetry, secondRetry, savedSession, resumedSession })}`);
+    }
     await freshStudent.page.getByTestId("quiz-finish-button").click();
     await freshStudent.page.getByTestId("quiz-finish-confirm").click();
     await freshStudent.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
@@ -164,10 +184,17 @@ async function main() {
     }));
     const resultResponse = await api(freshStudent.page, "/quiz-results/my?limit=50");
     const hasServerResult = listOf(resultResponse.payload, "results").some((result) => String(result.quizId || "") === createdQuizId);
+    let completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
+    for (let retry = 0; completedSession.payload?.session && retry < 10; retry += 1) {
+      await freshStudent.page.waitForTimeout(250);
+      completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
+    }
     const checks = [
       ["builder created a published directed definition", Boolean(created?.isPublished) && (created.targetGroupIds || []).map(String).includes(String(targetGroup.id || targetGroup._id))],
       ["target sees directed test in UI", true],
       ["target submits through runner", hasServerResult],
+      ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
+      ["accepted submission closes the resumable session", !completedSession.payload?.session],
       ["outsider cannot open direct URL", !outsiderState.canSeeQuestion],
       ["no 5xx request was required", true],
     ];
