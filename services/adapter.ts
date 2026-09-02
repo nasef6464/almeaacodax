@@ -357,6 +357,10 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   subjectId: String(quiz?.subjectId || ""),
   sectionId: quiz?.sectionId || undefined,
   type: quiz?.type || "quiz",
+  // Keep the explicit Assessment classification from the API. In particular,
+  // a current multi-section mock must not be mistaken for a legacy untyped
+  // standalone mock and disappear from the manager's catalog after reload.
+  quizKind: ["drill", "test", "mock"].includes(quiz?.quizKind) ? quiz.quizKind : undefined,
   placement: quiz?.placement,
   showInTraining: typeof quiz?.showInTraining === "boolean" ? quiz.showInTraining : undefined,
   showInMock: typeof quiz?.showInMock === "boolean" ? quiz.showInMock : undefined,

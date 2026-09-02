@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const typeSource = await readFile(new URL('../types.ts', import.meta.url), 'utf8');
 const mockUtilsSource = await readFile(new URL('../utils/mockExam.ts', import.meta.url), 'utf8');
 const quizPlacementSource = await readFile(new URL('../utils/quizPlacement.ts', import.meta.url), 'utf8');
+const adapterSource = await readFile(new URL('../services/adapter.ts', import.meta.url), 'utf8');
 const learningPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
 const adminSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8');
 const pathPageSource = await readFile(new URL('../pages/GenericPathPage.tsx', import.meta.url), 'utf8');
@@ -57,6 +58,7 @@ check('mock exam utilities preserve modern quizKind mocks while excluding only l
   assertIncludes(quizPlacementSource, "placement: 'mock' as Quiz['placement']");
   assertIncludes(quizPlacementSource, 'showInTraining: false');
   assertIncludes(quizPlacementSource, 'showInMock: true');
+  assertIncludes(adapterSource, 'quizKind: ["drill", "test", "mock"].includes(quiz?.quizKind) ? quiz.quizKind : undefined');
 });
 
 check('explicit learning placements keep mock classification separate from subject learning visibility', () => {
