@@ -354,7 +354,7 @@ async function runAssessmentJourney(csrf: CsrfContext) {
     csrf,
     body: {
       title: "Platform V3 immutable assessment version",
-      settings: { maxAttempts: 2, passingScore: 60, timeLimit: 45 },
+      settings: { maxAttempts: 1, passingScore: 60, timeLimit: 45 },
     },
   });
   expectStatus("admin updates published assessment definition", updatedDefinition, 200);
