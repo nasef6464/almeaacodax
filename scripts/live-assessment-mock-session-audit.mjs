@@ -174,11 +174,19 @@ async function main() {
     await student.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
     const results = await api(student.page, "/quiz-results/my?limit=50");
     const result = listOf(results.payload, "results").find((item) => String(item.quizId || "") === mockQuizId);
+    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).click();
+    await admin.page.getByTestId("assessment-mock-section-analytics").waitFor({ timeout: 30000 });
+    await admin.page.waitForFunction(
+      () => document.querySelectorAll('[data-testid^="assessment-mock-section-analytics-row-"]').length >= 2,
+      { timeout: 30000 },
+    );
     const checks = [
       ["two-section mock definition is published", created.quizKind === "mock" && created.mockExam.sections.length >= 2],
       ["runner exposes both sections", true],
       ["server attempt/autosave survives retry", retryOne.ok && retryTwo.ok && String(resumed.payload?.session?.assessmentAttemptId || "") === String(saved.payload.session.assessmentAttemptId)],
       ["mock result preserves section analysis", Array.isArray(result?.sectionResults) && result.sectionResults.length >= 2],
+      ["authorized manager reads section analytics in UI", true],
     ];
     fs.writeFileSync(path.join(OUT_DIR, "SUMMARY.json"), JSON.stringify({ mockQuizId, checks: checks.map(([name, ok]) => ({ name, ok })) }, null, 2));
     const failed = checks.filter(([, ok]) => !ok);

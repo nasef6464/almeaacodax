@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Question, Quiz } from '../../types';
 import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink, Dumbbell, Award, FileText, SendHorizontal, Users, Calendar, Clock, ChevronLeft } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import { api } from '../../services/api';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, inferQuizKind, isMockQuiz, isTrainingQuiz, isTrueMockExam, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import {
@@ -14,6 +15,11 @@ import {
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
 import { loadXlsx } from '../../utils/xlsxLoader';
+
+type MockSectionAnalytics = {
+  totalAttempts: number;
+  sections: Array<{ sectionId: string; sectionName: string; attempts: number; avgScore: number; passRate: number }>;
+};
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -211,6 +217,9 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   // فتح UnifiedQuizBuilder كـ overlay لإنشاء جديد
   const [isUnifiedBuilderOpen, setIsUnifiedBuilderOpen] = useState(false);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
+  const [mockSectionAnalytics, setMockSectionAnalytics] = useState<MockSectionAnalytics | null>(null);
+  const [mockSectionAnalyticsLoading, setMockSectionAnalyticsLoading] = useState(false);
+  const [mockSectionAnalyticsError, setMockSectionAnalyticsError] = useState('');
   // تبديل بين مركز الاختبارات ولوحة التوجيه
   const [mainView, setMainView] = useState<'quizzes' | 'assignments'>('quizzes');
   // توجيه: الاختبار المحدد للتوجيه
@@ -231,6 +240,31 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     ? { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot }
     : null;
   const activeLearningSlotLabel = activeLearningSlot === 'training' ? 'التدريب' : activeLearningSlot === 'tests' ? 'الاختبارات' : 'هذه المساحة';
+
+  React.useEffect(() => {
+    let active = true;
+    setMockSectionAnalytics(null);
+    setMockSectionAnalyticsError('');
+
+    if (!previewQuiz || !isTrueMockExam(previewQuiz) || !['admin', 'supervisor'].includes(user.role)) {
+      setMockSectionAnalyticsLoading(false);
+      return () => { active = false; };
+    }
+
+    setMockSectionAnalyticsLoading(true);
+    api.getQuizSectionAnalytics(previewQuiz.id)
+      .then((analytics) => {
+        if (active) setMockSectionAnalytics(analytics);
+      })
+      .catch(() => {
+        if (active) setMockSectionAnalyticsError('تعذّر تحميل تحليل الأقسام الآن. حاول لاحقًا.');
+      })
+      .finally(() => {
+        if (active) setMockSectionAnalyticsLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [previewQuiz?.id, user.role]);
 
   const reportContextSkill = selectedSkillId ? skills.find((skill) => skill.id === selectedSkillId) : undefined;
   const reportContextSubject = selectedSubjectId ? subjects.find((subject) => subject.id === selectedSubjectId) : undefined;
@@ -1349,7 +1383,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                         <button onClick={() => handleEdit(quiz.id)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="تعديل">
                           <Edit2 size={18} />
                         </button>
-                        <button onClick={() => handlePreviewQuiz(quiz)} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors" title="معاينة الاختبار قبل النشر">
+                        <button data-testid={`assessment-manager-preview-${quiz.id}`} onClick={() => handlePreviewQuiz(quiz)} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors" title="معاينة الاختبار قبل النشر">
                           <Eye size={18} />
                         </button>
                         {!isLearningSpaceManager && (
@@ -1554,6 +1588,42 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                 </div>
               </div>
             </div>
+
+            {isTrueMockExam(previewQuiz) && ['admin', 'supervisor'].includes(user.role) ? (
+              <section data-testid="assessment-mock-section-analytics" className="mt-5 rounded-3xl border border-violet-100 bg-violet-50/40 p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h4 className="text-sm font-black text-violet-950">تحليل أقسام المحاكي</h4>
+                    <p className="mt-1 text-xs font-bold leading-6 text-violet-700">قراءة مجمعة للمحاولات التي تقع داخل نطاق صلاحيتك.</p>
+                  </div>
+                  {mockSectionAnalytics ? (
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-violet-700">{mockSectionAnalytics.totalAttempts} محاولة</span>
+                  ) : null}
+                </div>
+
+                {mockSectionAnalyticsLoading ? <p className="mt-4 text-sm font-bold text-violet-700">جارٍ تحميل تحليل الأقسام…</p> : null}
+                {mockSectionAnalyticsError ? <p className="mt-4 text-sm font-bold text-rose-700">{mockSectionAnalyticsError}</p> : null}
+                {!mockSectionAnalyticsLoading && !mockSectionAnalyticsError && mockSectionAnalytics?.sections.length === 0 ? (
+                  <p className="mt-4 rounded-2xl border border-dashed border-violet-200 bg-white/70 p-4 text-sm font-bold text-violet-800">لا توجد محاولات مكتملة لهذا المحاكي ضمن نطاقك بعد.</p>
+                ) : null}
+                {mockSectionAnalytics?.sections.length ? (
+                  <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    {mockSectionAnalytics.sections.map((section) => (
+                      <div key={section.sectionId} data-testid={`assessment-mock-section-analytics-row-${section.sectionId}`} className="rounded-2xl bg-white p-4 shadow-sm">
+                        <div className="flex items-start justify-between gap-3">
+                          <span className="text-sm font-black text-gray-900">{section.sectionName || 'قسم غير مسمى'}</span>
+                          <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-black text-violet-700">{section.avgScore}%</span>
+                        </div>
+                        <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold text-gray-600">
+                          <span>{section.attempts} محاولة</span>
+                          <span>نجاح {section.passRate}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-2">
               <button
