@@ -135,6 +135,14 @@ async function main() {
     mockQuizId = String(created.id || created._id || "");
     if (!mockQuizId || created.quizKind !== "mock" || !(created.mockExam?.sections?.length >= 2)) throw new Error(`Mock definition was not persisted with two sections: ${JSON.stringify(created)}`);
 
+    // A manager's assessment catalog is intentionally a loaded read model.
+    // Open an independent manager session after publication, before the learner
+    // starts, then prove its analytics refresh after the persisted submission.
+    managerContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
+    const manager = await login(managerContext, credentials.admin);
+    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await manager.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).waitFor({ timeout: 30000 });
+
     await student.page.goto(`${BASE_URL}/quiz/${encodeURIComponent(mockQuizId)}?source=mock-exam`, { waitUntil: "networkidle", timeout: 60000 });
     await student.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await student.page.getByTestId("quiz-mock-section-0").waitFor();
@@ -184,13 +192,8 @@ async function main() {
     await student.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
     const results = await api(student.page, "/quiz-results/my?limit=50");
     const result = listOf(results.payload, "results").find((item) => String(item.quizId || "") === mockQuizId);
-    // The builder remains mounted in the original admin context and its global
-    // quiz snapshot predates this write. A fresh authenticated context proves
-    // that a manager loading the product after student completion can see both
-    // the persisted definition and its section analytics.
-    managerContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
-    const manager = await login(managerContext, credentials.admin);
-    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    // The manager catalog was loaded after publication. Opening its preview
+    // now must fetch current, authorization-scoped analytics after completion.
     await manager.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).click();
     await manager.page.getByTestId("assessment-mock-section-analytics").waitFor({ timeout: 30000 });
     await manager.page.waitForFunction(
