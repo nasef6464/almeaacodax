@@ -71,6 +71,16 @@ const observedApi = new Set();
 page.on("response", (response) => {
   if (response.url().includes("/api/")) observedApi.add(new URL(response.url()).pathname);
 });
+await page.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
+await page.evaluate((user) => {
+  sessionStorage.setItem("the-hundred-auth-profile", JSON.stringify({
+    id: String(user.id || user._id || user.email),
+    email: user.email,
+    displayName: user.name,
+    photoURL: user.avatar || "",
+    role: user.role,
+  }));
+}, session.user);
 await page.goto(`${BASE_URL}/#/admin-dashboard?tab=paths`, { waitUntil: "domcontentloaded", timeout: 60000 });
 await page.waitForSelector(`[data-testid="learning-manager-path-${idOf(targetPath)}"]`, { timeout: 30000 });
 await page.locator(`[data-testid="learning-manager-path-${idOf(targetPath)}"]`).click();
