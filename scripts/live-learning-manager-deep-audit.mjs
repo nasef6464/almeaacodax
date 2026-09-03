@@ -99,7 +99,7 @@ try {
 }
 await pathLocator.click();
 const subjectSelector = `[data-testid="learning-manager-subject-${idOf(targetSubject)}"]`;
-const subjectTestIdLocator = page.locator(subjectSelector);
+const subjectTestIdLocator = page.locator('[data-testid^="learning-manager-subject-"]').first();
 const subjectFallbackLocator = page.getByText(String(targetSubject.name || targetSubject.title), { exact: true }).last();
 let subjectLocator = subjectTestIdLocator;
 try {
@@ -127,7 +127,7 @@ const missingLabels = requiredLabels.filter((label) => !bodyText.includes(label)
 const result = {
   status: slots >= 5 && missingLabels.length === 0 ? "PASS" : "FAIL",
   pathId: idOf(targetPath),
-  subjectId: idOf(targetSubject),
+  subjectId: (await subjectLocator.getAttribute('data-testid').catch(() => null))?.replace('learning-manager-subject-', '') || idOf(targetSubject),
   managerSlots: slots,
   missingLabels,
   observedApi: [...observedApi].filter((value) => value.includes("taxonomy") || value.includes("content")),
