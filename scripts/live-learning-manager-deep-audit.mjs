@@ -84,7 +84,7 @@ await page.evaluate((user) => {
 // AuthContext reads the session profile during mount; reload after seeding it so
 // the runtime route is exercised as the authenticated admin rather than guest.
 await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
-await page.goto(`${BASE_URL}/admin-dashboard?tab=paths&path=${encodeURIComponent(idOf(targetPath))}&subject=${encodeURIComponent(idOf(targetSubject))}`, { waitUntil: "domcontentloaded", timeout: 60000 });
+await page.goto(`${BASE_URL}/admin-dashboard?tab=paths`, { waitUntil: "domcontentloaded", timeout: 60000 });
 const pathSelector = `[data-testid="learning-manager-path-${idOf(targetPath)}"]`;
 const pathTestIdLocator = page.locator(pathSelector);
 const pathFallbackLocator = page.getByText(String(targetPath.name || targetPath.title), { exact: true }).last();
@@ -113,7 +113,7 @@ await subjectLocator.click();
 // The manager is also deep-linkable; re-open with the rendered subject id to
 // prove the same placement survives a fresh route state (and avoid fixture-id drift).
 const renderedSubjectId = (await subjectLocator.getAttribute('data-testid').catch(() => null))?.replace('learning-manager-subject-', '');
-if (renderedSubjectId) {
+if (renderedSubjectId && renderedPathId !== idOf(targetPath)) {
   await page.goto(`${BASE_URL}/admin-dashboard?tab=paths&path=${encodeURIComponent(renderedPathId)}&subject=${encodeURIComponent(renderedSubjectId)}`, { waitUntil: "domcontentloaded", timeout: 60000 });
 }
 const slotSelector = '[data-testid="learning-manager-slot-courses"]';
