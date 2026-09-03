@@ -98,6 +98,7 @@ try {
   await page.screenshot({ path: path.join(OUT_DIR, "manager-debug.png"), fullPage: true }).catch(() => undefined);
 }
 await pathLocator.click();
+const renderedPathId = (await pathLocator.getAttribute('data-testid').catch(() => null))?.replace('learning-manager-path-', '') || idOf(targetPath);
 const subjectSelector = `[data-testid="learning-manager-subject-${idOf(targetSubject)}"]`;
 const subjectTestIdLocator = page.locator('[data-testid^="learning-manager-subject-"]').first();
 const subjectFallbackLocator = page.getByText(String(targetSubject.name || targetSubject.title), { exact: true }).last();
@@ -113,7 +114,7 @@ await subjectLocator.click();
 // prove the same placement survives a fresh route state (and avoid fixture-id drift).
 const renderedSubjectId = (await subjectLocator.getAttribute('data-testid').catch(() => null))?.replace('learning-manager-subject-', '');
 if (renderedSubjectId) {
-  await page.goto(`${BASE_URL}/admin-dashboard?tab=paths&path=${encodeURIComponent(idOf(targetPath))}&subject=${encodeURIComponent(renderedSubjectId)}`, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await page.goto(`${BASE_URL}/admin-dashboard?tab=paths&path=${encodeURIComponent(renderedPathId)}&subject=${encodeURIComponent(renderedSubjectId)}`, { waitUntil: "domcontentloaded", timeout: 60000 });
 }
 const slotSelector = '[data-testid="learning-manager-slot-courses"]';
 const slotTestIdLocator = page.locator(slotSelector);
