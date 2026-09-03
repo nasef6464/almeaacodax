@@ -109,6 +109,12 @@ try {
   await subjectLocator.waitFor({ state: "visible", timeout: 30000 });
 }
 await subjectLocator.click();
+// The manager is also deep-linkable; re-open with the rendered subject id to
+// prove the same placement survives a fresh route state (and avoid fixture-id drift).
+const renderedSubjectId = (await subjectLocator.getAttribute('data-testid').catch(() => null))?.replace('learning-manager-subject-', '');
+if (renderedSubjectId) {
+  await page.goto(`${BASE_URL}/admin-dashboard?tab=paths&path=${encodeURIComponent(idOf(targetPath))}&subject=${encodeURIComponent(renderedSubjectId)}`, { waitUntil: "domcontentloaded", timeout: 60000 });
+}
 const slotSelector = '[data-testid="learning-manager-slot-courses"]';
 const slotTestIdLocator = page.locator(slotSelector);
 const slotFallbackLocator = page.getByText("إدارة الدورات", { exact: true }).first();
