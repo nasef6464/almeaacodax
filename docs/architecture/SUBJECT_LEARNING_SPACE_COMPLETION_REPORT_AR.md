@@ -2,7 +2,7 @@
 
 ## الحالة
 
-`VERIFIED` على isolated UI/API/DB evidence في commit `09cb6886`، مع بقاء production-scale certification `NOT PROVEN`.
+`PARTIAL` إلى حين اكتمال Deep Pre-Merge required-green على commit `ee9cb7f5`. الأدلة المحلية وBackend CI ناجحة؛ production-scale certification `NOT PROVEN`.
 
 ## Strong MVP المنجز
 
