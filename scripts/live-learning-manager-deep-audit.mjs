@@ -56,8 +56,8 @@ const session = await login();
 const taxonomy = await apiGet(session, "/taxonomy/bootstrap");
 const content = await apiGet(session, "/content/bootstrap?scope=full");
 const targetPath = (taxonomy.paths || []).find((item) => idOf(item) === TARGET_PATH_ID) || (taxonomy.paths || [])[0];
-const targetSubject = (taxonomy.subjects || []).find((item) => idOf(item) === TARGET_SUBJECT_ID && idOf(item.pathId) === idOf(targetPath)) ||
-  (taxonomy.subjects || []).find((item) => idOf(item.pathId) === idOf(targetPath));
+const targetSubject = (taxonomy.subjects || []).find((item) => idOf(item) === TARGET_SUBJECT_ID && String(item.pathId || "") === idOf(targetPath)) ||
+  (taxonomy.subjects || []).find((item) => String(item.pathId || "") === idOf(targetPath));
 if (!targetPath || !targetSubject) throw new Error("No path/subject target available for manager audit");
 
 const browser = await chromium.launch({ headless: true });
