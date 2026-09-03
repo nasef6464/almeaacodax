@@ -123,10 +123,18 @@ async function main() {
     await admin.page.getByTestId("assessment-question-search").fill(String(firstQuestion.id || firstQuestion._id));
     await admin.page.getByTestId(`assessment-question-select-${firstQuestion.id || firstQuestion._id}`).waitFor({ timeout: 30000 });
     await admin.page.getByTestId(`assessment-question-select-${firstQuestion.id || firstQuestion._id}`).click();
+    await admin.page.waitForFunction(
+      () => document.querySelector('[data-testid="assessment-builder-mock-section-tab-0"]')?.textContent?.includes('1'),
+      { timeout: 30000 },
+    );
     await admin.page.getByTestId("assessment-builder-mock-section-tab-1").click();
     await admin.page.getByTestId("assessment-question-search").fill(String(secondQuestion.id || secondQuestion._id));
     await admin.page.getByTestId(`assessment-question-select-${secondQuestion.id || secondQuestion._id}`).waitFor({ timeout: 30000 });
     await admin.page.getByTestId(`assessment-question-select-${secondQuestion.id || secondQuestion._id}`).click();
+    await admin.page.waitForFunction(
+      () => document.querySelector('[data-testid="assessment-builder-mock-section-tab-1"]')?.textContent?.includes('1'),
+      { timeout: 30000 },
+    );
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId(`assessment-builder-target-group-${targetGroup.id || targetGroup._id}`).check();
