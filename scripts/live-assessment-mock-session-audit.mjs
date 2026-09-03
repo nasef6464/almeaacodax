@@ -161,6 +161,7 @@ async function main() {
     await student.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await student.page.getByTestId("quiz-mock-section-0").waitFor();
     await student.page.getByTestId("quiz-mock-section-1").waitFor();
+    const firstDisplayedQuestionId = await student.page.getByTestId("quiz-current-question").getAttribute("data-question-id");
     const autosaveResponsePromise = student.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
       { timeout: 30000 },
@@ -176,6 +177,10 @@ async function main() {
       () => document.querySelector('[data-testid="quiz-mock-section-1"]')?.className.includes('bg-indigo-600'),
       { timeout: 30000 },
     );
+    const secondDisplayedQuestionId = await student.page.getByTestId("quiz-current-question").getAttribute("data-question-id");
+    if (!firstDisplayedQuestionId || !secondDisplayedQuestionId || firstDisplayedQuestionId === secondDisplayedQuestionId) {
+      throw new Error(`Mock section navigation did not expose distinct questions: ${JSON.stringify({ firstDisplayedQuestionId, secondDisplayedQuestionId })}`);
+    }
     // The active-section control is the runner contract. Question copy is not:
     // two valid questions may intentionally have matching visible text. The
     // persisted two-answer assertion below proves that the second response is

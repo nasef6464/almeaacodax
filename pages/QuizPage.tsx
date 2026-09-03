@@ -1359,6 +1359,8 @@ export const QuizPage: React.FC = () => {
               </div>
 
               <div
+                data-testid="quiz-current-question"
+                data-question-id={currentQuestion?.id || ''}
                 onClick={handleInlineQuestionImageClick}
                 className={`question-html text-base sm:text-lg mb-4 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
