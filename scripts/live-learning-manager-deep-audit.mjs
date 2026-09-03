@@ -86,22 +86,39 @@ await page.evaluate((user) => {
 await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
 await page.goto(`${BASE_URL}/admin-dashboard?tab=paths`, { waitUntil: "domcontentloaded", timeout: 60000 });
 const pathSelector = `[data-testid="learning-manager-path-${idOf(targetPath)}"]`;
-const pathLocator = page.locator(pathSelector).count().then((count) => count > 0 ? page.locator(pathSelector) : page.getByText(String(targetPath.name || targetPath.title), { exact: true }).last());
+const pathTestIdLocator = page.locator(pathSelector);
+const pathFallbackLocator = page.getByText(String(targetPath.name || targetPath.title), { exact: true }).last();
+let pathLocator = pathTestIdLocator;
 try {
-  await (await pathLocator).waitFor({ state: "visible", timeout: 30000 });
+  await pathTestIdLocator.waitFor({ state: "visible", timeout: 30000 });
 } catch (error) {
+  pathLocator = pathFallbackLocator;
+  await pathLocator.waitFor({ state: "visible", timeout: 30000 });
   fs.writeFileSync(path.join(OUT_DIR, "manager-debug.json"), JSON.stringify({ url: page.url(), title: await page.title(), body: (await page.locator("body").innerText()).slice(0, 4000) }, null, 2));
   await page.screenshot({ path: path.join(OUT_DIR, "manager-debug.png"), fullPage: true }).catch(() => undefined);
-  throw error;
 }
-await (await pathLocator).click();
+await pathLocator.click();
 const subjectSelector = `[data-testid="learning-manager-subject-${idOf(targetSubject)}"]`;
-const subjectLocator = page.locator(subjectSelector).count().then((count) => count > 0 ? page.locator(subjectSelector) : page.getByText(String(targetSubject.name || targetSubject.title), { exact: true }).last());
-await (await subjectLocator).waitFor({ state: "visible", timeout: 30000 });
-await (await subjectLocator).click();
+const subjectTestIdLocator = page.locator(subjectSelector);
+const subjectFallbackLocator = page.getByText(String(targetSubject.name || targetSubject.title), { exact: true }).last();
+let subjectLocator = subjectTestIdLocator;
+try {
+  await subjectTestIdLocator.waitFor({ state: "visible", timeout: 30000 });
+} catch {
+  subjectLocator = subjectFallbackLocator;
+  await subjectLocator.waitFor({ state: "visible", timeout: 30000 });
+}
+await subjectLocator.click();
 const slotSelector = '[data-testid="learning-manager-slot-courses"]';
-const slotLocator = page.locator(slotSelector).count().then((count) => count > 0 ? page.locator(slotSelector) : page.getByText("إدارة الدورات", { exact: true }).first());
-await (await slotLocator).waitFor({ state: "visible", timeout: 30000 });
+const slotTestIdLocator = page.locator(slotSelector);
+const slotFallbackLocator = page.getByText("إدارة الدورات", { exact: true }).first();
+let slotLocator = slotTestIdLocator;
+try {
+  await slotTestIdLocator.waitFor({ state: "visible", timeout: 30000 });
+} catch {
+  slotLocator = slotFallbackLocator;
+  await slotLocator.waitFor({ state: "visible", timeout: 30000 });
+}
 const testIdSlots = await page.locator('[data-testid^="learning-manager-slot-"]').count();
 const requiredLabels = ["إدارة الدورات", "إدارة التأسيس", "إدارة التدريب", "إدارة الاختبارات", "إدارة المكتبة"];
 const slots = testIdSlots || requiredLabels.length;
