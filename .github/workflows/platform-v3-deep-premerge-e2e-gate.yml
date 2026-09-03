@@ -259,6 +259,16 @@ jobs:
           SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
         run: node scripts/live-student-learning-deep-audit.mjs
 
+      - name: Learning Space manager placement journey
+        id: learning_manager
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          LEARNING_MANAGER_AUDIT_RUN_ID: deep-premerge-learning-manager-${{ github.run_id }}
+          SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
+          SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
+        run: node scripts/live-learning-manager-deep-audit.mjs
+
       - name: Supervisor school command UI journey
         id: supervisor_school
         continue-on-error: true
@@ -300,6 +310,7 @@ jobs:
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
             echo "- Student Learning Space: ${{ steps.student_learning.outcome }}"
+            echo "- Learning Space manager: ${{ steps.learning_manager.outcome }}"
             echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
             echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
             echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
@@ -331,6 +342,7 @@ jobs:
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"
           check "Student Learning Space" "${{ steps.student_learning.outcome }}"
+          check "Learning Space manager" "${{ steps.learning_manager.outcome }}"
           check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
           check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
           check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
