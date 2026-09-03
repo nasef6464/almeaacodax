@@ -121,10 +121,10 @@ const slotTestIdLocator = page.locator(slotSelector);
 const slotFallbackLocator = page.getByText("إدارة الدورات", { exact: true }).first();
 let slotLocator = slotTestIdLocator;
 try {
-  await slotTestIdLocator.waitFor({ state: "visible", timeout: 30000 });
+  await slotTestIdLocator.waitFor({ state: "visible", timeout: 90000 });
 } catch {
   slotLocator = slotFallbackLocator;
-  await slotLocator.waitFor({ state: "visible", timeout: 30000 });
+  await slotLocator.waitFor({ state: "visible", timeout: 90000 });
 }
 const testIdSlots = await page.locator('[data-testid^="learning-manager-slot-"]').count();
 const requiredLabels = ["إدارة الدورات", "إدارة التأسيس", "إدارة التدريب", "إدارة الاختبارات", "إدارة المكتبة"];

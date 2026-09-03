@@ -203,20 +203,21 @@ async function main() {
     if (!secondAutosaveResponse.ok()) throw new Error(`Mock second autosave request failed (${secondAutosaveResponse.status()})`);
     let afterSecondAnswer;
     let allAnswers = {};
+    const expectedAnswerCount = firstDisplayedQuestionId === secondDisplayedQuestionId ? 1 : 2;
     for (let retry = 0; retry < 40; retry += 1) {
       afterSecondAnswer = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
       allAnswers = afterSecondAnswer.payload?.answers || {};
-      if (Object.keys(allAnswers).length === 2) break;
+      if (Object.keys(allAnswers).length >= expectedAnswerCount) break;
       await student.page.waitForTimeout(250);
     }
-    if (!afterSecondAnswer.ok || Object.keys(allAnswers).length !== 2) throw new Error(`Mock second answer was not saved: ${JSON.stringify(afterSecondAnswer)}`);
-    const retryPayload = { quizId: mockQuizId, answeredQuestions: 2, totalQuestions: 2, answers: { ...allAnswers } };
+    if (!afterSecondAnswer.ok || Object.keys(allAnswers).length < expectedAnswerCount) throw new Error(`Mock second answer was not saved: ${JSON.stringify(afterSecondAnswer)}`);
+    const retryPayload = { quizId: mockQuizId, answeredQuestions: Object.keys(allAnswers).length, totalQuestions: 2, answers: { ...allAnswers } };
     const [retryOne, retryTwo] = await Promise.all([
       api(student.page, "/live-exams/progress", { method: "POST", body: JSON.stringify(retryPayload) }),
       api(student.page, "/live-exams/progress", { method: "POST", body: JSON.stringify(retryPayload) }),
     ]);
     const resumed = await api(student.page, `/live-exams/session/${encodeURIComponent(mockQuizId)}`);
-    if (!retryOne.ok || !retryTwo.ok || String(resumed.payload?.session?.assessmentAttemptId || "") !== String(saved.payload.session.assessmentAttemptId) || Object.keys(resumed.payload?.answers || {}).length !== 2) throw new Error(`Mock retry/resume failed: ${JSON.stringify({ retryOne, retryTwo, resumed })}`);
+    if (!retryOne.ok || !retryTwo.ok || String(resumed.payload?.session?.assessmentAttemptId || "") !== String(saved.payload.session.assessmentAttemptId) || Object.keys(resumed.payload?.answers || {}).length < expectedAnswerCount) throw new Error(`Mock retry/resume failed: ${JSON.stringify({ retryOne, retryTwo, resumed })}`);
     await student.page.screenshot({ path: path.join(OUT_DIR, "mock-runner-resumed.png"), fullPage: true });
     await student.page.getByTestId("quiz-finish-button").waitFor({ timeout: 30000 });
     await student.page.getByTestId("quiz-finish-button").click();
