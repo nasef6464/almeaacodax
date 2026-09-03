@@ -137,7 +137,17 @@ async function main() {
     if (!createResponse.ok()) throw new Error(`Mock builder create failed (${createResponse.status()}): ${createdFromWrite?.message || ""}`);
     const created = listOf((await api(admin.page, "/quizzes?limit=200")).payload, "quizzes").find((quiz) => quiz.title === marker) || createdFromWrite;
     mockQuizId = String(created.id || created._id || "");
-    if (!mockQuizId || created.quizKind !== "mock" || !(created.mockExam?.sections?.length >= 2)) throw new Error(`Mock definition was not persisted with two sections: ${JSON.stringify(created)}`);
+    const persistedSections = created.mockExam?.sections || [];
+    const persistedQuestionIds = persistedSections.flatMap((section) => section.questionIds || []).map(String);
+    if (
+      !mockQuizId ||
+      created.quizKind !== "mock" ||
+      persistedSections.length < 2 ||
+      persistedQuestionIds.length < 2 ||
+      new Set(persistedQuestionIds).size < 2
+    ) {
+      throw new Error(`Mock definition was not persisted with distinct questions in two sections: ${JSON.stringify({ id: mockQuizId, sections: persistedSections })}`);
+    }
 
     // A manager's assessment catalog is intentionally a loaded read model.
     // Open an independent manager session after publication, before the learner
