@@ -535,8 +535,11 @@ export const QuizPage: React.FC = () => {
     () =>
       mockExamSections
         .map((mockSection, sectionIndex) => {
+          const questionIndexById = new Map(quizQuestions.map((question, index) => [String(question.id), index]));
           const questionIndexes = (mockSection.questionIds || [])
             .map((questionId) => {
+              const exactIndex = questionIndexById.get(String(questionId));
+              if (exactIndex !== undefined) return exactIndex;
               const resolvedQuestion = resolveQuestionFromBank(quizQuestions, questionId);
               return resolvedQuestion
                 ? quizQuestions.findIndex((question) => question.id === resolvedQuestion.id)
