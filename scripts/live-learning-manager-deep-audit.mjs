@@ -84,7 +84,7 @@ await page.evaluate((user) => {
 // AuthContext reads the session profile during mount; reload after seeding it so
 // the runtime route is exercised as the authenticated admin rather than guest.
 await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
-await page.goto(`${BASE_URL}/admin-dashboard?tab=paths`, { waitUntil: "domcontentloaded", timeout: 60000 });
+await page.goto(`${BASE_URL}/admin-dashboard?tab=paths&path=${encodeURIComponent(idOf(targetPath))}&subject=${encodeURIComponent(idOf(targetSubject))}`, { waitUntil: "domcontentloaded", timeout: 60000 });
 const pathSelector = `[data-testid="learning-manager-path-${idOf(targetPath)}"]`;
 const pathTestIdLocator = page.locator(pathSelector);
 const pathFallbackLocator = page.getByText(String(targetPath.name || targetPath.title), { exact: true }).last();
