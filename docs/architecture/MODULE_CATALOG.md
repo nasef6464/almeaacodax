@@ -4,10 +4,10 @@
 |---|---|---|---|---|
 | auth | identity/login/account | تقارير أو scoring | `server/src/routes/auth.routes.ts`, auth UI | Legacy boundary |
 | schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolsManager/` action/hooks/services, `SchoolPortalManager`, school routes | PARTIAL — core admin journeys and supervisor scope are verified; Sellable School MVP closure remains |
-| curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Boundary started |
+| curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Subject Learning Space boundary VERIFIED; School MVP remains |
 | questions | bank/authoring/types/import/search | report presentation | QuestionBankManager, question routes | Boundary pending |
 | assessments | definition/versioning, distribution, sessions, attempts/responses, submission, scoring, results, assessment-specific analytics | payment provider، long-term cross-assessment reports | compatibility facades in quiz routes/QuizPage/Results; `server/src/modules/quizzes/application/assessment*` | PARTIAL — additive foundations, controlled mirror/reconciliation/rollback are isolated-CI proven; UI commercial closure and production opt-in remain |
-| learning | lessons/topics/player/library/progress | school authorization | learning pages/content routes | Mixed legacy |
+| learning | lessons/topics/player/library/progress; canonical Subject Learning Space composition | school authorization, course/assessment ownership | `pages/GenericPathPage.tsx`, `components/LearningSection.tsx`, content routes | Gate 2 VERIFIED on isolated journeys |
 | courses | catalog/builder/enrollment/linkage | low-level media storage | course builders/API groups | Mixed legacy |
 | reports | result views/student/class/school/skill/export | write-side scoring | Reports, Results, report routes | View-model extraction started |
 | commerce | packages/memberships/payments/access | learning content ownership | payment routes, FinancialManager | High caution |

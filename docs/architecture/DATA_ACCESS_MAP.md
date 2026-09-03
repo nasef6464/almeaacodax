@@ -9,6 +9,7 @@
 | Attempts/Responses/Results | ملايين | student result/report/submit | `submissionKey` idempotency، response per attempt/question، mirror opt-in للموجه/المحاكي، cursor-bounded reconciliation؛ أسطح النتيجة المباشرة فقط تقرأ compatibility projection خلف rollback flag (القوائم ببحثين batch ثابتين، و`latest` ببحث مفرد)؛ أما analytics/reports/AI/notifications فتبقى `QuizResult` legacy لارتباطها بمقاييس مشتقة؛ historical backfill result-only only | PARTIAL — isolated Mongo proven, production scale NOT PROVEN |
 | Skills/mastery | ملايين تاريخيًا | student/class skill trend | projections/read models بعد benchmark | NOT PROVEN |
 | Courses/Lessons/Videos | مئات المناهج وعشرات آلاف الفيديو | catalog/player/progress | route-scoped loading، CDN/storage adapter | PARTIAL |
+| Subject Learning Space bootstrap | scoped path/subject content | student entry + manager placement | bounded taxonomy/content bootstrap؛ لا تحميل عالمي غير محدود؛ cache scope-aware | VERIFIED على isolated UI/API evidence |
 | Users/Groups/Memberships | آلاف/مئات المدارس | scope/roster/report | pagination؛ تقييم arrays الكبيرة | PARTIAL |
 | Notifications | نمو مستمر | unread/me/stream | indexed delivery، Redis fan-out، no per-user Mongo polling | P0 |
 | Reports/Exports | ثقيلة ومتكررة | school/class/student/export | queue + cached/preaggregated read models عند ثبوت الحاجة | NOT PROVEN |

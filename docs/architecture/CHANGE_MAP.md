@@ -15,6 +15,8 @@
 | صفحة الفصل والطلاب | `dashboards/admin/SchoolsManager/` | `useStore` مباشرة |
 | إنشاء/حذف/إعادة تسمية فصل أو إنشاء فصول جماعيًا | `dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts` | إعادة منطق orchestration إلى `SchoolsManager.tsx` |
 | تقدم المسار | `pages/Dashboard/pathProgressProjection.ts` | تعديل التقرير |
+| Subject Learning Space composition | `pages/GenericPathPage.tsx`, `components/LearningSection.tsx`, `utils/learningSpaceTabs.ts` | نقل Course أو Assessment ownership |
+| إدارة placement داخل المادة | `dashboards/admin/PathsManager.tsx` و`live-learning-manager-deep-audit.mjs` | بناء content graph أو microservice |
 | التقارير | Reports/Results view-models وreports backend | result write path |
 | الإشعارات والبث | notification module + SSE adapter + queue | إضافة polling جديد |
 | الدفع والوصول | payments routes/services/policies | UI unlock فقط |
