@@ -18,10 +18,10 @@
 
 | البند | الحالة | الدليل |
 |---|---|---|
-| Definition, Builder, pagination, published edit/version | `VERIFIED` | Deep [33688377731](https://github.com/nasef6464/almeaacodax/actions/runs/33688377731) على `d2298993` |
-| Normal + directed assignment/access/runner | `VERIFIED` | Deep `33688377731`؛ Backend [33688377700](https://github.com/nasef6464/almeaacodax/actions/runs/33688377700) |
-| Mock, autosave, resume, expiry, retry safety | `VERIFIED` | Deep `33688377731` وprevious exact evidence `47dabd68` |
-| Results, answer review, section analytics, historical summary compatibility | `VERIFIED` للـMVP | `5dfe7209`, `9bf273f1`, ثم regression green على `d2298993` |
+| Definition, Builder, pagination, published edit/version | `VERIFIED` | Deep [33770005171](https://github.com/nasef6464/almeaacodax/actions/runs/33770005171) على `22ac5d2a` |
+| Normal + directed assignment/access/runner | `VERIFIED` | Deep `33770005171`؛ Backend [33770005131](https://github.com/nasef6464/almeaacodax/actions/runs/33770005131) |
+| Mock, autosave, resume, expiry, retry safety | `VERIFIED` | Deep `33770005171` وBackend `33770005131` |
+| Results, answer review, section analytics, historical summary compatibility | `VERIFIED` للـMVP | `5dfe7209`, `9bf273f1`, ثم regression green على `22ac5d2a` |
 | Question → Skill → result analysis → mastery → recommendation resolver | `VERIFIED` | schema/application/side-effect/result contracts + focused smoke guards؛ لا scoring أو recommendation engine جديد |
 | كل نوع recommendation يُنقر حتى محتوى التعلم في E2E واحد | `PARTIAL` | resolver يربط الدرس/الفيديو/المورد/quiz؛ coverage التفاعلي الكامل مؤجل |
 | production cutover، opt-in، scale certification | `NOT PROVEN` / غير معتمد | CI معزول فقط؛ لا اختبار ضد production |
@@ -31,6 +31,7 @@
 - لا تغيير في API URLs أو RBAC أو scoring أو payments أو Mongo semantics.
 - لا production dual-write/cutover ولا historical attempt/response/definition reconstruction.
 - رفع CI limit في `d2298993` محصور في workflow المعزول؛ production rate limits كما هي.
+- إصلاح `22ac5d2a` يربط قسم Mock بالـquestion ID المحفوظ حرفيًا أولًا، مع fallback توافق `_copy` القديم؛ لا يغير API أو scoring.
 
 ## تحسينات مستقبلية مؤجلة عمدًا
 
