@@ -787,6 +787,8 @@ export const SchoolsManager: React.FC = () => {
             handleRemoveStudentScope,
             confirmRemoveSchoolWideSupervisor,
             confirmRemoveClassSupervisor,
+            handleAssignTeacherToClass,
+            handleRemoveTeacherFromClass,
         } = createSchoolRosterAssignmentActions({
             selectedSchool,
             schoolScopeGroups,

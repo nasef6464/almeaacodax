@@ -114,6 +114,7 @@ export type RelationImportSummary = {
     missingParents: number;
     missingSupervisors: number;
     missingClasses: number;
+    missingTeachers: number;
     skippedRows: number;
 };
 
