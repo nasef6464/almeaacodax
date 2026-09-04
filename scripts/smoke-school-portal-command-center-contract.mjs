@@ -32,8 +32,8 @@ const checks = [
   {
     name: "auth hydration preserves school and class scope for supervisors",
     ok:
-      authContext.includes("schoolId: backendUser?.schoolId ?? existing.schoolId") &&
-      authContext.includes("groupIds: backendUser?.groupIds ?? existing.groupIds") &&
+      authContext.includes("schoolId: backendUser?.schoolId ?? sessionUser.schoolId ?? existing.schoolId") &&
+      authContext.includes("groupIds: backendUser?.groupIds ?? sessionUser.groupIds ?? existing.groupIds") &&
       authContext.includes("isActive: backendUser?.isActive ?? existing.isActive"),
   },
   {
