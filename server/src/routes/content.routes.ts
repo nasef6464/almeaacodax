@@ -1426,22 +1426,46 @@ contentRouter.get(
     ]);
 
     const studentIds = students.map(getModelDocumentId).filter(Boolean);
-    const [quizResults, quizResultTotal] = studentIds.length
+    const quizResultFilter = { userId: { $in: studentIds } };
+    const [quizResults, quizResultTotal, quizResultStats, studentResultStats, skillResultStats] = studentIds.length
       ? await Promise.all([
-          QuizResultModel.find({ userId: { $in: studentIds } })
+          QuizResultModel.find(quizResultFilter)
             .select("userId score skillsAnalysis createdAt")
             .sort({ createdAt: -1 })
             .skip(pagination.skip)
             .limit(pagination.limit)
             .lean(),
-          QuizResultModel.countDocuments({ userId: { $in: studentIds } }),
+          QuizResultModel.countDocuments(quizResultFilter),
+          QuizResultModel.aggregate([
+            { $match: quizResultFilter },
+            { $group: { _id: null, attempts: { $sum: 1 }, averageScore: { $avg: "$score" } } },
+          ]),
+          QuizResultModel.aggregate([
+            { $match: quizResultFilter },
+            { $group: { _id: "$userId", attempts: { $sum: 1 }, scoreTotal: { $sum: "$score" } } },
+          ]),
+          QuizResultModel.aggregate([
+            { $match: quizResultFilter },
+            { $unwind: "$skillsAnalysis" },
+            {
+              $group: {
+                _id: {
+                  skillId: "$skillsAnalysis.skillId",
+                  skill: "$skillsAnalysis.skill",
+                  subjectId: "$skillsAnalysis.subjectId",
+                  sectionId: "$skillsAnalysis.sectionId",
+                },
+                attempts: { $sum: 1 },
+                masteryTotal: { $sum: "$skillsAnalysis.mastery" },
+              },
+            },
+          ]),
         ])
-      : [[], 0];
+      : [[], 0, [], [], []];
 
-    const averageScore = quizResults.length
-      ? Math.round(
-          quizResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / quizResults.length,
-        )
+    const aggregateStats = quizResultStats[0] as { attempts?: number; averageScore?: number } | undefined;
+    const averageScore = aggregateStats?.attempts
+      ? Math.round(Number(aggregateStats.averageScore) || 0)
       : 0;
 
     const weakSkillMap = new Map<
@@ -1456,22 +1480,15 @@ contentRouter.get(
       }
     >();
 
-    quizResults.forEach((result) => {
-      const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-      skills.forEach((gap: any) => {
-        const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
-        const current = weakSkillMap.get(key) || {
-          skillId: gap?.skillId,
-          skill: String(gap?.skill || "مهارة غير مسماة"),
-          subjectId: gap?.subjectId,
-          sectionId: gap?.sectionId,
-          attempts: 0,
-          masteryTotal: 0,
-        };
-
-        current.attempts += 1;
-        current.masteryTotal += Number(gap?.mastery) || 0;
-        weakSkillMap.set(key, current);
+    skillResultStats.forEach((item: any) => {
+      const key = String(item?._id?.skillId || item?._id?.skill || item?._id?.sectionId || "unknown");
+      weakSkillMap.set(key, {
+        skillId: item?._id?.skillId,
+        skill: String(item?._id?.skill || "مهارة غير مسماة"),
+        subjectId: item?._id?.subjectId,
+        sectionId: item?._id?.sectionId,
+        attempts: Number(item?.attempts) || 0,
+        masteryTotal: Number(item?.masteryTotal) || 0,
       });
     });
 
@@ -1491,9 +1508,11 @@ contentRouter.get(
       const classId = getModelDocumentId(group);
       const classStudents = students.filter((student) => (student.groupIds || []).includes(classId));
       const classStudentIds = new Set(classStudents.map(getModelDocumentId).filter(Boolean));
-      const classResults = quizResults.filter((result) => classStudentIds.has(String(result.userId)));
-      const classAverageScore = classResults.length
-        ? Math.round(classResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / classResults.length)
+      const classResults = studentResultStats.filter((result: any) => classStudentIds.has(String(result._id)));
+      const classAttempts = classResults.reduce((sum: number, result: any) => sum + (Number(result.attempts) || 0), 0);
+      const classScoreTotal = classResults.reduce((sum: number, result: any) => sum + (Number(result.scoreTotal) || 0), 0);
+      const classAverageScore = classAttempts
+        ? Math.round(classScoreTotal / classAttempts)
         : 0;
 
       return {
@@ -1501,7 +1520,7 @@ contentRouter.get(
         name: group.name,
         studentCount: classStudents.length,
         supervisorCount: Array.isArray(group.supervisorIds) ? group.supervisorIds.length : 0,
-        quizAttempts: classResults.length,
+        quizAttempts: classAttempts,
         averageScore: classAverageScore,
       };
     });

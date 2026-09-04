@@ -11,10 +11,12 @@ const managerFile = 'dashboards/admin/SchoolsManager.tsx';
 const reportsFile = 'dashboards/admin/SchoolsManager/SchoolReportsPanel.tsx';
 const handoverFile = 'dashboards/admin/SchoolsManager/SchoolHandoverReportSummary.tsx';
 const performanceFile = 'dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx';
+const contentRoutesFile = 'server/src/routes/content.routes.ts';
 const manager = read(managerFile);
 const reports = read(reportsFile);
 const handover = read(handoverFile);
 const performance = read(performanceFile);
+const contentRoutes = read(contentRoutesFile);
 
 assert.ok(manager.includes("from './SchoolsManager/SchoolReportsPanel';"), 'SchoolsManager must compose the school reports feature panel');
 assert.ok(manager.includes('<SchoolReportsPanel'), 'SchoolsManager must render SchoolReportsPanel');
@@ -63,6 +65,18 @@ assert.ok(performance.includes('Math.min(classroom.averageScore, 100)'), 'class 
 assert.ok(!performance.includes("from '../../../services/api'"), 'performance child must be presentation-only');
 assert.ok(!performance.includes("from '../../../store/useStore'"), 'performance child must not access global store');
 assert.ok(lineCount(performance) <= 220, `SchoolPerformanceReportPanel must stay <= 220 lines; got ${lineCount(performance)}`);
+
+for (const contract of [
+  'const quizResultFilter = { userId: { $in: studentIds } };',
+  'QuizResultModel.aggregate([',
+  'averageScore: { $avg: "$score" }',
+  'scoreTotal: { $sum: "$score" }',
+  'masteryTotal: { $sum: "$skillsAnalysis.mastery" }',
+  'sampledQuizAttempts: quizResults.length',
+]) {
+  assert.ok(contentRoutes.includes(contract), `school report must preserve aggregate-backed ${contract}`);
+}
+assert.ok(contentRoutes.includes('const classAttempts = classResults.reduce'), 'class summaries must use complete aggregate stats, not paginated samples');
 
 for (const [file, source] of [
   [reportsFile, reports],
