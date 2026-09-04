@@ -121,7 +121,9 @@ async function login(page, role) {
       path: "/",
       httpOnly: true,
       secure: API_COOKIE_SECURE,
-      sameSite: "None",
+      // SameSite=None is rejected by Chromium unless Secure=true. The CI
+      // audit API runs on plain HTTP, so use Lax for the local runtime.
+      sameSite: API_COOKIE_SECURE ? "None" : "Lax",
     },
   ]);
   await page.context().addInitScript((backendUser) => {
