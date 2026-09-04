@@ -64,6 +64,7 @@ const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
 await context.addCookies([
   { name: "almeaa_access_token", value: session.token, url: new URL(API_BASE_URL).origin, httpOnly: true, secure: new URL(API_BASE_URL).protocol === "https:", sameSite: "None" },
+  { name: "almeaa_access_token", value: session.token, url: new URL(BASE_URL).origin, httpOnly: true, secure: new URL(BASE_URL).protocol === "https:", sameSite: "Lax" },
   { name: "almeaa_csrf_token", value: session.csrfCookie, url: new URL(API_BASE_URL).origin, httpOnly: false, secure: new URL(API_BASE_URL).protocol === "https:", sameSite: "None" },
 ]);
 const page = await context.newPage();
