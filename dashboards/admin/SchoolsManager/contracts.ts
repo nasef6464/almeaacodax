@@ -96,6 +96,8 @@ export type RelationImportRow = {
     parentName?: string;
     supervisorEmail?: string;
     supervisorName?: string;
+    teacherEmail?: string;
+    teacherName?: string;
     className?: string;
 };
 
@@ -105,6 +107,8 @@ export type RelationImportSummary = {
     createdSupervisors: number;
     linkedParents: number;
     linkedSupervisors: number;
+    createdTeachers: number;
+    linkedTeachers: number;
     assignedClasses: number;
     missingStudents: number;
     missingParents: number;
@@ -114,7 +118,7 @@ export type RelationImportSummary = {
 };
 
 export type RelationCredential = {
-    role: Role.PARENT | Role.SUPERVISOR;
+    role: Role.PARENT | Role.SUPERVISOR | Role.TEACHER;
     name: string;
     email: string;
     password: string;

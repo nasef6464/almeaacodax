@@ -86,6 +86,8 @@ const schoolRelationRowSchema = z.object({
   parentName: z.string().optional(),
   supervisorEmail: z.string().email().optional().or(z.literal("")),
   supervisorName: z.string().optional(),
+  teacherEmail: z.string().email().optional().or(z.literal("")),
+  teacherName: z.string().optional(),
   className: z.string().optional(),
 });
 

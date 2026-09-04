@@ -2327,27 +2327,31 @@ contentRouter.post(
     const studentEmails = payload.rows.map((row) => row.studentEmail.trim().toLowerCase());
     const parentEmails = payload.rows.map((row) => String(row.parentEmail || "").trim().toLowerCase()).filter(Boolean);
     const supervisorEmails = payload.rows.map((row) => String(row.supervisorEmail || "").trim().toLowerCase()).filter(Boolean);
-    const allEmails = Array.from(new Set([...studentEmails, ...parentEmails, ...supervisorEmails]));
+    const teacherEmails = payload.rows.map((row) => String(row.teacherEmail || "").trim().toLowerCase()).filter(Boolean);
+    const allEmails = Array.from(new Set([...studentEmails, ...parentEmails, ...supervisorEmails, ...teacherEmails]));
     const users = await UserModel.find({ email: { $in: allEmails } });
     const usersByEmail = new Map(users.map((item) => [String(item.email || "").trim().toLowerCase(), item]));
-    const credentials: Array<{ role: "parent" | "supervisor"; name: string; email: string; password: string; linkedTo: string }> = [];
+    const credentials: Array<{ role: "parent" | "supervisor" | "teacher"; name: string; email: string; password: string; linkedTo: string }> = [];
     const summary = {
       rows: payload.rows.length,
       createdParents: 0,
       createdSupervisors: 0,
+      createdTeachers: 0,
       linkedParents: 0,
       linkedSupervisors: 0,
+      linkedTeachers: 0,
       assignedClasses: 0,
       missingStudents: 0,
       missingParents: 0,
       missingSupervisors: 0,
+      missingTeachers: 0,
       missingClasses: 0,
       skippedRows: 0,
     };
 
     const createUserIfMissing = async (
       email: string,
-      role: "parent" | "supervisor",
+      role: "parent" | "supervisor" | "teacher",
       name: string,
       linkedTo: string,
     ) => {
@@ -2371,6 +2375,7 @@ contentRouter.post(
       credentials.push({ role, name: created.name, email: normalizedEmail, password, linkedTo });
       if (role === "parent") summary.createdParents += 1;
       if (role === "supervisor") summary.createdSupervisors += 1;
+      if (role === "teacher") summary.createdTeachers += 1;
       return created;
     };
 
@@ -2450,6 +2455,23 @@ contentRouter.post(
           summary.linkedSupervisors += 1;
         }
       }
+
+      const teacherEmail = String(row.teacherEmail || "").trim().toLowerCase();
+      if (teacherEmail) {
+        const teacher = await createUserIfMissing(
+          teacherEmail,
+          "teacher",
+          row.teacherName?.trim() || `معلم ${student.name}`,
+          classroom?.name || school.name,
+        );
+        if (!teacher || teacher.role !== "teacher") {
+          summary.missingTeachers += 1;
+        } else {
+          const targetGroupId = classroom ? classroom.id || String(classroom._id) : schoolId;
+          await UserModel.findByIdAndUpdate(teacher._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } });
+          summary.linkedTeachers += 1;
+        }
+      }
     }
 
     const latestClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId });
@@ -2457,14 +2479,14 @@ contentRouter.post(
       GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {
         $set: {
           totalStudents: await UserModel.countDocuments({ schoolId, role: "student" }),
-          totalSupervisors: await UserModel.countDocuments({ schoolId, role: { $in: ["teacher", "supervisor"] } }),
+          totalSupervisors: await UserModel.countDocuments({ schoolId, role: "supervisor" }),
         },
       }),
       ...latestClasses.map(async (group) => {
         const classId = group.id || String(group._id);
         const [studentCount, supervisorCount] = await Promise.all([
           UserModel.countDocuments({ role: "student", groupIds: classId }),
-          UserModel.countDocuments({ role: { $in: ["teacher", "supervisor"] }, groupIds: classId }),
+          UserModel.countDocuments({ role: "supervisor", groupIds: classId }),
         ]);
         await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), {
           $set: { totalStudents: studentCount, totalSupervisors: supervisorCount },

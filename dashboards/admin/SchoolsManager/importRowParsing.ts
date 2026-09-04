@@ -27,8 +27,10 @@ const RELATION_IMPORT_HEADER_ALIASES = {
     studentEmail: aliasSet(['studentEmail', 'student', 'بريد الطالب', 'ايميل الطالب', 'إيميل الطالب', 'البريد الإلكتروني للطالب']),
     parentEmail: aliasSet(['parentEmail', 'parent', 'ولي الأمر', 'بريد ولي الأمر', 'ايميل ولي الأمر', 'إيميل ولي الأمر']),
     parentName: aliasSet(['parentName', 'اسم ولي الأمر', 'ولي الامر', 'guardianName']),
-    supervisorEmail: aliasSet(['supervisorEmail', 'teacherEmail', 'بريد المشرف', 'ايميل المشرف', 'إيميل المشرف', 'بريد المعلم']),
-    supervisorName: aliasSet(['supervisorName', 'teacherName', 'اسم المشرف', 'اسم المعلم']),
+    supervisorEmail: aliasSet(['supervisorEmail', 'بريد المشرف', 'ايميل المشرف', 'إيميل المشرف']),
+    supervisorName: aliasSet(['supervisorName', 'اسم المشرف']),
+    teacherEmail: aliasSet(['teacherEmail', 'بريد المعلم', 'ايميل المعلم', 'إيميل المعلم']),
+    teacherName: aliasSet(['teacherName', 'اسم المعلم']),
     className: aliasSet(['className', 'class', 'الفصل', 'اسم الفصل', 'الصف', 'المجموعة']),
 };
 
@@ -89,6 +91,8 @@ export const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
     const parentNameIndex = headers.findIndex((header) => header === 'parentname');
     const supervisorEmailIndex = headers.findIndex((header) => header === 'supervisoremail');
     const supervisorNameIndex = headers.findIndex((header) => header === 'supervisorname');
+    const teacherEmailIndex = headers.findIndex((header) => header === 'teacheremail');
+    const teacherNameIndex = headers.findIndex((header) => header === 'teachername');
     const classNameIndex = headers.findIndex((header) => header === 'classname');
 
     if (studentEmailIndex === -1) {
@@ -103,9 +107,11 @@ export const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
             parentName: parentNameIndex >= 0 ? (cells[parentNameIndex] || '').trim() : undefined,
             supervisorEmail: supervisorEmailIndex >= 0 ? (cells[supervisorEmailIndex] || '').trim() : undefined,
             supervisorName: supervisorNameIndex >= 0 ? (cells[supervisorNameIndex] || '').trim() : undefined,
+            teacherEmail: teacherEmailIndex >= 0 ? (cells[teacherEmailIndex] || '').trim() : undefined,
+            teacherName: teacherNameIndex >= 0 ? (cells[teacherNameIndex] || '').trim() : undefined,
             className: classNameIndex >= 0 ? (cells[classNameIndex] || '').trim() : undefined,
         }))
-        .filter((row) => row.studentEmail || row.parentEmail || row.supervisorEmail || row.className);
+        .filter((row) => row.studentEmail || row.parentEmail || row.supervisorEmail || row.teacherEmail || row.className);
 };
 
 export const getDuplicateImportEmails = (rows: ImportRow[]) => {

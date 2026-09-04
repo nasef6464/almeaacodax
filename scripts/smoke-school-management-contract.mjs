@@ -352,6 +352,14 @@ check("school access codes attach students to the school roster", () => {
   assertIncludes(files.authRoutes, '$set: { totalStudents: schoolStudentCount },');
 });
 
+check("school relation import assigns teachers without supervisor elevation", () => {
+  assertIncludes(files.routes, "teacherEmail");
+  assertIncludes(files.routes, 'createUserIfMissing(\n          teacherEmail,');
+  assertIncludes(files.routes, '"teacher",');
+  assertIncludes(files.routes, 'summary.linkedTeachers += 1');
+  assertNotIncludes(files.routes, 'GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: teacher');
+});
+
 check("school package access requires a user-specific active grant", () => {
   assertIncludes(files.quizRoutes, 'import { AccessGrantModel } from "../models/AccessGrant.js";');
   assertIncludes(files.quizRoutes, 'userId,');

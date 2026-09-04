@@ -35,7 +35,7 @@ export const SchoolRelationsImportPanel: React.FC<SchoolRelationsImportPanelProp
                 <div>
                     <h3 className="text-lg font-black text-gray-900">ربط جماعي للحسابات الموجودة</h3>
                     <p className="mt-1 text-sm leading-7 text-gray-500">
-                        ارفع ملف Excel يربط الطالب بولي أمر ومشرف وفصل. يمكن إنشاء الحسابات الناقصة تلقائيا ثم تحميل ملف تسليم آمن.
+                        ارفع ملف Excel يربط الطالب بولي أمر ومشرف ومعلم وفصل. يمكن إنشاء الحسابات الناقصة تلقائيا ثم تحميل ملف تسليم آمن.
                     </p>
                 </div>
                 <button
@@ -64,7 +64,7 @@ export const SchoolRelationsImportPanel: React.FC<SchoolRelationsImportPanelProp
                     <Upload size={28} />
                 </div>
                 <h4 className="font-black text-gray-900">رفع ملف الربط</h4>
-                <p className="mt-2 text-sm text-gray-500">الأعمدة الأساسية: بريد الطالب، بريد ولي الأمر، بريد المشرف، اسم الفصل.</p>
+                <p className="mt-2 text-sm text-gray-500">الأعمدة الأساسية: بريد الطالب، بريد ولي الأمر، بريد المشرف، بريد المعلم، اسم الفصل.</p>
             </div>
 
             {relationError && (
@@ -109,6 +109,7 @@ export const SchoolRelationsImportPanel: React.FC<SchoolRelationsImportPanelProp
                                     <th className="p-3 font-bold">بريد الطالب</th>
                                     <th className="p-3 font-bold">ولي الأمر</th>
                                     <th className="p-3 font-bold">المشرف</th>
+                                    <th className="p-3 font-bold">المعلم</th>
                                     <th className="p-3 font-bold">الفصل</th>
                                 </tr>
                             </thead>
@@ -118,6 +119,7 @@ export const SchoolRelationsImportPanel: React.FC<SchoolRelationsImportPanelProp
                                         <td className="p-3 text-gray-800">{row.studentEmail || '-'}</td>
                                         <td className="p-3 text-gray-500">{row.parentEmail || row.parentName || '-'}</td>
                                         <td className="p-3 text-gray-500">{row.supervisorEmail || row.supervisorName || '-'}</td>
+                                        <td className="p-3 text-gray-500">{row.teacherEmail || row.teacherName || '-'}</td>
                                         <td className="p-3 text-gray-500">{row.className || '-'}</td>
                                     </tr>
                                 ))}
@@ -149,6 +151,8 @@ export const SchoolRelationsImportPanel: React.FC<SchoolRelationsImportPanelProp
                             ['مشرفون تم إنشاؤهم', relationSummary.createdSupervisors, 'purple'],
                             ['أولياء تم ربطهم', relationSummary.linkedParents, 'emerald'],
                             ['مشرفون تم ربطهم', relationSummary.linkedSupervisors, 'purple'],
+                            ['معلمون تم إنشاؤهم', relationSummary.createdTeachers, 'blue'],
+                            ['معلمون تم ربطهم', relationSummary.linkedTeachers, 'blue'],
                         ].map(([label, value, tone]) => (
                             <div key={String(label)} className={`rounded-xl border p-3 ${
                                 tone === 'emerald' ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
@@ -167,6 +171,7 @@ export const SchoolRelationsImportPanel: React.FC<SchoolRelationsImportPanelProp
                             ['طلاب غير موجودين', relationSummary.missingStudents, 'amber'],
                             ['أولياء ناقصون', relationSummary.missingParents, 'amber'],
                             ['مشرفون ناقصون', relationSummary.missingSupervisors, 'amber'],
+                            ['معلمون ناقصون', relationSummary.missingTeachers, 'amber'],
                         ].map(([label, value, tone]) => (
                             <div key={String(label)} className={`rounded-xl border p-3 ${
                                 tone === 'blue' ? 'border-blue-100 bg-blue-50 text-blue-800'
