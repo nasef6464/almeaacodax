@@ -40,6 +40,7 @@ const checks = [
     name: "school portal supports daily operational actions",
     ok:
       schoolPortal.includes("openTargetedQuiz") &&
+      schoolPortal.includes('data-testid="supervisor-create-directed-assessment"') &&
       schoolPortal.includes("openFollowUpEmail") &&
       schoolPortal.includes("copyFollowUpMessage") &&
       schoolPortal.includes("copySupervisorBrief") &&
