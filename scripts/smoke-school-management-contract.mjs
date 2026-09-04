@@ -4,6 +4,7 @@ const read = async (path) => (await readFile(new URL(`../${path}`, import.meta.u
 
 const files = {
   routes: await read("server/src/routes/content.routes.ts"),
+  quizRoutes: await read("server/src/routes/quiz.routes.ts"),
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
   schools: [
@@ -348,6 +349,14 @@ check("school access codes attach students to the school roster", () => {
   assertIncludes(files.authRoutes, '$addToSet: { studentIds: String(user.id || user._id) },');
   assertIncludes(files.authRoutes, 'const schoolStudentCount = await UserModel.countDocuments({ schoolId, role: "student" });');
   assertIncludes(files.authRoutes, '$set: { totalStudents: schoolStudentCount },');
+});
+
+check("school package access requires a user-specific active grant", () => {
+  assertIncludes(files.quizRoutes, 'import { AccessGrantModel } from "../models/AccessGrant.js";');
+  assertIncludes(files.quizRoutes, 'userId,');
+  assertIncludes(files.quizRoutes, 'packageId: { $in: packageIds }');
+  assertIncludes(files.quizRoutes, 'status: "active"');
+  assertIncludes(files.quizRoutes, 'return grants.some((grant: any) => matchesContentScope(grant, contentType, pathId, subjectId));');
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

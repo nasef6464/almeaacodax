@@ -8,6 +8,7 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
+import { AccessGrantModel } from "../models/AccessGrant.js";
 import { CourseModel } from "../models/Course.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
@@ -333,23 +334,23 @@ const hasSchoolPackageAccess = async (
   subjectId?: string,
 ) => {
   const schoolId = String(user.schoolId || "");
-  if (!schoolId) {
+  const userId = String(user.id || user._id || "");
+  if (!schoolId || !userId) {
     return false;
   }
 
   const packages = await B2BPackageModel.find({ schoolId, status: "active" });
-  return packages.some((pkg: any) =>
-    matchesContentScope(
-      {
-        contentTypes: pkg.contentTypes,
-        pathIds: pkg.pathIds,
-        subjectIds: pkg.subjectIds,
-      },
-      contentType,
-      pathId,
-      subjectId,
-    ),
-  );
+  const packageIds = packages.map((pkg: any) => String(pkg.id || pkg._id || "")).filter(Boolean);
+  if (packageIds.length === 0) return false;
+
+  const grants = await AccessGrantModel.find({
+    userId,
+    packageId: { $in: packageIds },
+    status: "active",
+    $or: [{ expiresAt: null }, { expiresAt: { $exists: false } }, { expiresAt: { $gt: Date.now() } }],
+  }).select("contentTypes pathIds subjectIds").lean();
+
+  return grants.some((grant: any) => matchesContentScope(grant, contentType, pathId, subjectId));
 };
 
 const getPackageContentTypeForQuizSource = (source?: string) => {
