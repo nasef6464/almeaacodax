@@ -100,9 +100,11 @@ jobs:
             server/package-lock.json
 
       - name: Install frontend dependencies
+        timeout-minutes: 10
         run: npm ci
 
       - name: Install API dependencies
+        timeout-minutes: 10
         run: npm --prefix server ci
 
       - name: Generate masked ephemeral credentials
