@@ -2,7 +2,7 @@
 
 ## الحالة
 
-`PARTIAL` إلى حين اكتمال Deep Pre-Merge required-green على commit `ee9cb7f5`. الأدلة المحلية وBackend CI ناجحة؛ production-scale certification `NOT PROVEN`.
+`VERIFIED` على isolated UI/API/DB evidence في commit `a89c0ed3`. Backend CI وDeep Pre-Merge required-green نجحا؛ production-scale certification `NOT PROVEN`.
 
 ## Strong MVP المنجز
 
@@ -17,7 +17,7 @@
 - `npm run smoke:student-learning-journey` PASS (7/7).
 - `npm run smoke:learning-canonical-entry` و`learning-scoped-bootstrap` و`learning-tabs` و`learning-placement-admin` PASS.
 - `audit:learning-manager` أثبت رحلة الإدارة runtime مع taxonomy/content bootstrap، وخمس خانات محتوى.
-- Deep Pre-Merge وBackend Integration شُغّلا على commit الدفعة؛ نتيجة Deep النهائية تنتظر إكمال الـrun الحالي قبل اعتماد الإغلاق الرسمي.
+- Backend Integration [33831512975](https://github.com/nasef6464/almeaacodax/actions/runs/33831512975) وDeep Pre-Merge [33831512958](https://github.com/nasef6464/almeaacodax/actions/runs/33831512958) نجحا على نفس commit.
 
 ## ما أصبح قابلًا للبيع
 
