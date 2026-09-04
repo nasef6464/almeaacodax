@@ -261,6 +261,14 @@ jobs:
           SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
         run: node scripts/live-student-learning-deep-audit.mjs
 
+      - name: Results and report actions desktop + mobile journey
+        id: report_actions
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
+        run: node scripts/live-report-actions-audit.mjs
+
       - name: Learning Space manager placement journey
         id: learning_manager
         continue-on-error: true
@@ -312,6 +320,7 @@ jobs:
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
             echo "- Student Learning Space: ${{ steps.student_learning.outcome }}"
+            echo "- Results/report actions: ${{ steps.report_actions.outcome }}"
             echo "- Learning Space manager: ${{ steps.learning_manager.outcome }}"
             echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
             echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
@@ -344,6 +353,7 @@ jobs:
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"
           check "Student Learning Space" "${{ steps.student_learning.outcome }}"
+          check "Results/report actions" "${{ steps.report_actions.outcome }}"
           check "Learning Space manager" "${{ steps.learning_manager.outcome }}"
           check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
           check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
