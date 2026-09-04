@@ -38,6 +38,7 @@ const files = {
     await read("store/useStore.ts"),
     await read("store/slices/accessEnrollmentSlice.ts"),
   ].join("\n"),
+  accessEnrollment: await read("store/slices/accessEnrollmentSlice.ts"),
   packageJson: await read("package.json"),
   schoolFromScratchAudit: await read("scripts/live-school-from-scratch-audit.mjs"),
 };
@@ -357,6 +358,13 @@ check("school package access requires a user-specific active grant", () => {
   assertIncludes(files.quizRoutes, 'packageId: { $in: packageIds }');
   assertIncludes(files.quizRoutes, 'status: "active"');
   assertIncludes(files.quizRoutes, 'return grants.some((grant: any) => matchesContentScope(grant, contentType, pathId, subjectId));');
+});
+
+check("student UI access does not infer package entitlement from school membership", () => {
+  const scopedAccessSource = files.accessEnrollment.split("hasScopedPackageAccess: (contentType, pathId")[1]?.split("getMatchingPackage: (contentType, pathId")[0] || "";
+  assertIncludes(scopedAccessSource, "purchasedPackageIds");
+  assertIncludes(scopedAccessSource, "School membership identifies the learner's operational scope");
+  assertNotIncludes(scopedAccessSource, "schoolIds.has(pkg.schoolId) && packageMatchesScope(pkg, contentType, pathId, subjectId)");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

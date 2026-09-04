@@ -172,14 +172,10 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
             return true;
         }
 
-        const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || [], state.user.schoolId);
-        if (schoolIds.size === 0) {
-            return false;
-        }
-
-        return state.b2bPackages.some((pkg) =>
-            schoolIds.has(pkg.schoolId) && packageMatchesScope(pkg, contentType, pathId, subjectId),
-        );
+        // School membership identifies the learner's operational scope, but it
+        // does not grant package access by itself. Access must be mirrored into
+        // purchasedPackages by an active AccessGrant (access code/payment/admin).
+        return false;
     },
 
     getMatchingPackage: (contentType, pathId, subjectId) => {
