@@ -3,7 +3,7 @@
 | Domain | يملك | لا يملك | المداخل الحالية | الحالة |
 |---|---|---|---|---|
 | auth | identity/login/account | تقارير أو scoring | `server/src/routes/auth.routes.ts`, auth UI | Legacy boundary |
-| schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolsManager/` action/hooks/services, `SchoolPortalManager`, school routes | PARTIAL — core admin journeys and supervisor scope are verified; Sellable School MVP closure remains |
+| schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolsManager/` action/hooks/services, `SchoolPortalManager`, school routes | VERIFIED — Sellable School MVP Admin setup/access and Supervisor scoped follow-up vertical slice closed; advanced reporting/UX scalability deferred |
 | curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Subject Learning Space boundary VERIFIED; School MVP remains |
 | questions | bank/authoring/types/import/search | report presentation | QuestionBankManager, question routes | Boundary pending |
 | assessments | definition/versioning, distribution, sessions, attempts/responses, submission, scoring, results, assessment-specific analytics | payment provider، long-term cross-assessment reports | compatibility facades in quiz routes/QuizPage/Results; `server/src/modules/quizzes/application/assessment*` | PARTIAL — additive foundations, controlled mirror/reconciliation/rollback are isolated-CI proven; UI commercial closure and production opt-in remain |
