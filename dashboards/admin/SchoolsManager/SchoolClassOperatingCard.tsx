@@ -7,8 +7,10 @@ interface SchoolClassOperatingCardProps {
     classStudentCount: number;
     studentsWithoutParentCount: number;
     classSupervisors: User[];
+    classTeachers: User[];
     classCourses: Course[];
     supervisors: User[];
+    teachers: User[];
     publishedCourses: Course[];
     rosterActionPending: string | null;
     isSchoolWorkspaceBusy: boolean;
@@ -23,6 +25,8 @@ interface SchoolClassOperatingCardProps {
     onAssignSupervisor: (userId: string) => Promise<void>;
     onCreateSupervisor: () => void;
     onRemoveSupervisor: (user: User) => void;
+    onAssignTeacher: (userId: string) => Promise<void>;
+    onRemoveTeacher: (user: User) => Promise<void>;
     onAssignCourse: (courseId: string) => void;
     onRemoveCourse: (courseId: string) => void;
 }
@@ -32,8 +36,10 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
     classStudentCount,
     studentsWithoutParentCount,
     classSupervisors,
+    classTeachers,
     classCourses,
     supervisors,
+    teachers,
     publishedCourses,
     rosterActionPending,
     isSchoolWorkspaceBusy,
@@ -48,10 +54,13 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
     onAssignSupervisor,
     onCreateSupervisor,
     onRemoveSupervisor,
+    onAssignTeacher,
+    onRemoveTeacher,
     onAssignCourse,
     onRemoveCourse,
 }) => {
     const availableSupervisors = supervisors.filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id));
+    const availableTeachers = teachers.filter((currentUser) => !classTeachers.some((teacher) => teacher.id === currentUser.id));
     const availableCourses = publishedCourses.filter((course) => !classroom.courseIds.includes(course.id));
 
     return (
@@ -60,7 +69,7 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
                 <div>
                     <h4 className="font-bold text-gray-900">{classroom.name}</h4>
                     <p className="text-sm text-gray-500">
-                        {classStudentCount} طالب • {classSupervisors.length} مشرف • {classCourses.length} دورة
+                        {classStudentCount} طالب • {classSupervisors.length} مشرف • {classTeachers.length} معلم • {classCourses.length} دورة
                     </p>
                     {studentsWithoutParentCount > 0 && (
                         <p className="mt-1 text-xs font-bold text-amber-700">
@@ -136,6 +145,52 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
             </div>
 
             <div className="grid grid-cols-1 gap-3">
+                {/* ── المعلمون المسؤولون ── */}
+                <div className={`rounded-xl border p-3 ${classTeachers.length === 0 ? 'border-amber-200 bg-amber-50' : 'border-blue-100 bg-blue-50'}`} data-testid="school-class-teachers">
+                    <div className="flex items-center justify-between mb-2">
+                        <label className={`text-xs font-black ${classTeachers.length === 0 ? 'text-amber-800' : 'text-blue-800'}`}>
+                            {classTeachers.length === 0 ? '⚠️ لا يوجد معلم للفصل' : `✅ معلمو الفصل (${classTeachers.length})`}
+                        </label>
+                    </div>
+                    {classTeachers.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                            {classTeachers.map((teacher) => (
+                                <button
+                                    key={teacher.id}
+                                    type="button"
+                                    data-testid="school-remove-class-teacher"
+                                    onClick={() => void onRemoveTeacher(teacher)}
+                                    disabled={Boolean(rosterActionPending)}
+                                    className="flex items-center gap-1.5 rounded-full bg-white border border-blue-200 px-3 py-1.5 text-xs font-bold text-blue-800 hover:border-red-200 hover:bg-red-50 hover:text-red-700 transition-colors"
+                                    title="اضغط لإزالة المعلم"
+                                >
+                                    {teacher.name} ×
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                    <select
+                        data-testid="school-assign-class-teacher"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        defaultValue=""
+                        onChange={(event) => {
+                            const target = event.currentTarget;
+                            const value = event.target.value;
+                            if (!value) return;
+                            void onAssignTeacher(value).finally(() => { target.value = ''; });
+                        }}
+                        disabled={Boolean(rosterActionPending)}
+                    >
+                        <option value="">إسناد معلم موجود للفصل...</option>
+                        {availableTeachers.map((teacher) => (
+                            <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
+                        ))}
+                    </select>
+                    {availableTeachers.length === 0 && classTeachers.length === 0 && (
+                        <p className="mt-1.5 text-xs text-amber-700">لا توجد حسابات معلمين متاحة — أضف معلمًا من المستخدمين أو ملف العلاقات.</p>
+                    )}
+                </div>
+
                 {/* ── المشرف المسؤول ── */}
                 <div className={`rounded-xl border p-3 ${classSupervisors.length === 0 ? 'border-amber-200 bg-amber-50' : 'border-emerald-100 bg-emerald-50'}`}>
                     <div className="flex items-center justify-between mb-2">

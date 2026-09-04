@@ -145,6 +145,8 @@ export const SchoolsManager: React.FC = () => {
         updateUser,
         assignSupervisorToGroupAsync,
         removeSupervisorFromGroupAsync,
+        assignTeacherToGroupAsync,
+        removeTeacherFromGroupAsync,
         assignCourseToGroup,
         removeCourseFromGroup,
         assignStudentToGroupAsync,
@@ -791,8 +793,11 @@ export const SchoolsManager: React.FC = () => {
             schoolStudents,
             schoolClasses,
             supervisors,
+            teachers,
             assignSupervisorToGroupAsync,
             removeSupervisorFromGroupAsync,
+            assignTeacherToGroupAsync,
+            removeTeacherFromGroupAsync,
             assignStudentToGroupAsync,
             removeStudentFromGroupAsync,
             refreshSchoolWorkspace,
@@ -1537,6 +1542,7 @@ export const SchoolsManager: React.FC = () => {
                                 schoolStudents={schoolStudents}
                                 parents={parents}
                                 supervisors={supervisors}
+                                teachers={teachers}
                                 publishedCourses={publishedCourses}
                                 bulkClassNames={bulkClassNames}
                                 setBulkClassNames={setBulkClassNames}
@@ -1557,6 +1563,8 @@ export const SchoolsManager: React.FC = () => {
                                 onAssignSupervisor={handleAssignSchoolSupervisor}
                                 onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
                                 onRemoveSupervisor={confirmRemoveClassSupervisor}
+                                onAssignTeacher={handleAssignTeacherToClass}
+                                onRemoveTeacher={handleRemoveTeacherFromClass}
                                 onAssignCourse={assignCourseToGroup}
                                 onRemoveCourse={removeCourseFromGroup}
                             />

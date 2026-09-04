@@ -235,6 +235,19 @@ check("school student roster exposes direct removal actions", () => {
   assertIncludes(files.schools, "rosterActionPending");
 });
 
+check("school class cards provide direct teacher scope assignment without supervisor elevation", () => {
+  assertIncludes(files.schools, "data-testid=\"school-class-teachers\"");
+  assertIncludes(files.schools, "data-testid=\"school-assign-class-teacher\"");
+  assertIncludes(files.schools, "data-testid=\"school-remove-class-teacher\"");
+  assertIncludes(files.schools, "onAssignTeacher={handleAssignTeacherToClass}");
+  assertIncludes(files.schools, "onRemoveTeacher={handleRemoveTeacherFromClass}");
+  assertIncludes(files.store, "assignTeacherToGroupAsync: async");
+  assertIncludes(files.store, "removeTeacherFromGroupAsync: async");
+  assertIncludes(files.store, "currentUser.role !== Role.TEACHER");
+  assertIncludes(files.store, "schoolId: schoolId || null");
+  assertIncludes(files.store, "groupIds: nextGroupIds");
+});
+
 check("school roster assignments stay server-backed and refresh the authoritative workspace", () => {
   assertIncludes(files.schools, "createSchoolRosterAssignmentActions");
   assertIncludes(files.schools, "assignSupervisorToGroupAsync");

@@ -159,6 +159,8 @@ interface AppState {
     assignSupervisorToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeSupervisorFromGroup: (userId: string, groupId: string) => void;
     removeSupervisorFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
+    assignTeacherToGroupAsync: (userId: string, groupId: string) => Promise<void>;
+    removeTeacherFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignCourseToGroup: (courseId: string, groupId: string) => void;
     removeCourseFromGroup: (courseId: string, groupId: string) => void;
 
@@ -1299,6 +1301,58 @@ export const useStore = create<AppState>()(
                     groups: newGroups,
                     users: newUsers,
                     user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
+
+            assignTeacherToGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const targetGroup = state.groups.find(group => group.id === groupId);
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!targetGroup || !currentUser || currentUser.role !== Role.TEACHER) return;
+
+                const schoolId = targetGroup.type === 'SCHOOL' ? targetGroup.id : targetGroup.parentId || currentUser.schoolId;
+                const nextGroupIds = Array.from(new Set([
+                    ...(currentUser.groupIds || []),
+                    ...(schoolId ? [schoolId] : []),
+                    groupId,
+                ]));
+
+                await api.updateAdminUser(userId, {
+                    schoolId: schoolId || null,
+                    groupIds: nextGroupIds,
+                });
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId
+                    ? { ...existingUser, schoolId: schoolId || undefined, groupIds: nextGroupIds }
+                    : existingUser);
+                set({
+                    users: newUsers,
+                    user: newUsers.find(user => user.id === state.user.id) || state.user,
+                });
+            },
+
+            removeTeacherFromGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!currentUser || currentUser.role !== Role.TEACHER) return;
+
+                const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
+                const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
+                const nextSchoolId = currentUser.schoolId && remainingSchoolIds.has(currentUser.schoolId)
+                    ? currentUser.schoolId
+                    : Array.from(remainingSchoolIds)[0];
+
+                await api.updateAdminUser(userId, {
+                    schoolId: nextSchoolId || null,
+                    groupIds: nextGroupIds,
+                });
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId
+                    ? { ...existingUser, schoolId: nextSchoolId || undefined, groupIds: nextGroupIds }
+                    : existingUser);
+                set({
+                    users: newUsers,
+                    user: newUsers.find(user => user.id === state.user.id) || state.user,
                 });
             },
 

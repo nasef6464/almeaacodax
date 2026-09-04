@@ -8,8 +8,11 @@ type RosterAssignmentActionsInput = {
     schoolStudents: User[];
     schoolClasses: Group[];
     supervisors: User[];
+    teachers: User[];
     assignSupervisorToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeSupervisorFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
+    assignTeacherToGroupAsync: (userId: string, groupId: string) => Promise<void>;
+    removeTeacherFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     refreshSchoolWorkspace: (schoolId: string) => Promise<unknown>;
@@ -26,8 +29,11 @@ export const createSchoolRosterAssignmentActions = ({
     schoolStudents,
     schoolClasses,
     supervisors,
+    teachers,
     assignSupervisorToGroupAsync,
     removeSupervisorFromGroupAsync,
+    assignTeacherToGroupAsync,
+    removeTeacherFromGroupAsync,
     assignStudentToGroupAsync,
     removeStudentFromGroupAsync,
     refreshSchoolWorkspace,
@@ -119,6 +125,53 @@ export const createSchoolRosterAssignmentActions = ({
         }
     };
 
+    const handleAssignTeacherToClass = async (teacherId: string, classId: string) => {
+        const targetTeacher = teachers.find((teacher) => teacher.id === teacherId);
+        const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
+        setRosterActionPending(`teacher-assign-${classId}-${teacherId}`);
+        setManagementError(null);
+        setManagementNotice(null);
+        setSaveVerificationState('saving');
+        setSaveVerificationMessage('جاري ربط المعلم وحفظ نطاق الفصل...');
+        try {
+            await assignTeacherToGroupAsync(teacherId, classId);
+            await refreshSchoolWorkspace(selectedSchool.id);
+            setSaveVerificationState('success');
+            setSaveVerificationMessage('تم ربط المعلم والتأكد من حفظ نطاق الفصل.');
+            setManagementNotice(`تم حفظ ربط ${targetTeacher?.name || 'المعلم'} على ${targetClass?.name || 'الفصل المحدد'}.`);
+        } catch (error) {
+            const message = getErrorMessage(error, 'تعذر ربط المعلم الآن.');
+            setSaveVerificationState('error');
+            setSaveVerificationMessage(message);
+            setManagementError(message);
+        } finally {
+            setRosterActionPending(null);
+        }
+    };
+
+    const handleRemoveTeacherFromClass = async (classroom: Group, teacher: User) => {
+        if (!window.confirm(`هل تريد إزالة ${teacher.name} من تدريس فصل ${classroom.name}؟`)) return;
+        setRosterActionPending(`teacher-remove-${classroom.id}-${teacher.id}`);
+        setManagementError(null);
+        setManagementNotice(null);
+        setSaveVerificationState('saving');
+        setSaveVerificationMessage('جاري إزالة ربط المعلم وحفظ النطاق...');
+        try {
+            await removeTeacherFromGroupAsync(teacher.id, classroom.id);
+            await refreshSchoolWorkspace(selectedSchool.id);
+            setSaveVerificationState('success');
+            setSaveVerificationMessage('تم إزالة ربط المعلم والتأكد من حفظ النطاق.');
+            setManagementNotice(`تم حفظ إزالة ${teacher.name} من ${classroom.name}.`);
+        } catch (error) {
+            const message = getErrorMessage(error, 'تعذر إزالة المعلم الآن.');
+            setSaveVerificationState('error');
+            setSaveVerificationMessage(message);
+            setManagementError(message);
+        } finally {
+            setRosterActionPending(null);
+        }
+    };
+
     const confirmRemoveSchoolWideSupervisor = (currentUser: User) => {
         if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) return;
         void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
@@ -136,5 +189,7 @@ export const createSchoolRosterAssignmentActions = ({
         handleRemoveStudentScope,
         confirmRemoveSchoolWideSupervisor,
         confirmRemoveClassSupervisor,
+        handleAssignTeacherToClass,
+        handleRemoveTeacherFromClass,
     };
 };
