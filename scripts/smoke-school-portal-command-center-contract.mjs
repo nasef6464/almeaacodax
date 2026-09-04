@@ -165,6 +165,9 @@ const checks = [
       liveSupervisorSchoolAudit.includes('name: "mobile"') &&
       liveSupervisorSchoolAudit.includes("horizontalOverflow") &&
       liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=school-portal") &&
+      liveSupervisorSchoolAudit.includes('clickSelector: \'[data-testid="supervisor-create-directed-assessment"]\'') &&
+      liveSupervisorSchoolAudit.includes("expectedClickHref: \"tab=quizzes\"") &&
+      liveSupervisorSchoolAudit.includes("actionResult") &&
       liveSupervisorSchoolAudit.includes("requireSupervisorScopeCard") &&
       liveSupervisorSchoolAudit.includes("hasSupervisorScopeCard") &&
       liveSupervisorSchoolAudit.includes("hasSupervisorScopeActionGuide") &&
