@@ -4,6 +4,8 @@
 - Primary execution plan: `docs/architecture/CHAT_EXECUTION_GOALS_AR.md` — Sellable Strong MVP → Prove Real Use → Improve and Scale. `FINAL_MASTER_PLAN_V3_AR.md` remains the product/architecture reference.
 - Permanent delivery rule: `AGENTS.md` now requires product-value filtering, bounded goal scope, local gates, focused commit/push, remote CI on the exact commit, documentation/evidence update, and a commercial completion report before moving to the next goal.
 - Current batch: Gate 2 closed; student and manager journeys VERIFIED on isolated UI/API/DB evidence
+- Role & Scope Contract: APPROVED (documentation baseline) before Product Gate 3. Existing five roles remain; scope/capabilities govern Teacher and Supervisor behavior. No role migration, new roles, or Permissions Engine is authorized in this phase.
+- Product Gate 3 entry: pending implementation after this documentation-only approval. First vertical slice is Admin school setup/access followed by Supervisor scoped assessment/intervention tracking.
 - Current branch: `codex/assessment-data-evolution`
 - Current implementation HEAD: `a89c0ed3` (`test(learning): seed manager frontend auth cookie`)
 - Branch relation: runtime HEAD is pushed and verified by Backend Integration [33688377700](https://github.com/nasef6464/almeaacodax/actions/runs/33688377700) and Deep Pre-Merge E2E [33688377731](https://github.com/nasef6464/almeaacodax/actions/runs/33688377731). The latter passed every isolated full-stack suite, including normal/directed Assessment and mock resume/retry. The CI-only global limit prevents one loopback audit from masking later suites; production defaults and runtime policy are unchanged. Existing generated audit modifications and ZIP/text files are excluded from this batch.
