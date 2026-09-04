@@ -1076,7 +1076,7 @@ contentRouter.delete(
 contentRouter.post(
   "/groups",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = groupSchema.parse(req.body);
     const createScope = await buildScopedGroupCreatePayload(req.authUser!, payload);
@@ -1092,7 +1092,7 @@ contentRouter.post(
 contentRouter.patch(
   "/groups/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = groupSchema.partial().parse(req.body);
     const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
@@ -1120,7 +1120,7 @@ contentRouter.patch(
 contentRouter.delete(
   "/groups/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
     if (!existing) {
