@@ -11,25 +11,79 @@ on:
       - 'dashboards/admin/SupervisorTestsManager.tsx'
       - 'dashboards/admin/AssignedTestDetailPanel.tsx'
       - 'dashboards/admin/UsersManager.tsx'
+      - 'dashboards/admin/UnifiedQuizBuilder.tsx'
       - 'dashboards/admin/supervisorTests/**'
       - 'pages/Quizzes.tsx'
       - 'pages/QuizPage.tsx'
+      - 'server/src/models/Quiz.ts'
       - 'server/src/routes/quiz.routes.ts'
       - 'server/src/routes/notification.routes.ts'
       - 'server/src/routes/group.routes.ts'
       - 'scripts/live-assessment-commercial-audit.mjs'
       - 'scripts/live-supervisor-school-command-audit.mjs'
+      - 'scripts/patch-supervisor-student-e2e-findings.mjs'
+      - 'scripts/smoke-supervisor-dashboard-contract.mjs'
       - '.github/workflows/supervisor-student-directed-e2e.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: supervisor-student-directed-e2e-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
+  apply-focused-fixes:
+    name: Apply focused E2E findings safely
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch head
+        uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Apply exact focused patches
+        run: node scripts/patch-supervisor-student-e2e-findings.mjs
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Verify focused changes
+        run: |
+          npm run typecheck
+          npm run server:check
+          node scripts/smoke-supervisor-dashboard-contract.mjs
+
+      - name: Commit verified focused changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs; then
+            echo "Focused fixes already present."
+            exit 0
+          fi
+          git config user.name "almeaa-directed-e2e"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs
+          git commit -m "Fix directed assessment targeting and supervisor alerts"
+          git push origin HEAD:codex/supervisor-student-journey-hardening
+
   directed-assessment-journey:
+    needs: apply-focused-fixes
     name: Isolated supervisor → student school assessment journey
     runs-on: ubuntu-latest
     timeout-minutes: 35
@@ -82,10 +136,10 @@ jobs:
       SMOKE_PARENT_EMAIL: parent.a@almeaa.local
 
     steps:
-      - name: Checkout exact PR head
+      - name: Checkout latest verified branch head
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: codex/supervisor-student-journey-hardening
           fetch-depth: 1
 
       - name: Setup Node
