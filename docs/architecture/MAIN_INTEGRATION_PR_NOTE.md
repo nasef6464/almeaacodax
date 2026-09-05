@@ -1,0 +1,1 @@
+Integration preparation note for the approved merge of `codex/assessment-data-evolution` into `main` on 2026-09-05. Future agents should use `MAIN_INTEGRATION_CHECKPOINT_AR.md` as the authoritative handoff marker and start new implementation from the latest `main` after this integration.
