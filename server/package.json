@@ -10,6 +10,7 @@
     "check": "tsc --noEmit -p tsconfig.json",
     "verify:product-config": "tsx src/scripts/verifyProductConfigVariants.ts",
     "plan:customer-instance": "tsx src/scripts/planCustomerInstance.ts",
+    "bootstrap:customer-instance": "tsx src/scripts/bootstrapCustomerInstance.ts",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "seed:platform": "tsx src/scripts/seedPlatformData.ts",
     "seed:courses:api": "tsx src/scripts/seedCoursesViaApi.ts",
