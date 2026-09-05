@@ -6,6 +6,7 @@ import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../../utils/questionHtml';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 import { api } from '../../services/api';
+import type { QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -210,6 +211,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [pagedQuestionsError, setPagedQuestionsError] = useState<string | null>(null);
   const [isLoadingPagedQuestions, setIsLoadingPagedQuestions] = useState(false);
   const [questionsRefreshKey, setQuestionsRefreshKey] = useState(0);
+  const [questionUsageById, setQuestionUsageById] = useState<Record<string, QuestionUsageMetric>>({});
+  const [isLoadingQuestionUsage, setIsLoadingQuestionUsage] = useState(false);
+  const [questionUsageError, setQuestionUsageError] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
     options: ['', '', '', ''],
@@ -319,6 +323,54 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   const displayedQuestions = pagedQuestions ?? filteredQuestions;
   const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
+
+  useEffect(() => {
+    let active = true;
+    const questionIds = Array.from(
+      new Set(
+        displayedQuestions
+          .map((question) => String(question.id || (question as Question & { _id?: string })._id || '').trim())
+          .filter(Boolean),
+      ),
+    ).slice(0, 100);
+
+    if (questionIds.length === 0) {
+      setQuestionUsageById({});
+      setQuestionUsageError(null);
+      setIsLoadingQuestionUsage(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    setIsLoadingQuestionUsage(true);
+    setQuestionUsageError(null);
+
+    void api.getQuestionUsageAnalytics(questionIds)
+      .then((response) => {
+        if (!active) return;
+        const nextMetrics: Record<string, QuestionUsageMetric> = {};
+        (response.data || []).forEach((metric) => {
+          const aliases = metric.aliases?.length ? metric.aliases : [metric.questionId];
+          aliases.filter(Boolean).forEach((alias) => {
+            nextMetrics[String(alias)] = metric;
+          });
+        });
+        setQuestionUsageById(nextMetrics);
+      })
+      .catch((error) => {
+        if (!active) return;
+        setQuestionUsageById({});
+        setQuestionUsageError(error instanceof Error ? error.message : 'تعذر تحميل مؤشرات استخدام الأسئلة الآن.');
+      })
+      .finally(() => {
+        if (active) setIsLoadingQuestionUsage(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [displayedQuestions]);
 
   const questionCoverageSummary = useMemo(() => {
     const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
@@ -1189,6 +1241,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
       </div>
 
+      {questionUsageError && (
+        <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-700">
+          تعذر تحميل مؤشرات الاستخدام لهذه الصفحة الآن. إدارة الأسئلة نفسها ما زالت متاحة: {questionUsageError}
+        </div>
+      )}
+
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-right">
@@ -1197,6 +1255,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 <th className="px-6 py-4 text-sm font-bold text-gray-600 w-1/2">نص السؤال</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">المهارات الفرعية</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الصعوبة</th>
+                <th className="px-6 py-4 text-sm font-bold text-gray-600">الاستخدام والأداء</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الحالة</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الإجراءات</th>
               </tr>
@@ -1207,6 +1266,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 const normalizedQuestionText = normalizeQuestionHtml(question.text);
                 const hasInlineMedia = hasInlineQuestionMedia(normalizedQuestionText);
                 const hasMediaPreview = Boolean(question.imageUrl) || hasInlineMedia;
+                const questionIdentity = String(question.id || (question as Question & { _id?: string })._id || '');
+                const usageMetric = questionUsageById[questionIdentity];
                 return (
                   <tr key={question.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
@@ -1273,6 +1334,19 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                       >
                         {difficultyLabel(question.difficulty)}
                       </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      {usageMetric ? (
+                        <div className="min-w-[150px] space-y-1 text-xs font-bold text-gray-600">
+                          <div>المحاولات: <span className="text-gray-900">{usageMetric.attempts.toLocaleString('ar-EG')}</span></div>
+                          <div>الدقة: <span className="text-gray-900">{usageMetric.accuracyPercent === null ? 'لا توجد بيانات' : `${usageMetric.accuracyPercent}%`}</span></div>
+                          <div>متوسط الوقت: <span className="text-gray-900">{usageMetric.averageTimeSeconds === null ? 'لا توجد بيانات' : `${usageMetric.averageTimeSeconds} ث`}</span></div>
+                        </div>
+                      ) : (
+                        <span className="text-xs font-bold text-gray-400">
+                          {isLoadingQuestionUsage ? 'جارٍ التحميل...' : 'لا توجد محاولات'}
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
@@ -1344,7 +1418,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
               })}
               {displayedQuestions.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                     لا توجد أسئلة مطابقة للبحث.
                   </td>
                 </tr>
