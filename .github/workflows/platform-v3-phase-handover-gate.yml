@@ -55,6 +55,8 @@ jobs:
         run: npm run smoke:security-rbac-phase6
       - name: Gate 6 question AI authoring contract
         run: node scripts/smoke-gate6-question-ai-authoring-contract.mjs
+      - name: Gate 6 curriculum ownership contract
+        run: node scripts/smoke-gate6-curriculum-ownership-contract.mjs
       - name: Exam and payment phase 8 contract
         run: npm run smoke:exam-payment-phase8
       - name: Dashboards phase 11 contract
