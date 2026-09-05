@@ -3,12 +3,10 @@ import { readFile } from 'node:fs/promises';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-const [courseModel, b2bModel, route, enrollmentGuard, routesIndex, client, manager, pathsManager, kindHelper] = await Promise.all([
+const [courseModel, b2bModel, route, client, manager, pathsManager, kindHelper] = await Promise.all([
   read('server/src/models/Course.ts'),
   read('server/src/models/B2BPackage.ts'),
   read('server/src/routes/course.routes.ts'),
-  read('server/src/routes/courseEnrollmentGuard.routes.ts'),
-  read('server/src/routes/index.ts'),
   read('services/apiGroups/coursesApi.ts'),
   read('dashboards/admin/CoursesManager.tsx'),
   read('dashboards/admin/PathsManager.tsx'),
@@ -41,13 +39,12 @@ check('course list API exposes an additive product-kind boundary while preservin
 });
 
 check('direct enrollment cannot bypass paid course purchase and remains idempotent', () => {
-  assert.ok(enrollmentGuard.includes('COURSE_PURCHASE_REQUIRED'));
-  assert.ok(enrollmentGuard.includes('Number((course as { price?: number }).price || 0) > 0'));
-  assert.ok(enrollmentGuard.includes('alreadyEnrolled: true'));
-  assert.ok(enrollmentGuard.includes('return next();'));
-  const guardMount = routesIndex.indexOf('apiRouter.use("/courses", courseEnrollmentGuardRouter);');
-  const courseMount = routesIndex.indexOf('apiRouter.use("/courses", courseRouter);');
-  assert.ok(guardMount >= 0 && courseMount >= 0 && guardMount < courseMount);
+  assert.ok(route.includes('COURSE_PURCHASE_REQUIRED'));
+  assert.ok(route.includes('if (Number(course.price || 0) > 0)'));
+  assert.ok(route.includes('alreadyEnrolled: true'));
+  assert.ok(route.includes('currentPurchased.includes(courseId) || currentPurchased.includes(requestedCourseId)'));
+  assert.ok(route.includes('const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);'));
+  assert.ok(route.includes('await CourseModel.updateOne({ _id: course._id }, { $inc: { studentCount: 1 } });'));
 });
 
 check('LMS CoursesManager owns learning courses only', () => {
@@ -75,7 +72,7 @@ check('school commercial packages remain a separate B2B persistence product', ()
 });
 
 check('the boundary does not introduce tenant or microservice ownership', () => {
-  for (const source of [route, enrollmentGuard, client, kindHelper]) {
+  for (const source of [route, client, kindHelper]) {
     assert.ok(!source.includes('tenantId'));
   }
 });
