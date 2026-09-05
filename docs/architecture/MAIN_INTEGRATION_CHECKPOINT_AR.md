@@ -5,7 +5,10 @@
 - Source branch: `codex/assessment-data-evolution`
 - Source baseline before integration note: `079575af2a3d3d885527bacf9c9325db6bb62f58`
 - Target branch: `main`
-- Merge policy: preserve commit history with a normal merge; do not squash the delivery history.
+- Merge result: COMPLETED through PR `#27`.
+- Main merge commit: `e93d649dbc007e5102fbb719f9ab5598dbb14633`.
+- Continuation branch created from that exact merge: `codex/ui-polish-continuation`.
+- Merge policy: full history was preserved with a normal merge; the delivery history was not squashed.
 
 ## What this integration carries
 
@@ -22,14 +25,12 @@ Do not reopen Gates 1–4 merely because `main` was updated. Reopen only for a p
 
 ## Known non-blocking staging note
 
-Google OAuth on Staging remains a separate staging-only follow-up because the backend callback is still bound to the production `CLIENT_URL`. Production Google OAuth behavior is not changed by this checkpoint. This is not a blocker for integrating the completed product work into `main`.
+Google OAuth on Staging remains a separate staging-only follow-up because the backend callback is still bound to the production `CLIENT_URL`. Production Google OAuth behavior is not changed by this checkpoint. This is not a blocker for the integrated product work on `main`.
 
 ## Continuation rule after integration
 
-After this line is merged:
-
-1. Start future work from the latest `main`; do not continue implementation from the already-integrated historical branch.
-2. Create a fresh focused branch for the next bounded goal.
+1. Future work starts from the integrated `main` baseline `e93d649d` or a descendant of it; do not resume implementation from the historical branch `codex/assessment-data-evolution`.
+2. The current fresh continuation branch is `codex/ui-polish-continuation`.
 3. Continue the remaining UI Polish Sprint before resuming the next formal product gate:
    - UI-03 Supervisor / Teacher Dashboard
    - UI-04 Parent / Student Dashboard
