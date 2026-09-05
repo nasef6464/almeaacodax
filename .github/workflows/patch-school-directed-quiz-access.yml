@@ -1,0 +1,92 @@
+name: One-shot school directed quiz access patch
+
+on:
+  push:
+    branches:
+      - codex/supervisor-student-journey-hardening
+    paths:
+      - .github/workflows/patch-school-directed-quiz-access.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Patch only the directed-audience access block
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'pages/QuizPage.tsx';
+          const source = fs.readFileSync(path, 'utf8');
+          const before = `    const hasExplicitTargets = (foundQuiz.targetUserIds || []).length > 0 || (foundQuiz.targetGroupIds || []).length > 0;
+    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
+      const userGroups = user.groupIds || [];
+      const isUserTargeted =
+        (foundQuiz.targetUserIds || []).length === 0 || (foundQuiz.targetUserIds || []).includes(user.id);
+      const isGroupTargeted =
+        (foundQuiz.targetGroupIds || []).length === 0 ||
+        (foundQuiz.targetGroupIds || []).some((id) => userGroups.includes(id));
+
+      if (!isUserTargeted || !isGroupTargeted) {
+        setHasAccess(false);
+        setAccessMessage('هذا اختبار مركزي موجّه لطلاب محددين فقط.');
+        return;
+      }
+    }`;
+          const after = `    const targetUserIds = foundQuiz.targetUserIds || [];
+    const targetGroupIds = foundQuiz.targetGroupIds || [];
+    const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
+    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
+      const userGroups = user.groupIds || [];
+      const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
+      const isGroupTargeted =
+        targetGroupIds.length > 0 &&
+        (userGroups.length === 0 || targetGroupIds.some((id) => userGroups.includes(id)));
+
+      // School-directed audiences are additive. A direct student assignment OR
+      // membership in any targeted class/school is enough to enter the exam.
+      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted) {
+        setHasAccess(false);
+        setAccessMessage('هذا اختبار مدرسي موجّه لطلاب محددين فقط.');
+        return;
+      }
+    }`;
+          if (!source.includes(before)) {
+            console.error('Expected QuizPage audience block was not found; refusing to modify the file.');
+            process.exit(1);
+          }
+          const next = source.replace(before, after);
+          if (next === source || next.split(after).length !== 2) {
+            console.error('Audience patch was not applied exactly once.');
+            process.exit(1);
+          }
+          fs.writeFileSync(path, next);
+          NODE
+      - name: Verify targeted change
+        run: |
+          grep -F "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)" pages/QuizPage.tsx
+          grep -F "هذا اختبار مدرسي موجّه لطلاب محددين فقط." pages/QuizPage.tsx
+          npm ci
+          npm run typecheck
+      - name: Commit exact patch back to branch
+        shell: bash
+        run: |
+          if git diff --quiet -- pages/QuizPage.tsx; then
+            echo "No patch required"
+            exit 0
+          fi
+          git config user.name "workflow-patch-bot"
+          git config user.email "workflow-patch-bot@users.noreply.github.com"
+          git add pages/QuizPage.tsx
+          git commit -m "Fix school-directed quiz audience access"
+          git push origin HEAD:codex/supervisor-student-journey-hardening
