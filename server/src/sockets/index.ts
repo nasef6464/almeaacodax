@@ -4,10 +4,15 @@ import { Server } from "socket.io";
 import { env } from "../config/env.js";
 import { createRedisClient, createRedisDuplicate, isRedisConfigured } from "../config/redis.js";
 
+const configuredSocketOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const socketOrigins = Array.from(new Set([env.CLIENT_URL, ...configuredSocketOrigins]));
+
 export function createSocketServer(server: HttpServer) {
   const io = new Server(server, {
     cors: {
-      origin: env.CLIENT_URL,
+      origin: socketOrigins,
       credentials: true,
     },
   });
