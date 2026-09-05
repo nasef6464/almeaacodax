@@ -4,6 +4,7 @@ import process from "node:process";
 
 const tsxCommand = process.platform === "win32" ? "tsx.cmd" : "tsx";
 const alphaManifest = "../customer-instances/examples/alpha-learning.json";
+const betaManifest = "../customer-instances/examples/beta-academy.json";
 
 const withoutRuntimeSecrets = () => {
   const env = { ...process.env };
@@ -18,10 +19,10 @@ const withoutRuntimeSecrets = () => {
   return env;
 };
 
-const runBootstrap = (args: string[]) =>
+const runBootstrap = (manifest: string, args: string[] = []) =>
   spawnSync(
     tsxCommand,
-    ["src/scripts/bootstrapCustomerInstance.ts", `--manifest=${alphaManifest}`, ...args],
+    ["src/scripts/bootstrapCustomerInstance.ts", `--manifest=${manifest}`, ...args],
     {
       cwd: process.cwd(),
       env: withoutRuntimeSecrets(),
@@ -29,21 +30,51 @@ const runBootstrap = (args: string[]) =>
     },
   );
 
-const dryRun = runBootstrap([]);
-assert.equal(dryRun.status, 0, dryRun.stderr || "Customer bootstrap dry-run must succeed.");
-assert.match(dryRun.stdout, /"mode":\s*"DRY_RUN"/);
-assert.match(dryRun.stdout, /"writesPerformed":\s*false/);
-assert.match(dryRun.stdout, /"customerKey":\s*"alpha-learning"/);
-assert.match(dryRun.stdout, /"configDigest":\s*"sha256:[a-f0-9]{64}"/);
-assert.equal(dryRun.stderr.includes("MONGODB_URI is required"), false);
-assert.equal(dryRun.stderr.includes("JWT_SECRET"), false);
+const parseDryRun = (manifest: string, expectedCustomerKey: string) => {
+  const result = runBootstrap(manifest);
+  assert.equal(result.status, 0, result.stderr || `Customer bootstrap dry-run must succeed for ${expectedCustomerKey}.`);
+  assert.equal(result.stderr.includes("MONGODB_URI is required"), false);
+  assert.equal(result.stderr.includes("JWT_SECRET"), false);
 
-const missingConfirm = runBootstrap(["--apply"]);
+  const payload = JSON.parse(result.stdout) as {
+    mode: string;
+    writesPerformed: boolean;
+    configDigest: string;
+    customerKey: string;
+    productName: string;
+    domain: string;
+    settings: {
+      homepageFields: number;
+      fontFields: number;
+      integrationFields: number;
+    };
+  };
+
+  assert.equal(payload.mode, "DRY_RUN");
+  assert.equal(payload.writesPerformed, false);
+  assert.equal(payload.customerKey, expectedCustomerKey);
+  assert.match(payload.configDigest, /^sha256:[a-f0-9]{64}$/);
+  assert.ok(payload.settings.homepageFields > 0);
+  assert.ok(payload.settings.fontFields > 0);
+  assert.ok(payload.settings.integrationFields > 0);
+  return payload;
+};
+
+const alpha = parseDryRun(alphaManifest, "alpha-learning");
+const beta = parseDryRun(betaManifest, "beta-academy");
+
+assert.equal(alpha.productName, "Alpha Learning");
+assert.equal(beta.productName, "Beta Academy");
+assert.equal(alpha.domain, "https://alpha.example.test");
+assert.equal(beta.domain, "https://beta.example.test");
+assert.notEqual(alpha.configDigest, beta.configDigest, "Distinct customer manifests must produce distinct fingerprints.");
+
+const missingConfirm = runBootstrap(alphaManifest, ["--apply"]);
 assert.notEqual(missingConfirm.status, 0, "Apply without customer confirmation must fail.");
 assert.match(`${missingConfirm.stdout}\n${missingConfirm.stderr}`, /Apply requires --confirm=alpha-learning/);
 assert.equal(`${missingConfirm.stdout}\n${missingConfirm.stderr}`.includes("MONGODB_URI is required"), false);
 
-const missingAck = runBootstrap(["--apply", "--confirm=alpha-learning"]);
+const missingAck = runBootstrap(alphaManifest, ["--apply", "--confirm=alpha-learning"]);
 assert.notEqual(missingAck.status, 0, "Apply without deployment acknowledgement must fail.");
 assert.match(`${missingAck.stdout}\n${missingAck.stderr}`, /CUSTOMER_INSTANCE_WRITE_ACK=alpha-learning/);
 assert.equal(`${missingAck.stdout}\n${missingAck.stderr}`.includes("MONGODB_URI is required"), false);
@@ -52,9 +83,13 @@ console.log(
   JSON.stringify(
     {
       status: "PASS",
+      customerVariants: [
+        { customerKey: alpha.customerKey, productName: alpha.productName, domain: alpha.domain, configDigest: alpha.configDigest },
+        { customerKey: beta.customerKey, productName: beta.productName, domain: beta.domain, configDigest: beta.configDigest },
+      ],
       dryRunWithoutRuntimeSecrets: true,
       writesPerformed: false,
-      configFingerprintVerified: true,
+      distinctFingerprints: true,
       applyGuardsVerified: ["confirm", "CUSTOMER_INSTANCE_WRITE_ACK"],
     },
     null,
