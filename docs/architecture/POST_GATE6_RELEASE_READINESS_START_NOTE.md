@@ -58,3 +58,15 @@ On the next bounded run, inspect current release/deployment/readiness contracts 
 - Runtime/API/RBAC/scoring/payments/schema/data ownership: unchanged.
 - CI rule: because this commit changes documentation only, no new product runtime CI claim is required; the deployment must still be verified against the resulting `main` commit before this operations gap is called closed.
 - If the Git integration still does not produce a production deployment, stop and report the deployment integration itself as the remaining blocker rather than changing product code or production data.
+
+## Release-readiness bounded batch — Socket.IO configured-origin parity
+
+- Continuation branch: `codex/release-readiness-next-gap` from integrated `main` `42e3dbee330b1a4202858b13f48767615d866b75`.
+- Draft PR: `#35`.
+- Proven gap: HTTP CORS already accepts `CLIENT_URL` plus explicit `CORS_ALLOWED_ORIGINS`, while Socket.IO accepted only `CLIENT_URL`. An explicitly allowed staging/buyer frontend could therefore pass REST CORS but fail realtime Socket.IO connections.
+- Runtime commit: `0a262f5f00276a4d7b89f28359d79ef26c67a23d`.
+- Smallest coherent fix: Socket.IO now uses the deduplicated explicit origin set `CLIENT_URL + CORS_ALLOWED_ORIGINS`; credentials stay enabled and no wildcard, request-derived origin, or arbitrary callback was introduced.
+- Contract impact: no route/API/auth/RBAC/scoring/payment/schema/persistence/data-ownership change; Gates 1–6 remain CLOSED / VERIFIED.
+- Map impact: `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` remain unchanged because ownership, access and persistence boundaries did not change.
+- Verification status at handoff update: `PARTIAL` only because CI on exact runtime `0a262f5f00276a4d7b89f28359d79ef26c67a23d` is still running. Phase + Handover, Production Readiness, Safety and Recovery were started for that exact commit; the PR must remain draft until applicable required checks are terminal green.
+- Next exact action: inspect CI for runtime `0a262f5f00276a4d7b89f28359d79ef26c67a23d`. If green, update evidence and close this bounded batch; if a failure is structural/stale, prove that before any contract-test-only correction. Do not start a second product change in the same run.
