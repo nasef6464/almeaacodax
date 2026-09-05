@@ -43,7 +43,7 @@ changed = (await replaceExact(
 changed = (await replaceExact(
   files.builder,
   `onChange={(e) => {\n                          if (e.target.checked) setTargetGroupIds([...targetGroupIds, g.id]);\n                          else setTargetGroupIds(targetGroupIds.filter((id) => id !== g.id));\n                        }}`,
-  `onChange={(e) => {\n                          const checked = e.target.checked;\n                          setTargetGroupIds((current) => checked\n                            ? Array.from(new Set([...current, g.id]))\n                            : current.filter((id) => id !== g.id));\n                        }}`,
+  `onChange={(e) => {\n                          const checked = e.target.checked;\n                          const next = checked\n                            ? Array.from(new Set([...targetGroupIdsRef.current, g.id]))\n                            : targetGroupIdsRef.current.filter((id) => id !== g.id);\n                          targetGroupIdsRef.current = next;\n                          setTargetGroupIds(next);\n                        }}`,
   'UnifiedQuizBuilder target group state',
 )) || changed;
 
