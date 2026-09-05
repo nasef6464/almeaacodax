@@ -65,6 +65,16 @@ Google OAuth on Staging remains a separate staging-only follow-up because the ba
 5. Preserve the product model: reusable white-label single-deployment modular source platform; one deployment per buyer/customer, multiple schools allowed, no global `tenantId`, no SaaS multi-tenancy rewrite, no microservices, and no buyer-specific hardcoded branches.
 6. Production data migration/cutover and real buyer cutover/rollback drills require separate explicit owner authorization.
 
+## Release-readiness bounded batch — Socket.IO configured-origin parity
+
+- Branch: `codex/release-readiness-next-gap`; PR `#35`.
+- Runtime commit: `0a262f5f00276a4d7b89f28359d79ef26c67a23d`.
+- Proven gap: REST CORS accepted explicit `CORS_ALLOWED_ORIGINS`, but Socket.IO accepted only `CLIENT_URL`.
+- Fix: Socket.IO now uses the deduplicated explicit set `CLIENT_URL + CORS_ALLOWED_ORIGINS`; no wildcard or request-derived origin was introduced.
+- Verification: Phase + Handover, Production Readiness, Safety and Recovery all completed successfully on the exact runtime commit; Vercel status is successful.
+- Status: `VERIFIED`. No API/RBAC/scoring/payment/schema/data-ownership change. Gates 1–6 remain closed.
+- Owner-approved next product focus after this release-readiness batch: bounded Course System journey review and improvement, starting with one proved course authoring/access defect at a time. This is an explicit product-change authorization, not a reopening of Gate 6 wholesale.
+
 ## Agent handoff rule
 
 At the start of any future Codex/agent goal, read current Git HEAD, this checkpoint, and `docs/architecture/POST_GATE6_RELEASE_READINESS_START_NOTE.md` before interpreting older execution-state paragraphs. Current Git HEAD plus this checkpoint outrank stale notes that name already-integrated gates as active.
