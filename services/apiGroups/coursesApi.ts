@@ -20,6 +20,10 @@ interface CoursesApiDependencies {
   bootstrapCacheTtlMs: number;
 }
 
+export interface CourseListOptions extends PaginationOptions {
+  kind?: 'learning' | 'package' | 'all';
+}
+
 export const createCoursesApi = (
   request: ApiRequest,
   {
@@ -27,9 +31,9 @@ export const createCoursesApi = (
     canUsePublicLearningCache,
     bootstrapCacheTtlMs,
   }: CoursesApiDependencies,
-) => ({
-  getCourses: async (pagination: PaginationOptions = {}) => {
-    const query = { limit: 200, ...pagination };
+) => {
+  const getCoursesByKind = async (pagination: CourseListOptions = {}) => {
+    const query = { limit: 200, kind: 'all' as const, ...pagination };
     const path = withQuery("/courses", query);
     const cacheKey = [
       "courses",
@@ -38,32 +42,40 @@ export const createCoursesApi = (
       query.pathId || "all-paths",
       query.subjectId || "all-subjects",
       query.search || "",
+      query.kind || "all",
     ].join(":");
     const payload = canUsePublicLearningCache()
       ? await requestCached<unknown>(path, cacheKey, bootstrapCacheTtlMs)
       : await request<unknown>(path);
     return extractList(payload, "courses");
-  },
+  };
 
-  getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
+  return {
+    // Compatibility: existing callers still receive both legacy Course-backed public packages and learning courses.
+    getCourses: (pagination: CourseListOptions = {}) => getCoursesByKind(pagination),
+    getLearningCourses: (pagination: PaginationOptions = {}) => getCoursesByKind({ ...pagination, kind: 'learning' }),
+    getPublicPackageCourses: (pagination: PaginationOptions = {}) => getCoursesByKind({ ...pagination, kind: 'package' }),
 
-  createCourse: (payload: unknown, token?: string | null) =>
-    request<unknown>("/courses", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
+    getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
 
-  updateCourse: (id: string, payload: unknown, token?: string | null) =>
-    request<unknown>(`/courses/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
+    createCourse: (payload: unknown, token?: string | null) =>
+      request<unknown>("/courses", {
+        method: "POST",
+        body: payload,
+        token,
+      }),
 
-  deleteCourse: (id: string, token?: string | null) =>
-    request<void>(`/courses/${id}`, {
-      method: "DELETE",
-      token,
-    }),
-});
+    updateCourse: (id: string, payload: unknown, token?: string | null) =>
+      request<unknown>(`/courses/${id}`, {
+        method: "PATCH",
+        body: payload,
+        token,
+      }),
+
+    deleteCourse: (id: string, token?: string | null) =>
+      request<void>(`/courses/${id}`, {
+        method: "DELETE",
+        token,
+      }),
+  };
+};
