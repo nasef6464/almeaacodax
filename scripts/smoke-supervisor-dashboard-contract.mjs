@@ -7,6 +7,8 @@ const testsManager = await read("dashboards/admin/SupervisorTestsManager.tsx");
 const assessmentScope = await read("dashboards/admin/supervisorTests/useSupervisorAssessmentScope.ts");
 const detailPanel = await read("dashboards/admin/AssignedTestDetailPanel.tsx");
 const notificationRoutes = await read("server/src/routes/notification.routes.ts");
+const quizzesPage = await read("pages/Quizzes.tsx");
+const quizPage = await read("pages/QuizPage.tsx");
 
 const checks = [];
 
@@ -93,6 +95,18 @@ check("post-test workflow supports weak and absent student follow-up", () => {
   assertIncludes(detailPanel, "إعادة توجيه");
   assertIncludes(detailPanel, "لم يؤدوا");
   assertIncludes(testsManager, "onAssignToStudent");
+});
+
+check("student school-directed assessment list and runner share additive audience semantics", () => {
+  assertIncludes(quizzesPage, "directedQuizzes");
+  assertIncludes(quizzesPage, "الاختبارات المدرسية");
+  assertIncludes(quizPage, "const targetUserIds = foundQuiz.targetUserIds || [];");
+  assertIncludes(quizPage, "const targetGroupIds = foundQuiz.targetGroupIds || [];");
+  assertIncludes(quizPage, "...(user.schoolId ? [user.schoolId] : [])");
+  assertIncludes(quizPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
+  assertIncludes(quizPage, "targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id))");
+  assertIncludes(quizPage, "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)");
+  assertNotIncludes(quizPage, "if (!isUserTargeted || !isGroupTargeted)");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
