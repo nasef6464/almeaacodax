@@ -4,10 +4,11 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const baselineContractsPath = path.join(ROOT, 'docs', 'architecture', 'baseline', 'CONTRACTS_PRE_STRUCTURAL.json');
 const baselineAuditPath = path.join(ROOT, 'docs', 'architecture', 'baseline', 'REPOSITORY_PRE_STRUCTURAL.json');
+const approvedExtensionsPath = path.join(ROOT, 'docs', 'architecture', 'APPROVED_CONTRACT_EXTENSIONS.json');
 const progressiveBudgetPath = path.join(ROOT, 'docs', 'architecture', 'ARCHITECTURE_BUDGET.json');
 const currentAuditPath = path.join(ROOT, 'docs', 'architecture', 'generated', 'CURRENT_REPOSITORY_AUDIT.json');
 
-for (const file of [baselineContractsPath, baselineAuditPath, progressiveBudgetPath, currentAuditPath]) {
+for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensionsPath, progressiveBudgetPath, currentAuditPath]) {
   if (!fs.existsSync(file)) {
     throw new Error(`[architecture-gate] required evidence file is missing: ${path.relative(ROOT, file)}`);
   }
@@ -15,6 +16,7 @@ for (const file of [baselineContractsPath, baselineAuditPath, progressiveBudgetP
 
 const baselineContracts = JSON.parse(fs.readFileSync(baselineContractsPath, 'utf8'));
 const baselineAudit = JSON.parse(fs.readFileSync(baselineAuditPath, 'utf8'));
+const approvedExtensions = JSON.parse(fs.readFileSync(approvedExtensionsPath, 'utf8'));
 const progressiveBudget = JSON.parse(fs.readFileSync(progressiveBudgetPath, 'utf8'));
 const currentAudit = JSON.parse(fs.readFileSync(currentAuditPath, 'utf8'));
 const failures = [];
@@ -54,28 +56,38 @@ function finiteBudget(value, fallback) {
 
 const routeSignature = (entry) => `${entry.receiver}|${entry.method}|${entry.path}`;
 const mountSignature = (entry) => `${entry.receiver}|${entry.prefix}|${entry.mounted}`;
+const approvedFrontendRoutes = approvedExtensions.frontendRoutes || [];
+const approvedBackendRouteSignatures = approvedExtensions.backendRouteSignatures || [];
+const approvedRouterMountSignatures = approvedExtensions.routerMountSignatures || [];
+const approvedEnvKeys = approvedExtensions.envKeys || [];
 
 requireExact(
-  'frontend route literals changed during structural refactor',
-  baselineContracts.frontendRoutes || [],
+  'frontend route literals changed outside the immutable baseline and approved product extensions',
+  [...(baselineContracts.frontendRoutes || []), ...approvedFrontendRoutes],
   currentAudit.frontendRoutes || [],
 );
 
 requireExact(
-  'backend HTTP route contract changed during structural refactor',
-  (baselineContracts.backendRouteEntries || []).map(routeSignature),
+  'backend HTTP route contract changed outside the immutable baseline and approved product extensions',
+  [
+    ...(baselineContracts.backendRouteEntries || []).map(routeSignature),
+    ...approvedBackendRouteSignatures,
+  ],
   (currentAudit.backendRouteEntries || []).map(routeSignature),
 );
 
 requireExact(
-  'router mount contract changed during structural refactor',
-  (baselineContracts.routerMounts || []).map(mountSignature),
+  'router mount contract changed outside the immutable baseline and approved product extensions',
+  [
+    ...(baselineContracts.routerMounts || []).map(mountSignature),
+    ...approvedRouterMountSignatures,
+  ],
   (currentAudit.routerMounts || []).map(mountSignature),
 );
 
 requireExact(
-  'runtime environment-key contract changed during structural refactor',
-  baselineContracts.envKeys || [],
+  'runtime environment-key contract changed outside the immutable baseline and approved product extensions',
+  [...(baselineContracts.envKeys || []), ...approvedEnvKeys],
   currentAudit.envKeys || [],
 );
 
@@ -133,6 +145,12 @@ console.log(JSON.stringify({
   backendRouteEntries: currentAudit.backendRouteEntries?.length || 0,
   routerMounts: currentAudit.routerMounts?.length || 0,
   envKeys: currentAudit.envKeys?.length || 0,
+  approvedContractExtensions: {
+    frontendRoutes: approvedFrontendRoutes.length,
+    backendRouteEntries: approvedBackendRouteSignatures.length,
+    routerMounts: approvedRouterMountSignatures.length,
+    envKeys: approvedEnvKeys.length,
+  },
   unresolvedRuntimeRelativeImports: currentUnresolved,
   unresolvedRuntimeRelativeImportsLimit: unresolvedLimit,
   dependencyCycles: currentCycles,
