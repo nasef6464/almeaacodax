@@ -23,6 +23,10 @@ type IntegrationPayload = {
     seo?: Partial<ProductConfigAdminFields['seo']>;
 };
 
+type ProductConfigSellableSettingsPanelProps = {
+    onSaved?: () => void;
+};
+
 const EMPTY_FIELDS: ProductConfigAdminFields = {
     auth: {
         defaultRole: 'student',
@@ -67,7 +71,7 @@ const normalizeKeywords = (value: string) =>
         .map((item) => item.trim())
         .filter(Boolean);
 
-export const ProductConfigSellableSettingsPanel: React.FC = () => {
+export const ProductConfigSellableSettingsPanel: React.FC<ProductConfigSellableSettingsPanelProps> = ({ onSaved }) => {
     const [fields, setFields] = useState<ProductConfigAdminFields>(EMPTY_FIELDS);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -136,6 +140,7 @@ export const ProductConfigSellableSettingsPanel: React.FC = () => {
             await api.updatePlatformIntegrations(patch);
             const verified = readFields(await api.getPlatformIntegrations());
             setFields(verified);
+            onSaved?.();
             setSuccess('تم حفظ إعدادات ProductConfig والتأكد منها من الخادم.');
         } catch (saveError) {
             setError(saveError instanceof Error ? saveError.message : 'تعذر حفظ إعدادات ProductConfig.');
