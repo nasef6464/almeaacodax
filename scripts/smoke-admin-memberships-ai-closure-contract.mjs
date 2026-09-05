@@ -2,7 +2,9 @@ import { readFile } from "node:fs/promises";
 
 const adminDashboardSource = await readFile(new URL("../dashboards/admin/AdminDashboard.tsx", import.meta.url), "utf8");
 const membershipsSource = await readFile(new URL("../dashboards/admin/MembershipsManager.tsx", import.meta.url), "utf8").catch(() => "");
-const integrationsSource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManager.tsx", import.meta.url), "utf8");
+const integrationsWrapperSource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManager.tsx", import.meta.url), "utf8");
+const integrationsLegacySource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManagerLegacy.tsx", import.meta.url), "utf8");
+const integrationsSource = `${integrationsWrapperSource}\n${integrationsLegacySource}`;
 const assistantSource = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
 const aiRouteSource = await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8");
 const packageJsonSource = await readFile(new URL("../package.json", import.meta.url), "utf8");
@@ -40,7 +42,8 @@ check("memberships manager consolidates public packages and subscriber visibilit
   assertIncludes(membershipsSource, "window.location.hash = '#/admin-dashboard?tab=financial'");
 });
 
-check("integrations manager clearly diagnoses student AI runtime usage", () => {
+check("integrations manager composition preserves student AI runtime diagnostics", () => {
+  assertIncludes(integrationsWrapperSource, "PlatformIntegrationsManagerLegacy");
   assertIncludes(integrationsSource, "studentAiRuntimeSummary");
   assertIncludes(integrationsSource, "api.aiStatus()");
   assertIncludes(integrationsSource, "api.aiReadiness()");
