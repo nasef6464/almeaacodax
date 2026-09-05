@@ -48,3 +48,13 @@ On the next bounded run, inspect current release/deployment/readiness contracts 
 ## MAP IMPACT
 
 `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` are unchanged because this batch changes no module ownership, route/API access, persistence, migration, or data boundary.
+
+## Release-readiness bounded batch — production synchronization
+
+- Continuation branch for this batch: `codex/release-readiness-production-sync`, created from integrated `main` `1be48509b93d5772f0a05ff7712c56cf2133e806`.
+- Evidence before action: Vercel production alias `almeaacodax.vercel.app` is `READY` but resolves to deployment `dpl_3ucz5s7C4HZNiDBnkYiPGYjAp6QY` from `main` commit `3b125e8b5f2d9bf60480b11be01019bc392f466d`, older than the integrated Gate-6/post-Gate-6 main head.
+- Gap classification: operations/release-readiness synchronization only. No product defect is inferred and Gates 1–6 remain CLOSED / VERIFIED.
+- Smallest coherent action: push this focused non-runtime handoff commit through the normal PR/merge path so the linked Git production integration receives a fresh `main` push, then verify the resulting production deployment commit and HTTP health.
+- Runtime/API/RBAC/scoring/payments/schema/data ownership: unchanged.
+- CI rule: because this commit changes documentation only, no new product runtime CI claim is required; the deployment must still be verified against the resulting `main` commit before this operations gap is called closed.
+- If the Git integration still does not produce a production deployment, stop and report the deployment integration itself as the remaining blocker rather than changing product code or production data.
