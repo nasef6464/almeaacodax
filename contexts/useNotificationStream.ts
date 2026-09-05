@@ -13,6 +13,7 @@
  *   const { unreadCount, latestNotification } = useNotificationStream(token);
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { API_BASE_URL } from '../services/api';
 
 export interface InAppNotification {
   id: string;
@@ -24,9 +25,9 @@ export interface InAppNotification {
 }
 
 interface UseNotificationStreamOptions {
-  /** بيانات auth token — يُمرّر كـ query param بدلاً من header لأن EventSource لا يدعم headers */
+  /** توافق قديم مع callers سابقة؛ النقل الحالي يعتمد auth cookie ولا يرسل token في URL. */
   token?: string | null;
-  /** الـ base URL للـ API — يُستخدم في الإنتاج */
+  /** الـ base URL للـ API — عند عدم تمريره يُعاد استخدام نفس base الخاص بطبقة API */
   apiBase?: string;
   /** تفعيل الـ stream (false إذا لم يكن المستخدم مسجلاً) */
   enabled?: boolean;
@@ -35,8 +36,12 @@ interface UseNotificationStreamOptions {
 const RECONNECT_DELAY_MS = 5_000;
 const MAX_RECONNECT_ATTEMPTS = 10;
 
+const resolveNotificationApiBase = (apiBase?: string) => {
+  const base = String(apiBase || API_BASE_URL).replace(/\/$/, '');
+  return base.endsWith('/api') ? base : `${base}/api`;
+};
+
 export const useNotificationStream = ({
-  token,
   apiBase = '',
   enabled = true,
 }: UseNotificationStreamOptions = {}) => {
@@ -50,7 +55,7 @@ export const useNotificationStream = ({
   const isMounted = useRef(true);
 
   const connect = useCallback(() => {
-    if (!enabled || !token || !isMounted.current) return;
+    if (!enabled || !isMounted.current) return;
 
     // أغلق الاتصال القديم إن وُجد
     if (esRef.current) {
@@ -58,8 +63,8 @@ export const useNotificationStream = ({
       esRef.current = null;
     }
 
-    const url = `${apiBase}/api/notifications/stream?token=${encodeURIComponent(token)}`;
-    const es = new EventSource(url, { withCredentials: false });
+    const url = `${resolveNotificationApiBase(apiBase)}/notifications/stream`;
+    const es = new EventSource(url, { withCredentials: true });
     esRef.current = es;
 
     es.addEventListener('connected', () => {
@@ -99,7 +104,7 @@ export const useNotificationStream = ({
         }, delay);
       }
     };
-  }, [enabled, token, apiBase]);
+  }, [enabled, apiBase]);
 
   useEffect(() => {
     isMounted.current = true;

@@ -363,18 +363,18 @@ export const QuizPage: React.FC = () => {
       return;
     }
 
-    const hasExplicitTargets = (foundQuiz.targetUserIds || []).length > 0 || (foundQuiz.targetGroupIds || []).length > 0;
+    const targetUserIds = foundQuiz.targetUserIds || [];
+    const targetGroupIds = foundQuiz.targetGroupIds || [];
+    const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
     if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
-      const userGroups = user.groupIds || [];
-      const isUserTargeted =
-        (foundQuiz.targetUserIds || []).length === 0 || (foundQuiz.targetUserIds || []).includes(user.id);
-      const isGroupTargeted =
-        (foundQuiz.targetGroupIds || []).length === 0 ||
-        (foundQuiz.targetGroupIds || []).some((id) => userGroups.includes(id));
+      const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
+      const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
+      const isGroupTargeted = targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id));
 
-      if (!isUserTargeted || !isGroupTargeted) {
+      // Direct student targeting and school/class targeting are additive, matching the API contract.
+      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted) {
         setHasAccess(false);
-        setAccessMessage('هذا اختبار مركزي موجّه لطلاب محددين فقط.');
+        setAccessMessage('هذا اختبار مدرسي موجّه لطلاب محددين فقط.');
         return;
       }
     }
