@@ -9,6 +9,9 @@ const files = {
   app: await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8"),
   clientApp: await readFile(new URL("../App.tsx", import.meta.url), "utf8"),
   aiRoutes: await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8"),
+  aiService: await readFile(new URL("../services/geminiService.ts", import.meta.url), "utf8"),
+  questionBank: await readFile(new URL("../dashboards/admin/QuestionBankManager.tsx", import.meta.url), "utf8"),
+  questionBuilder: await readFile(new URL("../dashboards/admin/builders/UnifiedQuestionBuilder.tsx", import.meta.url), "utf8"),
   auth: await readFile(new URL("../server/src/middleware/auth.ts", import.meta.url), "utf8"),
   sockets: await readFile(new URL("../server/src/sockets/index.ts", import.meta.url), "utf8"),
   securityChecklist: await readFile(new URL("../docs/archive_reports/SECURITY_CHECKLIST.md", import.meta.url), "utf8"),
@@ -25,6 +28,12 @@ function check(name, fn) {
 function assertIncludes(source, expected) {
   if (!source.includes(expected)) {
     throw new Error(`Expected to find: ${expected}`);
+  }
+}
+
+function assertExcludes(source, unexpected) {
+  if (source.includes(unexpected)) {
+    throw new Error(`Expected not to find: ${unexpected}`);
   }
 }
 
@@ -66,9 +75,18 @@ check("student AI planning endpoints require authentication", () => {
     assertIncludes(files.aiRoutes, `aiRouter.post(\n  "${endpoint}",\n  requireAuth,`);
   }
 });
-check("AI question generation is staff-only in UI and API", () => {
+check("AI question generation is staff-only and review-first", () => {
   assertIncludes(files.clientApp, `<Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />`);
   assertIncludes(files.aiRoutes, 'aiRouter.post(\n  "/question",\n  requireAuth,\n  requireRole(["admin", "teacher", "supervisor"]),');
+  assertIncludes(files.aiService, "api.aiQuestion({ topic })");
+  assertIncludes(files.questionBank, "onClick={handleCreateAiDraft}");
+  assertIncludes(files.questionBank, "resetEditorQuestion('draft')");
+  assertIncludes(files.questionBank, "skillIds: selectedSkillId ? [selectedSkillId] : []");
+  assertIncludes(files.questionBank, "generateOnOpen={generateAiDraftOnOpen}");
+  assertIncludes(files.questionBuilder, "generateOnOpen?: boolean;");
+  assertIncludes(files.questionBuilder, "void handleGenerateWithFeedback();");
+  assertExcludes(files.questionBank, "توليد ذكي من ملف (AI)");
+  assertExcludes(files.questionBank, "جاري استخراج الأسئلة وتصنيفها آلياً");
 });
 check("security documents cover phase six controls", () => {
   assertIncludes(files.securityChecklist, "Redis-backed distributed storage");
