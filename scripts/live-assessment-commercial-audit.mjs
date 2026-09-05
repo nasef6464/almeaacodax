@@ -277,7 +277,7 @@ async function main() {
       const visibleCatalog = await api(freshStudent.page, "/quizzes?limit=200");
       throw new Error(`Directed assessment missing from learner catalog: ${JSON.stringify({ catalog: visibleCatalog.payload, diagnostics: { ...catalogDiagnostics, browserErrors } })}`);
     }
-    await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).click();
+    await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).getByRole("link", { name: /دخول الاختبار|إعادة الدخول/ }).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     const autosaveResponsePromise = freshStudent.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
