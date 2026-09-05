@@ -20,6 +20,7 @@ import { searchRouter } from "./search.routes.js";
 import { parentRouter } from "./parent.routes.js";
 import { activityRouter } from "./activity.routes.js";
 import { publicTestsRouter } from "./publicTests.routes.js";
+import { productConfigRouter } from "./productConfig.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
 
 export const apiRouter = Router();
@@ -37,6 +38,7 @@ apiRouter.use("/operations", operationsRouter);
 apiRouter.use("/backups", backupRouter);
 apiRouter.use("/seo", seoRouter);
 apiRouter.use("/notifications", notificationRouter);
+apiRouter.use("/product-config", productConfigRouter);
 apiRouter.use("/", quizResultsRouter);
 apiRouter.use("/certificates", certificateRouter);
 apiRouter.use("/discussions", discussionRouter);
