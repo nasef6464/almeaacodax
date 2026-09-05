@@ -75,6 +75,19 @@ Google OAuth on Staging remains a separate staging-only follow-up because the ba
 - Status: `VERIFIED`. No API/RBAC/scoring/payment/schema/data-ownership change. Gates 1–6 remain closed.
 - Owner-approved next product focus after this release-readiness batch: bounded Course System journey review and improvement, starting with one proved course authoring/access defect at a time. This is an explicit product-change authorization, not a reopening of Gate 6 wholesale.
 
+## Course System bounded batch — direct enrollment integrity
+
+- Branch: `codex/course-access-integrity`; draft PR `#36`.
+- Proven defect: the existing `POST /api/courses/:id/enroll` and `/join` handler could add a paid course to `subscription.purchasedCourses` without verified purchase entitlement and could increment `studentCount` repeatedly for the same user.
+- Final runtime commit under verification: `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`.
+- Fix: the existing canonical route now rejects direct enrollment for paid courses with `COURSE_PURCHASE_REQUIRED`, returns idempotent success for already-enrolled users, increments `studentCount` only on a new free enrollment, and applies the existing learner-visibility boundary before enrollment.
+- Structural correction: an initial extra guard-router implementation was rejected by the immutable architecture gate because it introduced duplicate HTTP route entries and an additional `/courses` mount. That structure was removed; the final runtime changes the existing route only and does not expand the HTTP/router contract.
+- Current evidence: Phase + Handover is green on the final runtime commit; Recovery, Safety and Production Readiness are still terminalizing on that exact commit. The previous failed run proved frontend/API typecheck and builds green and failed only because of the now-removed extra route/mount structure.
+- Contract impact: no new route URL/method, payment-provider redesign, RBAC role change, scoring change, schema/data migration, tenant model, microservice, or production cutover.
+- Map impact: `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` remain unchanged because module ownership, persistence ownership and data-query responsibility did not move.
+- Status: `PARTIAL` until Recovery + Safety + Production Readiness are terminal green on `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`.
+- Next exact action: inspect those three workflows only. If all are green, mark this batch `VERIFIED`, ready/merge PR `#36`, create a fresh branch from new `main`, then inspect the next Course System gap. Do not start a second course behavior change before this batch closes.
+
 ## Agent handoff rule
 
 At the start of any future Codex/agent goal, read current Git HEAD, this checkpoint, and `docs/architecture/POST_GATE6_RELEASE_READINESS_START_NOTE.md` before interpreting older execution-state paragraphs. Current Git HEAD plus this checkpoint outrank stale notes that name already-integrated gates as active.
