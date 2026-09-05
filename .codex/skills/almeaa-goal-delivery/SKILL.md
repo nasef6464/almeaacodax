@@ -11,7 +11,9 @@ Use this workflow automatically for an ALMEAA Product Goal, Product Gate, featur
 
 ## Start once
 
-Read Git HEAD, `git status`, only relevant recent commits, `docs/architecture/CODEX_EXECUTION_STATE.md`, the current goal, and directly affected maps/routes/callers/models/loaders/tests. Do a goal-scoped assessment—not a repository-wide audit.
+Read Git HEAD, `git status`, only relevant recent commits, `docs/architecture/MAIN_INTEGRATION_CHECKPOINT_AR.md` when present, `docs/architecture/CODEX_EXECUTION_STATE.md`, the current goal, and directly affected maps/routes/callers/models/loaders/tests. Do a goal-scoped assessment—not a repository-wide audit.
+
+If `MAIN_INTEGRATION_CHECKPOINT_AR.md` records that a delivery branch was already merged into `main`, start new implementation from the latest `main` on a fresh focused branch. Do not redo already-integrated closed gates unless a proved runtime defect, failing acceptance evidence, security/data-integrity risk, or explicit product change requires it.
 
 State concisely: `CURRENT STATE`, `VERIFIED`, `REAL GAPS`, `BLOCKERS`, `STRONG MVP`, `DEFERRED`, and one minimal execution plan. Re-open discovery only for a proved failing test, runtime defect, Strong-MVP blocker, or security/data-integrity risk.
 
