@@ -52,10 +52,10 @@ check("Auth middleware refreshes role and school relationship fields before prot
   assertIncludes(sources.authMiddleware, "requireRole");
 });
 
-check("POST /content/groups is protected by auth and role middleware", () => {
+check("POST /content/groups is protected by auth and school-operations roles", () => {
   assertPattern(
     sources.contentRoutes,
-    /contentRouter\.post\(\s*"\/groups"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "teacher", "supervisor"\]\)/,
+    /contentRouter\.post\(\s*"\/groups"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "supervisor"\]\)/,
   );
 });
 
@@ -77,9 +77,9 @@ check("Non-admin users cannot create top-level SCHOOL groups", () => {
 
 check("Scoped creation resolves and validates the parent school from server data", () => {
   assertIncludes(sources.contentRoutes, "GroupModel.findOne(buildDocumentQuery(parentId))");
-  assertIncludes(sources.contentRoutes, "parentGroup.type === \"SCHOOL\"");
-  assertIncludes(sources.contentRoutes, "parentGroup.parentId");
-  assertIncludes(sources.contentRoutes, "hasSchoolIdManagementScope(authUser, parentSchoolId)");
+  assertIncludes(sources.contentRoutes, 'parentGroup.type !== "SCHOOL"');
+  assertIncludes(sources.contentRoutes, 'parentGroup.type !== "CLASS"');
+  assertIncludes(sources.contentRoutes, "hasGroupManagementScope(authUser, parentGroup as any)");
 });
 
 check("Non-admin group creation ignores frontend relationship escalation fields", () => {
@@ -87,6 +87,15 @@ check("Non-admin group creation ignores frontend relationship escalation fields"
   assertPattern(sources.contentRoutes, /studentIds:\s*\[\]/);
   assertPattern(sources.contentRoutes, /courseIds:\s*\[\]/);
   assertPattern(sources.contentRoutes, /supervisorIds:\s*uniqueStrings\(\[String\(authUser\.id\)\]\)/);
+});
+
+check("Teacher is not a school-operations group manager", () => {
+  const groupRouteRoleLists = [...sources.contentRoutes.matchAll(/contentRouter\.(?:post|patch|delete)\(\s*"\/groups(?:\/:id)?"[\s\S]*?requireRole\(\[([^\]]+)\]\)/g)]
+    .map((match) => match[1]);
+  if (groupRouteRoleLists.length !== 3) throw new Error("Expected three protected group routes");
+  if (groupRouteRoleLists.some((roles) => roles.includes('"teacher"'))) {
+    throw new Error("Teacher still appears in a school group CRUD role list");
+  }
 });
 
 check("Out-of-scope users receive a safe forbidden response", () => {

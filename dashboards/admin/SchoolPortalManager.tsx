@@ -1269,6 +1269,7 @@ export const SchoolPortalManager: React.FC<SchoolPortalManagerProps> = ({ onOpen
                         <button
                             type="button"
                             onClick={openTargetedQuiz}
+                            data-testid="supervisor-create-directed-assessment"
                             className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700"
                         >
                             <Target size={15} />

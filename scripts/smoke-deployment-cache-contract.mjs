@@ -3,6 +3,7 @@ import { join } from 'node:path';
 
 const root = process.cwd();
 const vercel = JSON.parse(readFileSync(join(root, 'vercel.json'), 'utf8'));
+const viteConfig = readFileSync(join(root, 'vite.config.ts'), 'utf8');
 
 const headers = Array.isArray(vercel.headers) ? vercel.headers : [];
 
@@ -29,5 +30,7 @@ assert(hashedFileCache.includes('max-age=31536000'), 'Hashed JS/CSS/font/image f
 assert(shellCache.includes('no-cache'), 'SPA shell should revalidate instead of being permanently cached');
 assert(!shellCache.includes('no-store'), 'SPA shell must not force no-store for every production request');
 assert(!findHeader('/(.*)', 'Cache-Control'), 'Do not add a catch-all Cache-Control header that overrides immutable assets');
+assert(!viteConfig.includes("url.pathname.startsWith('/api/')"), 'Service worker must not broadly cache authenticated /api/* responses');
+assert(!viteConfig.includes("cacheName: 'api-cache'"), 'Service worker API cache must remain disabled until an explicit safe allowlist exists');
 
 console.log('Deployment cache contract passed: hashed assets are immutable and HTML shell revalidates.');

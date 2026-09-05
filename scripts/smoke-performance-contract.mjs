@@ -195,10 +195,12 @@ assertIncludes('server/src/routes/taxonomy.routes.ts', 'SubjectModel.find({ path
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'SkillModel.find({');
 assertIncludes('server/src/routes/content.routes.ts', 'CONTENT_BOOTSTRAP_CACHE_TTL_MS');
 assertIncludes('server/src/routes/content.routes.ts', 'X-Content-Cache');
-assertIncludes('server/src/routes/content.routes.ts', 'scopeFilterToActivePaths');
+assertIncludes('server/src/routes/content.routes.ts', 'buildContentBootstrapVisibilityFilters');
+assertIncludes('server/src/modules/content/application/contentBootstrapVisibility.ts', 'scopeFilterToActivePaths');
 assertIncludes('server/src/routes/content.routes.ts', 'PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT');
 assertIncludes('server/src/routes/content.routes.ts', 'publicContentBootstrapPromise');
-assertIncludes('server/src/routes/content.routes.ts', 'X-Content-Cache", "shared"');
+assertIncludes('server/src/routes/content.routes.ts', 'res.setHeader("X-Content-Cache", cacheStatus)');
+assertIncludes('server/src/modules/content/application/contentBootstrapCache.ts', 'cacheStatus: "shared"');
 assertIncludes('server/src/services/operationsAudit.ts', 'OPERATIONS_AUDIT_CACHE_TTL_MS');
 assertIncludes('server/src/services/operationsAudit.ts', 'cachedOperationsAudit');
 assertIncludes('server/src/services/operationsAudit.ts', 'pendingOperationsAudit');

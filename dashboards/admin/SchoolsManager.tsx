@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
     BookOpen,
     Building2,
@@ -45,17 +45,13 @@ import type {
     AdminUserPayload,
     ContentBootstrapPayload,
     ImportResponse,
-    RelationCredential,
-    RelationImportSummary,
     RelationResponse,
 } from './SchoolsManager/contracts';
 import {
     buildStoreUser,
     generateTemporaryPassword,
-    loadSchoolAdminUsers,
     mergeAdminUsersById,
     mergeGroupsById,
-    mergeUsersById,
     normalizeStoreGroups,
 } from './SchoolsManager/dataAdapters';
 import {
@@ -83,7 +79,6 @@ import {
     resolveSelectedAccessCodePackageId,
 } from './SchoolsManager/accessCodeService';
 import { buildSchoolClassReportSheets } from './SchoolsManager/classReportService';
-import { buildBulkClassGroups, filterNewClassNames, parseBulkClassNames } from './SchoolsManager/classService';
 import { copyTextToClipboard } from './SchoolsManager/clipboardService';
 import { buildQuickSupervisorPayload, buildSingleStudentImportRow } from './SchoolsManager/draftPayloadService';
 import { getErrorMessage } from './SchoolsManager/errorMessageService';
@@ -116,6 +111,11 @@ import { useSchoolReportState } from './SchoolsManager/useSchoolReportState';
 import { useSchoolRosterFilters } from './SchoolsManager/useSchoolRosterFilters';
 import { useSchoolSelectionState } from './SchoolsManager/useSchoolSelectionState';
 import { useSchoolWorkspaceDrafts } from './SchoolsManager/useSchoolWorkspaceDrafts';
+import { useSchoolRosterBootstrap } from './SchoolsManager/useSchoolRosterBootstrap';
+import { useSchoolWorkspaceRefresh } from './SchoolsManager/useSchoolWorkspaceRefresh';
+import { createSchoolRosterAssignmentActions } from './SchoolsManager/schoolRosterAssignmentActions';
+import { createSchoolBulkClassCreationAction, createSchoolClassLifecycleActions, createSchoolClassRenameAction } from './SchoolsManager/schoolClassLifecycleActions';
+import { createSchoolPackageActions } from './SchoolsManager/schoolPackageActions';
 
 export { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
 export type {
@@ -145,6 +145,8 @@ export const SchoolsManager: React.FC = () => {
         updateUser,
         assignSupervisorToGroupAsync,
         removeSupervisorFromGroupAsync,
+        assignTeacherToGroupAsync,
+        removeTeacherFromGroupAsync,
         assignCourseToGroup,
         removeCourseFromGroup,
         assignStudentToGroupAsync,
@@ -276,7 +278,23 @@ export const SchoolsManager: React.FC = () => {
 
     useAutoDismissMessage(managementNotice, setManagementNotice);
     useAutoDismissMessage(managementError, setManagementError);
-    const hasLoadedSchoolRosterUsersRef = useRef(false);
+    const { refreshUsers } = useSchoolRosterBootstrap({
+        role: user.role,
+        users,
+        hydrateUsers,
+        hydrateContentBootstrap,
+    });
+    const { refreshSchoolWorkspace } = useSchoolWorkspaceRefresh({
+        role: user.role,
+        users,
+        activeTab,
+        hydrateUsers,
+        hydrateContentBootstrap,
+        setSelectedSchool,
+        loadSchoolReport,
+        setSaveVerificationState,
+        setSaveVerificationMessage,
+    });
 
     const resetSchoolWorkspaceState = () => {
         resetWorkspaceDrafts();
@@ -337,83 +355,6 @@ export const SchoolsManager: React.FC = () => {
         }));
         setManagementNotice('تم تجهيز ملف جاهزية محفظة المدارس للتنزيل.');
         setManagementError(null);
-    };
-
-    const refreshUsers = async () => {
-        if (user.role !== Role.ADMIN) {
-            return;
-        }
-
-        try {
-            const loadedUsers = await loadSchoolAdminUsers();
-            hydrateUsers(mergeUsersById(users, loadedUsers));
-        } catch (error) {
-            console.warn('Failed to refresh users after school updates:', error);
-        }
-    };
-
-    const refreshSchoolListData = async () => {
-        if (user.role !== Role.ADMIN) {
-            return;
-        }
-
-        try {
-            api.clearContentBootstrapCache();
-            const [bootstrap, loadedUsers] = await Promise.all([
-                api.getContentBootstrapFresh(),
-                loadSchoolAdminUsers(),
-            ]);
-            hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
-            hydrateUsers(mergeUsersById(users, loadedUsers));
-        } catch (error) {
-            console.warn('Failed to refresh school list data:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (user.role !== Role.ADMIN || hasLoadedSchoolRosterUsersRef.current) {
-            return;
-        }
-
-        hasLoadedSchoolRosterUsersRef.current = true;
-        void refreshSchoolListData();
-    }, [user.role]);
-
-    const refreshSchoolWorkspace = async (schoolId: string, mode: 'silent' | 'manual' = 'silent') => {
-        if (mode === 'manual') {
-            setSaveVerificationState('verifying');
-            setSaveVerificationMessage('جاري التحقق من البيانات المحفوظة...');
-        }
-
-        api.clearContentBootstrapCache();
-        const [bootstrap, adminUsersResponse] = await Promise.all([
-            api.getContentBootstrapFresh(),
-            user.role === Role.ADMIN ? loadSchoolAdminUsers() : Promise.resolve(null),
-        ]);
-
-        const contentBootstrap = bootstrap as ContentBootstrapPayload;
-        hydrateContentBootstrap(contentBootstrap);
-        if (adminUsersResponse && Array.isArray(adminUsersResponse)) {
-            hydrateUsers(mergeUsersById(users, adminUsersResponse));
-        }
-
-        const freshGroups = normalizeStoreGroups(contentBootstrap.groups);
-        const freshSchool = freshGroups.find((group) => group.id === schoolId && group.type === 'SCHOOL');
-        if (!freshSchool) {
-            throw new Error('فشل التحقق: لم ترجع المدرسة من الخادم بعد الحفظ.');
-        }
-
-        setSelectedSchool(freshSchool);
-        if (activeTab === 'reports') {
-            await loadSchoolReport(freshSchool.id);
-        }
-
-        if (mode === 'manual') {
-            setSaveVerificationState('success');
-            setSaveVerificationMessage('تم الحفظ والتأكد من البيانات من الخادم.');
-        }
-
-        return freshSchool;
     };
 
     const handleSaveAndVerifySchool = async () => {
@@ -571,49 +512,6 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
-    const handleCreateBulkClasses = async () => {
-        if (!selectedSchool) return;
-
-        const classNames = parseBulkClassNames(bulkClassNames);
-
-        if (classNames.length === 0) {
-            setManagementError('اكتب اسم فصل واحد على الأقل، ويمكنك فصل الأسماء بسطر جديد أو فاصلة.');
-            return;
-        }
-
-        const namesToCreate = filterNewClassNames(classNames, classes, selectedSchool.id);
-
-        if (namesToCreate.length === 0) {
-            setManagementError('كل الفصول المكتوبة موجودة بالفعل داخل هذه المدرسة.');
-            return;
-        }
-
-        setSchoolActionPending('create-classes');
-        setSaveVerificationState('saving');
-        setSaveVerificationMessage('جاري حفظ الفصول...');
-        setManagementError(null);
-        setManagementNotice(null);
-        try {
-            await Promise.all(buildBulkClassGroups({
-                classNames: namesToCreate,
-                schoolId: selectedSchool.id,
-                ownerId: user.id,
-            }).map((classGroup) => createGroupAsync(classGroup)));
-
-            await refreshSchoolWorkspace(selectedSchool.id);
-            setBulkClassNames('');
-            setSaveVerificationState('success');
-            setSaveVerificationMessage('تم الحفظ والتأكد من الفصول من الخادم.');
-            setManagementNotice(`تم إنشاء ${namesToCreate.length} فصل/فصول والتأكد من حفظها.`);
-        } catch (error) {
-            const message = getErrorMessage(error, 'تعذر إنشاء الفصول الآن.');
-            setSaveVerificationState('error');
-            setSaveVerificationMessage(message);
-            setManagementError(message);
-        } finally {
-            setSchoolActionPending(null);
-        }
-    };
 
     const downloadTemplate = () => {
         downloadSchoolImportTemplate();
@@ -842,7 +740,7 @@ export const SchoolsManager: React.FC = () => {
             try {
                 await deleteGroupAsync(selectedSchool.id);
                 api.clearContentBootstrapCache();
-                const bootstrap = await api.getContentBootstrapFresh();
+                const bootstrap = await api.getOperationalBootstrapFresh();
                 hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
                 setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
                 setIsDeleteSchoolConfirmOpen(false);
@@ -853,86 +751,80 @@ export const SchoolsManager: React.FC = () => {
                 setSchoolActionPending(null);
             }
         };
-        const handleCreateSingleClass = async (notice = 'تم إنشاء فصل جديد. يمكنك تغيير اسمه وربط الطلاب والمشرفين من بطاقة الفصل.') => {
-            const now = Date.now();
-            setSchoolActionPending('create-class');
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري حفظ الفصل...');
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await createGroupAsync(buildNewClassGroup({
-                    name: `فصل جديد - ${selectedSchool.name}`,
-                    parentId: selectedSchool.id,
-                    ownerId: user.id,
-                    now,
-                }));
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم الحفظ والتأكد من الفصل من الخادم.');
-                setManagementNotice(notice);
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر إنشاء الفصل الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setSchoolActionPending(null);
-            }
-        };
-        const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {
-            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
-            const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
-            setRosterActionPending(`supervisor-assign-${groupId}-${supervisorId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري ربط المشرف وحفظ النطاق...');
-            try {
-                await assignSupervisorToGroupAsync(supervisorId, groupId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم ربط المشرف والتأكد من حفظ النطاق.');
-                setManagementNotice(`تم حفظ ربط ${targetSupervisor?.name || 'المشرف'} على ${targetGroup?.name || 'النطاق المحدد'}.`);
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر ربط المشرف الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setRosterActionPending(null);
-            }
-        };
-        const handleRemoveSchoolSupervisor = async (supervisorId: string, groupId: string) => {
-            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
-            const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
-            setRosterActionPending(`supervisor-remove-${groupId}-${supervisorId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري إزالة ربط المشرف وحفظ النطاق...');
-            try {
-                await removeSupervisorFromGroupAsync(supervisorId, groupId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم إزالة ربط المشرف والتأكد من حفظ النطاق.');
-                setManagementNotice(`تم حفظ إزالة ${targetSupervisor?.name || 'المشرف'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر إزالة المشرف الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setRosterActionPending(null);
-            }
-        };
-        const handleRemoveSchoolWideSupervisor = (currentUser: User) => {
-            if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
-                return;
-            }
-            void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
-        };
-
+        const {
+            handleCreateSingleClass,
+            handleDeleteClass,
+        } = createSchoolClassLifecycleActions({
+            selectedSchool,
+            ownerId: user.id,
+            createGroupAsync,
+            deleteGroupAsync,
+            refreshSchoolWorkspace,
+            setSchoolActionPending,
+            setManagementError,
+            setManagementNotice,
+            setSaveVerificationState,
+            setSaveVerificationMessage,
+        });
+        const handleCreateBulkClasses = createSchoolBulkClassCreationAction({
+            selectedSchool,
+            ownerId: user.id,
+            classes,
+            bulkClassNames,
+            setBulkClassNames,
+            createGroupAsync,
+            refreshSchoolWorkspace,
+            setSchoolActionPending,
+            setManagementError,
+            setManagementNotice,
+            setSaveVerificationState,
+            setSaveVerificationMessage,
+        });
+        const {
+            handleAssignSchoolSupervisor,
+            handleRemoveSchoolSupervisor,
+            handleAssignStudentToClass,
+            handleRemoveStudentScope,
+            confirmRemoveSchoolWideSupervisor,
+            confirmRemoveClassSupervisor,
+            handleAssignTeacherToClass,
+            handleRemoveTeacherFromClass,
+        } = createSchoolRosterAssignmentActions({
+            selectedSchool,
+            schoolScopeGroups,
+            schoolStudents,
+            schoolClasses,
+            supervisors,
+            teachers,
+            assignSupervisorToGroupAsync,
+            removeSupervisorFromGroupAsync,
+            assignTeacherToGroupAsync,
+            removeTeacherFromGroupAsync,
+            assignStudentToGroupAsync,
+            removeStudentFromGroupAsync,
+            refreshSchoolWorkspace,
+            setRosterActionPending,
+            setManagementError,
+            setManagementNotice,
+            setSaveVerificationState,
+            setSaveVerificationMessage,
+        });
+        const {
+            handleCreateSchoolPackage,
+            handleUpdateSchoolPackage,
+            handleDeleteSchoolPackage,
+            handleExpireAllSchoolPackages,
+        } = createSchoolPackageActions({
+            selectedSchool,
+            schoolPackages,
+            createB2BPackageAsync,
+            updateB2BPackageAsync,
+            deleteB2BPackageAsync,
+            refreshSchoolWorkspace,
+            setPackageActionPending,
+            setManagementError,
+            setManagementNotice,
+        });
         const focusQuickSupervisorEntry = (targetGroupId: string, targetGroupName: string) => {
             setQuickSupervisor((current) => ({ ...current, targetGroupId }));
             setManagementNotice(`تم اختيار ${targetGroupName}. اكتب بيانات المشرف ثم اضغط إنشاء/ربط المشرف.`);
@@ -943,38 +835,6 @@ export const SchoolsManager: React.FC = () => {
                 const nameInput = document.querySelector<HTMLInputElement>('[data-testid="school-relations-supervisor-name"]');
                 nameInput?.focus();
             }, 120);
-        };
-        const handleAssignStudentToClass = async (studentId: string, classId: string) => {
-            const targetStudent = schoolStudents.find((student) => student.id === studentId);
-            const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
-            setRosterActionPending(`student-assign-${classId}-${studentId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await assignStudentToGroupAsync(studentId, classId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice(`تم حفظ نقل ${targetStudent?.name || 'الطالب'} إلى ${targetClass?.name || 'الفصل المحدد'}.`);
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر نقل الطالب الآن.'));
-            } finally {
-                setRosterActionPending(null);
-            }
-        };
-        const handleRemoveStudentScope = async (studentId: string, groupId: string) => {
-            const targetStudent = schoolStudents.find((student) => student.id === studentId);
-            const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
-            setRosterActionPending(`student-remove-${groupId}-${studentId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await removeStudentFromGroupAsync(studentId, groupId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice(`تم حفظ إخراج ${targetStudent?.name || 'الطالب'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر إخراج الطالب الآن.'));
-            } finally {
-                setRosterActionPending(null);
-            }
         };
         const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
             const supervisorPayload = buildQuickSupervisorPayload(
@@ -1030,62 +890,6 @@ export const SchoolsManager: React.FC = () => {
                 setManagementNotice(null);
             } finally {
                 setRosterActionPending(null);
-            }
-        };
-        const handleCreateSchoolPackage = async (pkg: B2BPackage) => {
-            setPackageActionPending(`create-${pkg.id}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await createB2BPackageAsync(pkg);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice('تم حفظ الباقة المدرسية وربطها بالمدرسة بعد التحقق من الخادم.');
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر حفظ الباقة المدرسية الآن.'));
-            } finally {
-                setPackageActionPending(null);
-            }
-        };
-        const handleUpdateSchoolPackage = async (packageId: string, data: Partial<B2BPackage>) => {
-            setPackageActionPending(`update-${packageId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await updateB2BPackageAsync(packageId, data);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice('تم حفظ تعديل الباقة المدرسية بعد التحقق من الخادم.');
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر حفظ تعديل الباقة المدرسية الآن.'));
-            } finally {
-                setPackageActionPending(null);
-            }
-        };
-        const handleDeleteSchoolPackage = async (packageId: string) => {
-            setPackageActionPending(`delete-${packageId}`);
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await deleteB2BPackageAsync(packageId);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice('تم حذف الباقة المدرسية وأكوادها المرتبطة بعد التحقق من الخادم.');
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر حذف الباقة المدرسية الآن.'));
-            } finally {
-                setPackageActionPending(null);
-            }
-        };
-        const handleExpireAllSchoolPackages = async () => {
-            setPackageActionPending('expire-all');
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await Promise.all(schoolPackages.map((pkg) => updateB2BPackageAsync(pkg.id, { status: 'expired' })));
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setManagementNotice('تم إيقاف كل باقات المدرسة بعد تأكيد الحفظ من الخادم.');
-            } catch (error) {
-                setManagementError(getErrorMessage(error, 'تعذر إيقاف كل الباقات الآن.'));
-            } finally {
-                setPackageActionPending(null);
             }
         };
         const handleCreateSchoolAccessCode = async () => {
@@ -1250,61 +1054,20 @@ export const SchoolsManager: React.FC = () => {
                 isOpen: true,
                 title: 'أدخل اسم الفصل الجديد',
                 initialValue: classroom.name,
-                onSave: async (newName: string) => {
-                    if (!newName.trim() || newName.trim() === classroom.name) return;
-                    setSchoolActionPending(`rename-class-${classroom.id}`);
-                    setSaveVerificationState('saving');
-                    setSaveVerificationMessage('جاري حفظ اسم الفصل...');
-                    setManagementError(null);
-                    setManagementNotice(null);
-                    try {
-                        await updateGroupAsync(classroom.id, { name: newName.trim() });
-                        await refreshSchoolWorkspace(selectedSchool.id);
-                        setSaveVerificationState('success');
-                        setSaveVerificationMessage('تم حفظ اسم الفصل والتأكد منه من الخادم.');
-                        setManagementNotice('تم حفظ اسم الفصل بعد التحقق من الخادم.');
-                    } catch (error) {
-                        const message = getErrorMessage(error, 'تعذر تعديل اسم الفصل الآن.');
-                        setSaveVerificationState('error');
-                        setSaveVerificationMessage(message);
-                        setManagementError(message);
-                        throw error;
-                    } finally {
-                        setSchoolActionPending(null);
-                    }
-                },
+                onSave: createSchoolClassRenameAction({
+                    selectedSchool,
+                    classroom,
+                    updateGroupAsync,
+                    refreshSchoolWorkspace,
+                    setSchoolActionPending,
+                    setManagementError,
+                    setManagementNotice,
+                    setSaveVerificationState,
+                    setSaveVerificationMessage,
+                }),
             });
         };
 
-        const handleDeleteClass = async (classroom: Group) => {
-            if (!window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) return;
-
-            setSchoolActionPending(`delete-class-${classroom.id}`);
-            setSaveVerificationState('saving');
-            setSaveVerificationMessage('جاري حذف الفصل...');
-            setManagementError(null);
-            setManagementNotice(null);
-            try {
-                await deleteGroupAsync(classroom.id);
-                await refreshSchoolWorkspace(selectedSchool.id);
-                setSaveVerificationState('success');
-                setSaveVerificationMessage('تم حذف الفصل والتأكد منه من الخادم.');
-                setManagementNotice('تم حذف الفصل بعد التحقق من الخادم.');
-            } catch (error) {
-                const message = getErrorMessage(error, 'تعذر حذف الفصل الآن.');
-                setSaveVerificationState('error');
-                setSaveVerificationMessage(message);
-                setManagementError(message);
-            } finally {
-                setSchoolActionPending(null);
-            }
-        };
-
-        const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {
-            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
-                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
-            }
-        };
 
         const downloadClassReport = (classroom: Group) => {
             createWorkbookDownload(`${selectedSchool.name}-${classroom.name}-class-report.xlsx`, buildSchoolClassReportSheets({
@@ -1386,26 +1149,13 @@ export const SchoolsManager: React.FC = () => {
         };
 
         const handleApplyRelationImport = async () => {
+            if (isApplyingRelations) return;
             if (!relationRows.length) {
                 setRelationError('ارفع ملف الربط أولا ثم راجع الصفوف قبل التنفيذ.');
                 return;
             }
 
-            const nextSummary: RelationImportSummary = {
-                rows: relationRows.length,
-                createdParents: 0,
-                createdSupervisors: 0,
-                linkedParents: 0,
-                linkedSupervisors: 0,
-                assignedClasses: 0,
-                missingStudents: 0,
-                missingParents: 0,
-                missingSupervisors: 0,
-                missingClasses: 0,
-                skippedRows: 0,
-            };
-            const createdCredentials: RelationCredential[] = [];
-
+            setIsApplyingRelations(true);
             try {
                 const response = await api.applySchoolRelations(selectedSchool.id, {
                     rows: relationRows,
@@ -1429,9 +1179,6 @@ export const SchoolsManager: React.FC = () => {
                 setRelationError(getErrorMessage(error, 'تعذر تنفيذ الربط وإنشاء الحسابات الآن.'));
             } finally {
                 setIsApplyingRelations(false);
-                if (createdCredentials.length) {
-                    void refreshUsers();
-                }
             }
         };
 
@@ -1780,7 +1527,7 @@ export const SchoolsManager: React.FC = () => {
                                     rosterActionPending={rosterActionPending}
                                     onOpenSupervisorEntry={() => focusQuickSupervisorEntry(selectedSchool.id, selectedSchool.name)}
                                     onAssignSupervisor={(value) => handleAssignSchoolSupervisor(value, selectedSchool.id)}
-                                    onRemoveSupervisor={handleRemoveSchoolWideSupervisor}
+                                    onRemoveSupervisor={confirmRemoveSchoolWideSupervisor}
                                 />
 
                                 <SchoolCoursesPanel
@@ -1797,6 +1544,7 @@ export const SchoolsManager: React.FC = () => {
                                 schoolStudents={schoolStudents}
                                 parents={parents}
                                 supervisors={supervisors}
+                                teachers={teachers}
                                 publishedCourses={publishedCourses}
                                 bulkClassNames={bulkClassNames}
                                 setBulkClassNames={setBulkClassNames}
@@ -1816,7 +1564,9 @@ export const SchoolsManager: React.FC = () => {
                                 onOpenPackages={() => setActiveTab('packages')}
                                 onAssignSupervisor={handleAssignSchoolSupervisor}
                                 onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
-                                onRemoveSupervisor={handleRemoveClassSupervisor}
+                                onRemoveSupervisor={confirmRemoveClassSupervisor}
+                                onAssignTeacher={handleAssignTeacherToClass}
+                                onRemoveTeacher={handleRemoveTeacherFromClass}
                                 onAssignCourse={assignCourseToGroup}
                                 onRemoveCourse={removeCourseFromGroup}
                             />

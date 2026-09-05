@@ -6,6 +6,10 @@ import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
+import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
+import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
+import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 
 const quizResultsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -43,7 +47,7 @@ const buildPaginationPayload = (page: number, limit: number, total: number) => {
 };
 
 const buildResultProjection =
-  "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt";
+  "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
 
 const buildFilter = (query: z.infer<typeof quizResultsQuerySchema>, userId?: string) => {
   const filter: Record<string, unknown> = {};
@@ -86,6 +90,16 @@ const buildSort = (query: z.infer<typeof quizResultsQuerySchema>) => {
   return sort;
 };
 
+const resolveResultListReads = async (results: Record<string, unknown>[]) => {
+  const legacyIds = results.map((result) => String(result.id || result._id || "")).filter(Boolean);
+  const quizIds = results.map((result) => String(result.quizId || "")).filter(Boolean);
+  const [assessmentResultsByLegacyId, readerModesByQuizId] = await Promise.all([
+    findAssessmentResultsByLegacyIds(legacyIds),
+    findAssessmentResultReaderModes(quizIds),
+  ]);
+  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
+};
+
 export const quizResultsRouter = Router();
 
 quizResultsRouter.get(
@@ -111,7 +125,7 @@ quizResultsRouter.get(
     ]);
 
     return res.json({
-      data: serializeQuizResultsForLearner(data),
+      data: serializeQuizResultsForLearner(await resolveResultListReads(data as Record<string, unknown>[])),
       pagination: buildPaginationPayload(page, limit, total),
     });
   }),
@@ -136,9 +150,15 @@ quizResultsRouter.get(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You can only access your own result" });
     }
 
+    const readerMode = await findAssessmentResultReaderMode(String((result as any).quizId || ""));
+    const assessmentResult = shouldReadAssessmentCompatibilityProjection(readerMode)
+      ? await findAssessmentResultByLegacyId(String((result as any).id || (result as any)._id))
+      : null;
+    const compatibleResult = resolveAssessmentResultRead(result as any, assessmentResult);
+
     const analysis = await analyzeWeakSkillsFromQuizResult(result);
     return res.json({
-      result: serializeQuizResultForLearner(result),
+      result: serializeQuizResultForLearner(compatibleResult),
       analysis,
     });
   }),
@@ -162,7 +182,7 @@ quizResultsRouter.get(
     ]);
 
     return res.json({
-      data: serializeQuizResultsForLearner(data),
+      data: serializeQuizResultsForLearner(await resolveResultListReads(data as Record<string, unknown>[])),
       pagination: buildPaginationPayload(page, limit, total),
     });
   }),

@@ -4,6 +4,7 @@ const read = async (path) => (await readFile(new URL(`../${path}`, import.meta.u
 
 const files = {
   routes: await read("server/src/routes/content.routes.ts"),
+  quizRoutes: await read("server/src/routes/quiz.routes.ts"),
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
   schools: [
@@ -29,11 +30,15 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
+  await read("dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts"),
+  await read("dashboards/admin/SchoolsManager/schoolPackageActions.ts"),
 ].join("\n"),
   store: [
     await read("store/useStore.ts"),
     await read("store/slices/accessEnrollmentSlice.ts"),
   ].join("\n"),
+  accessEnrollment: await read("store/slices/accessEnrollmentSlice.ts"),
   packageJson: await read("package.json"),
   schoolFromScratchAudit: await read("scripts/live-school-from-scratch-audit.mjs"),
 };
@@ -111,6 +116,14 @@ check("school management can copy handover message", () => {
   assertIncludes(files.schools, "navigator.clipboard.writeText(text)");
   assertIncludes(files.schools, "managementNotice");
   assertIncludes(files.schools, "نسخ رسالة التسليم");
+});
+
+check("relation imports lock repeated execution until the authoritative refresh completes", () => {
+  assertIncludes(files.schools, "const handleApplyRelationImport = async () => {");
+  assertIncludes(files.schools, "if (isApplyingRelations) return;");
+  assertIncludes(files.schools, "setIsApplyingRelations(true);");
+  assertIncludes(files.schools, "api.applySchoolRelations(selectedSchool.id");
+  assertIncludes(files.schools, "} finally {\n                setIsApplyingRelations(false);");
 });
 
 check("school list has portfolio readiness command center", () => {
@@ -222,6 +235,56 @@ check("school student roster exposes direct removal actions", () => {
   assertIncludes(files.schools, "rosterActionPending");
 });
 
+check("school class cards provide direct teacher scope assignment without supervisor elevation", () => {
+  assertIncludes(files.schools, "data-testid=\"school-class-teachers\"");
+  assertIncludes(files.schools, "data-testid=\"school-assign-class-teacher\"");
+  assertIncludes(files.schools, "data-testid=\"school-remove-class-teacher\"");
+  assertIncludes(files.schools, "onAssignTeacher={handleAssignTeacherToClass}");
+  assertIncludes(files.schools, "onRemoveTeacher={handleRemoveTeacherFromClass}");
+  assertIncludes(files.store, "assignTeacherToGroupAsync: async");
+  assertIncludes(files.store, "removeTeacherFromGroupAsync: async");
+  assertIncludes(files.store, "currentUser.role !== Role.TEACHER");
+  assertIncludes(files.store, "schoolId: schoolId || null");
+  assertIncludes(files.store, "groupIds: nextGroupIds");
+});
+
+check("school roster assignments stay server-backed and refresh the authoritative workspace", () => {
+  assertIncludes(files.schools, "createSchoolRosterAssignmentActions");
+  assertIncludes(files.schools, "assignSupervisorToGroupAsync");
+  assertIncludes(files.schools, "removeSupervisorFromGroupAsync");
+  assertIncludes(files.schools, "assignStudentToGroupAsync");
+  assertIncludes(files.schools, "removeStudentFromGroupAsync");
+  assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
+  assertIncludes(files.schools, "supervisor-assign-${groupId}-${supervisorId}");
+  assertIncludes(files.schools, "student-remove-${groupId}-${studentId}");
+});
+
+check("selected-school class lifecycle stays server-backed and refreshes authoritatively", () => {
+  assertIncludes(files.schools, "createSchoolClassLifecycleActions");
+  assertIncludes(files.schools, "createSchoolClassRenameAction");
+  assertIncludes(files.schools, "createSchoolBulkClassCreationAction");
+  assertIncludes(files.schools, "createGroupAsync(buildNewClassGroup");
+  assertIncludes(files.schools, "deleteGroupAsync(classroom.id)");
+  assertIncludes(files.schools, "updateGroupAsync(classroom.id, { name: newName.trim() })");
+  assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
+  assertIncludes(files.schools, "create-class");
+  assertIncludes(files.schools, "delete-class-${classroom.id}");
+  assertIncludes(files.schools, "rename-class-${classroom.id}");
+  assertIncludes(files.schools, "create-classes");
+  assertIncludes(files.schools, "buildBulkClassGroups");
+});
+
+check("school package commands stay server-backed and refresh authoritatively", () => {
+  assertIncludes(files.schools, "createSchoolPackageActions");
+  assertIncludes(files.schools, "createB2BPackageAsync(pkg)");
+  assertIncludes(files.schools, "updateB2BPackageAsync(packageId, data)");
+  assertIncludes(files.schools, "deleteB2BPackageAsync(packageId)");
+  assertIncludes(files.schools, "await Promise.all(schoolPackages.map");
+  assertIncludes(files.schools, "await refreshSchoolWorkspace(selectedSchool.id)");
+  assertIncludes(files.schools, "create-${pkg.id}");
+  assertIncludes(files.schools, "expire-all");
+});
+
 check("school workspace avoids duplicate operating blocks", () => {
   assertNotIncludes(files.schools, "launchActionCards");
   assertNotIncludes(files.schools, "schoolOperatingBlueprint");
@@ -300,6 +363,29 @@ check("school access codes attach students to the school roster", () => {
   assertIncludes(files.authRoutes, '$addToSet: { studentIds: String(user.id || user._id) },');
   assertIncludes(files.authRoutes, 'const schoolStudentCount = await UserModel.countDocuments({ schoolId, role: "student" });');
   assertIncludes(files.authRoutes, '$set: { totalStudents: schoolStudentCount },');
+});
+
+check("school relation import assigns teachers without supervisor elevation", () => {
+  assertIncludes(files.routes, "teacherEmail");
+  assertIncludes(files.routes, 'createUserIfMissing(\n          teacherEmail,');
+  assertIncludes(files.routes, '"teacher",');
+  assertIncludes(files.routes, 'summary.linkedTeachers += 1');
+  assertNotIncludes(files.routes, 'GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: teacher');
+});
+
+check("school package access requires a user-specific active grant", () => {
+  assertIncludes(files.quizRoutes, 'import { AccessGrantModel } from "../models/AccessGrant.js";');
+  assertIncludes(files.quizRoutes, 'userId,');
+  assertIncludes(files.quizRoutes, 'packageId: { $in: packageIds }');
+  assertIncludes(files.quizRoutes, 'status: "active"');
+  assertIncludes(files.quizRoutes, 'return grants.some((grant: any) => matchesContentScope(grant, contentType, pathId, subjectId));');
+});
+
+check("student UI access does not infer package entitlement from school membership", () => {
+  const scopedAccessSource = files.accessEnrollment.split("hasScopedPackageAccess: (contentType, pathId")[1]?.split("getMatchingPackage: (contentType, pathId")[0] || "";
+  assertIncludes(scopedAccessSource, "purchasedPackageIds");
+  assertIncludes(scopedAccessSource, "School membership identifies the learner's operational scope");
+  assertNotIncludes(scopedAccessSource, "schoolIds.has(pkg.schoolId) && packageMatchesScope(pkg, contentType, pathId, subjectId)");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

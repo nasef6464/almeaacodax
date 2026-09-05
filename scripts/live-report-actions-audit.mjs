@@ -4,6 +4,9 @@ import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
 const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
+const API_ORIGIN = new URL(API_BASE_URL).origin;
+const API_COOKIE_DOMAIN = new URL(API_ORIGIN).hostname;
+const API_COOKIE_SECURE = new URL(API_ORIGIN).protocol === "https:";
 const RUN_ID = process.env.REPORT_ACTIONS_AUDIT_RUN_ID || `report-actions-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
@@ -114,11 +117,13 @@ async function login(page, role) {
     {
       name: "almeaa_access_token",
       value: authCookie,
-      domain: "almeaacodax-k2ux.onrender.com",
+      domain: API_COOKIE_DOMAIN,
       path: "/",
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: API_COOKIE_SECURE,
+      // SameSite=None is rejected by Chromium unless Secure=true. The CI
+      // audit API runs on plain HTTP, so use Lax for the local runtime.
+      sameSite: API_COOKIE_SECURE ? "None" : "Lax",
     },
   ]);
   await page.context().addInitScript((backendUser) => {

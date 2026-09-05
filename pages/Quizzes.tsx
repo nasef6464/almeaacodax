@@ -141,8 +141,13 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       if (hasExplicitTargets) {
         const userGroups = user.groupIds || [];
         const userTargeted = (quiz.targetUserIds || []).length === 0 || (quiz.targetUserIds || []).includes(user.id);
+        // The authenticated catalog is already audience-filtered by the API.
+        // Some legacy sessions do not hydrate groupIds into the client profile;
+        // do not hide a server-authorized assignment in that case. When local
+        // membership is present, retain the defensive mismatch rejection.
         const groupTargeted =
           (quiz.targetGroupIds || []).length === 0 ||
+          userGroups.length === 0 ||
           (quiz.targetGroupIds || []).some((groupId) => userGroups.includes(groupId));
 
         if (!userTargeted || !groupTargeted) return false;
@@ -573,60 +578,26 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           <div className="flex flex-col gap-3 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
+              <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1">سجل المحاولات السابقة والتقدم في الاختبارات التدريبية والمحاكية</p>
             </div>
             {weakestTrackedSkill ? (
               <Link
                 to="/dashboard?tab=reports"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-black text-amber-700 hover:bg-amber-100"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-black text-amber-700 hover:bg-amber-100 transition-colors"
               >
                 <Target size={16} />
                 أولوية المراجعة: {weakestTrackedSkill.skill}
               </Link>
             ) : null}
           </div>
-
-          {/* Quick Category Switcher in header */}
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveAttemptCategory('regular')}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-black transition-all ${
-                activeAttemptCategory === 'regular'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-200 hover:bg-indigo-50'
-              }`}
-            >
-              <FileText size={16} />
-              اختباراتي
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
-                activeAttemptCategory === 'regular' ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-600'
-              }`}>{attemptGroupsByCategory.regular.length}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveAttemptCategory('mock')}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-black transition-all ${
-                activeAttemptCategory === 'mock'
-                  ? 'bg-violet-600 text-white shadow-md'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:border-violet-200 hover:bg-violet-50'
-              }`}
-            >
-              <Sparkles size={16} />
-              اختبارات محاكية
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
-                activeAttemptCategory === 'mock' ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-600'
-              }`}>{attemptGroupsByCategory.mock.length}</span>
-            </button>
-          </div>
         </header>
 
-        {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
-
-        <div className="hidden">
-          <StatCard icon={<Sparkles size={24} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
-          <StatCard icon={<TrendingUp size={24} />} value={`${avgImprovement}%`} label="التحسن" color="amber" />
-          <StatCard icon={<CheckCircle size={24} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
-          <StatCard icon={<FileText size={24} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
+        {/* ملخص الإحصائيات السريعة للأداء */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <StatCard icon={<Sparkles size={22} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
+          <StatCard icon={<TrendingUp size={22} />} value={`${avgImprovement}%`} label="التحسن" color="amber" />
+          <StatCard icon={<CheckCircle size={22} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
+          <StatCard icon={<FileText size={22} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -863,6 +834,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               return (
                 <Link
                   key={quiz.id}
+                  data-testid={`student-directed-test-${quiz.id}`}
                   to={route}
                   className="rounded-xl border border-white bg-white p-5 transition-all hover:border-indigo-300 hover:shadow-md group flex flex-col"
                 >

@@ -20,15 +20,23 @@ import { createStudyPlansApi } from './apiGroups/studyPlansApi';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
+const isLocalhost = ["localhost", "127.0.0.1"].includes(runtimeHostname);
+
+// Explicit Environment Flag for Staging.
+// Custom white-label production domains and production will not trigger staging behavior.
+export const isStagingEnv = !isLocalhost && runtimeEnv?.VITE_APP_ENV === "staging";
+
 const configuredApiBaseUrl =
   (globalThis as { __API_BASE_URL__?: string }).__API_BASE_URL__ ||
   (typeof runtimeEnv?.VITE_API_URL === "string" ? runtimeEnv.VITE_API_URL : "");
-const defaultApiBaseUrl =
-  runtimeHostname && !["localhost", "127.0.0.1"].includes(runtimeHostname)
-    ? "/api"
-    : "http://localhost:4000/api";
+const defaultApiBaseUrl = isLocalhost ? "http://localhost:4000/api" : "/api";
 
-const API_BASE_URL = (configuredApiBaseUrl || defaultApiBaseUrl).replace(/\/$/, "");
+// Staging environment uses relative "/api" through Vercel's rewrite proxy
+// when VITE_APP_ENV=staging, guaranteeing same-origin transport.
+// Localhost and production/custom production domains preserve their configured or default API URL.
+const API_BASE_URL = (
+  isStagingEnv ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
+).replace(/\/$/, "");
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
@@ -316,6 +324,7 @@ export const api = {
     clearPublicCache("content-bootstrap:learning:full");
     clearPublicCache("content-bootstrap:learning:core");
     clearPublicCache("content-bootstrap:minimal");
+    clearPublicCache("content-bootstrap:operations");
   },
   /** يمسح كاش bootstrap التصنيفات حتى يُجلب المسار/المادة الجديدة عند إعادة التحميل */
   clearTaxonomyBootstrapCache: () => {
@@ -836,7 +845,9 @@ export const api = {
       body: payload,
       token,
     }),
-  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number }, token?: string | null) =>
+  getLiveExamSession: (quizId: string, token?: string | null) =>
+    request<any>(`/live-exams/session/${encodeURIComponent(quizId)}`, { token }),
+  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number; answers?: Record<string, unknown> }, token?: string | null) =>
     request<{ success: boolean }>("/live-exams/progress", {
       method: "POST",
       body: payload,

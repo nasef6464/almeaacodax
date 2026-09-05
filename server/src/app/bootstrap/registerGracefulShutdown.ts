@@ -2,6 +2,8 @@ import type { Server } from "http";
 import mongoose from "mongoose";
 import { closeRedisClients } from "../../config/redis.js";
 import { closeNotificationQueue } from "../../queues/notificationQueue.js";
+import { closeNotificationRealtime } from "../../modules/notifications/infrastructure/notificationRealtime.js";
+import { closeWeeklyParentReportQueue } from "../../modules/reports/infrastructure/weeklyParentReportQueue.js";
 
 /**
  * Registers the API process' existing graceful-shutdown contract.
@@ -36,6 +38,8 @@ export function registerGracefulShutdown(server: Server) {
         });
       });
       await closeNotificationQueue();
+      await closeWeeklyParentReportQueue();
+      await closeNotificationRealtime();
       await closeRedisClients();
       await mongoose.connection.close(false);
       clearTimeout(forceExitTimer);

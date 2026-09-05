@@ -21,7 +21,7 @@ export function buildSchoolRelationsTemplateSheets(): WorkbookSheet[] {
         {
             name: 'relations',
             rows: [
-                ['بريد الطالب', 'بريد ولي الأمر', 'اسم ولي الأمر', 'بريد المشرف', 'اسم المشرف', 'اسم الفصل'],
+                ['بريد الطالب', 'بريد ولي الأمر', 'اسم ولي الأمر', 'بريد المشرف', 'اسم المشرف', 'بريد المعلم', 'اسم المعلم', 'اسم الفصل'],
                 ['student1@example.com', 'parent1@example.com', 'ولي أمر تجريبي', 'supervisor1@example.com', 'مشرف تجريبي', 'فصل أ'],
                 ['student2@example.com', 'parent1@example.com', 'ولي أمر تجريبي', '', '', 'فصل ب'],
             ],

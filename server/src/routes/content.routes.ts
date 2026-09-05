@@ -31,33 +31,17 @@ import { announcementAdSchema, announcementAdUpdateSchema, homepageSettingsSchem
 import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
 import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content/http/studyPlanSchemas.js";
+import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
+import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
+import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
+import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
+import { resolveContentBootstrapCache } from "../modules/content/application/contentBootstrapCache.js";
+import {
+  getScopedContentBootstrapOperationalData,
+  PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT,
+} from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
 
-const sanitizeVideoUrl = (rawUrl?: string | null) => {
-  if (!rawUrl) return "";
-
-  let trimmedUrl = rawUrl.trim().replace(/^['"]|['"]$/g, "");
-  if (!trimmedUrl) return "";
-
-  trimmedUrl = trimmedUrl
-    .replace(/^https?:\/\/https?:\/\//i, "https://")
-    .replace(/^https?:\/\/:\/\//i, "https://")
-    .replace(/^:\/\//, "https://")
-    .replace(/^\/\//, "https://");
-
-  if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
-    return `https://${trimmedUrl}`;
-  }
-
-  return trimmedUrl;
-};
-
-const sanitizeLessonPayload = <T extends { videoUrl?: string; meetingUrl?: string; recordingUrl?: string; fileUrl?: string }>(payload: T): T => ({
-  ...payload,
-  ...(payload.videoUrl !== undefined ? { videoUrl: sanitizeVideoUrl(payload.videoUrl) } : {}),
-  ...(payload.meetingUrl !== undefined ? { meetingUrl: sanitizeVideoUrl(payload.meetingUrl) } : {}),
-  ...(payload.recordingUrl !== undefined ? { recordingUrl: sanitizeVideoUrl(payload.recordingUrl) } : {}),
-  ...(payload.fileUrl !== undefined ? { fileUrl: sanitizeVideoUrl(payload.fileUrl) } : {}),
-});
+const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {
@@ -69,7 +53,6 @@ const buildDocumentQuery = (value: string) => {
 
 const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
 const CONTENT_BOOTSTRAP_MINIMAL_CACHE_TTL_MS = 3 * 60 * 1000;
-const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
 type PublicContentBootstrapPayload = {
   topics: unknown[];
   lessons: unknown[];
@@ -82,7 +65,7 @@ type PublicContentBootstrapPayload = {
 };
 type ContentBootstrapCachePayload = PublicContentBootstrapPayload;
 type ContentBootstrapCacheEntry = { expiresAt: number; payload: ContentBootstrapCachePayload };
-const contentBootstrapScopeSchema = z.enum(["full", "learning"]).default("full");
+const contentBootstrapScopeSchema = z.enum(["full", "learning", "operations"]).default("full");
 const contentBootstrapPhaseSchema = z.enum(["full", "core"]).default("full");
 let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
 let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
@@ -101,20 +84,6 @@ const clearContentBootstrapCache = () => {
   contentBootstrapMinimalCache = null;
   contentBootstrapMinimalPromise = null;
 };
-
-const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter: T, activePathIds: string[], pathField = "pathId") => ({
-  $and: [
-    baseFilter,
-    {
-      $or: [
-        { [pathField]: { $in: activePathIds } },
-        { [pathField]: { $exists: false } },
-        { [pathField]: "" },
-        { [pathField]: null },
-      ],
-    },
-  ],
-});
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
@@ -156,90 +125,6 @@ const buildOwnedDocumentQuery = (
   }
 
   return { $and: [baseQuery, { $or: ownershipConditions }] };
-};
-
-const getScopedOperationalData = async (authUser?: { id: string; role: string; schoolId?: string | null }) => {
-  if (authUser?.role === "admin") {
-    const [groups, b2bPackages, accessCodes, announcementAds] = await Promise.all([
-      GroupModel.find().sort({ createdAt: -1 }),
-      B2BPackageModel.find().sort({ createdAt: -1 }),
-      AccessCodeModel.find().sort({ createdAt: -1 }),
-      AnnouncementAdModel.find().sort({ priority: 1, createdAt: -1 }),
-    ]);
-
-    return { groups, b2bPackages, accessCodes, announcementAds };
-  }
-
-  if (!authUser) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT)
-      .lean();
-    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
-  }
-
-  const user = await UserModel.findById(authUser.id).select("schoolId groupIds linkedStudentIds role");
-  if (!user) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT);
-    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
-  }
-
-  const managedGroups =
-    user.role === "teacher" || user.role === "supervisor"
-      ? await GroupModel.find({
-          $or: [
-            { ownerId: authUser.id },
-            { supervisorIds: authUser.id },
-            ...(authUser.schoolId ? [{ parentId: authUser.schoolId }, { _id: authUser.schoolId }, { id: authUser.schoolId }] : []),
-          ],
-        }).select("id _id parentId type")
-      : [];
-
-  const linkedStudents =
-    user.role === "parent" && Array.isArray(user.linkedStudentIds) && user.linkedStudentIds.length
-      ? await UserModel.find(buildDocumentsByIdsQuery(user.linkedStudentIds.map(String))).select("schoolId groupIds")
-      : [];
-
-  const seedGroupIds = uniqueStrings([
-    String(user.schoolId || ""),
-    ...(user.groupIds || []).map(String),
-    ...managedGroups.flatMap((group) => [String(group.id || group._id), String(group.parentId || "")]),
-    ...linkedStudents.flatMap((student) => [String(student.schoolId || ""), ...(student.groupIds || []).map(String)]),
-  ]);
-
-  if (seedGroupIds.length === 0) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT);
-    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
-  }
-
-  const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(seedGroupIds)).sort({ createdAt: -1 });
-  const schoolIds = uniqueStrings([
-    String(user.schoolId || ""),
-    ...linkedStudents.map((student) => String(student.schoolId || "")),
-    ...seedGroups
-      .filter((group) => group.type === "SCHOOL")
-      .map((group) => String(group.id || group._id)),
-    ...seedGroups.map((group) => String(group.parentId || "")),
-  ]);
-  const visibleGroupIds = uniqueStrings([...seedGroupIds, ...schoolIds]);
-  const groups = visibleGroupIds.length
-    ? await GroupModel.find(buildDocumentsByIdsQuery(visibleGroupIds)).sort({ createdAt: -1 })
-    : [];
-  const [b2bPackages, accessCodes, announcementAds] = await Promise.all([
-    schoolIds.length ? B2BPackageModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 }) : Promise.resolve([]),
-    user.role === "supervisor" && schoolIds.length
-      ? AccessCodeModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 })
-      : Promise.resolve([]),
-    AnnouncementAdModel.find({ isActive: true })
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT),
-  ]);
-
-  return { groups, b2bPackages, accessCodes, announcementAds };
 };
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
@@ -344,28 +229,43 @@ const normalizeAccessCodeResponse = (code: any) => ({
   createdAt: Number(code.createdAt || 0),
 });
 
-const resolveAccessCodeSchoolsForSupervisor = async (authUser: { id: string }) => {
+type SupervisorManagementScope = {
+  schoolIds: string[];
+  classIds: string[];
+};
+
+const resolveSupervisorManagementScope = async (authUser: { id: string }): Promise<SupervisorManagementScope> => {
   const user = await UserModel.findById(authUser.id).select("schoolId groupIds role").lean();
   if (!user) {
-    return [] as string[];
+    return { schoolIds: [], classIds: [] };
   }
 
   const managedGroupIds = uniqueStrings([...(user.groupIds || []).map(String)]);
-  const [seedGroups, directSupervisedSchools] = await Promise.all([
+  const [seedGroups, directlySupervisedGroups] = await Promise.all([
     managedGroupIds.length
       ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type")
       : Promise.resolve([]),
-    GroupModel.find({ type: "SCHOOL", supervisorIds: authUser.id }).select("id _id"),
+    GroupModel.find({ supervisorIds: authUser.id }).select("id _id parentId type"),
   ]);
 
   const schoolIds = uniqueStrings([
     String(user.schoolId || ""),
-    ...directSupervisedSchools.map((group) => String(group.id || group._id)),
+    ...directlySupervisedGroups
+      .filter((group) => group.type === "SCHOOL")
+      .map((group) => String(group.id || group._id)),
     ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
-    ...seedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
+  ]);
+  const classIds = uniqueStrings([
+    ...directlySupervisedGroups
+      .filter((group) => group.type === "CLASS")
+      .map((group) => String(group.id || group._id)),
+    ...seedGroups.filter((group) => group.type === "CLASS").map((group) => String(group.id || group._id)),
   ]);
 
-  return uniqueStrings(schoolIds.filter(Boolean));
+  return {
+    schoolIds: schoolIds.filter(Boolean),
+    classIds: classIds.filter(Boolean),
+  };
 };
 
 const assertSchoolManagementScope = async (
@@ -381,8 +281,8 @@ const assertSchoolManagementScope = async (
     return false;
   }
 
-  const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-  if (scopedSchoolIds.includes(schoolId)) {
+  const { schoolIds } = await resolveSupervisorManagementScope({ id: authUser.id });
+  if (schoolIds.includes(schoolId)) {
     return true;
   }
 
@@ -428,11 +328,14 @@ const hasGroupManagementScope = async (
   }
 
   if (authUser.role === "supervisor") {
-    const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-    if (String(group.type || "") === "SCHOOL" && scopedSchoolIds.includes(groupId)) {
+    const { schoolIds, classIds } = await resolveSupervisorManagementScope({ id: authUser.id });
+    if (String(group.type || "") === "SCHOOL" && schoolIds.includes(groupId)) {
       return true;
     }
-    if (scopedSchoolIds.includes(parentId)) {
+    if (schoolIds.includes(parentId)) {
+      return true;
+    }
+    if (classIds.includes(groupId) || classIds.includes(parentId)) {
       return true;
     }
   }
@@ -448,8 +351,8 @@ const hasSchoolIdManagementScope = async (
     return true;
   }
 
-  const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-  return scopedSchoolIds.includes(String(schoolId || ""));
+  const { schoolIds } = await resolveSupervisorManagementScope({ id: authUser.id });
+  return schoolIds.includes(String(schoolId || ""));
 };
 
 type GroupCreatePayload = z.infer<typeof groupSchema>;
@@ -508,21 +411,8 @@ const buildScopedGroupCreatePayload = async (
     };
   }
 
-  const parentSchoolId =
-    parentGroup.type === "SCHOOL"
-      ? String(parentGroup.id || parentGroup._id || "")
-      : String(parentGroup.parentId || "");
-
-  if (!parentSchoolId) {
-    return {
-      ok: false,
-      statusCode: StatusCodes.BAD_REQUEST,
-      message: "Parent school could not be resolved",
-    };
-  }
-
-  const canCreateUnderSchool = await hasSchoolIdManagementScope(authUser, parentSchoolId);
-  if (!canCreateUnderSchool) {
+  const canManageParentGroup = await hasGroupManagementScope(authUser, parentGroup as any);
+  if (!canManageParentGroup) {
     return {
       ok: false,
       statusCode: StatusCodes.FORBIDDEN,
@@ -805,88 +695,60 @@ contentRouter.get(
     const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
     const requestedPhase = contentBootstrapPhaseSchema.parse(req.query.phase);
     const canUseFullScope = isStaffRole(req.authUser?.role);
-    const scope = requestedScope === "full" && !canUseFullScope ? "learning" : requestedScope;
-    const phase = scope === "learning" ? requestedPhase : "full";
-    const isLearningCore = scope === "learning" && phase === "core";
-    const includeOperationalData = scope !== "learning";
-    const includeStudyPlans = scope !== "learning" && phase === "full";
-    const isNonStaffAuthedLearning = Boolean(req.authUser) && !canUseFullScope && scope === "learning";
-    const canUseSharedCache = !req.authUser || isNonStaffAuthedLearning;
-    const cacheKey = canUseSharedCache ? `scope:${scope}:phase:${phase}:shared-learning` : "";
-    const cachedEntry = cacheKey ? contentBootstrapCache.get(cacheKey) : null;
-    if (cachedEntry && cachedEntry.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
-      res.setHeader("X-Content-Cache", "hit");
-      res.setHeader("X-Content-Scope", scope);
-      res.setHeader("X-Content-Phase", phase);
-      return res.json(cachedEntry.payload);
-    }
-
-    const pendingPromise = cacheKey ? contentBootstrapPromises.get(cacheKey) : null;
-    if (pendingPromise) {
-      const payload = await pendingPromise;
-      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
-      res.setHeader("X-Content-Cache", "shared");
-      res.setHeader("X-Content-Scope", scope);
-      res.setHeader("X-Content-Phase", phase);
-      return res.json(payload);
-    }
-
+    const {
+      scope,
+      phase,
+      isLearningCore,
+      isOperationsOnly,
+      includeOperationalData,
+      includeStudyPlans,
+      canUseSharedCache,
+      cacheKey,
+    } = resolveContentBootstrapRequest({
+      requestedScope,
+      requestedPhase,
+      canUseFullScope,
+      isAuthenticated: Boolean(req.authUser),
+    });
     const loadBootstrapPayload = async (): Promise<PublicContentBootstrapPayload> => {
       const canSeeAllContent = isStaffRole(req.authUser?.role);
-      const lessonFilter = isStaffRole(req.authUser?.role)
-        ? {}
-        : {
-            showOnPlatform: { $ne: false },
-            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-          };
-      const topicFilter = isStaffRole(req.authUser?.role) ? {} : { showOnPlatform: { $ne: false } };
-      const libraryFilter = isStaffRole(req.authUser?.role)
-        ? {}
-        : {
-            showOnPlatform: { $ne: false },
-            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-          };
       const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
-      const finalTopicFilter = canSeeAllContent ? topicFilter : scopeFilterToActivePaths(topicFilter, activePathIds);
-      const finalLessonFilter = canSeeAllContent ? lessonFilter : scopeFilterToActivePaths(lessonFilter, activePathIds);
-      const finalLibraryFilter = canSeeAllContent ? libraryFilter : scopeFilterToActivePaths(libraryFilter, activePathIds);
+      const { finalTopicFilter, finalLessonFilter, finalLibraryFilter } =
+        buildContentBootstrapVisibilityFilters({ canSeeAllContent, activePathIds });
 
       const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
-        TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
-        isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
-        isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
+        isOperationsOnly ? Promise.resolve([]) : TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
+        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
+        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
         includeOperationalData
-          ? getScopedOperationalData(req.authUser)
+          ? getScopedContentBootstrapOperationalData(req.authUser)
           : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),
         includeStudyPlans && req.authUser
           ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean()
           : Promise.resolve([]),
       ]);
 
-      const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
-      return { topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans };
+      return buildContentBootstrapPayload({
+        topics,
+        lessons,
+        libraryItems,
+        operationalData,
+        studyPlans,
+      });
     };
 
-    const payloadPromise = loadBootstrapPayload();
-    const payload = canUseSharedCache
-      ? await (() => {
-          if (!cacheKey) return payloadPromise;
-          const inflight = payloadPromise.finally(() => {
-            contentBootstrapPromises.delete(cacheKey);
-          });
-          contentBootstrapPromises.set(cacheKey, inflight);
-          return inflight;
-        })()
-      : await payloadPromise;
+    const { payload, cacheStatus } = await resolveContentBootstrapCache({
+      cacheKey,
+      canUseSharedCache,
+      cache: contentBootstrapCache,
+      pending: contentBootstrapPromises,
+      ttlMs: CONTENT_BOOTSTRAP_CACHE_TTL_MS,
+      load: loadBootstrapPayload,
+    });
 
-    if (canUseSharedCache && cacheKey) {
-      contentBootstrapCache.set(cacheKey, {
-        expiresAt: Date.now() + CONTENT_BOOTSTRAP_CACHE_TTL_MS,
-        payload,
-      });
+    if (cacheStatus) {
       res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
-      res.setHeader("X-Content-Cache", "miss");
+      res.setHeader("X-Content-Cache", cacheStatus);
     }
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
@@ -1214,7 +1076,7 @@ contentRouter.delete(
 contentRouter.post(
   "/groups",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = groupSchema.parse(req.body);
     const createScope = await buildScopedGroupCreatePayload(req.authUser!, payload);
@@ -1230,7 +1092,7 @@ contentRouter.post(
 contentRouter.patch(
   "/groups/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = groupSchema.partial().parse(req.body);
     const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
@@ -1258,7 +1120,7 @@ contentRouter.patch(
 contentRouter.delete(
   "/groups/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
     if (!existing) {
@@ -1564,22 +1426,46 @@ contentRouter.get(
     ]);
 
     const studentIds = students.map(getModelDocumentId).filter(Boolean);
-    const [quizResults, quizResultTotal] = studentIds.length
+    const quizResultFilter = { userId: { $in: studentIds } };
+    const [quizResults, quizResultTotal, quizResultStats, studentResultStats, skillResultStats] = studentIds.length
       ? await Promise.all([
-          QuizResultModel.find({ userId: { $in: studentIds } })
+          QuizResultModel.find(quizResultFilter)
             .select("userId score skillsAnalysis createdAt")
             .sort({ createdAt: -1 })
             .skip(pagination.skip)
             .limit(pagination.limit)
             .lean(),
-          QuizResultModel.countDocuments({ userId: { $in: studentIds } }),
+          QuizResultModel.countDocuments(quizResultFilter),
+          QuizResultModel.aggregate([
+            { $match: quizResultFilter },
+            { $group: { _id: null, attempts: { $sum: 1 }, averageScore: { $avg: "$score" } } },
+          ]),
+          QuizResultModel.aggregate([
+            { $match: quizResultFilter },
+            { $group: { _id: "$userId", attempts: { $sum: 1 }, scoreTotal: { $sum: "$score" } } },
+          ]),
+          QuizResultModel.aggregate([
+            { $match: quizResultFilter },
+            { $unwind: "$skillsAnalysis" },
+            {
+              $group: {
+                _id: {
+                  skillId: "$skillsAnalysis.skillId",
+                  skill: "$skillsAnalysis.skill",
+                  subjectId: "$skillsAnalysis.subjectId",
+                  sectionId: "$skillsAnalysis.sectionId",
+                },
+                attempts: { $sum: 1 },
+                masteryTotal: { $sum: "$skillsAnalysis.mastery" },
+              },
+            },
+          ]),
         ])
-      : [[], 0];
+      : [[], 0, [], [], []];
 
-    const averageScore = quizResults.length
-      ? Math.round(
-          quizResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / quizResults.length,
-        )
+    const aggregateStats = quizResultStats[0] as { attempts?: number; averageScore?: number } | undefined;
+    const averageScore = aggregateStats?.attempts
+      ? Math.round(Number(aggregateStats.averageScore) || 0)
       : 0;
 
     const weakSkillMap = new Map<
@@ -1594,22 +1480,15 @@ contentRouter.get(
       }
     >();
 
-    quizResults.forEach((result) => {
-      const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-      skills.forEach((gap: any) => {
-        const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
-        const current = weakSkillMap.get(key) || {
-          skillId: gap?.skillId,
-          skill: String(gap?.skill || "مهارة غير مسماة"),
-          subjectId: gap?.subjectId,
-          sectionId: gap?.sectionId,
-          attempts: 0,
-          masteryTotal: 0,
-        };
-
-        current.attempts += 1;
-        current.masteryTotal += Number(gap?.mastery) || 0;
-        weakSkillMap.set(key, current);
+    skillResultStats.forEach((item: any) => {
+      const key = String(item?._id?.skillId || item?._id?.skill || item?._id?.sectionId || "unknown");
+      weakSkillMap.set(key, {
+        skillId: item?._id?.skillId,
+        skill: String(item?._id?.skill || "مهارة غير مسماة"),
+        subjectId: item?._id?.subjectId,
+        sectionId: item?._id?.sectionId,
+        attempts: Number(item?.attempts) || 0,
+        masteryTotal: Number(item?.masteryTotal) || 0,
       });
     });
 
@@ -1629,9 +1508,11 @@ contentRouter.get(
       const classId = getModelDocumentId(group);
       const classStudents = students.filter((student) => (student.groupIds || []).includes(classId));
       const classStudentIds = new Set(classStudents.map(getModelDocumentId).filter(Boolean));
-      const classResults = quizResults.filter((result) => classStudentIds.has(String(result.userId)));
-      const classAverageScore = classResults.length
-        ? Math.round(classResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / classResults.length)
+      const classResults = studentResultStats.filter((result: any) => classStudentIds.has(String(result._id)));
+      const classAttempts = classResults.reduce((sum: number, result: any) => sum + (Number(result.attempts) || 0), 0);
+      const classScoreTotal = classResults.reduce((sum: number, result: any) => sum + (Number(result.scoreTotal) || 0), 0);
+      const classAverageScore = classAttempts
+        ? Math.round(classScoreTotal / classAttempts)
         : 0;
 
       return {
@@ -1639,7 +1520,7 @@ contentRouter.get(
         name: group.name,
         studentCount: classStudents.length,
         supervisorCount: Array.isArray(group.supervisorIds) ? group.supervisorIds.length : 0,
-        quizAttempts: classResults.length,
+        quizAttempts: classAttempts,
         averageScore: classAverageScore,
       };
     });
@@ -1843,7 +1724,7 @@ contentRouter.get(
     let scopedSchoolIds: string[] | null = null;
 
     if (authUser.role === "supervisor") {
-      scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      scopedSchoolIds = (await resolveSupervisorManagementScope({ id: authUser.id })).schoolIds;
       if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
       }
@@ -1921,7 +1802,7 @@ contentRouter.get(
     let scopedSchoolIds: string[] | null = null;
 
     if (authUser.role === "supervisor") {
-      scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      scopedSchoolIds = (await resolveSupervisorManagementScope({ id: authUser.id })).schoolIds;
       if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
       }
@@ -2465,27 +2346,31 @@ contentRouter.post(
     const studentEmails = payload.rows.map((row) => row.studentEmail.trim().toLowerCase());
     const parentEmails = payload.rows.map((row) => String(row.parentEmail || "").trim().toLowerCase()).filter(Boolean);
     const supervisorEmails = payload.rows.map((row) => String(row.supervisorEmail || "").trim().toLowerCase()).filter(Boolean);
-    const allEmails = Array.from(new Set([...studentEmails, ...parentEmails, ...supervisorEmails]));
+    const teacherEmails = payload.rows.map((row) => String(row.teacherEmail || "").trim().toLowerCase()).filter(Boolean);
+    const allEmails = Array.from(new Set([...studentEmails, ...parentEmails, ...supervisorEmails, ...teacherEmails]));
     const users = await UserModel.find({ email: { $in: allEmails } });
     const usersByEmail = new Map(users.map((item) => [String(item.email || "").trim().toLowerCase(), item]));
-    const credentials: Array<{ role: "parent" | "supervisor"; name: string; email: string; password: string; linkedTo: string }> = [];
+    const credentials: Array<{ role: "parent" | "supervisor" | "teacher"; name: string; email: string; password: string; linkedTo: string }> = [];
     const summary = {
       rows: payload.rows.length,
       createdParents: 0,
       createdSupervisors: 0,
+      createdTeachers: 0,
       linkedParents: 0,
       linkedSupervisors: 0,
+      linkedTeachers: 0,
       assignedClasses: 0,
       missingStudents: 0,
       missingParents: 0,
       missingSupervisors: 0,
+      missingTeachers: 0,
       missingClasses: 0,
       skippedRows: 0,
     };
 
     const createUserIfMissing = async (
       email: string,
-      role: "parent" | "supervisor",
+      role: "parent" | "supervisor" | "teacher",
       name: string,
       linkedTo: string,
     ) => {
@@ -2509,6 +2394,7 @@ contentRouter.post(
       credentials.push({ role, name: created.name, email: normalizedEmail, password, linkedTo });
       if (role === "parent") summary.createdParents += 1;
       if (role === "supervisor") summary.createdSupervisors += 1;
+      if (role === "teacher") summary.createdTeachers += 1;
       return created;
     };
 
@@ -2588,6 +2474,23 @@ contentRouter.post(
           summary.linkedSupervisors += 1;
         }
       }
+
+      const teacherEmail = String(row.teacherEmail || "").trim().toLowerCase();
+      if (teacherEmail) {
+        const teacher = await createUserIfMissing(
+          teacherEmail,
+          "teacher",
+          row.teacherName?.trim() || `معلم ${student.name}`,
+          classroom?.name || school.name,
+        );
+        if (!teacher || teacher.role !== "teacher") {
+          summary.missingTeachers += 1;
+        } else {
+          const targetGroupId = classroom ? classroom.id || String(classroom._id) : schoolId;
+          await UserModel.findByIdAndUpdate(teacher._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } });
+          summary.linkedTeachers += 1;
+        }
+      }
     }
 
     const latestClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId });
@@ -2595,14 +2498,14 @@ contentRouter.post(
       GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {
         $set: {
           totalStudents: await UserModel.countDocuments({ schoolId, role: "student" }),
-          totalSupervisors: await UserModel.countDocuments({ schoolId, role: { $in: ["teacher", "supervisor"] } }),
+          totalSupervisors: await UserModel.countDocuments({ schoolId, role: "supervisor" }),
         },
       }),
       ...latestClasses.map(async (group) => {
         const classId = group.id || String(group._id);
         const [studentCount, supervisorCount] = await Promise.all([
           UserModel.countDocuments({ role: "student", groupIds: classId }),
-          UserModel.countDocuments({ role: { $in: ["teacher", "supervisor"] }, groupIds: classId }),
+          UserModel.countDocuments({ role: "supervisor", groupIds: classId }),
         ]);
         await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), {
           $set: { totalStudents: studentCount, totalSupervisors: supervisorCount },

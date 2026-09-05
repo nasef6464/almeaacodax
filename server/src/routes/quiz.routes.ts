@@ -8,6 +8,7 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
+import { AccessGrantModel } from "../models/AccessGrant.js";
 import { CourseModel } from "../models/Course.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
@@ -15,27 +16,68 @@ import { SkillModel } from "../models/Skill.js";
 import { SubjectModel } from "../models/Subject.js";
 import { SectionModel } from "../models/Section.js";
 import { TopicModel } from "../models/Topic.js";
-import { ReviewCardModel } from "../models/ReviewCard.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
-import { sm2 } from "../services/spacedRepetition.js";
-import { createNotificationDeliveries } from "../services/notificationService.js";
 import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
-import { buildRecommendedAction, buildResultSkillStatus, buildSkillRecommendation, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
+import { buildRecommendedAction, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
+import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
+import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";
+import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
+import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../modules/quizzes/application/quizWorkflow.js";
+import { resolveQuizPublicationState } from "../modules/quizzes/application/quizPublicationPolicy.js";
+import { processInlineQuestions } from "../modules/quizzes/application/quizInlineQuestions.js";
+import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
+import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
+import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
+import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
+import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
+import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
+import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
+import { buildQuizSubmissionSectionResults } from "../modules/quizzes/application/quizSubmissionSectionResults.js";
+import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quizSubmissionSnapshot.js";
+import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/quizSubmissionAnswerReview.js";
+import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
+import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
+import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
+import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
+import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
+import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
+import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
+import { buildQuizReportStudentScope } from "../modules/quizzes/application/quizReportStudentScope.js";
+import { buildQuizReportAttemptGaps } from "../modules/quizzes/application/quizReportAttemptGaps.js";
+import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
+import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
+import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
+import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
+import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
+import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
+import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
 const QUIZ_RESULTS_CACHE_TTL_MS = 5 * 1000;
 const QUIZ_RESULTS_CACHE_MAX_ENTRIES = 300;
+
+const resolveCompatibleQuizResultList = async (results: Record<string, unknown>[]) => {
+  const legacyIds = results.map((result) => String(result.id || result._id || "")).filter(Boolean);
+  const quizIds = results.map((result) => String(result.quizId || "")).filter(Boolean);
+  const [assessmentResultsByLegacyId, readerModesByQuizId] = await Promise.all([
+    findAssessmentResultsByLegacyIds(legacyIds),
+    findAssessmentResultReaderModes(quizIds),
+  ]);
+  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
+};
 
 let publicQuizListCache:
   | {
@@ -93,191 +135,8 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
     skillId: query.skillId || "",
   });
 
-const validateQuizQuestionIntegrity = async (quizLike: any) => {
-  const normalizedIds = uniqueStrings(getQuizQuestionIds(quizLike).map((value) => String(value || "").trim()).filter(Boolean));
-  if (normalizedIds.length === 0) {
-    return {
-      ok: false,
-      totalReferenced: 0,
-      resolved: 0,
-      missingIds: [] as string[],
-      invalidContentIds: [] as string[],
-      message: "Cannot publish a quiz without valid questions",
-    };
-  }
-
-  const questions = await QuestionModel.find(buildDocumentsByIdsQuery(normalizedIds))
-    .select("id text imageUrl options type")
-    .lean();
-  const byCanonicalId = new Map<string, any>();
-
-  questions.forEach((question: any) => {
-    const canonicalId = String(question.id || question._id);
-    byCanonicalId.set(canonicalId, question);
-    const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
-    if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
-      byCanonicalId.set(withoutCopySuffix, question);
-    }
-  });
-
-  const missingIds: string[] = [];
-  const invalidContentIds: string[] = [];
-  normalizedIds.forEach((id) => {
-    const resolved = byCanonicalId.get(id) || byCanonicalId.get(id.replace(/_copy(?:_\d+)?$/i, ""));
-    if (!resolved) {
-      missingIds.push(id);
-      return;
-    }
-    if (!isQuestionContentUsable(resolved)) {
-      invalidContentIds.push(id);
-    }
-  });
-
-  const ok = missingIds.length === 0 && invalidContentIds.length === 0;
-  return {
-    ok,
-    totalReferenced: normalizedIds.length,
-    resolved: normalizedIds.length - missingIds.length,
-    missingIds,
-    invalidContentIds,
-    message: ok
-      ? "ok"
-      : "Cannot publish quiz: some referenced questions are missing or have incomplete content",
-  };
-};
-
-const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T, fallbackType = "quiz") => {
-  if (payload.access && typeof payload.access === "object") {
-    const rawType = String(payload.access.type || "").toLowerCase();
-    if (rawType === "public" || rawType === "all") {
-      payload.access.type = "free";
-    }
-  }
-
-  const nextPayload = { ...payload };
-  const quizKind = nextPayload.quizKind;
-  const mockExamEnabled = nextPayload.mockExam?.enabled === true;
-  const placements = Array.isArray(nextPayload.learningPlacements) ? nextPayload.learningPlacements : [];
-  
-  let showInTraining = false;
-  let showInMock = false;
-  let type = fallbackType;
-  let placement = "mock";
-
-  if (quizKind || placements.length > 0 || mockExamEnabled) {
-    if (placements.length > 0) {
-      showInTraining = placements.some(p => p.slot === "training");
-      showInMock = placements.some(p => p.slot === "tests" || p.slot === "mock");
-    }
-
-    if (quizKind === "mock" || mockExamEnabled) {
-      showInMock = true;
-      showInTraining = false;
-      placement = "mock";
-      type = "quiz";
-      (nextPayload as any).quizKind = "mock";
-      if (!(nextPayload as any).mockExam) (nextPayload as any).mockExam = { enabled: true, sections: [] };
-      (nextPayload as any).mockExam.enabled = true;
-    } else if (quizKind === "drill") {
-      showInTraining = true;
-      placement = showInMock ? "both" : "training";
-      type = "bank";
-    } else if (quizKind === "test") {
-      showInTraining = true;
-      showInMock = true;
-      placement = "both";
-      type = "quiz";
-    } else {
-      placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
-      type = showInTraining && !showInMock ? "bank" : "quiz";
-    }
-  } else {
-    const hasPlacementFields =
-      nextPayload.type !== undefined ||
-      nextPayload.placement !== undefined ||
-      nextPayload.showInTraining !== undefined ||
-      nextPayload.showInMock !== undefined;
-
-    if (!hasPlacementFields) return nextPayload;
-
-    const inferredType = nextPayload.type || fallbackType;
-    showInTraining =
-      typeof nextPayload.showInTraining === "boolean"
-        ? nextPayload.showInTraining
-        : nextPayload.placement
-          ? nextPayload.placement === "training" || nextPayload.placement === "both"
-          : inferredType === "bank";
-    showInMock =
-      typeof nextPayload.showInMock === "boolean"
-        ? nextPayload.showInMock
-        : nextPayload.placement
-          ? nextPayload.placement === "mock" || nextPayload.placement === "both"
-          : inferredType !== "bank";
-    
-    placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
-    type = showInTraining && !showInMock ? "bank" : "quiz";
-
-    if (placement === "mock") (nextPayload as any).quizKind = "mock";
-    else if (placement === "training" || type === "bank") (nextPayload as any).quizKind = "drill";
-    else (nextPayload as any).quizKind = "test";
-  }
-
-  return {
-    ...nextPayload,
-    type,
-    placement,
-    showInTraining,
-    showInMock,
-  };
-};
-
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
-
-const getQuizMaxAttempts = (quiz: any) => {
-  const value = Number(quiz?.settings?.maxAttempts ?? 1);
-  return Number.isFinite(value) && value > 0 ? Math.floor(value) : 1;
-};
-
-const getQuizPassingScore = (quiz: any) => {
-  const value = Number(quiz?.settings?.passingScore ?? 60);
-  if (!Number.isFinite(value)) return 60;
-  return Math.min(100, Math.max(0, value));
-};
-
-const assertQuizWindowIsOpen = (
-  quiz: any,
-  payload: z.infer<typeof quizSubmitSchema>,
-): { ok: true } | { ok: false; status: number; message: string } => {
-  const dueDateRaw = String(quiz?.dueDate || "").trim();
-  if (dueDateRaw) {
-    const dueDateMs = Date.parse(dueDateRaw);
-    if (Number.isFinite(dueDateMs) && Date.now() > dueDateMs) {
-      return {
-        ok: false,
-        status: StatusCodes.FORBIDDEN,
-        message: "Quiz submission deadline has passed",
-      };
-    }
-  }
-
-  const timeLimitMinutes = Number(quiz?.settings?.timeLimit ?? 0);
-  if (Number.isFinite(timeLimitMinutes) && timeLimitMinutes > 0) {
-    const allowedSeconds = Math.ceil(timeLimitMinutes * 60) + 60;
-    if (payload.timeSpentSeconds > allowedSeconds) {
-      return {
-        ok: false,
-        status: StatusCodes.REQUEST_TIMEOUT,
-        message: "Quiz time limit exceeded",
-      };
-    }
-  }
-
-  return { ok: true };
-};
-
-const buildSubmissionKey = (userId: string, quizId: string, attemptNumber: number) =>
-  `quiz-submit:${userId}:${quizId}:attempt:${attemptNumber}`;
 
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {
@@ -331,112 +190,6 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
-};
-
-const resolveQuizSkillIds = async (questionIds: string[]) => {
-  if (questionIds.length === 0) {
-    return [];
-  }
-
-  const questions = await QuestionModel.find({ id: { $in: questionIds } }).select("skillIds");
-  return [...new Set(questions.flatMap((question) => question.skillIds || []).filter(Boolean))];
-};
-
-const getQuizQuestionIds = (quiz: any) => {
-  const mockSections = Array.isArray(quiz?.mockExam?.sections) ? quiz.mockExam.sections : [];
-  const mockQuestionIds = quiz?.mockExam?.enabled === true
-    ? mockSections.flatMap((section: any) => Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [])
-    : [];
-  const regularQuestionIds = Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String) : [];
-  return uniqueStrings((mockQuestionIds.length > 0 ? mockQuestionIds : regularQuestionIds).filter(Boolean));
-};
-
-const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
-  if (!authUser) {
-    return {};
-  }
-
-  if (authUser.role === "admin") {
-    return {
-      ownerType: "platform",
-      ownerId: authUser.id,
-      createdBy: authUser.id,
-      approvalStatus: "approved",
-      approvedBy: authUser.id,
-      approvedAt: Date.now(),
-      isPublished: true,
-    };
-  }
-
-  if (authUser.role === "supervisor") {
-    return {
-      ownerType: "school",
-      ownerId: authUser.schoolId || authUser.id,
-      createdBy: authUser.id,
-      approvalStatus: "approved",
-      approvedBy: authUser.id,
-      approvedAt: Date.now(),
-      isPublished: true,
-    };
-  }
-
-  if (authUser.role === "teacher") {
-    return {
-      ownerType: "teacher",
-      ownerId: authUser.id,
-      createdBy: authUser.id,
-      assignedTeacherId: authUser.id,
-      approvalStatus: "pending_review",
-      approvedBy: "",
-      approvedAt: null,
-    };
-  }
-
-  return {
-    ownerType: "school",
-    ownerId: authUser.schoolId || authUser.id,
-    createdBy: authUser.id,
-    approvalStatus: "pending_review",
-    approvedBy: "",
-    approvedAt: null,
-  };
-};
-
-const sanitizeWorkflowUpdate = (
-  payload: Record<string, unknown>,
-  authUser: { id: string; role: string; schoolId?: string | null },
-  options?: { respectPublished?: boolean },
-) => {
-  const nextPayload = { ...payload };
-
-  if (authUser.role !== "admin" && authUser.role !== "supervisor") {
-    delete nextPayload.ownerType;
-    delete nextPayload.ownerId;
-    delete nextPayload.createdBy;
-    delete nextPayload.approvedBy;
-    delete nextPayload.approvedAt;
-    delete nextPayload.reviewerNotes;
-    delete nextPayload.revenueSharePercentage;
-    if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
-      nextPayload.approvalStatus = "pending_review";
-    }
-    if (options?.respectPublished && nextPayload.isPublished === true) {
-      nextPayload.isPublished = false;
-    }
-  } else if (typeof nextPayload.approvalStatus === "string") {
-    if (nextPayload.approvalStatus === "approved") {
-      nextPayload.approvedBy = authUser.id;
-      nextPayload.approvedAt = Date.now();
-    } else if (nextPayload.approvalStatus === "rejected" || nextPayload.approvalStatus === "pending_review") {
-      nextPayload.approvedBy = "";
-      nextPayload.approvedAt = null;
-      if (options?.respectPublished) {
-        nextPayload.isPublished = false;
-      }
-    }
-  }
-
-  return nextPayload;
 };
 
 const assertTeacherManagedScope = async (
@@ -581,23 +334,23 @@ const hasSchoolPackageAccess = async (
   subjectId?: string,
 ) => {
   const schoolId = String(user.schoolId || "");
-  if (!schoolId) {
+  const userId = String(user.id || user._id || "");
+  if (!schoolId || !userId) {
     return false;
   }
 
   const packages = await B2BPackageModel.find({ schoolId, status: "active" });
-  return packages.some((pkg: any) =>
-    matchesContentScope(
-      {
-        contentTypes: pkg.contentTypes,
-        pathIds: pkg.pathIds,
-        subjectIds: pkg.subjectIds,
-      },
-      contentType,
-      pathId,
-      subjectId,
-    ),
-  );
+  const packageIds = packages.map((pkg: any) => String(pkg.id || pkg._id || "")).filter(Boolean);
+  if (packageIds.length === 0) return false;
+
+  const grants = await AccessGrantModel.find({
+    userId,
+    packageId: { $in: packageIds },
+    status: "active",
+    $or: [{ expiresAt: null }, { expiresAt: { $exists: false } }, { expiresAt: { $gt: Date.now() } }],
+  }).select("contentTypes pathIds subjectIds").lean();
+
+  return grants.some((grant: any) => matchesContentScope(grant, contentType, pathId, subjectId));
 };
 
 const getPackageContentTypeForQuizSource = (source?: string) => {
@@ -683,6 +436,47 @@ const isQuizTargetedToLearner = (quiz: any, user?: any) => {
   );
 };
 
+/**
+ * Directed assessments must protect their definition as well as submission.
+ * The client-side catalog is only a convenience layer; this check reloads the
+ * learner and verifies group membership from the database before questions
+ * can be returned from a direct URL.
+ */
+const resolveDirectedQuizReadAccess = async (quiz: any, authUser?: any) => {
+  const targetUserIds = uniqueStrings(quiz.targetUserIds || []);
+  const targetGroupIds = uniqueStrings(quiz.targetGroupIds || []);
+  if (targetUserIds.length === 0 && targetGroupIds.length === 0) {
+    return { allowed: true as const };
+  }
+
+  if (!authUser) {
+    return { allowed: false as const, status: StatusCodes.UNAUTHORIZED };
+  }
+
+  const user = await resolveAuthUserByAuthId(String(authUser.id || ""));
+  if (!user) {
+    return { allowed: false as const, status: StatusCodes.UNAUTHORIZED };
+  }
+  if (isStaffRole(user.role)) {
+    return { allowed: true as const };
+  }
+
+  const userId = String(user.id || user._id || "");
+  if (targetUserIds.includes(userId)) {
+    return { allowed: true as const };
+  }
+  if (targetGroupIds.length === 0) {
+    return { allowed: false as const, status: StatusCodes.FORBIDDEN };
+  }
+
+  const matchingGroup = await GroupModel.findOne({
+    $and: [buildDocumentsByIdsQuery(targetGroupIds), { studentIds: userId }],
+  }).select("_id").lean();
+  return matchingGroup
+    ? { allowed: true as const }
+    : { allowed: false as const, status: StatusCodes.FORBIDDEN };
+};
+
 const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   if (isStaffRole(user.role)) {
     return true;
@@ -748,207 +542,6 @@ const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   return false;
 };
 
-const updateSkillProgressFromResult = async (result: any, userId: string) => {
-  const skillsAnalysis = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-  if (skillsAnalysis.length === 0) return;
-
-  await Promise.all(
-    skillsAnalysis
-      .filter((skill: any) => skill?.skillId || skill?.skill)
-      .map(async (skill: any) => {
-        const skillId = String(skill.skillId || `${skill.subjectId || "subject"}:${skill.sectionId || "section"}:${skill.skill}`);
-        const mastery = Math.max(0, Math.min(100, Number(skill.mastery || 0)));
-        const existing = await SkillProgressModel.findOne({ userId, skillId });
-        const previousAttempts = Number(existing?.attempts || 0);
-        const nextAttempts = previousAttempts + 1;
-        const previousMastery = Number(existing?.mastery || 0);
-        const nextMastery = Math.round(((previousMastery * previousAttempts) + mastery) / nextAttempts);
-        const nextStatus = buildSkillStatus(nextMastery);
-
-        await SkillProgressModel.findOneAndUpdate(
-          { userId, skillId },
-          {
-            userId,
-            skillId,
-            skill: String(skill.skill || existing?.skill || "مهارة غير مسماة"),
-            pathId: String(skill.pathId || existing?.pathId || ""),
-            subjectId: String(skill.subjectId || existing?.subjectId || ""),
-            sectionId: String(skill.sectionId || existing?.sectionId || ""),
-            mastery: nextMastery,
-            status: nextStatus,
-            attempts: nextAttempts,
-            lastQuizId: String(result.quizId || ""),
-            lastQuizTitle: String(result.quizTitle || ""),
-            lastAttemptAt: new Date(),
-            recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
-          },
-          { new: true, upsert: true },
-        );
-      }),
-  );
-};
-
-const updateSkillProgressFromQuestionAttempt = async (attempt: any, userId: string) => {
-  const skillIds = uniqueStrings(Array.isArray(attempt.skillIds) ? attempt.skillIds.map(String) : []);
-  if (skillIds.length === 0) return;
-
-  const skills = await SkillModel.find(buildDocumentsByIdsQuery(skillIds));
-  const mastery = attempt.isCorrect ? 100 : 0;
-
-  await Promise.all(
-    skills.map(async (skill) => {
-      const skillId = String(skill.id || skill._id);
-      const existing = await SkillProgressModel.findOne({ userId, skillId });
-      const previousAttempts = Number(existing?.attempts || 0);
-      const nextAttempts = previousAttempts + 1;
-      const previousMastery = Number(existing?.mastery || 0);
-      const nextMastery = Math.round(((previousMastery * previousAttempts) + mastery) / nextAttempts);
-      const nextStatus = buildSkillStatus(nextMastery);
-
-      await SkillProgressModel.findOneAndUpdate(
-        { userId, skillId },
-        {
-          userId,
-          skillId,
-          skill: String(skill.name || existing?.skill || "مهارة غير مسماة"),
-          pathId: String(skill.pathId || existing?.pathId || attempt.pathId || ""),
-          subjectId: String(skill.subjectId || existing?.subjectId || attempt.subjectId || ""),
-          sectionId: String(skill.sectionId || existing?.sectionId || attempt.sectionId || ""),
-          mastery: nextMastery,
-          status: nextStatus,
-          attempts: nextAttempts,
-          lastQuizId: String(existing?.lastQuizId || ""),
-          lastQuizTitle: String(existing?.lastQuizTitle || ""),
-          lastAttemptAt: new Date(),
-          recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
-        },
-        { new: true, upsert: true },
-      );
-    }),
-  );
-};
-
-const qualityFromAttempt = (selectedOptionIndex?: number, isCorrect?: boolean) => {
-  if (selectedOptionIndex === undefined || selectedOptionIndex < 0) return 1;
-  return isCorrect ? 4 : 2;
-};
-
-const upsertReviewCardsFromQuestionReview = async (args: {
-  userId: string;
-  questionReview: Array<{
-    questionId: string;
-    selectedOptionIndex?: number;
-    isCorrect?: boolean;
-  }>;
-  questionById: Map<string, any>;
-}) => {
-  const { userId, questionReview, questionById } = args;
-  const operations = questionReview
-    .map((item) => {
-      const question = questionById.get(String(item.questionId || ""));
-      if (!question) return null;
-      const skillId = Array.isArray(question.skillIds) && question.skillIds.length > 0 ? String(question.skillIds[0]) : "";
-      const quality = qualityFromAttempt(item.selectedOptionIndex, item.isCorrect);
-      const previous = sm2({ easeFactor: 2.5, interval: 1, repetitions: 0 }, quality);
-      return {
-        updateOne: {
-          filter: { userId, questionId: String(item.questionId || "") },
-          update: {
-            $setOnInsert: {
-              userId,
-              questionId: String(item.questionId || ""),
-              skillId,
-            },
-            $set: {
-              skillId,
-              easeFactor: previous.easeFactor,
-              interval: previous.interval,
-              repetitions: previous.repetitions,
-              nextReviewDate: previous.nextReviewDate,
-              lastQuality: quality,
-            },
-          },
-          upsert: true,
-        },
-      };
-    })
-    .filter(Boolean);
-
-  if (operations.length === 0) return;
-  await ReviewCardModel.bulkWrite(operations as any[], { ordered: false });
-};
-
-const runQuizSubmissionSideEffects = async (args: {
-  requestId?: string;
-  result: any;
-  userId: string;
-  questionReview: Array<{
-    questionId: string;
-    selectedOptionIndex?: number;
-    isCorrect?: boolean;
-  }>;
-  questionById: Map<string, any>;
-}) => {
-  const score        = Number(args.result?.score ?? 0);
-  const quizTitle    = String(args.result?.quizTitle || "الاختبار");
-  const scoreEmoji   = score >= 80 ? "🎉" : score >= 60 ? "👍" : "💪";
-  const notifTitle   = `${scoreEmoji} نتيجة ${quizTitle}`;
-  const notifBody    = `حصلت على ${score}% في هذا الاختبار. ${score >= 80 ? 'أداء رائع!' : score >= 60 ? 'جيد جداً، استمر!' : 'لا تيأس، راجع الأخطاء وأعد المحاولة.'}`;
-
-  const outcomes = await Promise.allSettled([
-    updateSkillProgressFromResult(args.result, args.userId),
-    upsertReviewCardsFromQuestionReview({
-      userId: args.userId,
-      questionReview: args.questionReview,
-      questionById: args.questionById,
-    }),
-    // Phase 14: إشعار تلقائي للطالب بنتيجة اختباره عبر SSE
-    createNotificationDeliveries({
-      title:     notifTitle,
-      body:      notifBody,
-      channels:  ["in_app"],
-      userIds:   [args.userId],
-      createdBy: "system",
-    }).catch(() => { /* non-critical */ }),
-  ]);
-
-  outcomes.forEach((outcome, index) => {
-    if (outcome.status === "fulfilled") return;
-    const sideEffect = index === 0 ? "skill-progress" : "review-cards";
-    const reason = outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason || "unknown");
-    console.warn("[quiz-submit] non-critical side effect failed", {
-      requestId: args.requestId || "",
-      userId: args.userId,
-      quizId: String(args.result?.quizId || ""),
-      sideEffect,
-      reason,
-    });
-  });
-};
-
-const matchesManagedScope = (
-  gap: any,
-  managedPathIds: Set<string>,
-  managedSubjectIds: Set<string>,
-) => {
-  if (managedPathIds.size === 0 && managedSubjectIds.size === 0) {
-    return true;
-  }
-
-  const gapSubjectId = String(gap?.subjectId || "");
-  const gapPathId = String(gap?.pathId || "");
-
-  if (managedSubjectIds.size > 0 && gapSubjectId && managedSubjectIds.has(gapSubjectId)) {
-    return true;
-  }
-
-  if (managedPathIds.size > 0 && gapPathId && managedPathIds.has(gapPathId)) {
-    return true;
-  }
-
-  return false;
-};
-
 const toSafeDate = (value?: string) => {
   if (!value) return undefined;
   const date = new Date(value);
@@ -958,87 +551,11 @@ const toSafeDate = (value?: string) => {
 const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActive role";
 
 const resolveSupervisorSchoolReportScope = async (authUser: any) => {
-  if (authUser.role !== "supervisor") {
-    return {
-      schoolIds: uniqueStrings(authUser.schoolId ? [String(authUser.schoolId)] : []),
-      groupIds: uniqueStrings((authUser.groupIds || []).map(String)),
-    };
-  }
-
-  const managedGroupIds = uniqueStrings((authUser.groupIds || []).map(String));
-  const [seedGroups, directSupervisedSchools] = await Promise.all([
-    managedGroupIds.length
-      ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type").lean()
-      : Promise.resolve([]),
-    GroupModel.find({ type: "SCHOOL", supervisorIds: String(authUser.id || authUser._id || "") }).select("id _id").lean(),
-  ]);
-
-  const scopedSchoolIds = uniqueStrings([
-    authUser.schoolId ? String(authUser.schoolId) : undefined,
-    ...directSupervisedSchools.map((group: any) => String(group.id || group._id || "")),
-    ...seedGroups.filter((group: any) => group.type === "SCHOOL").map((group: any) => String(group.id || group._id || "")),
-    ...seedGroups
-      .filter((group: any) => group.type === "CLASS" || group.type === "PRIVATE_GROUP")
-      .map((group: any) => String(group.parentId || "")),
-  ]);
-
-  const childScopedGroups = scopedSchoolIds.length
-    ? await GroupModel.find({ parentId: { $in: scopedSchoolIds }, type: { $in: ["CLASS", "PRIVATE_GROUP"] } }).select("id _id").lean()
-    : [];
-
-  return {
-    schoolIds: scopedSchoolIds,
-    groupIds: uniqueStrings([
-      ...managedGroupIds,
-      ...directSupervisedSchools.map((group: any) => String(group.id || group._id || "")),
-      ...childScopedGroups.map((group: any) => String(group.id || group._id || "")),
-    ]),
-  };
+  return resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository);
 };
 
 const buildScopedStudentFilter = async (authUser: any) => {
-  const managedPathIds = new Set<string>((authUser.managedPathIds || []).map(String));
-  const managedSubjectIds = new Set<string>((authUser.managedSubjectIds || []).map(String));
-
-  if (authUser.role === "admin") {
-    return { filter: { role: "student" }, managedPathIds, managedSubjectIds };
-  }
-
-  if (authUser.role === "teacher" || authUser.role === "supervisor") {
-    const supervisorScope = await resolveSupervisorSchoolReportScope(authUser);
-    const allowedGroupIds = new Set(supervisorScope.groupIds);
-    const scopedSchoolIds = supervisorScope.schoolIds;
-    const scopeFilters: Record<string, unknown>[] = [];
-
-    if (allowedGroupIds.size > 0) {
-      scopeFilters.push({ groupIds: { $in: Array.from(allowedGroupIds) } });
-    }
-    if (scopedSchoolIds.length > 0) {
-      scopeFilters.push({ schoolId: { $in: scopedSchoolIds } });
-    }
-
-    return {
-      filter: scopeFilters.length ? { role: "student", $or: scopeFilters } : { role: "student", _id: { $exists: false } },
-      managedPathIds,
-      managedSubjectIds,
-    };
-  }
-
-  if (authUser.role === "parent") {
-    const linkedStudentIds = uniqueStrings((authUser.linkedStudentIds || []).map(String));
-    const studentIdentityFilter = linkedStudentIds.length ? buildDocumentsByIdsQuery(linkedStudentIds) : { _id: { $exists: false } };
-    return {
-      filter: { role: "student", ...studentIdentityFilter },
-      managedPathIds,
-      managedSubjectIds,
-    };
-  }
-
-  return {
-    filter: { role: "student", ...buildDocumentQuery(String(authUser.id || authUser._id || "")) },
-    managedPathIds,
-    managedSubjectIds,
-  };
+  return buildQuizReportStudentScope(authUser, resolveSupervisorSchoolReportScope);
 };
 
 const resolveScopedStudents = async (authUser: any, options?: { limit?: number }) => {
@@ -1050,22 +567,6 @@ const resolveScopedStudents = async (authUser: any, options?: { limit?: number }
   ]);
 
   return { students, totalStudents, isTruncated: totalStudents > students.length, managedPathIds, managedSubjectIds };
-};
-
-const filterResultsByManagedScope = (
-  results: any[],
-  role: string,
-  managedPathIds: Set<string>,
-  managedSubjectIds: Set<string>,
-) => {
-  if (role !== "teacher" || (managedPathIds.size === 0 && managedSubjectIds.size === 0)) {
-    return results;
-  }
-
-  return results.filter((result) => {
-    const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-    return skills.some((gap: any) => matchesManagedScope(gap, managedPathIds, managedSubjectIds));
-  });
 };
 
 export const quizRouter = Router();
@@ -1156,6 +657,11 @@ quizRouter.get(
     if (query.subject) scopeFilter.subject = query.subject;
     if (query.sectionId) scopeFilter.sectionId = query.sectionId;
     if (query.skillId) scopeFilter.skillIds = query.skillId;
+    if (query.skillIds) {
+      const skillIds = uniqueStrings(query.skillIds.split(",").map((item) => item.trim()));
+      if (skillIds.length > 0) scopeFilter.skillIds = { $in: skillIds };
+    }
+    if (query.difficulty) scopeFilter.difficulty = query.difficulty;
     if (query.examType) scopeFilter.examType = query.examType;
     if (query.source) scopeFilter.source = query.source;
     if (typeof query.year === "number") scopeFilter.year = query.year;
@@ -1321,6 +827,22 @@ quizRouter.get(
       req.authUser && !isStaffRole(req.authUser.role)
         ? await resolveAuthUserByAuthId(String(req.authUser.id || ""))
         : req.authUser;
+    // Group membership is authoritative in Group.studentIds for legacy and
+    // school-managed users; hydrate it before applying directed catalog
+    // filtering so an assigned learner is not hidden from the UI.
+    let learnerAudienceForCatalog = learnerAudienceUser;
+    if (learnerAudienceUser && !isStaffRole(learnerAudienceUser.role)) {
+      const learnerRecord = learnerAudienceUser as any;
+      const learnerId = String(learnerRecord.id || learnerRecord._id || "");
+      if (learnerId) {
+        const learnerGroups = await GroupModel.find({ studentIds: learnerId }).select("id _id").lean();
+        const membershipGroupIds = learnerGroups.flatMap((group: any) => [group.id, group._id].filter(Boolean).map(String));
+        learnerAudienceForCatalog = {
+          ...(typeof learnerRecord.toObject === "function" ? learnerRecord.toObject() : learnerRecord),
+          groupIds: uniqueStrings([...(learnerRecord.groupIds || []), ...membershipGroupIds]),
+        };
+      }
+    }
     const requestedPathId = typeof req.query.pathId === "string" ? req.query.pathId.trim() : "";
     const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
     const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
@@ -1397,7 +919,7 @@ quizRouter.get(
 
       safeItems = items.filter(
         (quiz: any) =>
-          isQuizTargetedToLearner(quiz, learnerAudienceUser) &&
+          isQuizTargetedToLearner(quiz, learnerAudienceForCatalog) &&
           getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
       );
     }
@@ -1454,7 +976,7 @@ quizRouter.get(
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
       quizResults = quizResults.filter((result) => {
         const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-        return skills.some((gap: any) => matchesManagedScope(gap, managedPathIds, managedSubjectIds));
+        return skills.some((gap: any) => matchesManagedContentScope(gap, managedPathIds, managedSubjectIds));
       });
     }
 
@@ -1463,7 +985,7 @@ quizRouter.get(
       : [];
 
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
-      questionAttempts = questionAttempts.filter((attempt) => matchesManagedScope(attempt, managedPathIds, managedSubjectIds));
+      questionAttempts = questionAttempts.filter((attempt) => matchesManagedContentScope(attempt, managedPathIds, managedSubjectIds));
     }
 
     const attemptSkillIds = uniqueStrings(questionAttempts.flatMap((attempt) => (attempt.skillIds || []).map(String)));
@@ -1488,25 +1010,6 @@ quizRouter.get(
       bucket.push(attempt);
       attemptsByStudent.set(key, bucket);
     });
-
-    const buildAttemptGaps = (attempt: any) =>
-      (Array.isArray(attempt.skillIds) ? attempt.skillIds : [])
-        .map((skillId: unknown) => {
-          const resolvedSkill = skillById.get(String(skillId));
-          if (!resolvedSkill) return null;
-
-          return {
-            skillId: String(resolvedSkill.id || resolvedSkill._id || skillId),
-            skill: String(resolvedSkill.name || "مهارة غير مسماة"),
-            pathId: String(resolvedSkill.pathId || attempt.pathId || ""),
-            subjectId: String(resolvedSkill.subjectId || attempt.subjectId || ""),
-            sectionId: String(resolvedSkill.sectionId || attempt.sectionId || ""),
-            subjectName: subjectNameById.get(String(resolvedSkill.subjectId || attempt.subjectId || "")) || "",
-            section: sectionNameById.get(String(resolvedSkill.sectionId || attempt.sectionId || "")) || String(resolvedSkill.sectionId || attempt.sectionId || ""),
-            mastery: attempt.isCorrect ? 100 : 0,
-          };
-        })
-        .filter(Boolean);
 
     const resultsByStudent = new Map<string, any[]>();
     quizResults.forEach((result) => {
@@ -1535,7 +1038,7 @@ quizRouter.get(
         results.forEach((result) => {
           const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
             authUser.role === "teacher"
-              ? matchesManagedScope(gap, managedPathIds, managedSubjectIds)
+              ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
               : true,
           );
           skills.forEach((gap: any) => {
@@ -1554,7 +1057,7 @@ quizRouter.get(
         });
 
         granularAttempts.forEach((attempt) => {
-          buildAttemptGaps(attempt).forEach((gap: any) => {
+          buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
             const mastery = Number(gap?.mastery || 0);
             if (mastery >= 75) return;
             const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
@@ -1627,7 +1130,7 @@ quizRouter.get(
     quizResults.forEach((result) => {
       const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
         authUser.role === "teacher"
-          ? matchesManagedScope(gap, managedPathIds, managedSubjectIds)
+          ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
           : true,
       );
       skills.forEach((gap: any) => {
@@ -1654,7 +1157,7 @@ quizRouter.get(
     });
 
     questionAttempts.forEach((attempt) => {
-      buildAttemptGaps(attempt).forEach((gap: any) => {
+      buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
         const mastery = Number(gap?.mastery || 0);
         if (mastery >= 75) return;
 
@@ -1713,7 +1216,7 @@ quizRouter.get(
     quizResults.forEach((result) => {
       const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
         authUser.role === "teacher"
-          ? matchesManagedScope(gap, managedPathIds, managedSubjectIds)
+          ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
           : true,
       );
       skills.forEach((gap: any) => {
@@ -1737,7 +1240,7 @@ quizRouter.get(
     });
 
     questionAttempts.forEach((attempt) => {
-      buildAttemptGaps(attempt).forEach((gap: any) => {
+      buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
         if (!gap?.subjectId) return;
         const key = String(gap.subjectId);
         const current = subjectMap.get(key) || {
@@ -1884,7 +1387,7 @@ quizRouter.get(
     if (projection) {
       resultsQuery.select(projection);
     }
-    const items = serializeQuizResultsForLearner(await resultsQuery.lean());
+    const items = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await resultsQuery.lean() as Record<string, unknown>[]));
     const total = query.noTotal
       ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
       : await QuizResultModel.countDocuments(filter);
@@ -1969,7 +1472,7 @@ quizRouter.get(
       if (projection) {
         scopedResultsQuery.select(projection);
       }
-      results = serializeQuizResultsForLearner(await scopedResultsQuery.lean());
+      results = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await scopedResultsQuery.lean() as Record<string, unknown>[]));
     }
     const total = selectedStudentIds.length
       ? (query.noTotal
@@ -1979,7 +1482,7 @@ quizRouter.get(
             ...scopedFilter,
           }))
       : 0;
-    results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
+    results = filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds);
 
     return res.json({
       scope: {
@@ -2053,17 +1556,13 @@ quizRouter.post(
     const selectedOptionIndex = Number(payload.selectedOptionIndex);
     const isCorrect =
       selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
-    const created = await QuestionAttemptModel.create({
-      ...payload,
+    const created = await QuestionAttemptModel.create(buildQuestionAttemptDocument({
+      payload,
       selectedOptionIndex,
       isCorrect,
       userId: req.authUser!.id,
-      date: payload.date || new Date().toISOString(),
-      pathId: String(question?.pathId || ""),
-      subjectId: String(question?.subject || ""),
-      sectionId: String(question?.sectionId || ""),
-      skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
-    });
+      question,
+    }));
     await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);
 
     res.status(StatusCodes.CREATED).json(created);
@@ -2075,13 +1574,26 @@ quizRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const documentQuery = buildDocumentQuery(req.params.id);
-    const quiz = await QuizModel.findOne(documentQuery).lean();
+    const legacyQuiz = await QuizModel.findOne(documentQuery).lean();
 
-    if (!quiz) {
+    if (!legacyQuiz) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
 
-    const questionIds = Array.isArray(quiz.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+    const directedReadAccess = await resolveDirectedQuizReadAccess(legacyQuiz, req.authUser);
+    if (!directedReadAccess.allowed) {
+      return res.status(directedReadAccess.status).json({
+        message: directedReadAccess.status === StatusCodes.UNAUTHORIZED
+          ? "Authentication required"
+          : "This quiz is not assigned to you",
+      });
+    }
+
+    const assessmentId = String(legacyQuiz.id || legacyQuiz._id || "");
+    const version = assessmentId ? await findLatestPublishedAssessmentVersion(assessmentId) : null;
+    const quiz = resolveAssessmentDefinitionRead(legacyQuiz, version);
+
+    const questionIds = getQuizQuestionIds(quiz);
     let questions: any[] = [];
     if (questionIds.length > 0) {
       const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();
@@ -2099,61 +1611,21 @@ quizRouter.get(
   }),
 );
 
-const processInlineQuestions = async (questions: any[], pathId: string, subjectId: string, authUser: any) => {
-  if (!Array.isArray(questions) || questions.length === 0) return [];
-  const createdIds: string[] = [];
-
-  for (const q of questions) {
-    if (typeof q === "string") {
-      createdIds.push(q);
-      continue;
-    }
-    if (q && typeof q === "object") {
-      if (q.id && !q.text && !q.options) {
-        createdIds.push(String(q.id));
-        continue;
-      }
-      const qId = String(q.id || `q_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
-      const formattedOptions = Array.isArray(q.options)
-        ? q.options.map((opt: any, idx: number) => {
-            if (typeof opt === "string") return { id: `opt_${idx}`, text: opt, isCorrect: idx === 0 };
-            return {
-              id: String(opt.id || `opt_${idx}`),
-              text: String(opt.text || opt.title || ""),
-              isCorrect: Boolean(opt.isCorrect),
-            };
-          })
-        : [];
-
-      const createdQuestion = await QuestionModel.create({
-        id: qId,
-        _id: qId,
-        text: String(q.text || q.title || "سؤال جديد"),
-        type: q.type || "multiple_choice",
-        pathId: String(q.pathId || pathId || "").trim(),
-        subjectId: String(q.subjectId || subjectId || "").trim(),
-        options: formattedOptions,
-        explanation: String(q.explanation || ""),
-        ownerId: String(authUser?.id || ""),
-        createdBy: String(authUser?.id || ""),
-      });
-      createdIds.push(String(createdQuestion.id || createdQuestion._id || ""));
-    }
-  }
-  return createdIds;
-};
-
 quizRouter.get(
   "/results/latest",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const item = await QuizResultModel.findOne({ userId: req.authUser!.id }).sort({ createdAt: -1 });
+    const item = await QuizResultModel.findOne({ userId: req.authUser!.id }).sort({ createdAt: -1 }).lean();
 
     if (!item) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "No quiz results found" });
     }
 
-    return res.json(serializeQuizResultForLearner(item));
+    const readerMode = await findAssessmentResultReaderMode(String(item.quizId || ""));
+    const assessmentResult = shouldReadAssessmentCompatibilityProjection(readerMode)
+      ? await findAssessmentResultByLegacyId(String(item._id))
+      : null;
+    return res.json(serializeQuizResultForLearner(resolveAssessmentResultRead(item as Record<string, unknown>, assessmentResult)));
   }),
 );
 
@@ -2194,13 +1666,27 @@ quizRouter.get(
       });
     }
 
-    // جلب جميع محاولات هذا المحاكي التي تحتوي على sectionResults
-    const results = await QuizResultModel.find({
+    const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
+    if (!authUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    const { students } = authUser.role === "admin"
+      ? { students: [] as any[] }
+      : await resolveScopedStudents(authUser, { limit: 1000 });
+    const scopedStudentIds = students.map((student) => idOf(student));
+
+    // Scope aggregate input to the same authoritative student relationship used
+    // by school reports; never aggregate every attempt for a supervisor request.
+    const results = authUser.role === "admin" || scopedStudentIds.length
+      ? await QuizResultModel.find({
       quizId,
+      ...(authUser.role === "admin" ? {} : { userId: { $in: scopedStudentIds } }),
       sectionResults: { $exists: true, $ne: [] },
     })
       .select("sectionResults score passed")
-      .lean();
+      .lean()
+      : [];
 
     const totalAttempts = results.length;
 
@@ -2259,7 +1745,7 @@ quizRouter.post(
     }
 
     if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
-      const inlineQuestionIds = await processInlineQuestions(req.body.questions, payload.pathId, payload.subjectId, req.authUser);
+      const inlineQuestionIds = await processInlineQuestions(req.body.questions, payload.pathId, payload.subjectId, req.authUser, (document) => QuestionModel.create(document));
       payload.questionIds = uniqueStrings([...(payload.questionIds || []), ...inlineQuestionIds]);
     }
 
@@ -2267,9 +1753,12 @@ quizRouter.post(
     await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const isPowerRole = req.authUser?.role === "admin" || req.authUser?.role === "supervisor";
     const hasQuestions = getQuizQuestionIds(payload).length > 0;
-    const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : hasQuestions) : false;
+    const willBePublished = resolveQuizPublicationState({
+      role: req.authUser?.role,
+      requestedPublished: payload.isPublished,
+      hasQuestions,
+    });
     
     if (willBePublished) {
       const integrity = await validateQuizQuestionIntegrity(payload);
@@ -2287,18 +1776,21 @@ quizRouter.post(
     }
 
     const quizId = String(payload.id || `quiz_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
-    const created = await QuizModel.create({
-      ...payload,
-      id: quizId,
-      _id: quizId,
-      ...workflowDefaults,
-      approvalStatus: isPowerRole
-        ? payload.approvalStatus || "approved"
-        : workflowDefaults.approvalStatus,
-      isPublished: willBePublished,
-      showOnPlatform: typeof payload.showOnPlatform === "boolean" ? payload.showOnPlatform : false,
-      skillIds: resolvedSkillIds,
-    });
+    const created = await QuizModel.create(buildQuizCreateDocument({
+      payload,
+      quizId,
+      workflowDefaults,
+      isPowerRole: req.authUser?.role === "admin" || req.authUser?.role === "supervisor",
+      resolvedSkillIds,
+      willBePublished,
+    }));
+    if (created.isPublished) {
+      await publishAssessmentVersion({
+        assessmentId: String(created.id || created._id),
+        definition: created.toObject(),
+        publishedBy: String(req.authUser!.id),
+      });
+    }
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
@@ -2312,10 +1804,20 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
   }
 
+  // `assessmentData` contains independent rollout controls. PATCHing one must
+  // not silently reset another (for example, reader cutover must not disable
+  // an already-approved post-legacy mirror).
+  if (payload.assessmentData) {
+    payload.assessmentData = {
+      ...((existing.toObject() as Record<string, any>).assessmentData || {}),
+      ...payload.assessmentData,
+    };
+  }
+
   if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
     const nextPathId = String(payload.pathId || existing.pathId || "").trim();
     const nextSubjectId = String(payload.subjectId || existing.subjectId || "").trim();
-    const inlineQuestionIds = await processInlineQuestions(req.body.questions, nextPathId, nextSubjectId, req.authUser);
+    const inlineQuestionIds = await processInlineQuestions(req.body.questions, nextPathId, nextSubjectId, req.authUser, (document) => QuestionModel.create(document));
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
     payload.questionIds = uniqueStrings([...existingQuestionIds, ...(payload.questionIds || []), ...inlineQuestionIds]);
   }
@@ -2333,18 +1835,15 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     : undefined;
   const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
   const sanitizedPayload = sanitizeWorkflowUpdate(
-    {
-      ...normalizedPayload,
-      ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
-    } as Record<string, unknown>,
+    buildQuizUpdateDocument(normalizedPayload as Record<string, unknown>, resolvedSkillIds),
     req.authUser!,
     { respectPublished: true },
   );
-  const nextQuizState = {
-    ...existing.toObject(),
-    ...normalizedPayload,
-    ...sanitizedPayload,
-  };
+  const nextQuizState = buildQuizValidationState(
+    existing.toObject() as Record<string, unknown>,
+    normalizedPayload as Record<string, unknown>,
+    sanitizedPayload,
+  );
   if (nextQuizState.isPublished === true) {
     const integrity = await validateQuizQuestionIntegrity(nextQuizState);
     if (!integrity.ok) {
@@ -2360,6 +1859,13 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     }
   }
   const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
+  if (updated?.isPublished) {
+    await publishAssessmentVersion({
+      assessmentId: String(updated.id || updated._id),
+      definition: updated.toObject(),
+      publishedBy: String(req.authUser!.id),
+    });
+  }
   return res.json(updated);
 });
 
@@ -2383,6 +1889,7 @@ quizRouter.post(
       String(existing.pathId || ""),
       String(existing.subjectId || ""),
       req.authUser,
+      (document) => QuestionModel.create(document),
     );
 
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
@@ -2416,26 +1923,25 @@ quizRouter.post(
     // ── Security: re-validate group membership from DB for directed quizzes ──
     // JWT claims (authUser.groupIds) could be stale or spoofed, so we
     // look up actual group membership directly from GroupModel.
-    const targetGroupIds = uniqueStrings((quiz.targetGroupIds || []).map(String));
-    const targetUserIds  = uniqueStrings((quiz.targetUserIds  || []).map(String));
-    const isDirectedQuiz = targetGroupIds.length > 0 || targetUserIds.length > 0;
-    if (isDirectedQuiz && !isStaffRole(authUser.role)) {
-      const userId = String(authUser.id || authUser._id || "");
-      const isExplicitUser = targetUserIds.includes(userId);
-      if (!isExplicitUser && targetGroupIds.length > 0) {
-        // Verify the student genuinely belongs to at least one targeted group from DB
-        // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
-        const matchingGroup = await GroupModel.findOne({
-          $and: [
-            buildDocumentsByIdsQuery(targetGroupIds),
-            { studentIds: userId },
-          ],
-        }).select("_id").lean();
-        if (!matchingGroup) {
-          return res.status(StatusCodes.FORBIDDEN).json({
-            message: "This quiz is not assigned to you",
-          });
-        }
+    const userId = String(authUser.id || authUser._id || "");
+    const directedScope = buildQuizSubmissionDirectedScope({
+      quiz,
+      userId,
+      isStaff: isStaffRole(authUser.role),
+    });
+    if (directedScope.requiresGroupMembershipCheck) {
+      // Verify the student genuinely belongs to at least one targeted group from DB
+      // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
+      const matchingGroup = await GroupModel.findOne({
+        $and: [
+          buildDocumentsByIdsQuery(directedScope.targetGroupIds),
+          { studentIds: userId },
+        ],
+      }).select("_id").lean();
+      if (!matchingGroup) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          message: "This quiz is not assigned to you",
+        });
       }
     }
 
@@ -2444,7 +1950,10 @@ quizRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
 
-    const quizWindow = assertQuizWindowIsOpen(quiz, payload);
+    const quizWindow = assertQuizSubmissionWindow({
+      quiz,
+      timeSpentSeconds: payload.timeSpentSeconds,
+    });
     if (quizWindow.ok === false) {
       return res.status(quizWindow.status).json({ message: quizWindow.message });
     }
@@ -2456,7 +1965,13 @@ quizRouter.post(
       quizId,
     });
 
-    if (previousAttempts >= maxAttempts) {
+    const attemptState = buildQuizSubmissionAttemptState({
+      userId: req.authUser!.id,
+      quizId,
+      previousAttempts,
+      maxAttempts,
+    });
+    if (attemptState.isLimitReached) {
       return res.status(StatusCodes.CONFLICT).json({
         message: "Quiz attempt limit reached",
         maxAttempts,
@@ -2464,189 +1979,83 @@ quizRouter.post(
       });
     }
 
-    const attemptNumber = previousAttempts + 1;
-    const submissionKey = buildSubmissionKey(req.authUser!.id, quizId, attemptNumber);
+    const { attemptNumber, submissionKey } = attemptState;
     const questionIds = getQuizQuestionIds(quiz);
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
-    const questionById = new Map<string, any>();
-    questions.forEach((question) => {
-      const canonicalId = String(question.id || question._id);
-      questionById.set(canonicalId, question);
-      const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
-      if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
-        questionById.set(withoutCopySuffix, question);
-      }
-    });
-
-    const orderedQuestions = questionIds
-      .map((questionId) => {
-        const id = String(questionId);
-        return questionById.get(id) || questionById.get(id.replace(/_copy(?:_\d+)?$/i, ""));
-      })
-      .filter(Boolean);
+    const questionById = buildQuizQuestionLookup(questions);
+    const orderedQuestions = resolveOrderedQuizQuestions(questionIds, questions);
 
     if (orderedQuestions.length === 0) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Quiz has no valid questions" });
     }
 
-    const skillIds = uniqueStrings(orderedQuestions.flatMap((question) => (question.skillIds || []).map(String)));
+    const skillIds = getQuizSubmissionSkillIds(orderedQuestions);
     const [skills, subjects, sections] = await Promise.all([
-      skillIds.length ? SkillModel.find(buildDocumentsByIdsQuery(skillIds)) : [],
+      skillIds.length
+        ? SkillModel.find(buildDocumentsByIdsQuery(skillIds))
+        : [],
       SubjectModel.find(),
       SectionModel.find(),
     ]);
-    const skillById = new Map<string, any>(
-      skills.map((skill: any) => [String(skill.id || skill._id), skill] as [string, any]),
-    );
-    const subjectNameById = new Map(subjects.map((subject) => [String(subject.id || subject._id), String(subject.name || "")]));
-    const sectionNameById = new Map(sections.map((section) => [String(section.id || section._id), String(section.name || "")]));
-
-    let correctAnswers = 0;
-    let wrongAnswers = 0;
-    let unanswered = 0;
-    const skillStats = new Map<string, { total: number; correct: number }>();
-
-    const questionReview = orderedQuestions.map((question) => {
-      const questionId = String(question.id || question._id);
-      const rawSelected = payload.answers[questionId];
-      const selectedOptionIndex = typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
-      const isCorrect = selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
-
-      if (selectedOptionIndex === undefined) {
-        unanswered += 1;
-      } else if (isCorrect) {
-        correctAnswers += 1;
-      } else {
-        wrongAnswers += 1;
-      }
-
-      (question.skillIds || []).map(String).filter(Boolean).forEach((skillId: string) => {
-        const current = skillStats.get(skillId) || { total: 0, correct: 0 };
-        current.total += 1;
-        if (isCorrect) {
-          current.correct += 1;
-        }
-        skillStats.set(skillId, current);
-      });
-
-      return {
-        questionId,
-        text: String(question.text || ""),
-        options: Array.isArray(question.options) ? question.options.map(String) : [],
-        correctOptionIndex: Number(question.correctOptionIndex ?? 0),
-        selectedOptionIndex,
-        explanation: question.explanation || "",
-        videoUrl: question.videoUrl || "",
-        imageUrl: question.imageUrl || "",
-        isCorrect,
-      };
+    const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({
+      skills,
+      subjects,
+      sections,
     });
 
-    const skillsAnalysis = Array.from(skillStats.entries()).map(([skillId, stats]) => {
-      const skill = skillById.get(skillId);
-      const mastery = Math.round((stats.correct / Math.max(stats.total, 1)) * 100);
-      const status = buildResultSkillStatus(mastery);
-      const subjectId = String(skill?.subjectId || quiz.subjectId || "");
-      const sectionId = String(skill?.sectionId || quiz.sectionId || "");
+    const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview } =
+      buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
 
-      return {
-        skillId,
-        pathId: String(skill?.pathId || quiz.pathId || ""),
-        subjectId,
-        sectionId,
-        skill: String(skill?.name || "مهارة غير مسماة"),
-        mastery,
-        status,
-        recommendation: buildSkillRecommendation(mastery),
-        section: sectionNameById.get(sectionId) || subjectNameById.get(subjectId) || "",
-      };
+    const skillsAnalysis = buildQuizSubmissionSkillsAnalysis({
+      skillStats,
+      skillById,
+      quiz,
+      subjectNameById,
+      sectionNameById,
     });
 
-    const totalQuestions = orderedQuestions.length;
-    const score = Math.round((correctAnswers / Math.max(totalQuestions, 1)) * 100);
     const passingScore = getQuizPassingScore(quiz);
-    const timeSpentMinutes = Math.max(0, Math.round(payload.timeSpentSeconds / 60));
-
+    const scoreSummary = buildQuizSubmissionScoreSummary({
+      correctAnswers,
+      wrongAnswers,
+      unanswered,
+      totalQuestions: orderedQuestions.length,
+      passingScore,
+    });
+    const { totalQuestions, score, passed } = scoreSummary;
     // ── تحليل الأداء لكل قسم (للمحاكيات فقط) ─────────────────────────────
-    const mockSections: any[] = (quiz as any).mockExam?.sections || [];
-    const sectionResults =
-      (quiz as any).mockExam?.enabled && mockSections.length > 0
-        ? mockSections.map((section: any) => {
-            const sectionQuestionIds = new Set<string>((section.questionIds || []).map(String));
-            const sectionQs = orderedQuestions.filter((q: any) =>
-              sectionQuestionIds.has(String(q.id || q._id)),
-            );
-            const secTotal = sectionQs.length;
-            const secCorrect = sectionQs.filter((q: any) => {
-              const qId = String(q.id || q._id);
-              const rawSelected = payload.answers[qId];
-              const selectedOptionIndex =
-                typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
-              return selectedOptionIndex === Number(q.correctOptionIndex ?? 0);
-            }).length;
-            const secWrong = sectionQs.filter((q: any) => {
-              const qId = String(q.id || q._id);
-              const rawSelected = payload.answers[qId];
-              const selectedOptionIndex =
-                typeof rawSelected === "number" && rawSelected >= 0 ? rawSelected : undefined;
-              return (
-                selectedOptionIndex !== undefined &&
-                selectedOptionIndex !== Number(q.correctOptionIndex ?? 0)
-              );
-            }).length;
-            const secUnanswered = secTotal - secCorrect - secWrong;
-            const secScore = secTotal > 0 ? Math.round((secCorrect / secTotal) * 100) : 0;
-            return {
-              sectionId:   String(section.id || section._id || ""),
-              sectionName: String(section.title || section.name || ""),
-              total:       secTotal,
-              correct:     secCorrect,
-              wrong:       secWrong,
-              unanswered:  secUnanswered,
-              score:       secScore,
-            };
-          })
-        : undefined;
+    const sectionResults = buildQuizSubmissionSectionResults({
+      quiz,
+      orderedQuestions,
+      answers: payload.answers,
+    });
 
     // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
     // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً
-    const quizSnapshot = {
-      title:          String(quiz.title || ""),
-      mode:           String((quiz as any).mode || "regular"),
-      quizKind:       String((quiz as any).quizKind || "test"),
-      passingScore,
-      targetGroupIds: uniqueStrings((quiz.targetGroupIds || []).map(String)),
-      targetUserIds:  uniqueStrings((quiz.targetUserIds  || []).map(String)),
-      dueDate:        String((quiz as any).dueDate || "") || null,
-      pathId:         String(quiz.pathId || ""),
-      subjectId:      String(quiz.subjectId || ""),
-      totalQuestions,
-      snapshotAt:     Date.now(),
-    };
+    const quizSnapshot = buildQuizSubmissionSnapshot({ quiz, passingScore, totalQuestions });
 
     let result;
     try {
       result = await QuizResultModel.create({
-        userId: req.authUser!.id,
-        quizId,
-        quizTitle: String(quiz.title || "اختبار"),
-        score,
-        passed: score >= passingScore,
-        attemptNumber,
-        source: payload.source || "",
-        totalQuestions,
-        correctAnswers,
-        wrongAnswers,
-        unanswered,
-        timeSpentSeconds: payload.timeSpentSeconds,
-        timeSpent: timeSpentMinutes > 0 ? `${timeSpentMinutes} دقيقة` : "أقل من دقيقة",
-        date: new Date().toISOString(),
-        skillsAnalysis,
-        questionReview,
-        // حفظ sectionResults فقط إذا كانت موجودة (للمحاكيات)
-        ...(sectionResults ? { sectionResults } : {}),
-        submissionKey,
-        quizSnapshot,
+        ...buildQuizSubmissionResultDocument({
+          userId: req.authUser!.id,
+          quizId,
+          quizTitle: String(quiz.title || "اختبار"),
+          score,
+          passed,
+          attemptNumber,
+          source: payload.source || "",
+          totalQuestions,
+          correctAnswers,
+          wrongAnswers,
+          unanswered,
+          timeSpentSeconds: payload.timeSpentSeconds,
+          skillsAnalysis,
+          questionReview,
+          sectionResults,
+          submissionKey,
+          quizSnapshot,
+        }),
       });
     } catch (error: any) {
       if (error?.code === 11000) {
@@ -2658,6 +2067,15 @@ quizRouter.post(
       }
       throw error;
     }
+
+    // Legacy QuizResult is committed first and stays authoritative. The
+    // mirror is opt-in and failure-contained, so this cannot turn an accepted
+    // legacy submission into a failed HTTP response.
+    await mirrorAssessmentSubmissionAfterLegacyResult({
+      quiz,
+      legacyResult: result,
+      answers: payload.answers,
+    });
 
     await runQuizSubmissionSideEffects({
       requestId: req.requestId,

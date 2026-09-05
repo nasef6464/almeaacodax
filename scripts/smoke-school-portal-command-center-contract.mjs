@@ -32,14 +32,15 @@ const checks = [
   {
     name: "auth hydration preserves school and class scope for supervisors",
     ok:
-      authContext.includes("schoolId: backendUser?.schoolId ?? existing.schoolId") &&
-      authContext.includes("groupIds: backendUser?.groupIds ?? existing.groupIds") &&
+      authContext.includes("schoolId: backendUser?.schoolId ?? sessionUser.schoolId ?? existing.schoolId") &&
+      authContext.includes("groupIds: backendUser?.groupIds ?? sessionUser.groupIds ?? existing.groupIds") &&
       authContext.includes("isActive: backendUser?.isActive ?? existing.isActive"),
   },
   {
     name: "school portal supports daily operational actions",
     ok:
       schoolPortal.includes("openTargetedQuiz") &&
+      schoolPortal.includes('data-testid="supervisor-create-directed-assessment"') &&
       schoolPortal.includes("openFollowUpEmail") &&
       schoolPortal.includes("copyFollowUpMessage") &&
       schoolPortal.includes("copySupervisorBrief") &&
@@ -164,6 +165,9 @@ const checks = [
       liveSupervisorSchoolAudit.includes('name: "mobile"') &&
       liveSupervisorSchoolAudit.includes("horizontalOverflow") &&
       liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=school-portal") &&
+      liveSupervisorSchoolAudit.includes('clickSelector: \'[data-testid="supervisor-create-directed-assessment"]\'') &&
+      liveSupervisorSchoolAudit.includes("expectedClickHref: \"tab=quizzes\"") &&
+      liveSupervisorSchoolAudit.includes("actionResult") &&
       liveSupervisorSchoolAudit.includes("requireSupervisorScopeCard") &&
       liveSupervisorSchoolAudit.includes("hasSupervisorScopeCard") &&
       liveSupervisorSchoolAudit.includes("hasSupervisorScopeActionGuide") &&

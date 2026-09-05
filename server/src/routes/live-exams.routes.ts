@@ -1,9 +1,70 @@
 import express from "express";
+import mongoose from "mongoose";
 import { requireAuth } from "../middleware/auth.js";
 import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
+import { QuizModel } from "../models/Quiz.js";
+import { UserModel } from "../models/User.js";
+import { isStaffRole } from "../services/visibility.js";
+import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
+import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
+import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
+import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 
 const router = express.Router();
+
+const buildDocumentsByIdsQuery = (values: string[]) => {
+  const ids = [...new Set(values.map(String).filter(Boolean))];
+  const objectIds = ids
+    .filter((id) => mongoose.Types.ObjectId.isValid(id))
+    .map((id) => new mongoose.Types.ObjectId(id));
+  return objectIds.length ? { $or: [{ _id: { $in: objectIds } }, { id: { $in: ids } }] } : { id: { $in: ids } };
+};
+
+/**
+ * A live-session endpoint must not become a side door around directed quiz
+ * access. Reload group membership from Mongo rather than trusting the client
+ * or token snapshot, matching the definition/submission boundary.
+ */
+const canStartDirectedQuiz = async (quiz: any, authUser: { id: string; role: string }) => {
+  if (isStaffRole(authUser.role)) return true;
+
+  const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
+  const targetGroupIds = Array.from(new Set<string>((quiz.targetGroupIds || []).map(String)));
+  if (targetUserIds.size === 0 && targetGroupIds.length === 0) return true;
+
+  const learner = await (mongoose.Types.ObjectId.isValid(authUser.id)
+    ? UserModel.findById(authUser.id)
+    : UserModel.findOne({ id: authUser.id }))
+    .select("_id id")
+    .lean();
+  if (!learner) return false;
+
+  const learnerId = String((learner as any).id || learner._id);
+  if (targetUserIds.has(learnerId)) return true;
+  if (targetGroupIds.length === 0) return false;
+
+  return Boolean(
+    await GroupModel.findOne({
+      $and: [buildDocumentsByIdsQuery(targetGroupIds), { studentIds: learnerId }],
+    })
+      .select("_id")
+      .lean(),
+  );
+};
+
+const saveAssessmentResponse = async (attemptId: string, studentId: string, questionId: string, answer: unknown) => {
+  const filter = { attemptId, questionId };
+  const update = { $set: { studentId, answer, savedAt: new Date() } };
+  try {
+    await AssessmentResponseModel.findOneAndUpdate(filter, update, { upsert: true });
+  } catch (error: any) {
+    // Two delivery retries can race before the unique index observes the first
+    // insert. The canonical key is still one response per attempt/question.
+    if (error?.code !== 11000) throw error;
+    await AssessmentResponseModel.updateOne(filter, update);
+  }
+};
 
 /**
  * STUDENT ENDPOINTS
@@ -16,16 +77,48 @@ router.post("/start", requireAuth, async (req, res) => {
     const userId = req.authUser!.id;
     const userName = (req.authUser as any).name || "طالب";
 
-    // Upsert an active session (in case they refresh)
+    const quiz = await QuizModel.findOne({ $or: [{ id: String(quizId) }, ...(String(quizId).match(/^[a-f\d]{24}$/i) ? [{ _id: quizId }] : [])] }).lean();
+    let assessmentAttemptId: string | undefined;
+    if (quiz) {
+      if (!(await canStartDirectedQuiz(quiz, { id: String(userId), role: String(req.authUser!.role || "") }))) {
+        return res.status(403).json({ error: "Not authorized to start this assessment" });
+      }
+      const version = await AssessmentVersionModel.findOneAndUpdate(
+        { assessmentId: String(quiz.id || quiz._id), version: 1 },
+        { $setOnInsert: { definition: quiz, publishedBy: String(quiz.createdBy || "system"), status: "published" } },
+        { new: true, upsert: true },
+      );
+      const assignment = await AssessmentAssignmentModel.findOneAndUpdate(
+        { assessmentId: String(quiz.id || quiz._id), assessmentVersionId: String(version._id) },
+        { $setOnInsert: { audience: { groupIds: quiz.targetGroupIds || [], userIds: quiz.targetUserIds || [] }, maxAttempts: Number(quiz.settings?.maxAttempts || 1), createdBy: String(quiz.createdBy || "system") } },
+        { new: true, upsert: true },
+      );
+      const existingAttempt = await AssessmentAttemptModel.findOne({ assignmentId: String(assignment._id), studentId: String(userId), status: "in_progress" }).sort({ attemptNumber: -1 });
+      if (!existingAttempt) {
+        const attemptsUsed = await AssessmentAttemptModel.countDocuments({
+          assignmentId: String(assignment._id),
+          studentId: String(userId),
+          status: { $in: ["submitted", "expired"] },
+        });
+        if (attemptsUsed >= Number(assignment.maxAttempts || 1)) {
+          return res.status(409).json({ error: "Assessment attempt limit reached", maxAttempts: assignment.maxAttempts, attemptsUsed });
+        }
+      }
+      const attempt = existingAttempt || await AssessmentAttemptModel.create({
+        assignmentId: String(assignment._id), assessmentVersionId: String(version._id), studentId: String(userId),
+        attemptNumber: (await AssessmentAttemptModel.countDocuments({ assignmentId: String(assignment._id), studentId: String(userId) })) + 1,
+        status: "in_progress", expiresAt: quiz.settings?.timeLimit ? new Date(Date.now() + Number(quiz.settings.timeLimit) * 60000) : undefined,
+      });
+      assessmentAttemptId = String(attempt._id);
+    }
+
+    // Upsert an active session (in case they refresh), preserving start time
+    // and progress so refresh/resume is idempotent.
     const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
       {
-        studentName: userName,
-        quizTitle: quizTitle || "اختبار",
-        totalQuestions: totalQuestions || 0,
-        answeredQuestions: 0,
-        progress: 0,
-        startTime: new Date(),
+        $set: { studentName: userName, quizTitle: quizTitle || "اختبار", totalQuestions: totalQuestions || 0, ...(assessmentAttemptId ? { assessmentAttemptId } : {}) },
+        $setOnInsert: { answeredQuestions: 0, progress: 0, startTime: new Date(), status: "active" },
       },
       { new: true, upsert: true }
     );
@@ -38,17 +131,57 @@ router.post("/start", requireAuth, async (req, res) => {
 });
 
 // Update progress
+router.get("/session/:quizId", requireAuth, async (req, res) => {
+  try {
+    const userId = String(req.authUser!.id);
+    const quizId = String(req.params.quizId);
+    const session = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" }).lean();
+    if (!session) return res.json({ session: null, answers: {} });
+    const responses = session.assessmentAttemptId
+      ? await AssessmentResponseModel.find({ attemptId: session.assessmentAttemptId, studentId: userId }).select("questionId answer").lean()
+      : [];
+    const answers = Object.fromEntries(responses.map((response: any) => [String(response.questionId), response.answer]));
+    return res.json({ session, answers });
+  } catch (error) {
+    console.error("Error reading live exam session:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update progress
 router.post("/progress", requireAuth, async (req, res) => {
   try {
-    const { quizId, answeredQuestions, totalQuestions } = req.body;
+    const { quizId, answeredQuestions, totalQuestions, answers } = req.body;
     const userId = req.authUser!.id;
 
     const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
-    await LiveExamSessionModel.findOneAndUpdate(
+    const activeSession = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" });
+    if (activeSession?.assessmentAttemptId) {
+      const attempt = await AssessmentAttemptModel.findById(activeSession.assessmentAttemptId).select("status expiresAt").lean();
+      if (attempt && (attempt.status !== "in_progress" || (attempt.expiresAt && attempt.expiresAt.getTime() <= Date.now()))) {
+        await Promise.all([
+          AssessmentAttemptModel.findOneAndUpdate(
+            { _id: activeSession.assessmentAttemptId, studentId: String(userId), status: "in_progress" },
+            { status: "expired", submittedAt: new Date() },
+          ),
+          LiveExamSessionModel.updateOne({ _id: activeSession._id, status: "active" }, { status: "completed", progress: 100 }),
+        ]);
+        return res.status(409).json({ error: "Assessment session expired" });
+      }
+    }
+
+    const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
-      { answeredQuestions, totalQuestions, progress }
+      { $set: { answeredQuestions, totalQuestions, progress } },
+      { new: true },
     );
+
+    if (session?.assessmentAttemptId && answers && typeof answers === "object") {
+      await Promise.all(Object.entries(answers).map(([questionId, answer]) =>
+        saveAssessmentResponse(String(session.assessmentAttemptId), String(userId), questionId, answer),
+      ));
+    }
 
     res.json({ success: true });
   } catch (error) {
@@ -63,10 +196,31 @@ router.post("/end", requireAuth, async (req, res) => {
     const { quizId } = req.body;
     const userId = req.authUser!.id;
 
-    await LiveExamSessionModel.findOneAndUpdate(
+    const activeSession = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" });
+    if (activeSession?.assessmentAttemptId) {
+      const attempt = await AssessmentAttemptModel.findById(activeSession.assessmentAttemptId).select("status expiresAt").lean();
+      if (attempt && (attempt.status !== "in_progress" || (attempt.expiresAt && attempt.expiresAt.getTime() <= Date.now()))) {
+        await Promise.all([
+          AssessmentAttemptModel.findOneAndUpdate(
+            { _id: activeSession.assessmentAttemptId, studentId: String(userId), status: "in_progress" },
+            { status: "expired", submittedAt: new Date() },
+          ),
+          LiveExamSessionModel.updateOne({ _id: activeSession._id, status: "active" }, { status: "completed", progress: 100 }),
+        ]);
+        return res.status(409).json({ error: "Assessment session expired" });
+      }
+    }
+
+    const session = await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
       { status: "completed", progress: 100 }
     );
+    if (session?.assessmentAttemptId) {
+      await AssessmentAttemptModel.findOneAndUpdate(
+        { _id: session.assessmentAttemptId, studentId: String(userId), status: "in_progress" },
+        { status: "submitted", submittedAt: new Date() },
+      );
+    }
 
     res.json({ success: true });
   } catch (error) {

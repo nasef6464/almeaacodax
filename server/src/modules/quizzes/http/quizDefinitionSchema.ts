@@ -26,6 +26,14 @@ export const quizSchema = z.object({
     updatedAt: z.number().optional(),
   })).optional(),
   mode: z.enum(["regular", "saher", "central"]).default("regular"),
+  assessmentData: z.object({
+    // Default-off operational rollout control. Only directed or mock
+    // assessments can activate this in the server-side mirror policy.
+    mirrorSubmissions: z.boolean().optional(),
+    // Reading the additive compatibility projection is an explicit and
+    // reversible per-assessment cutover; legacy is the model default.
+    resultReaderMode: z.enum(["legacy", "compatibility"]).optional(),
+  }).optional(),
   settings: z.record(z.any()).optional().default({}),
   access: z.record(z.any()).optional().default({}),
   questionIds: z.array(z.string()).default([]),

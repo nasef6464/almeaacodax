@@ -27,7 +27,7 @@ export const createTaxonomyContentApi = (
     bootstrapCacheTtlMs,
   }: TaxonomyContentDependencies,
 ) => ({
-  getTaxonomyBootstrap: (phase: "full" | "core" = "full") =>
+  getTaxonomyBootstrap: (phase: "full" | "compact" | "core" = "full") =>
     requestCached<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>(
       withQuery("/taxonomy/bootstrap", { phase }),
       `taxonomy-bootstrap:${phase}`,
@@ -147,6 +147,19 @@ export const createTaxonomyContentApi = (
       announcementAds: unknown[];
       studyPlans: unknown[];
     }>(withQuery("/content/bootstrap", { scope: "full" }), { cache: "no-store" });
+  },
+  getOperationalBootstrapFresh: () => {
+    clearPublicCache("content-bootstrap:operations");
+    return request<{
+      topics: unknown[];
+      lessons: unknown[];
+      libraryItems: unknown[];
+      groups: unknown[];
+      b2bPackages: unknown[];
+      accessCodes: unknown[];
+      announcementAds: unknown[];
+      studyPlans: unknown[];
+    }>(withQuery("/content/bootstrap", { scope: "operations" }), { cache: "no-store" });
   },
   getContentBootstrapByScope: (scope: "full" | "learning" = "full", phase: "full" | "core" = "full") =>
     requestCached<{

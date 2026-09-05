@@ -5,6 +5,7 @@ const liveExamSessionSchema = new Schema(
     studentId: { type: String, required: true, index: true },
     studentName: { type: String, required: true },
     quizId: { type: String, required: true, index: true },
+    assessmentAttemptId: { type: String, index: true, default: undefined },
     quizTitle: { type: String, required: true },
     startTime: { type: Date, required: true, default: Date.now },
     totalQuestions: { type: Number, required: true, default: 0 },

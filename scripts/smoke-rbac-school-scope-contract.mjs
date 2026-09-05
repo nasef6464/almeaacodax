@@ -14,7 +14,10 @@ const assertIncludes = (snippet, message) => {
 add("defines shared school scope guard", () => {
   assertIncludes("const assertSchoolManagementScope = async (", "Missing shared scope guard helper");
   assertIncludes("if (authUser.role === \"admin\")", "Missing admin bypass in scope guard");
-  assertIncludes("resolveAccessCodeSchoolsForSupervisor", "Scope guard must use supervisor school resolution");
+  assertIncludes("const resolveSupervisorManagementScope = async", "Scope guard must resolve school and class supervisor scope separately");
+  assertIncludes("schoolIds: string[]", "Scope resolution must retain school-wide scope explicitly");
+  assertIncludes("classIds: string[]", "Scope resolution must retain class-only scope explicitly");
+  assertIncludes("classIds.includes(groupId) || classIds.includes(parentId)", "Class scope must not be widened to sibling classes");
 });
 
 add("enforces scope on school report endpoint", () => {

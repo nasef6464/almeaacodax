@@ -14,6 +14,7 @@ import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 import { getCourseAudienceCount } from '../utils/courseStats';
 import { api } from '../services/api';
+import { normalizeLearningTab, type LearningTab } from '../utils/learningSpaceTabs';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
 const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
@@ -28,32 +29,6 @@ interface LearningSectionProps {
     title?: string;
     colorTheme?: 'indigo' | 'amber' | 'emerald' | 'purple' | 'rose';
 }
-
-type LearningTab = 'courses' | 'skills' | 'banks' | 'tests' | 'library';
-
-const learningTabAliases: Record<string, LearningTab> = {
-    courses: 'courses',
-    course: 'courses',
-    skills: 'skills',
-    foundation: 'skills',
-    topics: 'skills',
-    banks: 'banks',
-    bank: 'banks',
-    training: 'banks',
-    trainings: 'banks',
-    tests: 'tests',
-    test: 'tests',
-    quizzes: 'tests',
-    quiz: 'tests',
-    library: 'library',
-    files: 'library',
-    support: 'library',
-};
-
-const normalizeLearningTab = (value?: string | null): LearningTab | null => {
-    if (!value) return null;
-    return learningTabAliases[value.toLowerCase()] || null;
-};
 
 const themePaletteMap: Record<string, { base: string; soft: string; border: string; text: string }> = {
     indigo: { base: '#4f46e5', soft: '#e0e7ff', border: '#c7d2fe', text: '#4338ca' },
@@ -76,6 +51,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const navigate = useNavigate();
     const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
+    const [scopedBootstrapState, setScopedBootstrapState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+    const [scopedBootstrapRetry, setScopedBootstrapRetry] = useState(0);
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
     const theme = resolveThemePalette(colorTheme);
     
@@ -447,13 +424,21 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             return matchesScopedContent(resolveCoursePathId(course, subjects), resolveCourseSubjectId(course, subjects));
         });
         const hasScopedQuizzes = quizzes.some((quiz) => matchesScopedContent(quiz.pathId, quiz.subjectId));
-        if (hasScopedCourses && hasScopedQuizzes) return;
+        if (hasScopedCourses && hasScopedQuizzes) {
+            setScopedBootstrapState('ready');
+            return;
+        }
 
         scopedLearningBootstrapRef.current = scopeKey;
+        setScopedBootstrapState('loading');
         void Promise.allSettled([
             api.getCourses({ pathId: category, subjectId: subject, limit: 100 }),
             api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 }),
         ]).then(([coursesResult, quizzesResult]) => {
+            // hydrateCourses/hydrateQuizzes replace the shared collections. Ignore an
+            // older route response so it cannot overwrite the currently viewed scope.
+            if (scopedLearningBootstrapRef.current !== scopeKey) return;
+
             if (coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) && coursesResult.value.length > 0) {
                 const mergedCourses = new Map<string, any>();
                 [...courses, ...(coursesResult.value as any[])].forEach((course) => {
@@ -471,8 +456,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 });
                 hydrateQuizzes(Array.from(mergedQuizzes.values()));
             }
+            setScopedBootstrapState(coursesResult.status === 'rejected' && quizzesResult.status === 'rejected' ? 'error' : 'ready');
         });
-    }, [category, subject, courses, quizzes, subjects, hydrateCourses, hydrateQuizzes]);
+    }, [category, subject, courses, quizzes, subjects, hydrateCourses, hydrateQuizzes, scopedBootstrapRetry]);
+
+    const retryScopedLearningBootstrap = () => {
+        scopedLearningBootstrapRef.current = '';
+        setScopedBootstrapRetry((value) => value + 1);
+    };
 
     const topicList = useStore(state => state.topics);
     const quizList = useStore(state => state.quizzes);
@@ -739,6 +730,19 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 {(settings.showTests ?? true) && <TabButton active={activeTab === 'tests'} onClick={() => handleTabChange('tests')} icon={<FileText size={20} />} label="الاختبارات" colorTheme={colorTheme} />}
                 {(settings.showLibrary ?? true) && <TabButton active={activeTab === 'library'} onClick={() => handleTabChange('library')} icon={<Library size={20} />} label="المكتبة" colorTheme={colorTheme} />}
             </div>
+            {scopedBootstrapState === 'loading' ? (
+                <div className="mb-6 rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-800" role="status">
+                    جارٍ تحديث محتوى هذه المادة…
+                </div>
+            ) : null}
+            {scopedBootstrapState === 'error' ? (
+                <div className="mb-6 flex flex-col items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center sm:flex-row sm:text-right" role="alert">
+                    <p className="text-sm font-bold leading-6 text-amber-900">تعذر تحديث الدورات والاختبارات لهذه المادة الآن. المحتوى الظاهر محفوظ، ويمكنك إعادة المحاولة.</p>
+                    <button type="button" onClick={retryScopedLearningBootstrap} className="shrink-0 rounded-xl bg-amber-600 px-4 py-2 text-sm font-black text-white hover:bg-amber-700">
+                        إعادة المحاولة
+                    </button>
+                </div>
+            ) : null}
             {showStaffInventory ? (
                 <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
                     {Object.entries(learningInventory).map(([key, item]) => {

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const quizRoutesSource = await read("server/src/routes/quiz.routes.ts");
+const integrityModuleSource = await read("server/src/modules/quizzes/application/quizQuestionIntegrity.ts");
 
 const checks = [];
 
@@ -22,10 +23,11 @@ function assertIncludes(source, fragment, message) {
 }
 
 check("quiz publish path validates question integrity", () => {
-  assertIncludes(quizRoutesSource, "const validateQuizQuestionIntegrity = async (quizLike: any) => {");
+  assertIncludes(quizRoutesSource, "quizQuestionIntegrity.js");
+  assertIncludes(integrityModuleSource, "export async function validateQuizQuestionIntegrity");
   assertIncludes(quizRoutesSource, "if (willBePublished) {");
   assertIncludes(quizRoutesSource, "const integrity = await validateQuizQuestionIntegrity(payload);");
-  assertIncludes(quizRoutesSource, "Cannot publish quiz: some referenced questions are missing or have incomplete content");
+  assertIncludes(integrityModuleSource, "Cannot publish quiz: some referenced questions are missing or have incomplete content");
 });
 
 check("quiz update path validates published quizzes", () => {
@@ -41,7 +43,7 @@ check("integrity report endpoint exists for admins", () => {
 
 check("learner quiz listing excludes unusable quizzes", () => {
   assertIncludes(quizRoutesSource, "safeItems = items.filter(");
-  assertIncludes(quizRoutesSource, "isQuizTargetedToLearner(quiz, learnerAudienceUser)");
+  assertIncludes(quizRoutesSource, "isQuizTargetedToLearner(quiz, learnerAudienceForCatalog)");
   assertIncludes(quizRoutesSource, "getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)");
 });
 

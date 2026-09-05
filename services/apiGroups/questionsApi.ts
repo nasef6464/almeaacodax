@@ -20,6 +20,8 @@ export interface QuestionQuery {
   subject?: string;
   sectionId?: string;
   skillId?: string;
+  skillIds?: string;
+  difficulty?: string;
   search?: string;
   approvalStatus?: string;
   summary?: boolean;

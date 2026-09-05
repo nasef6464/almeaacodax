@@ -617,25 +617,25 @@ const App: React.FC = () => {
         }).catch((error) => console.warn('Taxonomy bootstrap unavailable:', error));
 
         if (profile.loadTaxonomy && profile.contentScope === 'learning') {
-          void adapter.getTaxonomyBootstrap('full')
-            .then((fullTaxonomyResult) => {
+          void adapter.getTaxonomyBootstrap('compact')
+            .then((compactTaxonomyResult) => {
               if (!mounted) return;
               const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
               if (
                 [
-                  fullTaxonomyResult.paths,
-                  fullTaxonomyResult.levels,
-                  fullTaxonomyResult.subjects,
-                  fullTaxonomyResult.sections,
-                  fullTaxonomyResult.skills,
+                  compactTaxonomyResult.paths,
+                  compactTaxonomyResult.levels,
+                  compactTaxonomyResult.subjects,
+                  compactTaxonomyResult.sections,
+                  compactTaxonomyResult.skills,
                 ].some(hasItems)
               ) {
                 hydrateTaxonomy({
-                  paths: fullTaxonomyResult.paths as any[],
-                  levels: fullTaxonomyResult.levels as any[],
-                  subjects: fullTaxonomyResult.subjects as any[],
-                  sections: fullTaxonomyResult.sections as any[],
-                  skills: fullTaxonomyResult.skills as any[],
+                  paths: compactTaxonomyResult.paths as any[],
+                  levels: compactTaxonomyResult.levels as any[],
+                  subjects: compactTaxonomyResult.subjects as any[],
+                  sections: compactTaxonomyResult.sections as any[],
+                  skills: compactTaxonomyResult.skills as any[],
                 });
               }
             })

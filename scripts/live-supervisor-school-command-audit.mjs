@@ -71,6 +71,8 @@ const ROUTES = [
   {
     name: "school-portal-decision-center",
     path: "/admin-dashboard?tab=school-portal",
+    clickSelector: '[data-testid="supervisor-create-directed-assessment"]',
+    expectedClickHref: "tab=quizzes",
     allowScopeNotice: true,
     requireSupervisorScopeCard: true,
     requireSupervisorRoleContract: true,
@@ -210,6 +212,22 @@ async function inspectRoute(page, viewport, routeSpec) {
     };
   }, routeSpec);
 
+  let actionResult = null;
+  if (routeSpec.clickSelector) {
+    try {
+      const action = page.locator(routeSpec.clickSelector).first();
+      await action.waitFor({ state: "visible", timeout: 10000 });
+      await action.click();
+      await page.waitForTimeout(400);
+      actionResult = {
+        status: routeSpec.expectedClickHref && page.url().includes(routeSpec.expectedClickHref) ? "PASS" : "FAIL",
+        href: page.url(),
+      };
+    } catch (error) {
+      actionResult = { status: "FAIL", error: error instanceof Error ? error.message : String(error), href: page.url() };
+    }
+  }
+
   const layoutFailure = viewport.name === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
   const scopeCardFailure =
     routeSpec.requireSupervisorScopeCard && !state.hasScopeNotice && (!state.hasSupervisorScopeCard || !state.hasSupervisorScopeActionGuide)
@@ -241,12 +259,13 @@ async function inspectRoute(page, viewport, routeSpec) {
       !scopeCardFailure &&
       !roleContractFailure &&
       network5xx.length === 0);
+  const actionPass = !routeSpec.clickSelector || actionResult?.status === "PASS";
 
   return {
     name: routeSpec.name,
     viewport: viewport.name,
     path: routeSpec.path,
-    status: pass ? "PASS" : "FAIL",
+    status: pass && actionPass ? "PASS" : "FAIL",
     note: scopeNoticeOk ? "scope-notice-visible-for-current-supervisor" : "",
     screenshot,
     consoleErrors,
@@ -254,6 +273,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     layoutFailure,
     scopeCardFailure,
     roleContractFailure,
+    actionResult,
     ...state,
   };
 }

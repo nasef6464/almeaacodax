@@ -214,7 +214,7 @@ export const PathsManager: React.FC = () => {
         },
         {
           id: 'exams' as const,
-          title: 'المحاكي',
+          title: 'الاختبارات',
           tab: 'exams' as const,
           total: subjectScopedContent.tests.length,
           visible: subjectScopedContent.tests.filter(isPublishedForLearner).length,
@@ -785,6 +785,7 @@ export const PathsManager: React.FC = () => {
             return (
               <div 
                 key={`path-${path.id}-${index}`}
+                data-testid={`learning-manager-path-${path.id}`}
                 onClick={() => setSelectedPathId(path.id)}
                 className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
               >
@@ -1246,6 +1247,7 @@ export const PathsManager: React.FC = () => {
                   return (
                     <div 
                       key={`psub-${subject.id}-${sidx}`}
+                      data-testid={`learning-manager-subject-${subject.id}`}
                       onClick={() => setSelectedSubjectId(subject.id)}
                       className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
                     >
@@ -2060,6 +2062,7 @@ export const PathsManager: React.FC = () => {
               return (
                 <button
                   key={row.id}
+                  data-testid={`learning-manager-slot-${row.id}`}
                   onClick={() => setSubjectTab(row.tab)}
                   className={`rounded-2xl border p-4 text-right transition hover:-translate-y-0.5 hover:shadow-sm ${
                     subjectTab === row.tab ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100 bg-white'

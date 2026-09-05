@@ -54,3 +54,11 @@ SEO_BROWSERROUTER_*.md
 .agents/
 migrated_prompt_history/
 
+# Track the reusable project delivery skill, not local Codex state.
+!.codex/
+.codex/*
+!.codex/skills/
+.codex/skills/*
+!.codex/skills/almeaa-goal-delivery/
+!.codex/skills/almeaa-goal-delivery/**
+

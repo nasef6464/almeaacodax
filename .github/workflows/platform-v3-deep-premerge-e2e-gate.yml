@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - develop/platform-v3-recovery
+      - refactor/modular-platform-safe
+      - codex/assessment-data-evolution
   pull_request:
     branches:
       - main
@@ -19,7 +21,7 @@ concurrency:
 
 jobs:
   isolated-full-stack-e2e:
-    if: github.event_name != 'pull_request' || (github.event.pull_request.number == 26 && github.event.pull_request.head.ref == 'develop/platform-v3-recovery')
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe'
     name: Full-stack roles + CRUD + school + quiz flows on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 55
@@ -42,6 +44,18 @@ jobs:
       MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_platform_v3_deep_${{ github.run_id }}
       REDIS_URL: ""
       RATE_LIMIT_REDIS_ENABLED: "false"
+      # The isolated full-stack suite makes more than the production global
+      # per-IP budget from one loopback address. Keep production defaults
+      # intact; this only prevents one audit from rate-limiting the next.
+      RATE_LIMIT_GLOBAL_LIMIT: "5000"
+      # The isolated suite intentionally logs in several independent roles and
+      # audits in a short window. Keep production's default throttling intact
+      # while preventing fixture authentication from masking product evidence.
+      RATE_LIMIT_AUTH_LIMIT: "500"
+      # The sequential isolated browser suites also exercise sensitive public
+      # actions from one loopback address. This is CI-only and keeps the
+      # production-sensitive limit unchanged.
+      RATE_LIMIT_SENSITIVE_LIMIT: "2000"
       NOTIFICATION_QUEUE_ENABLED: "false"
       GOOGLE_OAUTH_ENABLED: "false"
       DEV_LOCAL_ADMIN_BYPASS: "false"
@@ -86,9 +100,11 @@ jobs:
             server/package-lock.json
 
       - name: Install frontend dependencies
+        timeout-minutes: 10
         run: npm ci
 
       - name: Install API dependencies
+        timeout-minutes: 10
         run: npm --prefix server ci
 
       - name: Generate masked ephemeral credentials
@@ -173,6 +189,7 @@ jobs:
         run: npm --prefix server run smoke:operational:api
 
       - name: Install Chromium
+        timeout-minutes: 10
         run: npx playwright install --with-deps chromium
 
       - name: Start exact branch frontend
@@ -191,14 +208,21 @@ jobs:
           cat audit-artifacts/deep-premerge/frontend.log || true
           exit 1
 
+      - name: Bounded isolated read-scale validation
+        id: isolated_scale
+        timeout-minutes: 5
+        run: node scripts/run-isolated-scale-validation.mjs --base-url http://127.0.0.1:4010 --output audit-artifacts/deep-premerge/isolated-scale.json
+
       - name: Public full-stack journeys on isolated API
         id: public_ui
         continue-on-error: true
+        timeout-minutes: 10
         run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id deep-premerge-public-${{ github.run_id }}
 
       - name: All role pages desktop + mobile on isolated stack
         id: roles
         continue-on-error: true
+        timeout-minutes: 10
         env:
           ROLE_PAGES_AUDIT_RUN_ID: deep-premerge-roles-${{ github.run_id }}
         run: node scripts/live-role-pages-audit.mjs
@@ -206,13 +230,59 @@ jobs:
       - name: Question editor create/render/delete journey
         id: question_editor
         continue-on-error: true
+        timeout-minutes: 10
         env:
           QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
         run: node scripts/live-question-editor-audit.mjs
 
+      - name: Assessment normal and directed commercial journey
+        id: assessment_commercial
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID: deep-premerge-assessment-${{ github.run_id }}
+        run: node scripts/live-assessment-commercial-audit.mjs
+
+      - name: Assessment mock session resume and retry journey
+        id: assessment_mock_session
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          ASSESSMENT_MOCK_SESSION_AUDIT_RUN_ID: deep-premerge-assessment-mock-${{ github.run_id }}
+        run: node scripts/live-assessment-mock-session-audit.mjs
+
+      - name: Student Learning Space desktop + mobile journey
+        id: student_learning
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          STUDENT_LEARNING_AUDIT_RUN_ID: deep-premerge-student-learning-${{ github.run_id }}
+          SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
+          SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
+        run: node scripts/live-student-learning-deep-audit.mjs
+
+      - name: Results and report actions desktop + mobile journey
+        id: report_actions
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
+        run: node scripts/live-report-actions-audit.mjs
+
+      - name: Learning Space manager placement journey
+        id: learning_manager
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          LEARNING_MANAGER_AUDIT_RUN_ID: deep-premerge-learning-manager-${{ github.run_id }}
+          SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
+          SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
+        run: node scripts/live-learning-manager-deep-audit.mjs
+
       - name: Supervisor school command UI journey
         id: supervisor_school
         continue-on-error: true
+        timeout-minutes: 10
         env:
           SUPERVISOR_SCHOOL_AUDIT_RUN_ID: deep-premerge-supervisor-school-${{ github.run_id }}
         run: node scripts/live-supervisor-school-command-audit.mjs
@@ -220,6 +290,7 @@ jobs:
       - name: School from scratch CRUD + relations + cleanup
         id: school_from_scratch
         continue-on-error: true
+        timeout-minutes: 10
         env:
           SCHOOL_FROM_SCRATCH_RUN_ID: deep-premerge-school-${{ github.run_id }}
         run: node scripts/live-school-from-scratch-audit.mjs
@@ -227,6 +298,7 @@ jobs:
       - name: Barcode public-test admin + anonymous journey
         id: barcode
         continue-on-error: true
+        timeout-minutes: 10
         env:
           BARCODE_LIVE_AUDIT_RUN_ID: deep-premerge-barcode-${{ github.run_id }}
         run: node scripts/live-barcode-public-tests-audit.mjs
@@ -243,9 +315,15 @@ jobs:
             echo "- Database: isolated Mongo service for GitHub run $GITHUB_RUN_ID"
             echo "- Production writes: none"
             echo "- Operational API: ${{ steps.operational.outcome }}"
+            echo "- Bounded isolated read scale: ${{ steps.isolated_scale.outcome }}"
             echo "- Public UI: ${{ steps.public_ui.outcome }}"
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
+            echo "- Student Learning Space: ${{ steps.student_learning.outcome }}"
+            echo "- Results/report actions: ${{ steps.report_actions.outcome }}"
+            echo "- Learning Space manager: ${{ steps.learning_manager.outcome }}"
+            echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
+            echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
             echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
             echo "- School from scratch: ${{ steps.school_from_scratch.outcome }}"
             echo "- Barcode public test: ${{ steps.barcode.outcome }}"
@@ -270,9 +348,15 @@ jobs:
           check "API startup" "${{ steps.start_api.outcome }}"
           check "Operational multi-role API" "${{ steps.operational.outcome }}"
           check "Frontend startup" "${{ steps.start_frontend.outcome }}"
+          check "Bounded isolated read scale" "${{ steps.isolated_scale.outcome }}"
           check "Public full-stack UI" "${{ steps.public_ui.outcome }}"
           check "All role pages" "${{ steps.roles.outcome }}"
           check "Question editor" "${{ steps.question_editor.outcome }}"
+          check "Student Learning Space" "${{ steps.student_learning.outcome }}"
+          check "Results/report actions" "${{ steps.report_actions.outcome }}"
+          check "Learning Space manager" "${{ steps.learning_manager.outcome }}"
+          check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
+          check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
           check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
           check "School from scratch" "${{ steps.school_from_scratch.outcome }}"
           check "Barcode public test" "${{ steps.barcode.outcome }}"

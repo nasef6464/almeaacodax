@@ -43,6 +43,12 @@ const quizSchema = new Schema(
       default: [],
     },
     mode: { type: String, enum: ["regular", "saher", "central"], default: "regular" },
+    assessmentData: {
+      mirrorSubmissions: { type: Boolean, default: false },
+      // A per-assessment, default-off reader cutover. The legacy result remains
+      // authoritative unless an operator explicitly enables compatibility reads.
+      resultReaderMode: { type: String, enum: ["legacy", "compatibility"], default: "legacy" },
+    },
     settings: {
       showExplanations: { type: Boolean, default: true },
       showAnswers: { type: Boolean, default: true },

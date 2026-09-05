@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const canonicalSource = await readFile(new URL('../utils/exams/assessmentQuestionSource.ts', import.meta.url), 'utf8');
 const helperSource = await readFile(new URL('../utils/exams/questionBankSource.ts', import.meta.url), 'utf8').catch(() => '');
 const smartSelectorSource = await readFile(new URL('../dashboards/admin/SmartQuestionSelector.tsx', import.meta.url), 'utf8');
+const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
 const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilder.tsx', import.meta.url), 'utf8').catch(() => '');
 const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeTestsManager.tsx', import.meta.url), 'utf8').catch(() => '');
 const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8').catch(() => '');
@@ -31,7 +32,7 @@ function assertNotIncludes(source, fragment, message) {
 
 check('canonical assessment question source owns paginated API access', () => {
   assertIncludes(canonicalSource, 'client.getQuestionsPaginated');
-  assertIncludes(canonicalSource, "approvalStatus: request.approvalStatus ?? 'approved'");
+  assertIncludes(canonicalSource, 'approvalStatus: request.approvalStatus');
   assertIncludes(canonicalSource, 'const MAX_PAGE_LIMIT = 100');
   assertIncludes(querySchemaSource, 'max(100)');
 });
@@ -54,25 +55,30 @@ check('canonical source hydrates selected IDs in chunks and reports missing/dupl
 check('legacy exam question-bank helper delegates to the canonical source', () => {
   assertIncludes(helperSource, "from './assessmentQuestionSource'");
   assertIncludes(helperSource, 'assessmentQuestionSource.loadAll');
-  assertIncludes(helperSource, "approvalStatus: 'approved'");
+  assertNotIncludes(helperSource, "approvalStatus: 'approved'");
   assertNotIncludes(helperSource, 'api.getQuestionsPaginated');
   assertNotIncludes(helperSource, 'MAX_PAGES');
 });
 
-check('SmartQuestionSelector uses canonical source and never assumes first 300 questions', () => {
+check('SmartQuestionSelector uses canonical paginated search and never assumes first 300 questions', () => {
   assertIncludes(smartSelectorSource, 'assessmentQuestionSource');
-  assertIncludes(smartSelectorSource, '.loadAll({');
+  assertIncludes(smartSelectorSource, '.searchPage({');
   assertIncludes(smartSelectorSource, '.hydrateByIds(selectedIds)');
+  assertIncludes(smartSelectorSource, 'page: manualPage');
+  assertNotIncludes(smartSelectorSource, '.loadAll({');
   assertNotIncludes(smartSelectorSource, 'limit: 300');
   assertNotIncludes(smartSelectorSource, 'api.getQuestions(');
   assertNotIncludes(smartSelectorSource, 'storeQuestions');
 });
 
-check('SmartQuestionSelector preserves access to all filtered questions with client paging', () => {
+check('SmartQuestionSelector delegates filtering and paging to the API', () => {
   assertIncludes(smartSelectorSource, 'CLIENT_PAGE_SIZE = 100');
   assertIncludes(smartSelectorSource, 'visibleFilteredQuestions');
   assertIncludes(smartSelectorSource, 'totalManualPages');
-  assertNotIncludes(smartSelectorSource, 'filteredQuestions.slice(0, 100)');
+  assertIncludes(smartSelectorSource, 'skillIds: mode === "skills"');
+  assertIncludes(smartSelectorSource, 'difficulty: difficulty === "all"');
+  assertIncludes(quizRoutesSource, 'if (query.skillIds)');
+  assertIncludes(quizRoutesSource, 'scopeFilter.difficulty = query.difficulty');
 });
 
 check('SmartQuestionSelector surfaces selected-question integrity diagnostics', () => {
@@ -142,11 +148,16 @@ check('learner quiz lists are audience-scoped and never share a public cache acr
   assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, learnerAudienceUser)');
 });
 
-check('quiz submission result response is not broken by non-critical side effects', () => {
-  assertIncludes(quizRoutesSource, 'const runQuizSubmissionSideEffects = async');
-  assertIncludes(quizRoutesSource, 'Promise.allSettled');
-  assertIncludes(quizRoutesSource, '[quiz-submit] non-critical side effect failed');
+check('quiz submission result response delegates non-critical side effects', () => {
+  assertIncludes(quizRoutesSource, 'import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt }');
+  assertIncludes(quizRoutesSource, 'await runQuizSubmissionSideEffects({');
   assertIncludes(quizRoutesSource, 'return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));');
+});
+
+check('runner hydrates missing quiz questions through the chunked canonical source', () => {
+  assertIncludes(quizPageSource, "from '../utils/exams/assessmentQuestionSource'");
+  assertIncludes(quizPageSource, 'assessmentQuestionSource.hydrateByIds(missingIds)');
+  assertNotIncludes(quizPageSource, 'limit: Math.min(Math.max(missingIds.length, 20), 200)');
 });
 
 for (const item of checks) {

@@ -1,10 +1,205 @@
 # Assessment Platform V1 — Progress Ledger
 
-**آخر تحديث:** 21 أغسطس 2026  
-**Active branch:** `develop/assessment-platform-v1`  
-**Base:** `main` @ `7b666fe50d00766ce16f4b3f42d91edd659ffa12`
+**آخر تحديث:** 30 أغسطس 2026
+**Active branch:** `refactor/modular-platform-safe`
+**Base:** HEAD الحالي على الفرع؛ لا تعتمد على SHA تاريخي.
 
 > الفرع هو مصدر الحقيقة للـHEAD الحالي. لا تعتمد على SHA ثابت هنا بعد كل Commit.
+
+---
+
+## تدقيق 2026-08-30 وإصلاح A-001 — مكتمل (commit: `d31debe3`)
+
+### ما تم إثباته أولًا
+
+- لم تُعد معالجة فرضيات الحفظ الوهمي أو المعرفات المحلية: `addQuestion` و`addQuiz`/`updateQuiz` تنتظر API وتعيد كيان الخادم.
+- النتائج تحتفظ بـ`quizSnapshot` و`submissionKey`، وsubmit يجمع أسئلة أقسام المحاكي عبر `getQuizQuestionIds`.
+- ثبتت مشكلة detail response للمحاكي: كان `GET /api/quizzes/:id` يحل root `questionIds` فقط، بينما `UnifiedQuizBuilder` يحفظ محاكياته الجديدة مع IDs داخل الأقسام فقط.
+
+### التعديل
+
+- `server/src/routes/quiz.routes.ts`: endpoint التفاصيل صار يستخدم `getQuizQuestionIds(quiz)`، وهو resolver القائم نفسه الذي يحافظ على ترتيب الأسئلة ويجعل أسئلة أقسام المحاكي مصدر الحقيقة.
+- `scripts/smoke-assessment-detail-question-resolution-contract.mjs`: اختبار مباشر لحالات normal وmock والـlegacy root IDs.
+- `package.json`: أمر `smoke:assessment-detail-question-resolution`.
+
+### العقود المحفوظة
+
+- لا تغيير في URL أو method أو response keys أو schema أو RBAC أو scoring.
+- الاختبار العادي ما زال يستخدم IDs الجذرية؛ المحاكي يأخذ IDs الأقسام فقط عندما تكون موجودة.
+- لا migration ولا حذف لأي builder أو كيان.
+
+### الاختبارات المنفذة
+
+- `smoke:assessment-detail-question-resolution`: PASS (4/4).
+- `smoke:mock-exams`: PASS (10/10).
+- `smoke:quiz-integrity-guard`: PASS (4/4).
+- `smoke:quiz-access`: PASS (18/18).
+- `server:check` و`server:build`: PASS.
+- `architecture-gate`: PASS.
+- `repository-audit`: تعذّر قبل التحليل لأن تثبيت الحزم الجذري غير مكتمل ولا يحل package `typescript`؛ لا يُنسب ذلك للتعديل.
+
+### التالي
+
+**A-002 فقط:** وصل `resolveAssessmentSettings` و`toCanonicalAssessmentSettingsPayload` إلى مسارات القراءة/الكتابة المعنية بعد حصر callers، مع compatibility للبيانات القديمة واختبار runner. لا تبدأ توحيد المنشئ أو `ExamAssignment` أو migration للـplacement.
+
+---
+
+## إصلاح A-002 — Canonical settings consumption: مكتمل (commit: `b4cef107`)
+
+### التعديل
+
+- `types.ts`: إعلان canonical `randomizeOptions` وaliases التاريخية كحقول read-compatibility موثقة.
+- `UnifiedQuizBuilder.tsx`: يقرأ `resolveAssessmentSettings` ويكتب `toCanonicalAssessmentSettingsPayload`؛ لم يعد يرسل `shuffleOptions` في payload جديد.
+- `QuizPage.tsx`: كل سلوك الإعدادات المؤثر في الطالب (الوقت، ترتيب الأسئلة/الخيارات، العرض، المراجعة، النتيجة) يقرأ resolver موحدًا.
+- `scripts/smoke-assessment-settings-consumption-contract.mjs`: يثبت aliases وprecedence وcanonical writer واستهلاك builder/runner.
+
+### العقود المحفوظة
+
+- aliases القديمة مقبولة للقراءة فقط ولا تُحذف من السجلات التاريخية.
+- canonical field يتقدم دائمًا عندما توجد القيمتان.
+- لا تغيير API أو Mongo schema semantics أو RBAC أو scoring أو URLs.
+
+### الاختبارات
+
+- `smoke:assessment-settings-consumption`: PASS (5/5).
+- `smoke:quiz-answer-exposure`: PASS (5/5).
+- `smoke:mock-exams`: PASS (10/10).
+- `server:check`, `server:build`, `architecture-gate`: PASS.
+- `npm run smoke:assessment-settings`: غير موجود أصلًا في `package.json`؛ لا يُعد فشلًا في المنتج.
+- frontend typecheck/build لا يُعلن Green في هذا الجهاز بسبب تثبيت الجذر غير المكتمل (`lucide-react`/package resolution).
+
+### التالي
+
+لا تبدأ تغييرًا معماريًا آخر بلا تدقيق محدد. المرشح التالي من الخطة: حصر callers المتبقية لمصدر الأسئلة وإثبات ما إذا كانت تعتمد Store محدودًا قبل أي نقل.
+
+---
+
+## مصدر بنك الأسئلة — Pagination عند المصدر: مكتمل (commit: `f2835634`)
+
+### ما ثبت
+
+- المنشئات المتبقية لا تستخدم Store كسجل حقيقة لبنك الأسئلة؛ تستخدم `assessmentQuestionSource` أو wrapper التوافقي `questionBankSource`.
+- `SmartQuestionSelector` كان الاستثناء على مستوى التوسع: يستدعي `loadAll` عبر كل صفحات النطاق ثم يصفّي في المتصفح.
+- API كان يعلن `skillIds` و`difficulty` في query schema لكنه لا يطبقهما في filter الفعلي.
+
+### التعديل
+
+- selector صار يستخدم `searchPage` بحجم 100، مع pagination/filtering في API.
+- أُضيف تطبيق `skillIds` (OR داخل المهارات المحددة) و`difficulty` في route القائم، مع توسيع type للعميل والمصدر المشترك.
+- hydration للأسئلة المختارة بقيت `hydrateByIds`؛ لا تفقد edit flows اختيارات خارج الصفحة الحالية.
+- حدّثت contract قديمًا ليعكس ownership الحالي للـside effects وعدم فرض `approved` على staff question-bank visibility.
+
+### الاختبارات
+
+- `smoke:exam-question-source`: PASS (21/21).
+- `smoke:assessment-question-selection`: PASS (5/5).
+- `smoke:mock-exams`: PASS (10/10).
+- `server:check`, `server:build`, `architecture-gate`: PASS.
+
+### التالي
+
+لا تغيّر منشئًا آخر قبل حصر الوظائف الفريدة في `MockExamManager` و`QuizBuilder` واختيار concern واحد فقط. كما يظل اختبار API حي متعدد الأدوار مطلوبًا قبل أي ادعاء إنتاجي كامل للصلاحيات.
+
+---
+
+## حصر المنشئين قبل التوحيد — مكتمل بالتدقيق (commit: `645cff42`)
+
+- `UnifiedQuizBuilder` هو المسار الموحد الفعلي في Quizzes/Subject/Supervisor/Lesson.
+- `MockExamManager` ما زال runtime path في Admin وSupervisor ويحمل سياسات أقسام وتوجيه ومعاينة فريدة؛ لا يحذف.
+- لم يجد فحص imports أو lazy/dynamic في نقاط الدخول الحالية مستدعيًا لـ`QuizBuilder` legacy؛ أضيف `smoke:assessment-legacy-builder-inventory` لحماية هذه النتيجة. يبقى الملف للتوافق، ولا يمثل ذلك تصريحًا بالحذف أو إثباتًا لعدم استعمال إنتاجي غير مرئي في المصدر.
+- لم يُنفذ extraction لأن دوال الحفظ ليست تكرارًا محايدًا: نقلها الآن سيغير سياسة النشر/التوجيه بدل فصل concern معماري.
+
+### التالي
+
+تم اختيار **freeze موثق** للـ`QuizBuilder` legacy، بلا deprecation runtime أو حذف. الأولوية التالية: API integration tests متعددة الأدوار لمسارات الإنشاء/النشر/التسليم.
+
+### التحقق
+
+- `smoke:assessment-legacy-builder-inventory`: PASS (3/3).
+- `smoke:mock-exams`: PASS (10/10).
+- `smoke:assessment-settings-consumption`: PASS (5/5).
+- `server:check`, `server:build`, `architecture-gate`: PASS.
+
+---
+
+## بوابة API الحية للاختبارات — تغطية موجّهة مضافة (بانتظار تنفيذ CI)
+
+- وُسّعت `server/src/scripts/backendIntegrationGate.ts`، وهي harness قائم يشغّل HTTP حقيقيًا على Mongo محلي معزول داخل CI، بدل إضافة test framework أو الاتصال ببيئة تشغيلية.
+- تنشئ الرحلة مسارًا نشطًا وسؤالًا معتمدًا واختبارًا مركزيًا موجّهًا؛ ثم تثبت أن الطالب خارج الاستهداف يُرفض، وأن الطالب المستهدف يسلّم إجابة صحيحة وتُحفظ `quizSnapshot`، وأن حد المحاولات يمنع الإرسال المتكرر.
+- تجهز مدرسة وفصلًا معزولين وتتحقق من أن المشرف ينشئ فقط لطالب داخل نطاقه، وأن المعلم ينشئ داخل المسار/المادة المعيّنة كمسودة pending review ويُرفض خارج نطاقه. لا يغير ذلك API أو RBAC أو schema أو scoring.
+
+### حالة التحقق
+
+- typecheck الدقيق للـharness وفق أمر CI: PASS.
+- `smoke:assessment-workflow` (3/3) و`smoke:assessment-publication` (4/4) و`smoke:quiz-access` (18/18) و`smoke:quiz-integrity-guard` (4/4) و`smoke:assessment-detail-question-resolution` (4/4): PASS.
+- التنفيذ HTTP الكامل **لم يُشغّل محليًا**: يتطلب Mongo وخادم API تحت متغيرات `NODE_ENV=test` وقاعدة CI مخصصة، ولذلك تركته لبوابة CI المعزولة ولا توجد دعوى PASS حتى تعمل هناك.
+
+---
+
+## Runner — فصل حفظ مسودة التقدم: مكتمل (commit: `0c934318`)
+
+- نُقل حفظ/قراءة/حذف مسودة الطالب من `QuizPage.tsx` إلى `utils/quizProgressDraft.ts`.
+- المفتاح القديم `almeaa-quiz-progress:<quizId>` وبنية المسودة وترتيب استعادة الأسئلة بقيت متوافقة؛ لم يتغير التصحيح أو الوصول أو الإرسال أو مؤقت الاختبار.
+- `smoke:quiz-progress-draft`: PASS (5/5)، ويغطي round-trip، JSON الفاسد، حذف مسودة اختبار محدد، واستهلاك الـRunner للواجهة الجديدة.
+- `smoke:assessment-settings-consumption` (5/5)، و`smoke:quiz-answer-exposure` (5/5)، و`architecture-gate`: PASS. لا تعلن frontend typecheck/build خضراء في هذا الجهاز بسبب تثبيت الجذر الناقص.
+
+### تدقيق المؤقت والجلسة
+
+- التأكيد الحالي: مؤقت الـRunner محلي، و`LiveExamSession` متابعة تقدم لا محاولة موثقة زمنيًا من الخادم، وbackend يفرض حدًا أعلى للوقت المرسل فقط.
+- لم يُنقل هذا concern؛ فصله دون تصميم Session/Attempt سيخفي فجوة integrity بدل حلها. الدليل والقرار موثقان في `assessment-system-code-audit.md`.
+
+### Runner question hydration — مكتمل (commit: `6584d1de`)
+
+- استبدل طلب الـRunner المباشر الذي قد يمرر `limit=200` بـ`assessmentQuestionSource.hydrateByIds` المقطّع عند 100.
+- `smoke:exam-question-source`: PASS (22/22)، و`assessment-question-selection` (5/5)، و`mock-exams` (10/10)، و`quiz-progress-draft` (5/5)، و`architecture-gate`: PASS.
+
+### Runner server-result authority — مكتمل (commit: `4320a86c`)
+
+- عند فشل submit الحقيقي لا ينشئ الـRunner نتيجة محلية ولا ينتقل إلى التقرير؛ يحتفظ بمسودة التقدم ليتاح retry.
+- وضع التطوير فقط يحتفظ بمسار النتيجة المحلية المتعمد.
+- `smoke:quiz-submission-authority` (3/3)، و`quiz-answer-exposure` (5/5)، و`quiz-integrity-guard` (4/4)، و`architecture-gate`: PASS.
+
+### Runner mock section reset — مكتمل (commit: `4f6b2800`)
+
+- إعادة الاختبار أو تحميل اختبار جديد لا يرث الأقسام المقفلة أو وقت أسئلة المحاولة السابقة، ويبدأ مؤقت القسم الأول مجددًا.
+- `smoke:quiz-section-reset` (2/2)، و`mock-exams` (10/10)، و`quiz-progress-draft` (5/5)، و`quiz-submission-authority` (3/3)، و`architecture-gate`: PASS.
+
+## تفعيل بوابة HTTP المعزولة على فرع العمل (commit: `a6ad996c`)
+
+- كان workflow `Platform V3 Backend Integration Gate` مقصورًا تلقائيًا على `develop/platform-v3-recovery` وPR تاريخي محدد، لذلك لم تكن رحلة الاختبارات الجديدة ستعمل عند دفع فرع العمل الحالي.
+- أصبح يعمل على push أو PR من `refactor/modular-platform-safe` فقط، مع بقاء Mongo وsecrets المؤقتة والعزل كما هي.
+- فحص typecheck للـharness وعقد workflow trigger hygiene: PASS. لم يُنفذ GitHub Actions بعد؛ يحتاج push أو تشغيل يدوي من صاحب المستودع.
+
+## حصر مدخل مساحة التعلم — مكتمل بالتدقيق (commit: `579e0d4b`)
+
+- المسار الحي للفئات هو `GenericPathPage → LearningSection` على `/category/:pathId`.
+- لا يوجد import أو lazy/dynamic entry لصفحة `SubjectLearningPage` في مصدر التطبيق الحالي؛ بقيت للـcompatibility ولا تُحذف اعتمادًا على هذا الدليل وحده.
+- `smoke:learning-canonical-entry`: PASS (3/3)، و`architecture-gate`: PASS. الخطوة التالية هي حصر طلبات `LearningSection` قبل أي توحيد أو نقل.
+
+## تحميل مساحة التعلّم بحسب النطاق — إصلاح سباق الاستجابات (commit: `66d639a7`)
+
+- التحميل الحي يطلب `/courses` و`/quizzes` بحسب `pathId + subjectId` وبحد واضح `100`؛ endpoint الخادم يدعم pagination حتى 200، لكن هذا العرض الحالي لا يملك واجهة pagination فلا يجوز ادعاء معالجة التوسع أو رفع الحد بلا قرار UX.
+- كان `hydrateCourses` و`hydrateQuizzes` يستبدلان collection المخزّن كليًا؛ بعد انتقال سريع بين مادتين كان من الممكن لاستجابة النطاق القديم أن تصل متأخرة وتكتب فوق بيانات النطاق المفتوح.
+- أضيف حارس `scopeKey` قبل أي hydration؛ الاستجابة غير المطابقة للنطاق الحالي تُهمل فقط، من دون تغيير URLs أو API أو صلاحيات أو قواعد المحتوى.
+- `smoke:learning-scoped-bootstrap` (2/2)، و`smoke:learning-canonical-entry` (3/3)، و`architecture-gate`: PASS.
+
+## استعادة عقد bootstrap للمحتوى — مكتمل (commit: `118f39d7`)
+
+- كشف فحص الخادم أن route الـminimal content bootstrap كان يستخدم حدّ إعلانات عام بلا تعريف بعد فصل ownership إلى `contentBootstrapOperationalData`.
+- أصبح الثابت مُصدّرًا من وحدة البنية التحتية المالكة ويُستورد في route، بلا تكرار للقيمة وبلا تغيير query أو الاستجابة.
+- تم تحديث `smoke:performance` ليختبر وحدات visibility/cache الجديدة بدل الاعتماد على مواضع قبل الفصل؛ `smoke:performance` و`smoke:learning-scoped-bootstrap` و`server:check` و`architecture-gate`: PASS.
+
+## مفردات مساحة التعلّم والتوافق مع الروابط — مكتمل (commit: `2b121135`)
+
+- أصبحت قيم الرابط التاريخية `courses/skills/banks/tests/library` مملوكة في `utils/learningSpaceTabs.ts` بدل بقائها داخل شاشة التعلّم الكبيرة.
+- تُعرض المفردات الجديدة تدريجيًا عبر adapter: `skills → foundation` و`banks → practice` و`tests → assessments`؛ لا تغير في URLs أو `SubjectSettings` أو `PackageContentType` أو placements المخزنة.
+- أضيفت مرادفات deep links الجديدة (`practice`, `assessments`) مع بقاء القديمة، ويحرسها `smoke:learning-tabs` (3/3) إلى جانب عقدي المدخل والتحميل وبوابة المعمارية: PASS.
+
+## تطابق مساحة المادة الإدارية مع رحلة الطالب — مكتمل (commit: `a2524f8b`)
+
+- تبويب `tests` في مساحة المادة يعرض اختبارات المادة العادية فقط؛ `SubjectQuizzesPanel` يستبعد المحاكيات الحقيقية صراحة.
+- صُححت التسمية في الملخص من “المحاكي” إلى “الاختبارات” لتتطابق مع التبويب ورحلة الطالب، بينما تبقى المحاكيات في مدير/صفحة المحاكيات.
+- `smoke:learning-placement-admin` (6/6)، و`learning-tabs` (3/3)، و`learning-canonical-entry` (3/3)، و`architecture-gate`: PASS.
 
 ---
 

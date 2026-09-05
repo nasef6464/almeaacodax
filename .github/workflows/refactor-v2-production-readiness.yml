@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - refactor/repository-v2-safe
+      - refactor/modular-platform-safe
     paths:
       - 'package.json'
       - 'package-lock.json'
@@ -145,6 +146,12 @@ jobs:
 
       - name: API production build
         run: npm --prefix server run build
+
+      - name: Immutable architecture contract gate
+        run: node tools/refactor/architecture-gate.mjs
+
+      - name: Progressive module boundary gate
+        run: node tools/refactor/module-boundary-gate.mjs
 
       - name: Production audit contract
         run: npm run smoke:production-audit

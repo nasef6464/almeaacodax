@@ -27,6 +27,11 @@ const reportsSource = [
 ].join('\n');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizSupervisorScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorScope.ts', import.meta.url), 'utf8');
+const quizSupervisorReportScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorReportScope.ts', import.meta.url), 'utf8');
+const quizReportStudentScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportStudentScope.ts', import.meta.url), 'utf8');
+const quizReportAttemptGapsSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportAttemptGaps.ts', import.meta.url), 'utf8');
+const quizSupervisorScopeRepositorySource = await readFile(new URL('../server/src/modules/quizzes/infrastructure/quizSupervisorScopeRepository.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
 const contentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
 const apiSource = [
@@ -295,15 +300,35 @@ check('staff scoped reports keep intervention plan, summary, and smart remediati
 });
 
 check('server analytics scopes reports by role before returning weak skills and students', () => {
-  assertIncludes(quizRoutesSource, 'authUser.role === "admin"');
-  assertIncludes(quizRoutesSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
+  assertIncludes(quizRoutesSource, 'buildQuizReportStudentScope(authUser, resolveSupervisorSchoolReportScope)');
+  assertIncludes(quizReportStudentScopeSource, 'authUser.role === "admin"');
+  assertIncludes(quizReportStudentScopeSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
   assertIncludes(quizRoutesSource, 'const resolveSupervisorSchoolReportScope = async');
-  assertIncludes(quizRoutesSource, 'GroupModel.find({ type: "SCHOOL", supervisorIds: String(authUser.id || authUser._id || "") })');
-  assertIncludes(quizRoutesSource, 'const childScopedGroups = scopedSchoolIds.length');
-  assertIncludes(quizRoutesSource, 'scopeFilters.push({ schoolId: { $in: scopedSchoolIds } })');
-  assertIncludes(quizRoutesSource, 'authUser.role === "parent"');
-  assertIncludes(quizRoutesSource, 'linkedStudentIds');
-  assertIncludes(quizRoutesSource, 'matchesManagedScope');
+  assertIncludes(quizRoutesSource, 'resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository)');
+  assertIncludes(quizSupervisorReportScopeSource, 'without promoting a class-level supervisor to school-wide access');
+  assertIncludes(quizSupervisorReportScopeSource, 'repository.findDirectlySupervisedGroups');
+  assertIncludes(quizSupervisorReportScopeSource, 'repository.findSchoolWideChildGroups(directScope.schoolIds)');
+  assertIncludes(quizSupervisorScopeRepositorySource, 'GroupModel.find({ supervisorIds: supervisorId })');
+  assertIncludes(quizSupervisorScopeRepositorySource, 'type: { $in: ["CLASS", "PRIVATE_GROUP"] }');
+  assertIncludes(quizSupervisorScopeSource, 'Separates explicit school-wide authority from class/private-group authority.');
+  assertIncludes(quizSupervisorScopeSource, '.filter((group) => group.type === "SCHOOL")');
+  if (quizSupervisorScopeSource.includes('.map((group) => String(group.parentId')) {
+    throw new Error('Class/private-group scope must not be promoted to parent school scope');
+  }
+  assertIncludes(quizSupervisorReportScopeSource, 'const schoolWideChildGroups = await repository.findSchoolWideChildGroups(directScope.schoolIds);');
+  assertIncludes(quizReportStudentScopeSource, 'scopeFilters.push({ schoolId: { $in: supervisorScope.schoolIds } })');
+  assertIncludes(quizRoutesSource, 'const scopedStudentIds = students.map((student) => idOf(student));');
+  assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
+  assertIncludes(quizReportStudentScopeSource, 'authUser.role === "parent"');
+  assertIncludes(quizReportStudentScopeSource, 'linkedStudentIds');
+  assertIncludes(quizRoutesSource, 'matchesManagedContentScope');
+  assertIncludes(quizRoutesSource, 'filterResultsByManagedContentScope');
+  assertIncludes(quizRoutesSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');
+  assertIncludes(quizReportAttemptGapsSource, 'Converts one persisted question attempt into the report');
+  assertIncludes(quizReportAttemptGapsSource, 'mastery: attempt.isCorrect ? 100 : 0');
+  if (quizRoutesSource.includes('buildAttemptGaps(')) {
+    throw new Error('Analytics must use the extracted question-attempt gap read model consistently');
+  }
   assertIncludes(quizRoutesSource, 'const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
   assertIncludes(quizRoutesSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
   assertIncludes(quizRoutesSource, 'earlyWeakSkillSignalCount');

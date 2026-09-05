@@ -40,6 +40,9 @@ for (const field of [
   'missingStudents',
   'missingParents',
   'missingSupervisors',
+  'createdTeachers',
+  'linkedTeachers',
+  'missingTeachers',
 ]) {
   assert.ok(child.includes(`relationSummary.${field}`), `relation result metric must remain visible: ${field}`);
 }

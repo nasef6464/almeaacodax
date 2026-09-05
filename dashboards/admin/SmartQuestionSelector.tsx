@@ -56,8 +56,16 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [manualPage, setManualPage] = useState(1);
   const [hoveredQuestionId, setHoveredQuestionId] = useState<string | null>(null);
   const selectedSkillKey = useMemo(() => [...selectedSkillIds].sort().join("|"), [selectedSkillIds]);
+  const questionSourceFilters = useMemo(() => ({
+    pathId,
+    subjectId,
+    sectionId: selectedSectionId || undefined,
+    skillIds: mode === "skills" && selectedSkillIds.length > 0 ? selectedSkillIds : undefined,
+    difficulty: difficulty === "all" ? undefined : difficulty,
+    search: searchTerm.trim() || undefined,
+  }), [difficulty, mode, pathId, searchTerm, selectedSectionId, selectedSkillIds, subjectId]);
 
-  // ── تحميل النطاق الحالي من المصدر القانوني بدون حد 300/1000 صامت ─────────
+  // ── بحث صفحة واحدة من المصدر القانوني؛ لا نحمّل بنك المسار كاملاً ──────────
   useEffect(() => {
     const generation = ++requestGenerationRef.current;
 
@@ -72,15 +80,11 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     setLoadingQuestions(true);
     setLoadError("");
 
-    // لا نُرسل approvalStatus هنا — Backend يحدد الرؤية حسب دور المستخدم تلقائياً:
-    // - Admin/Supervisor/Teacher: يرون جميع الأسئلة في نطاقهم بما فيها Draft و Pending.
-    // - إرسال approvalStatus: 'approved' صراحةً كان يُخفي الأسئلة غير المعتمدة عن Admin
-    //   عند بناء الاختبار، وهو سلوك غير مقصود يمنع إضافة الأسئلة الجديدة.
     void assessmentQuestionSource
-      .loadAll({
-        pathId,
-        subjectId,
-        sectionId: selectedSectionId || undefined,
+      .searchPage({
+        ...questionSourceFilters,
+        page: manualPage,
+        limit: CLIENT_PAGE_SIZE,
       })
       .then((result) => {
         if (generation !== requestGenerationRef.current) return;
@@ -97,7 +101,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
       .finally(() => {
         if (generation === requestGenerationRef.current) setLoadingQuestions(false);
       });
-  }, [pathId, subjectId, selectedSectionId, refreshKey]);
+  }, [manualPage, pathId, questionSourceFilters, refreshKey]);
 
   // ── Hydrate المختارة بالـIDs مباشرة؛ لا تعتمد على Store أو الصفحة الحالية ─
   const selectedHydrationKey = useMemo(
@@ -153,26 +157,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     [selectedIds, allQuestionsMap],
   );
 
-  // ── الفلترة تعمل على كامل النطاق الذي تم تحميله عبر pagination ─────────────
-  const filteredQuestions = useMemo(() => {
-    let result = apiQuestions;
-    if (mode === "skills" && selectedSkillIds.length > 0)
-      result = result.filter((q) => (q.skillIds || []).some((id) => selectedSkillIds.includes(id)));
-    if (searchTerm.trim())
-      result = result.filter((q) => (q.text || "").toLowerCase().includes(searchTerm.toLowerCase()));
-    if (difficulty !== "all") result = result.filter((q) => q.difficulty === difficulty);
-    return result;
-  }, [apiQuestions, mode, selectedSkillIds, searchTerm, difficulty]);
-
-  const totalManualPages = Math.max(1, Math.ceil(filteredQuestions.length / CLIENT_PAGE_SIZE));
-  const visibleFilteredQuestions = useMemo(() => {
-    const start = (manualPage - 1) * CLIENT_PAGE_SIZE;
-    return filteredQuestions.slice(start, start + CLIENT_PAGE_SIZE);
-  }, [filteredQuestions, manualPage]);
+  const totalManualPages = Math.max(1, Math.ceil(totalAvailable / CLIENT_PAGE_SIZE));
+  const visibleFilteredQuestions = apiQuestions;
 
   useEffect(() => {
     setManualPage(1);
-  }, [mode, searchTerm, difficulty, selectedSectionId, selectedHydrationKey, selectedSkillKey]);
+  }, [mode, searchTerm, difficulty, selectedSectionId, selectedSkillKey]);
 
   useEffect(() => {
     if (manualPage > totalManualPages) setManualPage(totalManualPages);
@@ -254,7 +244,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'ه', 'و'];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div data-testid="assessment-question-selector" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
       {/* ══════════════════════════════════════════════
           اللوحة اليسرى: الفلاتر + قائمة الأسئلة
@@ -300,8 +290,8 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
         {!loadingQuestions && !loadError && pathId && apiQuestions.length > 0 && (
           <div className="flex items-center justify-between text-[11px] text-gray-400 font-bold px-1">
-            <span>{filteredQuestions.length} مطابق للفلاتر</span>
-            <span>{totalAvailable} متاح في النطاق الحالي</span>
+            <span>{totalAvailable} مطابق للفلاتر</span>
+            <span>الصفحة {manualPage}</span>
           </div>
         )}
 
@@ -348,7 +338,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
           <div className="space-y-2">
             <div className="relative">
               <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+              <input data-testid="assessment-question-search" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="ابحث في السؤال..." dir="rtl"
                 className="w-full pr-9 pl-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"/>
             </div>
@@ -382,14 +372,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
         {mode !== "smart" && !loadingQuestions && pathId && (
           <div className="space-y-2">
             <div className="overflow-y-auto space-y-1.5 max-h-72 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
-              {filteredQuestions.length === 0
+              {visibleFilteredQuestions.length === 0
                 ? (
                   <div className="py-6 text-center text-xs text-gray-400">
                     <BarChart2 size={24} className="mx-auto mb-2 opacity-30"/>
                     <p className="font-bold">
-                      {apiQuestions.length === 0
-                        ? "لا توجد أسئلة في هذا النطاق بعد"
-                        : "لا توجد أسئلة تطابق الفلتر"}
+                      "لا توجد أسئلة تطابق الفلتر"
                     </p>
                   </div>
                 )
@@ -398,7 +386,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                     const isHovered = hoveredQuestionId === q.id;
                     const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
                     return (
-                      <button key={q.id} type="button"
+                      <button key={q.id} type="button" data-testid={`assessment-question-select-${q.id}`}
                         onClick={() => { toggleQuestion(q.id); setHoveredQuestionId(q.id); }}
                         onMouseEnter={() => setHoveredQuestionId(q.id)}
                         disabled={!isSelected && selectedIds.length >= maxQuestions}
@@ -424,12 +412,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
             </div>
             {totalManualPages > 1 && (
               <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 px-1">
-                <button type="button" onClick={() => setManualPage((page) => Math.max(1, page - 1))} disabled={manualPage <= 1}
+                <button type="button" data-testid="assessment-question-page-previous" onClick={() => setManualPage((page) => Math.max(1, page - 1))} disabled={manualPage <= 1}
                   className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
                   <ChevronRight size={12}/> السابق
                 </button>
                 <span>صفحة {manualPage} من {totalManualPages}</span>
-                <button type="button" onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))} disabled={manualPage >= totalManualPages}
+                <button type="button" data-testid="assessment-question-page-next" onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))} disabled={manualPage >= totalManualPages}
                   className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
                   التالي <ChevronLeft size={12}/>
                 </button>
@@ -568,7 +556,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
                 const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
                 return (
-                  <div key={`${q.id}-${index}`} draggable
+                  <div key={`${q.id}-${index}`} data-testid={`assessment-selected-question-${q.id}`} draggable
                     onDragStart={(e) => { setDraggedId(q.id); e.dataTransfer.effectAllowed = "move"; }}
                     onDragOver={(e) => { e.preventDefault(); setDragOverId(q.id); }}
                     onDrop={(e) => handleDrop(e, q.id)}

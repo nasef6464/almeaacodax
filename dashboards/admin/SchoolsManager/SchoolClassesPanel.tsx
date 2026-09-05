@@ -8,6 +8,7 @@ interface SchoolClassesPanelProps {
     schoolStudents: User[];
     parents: User[];
     supervisors: User[];
+    teachers: User[];
     publishedCourses: Course[];
     bulkClassNames: string;
     setBulkClassNames: (value: string) => void;
@@ -28,6 +29,8 @@ interface SchoolClassesPanelProps {
     onAssignSupervisor: (userId: string, classId: string) => Promise<void>;
     onCreateSupervisor: (classroom: Group) => void;
     onRemoveSupervisor: (classroom: Group, user: User) => void;
+    onAssignTeacher: (userId: string, classId: string) => Promise<void>;
+    onRemoveTeacher: (classroom: Group, user: User) => Promise<void>;
     onAssignCourse: (courseId: string, classId: string) => void;
     onRemoveCourse: (courseId: string, classId: string) => void;
 }
@@ -37,6 +40,7 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
     schoolStudents,
     parents,
     supervisors,
+    teachers,
     publishedCourses,
     bulkClassNames,
     setBulkClassNames,
@@ -57,6 +61,8 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
     onAssignSupervisor,
     onCreateSupervisor,
     onRemoveSupervisor,
+    onAssignTeacher,
+    onRemoveTeacher,
     onAssignCourse,
     onRemoveCourse,
 }) => (
@@ -117,6 +123,7 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {schoolClasses.map((classroom) => {
                     const classSupervisors = supervisors.filter((currentUser) => classroom.supervisorIds.includes(currentUser.id));
+                    const classTeachers = teachers.filter((currentUser) => (currentUser.groupIds || []).includes(classroom.id));
                     const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
                     const classStudents = schoolStudents.filter((student) => classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id));
                     const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
@@ -130,6 +137,7 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
                             classSupervisors={classSupervisors}
                             classCourses={classCourses}
                             supervisors={supervisors}
+                            teachers={teachers}
                             publishedCourses={publishedCourses}
                             rosterActionPending={rosterActionPending}
                             isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
@@ -144,6 +152,9 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
                             onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}
                             onCreateSupervisor={() => onCreateSupervisor(classroom)}
                             onRemoveSupervisor={(currentUser) => onRemoveSupervisor(classroom, currentUser)}
+                            classTeachers={classTeachers}
+                            onAssignTeacher={(userId) => onAssignTeacher(userId, classroom.id)}
+                            onRemoveTeacher={(currentUser) => onRemoveTeacher(classroom, currentUser)}
                             onAssignCourse={(courseId) => onAssignCourse(courseId, classroom.id)}
                             onRemoveCourse={(courseId) => onRemoveCourse(courseId, classroom.id)}
                         />

@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const presentationSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/presentation/questionPresentation.ts'), 'utf8').replace(/\r\n/g, '\n');
+const integritySource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizQuestionIntegrity.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
 const presentationImport = 'import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";';
 const delegated = routeSource.includes(presentationImport);
@@ -51,8 +52,8 @@ check('question presentation call sites remain route-owned', () => {
     'toQuestionSummaryText(item.text)',
     'sanitizeQuestionForLearner(q)',
     'isQuestionContentUsable(question)',
-    'isQuestionContentUsable(resolved)',
   ]) assert.ok(routeSource.includes(fragment), `quiz route lost presentation call site ${fragment}`);
+  assert.ok(integritySource.includes('isQuestionContentUsable(resolved)'), 'integrity module lost usability call site');
 });
 
 check('question presentation ownership is exclusive after delegation while staging remains baseline-compatible', () => {
@@ -75,14 +76,15 @@ check('delegated presentation import is singular and remains before route-local 
   assert.ok(importIndex >= 0 && stateIndex >= 0 && importIndex < stateIndex, 'question presentation import must precede route-local state');
 });
 
-check('quiz integrity and database behavior remain route-owned', () => {
+check('quiz integrity and database behavior remain outside presentation module', () => {
   for (const fragment of [
-    'const validateQuizQuestionIntegrity = async',
+    'export async function validateQuizQuestionIntegrity',
     'QuestionModel.find(buildDocumentsByIdsQuery(normalizedIds))',
     'const missingIds: string[] = [];',
     'const invalidContentIds: string[] = [];',
     'Cannot publish quiz: some referenced questions are missing or have incomplete content',
-  ]) assert.ok(routeSource.includes(fragment), `quiz route lost integrity ownership: ${fragment}`);
+  ]) assert.ok(integritySource.includes(fragment), `integrity module lost behavior: ${fragment}`);
+  assert.ok(routeSource.includes('validateQuizQuestionIntegrity(payload)'), 'quiz route lost integrity call site');
 });
 
 check('question presentation module stays pure and bounded', () => {

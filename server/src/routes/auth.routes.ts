@@ -1361,46 +1361,18 @@ authRouter.post(
   "/parent/link-student",
   requireAuth,
   asyncHandler(async (req: any, res) => {
-    if (req.user.role !== "parent") {
+    if (req.authUser?.role !== "parent") {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
     }
 
     const payload = linkStudentSchema.parse(req.body);
+    void payload;
 
-    // Find student by nationalId or phone
-    const query: any = { role: "student" };
-    if (payload.nationalId) query.nationalId = payload.nationalId;
-    else query.phone = normalizePhone(payload.phone!);
-
-    const student = await UserModel.findOne(query);
-    if (!student) {
-      return res.status(StatusCodes.NOT_FOUND).json({
-        message: payload.nationalId
-          ? "لم يُعثر على طالب بهذا الرقم الوطني"
-          : "لم يُعثر على طالب بهذا الجوال",
-      });
-    }
-
-    const studentId = String(student.id || student._id);
-    const parentId = String(req.user.id || req.user._id);
-
-    // Prevent duplicate linking
-    const parent = await UserModel.findById(req.user._id);
-    if (parent?.linkedStudentIds?.includes(studentId)) {
-      return res.status(StatusCodes.CONFLICT).json({ message: "الطالب مرتبط بك بالفعل" });
-    }
-
-    // Link student to parent
-    await UserModel.findByIdAndUpdate(req.user._id, { $addToSet: { linkedStudentIds: studentId } });
-
-    return res.json({
-      message: "تم ربط الطالب بنجاح",
-      student: {
-        id: studentId,
-        name: student.name,
-        role: student.role,
-        schoolId: student.schoolId,
-      },
+    // National ID or phone possession alone does not prove guardianship. Keep the
+    // route stable but fail closed until a verified consent/approval flow exists.
+    // Administrators can maintain linkedStudentIds through the audited admin route.
+    return res.status(StatusCodes.FORBIDDEN).json({
+      message: "ربط الطالب يتطلب اعتمادًا موثقًا من إدارة المدرسة أو موافقة الطالب.",
     });
   }),
 );
@@ -1412,11 +1384,11 @@ authRouter.delete(
   "/parent/link-student/:studentId",
   requireAuth,
   asyncHandler(async (req: any, res) => {
-    if (req.user.role !== "parent") {
+    if (req.authUser?.role !== "parent") {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
     }
     const { studentId } = req.params;
-    await UserModel.findByIdAndUpdate(req.user._id, { $pull: { linkedStudentIds: studentId } });
+    await UserModel.findByIdAndUpdate(req.authUser!.id, { $pull: { linkedStudentIds: studentId } });
     return res.json({ message: "تم إلغاء ربط الطالب" });
   }),
 );
@@ -1428,10 +1400,10 @@ authRouter.get(
   "/parent/linked-students",
   requireAuth,
   asyncHandler(async (req: any, res) => {
-    if (req.user.role !== "parent") {
+    if (req.authUser?.role !== "parent") {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
     }
-    const parent = await UserModel.findById(req.user._id).select("linkedStudentIds").lean();
+    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
     const ids: string[] = (parent as any)?.linkedStudentIds ?? [];
     if (ids.length === 0) return res.json({ students: [] });
 

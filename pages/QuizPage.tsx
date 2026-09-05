@@ -9,6 +9,15 @@ import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
+import { resolveAssessmentSettings } from '../utils/assessmentSettings';
+import { getDefaultQuizSettings } from '../utils/quizSettings';
+import { assessmentQuestionSource } from '../utils/exams/assessmentQuestionSource';
+import {
+  readQuizProgressDraft,
+  removeQuizProgressDraft,
+  type SavedQuizPageProgress,
+  writeQuizProgressDraft,
+} from '../utils/quizProgressDraft';
 
 interface QuestionThreadItem {
   id: string;
@@ -18,18 +27,16 @@ interface QuestionThreadItem {
 }
 
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
-const QUIZ_PAGE_PROGRESS_PREFIX = 'almeaa-quiz-progress:';
-
-interface SavedQuizPageProgress {
-  quizId: string;
-  questionIds: string[];
-  selectedOptions: Record<string, number>;
-  currentQuestionIndex: number;
-  timeLeft: number | null;
-  savedAt: string;
-}
-
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
+const resolveQuizSettings = (quiz?: Quiz | null) =>
+  resolveAssessmentSettings(
+    quiz?.settings,
+    getDefaultQuizSettings({
+      type: quiz?.type || 'quiz',
+      mode: quiz?.mode || 'regular',
+      mockExam: quiz?.mockExam?.enabled === true,
+    }),
+  );
 const resolveQuizPackageContentType = (quiz: Quiz, source?: string): PackageContentType => {
   if (source === 'mock-exam' || quiz.mockExam?.enabled === true) return 'mockExams';
   if (source === 'training' || source === 'foundation') return 'banks';
@@ -174,8 +181,8 @@ export const QuizPage: React.FC = () => {
   const shouldReturnToSourceAfterFinish =
     Boolean(safeReturnTo) &&
     (searchParams.get('returnOnFinish') === '1' ||
-      quiz?.settings?.returnToSourceOnFinish === true ||
-      quiz?.settings?.showResultsReport === false);
+      resolveQuizSettings(quiz).returnToSourceOnFinish === true ||
+      resolveQuizSettings(quiz).showResultsReport === false);
   const returnLabel = useMemo(() => {
     if (sourceParam === 'foundation') return 'العودة لموضوع التأسيس';
     if (sourceParam === 'training') return 'العودة للتدريب';
@@ -296,11 +303,8 @@ export const QuizPage: React.FC = () => {
     setIsResolvingScopedQuestions(true);
     const run = async () => {
       try {
-        const fetched = await api.getQuestions({
-          ids: missingIds.join(','),
-          limit: Math.min(Math.max(missingIds.length, 20), 200),
-          noTotal: true,
-        }) as Question[];
+        const hydration = await assessmentQuestionSource.hydrateByIds(missingIds);
+        const fetched = hydration.questions;
         if (cancelled || !Array.isArray(fetched) || fetched.length === 0) return;
         setQuizScopedQuestions((prev) => {
           const merged = [...prev, ...fetched];
@@ -436,21 +440,13 @@ export const QuizPage: React.FC = () => {
     setShowFinishDialog(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
+    setSectionTimeLeft(null);
+    setQuestionTimeSpent({});
+    setLockedSectionIds(new Set());
 
-    const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (foundQuiz.settings?.timeLimit || 0);
+    const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (resolveQuizSettings(foundQuiz).timeLimit || 0);
     const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
-    const progressKey = `${QUIZ_PAGE_PROGRESS_PREFIX}${foundQuiz.id}`;
-    let savedProgress: SavedQuizPageProgress | null = null;
-
-    if (typeof window !== 'undefined') {
-      try {
-        const rawProgress = window.localStorage.getItem(progressKey);
-        savedProgress = rawProgress ? (JSON.parse(rawProgress) as SavedQuizPageProgress) : null;
-      } catch (error) {
-        console.warn('Unable to restore quiz progress draft:', error);
-        window.localStorage.removeItem(progressKey);
-      }
-    }
+    const savedProgress = readQuizProgressDraft(foundQuiz.id);
 
     const savedQuestionOrder =
       savedProgress?.quizId === foundQuiz.id &&
@@ -463,7 +459,7 @@ export const QuizPage: React.FC = () => {
     const canRestoreProgress = savedQuestionOrder.length === loadedQuestions.length && loadedQuestions.length > 0;
     const nextQuestions = canRestoreProgress
       ? savedQuestionOrder
-      : foundQuiz.settings?.randomizeQuestions === false
+      : resolveQuizSettings(foundQuiz).randomizeQuestions === false
         ? loadedQuestions
         : shuffleQuestions(loadedQuestions);
 
@@ -475,6 +471,18 @@ export const QuizPage: React.FC = () => {
         quizTitle: foundQuiz.title || 'اختبار',
         totalQuestions: nextQuestions.length,
       }).catch((err: any) => console.warn('Failed to start live exam session:', err));
+      api.getLiveExamSession(foundQuiz.id).then((serverProgress: any) => {
+        const serverAnswers = serverProgress?.answers;
+        if (!serverAnswers || typeof serverAnswers !== 'object') return;
+        const allowed = new Set(nextQuestions.map((question) => question.id));
+        const restoredAnswers: Record<string, number> = Object.fromEntries(
+          Object.entries(serverAnswers)
+            .filter(([questionId, value]) => allowed.has(questionId) && Number.isInteger(Number(value)) && Number(value) >= 0)
+            .map(([questionId, value]) => [questionId, Number(value)]),
+        );
+        setSelectedOptions((current) => ({ ...current, ...restoredAnswers }));
+        setDraftRestored(true);
+      }).catch((err: any) => console.warn('Failed to restore server progress:', err));
     }
     setDraftRestored(canRestoreProgress);
 
@@ -509,7 +517,7 @@ export const QuizPage: React.FC = () => {
       savedAt: new Date().toISOString(),
     };
 
-    window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
+    writeQuizProgressDraft(draft);
   }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, isFinished, isSubmittingResult]);
 
   useEffect(() => {
@@ -527,8 +535,11 @@ export const QuizPage: React.FC = () => {
     () =>
       mockExamSections
         .map((mockSection, sectionIndex) => {
+          const questionIndexById = new Map(quizQuestions.map((question, index) => [String(question.id), index]));
           const questionIndexes = (mockSection.questionIds || [])
             .map((questionId) => {
+              const exactIndex = questionIndexById.get(String(questionId));
+              if (exactIndex !== undefined) return exactIndex;
               const resolvedQuestion = resolveQuestionFromBank(quizQuestions, questionId);
               return resolvedQuestion
                 ? quizQuestions.findIndex((question) => question.id === resolvedQuestion.id)
@@ -642,11 +653,12 @@ export const QuizPage: React.FC = () => {
     [quizQuestions, selectedOptions]
   );
 
+  const quizSettings = useMemo(() => resolveQuizSettings(quiz), [quiz]);
   const finalScore = Math.round((correctAnswersCount / Math.max(quizQuestions.length, 1)) * 100);
-  const passingScore = quiz?.settings?.passingScore ?? 50;
-  const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
+  const passingScore = quizSettings.passingScore;
+  const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
-  const activeOptionLayout = ((quiz?.settings as any)?.optionLayout as 'horizontal' | 'auto' | undefined) ?? 'horizontal';
+  const activeOptionLayout = quizSettings.optionLayout ?? 'horizontal';
   const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
   const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
 
@@ -657,7 +669,7 @@ export const QuizPage: React.FC = () => {
   //   مثال: [2, 0, 1] يعني: عرض option[2] أولاً، ثم option[0]، ثم option[1].
   // إذا كان randomizeOptions = false أو undefined → null (نعرض الخيارات بترتيبها الأصلي).
   const questionShuffleMap = useMemo<Map<string, number[]> | null>(() => {
-    const shouldRandomize = (quiz?.settings as any)?.randomizeOptions === true;
+    const shouldRandomize = quizSettings.randomizeOptions === true;
     if (!shouldRandomize || quizQuestions.length === 0) return null;
 
     const map = new Map<string, number[]>();
@@ -682,7 +694,7 @@ export const QuizPage: React.FC = () => {
     return map;
   // يُعاد الحساب فقط عند تغيير الأسئلة أو تغيير إعداد randomizeOptions
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quizQuestions, (quiz?.settings as any)?.randomizeOptions]);
+  }, [quizQuestions, quizSettings.randomizeOptions]);
 
   // الخيارات المعروضة للسؤال الحالي (مخلوطة أو أصلية)
   const currentDisplayOptions = useMemo<{ text: string; originalIndex: number }[]>(() => {
@@ -696,13 +708,13 @@ export const QuizPage: React.FC = () => {
       originalIndex,
     }));
   }, [currentQuestion, questionShuffleMap]);
-  const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
-  const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
+  const shouldShowQuestionReview = quizSettings.allowQuestionReview !== false;
+  const shouldShowProgressBar = quizSettings.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
   const activeProgressPercentage = Math.round(((currentQuestionIndex + 1) / Math.max(quizQuestions.length, 1)) * 100);
   const reviewQuestionCount = quizQuestions.filter((question) => reviewLater.includes(question.id)).length;
   const isNextBlocked =
-    quiz?.settings?.requireAnswerBeforeNext === true &&
+    quizSettings.requireAnswerBeforeNext === true &&
     currentQuestion &&
     selectedOptions[currentQuestion.id] === undefined;
 
@@ -739,7 +751,7 @@ export const QuizPage: React.FC = () => {
     params.set('mode', 'self');
     params.set('autostart', '1');
     params.set('questionCount', String(Math.max(quizQuestions.length, 10)));
-    params.set('timeLimit', String(quiz?.settings?.timeLimit || 30));
+    params.set('timeLimit', String(quizSettings.timeLimit || 30));
     params.set('difficulty', focusWeakSkills ? 'Medium' : (quizQuestions[0]?.difficulty || 'Medium'));
 
     if (quiz?.pathId) params.set('pathId', quiz.pathId);
@@ -766,6 +778,7 @@ export const QuizPage: React.FC = () => {
         quizId: quiz?.id || '',
         answeredQuestions: Object.keys(next).length,
         totalQuestions: quizQuestions.length,
+        answers: next,
       }).catch((err: any) => console.warn('Failed to update live exam progress:', err));
       return next;
     });
@@ -845,8 +858,7 @@ export const QuizPage: React.FC = () => {
       savedAt: new Date().toISOString(),
     };
 
-    window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
-    return true;
+    return writeQuizProgressDraft(draft);
   };
 
   const showQuizStatus = (message: string, tone: 'success' | 'info' = 'success') => {
@@ -911,8 +923,6 @@ export const QuizPage: React.FC = () => {
 
     if (!quiz) return;
     setIsSubmittingResult(true);
-
-    api.endLiveExam({ quizId: quiz.id }).catch((err: any) => console.warn('Failed to end live exam:', err));
 
     const skillStats: Record<string, { total: number; correct: number }> = {};
     quizQuestions.forEach((question) => {
@@ -1020,10 +1030,12 @@ export const QuizPage: React.FC = () => {
     };
 
     let resultAttemptDate = result.date;
+    let submissionSucceeded = false;
 
     try {
       if (isDevSessionUser(user)) {
         saveExamResult(result);
+        submissionSucceeded = true;
       } else {
         const serverResult = await api.submitQuiz(quiz.id, {
           answers: selectedOptions,
@@ -1040,16 +1052,25 @@ export const QuizPage: React.FC = () => {
         };
         resultAttemptDate = savedServerResult.date || result.date;
         hydrateExamResults([savedServerResult, ...examResults]);
+        submissionSucceeded = true;
       }
     } catch (error) {
-      console.error('Unable to submit quiz on server, saving local result instead:', error);
-      saveExamResult(result);
+      console.error('Unable to submit quiz on server; keeping local progress for a retry:', error);
+      showQuizStatus('تعذر إرسال النتيجة. تم الاحتفاظ بتقدمك لإعادة المحاولة.', 'info');
     } finally {
       setIsSubmittingResult(false);
     }
 
+    if (!submissionSucceeded) {
+      return;
+    }
+
+    // Close the server-backed session only after the result is accepted. If
+    // submission fails, the active session remains resumable and retry-safe.
+    api.endLiveExam({ quizId: quiz.id }).catch((err: any) => console.warn('Failed to end live exam:', err));
+
     if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`);
+      removeQuizProgressDraft(quiz.id);
       setDraftRestored(false);
     }
 
@@ -1065,7 +1086,7 @@ export const QuizPage: React.FC = () => {
     if (!quiz) return;
 
     if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`);
+      removeQuizProgressDraft(quiz.id);
     }
     setSelectedOptions({});
     setCurrentQuestionIndex(0);
@@ -1073,7 +1094,12 @@ export const QuizPage: React.FC = () => {
     setDraftRestored(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
-    const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0);
+    setQuestionTimeSpent({});
+    setLockedSectionIds(new Set());
+    const firstMockSection = getMockExamSections(quiz)[0];
+    const firstSectionTimeLimit = Number(firstMockSection?.timeLimit || 0);
+    setSectionTimeLeft(firstSectionTimeLimit > 0 ? firstSectionTimeLimit * 60 : null);
+    const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0);
     setTimeLeft(effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1127,101 +1153,129 @@ export const QuizPage: React.FC = () => {
   return (
     <div className={`min-h-screen py-4 transition-colors sm:py-8 ${isNightMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'}`} dir="rtl">
       <div className="max-w-3xl mx-auto px-3 sm:px-4">
-        <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border p-3 sm:p-4 mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3`}>
-          <div className="min-w-0">
-            <button
-              type="button"
-              onClick={handleReturnToPreviousPlace}
-              className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'} mb-2 inline-flex items-center gap-2 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-3 py-2 text-xs font-black`}
-            >
-              <ArrowRight size={16} />
-              {returnLabel}
-            </button>
-            <h1
-              data-testid="quiz-title"
-              className={`text-lg sm:text-xl font-black break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}
-            >
-              {quiz.title}
-            </h1>
-            <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-black">
+        {/* Header: Identity, Timer & Utilities */}
+        <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl shadow-sm border p-4 sm:p-5 mb-4`}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <button
+                type="button"
+                onClick={handleReturnToPreviousPlace}
+                className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'} inline-flex items-center gap-1.5 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-3 py-1.5 text-xs font-black transition-colors shrink-0`}
+              >
+                <ArrowRight size={14} />
+                {returnLabel}
+              </button>
+              <h1
+                data-testid="quiz-title"
+                className={`text-base sm:text-lg font-black truncate ${isNightMode ? 'text-white' : 'text-gray-900'}`}
+              >
+                {quiz.title}
+              </h1>
+            </div>
+
+            {/* Middle: Timer display */}
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              {sectionTimeLeft !== null && !isFinished && currentMockExamSection && (
+                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl font-bold text-xs border ${
+                  sectionTimeLeft <= 60
+                    ? 'bg-red-100 border-red-200 text-red-700 animate-pulse'
+                    : isNightMode ? 'bg-violet-950/80 border-violet-900 text-violet-200' : 'bg-violet-50 border-violet-200 text-violet-700'
+                }`}>
+                  <span className="opacity-75">{currentMockExamSection.title}:</span>
+                  <span className="font-mono font-black">{Math.floor(sectionTimeLeft / 60)}:{String(sectionTimeLeft % 60).padStart(2, '0')}</span>
+                </div>
+              )}
+              {timeLeft !== null && !isFinished && (
+                <div className={`${isNightMode ? 'bg-amber-950/80 border-amber-900 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-700'} flex items-center gap-2 px-3.5 py-1.5 rounded-2xl border font-bold text-sm shadow-xs`}>
+                  <Clock size={16} className="text-amber-500" />
+                  <span className="font-mono text-base font-black tracking-wider">
+                    {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Utility Toolbar */}
+            <div className="flex items-center gap-1.5 self-end sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setShowFormulaSheet(true)}
+                className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs font-black transition-colors ${
+                  isNightMode ? 'border-amber-900/60 bg-amber-950/40 text-amber-300 hover:bg-amber-900/60' : 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
+                }`}
+                title="عرض قوانين الهندسية والرياضيات الخاصة بقياس"
+              >
+                <BookOpen size={14} />
+                <span>قوانين قياس</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const newValue = !isOfflineMode;
+                  setIsOfflineMode(newValue);
+                  window.localStorage.setItem('almeaa-quiz-offline', String(newValue));
+                  setQuizStatusMessage(newValue ? 'تم تفعيل وضع عدم الاتصال (حفظ مؤقت محلي)' : 'تم العودة لوضع الاتصال (مزامنة سحابية)');
+                  setTimeout(() => setQuizStatusMessage(null), 3000);
+                }}
+                className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs font-black transition-colors ${
+                  isOfflineMode
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    : isNightMode
+                      ? 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+                title="حفظ أوفلاين"
+              >
+                <Save size={14} />
+                <span>{isOfflineMode ? 'أوفلاين' : 'أوفلاين'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsNightMode((value) => !value)}
+                className={`inline-flex items-center justify-center h-8 w-8 rounded-xl border transition-colors ${
+                  isNightMode ? 'border-slate-700 bg-slate-800 text-amber-300 hover:bg-slate-700' : 'border-gray-200 bg-white text-slate-700 hover:bg-gray-50'
+                }`}
+                title={isNightMode ? 'النظام العادي' : 'النظام الليلي'}
+              >
+                {isNightMode ? <Sun size={15} /> : <Moon size={15} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Progress Strip */}
+          <div className="mt-3.5 pt-3 border-t border-gray-100/80 flex flex-wrap items-center justify-between gap-2 text-xs font-black">
+            <div className="flex flex-wrap items-center gap-2">
               <span
                 data-testid="quiz-answered-count"
-                className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'} rounded-full px-3 py-1`}
+                className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'} rounded-full px-3 py-0.5`}
               >
                 تم حل {answeredQuestionCount} من {quizQuestions.length}
               </span>
-              {shouldShowQuestionReview ? (
-                <span className={`${isNightMode ? 'bg-amber-950 text-amber-200' : 'bg-amber-50 text-amber-700'} rounded-full px-3 py-1`}>
+              {shouldShowQuestionReview && reviewQuestionCount > 0 ? (
+                <span className={`${isNightMode ? 'bg-purple-950 text-purple-200' : 'bg-purple-50 text-purple-700 border border-purple-100'} rounded-full px-3 py-0.5`}>
                   للمراجعة {reviewQuestionCount}
                 </span>
               ) : null}
               {draftRestored ? (
-                <span className={`${isNightMode ? 'bg-emerald-950 text-emerald-200' : 'bg-emerald-50 text-emerald-700'} rounded-full px-3 py-1`}>
+                <span className={`${isNightMode ? 'bg-indigo-950 text-indigo-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-100'} rounded-full px-2.5 py-0.5 text-[10px]`}>
                   تقدم محفوظ
                 </span>
               ) : null}
-              {currentMockExamSection ? (
-                <span className={`${isNightMode ? 'bg-indigo-950 text-indigo-200' : 'bg-indigo-50 text-indigo-700'} rounded-full px-3 py-1`}>
-                  {currentMockExamSection.title}
-                </span>
-              ) : null}
             </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setIsNightMode((value) => !value)}
-              className={`${isNightMode ? 'bg-slate-800 text-amber-200 hover:bg-slate-700' : 'bg-white text-slate-700 hover:bg-slate-50'} inline-flex items-center gap-2 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-4 py-2 text-sm font-black shadow-sm`}
-            >
-              {isNightMode ? <Sun size={18} /> : <Moon size={18} />}
-              {isNightMode ? 'النظام العادي' : 'النظام الليلي'}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                const newValue = !isOfflineMode;
-                setIsOfflineMode(newValue);
-                window.localStorage.setItem('almeaa-quiz-offline', String(newValue));
-                setQuizStatusMessage(newValue ? 'تم تفعيل وضع عدم الاتصال (حفظ مؤقت محلي)' : 'تم العودة لوضع الاتصال (مزامنة سحابية)');
-                setTimeout(() => setQuizStatusMessage(null), 3000);
-              }}
-              className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-black shadow-sm ${
-                isOfflineMode ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <Save size={18} />
-              {isOfflineMode ? 'أوفلاين مفعل' : 'دعم أوفلاين'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowFormulaSheet(true)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2 text-sm font-black text-amber-800 hover:bg-amber-100 shadow-sm"
-              title="عرض قوانين الهندسية والرياضيات الخاصة بقياس"
-            >
-              <BookOpen size={17} />
-              <span>قوانين قياس</span>
-            </button>
-            {/* Section timer (per-section, قياس-style) */}
-            {sectionTimeLeft !== null && !isFinished && currentMockExamSection && (
-              <div className={`self-start md:self-auto flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl font-bold text-center ${
-                sectionTimeLeft <= 60
-                  ? 'bg-red-100 text-red-700 animate-pulse'
-                  : isNightMode ? 'bg-violet-950 text-violet-200' : 'bg-violet-50 text-violet-700'
-              }`}>
-                <span className="text-[10px] font-black opacity-70">{currentMockExamSection.title}</span>
-                <span className="flex items-center gap-1.5">
-                  <Clock size={16} />
-                  {Math.floor(sectionTimeLeft / 60)}:{String(sectionTimeLeft % 60).padStart(2, '0')}
+
+            {shouldShowProgressBar ? (
+              <div className="flex items-center gap-2 min-w-[120px] sm:min-w-[160px]">
+                <span className={`text-[11px] font-bold ${isNightMode ? 'text-slate-400' : 'text-gray-500'}`}>
+                  {activeProgressPercentage}%
                 </span>
+                <div className={`${isNightMode ? 'bg-slate-800' : 'bg-gray-100'} h-2 flex-1 overflow-hidden rounded-full`}>
+                  <div
+                    className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                    style={{ width: `${activeProgressPercentage}%` }}
+                  />
+                </div>
               </div>
-            )}
-            {/* Global exam timer */}
-            {timeLeft !== null && !isFinished && (
-              <div className={`${isNightMode ? 'bg-amber-950 text-amber-200' : 'bg-amber-50 text-amber-600'} self-start md:self-auto flex items-center gap-2 px-4 py-2 rounded-xl font-bold`}>
-                <Clock size={20} />
-                <span>{Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</span>
-              </div>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -1263,13 +1317,14 @@ export const QuizPage: React.FC = () => {
             <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl border p-3 shadow-sm`}>
               <div className="mb-2 text-xs font-black text-gray-500">أقسام الاختبار المحاكي</div>
               <div className="flex gap-2 overflow-x-auto pb-1">
-                {mockExamSectionSummaries.map((section) => {
+                {mockExamSectionSummaries.map((section, sectionIndex) => {
                   const isActive = currentMockExamSection?.id === section.id;
                   const isLocked = lockedSectionIds.has(section.id);
                   return (
                     <button
                       key={section.id}
                       type="button"
+                      data-testid={`quiz-mock-section-${sectionIndex}`}
                       disabled={isLocked}
                       title={isLocked ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه' : undefined}
                       onClick={() => {
@@ -1335,6 +1390,8 @@ export const QuizPage: React.FC = () => {
               </div>
 
               <div
+                data-testid="quiz-current-question"
+                data-question-id={currentQuestion?.id || ''}
                 onClick={handleInlineQuestionImageClick}
                 className={`question-html text-base sm:text-lg mb-4 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
@@ -1354,31 +1411,44 @@ export const QuizPage: React.FC = () => {
                 </button>
               )}
 
-              <div className={`grid ${optionGridClass} gap-2`}>
-                {currentDisplayOptions.map((displayOption, displayIndex) => (
-                  <button
-                    key={displayOption.originalIndex}
-                    onClick={() => handleOptionSelect(displayIndex)}
-                    className={`${optionButtonHeightClass} w-full px-2 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-1.5 shadow-sm ${
-                      selectedOptions[currentQuestion.id] === displayOption.originalIndex
-                        ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
-                        : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
-                    }`}
-                  >
-                    <span className={`flex-1 text-xs sm:text-sm font-bold leading-5 text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
-                      <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
-                    </span>
-                    <div className="flex items-center shrink-0">
-                      <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${
-                        selectedOptions[currentQuestion.id] === displayOption.originalIndex ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
+              <div className={`grid ${optionGridClass} gap-2.5`}>
+                {currentDisplayOptions.map((displayOption, displayIndex) => {
+                  const isSelected = selectedOptions[currentQuestion.id] === displayOption.originalIndex;
+                  const optionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+                  const letter = optionLetters[displayIndex] || String(displayIndex + 1);
+
+                  return (
+                    <button
+                      key={displayOption.originalIndex}
+                      data-testid={`quiz-answer-option-${displayIndex}`}
+                      onClick={() => handleOptionSelect(displayIndex)}
+                      className={`${optionButtonHeightClass} w-full px-3 py-2 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-2.5 shadow-xs hover:shadow-sm ${
+                        isSelected
+                          ? (isNightMode ? 'border-indigo-500 bg-indigo-950/80 shadow-indigo-950/30' : 'border-indigo-600 bg-indigo-50/70 shadow-indigo-100')
+                          : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-slate-600 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/80 bg-white')
+                      }`}
+                    >
+                      <span className={`flex-1 text-xs sm:text-sm font-bold leading-relaxed text-center break-words ${
+                        isSelected
+                          ? (isNightMode ? 'text-white' : 'text-indigo-950')
+                          : (isNightMode ? 'text-slate-200' : 'text-gray-800')
                       }`}>
-                        <div className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full ${
-                          selectedOptions[currentQuestion.id] === displayOption.originalIndex ? 'bg-indigo-600' : 'bg-transparent'
-                        }`} />
+                        <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
+                      </span>
+                      <div className="flex items-center shrink-0">
+                        <span className={`flex h-7 w-7 items-center justify-center rounded-xl text-xs font-black transition-colors ${
+                          isSelected
+                            ? 'bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-200'
+                            : isNightMode
+                              ? 'bg-slate-800 text-slate-300 border border-slate-700'
+                              : 'bg-slate-100 text-slate-600 border border-slate-200'
+                        }`}>
+                          {letter}
+                        </span>
                       </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
 
               <div className={`${isNightMode ? 'border-slate-800 bg-slate-950/70' : 'border-gray-100 bg-gray-50'} mt-5 sm:mt-6 rounded-2xl border p-2.5 sm:p-3`}>
@@ -1628,7 +1698,7 @@ export const QuizPage: React.FC = () => {
               </div>
             </div>
 
-            {quiz.settings.showAnswers && (
+            {quizSettings.showAnswers && (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <h3 className="text-xl font-bold text-gray-800 mb-6">مراجعة الإجابات</h3>
                 <div className="space-y-8">
@@ -1677,7 +1747,7 @@ export const QuizPage: React.FC = () => {
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';
-                                if (quiz.settings.showAnswers) {
+                                if (quizSettings.showAnswers) {
                                   if (optionIndex === question.correctOptionIndex) {
                                     bgClass = 'bg-emerald-50 border-emerald-200 text-emerald-700';
                                     helperLabel = 'الإجابة الصحيحة';
@@ -1707,7 +1777,7 @@ export const QuizPage: React.FC = () => {
                               })}
                             </div>
 
-                            {(quiz.settings.showExplanations || question.videoUrl) && (
+                            {(quizSettings.showExplanations || question.videoUrl) && (
                               <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100 space-y-3">
                                 {question.explanation && (
                                   <div>
@@ -1804,6 +1874,7 @@ export const QuizPage: React.FC = () => {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 type="button"
+                data-testid="quiz-finish-cancel"
                 onClick={() => setShowFinishDialog(false)}
                 className="rounded-xl bg-rose-500 px-5 py-3 font-black text-white transition-colors hover:bg-rose-600"
               >
@@ -1811,6 +1882,7 @@ export const QuizPage: React.FC = () => {
               </button>
               <button
                 type="button"
+                data-testid="quiz-finish-confirm"
                 onClick={() => {
                   setShowFinishDialog(false);
                   handleFinish();
