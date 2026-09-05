@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "check": "tsc --noEmit -p tsconfig.json",
     "verify:product-config": "tsx src/scripts/verifyProductConfigVariants.ts",
+    "verify:customer-bootstrap": "tsx src/scripts/verifyCustomerBootstrapDryRun.ts",
     "plan:customer-instance": "tsx src/scripts/planCustomerInstance.ts",
     "bootstrap:customer-instance": "tsx src/scripts/bootstrapCustomerInstance.ts",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
