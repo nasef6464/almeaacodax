@@ -21,57 +21,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Patch audience gate
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          path = Path('pages/QuizPage.tsx')
-          source = path.read_text()
-          before = """    const hasExplicitTargets = (foundQuiz.targetUserIds || []).length > 0 || (foundQuiz.targetGroupIds || []).length > 0;
-    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
-      const userGroups = user.groupIds || [];
-      const isUserTargeted =
-        (foundQuiz.targetUserIds || []).length === 0 || (foundQuiz.targetUserIds || []).includes(user.id);
-      const isGroupTargeted =
-        (foundQuiz.targetGroupIds || []).length === 0 ||
-        (foundQuiz.targetGroupIds || []).some((id) => userGroups.includes(id));
-
-      if (!isUserTargeted || !isGroupTargeted) {
-        setHasAccess(false);
-        setAccessMessage('هذا اختبار مركزي موجّه لطلاب محددين فقط.');
-        return;
-      }
-    }"""
-          after = """    const targetUserIds = foundQuiz.targetUserIds || [];
-    const targetGroupIds = foundQuiz.targetGroupIds || [];
-    const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
-    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
-      const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
-      const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
-      const isGroupTargeted = targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id));
-
-      // Direct student targeting and school/class targeting are additive, matching the API contract.
-      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted) {
-        setHasAccess(false);
-        setAccessMessage('هذا اختبار مدرسي موجّه لطلاب محددين فقط.');
-        return;
-      }
-    }"""
-          if after in source:
-              print('Audience patch already applied')
-          elif before in source:
-              path.write_text(source.replace(before, after, 1))
-          else:
-              raise SystemExit('Expected audience block not found')
-          PY
+      - name: Patch exact audience gate
+        run: node scripts/patch-school-directed-quiz-access.mjs
       - name: Verify and typecheck
         run: |
           grep -F "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)" pages/QuizPage.tsx
           grep -F "user.schoolId ? [user.schoolId] : []" pages/QuizPage.tsx
           npm ci
           npm run typecheck
-      - name: Commit patch
+      - name: Commit exact patch
         shell: bash
         run: |
           if git diff --quiet -- pages/QuizPage.tsx; then
