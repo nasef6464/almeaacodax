@@ -39,6 +39,8 @@ jobs:
         run: npm ci
       - name: Install API dependencies
         run: npm --prefix server ci
+      - name: ProductConfig variant and secret-safety proof
+        run: npm --prefix server run verify:product-config
       - name: API phase 4 contract
         run: npm run smoke:api-phase4
       - name: Frontend phase 5 contract
