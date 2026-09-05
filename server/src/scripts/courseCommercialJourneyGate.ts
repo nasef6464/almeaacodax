@@ -83,7 +83,7 @@ async function login(label: string, email: string, password: string, csrf: CsrfC
 const baseCourse = (id: string, title: string, price: number) => ({
   id, title, thumbnail: "https://preview.example.invalid/course-cover.jpg", instructor: "ALMEAA CI",
   price, currency: "SAR", duration: 2, level: "Beginner", rating: 0, progress: 0,
-  category: "integration", subject: "integration-subject", pathId: "integration-path", subjectId: "integration-subject",
+  category: "integration", subject: "integration-subject", pathId: "", subjectId: "",
   features: ["journey proof"], description: `${title} description`, isPublished: true, showOnPlatform: true, modules: [],
 });
 
@@ -175,7 +175,7 @@ async function main() {
     const freeEnrollAgain = await jsonRequest(`/courses/${ids.freeCourse}/enroll`, { method: "POST", token: tokens.get("student"), csrf, body: {} });
     expectStatus("free enrollment is idempotent", freeEnrollAgain, 200);
     assert.equal(freeEnrollAgain.body?.alreadyEnrolled, true, "repeat free enrollment was not idempotent");
-    const freeCourseDoc = await CourseModel.findOne({ id: ids.freeCourse }).lean();
+    const freeCourseDoc = await CourseModel.findById(ids.freeCourse).lean();
     assert.equal(Number(freeCourseDoc?.studentCount || 0), 1, "free enrollment inflated studentCount");
 
     const noEvidencePayment = await jsonRequest("/payments/requests", { method: "POST", token: tokens.get("student"), csrf, body: { itemType: "course", itemId: ids.paidCourse, paymentMethod: "transfer" } });
