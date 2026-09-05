@@ -47,17 +47,22 @@
 
 هذه القيم تبقى في Environment / Secret Store الخاص بكل Deployment أو في مسار إدارة التكاملات الآمن الموجود في المنصة.
 
-## التحقق قبل أي كتابة
+## التحقق والتغليف قبل أي كتابة
 
 من جذر المستودع:
 
 ```bash
 npm --prefix server run verify:product-config
+npm --prefix server run verify:customer-bootstrap
+npm --prefix server run verify:customer-packaging
 npm --prefix server run plan:customer-instance -- --manifest=../customer-instances/examples/alpha-learning.json
+npm --prefix server run package:customer-instance -- --manifest=../customer-instances/examples/alpha-learning.json
 npm --prefix server run bootstrap:customer-instance -- --manifest=../customer-instances/examples/alpha-learning.json
 ```
 
-آخر أمر يعمل افتراضيًا كـDry Run ولا يحتاج MongoDB أو JWT secrets ولا يكتب أي بيانات.
+أمر `package:customer-instance` يبني حزمة نشر غير سرية تحت `server/dist/customer-instances/<customerKey>/customer-instance.package.json` افتراضيًا. يمكن تغيير المسار عبر `--out=<directory>`. الحزمة تحتوي بصمة config وخطة الإعدادات وعقد البناء/التحقق/الرجوع، ولا تحتوي credentials أو tokens.
+
+أمر الـbootstrap يعمل افتراضيًا كـDry Run ولا يحتاج MongoDB أو JWT secrets ولا يكتب أي بيانات. اختبار `verify:customer-packaging` يبني حزمتين مستقلتين من Alpha وBeta داخل مجلد مؤقت، ويثبت اختلاف البصمة وخطة الإعدادات وغياب الحقول السرية وعدم إجراء أي كتابة.
 
 ## الكتابة الفعلية
 
@@ -85,9 +90,10 @@ CUSTOMER_INSTANCE_PRODUCTION_WRITE_ACK=<customerKey>
 
 1. احتفظ بالـManifest السابق الذي تم اعتماده للـDeployment.
 2. شغّل Dry Run للنسخة الجديدة.
-3. طبّق النسخة الجديدة فقط على Deployment العميل المقصود.
-4. تحقق من `/api/product-config` ومن الصفحة العامة وتسجيل الدخول قبل إكمال التسليم.
-5. عند الحاجة للرجوع، أعد تطبيق الـManifest السابق بنفس آلية التأكيد.
+3. ابنِ الحزمة وسجل `configDigest` قبل التسليم.
+4. طبّق النسخة الجديدة فقط على Deployment العميل المقصود.
+5. تحقق من `/api/product-config` ومن الصفحة العامة وتسجيل الدخول قبل إكمال التسليم.
+6. عند الحاجة للرجوع، أعد تطبيق الـManifest السابق بنفس آلية التأكيد ثم تحقق من البصمة والرحلات العامة مرة أخرى.
 
 الـbootstrap يستخدم `$set` للحقول التي يملكها ProductConfig فقط؛ ولا يمسح أسرار providers الموجودة في قاعدة البيانات.
 
