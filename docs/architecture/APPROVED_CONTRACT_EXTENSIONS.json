@@ -4,11 +4,13 @@
   "frontendRoutes": [],
   "backendRouteSignatures": [
     "router|GET|/session/:quizId",
-    "productConfigRouter|GET|/"
+    "productConfigRouter|GET|/",
+    "questionAnalyticsRouter|GET|/"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
-    "apiRouter|/product-config|productConfigRouter"
+    "apiRouter|/product-config|productConfigRouter",
+    "apiRouter|/question-analytics|questionAnalyticsRouter"
   ],
   "envKeys": [
     "ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID",
