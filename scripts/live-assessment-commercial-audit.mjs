@@ -268,6 +268,7 @@ async function main() {
     // is intentionally the completed-attempt history and must not be used to
     // prove that a newly directed assessment is discoverable.
     await freshStudent.page.goto(`${BASE_URL}/quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await freshStudent.page.getByTestId("student-directed-tests").waitFor({ timeout: 30000 });
     const catalogDiagnostics = await freshStudent.page.evaluate(() => ({
       user: window.__ALMEAA_DEBUG_USER__ || null,
       hasDirectedSection: Boolean(document.querySelector('[data-testid="student-directed-tests"]')),
