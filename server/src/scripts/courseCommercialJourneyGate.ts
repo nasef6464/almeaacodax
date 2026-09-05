@@ -37,6 +37,7 @@ const tokens = new Map<string, string>();
 type CsrfContext = { token: string; cookie: string };
 type JsonResult = { status: number; body: any };
 const pass = (label: string) => console.log(`PASS ${label}`);
+const courseKey = (item: any) => String(item?.id || item?._id || "");
 const expectStatus = (label: string, result: JsonResult, expected: number) => {
   assert.equal(result.status, expected, `${label}: expected ${expected}, got ${result.status}\n${JSON.stringify(result.body)}`);
   pass(`${label} -> ${expected}`);
@@ -141,11 +142,11 @@ async function main() {
     const anonymousLearning = await jsonRequest("/courses?kind=learning&limit=50");
     expectStatus("anonymous reads learning catalog", anonymousLearning, 200);
     const learningItems = Array.isArray(anonymousLearning.body?.courses) ? anonymousLearning.body.courses : [];
-    assert.ok(learningItems.some((item: any) => item.id === ids.freeCourse), "free course missing from catalog");
-    assert.ok(learningItems.some((item: any) => item.id === ids.paidCourse), "paid course missing from catalog");
-    assert.ok(!learningItems.some((item: any) => item.id === ids.package), "package leaked into learning catalog");
-    assert.ok(!learningItems.some((item: any) => item.id === ids.teacherDraft), "teacher draft leaked into public catalog");
-    const paidCatalogItem = learningItems.find((item: any) => item.id === ids.paidCourse);
+    assert.ok(learningItems.some((item: any) => courseKey(item) === ids.freeCourse), "free course missing from catalog");
+    assert.ok(learningItems.some((item: any) => courseKey(item) === ids.paidCourse), "paid course missing from catalog");
+    assert.ok(!learningItems.some((item: any) => courseKey(item) === ids.package), "package leaked into learning catalog");
+    assert.ok(!learningItems.some((item: any) => courseKey(item) === ids.teacherDraft), "teacher draft leaked into public catalog");
+    const paidCatalogItem = learningItems.find((item: any) => courseKey(item) === ids.paidCourse);
     const paidCatalogLessons = paidCatalogItem?.modules?.[0]?.lessons || [];
     const catalogPreview = paidCatalogLessons.find((lesson: any) => lesson.id === ids.paidPreviewLesson);
     const catalogLocked = paidCatalogLessons.find((lesson: any) => lesson.id === ids.paidLockedLesson);
@@ -228,7 +229,7 @@ async function main() {
     assert.equal(packageStudentPaid.body?.modules?.[0]?.lessons?.[1]?.videoUrl, paidUrls.video, "package entitlement did not expose included course");
     const packageCatalog = await jsonRequest("/courses?kind=package&limit=50");
     expectStatus("anonymous reads package marketplace", packageCatalog, 200);
-    assert.ok((packageCatalog.body?.courses || []).some((item: any) => item.id === ids.package), "package missing from package marketplace");
+    assert.ok((packageCatalog.body?.courses || []).some((item: any) => courseKey(item) === ids.package), "package missing from package marketplace");
     const adminPaidDetail = await jsonRequest(`/courses/${ids.paidCourse}`, { token: tokens.get("admin") });
     expectStatus("admin receives full course authoring payload", adminPaidDetail, 200);
     assert.equal(adminPaidDetail.body?.modules?.[0]?.lessons?.[1]?.videoUrl, paidUrls.video, "staff course payload was unexpectedly redacted");
