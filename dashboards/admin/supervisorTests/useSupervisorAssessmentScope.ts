@@ -1,8 +1,27 @@
 import { useMemo } from 'react';
 import { useStore } from '../../../store/useStore';
+import { Quiz, QuizResult } from '../../../types';
 import { isTrueMockExam } from '../../../utils/quizPlacement';
 
 export type SupervisorTestTabFilter = 'all' | 'drill' | 'test' | 'mock';
+
+export type SupervisorScopedStudent = {
+  id: string;
+  name: string;
+  groupId?: string;
+  groupName?: string;
+};
+
+export type SupervisorQuizWithStats = Quiz & {
+  stats: {
+    results: QuizResult[];
+    allAttempts: QuizResult[];
+    avgScore: number;
+    totalTargetStudents: number;
+    targetStudentIds: string[];
+    participationRate: number;
+  };
+};
 
 export const uniqueSupervisorStudentIds = (values: Array<string | undefined | null>) =>
   Array.from(new Set(values.filter((value): value is string => typeof value === 'string' && value.trim().length > 0)));
@@ -53,7 +72,7 @@ export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter)
     return Array.from(students);
   }, [groups, scopedGroupIds, user.schoolId, users]);
 
-  const scopedStudents = useMemo(
+  const scopedStudents = useMemo<SupervisorScopedStudent[]>(
     () => scopedStudentIds.map((studentId) => {
       const student = users.find((candidate) => candidate.id === studentId);
       const classGroup = groups.find(
@@ -70,7 +89,7 @@ export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter)
     [groups, scopedGroupIds, scopedStudentIds, users],
   );
 
-  const quizzesWithStats = useMemo(() => quizzes
+  const quizzesWithStats = useMemo<SupervisorQuizWithStats[]>(() => quizzes
     .filter((quiz) =>
       (quiz.targetGroupIds || []).some((id) => scopedGroupIds.has(id)) ||
       (quiz.targetUserIds || []).some((id) => scopedStudentIds.includes(id)) ||
@@ -96,7 +115,7 @@ export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter)
       const matchingResults = examResults.filter(
         (result) => result.quizId === quiz.id && !!result.userId && targetStudentSet.has(result.userId),
       );
-      const latestResultByStudent = new Map<string, (typeof matchingResults)[number]>();
+      const latestResultByStudent = new Map<string, QuizResult>();
       matchingResults.forEach((result) => {
         if (!result.userId) return;
         const previous = latestResultByStudent.get(result.userId);
