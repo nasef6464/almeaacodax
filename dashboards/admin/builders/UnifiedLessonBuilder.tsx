@@ -474,13 +474,13 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                     onChange={event => setLesson({ ...lesson, videoSource: event.target.value as Lesson['videoSource'] })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                   >
-                    <option value="upload">رفع مباشر</option>
+                    <option value="upload">رابط مباشر / CDN</option>
                     <option value="youtube">رابط يوتيوب</option>
                     <option value="vimeo">رابط Vimeo</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">رابط الفيديو / الملف</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">رابط الفيديو</label>
                   <input
                     type="text"
                     value={lesson.videoUrl || ''}
@@ -489,6 +489,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                     placeholder="https://..."
                   />
+                  <p className="mt-1 text-xs text-gray-500">يُحفظ رابط الوسائط فقط. هذا المسار لا يرفع ملف فيديو إلى الخادم؛ استخدم رابطًا مباشرًا أو CDN أو اختر YouTube/Vimeo.</p>
                 </div>
               </div>
 
@@ -818,7 +819,6 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                 /> 
               </div>
 
-              {/* Teacher Assignment */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">المعلم المعيّن للحصة</label>
@@ -901,7 +901,6 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
           defaultKind="drill"
           onClose={() => setShowQuizBuilder(false)}
           onSave={(savedQuiz) => {
-            // ربط الاختبار المُنشأ بالدرس تلقائياً
             setLesson((prev) => ({ ...prev, quizId: savedQuiz.id }));
             setShowQuizBuilder(false);
           }}
@@ -930,4 +929,3 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     </div>
   );
 };
-
