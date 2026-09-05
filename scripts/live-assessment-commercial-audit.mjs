@@ -74,6 +74,14 @@ function listOf(payload, key) {
   return Array.isArray(payload?.[key]) ? payload[key] : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
 }
 
+function assertStringSet(actual, expected, label) {
+  const actualValues = Array.isArray(actual) ? actual.map(String).sort() : [];
+  const expectedValues = Array.isArray(expected) ? expected.map(String).sort() : [];
+  if (actualValues.length !== expectedValues.length || actualValues.some((value, index) => value !== expectedValues[index])) {
+    throw new Error(label + ': expected [' + expectedValues.join(', ') + '], received [' + actualValues.join(', ') + ']');
+  }
+}
+
 async function main() {
   const browser = await chromium.launch({ headless: true });
   const adminContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
