@@ -28,18 +28,10 @@ Verified now:
 - Excel import has a safe workbook reader, taxonomy validation, preview-before-apply, row-level errors and export/template support.
 - Admin review supports approve/reject; teacher-created questions follow review-state workflow.
 - Question HTML/media safety and runtime CRUD/pagination already have existing smoke coverage.
+- Review-first AI draft authoring is now proved by Q-01.
+- Bounded question-level usage/performance analytics are now proved by Q-02 from existing `QuestionAttempt` evidence.
 
-Proved selling gap:
-
-- `QuestionBankManager` currently presents a button labelled **"توليد ذكي من ملف (AI)"** but the button only runs a browser `alert(...)`; it does not upload a file, call AI, generate a draft or persist anything. This is a visible false affordance and cannot be counted as a working authoring capability.
-- A real server-authorized AI endpoint already exists at `POST /api/ai/question` and the frontend API exposes `api.aiQuestion(...)`, but the Question Bank does not use it.
-- Question-level usage/quality analytics are not yet proved from the current Admin Question Bank. Do not claim this sub-capability closed until API/data/UI evidence exists.
-
-First bounded Gate 6 slice:
-
-**Replace the fake AI affordance with a real review-first AI question draft flow using the existing `/api/ai/question` provider abstraction.** The generated result must open in the existing `UnifiedQuestionBuilder`, inherit only the currently selected allowed taxonomy context, never auto-publish or auto-save, and keep the normal server review/ownership path.
-
-This slice is `MVP الآن` because a visible control that claims generation but performs no real operation is a sellability defect. Full PDF/file extraction is not required for this slice and must not be faked; if it is not implemented, the UI must describe the capability accurately.
+Remaining Questions closure work must be proved from current product criteria rather than inferred from this baseline; do not manufacture another gap simply to continue the gate.
 
 ### Curriculum / Learning — NOT PROVEN for Gate 6 closure yet
 
@@ -86,10 +78,23 @@ Still to prove before Gate 6 closure:
 - Product accuracy: the UI now states that Excel import is supported and that PDF/file extraction is not available from this path; no fake document-extraction claim remains.
 - Contracts: `scripts/smoke-security-rbac-phase6-contract.mjs` and the dedicated `scripts/smoke-gate6-question-ai-authoring-contract.mjs` lock the authorized endpoint, review-first behavior, selected taxonomy inheritance, explicit save boundary, and removal of the false file/PDF affordance. The dedicated Gate 6 smoke is wired into the existing Phase + Handover workflow.
 - Runtime evidence: exact runtime/test commit `2f88ab863cf82cd48f5d2026ebf0fc7f0cf107ad` passed Platform V3 Phase + Handover `33958279565`, Platform V3 Recovery `33958279497`, and Refactor V2 Safety `33958279540`. The same commit also received a successful Vercel deployment status.
-- Current-head contract evidence: code-equivalent Gate 6 head `8cdd7becead9ee0ab037254860c667aef90e4966` passed Phase + Handover `33958440485`, including the explicit `Gate 6 question AI authoring contract` step. Recovery/Safety runs on this later test/scaffold-cleanup head are non-runtime follow-up checks and are not needed to re-prove the already-green exact runtime commit.
+- Current-head contract evidence: code-equivalent Gate 6 head `8cdd7becead9ee0ab037254860c667aef90e4966` passed Phase + Handover `33958440485`, including the explicit `Gate 6 question AI authoring contract` step.
 - CI correction evidence: temporary self-mutating delivery scaffolding briefly introduced a one-off workflow run `33957869693`. Its codemod and product contract both passed, then its frontend-only dependency install caused root `npm run typecheck` to fail on missing `server/` dependencies. This was not a product regression. The temporary apply workflow/codemod were removed; the useful dedicated contract was retained and aligned with the actual review flow.
 - Ownership/data impact: no schema, query shape, API URL, RBAC role, scoring, payment, persistence ownership, or production-data behavior changed. `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` therefore require no update for Q-01.
-- Handoff: the next approved Questions gap to inspect is question-level usage/quality analytics. Do not implement analytics merely because it is named here; first prove the current UI/API/data gap and choose one bounded commercial slice. Do not move to Curriculum until the approved Questions closure criteria are satisfied or explicitly reclassified.
+
+## Batch Q-02 — Bounded question usage / performance analytics
+
+- Status: `VERIFIED` for this bounded Questions commercial gap. Gate 6 and the Questions area remain `PARTIAL`; this batch does not close the whole gate.
+- Data source: uses the existing `QuestionAttemptModel` read path only. No new analytics persistence, scoring write, migration, or production-data cutover was introduced.
+- API boundary: `GET /api/question-analytics?ids=...` is authenticated, limited to existing Admin/Teacher question-bank roles, rejects requests above 100 question IDs, and for Teacher intersects requested questions with existing managed path/subject scope. The response contains aggregate metrics only, not student identities.
+- Identity compatibility: the endpoint resolves both persisted `Question.id` and Mongo `_id` aliases before aggregating attempts, then returns aliases so the existing paginated bank can match the visible row without changing question identity contracts.
+- Metrics: factual recorded aggregates only — attempts, correct answers / accuracy percentage, unique-student count, average recorded time, and last attempt. No invented quality score, threshold, recommendation, or automated content mutation is introduced.
+- UI boundary: `QuestionBankManager` requests analytics only for the currently displayed bounded page (maximum 100 IDs), shows attempts, accuracy, and average time in a new usage/performance column, and degrades to a non-blocking warning if analytics cannot load; CRUD/review remains available.
+- Contract control: `docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json` explicitly records the additive `questionAnalyticsRouter` route/mount; no legacy API URL was repurposed. `scripts/smoke-gate6-question-usage-analytics-contract.mjs` locks authentication/scope, bounded reads, aggregate-only response, no scoring writes, bounded frontend request, and no invented thresholds.
+- Build/test evidence: one-off delivery run `33960878893` succeeded end-to-end before writing runtime commit `6b6def34c574b5d81d3ff848d331b37f32e2fb6b`: frontend dependency install, API dependency install, frontend typecheck/build, API typecheck/build, dedicated Q-02 contract, and `git diff --check` all passed. The temporary apply workflow/codemod removed themselves in that runtime commit and are not retained product surface.
+- Integrated CI evidence: code-equivalent current runtime/test head `592aaa02e3d377c4ba6c09a42e1b2577a9bf0575` permanently wires the Q-02 contract into Platform V3 Phase + Handover; run `33961031960` passed, including the explicit `Gate 6 question usage analytics contract` step and the full handover suite. The commit changes CI contract wiring only above the runtime/API/UI/approved-contract Q-02 slice.
+- Ownership impact: this is an additive read capability in the existing Questions domain. Assessment scoring/session semantics, RBAC role definitions, Payments, ProductConfig, schemas, and production data are unchanged. `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` already place the touched question-bank/API/attempt surfaces in their existing owners; no new domain ownership is created.
+- Handoff: stop Q-02 here. On the next run, inspect current Questions closure criteria first; if no additional real Questions gap is proved, proceed to the documented Curriculum/Learning ownership verification rather than polishing this analytics UI or adding synthetic quality heuristics.
 
 ## Non-goals
 
