@@ -5,12 +5,13 @@ on:
   push:
     branches:
       - develop/platform-v3-recovery
+      - codex/supervisor-student-journey-hardening
   pull_request:
     branches:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: platform-v3-phase-handover-${{ github.event.pull_request.head.ref || github.ref_name }}
@@ -20,7 +21,49 @@ env:
   CI: "true"
 
 jobs:
+  apply-supervisor-student-fixes:
+    if: github.event_name == 'push' && github.ref_name == 'codex/supervisor-student-journey-hardening'
+    name: Apply focused supervisor-student fixes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Apply exact source patches
+        run: node scripts/patch-supervisor-student-e2e-findings.mjs
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Verify type safety and journey source contract
+        run: |
+          npm run typecheck
+          npm run server:check
+          node scripts/smoke-supervisor-dashboard-contract.mjs
+      - name: Commit focused fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs; then
+            echo "No focused source changes to commit."
+            exit 0
+          fi
+          git config user.name "almeaa-e2e-fix-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs
+          git commit -m "Fix directed assessment targeting and supervisor alerts"
+          git push origin HEAD:codex/supervisor-student-journey-hardening
+
   cross-phase-handover:
+    if: github.event_name != 'push' || github.ref_name != 'codex/supervisor-student-journey-hardening'
     name: Cross-phase + handover regression
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -53,6 +96,8 @@ jobs:
         run: npm run smoke:frontend-phase5
       - name: Security and RBAC phase 6 contract
         run: npm run smoke:security-rbac-phase6
+      - name: Notification cookie-session contract
+        run: node scripts/smoke-notification-cookie-session-contract.mjs
       - name: Gate 6 question AI authoring contract
         run: node scripts/smoke-gate6-question-ai-authoring-contract.mjs
       - name: Gate 6 question usage analytics contract

@@ -1798,12 +1798,11 @@ export const SupervisorDashboard: React.FC = () => {
                         supervisorMessage: config.message || null,
                       });
                       const { api: apiService } = await import('../../services/api');
-                      await apiService.sendNotifications({
+                      await apiService.sendStudentAlert({
+                        studentIds: [assignToStudentId],
                         title: 'اختبار جديد من مشرفك',
                         body: config.message || `تم تكليفك باختبار: ${pickedQuiz.title}`,
                         channels: ['in_app'],
-                        userIds: [assignToStudentId],
-                        variables: { link: '/dashboard?tab=quizzes' },
                       });
                       setAssignToStudentId(null);
                       setPickedQuizId('');

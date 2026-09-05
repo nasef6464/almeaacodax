@@ -52,27 +52,19 @@ function check(name, assertion) {
 }
 
 function assertIncludes(source, fragment, message) {
-  if (!source.includes(fragment)) {
-    throw new Error(message || `Missing fragment: ${fragment}`);
-  }
+  if (!source.includes(fragment)) throw new Error(message || `Missing fragment: ${fragment}`);
 }
 
 function assertNotIncludes(source, fragment, message) {
-  if (source.includes(fragment)) {
-    throw new Error(message || `Unexpected fragment: ${fragment}`);
-  }
+  if (source.includes(fragment)) throw new Error(message || `Unexpected fragment: ${fragment}`);
 }
 
 function assertAnyIncludes(source, fragments, message) {
-  if (!fragments.some((fragment) => source.includes(fragment))) {
-    throw new Error(message || `Missing one of: ${fragments.join(' | ')}`);
-  }
+  if (!fragments.some((fragment) => source.includes(fragment))) throw new Error(message || `Missing one of: ${fragments.join(' | ')}`);
 }
 
 function assertPattern(source, pattern, message) {
-  if (!pattern.test(source)) {
-    throw new Error(message || `Missing pattern: ${pattern}`);
-  }
+  if (!pattern.test(source)) throw new Error(message || `Missing pattern: ${pattern}`);
 }
 
 check('student dashboard keeps a clear continuation area and learner shortcuts', () => {
@@ -138,7 +130,7 @@ check('subject learning page guides foundation, training, tests, and package rec
   assertAnyIncludes(files.subjectLearning, ['عرض الباقات المناسبة', 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨Ø§Ù‚Ø§Øª Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø©']);
 });
 
-check('quiz center separates self Saher, directed tests, history, and weak-skill recommendations', () => {
+check('quiz center separates self Saher, school-directed tests, history, and weak-skill recommendations', () => {
   assertIncludes(files.quizzes, 'StudentNextActionStrip');
   assertIncludes(files.quizzes, 'quizCenterNextAction');
   assertIncludes(files.quizzes, 'directedQuizzes');
@@ -148,8 +140,13 @@ check('quiz center separates self Saher, directed tests, history, and weak-skill
   assertIncludes(files.quizzes, 'ابدأ بمهارة:');
   assertIncludes(files.quizzes, 'افتح التحليل');
   assertIncludes(files.quizzes, '/dashboard?tab=quizzes');
+  assertIncludes(files.quizzes, 'id="school-tests"');
+  assertIncludes(files.quizzes, 'data-testid="student-directed-tests"');
+  assertIncludes(files.quizzes, 'الاختبارات المدرسية');
+  assertIncludes(files.quizzes, 'اختبارات المنصة');
+  assertIncludes(files.quizzes, 'كل اختبار يصل من المدرسة أو المشرف أو ضمن خطة علاجية');
+  assertIncludes(files.quizzes, 'if (!isUserTargeted && !isGroupTargeted) return false;');
   assertAnyIncludes(files.quizzes, ['اختبار ساهر الذاتي', 'Ø§Ø®ØªØ¨Ø§Ø± Ø³Ø§Ù‡Ø± Ø§Ù„Ø°Ø§ØªÙŠ']);
-  assertAnyIncludes(files.quizzes, ['اختبارات موجهة لك', 'Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ù…ÙˆØ¬Ù‡Ø© Ù„Ùƒ']);
 });
 
 check('student report remains simple first and exposes retest/remediation actions', () => {

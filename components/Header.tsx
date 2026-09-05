@@ -526,7 +526,7 @@ export const Header: React.FC = () => {
             </button>
 
             {/* جرس الإشعارات — للمستخدمين المسجلين فقط */}
-            {user && <NotificationBell token={user.token} />}
+            {user && <NotificationBell />}
 
             <Link to="/cart" className="relative text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
               <ShoppingCart size={20} />

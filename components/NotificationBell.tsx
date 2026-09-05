@@ -11,33 +11,30 @@ import { useNotificationStream, InAppNotification } from '../contexts/useNotific
 import { api } from '../services/api';
 
 interface NotificationBellProps {
-  token?: string | null;
   apiBase?: string;
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ token, apiBase = '' }) => {
+export const NotificationBell: React.FC<NotificationBellProps> = ({ apiBase = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [loading, setLoading] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const { unreadCount, latestNotification, isConnected } = useNotificationStream({
-    token,
     apiBase,
-    enabled: !!token,
+    enabled: true,
   });
 
   // جلب الإشعارات عند فتح الـ panel
   const fetchNotifications = useCallback(async () => {
-    if (!token) return;
     setLoading(true);
     try {
-      const res = await api.getMyNotifications({ limit: 20 }, token);
+      const res = await api.getMyNotifications({ limit: 20 });
       setNotifications((res.notifications || []) as InAppNotification[]);
     } catch { /* silent */ } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   // عند استقبال إشعار جديد — أضفه في أعلى القائمة
   useEffect(() => {
@@ -69,16 +66,14 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ token, apiBa
 
   // قراءة إشعار واحد
   const handleMarkRead = async (id: string) => {
-    if (!token) return;
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, readAt: Date.now() } : n)));
-    try { await api.markNotificationRead(id, token); } catch { /* silent */ }
+    try { await api.markNotificationRead(id); } catch { /* silent */ }
   };
 
   // قراءة الكل
   const handleMarkAllRead = async () => {
-    if (!token) return;
     setNotifications((prev) => prev.map((n) => ({ ...n, readAt: n.readAt ?? Date.now() })));
-    try { await api.markAllNotificationsRead(token); } catch { /* silent */ }
+    try { await api.markAllNotificationsRead(); } catch { /* silent */ }
   };
 
   const unread = notifications.filter((n) => !n.readAt);

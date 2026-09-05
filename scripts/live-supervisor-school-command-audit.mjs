@@ -278,12 +278,127 @@ async function inspectRoute(page, viewport, routeSpec) {
   };
 }
 
+async function verifyAdminUserRoleRelationshipJourney(page) {
+  const adminEmail = process.env.ROLE_ADMIN_EMAIL || process.env.SMOKE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ROLE_ADMIN_PASSWORD || process.env.SMOKE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+  const targetEmail = process.env.ROLE_STUDENT_EMAIL || process.env.SMOKE_STUDENT_EMAIL || "student.a@almeaa.local";
+  if (!adminEmail || !adminPassword) throw new Error("Missing admin credentials for user relationship journey");
+
+  await page.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
+  const loginResult = await page.evaluate(async ({ apiBaseUrl, email, password }) => {
+    const csrfResponse = await fetch(`${apiBaseUrl}/auth/csrf-token`, { credentials: "include", cache: "no-store" });
+    const csrfPayload = await csrfResponse.json().catch(() => ({}));
+    const csrfToken = csrfPayload?.csrfToken || "";
+    const loginResponse = await fetch(`${apiBaseUrl}/auth/login`, {
+      method: "POST", credentials: "include",
+      headers: { "content-type": "application/json", "x-csrf-token": csrfToken },
+      body: JSON.stringify({ email, password }),
+    });
+    const payload = await loginResponse.json().catch(() => ({}));
+    if (!loginResponse.ok) return { ok: false, status: loginResponse.status, message: payload?.message || "" };
+    const user = payload?.user;
+    sessionStorage.setItem("the-hundred-auth-profile", JSON.stringify({
+      id: String(user?.id || user?._id || user?.email || ""),
+      email: user?.email || "", displayName: user?.name || "", photoURL: user?.avatar || "", role: user?.role || "",
+    }));
+    if (csrfToken) sessionStorage.setItem("almeaa:csrf-token", csrfToken);
+    return { ok: true, role: user?.role };
+  }, { apiBaseUrl: API_BASE_URL, email: adminEmail, password: adminPassword });
+  if (!loginResult.ok || loginResult.role !== "admin") throw new Error(`Admin login failed for user relationship journey: ${JSON.stringify(loginResult)}`);
+
+  const readPersistedState = async () => page.evaluate(async ({ apiBaseUrl, targetEmail }) => {
+    const csrfResponse = await fetch(`${apiBaseUrl}/auth/csrf-token`, { credentials: "include", cache: "no-store" });
+    const csrfPayload = await csrfResponse.json().catch(() => ({}));
+    const csrfToken = csrfPayload?.csrfToken || "";
+    if (csrfToken) sessionStorage.setItem("almeaa:csrf-token", csrfToken);
+    const [usersResponse, groupsResponse] = await Promise.all([
+      fetch(`${apiBaseUrl}/auth/admin/users?search=${encodeURIComponent(targetEmail)}&page=1&limit=20`, { credentials: "include", cache: "no-store" }),
+      fetch(`${apiBaseUrl}/content/groups`, { credentials: "include", cache: "no-store" }),
+    ]);
+    const usersPayload = await usersResponse.json().catch(() => ({}));
+    const groupsPayload = await groupsResponse.json().catch(() => ([]));
+    const user = (usersPayload?.users || []).find((item) => String(item.email || "").toLowerCase() === targetEmail.toLowerCase());
+    const groups = Array.isArray(groupsPayload) ? groupsPayload : (groupsPayload?.groups || []);
+    return { user, groups, usersStatus: usersResponse.status, groupsStatus: groupsResponse.status };
+  }, { apiBaseUrl: API_BASE_URL, targetEmail });
+
+  const before = await readPersistedState();
+  if (!before.user || before.user.role !== "student") throw new Error(`Expected seeded student before role transition: ${JSON.stringify(before.user)}`);
+  const targetId = String(before.user.id || before.user._id || "");
+  const hadStudentMembership = before.groups.some((group) => Array.isArray(group.studentIds) && group.studentIds.map(String).includes(targetId));
+  if (!hadStudentMembership) throw new Error("Seeded target student has no Group.studentIds membership to prove cleanup");
+
+  await page.goto(`${BASE_URL}/admin-dashboard?tab=users`, { waitUntil: "domcontentloaded", timeout: 60000 });
+  const search = page.getByPlaceholder("ابحث بالاسم أو البريد الإلكتروني...");
+  await search.waitFor({ state: "visible", timeout: 15000 });
+  await search.fill(targetEmail);
+  await page.waitForTimeout(700);
+
+  let row = page.locator("tbody tr").filter({ hasText: targetEmail }).first();
+  await row.waitFor({ state: "visible", timeout: 15000 });
+  await row.locator("button").nth(1).click();
+  const roleSelect = row.locator("select").first();
+  await roleSelect.selectOption("supervisor");
+  await page.waitForFunction((email) => {
+    const rows = Array.from(document.querySelectorAll("tbody tr"));
+    const row = rows.find((item) => (item.textContent || "").includes(email));
+    const select = row?.querySelector("select");
+    return select instanceof HTMLSelectElement && select.value === "supervisor" && !select.disabled;
+  }, targetEmail, { timeout: 15000 });
+
+  row = page.locator("tbody tr").filter({ hasText: targetEmail }).first();
+  const supervisorGroups = row.locator("select[multiple]").first();
+  await supervisorGroups.waitFor({ state: "visible", timeout: 10000 });
+  const options = await supervisorGroups.locator("option").evaluateAll((nodes) => nodes.map((node) => ({ value: node.value, label: node.textContent || "" })));
+  const school = options.find((option) => option.label.startsWith("مدرسة -"));
+  const klass = options.find((option) => option.label.startsWith("فصل -"));
+  if (!school || !klass) throw new Error(`Missing school/class options for supervisor assignment: ${JSON.stringify(options)}`);
+  await supervisorGroups.selectOption([school.value, klass.value]);
+  await page.waitForTimeout(1000);
+
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
+  const searchAfterReload = page.getByPlaceholder("ابحث بالاسم أو البريد الإلكتروني...");
+  await searchAfterReload.waitFor({ state: "visible", timeout: 15000 });
+  await searchAfterReload.fill(targetEmail);
+  await page.waitForTimeout(700);
+  row = page.locator("tbody tr").filter({ hasText: targetEmail }).first();
+  await row.waitFor({ state: "visible", timeout: 15000 });
+  await row.locator("button").nth(1).click();
+  const reloadedRole = await row.locator("select").first().inputValue();
+  const reloadedGroups = await row.locator("select[multiple]").first().evaluate((select) =>
+    Array.from(select.selectedOptions).map((option) => option.value),
+  );
+  if (reloadedRole !== "supervisor") throw new Error(`Role did not persist after reload: ${reloadedRole}`);
+  if (!reloadedGroups.includes(school.value) || !reloadedGroups.includes(klass.value)) {
+    throw new Error(`Supervisor school/class assignment did not persist after reload: ${JSON.stringify(reloadedGroups)}`);
+  }
+
+  const after = await readPersistedState();
+  const afterId = String(after.user?.id || after.user?._id || "");
+  if (!after.user || after.user.role !== "supervisor") throw new Error("Persisted user role is not supervisor");
+  if ((after.user.groupIds || []).some((id) => ![school.value, klass.value].includes(String(id))) || ![school.value, klass.value].every((id) => (after.user.groupIds || []).map(String).includes(id))) {
+    throw new Error(`Persisted supervisor groupIds mismatch: ${JSON.stringify(after.user.groupIds || [])}`);
+  }
+  if (after.groups.some((group) => Array.isArray(group.studentIds) && group.studentIds.map(String).includes(afterId))) {
+    throw new Error("Stale Group.studentIds membership survived Student → Supervisor transition");
+  }
+  for (const groupId of [school.value, klass.value]) {
+    const group = after.groups.find((item) => String(item.id || item._id || "") === groupId);
+    if (!group || !Array.isArray(group.supervisorIds) || !group.supervisorIds.map(String).includes(afterId)) {
+      throw new Error(`Supervisor membership missing from assigned group ${groupId}`);
+    }
+  }
+
+  return { status: "PASS", targetEmail, targetId: afterId, assignedGroupIds: [school.value, klass.value] };
+}
+
 async function main() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
   const page = await context.newPage();
   const results = [];
   let loginResult = null;
+  let adminUserRoleRelationship = null;
 
   try {
     loginResult = await login(page);
@@ -292,6 +407,7 @@ async function main() {
         results.push(await inspectRoute(page, viewport, routeSpec));
       }
     }
+    adminUserRoleRelationship = await verifyAdminUserRoleRelationshipJourney(page);
   } finally {
     await context.close().catch(() => {});
     await browser.close().catch(() => {});
@@ -303,6 +419,7 @@ async function main() {
     apiBaseUrl: API_BASE_URL,
     runId: RUN_ID,
     login: loginResult,
+    adminUserRoleRelationship,
     total: results.length,
     pass: results.filter((row) => row.status === "PASS").length,
     fail: results.filter((row) => row.status === "FAIL").length,
