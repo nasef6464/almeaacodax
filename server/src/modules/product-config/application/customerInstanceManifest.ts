@@ -123,6 +123,23 @@ export const customerInstanceManifestSchema = z.object({
 
 export type CustomerInstanceManifest = z.infer<typeof customerInstanceManifestSchema>;
 
+type ProviderCapability = {
+  enabled: boolean;
+  mode: string;
+};
+
+type CustomerProviderCapabilities = {
+  google: ProviderCapability;
+  facebook: ProviderCapability;
+  whatsapp: ProviderCapability;
+  telegram: ProviderCapability;
+  email: ProviderCapability;
+  zoom: ProviderCapability;
+  googleMeet: ProviderCapability;
+  teams: ProviderCapability;
+  youtubeLive: ProviderCapability;
+};
+
 export type CustomerInstancePlan = {
   version: 1;
   customerKey: string;
@@ -144,7 +161,7 @@ export type CustomerInstancePlan = {
       termsLink: string;
       privacyLink: string;
     };
-    providers: CustomerInstanceManifest["providers"];
+    providers: CustomerProviderCapabilities;
     seo: {
       enabled: boolean;
       siteName: string;
@@ -169,6 +186,14 @@ export type CustomerInstancePlan = {
     };
   };
 };
+
+const resolveProviderCapability = (
+  provider: { enabled?: boolean; mode?: string } | undefined,
+  defaults: ProviderCapability,
+): ProviderCapability => ({
+  enabled: provider?.enabled ?? defaults.enabled,
+  mode: provider?.mode || defaults.mode,
+});
 
 export const compileCustomerInstanceManifest = (input: unknown): CustomerInstancePlan => {
   const manifest = customerInstanceManifestSchema.parse(input);
@@ -200,7 +225,17 @@ export const compileCustomerInstanceManifest = (input: unknown): CustomerInstanc
         termsLink: manifest.registration.termsLink,
         privacyLink: manifest.registration.privacyLink,
       },
-      providers: manifest.providers,
+      providers: {
+        google: resolveProviderCapability(manifest.providers.google, { enabled: false, mode: "oauth" }),
+        facebook: resolveProviderCapability(manifest.providers.facebook, { enabled: false, mode: "oauth" }),
+        whatsapp: resolveProviderCapability(manifest.providers.whatsapp, { enabled: false, mode: "otp" }),
+        telegram: resolveProviderCapability(manifest.providers.telegram, { enabled: false, mode: "bot" }),
+        email: resolveProviderCapability(manifest.providers.email, { enabled: false, mode: "smtp" }),
+        zoom: resolveProviderCapability(manifest.providers.zoom, { enabled: false, mode: "oauth" }),
+        googleMeet: resolveProviderCapability(manifest.providers.googleMeet, { enabled: false, mode: "oauth" }),
+        teams: resolveProviderCapability(manifest.providers.teams, { enabled: false, mode: "oauth" }),
+        youtubeLive: resolveProviderCapability(manifest.providers.youtubeLive, { enabled: false, mode: "api" }),
+      },
       seo: {
         enabled: manifest.seo.enabled,
         siteName: manifest.productName,
@@ -216,7 +251,12 @@ export const compileCustomerInstanceManifest = (input: unknown): CustomerInstanc
       },
       contactWidget: {
         enabled: manifest.features.contactWidget,
-        ...manifest.contactWidget,
+        channel: manifest.contactWidget.channel ?? "whatsapp",
+        whatsappNumber: manifest.contactWidget.whatsappNumber ?? "",
+        whatsappMessage: manifest.contactWidget.whatsappMessage ?? "",
+        openInNewTab: manifest.contactWidget.openInNewTab ?? true,
+        showOnPublicPages: manifest.contactWidget.showOnPublicPages ?? true,
+        showOnDashboardPages: manifest.contactWidget.showOnDashboardPages ?? false,
       },
     },
   };
