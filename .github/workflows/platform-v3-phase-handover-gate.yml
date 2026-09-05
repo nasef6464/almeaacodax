@@ -96,6 +96,8 @@ jobs:
         run: npm run smoke:frontend-phase5
       - name: Security and RBAC phase 6 contract
         run: npm run smoke:security-rbac-phase6
+      - name: Notification cookie-session contract
+        run: node scripts/smoke-notification-cookie-session-contract.mjs
       - name: Gate 6 question AI authoring contract
         run: node scripts/smoke-gate6-question-ai-authoring-contract.mjs
       - name: Gate 6 question usage analytics contract
