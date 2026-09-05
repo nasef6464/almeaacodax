@@ -16,12 +16,15 @@
 | العنصر | الرابط / القيمة | الغرض |
 | :--- | :--- | :--- |
 | **الإنتاج (Production)** | `https://almeaacodax.vercel.app` | البيئة الحية العامة المعتمدة (تعرض فرع `main`) |
-| **بيئة المراجعة (Staging)** | `https://almeaacodax-bt5jeuxp0-nasefs-projects-18e6bdb1.vercel.app` (أو الرابط المعين لفرع المراجعة) | بيئة المراجعة والتأهيل الحية لآخر Git HEAD |
+| **بيئة المراجعة (Staging)** | `https://almeaacodax-git-codex-assessmen-3aa932-nasefs-projects-18e6bdb1.vercel.app` | الرابط الثابت والدائم للفرع (Stable Branch Alias) |
 | **الفرع المصدري (Source Branch)** | `codex/assessment-data-evolution` | الفرع النشط الذي يحتوي على أحدث العمل |
 
 ---
 
 ## 3. طريقة عمل الاتصال والتوثيق في Staging
+- **متغير البيئة الصريح (Environment Flag)**:
+  - تعتمد البيئة على `VITE_APP_ENV=staging` لتفعيل شارة `STAGING` وسلوك توجيه الـ API الخاص بـ Staging.
+  - النطاقات المخصصة لنظام White-label ونطاقات الإنتاج لا تعتبر بيئة Staging.
 - **الاتصال عبر نفس النطاق (Same-Origin `/api`)**:
   - يتصل المتصفح بـ `https://<staging-domain>/api/...`
   - يقوم وكيل Vercel (`vercel.json`) بتوجيه الطلب تلقائياً إلى خادم الـ Backend على Render.
@@ -34,8 +37,8 @@
 ---
 
 ## 4. كيفية التأكد أنك داخل بيئة Staging
-1. **شريط العنوان في المتصفح**: يتضمن اسم نطاق Staging ولا يحتوي على `almeaacodax.vercel.app`.
-2. **شارة STAGING في الهيدر**: تظهر شارة برتقالية صغيرة وواضحة بجوار الشعار في الهيدر العلوي بنص `STAGING`.
+1. **شريط العنوان في المتصفح**: يتضمن رابط الفرع الثابت `almeaacodax-git-codex-assessmen-3aa932-nasefs-projects-18e6bdb1.vercel.app`.
+2. **شارة STAGING في الهيدر**: تظهر شارة برتقالية صغيرة وواضحة بجوار الشعار في الهيدر العلوي بنص `STAGING` عند تفعيل `VITE_APP_ENV=staging`.
 3. **عدم مغادرة النطاق**: كافة عمليات التنقل (`Dashboard`، `Quiz`، `Results`، `Learning`) تتم عبر مسارات داخلية في React Router دون تغيير النطاق.
 
 ---

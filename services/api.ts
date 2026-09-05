@@ -21,20 +21,21 @@ import { createStudyPlansApi } from './apiGroups/studyPlansApi';
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
 const isLocalhost = ["localhost", "127.0.0.1"].includes(runtimeHostname);
-const isStagingOrigin =
-  Boolean(runtimeHostname) &&
-  !isLocalhost &&
-  runtimeHostname !== "almeaacodax.vercel.app";
+
+// Explicit Environment Flag for Staging.
+// Custom white-label production domains and production will not trigger staging behavior.
+export const isStagingEnv = !isLocalhost && runtimeEnv?.VITE_APP_ENV === "staging";
 
 const configuredApiBaseUrl =
   (globalThis as { __API_BASE_URL__?: string }).__API_BASE_URL__ ||
   (typeof runtimeEnv?.VITE_API_URL === "string" ? runtimeEnv.VITE_API_URL : "");
 const defaultApiBaseUrl = isLocalhost ? "http://localhost:4000/api" : "/api";
 
-// Staging and preview environments (*.vercel.app) use relative "/api" through Vercel's rewrite proxy
-// to guarantee same-origin transport, avoiding cross-origin Render CORS rejections and third-party cookie blocking.
+// Staging environment uses relative "/api" through Vercel's rewrite proxy
+// when VITE_APP_ENV=staging, guaranteeing same-origin transport.
+// Localhost and production/custom production domains preserve their configured or default API URL.
 const API_BASE_URL = (
-  isStagingOrigin ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
+  isStagingEnv ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
 ).replace(/\/$/, "");
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
