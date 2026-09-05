@@ -11,6 +11,8 @@ const quizzesPage = await read("pages/Quizzes.tsx");
 const quizPage = await read("pages/QuizPage.tsx");
 const quizBuilder = await read("dashboards/admin/UnifiedQuizBuilder.tsx");
 const quizModel = await read("server/src/models/Quiz.ts");
+const quizzesApi = await read("services/apiGroups/quizzesApi.ts");
+const quizRoutes = await read("server/src/routes/quiz.routes.ts");
 
 const checks = [];
 
@@ -108,20 +110,18 @@ check("post-test workflow supports weak and absent student follow-up", () => {
   assertIncludes(testsManager, "onAssignToStudent");
 });
 
-check("student school-directed assessment list and runner share additive audience semantics", () => {
+check("student directed assessment entry delegates group membership authority to the protected detail API", () => {
   assertIncludes(quizzesPage, "directedQuizzes");
   assertIncludes(quizzesPage, "الاختبارات المدرسية");
-  assertIncludes(quizzesPage, "...(user.schoolId ? [user.schoolId] : [])");
-  assertIncludes(quizzesPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
-  assertIncludes(quizzesPage, "if (!isUserTargeted && !isGroupTargeted) return false;");
-  assertIncludes(quizzesPage, "user.id, user.schoolId, visiblePathIds");
-  assertIncludes(quizPage, "const targetUserIds = foundQuiz.targetUserIds || [];");
-  assertIncludes(quizPage, "const targetGroupIds = foundQuiz.targetGroupIds || [];");
-  assertIncludes(quizPage, "...(user.schoolId ? [user.schoolId] : [])");
-  assertIncludes(quizPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
-  assertIncludes(quizPage, "targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id))");
-  assertIncludes(quizPage, "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)");
-  assertNotIncludes(quizPage, "if (!isUserTargeted || !isGroupTargeted)");
+  assertIncludes(quizzesApi, "getQuiz: (id: string, token?: string | null)");
+  assertIncludes(quizzesApi, "encodeURIComponent(id)");
+  assertIncludes(quizPage, "api.getQuiz(foundQuiz.id)");
+  assertIncludes(quizPage, "status: 'checking'");
+  assertIncludes(quizPage, "directedStatus === 'denied'");
+  assertNotIncludes(quizPage, "targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id))");
+  assertIncludes(quizRoutes, "const resolveDirectedQuizReadAccess = async");
+  assertIncludes(quizRoutes, "GroupModel.findOne");
+  assertIncludes(quizRoutes, "const directedReadAccess = await resolveDirectedQuizReadAccess(legacyQuiz, req.authUser);");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

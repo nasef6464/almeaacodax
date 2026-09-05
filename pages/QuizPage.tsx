@@ -132,6 +132,10 @@ export const QuizPage: React.FC = () => {
   const [submittedSkillsAnalysis, setSubmittedSkillsAnalysis] = useState<NonNullable<QuizResult['skillsAnalysis']>>([]);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [directedEntryAccess, setDirectedEntryAccess] = useState<{
+    quizId: string;
+    status: 'idle' | 'checking' | 'allowed' | 'denied';
+  }>({ quizId: '', status: 'idle' });
   const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حاليًا.');
   const [isSubmittingResult, setIsSubmittingResult] = useState(false);
   const [showFinishDialog, setShowFinishDialog] = useState(false);
@@ -330,6 +334,31 @@ export const QuizPage: React.FC = () => {
   }, [quizId, quizzes, questions, quizScopedQuestions]);
 
   useEffect(() => {
+    const foundQuiz = quizzes.find((item) => item.id === quizId);
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    const hasExplicitTargets = Boolean(foundQuiz && ((foundQuiz.targetUserIds || []).length > 0 || (foundQuiz.targetGroupIds || []).length > 0));
+
+    if (!foundQuiz || isStaffViewer || !hasExplicitTargets) {
+      setDirectedEntryAccess({ quizId: foundQuiz?.id || '', status: 'idle' });
+      return;
+    }
+
+    let cancelled = false;
+    setDirectedEntryAccess({ quizId: foundQuiz.id, status: 'checking' });
+    api.getQuiz(foundQuiz.id)
+      .then(() => {
+        if (!cancelled) setDirectedEntryAccess({ quizId: foundQuiz.id, status: 'allowed' });
+      })
+      .catch(() => {
+        if (!cancelled) setDirectedEntryAccess({ quizId: foundQuiz.id, status: 'denied' });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [quizId, quizzes, user.role]);
+
+  useEffect(() => {
     if (isResolvingScopedQuestions) {
       return;
     }
@@ -366,13 +395,13 @@ export const QuizPage: React.FC = () => {
     const targetUserIds = foundQuiz.targetUserIds || [];
     const targetGroupIds = foundQuiz.targetGroupIds || [];
     const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
-    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
-      const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
-      const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
-      const isGroupTargeted = targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id));
-
-      // Direct student targeting and school/class targeting are additive, matching the API contract.
-      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted) {
+    if (!isStaffViewer && hasExplicitTargets) {
+      const directedStatus = directedEntryAccess.quizId === foundQuiz.id ? directedEntryAccess.status : 'checking';
+      if (directedStatus === 'idle' || directedStatus === 'checking') {
+        setHasAccess(null);
+        return;
+      }
+      if (directedStatus === 'denied') {
         setHasAccess(false);
         setAccessMessage('هذا اختبار مدرسي موجّه لطلاب محددين فقط.');
         return;
@@ -502,7 +531,7 @@ export const QuizPage: React.FC = () => {
       setCurrentQuestionIndex(0);
       setTimeLeft(defaultTimeLeft);
     }
-  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, sourceParam, sourceCourse, courseHasAccess]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, sourceParam, sourceCourse, courseHasAccess, directedEntryAccess]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
