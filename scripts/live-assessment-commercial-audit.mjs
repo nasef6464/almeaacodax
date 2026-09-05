@@ -144,7 +144,7 @@ async function main() {
       throw new Error("Pagination fixture did not yield two bounded question pages.");
     }
 
-    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await admin.page.getByTestId("assessment-manager-create").click();
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-kind-test").click();
@@ -191,7 +191,7 @@ async function main() {
     // preserve the existing selection, update one setting, then reopen after
     // reload. This proves the real edit UI and the immutable-version read path.
     const editedTitle = `${marker} (edited)`;
-    await admin.page.reload({ waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
     await admin.page.getByTestId(`assessment-manager-edit-${createdQuizId}`).click();
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-title").fill(editedTitle);
@@ -221,7 +221,7 @@ async function main() {
     if (!editResponse.ok()) throw new Error(`Builder edit failed (${editResponse.status()}): ${editedFromWrite?.message || ""}`);
     await admin.page.getByTestId("assessment-builder").waitFor({ state: "detached", timeout: 30000 });
 
-    await admin.page.reload({ waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
     await admin.page.getByTestId(`assessment-manager-edit-${createdQuizId}`).click();
     await admin.page.getByTestId("assessment-builder-title").waitFor();
     if (await admin.page.getByTestId("assessment-builder-title").inputValue() !== editedTitle) {
@@ -267,7 +267,7 @@ async function main() {
     // `/quizzes` is the learner's available-assessments catalog. `/my-quizzes`
     // is intentionally the completed-attempt history and must not be used to
     // prove that a newly directed assessment is discoverable.
-    await freshStudent.page.goto(`${BASE_URL}/quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await freshStudent.page.goto(`${BASE_URL}/quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     const catalogDiagnostics = await freshStudent.page.evaluate(() => ({
       user: window.__ALMEAA_DEBUG_USER__ || null,
       hasDirectedSection: Boolean(document.querySelector('[data-testid="student-directed-tests"]')),
@@ -324,7 +324,7 @@ async function main() {
     await freshStudent.page.waitForFunction(() => !document.querySelector('[data-testid="quiz-finish-confirm"]'), { timeout: 30000 });
     await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-result.png"), fullPage: true });
 
-    await outsider.page.goto(`${BASE_URL}/quiz/${createdQuizId}`, { waitUntil: "networkidle", timeout: 60000 });
+    await outsider.page.goto(`${BASE_URL}/quiz/${createdQuizId}`, { waitUntil: "domcontentloaded", timeout: 60000 });
     const outsiderState = await outsider.page.evaluate(() => ({
       canSeeQuestion: Boolean(document.querySelector('[data-testid="quiz-answer-option-0"]')),
       body: document.body.innerText || "",
@@ -333,7 +333,7 @@ async function main() {
     const serverResult = listOf(resultResponse.payload, "results").find((result) => String(result.quizId || "") === createdQuizId);
     const hasServerResult = Boolean(serverResult);
     if (!serverResult?.date) throw new Error(`Server result is missing its attempt date: ${JSON.stringify(resultResponse)}`);
-    await freshStudent.page.goto(`${BASE_URL}/results?attempt=${encodeURIComponent(String(serverResult.date))}`, { waitUntil: "networkidle", timeout: 60000 });
+    await freshStudent.page.goto(`${BASE_URL}/results?attempt=${encodeURIComponent(String(serverResult.date))}`, { waitUntil: "domcontentloaded", timeout: 60000 });
     const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول والأخطاء", exact: true });
     await reviewButton.waitFor({ timeout: 30000 });
     await reviewButton.click();
