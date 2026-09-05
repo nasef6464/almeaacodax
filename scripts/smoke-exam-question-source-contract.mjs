@@ -145,7 +145,10 @@ check('learner quiz lists are audience-scoped and never share a public cache acr
   assertIncludes(quizRoutesSource, 'const canUsePublicCache = !req.authUser;');
   assertIncludes(quizRoutesSource, 'const learnerAudienceUser =');
   assertIncludes(quizRoutesSource, 'await resolveAuthUserByAuthId(String(req.authUser.id || ""))');
-  assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, learnerAudienceUser)');
+  assertIncludes(quizRoutesSource, 'let learnerAudienceForCatalog = learnerAudienceUser;');
+  assertIncludes(quizRoutesSource, 'GroupModel.find({ studentIds: learnerId })');
+  assertIncludes(quizRoutesSource, 'groupIds: uniqueStrings([...(learnerRecord.groupIds || []), ...membershipGroupIds])');
+  assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, learnerAudienceForCatalog)');
 });
 
 check('quiz submission result response delegates non-critical side effects', () => {
