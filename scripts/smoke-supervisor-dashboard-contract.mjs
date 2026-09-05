@@ -4,7 +4,9 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const dashboard = await read("dashboards/admin/SupervisorDashboard.tsx");
 const testsManager = await read("dashboards/admin/SupervisorTestsManager.tsx");
+const assessmentScope = await read("dashboards/admin/supervisorTests/useSupervisorAssessmentScope.ts");
 const detailPanel = await read("dashboards/admin/AssignedTestDetailPanel.tsx");
+const notificationRoutes = await read("server/src/routes/notification.routes.ts");
 
 const checks = [];
 
@@ -69,17 +71,20 @@ check("supervisor quick decision board exposes weekly decision metrics and alert
 });
 
 check("directed assessment manager includes explicit student targets in scope and analytics", () => {
-  assertIncludes(testsManager, "explicitUserIds");
-  assertIncludes(testsManager, "quiz.targetUserIds");
-  assertIncludes(testsManager, "scopedStudents");
-  assertIncludes(testsManager, "latestResultByStudent");
-  assertIncludes(testsManager, "targetStudentIds");
+  assertIncludes(testsManager, "useSupervisorAssessmentScope");
+  assertIncludes(assessmentScope, "explicitUserIds");
+  assertIncludes(assessmentScope, "quiz.targetUserIds");
+  assertIncludes(assessmentScope, "scopedStudents");
+  assertIncludes(assessmentScope, "latestResultByStudent");
+  assertIncludes(assessmentScope, "targetStudentIds");
 });
 
 check("supervisor assessment messages use scoped student alert rather than admin-only sender", () => {
   assertIncludes(testsManager, "api.sendStudentAlert");
   assertNotIncludes(testsManager, "api.sendNotifications");
-  assertIncludes(testsManager, "sendScopedStudentAlert");
+  assertIncludes(notificationRoutes, 'notificationRouter.post("/student-alert"');
+  assertIncludes(notificationRoutes, 'requireRole(["admin", "supervisor", "teacher"])');
+  assertIncludes(notificationRoutes, 'channels: ["in_app"]');
 });
 
 check("post-test workflow supports weak and absent student follow-up", () => {
