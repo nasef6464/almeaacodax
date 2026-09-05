@@ -43,6 +43,8 @@ jobs:
         run: npm --prefix server run verify:product-config
       - name: Customer bootstrap dry-run and apply guards
         run: npm --prefix server run verify:customer-bootstrap
+      - name: Customer deployment package proof
+        run: npm --prefix server run verify:customer-packaging
       - name: API phase 4 contract
         run: npm run smoke:api-phase4
       - name: Frontend phase 5 contract
