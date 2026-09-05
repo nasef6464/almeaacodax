@@ -28,6 +28,17 @@ export interface QuestionQuery {
   noTotal?: boolean;
 }
 
+export interface QuestionUsageMetric {
+  questionId: string;
+  aliases: string[];
+  attempts: number;
+  correctAnswers: number;
+  accuracyPercent: number | null;
+  averageTimeSeconds: number | null;
+  uniqueStudents: number;
+  lastAttemptAt: string | null;
+}
+
 const toQueryString = <T extends object>(params?: T | null) => {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries((params || {}) as Record<string, unknown>)) {
@@ -48,6 +59,17 @@ export const createQuestionsApi = (request: ApiRequest) => ({
   getQuestionsPaginated: (params?: QuestionQuery) => {
     const query = withQuery("/quizzes/questions", { ...(params || {}), paginate: true });
     return request<{ data: unknown[]; pagination: PaginationMeta }>(query);
+  },
+
+  getQuestionUsageAnalytics: (ids: string[], token?: string | null) => {
+    const boundedIds = Array.from(new Set(ids.map((id) => String(id || "").trim()).filter(Boolean))).slice(0, 100);
+    if (boundedIds.length === 0) {
+      return Promise.resolve({ data: [] as QuestionUsageMetric[] });
+    }
+    return request<{ data: QuestionUsageMetric[] }>(`/question-analytics?ids=${encodeURIComponent(boundedIds.join(","))}`, {
+      token,
+      cache: "no-store",
+    });
   },
 
   createQuestion: (payload: unknown, token?: string | null) =>

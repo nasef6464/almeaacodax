@@ -27,11 +27,20 @@ check('URL cleanup and lesson-field behavior remain explicit', () => {
   }
 });
 
+check('unsafe executable/local resource schemes are rejected before lesson persistence', () => {
+  assert.ok(moduleSource.includes('BLOCKED_RESOURCE_SCHEME'));
+  for (const blockedScheme of ['javascript', 'vbscript', 'file']) {
+    assert.ok(moduleSource.includes(blockedScheme), `missing blocked resource scheme ${blockedScheme}`);
+  }
+  assert.ok(moduleSource.includes('if (BLOCKED_RESOURCE_SCHEME.test(trimmedUrl))'));
+  assert.ok(moduleSource.includes('return "";'));
+});
+
 check('URL module stays pure and bounded', () => {
   for (const forbidden of ['express', 'mongoose', 'Router(', 'req.', 'res.', 'Model', 'process.env']) {
     assert.ok(!moduleSource.includes(forbidden), `learning resource URL module must not include ${forbidden}`);
   }
-  assert.ok(moduleSource.split(/\r?\n/).length <= 45, 'learningResourceUrl.ts exceeded 45 lines');
+  assert.ok(moduleSource.split(/\r?\n/).length <= 50, 'learningResourceUrl.ts exceeded 50 lines');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

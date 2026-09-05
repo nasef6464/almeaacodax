@@ -36,14 +36,17 @@ Required for production and Hostinger:
 - `JWT_SECRET`
 - `PAYMENT_WEBHOOK_SECRET` if payments are enabled
 
-Optional infrastructure:
+Optional infrastructure read by the backend runtime:
 - `REDIS_URL`
 - `REDIS_KEY_PREFIX`
 - `RATE_LIMIT_REDIS_ENABLED`
 - `NOTIFICATION_QUEUE_ENABLED`
 - `NOTIFICATION_QUEUE_CONCURRENCY`
-- `UPLOAD_DIR`
-- `MAX_UPLOAD_SIZE`
+
+Media note:
+- The current backend stores lesson/library media references as URLs; it does not expose a binary-media upload runtime controlled by `UPLOAD_DIR` or `MAX_UPLOAD_SIZE`.
+- `UPLOAD_DIR` is only an operations-script override for `scripts/backup-uploads.sh`; it is not a backend application setting.
+- If a buyer later requires first-party binary uploads, select and wire a real storage provider/persistent-volume contract first instead of adding unused environment variables.
 
 Optional integrations requiring owner secrets:
 - `PAYMENT_PROVIDER`
@@ -77,6 +80,16 @@ Optional integrations requiring owner secrets:
 
 Development-only:
 - `DEV_LOCAL_ADMIN_BYPASS` must remain `false` in production.
+
+## Operations Script Overrides
+
+These are shell-script inputs, not backend runtime configuration:
+- `UPLOAD_DIR`: source directory for `scripts/backup-uploads.sh` (defaults to `server/uploads`).
+- `BACKUP_DIR`: output directory for upload backup archives.
+- `ARCHIVE_PATH`: archive selected for `scripts/restore-uploads.sh`.
+- `RESTORE_DIR`: restore target for the uploads restore script.
+
+The existence of these maintenance scripts does not prove that the web application currently supports binary upload ingestion.
 
 ## Owner-Provided Values
 
