@@ -113,7 +113,7 @@ changed = (await replaceExact(
 changed = (await replaceExact(
   files.audit,
   `function listOf(payload, key) {\n  return Array.isArray(payload?.[key]) ? payload[key] : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];\n}\n\nasync function main() {`,
-  `function listOf(payload, key) {\n  return Array.isArray(payload?.[key]) ? payload[key] : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];\n}\n\nfunction assertStringSet(actual, expected, label) {\n  const actualValues = Array.isArray(actual) ? actual.map(String).sort() : [];\n  const expectedValues = Array.isArray(expected) ? expected.map(String).sort() : [];\n  if (actualValues.length !== expectedValues.length || actualValues.some((value, index) => value !== expectedValues[index])) {\n    throw new Error(\`${label}: expected [\${expectedValues.join(', ')}], received [\${actualValues.join(', ')}]\`);\n  }\n}\n\nasync function main() {`,
+  `function listOf(payload, key) {\n  return Array.isArray(payload?.[key]) ? payload[key] : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];\n}\n\nfunction assertStringSet(actual, expected, label) {\n  const actualValues = Array.isArray(actual) ? actual.map(String).sort() : [];\n  const expectedValues = Array.isArray(expected) ? expected.map(String).sort() : [];\n  if (actualValues.length !== expectedValues.length || actualValues.some((value, index) => value !== expectedValues[index])) {\n    throw new Error(label + ': expected [' + expectedValues.join(', ') + '], received [' + actualValues.join(', ') + ']');\n  }\n}\n\nasync function main() {`,
   'Directed assessment audience assertion helper',
 )) || changed;
 
