@@ -77,6 +77,20 @@ Still to prove before Gate 6 closure:
 - release checklist/handover completeness for the final Gate 6 candidate;
 - no capacity claim without an authorized staging load report.
 
+## Batch Q-01 — Review-first AI question draft
+
+- Status: `VERIFIED` for this bounded Questions sellability defect. Gate 6 and the Questions area remain `PARTIAL`; this batch does not close the whole gate.
+- Runtime behavior: the fake file/PDF AI alert was removed. `QuestionBankManager` now opens the existing `UnifiedQuestionBuilder` as an explicit AI draft, and the builder uses the existing `generateQuizQuestion(...) → api.aiQuestion(...) → POST /api/ai/question` provider path.
+- Review boundary: generated content is copied only into editable local question state. Generation does not call `addQuestion`, `updateQuestion`, or `onSave`; persistence remains an explicit user action through the existing builder/save path. New AI drafts start as `draft` even for Admin rather than being auto-approved.
+- Taxonomy boundary: the draft inherits only the currently selected path/subject/main-skill/sub-skill context. Existing teacher/admin ownership and review persistence are preserved.
+- Product accuracy: the UI now states that Excel import is supported and that PDF/file extraction is not available from this path; no fake document-extraction claim remains.
+- Contracts: `scripts/smoke-security-rbac-phase6-contract.mjs` and the dedicated `scripts/smoke-gate6-question-ai-authoring-contract.mjs` lock the authorized endpoint, review-first behavior, selected taxonomy inheritance, explicit save boundary, and removal of the false file/PDF affordance. The dedicated Gate 6 smoke is wired into the existing Phase + Handover workflow.
+- Runtime evidence: exact runtime/test commit `2f88ab863cf82cd48f5d2026ebf0fc7f0cf107ad` passed Platform V3 Phase + Handover `33958279565`, Platform V3 Recovery `33958279497`, and Refactor V2 Safety `33958279540`. The same commit also received a successful Vercel deployment status.
+- Current-head contract evidence: code-equivalent Gate 6 head `8cdd7becead9ee0ab037254860c667aef90e4966` passed Phase + Handover `33958440485`, including the explicit `Gate 6 question AI authoring contract` step. Recovery/Safety runs on this later test/scaffold-cleanup head are non-runtime follow-up checks and are not needed to re-prove the already-green exact runtime commit.
+- CI correction evidence: temporary self-mutating delivery scaffolding briefly introduced a one-off workflow run `33957869693`. Its codemod and product contract both passed, then its frontend-only dependency install caused root `npm run typecheck` to fail on missing `server/` dependencies. This was not a product regression. The temporary apply workflow/codemod were removed; the useful dedicated contract was retained and aligned with the actual review flow.
+- Ownership/data impact: no schema, query shape, API URL, RBAC role, scoring, payment, persistence ownership, or production-data behavior changed. `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` therefore require no update for Q-01.
+- Handoff: the next approved Questions gap to inspect is question-level usage/quality analytics. Do not implement analytics merely because it is named here; first prove the current UI/API/data gap and choose one bounded commercial slice. Do not move to Curriculum until the approved Questions closure criteria are satisfied or explicitly reclassified.
+
 ## Non-goals
 
 - No global `tenantId` or SaaS multi-tenancy.
