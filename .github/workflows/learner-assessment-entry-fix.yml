@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: codex/supervisor-student-journey-hardening
-          fetch-depth: 1
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -33,7 +33,7 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             server/package-lock.json
-      - name: Apply bounded learner entry patch
+      - name: Apply bounded harness correction
         run: node scripts/patch-learner-assessment-entry.mjs
       - name: Install frontend dependencies
         run: npm ci
@@ -43,20 +43,20 @@ jobs:
         run: npm run typecheck
       - name: API typecheck
         run: npm run server:check
-      - name: Directed journey source contract
+      - name: Existing directed journey source contract
         run: node scripts/smoke-supervisor-dashboard-contract.mjs
       - name: Diff check
         run: git diff --check
-      - name: Commit focused runtime and contract files
+      - name: Commit focused harness correction and runtime rollback
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- pages/QuizPage.tsx services/apiGroups/quizzesApi.ts scripts/smoke-supervisor-dashboard-contract.mjs; then
-            echo 'Learner assessment entry fix already present.'
+          if git diff --quiet -- pages/QuizPage.tsx services/apiGroups/quizzesApi.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs; then
+            echo 'Harness correction already present.'
             exit 0
           fi
           git config user.name 'almeaa-release-readiness'
           git config user.email 'actions@users.noreply.github.com'
-          git add pages/QuizPage.tsx services/apiGroups/quizzesApi.ts scripts/smoke-supervisor-dashboard-contract.mjs
-          git commit -m 'Fix learner entry for directed assessments'
+          git add pages/QuizPage.tsx services/apiGroups/quizzesApi.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs
+          git commit -m 'Correct directed assessment E2E navigation target'
           git push origin HEAD:codex/supervisor-student-journey-hardening
