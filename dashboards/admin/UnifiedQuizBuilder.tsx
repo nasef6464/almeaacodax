@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   X, ChevronRight, ChevronLeft, BookOpen, Award, Settings,
   Check, Loader2, AlertCircle, FileText, Users, Calendar, Lock, Globe,
@@ -138,7 +138,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [shuffleOptions, setShuffleOptions] = useState<boolean>(initialSettings.randomizeOptions ?? false);
 
   // Step 4
-  const [targetGroupIds, setTargetGroupIds] = useState<string[]>(editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? []);
+  const initialTargetGroups = editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? [];
+  const [targetGroupIds, setTargetGroupIds] = useState<string[]>(initialTargetGroups);
+  const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);
   const [targetUserIds] = useState<string[]>(editingQuiz?.targetUserIds ?? initialTargetUserIds ?? []);
   const [dueDate, setDueDate] = useState(editingQuiz?.dueDate ?? "");
   const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? isAdmin);
@@ -258,7 +260,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         access: { type: accessType === "package" ? "paid" : accessType } as any,
         mode: editingQuiz?.mode ?? initialMode,
         skillIds: editingQuiz?.skillIds ?? initialSkillIds ?? [],
-        targetGroupIds,
+        targetGroupIds: targetGroupIdsRef.current,
         targetUserIds,
         dueDate: dueDate || undefined,
         isPublished,
@@ -602,9 +604,11 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                       <input data-testid={`assessment-builder-target-group-${g.id}`} type="checkbox" checked={targetGroupIds.includes(g.id)}
                         onChange={(e) => {
                           const checked = e.target.checked;
-                          setTargetGroupIds((current) => checked
-                            ? Array.from(new Set([...current, g.id]))
-                            : current.filter((id) => id !== g.id));
+                          const next = checked
+                            ? Array.from(new Set([...targetGroupIdsRef.current, g.id]))
+                            : targetGroupIdsRef.current.filter((id) => id !== g.id);
+                          targetGroupIdsRef.current = next;
+                          setTargetGroupIds(next);
                         }}
                         className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
                       <span className="text-xs font-bold text-gray-700 line-clamp-1">{g.name}</span>

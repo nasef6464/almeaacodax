@@ -9,6 +9,7 @@ const detailPanel = await read("dashboards/admin/AssignedTestDetailPanel.tsx");
 const notificationRoutes = await read("server/src/routes/notification.routes.ts");
 const quizzesPage = await read("pages/Quizzes.tsx");
 const quizPage = await read("pages/QuizPage.tsx");
+const quizBuilder = await read("dashboards/admin/UnifiedQuizBuilder.tsx");
 const quizModel = await read("server/src/models/Quiz.ts");
 
 const checks = [];
@@ -91,6 +92,12 @@ check("supervisor assessment messages use scoped student alert rather than admin
   assertIncludes(notificationRoutes, 'requireRole(["admin", "supervisor", "teacher"])');
   assertIncludes(notificationRoutes, 'channels: ["in_app"]');
   assertIncludes(quizModel, 'supervisorMessage: { type: String, default: null }');
+});
+
+check("directed assessment builder preserves an immediately selected audience on save", () => {
+  assertIncludes(quizBuilder, "const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);");
+  assertIncludes(quizBuilder, "targetGroupIdsRef.current = next;");
+  assertIncludes(quizBuilder, "targetGroupIds: targetGroupIdsRef.current");
 });
 
 check("post-test workflow supports weak and absent student follow-up", () => {
