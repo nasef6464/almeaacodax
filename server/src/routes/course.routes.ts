@@ -115,6 +115,7 @@ const courseListQuerySchema = z.object({
   pathId: z.string().trim().optional(),
   subjectId: z.string().trim().optional(),
   search: z.string().trim().max(120).optional(),
+  kind: z.enum(['learning', 'package', 'all']).default('all'),
 });
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
@@ -431,6 +432,7 @@ courseRouter.get(
       query.pathId || "all-paths",
       query.subjectId || "all-subjects",
       query.search || "",
+      query.kind || "all",
     ].join(":");
 
     if (!isStaffViewer && publicCourseListCache?.key === cacheKey && publicCourseListCache.expiresAt > Date.now()) {
@@ -440,6 +442,8 @@ courseRouter.get(
     }
 
     const scopedFilter: Record<string, unknown> = {};
+    if (query.kind === 'learning') scopedFilter.isPackage = { $ne: true };
+    if (query.kind === 'package') scopedFilter.isPackage = true;
     if (query.pathId) scopedFilter.pathId = query.pathId;
     if (query.subjectId) {
       scopedFilter.$or = [{ subjectId: query.subjectId }, { subject: query.subjectId }];

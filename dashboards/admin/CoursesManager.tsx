@@ -4,6 +4,7 @@ import { useStore } from '../../store/useStore';
 import { AdvancedCourseBuilder } from './AdvancedCourseBuilder';
 import { Plus, Search, Edit2, Trash2, Eye, Star, Users, Lock, LockOpen, X, BookOpen, Target, ExternalLink, PlayCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { getCourseAudienceCount, getCourseRating } from '../../utils/courseStats';
+import { isLearningCourse } from '../../utils/courseProductKind';
 
 interface CoursesManagerProps {
   subjectId?: string;
@@ -38,11 +39,9 @@ const getCourseVisibilityMeta = (course: Course) =>
     : { label: 'ظاهر على المنصة', className: 'bg-sky-50 text-sky-700' };
 
 const getCourseAccessMeta = (course: Course) =>
-  course.isPackage
-    ? { label: 'باقة بيع', className: 'bg-violet-50 text-violet-700' }
-    : course.price > 0
-      ? { label: 'مدفوعة / تحتاج اشتراك', className: 'bg-amber-50 text-amber-700' }
-      : { label: 'مفتوحة أو مجانية', className: 'bg-emerald-50 text-emerald-700' };
+  course.price > 0
+    ? { label: 'دورة مدفوعة / تحتاج اشتراك', className: 'bg-amber-50 text-amber-700' }
+    : { label: 'دورة مفتوحة أو مجانية', className: 'bg-emerald-50 text-emerald-700' };
 
 const getCourseReadinessMeta = (course: Course) => {
   const issues: string[] = [];
@@ -50,7 +49,6 @@ const getCourseReadinessMeta = (course: Course) => {
   if (!course.subjectId && !course.subject) issues.push('غير مربوط بمادة');
   if (course.showOnPlatform !== false && course.isPublished === false) issues.push('ظاهر للطالب لكنه غير منشور');
   if (course.showOnPlatform !== false && course.approvalStatus && course.approvalStatus !== 'approved') issues.push('ظاهر قبل الاعتماد');
-  if (course.isPackage && course.price > 0 && !course.packageContentTypes?.length) issues.push('الباقة تحتاج تحديد ما تفتحه');
 
   return issues.length === 0
     ? { label: 'جاهز للطالب', issues, className: 'bg-emerald-50 text-emerald-700 border-emerald-100', icon: 'ready' as const }
@@ -191,6 +189,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   };
 
   const filteredCourses = courses.filter((course) => {
+    if (!isLearningCourse(course)) return false;
     const matchesSearch =
       (course.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (course.category || course.pathId || '').toLowerCase().includes(searchTerm.toLowerCase());
@@ -201,7 +200,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     total: filteredCourses.length,
     visible: filteredCourses.filter((course) => course.showOnPlatform !== false).length,
     published: filteredCourses.filter((course) => course.isPublished !== false).length,
-    sellable: filteredCourses.filter((course) => course.isPackage || course.price > 0).length,
+    paid: filteredCourses.filter((course) => course.price > 0).length,
   };
 
   if (isBuilding) {
@@ -263,7 +262,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
           { label: 'إجمالي الدورات', value: courseOverview.total, tone: 'text-slate-800 bg-slate-50' },
           { label: 'الظاهر على المنصة', value: courseOverview.visible, tone: 'text-sky-800 bg-sky-50' },
           { label: 'المنشور في المستودع', value: courseOverview.published, tone: 'text-emerald-800 bg-emerald-50' },
-          { label: 'القابل للبيع / الاشتراك', value: courseOverview.sellable, tone: 'text-amber-800 bg-amber-50' },
+          { label: 'الدورات المدفوعة', value: courseOverview.paid, tone: 'text-amber-800 bg-amber-50' },
         ].map((item) => (
           <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
             <div className="text-sm font-bold text-gray-500">{item.label}</div>
@@ -461,7 +460,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
               </div>
               <div className="rounded-2xl bg-emerald-50 p-4">
                 <div className="text-xs font-black text-emerald-500">النوع</div>
-                <div className="mt-2 text-sm font-black text-emerald-900">{previewCourse.isPackage ? 'باقة' : 'دورة'}</div>
+                <div className="mt-2 text-sm font-black text-emerald-900">دورة تعليمية</div>
               </div>
               <div className="rounded-2xl bg-amber-50 p-4">
                 <div className="text-xs font-black text-amber-500">السعر</div>
@@ -485,9 +484,6 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
                     <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
                       {previewCourse.ownerType === 'teacher' ? 'محتوى معلم' : previewCourse.ownerType === 'school' ? 'محتوى مدرسة' : 'محتوى المنصة'}
                     </span>
-                  ) : null}
-                  {previewCourse.isPackage ? (
-                    <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">باقة قابلة للبيع</span>
                   ) : null}
                 </div>
               </div>
