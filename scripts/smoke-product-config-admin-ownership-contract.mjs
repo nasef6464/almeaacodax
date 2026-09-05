@@ -92,6 +92,13 @@ check('platform integration admin keeps existing auth provider SEO and contact o
   }
 });
 
+check('composed integration managers refresh legacy state after a sellable-field save', () => {
+  assertIncludes(integrationsWrapper, 'const [legacyRevision, setLegacyRevision] = useState(0);');
+  assertIncludes(integrationsWrapper, 'onSaved={() => setLegacyRevision((current) => current + 1)}');
+  assertIncludes(integrationsWrapper, '<LegacyPlatformIntegrationsManager key={legacyRevision} />');
+  assertIncludes(sellablePanel, 'onSaved?.();');
+});
+
 check('all public providers have one generic admin ownership loop and public output remains secret-free', () => {
   for (const provider of ['google', 'facebook', 'whatsapp', 'telegram', 'email', 'sentry', 'redis', 'zoom', 'googleMeet', 'teams', 'youtubeLive']) {
     assertIncludes(integrationsLegacy, `{ key: "${provider}"`, `Missing provider admin entry: ${provider}`);
