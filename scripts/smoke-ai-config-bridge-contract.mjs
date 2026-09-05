@@ -1,9 +1,14 @@
 import { readFile } from "node:fs/promises";
 
 const aiRouteSource = await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8");
-const integrationsSource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManager.tsx", import.meta.url), "utf8");
+const integrationsWrapperSource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManager.tsx", import.meta.url), "utf8");
+const integrationsLegacySource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManagerLegacy.tsx", import.meta.url), "utf8");
+const integrationsSource = `${integrationsWrapperSource}\n${integrationsLegacySource}`;
 const assistantSource = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
-const apiSource = await readFile(new URL("../services/api.ts", import.meta.url), "utf8");
+const apiSource = [
+  await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
+  await readFile(new URL("../services/apiGroups/aiApi.ts", import.meta.url), "utf8"),
+].join("\n");
 const contentRouteSource = await readFile(new URL("../server/src/routes/content.routes.ts", import.meta.url), "utf8");
 const packageJsonSource = await readFile(new URL("../package.json", import.meta.url), "utf8");
 const liveAuditSource = await readFile(new URL("../scripts/live-ai-runtime-audit.mjs", import.meta.url), "utf8");
@@ -24,6 +29,10 @@ function assertIncludes(source, fragment) {
     throw new Error(`Missing fragment: ${fragment}`);
   }
 }
+
+check("integrations wrapper keeps the legacy manager in the composed admin surface", () => {
+  assertIncludes(integrationsWrapperSource, "PlatformIntegrationsManagerLegacy");
+});
 
 check("ai route supports admin runtime config load", () => {
   assertIncludes(aiRouteSource, "loadRuntimeAiConfig");
@@ -101,6 +110,7 @@ check("assistant manager shows source and bridges to integrations", () => {
 });
 
 check("api typing includes provider source fields", () => {
+  assertIncludes(apiSource, "createAiApi");
   assertIncludes(apiSource, 'source: "env" | "admin" | "runtime-local" | "fallback"');
   assertIncludes(apiSource, 'providerOrderSource?: "env" | "admin"');
   assertIncludes(apiSource, 'routingMode?: "manual" | "auto"');

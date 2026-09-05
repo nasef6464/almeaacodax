@@ -8,7 +8,9 @@ const contentRoutes = read("server/src/routes/content.routes.ts");
 const notificationRoutes = read("server/src/routes/notification.routes.ts");
 const notificationService = read("server/src/services/notificationService.ts");
 const api = read("services/api.ts");
-const manager = read("dashboards/admin/PlatformIntegrationsManager.tsx");
+const managerWrapper = read("dashboards/admin/PlatformIntegrationsManager.tsx");
+const managerLegacy = read("dashboards/admin/PlatformIntegrationsManagerLegacy.tsx");
+const manager = `${managerWrapper}\n${managerLegacy}`;
 
 const checks = [];
 const check = (name, fn) => checks.push({ name, fn });
@@ -84,7 +86,8 @@ check("frontend API exposes runtime audit and test delivery actions", () => {
   includes(api, '"/notifications/admin/test-delivery"');
 });
 
-check("integrations manager renders runtime audit and send test controls", () => {
+check("integrations manager composition preserves runtime audit and send test controls", () => {
+  includes(managerWrapper, "PlatformIntegrationsManagerLegacy");
   includes(manager, "فحص التشغيل الفعلي (Runtime)");
   includes(manager, "اختبار إرسال التكاملات");
   includes(manager, "sendIntegrationTest");

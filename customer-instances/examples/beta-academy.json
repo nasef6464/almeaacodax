@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "customerKey": "beta-academy",
+  "productName": "Beta Academy",
+  "domain": "https://beta.example.test",
+  "branding": {
+    "logoUrl": "/brands/beta-academy/logo.svg",
+    "logoAlt": "Beta Academy logo",
+    "logoText": "Beta",
+    "logoAccentText": "Academy"
+  },
+  "navigation": {
+    "showAutoPaths": false,
+    "moreLabel": "Explore",
+    "items": [
+      { "id": "home", "label": "Home", "visible": true, "order": 0 },
+      { "id": "mock-exams", "label": "Mock Exams", "visible": true, "order": 20 }
+    ]
+  },
+  "typography": {
+    "bodyFont": "cairo",
+    "headingFont": "cairo",
+    "navigationFont": "cairo",
+    "buttonFont": "cairo",
+    "bodyColor": "#30333a",
+    "headingColor": "#181b20"
+  },
+  "features": {
+    "selfRegistration": false,
+    "emailPasswordLogin": true,
+    "emailVerificationRequired": true,
+    "adminApprovalRequired": true,
+    "contactWidget": true
+  },
+  "providers": {
+    "google": { "enabled": false, "mode": "oauth" },
+    "facebook": { "enabled": false, "mode": "oauth" },
+    "whatsapp": { "enabled": false, "mode": "otp" },
+    "telegram": { "enabled": true, "mode": "bot" },
+    "email": { "enabled": true, "mode": "smtp" },
+    "zoom": { "enabled": false, "mode": "oauth" },
+    "googleMeet": { "enabled": true, "mode": "oauth" },
+    "teams": { "enabled": true, "mode": "oauth" },
+    "youtubeLive": { "enabled": false, "mode": "api" }
+  },
+  "registration": {
+    "title": "Beta Academy registration",
+    "subtitle": "Accounts are approved by your institution.",
+    "termsLink": "/terms",
+    "privacyLink": "/privacy"
+  },
+  "seo": {
+    "enabled": true,
+    "defaultTitle": "Beta Academy",
+    "defaultDescription": "Beta Academy learning and assessment platform.",
+    "defaultKeywords": ["academy", "school"],
+    "defaultOgImage": "/brands/beta-academy/og.png",
+    "robotsIndexingEnabled": false
+  },
+  "contactWidget": {
+    "channel": "telegram",
+    "whatsappNumber": "",
+    "whatsappMessage": "",
+    "openInNewTab": true,
+    "showOnPublicPages": true,
+    "showOnDashboardPages": true
+  }
+}

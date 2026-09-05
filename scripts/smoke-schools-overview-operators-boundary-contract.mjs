@@ -7,6 +7,7 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n
 const manager = read('dashboards/admin/SchoolsManager.tsx');
 const studentPanel = read('dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx');
 const supervisorPanel = read('dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx');
+const rosterActions = read('dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts');
 
 const checks = [];
 
@@ -60,15 +61,23 @@ check('single-student child remains presentation-only', () => {
   assertIncludes(studentPanel, 'void onSubmit()');
 });
 
-check('manager delegates school-wide supervisor presentation while keeping confirmations and mutations', () => {
+check('manager delegates school-wide supervisor presentation while extracted actions keep confirmations and mutations', () => {
   assertIncludes(manager, "import { SchoolWideSupervisorsPanel } from './SchoolsManager/SchoolWideSupervisorsPanel';");
+  assertIncludes(manager, "import { createSchoolRosterAssignmentActions } from './SchoolsManager/schoolRosterAssignmentActions';");
   assertIncludes(manager, '<SchoolWideSupervisorsPanel');
   assertIncludes(manager, 'onAssignSupervisor={(value) => handleAssignSchoolSupervisor(value, selectedSchool.id)}');
-  assertIncludes(manager, 'onRemoveSupervisor={handleRemoveSchoolWideSupervisor}');
-  assertIncludes(manager, 'const handleRemoveSchoolWideSupervisor = (currentUser: User) => {');
-  assertIncludes(manager, 'handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)');
-  assertIncludes(manager, 'const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {');
-  assertIncludes(manager, 'const handleRemoveSchoolSupervisor = async (supervisorId: string, groupId: string) => {');
+  assertIncludes(manager, 'onRemoveSupervisor={confirmRemoveSchoolWideSupervisor}');
+  assertIncludes(manager, 'confirmRemoveSchoolWideSupervisor,');
+  assertIncludes(manager, 'confirmRemoveClassSupervisor,');
+  assertNotIncludes(manager, 'const handleRemoveSchoolWideSupervisor = (currentUser: User) => {');
+  assertIncludes(rosterActions, 'const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {');
+  assertIncludes(rosterActions, 'await assignSupervisorToGroupAsync(supervisorId, groupId);');
+  assertIncludes(rosterActions, 'const handleRemoveSchoolSupervisor = async (supervisorId: string, groupId: string) => {');
+  assertIncludes(rosterActions, 'await removeSupervisorFromGroupAsync(supervisorId, groupId);');
+  assertIncludes(rosterActions, 'const confirmRemoveSchoolWideSupervisor = (currentUser: User) => {');
+  assertIncludes(rosterActions, 'void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);');
+  assertIncludes(rosterActions, 'const confirmRemoveClassSupervisor = (classroom: Group, currentUser: User) => {');
+  assertIncludes(rosterActions, 'void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);');
   assertNotIncludes(manager, '<div data-testid="school-wide-supervisors-panel"');
 });
 
@@ -102,9 +111,11 @@ check('overview operator extraction reduces manager hotspot without creating ove
   const managerLines = manager.split('\n').length;
   const studentLines = studentPanel.split('\n').length;
   const supervisorLines = supervisorPanel.split('\n').length;
+  const rosterActionLines = rosterActions.split('\n').length;
   if (managerLines >= 3620) throw new Error(`SchoolsManager remained too large after overview operator extraction: ${managerLines}`);
   if (studentLines > 170) throw new Error(`SchoolSingleStudentPanel exceeded 170 lines: ${studentLines}`);
   if (supervisorLines > 190) throw new Error(`SchoolWideSupervisorsPanel exceeded 190 lines: ${supervisorLines}`);
+  if (rosterActionLines > 240) throw new Error(`schoolRosterAssignmentActions exceeded 240 lines: ${rosterActionLines}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
@@ -114,6 +125,7 @@ const result = {
   managerLines: manager.split('\n').length,
   studentPanelLines: studentPanel.split('\n').length,
   supervisorPanelLines: supervisorPanel.split('\n').length,
+  rosterActionLines: rosterActions.split('\n').length,
   checks,
 };
 

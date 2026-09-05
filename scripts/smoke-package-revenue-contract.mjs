@@ -9,7 +9,8 @@ const schoolOperationsSchemaSource = fs.readFileSync(path.join(root, 'server/src
 const schoolsManagerParentSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
 const schoolPackagesPanelSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'), 'utf8');
 const schoolPackageCardSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackageCard.tsx'), 'utf8');
-const schoolsManagerSource = [schoolsManagerParentSource, schoolPackagesPanelSource, schoolPackageCardSource].join('\n');
+const schoolPackageActionsSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/schoolPackageActions.ts'), 'utf8');
+const importExportServiceSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/importExportService.ts'), 'utf8');
 const financialManagerSource = fs.readFileSync(path.join(root, 'dashboards/admin/FinancialManager.tsx'), 'utf8');
 
 const checks = [];
@@ -38,13 +39,15 @@ check('school package manager lets admin assign trainer and share percentage', (
   assertIncludes(schoolPackagesPanelSource, '<SchoolPackageCard');
   assertIncludes(schoolPackagesPanelSource, 'handleUpdateSchoolPackage={handleUpdateSchoolPackage}');
   assertIncludes(schoolsManagerParentSource, 'handleUpdateSchoolPackage={handleUpdateSchoolPackage}');
-  assertIncludes(schoolsManagerParentSource, 'await updateB2BPackageAsync(packageId, data);');
+  assertIncludes(schoolPackageActionsSource, 'await updateB2BPackageAsync(packageId, data);');
+  assertIncludes(schoolPackageActionsSource, 'await refreshSchoolWorkspace(selectedSchool.id);');
 });
 
 check('school package exports include trainer revenue fields', () => {
-  assertIncludes(schoolsManagerSource, 'المعلم/المدرب');
-  assertIncludes(schoolsManagerSource, 'نسبة المعلم');
-  assertIncludes(schoolsManagerSource, "packageTeacher?.name || 'غير محدد'");
+  assertIncludes(importExportServiceSource, 'المعلم/المدرب');
+  assertIncludes(importExportServiceSource, 'نسبة المعلم');
+  assertIncludes(importExportServiceSource, "packageTeacher?.name || 'غير محدد'");
+  assertIncludes(importExportServiceSource, 'pkg.revenueSharePercentage != null');
 });
 
 check('financial dashboard summarizes teacher shares for school packages', () => {

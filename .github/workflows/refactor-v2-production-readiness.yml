@@ -147,11 +147,18 @@ jobs:
       - name: API production build
         run: npm --prefix server run build
 
+      - name: Generate current architecture snapshot
+        run: node tools/refactor/repository-audit.mjs
+
       - name: Immutable architecture contract gate
         run: node tools/refactor/architecture-gate.mjs
 
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
+
+      - name: Restore generated architecture evidence
+        if: always()
+        run: git checkout -- docs/architecture/generated
 
       - name: Production audit contract
         run: npm run smoke:production-audit

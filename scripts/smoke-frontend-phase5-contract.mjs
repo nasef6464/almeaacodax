@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 
 const files = {
   api: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
+  authApi: await readFile(new URL("../services/apiGroups/authApi.ts", import.meta.url), "utf8"),
+  paymentsApi: await readFile(new URL("../services/apiGroups/paymentsApi.ts", import.meta.url), "utf8"),
   coursesApi: await readFile(new URL("../services/apiGroups/coursesApi.ts", import.meta.url), "utf8"),
   quizzesApi: await readFile(new URL("../services/apiGroups/quizzesApi.ts", import.meta.url), "utf8"),
   apiQueryUtilities: await readFile(new URL("../services/apiQueryUtilities.ts", import.meta.url), "utf8"),
@@ -23,14 +25,16 @@ function assertIncludes(source, expected) {
 }
 
 check("api client keeps paginated backend responses compatible with existing pages", () => {
-  assertIncludes(files.api, "extractList");
-  assertIncludes(files.api, "withQuery");
-  assertIncludes(files.apiQueryUtilities, "export interface PaginationOptions");
-  assertIncludes(files.api, 'withQuery("/auth/admin/users"');
-  assertIncludes(files.api, 'withQuery("/payments/requests"');
+  assertIncludes(files.api, "createAuthApi(request)");
+  assertIncludes(files.api, "createPaymentsApi(request)");
   assertIncludes(files.api, "createCoursesApi(request");
-  assertIncludes(files.coursesApi, 'withQuery("/courses"');
   assertIncludes(files.api, "createQuizzesApi(request");
+  assertIncludes(files.apiQueryUtilities, "export interface PaginationOptions");
+  assertIncludes(files.authApi, "extractList");
+  assertIncludes(files.authApi, 'withQuery("/auth/admin/users"');
+  assertIncludes(files.paymentsApi, "extractList");
+  assertIncludes(files.paymentsApi, 'withQuery("/payments/requests"');
+  assertIncludes(files.coursesApi, 'withQuery("/courses"');
   assertIncludes(files.quizzesApi, 'withQuery("/quizzes"');
   assertIncludes(files.quizzesApi, 'withQuery("/quizzes/results"');
 });

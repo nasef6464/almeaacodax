@@ -97,9 +97,10 @@ assertAllIncludes("server/src/routes/payment.routes.ts", [
 
 assertAllIncludes("server/src/routes/taxonomy.routes.ts", [
   "taxonomyBootstrapPhaseSchema",
-  'z.enum(["full", "core"]).default("full")',
+  'z.enum(["full", "compact", "core"]).default("full")',
   'res.setHeader("X-Taxonomy-Phase", phase)',
   'phase === "core"',
+  'phase === "compact"',
   "publicTaxonomyBootstrapCache",
   "publicTaxonomyBootstrapPromises",
 ]);
@@ -126,7 +127,8 @@ assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/
 ], "payments api facade/source");
 
 assertAllIncludes("services/apiGroups/taxonomyContentApi.ts", [
-  "getTaxonomyBootstrap: (phase: \"full\" | \"core\" = \"full\")",
+  'getTaxonomyBootstrap: (phase: "full" | "compact" | "core" = "full")',
+  '`taxonomy-bootstrap:${phase}`',
 ]);
 
 console.log("Batch 100Q operational admin runtime contract passed.");

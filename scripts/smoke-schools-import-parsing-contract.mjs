@@ -76,9 +76,29 @@ assert.deepEqual(
     parentName: 'ولي الطالب',
     supervisorEmail: 'teacher@example.com',
     supervisorName: 'المشرف',
+    teacherEmail: undefined,
+    teacherName: undefined,
     className: 'الفصل 1',
   }],
-  'Relationship import aliases must remain stable.',
+  'Relationship import aliases must remain stable while optional teacher fields stay explicit.',
+);
+
+assert.deepEqual(
+  parser.parseRelationRows([
+    ['بريد الطالب', 'بريد المعلم', 'اسم المعلم', 'اسم الفصل'],
+    ['student2@example.com', 'teacher2@example.com', 'المعلم', 'الفصل 2'],
+  ]),
+  [{
+    studentEmail: 'student2@example.com',
+    parentEmail: undefined,
+    parentName: undefined,
+    supervisorEmail: undefined,
+    supervisorName: undefined,
+    teacherEmail: 'teacher2@example.com',
+    teacherName: 'المعلم',
+    className: 'الفصل 2',
+  }],
+  'Teacher relationship aliases must remain distinct from supervisor elevation.',
 );
 
 assert.throws(

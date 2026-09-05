@@ -11,6 +11,9 @@ const files = {
   notificationRoutes: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   operationsRoutes: await readFile(new URL("../server/src/routes/operations.routes.ts", import.meta.url), "utf8"),
   apiClient: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
+  paymentsApi: await readFile(new URL("../services/apiGroups/paymentsApi.ts", import.meta.url), "utf8"),
+  quizzesApi: await readFile(new URL("../services/apiGroups/quizzesApi.ts", import.meta.url), "utf8"),
+  coursesApi: await readFile(new URL("../services/apiGroups/coursesApi.ts", import.meta.url), "utf8"),
 };
 
 const checks = [];
@@ -69,7 +72,7 @@ check("payment lists return bounded filtered pages with real items in pagination
   assertIncludes(files.paymentRoutes, "pagination: buildPaginatedResponse(requests, pagination, total)");
   assertIncludes(files.paymentRoutes, "DiscountCodeModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()");
   assertIncludes(files.paymentRoutes, "pagination: buildPaginatedResponse(codes, pagination, total)");
-  assertIncludes(files.apiClient, "pagination: PaginationOptions & { status?: string; search?: string } = {}");
+  assertIncludes(files.paymentsApi, "pagination: PaginationOptions & { status?: string; search?: string } = {}");
 });
 
 check("school report uses bounded quiz result sampling instead of loading all results", () => {
@@ -81,11 +84,14 @@ check("school report uses bounded quiz result sampling instead of loading all re
   assertIncludes(files.contentRoutes, "sampledQuizAttempts");
 });
 
-check("frontend service client safely unwraps paginated list payloads", () => {
-  assertIncludes(files.apiClient, "extractList");
-  assertIncludes(files.apiClient, 'withQuery("/quizzes"');
-  assertIncludes(files.apiClient, 'withQuery("/courses"');
-  assertIncludes(files.apiClient, 'withQuery("/quizzes/results"');
+check("frontend service clients safely unwrap paginated list payloads", () => {
+  assertIncludes(files.apiClient, "createQuizzesApi");
+  assertIncludes(files.apiClient, "createCoursesApi");
+  assertIncludes(files.quizzesApi, "extractList");
+  assertIncludes(files.quizzesApi, 'withQuery("/quizzes"');
+  assertIncludes(files.coursesApi, "extractList");
+  assertIncludes(files.coursesApi, 'withQuery("/courses"');
+  assertIncludes(files.quizzesApi, 'withQuery("/quizzes/results"');
 });
 
 for (const [name, fn] of checks) {

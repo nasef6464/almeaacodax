@@ -2,13 +2,28 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [quizRoutes, questionPresentation, quizResultModel, accessGrantService, paymentRoutes, authRoutes] = await Promise.all([
+const [
+  quizRoutes,
+  questionPresentation,
+  quizResultModel,
+  accessGrantService,
+  paymentRoutes,
+  authRoutes,
+  submissionWindow,
+  attemptContext,
+  scoreSummary,
+  answerReview,
+] = await Promise.all([
   read("server/src/routes/quiz.routes.ts"),
   read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   read("server/src/models/QuizResult.ts"),
   read("server/src/services/accessGrantService.ts"),
   read("server/src/routes/payment.routes.ts"),
   read("server/src/routes/auth.routes.ts"),
+  read("server/src/modules/quizzes/application/quizSubmissionWindow.ts"),
+  read("server/src/modules/quizzes/application/quizAttemptContext.ts"),
+  read("server/src/modules/quizzes/application/quizSubmissionScoreSummary.ts"),
+  read("server/src/modules/quizzes/application/quizSubmissionAnswerReview.ts"),
 ]);
 
 const checks = [];
@@ -42,17 +57,24 @@ check("direct result creation remains blocked and audited", () => {
 });
 
 check("quiz submit enforces server-side window, attempt limits, and duplicate protection", () => {
-  assertIncludes(quizRoutes, "assertQuizWindowIsOpen");
-  assertIncludes(quizRoutes, "getQuizMaxAttempts");
-  assertIncludes(quizRoutes, "previousAttempts >= maxAttempts");
-  assertIncludes(quizRoutes, "submissionKey");
+  assertIncludes(quizRoutes, 'import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";');
+  assertIncludes(quizRoutes, "const quizWindow = assertQuizSubmissionWindow({");
+  assertIncludes(submissionWindow, "now > dueDateMs");
+  assertIncludes(submissionWindow, "Quiz submission deadline has passed");
+  assertIncludes(quizRoutes, 'import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";');
+  assertIncludes(quizRoutes, "const maxAttempts = getQuizMaxAttempts(quiz)");
+  assertIncludes(quizRoutes, "const attemptState = buildQuizSubmissionAttemptState({");
+  assertIncludes(attemptContext, "previousAttempts >= maxAttempts");
+  assertIncludes(attemptContext, "submissionKey: buildSubmissionKey(userId, quizId, attemptNumber)");
   assertIncludes(quizRoutes, "Quiz submission already processed");
 });
 
 check("quiz score and pass/fail are calculated only on the server", () => {
-  assertIncludes(quizRoutes, "const score = Math.round((correctAnswers / Math.max(totalQuestions, 1)) * 100)");
-  assertIncludes(quizRoutes, "passed: score >= passingScore");
-  assertIncludes(quizRoutes, "const isCorrect = selectedOptionIndex === Number(question.correctOptionIndex ?? 0)");
+  assertIncludes(quizRoutes, 'import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";');
+  assertIncludes(quizRoutes, "const scoreSummary = buildQuizSubmissionScoreSummary({");
+  assertIncludes(scoreSummary, "const score = Math.round((correctAnswers / Math.max(totalQuestions, 1)) * 100)");
+  assertIncludes(scoreSummary, "passed: score >= passingScore");
+  assertIncludes(answerReview, "const isCorrect = selectedOptionIndex === Number(question.correctOptionIndex ?? 0)");
   assertNotIncludes(quizRoutes, "payload.score");
   assertNotIncludes(quizRoutes, "payload.passed");
 });

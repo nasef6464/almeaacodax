@@ -35,6 +35,15 @@ function assertAllIncludesSource(source, entries, label) {
   });
 }
 
+const schoolsRuntimeSource = [
+  read("dashboards/admin/SchoolsManager.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
+  read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
+].join("\n");
+
 assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "toggleActionsMenu",
   "Delete user",
@@ -87,7 +96,7 @@ assertAllIncludes("server/src/routes/payment.routes.ts", [
   "verifyPaymentWebhookSignature",
 ]);
 
-assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
+assertAllIncludesSource(schoolsRuntimeSource, [
   "handleAssignSchoolSupervisor(value, selectedSchool.id)",
   "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)",
   "onAssignSupervisor={handleAssignSchoolSupervisor}",
@@ -95,7 +104,7 @@ assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "rosterActionPending",
   "setActiveTab('relations')",
   "setSelectedSchool((current) =>",
-]);
+], "school manager runtime modules");
 
 assertAllIncludes("store/useStore.ts", [
   "assignSupervisorToGroupAsync: async",
