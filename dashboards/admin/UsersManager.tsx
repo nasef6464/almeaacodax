@@ -75,14 +75,16 @@ const MultiSelectField: React.FC<{
     placeholder: string;
     onChange: (next: string[]) => void;
     size?: 'sm' | 'md';
-}> = ({ value, options, placeholder, onChange, size = 'md' }) => (
+    disabled?: boolean;
+}> = ({ value, options, placeholder, onChange, size = 'md', disabled = false }) => (
     <select
         multiple
+        disabled={disabled}
         value={value}
         onChange={(event) => onChange(Array.from(event.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value))}
         className={`w-full border border-gray-300 rounded-lg px-3 ${
             size === 'sm' ? 'py-2 h-28 text-sm' : 'py-2.5 h-32 text-sm'
-        } focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white`}
+        } focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white disabled:cursor-wait disabled:opacity-60`}
     >
         {options.length === 0 ? (
             <option disabled value="">
@@ -116,10 +118,10 @@ export const UsersManager: React.FC = () => {
         addUser,
         updateUser,
         toggleUserStatus,
-        assignStudentToGroup,
-        removeStudentFromGroup,
-        assignSupervisorToGroup,
-        removeSupervisorFromGroup,
+        assignStudentToGroupAsync,
+        removeStudentFromGroupAsync,
+        assignSupervisorToGroupAsync,
+        removeSupervisorFromGroupAsync,
     } = useStore();
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -137,6 +139,8 @@ export const UsersManager: React.FC = () => {
     const [activeActionsUserId, setActiveActionsUserId] = useState<string | null>(null);
     const [allStudentsForLinking, setAllStudentsForLinking] = useState<User[]>([]);
     const [createError, setCreateError] = useState('');
+    const [relationshipActionUserId, setRelationshipActionUserId] = useState<string | null>(null);
+    const [relationshipActionError, setRelationshipActionError] = useState('');
     const [newUser, setNewUser] = useState({
         name: '',
         email: '',
@@ -438,38 +442,88 @@ export const UsersManager: React.FC = () => {
         return { pathNames, subjectNames };
     };
 
-    const handleStudentSchoolChange = (user: User, nextSchoolId: string) => {
-        if (user.schoolId && user.schoolId !== nextSchoolId) {
-            removeStudentFromGroup(user.id, user.schoolId);
+    const withRelationshipSave = async (userId: string, operation: () => Promise<void>) => {
+        setRelationshipActionUserId(userId);
+        setRelationshipActionError('');
+        try {
+            await operation();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'تعذر حفظ علاقة المستخدم الآن.';
+            console.error('Failed to persist user relationship:', error);
+            setRelationshipActionError(message);
+            window.alert(message);
+        } finally {
+            setRelationshipActionUserId((current) => current === userId ? null : current);
         }
+    };
 
-        if (nextSchoolId) {
-            assignStudentToGroup(user.id, nextSchoolId);
-        } else {
-            updateUser(user.id, { schoolId: undefined });
-        }
+    const handleStudentSchoolChange = (user: User, nextSchoolId: string) => {
+        void withRelationshipSave(user.id, async () => {
+            const currentClassIds = classes
+                .filter((group) => user.groupIds?.includes(group.id))
+                .map((group) => group.id);
+
+            for (const classId of currentClassIds) {
+                const classGroup = classes.find((group) => group.id === classId);
+                if (!nextSchoolId || classGroup?.parentId !== nextSchoolId) {
+                    await removeStudentFromGroupAsync(user.id, classId);
+                }
+            }
+
+            if (user.schoolId && user.schoolId !== nextSchoolId) {
+                await removeStudentFromGroupAsync(user.id, user.schoolId);
+            }
+
+            if (nextSchoolId && user.schoolId !== nextSchoolId) {
+                await assignStudentToGroupAsync(user.id, nextSchoolId);
+            }
+        });
     };
 
     const handleStudentClassChange = (user: User, nextClassId: string) => {
-        const currentClassId = classes.find((group) => user.groupIds?.includes(group.id))?.id;
-        if (currentClassId && currentClassId !== nextClassId) {
-            removeStudentFromGroup(user.id, currentClassId);
-        }
+        void withRelationshipSave(user.id, async () => {
+            const nextClass = nextClassId ? classes.find((group) => group.id === nextClassId) : undefined;
+            if (nextClassId && !nextClass) {
+                throw new Error('الفصل المحدد غير موجود.');
+            }
 
-        if (nextClassId) {
-            assignStudentToGroup(user.id, nextClassId);
-        }
+            if (nextClass?.parentId && user.schoolId !== nextClass.parentId) {
+                await assignStudentToGroupAsync(user.id, nextClass.parentId);
+            }
+
+            const currentClassIds = classes
+                .filter((group) => user.groupIds?.includes(group.id))
+                .map((group) => group.id);
+
+            for (const classId of currentClassIds) {
+                if (classId !== nextClassId) {
+                    await removeStudentFromGroupAsync(user.id, classId);
+                }
+            }
+
+            if (nextClassId && !currentClassIds.includes(nextClassId)) {
+                await assignStudentToGroupAsync(user.id, nextClassId);
+            }
+        });
     };
 
     const handleSupervisorGroupsChange = (user: User, nextGroupIds: string[]) => {
-        const currentGroupIds = user.groupIds || [];
-        currentGroupIds
-            .filter((groupId) => !nextGroupIds.includes(groupId))
-            .forEach((groupId) => removeSupervisorFromGroup(user.id, groupId));
+        void withRelationshipSave(user.id, async () => {
+            const validGroupIds = Array.from(new Set(nextGroupIds)).filter((groupId) =>
+                groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')),
+            );
+            const currentGroupIds = (user.groupIds || []).filter((groupId) =>
+                groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')),
+            );
 
-        nextGroupIds
-            .filter((groupId) => !currentGroupIds.includes(groupId))
-            .forEach((groupId) => assignSupervisorToGroup(user.id, groupId));
+            for (const groupId of currentGroupIds.filter((groupId) => !validGroupIds.includes(groupId))) {
+                await removeSupervisorFromGroupAsync(user.id, groupId);
+            }
+
+            for (const groupId of validGroupIds.filter((groupId) => !currentGroupIds.includes(groupId))) {
+                await assignSupervisorToGroupAsync(user.id, groupId);
+            }
+        });
     };
 
     const handleParentSchoolChange = (user: User, nextSchoolId: string) => {
@@ -640,22 +694,22 @@ export const UsersManager: React.FC = () => {
                         <Download size={18} />
                         <span>تصدير المستخدمين</span>
                     </button>
-                <button
-                    onClick={() => {
-                        setIsCreateOpen(true);
-                        setCreateError('');
-                    }}
-                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
-                >
-                    <Plus size={18} />
-                    <span>إضافة مستخدم</span>
-                </button>
+                    <button
+                        onClick={() => {
+                            setIsCreateOpen(true);
+                            setCreateError('');
+                        }}
+                        className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+                    >
+                        <Plus size={18} />
+                        <span>إضافة مستخدم</span>
+                    </button>
                 </div>
             </div>
 
-            {(isUsersLoading || usersLoadError) && (
-                <div className={`rounded-xl border px-4 py-3 text-sm ${usersLoadError ? 'border-red-100 bg-red-50 text-red-700' : 'border-amber-100 bg-amber-50 text-amber-700'}`}>
-                    {usersLoadError || 'جاري تحميل المستخدمين داخل هذا التبويب فقط...'}
+            {(isUsersLoading || usersLoadError || relationshipActionError) && (
+                <div className={`rounded-xl border px-4 py-3 text-sm ${usersLoadError || relationshipActionError ? 'border-red-100 bg-red-50 text-red-700' : 'border-amber-100 bg-amber-50 text-amber-700'}`}>
+                    {relationshipActionError || usersLoadError || 'جاري تحميل المستخدمين داخل هذا التبويب فقط...'}
                 </div>
             )}
 
@@ -756,7 +810,7 @@ export const UsersManager: React.FC = () => {
                                 <option value={Role.TEACHER}>معلم</option>
                                 <option value={Role.SUPERVISOR}>مشرف</option>
                                 <option value={Role.PARENT}>ولي أمر</option>
-                                <option value={Role.ADMIN}>مدير</option>
+                                <option value={Role.STUDENT}>طالب</option>
                             </select>
                         </div>
                     </div>
@@ -915,6 +969,7 @@ export const UsersManager: React.FC = () => {
                                 const currentClassId = classes.find((group) => currentUser.groupIds?.includes(group.id))?.id || '';
                                 const currentSupervisorGroupIds = currentUser.groupIds || [];
                                 const parentCandidates = linkableStudents.filter((student) => !currentSchoolId || student.schoolId === currentSchoolId);
+                                const isSavingRelationship = relationshipActionUserId === currentUser.id;
 
                                 return (
                                     <tr key={currentUser.id} className="hover:bg-gray-50/50 transition-colors">
@@ -968,7 +1023,8 @@ export const UsersManager: React.FC = () => {
                                             {isEditing && currentUser.role === Role.STUDENT ? (
                                                 <div className="space-y-2 min-w-[220px]">
                                                     <select
-                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500"
+                                                        disabled={isSavingRelationship}
+                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:cursor-wait disabled:opacity-60"
                                                         value={currentSchoolId}
                                                         onChange={(event) => handleStudentSchoolChange(currentUser, event.target.value)}
                                                     >
@@ -978,7 +1034,8 @@ export const UsersManager: React.FC = () => {
                                                         ))}
                                                     </select>
                                                     <select
-                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500"
+                                                        disabled={isSavingRelationship}
+                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:cursor-wait disabled:opacity-60"
                                                         value={currentClassId}
                                                         onChange={(event) => handleStudentClassChange(currentUser, event.target.value)}
                                                     >
@@ -987,10 +1044,12 @@ export const UsersManager: React.FC = () => {
                                                             <option key={group.id} value={group.id}>{group.name}</option>
                                                         ))}
                                                     </select>
+                                                    {isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ المدرسة والفصل…</p>}
                                                 </div>
                                             ) : isEditing && currentUser.role === Role.SUPERVISOR ? (
                                                 <div className="space-y-2 min-w-[260px]">
                                                     <MultiSelectField
+                                                        disabled={isSavingRelationship}
                                                         value={currentSupervisorGroupIds}
                                                         options={[...schools, ...classes].map((group) => ({
                                                             value: group.id,
@@ -1001,8 +1060,9 @@ export const UsersManager: React.FC = () => {
                                                         size="sm"
                                                     />
                                                     <p className="text-[11px] text-gray-400">
-                                                        يمكن جعل المشرف مدير مدرسة باختيار المدرسة، أو مسؤولًا عن فصل/عدة فصول من نفس الحساب.
+                                                        يمكن إسناد المشرف لمدرسة كاملة أو فصل/عدة فصول، ويحفظ الربط فعليًا قبل تحديث الواجهة.
                                                     </p>
+                                                    {isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ نطاق المشرف…</p>}
                                                 </div>
                                             ) : isEditing && currentUser.role === Role.PARENT ? (
                                                 <div className="space-y-2 min-w-[240px]">
