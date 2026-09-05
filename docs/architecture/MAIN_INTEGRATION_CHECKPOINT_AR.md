@@ -77,16 +77,17 @@ Google OAuth on Staging remains a separate staging-only follow-up because the ba
 
 ## Course System bounded batch — direct enrollment integrity
 
-- Branch: `codex/course-access-integrity`; draft PR `#36`.
+- Branch: `codex/course-access-integrity`; PR `#36`.
 - Proven defect: the existing `POST /api/courses/:id/enroll` and `/join` handler could add a paid course to `subscription.purchasedCourses` without verified purchase entitlement and could increment `studentCount` repeatedly for the same user.
-- Final runtime commit under verification: `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`.
-- Fix: the existing canonical route now rejects direct enrollment for paid courses with `COURSE_PURCHASE_REQUIRED`, returns idempotent success for already-enrolled users, increments `studentCount` only on a new free enrollment, and applies the existing learner-visibility boundary before enrollment.
+- Final runtime commit: `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`.
+- Fix: the existing canonical route rejects direct enrollment for paid courses with `COURSE_PURCHASE_REQUIRED`, returns idempotent success for already-enrolled users, increments `studentCount` only on a new free enrollment, and applies the existing learner-visibility boundary before enrollment.
 - Structural correction: an initial extra guard-router implementation was rejected by the immutable architecture gate because it introduced duplicate HTTP route entries and an additional `/courses` mount. That structure was removed; the final runtime changes the existing route only and does not expand the HTTP/router contract.
-- Current evidence: Phase + Handover, Recovery and Production Readiness are green on exact runtime commit `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`. Safety baseline-quality is also fully green, including frontend/API typecheck, production builds, immutable architecture, security and contract checks. The Safety workflow remains red only because its Vercel preview job sees the external Vercel status `failure` with target `upgradeToPro=build-rate-limit`; a focused rerun reproduced the same provider-rate-limit status immediately.
+- CI evidence: Phase + Handover, Recovery and Production Readiness are green on exact runtime commit `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`. Safety baseline-quality is fully green, including frontend/API typecheck, production builds, immutable architecture, security and contract checks.
+- Deployability evidence: Vercel later produced READY preview deployment `dpl_6uRuEeKzVHUrChCyqga7hNDDfN3F` from descendant `7b4533d7418170b7d569b21fd694e3c530642fe4`. The only commits between `bfe9755d...` and that deployed descendant modify this checkpoint document only, so the deployed runtime tree is the verified `bfe9755d...` runtime.
 - Contract impact: no new route URL/method, payment-provider redesign, RBAC role change, scoring change, schema/data migration, tenant model, microservice, or production cutover.
 - Map impact: `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` remain unchanged because module ownership, persistence ownership and data-query responsibility did not move.
-- Status: `PARTIAL / BLOCKED-ENV`. Product/runtime verification is green; exact-head deployability evidence is blocked by the external Vercel build-rate limit, so PR `#36` must remain draft and must not merge yet.
-- Next exact action: re-check the Vercel status and rerun only the failed Vercel preview job after the provider rate limit clears. If that exact runtime commit becomes Vercel-success and the Safety workflow is green, mark this batch `VERIFIED`, ready/merge PR `#36`, create a fresh branch from new `main`, then inspect the next Course System gap. Do not start a second course behavior change before this batch closes.
+- Status: `VERIFIED`; PR `#36` is ready for normal merge preserving history.
+- Next after merge: verify production deployment/health, then inspect the end-to-end Course System journey from authoring and configuration through free/paid/package access, purchase and student presentation; close one proved gap at a time.
 
 ## Agent handoff rule
 
