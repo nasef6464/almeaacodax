@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const dashboard = await read("dashboards/admin/SupervisorDashboard.tsx");
+const testsManager = await read("dashboards/admin/SupervisorTestsManager.tsx");
+const detailPanel = await read("dashboards/admin/AssignedTestDetailPanel.tsx");
 
 const checks = [];
 
@@ -18,6 +20,12 @@ function check(name, assertion) {
 function assertIncludes(source, fragment, message) {
   if (!source.includes(fragment)) {
     throw new Error(message || `Missing fragment: ${fragment}`);
+  }
+}
+
+function assertNotIncludes(source, fragment, message) {
+  if (source.includes(fragment)) {
+    throw new Error(message || `Unexpected fragment: ${fragment}`);
   }
 }
 
@@ -60,10 +68,31 @@ check("supervisor quick decision board exposes weekly decision metrics and alert
   assertIncludes(dashboard, "إرسال تنبيه أسبوعي");
 });
 
+check("directed assessment manager includes explicit student targets in scope and analytics", () => {
+  assertIncludes(testsManager, "explicitUserIds");
+  assertIncludes(testsManager, "quiz.targetUserIds");
+  assertIncludes(testsManager, "scopedStudents");
+  assertIncludes(testsManager, "latestResultByStudent");
+  assertIncludes(testsManager, "targetStudentIds");
+});
+
+check("supervisor assessment messages use scoped student alert rather than admin-only sender", () => {
+  assertIncludes(testsManager, "api.sendStudentAlert");
+  assertNotIncludes(testsManager, "api.sendNotifications");
+  assertIncludes(testsManager, "sendScopedStudentAlert");
+});
+
+check("post-test workflow supports weak and absent student follow-up", () => {
+  assertIncludes(detailPanel, 'StudentFilter = "all" | "needs-support" | "absent"');
+  assertIncludes(detailPanel, "needsSupportStudents");
+  assertIncludes(detailPanel, "إعادة توجيه");
+  assertIncludes(detailPanel, "لم يؤدوا");
+  assertIncludes(testsManager, "onAssignToStudent");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 
 if (failed.length > 0) {
   process.exit(1);
 }
-
