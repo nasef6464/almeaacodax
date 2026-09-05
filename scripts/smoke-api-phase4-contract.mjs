@@ -11,6 +11,10 @@ const files = {
   notificationRoutes: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   operationsRoutes: await readFile(new URL("../server/src/routes/operations.routes.ts", import.meta.url), "utf8"),
   apiClient: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
+  apiQueryUtilities: await readFile(new URL("../services/apiQueryUtilities.ts", import.meta.url), "utf8"),
+  paymentsApi: await readFile(new URL("../services/apiGroups/paymentsApi.ts", import.meta.url), "utf8"),
+  quizzesApi: await readFile(new URL("../services/apiGroups/quizzesApi.ts", import.meta.url), "utf8"),
+  coursesApi: await readFile(new URL("../services/apiGroups/coursesApi.ts", import.meta.url), "utf8"),
 };
 
 const checks = [];
@@ -69,7 +73,11 @@ check("payment lists return bounded filtered pages with real items in pagination
   assertIncludes(files.paymentRoutes, "pagination: buildPaginatedResponse(requests, pagination, total)");
   assertIncludes(files.paymentRoutes, "DiscountCodeModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()");
   assertIncludes(files.paymentRoutes, "pagination: buildPaginatedResponse(codes, pagination, total)");
-  assertIncludes(files.apiClient, "pagination: PaginationOptions & { status?: string; search?: string } = {}");
+  assertIncludes(files.paymentsApi, "getPaymentRequests: async (");
+  assertIncludes(files.paymentsApi, 'withQuery("/payments/requests", { limit: 50, ...pagination })');
+  assertIncludes(files.paymentsApi, "getDiscountCodes: async (");
+  assertIncludes(files.paymentsApi, "pagination: PaginationOptions & { status?: string; search?: string } = {}");
+  assertIncludes(files.paymentsApi, 'withQuery("/payments/discount-codes", { limit: 200, ...pagination })');
 });
 
 check("school report uses bounded quiz result sampling instead of loading all results", () => {
@@ -82,10 +90,14 @@ check("school report uses bounded quiz result sampling instead of loading all re
 });
 
 check("frontend service client safely unwraps paginated list payloads", () => {
-  assertIncludes(files.apiClient, "extractList");
-  assertIncludes(files.apiClient, 'withQuery("/quizzes"');
-  assertIncludes(files.apiClient, 'withQuery("/courses"');
-  assertIncludes(files.apiClient, 'withQuery("/quizzes/results"');
+  assertIncludes(files.apiQueryUtilities, "export const extractList");
+  assertIncludes(files.apiClient, "createQuizzesApi");
+  assertIncludes(files.apiClient, "createCoursesApi");
+  assertIncludes(files.quizzesApi, "extractList");
+  assertIncludes(files.quizzesApi, 'withQuery("/quizzes"');
+  assertIncludes(files.quizzesApi, 'withQuery("/quizzes/results"');
+  assertIncludes(files.coursesApi, "extractList");
+  assertIncludes(files.coursesApi, 'withQuery("/courses"');
 });
 
 for (const [name, fn] of checks) {
