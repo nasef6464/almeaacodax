@@ -805,7 +805,7 @@ authRouter.patch(
       });
     }
 
-    const targetUser = await UserModel.findOne(buildDocumentQuery(targetId)).select("role");
+    const targetUser = await UserModel.findOne(buildDocumentQuery(targetId)).select("role schoolId groupIds");
     if (!targetUser) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "User not found",
@@ -813,7 +813,16 @@ authRouter.patch(
     }
 
     const nextPayload: Record<string, unknown> = { ...payload };
+    const previousRole = String(targetUser.role || "").trim();
     const effectiveRole = String(payload.role || targetUser.role || "").trim();
+    const roleChanged = Boolean(payload.role && effectiveRole !== previousRole);
+
+    // School/group membership is role-specific. Never inherit a Student or Supervisor
+    // relationship into a different role; the Admin must explicitly assign the new scope.
+    if (roleChanged) {
+      nextPayload.schoolId = null;
+      nextPayload.groupIds = [];
+    }
     if (Array.isArray(payload.linkedStudentIds)) {
       if (effectiveRole !== "parent") {
         nextPayload.linkedStudentIds = [];
@@ -823,6 +832,24 @@ authRouter.patch(
           role: "student",
         }).select("id _id");
         nextPayload.linkedStudentIds = linkedStudents.map((student: any) => String(student.id || student._id || ""));
+      }
+    }
+
+    if (roleChanged) {
+      const membershipUserId = String(targetUser.id || targetUser._id || targetId);
+      const staleMembershipUpdates = [];
+      if (previousRole === "student") {
+        staleMembershipUpdates.push(
+          GroupModel.updateMany({ studentIds: membershipUserId }, { $pull: { studentIds: membershipUserId } }),
+        );
+      }
+      if (previousRole === "supervisor") {
+        staleMembershipUpdates.push(
+          GroupModel.updateMany({ supervisorIds: membershipUserId }, { $pull: { supervisorIds: membershipUserId } }),
+        );
+      }
+      if (staleMembershipUpdates.length > 0) {
+        await Promise.all(staleMembershipUpdates);
       }
     }
 

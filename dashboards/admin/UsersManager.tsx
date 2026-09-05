@@ -267,7 +267,27 @@ export const UsersManager: React.FC = () => {
         setUsersPage(1);
         setRoleFilter(value);
     };
-    const handleRoleChange = (userId: string, newRole: Role) => updateUser(userId, { role: newRole });
+    const handleRoleChange = (currentUser: User, newRole: Role) => {
+        if (currentUser.role === newRole) return;
+        setRelationshipActionUserId(currentUser.id);
+        setRelationshipActionError('');
+        void api.updateAdminUser(currentUser.id, { role: newRole })
+            .then((response) => {
+                const persistedPayload = (response as { user?: AdminUserPayload })?.user;
+                if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
+                const persistedUser = buildStoreUser(persistedPayload);
+                hydrateUsers(users.map((item) => item.id === currentUser.id ? persistedUser : item));
+            })
+            .catch((error) => {
+                const message = error instanceof Error ? error.message : 'تعذر تغيير دور المستخدم الآن.';
+                console.error('Failed to persist user role change:', error);
+                setRelationshipActionError(message);
+                window.alert(message);
+            })
+            .finally(() => {
+                setRelationshipActionUserId((current) => current === currentUser.id ? null : current);
+            });
+    };
 
     const startEditingUser = (user: User) => {
         setEditingUserId(user.id);
@@ -546,7 +566,7 @@ export const UsersManager: React.FC = () => {
                     const isSavingRelationship = relationshipActionUserId === currentUser.id;
                     return <tr key={currentUser.id} className="hover:bg-gray-50/50 transition-colors">
                         <td className="px-6 py-4"><div className="flex items-center gap-3"><img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" /><div>{isEditing ? <input type="text" value={nameDrafts[currentUser.id] ?? currentUser.name} onChange={(event) => setNameDrafts((current) => ({ ...current, [currentUser.id]: event.target.value }))} onBlur={() => saveUserName(currentUser)} onKeyDown={(event) => { if (event.key === 'Enter') stopEditingUser(currentUser); }} className="w-full min-w-[180px] px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500" /> : <p className="font-bold text-gray-900">{currentUser.name}</p>}<p className="text-xs text-gray-500">{currentUser.email || 'لا يوجد بريد'}</p></div></div></td>
-                        <td className="px-6 py-4">{isEditing ? <select className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500" value={currentUser.role} onChange={(event) => handleRoleChange(currentUser.id, event.target.value as Role)}>{Object.values(Role).map((role) => <option key={role} value={role}>{roleLabels[role]}</option>)}</select> : getRoleBadge(currentUser.role)}</td>
+                        <td className="px-6 py-4">{isEditing ? <select className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500" disabled={isSavingRelationship} value={currentUser.role} onChange={(event) => handleRoleChange(currentUser, event.target.value as Role)}>{Object.values(Role).map((role) => <option key={role} value={role}>{roleLabels[role]}</option>)}</select> : getRoleBadge(currentUser.role)}</td>
                         <td className="px-6 py-4">
                             {isEditing && currentUser.role === Role.STUDENT ? <div className="space-y-2 min-w-[220px]"><select disabled={isSavingRelationship} className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-60" value={currentSchoolId} onChange={(event) => handleStudentSchoolChange(currentUser, event.target.value)}><option value="">بدون مدرسة</option>{schools.map((school) => <option key={school.id} value={school.id}>{school.name}</option>)}</select><select disabled={isSavingRelationship} className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-60" value={currentClassId} onChange={(event) => handleStudentClassChange(currentUser, event.target.value)}><option value="">بدون فصل</option>{availableClasses.map((group) => <option key={group.id} value={group.id}>{group.name}</option>)}</select>{isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ المدرسة والفصل…</p>}</div>
                             : isEditing && currentUser.role === Role.SUPERVISOR ? <div className="space-y-2 min-w-[260px]"><MultiSelectField disabled={isSavingRelationship} value={currentSupervisorGroupIds} options={[...schools, ...classes].map((group) => ({ value: group.id, label: `${group.type === 'SCHOOL' ? 'مدرسة' : 'فصل'} - ${group.name}` }))} placeholder="اختر مدرسة أو فصلًا أو أكثر" onChange={(nextGroupIds) => handleSupervisorGroupsChange(currentUser, nextGroupIds)} size="sm" /><p className="text-[11px] text-gray-400">يمكن إسناد المشرف لمدرسة كاملة أو فصل/عدة فصول، ويحفظ الربط فعليًا قبل تحديث الواجهة.</p>{isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ نطاق المشرف…</p>}</div>
