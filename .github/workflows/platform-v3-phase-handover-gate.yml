@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - develop/platform-v3-recovery
+      - codex/supervisor-student-journey-hardening
   pull_request:
     branches:
       - main
@@ -22,7 +23,7 @@ env:
 jobs:
   patch-school-directed-quiz-access:
     name: One-shot school-directed quiz access patch
-    if: github.event_name == 'pull_request' && github.head_ref == 'codex/supervisor-student-journey-hardening'
+    if: (github.event_name == 'pull_request' && github.head_ref == 'codex/supervisor-student-journey-hardening') || (github.event_name == 'push' && github.ref_name == 'codex/supervisor-student-journey-hardening')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -107,6 +108,7 @@ jobs:
 
   cross-phase-handover:
     name: Cross-phase + handover regression
+    if: github.event_name != 'push' || github.ref_name == 'develop/platform-v3-recovery'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
