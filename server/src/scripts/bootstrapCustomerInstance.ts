@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { env } from "../config/env.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
@@ -56,6 +55,11 @@ if (process.env.CUSTOMER_INSTANCE_WRITE_ACK !== customerPlan.customerKey) {
     `Apply requires CUSTOMER_INSTANCE_WRITE_ACK=${customerPlan.customerKey} in the target deployment environment.`,
   );
 }
+
+// Keep the default dry-run path independent from runtime secrets and database
+// configuration. Runtime environment validation is intentionally loaded only
+// after an explicit apply request and the first customer acknowledgement.
+const { env } = await import("../config/env.js");
 
 if (
   env.NODE_ENV === "production" &&
