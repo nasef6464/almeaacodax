@@ -5,6 +5,7 @@ import process from "node:process";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
+import { fingerprintCustomerInstancePlan } from "../modules/product-config/application/customerInstanceFingerprint.js";
 import {
   assertCustomerInstanceManifestHasNoSecrets,
   compileCustomerInstanceManifest,
@@ -28,8 +29,10 @@ assertCustomerInstanceManifestHasNoSecrets(rawManifest);
 const customerPlan = compileCustomerInstanceManifest(rawManifest);
 const settingsSetPlan = buildCustomerInstanceSettingsSetPlan(customerPlan);
 const applyRequested = process.argv.includes("--apply");
+const configDigest = fingerprintCustomerInstancePlan(customerPlan);
 
 const summary = {
+  configDigest,
   customerKey: customerPlan.customerKey,
   productName: customerPlan.productName,
   domain: customerPlan.domain,
