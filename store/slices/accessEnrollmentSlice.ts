@@ -31,6 +31,7 @@ type StoreSet<TState> = (
 type StoreGet<TState> = () => TState;
 
 interface AccessEnrollmentApi {
+    enrollCourse: (courseId: string) => Promise<{ courseId?: string; enrolled?: boolean; alreadyEnrolled?: boolean }>;
     redeemAccessCode: (payload: { code: string }) => Promise<{ user?: any }>;
     updateMyPreferences: (payload: {
         favorites?: string[];
@@ -66,11 +67,41 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
     }: AccessEnrollmentDependencies,
 ): AccessEnrollmentSliceActions => ({
     enrollCourse: (courseId) => {
-        if (get().enrolledCourses.includes(courseId)) return;
+        const normalizedCourseId = String(courseId || '').trim();
+        if (!normalizedCourseId || get().enrolledCourses.includes(normalizedCourseId)) return;
 
         set((current) => ({
-            enrolledCourses: [...current.enrolledCourses, courseId],
+            enrolledCourses: [...current.enrolledCourses, normalizedCourseId],
         }) as Partial<TState>);
+
+        const currentUser = get().user;
+        if (!shouldSyncUserToApi(currentUser)) {
+            return;
+        }
+
+        void api.enrollCourse(normalizedCourseId)
+            .then((response) => {
+                const persistedCourseId = String(response?.courseId || normalizedCourseId).trim() || normalizedCourseId;
+                set((state) => ({
+                    enrolledCourses: Array.from(new Set([...state.enrolledCourses, persistedCourseId])),
+                    user: {
+                        ...state.user,
+                        subscription: {
+                            ...state.user.subscription,
+                            purchasedCourses: Array.from(new Set([
+                                ...(state.user.subscription?.purchasedCourses || []),
+                                persistedCourseId,
+                            ])),
+                        },
+                    },
+                }) as Partial<TState>);
+            })
+            .catch((error) => {
+                console.error('Failed to persist course enrollment:', error);
+                set((state) => ({
+                    enrolledCourses: state.enrolledCourses.filter((id) => id !== normalizedCourseId),
+                }) as Partial<TState>);
+            });
     },
 
     redeemAccessCode: async (code) => {
