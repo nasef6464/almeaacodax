@@ -63,8 +63,9 @@ check("spreadsheet import remains preview-before-apply with row-level validation
   for (const fragment of ["PendingImportBatch", "pendingImportBatch", "previewRows", "rowErrors", "readWorkbookFromBuffer", "sheetToSafeObjects"]) {
     assert.ok(bank.includes(fragment), `missing import evidence ${fragment}`);
   }
-  assert.ok(bank.includes("استيراد"));
-  assert.ok(bank.includes("تحميل قالب Excel"));
+  for (const label of ["نموذج Excel", "رفع Excel", "معاينة قبل الاعتماد", "اعتماد الاستيراد"]) {
+    assert.ok(bank.includes(label), `missing import UI ${label}`);
+  }
 });
 
 check("AI authoring and usage analytics are retained as dedicated guarded contracts", () => {
