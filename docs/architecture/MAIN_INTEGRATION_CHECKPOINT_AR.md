@@ -86,8 +86,22 @@ Google OAuth on Staging remains a separate staging-only follow-up because the ba
 - Deployability evidence: Vercel later produced READY preview deployment `dpl_6uRuEeKzVHUrChCyqga7hNDDfN3F` from descendant `7b4533d7418170b7d569b21fd694e3c530642fe4`. The only commits between `bfe9755d...` and that deployed descendant modify this checkpoint document only, so the deployed runtime tree is the verified `bfe9755d...` runtime.
 - Contract impact: no new route URL/method, payment-provider redesign, RBAC role change, scoring change, schema/data migration, tenant model, microservice, or production cutover.
 - Map impact: `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` remain unchanged because module ownership, persistence ownership and data-query responsibility did not move.
-- Status: `VERIFIED`; PR `#36` is ready for normal merge preserving history.
-- Next after merge: verify production deployment/health, then inspect the end-to-end Course System journey from authoring and configuration through free/paid/package access, purchase and student presentation; close one proved gap at a time.
+- Status: `VERIFIED`; PR `#36` was merged to `main` at `977f39b5d886c0369f50a8af06d630ff10672f97`.
+
+## Course System bounded batch — free enrollment persistence
+
+- Branch: `codex/course-free-enrollment-persistence`; draft PR `#38`.
+- Proven defect: learner `ابدأ مجاناً` used the local Zustand `enrollCourse` mutation only; it never called the canonical server enrollment route, so enrollment could disappear after refresh and never become authoritative server state.
+- Final runtime commit under verification: `02e0205721f4dba7be0841ce61db33c0cb4f081c`.
+- Fix: `coursesApi.enrollCourse(id)` calls existing `POST /api/courses/:id/enroll`; the enrollment slice keeps optimistic UX for syncable real users, persists through the API, mirrors successful server course access into current session state, and rolls back only the affected optimistic enrollment on failure. Dev/non-sync sessions preserve compatibility.
+- Focused contract: `scripts/smoke-batch100d-admin-course-flow.mjs` now asserts canonical API mutation, server sync, authoritative access mirror and rollback behavior.
+- CI evidence on exact runtime: Phase + Handover `33992943388` SUCCESS; Recovery `33992943284` SUCCESS; Public UI `33992943348` SUCCESS; Safety baseline-quality job `101378297059` SUCCESS including frontend/API typecheck, production builds, immutable architecture, security and student-journey contracts.
+- External blocker: Safety workflow `33992943342` is red only because Vercel reports `build-rate-limit` for the exact runtime commit. The product/runtime checks are green; deployability is not yet proven for this head.
+- Contract impact: no new route URL/method, payment-provider redesign, RBAC/scoring change, schema/data migration, ownership move, tenant model, microservice, buyer-specific core fork, or production cutover.
+- Map impact: `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` remain unchanged because module ownership and data-access responsibility did not move.
+- Status: `PARTIAL / BLOCKED-ENV`; PR `#38` remains draft and must not merge until Vercel deployability evidence clears on the unchanged runtime.
+- Handoff: `docs/architecture/COURSE_FREE_ENROLLMENT_PERSISTENCE_HANDOFF_AR.md`.
+- Next exact action: re-check Vercel/status only. If deployability succeeds, mark this batch VERIFIED, ready/merge PR `#38` preserving history, verify production deployment/health when available, then create a fresh branch from new `main` for the next independently proved Course System journey gap.
 
 ## Agent handoff rule
 
