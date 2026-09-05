@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Explicitly approved product/runtime additions layered on top of the immutable pre-structural baseline. The baseline remains unchanged; architecture-gate still requires an exact match against baseline plus this reviewed allowlist.",
+  "frontendRoutes": [],
+  "backendRouteSignatures": [
+    "router|GET|/session/:quizId",
+    "productConfigRouter|GET|/"
+  ],
+  "routerMountSignatures": [
+    "apiRouter|/live-exams|liveExamsRouter",
+    "apiRouter|/product-config|productConfigRouter"
+  ],
+  "envKeys": [
+    "ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID",
+    "ASSESSMENT_MOCK_SESSION_AUDIT_RUN_ID",
+    "CUSTOMER_INSTANCE_PRODUCTION_WRITE_ACK",
+    "CUSTOMER_INSTANCE_WRITE_ACK",
+    "LEARNING_MANAGER_AUDIT_RUN_ID"
+  ]
+}
