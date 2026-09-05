@@ -23,6 +23,14 @@ if (!audit.includes(directedCtaClick)) {
   audit = audit.replace(staleClick, directedCtaClick);
 }
 
+const catalogNavigation = '    await freshStudent.page.goto(`${BASE_URL}/quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });\n';
+const catalogNavigationWithReadiness = `${catalogNavigation}    await freshStudent.page.getByTestId("student-directed-tests").waitFor({ timeout: 30000 });\n`;
+if (!audit.includes(catalogNavigationWithReadiness)) {
+  const count = audit.split(catalogNavigation).length - 1;
+  if (count !== 1) throw new Error(`directed assessment catalog readiness: expected exactly one navigation anchor, found ${count}`);
+  audit = audit.replace(catalogNavigation, catalogNavigationWithReadiness);
+}
+
 const ambiguousReviewSelector = '    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول" });';
 const exactReviewSelector = '    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول والأخطاء", exact: true });';
 if (!audit.includes(exactReviewSelector)) {
@@ -32,4 +40,4 @@ if (!audit.includes(exactReviewSelector)) {
 }
 
 await writeFile(auditFile, audit, 'utf8');
-console.log('Restored the pre-entry runtime and corrected only stale E2E navigation selectors.');
+console.log('Restored the pre-entry runtime and corrected stale E2E navigation/readiness selectors only.');
