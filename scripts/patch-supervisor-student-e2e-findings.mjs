@@ -42,6 +42,13 @@ changed = (await replaceExact(
 
 changed = (await replaceExact(
   files.contract,
+  `const quizPage = await read("pages/QuizPage.tsx");`,
+  `const quizPage = await read("pages/QuizPage.tsx");\nconst quizModel = await read("server/src/models/Quiz.ts");`,
+  'Supervisor contract quiz model source',
+)) || changed;
+
+changed = (await replaceExact(
+  files.contract,
   `  assertIncludes(dashboard, "api.sendStudentAlert");\n  assertIncludes(dashboard, "openStudentReport");`,
   `  assertIncludes(dashboard, "api.sendStudentAlert");\n  assertIncludes(dashboard, "apiService.sendStudentAlert");\n  assertNotIncludes(dashboard, "apiService.sendNotifications");\n  assertIncludes(dashboard, "openStudentReport");`,
   'Supervisor dashboard notification contract',
@@ -50,8 +57,8 @@ changed = (await replaceExact(
 changed = (await replaceExact(
   files.contract,
   `  assertIncludes(notificationRoutes, 'channels: ["in_app"]');\n});`,
-  `  assertIncludes(notificationRoutes, 'channels: ["in_app"]');\n  assertIncludes(quizPage, "supervisorMessage");\n});`,
-  'Supervisor message contract',
+  `  assertIncludes(notificationRoutes, 'channels: ["in_app"]');\n  assertIncludes(quizModel, 'supervisorMessage: { type: String, default: null }');\n});`,
+  'Supervisor message persistence contract',
 )) || changed;
 
 changed = (await replaceExact(
