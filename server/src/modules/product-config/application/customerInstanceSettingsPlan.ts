@@ -18,10 +18,6 @@ const setProviderCapability = (
 export const buildCustomerInstanceSettingsSetPlan = (
   plan: CustomerInstancePlan,
 ): CustomerInstanceSettingsSetPlan => {
-  const homepage: Record<string, unknown> = {
-    "brand.logoUrl": plan.homepagePatch.branding?.logoUrl,
-  };
-
   const brand = plan.homepagePatch.brand;
   const navigation = plan.homepagePatch.navigation;
   const homepageSet: Record<string, unknown> = {
