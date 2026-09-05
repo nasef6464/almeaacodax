@@ -10,7 +10,9 @@
     "check": "tsc --noEmit -p tsconfig.json",
     "verify:product-config": "tsx src/scripts/verifyProductConfigVariants.ts",
     "verify:customer-bootstrap": "tsx src/scripts/verifyCustomerBootstrapDryRun.ts",
+    "verify:customer-packaging": "tsx src/scripts/verifyCustomerInstancePackaging.ts",
     "plan:customer-instance": "tsx src/scripts/planCustomerInstance.ts",
+    "package:customer-instance": "tsx src/scripts/packageCustomerInstance.ts",
     "bootstrap:customer-instance": "tsx src/scripts/bootstrapCustomerInstance.ts",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "seed:platform": "tsx src/scripts/seedPlatformData.ts",
@@ -45,7 +47,7 @@
     "ioredis": "^5.10.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
-    "rate-limit-redis": "^5.0.0",
+    "rate-limit-redis": "^8.5.1",
     "socket.io": "^4.8.1",
     "zod": "^3.25.76"
   },
