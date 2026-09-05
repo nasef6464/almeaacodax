@@ -79,7 +79,7 @@ check('typography remains owned by PlatformFontSettings admin APIs', () => {
 check('platform integration admin keeps existing auth provider SEO and contact ownership', () => {
   assertIncludes(integrationsWrapper, "import { ProductConfigSellableSettingsPanel } from './ProductConfigSellableSettingsPanel';");
   assertIncludes(integrationsWrapper, "import { PlatformIntegrationsManager as LegacyPlatformIntegrationsManager } from './PlatformIntegrationsManagerLegacy';");
-  assertIncludes(integrationsLegacy, 'api.getPlatformIntegrations()');
+  assertIncludes(integrationsLegacy, 'getPlatformIntegrations()');
   assertIncludes(integrationsLegacy, 'api.updatePlatformIntegrations(normalized)');
   for (const field of ['allowSelfRegistration', 'allowEmailPassword', 'requireEmailVerification', 'requireAdminApproval']) {
     assertIncludes(integrationsLegacy, `updateAuth("${field}"`, `Integration admin does not expose ${field}`);
