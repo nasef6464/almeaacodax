@@ -290,644 +290,555 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     }));
   };
 
-  const saveVideoQuestionToBank = async (videoQuestionId: string, questionPayload: Partial<Question>) => {
-    const questionId = questionPayload.id || `q_video_${Date.now()}`;
-    const questionToSave: Question = {
-      id: questionId,
-      text: questionPayload.text || '',
-      options: questionPayload.options || ['', ''],
-      correctOptionIndex: questionPayload.correctOptionIndex || 0,
-      explanation: questionPayload.explanation || '',
-      videoUrl: questionPayload.videoUrl || '',
-      imageUrl: questionPayload.imageUrl || '',
-      skillIds: questionPayload.skillIds || lesson.skillIds || [],
-      pathId: questionPayload.pathId || lesson.pathId || '',
-      subject: questionPayload.subject || lesson.subjectId || '',
-      sectionId: questionPayload.sectionId || lesson.sectionId || '',
-      difficulty: questionPayload.difficulty || 'Medium',
-      type: questionPayload.type || 'mcq',
-      approvalStatus: questionPayload.approvalStatus || 'approved',
-      showOnPlatform: true,
-    } as Question;
+  const saveInlineQuestionToBank = (videoQuestionId: string) => {
+    const videoQuestion = (lesson.interactiveQuestions || []).find((item) => item.id === videoQuestionId);
+    if (!videoQuestion?.inlineQuestion) return;
 
-    await addQuestion(questionToSave);
+    const inlineQuestion = videoQuestion.inlineQuestion;
+    const bankQuestion: Question = {
+      id: `q_video_${Date.now()}`,
+      text: inlineQuestion.text,
+      options: inlineQuestion.options,
+      correctOptionIndex: inlineQuestion.correctOptionIndex,
+      type: 'mcq',
+      pathId: lesson.pathId,
+      subject: lesson.subjectId,
+      sectionId: lesson.sectionId,
+      skillIds: lesson.skillIds || [],
+      difficulty: 'medium',
+      source: 'video-inline',
+      explanation: '',
+      approvalStatus: 'draft',
+      showOnPlatform: false,
+    };
+    addQuestion(bankQuestion);
     updateInteractiveQuestion(videoQuestionId, (current) => ({
       ...current,
-      questionId,
+      questionId: bankQuestion.id,
       inlineQuestion: undefined,
     }));
-    setShowQuestionBuilder(null);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 className="font-bold text-gray-800 text-lg flex items-center gap-2">
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden" dir="rtl">
+      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
             {getLessonIcon(lesson.type)}
-            منشئ الدروس الموحد: {lesson.title || 'درس جديد'}
-          </h3>
-          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-200">
-            <X size={20} />
-          </button>
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900">{lesson.id ? 'تعديل الدرس' : 'درس جديد'}</h3>
+            <p className="text-xs text-gray-500">اربط الدرس بالمسار والمادة والمهارات قبل الحفظ.</p>
+          </div>
+        </div>
+        <button onClick={onCancel} className="p-2 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100" aria-label="إغلاق">
+          <X size={18} />
+        </button>
+      </div>
+
+      <div className="p-6 space-y-6">
+        {validationError ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+            {validationError}
+          </div>
+        ) : null}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">عنوان الدرس</label>
+            <input
+              type="text"
+              value={lesson.title || ''}
+              onChange={event => setLesson({ ...lesson, title: event.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="مثال: مقدمة في الكسور"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">نوع الدرس</label>
+            <select
+              value={lesson.type}
+              onChange={event => setLesson({ ...lesson, type: event.target.value as LessonType })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            >
+              <option value="video">فيديو</option>
+              <option value="text">نص / مقال</option>
+              <option value="quiz">اختبار</option>
+              <option value="file">ملف</option>
+              <option value="live_youtube">بث YouTube مباشر</option>
+              <option value="zoom">Zoom</option>
+              <option value="google_meet">Google Meet</option>
+              <option value="teams">Microsoft Teams</option>
+            </select>
+          </div>
         </div>
 
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
-          {validationError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {validationError}
-            </div>
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
+            <select
+              value={lesson.pathId || ''}
+              onChange={event => {
+                const nextPathId = event.target.value;
+                const currentSubjectStillBelongs = subjects.some(
+                  (subject) => subject.id === lesson.subjectId && subject.pathId === nextPathId
+                );
+                setLesson({
+                  ...lesson,
+                  pathId: nextPathId,
+                  subjectId: currentSubjectStillBelongs ? lesson.subjectId : '',
+                  sectionId: currentSubjectStillBelongs ? lesson.sectionId : undefined,
+                  skillIds: currentSubjectStillBelongs ? lesson.skillIds : [],
+                });
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            >
+              <option value="">-- اختر المسار --</option>
+              {paths.map(path => <option key={path.id} value={path.id}>{path.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
+            <select
+              value={lesson.subjectId || ''}
+              onChange={event => setLesson({ ...lesson, subjectId: event.target.value, sectionId: undefined, skillIds: [] })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            >
+              <option value="">-- اختر المادة --</option>
+              {subjects.filter(subject => !lesson.pathId || subject.pathId === lesson.pathId).map(subject => (
+                <option key={subject.id} value={subject.id}>{subject.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الرئيسة</label>
+            <select
+              value={lesson.sectionId || ''}
+              onChange={event => setLesson({ ...lesson, sectionId: event.target.value || undefined, skillIds: [] })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              disabled={!lesson.subjectId || availableMainSkills.length === 0}
+            >
+              <option value="">-- اختر المهارة الرئيسة --</option>
+              {availableMainSkills.map(section => <option key={section.id} value={section.id}>{section.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">المدة</label>
+            <input
+              type="text"
+              value={lesson.duration || ''}
+              onChange={event => setLesson({ ...lesson, duration: event.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="مثال: 12 دقيقة"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1">ربط بالمهارات الفرعية</label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {lesson.skillIds?.map(skillId => {
+              const subSkill = skills.find(item => item.id === skillId);
+              return subSkill ? (
+                <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                  {subSkill.name}
+                  <button
+                    onClick={() => setLesson(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) || [] }))}
+                    className="text-indigo-600 hover:text-indigo-900"
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ) : null;
+            })}
+          </div>
+          <select
+            value=""
+            onChange={event => {
+              if (event.target.value && !lesson.skillIds?.includes(event.target.value)) {
+                setLesson(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), event.target.value] }));
+              }
+            }}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            disabled={!lesson.subjectId || !lesson.sectionId || availableSubSkills.length === 0}
+          >
+            <option value="">
+              {!lesson.subjectId
+                ? '-- اختر المادة أولًا --'
+                : !lesson.sectionId
+                  ? '-- اختر المهارة الرئيسة أولًا --'
+                  : availableSubSkills.length === 0
+                    ? '-- لا توجد مهارات فرعية لهذه المهارة الرئيسة بعد --'
+                    : '-- أضف مهارة فرعية --'}
+            </option>
+            {availableSubSkills.map(subSkill => (
+              <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500 mt-1">مصدر المهارات هنا هو مركز المهارات الحقيقي: المهارة الرئيسة ثم المهارات الفرعية التابعة لها.</p>
+        </div>
+
+        {lesson.type === 'video' && (
+          <div className="space-y-4 border-t border-gray-100 pt-4">
+            <h4 className="font-bold text-gray-800 flex items-center gap-2">
+              <Video size={18} className="text-blue-500" /> إعدادات الفيديو
+            </h4>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">مصدر الفيديو</label>
+                <select
+                  value={lesson.videoSource || 'upload'}
+                  onChange={event => setLesson({ ...lesson, videoSource: event.target.value as Lesson['videoSource'] })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
+                  <option value="upload">رابط فيديو مباشر / CDN</option>
+                  <option value="youtube">رابط يوتيوب</option>
+                  <option value="vimeo">رابط Vimeo</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">رابط الفيديو</label>
+                <input
+                  type="text"
+                  value={lesson.videoUrl || ''}
+                  onChange={event => setLesson({ ...lesson, videoUrl: event.target.value })}
+                  onBlur={event => setLesson({ ...lesson, videoUrl: sanitizeVideoUrl(event.target.value) })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+            {lesson.videoSource === 'upload' || !lesson.videoSource ? (
+              <p className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2 text-xs font-bold leading-5 text-sky-800">
+                الاستضافة المباشرة تعني أن ملف الفيديو موجود لدى مزود تخزين أو CDN خارجي، ثم تحفظ المنصة رابطه فقط. لا يوجد رفع ملف فيديو ثنائي إلى خادم التطبيق في هذا الإصدار.
+              </p>
+            ) : null}
+
+            <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h5 className="font-bold text-gray-800">أسئلة داخل الفيديو</h5>
+                  <p className="text-xs text-gray-500">تظهر للطالب عند توقيت محدد داخل مشغل الدرس، وتعمل في التأسيس والدورات.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => addInteractiveQuestion('bank')}
+                    disabled={questions.length === 0}
+                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+                  >
+                    <Plus size={14} /> سحب سؤال من مركز الأسئلة
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addInteractiveQuestion('inline')}
+                    className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50"
+                  >
+                    <Plus size={14} /> سؤال سريع
+                  </button>
+                </div>
+              </div>
+
+              {(lesson.interactiveQuestions || []).length === 0 ? (
+                <div className="rounded-xl border border-dashed border-indigo-200 bg-white px-4 py-5 text-center text-sm font-medium text-gray-500">
+                  لا توجد أسئلة داخل هذا الفيديو. اسحب سؤالًا محفوظًا من مركز الأسئلة أو أنشئ سؤالًا سريعًا.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {(lesson.interactiveQuestions || []).map((question, index) => {
+                    const inlineQuestion = question.inlineQuestion || { text: '', options: ['', ''], correctOptionIndex: 0 };
+                    const selectedBankQuestion = question.questionId
+                      ? questions.find((bankQuestion) => bankQuestion.id === question.questionId)
+                      : undefined;
+                    return (
+                      <div key={question.id} className="rounded-xl border border-gray-200 bg-white p-3">
+                        <div className="mb-3 flex items-center justify-between gap-3">
+                          <span className="text-sm font-bold text-gray-800">سؤال {index + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => removeInteractiveQuestion(question.id)}
+                            className="rounded-lg p-2 text-red-500 hover:bg-red-50"
+                            aria-label="حذف السؤال"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                          <div>
+                            <label className="mb-1 block text-xs font-bold text-gray-600">التوقيت بالثواني</label>
+                            <input
+                              type="number"
+                              min={0}
+                              value={question.timestamp}
+                              onChange={(event) =>
+                                updateInteractiveQuestion(question.id, (current) => ({
+                                  ...current,
+                                  timestamp: Math.max(0, Number(event.target.value) || 0),
+                                }))
+                              }
+                              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="mb-1 block text-xs font-bold text-gray-600">عند الخطأ</label>
+                            <select
+                              value={question.actionOnFail}
+                              onChange={(event) =>
+                                updateInteractiveQuestion(question.id, (current) => ({
+                                  ...current,
+                                  actionOnFail: event.target.value as 'rewatch' | 'continue',
+                                }))
+                              }
+                              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                            >
+                              <option value="continue">يكمل الدرس</option>
+                              <option value="rewatch">يرجع للمراجعة</option>
+                            </select>
+                          </div>
+                          <label className="mt-6 flex items-center gap-2 text-xs font-bold text-gray-700">
+                            <input
+                              type="checkbox"
+                              checked={question.mustPass}
+                              onChange={(event) =>
+                                updateInteractiveQuestion(question.id, (current) => ({
+                                  ...current,
+                                  mustPass: event.target.checked,
+                                }))
+                              }
+                              className="accent-indigo-600"
+                            />
+                            إجابة مطلوبة للمتابعة
+                          </label>
+                        </div>
+
+                        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+                          <div>
+                            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                              <label className="block text-xs font-bold text-gray-600">اختيار من مركز الأسئلة</label>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  updateInteractiveQuestion(question.id, (current) => ({
+                                    ...current,
+                                    questionId: undefined,
+                                    inlineQuestion: current.inlineQuestion || inlineQuestion,
+                                  }))
+                                }
+                                className="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50"
+                              >
+                                سؤال سريع بدل البنك
+                              </button>
+                            </div>
+                            {question.questionId ? (
+                              <p className="mt-1 text-[11px] font-bold text-emerald-700">
+                                مرتبط بسؤال محفوظ من مركز الأسئلة، وأي تعديل على السؤال يكون من البنك.
+                              </p>
+                            ) : questions.length === 0 ? (
+                              <p className="mt-1 text-[11px] font-bold text-amber-700">
+                                لا توجد أسئلة في مركز الأسئلة حتى الآن. أنشئ سؤالًا في البنك أولًا أو استخدم سؤالًا سريعًا مؤقتًا.
+                              </p>
+                            ) : null}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowQuestionBuilder({ videoQuestionId: question.id })}
+                            className="self-end rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white hover:bg-black"
+                          >
+                            فتح محرر السؤال
+                          </button>
+                        </div>
+
+                        {question.questionId ? (
+                          <div className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+                            {selectedBankQuestion ? renderBankQuestionPreview(selectedBankQuestion, true, () => undefined) : (
+                              <p className="text-xs font-bold text-red-600">السؤال المرتبط غير موجود في البنك الحالي.</p>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-xl border border-gray-100 bg-gray-50 p-3">
+                            <label className="mb-1 block text-xs font-bold text-gray-600">نص السؤال السريع</label>
+                            <input
+                              type="text"
+                              value={inlineQuestion.text}
+                              onChange={(event) =>
+                                updateInteractiveQuestion(question.id, (current) => ({
+                                  ...current,
+                                  inlineQuestion: {
+                                    ...(current.inlineQuestion || inlineQuestion),
+                                    text: event.target.value,
+                                  },
+                                }))
+                              }
+                              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                              {inlineQuestion.options.map((option, optionIndex) => (
+                                <label key={optionIndex} className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2">
+                                  <input
+                                    type="radio"
+                                    checked={inlineQuestion.correctOptionIndex === optionIndex}
+                                    onChange={() =>
+                                      updateInteractiveQuestion(question.id, (current) => ({
+                                        ...current,
+                                        inlineQuestion: {
+                                          ...(current.inlineQuestion || inlineQuestion),
+                                          correctOptionIndex: optionIndex,
+                                        },
+                                      }))
+                                    }
+                                  />
+                                  <input
+                                    type="text"
+                                    value={option}
+                                    onChange={(event) =>
+                                      updateInteractiveQuestion(question.id, (current) => ({
+                                        ...current,
+                                        inlineQuestion: {
+                                          ...(current.inlineQuestion || inlineQuestion),
+                                          options: inlineQuestion.options.map((item, currentIndex) =>
+                                            currentIndex === optionIndex ? event.target.value : item,
+                                          ),
+                                        },
+                                      }))
+                                    }
+                                    className="min-w-0 flex-1 bg-transparent text-sm outline-none"
+                                    placeholder={`اختيار ${optionIndex + 1}`}
+                                  />
+                                </label>
+                              ))}
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  updateInteractiveQuestion(question.id, (current) => ({
+                                    ...current,
+                                    inlineQuestion: {
+                                      ...(current.inlineQuestion || inlineQuestion),
+                                      options: [...inlineQuestion.options, ''],
+                                    },
+                                  }))
+                                }
+                                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50"
+                              >
+                                <Plus size={13} className="inline" /> إضافة اختيار
+                              </button>
+                              <button
+                                type="button"
+                                disabled={!inlineQuestion.text.trim() || inlineQuestion.options.filter((item) => item.trim()).length < 2}
+                                onClick={() => saveInlineQuestionToBank(question.id)}
+                                className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+                              >
+                                حفظ في مركز الأسئلة
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {lesson.type === 'text' && (
+          <div className="border-t border-gray-100 pt-4">
+            <label className="block text-sm font-bold text-gray-700 mb-1">محتوى الدرس</label>
+            <textarea
+              value={lesson.content || ''}
+              onChange={event => setLesson({ ...lesson, content: event.target.value })}
+              className="min-h-48 w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="اكتب محتوى الدرس..."
+            />
+          </div>
+        )}
+
+        {lesson.type === 'file' && (
+          <div className="border-t border-gray-100 pt-4">
+            <label className="block text-sm font-bold text-gray-700 mb-1">رابط الملف</label>
+            <input
+              type="text"
+              value={lesson.fileUrl || ''}
+              onChange={event => setLesson({ ...lesson, fileUrl: event.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="https://..."
+            />
+            <p className="mt-2 text-xs font-medium text-gray-500">يحفظ الدرس مرجع الملف فقط؛ استضف الملف لدى مزود تخزين موثوق ثم ضع الرابط هنا.</p>
+          </div>
+        )}
+
+        {['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type) && (
+          <div className="space-y-4 border-t border-gray-100 pt-4">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">اسم الدرس</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">رابط الاجتماع / البث</label>
               <input
                 type="text"
-                value={lesson.title || ''}
-                onChange={event => setLesson({ ...lesson, title: event.target.value })}
+                value={lesson.meetingUrl || ''}
+                onChange={event => setLesson({ ...lesson, meetingUrl: event.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                placeholder="https://..."
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">الوصول</label>
-              <select
-                value={lesson.accessControl || 'enrolled'}
-                onChange={event => setLesson({ ...lesson, accessControl: event.target.value as Lesson['accessControl'] })}
+              <label className="block text-sm font-bold text-gray-700 mb-1">موعد الجلسة</label>
+              <input
+                type="datetime-local"
+                value={lesson.meetingDate || ''}
+                onChange={event => setLesson({ ...lesson, meetingDate: event.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              >
-                <option value="public">متاح للجميع</option>
-                <option value="enrolled">للمشتركين في الدورة فقط</option>
-                <option value="specific_groups">لمجموعات محددة</option>
-              </select>
+              />
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">وصف قصير للدرس</label>
-            <textarea
-              value={lesson.description || ''}
-              onChange={event => setLesson({ ...lesson, description: event.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none h-20 resize-none"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
-              <select
-                value={lesson.pathId || ''}
-                onChange={event => setLesson({ ...lesson, pathId: event.target.value, subjectId: '', sectionId: undefined, skillIds: [] })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              >
-                <option value="">-- اختر المسار --</option>
-                {paths.map(path => (
-                  <option key={path.id} value={path.id}>{path.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
-              <select
-                value={lesson.subjectId || ''}
-                onChange={event => setLesson({ ...lesson, subjectId: event.target.value, sectionId: undefined, skillIds: [] })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                disabled={!lesson.pathId}
-              >
-                <option value="">-- اختر المادة --</option>
-                {subjects.filter(subject => subject.pathId === lesson.pathId).map(subject => (
-                  <option key={subject.id} value={subject.id}>{subject.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الرئيسة</label>
-              <select
-                value={lesson.sectionId || ''}
-                onChange={event => setLesson({ ...lesson, sectionId: event.target.value || undefined, skillIds: [] })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                disabled={!lesson.subjectId}
-              >
-                <option value="">-- اختر المهارة الرئيسة --</option>
-                {availableMainSkills.map(section => (
-                  <option key={section.id} value={section.id}>{section.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">ربط بالمهارات الفرعية</label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {lesson.skillIds?.map(skillId => {
-                const subSkill = skills.find(item => item.id === skillId);
-                return subSkill ? (
-                  <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                    {subSkill.name}
-                    <button
-                      onClick={() => setLesson(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) || [] }))}
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      <X size={14} />
-                    </button>
-                  </span>
-                ) : null;
-              })}
-            </div>
-            <select
-              value=""
-              onChange={event => {
-                if (event.target.value && !lesson.skillIds?.includes(event.target.value)) {
-                  setLesson(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), event.target.value] }));
-                }
-              }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              disabled={!lesson.subjectId || !lesson.sectionId || availableSubSkills.length === 0}
-            >
-              <option value="">
-                {!lesson.subjectId
-                  ? '-- اختر المادة أولًا --'
-                  : !lesson.sectionId
-                    ? '-- اختر المهارة الرئيسة أولًا --'
-                    : availableSubSkills.length === 0
-                      ? '-- لا توجد مهارات فرعية لهذه المهارة الرئيسة بعد --'
-                      : '-- أضف مهارة فرعية --'}
-              </option>
-              {availableSubSkills.map(subSkill => (
-                <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">مصدر المهارات هنا هو مركز المهارات الحقيقي: المهارة الرئيسة ثم المهارات الفرعية التابعة لها.</p>
-          </div>
-
-          {lesson.type === 'video' && (
-            <div className="space-y-4 border-t border-gray-100 pt-4">
-              <h4 className="font-bold text-gray-800 flex items-center gap-2">
-                <Video size={18} className="text-blue-500" /> إعدادات الفيديو
-              </h4>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">مصدر الفيديو</label>
-                  <select
-                    value={lesson.videoSource || 'upload'}
-                    onChange={event => setLesson({ ...lesson, videoSource: event.target.value as Lesson['videoSource'] })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  >
-                    <option value="upload">رفع مباشر</option>
-                    <option value="youtube">رابط يوتيوب</option>
-                    <option value="vimeo">رابط Vimeo</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">رابط الفيديو / الملف</label>
-                  <input
-                    type="text"
-                    value={lesson.videoUrl || ''}
-                    onChange={event => setLesson({ ...lesson, videoUrl: event.target.value })}
-                    onBlur={event => setLesson({ ...lesson, videoUrl: sanitizeVideoUrl(event.target.value) })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="https://..."
-                  />
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h5 className="font-bold text-gray-800">أسئلة داخل الفيديو</h5>
-                    <p className="text-xs text-gray-500">تظهر للطالب عند توقيت محدد داخل مشغل الدرس، وتعمل في التأسيس والدورات.</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => addInteractiveQuestion('bank')}
-                      disabled={questions.length === 0}
-                      className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
-                    >
-                      <Plus size={14} /> سحب سؤال من مركز الأسئلة
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => addInteractiveQuestion('inline')}
-                      className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50"
-                    >
-                      <Plus size={14} /> سؤال سريع
-                    </button>
-                  </div>
-                </div>
-
-                {(lesson.interactiveQuestions || []).length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-indigo-200 bg-white px-4 py-5 text-center text-sm font-medium text-gray-500">
-                      لا توجد أسئلة داخل هذا الفيديو. اسحب سؤالًا محفوظًا من مركز الأسئلة أو أنشئ سؤالًا سريعًا.
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {(lesson.interactiveQuestions || []).map((question, index) => {
-                      const inlineQuestion = question.inlineQuestion || { text: '', options: ['', ''], correctOptionIndex: 0 };
-                      const selectedBankQuestion = question.questionId
-                        ? questions.find((bankQuestion) => bankQuestion.id === question.questionId)
-                        : undefined;
-                      return (
-                        <div key={question.id} className="rounded-xl border border-gray-200 bg-white p-3">
-                          <div className="mb-3 flex items-center justify-between gap-3">
-                            <span className="text-sm font-bold text-gray-800">سؤال {index + 1}</span>
-                            <button
-                              type="button"
-                              onClick={() => removeInteractiveQuestion(question.id)}
-                              className="rounded-lg p-2 text-red-500 hover:bg-red-50"
-                              aria-label="حذف السؤال"
-                            >
-                              <Trash2 size={15} />
-                            </button>
-                          </div>
-
-                          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                            <div>
-                              <label className="mb-1 block text-xs font-bold text-gray-600">التوقيت بالثواني</label>
-                              <input
-                                type="number"
-                                min={0}
-                                value={question.timestamp}
-                                onChange={(event) =>
-                                  updateInteractiveQuestion(question.id, (current) => ({
-                                    ...current,
-                                    timestamp: Math.max(0, Number(event.target.value) || 0),
-                                  }))
-                                }
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-                              />
-                            </div>
-                            <div>
-                              <label className="mb-1 block text-xs font-bold text-gray-600">عند الخطأ</label>
-                              <select
-                                value={question.actionOnFail}
-                                onChange={(event) =>
-                                  updateInteractiveQuestion(question.id, (current) => ({
-                                    ...current,
-                                    actionOnFail: event.target.value as 'rewatch' | 'continue',
-                                  }))
-                                }
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-                              >
-                                <option value="continue">يكمل الدرس</option>
-                                <option value="rewatch">يرجع للمراجعة</option>
-                              </select>
-                            </div>
-                            <label className="mt-6 flex items-center gap-2 text-xs font-bold text-gray-700">
-                              <input
-                                type="checkbox"
-                                checked={question.mustPass}
-                                onChange={(event) =>
-                                  updateInteractiveQuestion(question.id, (current) => ({
-                                    ...current,
-                                    mustPass: event.target.checked,
-                                  }))
-                                }
-                                className="accent-indigo-600"
-                              />
-                              إجابة مطلوبة للمتابعة
-                            </label>
-                          </div>
-
-                          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
-                            <div>
-                              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                                <label className="block text-xs font-bold text-gray-600">اختيار من مركز الأسئلة</label>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    updateInteractiveQuestion(question.id, (current) => ({
-                                      ...current,
-                                      questionId: undefined,
-                                      inlineQuestion: current.inlineQuestion || inlineQuestion,
-                                    }))
-                                  }
-                                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50"
-                                >
-                                  سؤال سريع بدل البنك
-                                </button>
-                              </div>
-                              {question.questionId ? (
-                                <p className="mt-1 text-[11px] font-bold text-emerald-700">
-                                  مرتبط بسؤال محفوظ من مركز الأسئلة، وأي تعديل على السؤال يكون من البنك.
-                                </p>
-                              ) : questions.length === 0 ? (
-                                <p className="mt-1 text-[11px] font-bold text-amber-700">
-                                  لا توجد أسئلة في مركز الأسئلة حتى الآن. أنشئ سؤالًا في البنك أولًا أو استخدم سؤالًا سريعًا مؤقتًا.
-                                </p>
-                              ) : null}
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setShowQuestionBuilder({ videoQuestionId: question.id })}
-                              className="self-end rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50"
-                            >
-                              إنشاء سؤال في البنك
-                            </button>
-                          </div>
-
-                          {selectedBankQuestion ? (
-                            <div className="mt-3 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-3">
-                              <div className="mb-2 text-xs font-black text-emerald-700">معاينة السؤال المرتبط الآن</div>
-                              {renderBankQuestionPreview(selectedBankQuestion, true, () => undefined)}
-                            </div>
-                          ) : null}
-
-                          {availableVideoQuestions.length > 0 ? (
-                            <div className="mt-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
-                              <div className="mb-2 flex items-center justify-between gap-2">
-                                <div>
-                                  <div className="text-xs font-black text-gray-800">استعرض السؤال قبل السحب</div>
-                                  <div className="text-[11px] font-bold text-gray-500">تظهر المادة والمهارة ونص السؤال والاختيارات قبل ربطه بالفيديو.</div>
-                                </div>
-                                <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-600">
-                                  {filteredVideoQuestionsCount} / {availableVideoQuestions.length} سؤال
-                                </span>
-                              </div>
-                              <div className="relative mb-2">
-                                <Search size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <input
-                                  type="search"
-                                  value={videoQuestionSearch}
-                                  onChange={(event) => setVideoQuestionSearch(event.target.value)}
-                                  placeholder="ابحث بالمادة أو المهارة أو نص السؤال..."
-                                  className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-3 pr-9 text-sm font-bold text-gray-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100"
-                                />
-                              </div>
-                              <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
-                                {filteredRelevantVideoQuestions.length > 0 ? (
-                                  <div className="space-y-2">
-                                    <div className="text-[11px] font-black text-indigo-700">أسئلة مناسبة للدرس</div>
-                                    {filteredRelevantVideoQuestions.map((bankQuestion) =>
-                                      renderBankQuestionPreview(
-                                        bankQuestion,
-                                        question.questionId === bankQuestion.id,
-                                        () =>
-                                          updateInteractiveQuestion(question.id, (current) => ({
-                                            ...current,
-                                            questionId: bankQuestion.id,
-                                            inlineQuestion: undefined,
-                                          })),
-                                      ),
-                                    )}
-                                  </div>
-                                ) : null}
-                                {filteredOtherVideoQuestions.length > 0 ? (
-                                  <div className="space-y-2">
-                                    <div className="text-[11px] font-black text-gray-600">باقي مركز الأسئلة</div>
-                                    {filteredOtherVideoQuestions.map((bankQuestion) =>
-                                      renderBankQuestionPreview(
-                                        bankQuestion,
-                                        question.questionId === bankQuestion.id,
-                                        () =>
-                                          updateInteractiveQuestion(question.id, (current) => ({
-                                            ...current,
-                                            questionId: bankQuestion.id,
-                                            inlineQuestion: undefined,
-                                          })),
-                                      ),
-                                    )}
-                                  </div>
-                                ) : null}
-                                {filteredVideoQuestionsCount === 0 ? (
-                                  <div className="rounded-xl border border-dashed border-gray-200 bg-white px-3 py-4 text-center text-xs font-bold text-gray-500">
-                                    لا توجد أسئلة مطابقة للبحث الحالي.
-                                  </div>
-                                ) : null}
-                              </div>
-                            </div>
-                          ) : null}
-
-                          {!question.questionId ? (
-                            <>
-                              <label className="mt-3 block text-xs font-bold text-gray-600">نص السؤال السريع</label>
-                              <input
-                                type="text"
-                                value={inlineQuestion.text}
-                                onChange={(event) =>
-                                  updateInteractiveQuestion(question.id, (current) => ({
-                                    ...current,
-                                    inlineQuestion: { ...inlineQuestion, text: event.target.value },
-                                  }))
-                                }
-                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-                              />
-
-                              <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
-                                {inlineQuestion.options.map((option, optionIndex) => (
-                                  <div key={`${question.id}-option-${optionIndex}`} className="flex items-center gap-2">
-                                    <input
-                                      type="radio"
-                                      name={`correct-video-question-${question.id}`}
-                                      checked={inlineQuestion.correctOptionIndex === optionIndex}
-                                      onChange={() =>
-                                        updateInteractiveQuestion(question.id, (current) => ({
-                                          ...current,
-                                          inlineQuestion: { ...inlineQuestion, correctOptionIndex: optionIndex },
-                                        }))
-                                      }
-                                      className="accent-indigo-600"
-                                    />
-                                    <input
-                                      type="text"
-                                      value={option}
-                                      placeholder={`اختيار ${optionIndex + 1}`}
-                                      onChange={(event) => {
-                                        const nextOptions = [...inlineQuestion.options];
-                                        nextOptions[optionIndex] = event.target.value;
-                                        updateInteractiveQuestion(question.id, (current) => ({
-                                          ...current,
-                                          inlineQuestion: { ...inlineQuestion, options: nextOptions },
-                                        }));
-                                      }}
-                                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                            </>
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type) && (
-            <div className="space-y-4 border-t border-gray-100 pt-4">
-              <h4 className="font-bold text-gray-800 flex items-center gap-2">
-                <VideoIcon size={18} className="text-green-500" /> إعدادات البث / الاجتماع
-              </h4>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">رابط الاجتماع / البث</label>
-                  <input
-                    type="text"
-                    value={lesson.meetingUrl || ''}
-                    onChange={event => setLesson({ ...lesson, meetingUrl: event.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="https://..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">موعد الاجتماع</label>
-                  <input
-                    type="datetime-local"
-                    value={lesson.meetingDate || ''}
-                    onChange={event => setLesson({ ...lesson, meetingDate: event.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">رابط التسجيل بعد الحصة</label>
-                  <input
-                    type="text"
-                    value={lesson.recordingUrl || ''}
-                    onChange={event => setLesson({ ...lesson, recordingUrl: event.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="https://..."
-                  />
-                </div>
-                <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 mt-6 md:mt-0">
-                  <input
-                    type="checkbox"
-                    checked={lesson.showRecordingOnPlatform === true}
-                    onChange={event => setLesson({ ...lesson, showRecordingOnPlatform: event.target.checked })}
-                    className="accent-indigo-600"
-                  />
-                  <span className="text-sm font-bold text-gray-700">إظهار التسجيل للطالب بعد الحصة</span>
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">تعليمات الدخول أو التجهيز</label>
-                <textarea
-                  value={lesson.joinInstructions || ''}
-                  onChange={event => setLesson({ ...lesson, joinInstructions: event.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y"
-                  placeholder="مثال: ادخل قبل الموعد بعشر دقائق، جهّز القلم والدفتر، واستخدم اسمك الحقيقي داخل الجلسة."
-                /> 
-              </div>
-
-              {/* Teacher Assignment */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">المعلم المعيّن للحصة</label>
-                  <input
-                    type="text"
-                    value={lesson.assignedTeacherName || ''}
-                    onChange={event => setLesson({ ...lesson, assignedTeacherName: event.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="اسم المعلم أو المدرس..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">الحد الأقصى للحضور</label>
-                  <input
-                    type="number"
-                    value={lesson.maxAttendees || ''}
-                    onChange={event => setLesson({ ...lesson, maxAttendees: Number(event.target.value) || undefined })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="اتركه فارغاً لعدم التحديد..."
-                    min={1}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {lesson.type === 'quiz' && (
-            <div className="space-y-4 border-t border-gray-100 pt-4">
-              <h4 className="font-bold text-gray-800 flex items-center gap-2">
-                <HelpCircle size={18} className="text-purple-500" /> إعدادات الاختبار
-              </h4>
-              <p className="text-sm text-gray-500">يمكنك ربط هذا الدرس باختبار موجود أو إنشاء اختبار جديد من منشئ الاختبارات الموحد.</p>
-
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">اختيار من بنك الاختبارات</label>
-                  <select
-                    value={lesson.quizId || ''}
-                    onChange={event => setLesson({ ...lesson, quizId: event.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  >
-                    <option value="">-- اختر اختبارًا --</option>
-                    {quizzes.map(quiz => (
-                      <option key={quiz.id} value={quiz.id}>{quiz.title}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 h-px bg-gray-200"></div>
-                  <span className="text-sm text-gray-400 font-bold">أو</span>
-                  <div className="flex-1 h-px bg-gray-200"></div>
-                </div>
-                <button
-                  onClick={() => setShowQuizBuilder(true)}
-                  className="w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700 transition-colors"
-                >
-                  فتح منشئ الاختبارات الموحد لإنشاء اختبار جديد
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-          <button onClick={onCancel} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
-            إلغاء
-          </button>
-          <button
-            onClick={handleValidatedSave}
-            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
-          >
-            <Save size={18} /> حفظ التغييرات
-          </button>
-        </div>
+        )}
       </div>
 
-      {showQuizBuilder && (
-        <UnifiedQuizBuilder
-          role="admin"
-          defaultKind="drill"
-          onClose={() => setShowQuizBuilder(false)}
-          onSave={(savedQuiz) => {
-            // ربط الاختبار المُنشأ بالدرس تلقائياً
-            setLesson((prev) => ({ ...prev, quizId: savedQuiz.id }));
-            setShowQuizBuilder(false);
-          }}
-        />
-      )}
+      <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-end gap-3">
+        <button onClick={onCancel} className="px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-100">
+          إلغاء
+        </button>
+        <button onClick={handleSave} className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700">
+          <Save size={16} /> حفظ الدرس
+        </button>
+      </div>
 
-      {showQuestionBuilder && (
-        <UnifiedQuestionBuilder
-          initialQuestion={{
-            id: `q_video_${Date.now()}`,
-            pathId: lesson.pathId || '',
-            subject: lesson.subjectId || '',
-            sectionId: lesson.sectionId || '',
-            skillIds: lesson.skillIds || [],
-            difficulty: 'Medium',
-            type: 'mcq',
-            options: ['', '', '', ''],
-            correctOptionIndex: 0,
-          }}
-          subjectId={lesson.subjectId || ''}
-          sectionId={lesson.sectionId || ''}
-          onSave={(questionPayload) => saveVideoQuestionToBank(showQuestionBuilder.videoQuestionId, questionPayload)}
-          onCancel={() => setShowQuestionBuilder(null)}
+      {showQuizBuilder ? (
+        <UnifiedQuizBuilder
+          onClose={() => setShowQuizBuilder(false)}
+          onSave={() => setShowQuizBuilder(false)}
         />
-      )}
+      ) : null}
+
+      {showQuestionBuilder ? (
+        <div className="fixed inset-0 z-[80] bg-black/40 p-4 overflow-y-auto">
+          <div className="mx-auto max-w-4xl rounded-2xl bg-white p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h4 className="font-black text-gray-900">محرر سؤال الفيديو</h4>
+              <button type="button" onClick={() => setShowQuestionBuilder(null)} className="rounded-lg p-2 text-gray-500 hover:bg-gray-100">
+                <X size={18} />
+              </button>
+            </div>
+            <UnifiedQuestionBuilder
+              onSave={(question) => {
+                addQuestion(question);
+                updateInteractiveQuestion(showQuestionBuilder.videoQuestionId, (current) => ({
+                  ...current,
+                  questionId: question.id,
+                  inlineQuestion: undefined,
+                }));
+                setShowQuestionBuilder(null);
+              }}
+              onCancel={() => setShowQuestionBuilder(null)}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
-
