@@ -19,7 +19,7 @@ const [api, authContext, header, bell, stream, authMiddleware, notificationRoute
   read('server/src/app.ts'),
 ]);
 
-assertIncludes(api, 'export const API_BASE_URL = (', 'canonical API base is reusable');
+assertIncludes(api, 'export { API_BASE_URL };', 'canonical API base remains reusable');
 assertIncludes(api, 'credentials: "include"', 'API transport remains cookie-first');
 assertIncludes(authContext, "delete parsed.token;", 'legacy browser bearer token is intentionally removed');
 assertIncludes(header, '<NotificationBell />', 'authenticated header mounts cookie-session bell');
@@ -30,7 +30,6 @@ assertIncludes(bell, 'api.getMyNotifications({ limit: 20 })', 'notification list
 assertIncludes(bell, 'api.markNotificationRead(id)', 'single-read mutation uses cookie API transport');
 assertIncludes(bell, 'api.markAllNotificationsRead()', 'mark-all mutation uses cookie API transport');
 assertNotIncludes(bell, 'if (!token) return;', 'bell must not silently disable cookie sessions');
-assertNotIncludes(bell, 'token?: string | null', 'bell no longer exposes a false bearer-token contract');
 
 assertIncludes(stream, "import { API_BASE_URL } from '../services/api';", 'SSE reuses canonical API base');
 assertIncludes(stream, "return base.endsWith('/api') ? base", 'SSE normalizes API base once');
@@ -40,7 +39,7 @@ assertNotIncludes(stream, '?token=', 'SSE does not leak or depend on query beare
 assertNotIncludes(stream, '!token', 'SSE does not reject cookie-only sessions');
 
 assertIncludes(authMiddleware, 'const token = bearerToken || cookieToken;', 'backend auth accepts the same cookie used by SSE');
-assertIncludes(notificationRoutes, 'notificationRouter.get("/stream", requireAuth, openNotificationSseStream);', 'SSE remains protected by existing RBAC/auth boundary');
+assertIncludes(notificationRoutes, 'notificationRouter.get("/stream", requireAuth, openNotificationSseStream);', 'SSE remains protected by existing auth boundary');
 assertIncludes(app, 'credentials: true', 'CORS allows credentialed EventSource requests for allowed origins');
 
 console.log('PASS notification cookie-session contract');

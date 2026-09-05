@@ -1,7 +1,6 @@
-import { readFile, writeFile, rm } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 
 const files = {
-  api: new URL('../services/api.ts', import.meta.url),
   header: new URL('../components/Header.tsx', import.meta.url),
   bell: new URL('../components/NotificationBell.tsx', import.meta.url),
   stream: new URL('../contexts/useNotificationStream.ts', import.meta.url),
@@ -18,13 +17,6 @@ async function replaceExact(path, before, after, label) {
 }
 
 let changed = false;
-
-changed = (await replaceExact(
-  files.api,
-  'const API_BASE_URL = (',
-  'export const API_BASE_URL = (',
-  'export canonical API base for EventSource transport',
-)) || changed;
 
 changed = (await replaceExact(
   files.header,
@@ -78,7 +70,7 @@ changed = (await replaceExact(
 changed = (await replaceExact(
   files.stream,
   `interface UseNotificationStreamOptions {\n  /** بيانات auth token — يُمرّر كـ query param بدلاً من header لأن EventSource لا يدعم headers */\n  token?: string | null;\n  /** الـ base URL للـ API — يُستخدم في الإنتاج */\n  apiBase?: string;\n  /** تفعيل الـ stream (false إذا لم يكن المستخدم مسجلاً) */\n  enabled?: boolean;\n}`,
-  `interface UseNotificationStreamOptions {\n  /** الـ base URL للـ API — عند عدم تمريره يُعاد استخدام نفس base الخاص بطبقة API */\n  apiBase?: string;\n  /** تفعيل الـ stream (false إذا لم يكن المستخدم مسجلاً) */\n  enabled?: boolean;\n}`,
+  `interface UseNotificationStreamOptions {\n  /** توافق قديم مع callers سابقة؛ النقل الحالي يعتمد auth cookie ولا يرسل token في URL. */\n  token?: string | null;\n  /** الـ base URL للـ API — عند عدم تمريره يُعاد استخدام نفس base الخاص بطبقة API */\n  apiBase?: string;\n  /** تفعيل الـ stream (false إذا لم يكن المستخدم مسجلاً) */\n  enabled?: boolean;\n}`,
   'notification stream cookie-auth options',
 )) || changed;
 
