@@ -1,1 +1,0 @@
-READY — Project owner explicitly approved integrating the current delivery line into `main` on 2026-09-05. Merge should preserve history. After merge, future implementation starts from latest `main` on a fresh focused branch.
