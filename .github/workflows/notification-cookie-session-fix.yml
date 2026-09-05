@@ -52,20 +52,15 @@ jobs:
         run: node scripts/smoke-notification-cookie-session-contract.mjs
       - name: Diff check
         run: git diff --check
-      - name: Commit bounded runtime and permanent contract
+      - name: Commit bounded runtime and contract files
         shell: bash
         run: |
           set -euo pipefail
-          rm -f scripts/patch-notification-cookie-session.mjs .github/workflows/notification-cookie-session-fix.yml
-          git add -A -- \
-            services/api.ts \
+          git add -- \
             components/Header.tsx \
             components/NotificationBell.tsx \
             contexts/useNotificationStream.ts \
-            scripts/smoke-notification-cookie-session-contract.mjs \
-            .github/workflows/platform-v3-phase-handover-gate.yml \
-            scripts/patch-notification-cookie-session.mjs \
-            .github/workflows/notification-cookie-session-fix.yml
+            scripts/smoke-notification-cookie-session-contract.mjs
           if git diff --cached --quiet; then
             echo 'Notification cookie-session fix already present.'
             exit 0
