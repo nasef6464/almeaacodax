@@ -334,7 +334,7 @@ async function main() {
     const hasServerResult = Boolean(serverResult);
     if (!serverResult?.date) throw new Error(`Server result is missing its attempt date: ${JSON.stringify(resultResponse)}`);
     await freshStudent.page.goto(`${BASE_URL}/results?attempt=${encodeURIComponent(String(serverResult.date))}`, { waitUntil: "networkidle", timeout: 60000 });
-    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول" });
+    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول والأخطاء", exact: true });
     await reviewButton.waitFor({ timeout: 30000 });
     await reviewButton.click();
     await freshStudent.page.getByRole("heading", { name: "مراجعة الحلول" }).waitFor({ timeout: 30000 });
