@@ -13,6 +13,7 @@ const sources = {
   schoolsManager: [
     read("dashboards/admin/SchoolsManager.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolRelationsPanel.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx"),
@@ -116,9 +117,9 @@ check("School report and import-students routes reuse the same school scope guar
   );
 });
 
-check("Group CRUD requires auth, role, and group-scope validation before mutating existing groups", () => {
-  assertPattern(sources.contentRoutes, /"\/groups\/:id"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "teacher", "supervisor"\]\)/);
-  assertIncludes(sources.contentRoutes, "hasGroupManagementScope(req.authUser!, existing as any)");
+check("Group CRUD requires auth, supervisor/admin role, and group-scope validation before mutating existing groups", () => {
+  assertPattern(sources.contentRoutes, /"\/groups\/:id"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "supervisor"\]\)/);
+  assertIncludes(sources.contentRoutes, "const canManageGroup = await hasGroupManagementScope(req.authUser!, existing as any);");
   assertIncludes(sources.contentRoutes, "You cannot manage this group");
 });
 
