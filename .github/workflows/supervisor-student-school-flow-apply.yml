@@ -1,0 +1,78 @@
+name: Supervisor Student School Flow Apply
+
+on:
+  push:
+    branches:
+      - codex/supervisor-student-school-flow
+
+permissions:
+  contents: write
+
+concurrency:
+  group: supervisor-student-school-flow-apply
+  cancel-in-progress: true
+
+jobs:
+  apply-and-verify:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-school-flow
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Apply bounded flow fix
+        run: node tools/refactor/apply-supervisor-student-school-flow.mjs
+      - name: Focused relationship and notification contract
+        run: node scripts/smoke-supervisor-student-school-flow-contract.mjs
+      - name: School management contract
+        run: npm run smoke:school-management
+      - name: School portal command center contract
+        run: node scripts/smoke-school-portal-command-center-contract.mjs
+      - name: Notification contracts
+        run: |
+          npm run smoke:notifications
+          npm run smoke:notification-phase10
+      - name: Frontend typecheck
+        run: npm run typecheck
+      - name: API typecheck
+        run: npm --prefix server run check
+      - name: Diff check
+        run: git diff --check
+      - name: Commit bounded runtime fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- \
+            server/src/routes/auth.routes.ts \
+            store/useStore.ts \
+            dashboards/admin/UsersManager.tsx \
+            dashboards/admin/UnifiedQuizBuilder.tsx \
+            components/NotificationBell.tsx \
+            contexts/useNotificationStream.ts; then
+            echo "No runtime changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            server/src/routes/auth.routes.ts \
+            store/useStore.ts \
+            dashboards/admin/UsersManager.tsx \
+            dashboards/admin/UnifiedQuizBuilder.tsx \
+            components/NotificationBell.tsx \
+            contexts/useNotificationStream.ts
+          git commit -m "fix(schools): align supervisor student relationship flow"
+          git push origin HEAD:codex/supervisor-student-school-flow
