@@ -20,15 +20,22 @@ import { createStudyPlansApi } from './apiGroups/studyPlansApi';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
+const isLocalhost = ["localhost", "127.0.0.1"].includes(runtimeHostname);
+const isStagingOrigin =
+  Boolean(runtimeHostname) &&
+  !isLocalhost &&
+  runtimeHostname !== "almeaacodax.vercel.app";
+
 const configuredApiBaseUrl =
   (globalThis as { __API_BASE_URL__?: string }).__API_BASE_URL__ ||
   (typeof runtimeEnv?.VITE_API_URL === "string" ? runtimeEnv.VITE_API_URL : "");
-const defaultApiBaseUrl =
-  runtimeHostname && !["localhost", "127.0.0.1"].includes(runtimeHostname)
-    ? "/api"
-    : "http://localhost:4000/api";
+const defaultApiBaseUrl = isLocalhost ? "http://localhost:4000/api" : "/api";
 
-const API_BASE_URL = (configuredApiBaseUrl || defaultApiBaseUrl).replace(/\/$/, "");
+// Staging and preview environments (*.vercel.app) use relative "/api" through Vercel's rewrite proxy
+// to guarantee same-origin transport, avoiding cross-origin Render CORS rejections and third-party cookie blocking.
+const API_BASE_URL = (
+  isStagingOrigin ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
+).replace(/\/$/, "");
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 

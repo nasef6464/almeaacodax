@@ -442,6 +442,14 @@ export const Header: React.FC = () => {
               <div className="text-lg sm:text-2xl font-black text-amber-500 flex items-baseline min-w-0">
                 <span className="text-blue-900">{brandLogoText}</span>
                 <span className="mx-1">{brandLogoAccentText}</span>
+                {typeof window !== 'undefined' &&
+                Boolean(window.location?.hostname) &&
+                window.location.hostname !== 'almeaacodax.vercel.app' &&
+                !['localhost', '127.0.0.1'].includes(window.location.hostname) ? (
+                  <span className="mr-1.5 rounded-md bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-black text-amber-700 tracking-wider border border-amber-300/40 select-none">
+                    STAGING
+                  </span>
+                ) : null}
                 <span className="hidden sm:block text-xs font-normal text-gray-400 -mt-2">{text.subtitle}</span>
               </div>
             </Link>
