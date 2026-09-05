@@ -2,8 +2,6 @@ import { readFile } from 'node:fs/promises';
 
 const appSource = await readFile(new URL('../App.tsx', import.meta.url), 'utf8');
 const headerSource = await readFile(new URL('../components/Header.tsx', import.meta.url), 'utf8');
-const indexSource = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-const stylesSource = await readFile(new URL('../styles/main.css', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizzesSource = await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8');
 const smartLearningPathSource = await readFile(new URL('../components/SmartLearningPath.tsx', import.meta.url), 'utf8');
@@ -20,15 +18,11 @@ function check(name, assertion) {
 }
 
 function assertIncludes(source, fragment, message) {
-  if (!source.includes(fragment)) {
-    throw new Error(message || `Missing fragment: ${fragment}`);
-  }
+  if (!source.includes(fragment)) throw new Error(message || `Missing fragment: ${fragment}`);
 }
 
 function assertPattern(source, pattern, message) {
-  if (!pattern.test(source)) {
-    throw new Error(message || `Missing pattern: ${pattern}`);
-  }
+  if (!pattern.test(source)) throw new Error(message || `Missing pattern: ${pattern}`);
 }
 
 check('standalone routes separate quiz center from my attempts without dashboard sidebar', () => {
@@ -73,11 +67,20 @@ check('each attempt keeps result, review, analysis, and retry actions', () => {
 });
 
 check('student quiz actions have clear compact visual cues', () => {
-  assertIncludes(`${indexSource}\n${stylesSource}`, '.cta-attention');
-  assertIncludes(quizzesSource, "label.includes('محاكية')");
-  assertIncludes(quizzesSource, 'bg-gradient-to-br from-indigo-600 to-violet-600');
-  assertIncludes(quizzesSource, 'bg-gradient-to-br from-amber-400 to-orange-500');
-  assertIncludes(quizzesSource, 'px-4 py-2.5 text-sm font-black');
+  assertIncludes(quizzesSource, "activeAttemptCategory === 'regular'");
+  assertIncludes(quizzesSource, "activeAttemptCategory === 'mock'");
+  assertIncludes(quizzesSource, 'bg-indigo-600 text-white');
+  assertIncludes(quizzesSource, 'bg-violet-600 text-white');
+  assertIncludes(quizzesSource, 'اختباراتي');
+  assertIncludes(quizzesSource, 'اختبارات محاكية');
+  assertIncludes(quizzesSource, 'rounded-full px-2 py-0.5 text-[11px] font-black');
+});
+
+check('student quiz center keeps school-directed work separate from platform catalog', () => {
+  assertIncludes(quizzesSource, 'id="school-tests"');
+  assertIncludes(quizzesSource, 'الاختبارات المدرسية');
+  assertIncludes(quizzesSource, 'اختبارات المنصة');
+  assertIncludes(quizzesSource, 'directedQuizzes');
 });
 
 check('student quiz center excludes standalone path mock exams from regular catalog', () => {
