@@ -197,6 +197,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSkillId, setSelectedSkillId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isImporting, setIsImporting] = useState(false);
   const [importMessage, setImportMessage] = useState<string | null>(null);
@@ -334,7 +335,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     };
   }, [displayedQuestions, pagedPagination?.total]);
 
-  const resetEditorQuestion = () => {
+  const resetEditorQuestion = (approvalStatus?: Question['approvalStatus']) => {
     setCurrentQuestion({
       text: '',
       options: ['', '', '', ''],
@@ -345,20 +346,28 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       pathId: selectedPathId || '',
       subject: selectedSubjectId || '',
       sectionId: selectedSectionId || '',
-      skillIds: [],
+      skillIds: selectedSkillId ? [selectedSkillId] : [],
       ownerType: user.role === 'teacher' ? 'teacher' : 'platform',
       ownerId: user.id,
       createdBy: user.id,
-      approvalStatus: user.role === 'admin' ? 'approved' : 'pending_review',
+      approvalStatus: approvalStatus || (user.role === 'admin' ? 'approved' : 'pending_review'),
     });
   };
 
   const handleCreateNew = () => {
+    setGenerateAiDraftOnOpen(false);
     resetEditorQuestion();
     setIsEditing(true);
   };
 
+  const handleCreateAiDraft = () => {
+    setGenerateAiDraftOnOpen(true);
+    resetEditorQuestion('draft');
+    setIsEditing(true);
+  };
+
   const handleEdit = (question: Question) => {
+    setGenerateAiDraftOnOpen(false);
     setCurrentQuestion(question);
     setIsEditing(true);
   };
@@ -465,6 +474,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       }
     }
 
+    setGenerateAiDraftOnOpen(false);
     setIsEditing(false);
   };
 
@@ -857,8 +867,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           initialQuestion={currentQuestion as Question}
           subjectId={selectedSubjectId || ''}
           sectionId={selectedSectionId || ''}
+          generateOnOpen={generateAiDraftOnOpen}
           onSave={handleSave}
-          onCancel={() => setIsEditing(false)}
+          onCancel={() => {
+            setGenerateAiDraftOnOpen(false);
+            setIsEditing(false);
+          }}
         />
       </div>
     );
@@ -887,17 +901,18 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         <div>
           <h3 className="font-bold text-gray-800 mb-1">استيراد أو توليد الأسئلة</h3>
           <p className="text-sm text-gray-500">
-            يمكنك استيراد الأسئلة من نموذج Excel أو توليدها تلقائياً من الملازم وملفات PDF باستخدام الذكاء الاصطناعي.
+            استورد من نموذج Excel، أو أنشئ مسودة AI من التصنيف المحدد وراجعها داخل منشئ الأسئلة قبل الحفظ. استخراج PDF والملفات غير متاح من هذا المسار حاليًا.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
             className="bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors flex items-center gap-2"
-            onClick={() => alert('تم رفع الملف بنجاح.. جاري استخراج الأسئلة وتصنيفها آلياً!')}
+            onClick={handleCreateAiDraft}
+            data-testid="question-bank-ai-draft"
           >
             <BookOpen size={18} />
-            توليد ذكي من ملف (AI)
+            إنشاء مسودة ذكية (AI)
           </button>
           <button
             onClick={downloadQuestionsExport}
