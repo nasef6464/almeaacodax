@@ -1,3 +1,5 @@
+const BLOCKED_RESOURCE_SCHEME = /^(?:javascript|vbscript|file):/i;
+
 export const sanitizeLearningResourceUrl = (rawUrl?: string | null) => {
   if (!rawUrl) return "";
 
@@ -9,6 +11,10 @@ export const sanitizeLearningResourceUrl = (rawUrl?: string | null) => {
     .replace(/^https?:\/\/:\/\//i, "https://")
     .replace(/^:\/\//, "https://")
     .replace(/^\/\//, "https://");
+
+  if (BLOCKED_RESOURCE_SCHEME.test(trimmedUrl)) {
+    return "";
+  }
 
   if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
     return `https://${trimmedUrl}`;
