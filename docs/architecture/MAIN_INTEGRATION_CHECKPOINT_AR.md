@@ -75,6 +75,20 @@ Google OAuth on Staging remains a separate staging-only follow-up because the ba
 - Status: `VERIFIED`. No API/RBAC/scoring/payment/schema/data-ownership change. Gates 1–6 remain closed.
 - Owner-approved next product focus after this release-readiness batch: bounded Course System journey review and improvement, starting with one proved course authoring/access defect at a time. This is an explicit product-change authorization, not a reopening of Gate 6 wholesale.
 
+## Course System bounded batch — direct enrollment integrity
+
+- Branch: `codex/course-access-integrity`; PR `#36`.
+- Proven defect: the existing `POST /api/courses/:id/enroll` and `/join` handler could add a paid course to `subscription.purchasedCourses` without verified purchase entitlement and could increment `studentCount` repeatedly for the same user.
+- Final runtime commit: `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`.
+- Fix: the existing canonical route rejects direct enrollment for paid courses with `COURSE_PURCHASE_REQUIRED`, returns idempotent success for already-enrolled users, increments `studentCount` only on a new free enrollment, and applies the existing learner-visibility boundary before enrollment.
+- Structural correction: an initial extra guard-router implementation was rejected by the immutable architecture gate because it introduced duplicate HTTP route entries and an additional `/courses` mount. That structure was removed; the final runtime changes the existing route only and does not expand the HTTP/router contract.
+- CI evidence: Phase + Handover, Recovery and Production Readiness are green on exact runtime commit `bfe9755d9048408d1ba4d0c9c6978089bafa5c34`. Safety baseline-quality is fully green, including frontend/API typecheck, production builds, immutable architecture, security and contract checks.
+- Deployability evidence: Vercel later produced READY preview deployment `dpl_6uRuEeKzVHUrChCyqga7hNDDfN3F` from descendant `7b4533d7418170b7d569b21fd694e3c530642fe4`. The only commits between `bfe9755d...` and that deployed descendant modify this checkpoint document only, so the deployed runtime tree is the verified `bfe9755d...` runtime.
+- Contract impact: no new route URL/method, payment-provider redesign, RBAC role change, scoring change, schema/data migration, tenant model, microservice, or production cutover.
+- Map impact: `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` remain unchanged because module ownership, persistence ownership and data-query responsibility did not move.
+- Status: `VERIFIED`; PR `#36` is ready for normal merge preserving history.
+- Next after merge: verify production deployment/health, then inspect the end-to-end Course System journey from authoring and configuration through free/paid/package access, purchase and student presentation; close one proved gap at a time.
+
 ## Agent handoff rule
 
 At the start of any future Codex/agent goal, read current Git HEAD, this checkpoint, and `docs/architecture/POST_GATE6_RELEASE_READINESS_START_NOTE.md` before interpreting older execution-state paragraphs. Current Git HEAD plus this checkpoint outrank stale notes that name already-integrated gates as active.

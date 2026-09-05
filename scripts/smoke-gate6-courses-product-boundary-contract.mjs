@@ -38,6 +38,15 @@ check('course list API exposes an additive product-kind boundary while preservin
   assert.ok(client.includes("kind: 'all' as const"));
 });
 
+check('direct enrollment cannot bypass paid course purchase and remains idempotent', () => {
+  assert.ok(route.includes('COURSE_PURCHASE_REQUIRED'));
+  assert.ok(route.includes('if (Number(course.price || 0) > 0)'));
+  assert.ok(route.includes('alreadyEnrolled: true'));
+  assert.ok(route.includes('currentPurchased.includes(courseId) || currentPurchased.includes(requestedCourseId)'));
+  assert.ok(route.includes('const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);'));
+  assert.ok(route.includes('await CourseModel.updateOne({ _id: course._id }, { $inc: { studentCount: 1 } });'));
+});
+
 check('LMS CoursesManager owns learning courses only', () => {
   assert.ok(manager.includes("import { isLearningCourse } from '../../utils/courseProductKind';"));
   assert.ok(manager.includes('if (!isLearningCourse(course)) return false;'));

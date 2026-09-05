@@ -611,35 +611,57 @@ courseRouter.delete(
 );
 
 const handleCourseEnrollment = asyncHandler(async (req, res) => {
-  const courseId = String(req.params.id || "").trim();
-  const identityFilter = buildCourseIdentityQuery(courseId);
-  const course = await CourseModel.findOne(identityFilter);
+  const requestedCourseId = String(req.params.id || "").trim();
+  const identityFilter = buildCourseIdentityQuery(requestedCourseId);
+  const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+  const course = await CourseModel.findOne({ $and: [identityFilter, visibilityFilter] });
 
   if (!course) {
     return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
   }
 
-  const userId = req.authUser!.id;
-  const user = await UserModel.findById(userId);
-
-  if (user) {
-    const currentPurchased = Array.isArray(user.subscription?.purchasedCourses)
-      ? user.subscription.purchasedCourses.map(String)
-      : [];
-    if (!currentPurchased.includes(courseId)) {
-      currentPurchased.push(courseId);
-      const subscriptionObj = user.subscription || ({ plan: "free", status: "active", purchasedCourses: [] } as any);
-      subscriptionObj.purchasedCourses = currentPurchased;
-      user.subscription = subscriptionObj;
-      await user.save();
-    }
+  const user = await UserModel.findById(req.authUser!.id);
+  if (!user) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User account not found" });
   }
 
-  await CourseModel.updateOne(identityFilter, { $inc: { studentCount: 1 } });
+  const courseId = String(course.id || course._id || requestedCourseId);
+  const currentPurchased = Array.isArray(user.subscription?.purchasedCourses)
+    ? user.subscription.purchasedCourses.map(String)
+    : [];
+
+  if (currentPurchased.includes(courseId) || currentPurchased.includes(requestedCourseId)) {
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      enrolled: true,
+      alreadyEnrolled: true,
+      courseId,
+      message: "Already enrolled in course",
+    });
+  }
+
+  if (Number(course.price || 0) > 0) {
+    return res.status(StatusCodes.FORBIDDEN).json({
+      success: false,
+      enrolled: false,
+      code: "COURSE_PURCHASE_REQUIRED",
+      courseId,
+      message: "Paid course requires verified purchase or package access",
+    });
+  }
+
+  currentPurchased.push(courseId);
+  const subscriptionObj = user.subscription || ({ plan: "free", status: "active", purchasedCourses: [] } as any);
+  subscriptionObj.purchasedCourses = currentPurchased;
+  user.subscription = subscriptionObj;
+  await user.save();
+
+  await CourseModel.updateOne({ _id: course._id }, { $inc: { studentCount: 1 } });
 
   return res.status(StatusCodes.OK).json({
     success: true,
     enrolled: true,
+    alreadyEnrolled: false,
     courseId,
     message: "Enrolled in course successfully",
   });
