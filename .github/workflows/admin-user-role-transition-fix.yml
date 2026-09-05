@@ -1,0 +1,77 @@
+name: Admin User Role Transition Fix
+
+on:
+  push:
+    branches:
+      - codex/supervisor-student-journey-hardening
+    paths:
+      - 'scripts/patch-admin-user-role-transition.mjs'
+      - '.github/workflows/admin-user-role-transition-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: admin-user-role-transition-fix-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  apply-verify-commit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Apply bounded role-transition patch
+        run: node scripts/patch-admin-user-role-transition.mjs
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Verify type safety
+        run: |
+          npm run typecheck
+          npm run server:check
+
+      - name: Verify production builds
+        run: |
+          npm run build
+          npm run server:build
+
+      - name: Verify role-transition contract
+        run: node scripts/smoke-admin-user-role-transition-contract.mjs
+
+      - name: Verify diff
+        run: git diff --check
+
+      - name: Commit focused runtime + E2E slice
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- server/src/routes/auth.routes.ts dashboards/admin/UsersManager.tsx scripts/live-supervisor-school-command-audit.mjs scripts/smoke-admin-user-role-transition-contract.mjs; then
+            echo 'Role-transition slice already present.'
+            exit 0
+          fi
+          git config user.name 'almeaa-user-relationship-fix'
+          git config user.email 'actions@users.noreply.github.com'
+          git add server/src/routes/auth.routes.ts dashboards/admin/UsersManager.tsx scripts/live-supervisor-school-command-audit.mjs scripts/smoke-admin-user-role-transition-contract.mjs
+          git commit -m 'fix(users): clean stale school role memberships'
+          git push origin HEAD:codex/supervisor-student-journey-hardening
