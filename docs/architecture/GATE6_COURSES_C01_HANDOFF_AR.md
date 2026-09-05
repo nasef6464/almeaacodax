@@ -1,4 +1,4 @@
-# Gate 6 — Courses C-01 Product Boundary Handoff
+# Gate 6 — Courses Closure Evidence
 
 التاريخ: 2026-09-05
 
@@ -8,32 +8,50 @@
 
 - Questions: `CLOSED / VERIFIED Strong MVP`.
 - Curriculum/Learning ownership: `CLOSED / VERIFIED Strong MVP`.
-- Courses: `PARTIAL` — أُغلقت دفعة C-01 فقط، ولا يعني ذلك إغلاق نطاق Courses بالكامل أو Gate 6.
-- Operations: لم يبدأ في هذه الدفعة.
+- Courses: `CLOSED / VERIFIED Strong MVP`.
+- Operations: `ACTIVE` — هو النطاق التالي في Gate 6.
 
-## الفجوة المثبتة
+## الفجوة التي أُغلقت
 
-كان client contract يرسل `kind=learning|package` عبر `coursesApi`، لكن `GET /api/courses` لم يكن يعرّف `kind` في `courseListQuerySchema`. وبما أن Zod يزيل query fields غير المعرفة، كان النوع يُتجاهل فعليًا ويمكن أن تعود نفس القائمة المختلطة لمساري Learning Product وPackage/Commerce Product. كذلك كان Admin `CoursesManager` ما يزال يعرض package products داخل سطح إدارة LMS.
+كان client contract يرسل `kind=learning|package` عبر `coursesApi`، لكن `GET /api/courses` لم يكن يعرّف `kind` في `courseListQuerySchema`. وبما أن Zod يزيل query fields غير المعرفة، كان النوع يُتجاهل فعليًا ويمكن أن تعود نفس القائمة المختلطة لمساري Learning Product وPackage/Commerce Product. كذلك كان Admin `CoursesManager` يعرض package products داخل سطح إدارة LMS.
 
-## Batch C-01 — Learning Product / Package Product read boundary
+هذا كان يخرق معيار Gate 6 المحدد في الخطة: **فصل Learning Product عن Package/Commerce Product**.
+
+## C-01 — Learning Product / Package Product boundary
 
 Runtime commit: `1642ee83ef78968b2a6d38e7a20a7745b3035134` (`feat(courses): separate learning and package product surfaces`).
 
 التغيير المحدود:
 
-- `GET /api/courses` يقبل الآن `kind: learning | package | all` مع `all` كافتراضي للمحافظة على compatibility الحالية.
+- `GET /api/courses` يقبل `kind: learning | package | all` مع `all` كافتراضي للمحافظة على compatibility الحالية.
 - `kind=learning` يضيف `isPackage != true`، و`kind=package` يضيف `isPackage = true` إلى نفس query owner؛ لا schema جديد ولا persistence موازٍ.
 - cache key يتضمن `kind` لمنع إعادة نتيجة Learning cached لمسار Package أو العكس.
 - `CoursesManager` أصبح learning-only باستخدام `isLearningCourse(...)`، وأزيلت منه labels/readiness logic الخاصة بالباقات؛ إدارة الباقة تبقى في surfaces التجارية المخصصة لها.
 - لم تتغير URLs الحالية أو Assessment scoring/session semantics أو RBAC role definitions أو Payments ownership أو production data.
 - لا global `tenantId`، لا SaaS multi-tenancy، لا microservices، ولا buyer-specific core forks.
 
-## Contract / delivery evidence
+## Verification
 
-- `scripts/smoke-gate6-courses-product-boundary-contract.mjs` يثبت وجود `kind` في server query contract، الفصل في filter/cache، وفصل Admin learning surface عن package identity.
-- one-off delivery scaffold شغّل frontend/API install + typecheck + build + عقد C-01 + `git diff --check` قبل كتابة runtime commit، ثم حذف `.github/workflows/gate6-course-boundary-apply.yml` و`tools/gate6/apply-course-product-boundary.mjs` من المنتج النهائي.
-- PR checks الناتجة مباشرة عن runtime commit صُنفت `action_required` بدون jobs لأن commit كُتب بواسطة `github-actions[bot]`; هذا ليس product regression ولا test failure. هذا handoff commit البشري فوق نفس runtime tree مقصود أيضًا لإعادة تشغيل PR CI على الـHEAD المتكامل.
+العقد الدائم:
 
-## Closure / stop rule
+- `scripts/smoke-gate6-courses-product-boundary-contract.mjs`
 
-تتوقف هذه الدفعة بعد C-01. لا يُعلن Courses `CLOSED / VERIFIED` إلا بعد نجاح CI المطلوب على الـHEAD المتكامل وإعادة فحص معايير Courses التجارية الحالية لإثبات عدم وجود فجوة حقيقية أخرى. إذا ثبت الإغلاق، يكون الهدف التالي في تشغيل لاحق هو Operations حسب الترتيب التجاري الموثق، وليس مزيدًا من UI polish أو schema redesign.
+Integrated verification head:
+
+- commit `b62a918f8e8b7cffc4ec7c6dee60d1d5a71d788f` (`test(gate6): wire courses product boundary contract`).
+- Platform V3 Phase + Handover Gate run `33961796559`: `SUCCESS`.
+- job `101294839988` — `Cross-phase + handover regression`: `SUCCESS`.
+- خطوة `Gate 6 courses product boundary contract`: `SUCCESS`.
+- نفس الـjob مرر أيضًا API phase 4، Security/RBAC، Exam/Payment، Production Ops، QA، Deployment Handover، وFull Handover Suite.
+
+## قرار الإغلاق
+
+معيار Courses التجاري في `FINAL_MASTER_PLAN_V3_AR.md` و`CHAT_EXECUTION_GOALS_AR.md` هو فصل Learning Product عن Package/Commerce Product. الفجوة المثبتة أُغلقت، وعقدها مر على الـHEAD المتكامل. لا توجد فجوة بيع أخرى مثبتة داخل Courses تبرر توسيع النطاق الآن.
+
+لذلك:
+
+- Courses = `CLOSED / VERIFIED Strong MVP`.
+- أي تحسين إضافي في course authoring أو commerce presentation بلا blocker مثبت = `DEFERRED`.
+- الهدف التالي داخل Gate 6 = **Operations: storage/media, queues/jobs, observability, backup/restore, security/release checklist**.
+
+لا يُغلق Gate 6 بالكامل قبل إغلاق Operations وتسجيل ما هو `NOT PROVEN/BLOCKED` في production-like load certification، ثم إعداد Final Product Readiness Report وفق قرار المالك.
