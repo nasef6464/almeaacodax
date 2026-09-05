@@ -123,6 +123,11 @@ const publicProductConfigSchema = z.object({
 
 type UnknownRecord = Record<string, unknown>;
 
+type PublicProviderInput = {
+  enabled?: boolean;
+  mode?: string;
+};
+
 const asRecord = (value: unknown): UnknownRecord =>
   value && typeof value === "object" && !Array.isArray(value) ? (value as UnknownRecord) : {};
 
@@ -176,9 +181,9 @@ const normalizeIntegrationSettings = (rawIntegrations: unknown) => {
   });
 };
 
-const publicProvider = (provider: { enabled: boolean; mode: string }) => ({
-  enabled: provider.enabled,
-  mode: provider.mode,
+const publicProvider = (provider: PublicProviderInput | undefined) => ({
+  enabled: provider?.enabled ?? false,
+  mode: provider?.mode ?? "",
 });
 
 export const buildPublicProductConfig = ({
