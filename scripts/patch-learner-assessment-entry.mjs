@@ -21,7 +21,15 @@ if (!audit.includes(directedCtaClick)) {
   const count = audit.split(staleClick).length - 1;
   if (count !== 1) throw new Error(`directed assessment card click: expected exactly one stale selector, found ${count}`);
   audit = audit.replace(staleClick, directedCtaClick);
-  await writeFile(auditFile, audit, 'utf8');
 }
 
-console.log('Restored the pre-entry runtime and corrected only the E2E navigation target.');
+const ambiguousReviewSelector = '    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول" });';
+const exactReviewSelector = '    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول والأخطاء", exact: true });';
+if (!audit.includes(exactReviewSelector)) {
+  const count = audit.split(ambiguousReviewSelector).length - 1;
+  if (count !== 1) throw new Error(`result review CTA: expected exactly one ambiguous selector, found ${count}`);
+  audit = audit.replace(ambiguousReviewSelector, exactReviewSelector);
+}
+
+await writeFile(auditFile, audit, 'utf8');
+console.log('Restored the pre-entry runtime and corrected only stale E2E navigation selectors.');
