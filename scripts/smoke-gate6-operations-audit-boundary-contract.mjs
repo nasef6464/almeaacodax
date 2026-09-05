@@ -2,10 +2,10 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [routes, audit, operationsAuditDoc] = await Promise.all([
+const [routes, audit, decision] = await Promise.all([
   read("server/src/routes/operations.routes.ts"),
   read("server/src/services/operationsAudit.ts"),
-  read("docs/architecture/GATE6_OPERATIONS_AUDIT_AR.md"),
+  read("docs/architecture/GATE6_OPERATIONS_O02_DECISION_AR.md"),
 ]);
 
 const checks = [
@@ -48,10 +48,11 @@ const checks = [
       audit.includes("$strLenCP"),
   ],
   [
-    "Gate 6 does not claim production-scale certification for O-02",
-    operationsAuditDoc.includes("O-02") &&
-      operationsAuditDoc.includes("NOT PROVEN") &&
-      operationsAuditDoc.includes("BLOCKED-ENV"),
+    "O-02 production-scale certification remains explicitly unproved",
+    decision.includes("O-02") &&
+      decision.includes("NOT PROVEN / BLOCKED-ENV") &&
+      decision.includes("DEFERRED") &&
+      decision.includes("لا يوجد claim للسعة"),
   ],
 ];
 
