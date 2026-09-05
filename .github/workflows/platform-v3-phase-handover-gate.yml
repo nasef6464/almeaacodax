@@ -57,6 +57,8 @@ jobs:
         run: node scripts/smoke-gate6-question-ai-authoring-contract.mjs
       - name: Gate 6 question usage analytics contract
         run: node scripts/smoke-gate6-question-usage-analytics-contract.mjs
+      - name: Gate 6 Questions commercial closure contract
+        run: node scripts/smoke-gate6-questions-commercial-closure-contract.mjs
       - name: Gate 6 curriculum ownership contract
         run: node scripts/smoke-gate6-curriculum-ownership-contract.mjs
       - name: Exam and payment phase 8 contract
