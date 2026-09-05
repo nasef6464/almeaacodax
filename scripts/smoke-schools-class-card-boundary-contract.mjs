@@ -7,6 +7,8 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n
 const manager = read('dashboards/admin/SchoolsManager.tsx');
 const classesPanel = read('dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx');
 const card = read('dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx');
+const classLifecycleActions = read('dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts');
+const rosterAssignmentActions = read('dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts');
 
 const checks = [];
 
@@ -31,7 +33,9 @@ check('manager delegates classes shell and classes panel delegates class operati
   assertIncludes(manager, "import { SchoolClassesPanel } from './SchoolsManager/SchoolClassesPanel';");
   assertIncludes(manager, '<SchoolClassesPanel');
   assertIncludes(manager, 'onAssignSupervisor={handleAssignSchoolSupervisor}');
-  assertIncludes(manager, 'onRemoveSupervisor={handleRemoveClassSupervisor}');
+  assertIncludes(manager, 'onRemoveSupervisor={confirmRemoveClassSupervisor}');
+  assertIncludes(manager, 'onAssignTeacher={handleAssignTeacherToClass}');
+  assertIncludes(manager, 'onRemoveTeacher={handleRemoveTeacherFromClass}');
   assertIncludes(manager, 'onAssignCourse={assignCourseToGroup}');
   assertIncludes(manager, 'onRemoveCourse={removeCourseFromGroup}');
   assertNotIncludes(manager, "import { SchoolClassOperatingCard } from './SchoolsManager/SchoolClassOperatingCard';");
@@ -42,6 +46,8 @@ check('manager delegates classes shell and classes panel delegates class operati
   assertIncludes(classesPanel, 'studentsWithoutParentCount={classStudentsWithoutParent.length}');
   assertIncludes(classesPanel, 'onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}');
   assertIncludes(classesPanel, 'onRemoveSupervisor={(currentUser) => onRemoveSupervisor(classroom, currentUser)}');
+  assertIncludes(classesPanel, 'onAssignTeacher={(userId) => onAssignTeacher(userId, classroom.id)}');
+  assertIncludes(classesPanel, 'onRemoveTeacher={(currentUser) => onRemoveTeacher(classroom, currentUser)}');
   assertIncludes(classesPanel, 'onAssignCourse={(courseId) => onAssignCourse(courseId, classroom.id)}');
   assertIncludes(classesPanel, 'onRemoveCourse={(courseId) => onRemoveCourse(courseId, classroom.id)}');
   assertNotIncludes(manager, 'data-testid="school-class-card"');
@@ -80,23 +86,35 @@ check('class operating card is presentation-only and receives explicit callbacks
   assertIncludes(card, 'onRemoveCourse(course.id)');
 });
 
-check('rename delete and supervisor confirmations remain in manager orchestration', () => {
-  assertIncludes(manager, 'const openClassRenameModal = (classroom: Group) => {');
-  assertIncludes(manager, 'await updateGroupAsync(classroom.id, { name: newName.trim() });');
-  assertIncludes(manager, 'const handleDeleteClass = async (classroom: Group) => {');
-  assertIncludes(manager, "window.confirm('هل أنت متأكد من حذف هذا الفصل؟')");
-  assertIncludes(manager, 'await deleteGroupAsync(classroom.id);');
-  assertIncludes(manager, 'const handleRemoveClassSupervisor = (classroom: Group, currentUser: User) => {');
-  assertIncludes(manager, 'handleRemoveSchoolSupervisor(currentUser.id, classroom.id)');
+check('class rename delete and supervisor confirmations remain in extracted orchestration', () => {
+  assertIncludes(manager, 'createSchoolClassRenameAction({');
+  assertIncludes(manager, 'createSchoolClassLifecycleActions({');
+  assertIncludes(manager, 'createSchoolRosterAssignmentActions({');
+
+  assertIncludes(classLifecycleActions, 'export const createSchoolClassRenameAction');
+  assertIncludes(classLifecycleActions, 'await updateGroupAsync(classroom.id, { name: newName.trim() });');
+  assertIncludes(classLifecycleActions, 'const handleDeleteClass = async (classroom: Group) => {');
+  assertIncludes(classLifecycleActions, "window.confirm('هل أنت متأكد من حذف هذا الفصل؟')");
+  assertIncludes(classLifecycleActions, 'await deleteGroupAsync(classroom.id);');
+  assertIncludes(classLifecycleActions, 'await refreshSchoolWorkspace(selectedSchool.id);');
+
+  assertIncludes(rosterAssignmentActions, 'const confirmRemoveClassSupervisor = (classroom: Group, currentUser: User) => {');
+  assertIncludes(rosterAssignmentActions, 'void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);');
+  assertIncludes(rosterAssignmentActions, 'await removeSupervisorFromGroupAsync(supervisorId, groupId);');
+  assertIncludes(rosterAssignmentActions, 'await refreshSchoolWorkspace(selectedSchool.id);');
 });
 
 check('extraction reduces the school manager hotspot without creating a new hotspot', () => {
   const managerLines = manager.split('\n').length;
   const classesPanelLines = classesPanel.split('\n').length;
   const cardLines = card.split('\n').length;
+  const lifecycleLines = classLifecycleActions.split('\n').length;
+  const rosterActionsLines = rosterAssignmentActions.split('\n').length;
   if (managerLines >= 3900) throw new Error(`SchoolsManager remained too large after class-card extraction: ${managerLines}`);
   if (classesPanelLines > 260) throw new Error(`SchoolClassesPanel exceeded 260 lines: ${classesPanelLines}`);
   if (cardLines > 300) throw new Error(`SchoolClassOperatingCard exceeded 300 lines: ${cardLines}`);
+  if (lifecycleLines > 260) throw new Error(`schoolClassLifecycleActions exceeded 260 lines: ${lifecycleLines}`);
+  if (rosterActionsLines > 300) throw new Error(`schoolRosterAssignmentActions exceeded 300 lines: ${rosterActionsLines}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
@@ -106,6 +124,8 @@ const result = {
   managerLines: manager.split('\n').length,
   classesPanelLines: classesPanel.split('\n').length,
   cardLines: card.split('\n').length,
+  classLifecycleLines: classLifecycleActions.split('\n').length,
+  rosterActionsLines: rosterAssignmentActions.split('\n').length,
   checks,
 };
 
