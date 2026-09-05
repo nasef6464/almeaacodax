@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { fingerprintCustomerInstancePlan } from "../modules/product-config/application/customerInstanceFingerprint.js";
 import {
   assertCustomerInstanceManifestHasNoSecrets,
   compileCustomerInstanceManifest,
@@ -18,12 +19,14 @@ assertCustomerInstanceManifestHasNoSecrets(rawManifest);
 
 const customerPlan = compileCustomerInstanceManifest(rawManifest);
 const settingsSetPlan = buildCustomerInstanceSettingsSetPlan(customerPlan);
+const configDigest = fingerprintCustomerInstancePlan(customerPlan);
 
 console.log(
   JSON.stringify(
     {
       mode: "DRY_RUN_ONLY",
       writesPerformed: false,
+      configDigest,
       customer: {
         key: customerPlan.customerKey,
         productName: customerPlan.productName,
