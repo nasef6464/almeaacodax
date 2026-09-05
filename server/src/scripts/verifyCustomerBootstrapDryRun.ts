@@ -34,6 +34,7 @@ assert.equal(dryRun.status, 0, dryRun.stderr || "Customer bootstrap dry-run must
 assert.match(dryRun.stdout, /"mode":\s*"DRY_RUN"/);
 assert.match(dryRun.stdout, /"writesPerformed":\s*false/);
 assert.match(dryRun.stdout, /"customerKey":\s*"alpha-learning"/);
+assert.match(dryRun.stdout, /"configDigest":\s*"sha256:[a-f0-9]{64}"/);
 assert.equal(dryRun.stderr.includes("MONGODB_URI is required"), false);
 assert.equal(dryRun.stderr.includes("JWT_SECRET"), false);
 
@@ -53,6 +54,7 @@ console.log(
       status: "PASS",
       dryRunWithoutRuntimeSecrets: true,
       writesPerformed: false,
+      configFingerprintVerified: true,
       applyGuardsVerified: ["confirm", "CUSTOMER_INSTANCE_WRITE_ACK"],
     },
     null,
