@@ -2,7 +2,7 @@
 
 التاريخ: 2026-09-05
 
-الفرع: `codex/gate6-questions-curriculum-operations`
+الفرع الحالي: `codex/gate6-operations-media-contract`
 
 ## CURRENT STATE
 
@@ -10,6 +10,7 @@
 - Curriculum/Learning: `CLOSED / VERIFIED Strong MVP`.
 - Courses: `CLOSED / VERIFIED Strong MVP`.
 - Operations: `ACTIVE`.
+- O-01 Media/storage contract accuracy: `VERIFIED`.
 
 ## VERIFIED — الموجود بالفعل ولا يُعاد بناؤه
 
@@ -40,21 +41,28 @@
    - Phase 19 deployment handover contract موجود ويمر داخل Full Handover Suite.
    - Gate 5 أضاف customer manifest/bootstrap/package boundary؛ لا ننشئ packaging system موازٍ.
 
-## REAL GAPS
+6. **O-01 — Media/storage contract accuracy**
+   - الحالة: `VERIFIED` لهذه الفجوة المحددة، وليس إغلاق Operations بالكامل.
+   - `Lesson.videoSource='upload'` بقي كما هو للتوافق التاريخي؛ لا schema migration ولا API rename.
+   - `UnifiedLessonBuilder` يعرض هذه القيمة الآن كـ`رابط مباشر / CDN` ويوضح أن المسار يحفظ URL ولا يرفع binary video إلى الخادم.
+   - أمثلة backend runtime env لم تعد تعلن `UPLOAD_DIR` أو `MAX_UPLOAD_SIZE` لأن `server/src/config/env.ts` لا يقرأهما.
+   - `UPLOAD_DIR` بقي مدعومًا فقط كـoperations-script override في `scripts/backup-uploads.sh` وrestore tooling؛ لم تُحذف أدوات النسخ الاحتياطي للـfilesystem deployments.
+   - Hostinger/Feature Activation docs أصبحت تطلب إثبات تشغيل media URL بدل ادعاء direct upload غير موجود.
+   - العقد الدائم: `scripts/smoke-gate6-media-reference-contract.mjs` ومربوط بـPlatform V3 Phase + Handover Gate.
+   - runtime/integrated commit: `d85b74630fc00db0cadaee017e8c1902be482832`.
+   - CI evidence على نفس الـcommit:
+     - Platform V3 Phase + Handover `33963567571`: `SUCCESS`، بما فيه `Gate 6 media reference contract` والـFull Handover suite.
+     - Refactor V2 Production Readiness `33963567576`: `SUCCESS`، بما فيه frontend/API typecheck وproduction builds وبوابات architecture/security/readiness.
+     - Platform V3 Recovery `33963567567`: `SUCCESS`.
+   - لا StorageAdapter/provider جديد، لا secrets، لا binary-upload API، لا RBAC/scoring/payment/data migration، ولا production write.
 
-### O-01 — Media/storage contract is ambiguous
-
-`Lesson.videoSource` يحتفظ legacy value باسم `upload`، بينما الـLesson Builder الفعلي يحفظ `videoUrl` ولا توجد binary-media route أو `StorageAdapter` runtime مثبت في الخادم. يوجد `UPLOAD_DIR`/`MAX_UPLOAD_SIZE` في بعض deployment docs/examples، لكن `server/src/config/env.ts` لا يملك هذين المتغيرين كـbackend runtime contract.
-
-هذا يخلق خطرين تجاريين:
-- UI قد يوحي بوجود direct binary upload غير موجود فعليًا.
-- deployment docs قد توحي بوجود upload runtime setting غير موصول بالخادم.
-
-الـStrong-MVP الآمن الحالي يجب أن يكون صريحًا: **المنصة تحفظ مراجع media URLs (direct/CDN/YouTube/Vimeo)؛ binary upload provider ليس مثبتًا بعد**. لا نضيف مزود تخزين أو secret جديد بدون قرار deployment/provider واضح.
+## REAL GAPS AFTER O-01
 
 ### O-02 — Operations audit/status query shape is not scale-certified
 
 `operations.routes.ts` و`operationsAudit.ts` يبنيان تشخيصات عميقة من مجموعات محتوى كاملة، ومنها Questions/Lessons/Courses. هذا مفيد كأداة Admin، لكنه ليس production-scale certification لـ50k سؤال أو 20k درس/فيديو. لا نغير semantics قبل قياس أو تصميم bounded/exact aggregation واضح؛ يُعامل كـ`PARTIAL` حتى يثبت.
+
+لا نضع `.limit()` اعتباطيًا ونحوّل الأرقام الدقيقة إلى sampled بدون تغيير صريح في العقد. التشغيل التالي يفحص أولًا إن كانت O-02 فجوة تشغيل تمنع Strong MVP controlled customer instance أو أنها تحسين scale مؤجل يحتاج benchmark/staging.
 
 ### O-03 — External runtime proofs
 
@@ -67,24 +75,18 @@
 
 هذه عناصر `NOT PROVEN/BLOCKED-ENV` وليست سببًا لاختراع أرقام أو كتابة أسرار في المستودع.
 
-## MINIMAL EXECUTION PLAN
+## NEXT BOUNDED ACTION
 
-1. إغلاق O-01 بدون API جديد أو storage provider وهمي:
-   - توضيح media reference semantics في الواجهة/التوثيق.
-   - عدم إعلان `UPLOAD_DIR/MAX_UPLOAD_SIZE` كـbackend runtime env إذا لم يكن الخادم يقرأهما.
-   - إبقاء persisted `videoSource='upload'` للتوافق التاريخي، لكن اعتباره direct/CDN URL في presentation فقط.
-   - إضافة Gate 6 media contract يمنع رجوع claim "رفع مباشر" دون implementation.
-
-2. بعد O-01، تقييم O-02 فقط إذا كان تغيير query shape يمكن أن يحافظ على دقة readiness contract. لا نضع `.limit()` اعتباطيًا ونحوّل الأرقام الدقيقة إلى sampled بدون تغيير صريح في العقد.
-
-3. تجميع Evidence الموجود للـqueues/observability/backup/release بدل إعادة بنائه.
-
-4. production-like load/restore/live-provider proofs تظل `NOT PROVEN/BLOCKED` حتى توجد staging مفوضة وبيئة مناسبة.
+1. ابدأ من هذا الـhandoff والـPR الحالي، وافحص O-02 فقط.
+2. لا تغير query shape إلا إذا ثبت أن المسار الحالي خطر تشغيل حقيقي ضمن Strong MVP ويمكن الحفاظ على exact semantics بعقد واضح.
+3. إذا كانت O-02 تحتاج benchmark/staging مفوضًا قبل قرار صحيح، صنفها `NOT PROVEN/BLOCKED-ENV` بدل تنفيذ sampling أو limits اعتباطية.
+4. بعد ذلك اجمع Evidence الموجود للqueues/observability/backup/release بدل إعادة بنائه.
+5. production-like load/restore/live-provider proofs تظل `NOT PROVEN/BLOCKED` حتى توجد staging مفوضة وبيئة مناسبة.
 
 ## STRONG MVP BOUNDARY
 
 Operations يمكن إغلاقها تجاريًا عندما:
-- media strategy المعروضة للمستخدم تطابق ما ينفذه المنتج فعلًا؛
+- media strategy المعروضة للمستخدم تطابق ما ينفذه المنتج فعلًا؛ `VERIFIED` عبر O-01.
 - health/queue/observability/recovery/release paths لها contracts قابلة للإعادة؛
 - أي proof يحتاج بيئة خارجية مصنف بوضوح ولا يتحول إلى claim مزيف؛
 - لا توجد فجوة أمن/بيانات/تشغيل مثبتة تمنع تسليم customer instance controlled.
