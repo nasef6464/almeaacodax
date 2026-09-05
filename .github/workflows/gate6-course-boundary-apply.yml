@@ -1,0 +1,56 @@
+name: Gate 6 Apply Course Product Boundary
+
+on:
+  push:
+    branches:
+      - codex/gate6-questions-curriculum-operations
+    paths:
+      - tools/gate6/apply-course-product-boundary.mjs
+      - .github/workflows/gate6-course-boundary-apply.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-course-boundary:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Apply focused course boundary patch
+        run: node tools/gate6/apply-course-product-boundary.mjs
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Frontend typecheck
+        run: npm run typecheck
+      - name: Frontend build
+        run: npm run build
+      - name: API typecheck
+        run: npm --prefix server run check
+      - name: API build
+        run: npm --prefix server run build
+      - name: Gate 6 course product boundary contract
+        run: node scripts/smoke-gate6-courses-product-boundary-contract.mjs
+      - name: Diff check
+        run: git diff --check
+      - name: Commit focused runtime patch and remove one-off scaffolding
+        run: |
+          rm tools/gate6/apply-course-product-boundary.mjs
+          rm .github/workflows/gate6-course-boundary-apply.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/src/routes/course.routes.ts dashboards/admin/CoursesManager.tsx tools/gate6/apply-course-product-boundary.mjs .github/workflows/gate6-course-boundary-apply.yml
+          git commit -m "feat(courses): separate learning and package product surfaces"
+          git push
