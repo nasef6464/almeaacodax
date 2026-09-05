@@ -28,6 +28,7 @@ jobs:
           grep -F "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)" pages/QuizPage.tsx
           grep -F "user.schoolId ? [user.schoolId] : []" pages/QuizPage.tsx
           npm ci
+          npm --prefix server ci
           npm run typecheck
       - name: Commit exact patch
         shell: bash
