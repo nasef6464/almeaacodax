@@ -21,8 +21,8 @@ concurrency:
 
 jobs:
   isolated-backend-integration:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe'
-    name: Auth + RBAC + assessments + AI + certificates on isolated Mongo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe' || github.event.pull_request.head.ref == 'codex/course-commercial-journey'
+    name: Auth + RBAC + assessments + courses + commerce on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
@@ -86,7 +86,7 @@ jobs:
         run: npm --prefix server run build
 
       - name: Integration harness typecheck
-        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts
+        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts
 
       - name: Start exact branch API
         shell: bash
@@ -109,6 +109,9 @@ jobs:
 
       - name: Run real HTTP backend integration suite
         run: cd server && npx tsx src/scripts/backendIntegrationGate.ts
+
+      - name: Run course commercial journey acceptance
+        run: cd server && npx tsx src/scripts/courseCommercialJourneyGate.ts
 
       - name: Print API log on failure
         if: failure()

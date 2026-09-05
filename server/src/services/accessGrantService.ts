@@ -34,13 +34,8 @@ export async function mirrorGrantToUserSubscription(payload: {
 }) {
   const packageId = String(payload.packageId || "").trim();
   const courseIds = uniqueStrings(payload.courseIds || []);
-  const update: Record<string, unknown> = {
-    $set: {
-      "subscription.plan": packageId ? "premium" : "premium",
-    },
-  };
-
   const addToSet: Record<string, unknown> = {};
+
   if (packageId) {
     addToSet["subscription.purchasedPackages"] = packageId;
   }
@@ -48,11 +43,19 @@ export async function mirrorGrantToUserSubscription(payload: {
     addToSet["subscription.purchasedCourses"] = { $each: courseIds };
     addToSet.enrolledCourses = { $each: courseIds };
   }
-  if (Object.keys(addToSet).length) {
-    update.$addToSet = addToSet;
+
+  // A scoped course/package grant must not promote the account to the global
+  // premium subscription plan. Subscription upgrades are owned exclusively by
+  // the dedicated subscription purchase flow in payment.routes.ts.
+  if (!Object.keys(addToSet).length) {
+    return UserModel.findById(payload.userId);
   }
 
-  return UserModel.findByIdAndUpdate(payload.userId, update, { new: true });
+  return UserModel.findByIdAndUpdate(
+    payload.userId,
+    { $addToSet: addToSet },
+    { new: true },
+  );
 }
 
 export async function grantAccessToUser(payload: GrantAccessPayload) {
