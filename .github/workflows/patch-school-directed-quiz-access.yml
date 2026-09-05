@@ -1,5 +1,6 @@
 name: One-shot school directed quiz access patch
 
+# Temporary branch-only workflow. Delete after the exact QuizPage patch lands.
 on:
   push:
     branches:
