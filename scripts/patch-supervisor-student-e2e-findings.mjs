@@ -112,6 +112,13 @@ changed = (await replaceExact(
 
 changed = (await replaceExact(
   files.audit,
+  `function listOf(payload, key) {\n  return Array.isArray(payload?.[key]) ? payload[key] : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];\n}\n\nasync function main() {`,
+  `function listOf(payload, key) {\n  return Array.isArray(payload?.[key]) ? payload[key] : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];\n}\n\nfunction assertStringSet(actual, expected, label) {\n  const actualValues = Array.isArray(actual) ? actual.map(String).sort() : [];\n  const expectedValues = Array.isArray(expected) ? expected.map(String).sort() : [];\n  if (actualValues.length !== expectedValues.length || actualValues.some((value, index) => value !== expectedValues[index])) {\n    throw new Error(\`${label}: expected [\${expectedValues.join(', ')}], received [\${actualValues.join(', ')}]\`);\n  }\n}\n\nasync function main() {`,
+  'Directed assessment audience assertion helper',
+)) || changed;
+
+changed = (await replaceExact(
+  files.audit,
   `    const createResponsePromise = admin.page.waitForResponse(\n      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/quizzes"),\n      { timeout: 30000 },\n    );\n    await admin.page.getByTestId("assessment-builder-save").click();\n    const createResponse = await createResponsePromise;`,
   `    const createRequestPromise = admin.page.waitForRequest(\n      (request) => request.method() === "POST" && new URL(request.url()).pathname.endsWith("/api/quizzes"),\n      { timeout: 30000 },\n    );\n    const createResponsePromise = admin.page.waitForResponse(\n      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/quizzes"),\n      { timeout: 30000 },\n    );\n    await admin.page.getByTestId("assessment-builder-save").click();\n    const createRequest = await createRequestPromise;\n    const createRequestPayload = createRequest.postDataJSON();\n    assertStringSet(createRequestPayload?.targetGroupIds, [String(targetGroup.id || targetGroup._id)], "builder request explicit group target");\n    const createResponse = await createResponsePromise;`,
   'Directed assessment request payload proof',
