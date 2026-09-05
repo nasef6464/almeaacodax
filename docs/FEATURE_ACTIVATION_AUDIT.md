@@ -15,7 +15,7 @@ Date: 2026-05-22
 - WhatsApp: CONFIGURED BUT NEEDS OWNER SECRET.
 - AI: CONFIGURED BUT NEEDS OWNER SECRET.
 - Sentry: CONFIGURED BUT NEEDS OWNER DSN.
-- Uploads: ENABLED/PARTIAL; VPS `UPLOAD_DIR` ownership must be verified.
+- Media references: ENABLED for URL-based lesson/library media (direct/CDN/YouTube/Vimeo). First-party binary upload ingestion is NOT IMPLEMENTED; `UPLOAD_DIR` is only an operations-script override for upload-directory backup/restore tooling.
 - PWA: CONFIGURED; production behavior controlled by env.
 - Health/readiness: ENABLED; smoke exists.
 - Search/notifications: ENABLED/PARTIAL; live queue/provider checks depend on env.
