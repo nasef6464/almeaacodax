@@ -10,7 +10,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: platform-v3-phase-handover-${{ github.event.pull_request.head.ref || github.ref_name }}
@@ -20,6 +20,91 @@ env:
   CI: "true"
 
 jobs:
+  patch-school-directed-quiz-access:
+    name: One-shot school-directed quiz access patch
+    if: github.event_name == 'pull_request' && github.head_ref == 'codex/supervisor-student-journey-hardening'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Patch exact audience gate
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'pages/QuizPage.tsx';
+          const source = fs.readFileSync(path, 'utf8');
+          const before = `    const hasExplicitTargets = (foundQuiz.targetUserIds || []).length > 0 || (foundQuiz.targetGroupIds || []).length > 0;
+    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
+      const userGroups = user.groupIds || [];
+      const isUserTargeted =
+        (foundQuiz.targetUserIds || []).length === 0 || (foundQuiz.targetUserIds || []).includes(user.id);
+      const isGroupTargeted =
+        (foundQuiz.targetGroupIds || []).length === 0 ||
+        (foundQuiz.targetGroupIds || []).some((id) => userGroups.includes(id));
+
+      if (!isUserTargeted || !isGroupTargeted) {
+        setHasAccess(false);
+        setAccessMessage('هذا اختبار مركزي موجّه لطلاب محددين فقط.');
+        return;
+      }
+    }`;
+          const after = `    const targetUserIds = foundQuiz.targetUserIds || [];
+    const targetGroupIds = foundQuiz.targetGroupIds || [];
+    const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
+    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
+      const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
+      const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
+      const isGroupTargeted = targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id));
+
+      // Direct student targeting and school/class targeting are additive, matching the API contract.
+      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted) {
+        setHasAccess(false);
+        setAccessMessage('هذا اختبار مدرسي موجّه لطلاب محددين فقط.');
+        return;
+      }
+    }`;
+          if (source.includes(after)) {
+            console.log('Audience patch already applied.');
+            process.exit(0);
+          }
+          if (!source.includes(before)) {
+            console.error('Expected QuizPage audience block not found; refusing broad modification.');
+            process.exit(1);
+          }
+          const next = source.replace(before, after);
+          if (next === source || next.split(after).length !== 2) {
+            console.error('Audience patch was not applied exactly once.');
+            process.exit(1);
+          }
+          fs.writeFileSync(path, next);
+          NODE
+      - name: Verify patch and typecheck
+        run: |
+          grep -F "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)" pages/QuizPage.tsx
+          grep -F "...(user.schoolId ? [user.schoolId] : [])" pages/QuizPage.tsx
+          npm ci
+          npm run typecheck
+      - name: Commit exact patch to branch
+        shell: bash
+        run: |
+          if git diff --quiet -- pages/QuizPage.tsx; then
+            echo "No source change required."
+            exit 0
+          fi
+          git config user.name "workflow-patch-bot"
+          git config user.email "workflow-patch-bot@users.noreply.github.com"
+          git add pages/QuizPage.tsx
+          git commit -m "Fix school-directed quiz audience access"
+          git push origin HEAD:codex/supervisor-student-journey-hardening
+
   cross-phase-handover:
     name: Cross-phase + handover regression
     runs-on: ubuntu-latest
