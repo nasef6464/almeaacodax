@@ -38,11 +38,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout branch head
+      - name: Checkout exact triggering commit
         uses: actions/checkout@v4
         with:
-          ref: codex/supervisor-student-journey-hardening
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 1
+
+      - name: Verify exact triggering commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -136,11 +142,17 @@ jobs:
       SMOKE_PARENT_EMAIL: parent.a@almeaa.local
 
     steps:
-      - name: Checkout latest verified branch head
+      - name: Checkout exact triggering commit
         uses: actions/checkout@v4
         with:
-          ref: codex/supervisor-student-journey-hardening
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 1
+
+      - name: Verify exact triggering commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Setup Node
         uses: actions/setup-node@v4
