@@ -136,7 +136,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       const targetGroupIds = quiz.targetGroupIds || [];
       const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
       if (hasExplicitTargets) {
-        const userGroups = user.groupIds || [];
+        const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
         const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
         // The authenticated quiz catalog is already audience-filtered by the API.
         // If a legacy student session has no hydrated groupIds, keep a server-authorized
@@ -159,7 +159,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       if (access.type === 'course_only') return hasScopedPackageAccess('courses', quiz.pathId, quiz.subjectId);
       return false;
     },
-    [canSeeHiddenPaths, checkAccess, hasScopedPackageAccess, user.groupIds, user.id, visiblePathIds],
+    [canSeeHiddenPaths, checkAccess, hasScopedPackageAccess, user.groupIds, user.id, user.schoolId, visiblePathIds],
   );
 
   const availablePreparedQuizzes = useMemo(
