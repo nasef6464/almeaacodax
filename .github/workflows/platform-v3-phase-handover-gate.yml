@@ -65,6 +65,8 @@ jobs:
         run: node scripts/smoke-gate6-curriculum-commercial-closure-contract.mjs
       - name: Gate 6 courses product boundary contract
         run: node scripts/smoke-gate6-courses-product-boundary-contract.mjs
+      - name: Gate 6 media reference contract
+        run: node scripts/smoke-gate6-media-reference-contract.mjs
       - name: Exam and payment phase 8 contract
         run: npm run smoke:exam-payment-phase8
       - name: Dashboards phase 11 contract
