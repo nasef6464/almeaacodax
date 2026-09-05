@@ -100,6 +100,10 @@ check("post-test workflow supports weak and absent student follow-up", () => {
 check("student school-directed assessment list and runner share additive audience semantics", () => {
   assertIncludes(quizzesPage, "directedQuizzes");
   assertIncludes(quizzesPage, "الاختبارات المدرسية");
+  assertIncludes(quizzesPage, "...(user.schoolId ? [user.schoolId] : [])");
+  assertIncludes(quizzesPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
+  assertIncludes(quizzesPage, "if (!isUserTargeted && !isGroupTargeted) return false;");
+  assertIncludes(quizzesPage, "user.id, user.schoolId, visiblePathIds");
   assertIncludes(quizPage, "const targetUserIds = foundQuiz.targetUserIds || [];");
   assertIncludes(quizPage, "const targetGroupIds = foundQuiz.targetGroupIds || [];");
   assertIncludes(quizPage, "...(user.schoolId ? [user.schoolId] : [])");
