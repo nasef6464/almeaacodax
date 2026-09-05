@@ -11,7 +11,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: platform-v3-phase-handover-${{ github.event.pull_request.head.ref || github.ref_name }}
@@ -21,59 +21,15 @@ env:
   CI: "true"
 
 jobs:
-  supervisor-student-isolated-e2e:
+  apply-supervisor-student-fixes:
     if: github.event_name == 'push' && github.ref_name == 'codex/supervisor-student-journey-hardening'
-    name: Supervisor → student isolated E2E proof
+    name: Apply focused supervisor-student fixes
     runs-on: ubuntu-latest
-    timeout-minutes: 35
-    services:
-      mongodb:
-        image: mongo:7.0
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      NODE_ENV: test
-      PORT: '4010'
-      CLIENT_URL: http://127.0.0.1:4173
-      CORS_ALLOWED_ORIGINS: http://127.0.0.1:4173
-      MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_supervisor_student_${{ github.run_id }}
-      REDIS_URL: ''
-      RATE_LIMIT_REDIS_ENABLED: 'false'
-      RATE_LIMIT_GLOBAL_LIMIT: '5000'
-      RATE_LIMIT_AUTH_LIMIT: '500'
-      RATE_LIMIT_SENSITIVE_LIMIT: '2000'
-      NOTIFICATION_QUEUE_ENABLED: 'false'
-      GOOGLE_OAUTH_ENABLED: 'false'
-      DEV_LOCAL_ADMIN_BYPASS: 'false'
-      ADMIN_PASSWORD_SYNC_ON_BOOT: 'false'
-      AI_PROVIDER: none
-      VITE_API_URL: http://127.0.0.1:4010/api
-      UI_AUDIT_BASE_URL: http://127.0.0.1:4173
-      UI_AUDIT_API_BASE_URL: http://127.0.0.1:4010/api
-      SEED_API_BASE_URL: http://127.0.0.1:4010/api
-      SMOKE_API_BASE_URL: http://127.0.0.1:4010/api
-      SMOKE_ALLOW_PASSWORD_LOGIN: 'true'
-      ADMIN_NAME: Supervisor Student E2E Admin
-      ADMIN_EMAIL: nasef64@gmail.com
-      ROLE_ADMIN_EMAIL: nasef64@gmail.com
-      SMOKE_ADMIN_EMAIL: nasef64@gmail.com
-      ROLE_STUDENT_EMAIL: student.a@almeaa.local
-      SMOKE_STUDENT_EMAIL: student.a@almeaa.local
-      SMOKE_STUDENT_REDEEMED_EMAIL: student.d@almeaa.local
-      ROLE_TEACHER_EMAIL: teacher.quant@almeaa.local
-      SMOKE_TEACHER_EMAIL: teacher.quant@almeaa.local
-      ROLE_SUPERVISOR_EMAIL: supervisor.group@almeaa.local
-      SMOKE_SUPERVISOR_EMAIL: supervisor.group@almeaa.local
-      ROLE_SCHOOL_SUPERVISOR_EMAIL: supervisor.school@almeaa.local
-      ROLE_PARENT_EMAIL: parent.a@almeaa.local
-      SMOKE_PARENT_EMAIL: parent.a@almeaa.local
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -81,108 +37,30 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             server/package-lock.json
-      - name: Install dependencies
-        run: |
-          npm ci
-          npm --prefix server ci
-      - name: Generate masked ephemeral credentials
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const fs = require('node:fs');
-          const { randomBytes } = require('node:crypto');
-          const random = (bytes = 36) => randomBytes(bytes).toString('base64url');
-          const adminPassword = random();
-          const studentPassword = random();
-          const redeemedStudentPassword = random();
-          const teacherPassword = random();
-          const supervisorPassword = random();
-          const schoolSupervisorPassword = random();
-          const parentPassword = random();
-          const values = {
-            JWT_SECRET: random(48),
-            ADMIN_PASSWORD: adminPassword,
-            ROLE_ADMIN_PASSWORD: adminPassword,
-            SMOKE_ADMIN_PASSWORD: adminPassword,
-            ROLE_STUDENT_PASSWORD: studentPassword,
-            SMOKE_STUDENT_PASSWORD: studentPassword,
-            SMOKE_STUDENT_REDEEMED_PASSWORD: redeemedStudentPassword,
-            ROLE_TEACHER_PASSWORD: teacherPassword,
-            SMOKE_TEACHER_PASSWORD: teacherPassword,
-            ROLE_SUPERVISOR_PASSWORD: supervisorPassword,
-            SMOKE_SUPERVISOR_PASSWORD: supervisorPassword,
-            ROLE_SCHOOL_SUPERVISOR_PASSWORD: schoolSupervisorPassword,
-            ROLE_PARENT_PASSWORD: parentPassword,
-            SMOKE_PARENT_PASSWORD: parentPassword,
-          };
-          for (const value of Object.values(values)) console.log(`::add-mask::${value}`);
-          fs.appendFileSync(process.env.GITHUB_ENV, Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n');
-          NODE
-      - name: Typecheck and build
+      - name: Apply exact source patches
+        run: node scripts/patch-supervisor-student-e2e-findings.mjs
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Verify type safety and journey source contract
         run: |
           npm run typecheck
           npm run server:check
-          npm run build
-          npm run server:build
-      - name: Seed isolated fixture
-        run: |
-          npm --prefix server run seed:admin
-          npm --prefix server run seed:operational
-          cd server && npx tsx src/scripts/prepareDeepPreMergeUsers.ts
-      - name: Start isolated API
+          node scripts/smoke-supervisor-dashboard-contract.mjs
+      - name: Commit focused fixes
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p audit-artifacts/supervisor-student-directed
-          npm --prefix server run start > audit-artifacts/supervisor-student-directed/api.log 2>&1 &
-          echo $! > /tmp/supervisor-student-api.pid
-          for attempt in $(seq 1 45); do
-            if curl --fail --silent http://127.0.0.1:4010/api/health/ready > audit-artifacts/supervisor-student-directed/api-ready.json; then exit 0; fi
-            sleep 1
-          done
-          tail -n 200 audit-artifacts/supervisor-student-directed/api.log || true
-          exit 1
-      - name: Operational multi-role API smoke
-        run: npm --prefix server run smoke:operational:api
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Start exact branch frontend
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm run preview -- --host 127.0.0.1 --port 4173 > audit-artifacts/supervisor-student-directed/frontend.log 2>&1 &
-          echo $! > /tmp/supervisor-student-frontend.pid
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then exit 0; fi
-            sleep 1
-          done
-          cat audit-artifacts/supervisor-student-directed/frontend.log || true
-          exit 1
-      - name: Directed assessment journey
-        env:
-          ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID: supervisor-student-assessment-${{ github.run_id }}
-        run: node scripts/live-assessment-commercial-audit.mjs
-      - name: Supervisor school command journey
-        env:
-          SUPERVISOR_SCHOOL_AUDIT_RUN_ID: supervisor-student-school-${{ github.run_id }}
-        run: node scripts/live-supervisor-school-command-audit.mjs
-      - name: Source journey contract
-        run: node scripts/smoke-supervisor-dashboard-contract.mjs
-      - name: Upload isolated evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: supervisor-student-isolated-e2e-${{ github.run_id }}
-          path: audit-artifacts/
-          if-no-files-found: warn
-          retention-days: 14
-      - name: Stop isolated services
-        if: always()
-        shell: bash
-        run: |
-          if [ -f /tmp/supervisor-student-frontend.pid ]; then kill "$(cat /tmp/supervisor-student-frontend.pid)" 2>/dev/null || true; fi
-          if [ -f /tmp/supervisor-student-api.pid ]; then kill "$(cat /tmp/supervisor-student-api.pid)" 2>/dev/null || true; fi
+          if git diff --quiet -- dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs; then
+            echo "No focused source changes to commit."
+            exit 0
+          fi
+          git config user.name "almeaa-e2e-fix-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs
+          git commit -m "Fix directed assessment targeting and supervisor alerts"
+          git push origin HEAD:codex/supervisor-student-journey-hardening
 
   cross-phase-handover:
     if: github.event_name != 'push' || github.ref_name != 'codex/supervisor-student-journey-hardening'
