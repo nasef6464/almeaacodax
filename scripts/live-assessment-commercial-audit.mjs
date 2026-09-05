@@ -157,11 +157,18 @@ async function main() {
     await admin.page.getByTestId("assessment-builder-next").click();
     await admin.page.getByTestId(`assessment-builder-target-group-${targetGroup.id || targetGroup._id}`).check();
     await admin.page.screenshot({ path: path.join(OUT_DIR, "admin-directed-builder.png"), fullPage: true });
+    const createRequestPromise = admin.page.waitForRequest(
+      (request) => request.method() === "POST" && new URL(request.url()).pathname.endsWith("/api/quizzes"),
+      { timeout: 30000 },
+    );
     const createResponsePromise = admin.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/quizzes"),
       { timeout: 30000 },
     );
     await admin.page.getByTestId("assessment-builder-save").click();
+    const createRequest = await createRequestPromise;
+    const createRequestPayload = createRequest.postDataJSON();
+    assertStringSet(createRequestPayload?.targetGroupIds, [String(targetGroup.id || targetGroup._id)], "builder request explicit group target");
     const createResponse = await createResponsePromise;
     const createdFromWrite = await createResponse.json().catch(() => ({}));
     if (!createResponse.ok()) throw new Error(`Builder create failed (${createResponse.status()}): ${createdFromWrite?.message || ""}`);

@@ -9,6 +9,7 @@ const detailPanel = await read("dashboards/admin/AssignedTestDetailPanel.tsx");
 const notificationRoutes = await read("server/src/routes/notification.routes.ts");
 const quizzesPage = await read("pages/Quizzes.tsx");
 const quizPage = await read("pages/QuizPage.tsx");
+const quizModel = await read("server/src/models/Quiz.ts");
 
 const checks = [];
 
@@ -61,6 +62,8 @@ check("supervisor weak-student center has scoped filters and real actions", () =
   assertIncludes(dashboard, "visibleWeakStudents");
   assertIncludes(dashboard, "sendStudentFollowUpAlert");
   assertIncludes(dashboard, "api.sendStudentAlert");
+  assertIncludes(dashboard, "apiService.sendStudentAlert");
+  assertNotIncludes(dashboard, "apiService.sendNotifications");
   assertIncludes(dashboard, "openStudentReport");
 });
 
@@ -87,6 +90,7 @@ check("supervisor assessment messages use scoped student alert rather than admin
   assertIncludes(notificationRoutes, 'notificationRouter.post("/student-alert"');
   assertIncludes(notificationRoutes, 'requireRole(["admin", "supervisor", "teacher"])');
   assertIncludes(notificationRoutes, 'channels: ["in_app"]');
+  assertIncludes(quizModel, 'supervisorMessage: { type: String, default: null }');
 });
 
 check("post-test workflow supports weak and absent student follow-up", () => {

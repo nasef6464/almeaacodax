@@ -601,8 +601,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                     <label key={g.id} className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white rounded-lg transition-all">
                       <input data-testid={`assessment-builder-target-group-${g.id}`} type="checkbox" checked={targetGroupIds.includes(g.id)}
                         onChange={(e) => {
-                          if (e.target.checked) setTargetGroupIds([...targetGroupIds, g.id]);
-                          else setTargetGroupIds(targetGroupIds.filter((id) => id !== g.id));
+                          const checked = e.target.checked;
+                          setTargetGroupIds((current) => checked
+                            ? Array.from(new Set([...current, g.id]))
+                            : current.filter((id) => id !== g.id));
                         }}
                         className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
                       <span className="text-xs font-bold text-gray-700 line-clamp-1">{g.name}</span>
