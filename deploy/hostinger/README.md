@@ -26,6 +26,8 @@ cp deploy/hostinger/env.backend.example server/.env.production
 
 Fill the env files with owner-provided values. Do not commit real secrets.
 
+The current application stores lesson and library media as URL references. It does not expose first-party binary upload ingestion, so do not add `UPLOAD_DIR` or `MAX_UPLOAD_SIZE` to the backend runtime env. `UPLOAD_DIR` remains available only as an override for the separate backup/restore shell scripts when a deployment actually has a filesystem media directory to preserve.
+
 ## 3. Deploy
 
 ```bash
@@ -56,7 +58,7 @@ pm2 status
 pm2 logs almeaa-codax-api --lines 100
 ```
 
-Verify login, admin dashboard, student dashboard, package/path navigation, payment dry-run, question bank CRUD, and uploads.
+Verify login, admin dashboard, student dashboard, package/path navigation, payment dry-run, question bank CRUD, and lesson media playback from configured direct/CDN/YouTube/Vimeo URLs.
 
 ## 6. Rollback
 
@@ -81,4 +83,4 @@ Rollback to Vercel/Render:
 - 502 from Nginx: check `pm2 logs` and `BACKEND_PORT`.
 - CORS errors: set `CLIENT_URL` and `CORS_ALLOWED_ORIGINS`.
 - Payment failures: configure provider keys and webhook secret.
-- Upload failures: confirm `UPLOAD_DIR` ownership and Nginx `client_max_body_size`.
+- Media playback failures: verify the stored media URL is reachable by the browser and that the external host/CDN returns an appropriate media content type and cross-origin policy. `UPLOAD_DIR` is not a backend application setting.
