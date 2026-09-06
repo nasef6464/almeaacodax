@@ -90,9 +90,10 @@ check(
   matches(courseView, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
 );
 check(
-  "Course view does not open an empty player for guests without preview lessons",
+  "Course view opens playback only for entitlement or explicit preview",
   includes(courseView, "hasPlayablePreviewLesson") &&
-    matches(courseView, /if \(isPlaying && \(isEnrolled \|\| isStaffViewer \|\| isFreeCourse \|\| hasPlayablePreviewLesson\)\)/),
+    matches(courseView, /if \(isPlaying && \(isEnrolled \|\| isStaffViewer \|\| hasPlayablePreviewLesson\)\)/) &&
+    !includes(courseView, "isEnrolled || isStaffViewer || isFreeCourse"),
 );
 check(
   "Course cards ignore global purchase flags for guests",

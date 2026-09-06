@@ -74,6 +74,9 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
         if (!normalizedCourseId || get().enrolledCourses.includes(normalizedCourseId) || pendingCourseEnrollments.has(normalizedCourseId)) return;
 
         const currentUser = get().user;
+        if (!isRegisteredUser(currentUser)) {
+            return;
+        }
         if (!shouldSyncUserToApi(currentUser)) {
             set((current) => ({
                 enrolledCourses: [...current.enrolledCourses, normalizedCourseId],

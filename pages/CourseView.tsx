@@ -102,7 +102,7 @@ const CourseView: React.FC = () => {
         return () => {
             mounted = false;
         };
-    }, [courseId, courses]);
+    }, [courseId, courses, enrolledCourses]);
 
     if (loading) {
         return (
@@ -158,11 +158,12 @@ const CourseView: React.FC = () => {
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasPackageAccess;
-    const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer || isFreeCourse);
+    const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer);
     const hasPlayablePreviewLesson = courseForCurrentAccess.modules?.some((module) =>
         module.lessons.some((lesson) => !lesson.isLocked),
     ) === true;
-    const canOpenCoursePlayer = isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson;
+    const canOpenCoursePlayer = isEnrolled || isStaffViewer || hasPlayablePreviewLesson;
+    const needsFreeEnrollment = isFreeCourse && !isEnrolled && !isStaffViewer;
     const courseSubjectPath = course.subjectId || course.subject;
     const coursePath = course.pathId || course.category;
     const foundationHref =
@@ -172,19 +173,19 @@ const CourseView: React.FC = () => {
     const courseNextAction = (
         <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
             <StudentNextActionStrip
-                title={canOpenCoursePlayer ? 'ابدأ أول درس الآن' : 'افتح الباقة المناسبة'}
-                description={canOpenCoursePlayer ? 'شاهد درسًا قصيرًا، ثم انتقل لتدريب بسيط من نفس المهارة.' : 'بعد التفعيل تظهر لك الدروس والاختبارات المرتبطة بهذه الدورة.'}
-                primaryLabel={canOpenCoursePlayer ? 'ابدأ التعلم' : 'عرض الباقات'}
-                primaryHref={canOpenCoursePlayer ? `/course/${course.id}?learn=1` : '/pricing'}
+                title={canOpenCoursePlayer ? (isEnrolled || isStaffViewer ? 'ابدأ أول درس الآن' : 'جرّب المعاينة المجانية') : needsFreeEnrollment ? 'سجّل مجانًا لفتح الدورة' : 'افتح الباقة المناسبة'}
+                description={canOpenCoursePlayer ? (isEnrolled || isStaffViewer ? 'شاهد درسًا قصيرًا، ثم انتقل لتدريب بسيط من نفس المهارة.' : 'المعاينة العامة متاحة الآن، وباقي محتوى الدورة يفتح بعد التسجيل المجاني.') : needsFreeEnrollment ? 'الدورة مجانية، لكن المحتوى المخصص للمسجلين يفتح بعد تأكيد التسجيل على حسابك.' : 'بعد التفعيل تظهر لك الدروس والاختبارات المرتبطة بهذه الدورة.'}
+                primaryLabel={canOpenCoursePlayer ? (isEnrolled || isStaffViewer ? 'ابدأ التعلم' : 'ابدأ المعاينة') : needsFreeEnrollment ? (isGuestUser ? 'تسجيل الدخول' : 'سجّل مجانًا') : 'عرض الباقات'}
+                primaryHref={canOpenCoursePlayer ? `/course/${course.id}?learn=1` : needsFreeEnrollment ? (isGuestUser ? '/?auth=login' : `/course/${course.id}?buy=1`) : '/pricing'}
                 secondaryLabel="التأسيس"
                 secondaryHref={foundationHref}
-                tone={canOpenCoursePlayer ? 'indigo' : 'amber'}
+                tone={canOpenCoursePlayer || needsFreeEnrollment ? 'indigo' : 'amber'}
             />
         </div>
     );
 
     // if (isPlaying)
-    if (isPlaying && (isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson)) {
+    if (isPlaying && (isEnrolled || isStaffViewer || hasPlayablePreviewLesson)) {
         return (
             <CoursePlayer
                 course={courseForCurrentAccess}
