@@ -49,6 +49,11 @@ interface LearningProgressDependencies {
 const pendingLessonCompletions = new Set<string>();
 let lessonCompletionSyncQueue: Promise<void> = Promise.resolve();
 
+const buildPendingLessonCompletionKey = (user: User | null | undefined, courseId: string, lessonId: string) => {
+    const userKey = String(user?.id || user?.email || '').trim();
+    return `${userKey}:${String(courseId || '').trim()}:${String(lessonId || '').trim()}`;
+};
+
 export const createLearningProgressSlice = <TState extends LearningProgressSliceState>(
     set: StoreSet<TState>,
     get: StoreGet<TState>,
@@ -79,7 +84,7 @@ export const createLearningProgressSlice = <TState extends LearningProgressSlice
 
     markLessonComplete: (lessonId, courseId, lessonTitle) => {
         const state = get();
-        if (state.completedLessons.includes(lessonId) || pendingLessonCompletions.has(lessonId)) return;
+        if (state.completedLessons.includes(lessonId)) return;
 
         const buildCompletionActivity = (): Activity => ({
             id: Date.now().toString(),
@@ -100,7 +105,9 @@ export const createLearningProgressSlice = <TState extends LearningProgressSlice
         }
 
         const syncUserKey = String(state.user?.id || state.user?.email || '');
-        pendingLessonCompletions.add(lessonId);
+        const pendingCompletionKey = buildPendingLessonCompletionKey(state.user, courseId, lessonId);
+        if (pendingLessonCompletions.has(pendingCompletionKey)) return;
+        pendingLessonCompletions.add(pendingCompletionKey);
 
         lessonCompletionSyncQueue = lessonCompletionSyncQueue
             .catch(() => undefined)
@@ -132,7 +139,7 @@ export const createLearningProgressSlice = <TState extends LearningProgressSlice
             })
             .catch(console.error)
             .finally(() => {
-                pendingLessonCompletions.delete(lessonId);
+                pendingLessonCompletions.delete(pendingCompletionKey);
             });
     },
 
