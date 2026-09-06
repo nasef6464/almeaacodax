@@ -3,6 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const source = fs.readFileSync(path.join(root, "server", "src", "routes", "certificates.routes.ts"), "utf8");
+const courseViewSource = fs.readFileSync(path.join(root, "pages", "CourseView.tsx"), "utf8");
 
 const checks = [
   ["certificate generation is student-only", source.includes('requireRole(["student"])')],
@@ -13,6 +14,8 @@ const checks = [
   ["certificate grant scope checks course/path/subject", source.includes('courseIds.includes(courseId)') && source.includes('matchesPath && matchesSubject')],
   ["certificate requires entitlement", source.includes('if (!hasCourseEntitlement)') && source.includes('Course access is required before issuing a certificate')],
   ["certificate still requires full completion", source.includes('if (completionPercentage < 100)')],
+  ["course certificate CTA reads confirmed learner lesson completion", courseViewSource.includes('const { user, enrolledCourses, completedLessons, hasScopedPackageAccess, courses } = useStore()') && courseViewSource.includes('const courseCompletionProgress = courseLessons.length > 0')],
+  ["course certificate CTA does not trust catalog progress", courseViewSource.includes('course.certificateEnabled && courseCompletionProgress >= 100') && !courseViewSource.includes('course.certificateEnabled && Number(course.progress || 0) >= 100')],
 ];
 
 const failed = checks.filter(([, pass]) => !pass);
