@@ -133,6 +133,17 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     if (!activeLesson || activeLesson.type !== 'video') return undefined;
     return interactiveVideoProgress.find((item) => item.courseId === course.id && item.lessonId === activeLesson.id);
   }, [activeLesson, course.id, interactiveVideoProgress]);
+  const requiredVideoQuestionIds = useMemo(() => {
+    if (!activeLesson || activeLesson.type !== 'video') return [];
+    return (activeLesson.interactiveQuestions || [])
+      .filter((question) => question.mustPass)
+      .map((question) => question.id);
+  }, [activeLesson]);
+  const unansweredRequiredVideoQuestionIds = useMemo(() => {
+    if (requiredVideoQuestionIds.length === 0) return [];
+    const answeredQuestionIds = new Set(activeVideoProgress?.answeredQuestionIds || []);
+    return requiredVideoQuestionIds.filter((questionId) => !answeredQuestionIds.has(questionId));
+  }, [activeVideoProgress?.answeredQuestionIds, requiredVideoQuestionIds]);
   const saveInteractiveVideoProgress = useCallback((progressState: Pick<InteractiveVideoProgress, 'positionSeconds' | 'answeredQuestionIds'>) => {
     if (!activeLesson || activeLesson.type !== 'video') return;
     const next = normalizeInteractiveVideoProgress(course.id, activeLesson.id, progressState);
@@ -272,9 +283,9 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   }, [activeLesson?.id, activeTab, course.id]);
 
   const handleMarkComplete = () => {
-    if (activeLesson) {
-      markLessonComplete(activeLesson.id, course.id, activeLesson.title);
-    }
+    if (!activeLesson) return;
+    if (activeLesson.type === 'video' && unansweredRequiredVideoQuestionIds.length > 0) return;
+    markLessonComplete(activeLesson.id, course.id, activeLesson.title);
   };
 
   const toggleDarkMode = () => setIsDarkMode((current) => !current);
@@ -540,7 +551,8 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
                     <button
                       onClick={handleMarkComplete}
-                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all w-full sm:w-auto ${completedLessons.includes(activeLesson.id) ? 'bg-emerald-100 text-emerald-600' : 'bg-white border border-gray-200 hover:bg-gray-50 shadow-sm'}`}
+                      disabled={!completedLessons.includes(activeLesson.id) && unansweredRequiredVideoQuestionIds.length > 0}
+                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-auto ${completedLessons.includes(activeLesson.id) ? 'bg-emerald-100 text-emerald-600' : 'bg-white border border-gray-200 hover:bg-gray-50 shadow-sm'}`}
                     >
                       <CheckCircle size={18} /> {completedLessons.includes(activeLesson.id) ? 'مكتمل' : 'تحديد كمكتمل'}
                     </button>
@@ -560,6 +572,14 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                     </button>
                   </div>
                 </div>
+                {!completedLessons.includes(activeLesson.id) && unansweredRequiredVideoQuestionIds.length > 0 ? (
+                  <p
+                    data-testid="interactive-video-required-completion-block"
+                    className={`text-xs font-bold ${isDarkMode ? 'text-amber-300' : 'text-amber-700'}`}
+                  >
+                    أجب عن جميع الأسئلة الإلزامية داخل الفيديو قبل تحديد الدرس كمكتمل.
+                  </p>
+                ) : null}
 
                 <div className="pt-8">
                   {actionFeedback ? (

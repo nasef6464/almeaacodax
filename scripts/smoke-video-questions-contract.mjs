@@ -126,6 +126,15 @@ const checks = [
       source.coursePlayer.includes("api.updateMyPreferences({ interactiveVideoProgress: interactiveVideoProgressRef.current })"),
   ],
   [
+    "course lesson completion cannot bypass unanswered must-pass video questions",
+    source.coursePlayer.includes("requiredVideoQuestionIds") &&
+      source.coursePlayer.includes(".filter((question) => question.mustPass)") &&
+      source.coursePlayer.includes("unansweredRequiredVideoQuestionIds") &&
+      source.coursePlayer.includes("activeLesson.type === 'video' && unansweredRequiredVideoQuestionIds.length > 0") &&
+      source.coursePlayer.includes("disabled={!completedLessons.includes(activeLesson.id) && unansweredRequiredVideoQuestionIds.length > 0}") &&
+      source.coursePlayer.includes('data-testid="interactive-video-required-completion-block"'),
+  ],
+  [
     "video question overlay renders clean bank question content",
     source.videoPlayer.includes("normalizeQuestionHtml") &&
       source.videoPlayer.includes("bankQuestion?.imageUrl") &&
