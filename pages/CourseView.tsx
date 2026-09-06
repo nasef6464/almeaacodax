@@ -32,7 +32,7 @@ const CourseView: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(() => searchParams.get('learn') === '1');
     const requestedTab = searchParams.get('tab');
     const [certificateCode, setCertificateCode] = useState('');
-    const { user, enrolledCourses, hasScopedPackageAccess, courses } = useStore();
+    const { user, enrolledCourses, completedLessons, hasScopedPackageAccess, courses } = useStore();
     const isGuestUser = !user?.email || user.id === 'guest';
     const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
 
@@ -159,6 +159,12 @@ const CourseView: React.FC = () => {
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasPackageAccess;
     const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer);
+    const courseLessons = course.modules?.flatMap((module) => module.lessons || []) || [];
+    const completedLessonIds = new Set(completedLessons.map(String));
+    const completedCourseLessons = courseLessons.filter((lesson: any) => completedLessonIds.has(String(lesson.id || lesson._id))).length;
+    const courseCompletionProgress = courseLessons.length > 0
+        ? Math.round((completedCourseLessons / courseLessons.length) * 100)
+        : 0;
     const hasPlayablePreviewLesson = courseForCurrentAccess.modules?.some((module) =>
         module.lessons.some((lesson) => !lesson.isLocked),
     ) === true;
@@ -203,7 +209,7 @@ const CourseView: React.FC = () => {
         return (
             <div>
                 {courseNextAction}
-                {course.certificateEnabled && Number(course.progress || 0) >= 100 ? (
+                {course.certificateEnabled && courseCompletionProgress >= 100 ? (
                     <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
                         <button
                             onClick={async () => {
