@@ -53,6 +53,10 @@ export const lessonSchema = z.object({
             text: z.string().min(1),
             options: z.array(z.string()).min(2),
             correctOptionIndex: z.number().min(0),
+            type: z.enum(["mcq", "true_false"]).optional(),
+            imageUrl: z.string().optional(),
+            explanation: z.string().optional(),
+            videoUrl: z.string().optional(),
           })
           .optional(),
         mustPass: z.boolean().default(false),

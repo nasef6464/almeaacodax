@@ -62,9 +62,9 @@ const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, b
     <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/75 p-4" dir="rtl">
       <div className="w-full max-w-2xl rounded-2xl bg-white p-4 shadow-2xl sm:p-5">
         <div className="mb-3 text-xs font-bold text-indigo-600">سؤال سريع داخل الدرس</div>
-        {bankQuestion?.imageUrl ? (
+        {(bankQuestion?.imageUrl || inlineQuestion.imageUrl) ? (
           <img
-            src={bankQuestion.imageUrl}
+            src={bankQuestion?.imageUrl || inlineQuestion.imageUrl}
             alt="صورة السؤال"
             className="mb-3 max-h-56 w-full rounded-xl border border-gray-100 object-contain"
           />

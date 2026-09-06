@@ -6,6 +6,10 @@ const files = {
   contentRoutes: "server/src/routes/content.routes.ts",
   learningSchemas: "server/src/modules/content/http/learningContentSchemas.ts",
   lessonBuilder: "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
+  videoQuestionPicker: "dashboards/admin/builders/VideoQuestionPicker.tsx",
+  videoQuestionSnapshot: "utils/videoQuestionSnapshot.ts",
+  questionsApi: "services/apiGroups/questionsApi.ts",
+  quizRoutes: "server/src/routes/quiz.routes.ts",
   videoPlayer: "components/CustomVideoPlayer.tsx",
   videoModal: "components/VideoModal.tsx",
   subjectPage: "pages/SubjectLearningPage.tsx",
@@ -29,7 +33,7 @@ const checks = [
   [
     "lesson builder can author timed video questions",
     source.lessonBuilder.includes("أسئلة داخل الفيديو") &&
-      source.lessonBuilder.includes("اختيار من مركز الأسئلة") &&
+      source.lessonBuilder.includes("اختيار من بنك الأسئلة") &&
       source.lessonBuilder.includes("saveVideoQuestionToBank") &&
       source.lessonBuilder.includes("timestamp") &&
       source.lessonBuilder.includes("correctOptionIndex"),
@@ -40,23 +44,41 @@ const checks = [
       source.subjectPage.includes("interactiveQuestions={videoData.interactiveQuestions"),
   ],
   [
-    "lesson builder pulls from the full question center with relevant questions first",
-    source.lessonBuilder.includes("relevantVideoQuestions") &&
-      source.lessonBuilder.includes("otherVideoQuestions") &&
-      source.lessonBuilder.includes("availableVideoQuestions") &&
-      source.lessonBuilder.includes("filteredRelevantVideoQuestions") &&
-      source.lessonBuilder.includes("filteredOtherVideoQuestions") &&
-      source.lessonBuilder.includes("placeholder=\"ابحث بالمادة أو المهارة أو نص السؤال...\"") &&
-      source.lessonBuilder.includes("questionId: firstBankQuestion?.id") &&
-      source.lessonBuilder.includes("disabled={questions.length === 0}"),
+    "picker loads the authoritative question bank with server pagination and scoped filters",
+    source.lessonBuilder.includes("VideoQuestionPicker") &&
+      source.videoQuestionPicker.includes("api.getQuestionsPaginated") &&
+      source.videoQuestionPicker.includes("pathId: context.pathId") &&
+      source.videoQuestionPicker.includes("subject: context.subjectId") &&
+      source.videoQuestionPicker.includes("sectionId: sectionId") &&
+      source.videoQuestionPicker.includes("skillId: skillId") &&
+      source.videoQuestionPicker.includes("approvalStatus: 'approved'") &&
+      source.videoQuestionPicker.includes("hasExplanationVideo") &&
+      source.questionsApi.includes("hasExplanationVideo?: boolean") &&
+      source.quizRoutes.includes("query.hasExplanationVideo"),
   ],
   [
-    "lesson builder previews bank questions with taxonomy before linking",
-    source.lessonBuilder.includes("cleanQuestionText") &&
-      source.lessonBuilder.includes("questionMatchesVideoSearch") &&
-      source.lessonBuilder.includes("renderBankQuestionPreview") &&
-      source.lessonBuilder.includes("معاينة السؤال المرتبط الآن") &&
-      source.lessonBuilder.includes("استعرض السؤال قبل السحب"),
+    "picker requires explicit selection and blocks duplicates or essay questions",
+    source.videoQuestionPicker.includes("selectionMode") &&
+      source.videoQuestionPicker.includes("excludedQuestionIds") &&
+      source.videoQuestionPicker.includes("question.type === 'mcq' || question.type === 'true_false'") &&
+      source.lessonBuilder.includes("لا يمكن ربط السؤال نفسه أكثر من مرة") &&
+      !source.lessonBuilder.includes("firstBankQuestion"),
+  ],
+  [
+    "bank selection persists an immutable playback snapshot and legacy inline questions remain supported",
+    source.lessonBuilder.includes("createVideoQuestionSnapshot") &&
+      source.lessonBuilder.includes("questionId: question.id") &&
+      source.videoQuestionSnapshot.includes("correctOptionIndex: question.correctOptionIndex") &&
+      source.types.includes("Immutable playback snapshot") &&
+      source.learningSchemas.includes("imageUrl: z.string().optional()") &&
+      source.videoPlayer.includes("inlineQuestion.imageUrl"),
+  ],
+  [
+    "new questions use the unified builder and attach only after a successful approved response",
+    source.lessonBuilder.includes("allowedTypes={['mcq', 'true_false']}") &&
+      source.lessonBuilder.includes("const createdQuestion = await addQuestion") &&
+      source.lessonBuilder.includes("createdQuestion.approvalStatus") &&
+      source.lessonBuilder.includes("appendBankQuestions([createdQuestion])"),
   ],
   [
     "course player uses the same lesson video questions",

@@ -22,8 +22,10 @@ export interface QuestionQuery {
   skillId?: string;
   skillIds?: string;
   difficulty?: string;
+  type?: "mcq" | "true_false" | "essay";
   search?: string;
   approvalStatus?: string;
+  hasExplanationVideo?: boolean;
   summary?: boolean;
   noTotal?: boolean;
 }
