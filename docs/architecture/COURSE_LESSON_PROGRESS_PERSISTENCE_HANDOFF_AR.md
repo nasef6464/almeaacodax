@@ -5,7 +5,8 @@
 - PR: `#48`
 - Base main: `d9f1ecaae509ba063ae8e11d621afefe09bee653`
 - Exact runtime/test commit: `9d891c144107f0d00cbd14f498636defe14ae5ba`
-- Status: `VERIFIED`
+- Merge commit: `0224c91fe1e76a8e3aca255460514183ca2355a8`
+- Status: `VERIFIED / MERGED`
 
 ## الفجوة المثبتة
 
@@ -26,8 +27,16 @@
 - Platform V3 Recovery Gate `34024872805` — `SUCCESS`.
 - Refactor V2 Safety Gate `34024872806` — `SUCCESS`، ويتضمن frontend/API typecheck، production builds، immutable architecture، security/contracts.
 - Platform V3 Public UI Gate `34024872780` — `SUCCESS`، ويتضمن frontend typecheck/build وdesktop/mobile public/guarded UI audit.
-- Vercel status على `9d891c144107f0d00cbd14f498636defe14ae5ba` — `SUCCESS`.
+- Vercel exact-runtime deployment `dpl_BJSkVVRQB5zX4cyTbGxR69QUaBdC` على `9d891c144107f0d00cbd14f498636defe14ae5ba` — `READY`.
 - Backend Integration / Deep Pre-Merge / Live Role / role preview workflows تم `SKIPPED` وفق شروطها الحالية لأن الدفعة لا تغيّر backend runtime أو RBAC؛ لم يتم تعديل workflows لإجبار بوابات غير مرتبطة بنيويًا.
+
+## الدمج والنشر
+
+- PR `#48` أصبح Ready ثم دُمج إلى `main` بدمج عادي يحفظ التاريخ عند commit `0224c91fe1e76a8e3aca255460514183ca2355a8`.
+- Vercel لم ينشئ production deployment جديدًا للـmerge commit بسبب Hobby `build-rate-limit`، وليس بسبب build أو product regression؛ GitHub Vercel status للـmerge يشير صراحة إلى build-rate-limit.
+- آخر production deployment ما زال `READY` على main السابق `d9f1ecaae509ba063ae8e11d621afefe09bee653`.
+- production alias `https://almeaacodax.vercel.app/` تم فحصه بعد الدمج وأعاد HTTP `200 OK`.
+- لا ندّعي أن merge commit نفسه نُشر production؛ exact runtime preview قبل الدمج هو دليل deployability لهذه الدفعة.
 
 ## الحدود المحفوظة
 
@@ -37,9 +46,7 @@
 
 ## handoff للدفعة التالية
 
-بعد دمج PR #48 وتحقق deployment/health عند توفره:
-
-1. ابدأ من أحدث `main` على فرع Course System جديد ومحدد.
+1. ابدأ من أحدث `main` بعد هذا التحديث التوثيقي على `codex/course-system-next-gap-7`.
 2. أثبت فجوة واحدة فقط في رحلة Courses وفق الترتيب التجاري/التشغيلي.
 3. لا تعِد فتح Gates 1–6 بدون defect مثبت مستقل.
 4. لا توسع هذه الدفعة إلى تغيير API للتقدم أو migration تاريخية؛ أي تغيير persisted contract يحتاج owner authorization منفصل.
