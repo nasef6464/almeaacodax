@@ -14,6 +14,7 @@ const files = {
   videoModal: "components/VideoModal.tsx",
   subjectPage: "pages/SubjectLearningPage.tsx",
   coursePlayer: "components/CoursePlayer.tsx",
+  learningProgressSlice: "store/slices/learningProgressSlice.ts",
   authRoutes: "server/src/routes/auth.routes.ts",
   userModel: "server/src/models/User.ts",
   videoProgress: "utils/interactiveVideoProgress.ts",
@@ -133,6 +134,17 @@ const checks = [
       source.coursePlayer.includes("activeLesson.type === 'video' && unansweredRequiredVideoQuestionIds.length > 0") &&
       source.coursePlayer.includes("disabled={!completedLessons.includes(activeLesson.id) && unansweredRequiredVideoQuestionIds.length > 0}") &&
       source.coursePlayer.includes('data-testid="interactive-video-required-completion-block"'),
+  ],
+  [
+    "pending lesson completion is isolated by learner and course instead of a global lesson id",
+    source.learningProgressSlice.includes("buildPendingLessonCompletionKey") &&
+      source.learningProgressSlice.includes("user?.id || user?.email") &&
+      source.learningProgressSlice.includes("courseId") &&
+      source.learningProgressSlice.includes("lessonId") &&
+      source.learningProgressSlice.includes("pendingLessonCompletions.has(pendingCompletionKey)") &&
+      source.learningProgressSlice.includes("pendingLessonCompletions.add(pendingCompletionKey)") &&
+      source.learningProgressSlice.includes("pendingLessonCompletions.delete(pendingCompletionKey)") &&
+      !source.learningProgressSlice.includes("pendingLessonCompletions.has(lessonId)"),
   ],
   [
     "video question overlay renders clean bank question content",
