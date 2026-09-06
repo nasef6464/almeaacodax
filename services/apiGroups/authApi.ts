@@ -13,136 +13,167 @@ type ApiRequest = <T>(path: string, options?: {
   skipCsrf?: boolean;
 }) => Promise<T>;
 
-export const createAuthApi = (request: ApiRequest) => ({
-  login: (email: string, password: string) =>
-    request<{ token?: string; user: unknown }>("/auth/login", {
-      method: "POST",
-      body: { email, password },
-    }),
+type InteractiveVideoPreference = {
+  courseId: string;
+  lessonId: string;
+  positionSeconds: number;
+  answeredQuestionIds: string[];
+  updatedAt: number;
+};
 
-  whatsappStartLogin: (phone: string) =>
-    request<{ message: string; expiresInSeconds: number }>("/auth/whatsapp/start", {
-      method: "POST",
-      body: { phone },
-    }),
+type PreferencePayload = {
+  favorites?: string[];
+  reviewLater?: string[];
+  enrolledPaths?: string[];
+  completedLessons?: string[];
+  interactiveVideoProgress?: InteractiveVideoPreference[];
+};
 
-  whatsappVerifyLogin: (phone: string, code: string) =>
-    request<{ token?: string; user: unknown }>("/auth/whatsapp/verify", {
-      method: "POST",
-      body: { phone, code },
-    }),
+export const createAuthApi = (request: ApiRequest) => {
+  let preferenceUpdateQueue: Promise<void> = Promise.resolve();
 
-  nationalIdLogin: (nationalId: string, password: string) =>
-    request<{ token?: string; user: unknown }>("/auth/login/national-id", {
-      method: "POST",
-      body: { nationalId, password },
-    }),
+  const waitForPreferenceUpdates = <T>(operation: () => Promise<T>) =>
+    preferenceUpdateQueue.catch(() => undefined).then(operation);
 
-  updateMyIdentity: (payload: { nationalId?: string | null; phone?: string | null }, token?: string | null) =>
-    request<{ user: unknown }>("/auth/me/identity", {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
+  const updateMyPreferences = (payload: PreferencePayload, token?: string | null) => {
+    const operation = preferenceUpdateQueue
+      .catch(() => undefined)
+      .then(() => request<{ user: unknown }>("/auth/me/preferences", {
+        method: "PATCH",
+        body: payload,
+        token,
+      }));
 
-  parentLinkStudent: (payload: { nationalId?: string; phone?: string }) =>
-    request<{ message: string; student: { id: string; name: string; role: string; schoolId?: string | null } }>(
-      "/auth/parent/link-student",
-      { method: "POST", body: payload },
-    ),
+    preferenceUpdateQueue = operation.then(() => undefined, () => undefined);
+    return operation;
+  };
 
-  parentUnlinkStudent: (studentId: string) =>
-    request<{ message: string }>(`/auth/parent/link-student/${studentId}`, { method: "DELETE" }),
+  return {
+    login: (email: string, password: string) =>
+      waitForPreferenceUpdates(() => request<{ token?: string; user: unknown }>("/auth/login", {
+        method: "POST",
+        body: { email, password },
+      })),
 
-  register: (name: string, email: string, password: string) =>
-    request<{ token?: string; user: unknown }>("/auth/register", {
-      method: "POST",
-      body: { name, email, password },
-    }),
+    whatsappStartLogin: (phone: string) =>
+      request<{ message: string; expiresInSeconds: number }>("/auth/whatsapp/start", {
+        method: "POST",
+        body: { phone },
+      }),
 
-  logout: () =>
-    request<void>("/auth/logout", {
-      method: "POST",
-      token: null,
-    }),
+    whatsappVerifyLogin: (phone: string, code: string) =>
+      waitForPreferenceUpdates(() => request<{ token?: string; user: unknown }>("/auth/whatsapp/verify", {
+        method: "POST",
+        body: { phone, code },
+      })),
 
-  forgotPassword: (email: string) =>
-    request<{ message: string }>("/auth/forgot-password", {
-      method: "POST",
-      body: { email },
-    }),
+    nationalIdLogin: (nationalId: string, password: string) =>
+      waitForPreferenceUpdates(() => request<{ token?: string; user: unknown }>("/auth/login/national-id", {
+        method: "POST",
+        body: { nationalId, password },
+      })),
 
-  resetPassword: (token: string, password: string) =>
-    request<{ message: string }>("/auth/reset-password", {
-      method: "POST",
-      body: { token, password },
-    }),
+    updateMyIdentity: (payload: { nationalId?: string | null; phone?: string | null }, token?: string | null) =>
+      request<{ user: unknown }>("/auth/me/identity", {
+        method: "PATCH",
+        body: payload,
+        token,
+      }),
 
-  verifyEmail: (token: string) =>
-    request<{ user: unknown; message: string }>("/auth/email/verify", {
-      method: "POST",
-      body: { token },
-    }),
+    parentLinkStudent: (payload: { nationalId?: string; phone?: string }) =>
+      request<{ message: string; student: { id: string; name: string; role: string; schoolId?: string | null } }>(
+        "/auth/parent/link-student",
+        { method: "POST", body: payload },
+      ),
 
-  resendEmailVerification: (token?: string | null) =>
-    request<{ message: string; user?: unknown }>("/auth/email/resend-verification", {
-      method: "POST",
-      body: {},
-      token,
-    }),
+    parentUnlinkStudent: (studentId: string) =>
+      request<{ message: string }>(`/auth/parent/link-student/${studentId}`, { method: "DELETE" }),
 
-  createAdminUser: (payload: unknown, token?: string | null) =>
-    request<{ user: unknown }>("/auth/admin/users", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
+    register: (name: string, email: string, password: string) =>
+      waitForPreferenceUpdates(() => request<{ token?: string; user: unknown }>("/auth/register", {
+        method: "POST",
+        body: { name, email, password },
+      })),
 
-  getAdminUsers: async (pagination: PaginationOptions = {}) => {
-    const payload = await request<{ users: unknown[]; pagination?: PaginatedResponseShape }>(
-      withQuery("/auth/admin/users", { limit: 100, ...pagination }),
-    );
+    logout: () =>
+      waitForPreferenceUpdates(() => request<void>("/auth/logout", {
+        method: "POST",
+        token: null,
+      })),
 
-    return {
-      ...payload,
-      users: extractList(payload, "users"),
-      pagination: payload.pagination || {
-        page: 1,
-        limit: 100,
-        total: 0,
-        totalPages: 0,
-        items: 0,
-      },
-    };
-  },
+    forgotPassword: (email: string) =>
+      request<{ message: string }>("/auth/forgot-password", {
+        method: "POST",
+        body: { email },
+      }),
 
-  updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
-    request<{ user: unknown }>(`/auth/admin/users/${id}`, {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
+    resetPassword: (token: string, password: string) =>
+      request<{ message: string }>("/auth/reset-password", {
+        method: "POST",
+        body: { token, password },
+      }),
 
-  deleteAdminUser: (id: string, token?: string | null) =>
-    request<{ ok: boolean }>(`/auth/admin/users/${id}`, {
-      method: "DELETE",
-      token,
-    }),
+    verifyEmail: (token: string) =>
+      request<{ user: unknown; message: string }>("/auth/email/verify", {
+        method: "POST",
+        body: { token },
+      }),
 
-  getCurrentUser: () =>
-    request<{ user: unknown }>("/auth/me"),
+    resendEmailVerification: (token?: string | null) =>
+      request<{ message: string; user?: unknown }>("/auth/email/resend-verification", {
+        method: "POST",
+        body: {},
+        token,
+      }),
 
-  updateMyProfile: (payload: { name?: string; avatar?: string }, token?: string | null) =>
-    request<{ user: unknown }>("/auth/me/profile", {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
+    createAdminUser: (payload: unknown, token?: string | null) =>
+      request<{ user: unknown }>("/auth/admin/users", {
+        method: "POST",
+        body: payload,
+        token,
+      }),
 
-  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[]; completedLessons?: string[]; interactiveVideoProgress?: Array<{ courseId: string; lessonId: string; positionSeconds: number; answeredQuestionIds: string[]; updatedAt: number }> }, token?: string | null) =>
-    request<{ user: unknown }>("/auth/me/preferences", {
-      method: "PATCH",
-      body: payload,
-      token,
-    }),
-});
+    getAdminUsers: async (pagination: PaginationOptions = {}) => {
+      const payload = await request<{ users: unknown[]; pagination?: PaginatedResponseShape }>(
+        withQuery("/auth/admin/users", { limit: 100, ...pagination }),
+      );
+
+      return {
+        ...payload,
+        users: extractList(payload, "users"),
+        pagination: payload.pagination || {
+          page: 1,
+          limit: 100,
+          total: 0,
+          totalPages: 0,
+          items: 0,
+        },
+      };
+    },
+
+    updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
+      request<{ user: unknown }>(`/auth/admin/users/${id}`, {
+        method: "PATCH",
+        body: payload,
+        token,
+      }),
+
+    deleteAdminUser: (id: string, token?: string | null) =>
+      request<{ ok: boolean }>(`/auth/admin/users/${id}`, {
+        method: "DELETE",
+        token,
+      }),
+
+    getCurrentUser: () =>
+      request<{ user: unknown }>("/auth/me"),
+
+    updateMyProfile: (payload: { name?: string; avatar?: string }, token?: string | null) =>
+      request<{ user: unknown }>("/auth/me/profile", {
+        method: "PATCH",
+        body: payload,
+        token,
+      }),
+
+    updateMyPreferences,
+  };
+};

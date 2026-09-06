@@ -9,6 +9,7 @@ const files = {
   videoQuestionPicker: "dashboards/admin/builders/VideoQuestionPicker.tsx",
   videoQuestionSnapshot: "utils/videoQuestionSnapshot.ts",
   questionsApi: "services/apiGroups/questionsApi.ts",
+  authApi: "services/apiGroups/authApi.ts",
   quizRoutes: "server/src/routes/quiz.routes.ts",
   videoPlayer: "components/CustomVideoPlayer.tsx",
   videoModal: "components/VideoModal.tsx",
@@ -118,6 +119,17 @@ const checks = [
       source.authRoutes.includes("interactiveVideoProgress") &&
       source.authRoutes.includes("max(100)") &&
       source.userModel.includes("interactiveVideoProgress"),
+  ],
+  [
+    "authenticated preference writes are serialized before auth-session transitions",
+    source.authApi.includes("let preferenceUpdateQueue: Promise<void> = Promise.resolve()") &&
+      source.authApi.includes("const waitForPreferenceUpdates") &&
+      source.authApi.includes("const updateMyPreferences") &&
+      source.authApi.includes("preferenceUpdateQueue = operation.then(() => undefined, () => undefined)") &&
+      source.authApi.includes("login: (email: string, password: string) =>\n      waitForPreferenceUpdates") &&
+      source.authApi.includes("logout: () =>\n      waitForPreferenceUpdates") &&
+      source.authApi.includes("whatsappVerifyLogin: (phone: string, code: string) =>\n      waitForPreferenceUpdates") &&
+      source.authApi.includes("nationalIdLogin: (nationalId: string, password: string) =>\n      waitForPreferenceUpdates"),
   ],
   [
     "pending authenticated video progress flushes on unmount without crossing user sessions",
