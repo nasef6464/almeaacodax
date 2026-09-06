@@ -63,7 +63,12 @@ const courseSchema = z.object({
     const text = typeof value === "string" ? value.trim() : "";
     return text || "Platform Team";
   }, z.string().min(1)),
-  price: numberWithDefault(0),
+  price: z.preprocess((value) => {
+    if (value === "" || value === null || value === undefined) {
+      return 0;
+    }
+    return value;
+  }, z.coerce.number().finite().min(0).default(0)),
   currency: z.string().default("SAR"),
   duration: numberWithDefault(0),
   level: z.enum(["Beginner", "Intermediate", "Advanced"]).default("Beginner"),

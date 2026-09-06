@@ -307,13 +307,14 @@ jobs:
             local sha="$1"
             local json
             json="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${sha}/status")"
-            printf '%s\t%s\n' \
+            printf '%s\t%s\t%s\n' \
               "$(printf '%s' "$json" | jq -r '[.statuses[] | select(.context == "Vercel")][0].state // "missing"')" \
-              "$(printf '%s' "$json" | jq -r '[.statuses[] | select(.context == "Vercel")][0].target_url // ""')"
+              "$(printf '%s' "$json" | jq -r '[.statuses[] | select(.context == "Vercel")][0].target_url // ""')" \
+              "$(printf '%s' "$json" | jq -r '[.statuses[] | select(.context == "Vercel")][0].description // ""')"
           }
 
           for attempt in $(seq 1 60); do
-            IFS=$'\t' read -r STATE TARGET_URL < <(read_vercel_state "$DEPLOY_SHA")
+            IFS=$'\t' read -r STATE TARGET_URL DESCRIPTION < <(read_vercel_state "$DEPLOY_SHA")
             echo "Attempt ${attempt}/60: Vercel=${STATE}"
             case "$STATE" in
               success)
@@ -322,16 +323,22 @@ jobs:
                 exit 0
                 ;;
               failure|error)
-                echo "Vercel reported deployment failure for ${DEPLOY_SHA}."
-                exit 1
+                if [[ "$DESCRIPTION" != *"rate limited"* && "$DESCRIPTION" != *"rate limit"* ]]; then
+                  echo "Vercel reported deployment failure for ${DEPLOY_SHA}: ${DESCRIPTION}"
+                  exit 1
+                fi
+                echo "Vercel could not create an exact-head preview because of build rate limiting; checking a READY runtime ancestor."
                 ;;
             esac
 
-            if [ "$attempt" -eq 12 ] && [ "$STATE" = "missing" ]; then
-              echo "Exact head has no Vercel status after two minutes; checking whether it is docs/CI-only."
+            if { [ "$attempt" -eq 12 ] && [ "$STATE" = "missing" ]; } || [[ "$DESCRIPTION" == *"rate limited"* || "$DESCRIPTION" == *"rate limit"* ]]; then
+              if [ "$STATE" = "missing" ]; then
+                echo "Exact head has no Vercel status after two minutes; checking whether it is docs/CI-only."
+              fi
+
               while read -r ancestor; do
                 [ -n "$ancestor" ] || continue
-                IFS=$'\t' read -r ANCESTOR_STATE ANCESTOR_URL < <(read_vercel_state "$ancestor")
+                IFS=$'\t' read -r ANCESTOR_STATE ANCESTOR_URL ANCESTOR_DESCRIPTION < <(read_vercel_state "$ancestor")
                 if [ "$ANCESTOR_STATE" != "success" ]; then
                   continue
                 fi
@@ -350,6 +357,11 @@ jobs:
                 echo "Exact-head preview is still required."
                 break
               done < <(git rev-list --first-parent "${DEPLOY_SHA}^" | head -25)
+
+              if [[ "$DESCRIPTION" == *"rate limited"* || "$DESCRIPTION" == *"rate limit"* ]]; then
+                echo "No Vercel-ready runtime-equivalent ancestor was found for the rate-limited exact head."
+                exit 1
+              fi
             fi
 
             sleep 10
