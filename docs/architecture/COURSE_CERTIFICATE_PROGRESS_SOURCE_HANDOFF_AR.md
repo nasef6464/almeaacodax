@@ -5,7 +5,7 @@
 - PR: `#50`
 - Base main: `bd1a6fab4c82ef32ca29b283e3c619090dc98aa1`
 - Exact runtime/test commit: `1e9500e239f17b23c50cd21bcb2d5b2ef1a6f4f7`
-- Status: `PARTIAL — runtime checks green/in progress; merge blocked by exact-runtime Vercel build-rate-limit`
+- Status: `PARTIAL — product/runtime verification green; merge blocked only by exact-runtime Vercel build-rate-limit`
 
 ## الفجوة المثبتة
 
@@ -27,10 +27,14 @@
 - Platform V3 Recovery Gate `34027469605` — `SUCCESS`.
 - Course Free Enrollment UI Gate `34027469619` — `SUCCESS`.
 - Refactor V2 Production Readiness Gate `34027469647` — `SUCCESS`.
-- Refactor V2 Safety Gate `34027469642` — still running at handoff capture; completed checks so far include frontend/API typecheck, frontend/API production builds, architecture/module boundaries, security and product contracts.
-- Platform V3 Public UI Gate `34027469611` — still running at handoff capture after successful typecheck/build/browser setup.
-- Backend Integration / Deep Pre-Merge / Live Role / role preview gates are `SKIPPED` under their existing path/role conditions because this bounded batch changes no backend runtime or RBAC.
-- Vercel exact-runtime status — `FAILURE` with explicit Hobby `build-rate-limit`; no build/product regression is evidenced by that status.
+- Platform V3 Public UI Gate `34027469611` — `SUCCESS`؛ frontend typecheck/build وdesktop/mobile public/guarded audit كلها خضراء.
+- Refactor V2 Safety Gate `34027469642` — الـ`baseline-quality-gate` نفسه `SUCCESS` بالكامل: frontend/API typecheck، production builds، architecture/module boundaries، school/reports/student journey، runtime/security/contracts كلها نجحت. workflow conclusion النهائي `FAILURE` فقط لأن job منفصل `Vercel preview deployment gate` فشل في انتظار preview.
+- Backend Integration / Deep Pre-Merge / Live Role / role preview gates هي `SKIPPED` وفق شروط path/role الحالية لأن هذه الدفعة لا تغيّر backend runtime أو RBAC.
+- Vercel exact-runtime status — `FAILURE` مع target صريح `upgradeToPro=build-rate-limit`. هذا مانع Hobby rate-limit خارجي، وليس build/product regression؛ لا يوجد exact-runtime READY deployment لهذه الدفعة حتى الآن.
+
+## قرار الدمج
+
+لا يتم جعل PR `#50` Ready ولا دمجه الآن. ملفات runtime تغيرت، وعقد Safety الحالي ما زال يطلب deployability evidence للرأس التنفيذي؛ لذلك لا يجوز استخدام production/preview ancestor لإخفاء غياب exact-runtime deployment. إعادة الفحص التالية تبدأ من PR نفسه، ولا تفتح فجوة Courses جديدة قبله.
 
 ## الحدود المحفوظة
 
@@ -41,6 +45,6 @@
 ## handoff
 
 1. افحص PR `#50` نفسه أولًا في التشغيل التالي.
-2. لا تبدأ فجوة Course System جديدة قبل وصول Safety/Public UI إلى terminal ووجود دليل deployability مقبول وفق عقد Vercel الحالي.
-3. إذا أصبحت كل البوابات المطلوبة خضراء على runtime commit النهائي، حدّث هذا handoff إلى `VERIFIED`, اجعل PR Ready، ادمجه بدمج يحفظ التاريخ، تحقق من deployment/health عند توفره، ثم أنشئ فرعًا جديدًا من أحدث `main`.
+2. أعد فحص Vercel exact-runtime status على `1e9500e239f17b23c50cd21bcb2d5b2ef1a6f4f7`/الـruntime-equivalent head؛ لا تغيّر runtime أو CI contract لمجرد تجاوز rate-limit.
+3. إذا أصبحت البوابات المطلوبة خضراء مع deployability evidence مقبول، حدّث هذا handoff إلى `VERIFIED`, اجعل PR Ready، ادمجه بدمج يحفظ التاريخ، تحقق من deployment/health عند توفره، ثم أنشئ فرعًا جديدًا من أحدث `main`.
 4. لا تغيّر server certificate semantics أو persisted progress contract أو تجري migration تاريخية ضمن هذا batch.
