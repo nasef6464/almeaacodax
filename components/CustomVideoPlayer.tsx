@@ -198,7 +198,8 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, i
 
   const resolveQuestion = (isCorrect: boolean) => {
     if (!activeQuestion) return;
-    const nextAnsweredQuestionIds = new Set(answeredQuestionIds).add(activeQuestion.id);
+    const nextAnsweredQuestionIds = new Set(answeredQuestionIds);
+    if (isCorrect || !activeQuestion.mustPass) nextAnsweredQuestionIds.add(activeQuestion.id);
     setAnsweredQuestionIds(nextAnsweredQuestionIds);
     answeredQuestionIdsRef.current = nextAnsweredQuestionIds;
     if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
@@ -427,7 +428,8 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
 
   const resolveQuestion = (isCorrect: boolean) => {
     if (!activeQuestion) return;
-    const nextAnsweredQuestionIds = new Set(answeredQuestionIds).add(activeQuestion.id);
+    const nextAnsweredQuestionIds = new Set(answeredQuestionIds);
+    if (isCorrect || !activeQuestion.mustPass) nextAnsweredQuestionIds.add(activeQuestion.id);
     setAnsweredQuestionIds(nextAnsweredQuestionIds);
     if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
       const currentTime = videoRef.current?.currentTime || 0;
