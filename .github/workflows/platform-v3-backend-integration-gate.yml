@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   isolated-backend-integration:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe' || github.event.pull_request.head.ref == 'codex/course-commercial-journey'
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe' || github.event.pull_request.head.ref == 'codex/course-commercial-journey' || github.event.pull_request.head.ref == 'codex/course-system-next-gap-2'
     name: Auth + RBAC + assessments + courses + commerce on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 20
