@@ -42,7 +42,12 @@ check('direct enrollment cannot bypass paid course purchase and remains idempote
   assert.ok(route.includes('COURSE_PURCHASE_REQUIRED'));
   assert.ok(route.includes('if (Number(course.price || 0) > 0)'));
   assert.ok(route.includes('alreadyEnrolled: true'));
-  assert.ok(route.includes('currentPurchased.includes(courseId) || currentPurchased.includes(requestedCourseId)'));
+  assert.ok(route.includes('const currentEnrolled = Array.isArray(user.enrolledCourses)'));
+  assert.ok(route.includes('currentEnrolled.includes(courseId)'));
+  assert.ok(route.includes('currentPurchased.includes(courseId)'));
+  assert.ok(route.includes('currentEnrolled.push(courseId)'));
+  assert.ok(route.includes('user.enrolledCourses = currentEnrolled'));
+  assert.ok(!route.includes('subscriptionObj.purchasedCourses = currentPurchased'));
   assert.ok(route.includes('const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);'));
   assert.ok(route.includes('await CourseModel.updateOne({ _id: course._id }, { $inc: { studentCount: 1 } });'));
 });

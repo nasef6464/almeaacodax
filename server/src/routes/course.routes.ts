@@ -727,11 +727,19 @@ const handleCourseEnrollment = asyncHandler(async (req, res) => {
   }
 
   const courseId = String(course.id || course._id || requestedCourseId);
+  const currentEnrolled = Array.isArray(user.enrolledCourses)
+    ? user.enrolledCourses.map(String)
+    : [];
   const currentPurchased = Array.isArray(user.subscription?.purchasedCourses)
     ? user.subscription.purchasedCourses.map(String)
     : [];
 
-  if (currentPurchased.includes(courseId) || currentPurchased.includes(requestedCourseId)) {
+  if (
+    currentEnrolled.includes(courseId) ||
+    currentEnrolled.includes(requestedCourseId) ||
+    currentPurchased.includes(courseId) ||
+    currentPurchased.includes(requestedCourseId)
+  ) {
     return res.status(StatusCodes.OK).json({
       success: true,
       enrolled: true,
@@ -751,10 +759,8 @@ const handleCourseEnrollment = asyncHandler(async (req, res) => {
     });
   }
 
-  currentPurchased.push(courseId);
-  const subscriptionObj = user.subscription || ({ plan: "free", status: "active", purchasedCourses: [] } as any);
-  subscriptionObj.purchasedCourses = currentPurchased;
-  user.subscription = subscriptionObj;
+  currentEnrolled.push(courseId);
+  user.enrolledCourses = currentEnrolled;
   await user.save();
 
   await CourseModel.updateOne({ _id: course._id }, { $inc: { studentCount: 1 } });
