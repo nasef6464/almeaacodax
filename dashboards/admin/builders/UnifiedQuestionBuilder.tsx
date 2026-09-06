@@ -12,6 +12,9 @@ interface UnifiedQuestionBuilderProps {
   subjectId?: string;
   sectionId?: string;
   generateOnOpen?: boolean;
+  /** Restricts a contextual caller (such as interactive video) without changing the general question editor. */
+  allowedTypes?: Question['type'][];
+  isSaving?: boolean;
 }
 
 const emptyMcqOptions = ['', '', '', ''];
@@ -53,6 +56,8 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   subjectId,
   sectionId,
   generateOnOpen = false,
+  allowedTypes,
+  isSaving = false,
 }) => {
   const { skills, subjects, sections, paths } = useStore();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -275,9 +280,9 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
-                <option value="mcq">اختيار من متعدد</option>
-                <option value="true_false">صح أم خطأ</option>
-                <option value="essay">مقالي / نصي</option>
+                {(!allowedTypes || allowedTypes.includes('mcq')) && <option value="mcq">اختيار من متعدد</option>}
+                {(!allowedTypes || allowedTypes.includes('true_false')) && <option value="true_false">صح أم خطأ</option>}
+                {(!allowedTypes || allowedTypes.includes('essay')) && <option value="essay">مقالي / نصي</option>}
               </select>
             </div>
             <div>
@@ -462,10 +467,11 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           </button>
           <button
             onClick={handleValidatedSave}
+            disabled={isSaving}
             data-testid="question-builder-save"
-            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <Save size={18} /> حفظ السؤال
+            <Save size={18} /> {isSaving ? 'جارٍ حفظ السؤال...' : 'حفظ السؤال'}
           </button>
         </div>
       </div>

@@ -139,7 +139,7 @@ export const createAuthApi = (request: ApiRequest) => ({
       token,
     }),
 
-  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[]; completedLessons?: string[] }, token?: string | null) =>
+  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[]; completedLessons?: string[]; interactiveVideoProgress?: Array<{ courseId: string; lessonId: string; positionSeconds: number; answeredQuestionIds: string[]; updatedAt: number }> }, token?: string | null) =>
     request<{ user: unknown }>("/auth/me/preferences", {
       method: "PATCH",
       body: payload,

@@ -15,7 +15,7 @@ import {
 import { AnimatePresence, motion } from 'motion/react';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { reportClientEvent } from '../services/clientTelemetry';
-import { InteractiveQuestion, Question } from '../types';
+import { InteractiveQuestion, InteractiveVideoProgress, Question } from '../types';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 
 interface CustomVideoPlayerProps {
@@ -23,6 +23,8 @@ interface CustomVideoPlayerProps {
   title?: string;
   interactiveQuestions?: InteractiveQuestion[];
   questionBank?: Question[];
+  initialProgress?: Pick<InteractiveVideoProgress, 'positionSeconds' | 'answeredQuestionIds'>;
+  onInteractiveProgress?: (progress: Pick<InteractiveVideoProgress, 'positionSeconds' | 'answeredQuestionIds'>) => void;
 }
 
 interface NormalizedVideoSource {
@@ -39,6 +41,8 @@ interface PlyrYouTubePlayerProps {
   title?: string;
   interactiveQuestions?: InteractiveQuestion[];
   questionBank?: Question[];
+  initialProgress?: Pick<InteractiveVideoProgress, 'positionSeconds' | 'answeredQuestionIds'>;
+  onInteractiveProgress?: (progress: Pick<InteractiveVideoProgress, 'positionSeconds' | 'answeredQuestionIds'>) => void;
 }
 
 interface VideoQuestionOverlayProps {
@@ -62,9 +66,9 @@ const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, b
     <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/75 p-4" dir="rtl">
       <div className="w-full max-w-2xl rounded-2xl bg-white p-4 shadow-2xl sm:p-5">
         <div className="mb-3 text-xs font-bold text-indigo-600">سؤال سريع داخل الدرس</div>
-        {bankQuestion?.imageUrl ? (
+        {(bankQuestion?.imageUrl || inlineQuestion.imageUrl) ? (
           <img
-            src={bankQuestion.imageUrl}
+            src={bankQuestion?.imageUrl || inlineQuestion.imageUrl}
             alt="صورة السؤال"
             className="mb-3 max-h-56 w-full rounded-xl border border-gray-100 object-contain"
           />
@@ -106,11 +110,22 @@ const getDueVideoQuestion = (
     })
     .sort((first, second) => first.timestamp - second.timestamp)[0] || null;
 
-const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, interactiveQuestions = [], questionBank = [] }) => {
+const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, interactiveQuestions = [], questionBank = [], initialProgress, onInteractiveProgress }) => {
   const playerElementRef = useRef<HTMLDivElement>(null);
   const playerInstanceRef = useRef<Plyr | null>(null);
   const [activeQuestion, setActiveQuestion] = useState<InteractiveQuestion | null>(null);
-  const [answeredQuestionIds, setAnsweredQuestionIds] = useState<Set<string>>(() => new Set());
+  const initialProgressRef = useRef(initialProgress);
+  const [answeredQuestionIds, setAnsweredQuestionIds] = useState<Set<string>>(() => new Set(initialProgressRef.current?.answeredQuestionIds || []));
+  const lastReportedSecondRef = useRef(-1);
+  const activeQuestionRef = useRef<InteractiveQuestion | null>(null);
+  const answeredQuestionIdsRef = useRef(answeredQuestionIds);
+  const questionConfigRef = useRef({ interactiveQuestions, questionBank });
+  const progressCallbackRef = useRef(onInteractiveProgress);
+
+  useEffect(() => { activeQuestionRef.current = activeQuestion; }, [activeQuestion]);
+  useEffect(() => { answeredQuestionIdsRef.current = answeredQuestionIds; }, [answeredQuestionIds]);
+  useEffect(() => { questionConfigRef.current = { interactiveQuestions, questionBank }; }, [interactiveQuestions, questionBank]);
+  useEffect(() => { progressCallbackRef.current = onInteractiveProgress; }, [onInteractiveProgress]);
 
   useEffect(() => {
     if (!playerElementRef.current) return undefined;
@@ -146,13 +161,20 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, i
     } as Plyr.Options);
 
     playerInstanceRef.current = player;
+    player.once('ready', () => {
+      if (initialProgressRef.current?.positionSeconds) player.currentTime = initialProgressRef.current.positionSeconds;
+    });
     player.on('timeupdate', () => {
-      if (activeQuestion) return;
+      if (activeQuestionRef.current) return;
       const currentTime = Number(player.currentTime || 0);
-      const dueQuestion = getDueVideoQuestion(interactiveQuestions, questionBank, answeredQuestionIds, currentTime);
+      const dueQuestion = getDueVideoQuestion(questionConfigRef.current.interactiveQuestions, questionConfigRef.current.questionBank, answeredQuestionIdsRef.current, currentTime);
       if (dueQuestion) {
         player.pause();
         setActiveQuestion(dueQuestion);
+      }
+      if (Math.floor(currentTime) - lastReportedSecondRef.current >= 10) {
+        lastReportedSecondRef.current = Math.floor(currentTime);
+        progressCallbackRef.current?.({ positionSeconds: currentTime, answeredQuestionIds: Array.from(answeredQuestionIdsRef.current) });
       }
     });
     player.on('error', (event) => {
@@ -172,11 +194,14 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, i
       playerInstanceRef.current?.destroy();
       playerInstanceRef.current = null;
     };
-  }, [videoId, interactiveQuestions, questionBank, answeredQuestionIds, activeQuestion]);
+  }, [videoId]);
 
   const resolveQuestion = (isCorrect: boolean) => {
     if (!activeQuestion) return;
-    setAnsweredQuestionIds((previous) => new Set(previous).add(activeQuestion.id));
+    const nextAnsweredQuestionIds = new Set(answeredQuestionIds);
+    if (isCorrect || !activeQuestion.mustPass) nextAnsweredQuestionIds.add(activeQuestion.id);
+    setAnsweredQuestionIds(nextAnsweredQuestionIds);
+    answeredQuestionIdsRef.current = nextAnsweredQuestionIds;
     if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
       const player = playerInstanceRef.current;
       if (player) {
@@ -184,6 +209,7 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, i
       }
     }
     setActiveQuestion(null);
+    progressCallbackRef.current?.({ positionSeconds: Number(playerInstanceRef.current?.currentTime || 0), answeredQuestionIds: Array.from(nextAnsweredQuestionIds) });
     playerInstanceRef.current?.play();
   };
 
@@ -298,7 +324,7 @@ const normalizeVideoUrl = (rawUrl: string) => {
   return { playerUrl: safeUrl, externalUrl: safeUrl, provider: 'file' };
 };
 
-export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title, interactiveQuestions = [], questionBank = [] }) => {
+export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title, interactiveQuestions = [], questionBank = [], initialProgress, onInteractiveProgress }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoSource = normalizeVideoUrl(url);
@@ -314,7 +340,9 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasPlaybackError, setHasPlaybackError] = useState(false);
   const [activeQuestion, setActiveQuestion] = useState<InteractiveQuestion | null>(null);
-  const [answeredQuestionIds, setAnsweredQuestionIds] = useState<Set<string>>(() => new Set());
+  const initialProgressRef = useRef(initialProgress);
+  const [answeredQuestionIds, setAnsweredQuestionIds] = useState<Set<string>>(() => new Set(initialProgressRef.current?.answeredQuestionIds || []));
+  const lastReportedSecondRef = useRef(-1);
 
   useEffect(() => {
     setPlaying(false);
@@ -322,7 +350,8 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     setDuration(0);
     setHasPlaybackError(false);
     setActiveQuestion(null);
-    setAnsweredQuestionIds(new Set());
+    setAnsweredQuestionIds(new Set(initialProgressRef.current?.answeredQuestionIds || []));
+    lastReportedSecondRef.current = -1;
   }, [normalizedUrl]);
 
   useEffect(() => {
@@ -390,11 +419,18 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
         setActiveQuestion(dueQuestion);
       }
     }
+    const positionSeconds = Number(state.playedSeconds || 0);
+    if (Math.floor(positionSeconds) - lastReportedSecondRef.current >= 10) {
+      lastReportedSecondRef.current = Math.floor(positionSeconds);
+      onInteractiveProgress?.({ positionSeconds, answeredQuestionIds: Array.from(answeredQuestionIds) });
+    }
   };
 
   const resolveQuestion = (isCorrect: boolean) => {
     if (!activeQuestion) return;
-    setAnsweredQuestionIds((previous) => new Set(previous).add(activeQuestion.id));
+    const nextAnsweredQuestionIds = new Set(answeredQuestionIds);
+    if (isCorrect || !activeQuestion.mustPass) nextAnsweredQuestionIds.add(activeQuestion.id);
+    setAnsweredQuestionIds(nextAnsweredQuestionIds);
     if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
       const currentTime = videoRef.current?.currentTime || 0;
       const targetTime = Math.max(0, activeQuestion.rewatchTimestamp ?? currentTime - 15);
@@ -403,6 +439,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
       }
     }
     setActiveQuestion(null);
+    onInteractiveProgress?.({ positionSeconds: Number(videoRef.current?.currentTime || 0), answeredQuestionIds: Array.from(nextAnsweredQuestionIds) });
     void videoRef.current?.play().catch(() => setPlaying(false));
   };
 
@@ -418,6 +455,9 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     setHasPlaybackError(false);
     const playerDuration = videoRef.current?.duration || 0;
     if (playerDuration > 0) setDuration(playerDuration);
+    if (videoRef.current && initialProgressRef.current?.positionSeconds) {
+      videoRef.current.currentTime = Math.min(initialProgressRef.current.positionSeconds, Math.max(0, playerDuration - 1));
+    }
   };
 
   const toggleFullscreen = () => {
@@ -450,9 +490,26 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   };
 
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
+  const hasUnsupportedRequiredQuestions =
+    usesNativeIframe && interactiveQuestions.some((question) => question.mustPass);
 
   if (videoSource.provider === 'youtube' && videoSource.videoId) {
-    return <PlyrYouTubePlayer videoId={videoSource.videoId} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} />;
+    return <PlyrYouTubePlayer videoId={videoSource.videoId} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} initialProgress={initialProgress} onInteractiveProgress={onInteractiveProgress} />;
+  }
+
+  if (hasUnsupportedRequiredQuestions) {
+    return (
+      <div
+        data-testid="interactive-video-required-provider-block"
+        className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-3xl bg-slate-950 px-6 text-center text-white"
+        dir="rtl"
+      >
+        <p className="text-lg font-bold">تعذر تشغيل هذا الدرس التفاعلي بأمان.</p>
+        <p className="max-w-lg text-sm leading-7 text-white/70">
+          يحتوي الدرس على سؤال إلزامي، لكن مصدر الفيديو الحالي لا يتيح للمشغل التحقق من توقيت السؤال وإيقاف الفيديو عنده. استخدم YouTube أو ملف فيديو مباشر لهذا الدرس.
+        </p>
+      </div>
+    );
   }
 
   if (!normalizedUrl && videoSource.blockedProvider) {

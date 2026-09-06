@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Course, Lesson } from '../types';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Course, InteractiveVideoProgress, Lesson } from '../types';
 import {
   PlayCircle,
   CheckCircle,
@@ -32,6 +32,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { api } from '../services/api';
 import { shareTextSummary } from '../utils/shareText';
+import { mergeInteractiveVideoProgress, normalizeInteractiveVideoProgress } from '../utils/interactiveVideoProgress';
 
 const CustomVideoPlayer = React.lazy(() =>
   import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
@@ -52,6 +53,33 @@ interface CoursePlayerProps {
 export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, initialLessonId, onLessonChange }) => {
   const navigate = useNavigate();
   const { completedLessons, markLessonComplete, questions, user, enrolledCourses, hasScopedPackageAccess } = useStore();
+  const [interactiveVideoProgress, setInteractiveVideoProgress] = useState<InteractiveVideoProgress[]>(() => user.interactiveVideoProgress || []);
+  const videoProgressSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const interactiveVideoProgressRef = useRef<InteractiveVideoProgress[]>(user.interactiveVideoProgress || []);
+  const videoProgressPendingUserIdRef = useRef<string | null>(null);
+  const currentVideoProgressUserIdRef = useRef(String(user.id || 'guest'));
+  currentVideoProgressUserIdRef.current = String(user.id || 'guest');
+
+  useEffect(() => {
+    if (videoProgressSaveTimerRef.current) {
+      clearTimeout(videoProgressSaveTimerRef.current);
+      videoProgressSaveTimerRef.current = null;
+    }
+    videoProgressPendingUserIdRef.current = null;
+    const nextProgress = user.interactiveVideoProgress || [];
+    interactiveVideoProgressRef.current = nextProgress;
+    setInteractiveVideoProgress(nextProgress);
+  }, [user.id]);
+
+  useEffect(() => () => {
+    if (!videoProgressSaveTimerRef.current) return;
+    clearTimeout(videoProgressSaveTimerRef.current);
+    videoProgressSaveTimerRef.current = null;
+    const pendingUserId = videoProgressPendingUserIdRef.current;
+    videoProgressPendingUserIdRef.current = null;
+    if (!pendingUserId || pendingUserId !== currentVideoProgressUserIdRef.current) return;
+    void api.updateMyPreferences({ interactiveVideoProgress: interactiveVideoProgressRef.current }).catch(() => undefined);
+  }, []);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('course_player_night_mode');
@@ -101,6 +129,37 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     () => flattenedLessons.findIndex((lesson) => lesson.id === activeLesson?.id),
     [activeLesson?.id, flattenedLessons],
   );
+  const activeVideoProgress = useMemo(() => {
+    if (!activeLesson || activeLesson.type !== 'video') return undefined;
+    return interactiveVideoProgress.find((item) => item.courseId === course.id && item.lessonId === activeLesson.id);
+  }, [activeLesson, course.id, interactiveVideoProgress]);
+  const saveInteractiveVideoProgress = useCallback((progressState: Pick<InteractiveVideoProgress, 'positionSeconds' | 'answeredQuestionIds'>) => {
+    if (!activeLesson || activeLesson.type !== 'video') return;
+    const next = normalizeInteractiveVideoProgress(course.id, activeLesson.id, progressState);
+    const merged = mergeInteractiveVideoProgress(interactiveVideoProgressRef.current, next);
+    interactiveVideoProgressRef.current = merged;
+    setInteractiveVideoProgress(merged);
+
+    try {
+      localStorage.setItem(`interactive-video-progress:${String(user.id || 'guest')}:${course.id}:${activeLesson.id}`, JSON.stringify(next));
+    } catch {
+      // Browser storage is a resilience cache only; the authenticated API remains authoritative.
+    }
+
+    if (!user.email || !user.id || user.id === 'guest') return;
+    if (videoProgressSaveTimerRef.current) clearTimeout(videoProgressSaveTimerRef.current);
+    const scheduledUserId = String(user.id);
+    videoProgressPendingUserIdRef.current = scheduledUserId;
+    videoProgressSaveTimerRef.current = setTimeout(() => {
+      videoProgressSaveTimerRef.current = null;
+      if (
+        videoProgressPendingUserIdRef.current !== scheduledUserId ||
+        currentVideoProgressUserIdRef.current !== scheduledUserId
+      ) return;
+      videoProgressPendingUserIdRef.current = null;
+      void api.updateMyPreferences({ interactiveVideoProgress: interactiveVideoProgressRef.current }).catch(() => undefined);
+    }, 750);
+  }, [activeLesson, course.id, user.email, user.id]);
   const previousLesson = activeLessonIndex >= 0 ? flattenedLessons[activeLessonIndex - 1] : undefined;
   const nextLesson = activeLessonIndex >= 0 ? flattenedLessons[activeLessonIndex + 1] : undefined;
   const favoriteStorageKey = `course-player-favorites:${String(user?.id || 'guest')}`;
@@ -411,6 +470,8 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                         title={activeLesson.title}
                         interactiveQuestions={activeLesson.interactiveQuestions || []}
                         questionBank={questions}
+                        initialProgress={activeVideoProgress}
+                        onInteractiveProgress={saveInteractiveVideoProgress}
                       />
                     </React.Suspense>
                   ) : activeLesson.type === 'quiz' ? (

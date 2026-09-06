@@ -32,10 +32,24 @@ export interface InteractiveQuestion {
         text: string;
         options: string[];
         correctOptionIndex: number;
+        /** Immutable playback snapshot when the source is a Question Bank item. */
+        type?: 'mcq' | 'true_false';
+        imageUrl?: string;
+        explanation?: string;
+        videoUrl?: string;
     };
     mustPass: boolean;
     actionOnFail: 'rewatch' | 'continue';
     rewatchTimestamp?: number; // where to go back if failed
+}
+
+/** Per-learner resume state for one interactive lesson. It is progress metadata, not assessment data. */
+export interface InteractiveVideoProgress {
+    courseId: string;
+    lessonId: string;
+    positionSeconds: number;
+    answeredQuestionIds: string[];
+    updatedAt: number;
 }
 
 export interface Lesson extends ContentWorkflow {
@@ -812,6 +826,7 @@ export interface User {
     linkedStudentIds?: string[];
     managedPathIds?: string[];
     managedSubjectIds?: string[];
+    interactiveVideoProgress?: InteractiveVideoProgress[];
 }
 
 export type GroupType = 'SCHOOL' | 'CLASS' | 'PRIVATE_GROUP';

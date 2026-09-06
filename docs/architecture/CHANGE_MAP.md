@@ -10,7 +10,9 @@
 | فحص/إصلاح اختلاف mirror | `assessmentMirrorReconciliation.ts` | تعديل `QuizResult` أو scoring |
 | جرد backfill تاريخي | `assessmentLegacyBackfillInventory.ts` | تشغيل كتابة migration على بيانات تشغيلية |
 | Timer/Runner | `pages/QuizPage.tsx` وrunner components | Reports |
-| بنك الأسئلة/البحث | `QuestionBankManager` وquestions API | generic shared |
+| بنك الأسئلة/البحث العام | `QuestionBankManager` وquestions API | generic shared |
+| ربط أسئلة داخل فيديو/درس | `dashboards/admin/builders/VideoQuestionPicker.tsx` ثم `UnifiedLessonBuilder.tsx` | تحميل أول 100 سؤال أو تعديل Player |
+| snapshot تشغيل سؤال فيديو | `utils/videoQuestionSnapshot.ts` و`InteractiveQuestion.inlineQuestion` | global Question Bank عند تشغيل الطالب |
 | نوع سؤال جديد | assessment/question type contract | switch موزع |
 | صفحة الفصل والطلاب | `dashboards/admin/SchoolsManager/` | `useStore` مباشرة |
 | إنشاء/حذف/إعادة تسمية فصل أو إنشاء فصول جماعيًا | `dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts` | إعادة منطق orchestration إلى `SchoolsManager.tsx` |

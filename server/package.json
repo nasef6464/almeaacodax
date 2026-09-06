@@ -23,6 +23,8 @@
     "seed:learning:api": "tsx src/scripts/seedLearningInventoryApi.ts",
     "smoke:operational": "npm run smoke:operational:api",
     "smoke:operational:api": "tsx src/scripts/smokeOperationalJourneysApi.ts",
+    "smoke:video-question-picker-runtime": "tsx ../scripts/video-question-picker-runtime.ts",
+    "smoke:interactive-video-progress-runtime": "tsx ../scripts/interactive-video-progress-runtime.ts",
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
     "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts",
