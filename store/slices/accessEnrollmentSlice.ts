@@ -91,16 +91,6 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
                 const persistedCourseId = String(response?.courseId || normalizedCourseId).trim() || normalizedCourseId;
                 set((state) => ({
                     enrolledCourses: Array.from(new Set([...state.enrolledCourses, persistedCourseId])),
-                    user: {
-                        ...state.user,
-                        subscription: {
-                            ...state.user.subscription,
-                            purchasedCourses: Array.from(new Set([
-                                ...(state.user.subscription?.purchasedCourses || []),
-                                persistedCourseId,
-                            ])),
-                        },
-                    },
                 }) as Partial<TState>);
             })
             .catch((error) => {
