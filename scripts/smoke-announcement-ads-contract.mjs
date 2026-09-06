@@ -45,8 +45,9 @@ const videoPlayer = read('components/CustomVideoPlayer.tsx');
 assert(videoPlayer.includes('questionBank.find'), 'Video player must resolve timed questions from the question bank');
 
 const lessonManager = read('dashboards/admin/builders/UnifiedLessonBuilder.tsx');
-assert(lessonManager.includes('availableVideoQuestions'), 'Lesson manager must list question-bank candidates');
-assert(lessonManager.includes("addInteractiveQuestion('bank')"), 'Lesson manager must provide a direct pull-from-bank action');
+const videoQuestionPicker = read('dashboards/admin/builders/VideoQuestionPicker.tsx');
+assert(lessonManager.includes('VideoQuestionPicker'), 'Lesson manager must expose a direct question-bank picker action');
+assert(videoQuestionPicker.includes('api.getQuestionsPaginated'), 'Video question picker must load bank candidates from the paginated API');
 assert(lessonManager.includes('questionId') && lessonManager.includes('interactiveQuestions'), 'Video questions must keep question-bank references');
 
 const adsManager = read('dashboards/admin/AnnouncementAdsManager.tsx');

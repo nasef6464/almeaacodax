@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Lesson, LessonType, Question } from '../../../types';
-import { Plus, Save, Search, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
+import { Plus, Save, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
 import { UnifiedQuizBuilder } from '../UnifiedQuizBuilder';
 import { UnifiedQuestionBuilder } from './UnifiedQuestionBuilder';
+import { VideoQuestionPicker } from './VideoQuestionPicker';
 import { useStore } from '../../../store/useStore';
 import { sanitizeVideoUrl } from '../../../utils/videoLinks';
+import { createVideoQuestionSnapshot, isValidVideoQuestionSnapshot } from '../../../utils/videoQuestionSnapshot';
 
 interface UnifiedLessonBuilderProps {
   initialLesson: Lesson;
@@ -21,9 +23,11 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
 }) => {
   const [lesson, setLesson] = useState<Lesson>(initialLesson);
   const [showQuizBuilder, setShowQuizBuilder] = useState(false);
-  const [showQuestionBuilder, setShowQuestionBuilder] = useState<{ videoQuestionId: string } | null>(null);
+  const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
+  const [isSavingVideoQuestion, setIsSavingVideoQuestion] = useState(false);
+  const [questionPickerTargetId, setQuestionPickerTargetId] = useState<string | null | undefined>(undefined);
   const [validationError, setValidationError] = useState('');
-  const [videoQuestionSearch, setVideoQuestionSearch] = useState('');
+  const [questionCreationNotice, setQuestionCreationNotice] = useState('');
   const { quizzes, questions, paths, subjects, sections, skills, addQuestion } = useStore();
 
   const availableMainSkills = useMemo(
@@ -36,32 +40,6 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     [skills, lesson.subjectId, lesson.sectionId]
   );
 
-  const questionMatchesLessonContext = (question: Question) => {
-    const pathMatches = !lesson.pathId || !question.pathId || question.pathId === lesson.pathId;
-    const subjectMatches = !lesson.subjectId || !question.subject || question.subject === lesson.subjectId;
-    const sectionMatches = !lesson.sectionId || !question.sectionId || question.sectionId === lesson.sectionId;
-    const skillMatches =
-      !lesson.skillIds?.length ||
-      !question.skillIds?.length ||
-      question.skillIds.some((skillId) => lesson.skillIds.includes(skillId));
-
-    return pathMatches && subjectMatches && sectionMatches && skillMatches;
-  };
-
-  const relevantVideoQuestions = useMemo(
-    () => questions.filter(questionMatchesLessonContext),
-    [questions, lesson.pathId, lesson.subjectId, lesson.sectionId, lesson.skillIds],
-  );
-
-  const otherVideoQuestions = useMemo(
-    () => questions.filter((question) => !relevantVideoQuestions.some((item) => item.id === question.id)),
-    [questions, relevantVideoQuestions],
-  );
-
-  const availableVideoQuestions = useMemo(
-    () => [...relevantVideoQuestions, ...otherVideoQuestions],
-    [relevantVideoQuestions, otherVideoQuestions],
-  );
 
   useEffect(() => {
     if (!lesson.subjectId) return;
@@ -117,106 +95,6 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     }
   };
 
-  const cleanQuestionText = (value?: string) =>
-    String(value || '')
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/\s+/g, ' ')
-      .trim();
-
-  const getQuestionMeta = (question: Question) => {
-    const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || 'بدون مادة';
-    const sectionName = sections.find((section) => section.id === question.sectionId)?.name || 'بدون مهارة رئيسية';
-    const skillNames = (question.skillIds || [])
-      .map((skillId) => skills.find((skill) => skill.id === skillId)?.name)
-      .filter(Boolean)
-      .slice(0, 2)
-      .join('، ');
-
-    return {
-      subjectName,
-      sectionName,
-      skillNames: skillNames || 'غير محدد',
-    };
-  };
-
-  const videoQuestionSearchTerm = videoQuestionSearch.trim().toLowerCase();
-
-  const questionMatchesVideoSearch = (question: Question) => {
-    if (!videoQuestionSearchTerm) return true;
-    const meta = getQuestionMeta(question);
-    const haystack = [
-      meta.subjectName,
-      meta.sectionName,
-      meta.skillNames,
-      cleanQuestionText(question.text),
-      ...(question.options || []).map((option) => cleanQuestionText(option)),
-    ]
-      .join(' ')
-      .toLowerCase();
-
-    return haystack.includes(videoQuestionSearchTerm);
-  };
-
-  const filteredRelevantVideoQuestions = useMemo(
-    () => relevantVideoQuestions.filter(questionMatchesVideoSearch),
-    [relevantVideoQuestions, videoQuestionSearchTerm, subjects, sections, skills],
-  );
-
-  const filteredOtherVideoQuestions = useMemo(
-    () => otherVideoQuestions.filter(questionMatchesVideoSearch),
-    [otherVideoQuestions, videoQuestionSearchTerm, subjects, sections, skills],
-  );
-
-  const filteredVideoQuestionsCount = filteredRelevantVideoQuestions.length + filteredOtherVideoQuestions.length;
-
-  const renderBankQuestionPreview = (bankQuestion: Question, selected: boolean, onPick: () => void) => {
-    const meta = getQuestionMeta(bankQuestion);
-    const preview = cleanQuestionText(bankQuestion.text) || 'سؤال بدون نص';
-    const optionsPreview = (bankQuestion.options || []).filter(Boolean).slice(0, 4);
-
-    return (
-      <button
-        key={bankQuestion.id}
-        type="button"
-        onClick={onPick}
-        className={`w-full rounded-xl border p-3 text-right transition ${
-          selected
-            ? 'border-indigo-300 bg-indigo-50 shadow-sm ring-2 ring-indigo-100'
-            : 'border-gray-100 bg-white hover:border-indigo-200 hover:bg-indigo-50/50'
-        }`}
-      >
-        <div className="mb-2 flex flex-wrap gap-1.5 text-[11px] font-black">
-          <span className="rounded-full bg-blue-50 px-2 py-1 text-blue-700">{meta.subjectName}</span>
-          <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-700">{meta.sectionName}</span>
-          <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">{meta.skillNames}</span>
-          {selected ? <span className="rounded-full bg-indigo-600 px-2 py-1 text-white">محدد الآن</span> : null}
-        </div>
-        <div className="line-clamp-2 text-sm font-black leading-6 text-gray-900">{preview}</div>
-        {optionsPreview.length > 0 ? (
-          <div className="mt-2 grid grid-cols-2 gap-1.5">
-            {optionsPreview.map((option, optionIndex) => (
-              <span
-                key={`${bankQuestion.id}-preview-option-${optionIndex}`}
-                className={`rounded-lg px-2 py-1 text-xs font-bold ${
-                  optionIndex === bankQuestion.correctOptionIndex
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'bg-gray-50 text-gray-600'
-                }`}
-              >
-                {cleanQuestionText(option) || `اختيار ${optionIndex + 1}`}
-              </span>
-            ))}
-          </div>
-        ) : null}
-      </button>
-    );
-  };
 
   const handleSave = () => {
     handleValidatedSave();
@@ -245,31 +123,61 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
       return;
     }
 
+    const normalizedInteractiveQuestions = (lesson.interactiveQuestions || []).map((question) => {
+      if (question.questionId && !question.inlineQuestion) {
+        const bankQuestion = questions.find((item) => item.id === question.questionId);
+        return bankQuestion ? { ...question, inlineQuestion: createVideoQuestionSnapshot(bankQuestion) } : question;
+      }
+      return question;
+    });
+    const invalidInteractiveQuestion = validateInteractiveQuestions(normalizedInteractiveQuestions);
+    if (invalidInteractiveQuestion) {
+      setValidationError(invalidInteractiveQuestion);
+      return;
+    }
+
     setValidationError('');
-    onSave(moduleId, lesson);
+    onSave(moduleId, { ...lesson, interactiveQuestions: normalizedInteractiveQuestions });
   };
 
-  const addInteractiveQuestion = (source: 'inline' | 'bank' = 'inline') => {
-    const firstBankQuestion = source === 'bank' ? availableVideoQuestions[0] : undefined;
+  const validateInteractiveQuestions = (interactiveQuestions: NonNullable<Lesson['interactiveQuestions']>) => {
+    const linkedQuestionIds = new Set<string>();
+    for (const question of interactiveQuestions) {
+      if (!Number.isFinite(question.timestamp) || question.timestamp < 0) {
+        return 'يوجد سؤال فيديو بتوقيت غير صالح.';
+      }
+      const snapshot = question.inlineQuestion;
+      const hasValidSnapshot = isValidVideoQuestionSnapshot(snapshot);
+      if (question.questionId) {
+        if (linkedQuestionIds.has(question.questionId)) return 'لا يمكن ربط السؤال نفسه أكثر من مرة داخل الفيديو.';
+        linkedQuestionIds.add(question.questionId);
+        if (!hasValidSnapshot) return 'يوجد سؤال مرتبط بالبنك بلا نسخة تشغيل صالحة. استبدله من البنك قبل الحفظ.';
+      } else if (!hasValidSnapshot) {
+        return 'يوجد سؤال قديم داخل الفيديو غير مكتمل. استبدله بسؤال محفوظ من البنك.';
+      }
+    }
+    return '';
+  };
 
+  const appendBankQuestions = (bankQuestions: Question[]) => {
+    const alreadyLinked = new Set((lesson.interactiveQuestions || []).map((question) => question.questionId).filter(Boolean));
+    const usableQuestions = bankQuestions.filter((question) =>
+      !alreadyLinked.has(question.id) &&
+      (question.type === 'mcq' || question.type === 'true_false'),
+    );
+    if (usableQuestions.length === 0) return;
     setLesson((previous) => ({
       ...previous,
       interactiveQuestions: [
         ...(previous.interactiveQuestions || []),
-        {
-          id: `video_question_${Date.now()}`,
+        ...usableQuestions.map((question, index) => ({
+          id: `video_question_${Date.now()}_${index}`,
           timestamp: 0,
-          questionId: firstBankQuestion?.id,
-          inlineQuestion: firstBankQuestion
-            ? undefined
-            : {
-                text: '',
-                options: ['', ''],
-                correctOptionIndex: 0,
-              },
+          questionId: question.id,
+          inlineQuestion: createVideoQuestionSnapshot(question),
           mustPass: false,
-          actionOnFail: 'continue',
-        },
+          actionOnFail: 'continue' as const,
+        })),
       ],
     }));
   };
@@ -290,7 +198,8 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     }));
   };
 
-  const saveVideoQuestionToBank = async (videoQuestionId: string, questionPayload: Partial<Question>) => {
+  const saveVideoQuestionToBank = async (questionPayload: Partial<Question>) => {
+    if (isSavingVideoQuestion) return;
     const questionId = questionPayload.id || `q_video_${Date.now()}`;
     const questionToSave: Question = {
       id: questionId,
@@ -310,13 +219,20 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
       showOnPlatform: true,
     } as Question;
 
-    await addQuestion(questionToSave);
-    updateInteractiveQuestion(videoQuestionId, (current) => ({
-      ...current,
-      questionId,
-      inlineQuestion: undefined,
-    }));
-    setShowQuestionBuilder(null);
+    try {
+      setIsSavingVideoQuestion(true);
+      const createdQuestion = await addQuestion(questionToSave);
+      setShowQuestionBuilder(false);
+      if (createdQuestion.approvalStatus && createdQuestion.approvalStatus !== 'approved') {
+        setQuestionCreationNotice('تم حفظ السؤال في البنك وهو الآن بانتظار الاعتماد؛ لن يُنشر داخل الفيديو قبل اعتماده.');
+        return;
+      }
+      appendBankQuestions([createdQuestion]);
+    } catch (error) {
+      setValidationError(error instanceof Error ? error.message : 'تعذر حفظ السؤال الجديد في البنك. لم يتم ربط أي سؤال بالفيديو.');
+    } finally {
+      setIsSavingVideoQuestion(false);
+    }
   };
 
   return (
@@ -502,22 +418,57 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
-                      onClick={() => addInteractiveQuestion('bank')}
-                      disabled={questions.length === 0}
+                      onClick={() => { setQuestionCreationNotice(''); setQuestionPickerTargetId(null); }}
+                      disabled={!lesson.pathId || !lesson.subjectId}
                       className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
                     >
-                      <Plus size={14} /> سحب سؤال من مركز الأسئلة
+                      <Plus size={14} /> اختيار من بنك الأسئلة
                     </button>
                     <button
                       type="button"
-                      onClick={() => addInteractiveQuestion('inline')}
+                      onClick={() => { setQuestionCreationNotice(''); setShowQuestionBuilder(true); }}
                       className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50"
                     >
-                      <Plus size={14} /> سؤال سريع
+                      <Plus size={14} /> إنشاء سؤال جديد
                     </button>
                   </div>
                 </div>
 
+                {questionCreationNotice ? <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">{questionCreationNotice}</div> : null}
+                {(lesson.interactiveQuestions || []).length === 0 ? (
+                  <div className="rounded-xl border border-dashed border-indigo-200 bg-white px-4 py-5 text-center text-sm font-medium text-gray-500">
+                    لا توجد أسئلة داخل هذا الفيديو. اختر سؤالًا معتمدًا من البنك أو أنشئ سؤالًا جديدًا فيه.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {(lesson.interactiveQuestions || []).map((question, index) => {
+                      const snapshot = question.inlineQuestion;
+                      const timestampMinutes = Math.floor((question.timestamp || 0) / 60);
+                      const timestampSeconds = (question.timestamp || 0) % 60;
+                      const rewatchMinutes = Math.floor((question.rewatchTimestamp || 0) / 60);
+                      const rewatchSeconds = (question.rewatchTimestamp || 0) % 60;
+                      return (
+                        <div key={question.id} className="rounded-xl border border-gray-200 bg-white p-3">
+                          <div className="mb-3 flex items-start justify-between gap-3">
+                            <div><span className="text-sm font-black text-gray-800">سؤال {index + 1}</span><p className="mt-1 text-[11px] font-bold text-gray-500">{question.questionId ? `مرجع البنك: ${question.questionId}` : 'سؤال Inline قديم — احتفظنا به للتوافق'}</p></div>
+                            <button type="button" onClick={() => removeInteractiveQuestion(question.id)} className="rounded-lg p-2 text-red-500 hover:bg-red-50" aria-label="حذف السؤال"><Trash2 size={15} /></button>
+                          </div>
+                          <div className="rounded-xl bg-gray-50 p-3 text-sm font-bold text-gray-800">{snapshot?.text?.replace(/<[^>]*>/g, ' ').trim() || 'سؤال غير مكتمل — استبدله من البنك.'}</div>
+                          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-4">
+                            <label className="text-xs font-bold text-gray-600">التوقيت (دقيقة)<input type="number" min={0} value={timestampMinutes} onChange={(event) => updateInteractiveQuestion(question.id, (current) => ({ ...current, timestamp: Math.max(0, Number(event.target.value) || 0) * 60 + ((current.timestamp || 0) % 60) }))} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" /></label>
+                            <label className="text-xs font-bold text-gray-600">التوقيت (ثانية)<input type="number" min={0} max={59} value={timestampSeconds} onChange={(event) => updateInteractiveQuestion(question.id, (current) => ({ ...current, timestamp: Math.floor((current.timestamp || 0) / 60) * 60 + Math.min(59, Math.max(0, Number(event.target.value) || 0)) }))} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" /></label>
+                            <label className="text-xs font-bold text-gray-600">عند الخطأ<select value={question.actionOnFail} onChange={(event) => updateInteractiveQuestion(question.id, (current) => ({ ...current, actionOnFail: event.target.value as 'rewatch' | 'continue' }))} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"><option value="continue">يكمل الدرس</option><option value="rewatch">يرجع للمراجعة</option></select></label>
+                            <label className="mt-5 flex items-center gap-2 text-xs font-bold text-gray-700"><input type="checkbox" checked={question.mustPass} onChange={(event) => updateInteractiveQuestion(question.id, (current) => ({ ...current, mustPass: event.target.checked }))} className="accent-indigo-600" /> إجابة مطلوبة للمتابعة</label>
+                          </div>
+                          {question.actionOnFail === 'rewatch' ? <div className="mt-3 grid grid-cols-2 gap-3 rounded-xl border border-amber-100 bg-amber-50 p-3 md:max-w-md"><label className="text-xs font-bold text-amber-800">الرجوع: دقيقة<input type="number" min={0} value={rewatchMinutes} onChange={(event) => updateInteractiveQuestion(question.id, (current) => ({ ...current, rewatchTimestamp: Math.max(0, Number(event.target.value) || 0) * 60 + ((current.rewatchTimestamp || 0) % 60) }))} className="mt-1 w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm" /></label><label className="text-xs font-bold text-amber-800">الرجوع: ثانية<input type="number" min={0} max={59} value={rewatchSeconds} onChange={(event) => updateInteractiveQuestion(question.id, (current) => ({ ...current, rewatchTimestamp: Math.floor((current.rewatchTimestamp || 0) / 60) * 60 + Math.min(59, Math.max(0, Number(event.target.value) || 0)) }))} className="mt-1 w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm" /></label></div> : null}
+                          <button type="button" onClick={() => setQuestionPickerTargetId(question.id)} className="mt-3 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50">استبدال من بنك الأسئلة</button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Legacy inline editor retained below only as source reference during this focused migration.
                 {(lesson.interactiveQuestions || []).length === 0 ? (
                   <div className="rounded-xl border border-dashed border-indigo-200 bg-white px-4 py-5 text-center text-sm font-medium text-gray-500">
                       لا توجد أسئلة داخل هذا الفيديو. اسحب سؤالًا محفوظًا من مركز الأسئلة أو أنشئ سؤالًا سريعًا.
@@ -754,6 +705,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                     })}
                   </div>
                 )}
+                */}
               </div>
             </div>
           )}
@@ -922,8 +874,35 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
           }}
           subjectId={lesson.subjectId || ''}
           sectionId={lesson.sectionId || ''}
-          onSave={(questionPayload) => saveVideoQuestionToBank(showQuestionBuilder.videoQuestionId, questionPayload)}
-          onCancel={() => setShowQuestionBuilder(null)}
+          allowedTypes={['mcq', 'true_false']}
+          isSaving={isSavingVideoQuestion}
+          onSave={saveVideoQuestionToBank}
+          onCancel={() => setShowQuestionBuilder(false)}
+        />
+      )}
+
+      {questionPickerTargetId !== undefined && (
+        <VideoQuestionPicker
+          context={{ pathId: lesson.pathId, subjectId: lesson.subjectId, sectionId: lesson.sectionId, skillIds: lesson.skillIds }}
+          excludedQuestionIds={(lesson.interactiveQuestions || []).filter((question) => question.id !== questionPickerTargetId).map((question) => question.questionId).filter(Boolean) as string[]}
+          selectionMode={typeof questionPickerTargetId === 'string' ? 'single' : 'multiple'}
+          onClose={() => setQuestionPickerTargetId(undefined)}
+          onCreateNew={() => { setQuestionPickerTargetId(undefined); setShowQuestionBuilder(true); }}
+          onConfirm={(selectedQuestions) => {
+            if (typeof questionPickerTargetId === 'string') {
+              const replacement = selectedQuestions[0];
+              if (replacement) {
+                updateInteractiveQuestion(questionPickerTargetId, (current) => ({
+                  ...current,
+                  questionId: replacement.id,
+                  inlineQuestion: createVideoQuestionSnapshot(replacement),
+                }));
+              }
+            } else {
+              appendBankQuestions(selectedQuestions);
+            }
+            setQuestionPickerTargetId(undefined);
+          }}
         />
       )}
     </div>

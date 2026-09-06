@@ -32,6 +32,11 @@ export interface InteractiveQuestion {
         text: string;
         options: string[];
         correctOptionIndex: number;
+        /** Immutable playback snapshot when the source is a Question Bank item. */
+        type?: 'mcq' | 'true_false';
+        imageUrl?: string;
+        explanation?: string;
+        videoUrl?: string;
     };
     mustPass: boolean;
     actionOnFail: 'rewatch' | 'continue';

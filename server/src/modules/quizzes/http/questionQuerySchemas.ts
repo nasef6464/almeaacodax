@@ -51,6 +51,7 @@ export const questionListQuerySchema = z.object({
   source: z.enum(["internal", "official_exam", "mock", "imported"]).optional(),
   year: z.coerce.number().int().min(1990).max(2100).optional(),
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
+  hasExplanationVideo: z.coerce.boolean().optional(),
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
   noTotal: z.coerce.boolean().default(false),

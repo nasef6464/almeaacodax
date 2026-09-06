@@ -666,6 +666,9 @@ quizRouter.get(
     if (query.source) scopeFilter.source = query.source;
     if (typeof query.year === "number") scopeFilter.year = query.year;
     if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
+    if (query.hasExplanationVideo) {
+      scopeFilter.videoUrl = { $exists: true, $ne: "" };
+    }
     if (query.search) {
       const safeSearch = escapeRegex(query.search);
       scopeFilter.$or = [
