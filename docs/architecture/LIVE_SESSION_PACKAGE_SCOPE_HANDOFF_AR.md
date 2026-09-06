@@ -4,7 +4,7 @@
 
 ## الحالة
 
-`VERIFIED` لدفعة واحدة محدودة على سطح `/live-sessions`.
+`VERIFIED + MERGED` لدفعة واحدة محدودة على سطح `/live-sessions`.
 
 هذه الدفعة لا تعيد فتح Product Gates 1–6. المرجع الحالي يبقى `MAIN_INTEGRATION_CHECKPOINT_AR.md`: Gates 5 و6 مغلقة، والعمل الحالي هو owner-approved bounded Course System / release-readiness review بفجوة واحدة مثبتة في كل دفعة.
 
@@ -41,11 +41,15 @@
 
 - Runtime: `de3a287cae2421b1f20bd42dcc6902fd152b8bb0` — `fix(live-sessions): enforce scoped package access`
 - Runtime/test verification head: `3015ee91490327f1552ef72cfa478f32984e3a2b` — `test(access): guard live-session package scope`
+- Pre-merge docs-only head: `1afba67d09e070634ed9b1a44664de0bdb2e5bce`.
+- PR #47 merge commit: `d4805a32f3ef9dc94c0443e83d15f82eaf60ccf2`.
 
 الـdiff من `main@292eeba8df138ffd16f98d464b496b6e409f9d74` إلى runtime/test head محصور في:
 
 1. `pages/LiveSessions.tsx`
 2. `scripts/smoke-quiz-access-contract.mjs`
+
+والـcommit اللاحق `1afba67d...` docs-only ويضيف هذا handoff فقط.
 
 ## CI على exact runtime/test head
 
@@ -61,10 +65,20 @@
 - Vercel preview status on `3015ee91490327f1552ef72cfa478f32984e3a2b` — `SUCCESS`.
 - Backend Integration/Deep/role-only workflows skipped by path rules for this frontend-only bounded change; no backend runtime file changed.
 
+## الدمج والنشر
+
+- PR #47 أصبح Ready بعد اكتمال exact-runtime evidence ثم دُمج إلى `main` بدمج عادي يحفظ التاريخ.
+- merge commit هو `d4805a32f3ef9dc94c0443e83d15f82eaf60ccf2`.
+- Vercel على merge commit نفسه أعاد `build-rate-limit` بعد الدمج. هذا ليس build/product regression لأن exact runtime/test preview كان `SUCCESS`; لا يوجد تعديل runtime بين runtime/test head والدمج غير merge topology + handoff docs.
+- لا يُدّعى exact-merge production deployment كـREADY حتى يزول rate limit ويظهر deployment جديد على merge/main descendant.
+
 ## ما لا تدعيه هذه الدفعة
 
 هذا الإغلاق خاص بسطح `/live-sessions`. لا ندعي هنا أن كل surfaces الأخرى التي تعرض lesson meeting/recording data تم تدقيقها أو تغييرها. أي surface مستقل يحتاج إثبات فجوة منفصل ودفعة مستقلة لاحقة.
 
 ## handoff للدفعة التالية
 
-بعد دمج PR #47 والتحقق من `main`/deployment، ابدأ من `main` الجديد في branch جديد. افحص فجوة Course System واحدة فقط وفق الترتيب التجاري. لا توسّع هذه الدفعة لتشمل Dashboard أو content bootstrap أو backend lesson payload إلا إذا تم إثبات defect مستقل وحدوده واختباره في دفعة لاحقة.
+- نقطة البداية التالية هي أحدث `main` بعد هذا التحديث التوثيقي.
+- continuation branch: `codex/course-system-next-gap-5` ويجب تحريكه fast-forward إلى أحدث docs-only main قبل أي runtime change إن أصبح main متقدمًا عليه.
+- افحص فجوة Course System واحدة فقط وفق الترتيب التجاري.
+- لا توسّع دفعة `/live-sessions` لتشمل Dashboard أو content bootstrap أو backend lesson payload إلا إذا تم إثبات defect مستقل وحدوده واختباره في دفعة لاحقة.
