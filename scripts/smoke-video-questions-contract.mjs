@@ -102,6 +102,13 @@ const checks = [
       !source.videoPlayer.includes("new Set(answeredQuestionIds).add(activeQuestion.id)"),
   ],
   [
+    "iframe video sources fail closed when required interactive questions cannot be enforced",
+    source.videoPlayer.includes("hasUnsupportedRequiredQuestions") &&
+      source.videoPlayer.includes("usesNativeIframe && interactiveQuestions.some((question) => question.mustPass)") &&
+      source.videoPlayer.includes('data-testid="interactive-video-required-provider-block"') &&
+      source.videoPlayer.includes("يحتوي الدرس على سؤال إلزامي"),
+  ],
+  [
     "interactive video progress is bounded, persisted through the existing preferences route, and restores player state",
     source.types.includes("interface InteractiveVideoProgress") &&
       source.videoProgress.includes("mergeInteractiveVideoProgress") &&
