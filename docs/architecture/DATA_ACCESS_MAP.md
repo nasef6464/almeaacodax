@@ -4,11 +4,11 @@
 
 | البيانات | النمو المتوقع | القراءات الساخنة | السياسة الحالية/المطلوبة | الحالة |
 |---|---|---|---|---|
-| Questions + image references | 80k–500k+ | filters/skill/type/search | server pagination، projection، indexes، media خارج Mongo | PARTIAL |
+| Questions + image references | 80k–500k+ | filters/skill/type/search؛ Video Question Picker | server pagination، projection، indexes، media خارج Mongo؛ picker يرسل scope الدرس والبحث/الفلاتر ويخزن snapshot تشغيل متوافقًا داخل lesson بدل قراءة global Question Bank أثناء playback | PARTIAL |
 | Quiz/Assessment definitions | آلاف | builder/access/assignment | `AssessmentVersion` immutable additive عند النشر وتعديل المنشور؛ reader يرجع للـlegacy عند الغياب؛ النسخ التاريخية لا تعدّل | PARTIAL — isolated create/PATCH/version-read proven; production cutover NOT PROVEN |
 | Attempts/Responses/Results | ملايين | student result/report/submit | `submissionKey` idempotency، response per attempt/question، mirror opt-in للموجه/المحاكي، cursor-bounded reconciliation؛ أسطح النتيجة المباشرة فقط تقرأ compatibility projection خلف rollback flag (القوائم ببحثين batch ثابتين، و`latest` ببحث مفرد)؛ أما analytics/reports/AI/notifications فتبقى `QuizResult` legacy لارتباطها بمقاييس مشتقة؛ historical backfill result-only only | PARTIAL — isolated Mongo proven, production scale NOT PROVEN |
 | Skills/mastery | ملايين تاريخيًا | student/class skill trend | projections/read models بعد benchmark | NOT PROVEN |
-| Courses/Lessons/Videos | مئات المناهج وعشرات آلاف الفيديو | catalog/player/progress | route-scoped loading، CDN/storage adapter | PARTIAL |
+| Courses/Lessons/Videos | مئات المناهج وعشرات آلاف الفيديو | catalog/player/progress؛ interactive-question playback | route-scoped loading، CDN/storage adapter؛ interactive question يحفظ `questionId` وsnapshot صغيرًا ضمن الدرس، مع استمرار legacy inline read | PARTIAL |
 | Subject Learning Space bootstrap | scoped path/subject content | student entry + manager placement | bounded taxonomy/content bootstrap؛ لا تحميل عالمي غير محدود؛ cache scope-aware | VERIFIED على isolated UI/API evidence |
 | Users/Groups/Memberships | آلاف/مئات المدارس | scope/roster/report | pagination؛ تقييم arrays الكبيرة؛ Teacher لا يملك Group CRUD ضمن School Operations؛ Admin relations import أو بطاقة الفصل تسند Teacher عبر schoolId/groupIds دون supervisorIds | PARTIAL |
 | Notifications | نمو مستمر | unread/me/stream | indexed delivery، Redis fan-out، no per-user Mongo polling | P0 |
