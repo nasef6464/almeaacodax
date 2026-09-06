@@ -16,7 +16,7 @@ const providerLabelMap: Record<string, string> = {
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
-const canAccessLesson = (lesson: any, user: any) => {
+const canAccessLesson = (lesson: any, user: any, hasScopedFoundationAccess: boolean) => {
     if (user.role === 'student' && lesson.showOnPlatform === false) {
         return false;
     }
@@ -34,7 +34,7 @@ const canAccessLesson = (lesson: any, user: any) => {
         return (lesson.allowedGroupIds || []).some((groupId: string) => userGroups.includes(groupId));
     }
 
-    return user.role !== 'student' || user.subscription?.plan === 'premium' || (user.subscription?.purchasedPackages || []).length > 0;
+    return user.role !== 'student' || user.subscription?.plan === 'premium' || hasScopedFoundationAccess;
 };
 
 const formatMeetingDate = (meetingDate?: string) =>
@@ -49,7 +49,7 @@ const formatMeetingDate = (meetingDate?: string) =>
         : 'غير محدد';
 
 const LiveSessions: React.FC = () => {
-    const { lessons, user, paths, subjects } = useStore();
+    const { lessons, user, paths, subjects, hasScopedPackageAccess } = useStore();
     const [copyMessage, setCopyMessage] = useState('');
 
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(String(user.role));
@@ -63,13 +63,19 @@ const LiveSessions: React.FC = () => {
             lessons
                 .filter((lesson) => LIVE_TYPES.has(lesson.type))
                 .filter((lesson) => canSeeHiddenPaths || !lesson.pathId || visiblePathIds.has(lesson.pathId))
-                .filter((lesson) => canAccessLesson(lesson, user))
+                .filter((lesson) =>
+                    canAccessLesson(
+                        lesson,
+                        user,
+                        hasScopedPackageAccess('foundation', lesson.pathId, lesson.subjectId),
+                    ),
+                )
                 .sort((a, b) => {
                     const aDate = a.meetingDate ? new Date(a.meetingDate).getTime() : Number.MAX_SAFE_INTEGER;
                     const bDate = b.meetingDate ? new Date(b.meetingDate).getTime() : Number.MAX_SAFE_INTEGER;
                     return aDate - bDate;
                 }),
-        [canSeeHiddenPaths, lessons, user, visiblePathIds],
+        [canSeeHiddenPaths, hasScopedPackageAccess, lessons, user, visiblePathIds],
     );
 
     const upcomingSessions = sessions.filter((lesson) => lesson.meetingDate && new Date(lesson.meetingDate).getTime() >= Date.now());
