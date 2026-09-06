@@ -513,7 +513,7 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
   }
 
   const currency = String((primaryTarget.currency || packageItem.currency || "SAR")).trim() || "SAR";
-  const rawAmount = primaryTarget.originalPrice ?? primaryTarget.price ?? 0;
+  const rawAmount = primaryTarget.price ?? 0;
   const resolvedAmount = Number.isFinite(rawAmount) ? Math.max(0, Number(rawAmount)) : 0;
   if (resolvedAmount <= 0) {
     return {
