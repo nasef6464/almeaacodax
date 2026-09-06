@@ -43,6 +43,15 @@ export interface InteractiveQuestion {
     rewatchTimestamp?: number; // where to go back if failed
 }
 
+/** Per-learner resume state for one interactive lesson. It is progress metadata, not assessment data. */
+export interface InteractiveVideoProgress {
+    courseId: string;
+    lessonId: string;
+    positionSeconds: number;
+    answeredQuestionIds: string[];
+    updatedAt: number;
+}
+
 export interface Lesson extends ContentWorkflow {
     id: string;
     title: string;
@@ -817,6 +826,7 @@ export interface User {
     linkedStudentIds?: string[];
     managedPathIds?: string[];
     managedSubjectIds?: string[];
+    interactiveVideoProgress?: InteractiveVideoProgress[];
 }
 
 export type GroupType = 'SCHOOL' | 'CLASS' | 'PRIVATE_GROUP';

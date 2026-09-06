@@ -26,6 +26,7 @@ interface BackendAuthUser {
   enrolledCourses?: string[];
   enrolledPaths?: string[];
   completedLessons?: string[];
+  interactiveVideoProgress?: Array<{ courseId: string; lessonId: string; positionSeconds: number; answeredQuestionIds: string[]; updatedAt: number }>;
   subscription?: {
     plan?: 'free' | 'premium';
     expiresAt?: string;
@@ -159,6 +160,7 @@ const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAut
       linkedStudentIds: backendUser?.linkedStudentIds ?? existing.linkedStudentIds,
       managedPathIds: backendUser?.managedPathIds ?? existing.managedPathIds,
       managedSubjectIds: backendUser?.managedSubjectIds ?? existing.managedSubjectIds,
+      interactiveVideoProgress: backendUser?.interactiveVideoProgress ?? existing.interactiveVideoProgress,
       subscription: {
         ...existing.subscription,
         plan: backendUser?.subscription?.plan ?? existing.subscription.plan,

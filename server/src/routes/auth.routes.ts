@@ -100,6 +100,13 @@ const preferencesSchema = z.object({
   reviewLater: z.array(z.string()).optional(),
   enrolledPaths: z.array(z.string()).optional(),
   completedLessons: z.array(z.string()).optional(),
+  interactiveVideoProgress: z.array(z.object({
+    courseId: z.string().min(1).max(160),
+    lessonId: z.string().min(1).max(160),
+    positionSeconds: z.number().finite().min(0).max(86_400),
+    answeredQuestionIds: z.array(z.string().min(1).max(160)).max(100),
+    updatedAt: z.number().int().positive(),
+  })).max(100).optional(),
 });
 const updateMyProfileSchema = z.object({
   name: z.string().min(2).max(120).optional(),
@@ -1121,7 +1128,7 @@ authRouter.patch(
   requireAuth,
   asyncHandler(async (req, res) => {
     const payload = preferencesSchema.parse(req.body);
-    const update: Record<string, string[]> = {};
+    const update: Record<string, unknown> = {};
 
     if (payload.favorites) {
       update.favorites = Array.from(new Set(payload.favorites));
@@ -1137,6 +1144,19 @@ authRouter.patch(
 
     if (payload.completedLessons) {
       update.completedLessons = Array.from(new Set(payload.completedLessons));
+    }
+
+    if (payload.interactiveVideoProgress) {
+      const newestByLesson = new Map<string, typeof payload.interactiveVideoProgress[number]>();
+      for (const item of payload.interactiveVideoProgress) {
+        const key = `${item.courseId}:${item.lessonId}`;
+        const previous = newestByLesson.get(key);
+        if (!previous || item.updatedAt >= previous.updatedAt) newestByLesson.set(key, item);
+      }
+      update.interactiveVideoProgress = Array.from(newestByLesson.values())
+        .sort((first, second) => second.updatedAt - first.updatedAt)
+        .slice(0, 100)
+        .map((item) => ({ ...item, answeredQuestionIds: Array.from(new Set(item.answeredQuestionIds)) }));
     }
 
     const user = await UserModel.findByIdAndUpdate(

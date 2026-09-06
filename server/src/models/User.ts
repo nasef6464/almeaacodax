@@ -35,6 +35,16 @@ const userSchema = new Schema(
     enrolledCourses: { type: [String], default: [] },
     enrolledPaths: { type: [String], default: [] },
     completedLessons: { type: [String], default: [] },
+    interactiveVideoProgress: {
+      type: [{
+        courseId: { type: String, required: true },
+        lessonId: { type: String, required: true },
+        positionSeconds: { type: Number, min: 0, default: 0 },
+        answeredQuestionIds: { type: [String], default: [] },
+        updatedAt: { type: Number, required: true },
+      }],
+      default: [],
+    },
     favorites: { type: [String], default: [] },
     reviewLater: { type: [String], default: [] },
     phone: { type: String, default: "" },
