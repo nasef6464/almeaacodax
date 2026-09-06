@@ -106,6 +106,16 @@ async function main() {
     await login("student", emails.student, passwords.student, csrf);
     await login("packageStudent", emails.packageStudent, passwords.packageStudent, csrf);
 
+    const negativeCourseId = `course-negative-${RUN_MARKER}`;
+    const negativeCreate = await jsonRequest("/courses", {
+      method: "POST",
+      token: tokens.get("admin"),
+      csrf,
+      body: baseCourse(negativeCourseId, "Negative Price Course", -1),
+    });
+    expectStatus("admin cannot create negative-price course", negativeCreate, 400);
+    assert.equal(await CourseModel.exists({ _id: negativeCourseId }), null, "negative-price course was persisted");
+
     const teacherDraft = await jsonRequest("/courses", { method: "POST", token: tokens.get("teacher"), csrf, body: { ...baseCourse(ids.teacherDraft, "Teacher Draft Course", 90), isPublished: true } });
     expectStatus("teacher creates course", teacherDraft, 201);
     assert.equal(teacherDraft.body?.approvalStatus, "pending_review", "teacher course did not enter review");
@@ -133,6 +143,17 @@ async function main() {
       ] }],
     } });
     expectStatus("admin publishes paid course", paidCourse, 201);
+
+    const negativeUpdate = await jsonRequest(`/courses/${ids.paidCourse}`, {
+      method: "PATCH",
+      token: tokens.get("admin"),
+      csrf,
+      body: { price: -5 },
+    });
+    expectStatus("admin cannot change course to negative price", negativeUpdate, 400);
+    const paidCourseAfterRejectedPrice = await CourseModel.findById(ids.paidCourse).lean();
+    assert.equal(Number(paidCourseAfterRejectedPrice?.price), 120, "rejected negative update changed persisted price");
+    pass("course price remains non-negative and server authoritative");
 
     const packageCourse = await jsonRequest("/courses", { method: "POST", token: tokens.get("admin"), csrf, body: {
       ...baseCourse(ids.package, "Course Package", 180), isPackage: true, packageType: "courses", packageContentTypes: ["courses"], includedCourses: [ids.paidCourse],
