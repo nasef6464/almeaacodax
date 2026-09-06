@@ -8,6 +8,7 @@ const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilde
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
 const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
 const foundationManagerSource = await readFile(new URL('../dashboards/admin/FoundationManager.tsx', import.meta.url), 'utf8');
+const liveSessionsSource = await readFile(new URL('../pages/LiveSessions.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const quizPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
 const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
@@ -182,6 +183,14 @@ check('subject learning page gates paid foundation, banks, tests, and library th
   assertIncludes(subjectLearningSource, "params.set('tab', 'packages')");
   assertIncludes(subjectLearningSource, "isTopicLockedForStudent(mainTopic)");
   assertIncludes(subjectLearningSource, "isLibraryItemLockedForStudent(item)");
+});
+
+check('live sessions use the same scoped foundation package boundary as subject learning', () => {
+  assertIncludes(liveSessionsSource, "hasScopedPackageAccess('foundation', lesson.pathId, lesson.subjectId)");
+  assertIncludes(liveSessionsSource, 'hasScopedFoundationAccess');
+  if (liveSessionsSource.includes("(user.subscription?.purchasedPackages || []).length > 0")) {
+    throw new Error('Live sessions must not unlock from an unrelated purchased package');
+  }
 });
 
 check('foundation admin treats topic lock as package access instead of readiness cleanup', () => {
