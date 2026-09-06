@@ -5,6 +5,7 @@ const root = process.cwd();
 const source = fs.readFileSync(path.join(root, "server", "src", "routes", "certificates.routes.ts"), "utf8");
 const courseViewSource = fs.readFileSync(path.join(root, "pages", "CourseView.tsx"), "utf8");
 
+// Keep certificate visibility aligned with the server-authoritative learner completion source.
 const checks = [
   ["certificate generation is student-only", source.includes('requireRole(["student"])')],
   ["certificate requires course opt-in", source.includes('course.certificateEnabled !== true')],
