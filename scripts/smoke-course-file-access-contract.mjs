@@ -16,6 +16,7 @@ const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 const overview = read("components/CourseOverview.tsx");
 const player = read("components/CoursePlayer.tsx");
 const courseView = read("pages/CourseView.tsx");
+const accessEnrollmentSlice = read("store/slices/accessEnrollmentSlice.ts");
 const learningSection = read("components/LearningSection.tsx");
 const courseLanding = read("components/CourseLanding.tsx");
 const simulatedTestExperienceSource = read("components/SimulatedTestExperience.tsx");
@@ -51,6 +52,28 @@ check(
 check(
   "Course overview does not open locked paid files from preview",
   includes(overview, "handleLockedCourseFileClick") && includes(overview, "lockedCourseFiles.map"),
+);
+check(
+  "Free price alone does not unlock enrolled-only course files",
+  !includes(overview, "isStaffViewer || isEnrolled || coursePrice <= 0") &&
+    !includes(player, "Number(course.price || 0) <= 0"),
+);
+check(
+  "Guest enrollment is rejected before local compatibility state can unlock a course",
+  includes(accessEnrollmentSlice, "if (!isRegisteredUser(currentUser))") &&
+    matches(accessEnrollmentSlice, /if \(!isRegisteredUser\(currentUser\)\) \{\s*return;\s*\}\s*if \(!shouldSyncUserToApi\(currentUser\)\)/),
+);
+check(
+  "Course overview routes guests to login before any free enrollment mutation",
+  matches(overview, /const handleEnroll = \(\) => \{\s*if \(isGuestUser\) \{\s*navigate\('\/\?auth=login'\);\s*return;[\s\S]*enrollCourse\(course\.id\);\s*\};/),
+);
+check(
+  "Free locked course content requests canonical enrollment instead of payment",
+  (overview.match(/if \(coursePrice <= 0\) \{\s*enrollCourse\(course\.id\);\s*return;\s*\}/g) || []).length >= 3,
+);
+check(
+  "Course view refetches canonical detail after confirmed enrollment state changes",
+  includes(courseView, "}, [courseId, courses, enrolledCourses]);"),
 );
 check(
   "Course overview shows curriculum quiz lessons in the course tests tab",
@@ -94,6 +117,11 @@ check(
   includes(courseView, "hasPlayablePreviewLesson") &&
     matches(courseView, /if \(isPlaying && \(isEnrolled \|\| isStaffViewer \|\| hasPlayablePreviewLesson\)\)/) &&
     !includes(courseView, "isEnrolled || isStaffViewer || isFreeCourse"),
+);
+check(
+  "Free course without preview points registered learners to enrollment and guests to login",
+  includes(courseView, "needsFreeEnrollment") &&
+    includes(courseView, "isGuestUser ? '/?auth=login' : `/course/${course.id}?buy=1`"),
 );
 check(
   "Course cards ignore global purchase flags for guests",
