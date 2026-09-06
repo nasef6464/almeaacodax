@@ -65,22 +65,29 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
         packageMatchesScope,
         shouldSyncUserToApi,
     }: AccessEnrollmentDependencies,
-): AccessEnrollmentSliceActions => ({
+): AccessEnrollmentSliceActions => {
+    const pendingCourseEnrollments = new Set<string>();
+
+    return ({
     enrollCourse: (courseId) => {
         const normalizedCourseId = String(courseId || '').trim();
-        if (!normalizedCourseId || get().enrolledCourses.includes(normalizedCourseId)) return;
-
-        set((current) => ({
-            enrolledCourses: [...current.enrolledCourses, normalizedCourseId],
-        }) as Partial<TState>);
+        if (!normalizedCourseId || get().enrolledCourses.includes(normalizedCourseId) || pendingCourseEnrollments.has(normalizedCourseId)) return;
 
         const currentUser = get().user;
         if (!shouldSyncUserToApi(currentUser)) {
+            set((current) => ({
+                enrolledCourses: [...current.enrolledCourses, normalizedCourseId],
+            }) as Partial<TState>);
             return;
         }
 
+        pendingCourseEnrollments.add(normalizedCourseId);
         void api.enrollCourse(normalizedCourseId)
             .then((response) => {
+                if (response?.enrolled === false) {
+                    throw new Error('Course enrollment was not confirmed by server');
+                }
+
                 const persistedCourseId = String(response?.courseId || normalizedCourseId).trim() || normalizedCourseId;
                 set((state) => ({
                     enrolledCourses: Array.from(new Set([...state.enrolledCourses, persistedCourseId])),
@@ -98,9 +105,9 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
             })
             .catch((error) => {
                 console.error('Failed to persist course enrollment:', error);
-                set((state) => ({
-                    enrolledCourses: state.enrolledCourses.filter((id) => id !== normalizedCourseId),
-                }) as Partial<TState>);
+            })
+            .finally(() => {
+                pendingCourseEnrollments.delete(normalizedCourseId);
             });
     },
 
@@ -226,4 +233,5 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
 
         return prioritizedPackages[0] || null;
     },
-});
+    });
+};

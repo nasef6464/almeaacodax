@@ -34,8 +34,16 @@ assertPattern(coursesApi, /enrollCourse:[\s\S]*method:\s*["']POST["']/, "course 
 const accessEnrollmentSlice = read("store/slices/accessEnrollmentSlice.ts");
 assertIncludes(accessEnrollmentSlice, "api.enrollCourse(normalizedCourseId)", "free enrollment persists through API");
 assertIncludes(accessEnrollmentSlice, "shouldSyncUserToApi(currentUser)", "local-only sessions preserve compatibility");
+assertIncludes(accessEnrollmentSlice, "pendingCourseEnrollments.has(normalizedCourseId)", "synced enrollment deduplicates in-flight requests");
+assertIncludes(accessEnrollmentSlice, "pendingCourseEnrollments.add(normalizedCourseId)", "synced enrollment records in-flight state before mutation");
+assertIncludes(accessEnrollmentSlice, "response?.enrolled === false", "server must explicitly confirm synced enrollment");
 assertIncludes(accessEnrollmentSlice, "purchasedCourses: Array.from(new Set", "successful server enrollment mirrors authoritative course access");
-assertIncludes(accessEnrollmentSlice, "enrolledCourses: state.enrolledCourses.filter((id) => id !== normalizedCourseId)", "failed enrollment rolls back optimistic access");
+assertPattern(
+  accessEnrollmentSlice,
+  /if \(!shouldSyncUserToApi\(currentUser\)\) \{[\s\S]*enrolledCourses: \[\.\.\.current\.enrolledCourses, normalizedCourseId\][\s\S]*return;[\s\S]*pendingCourseEnrollments\.add\(normalizedCourseId\);[\s\S]*api\.enrollCourse\(normalizedCourseId\)/,
+  "only local sessions grant immediate enrollment; synced sessions wait for the server",
+);
+assertIncludes(accessEnrollmentSlice, "pendingCourseEnrollments.delete(normalizedCourseId)", "in-flight enrollment state is always released");
 
 const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 assertIncludes(builder, "const [importPathId, setImportPathId]", "course builder has path filter for imports");
