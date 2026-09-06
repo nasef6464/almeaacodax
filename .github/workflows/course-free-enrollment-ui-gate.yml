@@ -1,0 +1,45 @@
+name: Course Free Enrollment UI Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'pages/CourseView.tsx'
+      - 'components/CourseOverview.tsx'
+      - 'components/CoursePlayer.tsx'
+      - 'store/slices/accessEnrollmentSlice.ts'
+      - 'scripts/smoke-course-file-access-contract.mjs'
+      - '.github/workflows/course-free-enrollment-ui-gate.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: course-free-enrollment-ui-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  free-enrollment-entitlement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: Course free-enrollment entitlement contract
+        run: node scripts/smoke-course-file-access-contract.mjs
