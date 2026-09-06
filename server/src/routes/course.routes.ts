@@ -593,7 +593,7 @@ courseRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
     }
 
-    if (isStaffRole(req.authUser?.role) || Number((item as any).price || 0) <= 0) {
+    if (isStaffRole(req.authUser?.role)) {
       return res.json(item);
     }
 
