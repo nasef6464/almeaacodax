@@ -107,6 +107,13 @@ const checks = [
       source.userModel.includes("interactiveVideoProgress"),
   ],
   [
+    "pending authenticated video progress flushes on unmount without crossing user sessions",
+    source.coursePlayer.includes("interactiveVideoProgressRef.current = merged") &&
+      source.coursePlayer.includes("videoProgressPendingUserIdRef.current") &&
+      source.coursePlayer.includes("pendingUserId !== currentVideoProgressUserIdRef.current") &&
+      source.coursePlayer.includes("api.updateMyPreferences({ interactiveVideoProgress: interactiveVideoProgressRef.current })"),
+  ],
+  [
     "video question overlay renders clean bank question content",
     source.videoPlayer.includes("normalizeQuestionHtml") &&
       source.videoPlayer.includes("bankQuestion?.imageUrl") &&
