@@ -26,6 +26,17 @@ assertPattern(
   "homepage settings update clears stale public cache",
 );
 
+const coursesApi = read("services/apiGroups/coursesApi.ts");
+assertIncludes(coursesApi, "enrollCourse: (id: string", "courses API exposes canonical enrollment mutation");
+assertIncludes(coursesApi, "`/courses/${id}/enroll`", "courses API uses canonical enrollment route");
+assertPattern(coursesApi, /enrollCourse:[\s\S]*method:\s*["']POST["']/, "course enrollment is a POST mutation");
+
+const accessEnrollmentSlice = read("store/slices/accessEnrollmentSlice.ts");
+assertIncludes(accessEnrollmentSlice, "api.enrollCourse(normalizedCourseId)", "free enrollment persists through API");
+assertIncludes(accessEnrollmentSlice, "shouldSyncUserToApi(currentUser)", "local-only sessions preserve compatibility");
+assertIncludes(accessEnrollmentSlice, "purchasedCourses: Array.from(new Set", "successful server enrollment mirrors authoritative course access");
+assertIncludes(accessEnrollmentSlice, "enrolledCourses: state.enrolledCourses.filter((id) => id !== normalizedCourseId)", "failed enrollment rolls back optimistic access");
+
 const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 assertIncludes(builder, "const [importPathId, setImportPathId]", "course builder has path filter for imports");
 assertIncludes(builder, "const [importSubjectId, setImportSubjectId]", "course builder has subject filter for imports");

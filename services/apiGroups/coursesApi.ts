@@ -24,6 +24,14 @@ export interface CourseListOptions extends PaginationOptions {
   kind?: 'learning' | 'package' | 'all';
 }
 
+export interface CourseEnrollmentResponse {
+  success: boolean;
+  enrolled: boolean;
+  alreadyEnrolled?: boolean;
+  courseId: string;
+  message?: string;
+}
+
 export const createCoursesApi = (
   request: ApiRequest,
   {
@@ -57,6 +65,13 @@ export const createCoursesApi = (
     getPublicPackageCourses: (pagination: PaginationOptions = {}) => getCoursesByKind({ ...pagination, kind: 'package' }),
 
     getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
+
+    enrollCourse: (id: string, token?: string | null) =>
+      request<CourseEnrollmentResponse>(`/courses/${id}/enroll`, {
+        method: "POST",
+        body: {},
+        token,
+      }),
 
     createCourse: (payload: unknown, token?: string | null) =>
       request<unknown>("/courses", {
