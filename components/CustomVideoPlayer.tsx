@@ -490,9 +490,26 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   };
 
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
+  const hasUnsupportedRequiredQuestions =
+    usesNativeIframe && interactiveQuestions.some((question) => question.mustPass);
 
   if (videoSource.provider === 'youtube' && videoSource.videoId) {
     return <PlyrYouTubePlayer videoId={videoSource.videoId} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} initialProgress={initialProgress} onInteractiveProgress={onInteractiveProgress} />;
+  }
+
+  if (hasUnsupportedRequiredQuestions) {
+    return (
+      <div
+        data-testid="interactive-video-required-provider-block"
+        className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-3xl bg-slate-950 px-6 text-center text-white"
+        dir="rtl"
+      >
+        <p className="text-lg font-bold">تعذر تشغيل هذا الدرس التفاعلي بأمان.</p>
+        <p className="max-w-lg text-sm leading-7 text-white/70">
+          يحتوي الدرس على سؤال إلزامي، لكن مصدر الفيديو الحالي لا يتيح للمشغل التحقق من توقيت السؤال وإيقاف الفيديو عنده. استخدم YouTube أو ملف فيديو مباشر لهذا الدرس.
+        </p>
+      </div>
+    );
   }
 
   if (!normalizedUrl && videoSource.blockedProvider) {
