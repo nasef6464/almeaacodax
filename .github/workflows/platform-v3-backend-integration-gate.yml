@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   isolated-backend-integration:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe' || github.event.pull_request.head.ref == 'codex/course-commercial-journey' || github.event.pull_request.head.ref == 'codex/course-system-next-gap-2' || github.event.pull_request.head.ref == 'codex/course-free-content-entitlement' || github.event.pull_request.head.ref == 'codex/course-price-integrity'
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe' || github.event.pull_request.head.ref == 'codex/course-commercial-journey' || github.event.pull_request.head.ref == 'codex/course-system-next-gap-2' || github.event.pull_request.head.ref == 'codex/course-free-content-entitlement' || github.event.pull_request.head.ref == 'codex/course-price-integrity' || github.event.pull_request.head.ref == 'codex/course-sale-price-payment-integrity'
     name: Auth + RBAC + assessments + courses + commerce on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -86,7 +86,7 @@ jobs:
         run: npm --prefix server run build
 
       - name: Integration harness typecheck
-        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts
+        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts ../.github/scripts/courseSalePricePaymentGate.ts
 
       - name: Start exact branch API
         shell: bash
@@ -115,6 +115,9 @@ jobs:
 
       - name: Run free course content entitlement journey
         run: cd server && npx tsx src/scripts/freeCourseContentEntitlementGate.ts
+
+      - name: Run course sale-price payment integrity journey
+        run: cd server && npx tsx ../.github/scripts/courseSalePricePaymentGate.ts
 
       - name: Print API log on failure
         if: failure()
