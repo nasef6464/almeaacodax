@@ -81,7 +81,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;
     const courseAudienceCount = getCourseAudienceCount(course);
     const courseContentStats = getCourseContentStats(course);
-    const canUsePaidCourseFiles = isStaffViewer || isEnrolled || coursePrice <= 0;
+    const canUsePaidCourseFiles = isStaffViewer || isEnrolled;
     const visibleCourseFiles = (course.files || []).filter((file) => file.access !== 'enrolled_paid' || canUsePaidCourseFiles);
     const lockedCourseFiles = (course.files || []).filter((file) => file.access === 'enrolled_paid' && !canUsePaidCourseFiles);
     const requiredPathId = String(course.pathId || '').trim();
@@ -290,11 +290,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     }, [course.id, favoriteStorageKey]);
 
     const handleEnroll = () => {
+        if (isGuestUser) {
+            navigate('/?auth=login');
+            return;
+        }
         if (!isEnrolled && coursePrice > 0) {
-            if (isGuestUser) {
-                navigate('/?auth=login');
-                return;
-            }
             if (needsPathEnrollmentBeforePurchase) {
                 sendStudentToPathRegistration();
                 return;
@@ -310,6 +310,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             navigate('/?auth=login');
             return;
         }
+        if (coursePrice <= 0) {
+            enrollCourse(course.id);
+            return;
+        }
         if (needsPathEnrollmentBeforePurchase) {
             sendStudentToPathRegistration();
             return;
@@ -320,6 +324,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const handleLockedCourseFileClick = () => {
         if (isGuestUser) {
             navigate('/?auth=login');
+            return;
+        }
+        if (coursePrice <= 0) {
+            enrollCourse(course.id);
             return;
         }
         if (needsPathEnrollmentBeforePurchase) {
@@ -336,11 +344,12 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         nextParams.delete('buy');
         setSearchParams(nextParams, { replace: true });
 
+        if (isGuestUser) {
+            navigate('/?auth=login');
+            return;
+        }
+
         if (coursePrice > 0) {
-            if (isGuestUser) {
-                navigate('/?auth=login');
-                return;
-            }
             if (needsPathEnrollmentBeforePurchase) {
                 sendStudentToPathRegistration();
                 return;
@@ -401,6 +410,14 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         if (lesson.isLocked) {
             if (isGuestUser) {
                 navigate('/?auth=login');
+                return;
+            }
+            if (coursePrice <= 0) {
+                enrollCourse(course.id);
+                return;
+            }
+            if (needsPathEnrollmentBeforePurchase) {
+                sendStudentToPathRegistration();
                 return;
             }
             setShowPaymentModal(true);

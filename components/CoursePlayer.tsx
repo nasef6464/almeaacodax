@@ -96,8 +96,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     isStaffViewer ||
     enrolledCourses.includes(course.id) ||
     (user.subscription?.purchasedCourses || []).includes(course.id) ||
-    hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject) ||
-    Number(course.price || 0) <= 0;
+    hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
   const activeLessonIndex = useMemo(
     () => flattenedLessons.findIndex((lesson) => lesson.id === activeLesson?.id),
     [activeLesson?.id, flattenedLessons],
