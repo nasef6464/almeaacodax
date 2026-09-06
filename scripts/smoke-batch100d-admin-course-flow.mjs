@@ -12,6 +12,12 @@ const assertIncludes = (source, needle, label) => {
   }
 };
 
+const assertNotIncludes = (source, needle, label) => {
+  if (source.includes(needle)) {
+    throw new Error(`${label}: unexpected "${needle}"`);
+  }
+};
+
 const assertPattern = (source, pattern, label) => {
   if (!pattern.test(source)) {
     throw new Error(`${label}: pattern not found ${pattern}`);
@@ -37,7 +43,8 @@ assertIncludes(accessEnrollmentSlice, "shouldSyncUserToApi(currentUser)", "local
 assertIncludes(accessEnrollmentSlice, "pendingCourseEnrollments.has(normalizedCourseId)", "synced enrollment deduplicates in-flight requests");
 assertIncludes(accessEnrollmentSlice, "pendingCourseEnrollments.add(normalizedCourseId)", "synced enrollment records in-flight state before mutation");
 assertIncludes(accessEnrollmentSlice, "response?.enrolled === false", "server must explicitly confirm synced enrollment");
-assertIncludes(accessEnrollmentSlice, "purchasedCourses: Array.from(new Set", "successful server enrollment mirrors authoritative course access");
+assertIncludes(accessEnrollmentSlice, "enrolledCourses: Array.from(new Set", "successful server enrollment mirrors authoritative enrollment access");
+assertNotIncludes(accessEnrollmentSlice, "purchasedCourses: Array.from(new Set", "free enrollment must not manufacture a purchase entitlement in frontend state");
 assertPattern(
   accessEnrollmentSlice,
   /if \(!shouldSyncUserToApi\(currentUser\)\) \{[\s\S]*enrolledCourses: \[\.\.\.current\.enrolledCourses, normalizedCourseId\][\s\S]*return;[\s\S]*pendingCourseEnrollments\.add\(normalizedCourseId\);[\s\S]*api\.enrollCourse\(normalizedCourseId\)/,
