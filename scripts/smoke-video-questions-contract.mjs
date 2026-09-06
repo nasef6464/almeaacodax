@@ -97,6 +97,11 @@ const checks = [
       source.videoPlayer.includes("setActiveQuestion(dueQuestion)"),
   ],
   [
+    "must-pass video questions are not recorded as answered after a wrong response in either player path",
+    source.videoPlayer.split("if (isCorrect || !activeQuestion.mustPass) nextAnsweredQuestionIds.add(activeQuestion.id);").length - 1 === 2 &&
+      !source.videoPlayer.includes("new Set(answeredQuestionIds).add(activeQuestion.id)"),
+  ],
+  [
     "interactive video progress is bounded, persisted through the existing preferences route, and restores player state",
     source.types.includes("interface InteractiveVideoProgress") &&
       source.videoProgress.includes("mergeInteractiveVideoProgress") &&
