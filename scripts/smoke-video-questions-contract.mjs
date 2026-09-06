@@ -14,6 +14,9 @@ const files = {
   videoModal: "components/VideoModal.tsx",
   subjectPage: "pages/SubjectLearningPage.tsx",
   coursePlayer: "components/CoursePlayer.tsx",
+  authRoutes: "server/src/routes/auth.routes.ts",
+  userModel: "server/src/models/User.ts",
+  videoProgress: "utils/interactiveVideoProgress.ts",
 };
 
 const read = (path) => readFileSync(path, "utf8");
@@ -82,7 +85,9 @@ const checks = [
   ],
   [
     "course player uses the same lesson video questions",
-    source.coursePlayer.includes("interactiveQuestions={activeLesson.interactiveQuestions || []}"),
+    source.coursePlayer.includes("interactiveQuestions={activeLesson.interactiveQuestions || []}") &&
+      source.coursePlayer.includes("initialProgress={activeVideoProgress}") &&
+      source.coursePlayer.includes("onInteractiveProgress={saveInteractiveVideoProgress}"),
   ],
   [
     "custom player pauses for due video questions",
@@ -90,6 +95,23 @@ const checks = [
       source.videoPlayer.includes("getDueVideoQuestion") &&
       source.videoPlayer.includes("questionBank") &&
       source.videoPlayer.includes("setActiveQuestion(dueQuestion)"),
+  ],
+  [
+    "interactive video progress is bounded, persisted through the existing preferences route, and restores player state",
+    source.types.includes("interface InteractiveVideoProgress") &&
+      source.videoProgress.includes("mergeInteractiveVideoProgress") &&
+      source.videoPlayer.includes("initialProgressRef.current?.positionSeconds") &&
+      source.videoPlayer.includes("onInteractiveProgress") &&
+      source.authRoutes.includes("interactiveVideoProgress") &&
+      source.authRoutes.includes("max(100)") &&
+      source.userModel.includes("interactiveVideoProgress"),
+  ],
+  [
+    "pending authenticated video progress flushes on unmount without crossing user sessions",
+    source.coursePlayer.includes("interactiveVideoProgressRef.current = merged") &&
+      source.coursePlayer.includes("videoProgressPendingUserIdRef.current") &&
+      source.coursePlayer.includes("pendingUserId !== currentVideoProgressUserIdRef.current") &&
+      source.coursePlayer.includes("api.updateMyPreferences({ interactiveVideoProgress: interactiveVideoProgressRef.current })"),
   ],
   [
     "video question overlay renders clean bank question content",
