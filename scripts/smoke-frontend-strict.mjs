@@ -2,8 +2,8 @@ import { execSync } from 'node:child_process';
 
 const frontendUrl = (process.env.SMOKE_FRONTEND_URL || 'https://almeaacodax.vercel.app').replace(/\/$/, '');
 const expectedVersion = process.env.SMOKE_EXPECT_VERSION || execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-const maxAttempts = Math.max(1, Number(process.env.SMOKE_VERSION_WAIT_ATTEMPTS || 12));
-const waitMs = Math.max(250, Number(process.env.SMOKE_VERSION_WAIT_MS || 5000));
+const maxAttempts = 12;
+const waitMs = 5000;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function productionServesExpectedVersion() {
