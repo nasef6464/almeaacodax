@@ -1,9 +1,18 @@
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
+import { createRequire } from "node:module";
 import { env } from "../../server/src/config/env.js";
 import { UserModel } from "../../server/src/models/User.js";
+
+const requireFromServer = createRequire(new URL("../../server/package.json", import.meta.url));
+const bcrypt = requireFromServer("bcryptjs") as {
+  hash(value: string, rounds: number): Promise<string>;
+};
+const mongoose = requireFromServer("mongoose") as {
+  connect(uri: string): Promise<unknown>;
+  disconnect(): Promise<void>;
+  connection: { readyState: number };
+};
 
 const API_BASE = `http://127.0.0.1:${env.PORT}/api`;
 const RUN_MARKER = `${Date.now().toString(36)}-${randomBytes(5).toString("hex")}`;
