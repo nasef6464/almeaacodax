@@ -46,6 +46,9 @@ interface LearningProgressDependencies {
     shouldSyncUserToApi: (user?: User | null) => boolean;
 }
 
+const pendingLessonCompletions = new Set<string>();
+let lessonCompletionSyncQueue: Promise<void> = Promise.resolve();
+
 export const createLearningProgressSlice = <TState extends LearningProgressSliceState>(
     set: StoreSet<TState>,
     get: StoreGet<TState>,
@@ -76,30 +79,61 @@ export const createLearningProgressSlice = <TState extends LearningProgressSlice
 
     markLessonComplete: (lessonId, courseId, lessonTitle) => {
         const state = get();
-        if (state.completedLessons.includes(lessonId)) return;
-        const nextCompletedLessons = [...state.completedLessons, lessonId];
+        if (state.completedLessons.includes(lessonId) || pendingLessonCompletions.has(lessonId)) return;
 
-        const newActivity: Activity = {
+        const buildCompletionActivity = (): Activity => ({
             id: Date.now().toString(),
             type: 'lesson_complete',
             title: `أكملت درس: ${lessonTitle}`,
             date: new Date().toISOString(),
             link: `/course/${courseId}`,
-        };
+        });
 
-        if (shouldSyncUserToApi(state.user)) {
-            api.updateMyPreferences({
-                favorites: state.favorites,
-                reviewLater: state.reviewLater,
-                enrolledPaths: state.enrolledPaths,
+        if (!shouldSyncUserToApi(state.user)) {
+            const nextCompletedLessons = [...state.completedLessons, lessonId];
+            const newActivity = buildCompletionActivity();
+            set((current) => ({
                 completedLessons: nextCompletedLessons,
-            }).catch(console.error);
+                recentActivity: [newActivity, ...current.recentActivity].slice(0, 10),
+            }) as Partial<TState>);
+            return;
         }
 
-        set((state) => ({
-            completedLessons: nextCompletedLessons,
-            recentActivity: [newActivity, ...state.recentActivity].slice(0, 10),
-        }) as Partial<TState>);
+        const syncUserKey = String(state.user?.id || state.user?.email || '');
+        pendingLessonCompletions.add(lessonId);
+
+        lessonCompletionSyncQueue = lessonCompletionSyncQueue
+            .catch(() => undefined)
+            .then(async () => {
+                const current = get();
+                const currentUserKey = String(current.user?.id || current.user?.email || '');
+                if (!syncUserKey || currentUserKey !== syncUserKey || !shouldSyncUserToApi(current.user)) return;
+                if (current.completedLessons.includes(lessonId)) return;
+
+                const nextCompletedLessons = [...current.completedLessons, lessonId];
+                await api.updateMyPreferences({
+                    favorites: current.favorites,
+                    reviewLater: current.reviewLater,
+                    enrolledPaths: current.enrolledPaths,
+                    completedLessons: nextCompletedLessons,
+                });
+
+                const newActivity = buildCompletionActivity();
+                set((latest) => {
+                    const latestUserKey = String(latest.user?.id || latest.user?.email || '');
+                    if (latestUserKey !== syncUserKey || latest.completedLessons.includes(lessonId)) {
+                        return {} as Partial<TState>;
+                    }
+                    return {
+                        completedLessons: nextCompletedLessons,
+                        recentActivity: [newActivity, ...latest.recentActivity].slice(0, 10),
+                    } as Partial<TState>;
+                });
+            })
+            .catch(console.error)
+            .finally(() => {
+                pendingLessonCompletions.delete(lessonId);
+            });
     },
 
     saveExamResult: (result) => {

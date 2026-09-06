@@ -52,6 +52,22 @@ assertPattern(
 );
 assertIncludes(accessEnrollmentSlice, "pendingCourseEnrollments.delete(normalizedCourseId)", "in-flight enrollment state is always released");
 
+const learningProgressSlice = read("store/slices/learningProgressSlice.ts");
+assertIncludes(learningProgressSlice, "pendingLessonCompletions.has(lessonId)", "lesson completion deduplicates pending sync");
+assertIncludes(learningProgressSlice, "lessonCompletionSyncQueue", "lesson completions serialize preference writes");
+assertIncludes(learningProgressSlice, "await api.updateMyPreferences", "synced lesson completion waits for server persistence");
+assertIncludes(learningProgressSlice, "pendingLessonCompletions.delete(lessonId)", "pending completion state is always released");
+assertPattern(
+  learningProgressSlice,
+  /if \(!shouldSyncUserToApi\(state\.user\)\) \{[\s\S]*completedLessons: nextCompletedLessons[\s\S]*return;[\s\S]*pendingLessonCompletions\.add\(lessonId\);[\s\S]*await api\.updateMyPreferences[\s\S]*completedLessons: nextCompletedLessons/,
+  "local sessions may complete immediately while synced sessions wait for persistence",
+);
+assertPattern(
+  learningProgressSlice,
+  /await api\.updateMyPreferences\([\s\S]*completedLessons: nextCompletedLessons[\s\S]*\);[\s\S]*set\(\(latest\)/,
+  "synced lesson progress is mirrored only after the server accepts the update",
+);
+
 const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 assertIncludes(builder, "const [importPathId, setImportPathId]", "course builder has path filter for imports");
 assertIncludes(builder, "const [importSubjectId, setImportSubjectId]", "course builder has subject filter for imports");
