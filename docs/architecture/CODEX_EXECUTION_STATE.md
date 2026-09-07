@@ -636,6 +636,15 @@
 - Deferred: legacy mirrored-course provenance/revocation, renewal/invoices, high-volume concurrency hardening, and any new contract/tenant/discount engine.
 - Next exact action: authorize a disposable test environment and supply the intended path/subject/content scope; then run the existing live school-from-scratch audit with cleanup and record its evidence without changing product contracts.
 
+## Batch 6S-11 — Student assessment navigation and fresh directed delivery
+
+- Scope: removed the duplicate student-facing “Exam Center” concept from the dashboard navigation. The single `الاختبارات` entry now contains exactly `اختباراتي`, `الاختبارات المحاكية`, and `اختبارات المدرسة`; legacy tab URLs remain compatible.
+- Runtime fix: opening the student assessment area refreshes the server-authoritative quiz catalogue. A supervisor can therefore publish a directed assessment while a student session is already open without the school-test list relying on the application's one-time bootstrap state.
+- Preserved: directed-audience filtering, hidden-school-test privacy, Quiz runner access checks, scoring, RBAC, public routes, and historical attempts. `اختبارات المدرسة` remains a presentation boundary over the existing targeted catalogue, not a new assessment system.
+- Local evidence: `smoke:my-quizzes` 10/10, `smoke:assessment-directed-scope` PASS, `smoke:supervisor-dashboard` 14/14, and production frontend build PASS. CI on the focused runtime commit is required before merge.
+- `NOT PROVEN`: the specific production record shown in the screenshot cannot be inspected without using an authenticated account/session. If it remains absent after deployment and refresh, inspect only that record's saved `targetGroupIds/targetUserIds`, publication state, and question integrity against the student's authoritative Group membership.
+- Next exact action: inspect the exact deployed student response after CI/deployment, then close this repair or apply only the proven record-level correction.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:

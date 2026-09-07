@@ -36,12 +36,14 @@ check('account menu opens the simple my quizzes attempts page', () => {
   assertIncludes(headerSource, 'label={text.quizzes}');
 });
 
-check('student dashboard exam hub preserves the attempts view for sidebar and legacy quiz links', () => {
-  assertIncludes(dashboardSource, "const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }>");
+check('student dashboard keeps one assessments entry with attempts, mock, and school views', () => {
+  assertIncludes(dashboardSource, "const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }>");
   assertIncludes(dashboardSource, "{view === 'attempts' && <Quizzes view=\"attempts\" />}");
-  assertIncludes(dashboardSource, "const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams' };");
+  assertIncludes(dashboardSource, "{view === 'school'   && <Quizzes view=\"school\" />}");
+  assertIncludes(dashboardSource, "label: 'الاختبارات'");
+  assertIncludes(dashboardSource, "const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };");
   assertIncludes(dashboardSource, "case 'quizzes':");
-  assertIncludes(dashboardSource, "return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'quizzes' ? 'attempts' : 'explore'} />;");
+  assertIncludes(dashboardSource, "return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'school-tests' ? 'school' : 'attempts'} />;");
 });
 
 check('my quizzes groups attempts by quiz and separates regular from mock exams', () => {
@@ -81,6 +83,8 @@ check('student quiz center keeps school-directed work separate from platform cat
   assertIncludes(quizzesSource, 'الاختبارات المدرسية');
   assertIncludes(quizzesSource, 'اختبارات المنصة');
   assertIncludes(quizzesSource, 'directedQuizzes');
+  assertIncludes(quizzesSource, 'api.getQuizzes()');
+  assertIncludes(quizzesSource, '<SchoolTestsPanel');
 });
 
 check('student quiz center excludes standalone path mock exams from regular catalog', () => {
