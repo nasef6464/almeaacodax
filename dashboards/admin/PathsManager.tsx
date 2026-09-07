@@ -878,15 +878,15 @@ export const PathsManager: React.FC = () => {
 
         {/* Modal for adding path */}
         {isPathModalOpen && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
-              <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
                 <h3 className="font-bold text-lg text-gray-800">{editingPath ? 'تعديل المسار' : 'إضافة مسار جديد'}</h3>
                 <button onClick={() => { setIsPathModalOpen(false); setEditingPath(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 overflow-y-auto flex-1">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">اسم المسار</label>
                   <input
@@ -1062,7 +1062,7 @@ export const PathsManager: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-2">
+              <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-2 shrink-0">
                 {pathSaveError && (
                   <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2">
                     <AlertTriangle size={16} className="text-red-500 shrink-0" />
@@ -1599,15 +1599,15 @@ export const PathsManager: React.FC = () => {
 
         {/* Modal for adding Subject */}
         {isSubjectModalOpen && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
-              <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
                 <h3 className="font-bold text-lg text-gray-800">{editingSubject ? 'تعديل المادة' : 'إضافة مادة جديدة'}</h3>
                 <button onClick={() => { setIsSubjectModalOpen(false); setEditingSubject(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 overflow-y-auto flex-1">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">اسم المادة</label>
                   <input
@@ -1726,7 +1726,7 @@ export const PathsManager: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+              <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
                 <button type="button" onClick={() => { setIsSubjectModalOpen(false); setEditingSubject(null); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                   إلغاء
                 </button>

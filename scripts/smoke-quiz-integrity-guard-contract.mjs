@@ -2,8 +2,9 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const quizRoutesSource = await read("server/src/routes/quiz.routes.ts");
-const integrityModuleSource = await read("server/src/modules/quizzes/application/quizQuestionIntegrity.ts");
+const normalizeLf = (s) => s.replace(/\r\n/g, "\n");
+const quizRoutesSource = normalizeLf(await read("server/src/routes/quiz.routes.ts"));
+const integrityModuleSource = normalizeLf(await read("server/src/modules/quizzes/application/quizQuestionIntegrity.ts"));
 
 const checks = [];
 
