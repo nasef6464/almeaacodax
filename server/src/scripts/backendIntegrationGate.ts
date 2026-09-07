@@ -968,13 +968,51 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
       questionIds: [ASSESSMENT_QUESTION_ID],
       targetUserIds: [studentId],
       isPublished: true,
-      showOnPlatform: true,
+      // School-directed tests are intentionally not public. The target learner
+      // must still discover, open, and submit this exact assessment.
+      showOnPlatform: false,
       access: { type: "free" },
     },
   });
   expectStatus("supervisor creates an assessment for an in-scope student", supervisorQuiz, 201);
   assert.equal(supervisorQuiz.body?.mode, "central", "supervisor assessment lost central mode");
   assert.equal(supervisorQuiz.body?.approvalStatus, "approved", "supervisor assessment was not approved by workflow");
+
+  const studentCatalog = await jsonRequest("/quizzes", { token: tokens.get("student") });
+  expectStatus("targeted student loads the assessment catalogue", studentCatalog, 200);
+  const listedForStudent = (studentCatalog.body?.quizzes || []).find((item: any) => item.id === SUPERVISOR_QUIZ_ID);
+  assert.ok(listedForStudent, "hidden school-directed assessment was missing from its target student catalogue");
+  assert.equal(listedForStudent?.showOnPlatform, false, "school-directed assessment became public");
+  assert.equal(listedForStudent?.viewerAudienceVerified, true, "target catalogue lacked server audience verification");
+
+  const outsiderCatalog = await jsonRequest("/quizzes", { token: tokens.get("outsider") });
+  expectStatus("outside student loads the assessment catalogue", outsiderCatalog, 200);
+  assert.equal(
+    (outsiderCatalog.body?.quizzes || []).some((item: any) => item.id === SUPERVISOR_QUIZ_ID),
+    false,
+    "hidden school-directed assessment leaked into an outside student catalogue",
+  );
+
+  const studentDefinition = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}`, { token: tokens.get("student") });
+  expectStatus("targeted student opens hidden school-directed assessment", studentDefinition, 200);
+  const outsiderDefinition = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}`, { token: tokens.get("outsider") });
+  expectStatus("outside student cannot open hidden school-directed assessment", outsiderDefinition, 403);
+
+  const studentSubmission = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("targeted student submits hidden school-directed assessment", studentSubmission, 201);
+
+  const outsiderSubmission = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("outsider"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("outside student cannot submit hidden school-directed assessment", outsiderSubmission, 403);
 }
 
 async function runSchoolScopeJourney(csrf: CsrfContext) {

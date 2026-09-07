@@ -143,7 +143,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);
   const [targetUserIds] = useState<string[]>(editingQuiz?.targetUserIds ?? initialTargetUserIds ?? []);
   const [dueDate, setDueDate] = useState(editingQuiz?.dueDate ?? "");
-  const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? isAdmin);
+  // Supervisors create school-directed assessments that are immediately usable by
+  // their in-scope students. Teachers retain the approval workflow.
+  const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? (isAdmin || isSupervisor));
   const [showOnPlatform, setShowOnPlatform] = useState(editingQuiz?.showOnPlatform ?? isAdmin);
   const [accessType, setAccessType] = useState<"free" | "paid" | "package">(
     (editingQuiz?.access?.type as "free" | "paid" | "package") ?? "free",

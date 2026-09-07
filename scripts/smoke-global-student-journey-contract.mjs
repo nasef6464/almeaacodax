@@ -145,7 +145,8 @@ check('quiz center separates self Saher, school-directed tests, history, and wea
   assertIncludes(files.quizzes, 'الاختبارات المدرسية');
   assertIncludes(files.quizzes, 'اختبارات المنصة');
   assertIncludes(files.quizzes, 'كل اختبار يصل من المدرسة أو المشرف أو ضمن خطة علاجية');
-  assertIncludes(files.quizzes, 'if (!isUserTargeted && !isGroupTargeted) return false;');
+  assertIncludes(files.quizzes, 'const isServerVerifiedDirectedAudience = quiz.viewerAudienceVerified === true;');
+  assertIncludes(files.quizzes, 'if (!isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience) return false;');
   assertAnyIncludes(files.quizzes, ['اختبار ساهر الذاتي', 'Ø§Ø®ØªØ¨Ø§Ø± Ø³Ø§Ù‡Ø± Ø§Ù„Ø°Ø§ØªÙŠ']);
 });
 

@@ -98,6 +98,7 @@ check("directed assessment builder preserves an immediately selected audience on
   assertIncludes(quizBuilder, "const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);");
   assertIncludes(quizBuilder, "targetGroupIdsRef.current = next;");
   assertIncludes(quizBuilder, "targetGroupIds: targetGroupIdsRef.current");
+  assertIncludes(quizBuilder, "editingQuiz?.isPublished ?? (isAdmin || isSupervisor)");
 });
 
 check("post-test workflow supports weak and absent student follow-up", () => {
@@ -113,15 +114,23 @@ check("student school-directed assessment list and runner share additive audienc
   assertIncludes(quizzesPage, "الاختبارات المدرسية");
   assertIncludes(quizzesPage, "...(user.schoolId ? [user.schoolId] : [])");
   assertIncludes(quizzesPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
-  assertIncludes(quizzesPage, "if (!isUserTargeted && !isGroupTargeted) return false;");
+  assertIncludes(quizzesPage, "const isServerVerifiedDirectedAudience = quiz.viewerAudienceVerified === true;");
+  assertIncludes(quizzesPage, "if (quiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) return false;");
+  assertIncludes(quizzesPage, "if (!isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience) return false;");
   assertIncludes(quizzesPage, "user.id, user.schoolId, visiblePathIds");
   assertIncludes(quizPage, "const targetUserIds = foundQuiz.targetUserIds || [];");
   assertIncludes(quizPage, "const targetGroupIds = foundQuiz.targetGroupIds || [];");
   assertIncludes(quizPage, "...(user.schoolId ? [user.schoolId] : [])");
   assertIncludes(quizPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
   assertIncludes(quizPage, "targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id))");
-  assertIncludes(quizPage, "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted)");
+  assertIncludes(quizPage, "const isServerVerifiedDirectedAudience = foundQuiz.viewerAudienceVerified === true;");
+  assertIncludes(quizPage, "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience)");
   assertNotIncludes(quizPage, "if (!isUserTargeted || !isGroupTargeted)");
+});
+
+check("supervisor actions navigate through BrowserRouter rather than only changing the hash", () => {
+  assertIncludes(dashboard, "window.location.assign(`/admin-dashboard?${params.toString()}`);");
+  assertNotIncludes(dashboard, "window.location.hash = `/admin-dashboard?");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

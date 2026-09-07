@@ -429,7 +429,10 @@ const isQuizTargetedToLearner = (quiz: any, user?: any) => {
     return false;
   }
 
-  const userGroupIds = (user.groupIds || []).map(String);
+  const userGroupIds = uniqueStrings([
+    ...(user.groupIds || []).map(String),
+    ...(user.schoolId ? [String(user.schoolId)] : []),
+  ]);
   return (
     targetUserIds.has(String(user.id || user._id)) ||
     userGroupIds.some((groupId: string) => targetGroupIds.has(groupId))
@@ -483,7 +486,10 @@ const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   }
 
   const isApproved = quiz.approvalStatus === "approved" || !quiz.approvalStatus;
-  const isVisible = quiz.isPublished && quiz.showOnPlatform !== false && isApproved;
+  const isDirectedToLearner = isQuizTargetedToLearner(quiz, user);
+  // A school-directed assessment is intentionally excluded from the public
+  // catalogue. It remains available to its verified audience only.
+  const isVisible = quiz.isPublished && isApproved && (quiz.showOnPlatform !== false || isDirectedToLearner);
   if (!isVisible) {
     return false;
   }
@@ -496,11 +502,15 @@ const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
     }
   }
 
-  const userGroupIds = (user.groupIds || []).map(String);
-  const hasExplicitTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
-  if (!isQuizTargetedToLearner(quiz, user)) {
+  if (!isDirectedToLearner) {
     return false;
   }
+
+  const userGroupIds = uniqueStrings([
+    ...(user.groupIds || []).map(String),
+    ...(user.schoolId ? [String(user.schoolId)] : []),
+  ]);
+  const hasExplicitTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
 
   const placementAccessType = getQuizPlacementAccessType(quiz, source);
   const accessType = placementAccessType !== "inherit" ? placementAccessType : quiz.access?.type || "free";
@@ -868,12 +878,35 @@ quizRouter.get(
       return res.json(publicQuizListCache.payload);
     }
 
+    const learnerAudienceRecord = learnerAudienceForCatalog as any;
+    const learnerAudienceIds = uniqueStrings([
+      ...(learnerAudienceRecord?.groupIds || []).map(String),
+      ...(learnerAudienceRecord?.schoolId ? [String(learnerAudienceRecord.schoolId)] : []),
+    ]);
+    const learnerId = learnerAudienceRecord
+      ? String(learnerAudienceRecord.id || learnerAudienceRecord._id || "")
+      : "";
+    const directedAudienceFilter = learnerId
+      ? {
+          $or: [
+            { targetUserIds: learnerId },
+            ...(learnerAudienceIds.length ? [{ targetGroupIds: { $in: learnerAudienceIds } }] : []),
+          ],
+        }
+      : null;
     let baseFilter: Record<string, any> = isStaffRole(req.authUser?.role)
       ? {}
       : {
           isPublished: true,
-          showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
+          $and: [
+            {
+              $or: [
+                { showOnPlatform: { $ne: false } },
+                ...(directedAudienceFilter ? [directedAudienceFilter] : []),
+              ],
+            },
+          ],
         };
     if (req.authUser?.role === "supervisor") {
       const supervisorScope = await resolveSupervisorSchoolReportScope(req.authUser);
@@ -920,11 +953,16 @@ quizRouter.get(
         }
       });
 
-      safeItems = items.filter(
-        (quiz: any) =>
-          isQuizTargetedToLearner(quiz, learnerAudienceForCatalog) &&
-          getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
-      );
+      safeItems = items
+        .filter(
+          (quiz: any) =>
+            isQuizTargetedToLearner(quiz, learnerAudienceForCatalog) &&
+            getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
+        )
+        .map((quiz: any) => {
+          const hasExplicitTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+          return hasExplicitTarget ? { ...quiz, viewerAudienceVerified: true } : quiz;
+        });
     }
 
     const payload = {
