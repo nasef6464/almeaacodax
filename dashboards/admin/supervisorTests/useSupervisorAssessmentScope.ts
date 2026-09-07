@@ -108,6 +108,9 @@ export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter)
         .forEach((group) => (group.studentIds || []).forEach((id) => {
           if (scopedStudentIds.includes(String(id))) targetStudents.add(String(id));
         }));
+      scopedStudents
+        .filter((student) => student.groupId && targetGroupIds.includes(student.groupId))
+        .forEach((student) => targetStudents.add(student.id));
       if (!hasExplicitTargets) scopedStudentIds.forEach((id) => targetStudents.add(id));
 
       const targetStudentIds = Array.from(targetStudents);
@@ -142,7 +145,7 @@ export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter)
           participationRate,
         },
       };
-    }), [examResults, groups, quizzes, scopedGroupIds, scopedStudentIds, user.id]);
+    }), [examResults, groups, quizzes, scopedGroupIds, scopedStudentIds, scopedStudents, user.id]);
 
   const summaryStats = useMemo(() => {
     const totalTests = quizzesWithStats.length;

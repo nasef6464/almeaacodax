@@ -126,6 +126,12 @@ check("supervisor group assignment counts and alerts students from either group 
   assertIncludes(testsManager, "scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)");
 });
 
+check("supervisor assessment statistics include student-side group membership", () => {
+  assertIncludes(assessmentScope, "scopedStudents");
+  assertIncludes(assessmentScope, "targetGroupIds.includes(student.groupId)");
+  assertIncludes(assessmentScope, "targetStudents.add(student.id)");
+});
+
 check("student school-directed assessment list and runner share additive audience semantics", () => {
   assertIncludes(quizzesPage, "directedQuizzes");
   assertIncludes(quizzesPage, "الاختبارات المدرسية");
