@@ -618,6 +618,15 @@
 - Deferred: automatic renewal, contract invoices, and revocation semantics for legacy mirrored course fields; these need an owner-approved commercial policy, not an implementation guess.
 - Next exact action: proceed to the next product goal only after selecting whether the first school offer is (a) discount-code sales or (b) fully opened scoped paths, then configure the existing flows accordingly.
 
+## Batch 6S-09 — School offer expiry policy decision
+
+- Owner decision: school package/code expiry revokes only school-granted access; it must never revoke a student's direct course purchase or independent subscription.
+- Status: `VERIFIED` for the supported new-grant path. Access-code redemption creates an expiring `AccessGrant` carrying the package scope (`pathIds`, `subjectIds`, `contentTypes`) and the code expiry; content and quiz entitlement reads honor that grant boundary. Existing seat-capacity, expiry, payment, and global-student-journey evidence remains green.
+- No runtime change in this batch. The decision preserves the modular boundary: `B2BPackage` defines the offer, `AccessCode` activates it, `AccessGrant` records school entitlement, content/quiz routes consume entitlement, and reports remain analytical.
+- `HIGH / NOT PROVEN` boundary retained: legacy `courseIds` grants were historically mirrored into `User.enrolledCourses`/`subscription.purchasedCourses` without provenance. Automatic revocation on package status change cannot be added safely without distinguishing school grants from direct purchases; no migration or destructive cleanup is authorized.
+- Deferred: contract renewal/invoices, bulk revocation, provenance migration, and concurrent high-volume seat reservation hardening.
+- Next exact action: configure and run the first school pilot offer using scoped path/subject/content access with an expiring code; keep Discount Codes as the separate paid-product promotion flow.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
