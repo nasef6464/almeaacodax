@@ -989,6 +989,27 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   expectStatus("supervisor persists the selected directed-assessment attempt limit", supervisorAssignmentUpdate, 200);
   assert.equal(supervisorAssignmentUpdate.body?.settings?.maxAttempts, 2, "supervisor assignment lost its attempt limit");
 
+  const supervisorAlertTitle = `Platform V3 directed assessment alert ${RUN_MARKER}`;
+  const supervisorAlert = await jsonRequest("/notifications/student-alert", {
+    method: "POST",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: {
+      studentIds: [studentId],
+      title: supervisorAlertTitle,
+      body: "Please complete your directed assessment.",
+    },
+  });
+  expectStatus("supervisor sends a scoped assessment alert to the target student", supervisorAlert, 202);
+
+  const studentNotifications = await jsonRequest("/notifications/me?limit=50", { token: tokens.get("student") });
+  expectStatus("target student loads their in-app notifications", studentNotifications, 200);
+  assert.ok(
+    (studentNotifications.body?.notifications || []).some((notification: any) => notification.title === supervisorAlertTitle),
+    "supervisor assessment alert was not visible in the target student's inbox",
+  );
+  pass("supervisor assessment alert is visible in the target student's inbox");
+
   const studentCatalog = await jsonRequest("/quizzes", { token: tokens.get("student") });
   expectStatus("targeted student loads the assessment catalogue", studentCatalog, 200);
   const listedForStudent = (studentCatalog.body?.quizzes || []).find((item: any) => item.id === SUPERVISOR_QUIZ_ID);

@@ -12,6 +12,7 @@ const quizPage = await read("pages/QuizPage.tsx");
 const quizBuilder = await read("dashboards/admin/UnifiedQuizBuilder.tsx");
 const assignmentWidget = await read("dashboards/admin/QuizAssignWidget.tsx");
 const quizModel = await read("server/src/models/Quiz.ts");
+const backendIntegrationGate = await read("server/src/scripts/backendIntegrationGate.ts");
 
 const checks = [];
 
@@ -92,6 +93,8 @@ check("supervisor assessment messages use scoped student alert rather than admin
   assertIncludes(notificationRoutes, 'notificationRouter.post("/student-alert"');
   assertIncludes(notificationRoutes, 'requireRole(["admin", "supervisor", "teacher"])');
   assertIncludes(notificationRoutes, 'channels: ["in_app"]');
+  assertIncludes(backendIntegrationGate, '"/notifications/student-alert"');
+  assertIncludes(backendIntegrationGate, "supervisor assessment alert is visible in the target student's inbox");
   assertIncludes(quizModel, 'supervisorMessage: { type: String, default: null }');
 });
 
