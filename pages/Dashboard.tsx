@@ -151,6 +151,7 @@ type DashboardTab =
     | 'saher'
     | 'quizzes'
     | 'mock-exams'
+    | 'school-tests'
     | 'exams'
     | 'reports'
     | 'favorites'
@@ -734,13 +735,13 @@ const MyCoursesTab = () => {
     );
 };
 
-/** Unified Exams Hub: merges ساهر + اختباراتي + محاكي قياس into one tab */
-const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> = ({ initialView = 'explore' }) => {
-    const [view, setView] = React.useState<'explore' | 'attempts' | 'mock'>(initialView);
+/** Student assessment hub: attempts, mock exams, and school-directed work. */
+const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = ({ initialView = 'attempts' }) => {
+    const [view, setView] = React.useState<'attempts' | 'mock' | 'school'>(initialView);
     const examViews = [
-        { id: 'explore' as const, label: 'مركز الاختبارات', icon: <Zap size={16} /> },
-        { id: 'attempts' as const, label: 'محاولاتي', icon: <FileText size={16} /> },
-        { id: 'mock' as const, label: 'محاكي قياس', icon: <Star size={16} /> },
+        { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} /> },
+        { id: 'mock' as const, label: 'الاختبارات المحاكية', icon: <Star size={16} /> },
+        { id: 'school' as const, label: 'اختبارات المدرسة', icon: <Zap size={16} /> },
     ];
     return (
         <div className="space-y-4">
@@ -754,9 +755,9 @@ const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> =
                 ))}
             </div>
             <Suspense fallback={<TabLoading />}>
-                {view === 'explore'  && <Quizzes />}
                 {view === 'attempts' && <Quizzes view="attempts" />}
                 {view === 'mock'     && <MockExamStudentHub />}
+                {view === 'school'   && <Quizzes view="school" />}
             </Suspense>
         </div>
     );
@@ -790,7 +791,7 @@ const Dashboard: React.FC = () => {
         { id: 'my-courses',  label: 'دوراتي',            icon: <BookOpen size={20} /> },
         { id: 'smart-path',  label: 'التعلم الذكي',     icon: <Brain size={20} /> },
         { id: 'sessions',    label: 'جلساتي',            icon: <Calendar size={20} /> },
-        { id: 'exams',       label: 'مركز الاختبارات',  icon: <Zap size={20} /> },
+        { id: 'exams',       label: 'الاختبارات',        icon: <Zap size={20} /> },
         { id: 'reports',     label: 'تقاريري',           icon: <PieChart size={20} /> },
         { id: 'plan',        label: 'خطتي',              icon: <MapIcon size={20} /> },
         { id: 'favorites',   label: 'مراجعة الأسئلة',   icon: <Heart size={20} /> },
@@ -815,7 +816,7 @@ const Dashboard: React.FC = () => {
         const requestedTab = new URLSearchParams(location.search).get('tab');
         const allowedTabs = new Set(menuItems.map((item) => item.id));
         // Alias legacy tab IDs to the merged 'exams' tab
-        const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams' };
+        const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };
         const resolved = requestedTab ? (aliasMap[requestedTab] ?? requestedTab) : null;
         if (resolved && allowedTabs.has(resolved)) {
             setActiveTab(resolved as typeof activeTab);
@@ -894,7 +895,8 @@ const Dashboard: React.FC = () => {
             case 'saher':
             case 'quizzes':
             case 'mock-exams':
-                return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'quizzes' ? 'attempts' : 'explore'} />;
+            case 'school-tests':
+                return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'school-tests' ? 'school' : 'attempts'} />;
             case 'reports':    return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
             case 'plan':       return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;
             case 'favorites':  return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
@@ -1024,7 +1026,7 @@ const Dashboard: React.FC = () => {
                                         key={item.id}
                                         onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
                                         className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            ['exams','saher','quizzes','mock-exams'].includes(activeTab) && item.id === 'exams'
+                                            ['exams','saher','quizzes','mock-exams','school-tests'].includes(activeTab) && item.id === 'exams'
                                                 ? 'bg-amber-50 text-amber-600 shadow-sm'
                                                 : activeTab === item.id
                                                     ? 'bg-amber-50 text-amber-600 shadow-sm'
@@ -1032,7 +1034,7 @@ const Dashboard: React.FC = () => {
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {(item.id === 'exams' ? ['exams','saher','quizzes','mock-exams'].includes(activeTab) : activeTab === item.id) && <ChevronLeft size={16} />}
+                                        {(item.id === 'exams' ? ['exams','saher','quizzes','mock-exams','school-tests'].includes(activeTab) : activeTab === item.id) && <ChevronLeft size={16} />}
                                     </button>
                                 ))}
                                 {/* Group: الأدوات */}
