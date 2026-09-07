@@ -3,9 +3,9 @@
 - Date: 2026-09-07
 - Branch: `codex/course-package-id-collision-access`
 - PR: `#60`
-- Base main: `9dc18eb35627d1165bd03ef9d9555e1818568922`
+- Base main at implementation: `9dc18eb35627d1165bd03ef9d9555e1818568922`
 - Runtime commit: `1bbfb99500dc3b35f2749d7f2631819f184519d3`
-- Status: `PARTIAL` pending terminal CI on the exact runtime commit.
+- Status: `VERIFIED` for the bounded runtime slice; ready for integration.
 
 ## Proven gap
 
@@ -29,12 +29,13 @@ No API URL/method, backend RBAC, scoring, payment-provider semantics, persisted 
 
 Exact runtime `1bbfb99500dc3b35f2749d7f2631819f184519d3`:
 
-- Vercel commit status: `SUCCESS`.
-- Platform V3 Phase + Handover Gate: running at handoff time.
-- Platform V3 Recovery Gate: running at handoff time.
-- Refactor V2 Safety Gate: running at handoff time.
-- Platform V3 Public UI Gate: running at handoff time.
-- Course Free Enrollment UI Gate: running at handoff time.
-- Backend Integration / Deep Pre-Merge / Live Role / Assessment / role-preview: skipped by existing workflow conditions for this bounded frontend-only slice.
+- Vercel commit status: `SUCCESS` / deployment completed.
+- GitHub Actions reported 10 workflow runs for the exact runtime SHA.
+- At closure there were zero `failure`, zero `cancelled`, zero `queued`, and zero `in_progress` runs for that SHA.
+- The applicable frontend/safety/public/course gates therefore reached terminal non-failing results; backend/deep/live-role/assessment role-preview jobs remain skipped by their existing path conditions for this bounded frontend-only slice.
 
-Do not mark the PR ready or merge until the applicable exact-runtime workflows above reach terminal green results. If green, update this handoff/PR evidence, mark PR #60 ready, merge preserving history, verify the resulting production deployment/health when available, and continue only from the new `main`.
+## Integration note
+
+`main` advanced after this PR was opened with School-focused commits. The current `main` still contains the unsafe package-ID shortcut, so the gap remains real and the PR remains necessary. Those intervening changes are in a separate product area and do not change this slice's API, RBAC, data, or entitlement resolver contract.
+
+After merge, verify the resulting `main` deployment/health before starting another product gap.
