@@ -1770,45 +1770,44 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         .filter((path) => path.courses.length > 0 || path.stats.examsCount > 0);
 
     return (
-    <div className="space-y-6 animate-fade-in pb-20">
+    <div className="space-y-4 animate-fade-in pb-16">
         {/* Header & Streak */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-            <div className="flex items-center gap-4">
-                <img src={user.avatar} alt="Profile" className="w-16 h-16 rounded-full border-4 border-amber-100" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xs border border-gray-100">
+            <div className="flex items-center gap-3">
+                <img src={user.avatar} alt="Profile" className="w-11 h-11 rounded-full border-2 border-amber-100 shrink-0" />
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900">مرحباً يا بطل! 👋</h2>
-                    <p className="text-gray-500 text-sm font-bold mt-1">جاهز تحقق أهدافك اليوم؟</p>
+                    <h2 className="text-lg sm:text-xl font-black text-gray-900">مرحباً يا بطل! 👋</h2>
+                    <p className="text-gray-500 text-xs font-bold mt-0.5">جاهز تحقق أهدافك اليوم؟</p>
                 </div>
             </div>
-            <div className="flex items-center gap-3 bg-orange-50 border border-orange-100 p-3 rounded-2xl">
-                <div className="w-12 h-12 flex items-center justify-center text-2xl bg-white rounded-xl shadow-sm">🔥</div>
+            <div className="flex items-center gap-2.5 bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+                <div className="w-8 h-8 flex items-center justify-center text-base bg-white rounded-lg shadow-2xs">🔥</div>
                 <div>
-                    <div className="text-xs font-black text-orange-600">شريط الاستمرارية</div>
-                    <div className="text-xl font-black text-orange-700">{streakDays} أيام متتالية</div>
+                    <div className="text-[10px] font-black text-orange-600">شريط الاستمرارية</div>
+                    <div className="text-sm font-black text-orange-700 leading-tight">{streakDays} أيام متتالية</div>
                 </div>
             </div>
         </div>
 
         {/* Shortcuts for Students */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
             {[
-                { id: 'saher', icon: <Zap size={28} />, label: 'اختبار سريع', sub: 'تدريب ذكي', color: 'text-purple-600', bg: 'bg-purple-50', ring: 'focus:ring-purple-200' },
-                { id: 'flashcards', icon: <BookOpen size={28} />, label: 'البطاقات', sub: 'المراجعة السريعة', color: 'text-rose-600', bg: 'bg-rose-50', ring: 'focus:ring-rose-200' },
-                { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', sub: 'السابقة', color: 'text-blue-600', bg: 'bg-blue-50', ring: 'focus:ring-blue-200' },
-                { id: 'reports', icon: <PieChart size={28} />, label: 'التقارير', sub: 'أداء المستوى', color: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'focus:ring-emerald-200' }
+                { id: 'saher', icon: <Zap size={18} />, label: 'اختبار سريع', sub: 'تدريب ذكي', color: 'text-purple-600', bg: 'bg-purple-50', ring: 'focus:ring-purple-200' },
+                { id: 'flashcards', icon: <BookOpen size={18} />, label: 'البطاقات', sub: 'المراجعة السريعة', color: 'text-rose-600', bg: 'bg-rose-50', ring: 'focus:ring-rose-200' },
+                { id: 'quizzes', icon: <FileText size={18} />, label: 'اختباراتي', sub: 'السابقة', color: 'text-blue-600', bg: 'bg-blue-50', ring: 'focus:ring-blue-200' },
+                { id: 'reports', icon: <PieChart size={18} />, label: 'التقارير', sub: 'أداء المستوى', color: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'focus:ring-emerald-200' }
             ].map(btn => (
                 <button 
                     key={btn.id}
                     onClick={() => setActiveTab(btn.id as any)} 
-                    className={`group relative flex flex-col items-center justify-center gap-3 rounded-3xl bg-white p-5 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-4 ${btn.ring}`}
+                    className={`group relative flex items-center gap-2.5 sm:gap-3 rounded-2xl bg-white p-2.5 sm:p-3 shadow-2xs border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-gray-200 focus:outline-none focus:ring-2 ${btn.ring} text-right`}
                 >
-                    <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${btn.bg}`}></div>
-                    <div className={`relative z-10 w-14 h-14 flex items-center justify-center rounded-2xl ${btn.bg} ${btn.color} transition-transform duration-300 group-hover:scale-110`}>
+                    <div className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl ${btn.bg} ${btn.color} shrink-0 transition-transform duration-200 group-hover:scale-105`}>
                         {btn.icon}
                     </div>
-                    <div className="relative z-10 text-center">
-                        <span className="block font-black text-gray-800 text-sm mb-0.5">{btn.label}</span>
-                        <span className="block text-xs font-bold text-gray-400">{btn.sub}</span>
+                    <div className="min-w-0 flex-1">
+                        <span className="block font-black text-gray-800 text-xs sm:text-sm truncate">{btn.label}</span>
+                        <span className="block text-[10px] sm:text-xs font-bold text-gray-400 truncate">{btn.sub}</span>
                     </div>
                 </button>
             ))}
@@ -1828,43 +1827,42 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
 
         {/* Student Tools: Parent Code & Notifications */}
         {user.role === Role.STUDENT && (
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm transition-all hover:shadow-md cursor-pointer" onClick={() => setShowCalculator(true)}>
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black">
-                        <Target size={24} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+            <Card className="p-3 sm:p-3.5 rounded-2xl flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-2xs transition-all hover:shadow-md cursor-pointer" onClick={() => setShowCalculator(true)}>
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black shrink-0">
+                        <Target size={18} />
                     </div>
-                    <div>
-                        <h4 className="font-black text-gray-900 text-sm">حاسبة القبول الجامعي</h4>
-                        <p className="text-xs text-gray-500 font-bold mt-1">احسب النسبة الموزونة وفرصتك.</p>
+                    <div className="min-w-0">
+                        <h4 className="font-black text-gray-900 text-xs sm:text-sm truncate">حاسبة القبول الجامعي</h4>
+                        <p className="text-[10px] sm:text-xs text-gray-500 font-bold truncate">احسب النسبة الموزونة وفرصتك.</p>
                     </div>
                 </div>
-                <div className="text-indigo-600 bg-indigo-100 p-2 rounded-xl">
-                    <Calculator size={20} />
+                <div className="text-indigo-600 bg-indigo-100 p-1.5 rounded-lg shrink-0 mr-2">
+                    <Calculator size={18} />
                 </div>
             </Card>
 
-            <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black">🔗</div>
-                    <div>
-                        <h4 className="font-black text-gray-900 text-sm">كود ربط ولي الأمر</h4>
-                        <p className="text-xs text-gray-500 font-bold mt-1">شاركه مع ولي أمرك لمتابعة أدائك.</p>
+            <Card className="p-3 sm:p-3.5 rounded-2xl flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-2xs">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black shrink-0 text-sm">🔗</div>
+                    <div className="min-w-0">
+                        <h4 className="font-black text-gray-900 text-xs sm:text-sm truncate">كود ربط ولي الأمر</h4>
+                        <p className="text-[10px] sm:text-xs text-gray-500 font-bold truncate">شاركه مع ولي أمرك لمتابعة أدائك.</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl shadow-sm border border-indigo-100">
-                    <span className="font-mono font-black text-indigo-700 tracking-widest">{String(user?.id || '883921').slice(-6).toUpperCase()}</span>
+                <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl shadow-2xs border border-indigo-100 shrink-0 mr-2">
+                    <span className="font-mono font-black text-indigo-700 text-xs tracking-wider">{String(user?.id || '883921').slice(-6).toUpperCase()}</span>
                     <button 
                         onClick={() => {
                             navigator.clipboard?.writeText(String(user?.id || '883921').slice(-6).toUpperCase());
                             setCopiedCode(true);
                             setTimeout(() => setCopiedCode(false), 2000);
                         }}
-                        className="text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1.5 rounded-lg flex items-center gap-1 text-xs font-bold transition-colors"
+                        className="text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1 rounded-lg flex items-center gap-1 text-[11px] font-bold transition-colors"
                         title="نسخ الكود"
                     >
-                        <Copy size={16} />
+                        <Copy size={14} />
                         {copiedCode && <span className="text-[10px] text-emerald-600 font-black">تم النسخ ✓</span>}
                     </button>
                 </div>
@@ -1872,28 +1870,28 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
+        <div className="grid lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 space-y-4">
                 {/* My Paths (مساراتي) */}
                 {paths.length > 0 && (
                     <section>
-                        <h3 className="text-lg font-black text-gray-900 mb-3">أكمل مساراتك</h3>
-                        <div className="space-y-3">
+                        <h3 className="text-sm sm:text-base font-black text-gray-900 mb-2.5">أكمل مساراتك</h3>
+                        <div className="space-y-2.5">
                             {paths.map(path => (
-                                <Card key={path.id} className="p-4 flex items-center gap-4 hover:shadow-md transition-shadow border-gray-100">
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${path.bg}`}>
+                                <Card key={path.id} className="p-2.5 sm:p-3 rounded-2xl flex items-center gap-3 hover:shadow-md transition-shadow border-gray-100">
+                                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${path.bg}`}>
                                         {path.icon}
                                     </div>
                                     <div className="flex-1 min-w-0 text-right">
-                                        <h4 className="font-black text-gray-900 text-base truncate">{path.title}</h4>
-                                        <div className="flex items-center gap-2 mt-2">
+                                        <h4 className="font-black text-gray-900 text-xs sm:text-sm truncate">{path.title}</h4>
+                                        <div className="flex items-center gap-2 mt-1">
                                             <div className="flex-1"><ProgressBar percentage={path.stats.progress} color="secondary" /></div>
-                                            <span className="text-xs font-black text-gray-500 min-w-[30px]">{path.stats.progress}%</span>
+                                            <span className="text-[11px] font-black text-gray-500 min-w-[28px]">{path.stats.progress}%</span>
                                         </div>
                                     </div>
                                     <Link 
                                         to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}
-                                        className="hidden sm:flex bg-gray-900 text-white px-5 py-2.5 rounded-xl font-black text-xs hover:bg-gray-800 items-center justify-center whitespace-nowrap"
+                                        className="hidden sm:flex bg-gray-900 text-white px-3.5 py-1.5 rounded-xl font-black text-xs hover:bg-gray-800 items-center justify-center whitespace-nowrap"
                                     >
                                         متابعة
                                     </Link>
@@ -1906,51 +1904,51 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 {/* Assigned Quizzes (الاختبارات الموجهة) */}
                 {assignedQuizzes.length > 0 && (
                     <section>
-                        <h3 className="text-lg font-black text-gray-900 mb-3 flex items-center gap-2">
-                            <ClipboardList className="text-indigo-600" size={24} />
+                        <h3 className="text-sm sm:text-base font-black text-gray-900 mb-2.5 flex items-center gap-2">
+                            <ClipboardList className="text-indigo-600" size={18} />
                             الاختبارات الموجهة لك
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {assignedQuizzes.map(quiz => {
                                 const hasCompleted = examResults.some(r => r.quizId === quiz.id && r.userId === user.id);
                                 return (
-                                    <Card key={quiz.id} className={`p-5 flex flex-col justify-between transition-all border ${hasCompleted ? 'border-emerald-100 bg-emerald-50/30' : 'border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md'}`}>
+                                    <Card key={quiz.id} className={`p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between transition-all border ${hasCompleted ? 'border-emerald-100 bg-emerald-50/30' : 'border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md'}`}>
                                         <div>
-                                            <div className="flex justify-between items-start mb-3">
-                                                <div className={`p-2 rounded-lg ${
-                                              quiz.quizKind === 'drill' ? 'bg-emerald-100 text-emerald-600'
-                                              : isTrueMockExam(quiz) ? 'bg-violet-100 text-violet-600'
-                                              : 'bg-indigo-100 text-indigo-600'
-                                            }`}>
-                                                {isTrueMockExam(quiz) ? <ActivityIcon size={20} /> : <FileText size={20} />}
-                                            </div>
-                                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
-                                              quiz.quizKind === 'drill' ? 'bg-emerald-50 text-emerald-700'
-                                              : isTrueMockExam(quiz) ? 'bg-violet-50 text-violet-700'
-                                              : 'bg-indigo-50 text-indigo-700'
-                                            }`}>
-                                                {quiz.quizKind === 'drill' ? 'تدريب' : isTrueMockExam(quiz) ? 'محاكي قياس' : 'اختبار'}
-                                                </span>
-                                            </div>
-                                            <h4 className="font-black text-gray-900 text-sm mb-1">{quiz.title}</h4>
-                                            {quiz.dueDate && (
-                                                <p className="text-xs text-rose-600 font-bold mb-4 flex items-center gap-1">
-                                                    <Clock size={12} /> أخر موعد: {new Date(quiz.dueDate).toLocaleDateString('ar-EG')}
-                                                </p>
-                                            )}
-                                        </div>
-                                        {hasCompleted ? (
-                                            <div className="mt-4 flex items-center justify-center gap-2 py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">
-                                                <CheckCircle size={16} /> تم الإنجاز
-                                            </div>
-                                        ) : (
-                                            <Link 
-                                                to={`/quiz/${quiz.id}`}
-                                                className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors block text-center text-xs"
-                                            >
-                                                بدء الاختبار
-                                            </Link>
-                                        )}
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className={`p-1.5 rounded-lg ${
+                                                quiz.quizKind === 'drill' ? 'bg-emerald-100 text-emerald-600'
+                                                : isTrueMockExam(quiz) ? 'bg-violet-100 text-violet-600'
+                                                : 'bg-indigo-100 text-indigo-600'
+                                              }`}>
+                                                  {isTrueMockExam(quiz) ? <ActivityIcon size={16} /> : <FileText size={16} />}
+                                              </div>
+                                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                                quiz.quizKind === 'drill' ? 'bg-emerald-50 text-emerald-700'
+                                                : isTrueMockExam(quiz) ? 'bg-violet-50 text-violet-700'
+                                                : 'bg-indigo-50 text-indigo-700'
+                                              }`}>
+                                                  {quiz.quizKind === 'drill' ? 'تدريب' : isTrueMockExam(quiz) ? 'محاكي قياس' : 'اختبار'}
+                                                  </span>
+                                              </div>
+                                              <h4 className="font-black text-gray-900 text-xs sm:text-sm mb-1">{quiz.title}</h4>
+                                              {quiz.dueDate && (
+                                                  <p className="text-[11px] text-rose-600 font-bold mb-2 flex items-center gap-1">
+                                                      <Clock size={11} /> أخر موعد: {new Date(quiz.dueDate).toLocaleDateString('ar-EG')}
+                                                  </p>
+                                              )}
+                                          </div>
+                                          {hasCompleted ? (
+                                              <div className="mt-2 flex items-center justify-center gap-1.5 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">
+                                                  <CheckCircle size={14} /> تم الإنجاز
+                                              </div>
+                                          ) : (
+                                              <Link 
+                                                  to={`/quiz/${quiz.id}`}
+                                                  className="mt-2 w-full bg-indigo-600 text-white py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition-colors block text-center text-xs"
+                                              >
+                                                  بدء الاختبار
+                                              </Link>
+                                          )}
                                     </Card>
                                 );
                             })}
@@ -1962,21 +1960,21 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             </div>
 
             {/* Recent Activity */}
-            <div className="space-y-6">
-                <section className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
-                    <h3 className="text-lg font-black text-gray-900 mb-4">آخر إنجازاتك</h3>
+            <div className="space-y-4">
+                <section className="bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-100 shadow-2xs">
+                    <h3 className="text-sm sm:text-base font-black text-gray-900 mb-2.5">آخر إنجازاتك</h3>
                     {recentActivity.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {recentActivity.slice(0, 4).map((activity) => (
-                                <div key={activity.id} className="flex items-center gap-3 bg-gray-50 p-3 rounded-2xl">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                <div key={activity.id} className="flex items-center gap-2.5 bg-gray-50 p-2 sm:p-2.5 rounded-xl">
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                                         activity.type === 'lesson_complete' ? 'bg-emerald-100 text-emerald-600' :
                                         activity.type === 'quiz_complete' ? 'bg-blue-100 text-blue-600' :
                                         'bg-purple-100 text-purple-600'
                                     }`}>
-                                        {activity.type === 'lesson_complete' ? <CheckCircle size={18} /> :
-                                         activity.type === 'quiz_complete' ? <FileText size={18} /> :
-                                         <Star size={18} />}
+                                        {activity.type === 'lesson_complete' ? <CheckCircle size={15} /> :
+                                         activity.type === 'quiz_complete' ? <FileText size={15} /> :
+                                         <Star size={15} />}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="font-bold text-xs text-gray-800 truncate">{activity.title}</p>
@@ -1986,8 +1984,8 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-6 text-gray-400">
-                            <Clock size={28} className="mx-auto mb-2 opacity-30" />
+                        <div className="text-center py-4 text-gray-400">
+                            <Clock size={24} className="mx-auto mb-1.5 opacity-30" />
                             <p className="text-xs font-bold">لم تقم بأي نشاط بعد.</p>
                         </div>
                     )}
