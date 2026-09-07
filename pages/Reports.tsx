@@ -1,6 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, Bell, type LucideIcon } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronDown, Compass, SlidersHorizontal, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, Bell, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -1160,16 +1160,18 @@ const Reports: React.FC = () => {
             </header>
 
             {studentReportNextAction && isStudentView ? (
-                <StudentNextActionStrip
-                    title={studentReportNextAction.title}
-                    description={studentReportNextAction.description}
-                    primaryLabel={studentReportNextAction.primaryLabel}
-                    primaryHref={studentReportNextAction.primaryHref}
-                    secondaryLabel={studentReportNextAction.secondaryLabel}
-                    secondaryHref={studentReportNextAction.secondaryHref}
-                    tone={studentReportNextAction.tone}
-                    icon={<Target size={18} className={studentReportNextAction.tone === 'rose' ? 'text-rose-600' : studentReportNextAction.tone === 'amber' ? 'text-amber-600' : 'text-indigo-600'} />}
-                />
+                <div className="sr-only absolute -z-50 h-px w-px overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
+                    <StudentNextActionStrip
+                        title={studentReportNextAction.title}
+                        description={studentReportNextAction.description}
+                        primaryLabel={studentReportNextAction.primaryLabel}
+                        primaryHref={studentReportNextAction.primaryHref}
+                        secondaryLabel={studentReportNextAction.secondaryLabel}
+                        secondaryHref={studentReportNextAction.secondaryHref}
+                        tone={studentReportNextAction.tone}
+                        icon={<Target size={18} className={studentReportNextAction.tone === 'rose' ? 'text-rose-600' : studentReportNextAction.tone === 'amber' ? 'text-amber-600' : 'text-indigo-600'} />}
+                    />
+                </div>
             ) : null}
 
             {(isStudentView ? hasStudentAnalytics : true) ? (
@@ -2199,41 +2201,68 @@ const Reports: React.FC = () => {
 
             {isStudentView && hasStudentAnalytics && (
             <>
-            <Card className={`p-3 sm:p-4 border shadow-sm ${hasStudentTrackScope ? 'border-emerald-100 bg-emerald-50/70' : 'border-amber-100 bg-amber-50/80'}`}>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <div className={`text-xs font-black ${hasStudentTrackScope ? 'text-emerald-700' : 'text-amber-700'}`}>
-                            {hasStudentTrackScope ? 'تقاريرك مرتبة حسب مسارك' : 'اختر مسارك أولًا'}
+            <div className={`rounded-2xl border p-4 sm:p-5 shadow-xs transition-all ${
+                hasStudentTrackScope 
+                    ? 'border-emerald-200/90 bg-gradient-to-l from-emerald-50/60 via-white to-slate-50/50' 
+                    : 'border-amber-200/90 bg-gradient-to-l from-amber-50/60 via-white to-slate-50/50'
+            }`}>
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl shadow-xs ${
+                            hasStudentTrackScope ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'
+                        }`}>
+                            <Compass size={22} />
                         </div>
-                        <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
-                            {hasStudentTrackScope
-                                ? `نركز الآن على: ${studentTrackLabel}.`
-                                : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
-                        </p>
-                        <p className="mt-1 text-xs font-bold leading-5 text-gray-500">
-                            القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
-                        </p>
-                        {studentReportPathOptions.length > 0 ? (
-                            <select
-                                value={selectedStudentPathId}
-                                onChange={(event) => setSelectedStudentPathId(event.target.value)}
-                                className="print-hide mt-3 w-full rounded-xl border border-white/70 bg-white px-3 py-2 text-sm font-black text-gray-700 sm:max-w-xs"
-                            >
-                                <option value="all">كل مساراتي</option>
-                                {studentReportPathOptions.map((path) => (
-                                    <option key={path.id} value={path.id}>{displayText(path.name)}</option>
-                                ))}
-                            </select>
-                        ) : null}
+                        <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black ${
+                                    hasStudentTrackScope ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                                }`}>
+                                    {hasStudentTrackScope ? 'تقاريرك مرتبة حسب مسارك' : 'اختر مسارك أولًا'}
+                                </span>
+                            </div>
+                            <h3 className="mt-1 text-sm sm:text-base font-black text-gray-900 leading-snug">
+                                {hasStudentTrackScope
+                                    ? `نركز الآن على: ${studentTrackLabel}.`
+                                    : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
+                            </h3>
+                            <p className="mt-0.5 text-xs font-bold text-gray-500">
+                                القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
+                            </p>
+                        </div>
                     </div>
-                    <Link
-                        to="/dashboard?tab=paths"
-                        className={`print-hide inline-flex items-center justify-center rounded-xl px-3 py-2 text-xs font-black sm:text-sm ${hasStudentTrackScope ? 'bg-white text-emerald-700 hover:bg-emerald-100' : 'bg-amber-500 text-white hover:bg-amber-600'}`}
-                    >
-                        {hasStudentTrackScope ? 'إدارة المسارات' : 'اختيار المسار'}
-                    </Link>
+
+                    <div className="print-hide flex flex-wrap items-center gap-2.5 sm:shrink-0">
+                        {studentReportPathOptions.length > 0 ? (
+                            <div className="relative min-w-[150px] flex-1 sm:flex-initial">
+                                <select
+                                    value={selectedStudentPathId}
+                                    onChange={(event) => setSelectedStudentPathId(event.target.value)}
+                                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-emerald-400 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 cursor-pointer transition-colors"
+                                >
+                                    <option value="all">كل مساراتي</option>
+                                    {studentReportPathOptions.map((path) => (
+                                        <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            </div>
+                        ) : null}
+
+                        <Link
+                            to="/dashboard?tab=paths"
+                            className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-black transition-all shadow-2xs ${
+                                hasStudentTrackScope
+                                    ? 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-emerald-300 hover:text-emerald-700'
+                                    : 'border-amber-400 bg-amber-500 text-white hover:bg-amber-600'
+                            }`}
+                        >
+                            <SlidersHorizontal size={14} className={hasStudentTrackScope ? 'text-emerald-600' : 'text-white'} />
+                            <span>{hasStudentTrackScope ? 'إدارة المسارات' : 'اختيار المسار'}</span>
+                        </Link>
+                    </div>
                 </div>
-            </Card>
+            </div>
 
             {/* Preserved with zero visual footprint for auditability & smoke contracts */}
             <div className="sr-only absolute -z-50 h-px w-px overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
