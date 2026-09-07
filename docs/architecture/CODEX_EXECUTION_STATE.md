@@ -627,6 +627,15 @@
 - Deferred: contract renewal/invoices, bulk revocation, provenance migration, and concurrent high-volume seat reservation hardening.
 - Next exact action: configure and run the first school pilot offer using scoped path/subject/content access with an expiring code; keep Discount Codes as the separate paid-product promotion flow.
 
+## Batch 6S-10 — School pilot offer readiness
+
+- Scope: re-ran the bounded evidence for configuring a school offer and consuming it through the existing package/access-code/grant/report boundaries.
+- Status: `VERIFIED` at contract level; no runtime change. `smoke:school-management` (30/30), `smoke:school-package-seat-capacity` (5/5), `smoke:school-grant-expiry` (4/4), `smoke:payment-package` (11/11), `smoke:payment-tampering` (9/9), `smoke:package-revenue` (4/4), and `smoke:global-student-journey` (13/13) passed on the current tree.
+- Strong MVP: Admin can create a scoped school package, set seats, issue an expiring access code, and the student redemption path creates an expiring scoped `AccessGrant`; allowed course/quiz content and school reports use the server-side grant boundary. Discount Codes remain the separate paid-product promotion path.
+- `NOT PROVEN / BLOCKED`: a live end-to-end pilot run requires creating external school/package/student data. No production accounts, secrets, or external data were used in this batch. The existing live audit remains available for an explicitly authorized test environment.
+- Deferred: legacy mirrored-course provenance/revocation, renewal/invoices, high-volume concurrency hardening, and any new contract/tenant/discount engine.
+- Next exact action: authorize a disposable test environment and supply the intended path/subject/content scope; then run the existing live school-from-scratch audit with cleanup and record its evidence without changing product contracts.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
