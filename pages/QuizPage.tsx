@@ -12,6 +12,7 @@ import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { resolveAssessmentSettings } from '../utils/assessmentSettings';
 import { getDefaultQuizSettings } from '../utils/quizSettings';
 import { assessmentQuestionSource } from '../utils/exams/assessmentQuestionSource';
+import { buildSkillRecommendation } from './Reports/recommendationViewModel';
 import {
   readQuizProgressDraft,
   removeQuizProgressDraft,
@@ -117,6 +118,9 @@ export const QuizPage: React.FC = () => {
     skills,
     subjects,
     sections,
+    lessons,
+    topics,
+    libraryItems,
     toggleFavorite,
     toggleReviewLater,
     favorites,
@@ -1669,13 +1673,34 @@ export const QuizPage: React.FC = () => {
                     <h3 className="text-base font-black text-gray-800 flex items-center gap-2 justify-center">
                       <span>🎯</span> المهارات التي تحتاج تحسين
                     </h3>
-                    <div className="flex flex-wrap justify-center gap-2">
-                      {weak.map((s, i) => (
-                        <span key={i} className={`inline-flex items-center gap-1 rounded-xl border px-3 py-1.5 text-xs font-bold ${s.status === 'weak' ? 'bg-rose-50 border-rose-100 text-rose-700' : 'bg-amber-50 border-amber-100 text-amber-700'}`}>
-                          {s.skill}
-                          <span className="font-black opacity-70">{s.mastery}%</span>
-                        </span>
-                      ))}
+                    <div className="grid grid-cols-1 gap-2 text-right">
+                      {weak.map((s, i) => {
+                        const recommendation = buildSkillRecommendation(s, {
+                          allSkills: skills,
+                          lessons,
+                          quizzes,
+                          libraryItems,
+                          questions,
+                          topics,
+                          subjects,
+                          sections,
+                        });
+                        const lessonLink = recommendation.lessonLink || recommendation.foundationTopicLink;
+                        const trainingLink = recommendation.quizLink;
+                        return (
+                          <div key={`${s.skillId || s.skill}-${i}`} className={`rounded-xl border p-3 ${s.status === 'weak' ? 'bg-rose-50 border-rose-100' : 'bg-amber-50 border-amber-100'}`}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-black text-gray-800">{s.skill}</span>
+                              <span className={`text-sm font-black ${s.status === 'weak' ? 'text-rose-700' : 'text-amber-700'}`}>{s.mastery}%</span>
+                            </div>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {lessonLink ? <button type="button" onClick={() => navigate(lessonLink)} className="rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-50">شرح</button> : null}
+                              {trainingLink ? <button type="button" onClick={() => navigate(trainingLink)} className="rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-xs font-black text-amber-700 hover:bg-amber-50">تدريب</button> : null}
+                              <button type="button" onClick={() => navigate(buildSelfQuizLink(true))} className="rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs font-black text-emerald-700 hover:bg-emerald-50">إعادة قياس</button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
