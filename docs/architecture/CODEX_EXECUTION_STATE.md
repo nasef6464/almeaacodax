@@ -571,6 +571,15 @@
 - Deferred: intervention lifecycle, threaded messaging, bulk imports, advanced analytics, and pagination redesign.
 - Next exact action: continue a focused audit of remaining school-assessment result/feedback surfaces from current HEAD.
 
+## Batch 6Q-01 — Question Bank explanation-video filter
+
+- Scope: added a clear `contains explanation video` filter to the main `QuestionBankManager`; it reuses the existing `hasExplanationVideo` API query with server-side pagination and all existing scope filters.
+- Status: `VERIFIED` / merged in PR `#61` (`869a75ba`), runtime commit `8338883d`.
+- Tests: `npm run typecheck`; `npm run smoke:batch100p-question-bank-crud`; `npm run smoke:question-html-security`; all applicable PR checks, Core Build, Safety, Production Readiness, and Vercel passed on exact head.
+- Preserved: Question schema, API contract, RBAC/scope rules, pagination ownership, video picker behavior, and production data.
+- Deferred: a separate “without video” filter, bulk video-link assignment, and video validation/analytics; these are not required for the current MVP.
+- Next exact action: verify the student weak-skill recommendation links end-to-end (`Skill → foundation topic → lesson/video` and `Skill → actual training`) before changing recommendation logic.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
