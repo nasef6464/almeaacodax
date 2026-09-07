@@ -596,7 +596,9 @@
 - Tests: targeted seat-capacity contract `5/5`; school-management contract `30/30`; CI exact head passed frontend/API typecheck, builds, immutable architecture, school operations/contracts, security, reports, cross-phase, readiness, and Vercel preview gates.
 - Preserved: existing access-code route, AccessGrant model, RBAC, course/quiz access semantics, payment flows, historical data, and public API URL/method. No migration or ownership-map change.
 - Deferred: atomic seat reservation/counter migration, contract billing lifecycle, automated renewal, and bulk school import improvements; these require a separate product decision or scale evidence.
-- Next exact action: verify the production deployment is serving merge `0dbbeeb0`, then continue with the next independently evidenced commercial school-operations gap.
+- Production check: both the Vercel frontend and Render API health endpoints returned HTTP `200` with database and Redis checks passing after the merge.
+- Known commercial boundary: package expiry/revocation is `NOT PROVEN` for already mirrored `subscription.purchasedCourses`/`enrolledCourses`; changing it safely requires an explicit entitlement-provenance decision to avoid revoking direct course purchases. Classified `HIGH` and deferred.
+- Next exact action: obtain the entitlement-provenance decision, then implement only the smallest compatible expiry boundary if authorized.
 
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
