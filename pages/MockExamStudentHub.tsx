@@ -401,170 +401,312 @@ const MockExamStudentHub: React.FC = () => {
     return { total, best, avg, passed };
   }, [myResults]);
 
+  const [activeHubTab, setActiveHubTab] = useState<'available' | 'history'>('available');
+  const [catalogFilter, setCatalogFilter] = useState<'all' | 'directed' | 'platform'>('all');
+  const [historyScoreFilter, setHistoryScoreFilter] = useState<'all' | 'good' | 'review'>('all');
+
+  // Filtered available exams
+  const displayedExams = useMemo(() => {
+    if (catalogFilter === 'directed') return directedMockExams;
+    if (catalogFilter === 'platform') return platformMockExams;
+    return availableMockExams;
+  }, [catalogFilter, directedMockExams, platformMockExams, availableMockExams]);
+
+  // Filtered student history
+  const displayedHistory = useMemo(() => {
+    if (historyScoreFilter === 'good') return myResults.filter((r) => r.score >= 60);
+    if (historyScoreFilter === 'review') return myResults.filter((r) => r.score < 60);
+    return myResults;
+  }, [historyScoreFilter, myResults]);
+
   const selectedExam = selectedExamId ? availableMockExams.find((q) => q.id === selectedExamId) : null;
   const selectedResults = selectedExamId ? (resultsByExam.get(selectedExamId) || []) : [];
 
   return (
     <div className="space-y-6 pb-20" dir="rtl">
-      {/* Header */}
-      <div className="rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-6 text-white shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
-            <Sparkles size={26} />
+      {/* Header Banner */}
+      <div className="rounded-3xl bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 p-6 text-white shadow-xl">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-inner">
+              <Sparkles size={26} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-black sm:text-2xl">مركز الاختبارات المحاكية</h1>
+                <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-black text-white">قياس وتحصيلي</span>
+              </div>
+              <p className="mt-1 text-xs sm:text-sm text-white/80">نماذج قياس المعيارية وتاريخ تدريبك ومحاولاتك السابقة</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-black">اختباراتي المحاكية</h1>
-            <p className="mt-0.5 text-sm text-white/80">رحلتك الكاملة في الاختبارات المحاكية لقياس وتحصيلي</p>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="rounded-2xl bg-white/10 px-3.5 py-2 text-center backdrop-blur-sm">
+              <div className="text-lg font-black">{availableMockExams.length}</div>
+              <div className="text-[10px] font-bold text-white/75">نماذج متاحة</div>
+            </div>
+            <div className="rounded-2xl bg-white/10 px-3.5 py-2 text-center backdrop-blur-sm">
+              <div className="text-lg font-black">{myResults.length}</div>
+              <div className="text-[10px] font-bold text-white/75">محاولاتي السابقة</div>
+            </div>
+            {stats.best > 0 && (
+              <div className="rounded-2xl bg-white/10 px-3.5 py-2 text-center backdrop-blur-sm">
+                <div className="text-lg font-black">{stats.best}%</div>
+                <div className="text-[10px] font-bold text-white/75">أعلى نتيجة</div>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Quick Stats */}
-        {stats.total > 0 && (
-          <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <div className="rounded-2xl bg-white/15 p-3 text-center">
-              <div className="text-2xl font-black">{stats.total}</div>
-              <div className="text-[11px] font-bold text-white/70">محاولة</div>
-            </div>
-            <div className="rounded-2xl bg-white/15 p-3 text-center">
-              <div className="text-2xl font-black">{stats.best}%</div>
-              <div className="text-[11px] font-bold text-white/70">أعلى درجة</div>
-            </div>
-            <div className="rounded-2xl bg-white/15 p-3 text-center">
-              <div className="text-2xl font-black">{stats.avg}%</div>
-              <div className="text-[11px] font-bold text-white/70">المتوسط</div>
-            </div>
-            <div className="rounded-2xl bg-white/15 p-3 text-center">
-              <div className="text-2xl font-black">{stats.passed}</div>
-              <div className="text-[11px] font-bold text-white/70">ناجح (60+)</div>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* ── Directed Exams (from supervisor/admin) ── */}
-      {directedMockExams.length > 0 && (
-        <section>
-          <h2 className="mb-3 flex items-center gap-2 text-base font-black text-gray-900">
-            <Users size={18} className="text-blue-600" />
-            اختبارات موجهة لك
-            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-black text-blue-700">
-              {directedMockExams.length}
-            </span>
-            <span className="ml-2 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-500 border border-blue-100">
-              من مشرفك أو مدرستك
-            </span>
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {directedMockExams.map((exam) => (
-              <MockExamCard
-                key={exam.id}
-                exam={exam}
-                paths={paths as Array<{ id: string; name: string; [key: string]: unknown }>}
-                resultsByExam={resultsByExam}
-                selectedExamId={selectedExamId}
-                setSelectedExamId={setSelectedExamId}
-                isDirected
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Platform Mock Exams (showOnPlatform) ── */}
-      <section>
-        <h2 className="mb-3 flex items-center gap-2 text-base font-black text-gray-900">
-          <Award size={18} className="text-indigo-600" />
-          الاختبارات المحاكية على المسار
-          <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-black text-indigo-700">
-            {platformMockExams.length}
+      {/* Main Section Navigation Tabs */}
+      <div className="grid grid-cols-2 gap-2 rounded-2xl border border-gray-100 bg-white p-1.5 shadow-sm">
+        <button
+          type="button"
+          onClick={() => setActiveHubTab('available')}
+          className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-black transition-all ${
+            activeHubTab === 'available'
+              ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+          }`}
+        >
+          <Award size={18} />
+          <span>النماذج المحاكية المتاحة</span>
+          <span className={`rounded-full px-2 py-0.5 text-xs font-black ${
+            activeHubTab === 'available' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700'
+          }`}>
+            {availableMockExams.length}
           </span>
-        </h2>
+        </button>
 
-        {platformMockExams.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
-            <Trophy size={32} className="mx-auto mb-3 text-gray-300" />
-            <p className="text-sm font-bold text-gray-500">لا توجد اختبارات محاكية منشورة بعد</p>
-          </div>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {platformMockExams.map((exam) => (
-              <MockExamCard
-                key={exam.id}
-                exam={exam}
-                paths={paths as Array<{ id: string; name: string; [key: string]: unknown }>}
-                resultsByExam={resultsByExam}
-                selectedExamId={selectedExamId}
-                setSelectedExamId={setSelectedExamId}
-                isDirected={false}
-              />
-            ))}
-          </div>
-        )}
-      </section>
+        <button
+          type="button"
+          onClick={() => setActiveHubTab('history')}
+          className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-black transition-all ${
+            activeHubTab === 'history'
+              ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+          }`}
+        >
+          <TrendingUp size={18} />
+          <span>محاولاتي السابقة في المحاكي</span>
+          <span className={`rounded-full px-2 py-0.5 text-xs font-black ${
+            activeHubTab === 'history' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700'
+          }`}>
+            {myResults.length}
+          </span>
+        </button>
+      </div>
 
-      {/* Expanded exam results */}
-      {selectedExam && selectedResults.length > 0 && (
-        <section className="rounded-3xl border-2 border-indigo-200 bg-indigo-50/50 p-5">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-black text-indigo-800">
-            <TrendingUp size={16} />
-            تاريخ محاولاتي — {selectedExam.title}
-            <span className="ml-auto rounded-full bg-indigo-100 px-2 py-0.5 text-[11px] font-black text-indigo-700">
-              {selectedResults.length} محاولة
+      {/* ── Tab 1: Available Mock Exams ── */}
+      {activeHubTab === 'available' && (
+        <div className="space-y-5">
+          {/* Catalog Filter Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('all')}
+                className={`rounded-xl px-3.5 py-1.5 text-xs font-black transition-all ${
+                  catalogFilter === 'all'
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                كل النماذج ({availableMockExams.length})
+              </button>
+
+              {directedMockExams.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setCatalogFilter('directed')}
+                  className={`rounded-xl px-3.5 py-1.5 text-xs font-black transition-all ${
+                    catalogFilter === 'directed'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                  }`}
+                >
+                  موجهة لي ({directedMockExams.length})
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('platform')}
+                className={`rounded-xl px-3.5 py-1.5 text-xs font-black transition-all ${
+                  catalogFilter === 'platform'
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                نماذج المسارات ({platformMockExams.length})
+              </button>
+            </div>
+
+            <span className="text-xs font-bold text-gray-400">
+              معايير قياس والتحصيلي المعتمدة
             </span>
-          </h3>
-
-          {/* Best & Latest quick stats */}
-          <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <StatBadge
-              label="أعلى درجة"
-              value={`${Math.max(...selectedResults.map(r => r.score))}%`}
-              icon={<Trophy size={16} className="text-amber-600" />}
-              color="bg-amber-50 border-amber-200 text-amber-800"
-            />
-            <StatBadge
-              label="آخر درجة"
-              value={`${selectedResults[0]?.score}%`}
-              icon={<Target size={16} className="text-indigo-600" />}
-              color="bg-indigo-50 border-indigo-200 text-indigo-800"
-            />
-            <StatBadge
-              label="عدد المحاولات"
-              value={selectedResults.length}
-              icon={<RefreshCw size={16} className="text-emerald-600" />}
-              color="bg-emerald-50 border-emerald-200 text-emerald-800"
-            />
-            <StatBadge
-              label="الحالة"
-              value={scoreLabel(selectedResults[0]?.score || 0)}
-              icon={selectedResults[0]?.score >= 60 ? <CheckCircle2 size={16} className="text-emerald-600" /> : <XCircle size={16} className="text-rose-600" />}
-              color={selectedResults[0]?.score >= 60 ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}
-            />
           </div>
 
-          {/* Attempts list */}
-          <div className="space-y-2">
-            {selectedResults.map((result, i) => (
-              <AttemptRow key={result.id || result.date || i} result={result} index={i} />
-            ))}
-          </div>
-        </section>
+          {/* Exam Cards Grid */}
+          {displayedExams.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-gray-200 bg-white p-12 text-center">
+              <Trophy size={40} className="mx-auto mb-3 text-gray-300" />
+              <h3 className="text-base font-black text-gray-700">لا توجد نماذج محاكية منشورة في هذا القسم حالياً</h3>
+              <p className="mt-1 text-xs font-bold text-gray-400">سيتم إضافة وتفعيل نماذج جديدة قريباً من الإدارة.</p>
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {displayedExams.map((exam) => {
+                const isDirected = Array.isArray(exam.targetGroupIds) && exam.targetGroupIds.length > 0;
+                return (
+                  <MockExamCard
+                    key={exam.id}
+                    exam={exam}
+                    paths={paths as Array<{ id: string; name: string; [key: string]: unknown }>}
+                    resultsByExam={resultsByExam}
+                    selectedExamId={selectedExamId}
+                    setSelectedExamId={setSelectedExamId}
+                    isDirected={isDirected}
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          {/* Expanded Selected Exam History (if clicked) */}
+          {selectedExam && selectedResults.length > 0 && (
+            <section className="rounded-3xl border-2 border-indigo-200 bg-indigo-50/50 p-5 shadow-sm">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="flex items-center gap-2 text-sm font-black text-indigo-900">
+                  <TrendingUp size={16} />
+                  سجل محاولاتك في: {selectedExam.title}
+                  <span className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-[11px] font-black text-indigo-700">
+                    {selectedResults.length} محاولة
+                  </span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setSelectedExamId(null)}
+                  className="rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-gray-500 hover:bg-gray-100"
+                >
+                  إغلاق
+                </button>
+              </div>
+
+              {/* Quick stats for this exam */}
+              <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <StatBadge
+                  label="أعلى درجة"
+                  value={`${Math.max(...selectedResults.map((r) => r.score))}%`}
+                  icon={<Trophy size={16} className="text-amber-600" />}
+                  color="bg-amber-50 border-amber-200 text-amber-800"
+                />
+                <StatBadge
+                  label="آخر درجة"
+                  value={`${selectedResults[0]?.score}%`}
+                  icon={<Target size={16} className="text-indigo-600" />}
+                  color="bg-indigo-50 border-indigo-200 text-indigo-800"
+                />
+                <StatBadge
+                  label="عدد المحاولات"
+                  value={selectedResults.length}
+                  icon={<RefreshCw size={16} className="text-emerald-600" />}
+                  color="bg-emerald-50 border-emerald-200 text-emerald-800"
+                />
+                <StatBadge
+                  label="الحالة"
+                  value={scoreLabel(selectedResults[0]?.score || 0)}
+                  icon={selectedResults[0]?.score >= 60 ? <CheckCircle2 size={16} className="text-emerald-600" /> : <XCircle size={16} className="text-rose-600" />}
+                  color={selectedResults[0]?.score >= 60 ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}
+                />
+              </div>
+
+              <div className="space-y-2">
+                {selectedResults.map((result, i) => (
+                  <AttemptRow key={result.id || result.date || i} result={result} index={i} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
       )}
 
-      {/* All History (when no exam selected) */}
-      {!selectedExamId && (
-        <section>
-          <h2 className="mb-3 flex items-center gap-2 text-base font-black text-gray-900">
-            <Clock size={18} className="text-violet-600" />
-            كل محاولاتي المحاكية
-            <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-black text-violet-700">
-              {myResults.length}
-            </span>
-          </h2>
+      {/* ── Tab 2: Previous Mock Attempts (History) ── */}
+      {activeHubTab === 'history' && (
+        <div className="space-y-5">
+          {/* Stats Overview */}
+          {stats.total > 0 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm">
+                <div className="text-2xl font-black text-gray-900">{stats.total}</div>
+                <div className="mt-1 text-xs font-bold text-gray-500">إجمالي المحاولات</div>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm">
+                <div className="text-2xl font-black text-emerald-600">{stats.best}%</div>
+                <div className="mt-1 text-xs font-bold text-gray-500">أعلى درجة محققة</div>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm">
+                <div className="text-2xl font-black text-indigo-600">{stats.avg}%</div>
+                <div className="mt-1 text-xs font-bold text-gray-500">متوسط الدرجات</div>
+              </div>
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm">
+                <div className="text-2xl font-black text-blue-600">{stats.passed}</div>
+                <div className="mt-1 text-xs font-bold text-gray-500">اختبارات ناجحة (60+)</div>
+              </div>
+            </div>
+          )}
 
+          {/* History Filters */}
+          {myResults.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setHistoryScoreFilter('all')}
+                  className={`rounded-xl px-3 py-1.5 text-xs font-black transition-all ${
+                    historyScoreFilter === 'all'
+                      ? 'bg-violet-600 text-white shadow-sm'
+                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  كل النتائج ({myResults.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryScoreFilter('good')}
+                  className={`rounded-xl px-3 py-1.5 text-xs font-black transition-all ${
+                    historyScoreFilter === 'good'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                  }`}
+                >
+                  ناجح ومطمئن ({stats.passed})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryScoreFilter('review')}
+                  className={`rounded-xl px-3 py-1.5 text-xs font-black transition-all ${
+                    historyScoreFilter === 'review'
+                      ? 'bg-rose-600 text-white shadow-sm'
+                      : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
+                  }`}
+                >
+                  يحتاج تدريب ({myResults.length - stats.passed})
+                </button>
+              </div>
+
+              <span className="text-xs font-bold text-gray-400">
+                مرتبة من الأحدث إلى الأقدم
+              </span>
+            </div>
+          )}
+
+          {/* Loading & Error States */}
           {isLoading && (
             <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center">
-              <RefreshCw size={24} className="mx-auto mb-2 animate-spin text-indigo-400" />
-              <p className="text-sm font-bold text-gray-500">جارٍ تحميل سجل المحاولات...</p>
+              <RefreshCw size={24} className="mx-auto mb-2 animate-spin text-indigo-500" />
+              <p className="text-sm font-bold text-gray-500">جارٍ تحميل سجل محاولاتك المحاكية...</p>
             </div>
           )}
 
@@ -574,24 +716,33 @@ const MockExamStudentHub: React.FC = () => {
             </div>
           )}
 
+          {/* Empty State */}
           {!isLoading && myResults.length === 0 && !loadError && (
-            <div className="rounded-2xl border border-dashed border-gray-200 p-10 text-center">
-              <Award size={40} className="mx-auto mb-3 text-gray-300" />
-              <h3 className="text-base font-black text-gray-700">لا توجد محاولات محاكية بعد</h3>
-              <p className="mt-1 text-sm font-bold text-gray-400">
-                اختر أحد الاختبارات أعلاه وابدأ رحلتك الأولى
+            <div className="rounded-3xl border border-dashed border-gray-200 bg-white p-12 text-center">
+              <Award size={48} className="mx-auto mb-3 text-indigo-300" />
+              <h3 className="text-lg font-black text-gray-800">لم تؤدِ أي اختبار محاكي حتى الآن</h3>
+              <p className="mx-auto mt-2 max-w-md text-sm font-bold text-gray-500">
+                الاختبارات المحاكية تحاكي اختبارات قياس الحقيقية بزمن وأقسام ونظام درجات معياري. اختر أحد النماذج المتاحة لتبدأ قياس مستواك.
               </p>
+              <button
+                type="button"
+                onClick={() => setActiveHubTab('available')}
+                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white shadow-md hover:bg-indigo-700"
+              >
+                <Zap size={16} /> تصفح النماذج المتاحة وابدأ الآن
+              </button>
             </div>
           )}
 
-          {!isLoading && myResults.length > 0 && (
-            <div className="space-y-2">
-              {myResults.map((result, i) => (
+          {/* Attempts List */}
+          {!isLoading && displayedHistory.length > 0 && (
+            <div className="space-y-2.5">
+              {displayedHistory.map((result, i) => (
                 <AttemptRow key={result.id || result.date || i} result={result} index={i} />
               ))}
             </div>
           )}
-        </section>
+        </div>
       )}
     </div>
   );

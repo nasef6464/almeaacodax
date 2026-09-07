@@ -492,14 +492,22 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return (
       <div className="space-y-5 pb-20">
         <header className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
-              <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1">سجل المحاولات السابقة والتقدم في الاختبارات التدريبية والمحاكية</p>
+          <div className="flex flex-col gap-3 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/40 p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md">
+                <FileText size={24} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">اختباراتي</h1>
+                  <span className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-black text-indigo-700">سجل الإنجاز</span>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-500 font-bold mt-1">سجل المحاولات السابقة والتقدم في الاختبارات التدريبية والمحاكية</p>
+              </div>
             </div>
             {weakestTrackedSkill ? (
-              <Link to="/dashboard?tab=reports" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-black text-amber-700 hover:bg-amber-100 transition-colors">
-                <Target size={16} /> أولوية المراجعة: {weakestTrackedSkill.skill}
+              <Link to="/dashboard?tab=reports" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm font-black text-amber-800 hover:bg-amber-100 transition-colors shadow-sm">
+                <Target size={16} className="text-amber-600" /> أولوية المراجعة: {weakestTrackedSkill.skill}
               </Link>
             ) : null}
           </div>
@@ -824,43 +832,141 @@ const SchoolTestsPanel: React.FC<{
   quizzes: Quiz[];
   examResults: QuizResult[];
   getPathName: (pathId?: string) => string;
-}> = ({ quizzes, examResults, getPathName }) => (
-  <div className="mx-auto max-w-5xl space-y-5 pb-20">
-    <header className="rounded-3xl border border-indigo-100 bg-white p-5 shadow-sm">
-      <div className="flex items-center gap-3">
-        <div className="rounded-2xl bg-indigo-100 p-3 text-indigo-700"><Target size={24} /></div>
-        <div>
-          <h1 className="text-xl font-black text-gray-900">اختبارات المدرسة</h1>
-          <p className="mt-1 text-sm font-bold leading-6 text-gray-500">الاختبارات التي يوجهها لك المشرف أو المدرسة أو خطة علاجية.</p>
+}> = ({ quizzes, examResults, getPathName }) => {
+  const completedCount = quizzes.filter((quiz) => examResults.some((result) => result.quizId === quiz.id)).length;
+  const pendingCount = quizzes.length - completedCount;
+
+  return (
+    <div className="mx-auto max-w-5xl space-y-6 pb-20">
+      <header className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/50 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md">
+              <Target size={28} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">اختبارات المدرسة</h1>
+                <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-black text-indigo-700">توجيه مباشر</span>
+              </div>
+              <p className="mt-1 text-xs sm:text-sm font-bold text-gray-500">الاختبارات التي يوجهها لك المشرف أو المدرسة أو خطة علاجية مخصصة</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="rounded-2xl border border-indigo-100 bg-white px-4 py-2.5 text-center shadow-xs">
+              <div className="text-lg font-black text-indigo-600">{quizzes.length}</div>
+              <div className="text-[10px] font-bold text-gray-400">إجمالي الموجه</div>
+            </div>
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-2.5 text-center shadow-xs">
+              <div className="text-lg font-black text-emerald-700">{completedCount}</div>
+              <div className="text-[10px] font-bold text-emerald-600">تم حلها</div>
+            </div>
+            {pendingCount > 0 && (
+              <div className="rounded-2xl border border-amber-100 bg-amber-50/60 px-4 py-2.5 text-center shadow-xs">
+                <div className="text-lg font-black text-amber-700">{pendingCount}</div>
+                <div className="text-[10px] font-bold text-amber-600">بانتظارك</div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
-    <section data-testid="student-directed-tests" className="rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-5 shadow-sm">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <h2 className="text-base font-black text-gray-900">المطلوب منك الآن</h2>
-        <span className="rounded-full border border-indigo-100 bg-white px-3 py-1 text-xs font-black text-indigo-700">{quizzes.length} اختبار</span>
-      </div>
-      {quizzes.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {quizzes.map((quiz) => {
-            const completedResult = examResults.find((result) => result.quizId === quiz.id);
-            const route = buildQuizRouteWithContext(quiz.id, { returnTo: '/dashboard?tab=school-tests', source: 'tests' });
-            return (
-              <article key={quiz.id} data-testid={`student-directed-test-${quiz.id}`} className="flex flex-col rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0"><h3 className="text-base font-black text-gray-900">{quiz.title}</h3><p className="mt-1 inline-block rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">{getPathName(quiz.pathId)}</p></div>
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${completedResult ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}`}>{completedResult ? 'تم الحل' : 'مدرسي'}</span>
-                </div>
-                <p className="mt-3 flex-1 text-xs font-bold leading-6 text-gray-500">{quiz.supervisorMessage || quiz.description || 'اختبار موجه من المدرسة للمتابعة والقياس.'}</p>
-                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-500"><span className="rounded-lg bg-gray-50 px-2.5 py-1">{quiz.questionIds.length} سؤال</span>{quiz.dueDate ? <span className="rounded-lg bg-amber-50 px-2.5 py-1 text-amber-700">حتى {formatQuizDate(quiz.dueDate)}</span> : null}</div>
-                <div className="mt-4 border-t border-gray-100 pt-3 text-left"><Link to={route} className="inline-flex items-center gap-1 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">{completedResult ? 'مراجعة الاختبار' : 'دخول الاختبار'} <ArrowRight size={14} /></Link></div>
-              </article>
-            );
-          })}
+      </header>
+
+      <section data-testid="student-directed-tests" className="rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-6 shadow-sm">
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-black text-gray-900">المطلوب منك الآن</h2>
+            {pendingCount > 0 ? (
+              <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-black text-rose-700 animate-pulse">
+                {pendingCount} في انتظار الحل
+              </span>
+            ) : null}
+          </div>
+          <span className="rounded-full border border-indigo-100 bg-white px-3.5 py-1 text-xs font-black text-indigo-700 shadow-2xs">
+            {quizzes.length} اختبار مدرسي
+          </span>
         </div>
-      ) : (
-        <div className="rounded-2xl border border-dashed border-indigo-200 bg-white/80 px-5 py-10 text-center"><CheckCircle size={28} className="mx-auto text-emerald-500" /><h2 className="mt-3 font-black text-gray-900">لا توجد اختبارات مدرسية مطلوبة الآن</h2><p className="mt-1 text-xs font-bold text-gray-500">تُحدَّث هذه القائمة من الخادم عند فتحها. إذا أنشأ المشرف اختبارًا جديدًا لك، أعد فتح هذا القسم بعد لحظات.</p></div>
-      )}
-    </section>
-  </div>
-);
+
+        {quizzes.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            {quizzes.map((quiz) => {
+              const completedResult = examResults.find((result) => result.quizId === quiz.id);
+              const route = buildQuizRouteWithContext(quiz.id, { returnTo: '/dashboard?tab=school-tests', source: 'tests' });
+              return (
+                <article
+                  key={quiz.id}
+                  data-testid={`student-directed-test-${quiz.id}`}
+                  className="flex flex-col rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-base font-black text-gray-900 leading-tight">{quiz.title}</h3>
+                      <p className="mt-1 inline-block rounded-full bg-indigo-50 px-2.5 py-0.5 text-[11px] font-black text-indigo-700">
+                        {getPathName(quiz.pathId)}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${
+                        completedResult
+                          ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                          : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                      }`}
+                    >
+                      {completedResult ? `تم الحل (${completedResult.score}%)` : 'مدرسي'}
+                    </span>
+                  </div>
+
+                  <div className="mt-3.5 flex-1 rounded-xl bg-gray-50/80 p-3 text-xs font-bold leading-relaxed text-gray-600 border border-gray-100">
+                    <span className="text-indigo-600 font-black ml-1">💬 رسالة المشرف:</span>
+                    {quiz.supervisorMessage || quiz.description || 'اختبار موجه من المدرسة للمتابعة والقياس.'}
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-500">
+                    <span className="flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1">
+                      <ListChecks size={13} /> {quiz.questionIds.length} سؤال
+                    </span>
+                    {quiz.dueDate ? (
+                      <span className="flex items-center gap-1 rounded-lg bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100">
+                        <Clock size={13} /> حتى {formatQuizDate(quiz.dueDate)}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3.5">
+                    {completedResult ? (
+                      <Link
+                        to={`/results?attempt=${encodeURIComponent(completedResult.date)}`}
+                        className="text-xs font-black text-emerald-700 hover:underline"
+                      >
+                        عرض التقرير الكامل ({completedResult.score}%)
+                      </Link>
+                    ) : (
+                      <span className="text-xs font-bold text-gray-400">لم يؤدَ بعد</span>
+                    )}
+
+                    <Link
+                      to={route}
+                      className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-black text-white transition-colors ${
+                        completedResult ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700 shadow-sm'
+                      }`}
+                    >
+                      {completedResult ? 'مراجعة الاختبار' : 'دخول الاختبار الآن'} <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-dashed border-indigo-200 bg-white/90 px-6 py-12 text-center shadow-xs">
+            <CheckCircle size={36} className="mx-auto text-emerald-500 mb-2" />
+            <h2 className="mt-2 text-lg font-black text-gray-900">لا توجد اختبارات مدرسية مطلوبة منك الآن</h2>
+            <p className="mx-auto mt-1 max-w-md text-xs sm:text-sm font-bold text-gray-500 leading-relaxed">
+              عمل رائع! كل الاختبارات والواجبات التي يوجهها لك المشرف أو المدرسة ستظهر هنا فور إسنادها.
+            </p>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+};

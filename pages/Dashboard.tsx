@@ -738,6 +738,11 @@ const MyCoursesTab = () => {
 /** Student assessment hub: attempts, mock exams, and school-directed work. */
 const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = ({ initialView = 'attempts' }) => {
     const [view, setView] = React.useState<'attempts' | 'mock' | 'school'>(initialView);
+
+    React.useEffect(() => {
+        setView(initialView);
+    }, [initialView]);
+
     const examViews = [
         { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} /> },
         { id: 'mock' as const, label: 'الاختبارات المحاكية', icon: <Star size={16} /> },
@@ -786,18 +791,21 @@ const Dashboard: React.FC = () => {
     }, [latestNotification]);
 
     const studentMenuItems = [
-        { id: 'overview',    label: 'نظرة عامة',       icon: <LayoutDashboard size={20} /> },
-        { id: 'paths',       label: 'مساراتي',          icon: <RouteIcon size={20} /> },
-        { id: 'my-courses',  label: 'دوراتي',            icon: <BookOpen size={20} /> },
-        { id: 'smart-path',  label: 'التعلم الذكي',     icon: <Brain size={20} /> },
-        { id: 'sessions',    label: 'جلساتي',            icon: <Calendar size={20} /> },
-        { id: 'exams',       label: 'الاختبارات',        icon: <Zap size={20} /> },
-        { id: 'reports',     label: 'تقاريري',           icon: <PieChart size={20} /> },
-        { id: 'plan',        label: 'خطتي',              icon: <MapIcon size={20} /> },
-        { id: 'favorites',   label: 'مراجعة الأسئلة',   icon: <Heart size={20} /> },
-        { id: 'flashcards',  label: 'بطاقات التذكر',    icon: <BookOpen size={20} /> },
-        { id: 'qa',          label: 'سؤال وجواب',        icon: <HelpCircle size={20} /> },
-        { id: 'requests',    label: 'طلباتي',            icon: <ShoppingCart size={20} /> },
+        { id: 'overview',     label: 'نظرة عامة',          icon: <LayoutDashboard size={20} /> },
+        { id: 'paths',        label: 'مساراتي',             icon: <RouteIcon size={20} /> },
+        { id: 'my-courses',   label: 'دوراتي',               icon: <BookOpen size={20} /> },
+        { id: 'smart-path',   label: 'التعلم الذكي',        icon: <Brain size={20} /> },
+        { id: 'sessions',     label: 'جلساتي',               icon: <Calendar size={20} /> },
+        { id: 'quizzes',      label: 'الاختبارات السابقة',  icon: <FileText size={20} /> },
+        { id: 'school-tests', label: 'الاختبارات المدرسية', icon: <Target size={20} /> },
+        { id: 'mock-exams',   label: 'الاختبارات المحاكية', icon: <Star size={20} /> },
+        { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
+        { id: 'reports',      label: 'تقاريري',              icon: <PieChart size={20} /> },
+        { id: 'plan',         label: 'خطتي',                 icon: <MapIcon size={20} /> },
+        { id: 'favorites',    label: 'مراجعة الأسئلة',      icon: <Heart size={20} /> },
+        { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <BookOpen size={20} /> },
+        { id: 'qa',           label: 'سؤال وجواب',           icon: <HelpCircle size={20} /> },
+        { id: 'requests',     label: 'طلباتي',               icon: <ShoppingCart size={20} /> },
     ];
 
     const parentMenuItems = [
@@ -817,7 +825,7 @@ const Dashboard: React.FC = () => {
         const allowedTabs = new Set(menuItems.map((item) => item.id));
         // Alias legacy tab IDs to the merged 'exams' tab
         const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };
-        const resolved = requestedTab ? (aliasMap[requestedTab] ?? requestedTab) : null;
+        const resolved = requestedTab ? (['mock-exams', 'school-tests', 'quizzes'].includes(requestedTab) ? requestedTab : (aliasMap[requestedTab] ?? requestedTab)) : null;
         if (resolved && allowedTabs.has(resolved)) {
             setActiveTab(resolved as typeof activeTab);
         }
@@ -1021,22 +1029,25 @@ const Dashboard: React.FC = () => {
                                 ))}
                                 {/* Group: الاختبارات */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
-                                {menuItems.filter(i => ['exams','reports','plan'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            ['exams','saher','quizzes','mock-exams','school-tests'].includes(activeTab) && item.id === 'exams'
-                                                ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                                : activeTab === item.id
+                                {menuItems.filter(i => ['quizzes','school-tests','mock-exams','reports','plan'].includes(i.id)).map(item => {
+                                    const isItemActive = item.id === 'quizzes'
+                                        ? ['quizzes', 'exams', 'saher'].includes(activeTab)
+                                        : activeTab === item.id;
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                            className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                                isItemActive
                                                     ? 'bg-amber-50 text-amber-600 shadow-sm'
                                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {(item.id === 'exams' ? ['exams','saher','quizzes','mock-exams','school-tests'].includes(activeTab) : activeTab === item.id) && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                            {isItemActive && <ChevronLeft size={16} />}
+                                        </button>
+                                    );
+                                })}
                                 {/* Group: الأدوات */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
                                 {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(item => (
