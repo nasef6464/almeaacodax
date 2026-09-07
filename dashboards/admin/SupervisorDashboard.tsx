@@ -40,7 +40,6 @@ import { LiveSessionsManager } from './LiveSessionsManager';
 
 import { SupervisorTestsManager } from './SupervisorTestsManager';
 import { StudentIntelligenceProfile } from './StudentIntelligenceProfile';
-import { SupervisorOverviewPanel } from './SupervisorOverviewPanel';
 import { ClassSkillsMapPanel } from './ClassSkillsMapPanel';
 import { ClassReportPanel } from './ClassReportPanel';
 import { QuizAssignWidget } from './QuizAssignWidget';
@@ -509,12 +508,13 @@ export const SupervisorDashboard: React.FC = () => {
     >
       <div className="space-y-6 animate-fade-in print:bg-white print:p-0">
         
-        {/* Navigation Tabs (Top Header) */}
+        {/* Top Header Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4 print:hidden">
-          <div className="flex gap-1 rounded-2xl bg-gray-100 p-1">
+          {/* Mobile Tab Scroller */}
+          <div className="flex md:hidden gap-1 rounded-2xl bg-gray-100 p-1 overflow-x-auto w-full">
             {sidebarItems.map((item) => (
               <button key={item.id} onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shrink-0 transition-all ${
                   activeTab === item.id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -524,17 +524,39 @@ export const SupervisorDashboard: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-            <button onClick={() => setShowPrincipalReport(true)} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-800 hover:bg-indigo-100 transition-colors shadow-sm">
-              <Building2 size={16} />
+          {/* Desktop Section Heading */}
+          <div className="hidden md:flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100">
+              {sidebarItems.find(i => i.id === activeTab)?.icon}
+            </div>
+            <div>
+              <h1 className="text-xl font-black text-gray-900">
+                {sidebarItems.find(i => i.id === activeTab)?.label}
+              </h1>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {activeTab === 'overview' && 'نظرة عامة على مؤشرات الأداء والتحصيل والتدخلات المباشرة'}
+                {activeTab === 'students' && 'متابعة تفصيلية لمستويات الطلاب والفجوات المهارية'}
+                {activeTab === 'tests' && 'إدارة وتوجيه الاختبارات التشخيصية والعلاجية'}
+                {activeTab === 'skills' && 'خريطة مهارات الفصول وتحليل نقاط القوة والضعف'}
+                {activeTab === 'reports' && 'تقارير الأداء المعتمدة وتوزيع الدرجات'}
+                {activeTab === 'live-sessions' && 'جدول ومتابعة الحصص الدراسية المباشرة'}
+                {activeTab === 'live-monitoring' && 'شاشة المراقبة اللحظية للاختبارات النشطة'}
+              </p>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap mr-auto">
+            <button onClick={() => setShowPrincipalReport(true)} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-xs font-bold text-indigo-800 hover:bg-indigo-100 transition-colors shadow-xs">
+              <Building2 size={15} />
               <span>تقرير مدير المدرسة (PDF)</span>
             </button>
-            <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-              <Printer size={16} />
+            <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
+              <Printer size={15} />
               <span>طباعة التقرير</span>
             </button>
-            <button onClick={exportScopeDataToCSV} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-sm">
-              <Download size={16} />
+            <button onClick={exportScopeDataToCSV} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-colors shadow-xs">
+              <Download size={15} />
               <span>تصدير البيانات</span>
             </button>
           </div>
@@ -655,32 +677,6 @@ export const SupervisorDashboard: React.FC = () => {
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* لوحة النظرة العامة الجديدة */}
-            <SupervisorOverviewPanel
-              primarySchoolName={supervisorScopeSummary.primarySchoolName}
-              scopeTypeName={supervisorScopeSummary.scopeTypeName}
-              studentCount={supervisorScopeSummary.studentCount}
-              groupCount={supervisorScopeSummary.groupCount}
-              averageScore={supervisorScopeSummary.averageScore}
-              weakStudentsCount={supervisorScopeSummary.weakStudentsCount}
-              improvedStudentsCount={supervisorScopeSummary.improvedStudentsCount}
-              declinedCount={supervisorScopeSummary.declinedCount}
-              inactiveCount={supervisorScopeSummary.inactiveCount}
-              resultCount={supervisorScopeSummary.resultCount}
-              pendingFollowUpCount={supervisorScopeSummary.pendingFollowUpCount}
-              weakestSkills={supervisorScopeSummary.weakestSkills}
-              groupSnapshots={supervisorScopeSummary.groupSnapshots}
-              topStudents={supervisorScopeSummary.allStudentsList.filter((s) => s.average >= 85).slice(0, 5)}
-              urgentStudents={supervisorScopeSummary.allStudentsList.filter((s) => s.status === 'danger').slice(0, 5)}
-              bestClass={supervisorScopeSummary.bestClass}
-              weakestClass={supervisorScopeSummary.weakestClass}
-              onGoToStudents={() => setActiveTab('students')}
-              onGoToTests={() => setActiveTab('tests')}
-              onGoToSkills={() => setActiveTab('skills')}
-              onSelectStudent={(id) => setSelectedStudentId(id)}
-            />
-
-            {/* ── الباقي من محتوى overview الأصلي ── */}
             <div className="rounded-3xl bg-gradient-to-r from-indigo-900 to-indigo-950 p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
 
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.15),transparent)]"></div>
@@ -978,7 +974,7 @@ export const SupervisorDashboard: React.FC = () => {
                                     } catch { setStudentActionFeedback(`❌ تعذر نقل الطالب`); }
                                     setTimeout(() => setStudentActionFeedback(null), 3000);
                                   }}
-                                  className="rounded-lg border border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 py-1.5 px-2 max-w-[110px] focus:border-indigo-500 focus:outline-none"
+                                  className="rounded-xl border border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 py-1.5 px-2 max-w-[110px] focus:border-indigo-500 focus:outline-none transition-colors"
                                   title="نقل الطالب إلى فصل آخر"
                                 >
                                   <option value="" disabled>نقل لـ...</option>
@@ -1001,22 +997,29 @@ export const SupervisorDashboard: React.FC = () => {
                                 setTimeout(() => setStudentActionFeedback(null), 3000);
                               }}
                               title="إخراج الطالب من الفصل"
-                              className="rounded-lg bg-rose-50 border border-rose-200 p-1.5 text-rose-600 hover:bg-rose-100 transition-colors"
+                              className="rounded-xl bg-rose-50 border border-rose-200 p-1.5 text-rose-600 hover:bg-rose-100 transition-colors shadow-xs"
                             >
                               <LogOut size={14} />
                             </button>
                           </div>
                         </td>
                         <td className="px-5 py-4">
-                          <div className="flex gap-1 justify-center">
+                          <div className="flex gap-1.5 justify-center">
                             <button onClick={() => setSelectedStudentId(s.id)} title="بطاقة الطالب الذكية"
-                              className="rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-700 transition-colors shadow-xs">بطاقة</button>
+                              className="rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 transition-all shadow-xs flex items-center gap-1">
+                              <Eye size={13} />
+                              <span>بطاقة</span>
+                            </button>
                             <button onClick={() => openStudentReport(s.id)} title="تقرير الطالب التفصيلي"
-                              className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-gray-800 transition-colors shadow-xs">تقرير</button>
+                              className="rounded-xl bg-gray-100 border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 transition-all shadow-xs">
+                              تقرير
+                            </button>
                             <button onClick={() => openStudentQuiz(s.id)} title="تعيين اختبار علاجي"
-                              className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-colors">اختبار</button>
+                              className="rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-all shadow-xs">
+                              اختبار
+                            </button>
                             <button onClick={() => void sendStudentFollowUpAlert(s)} disabled={studentActionState?.id === s.id} title="إرسال تنبيه فوري"
-                              className="rounded-lg bg-indigo-50 border border-indigo-200 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-colors disabled:opacity-50">
+                              className="rounded-xl bg-indigo-50 border border-indigo-200 px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-all disabled:opacity-50 shadow-xs">
                               {studentActionState?.id === s.id && studentActionState.action === 'alert' ? '...' : 'تنبيه'}
                             </button>
                           </div>
