@@ -887,7 +887,8 @@ async function runMockAssessmentJourney(csrf: CsrfContext) {
 
 async function runScopedCreatorJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
-  assert.ok(studentId, "target student id missing for scoped creator checks");
+  const classId = groupIds.get("class");
+  assert.ok(studentId && classId, "target student/class ids missing for scoped creator checks");
 
   const teacherQuestion = await jsonRequest("/quizzes/questions", {
     method: "POST",
@@ -966,7 +967,8 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
       subjectId: ASSESSMENT_SUBJECT_ID,
       mode: "central",
       questionIds: [ASSESSMENT_QUESTION_ID],
-      targetUserIds: [studentId],
+      targetUserIds: [],
+      targetGroupIds: [classId],
       isPublished: true,
       // School-directed tests are intentionally not public. The target learner
       // must still discover, open, and submit this exact assessment.
