@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
 import { calculateStreak } from '../utils/streak';
 import { useStore } from '../store/useStore';
@@ -774,14 +774,38 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
 };
 
 const Dashboard: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
+    const { user } = useStore();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const isParentDashboard = user.role === Role.PARENT;
+    const { logout, user: authUser } = useAuth();
+
+    const [activeTab, setActiveTabState] = useState<DashboardTab>(() => {
+        if (typeof window !== 'undefined') {
+            const initialTab = new URLSearchParams(window.location.search).get('tab');
+            if (initialTab) {
+                const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };
+                return (['mock-exams', 'school-tests', 'quizzes'].includes(initialTab) ? initialTab : (aliasMap[initialTab] ?? initialTab)) as DashboardTab;
+            }
+        }
+        return 'overview';
+    });
+
+    const setActiveTab = React.useCallback((tabOrAction: DashboardTab | ((prev: DashboardTab) => DashboardTab)) => {
+        setActiveTabState((prev) => {
+            const nextTab = typeof tabOrAction === 'function' ? tabOrAction(prev) : tabOrAction;
+            const currentSearchTab = new URLSearchParams(location.search).get('tab') || 'overview';
+            if (currentSearchTab !== nextTab) {
+                const targetUrl = nextTab === 'overview' ? '/dashboard' : `/dashboard?tab=${nextTab}`;
+                navigate(targetUrl);
+            }
+            return nextTab;
+        });
+    }, [location.search, navigate]);
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [notifToast, setNotifToast] = useState<{ title: string; body: string } | null>(null);
     const [weeklyReportState, setWeeklyReportState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
-    const { user } = useStore();
-    const location = useLocation();
-    const isParentDashboard = user.role === Role.PARENT;
-    const { logout, user: authUser } = useAuth();
 
     // ── Real-time notifications ───────────────────────────────────────────
     const { latestNotification } = useNotificationStream({
@@ -850,9 +874,11 @@ const Dashboard: React.FC = () => {
         const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };
         const resolved = requestedTab ? (['mock-exams', 'school-tests', 'quizzes'].includes(requestedTab) ? requestedTab : (aliasMap[requestedTab] ?? requestedTab)) : null;
         if (resolved && allowedTabs.has(resolved)) {
-            setActiveTab(resolved as typeof activeTab);
+            setActiveTabState(resolved as typeof activeTab);
+        } else if (!requestedTab) {
+            setActiveTabState('overview');
         }
-    }, [location.search]);
+    }, [location.search, menuItems]);
 
     const renderContent = () => {
         if (isParentDashboard) {
