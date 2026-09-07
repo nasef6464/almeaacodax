@@ -580,6 +580,15 @@
 - Deferred: a separate “without video” filter, bulk video-link assignment, and video validation/analytics; these are not required for the current MVP.
 - Next exact action: verify the student weak-skill recommendation links end-to-end (`Skill → foundation topic → lesson/video` and `Skill → actual training`) before changing recommendation logic.
 
+## Batch 6Q-02 — Weak-skill actions at quiz completion
+
+- Scope: the quiz completion view now presents each weak/average skill with the existing recommendation-driven actions: `شرح` (lesson/foundation topic when available), `تدريب` (actual linked quiz when available), and `إعادة قياس` (a follow-up skill assessment). Existing generic follow-up actions remain unchanged.
+- Status: `VERIFIED` / merged in PR `#62` (`91216ccb`), runtime commit `98922eee`.
+- Tests: local `npm run typecheck`; `npm run smoke:global-student-journey` `13/13`; `npm run smoke:results` `6/6`; PR gates including Core Build, Safety, Student/Assessment, Public UI, Production Readiness, Cross-phase, and Vercel passed on exact head.
+- Preserved: scoring and result write paths, recommendation view-model, API/RBAC, schema, payment/access rules, and legacy result/report behavior. No new recommendation engine or player architecture.
+- Deferred: AI recommendations, intervention lifecycle, custom remediation builder, and richer analytics; none is required for the commercial MVP.
+- Next exact action: inspect the existing Reports recommendation links end-to-end (`Skill → foundation topic → lesson/video` and `Skill → actual training`) and patch only a proven link/target gap.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
