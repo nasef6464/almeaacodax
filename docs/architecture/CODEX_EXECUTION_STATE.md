@@ -589,6 +589,15 @@
 - Deferred: AI recommendations, intervention lifecycle, custom remediation builder, and richer analytics; none is required for the commercial MVP.
 - Next exact action: inspect the existing Reports recommendation links end-to-end (`Skill → foundation topic → lesson/video` and `Skill → actual training`) and patch only a proven link/target gap.
 
+## Batch 6S-06 — School package seat-capacity enforcement
+
+- Scope: access-code redemption now checks the existing package `maxStudents` against active, unexpired `AccessGrant` records before granting access. Full packages return a clear conflict response; legacy packages with `maxStudents = 0` remain unlimited.
+- Status: `VERIFIED` / merged in PR `#63` (`0dbbeeb0`), runtime commit `712e8b23`.
+- Tests: targeted seat-capacity contract `5/5`; school-management contract `30/30`; CI exact head passed frontend/API typecheck, builds, immutable architecture, school operations/contracts, security, reports, cross-phase, readiness, and Vercel preview gates.
+- Preserved: existing access-code route, AccessGrant model, RBAC, course/quiz access semantics, payment flows, historical data, and public API URL/method. No migration or ownership-map change.
+- Deferred: atomic seat reservation/counter migration, contract billing lifecycle, automated renewal, and bulk school import improvements; these require a separate product decision or scale evidence.
+- Next exact action: verify the production deployment is serving merge `0dbbeeb0`, then continue with the next independently evidenced commercial school-operations gap.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
