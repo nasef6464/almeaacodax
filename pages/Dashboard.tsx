@@ -744,9 +744,9 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
     }, [initialView]);
 
     const examViews = [
-        { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} /> },
-        { id: 'mock' as const, label: 'الاختبارات المحاكية', icon: <Star size={16} /> },
-        { id: 'school' as const, label: 'اختبارات المدرسة', icon: <Zap size={16} /> },
+        { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} />, iconColor: 'text-amber-500' },
+        { id: 'mock' as const, label: 'الاختبارات المحاكية', icon: <Star size={16} />, iconColor: 'text-purple-600' },
+        { id: 'school' as const, label: 'اختبارات المدرسة', icon: <Zap size={16} />, iconColor: 'text-sky-600' },
     ];
     return (
         <div className="space-y-4">
@@ -758,7 +758,10 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
                                 ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
                                 : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-2xs'
                         }`}
-                    >{v.icon}{v.label}</button>
+                    >
+                        <span className={view === v.id ? 'text-white' : v.iconColor}>{v.icon}</span>
+                        <span>{v.label}</span>
+                    </button>
                 ))}
             </div>
             <Suspense fallback={<TabLoading />}>
