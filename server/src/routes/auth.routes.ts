@@ -1287,6 +1287,7 @@ authRouter.post(
       contentTypes: Array.isArray(linkedPackage.contentTypes) ? linkedPackage.contentTypes.map(String) : ["all"],
       pathIds: Array.isArray(linkedPackage.pathIds) ? linkedPackage.pathIds.map(String) : [],
       subjectIds: Array.isArray(linkedPackage.subjectIds) ? linkedPackage.subjectIds.map(String) : [],
+      expiresAt: Number(reservedAccessCode.expiresAt || 0) || null,
       grantedBy: "access-code",
       idempotencyKey: `access_code:${String(accessCode._id)}:${String(user._id)}`,
       metadata: {
