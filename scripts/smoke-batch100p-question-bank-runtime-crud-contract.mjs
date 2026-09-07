@@ -65,6 +65,16 @@ assertMatches(
 );
 assertIncludes(
   'dashboards/admin/QuestionBankManager.tsx',
+  'hasExplanationVideo: hasExplanationVideo || undefined',
+  'Question bank must send the optional hasExplanationVideo filter to the paginated API.',
+);
+assertIncludes(
+  'dashboards/admin/QuestionBankManager.tsx',
+  'data-testid="question-bank-has-explanation-video-filter"',
+  'Question bank must expose a clear video-explanation filter control.',
+);
+assertIncludes(
+  'dashboards/admin/QuestionBankManager.tsx',
   'questionsRefreshKey]',
   'Question bank paginated loader must depend on the refresh key.',
 );
