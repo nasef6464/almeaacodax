@@ -405,6 +405,7 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   createdAt: toTimestamp(quiz?.createdAt),
   isPublished: Boolean(quiz?.isPublished),
   showOnPlatform: quiz?.showOnPlatform !== false,
+  viewerAudienceVerified: quiz?.viewerAudienceVerified === true,
   skillIds: Array.isArray(quiz?.skillIds) ? quiz.skillIds.map(String) : [],
   targetGroupIds: Array.isArray(quiz?.targetGroupIds) ? quiz.targetGroupIds.map(String) : [],
   targetUserIds: Array.isArray(quiz?.targetUserIds) ? quiz.targetUserIds.map(String) : [],

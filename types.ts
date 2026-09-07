@@ -503,6 +503,8 @@ export interface Quiz extends ContentWorkflow {
     createdAt: number;
     isPublished: boolean;
     showOnPlatform?: boolean;
+    /** Server-issued only for a directed assessment after audience verification. */
+    viewerAudienceVerified?: boolean;
     skillIds?: string[];
     targetGroupIds?: string[];
     targetUserIds?: string[];

@@ -123,7 +123,6 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const canAccessQuiz = useMemo(
     () => (quiz: (typeof quizzes)[number]) => {
       if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
-      if (quiz.showOnPlatform === false) return false;
       if (quiz.approvalStatus && quiz.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
       if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
 
@@ -135,6 +134,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       const targetUserIds = quiz.targetUserIds || [];
       const targetGroupIds = quiz.targetGroupIds || [];
       const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
+      const isServerVerifiedDirectedAudience = quiz.viewerAudienceVerified === true;
+      if (quiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) return false;
       if (hasExplicitTargets) {
         const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
         const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
@@ -146,7 +147,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           (userGroups.length === 0 || targetGroupIds.some((groupId) => userGroups.includes(groupId)));
 
         // Directed audiences are additive: direct student OR any assigned class/school.
-        if (!isUserTargeted && !isGroupTargeted) return false;
+        if (!isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience) return false;
       }
 
       const access = quiz.access || { type: 'free' as const };

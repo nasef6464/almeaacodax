@@ -34,6 +34,9 @@ concurrency:
 
 jobs:
   apply-focused-fixes:
+    # This historical self-mutating repair job owns one legacy branch only.
+    # PR validation must never attempt to push its generated commit there.
+    if: github.event_name == 'push' && github.ref_name == 'codex/supervisor-student-journey-hardening'
     name: Apply focused E2E findings safely
     runs-on: ubuntu-latest
     timeout-minutes: 20

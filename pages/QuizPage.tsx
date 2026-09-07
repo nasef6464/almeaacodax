@@ -347,9 +347,16 @@ export const QuizPage: React.FC = () => {
     setQuizStatusMessage(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
 
+    const targetUserIds = foundQuiz.targetUserIds || [];
+    const targetGroupIds = foundQuiz.targetGroupIds || [];
+    const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
+    const isServerVerifiedDirectedAudience = foundQuiz.viewerAudienceVerified === true;
+
     if (
       !isStaffViewer &&
-      (!foundQuiz.isPublished || foundQuiz.showOnPlatform === false || (!!foundQuiz.approvalStatus && foundQuiz.approvalStatus !== 'approved'))
+      (!foundQuiz.isPublished ||
+        (foundQuiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) ||
+        (!!foundQuiz.approvalStatus && foundQuiz.approvalStatus !== 'approved'))
     ) {
       setHasAccess(false);
       setAccessMessage('هذا الاختبار غير منشور للطلاب حاليًا.');
@@ -363,16 +370,13 @@ export const QuizPage: React.FC = () => {
       return;
     }
 
-    const targetUserIds = foundQuiz.targetUserIds || [];
-    const targetGroupIds = foundQuiz.targetGroupIds || [];
-    const hasExplicitTargets = targetUserIds.length > 0 || targetGroupIds.length > 0;
     if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
       const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
       const isUserTargeted = targetUserIds.length > 0 && targetUserIds.includes(user.id);
       const isGroupTargeted = targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id));
 
       // Direct student targeting and school/class targeting are additive, matching the API contract.
-      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted) {
+      if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience) {
         setHasAccess(false);
         setAccessMessage('هذا اختبار مدرسي موجّه لطلاب محددين فقط.');
         return;

@@ -380,7 +380,7 @@ export const SupervisorDashboard: React.FC = () => {
   const openStudentReport = (id: string) => window.location.assign(`/reports?studentId=${encodeURIComponent(id)}`);
   const openStudentQuiz = (id: string) => {
     const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal', targetUserId: id });
-    window.location.hash = `/admin-dashboard?${params.toString()}`;
+    window.location.assign(`/admin-dashboard?${params.toString()}`);
   };
 
   const sendStudentFollowUpAlert = async (student: { id: string; name: string; latestQuiz?: string; followUpReason?: string }) => {
@@ -816,7 +816,7 @@ export const SupervisorDashboard: React.FC = () => {
                   />
                   <ActionButton label="توجيه اختبار مهارات" icon={<ClipboardList size={18} />} color="amber"
                     subtitle="تعيين اختبار تشخيصي للطلاب الضعفاء"
-                    onClick={() => { const p = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal' }); window.location.hash = `/admin-dashboard?${p.toString()}`; }}
+                    onClick={() => { const p = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal' }); window.location.assign(`/admin-dashboard?${p.toString()}`); }}
                   />
                 </div>
               </div>
@@ -1562,7 +1562,7 @@ export const SupervisorDashboard: React.FC = () => {
                         <span className="text-xs font-bold text-gray-400">قائمة المستهدفين بالدعم</span>
                         <button onClick={() => {
                           const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal' });
-                          window.location.hash = `/admin-dashboard?${params.toString()}`;
+                          window.location.assign(`/admin-dashboard?${params.toString()}`);
                         }} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">توجيه خطة جماعية ←</button>
                       </div>
 

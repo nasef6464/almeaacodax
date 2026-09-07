@@ -20,6 +20,17 @@ check('directed submission scope is delegated while database verification stays 
   assert.ok(routeSource.includes('message: "This quiz is not assigned to you"'));
 });
 
+check('hidden school-directed assessments are visible only after server audience verification', () => {
+  for (const fragment of [
+    'viewerAudienceVerified: true',
+    'quiz.showOnPlatform !== false || isDirectedToLearner',
+    '...(learnerAudienceRecord?.schoolId ? [String(learnerAudienceRecord.schoolId)] : [])',
+    '...(user.schoolId ? [String(user.schoolId)] : [])',
+  ]) {
+    assert.ok(routeSource.includes(fragment), `hidden directed catalogue contract missing ${fragment}`);
+  }
+});
+
 check('directed scope conditions remain explicit', () => {
   for (const fragment of ['targetGroupIds', 'targetUserIds', 'isDirectedQuiz', 'isExplicitUser', 'isDirectedQuiz && !isStaff && !isExplicitUser && targetGroupIds.length > 0']) {
     assert.ok(moduleSource.includes(fragment), `directed scope missing ${fragment}`);
@@ -41,6 +52,9 @@ check('isolated HTTP gate rejects directed targets outside both class and school
     'school supervisor cannot target another school\'s student',
     'targetUserIds: [outsideSchoolStudentId]',
     'schoolSupervisorOutsideTarget, 403',
+    'showOnPlatform: false',
+    'hidden school-directed assessment was missing from its target student catalogue',
+    'outside student cannot submit hidden school-directed assessment',
   ]) {
     assert.ok(integrationGateSource.includes(fragment), `isolated directed-scope gate missing ${fragment}`);
   }
