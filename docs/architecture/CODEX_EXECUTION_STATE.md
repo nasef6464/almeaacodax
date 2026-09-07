@@ -600,6 +600,15 @@
 - Known commercial boundary: package expiry/revocation is `NOT PROVEN` for already mirrored `subscription.purchasedCourses`/`enrolledCourses`; changing it safely requires an explicit entitlement-provenance decision to avoid revoking direct course purchases. Classified `HIGH` and deferred.
 - Next exact action: obtain the entitlement-provenance decision, then implement only the smallest compatible expiry boundary if authorized.
 
+## Batch 6S-07 — School access-code grant expiry propagation
+
+- Scope: access-code redemption now passes the reserved code expiry into the created `AccessGrant`, so school path/package/content access ends with the code while direct course purchases remain independent.
+- Status: `VERIFIED` / merged in PR `#64` (`02208c21`), runtime commit `f0b4b7a6`.
+- Tests: grant-expiry contract `4/4`; seat-capacity contract `5/5`; access-code boundary PASS; school-management contract `30/30`; all applicable CI, typecheck, build, security, readiness, cross-phase, and Vercel gates passed on the exact runtime.
+- Preserved: existing code/package/path scope, API/RBAC, payment and direct-purchase semantics, schema compatibility, and production data. No migration or map ownership change.
+- Deferred: discount-code billing lifecycle, automatic school contract renewal, and revocation of legacy mirrored course fields pending an explicit entitlement-provenance decision.
+- Next exact action: define the commercial contract policy for discount packages versus full path grants before adding any further expiry or renewal behavior.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
