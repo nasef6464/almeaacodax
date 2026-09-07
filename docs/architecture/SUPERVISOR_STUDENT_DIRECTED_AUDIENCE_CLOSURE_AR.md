@@ -62,3 +62,9 @@ No ownership or data-access boundary changed. `MODULE_CATALOG.md`, `CHANGE_MAP.m
 - Group recipient/count alignment was previously fixed in `fb0f1cee`; both `group.studentIds` and student-side `groupId` membership are now considered by the assignment UI and alert recipient calculation.
 - CI: Backend Integration Gate `34104719775` passed on the exact commit; Supervisor Dashboard contract is `13/13` locally.
 - Deferred: read receipts, threaded messaging, intervention lifecycle, email/WhatsApp delivery, and advanced analytics remain outside this closure.
+
+## 2026-09-07 — Class-targeted assessment journey
+
+- Status: `VERIFIED` on exact runtime/test head `2020deb3`.
+- The isolated HTTP journey assigns the hidden assessment to the seeded class through `targetGroupIds`, then proves the student discovers, opens, and submits it within the attempt limit while an outside student remains denied.
+- Backend Integration Gate `34105351620` passed on the exact head. No public route, audience contract, RBAC, scoring, schema, or notification behavior changed.
