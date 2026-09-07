@@ -10,6 +10,7 @@ const notificationRoutes = await read("server/src/routes/notification.routes.ts"
 const quizzesPage = await read("pages/Quizzes.tsx");
 const quizPage = await read("pages/QuizPage.tsx");
 const quizBuilder = await read("dashboards/admin/UnifiedQuizBuilder.tsx");
+const assignmentWidget = await read("dashboards/admin/QuizAssignWidget.tsx");
 const quizModel = await read("server/src/models/Quiz.ts");
 
 const checks = [];
@@ -114,6 +115,12 @@ check("supervisor assignment persists its chosen attempt limit without dropping 
   assertIncludes(testsManager, "settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}");
   assertIncludes(dashboard, "maxAttempts: pickedQuiz.settings?.maxAttempts");
   assertIncludes(dashboard, "settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 }");
+});
+
+check("supervisor group assignment counts and alerts students from either group membership source", () => {
+  assertIncludes(assignmentWidget, "const pickerStudentIds = (scopedStudents || [])");
+  assertIncludes(assignmentWidget, "return new Set([...groupStudentIds, ...pickerStudentIds, ...targetUserIds]).size;");
+  assertIncludes(testsManager, "scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)");
 });
 
 check("student school-directed assessment list and runner share additive audience semantics", () => {

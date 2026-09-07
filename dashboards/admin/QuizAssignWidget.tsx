@@ -57,11 +57,14 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
   };
 
   const totalTargeted = useMemo(() => {
-    const fromGroups = scopedGroups
+    const groupStudentIds = scopedGroups
       .filter((g) => targetGroupIds.includes(g.id))
-      .reduce((sum, g) => sum + (g.studentIds?.length ?? 0), 0);
-    return fromGroups + targetUserIds.length;
-  }, [scopedGroups, targetGroupIds, targetUserIds]);
+      .flatMap((g) => g.studentIds || []);
+    const pickerStudentIds = (scopedStudents || [])
+      .filter((student) => student.groupId && targetGroupIds.includes(student.groupId))
+      .map((student) => student.id);
+    return new Set([...groupStudentIds, ...pickerStudentIds, ...targetUserIds]).size;
+  }, [scopedGroups, scopedStudents, targetGroupIds, targetUserIds]);
 
   const toggleGroup = (id: string) =>
     setTargetGroupIds((prev) => prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]);
