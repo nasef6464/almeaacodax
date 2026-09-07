@@ -53,3 +53,12 @@ This learner launch/result-review batch is closed. Do not reopen it from the old
 ## Ownership impact
 
 No ownership or data-access boundary changed. `MODULE_CATALOG.md`, `CHANGE_MAP.md`, and `DATA_ACCESS_MAP.md` therefore require no update for this batch.
+
+## 2026-09-07 — Scoped alert delivery evidence
+
+- Status: `VERIFIED` on `8c2aea4a`.
+- The isolated backend journey now creates a scoped supervisor alert for the directed student, then reads `/notifications/me` with that student's token and asserts the unique alert title is present.
+- This proves the existing Supervisor → Student in-app notification path end-to-end without introducing chat/inbox architecture or changing notification APIs, RBAC, schema, or delivery channels.
+- Group recipient/count alignment was previously fixed in `fb0f1cee`; both `group.studentIds` and student-side `groupId` membership are now considered by the assignment UI and alert recipient calculation.
+- CI: Backend Integration Gate `34104719775` passed on the exact commit; Supervisor Dashboard contract is `13/13` locally.
+- Deferred: read receipts, threaded messaging, intervention lifecycle, email/WhatsApp delivery, and advanced analytics remain outside this closure.

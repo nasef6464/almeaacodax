@@ -551,6 +551,16 @@
 - Risks: Phase 5 remains isolated-only. Historical backfill is result-only; no attempt/response/version historical reconstruction, production-scale certification, production opt-in, legacy retirement, or final cutover is authorized.
 - Next exact action: record this documentation commit, then begin the read-only Phase 6 schools/academic-operations entry audit.
 
+## Batch 6S-03 — School directed assessment recipient and alert proof
+
+- Scope: aligned group-assignment recipient resolution across `QuizAssignWidget` and `SupervisorTestsManager` with both group-owned `studentIds` and student-side `groupId`; extended the isolated HTTP journey to prove a Supervisor alert is visible in the target Student notification list.
+- Status: `VERIFIED`.
+- Tests: `npm run typecheck`, `npm run smoke:supervisor-dashboard` (`13/13`), `git diff --check`; Backend Integration Gate `34104719775` passed on exact head `8c2aea4a079a7433fb49751c2c28d02706ebd647`.
+- Commits: `fb0f1cee` (recipient alignment), `8c2aea4a` (alert delivery evidence). Both pushed to `origin/main`.
+- Preserved: public/API routes, RBAC, scoring, payments, schema, notification channels, and production data. No broad messaging or intervention engine was added.
+- Deferred: read receipts, threaded inbox, intervention lifecycle, contract/seat administration, and advanced Supervisor analytics.
+- Next exact action: continue with the next independently evidenced School Operations/Product Gate gap; do not reopen directed-assessment delivery unless a new failing runtime/CI signal appears.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
