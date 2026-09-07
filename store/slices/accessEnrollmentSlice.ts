@@ -168,7 +168,6 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
         if (state.user.subscription.plan === 'premium') return true;
         if (state.enrolledCourses.includes(contentId)) return true;
         if (state.user.subscription.purchasedCourses.includes(contentId)) return true;
-        if (state.user.subscription.purchasedPackages.includes(contentId)) return true;
         return false;
     },
 
