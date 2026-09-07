@@ -8,6 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
+import { AccessGrantModel } from "../models/AccessGrant.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { PhoneOtpModel } from "../models/PhoneOtp.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
@@ -20,6 +21,7 @@ import { sendExternalNotification } from "../services/notificationProviders.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
 import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
+import { isPackageSeatAvailable } from "../services/packageSeatCapacity.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -1237,6 +1239,19 @@ authRouter.post(
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "الباقة المرتبطة بهذا الكود غير متاحة الآن",
       });
+    }
+
+    if (Number(linkedPackage.maxStudents || 0) > 0) {
+      const activeStudentGrants = await AccessGrantModel.countDocuments({
+        packageId: String(linkedPackage.id || linkedPackage._id),
+        status: "active",
+        $or: [{ expiresAt: null }, { expiresAt: { $exists: false } }, { expiresAt: { $gt: Date.now() } }],
+      });
+      if (!isPackageSeatAvailable(linkedPackage.maxStudents, activeStudentGrants)) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: "اكتمل عدد المقاعد المتاحة لهذه الباقة",
+        });
+      }
     }
 
     if ((user.subscription?.purchasedPackages || []).includes(String(linkedPackage.id || linkedPackage._id))) {
