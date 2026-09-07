@@ -197,6 +197,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [selectedSkillId, setSelectedSkillId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [hasExplanationVideo, setHasExplanationVideo] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -281,7 +282,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId]);
+  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId, hasExplanationVideo]);
 
   useEffect(() => {
     let active = true;
@@ -298,6 +299,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           sectionId: selectedSectionId || undefined,
           skillId: selectedSkillId || undefined,
           search: searchTerm || undefined,
+          hasExplanationVideo: hasExplanationVideo || undefined,
         });
 
         if (!active) return;
@@ -319,7 +321,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     return () => {
       active = false;
     };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, questionsRefreshKey]);
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, hasExplanationVideo, questionsRefreshKey]);
 
   const displayedQuestions = pagedQuestions ?? filteredQuestions;
   const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
@@ -1239,6 +1241,16 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
+        <label className="inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800 whitespace-nowrap">
+          <input
+            type="checkbox"
+            checked={hasExplanationVideo}
+            onChange={(event) => setHasExplanationVideo(event.target.checked)}
+            className="accent-emerald-600"
+            data-testid="question-bank-has-explanation-video-filter"
+          />
+          يحتوي فيديو شرح
+        </label>
       </div>
 
       {questionUsageError && (
