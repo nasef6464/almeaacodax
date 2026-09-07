@@ -1784,7 +1784,7 @@ export const SupervisorDashboard: React.FC = () => {
                     quizKind={pickedQuiz.quizKind as 'drill' | 'test' | 'mock' | undefined}
                     scopedGroups={scopedGroupsList}
                     scopedStudents={[{ id: assignToStudentId, name: student?.name || assignToStudentId, groupId: studentGroup?.id }]}
-                    existingConfig={{ targetUserIds: [assignToStudentId], targetGroupIds: [] }}
+                    existingConfig={{ targetUserIds: [assignToStudentId], targetGroupIds: [], maxAttempts: pickedQuiz.settings?.maxAttempts }}
                     hideAccessType={true}
                     confirmLabel="إرسال للطالب"
                     onCancel={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
@@ -1796,6 +1796,7 @@ export const SupervisorDashboard: React.FC = () => {
                         ],
                         dueDate: config.dueDate,
                         supervisorMessage: config.message || null,
+                        settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 },
                       });
                       const { api: apiService } = await import('../../services/api');
                       await apiService.sendStudentAlert({

@@ -978,6 +978,17 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   assert.equal(supervisorQuiz.body?.mode, "central", "supervisor assessment lost central mode");
   assert.equal(supervisorQuiz.body?.approvalStatus, "approved", "supervisor assessment was not approved by workflow");
 
+  const supervisorAssignmentUpdate = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}`, {
+    method: "PATCH",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: {
+      settings: { ...(supervisorQuiz.body?.settings || {}), maxAttempts: 2 },
+    },
+  });
+  expectStatus("supervisor persists the selected directed-assessment attempt limit", supervisorAssignmentUpdate, 200);
+  assert.equal(supervisorAssignmentUpdate.body?.settings?.maxAttempts, 2, "supervisor assignment lost its attempt limit");
+
   const studentCatalog = await jsonRequest("/quizzes", { token: tokens.get("student") });
   expectStatus("targeted student loads the assessment catalogue", studentCatalog, 200);
   const listedForStudent = (studentCatalog.body?.quizzes || []).find((item: any) => item.id === SUPERVISOR_QUIZ_ID);
@@ -1005,6 +1016,22 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
     body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
   });
   expectStatus("targeted student submits hidden school-directed assessment", studentSubmission, 201);
+
+  const secondStudentSubmission = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("targeted student receives the supervisor-selected second attempt", secondStudentSubmission, 201);
+
+  const blockedThirdStudentSubmission = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}/submit`, {
+    method: "POST",
+    token: tokens.get("student"),
+    csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: "tests" },
+  });
+  expectStatus("third submission is rejected after the supervisor-selected limit", blockedThirdStudentSubmission, 409);
 
   const outsiderSubmission = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}/submit`, {
     method: "POST",
