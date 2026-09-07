@@ -909,7 +909,7 @@ const Dashboard: React.FC = () => {
         <div className="flex min-h-screen bg-gray-50">
             {/* ── Notification Toast (SSE real-time) ─────────────────────── */}
             {notifToast && (
-                <div className="fixed bottom-6 left-6 z-[9999] max-w-sm w-full animate-fade-in">
+                <div className="fixed top-24 left-6 z-[9999] max-w-sm w-full animate-fade-in">
                     <div className="bg-white border border-indigo-100 rounded-2xl shadow-2xl p-4 flex items-start gap-3">
                         <div className="shrink-0 w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg">
                             🔔
@@ -948,72 +948,127 @@ const Dashboard: React.FC = () => {
                     </div>
 
                     <nav className="space-y-1">
-                        {/* Group: التعلم */}
-                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">التعلم</p>
-                        {menuItems.filter(i => ['overview','paths','my-courses','smart-path','sessions'].includes(i.id)).map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                    activeTab === item.id
-                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
-                            >
-                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                {activeTab === item.id && <ChevronLeft size={16} />}
-                            </button>
-                        ))}
-                        {/* Group: الاختبارات */}
-                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
-                        {menuItems.filter(i => ['exams','reports','plan'].includes(i.id)).map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                    ['exams','saher','quizzes','mock-exams'].includes(activeTab) && item.id === 'exams'
-                                        ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                        : activeTab === item.id
+                        {isParentDashboard ? (
+                            <>
+                                {/* Group: المتابعة */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">المتابعة</p>
+                                {menuItems.filter(i => ['overview','parent-results','parent-skills','reports'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: إدارة الحساب */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">إدارة الحساب</p>
+                                {menuItems.filter(i => ['parent-link','requests'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: الدعم */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
+                                {menuItems.filter(i => ['qa'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                            </>
+                        ) : (
+                            <>
+                                {/* Group: التعلم */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">التعلم</p>
+                                {menuItems.filter(i => ['overview','paths','my-courses','smart-path','sessions'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
                                             ? 'bg-amber-50 text-amber-600 shadow-sm'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
-                            >
-                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                {(item.id === 'exams' ? ['exams','saher','quizzes','mock-exams'].includes(activeTab) : activeTab === item.id) && <ChevronLeft size={16} />}
-                            </button>
-                        ))}
-                        {/* Group: الأدوات */}
-                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
-                        {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                    activeTab === item.id
-                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
-                            >
-                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                {activeTab === item.id && <ChevronLeft size={16} />}
-                            </button>
-                        ))}
-                        {/* Group: الدعم */}
-                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
-                        {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                    activeTab === item.id
-                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
-                            >
-                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                {activeTab === item.id && <ChevronLeft size={16} />}
-                            </button>
-                        ))}
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: الاختبارات */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
+                                {menuItems.filter(i => ['exams','reports','plan'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            ['exams','saher','quizzes','mock-exams'].includes(activeTab) && item.id === 'exams'
+                                                ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                                : activeTab === item.id
+                                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {(item.id === 'exams' ? ['exams','saher','quizzes','mock-exams'].includes(activeTab) : activeTab === item.id) && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: الأدوات */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
+                                {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: الدعم */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
+                                {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                            </>
+                        )}
                     </nav>
                     <div className="mt-6 border-t border-gray-100 pt-4">
                         <button
@@ -1086,9 +1141,31 @@ const ParentErrorState = ({ message }: { message: string }) => (
 
 const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: DashboardTab) => void }) => {
     const data = useParentScopedResults();
+    const { user } = useStore();
     const trend = data.lastThreeAverage - data.olderThreeAverage;
     const [copiedCoachMessage, setCopiedCoachMessage] = useState(false);
     const [showParentDetails, setShowParentDetails] = useState(false);
+    const [showApprovalsModal, setShowApprovalsModal] = useState(false);
+    const [whatsappEnabled, setWhatsappEnabled] = useState(false);
+    const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+
+    useEffect(() => {
+        setWhatsappEnabled((user as any).whatsappDigestEnabled || false);
+        api.get('/parent/approvals').then(data => {
+            if (Array.isArray(data)) setPendingApprovalsCount(data.length);
+        }).catch(console.error);
+    }, [user]);
+
+    const toggleWhatsapp = async () => {
+        try {
+            const next = !whatsappEnabled;
+            setWhatsappEnabled(next);
+            await api.post('/parent/settings/whatsapp', { enabled: next });
+        } catch (error) {
+            console.error('Failed to toggle whatsapp digest', error);
+            setWhatsappEnabled(!whatsappEnabled); // revert
+        }
+    };
 
     const copyCoachMessage = async () => {
         try {
@@ -1116,6 +1193,61 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                         التقرير
                     </button>
                 </div>
+            </div>
+
+            {/* ── أدوات ولي الأمر السريعة: ملخصات واتساب وسير عمل الموافقات ── */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-5 flex items-center justify-between border border-emerald-100 bg-emerald-50/40 shadow-sm transition-all hover:shadow-md">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black shadow-sm">
+                            <MessageCircle size={22} />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-gray-900 text-sm">ملخصات واتساب الأسبوعية</h4>
+                            <p className="text-xs text-gray-500 font-bold mt-1">احصل على تقرير أسبوعي لأداء أبنائك مباشرة.</p>
+                        </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={whatsappEnabled}
+                            onChange={toggleWhatsapp}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </Card>
+
+                <Card className="p-5 flex items-center justify-between border border-blue-100 bg-blue-50/40 shadow-sm transition-all hover:shadow-md">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black shadow-sm">
+                            <CheckCircle size={22} />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-gray-900 text-sm">سير عمل الموافقات</h4>
+                            <p className="text-xs text-gray-500 font-bold mt-1">طلبات واشتراكات بانتظار موافقتك ({pendingApprovalsCount}).</p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => setShowApprovalsModal(true)}
+                        className="text-white font-bold text-xs bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+                    >
+                        مراجعة الطلبات
+                    </button>
+                </Card>
+
+                {showApprovalsModal && (
+                    <ParentApprovalsModal 
+                        isOpen={showApprovalsModal} 
+                        onClose={() => {
+                            setShowApprovalsModal(false);
+                            // Refresh count
+                            api.get('/parent/approvals').then(data => {
+                                if (Array.isArray(data)) setPendingApprovalsCount(data.length);
+                            }).catch(console.error);
+                        }} 
+                    />
+                )}
             </div>
 
             {data.isLoading ? <ParentLoadingState /> : data.loadError ? <ParentErrorState message={data.loadError} /> : null}
@@ -1579,30 +1711,8 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     
-    const [showApprovalsModal, setShowApprovalsModal] = useState(false);
-    const [whatsappEnabled, setWhatsappEnabled] = useState(false);
-    const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+    const [copiedCode, setCopiedCode] = useState(false);
     const [showCalculator, setShowCalculator] = useState(false);
-
-    useEffect(() => {
-        if (user.role === Role.PARENT) {
-            setWhatsappEnabled((user as any).whatsappDigestEnabled || false);
-            api.get('/parent/approvals').then(data => {
-                if (Array.isArray(data)) setPendingApprovalsCount(data.length);
-            }).catch(console.error);
-        }
-    }, [user]);
-
-    const toggleWhatsapp = async () => {
-        try {
-            const next = !whatsappEnabled;
-            setWhatsappEnabled(next);
-            await api.post('/parent/settings/whatsapp', { enabled: next });
-        } catch (error) {
-            console.error('Failed to toggle whatsapp digest', error);
-            setWhatsappEnabled(!whatsappEnabled); // revert
-        }
-    };
     
     const assignedQuizzes = useMemo(() => {
         return quizzes.filter(q => {
@@ -1733,71 +1843,17 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                     <button 
                         onClick={() => {
                             navigator.clipboard?.writeText(String(user?.id || '883921').slice(-6).toUpperCase());
-                            alert('تم نسخ الكود!');
+                            setCopiedCode(true);
+                            setTimeout(() => setCopiedCode(false), 2000);
                         }}
-                        className="text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1.5 rounded-lg"
+                        className="text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1.5 rounded-lg flex items-center gap-1 text-xs font-bold transition-colors"
+                        title="نسخ الكود"
                     >
                         <Copy size={16} />
+                        {copiedCode && <span className="text-[10px] text-emerald-600 font-black">تم النسخ ✓</span>}
                     </button>
                 </div>
             </Card>
-        </div>
-        )}
-
-        {/* Parent Tools: WhatsApp Digest & Approvals */}
-        {user.role === Role.PARENT && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="p-5 flex items-center justify-between border border-emerald-100 bg-emerald-50/30 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
-                        <MessageCircle size={24} />
-                    </div>
-                    <div>
-                        <h4 className="font-black text-gray-900 text-sm">ملخصات واتساب الأسبوعية</h4>
-                        <p className="text-xs text-gray-500 font-bold mt-1">احصل على تقرير أسبوعي لأداء أبنائك.</p>
-                    </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                    <input 
-                        type="checkbox" 
-                        className="sr-only peer" 
-                        checked={whatsappEnabled}
-                        onChange={toggleWhatsapp}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
-            </Card>
-
-            <Card className="p-5 flex items-center justify-between border border-blue-100 bg-blue-50/30 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
-                        <CheckCircle size={24} />
-                    </div>
-                    <div>
-                        <h4 className="font-black text-gray-900 text-sm">سير عمل الموافقات</h4>
-                        <p className="text-xs text-gray-500 font-bold mt-1">طلبات واشتراكات تحتاج لموافقتك ({pendingApprovalsCount}).</p>
-                    </div>
-                </div>
-                <button 
-                    onClick={() => setShowApprovalsModal(true)}
-                    className="text-blue-600 hover:text-blue-800 font-bold text-sm bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors"
-                >
-                    مراجعة الطلبات
-                </button>
-            </Card>
-
-            {showApprovalsModal && (
-                <ParentApprovalsModal 
-                    isOpen={showApprovalsModal} 
-                    onClose={() => {
-                        setShowApprovalsModal(false);
-                        // Refresh count
-                        api.get('/parent/approvals').then(data => {
-                            if (Array.isArray(data)) setPendingApprovalsCount(data.length);
-                        }).catch(console.error);
-                    }} 
-                />
-            )}
         </div>
         )}
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, CheckCircle, XCircle } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -47,10 +48,10 @@ export const ParentApprovalsModal: React.FC<ParentApprovalsModalProps> = ({ isOp
 
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm" dir="rtl">
-            <div className="bg-white rounded-3xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10">
+    const modalContent = (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in" dir="rtl">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white/95 backdrop-blur-md z-10">
                     <div>
                         <h2 className="text-xl font-black text-gray-900">سير عمل الموافقات</h2>
                         <p className="text-sm text-gray-500 font-bold mt-1">
@@ -112,4 +113,9 @@ export const ParentApprovalsModal: React.FC<ParentApprovalsModalProps> = ({ isOp
             </div>
         </div>
     );
+
+    if (typeof document !== 'undefined') {
+        return createPortal(modalContent, document.body);
+    }
+    return modalContent;
 };

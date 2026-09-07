@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Calculator, Target, Award } from 'lucide-react';
 import { Card } from './ui/Card';
 
@@ -47,11 +48,11 @@ export const QiyasCalculatorModal: React.FC<QiyasCalculatorModalProps> = ({ isOp
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+  const modalContent = (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in" dir="rtl">
       <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 bg-gradient-to-r from-indigo-800 to-indigo-600 text-white flex justify-between items-center relative overflow-hidden">
+        <div className="p-6 bg-gradient-to-r from-indigo-800 to-indigo-600 text-white flex justify-between items-center relative overflow-hidden shrink-0">
           <div className="relative z-10 flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
               <Calculator size={24} className="text-white" />
@@ -197,7 +198,7 @@ export const QiyasCalculatorModal: React.FC<QiyasCalculatorModalProps> = ({ isOp
         </div>
         
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-between items-center rounded-b-3xl">
+        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-between items-center rounded-b-3xl shrink-0">
             <p className="text-xs sm:text-sm text-gray-500 font-bold flex items-center gap-2">
                 <Award size={18} className="text-amber-500" />
                 حسّن درجة القدرات والتحصيلي معنا لرفع موزونتك!
@@ -212,4 +213,9 @@ export const QiyasCalculatorModal: React.FC<QiyasCalculatorModalProps> = ({ isOp
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined') {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 };
