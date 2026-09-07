@@ -561,6 +561,16 @@
 - Deferred: read receipts, threaded inbox, intervention lifecycle, contract/seat administration, and advanced Supervisor analytics.
 - Next exact action: continue with the next independently evidenced School Operations/Product Gate gap; do not reopen directed-assessment delivery unless a new failing runtime/CI signal appears.
 
+## Batch 6S-05 — Supervisor assessment statistics membership closure
+
+- Scope: supervisor assessment statistics now include scoped students whose class relationship is stored on the student (`groupId`), in addition to the group's `studentIds` list.
+- Status: `VERIFIED`.
+- Tests: local `typecheck`; `smoke:supervisor-dashboard` `14/14`; Backend Integration Gate `34106121278` PASS on `446d88b9`; Public UI Gate `34106385561` PASS on synchronized `482ebc85`.
+- Commit: `446d88b9` pushed to `origin/main`; local workspace fast-forwarded to external merge `482ebc85` without losing the fix.
+- Preserved: assessment targeting, RBAC, API contracts, scoring, notifications, and persisted data semantics. No schema or broad refactor.
+- Deferred: intervention lifecycle, threaded messaging, bulk imports, advanced analytics, and pagination redesign.
+- Next exact action: continue a focused audit of remaining school-assessment result/feedback surfaces from current HEAD.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
