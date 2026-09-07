@@ -609,6 +609,15 @@
 - Deferred: discount-code billing lifecycle, automatic school contract renewal, and revocation of legacy mirrored course fields pending an explicit entitlement-provenance decision.
 - Next exact action: define the commercial contract policy for discount packages versus full path grants before adding any further expiry or renewal behavior.
 
+## Batch 6S-08 — Commercial access policy audit
+
+- Scope: verified the two supported school sales modes without adding a parallel system: discount codes flow through the existing server-authoritative payment/discount boundary, while full path/package opening flows through scoped `AccessGrant` records (`pathIds`, `subjectIds`, `contentTypes`) and expiring access codes.
+- Status: `VERIFIED` for existing behavior; no new runtime gap found in this audit.
+- Evidence: package revenue `4/4`; payment/package `11/11`; payment tampering `9/9`; global student journey `13/13`; prior grant-expiry and seat-capacity gates remain green.
+- Preserved: direct course purchases, school grants, payment approval, discount scope, RBAC, API/schema contracts, and historical data.
+- Deferred: automatic renewal, contract invoices, and revocation semantics for legacy mirrored course fields; these need an owner-approved commercial policy, not an implementation guess.
+- Next exact action: proceed to the next product goal only after selecting whether the first school offer is (a) discount-code sales or (b) fully opened scoped paths, then configure the existing flows accordingly.
+
 ## بروتوكول بداية أي جلسة أو حساب جديد
 
 اقرأ بهذا الترتيب فقط:
