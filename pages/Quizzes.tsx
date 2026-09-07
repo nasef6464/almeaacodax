@@ -811,10 +811,14 @@ export type AttemptGroupCardProps = {
 };
 
 export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpen, onToggle, getAttemptResultLink, getAttemptRetryLink, getPathName }) => {
-  const latest = group.latestAttempt;
-  const best = group.bestAttempt;
+  const latest = group.latestAttempt || group.attempts?.[0] || ({} as QuizResult);
+  const best = group.bestAttempt || latest;
   const pathLabel = getPathName(group.quiz?.pathId || latest.skillsAnalysis?.[0]?.pathId);
   const categoryLabel = group.category === 'mock' ? 'محاكي' : 'عادي';
+  const rawDate = latest.date || (latest as any)?.submittedAt || (latest as any)?.createdAt;
+  const dateFormatted = rawDate ? new Date(rawDate).toLocaleDateString('ar-SA') : 'مؤخرًا';
+  const latestScore = typeof latest.score === 'number' ? latest.score : 0;
+  const bestScore = typeof best?.score === 'number' ? best.score : latestScore;
 
   return (
     <article className="rounded-2xl border-2 border-slate-200/90 bg-white p-4 shadow-xs transition-colors hover:border-indigo-300">
@@ -826,18 +830,18 @@ export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpe
           </div>
           <h3 className="mt-1.5 text-base font-black leading-tight text-gray-900">{group.quizTitle}</h3>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-bold text-gray-500">
-            <span>{group.attempts.length} محاولة</span>
-            <span>• آخر حل {new Date(latest.date).toLocaleDateString('ar-SA')}</span>
+            <span>{(group.attempts || []).length} محاولة</span>
+            <span>• آخر حل {dateFormatted}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-center">
             <div className="text-[10px] font-bold text-gray-500">آخر درجة</div>
-            <div className={`text-lg font-black ${latest.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{latest.score}%</div>
+            <div className={`text-lg font-black ${latestScore >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{latestScore}%</div>
           </div>
           <div className="text-center border-r pr-3 border-gray-100">
             <div className="text-[10px] font-bold text-gray-500">أفضل درجة</div>
-            <div className="text-lg font-black text-indigo-700">{best.score}%</div>
+            <div className="text-lg font-black text-indigo-700">{bestScore}%</div>
           </div>
         </div>
       </div>
@@ -868,7 +872,32 @@ export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpe
       </div>
 
       {isOpen ? (
-        <div className="mt-3 overflow-hidden rounded-xl border border-slate-100"><div className="divide-y divide-gray-100">{group.attempts.map((attempt, index) => <div key={`${attempt.quizId}-${attempt.date}-${index}`} className="grid grid-cols-1 items-center gap-3 px-3 py-2.5 text-sm sm:grid-cols-12 sm:gap-2"><div className="sm:col-span-4"><div className="font-black text-gray-900">محاولة {group.attempts.length - index}</div><div className="mt-0.5 text-[11px] font-bold text-gray-500">{new Date(attempt.date).toLocaleString('ar-SA')}</div></div><div className={`text-center font-black sm:col-span-2 ${attempt.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{attempt.score}%</div><div className="text-center text-xs font-bold text-gray-500 sm:col-span-2">{attempt.timeSpent}</div><div className="flex flex-wrap gap-1.5 sm:col-span-4 sm:justify-center"><Link to={getAttemptResultLink(attempt)} className="rounded-lg bg-indigo-50 px-2.5 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-100">تفاصيل</Link><Link to={getAttemptResultLink(attempt, 'review')} className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-black text-emerald-700 hover:bg-emerald-100">مراجعة</Link><Link to={getAttemptResultLink(attempt, 'analysis')} className="rounded-lg bg-purple-50 px-2.5 py-1.5 text-xs font-black text-purple-700 hover:bg-purple-100">تحليل</Link></div></div>)}</div></div>
+        <div className="mt-3 overflow-hidden rounded-xl border border-slate-100">
+          <div className="divide-y divide-gray-100">
+            {(group.attempts || []).map((attempt, index) => {
+              const attemptDate = attempt.date || (attempt as any)?.submittedAt || (attempt as any)?.createdAt;
+              const attemptDateFormatted = attemptDate ? new Date(attemptDate).toLocaleString('ar-SA') : 'مؤخرًا';
+              const attemptScore = typeof attempt.score === 'number' ? attempt.score : 0;
+              return (
+                <div key={`${attempt.quizId}-${attempt.date}-${index}`} className="grid grid-cols-1 items-center gap-3 px-3 py-2.5 text-sm sm:grid-cols-12 sm:gap-2">
+                  <div className="sm:col-span-4">
+                    <div className="font-black text-gray-900">محاولة {(group.attempts || []).length - index}</div>
+                    <div className="mt-0.5 text-[11px] font-bold text-gray-500">{attemptDateFormatted}</div>
+                  </div>
+                  <div className={`text-center font-black sm:col-span-2 ${attemptScore >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    {attemptScore}%
+                  </div>
+                  <div className="text-center text-xs font-bold text-gray-500 sm:col-span-2">{attempt.timeSpent || '—'}</div>
+                  <div className="flex flex-wrap gap-1.5 sm:col-span-4 sm:justify-center">
+                    <Link to={getAttemptResultLink(attempt)} className="rounded-lg bg-indigo-50 px-2.5 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-100">تفاصيل</Link>
+                    <Link to={getAttemptResultLink(attempt, 'review')} className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-black text-emerald-700 hover:bg-emerald-100">مراجعة</Link>
+                    <Link to={getAttemptResultLink(attempt, 'analysis')} className="rounded-lg bg-purple-50 px-2.5 py-1.5 text-xs font-black text-purple-700 hover:bg-purple-100">تحليل</Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       ) : null}
     </article>
   );
@@ -906,8 +935,6 @@ const StatCard = ({ icon, value, label, color }: { icon: React.ReactNode; value:
   const colorClasses = { purple: 'bg-purple-50 text-purple-600', amber: 'bg-amber-50 text-amber-600', blue: 'bg-blue-50 text-blue-600', emerald: 'bg-emerald-50 text-emerald-600' };
   return <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between gap-3"><div className={`w-12 h-12 rounded-full flex items-center justify-center ${colorClasses[color]}`}>{icon}</div><div className="text-right"><div className="font-bold text-2xl text-gray-800">{value}</div><div className="text-xs text-gray-500 font-medium">{label}</div></div></div>;
 };
-
-export default Quizzes;
 
 const SchoolTestsPanel: React.FC<{
   quizzes: Quiz[];
@@ -1051,3 +1078,5 @@ const SchoolTestsPanel: React.FC<{
     </div>
   );
 };
+
+export default Quizzes;

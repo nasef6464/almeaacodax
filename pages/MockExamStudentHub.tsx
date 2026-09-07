@@ -52,7 +52,8 @@ type MockAttemptResult = QuizResult & {
   date?: number | string;
 };
 
-const getTimestamp = (r: MockAttemptResult) => {
+const getTimestamp = (r?: MockAttemptResult | null) => {
+  if (!r) return 0;
   const raw = r.createdAt ?? r.submittedAt ?? r.date;
   if (typeof raw === 'number') return raw;
   if (typeof raw === 'string') {
@@ -181,12 +182,12 @@ const MockExamCard: React.FC<{
   setSelectedExamId: (id: string | null) => void;
   isDirected?: boolean;
 }> = ({ exam, paths, resultsByExam, selectedExamId, setSelectedExamId, isDirected }) => {
-  const path = paths.find((p) => p.id === exam.pathId);
+  const path = (paths || []).find((p) => p.id === exam.pathId);
   const sectionsCount = getMockExamSections(exam).length;
   const questionsCount = getMockExamQuestionCount(exam);
   const timeLimit = getMockExamTimeLimit(exam);
-  const examAttempts = resultsByExam.get(exam.id) || [];
-  const bestScore = examAttempts.length > 0 ? Math.max(...examAttempts.map((r) => r.score)) : null;
+  const examAttempts = resultsByExam?.get?.(exam.id) || [];
+  const bestScore = examAttempts.length > 0 ? Math.max(...examAttempts.map((r) => r.score || 0)) : null;
   const isFree = exam.access?.type !== 'paid';
   const isSelected = selectedExamId === exam.id;
 
@@ -309,13 +310,16 @@ const MockExamStudentHub: React.FC = () => {
 
   // ── Student's group membership ────────────────────────────────────────────
   const myGroupIds = useMemo(() => {
-    const ids = new Set<string>(user.groupIds || []);
-    // Also include school group if any
-    if (user.schoolId) ids.add(user.schoolId);
-    // Add any group that lists this student
-    groups.forEach((g) => {
-      if ((g.studentIds || []).includes(user.id)) ids.add(g.id);
-    });
+    const ids = new Set<string>(user?.groupIds || []);
+    if (user?.groupId) ids.add(user.groupId);
+    if (user?.schoolId) ids.add(user.schoolId);
+    if (Array.isArray(groups)) {
+      groups.forEach((g) => {
+        if (user?.id && Array.isArray(g?.studentIds) && g.studentIds.includes(user.id)) {
+          ids.add(g.id);
+        }
+      });
+    }
     return ids;
   }, [user, groups]);
 
@@ -328,17 +332,17 @@ const MockExamStudentHub: React.FC = () => {
     api.getMyQuizResultsPage({ limit: 200 })
       .then((resp) => {
         if (!active) return;
-        const all = Array.isArray(resp?.data) ? resp.data as MockAttemptResult[] : [];
+        const all = Array.isArray(resp?.data) ? (resp.data as MockAttemptResult[]) : [];
         const mockResults = all.filter((r) => {
-          const quiz = quizzes.find((q) => q.id === r.quizId);
+          const quiz = (quizzes || []).find((q) => q.id === r.quizId);
           return r.source === 'mock-exam' || (quiz && isStandaloneMockExam(quiz));
         });
         setMyResults(mockResults.sort((a, b) => getTimestamp(b) - getTimestamp(a)));
       })
       .catch(() => {
         if (!active) return;
-        const fallback = examResults.filter((r) => {
-          const quiz = quizzes.find((q) => q.id === r.quizId);
+        const fallback = (examResults || []).filter((r) => {
+          const quiz = (quizzes || []).find((q) => q.id === r.quizId);
           return r.source === 'mock-exam' || (quiz && isStandaloneMockExam(quiz));
         }) as MockAttemptResult[];
         setMyResults(fallback);
@@ -353,8 +357,9 @@ const MockExamStudentHub: React.FC = () => {
 
   // ── Split: Directed (school/class targeted) vs Platform (showOnPlatform) ──
   const { directedMockExams, platformMockExams } = useMemo(() => {
-    const published = quizzes.filter(
+    const published = (quizzes || []).filter(
       (q) =>
+        Boolean(q) &&
         isStandaloneMockExam(q) &&
         q.isPublished !== false &&
         (!q.approvalStatus || q.approvalStatus === 'approved'),
@@ -385,7 +390,8 @@ const MockExamStudentHub: React.FC = () => {
   // Grouped results by exam
   const resultsByExam = useMemo(() => {
     const map = new Map<string, MockAttemptResult[]>();
-    myResults.forEach((r) => {
+    (myResults || []).forEach((r) => {
+      if (!r) return;
       const key = r.quizId || 'unknown';
       const arr = map.get(key) || [];
       arr.push(r);
@@ -396,10 +402,11 @@ const MockExamStudentHub: React.FC = () => {
 
   // Summary stats
   const stats = useMemo(() => {
-    const total = myResults.length;
-    const best = total > 0 ? Math.max(...myResults.map((r) => r.score)) : 0;
-    const avg = total > 0 ? Math.round(myResults.reduce((s, r) => s + r.score, 0) / total) : 0;
-    const passed = myResults.filter((r) => r.score >= 60).length;
+    const validResults = (myResults || []).filter(Boolean);
+    const total = validResults.length;
+    const best = total > 0 ? Math.max(...validResults.map((r) => r.score || 0)) : 0;
+    const avg = total > 0 ? Math.round(validResults.reduce((s, r) => s + (r.score || 0), 0) / total) : 0;
+    const passed = validResults.filter((r) => (r.score || 0) >= 60).length;
     return { total, best, avg, passed };
   }, [myResults]);
 
@@ -408,7 +415,7 @@ const MockExamStudentHub: React.FC = () => {
   const [historyScoreFilter, setHistoryScoreFilter] = useState<'all' | 'good' | 'review'>('all');
   const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
 
-  const getPathName = (pathId?: string) => paths.find((path) => path.id === pathId)?.name || 'القدرات العامة';
+  const getPathName = (pathId?: string) => (paths || []).find((path) => path.id === pathId)?.name || 'القدرات العامة';
 
   const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
     const params = new URLSearchParams();
@@ -426,16 +433,17 @@ const MockExamStudentHub: React.FC = () => {
   const mockAttemptGroups = useMemo<QuizAttemptGroup[]>(() => {
     const grouped = new Map<string, QuizAttemptGroup>();
 
-    myResults.forEach((result) => {
-      const quiz = quizzes.find((q) => q.id === result.quizId);
-      const key = result.quizId || result.quizTitle || String(result.date);
+    (myResults || []).forEach((result) => {
+      if (!result) return;
+      const quiz = (quizzes || []).find((q) => q.id === result.quizId);
+      const key = result.quizId || result.quizTitle || String(result.date || Math.random());
       const existing = grouped.get(key);
       if (existing) {
         existing.attempts.push(result);
       } else {
         grouped.set(key, {
           key,
-          quizId: result.quizId,
+          quizId: result.quizId || '',
           quizTitle: result.quizTitle || quiz?.title || 'اختبار محاكي',
           category: 'mock',
           quiz,
@@ -448,20 +456,22 @@ const MockExamStudentHub: React.FC = () => {
 
     return Array.from(grouped.values())
       .map((group) => {
-        const sorted = [...group.attempts].sort((a, b) => getTimestamp(b) - getTimestamp(a));
+        const sorted = [...(group.attempts || [])].sort((a, b) => getTimestamp(b) - getTimestamp(a));
+        const latest = sorted[0] || ({} as QuizResult);
+        const best = sorted.reduce((b, a) => ((a?.score ?? 0) > (b?.score ?? 0) ? a : b), latest);
         return {
           ...group,
           attempts: sorted,
-          latestAttempt: sorted[0],
-          bestAttempt: sorted.reduce((best, a) => (a.score > best.score ? a : best), sorted[0]),
+          latestAttempt: latest,
+          bestAttempt: best,
         };
       })
       .sort((a, b) => getTimestamp(b.latestAttempt) - getTimestamp(a.latestAttempt));
   }, [myResults, quizzes]);
 
   const filteredMockAttemptGroups = useMemo(() => {
-    if (historyScoreFilter === 'good') return mockAttemptGroups.filter((g) => g.latestAttempt.score >= 60);
-    if (historyScoreFilter === 'review') return mockAttemptGroups.filter((g) => g.latestAttempt.score < 60);
+    if (historyScoreFilter === 'good') return mockAttemptGroups.filter((g) => (g.latestAttempt?.score ?? 0) >= 60);
+    if (historyScoreFilter === 'review') return mockAttemptGroups.filter((g) => (g.latestAttempt?.score ?? 0) < 60);
     return mockAttemptGroups;
   }, [historyScoreFilter, mockAttemptGroups]);
 
