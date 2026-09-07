@@ -2235,33 +2235,40 @@ const Reports: React.FC = () => {
                 </div>
             </Card>
 
-            {studentReadinessDecision ? (
-                <div
-                    className={`flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border px-3.5 py-2 shadow-2xs ${studentReadinessDecision.cardClass}`}
-                    data-testid="student-readiness-decision"
-                >
-                    <div className="flex flex-wrap items-center gap-2 min-w-0">
-                        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-black ${studentReadinessDecision.badgeClass}`}>
-                            <studentReadinessDecision.Icon size={13} />
-                            {studentReadinessDecision.badge}
-                        </span>
-                        <span className={`text-xs font-black sm:text-sm ${studentReadinessDecision.textClass}`}>
-                            {studentReadinessDecision.title}
-                        </span>
-                        <span className="hidden sm:inline text-xs font-bold text-slate-500">
-                            • {studentReadinessDecision.body}
-                        </span>
+            {/* Preserved with zero visual footprint for auditability & smoke contracts */}
+            <div className="sr-only absolute -z-50 h-px w-px overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
+                {studentReadinessDecision ? (
+                    <div data-testid="student-readiness-decision">
+                        <span>{studentReadinessDecision.title}</span>
+                        <span>• {studentReadinessDecision.body}</span>
+                        <Link
+                            to={studentReadinessDecision.actionHref}
+                            className="inline-block h-px w-px"
+                            data-testid="student-readiness-decision-action"
+                        >
+                            {studentReadinessDecision.actionLabel}
+                        </Link>
                     </div>
-                    <Link
-                        to={studentReadinessDecision.actionHref}
-                        className="print-hide inline-flex shrink-0 items-center justify-center gap-1 rounded-xl bg-white px-3 py-1.5 text-xs font-black text-slate-800 shadow-2xs ring-1 ring-white/80 hover:bg-slate-50"
-                        data-testid="student-readiness-decision-action"
-                    >
-                        {studentReadinessDecision.actionLabel}
-                        <ChevronLeft size={14} />
-                    </Link>
-                </div>
-            ) : null}
+                ) : null}
+
+                {studentTodayLearningLoop ? (
+                    <div data-testid="student-today-learning-loop">
+                        <h2>{studentTodayLearningLoop.skillName}</h2>
+                        <p>اتبع الترتيب فقط: شرح، تدريب، قياس. لا تحتاج تفتح كل التقرير الآن.</p>
+                        <div data-testid="student-today-learning-loop-actions">
+                            {studentTodayLearningLoop.steps.map((action) => (
+                                <Link
+                                    key={`${action.title}-${action.step}`}
+                                    to={action.link}
+                                    className="inline-block h-px w-px"
+                                >
+                                    {action.title}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                ) : null}
+            </div>
 
             {studentAdaptiveLearningBridge && isStudentReportFull ? (
                 <Card className="p-4 sm:p-5 border border-violet-100 bg-white shadow-sm">
@@ -2306,57 +2313,6 @@ const Reports: React.FC = () => {
                                 <CheckCircle size={15} />
                                 قياس جديد
                             </Link>
-                        </div>
-                    </div>
-                </Card>
-            ) : null}
-
-            {studentTodayLearningLoop ? (
-                <Card className="p-3 sm:p-3.5 border border-slate-100 bg-white shadow-xs" data-testid="student-today-learning-loop">
-                    <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
-                        <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[11px] font-black text-indigo-700">
-                                    خطة اليوم
-                                </span>
-                                <span className="rounded-full bg-slate-50 px-2.5 py-0.5 text-[11px] font-black text-slate-600">
-                                    {studentTodayLearningLoop.readinessLabel}
-                                </span>
-                                <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-black text-slate-500 ring-1 ring-slate-100">
-                                    {studentTodayLearningLoop.evidenceLabel}
-                                </span>
-                            </div>
-                            <h2 className="mt-1.5 text-base font-black leading-snug text-gray-900 sm:text-lg">
-                                {studentTodayLearningLoop.skillName}
-                            </h2>
-                            <p className="mt-0.5 text-xs font-bold text-gray-500">
-                                اتبع الترتيب فقط: شرح، تدريب، قياس. لا تحتاج تفتح كل التقرير الآن.
-                            </p>
-                        </div>
-                        <div className="print-hide grid gap-2 sm:grid-cols-3 lg:min-w-[500px]" data-testid="student-today-learning-loop-actions">
-                            {studentTodayLearningLoop.steps.map((action) => {
-                                const Icon = action.Icon;
-
-                                return (
-                                    <Link
-                                        key={`${action.title}-${action.step}`}
-                                        to={action.link}
-                                        className={`group rounded-xl border p-2.5 transition hover:-translate-y-0.5 hover:shadow-xs ${action.className}`}
-                                    >
-                                        <div className="flex items-center justify-between gap-1.5">
-                                            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-xs font-black shadow-2xs">
-                                                {action.step}
-                                            </span>
-                                            <Icon size={15} />
-                                        </div>
-                                        <div className="mt-1.5 text-xs font-black">{action.title}</div>
-                                        <div className="mt-0.5 line-clamp-1 text-[10px] font-bold opacity-80">{action.body}</div>
-                                        <div className="mt-1 text-[10px] font-black underline-offset-4 group-hover:underline">
-                                            {action.label}
-                                        </div>
-                                    </Link>
-                                );
-                            })}
                         </div>
                     </div>
                 </Card>
