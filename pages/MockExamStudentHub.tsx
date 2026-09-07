@@ -22,6 +22,8 @@ import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Quiz, QuizResult } from '../types';
 import { isStandaloneMockExam, getMockExamSections, getMockExamQuestionCount, getMockExamTimeLimit } from '../utils/mockExam';
+import { AttemptGroupCard, QuizAttemptGroup } from './Quizzes';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 /* ─── helpers ─── */
 const formatDate = (v?: number | string) => {
@@ -404,6 +406,64 @@ const MockExamStudentHub: React.FC = () => {
   const [activeHubTab, setActiveHubTab] = useState<'available' | 'history'>('available');
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'directed' | 'platform'>('all');
   const [historyScoreFilter, setHistoryScoreFilter] = useState<'all' | 'good' | 'review'>('all');
+  const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
+
+  const getPathName = (pathId?: string) => paths.find((path) => path.id === pathId)?.name || 'القدرات العامة';
+
+  const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
+    const params = new URLSearchParams();
+    if (result.date) params.set('attempt', typeof result.date === 'string' ? result.date : String(result.date));
+    if (viewMode) params.set('view', viewMode);
+    return `/results?${params.toString()}`;
+  };
+
+  const getAttemptRetryLink = (result: QuizResult) => {
+    if (!result.quizId) return '/dashboard?tab=mock-exams';
+    return buildQuizRouteWithContext(result.quizId, { returnTo: '/dashboard?tab=mock-exams', source: 'tests' });
+  };
+
+  // Group student mock results by quiz to produce the exact card format
+  const mockAttemptGroups = useMemo<QuizAttemptGroup[]>(() => {
+    const grouped = new Map<string, QuizAttemptGroup>();
+
+    myResults.forEach((result) => {
+      const quiz = quizzes.find((q) => q.id === result.quizId);
+      const key = result.quizId || result.quizTitle || String(result.date);
+      const existing = grouped.get(key);
+      if (existing) {
+        existing.attempts.push(result);
+      } else {
+        grouped.set(key, {
+          key,
+          quizId: result.quizId,
+          quizTitle: result.quizTitle || quiz?.title || 'اختبار محاكي',
+          category: 'mock',
+          quiz,
+          attempts: [result],
+          latestAttempt: result,
+          bestAttempt: result,
+        });
+      }
+    });
+
+    return Array.from(grouped.values())
+      .map((group) => {
+        const sorted = [...group.attempts].sort((a, b) => getTimestamp(b) - getTimestamp(a));
+        return {
+          ...group,
+          attempts: sorted,
+          latestAttempt: sorted[0],
+          bestAttempt: sorted.reduce((best, a) => (a.score > best.score ? a : best), sorted[0]),
+        };
+      })
+      .sort((a, b) => getTimestamp(b.latestAttempt) - getTimestamp(a.latestAttempt));
+  }, [myResults, quizzes]);
+
+  const filteredMockAttemptGroups = useMemo(() => {
+    if (historyScoreFilter === 'good') return mockAttemptGroups.filter((g) => g.latestAttempt.score >= 60);
+    if (historyScoreFilter === 'review') return mockAttemptGroups.filter((g) => g.latestAttempt.score < 60);
+    return mockAttemptGroups;
+  }, [historyScoreFilter, mockAttemptGroups]);
 
   // Filtered available exams
   const displayedExams = useMemo(() => {
@@ -411,13 +471,6 @@ const MockExamStudentHub: React.FC = () => {
     if (catalogFilter === 'platform') return platformMockExams;
     return availableMockExams;
   }, [catalogFilter, directedMockExams, platformMockExams, availableMockExams]);
-
-  // Filtered student history
-  const displayedHistory = useMemo(() => {
-    if (historyScoreFilter === 'good') return myResults.filter((r) => r.score >= 60);
-    if (historyScoreFilter === 'review') return myResults.filter((r) => r.score < 60);
-    return myResults;
-  }, [historyScoreFilter, myResults]);
 
   const selectedExam = selectedExamId ? availableMockExams.find((q) => q.id === selectedExamId) : null;
   const selectedResults = selectedExamId ? (resultsByExam.get(selectedExamId) || []) : [];
@@ -734,11 +787,19 @@ const MockExamStudentHub: React.FC = () => {
             </div>
           )}
 
-          {/* Attempts List */}
-          {!isLoading && displayedHistory.length > 0 && (
-            <div className="space-y-2.5">
-              {displayedHistory.map((result, i) => (
-                <AttemptRow key={result.id || result.date || i} result={result} index={i} />
+          {/* Attempts List with EXACT Same Card from Image */}
+          {!isLoading && filteredMockAttemptGroups.length > 0 && (
+            <div className="space-y-3">
+              {filteredMockAttemptGroups.map((group) => (
+                <AttemptGroupCard
+                  key={group.key}
+                  group={group}
+                  isOpen={openAttemptGroupKey === group.key}
+                  onToggle={() => setOpenAttemptGroupKey((curr) => (curr === group.key ? null : group.key))}
+                  getAttemptResultLink={getAttemptResultLink}
+                  getAttemptRetryLink={getAttemptRetryLink}
+                  getPathName={getPathName}
+                />
               ))}
             </div>
           )}

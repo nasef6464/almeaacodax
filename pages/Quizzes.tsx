@@ -42,7 +42,7 @@ type AssignedBarcodeTest = {
   settings?: { timeLimit?: number };
 };
 
-type QuizAttemptGroup = {
+export type QuizAttemptGroup = {
   key: string;
   quizId: string;
   quizTitle: string;
@@ -532,6 +532,21 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             </button>
           </div>
 
+          {activeAttemptCategory === 'mock' && (
+            <div className="mx-4 mt-4 flex flex-col gap-2.5 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 to-indigo-50 p-4 text-xs sm:flex-row sm:items-center sm:justify-between shadow-2xs">
+              <div className="flex items-center gap-2.5 text-violet-900 font-bold">
+                <Sparkles size={18} className="text-violet-600 shrink-0" />
+                <span>هذه محاولاتك السابقة في اختبارات المحاكي. لتصفح ودخول نماذج قياس والتحصيلي المعتمدة:</span>
+              </div>
+              <Link
+                to="/dashboard?tab=mock-exams"
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 text-xs font-black text-white hover:bg-violet-700 transition shadow-xs"
+              >
+                مركز الاختبارات المحاكية <ArrowRight size={13} />
+              </Link>
+            </div>
+          )}
+
           <div className="border-b border-gray-100 bg-gray-50/70 p-4 space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <select value={activeAttemptCategory} onChange={(e) => setActiveAttemptCategory(e.target.value as AttemptCategory)} className="hidden"><option value="regular">اختبارات عادية</option><option value="mock">اختبارات محاكية</option></select>
@@ -760,7 +775,7 @@ const QuizSection = ({ title, emptyMessage, items, subjects, paths, badgeClassNa
   </div>
 );
 
-type AttemptGroupCardProps = {
+export type AttemptGroupCardProps = {
   group: QuizAttemptGroup;
   isOpen: boolean;
   onToggle: () => void;
@@ -769,7 +784,7 @@ type AttemptGroupCardProps = {
   getPathName: (pathId?: string) => string;
 };
 
-const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpen, onToggle, getAttemptResultLink, getAttemptRetryLink, getPathName }) => {
+export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpen, onToggle, getAttemptResultLink, getAttemptRetryLink, getPathName }) => {
   const latest = group.latestAttempt;
   const best = group.bestAttempt;
   const weakestSkill = [...(latest.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
