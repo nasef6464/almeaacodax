@@ -750,11 +750,13 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
     ];
     return (
         <div className="space-y-4">
-            <div className="flex gap-2 rounded-2xl border border-gray-100 bg-white p-1.5 shadow-sm w-fit">
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-slate-100/90 p-1.5 shadow-xs w-fit">
                 {examViews.map(v => (
                     <button key={v.id} onClick={() => setView(v.id)}
-                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
-                            view === v.id ? 'bg-amber-500 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black transition-all ${
+                            view === v.id
+                                ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
+                                : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-2xs'
                         }`}
                     >{v.icon}{v.label}</button>
                 ))}
@@ -807,6 +809,24 @@ const Dashboard: React.FC = () => {
         { id: 'qa',           label: 'سؤال وجواب',           icon: <HelpCircle size={20} /> },
         { id: 'requests',     label: 'طلباتي',               icon: <ShoppingCart size={20} /> },
     ];
+
+    const studentItemStyles: Record<string, { iconBg: string; iconColor: string; activeBg: string; activeBorder: string; activeText: string }> = {
+        overview:      { iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600',  activeBg: 'bg-indigo-50',  activeBorder: 'border-indigo-200',  activeText: 'text-indigo-700' },
+        paths:         { iconBg: 'bg-blue-50',    iconColor: 'text-blue-600',    activeBg: 'bg-blue-50',    activeBorder: 'border-blue-200',    activeText: 'text-blue-700' },
+        'my-courses':  { iconBg: 'bg-violet-50',  iconColor: 'text-violet-600',  activeBg: 'bg-violet-50',  activeBorder: 'border-violet-200',  activeText: 'text-violet-700' },
+        'smart-path':  { iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600', activeBg: 'bg-emerald-50', activeBorder: 'border-emerald-200', activeText: 'text-emerald-700' },
+        sessions:      { iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600',    activeBg: 'bg-cyan-50',    activeBorder: 'border-cyan-200',    activeText: 'text-cyan-700' },
+        quizzes:       { iconBg: 'bg-amber-50',   iconColor: 'text-amber-600',   activeBg: 'bg-amber-50',   activeBorder: 'border-amber-200',   activeText: 'text-amber-700' },
+        'school-tests':{ iconBg: 'bg-sky-50',     iconColor: 'text-sky-600',     activeBg: 'bg-sky-50',     activeBorder: 'border-sky-200',     activeText: 'text-sky-700' },
+        'mock-exams':  { iconBg: 'bg-purple-50',  iconColor: 'text-purple-600',  activeBg: 'bg-purple-50',  activeBorder: 'border-purple-200',  activeText: 'text-purple-700' },
+        exams:         { iconBg: 'bg-amber-50',   iconColor: 'text-amber-600',   activeBg: 'bg-amber-50',   activeBorder: 'border-amber-200',   activeText: 'text-amber-700' },
+        reports:       { iconBg: 'bg-rose-50',    iconColor: 'text-rose-600',    activeBg: 'bg-rose-50',    activeBorder: 'border-rose-200',    activeText: 'text-rose-700' },
+        plan:          { iconBg: 'bg-teal-50',    iconColor: 'text-teal-600',    activeBg: 'bg-teal-50',    activeBorder: 'border-teal-200',    activeText: 'text-teal-700' },
+        favorites:     { iconBg: 'bg-pink-50',    iconColor: 'text-pink-600',    activeBg: 'bg-pink-50',    activeBorder: 'border-pink-200',    activeText: 'text-pink-700' },
+        flashcards:    { iconBg: 'bg-orange-50',  iconColor: 'text-orange-600',  activeBg: 'bg-orange-50',  activeBorder: 'border-orange-200',  activeText: 'text-orange-700' },
+        qa:            { iconBg: 'bg-amber-50',   iconColor: 'text-amber-700',   activeBg: 'bg-amber-50',   activeBorder: 'border-amber-200',   activeText: 'text-amber-700' },
+        requests:      { iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600', activeBg: 'bg-emerald-50', activeBorder: 'border-emerald-200', activeText: 'text-emerald-700' },
+    };
 
     const parentMenuItems = [
         { id: 'overview', label: 'متابعة الأبناء', icon: <LayoutDashboard size={20} /> },
@@ -915,6 +935,42 @@ const Dashboard: React.FC = () => {
         }
     };
 
+    const renderStudentMenuItem = (item: { id: string; label: string; icon: React.ReactNode }) => {
+        const isItemActive = item.id === 'quizzes'
+            ? ['quizzes', 'exams', 'saher'].includes(activeTab)
+            : activeTab === item.id;
+        const style = studentItemStyles[item.id] || {
+            iconBg: 'bg-indigo-50',
+            iconColor: 'text-indigo-600',
+            activeBg: 'bg-indigo-50/90',
+            activeBorder: 'border-indigo-200',
+            activeText: 'text-indigo-700',
+        };
+
+        return (
+            <button
+                key={item.id}
+                type="button"
+                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                className={`w-full flex items-center justify-between px-3.5 py-2 rounded-2xl text-sm transition-all border ${
+                    isItemActive
+                        ? `${style.activeBg} ${style.activeText} font-black ${style.activeBorder} shadow-xs`
+                        : 'border-transparent text-gray-700 font-bold hover:bg-slate-100 hover:text-gray-900'
+                }`}
+            >
+                <div className="flex items-center gap-3">
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors ${
+                        isItemActive ? 'bg-white shadow-2xs ' + style.iconColor : style.iconBg + ' ' + style.iconColor
+                    }`}>
+                        {item.icon}
+                    </span>
+                    <span>{item.label}</span>
+                </div>
+                {isItemActive && <ChevronLeft size={16} className="text-current" />}
+            </button>
+        );
+    };
+
     return (
         <div className="flex min-h-screen bg-gray-50">
             {/* ── Notification Toast (SSE real-time) ─────────────────────── */}
@@ -1013,73 +1069,16 @@ const Dashboard: React.FC = () => {
                             <>
                                 {/* Group: التعلم */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">التعلم</p>
-                                {menuItems.filter(i => ['overview','paths','my-courses','smart-path','sessions'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            activeTab === item.id
-                                            ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {activeTab === item.id && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
+                                {menuItems.filter(i => ['overview','paths','my-courses','smart-path','sessions'].includes(i.id)).map(renderStudentMenuItem)}
                                 {/* Group: الاختبارات */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
-                                {menuItems.filter(i => ['quizzes','school-tests','mock-exams','reports','plan'].includes(i.id)).map(item => {
-                                    const isItemActive = item.id === 'quizzes'
-                                        ? ['quizzes', 'exams', 'saher'].includes(activeTab)
-                                        : activeTab === item.id;
-                                    return (
-                                        <button
-                                            key={item.id}
-                                            onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                            className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                                isItemActive
-                                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                            }`}
-                                        >
-                                            <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                            {isItemActive && <ChevronLeft size={16} />}
-                                        </button>
-                                    );
-                                })}
+                                {menuItems.filter(i => ['quizzes','school-tests','mock-exams','reports','plan'].includes(i.id)).map(renderStudentMenuItem)}
                                 {/* Group: الأدوات */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
-                                {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            activeTab === item.id
-                                            ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {activeTab === item.id && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
+                                {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
                                 {/* Group: الدعم */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
-                                {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            activeTab === item.id
-                                            ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {activeTab === item.id && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
+                                {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
                             </>
                         )}
                     </nav>

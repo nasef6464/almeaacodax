@@ -521,14 +521,40 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="grid grid-cols-2 border-b border-gray-100">
-            <button type="button" onClick={() => setActiveAttemptCategory('regular')} className={`flex items-center justify-center gap-2 py-3.5 text-sm font-black transition-all ${activeAttemptCategory === 'regular' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'}`}>
-              <FileText size={16} /> اختباراتي
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${activeAttemptCategory === 'regular' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'}`}>{attemptGroupsByCategory.regular.length}</span>
+          <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-slate-50/60 p-2.5">
+            <button
+              type="button"
+              onClick={() => setActiveAttemptCategory('regular')}
+              className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition-all ${
+                activeAttemptCategory === 'regular'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
+                  : 'border border-slate-200/90 bg-white text-slate-700 shadow-2xs hover:bg-slate-50'
+              }`}
+            >
+              <FileText size={16} />
+              <span>اختباراتي</span>
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                activeAttemptCategory === 'regular' ? 'bg-white/20 text-white' : 'border border-slate-200 bg-slate-100 text-slate-700'
+              }`}>
+                {attemptGroupsByCategory.regular.length}
+              </span>
             </button>
-            <button type="button" onClick={() => setActiveAttemptCategory('mock')} className={`flex items-center justify-center gap-2 py-3.5 text-sm font-black transition-all border-r border-gray-100 ${activeAttemptCategory === 'mock' ? 'bg-violet-600 text-white shadow-sm' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'}`}>
-              <Sparkles size={16} /> اختبارات محاكية
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${activeAttemptCategory === 'mock' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'}`}>{attemptGroupsByCategory.mock.length}</span>
+            <button
+              type="button"
+              onClick={() => setActiveAttemptCategory('mock')}
+              className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition-all ${
+                activeAttemptCategory === 'mock'
+                  ? 'bg-violet-600 text-white shadow-md shadow-violet-200'
+                  : 'border border-slate-200/90 bg-white text-slate-700 shadow-2xs hover:bg-slate-50'
+              }`}
+            >
+              <Sparkles size={16} />
+              <span>اختبارات محاكية</span>
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                activeAttemptCategory === 'mock' ? 'bg-white/20 text-white' : 'border border-slate-200 bg-slate-100 text-slate-700'
+              }`}>
+                {attemptGroupsByCategory.mock.length}
+              </span>
             </button>
           </div>
 
