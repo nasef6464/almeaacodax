@@ -7,6 +7,7 @@ const files = {
   emptyState: await readFile(new URL('../components/ui/EmptyState.tsx', import.meta.url), 'utf8'),
   subjectLearning: await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8'),
   quizzes: await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8'),
+  quizPage: await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8'),
   reports: [
     await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
@@ -177,6 +178,14 @@ check('student report remains simple first and exposes retest/remediation action
   assertIncludes(files.reports, 'retestLink');
   assertIncludes(files.reports, 'downloadStudentSkillsWorkbook');
   assertAnyIncludes(files.reports, ['خطوة واحدة واضحة اليوم', 'Ø®Ø·ÙˆØ© ÙˆØ§Ø­Ø¯Ø© ÙˆØ§Ø¶Ø­Ø© Ø§Ù„ÙŠÙˆÙ…']);
+});
+
+check('quiz completion exposes per-weak-skill explanation, training, and reassessment actions', () => {
+  assertIncludes(files.quizPage, "buildSkillRecommendation(s");
+  assertIncludes(files.quizPage, '>شرح</button>');
+  assertIncludes(files.quizPage, '>تدريب</button>');
+  assertIncludes(files.quizPage, '>إعادة قياس</button>');
+  assertIncludes(files.quizPage, 'navigate(buildSelfQuizLink(true))');
 });
 
 check('plan page can turn weak skills into a timed learning loop', () => {
