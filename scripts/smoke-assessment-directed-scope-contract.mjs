@@ -55,6 +55,9 @@ check('isolated HTTP gate rejects directed targets outside both class and school
     'showOnPlatform: false',
     'hidden school-directed assessment was missing from its target student catalogue',
     'outside student cannot submit hidden school-directed assessment',
+    'supervisor persists the selected directed-assessment attempt limit',
+    'targeted student receives the supervisor-selected second attempt',
+    'third submission is rejected after the supervisor-selected limit',
   ]) {
     assert.ok(integrationGateSource.includes(fragment), `isolated directed-scope gate missing ${fragment}`);
   }

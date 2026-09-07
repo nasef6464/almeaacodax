@@ -109,6 +109,13 @@ check("post-test workflow supports weak and absent student follow-up", () => {
   assertIncludes(testsManager, "onAssignToStudent");
 });
 
+check("supervisor assignment persists its chosen attempt limit without dropping current settings", () => {
+  assertIncludes(testsManager, "maxAttempts:assignQuiz.settings?.maxAttempts");
+  assertIncludes(testsManager, "settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}");
+  assertIncludes(dashboard, "maxAttempts: pickedQuiz.settings?.maxAttempts");
+  assertIncludes(dashboard, "settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 }");
+});
+
 check("student school-directed assessment list and runner share additive audience semantics", () => {
   assertIncludes(quizzesPage, "directedQuizzes");
   assertIncludes(quizzesPage, "الاختبارات المدرسية");
