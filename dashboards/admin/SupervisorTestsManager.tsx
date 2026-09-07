@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Activity, AlertTriangle, ArrowRight, Award, BarChart, Bell,
   BookOpen, CheckCircle, ClipboardList, Dumbbell, Plus, RefreshCw,
@@ -51,8 +52,8 @@ export const SupervisorTestsManager: React.FC = () => {
   };
 
   if (viewMode === 'create') {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+    const modalContent = (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
         <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
           <div className="flex items-center justify-between bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-5 text-white">
             <div><h2 className="text-lg font-black">إنشاء تدخل قياسي</h2><p className="mt-1 text-xs text-white/75">اختبار عادي أو محاكي داخل نطاق المدرسة فقط</p></div>
@@ -69,6 +70,7 @@ export const SupervisorTestsManager: React.FC = () => {
         </div>
       </div>
     );
+    return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
   }
 
   if (viewMode === 'create_normal') {
@@ -145,7 +147,7 @@ export const SupervisorTestsManager: React.FC = () => {
         {!filteredQuizzes.length && <div className="col-span-full rounded-2xl border border-dashed border-gray-300 bg-gray-50 py-14 text-center text-sm font-bold text-gray-500">لا توجد عناصر في هذا القسم.</div>}
       </div>
 
-      {assignQuiz && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">توجيه تدخل</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,maxAttempts:assignQuiz.settings?.maxAttempts}} hideAccessType confirmLabel="حفظ التوجيه" onCancel={() => setAssignQuizId(null)} onAssign={async (config) => { const selectedGroupIds = new Set(config.targetGroupIds); const ids = uniqueSupervisorStudentIds([...config.targetUserIds,...groups.filter((g) => selectedGroupIds.has(g.id)).flatMap((g) => g.studentIds || []),...scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)]).filter((id) => scopedStudentIds.includes(id)); await updateQuiz(assignQuiz.id,{targetGroupIds:config.targetGroupIds,targetUserIds:config.targetUserIds,dueDate:config.dueDate,supervisorMessage:config.message || null,settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}}); await sendScopedAlert(ids,'اختبار موجّه من المشرف',config.message || `تم توجيه اختبار لك: ${assignQuiz.title}`); }}/></div></div></div>}
+      {assignQuiz && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">توجيه تدخل</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,maxAttempts:assignQuiz.settings?.maxAttempts}} hideAccessType confirmLabel="حفظ التوجيه" onCancel={() => setAssignQuizId(null)} onAssign={async (config) => { const selectedGroupIds = new Set(config.targetGroupIds); const ids = uniqueSupervisorStudentIds([...config.targetUserIds,...groups.filter((g) => selectedGroupIds.has(g.id)).flatMap((g) => g.studentIds || []),...scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)]).filter((id) => scopedStudentIds.includes(id)); await updateQuiz(assignQuiz.id,{targetGroupIds:config.targetGroupIds,targetUserIds:config.targetUserIds,dueDate:config.dueDate,supervisorMessage:config.message || null,settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}}); await sendScopedAlert(ids,'اختبار موجّه من المشرف',config.message || `تم توجيه اختبار لك: ${assignQuiz.title}`); }}/></div></div></div>}
 
       {detailQuiz && <AssignedTestDetailPanel quizId={detailQuiz.id} quizTitle={detailQuiz.title} quizKind={detailQuiz.quizKind} totalQuestions={detailQuiz.questionIds?.length ?? 0} passingScore={detailQuiz.settings?.passingScore ?? 60} dueDate={detailQuiz.dueDate} targetStudents={detailQuiz.stats.targetStudentIds.map((id) => { const s = scopedStudents.find((student) => student.id === id); return {id,name:s?.name || id,groupName:s?.groupName}; })} results={detailQuiz.stats.results} onClose={() => setDetailQuizId(null)} onRemindAbsent={(ids) => sendScopedAlert(ids,'تذكير بأداء الاختبار',`نذكرك بضرورة أداء الاختبار: ${detailQuiz.title}`)} onAssignToStudent={async (studentId) => { await updateQuiz(detailQuiz.id,{targetUserIds:uniqueSupervisorStudentIds([...(detailQuiz.targetUserIds || []),studentId])}); await sendScopedAlert([studentId],'إعادة توجيه اختبار',`تم إعادة توجيه الاختبار لك للمتابعة: ${detailQuiz.title}`); }}/>} 
     </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CoursesManager } from './CoursesManager';
 import { QuestionBankManager } from './QuestionBankManager';
 import { FoundationManager } from './FoundationManager';
@@ -877,7 +878,7 @@ export const PathsManager: React.FC = () => {
         </div>
 
         {/* Modal for adding path */}
-        {isPathModalOpen && (
+        {isPathModalOpen && typeof document !== 'undefined' && createPortal(
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
@@ -1080,7 +1081,8 @@ export const PathsManager: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
       </>
@@ -1598,7 +1600,7 @@ export const PathsManager: React.FC = () => {
         </div>
 
         {/* Modal for adding Subject */}
-        {isSubjectModalOpen && (
+        {isSubjectModalOpen && typeof document !== 'undefined' && createPortal(
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
@@ -1735,7 +1737,8 @@ export const PathsManager: React.FC = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {isPackageModalOpen && (
