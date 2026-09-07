@@ -16,6 +16,15 @@ Runtime commit `5da6a56774cc8af80afe98b9249beac3dc0b2f6c` keeps the current targ
 
 The existing supervisor dashboard contract locks the synchronous ref update and save-payload boundary.
 
+## 2026-09-07 — Hidden school assessment delivery repair
+
+- Status: `VERIFIED` on exact runtime commit `41e100ab85237eac486d26f6c41cf0134b7a0e7d` (PR `#58`).
+- Root cause: the Supervisor Builder defaulted a new assessment to an unpublished draft. Separately, a correctly hidden school assessment (`showOnPlatform: false`) was excluded by the learner catalogue, runner guard, and submission guard before its server-verified audience could use it. Three Supervisor Dashboard actions also changed a hash rather than navigating under `BrowserRouter`.
+- Resolution: Supervisor-created directed assessments now publish for their existing scoped audience; `showOnPlatform: false` remains the public-catalogue boundary, not a denial to the assigned student. The server verifies and marks an explicit directed audience only after its own learner/group scope filter, while the client accepts that server-issued read flag only for the returned item. The outside learner remains denied in catalogue, direct read, and submission.
+- Evidence: local frontend/API typechecks; directed-scope, quiz-integrity, global-student-journey, Supervisor Dashboard, and school-RBAC contracts. Remote CI passed Core Build, Public UI desktop/mobile, Production Readiness, Safety baseline, Student/Assessment, and isolated Mongo `Auth + RBAC + assessments + courses + commerce` on the exact runtime. The isolated HTTP journey proves Supervisor create → target student catalogue/read/submit → outside learner denied.
+- Boundaries preserved: no public API URL, global RBAC policy, scoring, payments, persisted schema, migration, or production-data write changed. `showOnPlatform: false` still prevents public discovery.
+- Deferred: a full messaging/inbox product, intervention lifecycle, contract/seat administration, and advanced Supervisor analytics remain separate Product Goals; they are not claimed by this repair.
+
 ## CI / contract evidence
 
 The runtime commit was emitted by the dedicated GitHub Actions repair runner, so PR-triggered checks attached directly to that bot-authored commit were classified `action_required` without executing jobs. A normal integrated head was therefore used for regression verification without changing runtime behavior.
