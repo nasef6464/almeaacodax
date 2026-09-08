@@ -426,36 +426,65 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
           : 'هذا المحتوى مرتبط بمسار تعلمك الحالي وسيظهر هنا عند توفره.';
 
   return (
-    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0f172a] text-white' : 'bg-gray-50 text-gray-900'} transition-colors duration-300`} dir="rtl">
-      <header className={`h-16 flex items-center justify-between px-3 sm:px-4 md:px-6 border-b ${isDarkMode ? 'border-gray-800 bg-[#1e293b]' : 'border-gray-200 bg-white'} sticky top-0 z-50 shadow-sm`}>
+    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'dark bg-[#0f172a] text-slate-100' : 'bg-slate-50 text-slate-900'} transition-colors duration-300`} dir="rtl">
+      <header className={`h-16 flex items-center justify-between px-3 sm:px-4 md:px-6 border-b ${isDarkMode ? 'border-slate-800 bg-[#1e293b]' : 'border-slate-200 bg-white'} sticky top-0 z-50 shadow-xs transition-colors`}>
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-          <button onClick={handleBack} className={`p-2 rounded-lg hover:bg-gray-100 ${isDarkMode ? 'hover:bg-gray-800' : ''} transition-colors`}>
+          <button
+            onClick={handleBack}
+            className={`p-2 rounded-xl transition-colors ${
+              isDarkMode ? 'text-slate-300 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+            title="الرجوع"
+          >
             <ArrowRight size={20} />
           </button>
           <div className="hidden md:block min-w-0">
-            <h1 className="font-black text-lg truncate max-w-[300px]">{course.title}</h1>
-            <p className="text-[10px] text-gray-500 font-bold">تقدمك: {progress}%</p>
+            <h1 className={`font-black text-base lg:text-lg truncate max-w-[340px] lg:max-w-md ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{course.title}</h1>
+            <p className={`text-[11px] font-bold mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>تقدمك: {progress}%</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
-          <button onClick={toggleDarkMode} className={`p-2.5 rounded-xl ${isDarkMode ? 'bg-amber-500/10 text-amber-500' : 'bg-indigo-50 text-indigo-600'} transition-all`}>
+        <div className="flex items-center gap-2 md:gap-3">
+          <button
+            onClick={toggleDarkMode}
+            className={`p-2.5 rounded-xl transition-all ${
+              isDarkMode ? 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+            }`}
+            title={isDarkMode ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الليلي'}
+          >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           <button
             onClick={handleShareCourse}
             disabled={isSharing}
-            className={`p-2.5 rounded-xl ${isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600'} hidden sm:block disabled:opacity-60`}
+            className={`p-2.5 rounded-xl hidden sm:block disabled:opacity-60 transition-all ${
+              isDarkMode ? 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700' : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+            }`}
+            title="مشاركة الدورة"
           >
             <Share2 size={20} />
           </button>
-          <button onClick={toggleSidebar} className={`lg:hidden p-2.5 rounded-xl ${isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
+          <button
+            onClick={toggleSidebar}
+            className={`lg:hidden p-2.5 rounded-xl transition-all ${
+              isDarkMode ? 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700' : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+            }`}
+            title="قائمة الدروس"
+          >
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </header>
 
       <div className="flex-1 flex overflow-hidden relative">
+        {/* Mobile Backdrop for Sidebar */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 top-16 z-30 bg-black/60 backdrop-blur-xs lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         <main className={`flex-1 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:mr-80' : 'mr-0'}`}>
           <div className="max-w-5xl mx-auto p-4 sm:p-6 md:p-8">
             {activeLesson ? (
@@ -466,7 +495,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                 transition={{ duration: 0.5 }}
                 className="space-y-6"
               >
-                <div className={`aspect-video rounded-3xl overflow-hidden shadow-2xl relative group ${isDarkMode ? 'bg-black' : 'bg-gray-900'}`}>
+                <div className={`aspect-video rounded-3xl overflow-hidden shadow-2xl relative group border ${isDarkMode ? 'bg-black border-slate-800 shadow-black/50' : 'bg-gray-900 border-slate-200 shadow-indigo-950/10'}`}>
                   {activeLesson.type === 'video' ? (
                     <React.Suspense
                       fallback={
@@ -486,40 +515,40 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                       />
                     </React.Suspense>
                   ) : activeLesson.type === 'quiz' ? (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gradient-to-br from-indigo-600 to-purple-700 text-white">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-3xl flex items-center justify-center mb-6">
-                        <BarChart size={48} />
+                    <div className="w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/15 rounded-3xl flex items-center justify-center mb-6 shadow-inner">
+                        <BarChart size={44} />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-black mb-4 leading-tight">{activeLesson.title}</h2>
-                      <p className="text-indigo-100 mb-8 max-w-md">هذا الاختبار سيساعدك على قياس فهمك للمحتوى المرتبط بهذه الدورة قبل متابعة الدروس التالية.</p>
+                      <p className="text-indigo-100 mb-8 max-w-md text-sm sm:text-base leading-relaxed">هذا الاختبار سيساعدك على قياس فهمك للمحتوى المرتبط بهذه الدورة قبل متابعة الدروس التالية.</p>
                       <button
                         onClick={handleOpenLessonQuiz}
                         disabled={!resolveEmbeddedQuizId(activeLesson)}
-                        className="bg-white text-indigo-600 px-6 sm:px-10 py-4 rounded-2xl font-black text-base sm:text-lg hover:bg-indigo-50 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                        className="bg-white text-indigo-700 px-8 sm:px-10 py-3.5 rounded-2xl font-black text-base sm:text-lg hover:bg-indigo-50 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                       >
                         ابدأ الاختبار الآن
                       </button>
                     </div>
                   ) : activeLesson.type === 'file' ? (
-                    <div className={`w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-gray-50 text-gray-900'}`}>
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-100 text-rose-600 rounded-3xl flex items-center justify-center mb-6">
-                        <FileText size={48} />
+                    <div className={`w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-500/10 text-rose-500 rounded-3xl flex items-center justify-center mb-6">
+                        <FileText size={44} />
                       </div>
-                      <h2 className="text-2xl sm:text-3xl font-black mb-4 leading-tight">{activeLesson.title}</h2>
-                      <p className={`mb-8 max-w-md ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>يمكنك استعراض هذا الملف أو تحميله للمذاكرة لاحقًا من داخل نفس الدرس.</p>
+                      <h2 className={`text-2xl sm:text-3xl font-black mb-4 leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{activeLesson.title}</h2>
+                      <p className={`mb-8 max-w-md text-sm sm:text-base ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>يمكنك استعراض هذا الملف أو تحميله للمذاكرة لاحقًا من داخل نفس الدرس.</p>
                       <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                         <button
                           onClick={() => handleOpenLessonFile('download')}
                           disabled={!activeLesson.fileUrl}
-                          className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black text-base sm:text-lg hover:bg-indigo-700 transition-all shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                          className="bg-indigo-600 text-white px-8 py-3.5 rounded-2xl font-black text-base hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                         >
                           <Download size={20} /> تحميل الملف
                         </button>
                         <button
                           onClick={() => handleOpenLessonFile('preview')}
                           disabled={!activeLesson.fileUrl}
-                          className={`px-8 py-4 rounded-2xl font-black text-base sm:text-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto ${
-                            isDarkMode ? 'bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                          className={`px-8 py-3.5 rounded-2xl font-black text-base transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto ${
+                            isDarkMode ? 'bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           <Eye size={20} /> استعراض
@@ -527,7 +556,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                       </div>
                     </div>
                   ) : (
-                    <div className={`w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center ${isDarkMode ? 'bg-slate-900 text-slate-200' : 'bg-gray-100 text-gray-600'}`}>
+                    <div className={`w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center ${isDarkMode ? 'bg-slate-900 text-slate-200' : 'bg-slate-100 text-slate-600'}`}>
                       <FileText size={64} className="mb-4 opacity-20" />
                       <h2 className="text-xl sm:text-2xl font-bold mb-2">محتوى غير متاح</h2>
                     </div>
@@ -537,12 +566,16 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${isDarkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-100 text-indigo-600'}`}>
+                      <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                        isDarkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
+                      }`}>
                         {lessonTypeLabel}
                       </span>
-                      <span className="text-xs text-gray-500 font-bold">{activeLesson.duration}</span>
+                      <span className={`text-xs font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{activeLesson.duration}</span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight break-words inline-flex items-center gap-2">
+                    <h2 className={`text-xl sm:text-2xl md:text-3xl font-black leading-tight break-words inline-flex items-center gap-2 ${
+                      isDarkMode ? 'text-white' : 'text-slate-900'
+                    }`}>
                       {renderLessonEdgeIcon('start')}
                       <span>{activeLesson.title}</span>
                       {renderLessonEdgeIcon('end')}
@@ -552,21 +585,33 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                     <button
                       onClick={handleMarkComplete}
                       disabled={!completedLessons.includes(activeLesson.id) && unansweredRequiredVideoQuestionIds.length > 0}
-                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-auto ${completedLessons.includes(activeLesson.id) ? 'bg-emerald-100 text-emerald-600' : 'bg-white border border-gray-200 hover:bg-gray-50 shadow-sm'}`}
+                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-auto ${
+                        completedLessons.includes(activeLesson.id)
+                          ? isDarkMode
+                            ? 'bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 shadow-xs'
+                            : 'bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-xs'
+                          : isDarkMode
+                            ? 'bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700'
+                            : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
+                      }`}
                     >
                       <CheckCircle size={18} /> {completedLessons.includes(activeLesson.id) ? 'مكتمل' : 'تحديد كمكتمل'}
                     </button>
                     <button
                       onClick={() => handleNavigateBetweenLessons('prev')}
                       disabled={activeLessonIndex <= 0 || Boolean(previousLesson?.isLocked)}
-                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white border border-gray-200 hover:bg-gray-50 shadow-sm'}`}
+                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-auto ${
+                        isDarkMode
+                          ? 'bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700'
+                          : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
+                      }`}
                     >
                       <SkipBack size={18} /> السابق
                     </button>
                     <button
                       onClick={() => handleNavigateBetweenLessons('next')}
                       disabled={activeLessonIndex === -1 || activeLessonIndex >= flattenedLessons.length - 1 || Boolean(nextLesson?.isLocked)}
-                      className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                      className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-auto"
                     >
                       التالي <SkipForward size={18} />
                     </button>
@@ -575,42 +620,72 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                 {!completedLessons.includes(activeLesson.id) && unansweredRequiredVideoQuestionIds.length > 0 ? (
                   <p
                     data-testid="interactive-video-required-completion-block"
-                    className={`text-xs font-bold ${isDarkMode ? 'text-amber-300' : 'text-amber-700'}`}
+                    className={`text-xs font-bold p-3 rounded-2xl border ${
+                      isDarkMode
+                        ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                        : 'border-amber-200 bg-amber-50 text-amber-800'
+                    }`}
                   >
-                    أجب عن جميع الأسئلة الإلزامية داخل الفيديو قبل تحديد الدرس كمكتمل.
+                    ⚠️ أجب عن جميع الأسئلة الإلزامية داخل الفيديو قبل تحديد الدرس كمكتمل.
                   </p>
                 ) : null}
 
                 <div className="pt-8">
                   {actionFeedback ? (
-                    <div className={`mb-4 rounded-xl border px-3 py-2 text-xs font-bold ${isDarkMode ? 'border-emerald-700/40 bg-emerald-900/30 text-emerald-200' : 'border-emerald-100 bg-emerald-50 text-emerald-700'}`}>
+                    <div className={`mb-4 rounded-xl border px-3 py-2 text-xs font-bold ${
+                      isDarkMode ? 'border-emerald-700/40 bg-emerald-900/30 text-emerald-200' : 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                    }`}>
                       {actionFeedback}
                     </div>
                   ) : null}
-                  <div className={`flex overflow-x-auto border-b ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} mb-8`}>
+                  <div className={`flex overflow-x-auto border-b ${isDarkMode ? 'border-slate-800' : 'border-slate-200'} mb-8`}>
                     <button
                       onClick={() => setActiveTab('description')}
-                      className={`shrink-0 px-6 py-4 font-bold text-sm ${activeTab === 'description' ? 'text-indigo-600 border-b-2 border-indigo-600 font-black' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
+                      className={`shrink-0 px-6 py-4 font-bold text-sm transition-all ${
+                        activeTab === 'description'
+                          ? isDarkMode
+                            ? 'text-indigo-400 border-b-2 border-indigo-400 font-black'
+                            : 'text-indigo-600 border-b-2 border-indigo-600 font-black'
+                          : isDarkMode
+                            ? 'text-slate-400 hover:text-slate-200'
+                            : 'text-slate-500 hover:text-slate-800'
+                      }`}
                     >
                       الوصف
                     </button>
                     <button
                       onClick={() => setActiveTab('resources')}
-                      className={`shrink-0 px-6 py-4 font-bold text-sm ${activeTab === 'resources' ? 'text-indigo-600 border-b-2 border-indigo-600 font-black' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
+                      className={`shrink-0 px-6 py-4 font-bold text-sm transition-all ${
+                        activeTab === 'resources'
+                          ? isDarkMode
+                            ? 'text-indigo-400 border-b-2 border-indigo-400 font-black'
+                            : 'text-indigo-600 border-b-2 border-indigo-600 font-black'
+                          : isDarkMode
+                            ? 'text-slate-400 hover:text-slate-200'
+                            : 'text-slate-500 hover:text-slate-800'
+                      }`}
                     >
                       المصادر
                     </button>
                     <button
                       onClick={() => setActiveTab('discussions')}
-                      className={`shrink-0 px-6 py-4 font-bold text-sm ${activeTab === 'discussions' ? 'text-indigo-600 border-b-2 border-indigo-600 font-black' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
+                      className={`shrink-0 px-6 py-4 font-bold text-sm transition-all ${
+                        activeTab === 'discussions'
+                          ? isDarkMode
+                            ? 'text-indigo-400 border-b-2 border-indigo-400 font-black'
+                            : 'text-indigo-600 border-b-2 border-indigo-600 font-black'
+                          : isDarkMode
+                            ? 'text-slate-400 hover:text-slate-200'
+                            : 'text-slate-500 hover:text-slate-800'
+                      }`}
                     >
                       المناقشات
                     </button>
                   </div>
                   {activeTab === 'description' && (
-                    <div className={`leading-relaxed ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      <p className="mb-4">{lessonDescription}</p>
-                      <ul className="list-disc list-inside space-y-2 mr-4">
+                    <div className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                      <p className="mb-4 text-sm md:text-base leading-relaxed">{lessonDescription}</p>
+                      <ul className={`list-disc list-inside space-y-2.5 mr-2 text-sm ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                         <li>يمكنك الانتقال بين دروس الدورة من الشريط الجانبي أو أزرار التالي والسابق.</li>
                         <li>سيتم حفظ إتمام الدرس في تقدمك داخل الدورة.</li>
                         <li>ترتبط الاختبارات والملفات هنا مباشرة بالدرس الحالي عندما تكون متوفرة.</li>
@@ -620,15 +695,27 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                   {activeTab === 'resources' && (
                     <div className="space-y-3">
                       {lessonResources.length > 0 ? lessonResources.map((resource) => (
-                        <div key={resource.id} className={`rounded-2xl border p-4 flex items-center justify-between gap-3 ${isDarkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-white'}`}>
-                          <div className="min-w-0">
-                            <p className="font-bold text-sm truncate">{resource.title}</p>
-                            <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{resource.source}</p>
+                        <div key={resource.id} className={`rounded-2xl border p-4 flex items-center justify-between gap-3 transition-all ${
+                          isDarkMode ? 'border-slate-800 bg-slate-900/60 hover:border-slate-700' : 'border-slate-200 bg-white hover:border-slate-300 shadow-xs'
+                        }`}>
+                          <div className="min-w-0 flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                              isDarkMode ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600'
+                            }`}>
+                              <FileText size={20} />
+                            </div>
+                            <div className="min-w-0">
+                              <p className={`font-bold text-sm truncate ${isDarkMode ? 'text-slate-100' : 'text-slate-800'}`}>{resource.title}</p>
+                              <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{resource.source}</p>
+                            </div>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <button
                               onClick={() => openExternalUrl(resource.url)}
-                              className={`p-2 rounded-lg ${isDarkMode ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-gray-700'}`}
+                              title="استعراض"
+                              className={`p-2.5 rounded-xl transition-all ${
+                                isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                              }`}
                             >
                               <Eye size={16} />
                             </button>
@@ -641,46 +728,55 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                                 anchor.download = resource.title;
                                 anchor.click();
                               }}
-                              className={`p-2 rounded-lg ${isDarkMode ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-gray-700'}`}
+                              title="تحميل"
+                              className={`p-2.5 rounded-xl transition-all ${
+                                isDarkMode ? 'bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                              }`}
                             >
                               <Download size={16} />
                             </button>
                           </div>
                         </div>
                       )) : (
-                        <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>لا توجد مصادر متاحة لهذا الدرس حالياً.</p>
+                        <p className={isDarkMode ? 'text-slate-400 text-sm' : 'text-slate-500 text-sm'}>لا توجد مصادر متاحة لهذا الدرس حالياً.</p>
                       )}
                     </div>
                   )}
                   {activeTab === 'discussions' && (
                     <div className="space-y-4">
-                      <div className={`rounded-2xl border p-4 ${isDarkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-white'}`}>
+                      <div className={`rounded-2xl border p-4 ${isDarkMode ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-white shadow-xs'}`}>
                         <textarea
                           value={discussionDraft}
                           onChange={(event) => setDiscussionDraft(event.target.value)}
                           placeholder="اكتب سؤالك أو مناقشتك حول هذا الدرس..."
-                          className={`w-full min-h-[96px] rounded-xl border p-3 text-sm resize-y ${isDarkMode ? 'bg-gray-900 border-gray-700 text-gray-100 placeholder:text-gray-500' : 'bg-white border-gray-200 text-gray-800 placeholder:text-gray-400'}`}
+                          className={`w-full min-h-[96px] rounded-xl border p-3 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
+                            isDarkMode
+                              ? 'bg-slate-950 border-slate-700 text-slate-100 placeholder:text-slate-500'
+                              : 'bg-slate-50 border-slate-200 text-slate-800 placeholder:text-slate-400'
+                          }`}
                         />
                         <div className="mt-3 flex justify-end">
                           <button
                             onClick={handleCreateDiscussion}
                             disabled={!discussionDraft.trim() || discussionPosting}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold disabled:opacity-50"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-md shadow-indigo-600/20 disabled:opacity-50"
                           >
                             <Send size={14} /> إرسال
                           </button>
                         </div>
-                        {discussionError ? <p className="mt-2 text-xs text-rose-500">{discussionError}</p> : null}
+                        {discussionError ? <p className="mt-2 text-xs text-rose-500 font-bold">{discussionError}</p> : null}
                       </div>
                       {discussionLoading ? (
-                        <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>جارٍ تحميل المناقشات...</p>
+                        <p className={isDarkMode ? 'text-slate-400 text-sm' : 'text-slate-500 text-sm'}>جارٍ تحميل المناقشات...</p>
                       ) : discussionThreads.length === 0 ? (
-                        <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>لا توجد مناقشات بعد لهذا الدرس.</p>
+                        <p className={isDarkMode ? 'text-slate-400 text-sm' : 'text-slate-500 text-sm'}>لا توجد مناقشات بعد لهذا الدرس.</p>
                       ) : (
                         discussionThreads.map((thread) => (
-                          <div key={thread.id} className={`rounded-2xl border p-4 ${isDarkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-white'}`}>
-                            <p className="font-bold text-sm">{thread.title || 'مناقشة'}</p>
-                            <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{thread.body || ''}</p>
+                          <div key={thread.id} className={`rounded-2xl border p-4 space-y-1.5 ${
+                            isDarkMode ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-white shadow-xs'
+                          }`}>
+                            <p className={`font-bold text-sm ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{thread.title || 'مناقشة'}</p>
+                            <p className={`text-sm leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>{thread.body || ''}</p>
                           </div>
                         ))
                       )}
@@ -689,79 +785,112 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                 </div>
               </motion.div>
             ) : flattenedLessons.length > 0 && unlockedLessons.length === 0 ? (
-              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
-                <Lock className="w-14 h-14 text-amber-300 mb-4" />
-                <h2 className="text-2xl font-black text-gray-900">محتوى الدورة يحتاج تفعيل</h2>
-                <p className="mt-3 max-w-md text-sm leading-7 text-gray-500">
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center p-4">
+                <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 ${
+                  isDarkMode ? 'bg-amber-500/10 text-amber-400' : 'bg-amber-50 text-amber-600'
+                }`}>
+                  <Lock className="w-10 h-10" />
+                </div>
+                <h2 className={`text-2xl font-black mb-3 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>محتوى الدورة يحتاج تفعيل</h2>
+                <p className={`max-w-md text-sm leading-7 mb-6 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                   لا توجد دروس مجانية للمعاينة في هذه الدورة حالياً. يمكنك الرجوع لصفحة الدورة وطلب الشراء أو اختيار باقة مناسبة.
                 </p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <button
                     onClick={() => navigate(`/course/${course.id}?buy=1`)}
-                    className="rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black text-white hover:bg-amber-600"
+                    className="rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black text-white hover:bg-amber-600 shadow-md shadow-amber-500/20"
                   >
                     شراء الدورة
                   </button>
                   <button
                     onClick={handleBack}
-                    className="rounded-2xl border border-gray-200 bg-white px-6 py-3 text-sm font-black text-gray-700 hover:bg-gray-50"
+                    className={`rounded-2xl border px-6 py-3 text-sm font-black transition-all ${
+                      isDarkMode ? 'border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    }`}
                   >
                     الرجوع للدورة
                   </button>
                 </div>
               </div>
             ) : flattenedLessons.length === 0 ? (
-              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
-                <BookOpen className="w-14 h-14 text-indigo-200 mb-4" />
-                <h2 className="text-2xl font-black text-gray-900">لا توجد دروس منشورة في هذه الدورة بعد</h2>
-                <p className="mt-3 max-w-md text-sm leading-7 text-gray-500">
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center p-4">
+                <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 ${
+                  isDarkMode ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600'
+                }`}>
+                  <BookOpen className="w-10 h-10" />
+                </div>
+                <h2 className={`text-2xl font-black mb-3 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>لا توجد دروس منشورة في هذه الدورة بعد</h2>
+                <p className={`max-w-md text-sm leading-7 mb-6 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                   الدورة موجودة، لكن محتواها لم يجهز للعرض للطالب بعد. يمكنك الرجوع لصفحة الدورة أو مراجعة الإدارة لإضافة الدروس.
                 </p>
                 <button
                   onClick={handleBack}
-                  className="mt-6 rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white hover:bg-indigo-700"
+                  className="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white hover:bg-indigo-700 shadow-md shadow-indigo-600/20"
                 >
                   الرجوع للدورة
                 </button>
               </div>
             ) : (
-              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center p-4">
                 <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mb-4" />
-                <p className="text-gray-500 font-bold">جاري تحميل محتوى الدرس...</p>
+                <p className={`font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>جاري تحميل محتوى الدرس...</p>
               </div>
             )}
           </div>
         </main>
 
-        <aside className={`fixed lg:absolute top-16 lg:top-0 right-0 bottom-0 w-80 ${isDarkMode ? 'bg-[#1e293b] border-r border-gray-800' : 'bg-white border-r border-gray-200'} z-40 transition-transform duration-300 shadow-xl lg:shadow-none ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <aside className={`fixed lg:absolute top-16 lg:top-0 right-0 bottom-0 w-80 ${
+          isDarkMode ? 'bg-[#1e293b] border-l border-slate-800' : 'bg-white border-l border-slate-200'
+        } z-40 transition-transform duration-300 shadow-xl lg:shadow-none ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           <div className="h-full flex flex-col">
-            <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-800">
-              <h3 className="font-black text-lg mb-4">محتوى الدورة</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between gap-4 text-xs font-bold text-gray-500">
-                  <span>إتمام الدورة</span>
-                  <span>{progress}%</span>
+            <div className={`p-4 sm:p-5 border-b ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className={`font-black text-base ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>محتوى ومنهج الدورة</h3>
+                <span className={`text-xs font-black px-2.5 py-0.5 rounded-full ${
+                  isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-50 text-indigo-700'
+                }`}>{progress}%</span>
+              </div>
+              <div className="space-y-1.5">
+                <div className={`h-2 rounded-full overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                  <div className="h-full bg-gradient-to-l from-indigo-500 to-indigo-600 transition-all duration-700 rounded-full" style={{ width: `${progress}%` }} />
                 </div>
-                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-indigo-600 transition-all duration-1000" style={{ width: `${progress}%` }} />
+                <div className={`flex justify-between text-[11px] font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  <span>تم إكمال {completedCount} من {totalLessons} درس</span>
+                  <span>{Math.max(0, totalLessons - completedCount)} متبقي</span>
                 </div>
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto">
               {course.modules?.map((module) => (
-                <div key={module.id} className="border-b border-gray-50 dark:border-gray-800/50">
+                <div key={module.id} className={`border-b ${isDarkMode ? 'border-slate-800/60' : 'border-slate-100'}`}>
                   <button
                     onClick={() => toggleModule(module.id)}
-                    className={`w-full flex items-center justify-between gap-3 p-4 text-right transition-colors ${expandedModules.includes(module.id) ? (isDarkMode ? 'bg-indigo-500/5' : 'bg-indigo-50/50') : ''}`}
+                    className={`w-full flex items-center justify-between gap-3 p-4 text-right transition-colors ${
+                      expandedModules.includes(module.id)
+                        ? isDarkMode
+                          ? 'bg-indigo-500/10 text-white'
+                          : 'bg-indigo-50/60 text-indigo-950'
+                        : isDarkMode
+                          ? 'text-slate-300 hover:bg-slate-800/40'
+                          : 'text-slate-700 hover:bg-slate-50'
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${expandedModules.includes(module.id) ? 'bg-indigo-600 text-white' : (isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-500')}`}>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                        expandedModules.includes(module.id)
+                          ? 'bg-indigo-600 text-white'
+                          : isDarkMode
+                            ? 'bg-slate-800 text-slate-400'
+                            : 'bg-slate-100 text-slate-500'
+                      }`}>
                         <BookOpen size={16} />
                       </div>
-                      <span className="font-bold text-sm leading-snug">{module.title}</span>
+                      <span className="font-bold text-sm leading-snug truncate">{module.title}</span>
                     </div>
-                    {expandedModules.includes(module.id) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    <span className={isDarkMode ? 'text-slate-400' : 'text-slate-400'}>
+                      {expandedModules.includes(module.id) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </span>
                   </button>
 
                   <AnimatePresence>
@@ -771,7 +900,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className={`overflow-hidden py-1 ${isDarkMode ? 'bg-[#0f172a]/50' : 'bg-gray-50/30'}`}
+                        className={`overflow-hidden py-1 ${isDarkMode ? 'bg-[#0f172a]/50' : 'bg-slate-50/50'}`}
                       >
                         {module.lessons.map((lesson) => {
                           const isCompleted = completedLessons.includes(lesson.id);
@@ -779,22 +908,40 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                             <button
                               key={lesson.id}
                               onClick={() => handleLessonClick(lesson)}
-                              className={`w-full p-4 flex items-center justify-between gap-3 group transition-all border-r-4 ${activeLesson?.id === lesson.id ? 'border-indigo-600 bg-indigo-600/5' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-800/50'}`}
+                              className={`w-full p-3.5 sm:p-4 flex items-center justify-between gap-3 group transition-all border-r-4 ${
+                                activeLesson?.id === lesson.id
+                                  ? isDarkMode
+                                    ? 'border-indigo-500 bg-indigo-500/15 text-white'
+                                    : 'border-indigo-600 bg-indigo-50/80 text-indigo-950 font-black'
+                                  : isDarkMode
+                                    ? 'border-transparent text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                                    : 'border-transparent text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
+                              }`}
                             >
-                              <div className="flex items-center gap-3">
-                                <div className={`transition-colors ${isCompleted ? 'text-emerald-500' : (activeLesson?.id === lesson.id ? 'text-indigo-600' : 'text-gray-400')}`}>
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className={`shrink-0 transition-colors ${
+                                  isCompleted
+                                    ? 'text-emerald-500'
+                                    : activeLesson?.id === lesson.id
+                                      ? isDarkMode ? 'text-indigo-400' : 'text-indigo-600'
+                                      : isDarkMode ? 'text-slate-500' : 'text-slate-400'
+                                }`}>
                                   {isCompleted ? <CheckCircle size={18} /> : lesson.type === 'video' ? <PlayCircle size={18} /> : <HelpCircle size={18} />}
                                 </div>
-                                <div className="text-right">
-                                  <p className={`text-xs font-bold leading-snug inline-flex items-center gap-1 ${activeLesson?.id === lesson.id ? 'text-indigo-600' : (isDarkMode ? 'text-gray-300' : 'text-gray-700')}`}>
+                                <div className="text-right min-w-0">
+                                  <p className={`text-xs font-bold leading-snug truncate ${
+                                    activeLesson?.id === lesson.id
+                                      ? isDarkMode ? 'text-indigo-300 font-black' : 'text-indigo-700 font-black'
+                                      : isDarkMode ? 'text-slate-200' : 'text-slate-700'
+                                  }`}>
                                     {renderLessonEdgeIcon('start')}
                                     <span>{lesson.title}</span>
                                     {renderLessonEdgeIcon('end')}
                                   </p>
-                                  <p className="text-[10px] text-gray-400 mt-0.5">{lesson.duration}</p>
+                                  <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>{lesson.duration}</p>
                                 </div>
                               </div>
-                              {lesson.isLocked && <Lock size={14} className="text-gray-300" />}
+                              {lesson.isLocked && <Lock size={14} className={isDarkMode ? 'text-amber-400 shrink-0' : 'text-amber-500 shrink-0'} />}
                             </button>
                           );
                         })}
@@ -805,25 +952,35 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
               ))}
             </div>
 
-            <div className={`p-4 border-t ${isDarkMode ? 'border-gray-800 bg-[#1e293b]' : 'border-gray-200 bg-white'}`}>
+            <div className={`p-4 border-t ${isDarkMode ? 'border-slate-800 bg-[#1e293b]' : 'border-slate-200 bg-white'}`}>
               <div className="mb-3 flex items-center gap-2">
                 <button
                   onClick={handleToggleFavorite}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold ${isFavorite ? 'bg-rose-100 text-rose-600' : isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all ${
+                    isFavorite
+                      ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                      : isDarkMode
+                        ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700'
+                        : 'bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200'
+                  }`}
                 >
                   <Heart size={15} fill={isFavorite ? 'currentColor' : 'none'} /> {isFavorite ? 'في المفضلة' : 'إضافة للمفضلة'}
                 </button>
                 <button
                   onClick={handleShareCourse}
                   disabled={isSharing}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold ${isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'} disabled:opacity-60`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold disabled:opacity-60 transition-all ${
+                    isDarkMode
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700'
+                      : 'bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200'
+                  }`}
                 >
                   <Share2 size={15} /> مشاركة
                 </button>
               </div>
               <button
                 onClick={() => navigate('/book-session')}
-                className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-3 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
               >
                 <MessageSquare size={18} /> تواصل مع المدرس
               </button>
