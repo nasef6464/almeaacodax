@@ -1621,7 +1621,6 @@ const ReviewSolutions = ({
             <div className={`grid ${getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2.5 sm:gap-3 mb-6`}>
               {q.options.map((option, i) => {
                 const isUserChoice = i === q.selectedOptionIndex;
-                const isCorrectOption = i === q.correctOptionIndex;
 
                 let cardStyle = 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
                 let radioStyle = 'border-slate-300 bg-white';
@@ -1640,11 +1639,6 @@ const ReviewSolutions = ({
                     badgeText = '✗ اختيارك (خاطئ)';
                     badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
                   }
-                } else if (isCorrectOption && (!wasCorrect || !wasAnswered)) {
-                  cardStyle = 'border-emerald-500/80 bg-emerald-50/30 text-slate-900 border-dashed';
-                  radioStyle = 'border-emerald-500 bg-emerald-50 text-emerald-600';
-                  badgeText = 'الإجابة النموذجية الصحيحة';
-                  badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
                 }
 
                 return (
@@ -1654,7 +1648,7 @@ const ReviewSolutions = ({
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-3">
                       <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black transition-all ${radioStyle}`}>
-                        {isUserChoice ? (wasCorrect ? '✓' : '✕') : (isCorrectOption ? '✓' : '')}
+                        {isUserChoice ? (wasCorrect ? '✓' : '✕') : ''}
                       </div>
                       <span
                         className="question-html flex-1 text-sm sm:text-base font-bold leading-relaxed text-slate-800 break-words"
@@ -1671,12 +1665,12 @@ const ReviewSolutions = ({
               })}
             </div>
 
-            {/* Integrated Explanation / Review Solution Card */}
-            {showExplanation || q.explanation || q.videoUrl ? (
+            {/* Integrated Review Note / Video Solution Card */}
+            {showExplanation || q.videoUrl ? (
               <div className="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 sm:p-5 mb-6 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 text-xs font-black text-indigo-700 bg-white px-3 py-1 rounded-full shadow-xs">
-                    💡 شرح وطريقة الحل
+                    💡 مراجعة وتقييم السؤال
                   </span>
                   {q.videoUrl ? (
                     <button
@@ -1689,15 +1683,9 @@ const ReviewSolutions = ({
                     </button>
                   ) : null}
                 </div>
-                {q.explanation ? (
-                  <p className="text-sm font-bold text-slate-700 leading-relaxed break-words">
-                    {displayText(q.explanation)}
-                  </p>
-                ) : (
-                  <p className="text-xs font-bold text-slate-500 leading-relaxed">
-                    تم إخفاء التفاصيل التحريرية لحماية بنك الأسئلة. يمكنك مراجعة اختيارك والحل النموذجي أعلاه.
-                  </p>
-                )}
+                <p className="text-xs font-bold text-slate-500 leading-relaxed">
+                  تم إخفاء الإجابة النموذجية والشرح التحريري لحماية بنك الأسئلة. يمكنك مراجعة اختيارك وحالة إجابتك أعلاه.
+                </p>
               </div>
             ) : null}
 
@@ -1723,7 +1711,7 @@ const ReviewSolutions = ({
                 }`}
               >
                 <Eye size={14} />
-                <span>{showExplanation ? 'إخفاء الشرح' : 'إظهار الشرح'}</span>
+                <span>{showExplanation ? 'إخفاء الملاحظات' : 'إظهار الملاحظات'}</span>
               </button>
 
               <button
