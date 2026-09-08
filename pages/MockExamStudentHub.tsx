@@ -311,7 +311,6 @@ const MockExamStudentHub: React.FC = () => {
   // ── Student's group membership ────────────────────────────────────────────
   const myGroupIds = useMemo(() => {
     const ids = new Set<string>(user?.groupIds || []);
-    if (user?.groupId) ids.add(user.groupId);
     if (user?.schoolId) ids.add(user.schoolId);
     if (Array.isArray(groups)) {
       groups.forEach((g) => {
