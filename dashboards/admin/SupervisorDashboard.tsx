@@ -120,9 +120,41 @@ const ActionButton: React.FC<{
   );
 };
 
+const getRequestedSupervisorTab = (): SupervisorTab | null => {
+  if (typeof window === 'undefined') return null;
+  const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
+  const tabParam = new URLSearchParams(hashQuery || window.location.search).get('tab');
+  const validTabs: SupervisorTab[] = ['overview', 'students', 'skills', 'reports', 'live-sessions', 'tests', 'live-monitoring'];
+  return validTabs.includes(tabParam as SupervisorTab) ? (tabParam as SupervisorTab) : null;
+};
+
 export const SupervisorDashboard: React.FC = () => {
   const { user, groups, users, examResults, quizzes, updateQuiz, hydrateUsers, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
-  const [activeTab, setActiveTab] = useState<SupervisorTab>('overview');
+  const [activeTab, setActiveTabState] = useState<SupervisorTab>(() => getRequestedSupervisorTab() || 'overview');
+
+  const setActiveTab = React.useCallback((newTab: SupervisorTab) => {
+    setActiveTabState(newTab);
+    const url = new URL(window.location.href);
+    const currentTab = url.searchParams.get('tab') || 'overview';
+    if (currentTab !== newTab) {
+      if (newTab === 'overview') {
+        url.searchParams.delete('tab');
+      } else {
+        url.searchParams.set('tab', newTab);
+      }
+      window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const requested = getRequestedSupervisorTab() || 'overview';
+      setActiveTabState(requested);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const [studentTab, setStudentTab] = useState<StudentSubTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [schoolFilter, setSchoolFilter] = useState('all');

@@ -177,19 +177,21 @@ export const AdminDashboard: React.FC = () => {
 
     useEffect(() => {
         const syncRequestedTab = () => {
-            const requestedTab = getRequestedAdminTab();
-            if (requestedTab) {
-                if (requestedTab !== activeTab) {
-                    setActiveTab(requestedTab);
-                }
+            const requestedTab = getRequestedAdminTab() || (user.role === Role.ADMIN ? 'paths' : 'overview');
+            if (requestedTab && requestedTab !== activeTab) {
+                setActiveTab(requestedTab);
                 setTabRequestVersion((current) => current + 1);
             }
         };
 
         window.addEventListener('hashchange', syncRequestedTab);
+        window.addEventListener('popstate', syncRequestedTab);
         syncRequestedTab();
-        return () => window.removeEventListener('hashchange', syncRequestedTab);
-    }, [activeTab]);
+        return () => {
+            window.removeEventListener('hashchange', syncRequestedTab);
+            window.removeEventListener('popstate', syncRequestedTab);
+        };
+    }, [activeTab, user.role]);
 
     const loadAiStatus = async () => {
         if (user.role !== Role.ADMIN) {
@@ -240,8 +242,11 @@ export const AdminDashboard: React.FC = () => {
         setActiveTab(normalizedTabId);
 
         const url = new URL(window.location.href);
-        url.searchParams.set('tab', normalizedTabId);
-        window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+        const currentTab = url.searchParams.get('tab');
+        if (currentTab !== normalizedTabId) {
+            url.searchParams.set('tab', normalizedTabId);
+            window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
+        }
     }, []);
 
     const librarySubjectOptions = useMemo(

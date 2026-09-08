@@ -738,10 +738,21 @@ const MyCoursesTab = () => {
 /** Student assessment hub: attempts, mock exams, and school-directed work. */
 const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = ({ initialView = 'attempts' }) => {
     const [view, setView] = React.useState<'attempts' | 'mock' | 'school'>(initialView);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     React.useEffect(() => {
         setView(initialView);
     }, [initialView]);
+
+    const handleViewChange = (newView: 'attempts' | 'mock' | 'school') => {
+        setView(newView);
+        const tabName = newView === 'mock' ? 'mock-exams' : newView === 'school' ? 'school-tests' : 'quizzes';
+        const targetUrl = `/dashboard?tab=${tabName}`;
+        if (location.pathname + location.search !== targetUrl) {
+            navigate(targetUrl);
+        }
+    };
 
     const examViews = [
         { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} />, iconColor: 'text-amber-500' },
@@ -752,7 +763,7 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
         <div className="space-y-4">
             <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-slate-100/90 p-1.5 shadow-xs w-fit">
                 {examViews.map(v => (
-                    <button key={v.id} onClick={() => setView(v.id)}
+                    <button key={v.id} onClick={() => handleViewChange(v.id)}
                         className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black transition-all ${
                             view === v.id
                                 ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
