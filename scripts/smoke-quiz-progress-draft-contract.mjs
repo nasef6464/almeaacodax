@@ -66,6 +66,11 @@ check('runner delegates draft storage to the shared utility', () => {
   assert.ok(quizPageSource.includes('removeQuizProgressDraft(quiz.id)'));
   assert.equal(quizPageSource.includes("const QUIZ_PAGE_PROGRESS_PREFIX = 'almeaa-quiz-progress:'"), false);
 });
+check('runner prevents infinite auto-submit loop and zero timer restoration', () => {
+  assert.ok(quizPageSource.includes('autoSubmitTriggeredRef'));
+  assert.ok(quizPageSource.includes('savedProgress.timeLeft > 0'));
+  assert.ok(quizPageSource.includes('timeLeft > 0 ? timeLeft : null'));
+});
 
 const failed = checks.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({ phase: 'quiz-progress-draft', status: failed.length ? 'FAIL' : 'PASS', checks }, null, 2));
