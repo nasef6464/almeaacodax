@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import {
   Activity, Award, BookOpen, ChevronRight, TrendingDown,
   TrendingUp, Users, Zap, Clock, BarChart3, Target,
-  CheckCircle2, AlertTriangle, XCircle, ArrowLeft,
+  CheckCircle2, AlertTriangle, XCircle, ArrowLeft, FileText, ExternalLink,
 } from 'lucide-react';
 import type { QuizResult } from '../../types';
 
@@ -35,6 +35,7 @@ interface StudentIntelligenceProfileProps {
   onClose: () => void;
   onSendAlert: () => void;
   onAssignTest: () => void;
+  onOpenReport?: (id: string) => void;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -73,7 +74,7 @@ const ScoreChip: React.FC<{ score: number; label: string }> = ({ score, label })
 // ── Main Component ────────────────────────────────────────────────────────────
 export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProps> = ({
   student, classAverage, classTotalStudents, completedLessons = [],
-  onClose, onSendAlert, onAssignTest,
+  onClose, onSendAlert, onAssignTest, onOpenReport,
 }) => {
   // ── اشتقاق المهارات من كل النتائج ──────────────────────────────────────────
   const aggregatedSkills = useMemo(() => {
@@ -231,11 +232,23 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
                     : 'text-rose-700 bg-rose-50 border-rose-200';
                   return (
                     <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-gray-100 bg-white px-4 py-2.5 text-sm">
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="font-bold text-gray-900 truncate">{r.quizTitle}</p>
                         <p className="text-xs text-gray-400">{r.date}</p>
                       </div>
-                      <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black ${scColor}`}>{sc}%</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black ${scColor}`}>{sc}%</span>
+                        {onOpenReport && (
+                          <button
+                            onClick={() => onOpenReport(student.id)}
+                            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-lg transition-colors flex items-center gap-1"
+                            title="عرض تقرير الاختبار"
+                          >
+                            <ExternalLink size={11} />
+                            تقرير
+                          </button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -244,18 +257,26 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           )}
 
           {/* ── إجراءات ── */}
-          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-3 border-t border-gray-100">
+            {onOpenReport && (
+              <button
+                onClick={() => onOpenReport(student.id)}
+                className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gray-50 border border-gray-200 px-4 py-3 text-xs font-black text-gray-700 hover:bg-gray-100 transition-colors shadow-xs"
+              >
+                <FileText size={15} /> التقرير الشامل
+              </button>
+            )}
             <button
               onClick={onSendAlert}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm font-black text-amber-800 hover:bg-amber-100 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs font-black text-amber-800 hover:bg-amber-100 transition-colors shadow-xs"
             >
-              <Activity size={16} /> إرسال تنبيه
+              <Activity size={15} /> إرسال تنبيه
             </button>
             <button
               onClick={onAssignTest}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-3 text-xs font-black text-white hover:bg-indigo-700 transition-colors shadow-xs"
             >
-              <Award size={16} /> إرسال اختبار
+              <Award size={15} /> توجيه اختبار
             </button>
           </div>
 

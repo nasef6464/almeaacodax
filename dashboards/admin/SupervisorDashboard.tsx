@@ -579,17 +579,17 @@ export const SupervisorDashboard: React.FC = () => {
 
           {/* Action buttons */}
           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap mr-auto">
-            <button onClick={() => setShowPrincipalReport(true)} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-xs font-bold text-indigo-800 hover:bg-indigo-100 transition-colors shadow-xs">
-              <Building2 size={15} />
-              <span>تقرير مدير المدرسة (PDF)</span>
+            <button onClick={() => setShowPrincipalReport(true)} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/80 px-3.5 py-2 text-xs font-black text-indigo-800 hover:bg-indigo-100 transition-all shadow-xs">
+              <Building2 size={14} className="text-indigo-600" />
+              <span>تقرير الإدارة (PDF)</span>
             </button>
-            <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
-              <Printer size={15} />
-              <span>طباعة التقرير</span>
+            <button onClick={handlePrint} className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-xs">
+              <Printer size={14} className="text-gray-500" />
+              <span>طباعة</span>
             </button>
-            <button onClick={exportScopeDataToCSV} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-colors shadow-xs">
-              <Download size={15} />
-              <span>تصدير البيانات</span>
+            <button onClick={exportScopeDataToCSV} className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-all shadow-xs hover:shadow-sm">
+              <Download size={14} />
+              <span>تصدير CSV</span>
             </button>
           </div>
         </div>
@@ -695,6 +695,7 @@ export const SupervisorDashboard: React.FC = () => {
               )?.studentCount ?? supervisorScopeSummary.studentCount
             }
             onClose={() => setSelectedStudentId(null)}
+            onOpenReport={(id) => openStudentReport(id)}
             onSendAlert={() => {
               setSelectedStudentId(null);
               void sendStudentFollowUpAlert(activeStudentDetails);
@@ -709,22 +710,24 @@ export const SupervisorDashboard: React.FC = () => {
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            <div className="rounded-3xl bg-gradient-to-r from-indigo-900 to-indigo-950 p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.15),transparent)]"></div>
-              <div className="relative z-10">
-                <h1 className="text-3xl font-black">مرحباً بك، {user.name}</h1>
-                <p className="mt-2 text-indigo-200 max-w-2xl text-sm sm:text-base">
-                  {supervisorScopeSummary.schoolCount > 0
-                    ? `أنت تشرف على ${supervisorScopeSummary.schoolCount} مدرسة، و ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`
-                    : `أنت تشرف على ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`}
-                </p>
-                <div className="flex flex-wrap gap-2 mt-4">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold backdrop-blur-sm border border-white/10">
+            {/* Streamlined Welcome Hero Banner */}
+            <div className="rounded-3xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-slate-900 p-5 sm:p-7 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.2),transparent)]"></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-black">مرحباً بك، {user.name}</h1>
+                  <p className="mt-1 text-indigo-200 max-w-2xl text-xs sm:text-sm">
+                    {supervisorScopeSummary.schoolCount > 0
+                      ? `أنت تشرف على ${supervisorScopeSummary.schoolCount} مدرسة، و ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`
+                      : `أنت تشرف على ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-sm border border-white/10 text-white">
                     <Building2 size={13} className="text-amber-300" />
                     <span>المدرسة: {supervisorScopeSummary.primarySchoolName}</span>
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold backdrop-blur-sm border border-white/10">
+                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-sm border border-white/10 text-white">
                     <GraduationCap size={13} className="text-emerald-300" />
                     <span>نطاق الصلاحية: {supervisorScopeSummary.scopeTypeName}</span>
                   </span>
@@ -743,61 +746,67 @@ export const SupervisorDashboard: React.FC = () => {
             </div>
 
             {/* Supervisor Quick Decision Board */}
-            <div data-testid="supervisor-quick-decision-board" className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 to-white p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div data-testid="supervisor-quick-decision-board" className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 to-white p-5 sm:p-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                 <div>
-                  <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
-                    <Trophy className="text-amber-500 animate-bounce" size={20} />
+                  <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                    <Trophy className="text-amber-500" size={20} />
                     لوحة اتخاذ القرار السريعة والتحسين
                   </h3>
-                  <p className="text-xs text-gray-500 mt-1">تحديد الحالات الأكثر حرجاً للإصلاح الفوري وتوجيه المعلمين</p>
+                  <p className="text-xs text-gray-500 mt-0.5">تحديد الحالات الأكثر حرجاً للإصلاح الفوري وتوجيه المعلمين</p>
                 </div>
                 <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0}
-                  className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all transform hover:-translate-y-0.5"
+                  className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 shadow-xs"
                 >
-                  {weeklyAlertState === 'sending' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                  {weeklyAlertState === 'sending' ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
                   <span>إرسال تنبيه أسبوعي</span>
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-xs">
-                  <div className="flex items-center gap-2 mb-2 text-emerald-700">
-                    <Trophy size={16} />
-                    <span className="text-xs font-bold">أعلى فصل دراسي أداءً</span>
+                <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2 text-emerald-700">
+                      <Trophy size={15} />
+                      <span className="text-xs font-bold">أعلى فصل دراسي أداءً</span>
+                    </div>
+                    {supervisorScopeSummary.bestClass ? (
+                      <>
+                        <h4 className="text-base font-black text-gray-900 truncate">{supervisorScopeSummary.bestClass.name}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{supervisorScopeSummary.bestClass.studentCount} طالب • متوسط أداء {supervisorScopeSummary.bestClass.average}%</p>
+                      </>
+                    ) : (
+                      <p className="text-xs text-gray-400">لا تتوفر نتائج فصول بعد</p>
+                    )}
                   </div>
-                  {supervisorScopeSummary.bestClass ? (
-                    <>
-                      <h4 className="text-lg font-black text-gray-900 truncate">{supervisorScopeSummary.bestClass.name}</h4>
-                      <p className="text-xs text-gray-500 mt-1">{supervisorScopeSummary.bestClass.studentCount} طالب • متوسط أداء {supervisorScopeSummary.bestClass.average}%</p>
-                    </>
-                  ) : (
-                    <p className="text-xs text-gray-400">لا تتوفر نتائج فصول بعد</p>
-                  )}
                 </div>
 
-                <div className="rounded-xl border border-rose-100 bg-white p-4 shadow-xs">
-                  <div className="flex items-center gap-2 mb-2 text-rose-700">
-                    <AlertTriangle size={16} />
-                    <span className="text-xs font-bold">الفصل الأكثر احتياجاً للتدخل</span>
+                <div className="rounded-xl border border-rose-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2 text-rose-700">
+                      <AlertTriangle size={15} />
+                      <span className="text-xs font-bold">الفصل الأكثر احتياجاً للتدخل</span>
+                    </div>
+                    {supervisorScopeSummary.weakestClass ? (
+                      <>
+                        <h4 className="text-base font-black text-rose-900 truncate">{supervisorScopeSummary.weakestClass.name}</h4>
+                        <p className="text-xs text-rose-500 mt-1">{supervisorScopeSummary.weakestClass.studentCount} طلاب متعثرون • متوسط {supervisorScopeSummary.weakestClass.average}%</p>
+                      </>
+                    ) : (
+                      <p className="text-xs text-gray-400">لا تتوفر فصول تحتاج تدخل حالياً</p>
+                    )}
                   </div>
-                  {supervisorScopeSummary.weakestClass ? (
-                    <>
-                      <h4 className="text-lg font-black text-rose-900 truncate">{supervisorScopeSummary.weakestClass.name}</h4>
-                      <p className="text-xs text-rose-500 mt-1">{supervisorScopeSummary.weakestClass.studentCount} طلاب متعثرون • متوسط {supervisorScopeSummary.weakestClass.average}%</p>
-                    </>
-                  ) : (
-                    <p className="text-xs text-gray-400">لا تتوفر فصول تحتاج تدخل حالياً</p>
-                  )}
                 </div>
 
-                <div className="rounded-xl border border-indigo-100 bg-white p-4 shadow-xs">
-                  <div className="flex items-center gap-2 mb-2 text-indigo-700">
-                    <Activity size={16} />
-                    <span className="text-xs font-bold">الحالات الأسبوعية العالقة</span>
+                <div className="rounded-xl border border-indigo-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2 text-indigo-700">
+                      <Activity size={15} />
+                      <span className="text-xs font-bold">الحالات الأسبوعية العالقة</span>
+                    </div>
+                    <h4 className="text-base font-black text-indigo-900">{supervisorScopeSummary.pendingFollowUpCount} حالة معلقة</h4>
+                    <p className="text-xs text-indigo-500 mt-1">طلاب منخفضو التحصيل لم تُعيّن خطط علاجية لهم</p>
                   </div>
-                  <h4 className="text-lg font-black text-indigo-900">{supervisorScopeSummary.pendingFollowUpCount} حالة معلقة</h4>
-                  <p className="text-xs text-indigo-500 mt-1">تتضمن طلاب منخفض التحصيل ولم يتم تعيين خطط علاجية لهم</p>
                 </div>
               </div>
             </div>
@@ -953,41 +962,52 @@ export const SupervisorDashboard: React.FC = () => {
                         </td>
                       </tr>
                     ) : filteredStudents.map((s) => (
-                      <tr key={s.id} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-5 py-4">
-                          <button onClick={() => setSelectedStudentId(s.id)} className="font-bold text-gray-900 hover:text-indigo-600 transition-colors text-right flex items-center gap-2">
-                            <span>{s.name}</span>
-                            <Eye size={14} className="opacity-40" />
-                          </button>
-                          <div className="text-xs text-gray-400 mt-0.5">{s.email}</div>
-                        </td>
-                        <td className="px-5 py-4">
-                          <div className="font-medium text-gray-800">{s.schoolName}</div>
-                          <div className="text-xs text-gray-500 mt-0.5">{s.className} • {s.gradeName}</div>
-                        </td>
-                        <td className="px-5 py-4">
-                          <div className="text-gray-700 truncate max-w-[150px]" title={s.latestQuiz}>{s.latestQuiz}</div>
-                        </td>
-                        <td className="px-5 py-4 text-center">
-                          <span className={`font-black text-base ${s.attempts ? (s.average >= 85 ? 'text-emerald-600' : s.average >= 70 ? 'text-indigo-600' : s.average >= 60 ? 'text-amber-600' : 'text-rose-600') : 'text-gray-400'}`}>
-                            {s.attempts ? `${s.average}%` : '—'}
-                          </span>
-                          <span className="block text-[10px] text-gray-400">{s.attempts} محاولات</span>
-                        </td>
-                        <td className="px-5 py-4">
-                          <div className="flex flex-wrap gap-1 max-w-[200px]">
-                            {s.weakSkills.length > 0 ? s.weakSkills.slice(0, 2).map((sk) => (
-                              <span key={sk} className="rounded-full bg-rose-50 border border-rose-100 px-2.5 py-0.5 text-[11px] text-rose-700 truncate max-w-[90px]">{sk}</span>
-                            )) : <span className="text-xs text-gray-400">لا توجد مهارات ضعيفة</span>}
-                            {s.weakSkills.length > 2 && <span className="text-[11px] text-gray-400 font-bold">+{s.weakSkills.length - 2}</span>}
+                      <tr key={s.id} className="hover:bg-indigo-50/20 transition-colors">
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => setSelectedStudentId(s.id)}
+                              className="h-9 w-9 shrink-0 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center font-black text-indigo-700 text-xs hover:bg-indigo-100 transition-colors"
+                              title="عرض ملف الطالب"
+                            >
+                              {s.name[0]}
+                            </button>
+                            <div className="min-w-0">
+                              <button onClick={() => setSelectedStudentId(s.id)} className="font-bold text-gray-900 hover:text-indigo-600 transition-colors text-right flex items-center gap-1.5 truncate">
+                                <span className="truncate">{s.name}</span>
+                                <Eye size={13} className="opacity-40 shrink-0" />
+                              </button>
+                              <div className="text-[11px] text-gray-400 mt-0.5 truncate max-w-[160px]">{s.email}</div>
+                            </div>
                           </div>
                         </td>
-                        <td className="px-5 py-4">
-                          <span className={`rounded-full px-3 py-1 text-xs font-bold border ${
+                        <td className="px-5 py-3.5">
+                          <div className="font-medium text-gray-800 text-xs">{s.schoolName}</div>
+                          <div className="text-[11px] text-gray-500 mt-0.5">{s.className} • {s.gradeName}</div>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="text-gray-700 truncate max-w-[140px] text-xs font-medium" title={s.latestQuiz}>{s.latestQuiz}</div>
+                        </td>
+                        <td className="px-5 py-3.5 text-center">
+                          <span className={`font-black text-sm ${s.attempts ? (s.average >= 85 ? 'text-emerald-600' : s.average >= 70 ? 'text-indigo-600' : s.average >= 60 ? 'text-amber-600' : 'text-rose-600') : 'text-gray-400'}`}>
+                            {s.attempts ? `${s.average}%` : '—'}
+                          </span>
+                          <span className="block text-[10px] text-gray-400 font-medium">{s.attempts} محاولات</span>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex flex-wrap gap-1 max-w-[180px]">
+                            {s.weakSkills.length > 0 ? s.weakSkills.slice(0, 2).map((sk) => (
+                              <span key={sk} className="rounded-md bg-rose-50 border border-rose-100 px-2 py-0.5 text-[10px] text-rose-700 font-bold truncate max-w-[85px]" title={sk}>{sk}</span>
+                            )) : <span className="text-xs text-gray-400">لا توجد</span>}
+                            {s.weakSkills.length > 2 && <span className="text-[10px] text-gray-400 font-bold">+{s.weakSkills.length - 2}</span>}
+                          </div>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span className={`rounded-full px-2.5 py-1 text-[11px] font-black border ${
                             s.status === 'danger' ? 'bg-rose-50 border-rose-100 text-rose-700' : s.status === 'watch' ? 'bg-amber-50 border-amber-100 text-amber-700' : 'bg-emerald-50 border-emerald-100 text-emerald-700'
                           }`}>{s.followUpReason}</span>
                         </td>
-                        <td className="px-5 py-4">
+                        <td className="px-5 py-3.5 text-center">
                           <div className="flex gap-1 items-center justify-center">
                             {(() => {
                               const supervisorClasses = groups.filter(g => g.type === 'CLASS' && (g.supervisorIds?.includes(user.id) || (user.groupIds || []).includes(g.id) || (g.parentId && (g.parentId === user.schoolId || (user.groupIds || []).includes(g.parentId)))));
@@ -1006,7 +1026,7 @@ export const SupervisorDashboard: React.FC = () => {
                                     } catch { setStudentActionFeedback(`❌ تعذر نقل الطالب`); }
                                     setTimeout(() => setStudentActionFeedback(null), 3000);
                                   }}
-                                  className="rounded-xl border border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 py-1.5 px-2 max-w-[110px] focus:border-indigo-500 focus:outline-none transition-colors"
+                                  className="rounded-lg border border-gray-200 bg-gray-50 text-[11px] font-bold text-gray-700 py-1 px-1.5 max-w-[95px] focus:border-indigo-500 focus:outline-none transition-colors"
                                   title="نقل الطالب إلى فصل آخر"
                                 >
                                   <option value="" disabled>نقل لـ...</option>
@@ -1029,29 +1049,29 @@ export const SupervisorDashboard: React.FC = () => {
                                 setTimeout(() => setStudentActionFeedback(null), 3000);
                               }}
                               title="إخراج الطالب من الفصل"
-                              className="rounded-xl bg-rose-50 border border-rose-200 p-1.5 text-rose-600 hover:bg-rose-100 transition-colors shadow-xs"
+                              className="rounded-lg bg-rose-50 border border-rose-200 p-1 text-rose-600 hover:bg-rose-100 transition-colors shadow-xs"
                             >
-                              <LogOut size={14} />
+                              <LogOut size={13} />
                             </button>
                           </div>
                         </td>
-                        <td className="px-5 py-4">
-                          <div className="flex gap-1.5 justify-center">
-                            <button onClick={() => setSelectedStudentId(s.id)} title="بطاقة الطالب الذكية"
-                              className="rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 transition-all shadow-xs flex items-center gap-1">
-                              <Eye size={13} />
+                        <td className="px-5 py-3.5 text-center">
+                          <div className="flex gap-1.5 items-center justify-center">
+                            <button onClick={() => setSelectedStudentId(s.id)} title="عرض بطاقة الطالب الذكية"
+                              className="rounded-lg bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-indigo-700 transition-all shadow-xs flex items-center gap-1">
+                              <Eye size={12} />
                               <span>بطاقة</span>
                             </button>
                             <button onClick={() => openStudentReport(s.id)} title="تقرير الطالب التفصيلي"
-                              className="rounded-xl bg-gray-100 border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 transition-all shadow-xs">
+                              className="rounded-lg bg-gray-50 border border-gray-200 px-2 py-1 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-all shadow-xs">
                               تقرير
                             </button>
                             <button onClick={() => openStudentQuiz(s.id)} title="تعيين اختبار علاجي"
-                              className="rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-all shadow-xs">
+                              className="rounded-lg bg-amber-50 border border-amber-200 px-2 py-1 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-all shadow-xs">
                               اختبار
                             </button>
-                            <button onClick={() => void sendStudentFollowUpAlert(s)} disabled={studentActionState?.id === s.id} title="إرسال تنبيه فوري"
-                              className="rounded-xl bg-indigo-50 border border-indigo-200 px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-all disabled:opacity-50 shadow-xs">
+                            <button onClick={() => void sendStudentFollowUpAlert(s)} disabled={studentActionState?.id === s.id} title="إرسال تنبيه فوري للطالب"
+                              className="rounded-lg bg-indigo-50 border border-indigo-200 px-2 py-1 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-all disabled:opacity-50 shadow-xs">
                               {studentActionState?.id === s.id && studentActionState.action === 'alert' ? '...' : 'تنبيه'}
                             </button>
                           </div>
@@ -1376,8 +1396,11 @@ export const SupervisorDashboard: React.FC = () => {
               
               {/* Score Distribution Chart */}
               <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-4">
-                <h3 className="text-base font-black text-gray-900">توزيع درجات الطلاب الإجمالي (منحنى الأداء)</h3>
-                <div className="h-64 flex items-end justify-between gap-2 pt-6">
+                <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                  <h3 className="text-base font-black text-gray-900">توزيع درجات الطلاب الإجمالي (منحنى الأداء)</h3>
+                  <span className="text-xs text-gray-400 font-bold">{supervisorScopeSummary.allStudentsList.length} طالب</span>
+                </div>
+                <div className="h-64 flex items-end justify-between gap-3 pt-6 px-2">
                   {[
                     { label: 'دون 50%', height: supervisorScopeSummary.allStudentsList.filter(s => s.average < 50 && s.attempts > 0).length, color: 'bg-rose-500' },
                     { label: '50% - 60%', height: supervisorScopeSummary.allStudentsList.filter(s => s.average >= 50 && s.average < 60).length, color: 'bg-rose-400' },
@@ -1386,13 +1409,17 @@ export const SupervisorDashboard: React.FC = () => {
                     { label: '80% - 90%', height: supervisorScopeSummary.allStudentsList.filter(s => s.average >= 80 && s.average < 90).length, color: 'bg-emerald-400' },
                     { label: 'أعلى من 90%', height: supervisorScopeSummary.allStudentsList.filter(s => s.average >= 90).length, color: 'bg-emerald-500' },
                   ].map((bar, i) => {
-                    const maxCount = Math.max(1, ...[bar.height]);
+                    const totalWithAttempts = supervisorScopeSummary.allStudentsList.filter(s => s.attempts > 0).length || 1;
+                    const pctOfCohort = Math.round((bar.height / totalWithAttempts) * 100);
                     const pctHeight = (bar.height / (supervisorScopeSummary.allStudentsList.length || 1)) * 100;
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group">
-                        <div className="text-[10px] font-bold text-gray-500 mb-1 group-hover:text-indigo-600">{bar.height} طالباً</div>
-                        <div className={`w-full rounded-t-lg transition-all duration-500 ${bar.color}`} style={{ height: `${Math.max(6, pctHeight * 1.5)}%` }} />
-                        <div className="text-[10px] text-gray-400 mt-2 truncate w-full text-center">{bar.label}</div>
+                        <div className="text-[11px] font-black text-gray-600 mb-1 group-hover:text-indigo-600 transition-colors">
+                          {bar.height}
+                          <span className="text-[9px] text-gray-400 font-normal block text-center">({pctOfCohort}%)</span>
+                        </div>
+                        <div className={`w-full rounded-t-xl transition-all duration-500 group-hover:brightness-110 shadow-xs ${bar.color}`} style={{ height: `${Math.max(8, pctHeight * 1.5)}%` }} />
+                        <div className="text-[11px] font-bold text-gray-500 mt-2 truncate w-full text-center group-hover:text-gray-900">{bar.label}</div>
                       </div>
                     );
                   })}
@@ -1401,27 +1428,30 @@ export const SupervisorDashboard: React.FC = () => {
 
               {/* Progress Summary Statistics */}
               <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-4">
-                <h3 className="text-base font-black text-gray-900">إحصائيات التقدم والتحصيل الكلي</h3>
-                <div className="grid grid-cols-2 gap-4 h-[calc(100%-2.5rem)]">
-                  <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 text-center flex flex-col justify-center">
-                    <TrendingUp size={28} className="mx-auto mb-2 text-emerald-600" />
-                    <div className="text-3xl font-black text-emerald-700">{supervisorScopeSummary.improvedStudentsCount}</div>
-                    <div className="text-xs font-bold text-emerald-600 mt-1">طلاب ارتفع مستوى تحصيلهم</div>
+                <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                  <h3 className="text-base font-black text-gray-900">إحصائيات التقدم والتحصيل الكلي</h3>
+                  <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-md">مؤشرات أسبوعية</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 h-[calc(100%-3rem)]">
+                  <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 text-center flex flex-col justify-center transition-all hover:bg-emerald-50 shadow-xs">
+                    <TrendingUp size={24} className="mx-auto mb-1.5 text-emerald-600" />
+                    <div className="text-2xl sm:text-3xl font-black text-emerald-700">{supervisorScopeSummary.improvedStudentsCount}</div>
+                    <div className="text-[11px] font-bold text-emerald-700 mt-1">طلاب ارتفع تحصيلهم</div>
                   </div>
-                  <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-4 text-center flex flex-col justify-center">
-                    <TrendingDown size={28} className="mx-auto mb-2 text-rose-600" />
-                    <div className="text-3xl font-black text-rose-700">{supervisorScopeSummary.declinedCount}</div>
-                    <div className="text-xs font-bold text-rose-600 mt-1">طلاب تراجع مستوى تحصيلهم</div>
+                  <div className="rounded-2xl border border-rose-100 bg-rose-50/50 p-4 text-center flex flex-col justify-center transition-all hover:bg-rose-50 shadow-xs">
+                    <TrendingDown size={24} className="mx-auto mb-1.5 text-rose-600" />
+                    <div className="text-2xl sm:text-3xl font-black text-rose-700">{supervisorScopeSummary.declinedCount}</div>
+                    <div className="text-[11px] font-bold text-rose-700 mt-1">طلاب تراجع تحصيلهم</div>
                   </div>
-                  <div className="rounded-xl border border-amber-100 bg-amber-50/50 p-4 text-center flex flex-col justify-center">
-                    <UserCheck size={28} className="mx-auto mb-2 text-amber-600" />
-                    <div className="text-3xl font-black text-amber-700">{supervisorScopeSummary.weakStudentsCount}</div>
-                    <div className="text-xs font-bold text-amber-600 mt-1">طلاب بحاجة تدخل أسبوعي</div>
+                  <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-center flex flex-col justify-center transition-all hover:bg-amber-50 shadow-xs">
+                    <UserCheck size={24} className="mx-auto mb-1.5 text-amber-600" />
+                    <div className="text-2xl sm:text-3xl font-black text-amber-700">{supervisorScopeSummary.weakStudentsCount}</div>
+                    <div className="text-[11px] font-bold text-amber-700 mt-1">بحاجة تدخل أسبوعي</div>
                   </div>
-                  <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4 text-center flex flex-col justify-center">
-                    <Target size={28} className="mx-auto mb-2 text-indigo-600" />
-                    <div className="text-3xl font-black text-indigo-700">{supervisorScopeSummary.averageScore}%</div>
-                    <div className="text-xs font-bold text-indigo-600 mt-1">معدل التحصيل العام للنطاق</div>
+                  <div className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 text-center flex flex-col justify-center transition-all hover:bg-indigo-50 shadow-xs">
+                    <Target size={24} className="mx-auto mb-1.5 text-indigo-600" />
+                    <div className="text-2xl sm:text-3xl font-black text-indigo-700">{supervisorScopeSummary.averageScore}%</div>
+                    <div className="text-[11px] font-bold text-indigo-700 mt-1">معدل التحصيل العام</div>
                   </div>
                 </div>
               </div>
@@ -1432,146 +1462,6 @@ export const SupervisorDashboard: React.FC = () => {
 
 
 
-        {/* ===== STUDENT DETAILS SLIDING DRAWER / MODAL ===== */}
-        {activeStudentDetails && (
-          <div className="fixed inset-0 z-50 overflow-hidden print:hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
-            <div className="absolute inset-0 overflow-hidden">
-              {/* Backdrop */}
-              <div onClick={() => setSelectedStudentId(null)} className="absolute inset-0 bg-gray-500/75 transition-opacity duration-300 ease-in-out"></div>
-              
-              <div className="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10 sm:pr-16">
-                <div className="pointer-events-auto w-screen max-w-2xl transform transition duration-500 ease-in-out">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl text-right">
-                    
-                    {/* Header */}
-                    <div className="bg-indigo-900 px-6 py-6 text-white sm:flex sm:items-center sm:justify-between">
-                      <div className="space-y-1">
-                        <h2 className="text-xl font-bold text-white" id="slide-over-title">ملف تفاصيل مستوى الطالب</h2>
-                        <p className="text-xs text-indigo-200">تحليل مفصل للمحاولات والمهارات وتوصيات المعلم</p>
-                      </div>
-                      <button onClick={() => setSelectedStudentId(null)} className="rounded-md text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
-                        <X size={24} />
-                      </button>
-                    </div>
-
-                    {/* Content */}
-                    <div className="relative flex-1 px-6 py-6 space-y-6">
-                      
-                      {/* Student Info Summary */}
-                      <div className="flex items-center justify-between border-b border-gray-100 pb-5">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center font-black text-indigo-700 text-xl shadow-xs">
-                            {activeStudentDetails.name[0]}
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-black text-gray-900">{activeStudentDetails.name}</h3>
-                            <p className="text-xs text-gray-500 mt-1">{activeStudentDetails.schoolName} • {activeStudentDetails.className} • {activeStudentDetails.gradeName}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-16 h-16 rounded-full border-4 border-indigo-500 flex flex-col items-center justify-center bg-indigo-50">
-                            <span className="text-base font-black text-indigo-700">{activeStudentDetails.average}%</span>
-                            <span className="text-[8px] text-gray-500">المعدل</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Intervention Quick Actions inside Drawer */}
-                      <div className="rounded-xl bg-gray-50 p-4 border border-gray-100">
-                        <h4 className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">الإجراءات السريعة للمشرف</h4>
-                        <div className="flex flex-wrap gap-2">
-                          <button onClick={() => void sendStudentFollowUpAlert(activeStudentDetails)}
-                            className="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
-                          >
-                            <Send size={14} />
-                            إرسال تنبيه متابعة
-                          </button>
-                          <button onClick={() => openStudentQuiz(activeStudentDetails.id)}
-                            className="flex-1 rounded-xl bg-amber-50 border border-amber-200 px-4 py-2.5 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-colors flex items-center justify-center gap-2"
-                          >
-                            <ClipboardList size={14} />
-                            توجيه خطة علاجية
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Skill Mastery Map */}
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-bold text-gray-900">خريطة المهارات والتحصيل (Skills Breakdown)</h4>
-                        {activeStudentDetails.resultsList.length > 0 ? (
-                          <div className="space-y-3 max-h-56 overflow-y-auto border border-gray-100 rounded-xl p-3 bg-gray-50/20">
-                            {activeStudentDetails.resultsList[0].skillsAnalysis?.map((sk) => {
-                              const masteryPct = Number(sk.mastery || 0);
-                              const levelColor = masteryPct < 60 ? 'bg-rose-500 text-rose-700' : masteryPct < 75 ? 'bg-amber-500 text-amber-700' : 'bg-emerald-500 text-emerald-700';
-                              const levelBg = masteryPct < 60 ? 'bg-rose-50' : masteryPct < 75 ? 'bg-amber-50' : 'bg-emerald-50';
-                              return (
-                                <div key={sk.skill} className="space-y-1.5 pb-2 border-b border-gray-50 last:border-0 last:pb-0">
-                                  <div className="flex justify-between items-center text-xs">
-                                    <span className="font-bold text-gray-800">{sk.skill}</span>
-                                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-black ${levelBg} ${levelColor.split(' ')[1]}`}>{masteryPct}%</span>
-                                  </div>
-                                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div className={`h-full rounded-full ${levelColor.split(' ')[0]}`} style={{ width: `${masteryPct}%` }} />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <div className="border border-dashed border-gray-200 rounded-xl p-6 text-center text-xs text-gray-400">
-                            لم يؤدِ هذا الطالب أي اختبارات تتضمن تحليلاً للمهارات بعد.
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Recent Quiz Attempts List */}
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-bold text-gray-900">سجل محاولات الاختبار</h4>
-                        {activeStudentDetails.resultsList.length > 0 ? (
-                          <div className="overflow-x-auto border border-gray-100 rounded-xl">
-                            <table className="w-full text-right text-xs">
-                              <thead>
-                                <tr className="bg-gray-50 border-b border-gray-100">
-                                  <th className="px-4 py-2.5 font-bold text-gray-500">اسم الاختبار</th>
-                                  <th className="px-4 py-2.5 font-bold text-gray-500 text-center">الدرجة</th>
-                                  <th className="px-4 py-2.5 font-bold text-gray-500">التاريخ</th>
-                                  <th className="px-4 py-2.5 font-bold text-gray-500 text-center">التقرير</th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-gray-50">
-                                {activeStudentDetails.resultsList.map((r, i) => (
-                                  <tr key={i} className="hover:bg-gray-50/50">
-                                    <td className="px-4 py-3 font-bold text-gray-800 truncate max-w-[160px]">{r.quizTitle}</td>
-                                    <td className="px-4 py-3 text-center">
-                                      <span className={`font-black text-sm ${r.score >= 80 ? 'text-emerald-600' : r.score >= 60 ? 'text-amber-600' : 'text-rose-600'}`}>
-                                        {r.score}%
-                                      </span>
-                                    </td>
-                                    <td className="px-4 py-3 text-gray-500">{new Date(r.date).toLocaleDateString('ar-EG')}</td>
-                                    <td className="px-4 py-3 text-center">
-                                      <button onClick={() => openStudentReport(activeStudentDetails.id)} className="text-indigo-600 hover:text-indigo-800 font-bold transition-colors">
-                                        عرض التقرير
-                                      </button>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        ) : (
-                          <div className="border border-dashed border-gray-200 rounded-xl p-6 text-center text-xs text-gray-400">
-                            لا تتوفر محاولات اختبار مسجلة للطالب.
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* ===== SKILL DETAILS SUB-DRAWER / MODAL ===== */}
         {selectedSkillFilter && (
