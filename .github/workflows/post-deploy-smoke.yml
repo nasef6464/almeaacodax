@@ -13,8 +13,8 @@ jobs:
     env:
       SMOKE_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
       SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
-      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL }}
-      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
       SMOKE_ALLOW_PASSWORD_LOGIN: "true"
     steps:
       - name: Checkout
@@ -42,8 +42,14 @@ jobs:
         run: |
           if [ -z "$SMOKE_ADMIN_TOKEN" ] && { [ -z "$SMOKE_ADMIN_EMAIL" ] || [ -z "$SMOKE_ADMIN_PASSWORD" ]; }; then
             echo "Operational smoke auth material is missing."
-            echo "Provide either SMOKE_ADMIN_TOKEN or both SMOKE_ADMIN_EMAIL + SMOKE_ADMIN_PASSWORD in GitHub Secrets."
+            echo "Provide SMOKE_ADMIN_TOKEN or an admin email/password pair in SMOKE_ADMIN_* or ROLE_ADMIN_* GitHub Secrets."
             exit 1
+          fi
+
+      - name: Prefer dedicated admin credentials over a stale token
+        run: |
+          if [ -n "$SMOKE_ADMIN_EMAIL" ] && [ -n "$SMOKE_ADMIN_PASSWORD" ]; then
+            echo "SMOKE_ADMIN_TOKEN=" >> "$GITHUB_ENV"
           fi
 
       - name: Operational smoke
