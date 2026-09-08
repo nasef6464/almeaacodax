@@ -53,7 +53,8 @@ sudo certbot --nginx -d example.com -d api.example.com
 
 ```bash
 curl -fsS https://api.example.com/api/health
-curl -fsS https://api.example.com/api/ready
+curl -fsS https://api.example.com/api/health/ready
+curl -fsS https://api.example.com/api/health/scale-ready
 pm2 status
 pm2 logs almeaa-codax-api --lines 100
 ```
