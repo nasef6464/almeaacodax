@@ -157,6 +157,7 @@ export const QuizPage: React.FC = () => {
   // Sections that have been locked (time expired or manually advanced)
   const [lockedSectionIds, setLockedSectionIds] = useState<Set<string>>(new Set());
   const activeQuizLoadKeyRef = useRef('');
+  const autoSubmitTriggeredRef = useRef(false);
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
@@ -451,6 +452,7 @@ export const QuizPage: React.FC = () => {
     setSectionTimeLeft(null);
     setQuestionTimeSpent({});
     setLockedSectionIds(new Set());
+    autoSubmitTriggeredRef.current = false;
 
     const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (resolveQuizSettings(foundQuiz).timeLimit || 0);
     const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
@@ -504,7 +506,13 @@ export const QuizPage: React.FC = () => {
       );
       setSelectedOptions(safeSelectedOptions);
       setCurrentQuestionIndex(Math.min(Math.max(savedProgress.currentQuestionIndex || 0, 0), Math.max(nextQuestions.length - 1, 0)));
-      setTimeLeft(typeof savedProgress.timeLeft === 'number' ? Math.max(savedProgress.timeLeft, 0) : defaultTimeLeft);
+      const restoredTimeLeft =
+        defaultTimeLeft !== null
+          ? (typeof savedProgress.timeLeft === 'number' && savedProgress.timeLeft > 0
+              ? savedProgress.timeLeft
+              : defaultTimeLeft)
+          : null;
+      setTimeLeft(restoredTimeLeft);
     } else {
       setSelectedOptions({});
       setCurrentQuestionIndex(0);
@@ -521,7 +529,7 @@ export const QuizPage: React.FC = () => {
       questionIds: quizQuestions.map((question) => question.id),
       selectedOptions,
       currentQuestionIndex,
-      timeLeft,
+      timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
     };
 
@@ -587,7 +595,8 @@ export const QuizPage: React.FC = () => {
       const timerId = window.setTimeout(() => setTimeLeft((t) => (t !== null ? t - 1 : null)), 1000);
       return () => window.clearTimeout(timerId);
     }
-    if (timeLeft === 0 && !isFinished && !isSubmittingResult) {
+    if (timeLeft === 0 && !isFinished && !isSubmittingResult && !autoSubmitTriggeredRef.current) {
+      autoSubmitTriggeredRef.current = true;
       handleFinish();
     }
   }, [timeLeft, isFinished, isSubmittingResult]);
@@ -634,8 +643,9 @@ export const QuizPage: React.FC = () => {
     const nextSection = mockExamSectionSummaries.slice(currentIdx + 1).find((s) => !lockedSectionIds.has(s.id));
     if (nextSection && nextSection.firstQuestionIndex >= 0) {
       setCurrentQuestionIndex(nextSection.firstQuestionIndex);
-    } else {
+    } else if (!autoSubmitTriggeredRef.current) {
       // All sections exhausted → finish the exam
+      autoSubmitTriggeredRef.current = true;
       handleFinish();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -862,7 +872,7 @@ export const QuizPage: React.FC = () => {
       questionIds: quizQuestions.map((question) => question.id),
       selectedOptions,
       currentQuestionIndex,
-      timeLeft,
+      timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
     };
 
@@ -1062,9 +1072,10 @@ export const QuizPage: React.FC = () => {
         hydrateExamResults([savedServerResult, ...examResults]);
         submissionSucceeded = true;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Unable to submit quiz on server; keeping local progress for a retry:', error);
-      showQuizStatus('تعذر إرسال النتيجة. تم الاحتفاظ بتقدمك لإعادة المحاولة.', 'info');
+      const serverMessage = error?.message || 'تعذر إرسال النتيجة. تم الاحتفاظ بتقدمك لإعادة المحاولة.';
+      showQuizStatus(serverMessage, 'info');
     } finally {
       setIsSubmittingResult(false);
     }
@@ -1096,6 +1107,7 @@ export const QuizPage: React.FC = () => {
     if (typeof window !== 'undefined') {
       removeQuizProgressDraft(quiz.id);
     }
+    autoSubmitTriggeredRef.current = false;
     setSelectedOptions({});
     setCurrentQuestionIndex(0);
     setIsFinished(false);
