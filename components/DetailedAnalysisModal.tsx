@@ -99,84 +99,96 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
   const weakestSkill = displaySkills[0];
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm sm:p-4" dir="rtl">
-      <div className="w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-2xl animate-scale-up">
-        <div className="flex items-center justify-between gap-3 border-b border-gray-100 p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-3 backdrop-blur-sm sm:p-4 animate-fade-in" dir="rtl">
+      <div id="skills-analysis-modal-content" className="w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-2xl border border-slate-200/80 animate-scale-up">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 border-b border-slate-100 p-5 bg-gradient-to-r from-indigo-50/60 via-white to-white">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700">
-              <Target size={20} />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-sm shadow-indigo-200">
+              <Target size={22} />
             </div>
             <div className="min-w-0">
-              <h2 className="truncate text-base font-black text-gray-900">تحليل المهارات</h2>
-              <p className="mt-0.5 text-xs font-bold text-gray-500">
-                {mode === 'bank' ? 'من التدريب' : 'من الاختبار'} • {displaySkills.length} مهارات تم قياسها
+              <h2 className="truncate text-base sm:text-lg font-black text-slate-900">تقرير تحليل المهارات التفصيلي</h2>
+              <p className="mt-0.5 text-xs font-bold text-slate-500">
+                {mode === 'bank' ? 'من التدريب' : 'من الاختبار'} • {displaySkills.length} مهارات تم قياسها بدقة
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-50 text-gray-500 transition-colors hover:bg-gray-100"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800"
             aria-label="إغلاق"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="max-h-[72vh] space-y-3 overflow-y-auto p-4">
+        {/* Modal Scrollable Content */}
+        <div className="max-h-[72vh] space-y-4 overflow-y-auto p-4 sm:p-5">
           {weakestSkill ? (
-            <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-4 shadow-xs">
+            <div className="rounded-2xl border border-rose-200 bg-gradient-to-br from-rose-50/80 via-white to-rose-50/30 p-4 sm:p-5 shadow-xs">
               <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-0.5 text-xs font-black text-rose-700 shadow-xs">
-                  أول تركيز موصى به
+                <span className="inline-flex items-center gap-1 rounded-full bg-rose-600 px-3 py-1 text-xs font-black text-white shadow-xs">
+                  أول تركيز موصى به للتحسين
                 </span>
-                <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-black text-rose-800">
-                  {weakestSkill.percentage}%
+                <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-black text-rose-800 border border-rose-200">
+                  {weakestSkill.percentage}% إتقان
                 </span>
               </div>
-              <div className="mt-2 text-base font-black text-gray-900">{weakestSkill.name}</div>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-gray-600">
-                {weakestSkill.recommendation || 'ابدأ بشرح قصير لهذه المهارة ثم انتقل للتدريب عليها لتثبيتها.'}
+              <div className="mt-2.5 text-base sm:text-lg font-black text-slate-900">{weakestSkill.name}</div>
+              <p className="mt-1.5 text-xs sm:text-sm font-bold leading-relaxed text-slate-600">
+                {weakestSkill.recommendation || 'ابدأ بمراجعة شرح هذه المهارة أولاً ثم نفّذ تدريباً قصيراً لرفع نسبة إتقانك وتثبيت المعلومة.'}
               </p>
             </div>
           ) : null}
 
-          <div className="grid gap-2.5">
+          <div className="space-y-3">
+            <span className="text-xs font-black text-slate-400 block px-1">
+              جميع المهارات المقاسة ({displaySkills.length}):
+            </span>
+
             {displaySkills.map((skill, idx) => {
               const levelMeta = getSimpleLevel(skill.percentage);
 
               return (
-                <div key={`${skill.name}-${idx}`} className="rounded-2xl border border-gray-100 bg-white p-3.5 shadow-xs transition-shadow hover:shadow-sm">
+                <div
+                  key={`${skill.name}-${idx}`}
+                  className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs transition-all hover:shadow-sm hover:border-indigo-100"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[11px] font-black">
+                      <div className="mb-2 flex flex-wrap items-center gap-1.5 text-[11px] font-black">
                         {skill.subjectName ? (
-                          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600">
+                          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-slate-600">
                             {skill.subjectName}
                           </span>
                         ) : null}
                         {skill.sectionName ? (
-                          <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-indigo-700">
+                          <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-indigo-700">
                             {skill.sectionName}
                           </span>
                         ) : null}
-                        <span className={`rounded-full px-2 py-0.5 ${levelMeta.className}`}>
+                        <span className={`rounded-md px-2 py-0.5 ${levelMeta.className}`}>
                           {levelMeta.label}
                         </span>
                       </div>
-                      <h3 className="break-words text-sm font-black text-gray-900">
+                      <h3 className="break-words text-sm sm:text-base font-black text-slate-900">
                         {skill.name}
                       </h3>
                       {skill.recommendation && skill.name !== weakestSkill?.name ? (
-                        <p className="mt-1 text-xs font-bold leading-5 text-gray-500">{skill.recommendation}</p>
+                        <p className="mt-1.5 text-xs font-bold leading-5 text-slate-500">{skill.recommendation}</p>
                       ) : null}
                     </div>
 
-                    <div className="shrink-0 rounded-2xl bg-gray-50 px-3 py-1.5 text-center">
-                      <div className="text-base font-black text-gray-900">{skill.percentage}%</div>
+                    <div className="shrink-0 rounded-2xl bg-slate-50 border border-slate-100 px-3.5 py-2 text-center">
+                      <div className="text-base sm:text-lg font-black text-slate-900">{skill.percentage}%</div>
+                      <div className="text-[10px] font-bold text-slate-400">
+                        {skill.percentage >= 80 ? 'إتقان عالٍ' : skill.percentage >= 60 ? 'متوسط' : 'يحتاج دعم'}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-gray-100">
+                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
                     <div
                       className={`h-full ${skill.percentage >= 80 ? 'bg-emerald-500' : skill.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'} transition-all duration-500 ease-out`}
                       style={{ width: `${skill.percentage}%` }}
@@ -186,12 +198,25 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
               );
             })}
           </div>
+        </div>
 
+        {/* Footer */}
+        <div className="border-t border-slate-100 bg-slate-50/80 p-4 flex items-center justify-between gap-3">
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-gray-900 py-2.5 text-sm font-black text-white transition-colors hover:bg-gray-800"
+            className="rounded-xl bg-white border border-slate-200 px-5 py-2.5 text-xs sm:text-sm font-black text-slate-700 transition-colors hover:bg-slate-100 shadow-xs"
           >
             إغلاق
+          </button>
+          <button
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.print();
+              }
+            }}
+            className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs sm:text-sm font-black text-white transition-colors hover:bg-indigo-700 shadow-sm shadow-indigo-100"
+          >
+            طباعة تقرير المهارات 🖨️
           </button>
         </div>
       </div>
