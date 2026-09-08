@@ -21,7 +21,7 @@ const files = {
   videoProgress: "utils/interactiveVideoProgress.ts",
 };
 
-const read = (path) => readFileSync(path, "utf8");
+const read = (path) => readFileSync(path, "utf8").replace(/\r\n/g, "\n");
 const source = Object.fromEntries(Object.entries(files).map(([key, path]) => [key, read(path)]));
 
 const checks = [
