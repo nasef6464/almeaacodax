@@ -638,11 +638,29 @@ const Results: React.FC = () => {
   };
 
   const averageTimeSeconds = React.useMemo(() => {
-    if (!latestResult || !latestResult.questionReview || latestResult.questionReview.length === 0) return 0;
-    const answeredQuestions = latestResult.questionReview.filter((q) => q.timeSpentSeconds !== undefined);
-    if (answeredQuestions.length === 0) return 0;
-    const totalSeconds = answeredQuestions.reduce((sum, q) => sum + (q.timeSpentSeconds || 0), 0);
-    return Math.round(totalSeconds / answeredQuestions.length);
+    if (!latestResult) return 0;
+    if (latestResult.questionReview && latestResult.questionReview.length > 0) {
+      const answeredQuestions = latestResult.questionReview.filter((q) => q.timeSpentSeconds !== undefined);
+      if (answeredQuestions.length > 0) {
+        const totalSeconds = answeredQuestions.reduce((sum, q) => sum + (q.timeSpentSeconds || 0), 0);
+        const avg = Math.round(totalSeconds / answeredQuestions.length);
+        if (avg > 0) return avg;
+      }
+    }
+    // Fallback: estimate from timeSpent string if available
+    if (latestResult.totalQuestions > 0 && latestResult.timeSpent) {
+      if (latestResult.timeSpent.includes('أقل من دقيقة')) {
+        return Math.max(1, Math.round(30 / latestResult.totalQuestions));
+      }
+      const match = latestResult.timeSpent.match(/(\d+)/);
+      if (match) {
+        const minutes = Number(match[1]);
+        if (minutes > 0) {
+          return Math.round((minutes * 60) / latestResult.totalQuestions);
+        }
+      }
+    }
+    return 0;
   }, [latestResult]);
 
   const donutData = [
@@ -808,7 +826,7 @@ const Results: React.FC = () => {
                 <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
                 <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
                 <SimpleResultStat label="وقت الحل" value={latestResult.timeSpent} />
-                <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/سؤال` : 'غير متاح'} />
+                <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/سؤال` : (latestResult.timeSpent && latestResult.timeSpent.includes('أقل من دقيقة') ? '< 5 ث/سؤال' : 'سريع')} />
               </div>
 
               {latestResult.unanswered > 0 ? (
@@ -863,7 +881,7 @@ const Results: React.FC = () => {
           ) : null}
 
           {/* Primary Action Buttons - Ordered for optimal student journey */}
-          <div className="mt-6 flex flex-wrap items-center gap-2.5 pt-4 border-t border-slate-200/70">
+          <div className="mt-6 flex flex-wrap items-center gap-3 pt-5 border-t border-slate-200/80">
             <button
               onClick={() => {
                 if (questionReviewCount > 0) {
@@ -871,38 +889,38 @@ const Results: React.FC = () => {
                 }
               }}
               disabled={questionReviewCount === 0}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition-all hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-sm shadow-emerald-200 transition-all hover:bg-emerald-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
             >
-              <Eye size={16} />
-              {questionReviewCount > 0 ? 'مراجعة الحلول والأخطاء' : 'المراجعة غير متاحة'}
+              <Eye size={17} />
+              <span>{questionReviewCount > 0 ? `مراجعة الحلول والأخطاء (${questionReviewCount})` : 'المراجعة غير متاحة'}</span>
             </button>
             <Link
               to={additionalQuizLink}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white shadow-sm shadow-indigo-100 transition-all hover:bg-indigo-700 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-md"
             >
-              <PlusCircle size={16} />
-              اختبار تدريبي إضافي
+              <PlusCircle size={17} />
+              <span>اختبار تدريبي إضافي</span>
             </Link>
             <Link
               to={retryQuizLink}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-700 shadow-xs transition-all hover:bg-slate-50 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs sm:text-sm font-black text-slate-700 shadow-xs transition-all hover:bg-slate-50 hover:border-slate-300"
             >
               <RefreshCw size={16} />
-              إعادة الاختبار
+              <span>إعادة الاختبار</span>
             </Link>
             <button
               onClick={() => setIsAnalysisOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-xs font-black text-indigo-700 shadow-xs transition-all hover:bg-indigo-100 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/80 px-4 py-3 text-xs sm:text-sm font-black text-indigo-700 shadow-xs transition-all hover:bg-indigo-100 hover:border-indigo-300"
             >
               <BarChart3 size={16} />
-              تقرير تفصيلي
+              <span>تقرير تفصيلي</span>
             </button>
             <button
               onClick={() => setViewMode('history')}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-black text-slate-700 shadow-xs transition-all hover:bg-slate-50 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs sm:text-sm font-black text-slate-700 shadow-xs transition-all hover:bg-slate-50 hover:border-slate-300"
             >
               <History size={16} />
-              المحاولات السابقة
+              <span>المحاولات السابقة</span>
             </button>
           </div>
         </div>
@@ -1479,131 +1497,264 @@ const ReviewSolutions = ({
   const isReviewLater = reviewLater.includes(q.questionId);
   const reviewOptionLayout = 'horizontal' as const;
 
+  const wasAnswered = typeof q.selectedOptionIndex === 'number' && q.selectedOptionIndex !== -1;
+  const wasCorrect = q.isCorrect;
+
   return (
-    <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5 pb-20 animate-fade-in">
-      <header className="flex items-center justify-between gap-3 mb-6 flex-wrap">
-        <div className="flex items-center gap-4">
-          <button onClick={onBack} className="text-gray-500 hover:text-indigo-600 transition-colors">
-            <ArrowRight />
+    <div className="mx-auto max-w-6xl space-y-5 pb-20 animate-fade-in" dir="rtl">
+      {/* Top Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-200/80">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onBack}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 hover:text-indigo-600 shadow-xs"
+            aria-label="العودة للملخص"
+          >
+            <ArrowRight size={20} />
           </button>
           <div>
-            <h1 className="text-xl font-bold">مراجعة الحلول</h1>
-            <p className="mt-1 text-sm text-gray-500">راجع السؤال عند الحاجة.</p>
+            <h1 className="text-xl font-black text-slate-900">مراجعة الحلول والأسئلة</h1>
+            <p className="text-xs font-bold text-slate-500">
+              {displayText(result.quizTitle)} • تفاصيل الإجابات والشرح النموذجي
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="bg-amber-500 text-white px-4 py-1.5 rounded-xl text-sm font-bold">
-            السؤال {currentIdx + 1} من {questions.length}
-          </span>
+
+        <div className="flex flex-wrap items-center gap-2">
           <button
+            type="button"
             onClick={() => toggleFavorite(q.questionId)}
-            className={`${isFavorite ? 'bg-rose-500 hover:bg-rose-600' : 'bg-indigo-500 hover:bg-indigo-600'} text-white px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-colors`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
+              isFavorite ? 'bg-rose-500 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
+            }`}
           >
-            {isFavorite ? <Trash2 size={15} /> : <Star size={15} />}
-            {isFavorite ? 'في المفضلة' : 'المفضلة'}
+            <Star size={14} className={isFavorite ? 'fill-current' : ''} />
+            <span>{isFavorite ? 'في المفضلة' : 'المفضلة'}</span>
           </button>
           <button
+            type="button"
             onClick={() => toggleReviewLater(q.questionId)}
-            className={`${isReviewLater ? 'bg-purple-600 hover:bg-purple-700' : 'bg-amber-500 hover:bg-amber-600'} text-white px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-colors`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
+              isReviewLater ? 'bg-purple-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
+            }`}
           >
-            <Star size={15} className={isReviewLater ? 'fill-current' : ''} />
-            {isReviewLater ? 'للمراجعة' : 'راجع لاحقًا'}
+            <Star size={14} className={isReviewLater ? 'fill-current' : ''} />
+            <span>{isReviewLater ? 'للمراجعة' : 'راجع لاحقًا'}</span>
           </button>
-          <span className="bg-slate-50 text-slate-600 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 flex items-center gap-1.5" title="الوقت المستغرق في حل هذا السؤال">
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black bg-slate-100 text-slate-600 border border-slate-200/80"
+            title="الوقت المستغرق في حل هذا السؤال"
+          >
             ⏳ {q.timeSpentSeconds || 0} ث
           </span>
         </div>
       </header>
 
-      <Card className="p-0 overflow-hidden border border-gray-100 shadow-sm">
-        <div className="p-3 sm:p-8 bg-white">
-          <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-5 sm:mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[180px] sm:min-h-[220px]">
-            <div
-              onClick={handleInlineQuestionImageClick}
-              className="question-html mb-5 sm:mb-6 px-2 text-center text-base sm:text-xl font-bold leading-loose text-gray-800 sm:px-4 [&_img]:cursor-zoom-in"
-              dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
-            />
-            {q.imageUrl ? (
+      {/* 2-Column Quiz Runner Layout (Matches QuizPage.tsx modern design) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Main Column: Isolated Question Card (lg:col-span-8) */}
+        <div className="lg:col-span-8 space-y-5">
+          <Card className="p-5 sm:p-7 border border-slate-200/80 bg-white shadow-sm rounded-3xl">
+            
+            {/* Top Bar of Question Card */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-6 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-xs">
+                  السؤال {currentIdx + 1} من {questions.length}
+                </span>
+                {wasAnswered ? (
+                  wasCorrect ? (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <CheckCircle2 size={13} className="text-emerald-600" />
+                      إجابة صحيحة
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-black bg-rose-50 text-rose-700 border border-rose-200">
+                      <AlertCircle size={13} className="text-rose-600" />
+                      إجابة خاطئة
+                    </span>
+                  )
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-black bg-amber-50 text-amber-800 border border-amber-200">
+                    لم تتم الإجابة
+                  </span>
+                )}
+              </div>
+              <div className="text-xs font-bold text-slate-400">
+                {filterMode !== 'all' ? (
+                  <span className="bg-slate-100 px-2 py-0.5 rounded-md text-slate-600">
+                    عرض المصفى: {currentFilteredPos + 1} من {filteredIndices.length}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            {/* Question Prompt Body */}
+            <div className="space-y-4 mb-8">
+              <div
+                onClick={handleInlineQuestionImageClick}
+                className="question-html text-base sm:text-lg font-bold leading-relaxed text-slate-900 [&_img]:cursor-zoom-in"
+                dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
+              />
+
+              {q.imageUrl ? (
+                <div className="relative group cursor-zoom-in rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 sm:p-3 shadow-xs">
+                  <img
+                    src={q.imageUrl}
+                    alt="صورة السؤال"
+                    className="mx-auto max-h-56 sm:max-h-72 w-full object-contain rounded-xl"
+                    referrerPolicy="no-referrer"
+                    onClick={() => setZoomedImageUrl(q.imageUrl || null)}
+                  />
+                  <div
+                    onClick={() => setZoomedImageUrl(q.imageUrl || null)}
+                    className="mt-2 text-center text-xs font-bold text-indigo-600 flex items-center justify-center gap-1 hover:underline cursor-pointer"
+                  >
+                    🔍 اضغط على الصورة للتكبير
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Options List (Radio Circle Cards - NO Duplicate Letters) */}
+            <div className={`grid ${getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2.5 sm:gap-3 mb-6`}>
+              {q.options.map((option, i) => {
+                const isUserChoice = i === q.selectedOptionIndex;
+
+                let cardStyle = 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
+                let radioStyle = 'border-slate-300 bg-white';
+                let badgeText = '';
+                let badgeClass = '';
+
+                if (isUserChoice) {
+                  if (wasCorrect) {
+                    cardStyle = 'border-emerald-500 bg-emerald-50/60 text-slate-900 shadow-xs';
+                    radioStyle = 'border-emerald-500 bg-emerald-500 text-white';
+                    badgeText = '✓ اختيارك (صحيح)';
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                  } else {
+                    cardStyle = 'border-rose-500 bg-rose-50/60 text-slate-900 shadow-xs';
+                    radioStyle = 'border-rose-500 bg-rose-500 text-white';
+                    badgeText = '✗ اختيارك (خاطئ)';
+                    badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
+                  }
+                }
+
+                return (
+                  <div
+                    key={`${q.questionId}-${i}`}
+                    className={`flex ${getQuizOptionButtonHeightClass(q.options, reviewOptionLayout)} items-center justify-between gap-3 rounded-2xl border-2 p-3 sm:p-4 text-right transition-all ${cardStyle}`}
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black transition-all ${radioStyle}`}>
+                        {isUserChoice ? (wasCorrect ? '✓' : '✕') : ''}
+                      </div>
+                      <span
+                        className="question-html flex-1 text-sm sm:text-base font-bold leading-relaxed text-slate-800 break-words"
+                        dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
+                      />
+                    </div>
+                    {badgeText ? (
+                      <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${badgeClass}`}>
+                        {badgeText}
+                      </span>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Integrated Review Note / Video Solution Card */}
+            {showExplanation || q.videoUrl ? (
+              <div className="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 sm:p-5 mb-6 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-black text-indigo-700 bg-white px-3 py-1 rounded-full shadow-xs">
+                    💡 مراجعة وتقييم السؤال
+                  </span>
+                  {q.videoUrl ? (
+                    <button
+                      type="button"
+                      onClick={() => onShowVideo(q.videoUrl!, `شرح السؤال ${currentIdx + 1}`)}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs transition-all"
+                    >
+                      <PlayCircle size={15} />
+                      <span>تشغيل شرح الفيديو</span>
+                    </button>
+                  ) : null}
+                </div>
+                <p className="text-xs font-bold text-slate-500 leading-relaxed">
+                  تم إخفاء الإجابة النموذجية والشرح التحريري لحماية بنك الأسئلة. يمكنك مراجعة اختيارك وحالة إجابتك أعلاه.
+                </p>
+              </div>
+            ) : null}
+
+            {/* Question Card Navigation Bar */}
+            <div className="flex items-center justify-between pt-5 border-t border-slate-100">
               <button
                 type="button"
-                onClick={() => setZoomedImageUrl(q.imageUrl || null)}
-                className="block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-2 sm:p-3 shadow-sm"
+                onClick={handlePrevQuestion}
+                disabled={filterMode === 'all' ? currentIdx === 0 : currentFilteredPos <= 0}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 shadow-xs transition-all"
               >
-                <img src={q.imageUrl} alt="صورة السؤال" className="mx-auto max-h-56 sm:max-h-64 w-full object-contain" referrerPolicy="no-referrer" />
+                <ArrowRight size={15} />
+                <span>السابق</span>
               </button>
-            ) : !questionHasInlineMedia ? null : null}
-          </div>
 
-          <div className={`grid ${getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2 sm:gap-3 mb-5 sm:mb-8`}>
-            {q.options.map((option, i) => {
-              const isUser = i === q.selectedOptionIndex;
+              <button
+                type="button"
+                onClick={() => setShowExplanation((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                  showExplanation
+                    ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                    : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                }`}
+              >
+                <Eye size={14} />
+                <span>{showExplanation ? 'إخفاء الملاحظات' : 'إظهار الملاحظات'}</span>
+              </button>
 
-              let borderClass = 'border-gray-200 text-gray-400';
-              let bgClass = 'bg-white';
-              let helperLabel = '';
-
-              if (showExplanation) {
-                if (isUser && q.isCorrect) {
-                  borderClass = 'border-emerald-500 text-emerald-600';
-                  bgClass = 'bg-emerald-50';
-                  helperLabel = 'اختيارك صحيح';
-                } else if (isUser) {
-                  borderClass = 'border-red-500 text-red-600';
-                  bgClass = 'bg-red-50';
-                  helperLabel = 'اختيارك';
-                }
-              } else if (isUser) {
-                borderClass = 'border-indigo-500 text-indigo-600';
-                bgClass = 'bg-indigo-50';
-                helperLabel = 'اختيارك';
-              }
-
-              return (
-                <button
-                  key={`${q.questionId}-${i}`}
-                  type="button"
-                  className={`group flex ${getQuizOptionButtonHeightClass(q.options, reviewOptionLayout)} items-center justify-between gap-2 rounded-xl border-2 px-2.5 py-1.5 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
-                >
-                  <div className="flex min-w-0 flex-1 items-center gap-2">
-                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
-                    <span
-                      className="question-html flex-1 text-center text-sm font-bold leading-6 text-gray-700 break-words"
-                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
-                    />
-                  </div>
-                  {helperLabel ? (
-                    <span
-                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${
-                        isUser && q.isCorrect
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : showExplanation && isUser
-                            ? 'bg-rose-100 text-rose-700'
-                            : isUser
-                              ? 'bg-indigo-100 text-indigo-700'
-                              : 'bg-gray-100 text-gray-600'
-                      }`}
-                    >
-                      {helperLabel}
-                    </span>
-                  ) : null}
-                </button>
-              );
-            })}
-          </div>
+              <button
+                type="button"
+                onClick={handleNextQuestion}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-100 transition-all"
+              >
+                <span>
+                  {(filterMode === 'all' ? currentIdx === questions.length - 1 : currentFilteredPos === filteredIndices.length - 1)
+                    ? 'إنهاء المراجعة'
+                    : 'التالي'}
+                </span>
+                <ChevronRightIcon size={15} className="transform rotate-180" />
+              </button>
+            </div>
+          </Card>
         </div>
 
-        <div className="bg-gray-50 p-3 sm:p-4 border-t border-gray-100 flex flex-col gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-white p-3 sm:p-4 shadow-xs">
-            {/* شريط الفلاتر السريعة للمراجعة */}
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
-              <div className="flex flex-wrap items-center gap-1.5 text-xs font-black">
-                <span className="text-gray-400 ml-1">تصفية:</span>
+        {/* Sidebar Column: Sticky Review Board (lg:col-span-4) */}
+        <div className="lg:col-span-4 space-y-4 sticky top-6">
+          <Card className="p-5 border border-slate-200/80 bg-white shadow-sm rounded-3xl space-y-5">
+            
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h2 className="font-black text-slate-900 text-sm">لوحة مراجعة الأسئلة</h2>
+                <p className="text-[11px] font-bold text-slate-400 mt-0.5">انقر على أي سؤال للانتقال الفوري</p>
+              </div>
+              <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-black text-xs">
+                {questions.length} أسئلة
+              </span>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-slate-400 block">تصفية حسب النتيجة:</span>
+              <div className="grid grid-cols-2 gap-1.5 text-xs font-black">
                 <button
                   type="button"
                   onClick={() => handleFilterChange('all')}
-                  className={`rounded-lg px-2.5 py-1 transition-all ${
+                  className={`py-2 px-2.5 rounded-xl text-center transition-all ${
                     filterMode === 'all'
-                      ? 'bg-slate-800 text-white shadow-xs'
+                      ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -1612,179 +1763,137 @@ const ReviewSolutions = ({
                 <button
                   type="button"
                   onClick={() => handleFilterChange('wrong')}
-                  className={`rounded-lg px-2.5 py-1 transition-all ${
+                  className={`py-2 px-2.5 rounded-xl text-center transition-all ${
                     filterMode === 'wrong'
-                      ? 'bg-rose-600 text-white shadow-xs ring-2 ring-rose-200'
-                      : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
+                      ? 'bg-rose-600 text-white shadow-xs'
+                      : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-100'
                   }`}
                 >
                   الأخطاء فقط ({questionFilterCounts.wrong})
                 </button>
-                {questionFilterCounts.unanswered > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => handleFilterChange('unanswered')}
-                    className={`rounded-lg px-2.5 py-1 transition-all ${
-                      filterMode === 'unanswered'
-                        ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-200'
-                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                    }`}
-                  >
-                    بدون إجابة ({questionFilterCounts.unanswered})
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => handleFilterChange('correct')}
-                  className={`rounded-lg px-2.5 py-1 transition-all ${
+                  className={`py-2 px-2.5 rounded-xl text-center transition-all ${
                     filterMode === 'correct'
-                      ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-200'
-                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-100'
                   }`}
                 >
                   الصحيحة ({questionFilterCounts.correct})
                 </button>
-              </div>
-
-              {questionFilterCounts.wrong > 0 && filterMode === 'all' && (
                 <button
                   type="button"
-                  onClick={() => handleFilterChange('wrong')}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:text-rose-700 underline underline-offset-2"
+                  onClick={() => handleFilterChange('unanswered')}
+                  className={`py-2 px-2.5 rounded-xl text-center transition-all ${
+                    filterMode === 'unanswered'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-100'
+                  }`}
                 >
-                  الانتقال للأخطاء مباشرة
+                  بدون إجابة ({questionFilterCounts.unanswered})
                 </button>
-              )}
-            </div>
-
-            {/* دليل الألوان */}
-            <div className="mb-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] sm:text-[11px] font-black text-gray-600">
-              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-indigo-600 ring-2 ring-indigo-100" />السؤال الحالي</span>
-              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />إجابة صحيحة</span>
-              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-rose-500 ring-2 ring-rose-100" />إجابة خاطئة</span>
-              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-white ring-2 ring-slate-300" />لم يجب</span>
-            </div>
-
-            {/* شبكة الأسئلة */}
-            {filteredIndices.length > 0 ? (
-              <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-10 sm:gap-2">
-                {filteredIndices.map((index) => {
-                  const question = questions[index];
-                  const isCurrent = index === currentIdx;
-                  const wasAnswered = typeof question.selectedOptionIndex === 'number' && question.selectedOptionIndex !== -1;
-                  const wasCorrect = question.isCorrect;
-                  const mapState = isCurrent
-                    ? 'current'
-                    : !wasAnswered
-                      ? 'unanswered'
-                      : wasCorrect
-                        ? 'correct'
-                        : 'wrong';
-
-                  return (
-                    <button
-                      key={`${question.questionId}-${index}`}
-                      type="button"
-                      onClick={() => {
-                        setCurrentIdx(index);
-                        setShowExplanation(false);
-                      }}
-                      className={`h-7 sm:h-8 rounded-lg border-2 text-xs font-black transition ${getQuizQuestionMapButtonClass(mapState)}`}
-                      title={`سؤال ${index + 1}: ${!wasAnswered ? 'لم تتم الإجابة' : wasCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}`}
-                    >
-                      {index + 1}
-                    </button>
-                  );
-                })}
               </div>
-            ) : (
-              <div className="py-4 text-center text-xs font-bold text-gray-500">
-                لا توجد أسئلة تطابق هذا الفلتر.
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-between">
-            {q.videoUrl ? (
-              <button
-                onClick={() => onShowVideo(q.videoUrl!, `شرح السؤال ${currentIdx + 1}`)}
-                className="inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-1.5 text-xs sm:text-sm font-black text-white shadow-sm shadow-emerald-100 transition-all hover:bg-emerald-600"
-              >
-                <PlayCircle size={15} />
-                شرح الفيديو
-              </button>
-            ) : null}
-            <button
-              onClick={() => setShowExplanation((value) => !value)}
-              className={`inline-flex min-w-[92px] items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-black transition-all shadow-sm ${
-                showExplanation
-                  ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100'
-                  : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
-              }`}
-            >
-              <Eye size={15} />
-              {showExplanation ? 'إخفاء التقييم' : 'إظهار التقييم'}
-            </button>
-            <button
-              onClick={handlePrevQuestion}
-              disabled={filterMode === 'all' ? currentIdx === 0 : currentFilteredPos <= 0}
-              className="inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs sm:text-sm font-black text-sky-700 transition-all hover:bg-sky-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400"
-            >
-              <ArrowRight size={15} />
-              السابق
-            </button>
-            <button
-              onClick={handleNextQuestion}
-              className="inline-flex min-w-[86px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs sm:text-sm font-black text-white transition-all hover:bg-indigo-700"
-            >
-              {(filterMode === 'all' ? currentIdx === questions.length - 1 : currentFilteredPos === filteredIndices.length - 1)
-                ? 'إنهاء المراجعة'
-                : 'التالي'}
-              <ChevronRightIcon size={15} className="transform rotate-180" />
-            </button>
-          </div>
-        </div>
-      </Card>
-
-      {showExplanation ? (
-        <div className="animate-slide-up">
-          <Card className="p-6 border-2 border-emerald-100 bg-emerald-50/30 space-y-4">
-            <div className="flex flex-wrap gap-3 text-sm font-bold">
-              <span className={`px-3 py-1 rounded-full ${q.isCorrect ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                {q.isCorrect ? 'إجابتك صحيحة' : 'إجابتك تحتاج مراجعة'}
-              </span>
-              {typeof q.selectedOptionIndex === 'number' ? (
-                <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700">
-                  اختيارك: {displayText(q.options[q.selectedOptionIndex]).replace(/<[^>]*>/g, ' ')}
-                </span>
-              ) : (
-                <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700">لم تُجب عن هذا السؤال</span>
-              )}
             </div>
 
-            <p className="text-gray-600 leading-relaxed">
-              تم إخفاء الإجابة الصحيحة والشرح التفصيلي حفاظًا على أمن بنك الأسئلة. يمكنك مراجعة اختيارك وحالة الإجابة فقط.
-            </p>
+            {/* Color Indicators Legend */}
+            <div className="bg-slate-50/80 rounded-2xl p-3 grid grid-cols-2 gap-2 text-[11px] font-bold text-slate-600 border border-slate-100">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span>صحيحة ({questionFilterCounts.correct})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span>خاطئة ({questionFilterCounts.wrong})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-amber-400"></span>
+                <span>لم يجب ({questionFilterCounts.unanswered})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-indigo-600 ring-2 ring-indigo-200"></span>
+                <span>الحالي</span>
+              </div>
+            </div>
+
+            {/* Interactive Question Map Grid */}
+            <div className="space-y-2">
+              <div className="max-h-56 overflow-y-auto p-1 grid grid-cols-6 gap-2">
+                {filteredIndices.length > 0 ? (
+                  filteredIndices.map((index) => {
+                    const question = questions[index];
+                    const isCurrent = index === currentIdx;
+                    const isQAnswered = typeof question.selectedOptionIndex === 'number' && question.selectedOptionIndex !== -1;
+                    const isQCorrect = question.isCorrect;
+
+                    let btnClass = 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50';
+                    if (isCurrent) {
+                      btnClass = isQCorrect
+                        ? 'bg-emerald-500 text-white ring-4 ring-indigo-300 shadow-xs'
+                        : !isQAnswered
+                          ? 'bg-amber-500 text-white ring-4 ring-indigo-300 shadow-xs'
+                          : 'bg-rose-500 text-white ring-4 ring-indigo-300 shadow-xs';
+                    } else if (!isQAnswered) {
+                      btnClass = 'bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100';
+                    } else if (isQCorrect) {
+                      btnClass = 'bg-emerald-500 text-white border-emerald-500 hover:bg-emerald-600';
+                    } else {
+                      btnClass = 'bg-rose-500 text-white border-rose-500 hover:bg-rose-600';
+                    }
+
+                    return (
+                      <button
+                        key={`${question.questionId}-${index}`}
+                        type="button"
+                        onClick={() => {
+                          setCurrentIdx(index);
+                          setShowExplanation(false);
+                        }}
+                        className={`h-9 rounded-xl font-black text-xs transition-all flex items-center justify-center ${btnClass}`}
+                        title={`سؤال ${index + 1}: ${!isQAnswered ? 'لم تتم الإجابة' : isQCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}`}
+                      >
+                        {index + 1}
+                      </button>
+                    );
+                  })
+                ) : (
+                  <div className="col-span-6 py-4 text-center text-xs font-bold text-slate-400">
+                    لا توجد أسئلة تطابق هذا الفلتر
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Sidebar Bottom Action Button */}
+            <button
+              type="button"
+              onClick={onBack}
+              className="w-full py-3 rounded-2xl text-xs sm:text-sm font-black bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-sm"
+            >
+              إنهاء المراجعة والعودة للملخص
+            </button>
           </Card>
         </div>
-      ) : null}
 
+      </div>
+
+      {/* Lightbox Image Modal */}
       {zoomedImageUrl ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-3 sm:p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 p-3 sm:p-4 backdrop-blur-sm animate-fade-in"
           onClick={() => setZoomedImageUrl(null)}
         >
           <button
             type="button"
             onClick={() => setZoomedImageUrl(null)}
-            className="absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+            className="absolute left-4 top-4 rounded-full bg-white/90 px-4 py-2 text-xs sm:text-sm font-black text-slate-800 shadow-lg hover:bg-white transition-all"
           >
-            إغلاق
+            ✕ إغلاق
           </button>
           <img
             src={zoomedImageUrl}
             alt="تكبير صورة السؤال"
-            className="max-h-[82vh] sm:max-h-[90vh] max-w-[96vw] rounded-2xl bg-white object-contain"
+            className="max-h-[85vh] max-w-[95vw] rounded-2xl bg-white object-contain shadow-2xl animate-scale-up"
             referrerPolicy="no-referrer"
             onClick={(event) => event.stopPropagation()}
           />
