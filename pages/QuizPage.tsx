@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types';
-import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
@@ -1160,9 +1160,9 @@ export const QuizPage: React.FC = () => {
 
   return (
     <div className={`min-h-screen py-4 transition-colors sm:py-8 ${isNightMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'}`} dir="rtl">
-      <div className="max-w-3xl mx-auto px-3 sm:px-4">
+      <div className={`${isFinished ? 'max-w-4xl' : 'max-w-7xl'} mx-auto px-3 sm:px-6 transition-all duration-300`}>
         {/* Header: Identity, Timer & Utilities */}
-        <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl shadow-sm border p-4 sm:p-5 mb-4`}>
+        <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl shadow-sm border p-4 sm:p-5 mb-5`}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <button
@@ -1181,10 +1181,10 @@ export const QuizPage: React.FC = () => {
               </h1>
             </div>
 
-            {/* Middle: Timer display */}
-            <div className="flex items-center gap-2 self-start sm:self-auto">
+            {/* Mobile-only Timer Indicator (visible on mobile screens when Question Board is below) */}
+            <div className="flex items-center gap-2 self-start sm:self-auto lg:hidden">
               {sectionTimeLeft !== null && !isFinished && currentMockExamSection && (
-                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl font-bold text-xs border ${
+                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-xl font-bold text-xs border ${
                   sectionTimeLeft <= 60
                     ? 'bg-red-100 border-red-200 text-red-700 animate-pulse'
                     : isNightMode ? 'bg-violet-950/80 border-violet-900 text-violet-200' : 'bg-violet-50 border-violet-200 text-violet-700'
@@ -1194,9 +1194,9 @@ export const QuizPage: React.FC = () => {
                 </div>
               )}
               {timeLeft !== null && !isFinished && (
-                <div className={`${isNightMode ? 'bg-amber-950/80 border-amber-900 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-700'} flex items-center gap-2 px-3.5 py-1.5 rounded-2xl border font-bold text-sm shadow-xs`}>
-                  <Clock size={16} className="text-amber-500" />
-                  <span className="font-mono text-base font-black tracking-wider">
+                <div className={`${isNightMode ? 'bg-amber-950/80 border-amber-900 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-700'} flex items-center gap-1.5 px-3 py-1 rounded-xl border font-bold text-xs shadow-xs`}>
+                  <Clock size={14} className="text-amber-500" />
+                  <span className="font-mono text-sm font-black tracking-wider">
                     {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
                   </span>
                 </div>
@@ -1301,297 +1301,420 @@ export const QuizPage: React.FC = () => {
 
         {!isFinished ? (
           <div className="space-y-4">
-          <div
-            data-testid="quiz-current-step-hint"
-            className={`${isNightMode ? 'border-indigo-900 bg-indigo-950 text-indigo-100' : 'border-indigo-100 bg-indigo-50 text-indigo-800'} rounded-2xl border px-4 py-3 text-sm font-black leading-6`}
-          >
-            أجب عن السؤال الحالي، ثم اضغط التالي. عند آخر سؤال اضغط إنهاء الاختبار.
-          </div>
-          {shouldShowProgressBar ? (
-            <div className="px-1">
-              <div className={`mb-1 flex items-center justify-between text-xs font-black ${isNightMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                <span>التقدم</span>
-                <span>{activeProgressPercentage}%</span>
-              </div>
-              <div className={`${isNightMode ? 'bg-slate-800' : 'bg-gray-100'} h-2 w-full overflow-hidden rounded-full`}>
-                <div
-                  className="h-full rounded-full bg-amber-500 transition-all duration-300"
-                  style={{ width: `${activeProgressPercentage}%` }}
-                />
-              </div>
+            <div
+              data-testid="quiz-current-step-hint"
+              className={`${isNightMode ? 'border-indigo-900 bg-indigo-950 text-indigo-100' : 'border-indigo-100 bg-indigo-50 text-indigo-800'} rounded-2xl border px-4 py-2.5 text-xs sm:text-sm font-black leading-6`}
+            >
+              أجب عن السؤال الحالي، ثم اضغط التالي. عند آخر سؤال اضغط إنهاء الاختبار.
             </div>
-          ) : null}
-          {mockExamSectionSummaries.length > 1 ? (
-            <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl border p-3 shadow-sm`}>
-              <div className="mb-2 text-xs font-black text-gray-500">أقسام الاختبار المحاكي</div>
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {mockExamSectionSummaries.map((section, sectionIndex) => {
-                  const isActive = currentMockExamSection?.id === section.id;
-                  const isLocked = lockedSectionIds.has(section.id);
-                  return (
-                    <button
-                      key={section.id}
-                      type="button"
-                      data-testid={`quiz-mock-section-${sectionIndex}`}
-                      disabled={isLocked}
-                      title={isLocked ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه' : undefined}
-                      onClick={() => {
-                        if (isLocked || section.firstQuestionIndex < 0) return;
-                        setCurrentQuestionIndex(section.firstQuestionIndex);
-                      }}
-                      className={`shrink-0 rounded-xl border px-4 py-2 text-xs font-black transition-colors ${
-                        isLocked
-                          ? isNightMode
-                            ? 'border-slate-700 bg-slate-800 text-slate-500 cursor-not-allowed opacity-60'
-                            : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
-                          : isActive
-                            ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                            : isNightMode
-                              ? 'border-slate-700 bg-slate-950 text-slate-200 hover:border-indigo-500'
-                              : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-indigo-200 hover:bg-white'
-                      }`}
-                    >
-                      {isLocked && <span className="ml-1">🔒</span>}
-                      <span>{section.title}</span>
-                      <span className={`mr-2 rounded-full px-2 py-0.5 ${
-                        isLocked
-                          ? isNightMode ? 'bg-slate-700 text-slate-400' : 'bg-gray-200 text-gray-400'
-                          : isActive ? 'bg-white/15 text-white' : isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-white text-gray-500'
-                      }`}>
-                        {section.answered}/{section.total}
-                      </span>
-                      {section.timeLimit && !isLocked && (
-                        <span className={`mr-1 text-[10px] opacity-60`}>
-                          {section.timeLimit}د
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
 
-          <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border overflow-hidden`}>
-            <div className="p-3 sm:p-4">
-              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
-                <span
-                  data-testid="quiz-question-counter"
-                  className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}
-                >
-                  {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
-                </span>
-                <div className="flex flex-wrap items-center gap-2">
-                  {shouldShowQuestionReview ? (
-                    <button
-                      onClick={handleToggleCurrentReviewLater}
-                      className={`${reviewLater.includes(currentQuestion.id) ? (isNightMode ? 'bg-purple-950 text-purple-200 ring-1 ring-purple-800' : 'bg-purple-100 text-purple-700 ring-1 ring-purple-200') : (isNightMode ? 'bg-amber-950 text-amber-200 ring-1 ring-amber-900' : 'bg-amber-50 text-amber-700 ring-1 ring-amber-100')} inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-black transition hover:opacity-90`}
-                    >
-                      <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current' : ''} />
-                      {reviewLater.includes(currentQuestion.id) ? 'للمراجعة' : 'راجع لاحقًا'}
-                    </button>
-                  ) : null}
-                  <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : getQuizDifficultyBadgeClass(currentQuestion?.difficulty)} text-xs px-2 py-1 rounded font-bold`}>
-                    {getQuizDifficultyLabel(currentQuestion?.difficulty)}
-                  </span>
-                </div>
-              </div>
-
-              <div
-                data-testid="quiz-current-question"
-                data-question-id={currentQuestion?.id || ''}
-                onClick={handleInlineQuestionImageClick}
-                className={`question-html text-base sm:text-lg mb-4 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
-                dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
-              />
-              {currentQuestion?.imageUrl && (
-                <button
-                  type="button"
-                  onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
-                  className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-4 block w-full cursor-zoom-in rounded-2xl border p-2 shadow-sm`}
-                >
-                  <img
-                    src={currentQuestion.imageUrl}
-                    alt="صورة السؤال"
-                    className="mx-auto max-h-[260px] sm:max-h-[340px] w-full object-contain"
-                    referrerPolicy="no-referrer"
-                  />
-                </button>
-              )}
-
-              <div className={`grid ${optionGridClass} gap-2.5`}>
-                {currentDisplayOptions.map((displayOption, displayIndex) => {
-                  const isSelected = selectedOptions[currentQuestion.id] === displayOption.originalIndex;
-                  const optionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
-                  const letter = optionLetters[displayIndex] || String(displayIndex + 1);
-
-                  return (
-                    <button
-                      key={displayOption.originalIndex}
-                      data-testid={`quiz-answer-option-${displayIndex}`}
-                      onClick={() => handleOptionSelect(displayIndex)}
-                      className={`${optionButtonHeightClass} w-full px-3 py-2 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-2.5 shadow-xs hover:shadow-sm ${
-                        isSelected
-                          ? (isNightMode ? 'border-indigo-500 bg-indigo-950/80 shadow-indigo-950/30' : 'border-indigo-600 bg-indigo-50/70 shadow-indigo-100')
-                          : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-slate-600 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/80 bg-white')
-                      }`}
-                    >
-                      <span className={`flex-1 text-xs sm:text-sm font-bold leading-relaxed text-center break-words ${
-                        isSelected
-                          ? (isNightMode ? 'text-white' : 'text-indigo-950')
-                          : (isNightMode ? 'text-slate-200' : 'text-gray-800')
-                      }`}>
-                        <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
-                      </span>
-                      <div className="flex items-center shrink-0">
-                        <span className={`flex h-7 w-7 items-center justify-center rounded-xl text-xs font-black transition-colors ${
-                          isSelected
-                            ? 'bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-200'
-                            : isNightMode
-                              ? 'bg-slate-800 text-slate-300 border border-slate-700'
-                              : 'bg-slate-100 text-slate-600 border border-slate-200'
-                        }`}>
-                          {letter}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className={`${isNightMode ? 'border-slate-800 bg-slate-950/70' : 'border-gray-100 bg-gray-50'} mt-5 sm:mt-6 rounded-2xl border p-2.5 sm:p-3`}>
-                <div className={`mb-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] sm:text-[11px] font-black ${isNightMode ? 'text-slate-300' : 'text-gray-600'}`}>
-                  <span className="inline-flex items-center gap-1">
-                    <span className="h-3 w-3 rounded-full bg-amber-500 ring-2 ring-amber-100" />
-                    السؤال الحالي
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />
-                    تمت الإجابة
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <span className={`h-3 w-3 rounded-full border-2 ${isNightMode ? 'border-slate-500 bg-slate-950' : 'border-slate-300 bg-white'}`} />
-                    لم يجب
-                  </span>
-                  {shouldShowQuestionReview ? (
-                    <span className="inline-flex items-center gap-1">
-                      <span className="h-3 w-3 rounded-full bg-purple-500 ring-2 ring-purple-100" />
-                      للمراجعة
-                    </span>
-                  ) : null}
-                </div>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {quizQuestions.map((question, index) => {
-                    const isAnswered = selectedOptions[question.id] !== undefined;
-                    const isMarkedForReview = reviewLater.includes(question.id);
-                    const title = index === currentQuestionIndex
-                      ? `السؤال ${index + 1} الحالي`
-                      : isAnswered
-                        ? `السؤال ${index + 1} تمت الإجابة`
-                        : isMarkedForReview
-                          ? `السؤال ${index + 1} للمراجعة`
-                          : `السؤال ${index + 1} لم يجب`;
-
+            {mockExamSectionSummaries.length > 1 ? (
+              <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl border p-3 shadow-sm`}>
+                <div className="mb-2 text-xs font-black text-gray-500">أقسام الاختبار المحاكي</div>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {mockExamSectionSummaries.map((section, sectionIndex) => {
+                    const isActive = currentMockExamSection?.id === section.id;
+                    const isLocked = lockedSectionIds.has(section.id);
                     return (
                       <button
-                        key={question.id}
+                        key={section.id}
                         type="button"
-                        data-testid={`quiz-question-map-${index + 1}`}
-                        onClick={() => setCurrentQuestionIndex(index)}
-                        className={`h-7 w-7 sm:h-8 sm:w-8 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
-                        aria-label={title}
-                        title={title}
+                        data-testid={`quiz-mock-section-${sectionIndex}`}
+                        disabled={isLocked}
+                        title={isLocked ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه' : undefined}
+                        onClick={() => {
+                          if (isLocked || section.firstQuestionIndex < 0) return;
+                          setCurrentQuestionIndex(section.firstQuestionIndex);
+                        }}
+                        className={`shrink-0 rounded-xl border px-4 py-2 text-xs font-black transition-colors ${
+                          isLocked
+                            ? isNightMode
+                              ? 'border-slate-700 bg-slate-800 text-slate-500 cursor-not-allowed opacity-60'
+                              : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
+                            : isActive
+                              ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                              : isNightMode
+                                ? 'border-slate-700 bg-slate-950 text-slate-200 hover:border-indigo-500'
+                                : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-indigo-200 hover:bg-white'
+                        }`}
                       >
-                        {index + 1}
+                        {isLocked && <span className="ml-1">🔒</span>}
+                        <span>{section.title}</span>
+                        <span className={`mr-2 rounded-full px-2 py-0.5 ${
+                          isLocked
+                            ? isNightMode ? 'bg-slate-700 text-slate-400' : 'bg-gray-200 text-gray-400'
+                            : isActive ? 'bg-white/15 text-white' : isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-white text-gray-500'
+                        }`}>
+                          {section.answered}/{section.total}
+                        </span>
+                        {section.timeLimit && !isLocked && (
+                          <span className={`mr-1 text-[10px] opacity-60`}>
+                            {section.timeLimit}د
+                          </span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
               </div>
-            </div>
+            ) : null}
 
-            <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50'} flex flex-wrap items-center justify-center gap-2 border-t p-3 sm:justify-between`}>
-              <button
-                type="button"
-                data-testid="quiz-prev-button"
-                onClick={handlePrev}
-                disabled={currentQuestionIndex === 0}
-                className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-gray-600 hover:bg-gray-200'} inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-black disabled:cursor-not-allowed disabled:opacity-50`}
-              >
-                <ArrowRight size={15} />
-                السابق
-              </button>
+            {/* Main Quiz Runner Layout: Question Card (Main) & Question Board (Sidebar) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Main Distraction-Free Question Card Column */}
+              <div className="lg:col-span-8 xl:col-span-9 space-y-4">
+                <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl shadow-sm border overflow-hidden`}>
+                  {/* Question Card Header */}
+                  <div className={`p-4 sm:p-5 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${
+                    isNightMode ? 'border-slate-800 bg-slate-900/60' : 'border-gray-100 bg-gray-50/60'
+                  }`}>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span
+                        data-testid="quiz-question-counter"
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black ${
+                          isNightMode ? 'bg-slate-800 text-indigo-300' : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
+                        }`}
+                      >
+                        {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
+                      </span>
+                      {currentQuestion?.difficulty && (
+                        <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : getQuizDifficultyBadgeClass(currentQuestion?.difficulty)} text-xs px-2.5 py-1 rounded-xl font-bold`}>
+                          {getQuizDifficultyLabel(currentQuestion?.difficulty)}
+                        </span>
+                      )}
+                    </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <button
-                  type="button"
-                  data-testid="quiz-save-progress-button"
-                  onClick={handleSaveQuizProgress}
-                  disabled={isSubmittingResult}
-                  className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex min-w-[74px] items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
-                >
-                  <Save size={15} />
-                  حفظ
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!currentQuestion) return;
-                    setFlaggedQuestionIds((prev) =>
-                      prev.includes(currentQuestion.id)
-                        ? prev.filter((id) => id !== currentQuestion.id)
-                        : [...prev, currentQuestion.id]
-                    );
-                  }}
-                  className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs sm:text-sm font-black transition ${
-                    currentQuestion && flaggedQuestionIds.includes(currentQuestion.id)
-                      ? 'border-amber-400 bg-amber-500 text-white shadow-sm'
-                      : isNightMode
-                        ? 'border-amber-800 bg-amber-950/60 text-amber-200 hover:bg-amber-900'
-                        : 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
-                  }`}
-                  title="حفظ السؤال للمراجعة قبل التسليم"
-                >
-                  <Bookmark size={15} />
-                  <span>{currentQuestion && flaggedQuestionIds.includes(currentQuestion.id) ? 'تعليم للمراجعة 🚩' : 'حفظ للمراجعة'}</span>
-                </button>
-                <button
-                  type="button"
-                  data-testid="quiz-pause-button"
-                  onClick={handlePauseQuiz}
-                  disabled={isSubmittingResult}
-                  className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex min-w-[74px] items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
-                >
-                  <PauseCircle size={15} />
-                  إيقاف
-                </button>
+                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                      {shouldShowQuestionReview ? (
+                        <button
+                          type="button"
+                          onClick={handleToggleCurrentReviewLater}
+                          className={`${
+                            reviewLater.includes(currentQuestion.id)
+                              ? (isNightMode ? 'bg-purple-950 text-purple-200 ring-1 ring-purple-800' : 'bg-purple-50 text-purple-700 ring-1 ring-purple-200')
+                              : (isNightMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50')
+                          } inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black transition shadow-xs`}
+                          title="تمييز السؤال للمراجعة لاحقاً"
+                        >
+                          <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current text-purple-500' : 'text-gray-400'} />
+                          <span>{reviewLater.includes(currentQuestion.id) ? 'تمت إضافته للمراجعة' : 'مراجعة لاحقاً'}</span>
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  {/* Question Content */}
+                  <div className="p-4 sm:p-7 space-y-6">
+                    <div
+                      data-testid="quiz-current-question"
+                      data-question-id={currentQuestion?.id || ''}
+                      onClick={handleInlineQuestionImageClick}
+                      className={`question-html text-base sm:text-lg lg:text-xl font-medium leading-relaxed break-words [&_img]:cursor-zoom-in [&_img]:rounded-xl [&_img]:max-h-[300px] [&_img]:mx-auto [&_img]:my-2 ${
+                        isNightMode ? 'text-slate-100' : 'text-gray-900'
+                      }`}
+                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
+                    />
+
+                    {/* Question Diagram / Image with Zoom */}
+                    {currentQuestion?.imageUrl && (
+                      <div className="space-y-2">
+                        <button
+                          type="button"
+                          onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
+                          className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-2xl border p-3 transition-all hover:border-indigo-300 hover:shadow-md ${
+                            isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-slate-50/50'
+                          }`}
+                          title="اضغط لتكبير الصورة وفحص الرسم البياني أو الهندسي"
+                        >
+                          <img
+                            src={currentQuestion.imageUrl}
+                            alt="صورة السؤال"
+                            className="mx-auto max-h-[280px] sm:max-h-[360px] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                            referrerPolicy="no-referrer"
+                          />
+                        </button>
+                        <div className="flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
+                            className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full transition-colors ${
+                              isNightMode
+                                ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                                : 'bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100'
+                            }`}
+                          >
+                            <ZoomIn size={13} />
+                            <span>اضغط على الصورة للتكبير</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Answer Options Grid (without duplicate letter badge) */}
+                    <div className={`grid ${optionGridClass} gap-3 pt-2`}>
+                      {currentDisplayOptions.map((displayOption, displayIndex) => {
+                        const isSelected = selectedOptions[currentQuestion.id] === displayOption.originalIndex;
+                        const optionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+                        const fallbackLetter = optionLetters[displayIndex] || String(displayIndex + 1);
+                        const hasText = Boolean(displayOption.text && displayOption.text.trim().length > 0);
+
+                        return (
+                          <button
+                            key={displayOption.originalIndex}
+                            data-testid={`quiz-answer-option-${displayIndex}`}
+                            onClick={() => handleOptionSelect(displayIndex)}
+                            className={`${optionButtonHeightClass} group w-full px-4 py-3 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-xs hover:shadow-sm ${
+                              isSelected
+                                ? (isNightMode ? 'border-indigo-500 bg-indigo-950/90 shadow-indigo-950/40 ring-1 ring-indigo-500/50' : 'border-indigo-600 bg-indigo-50/85 shadow-indigo-100 ring-2 ring-indigo-100')
+                                : (isNightMode ? 'border-slate-800 bg-slate-950/80 hover:border-slate-700 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/90 bg-white')
+                            }`}
+                          >
+                            <span className={`flex-1 text-xs sm:text-sm md:text-base font-bold leading-relaxed break-words text-center ${
+                              isSelected
+                                ? (isNightMode ? 'text-white' : 'text-indigo-950')
+                                : (isNightMode ? 'text-slate-200 group-hover:text-slate-100' : 'text-gray-800 group-hover:text-indigo-950')
+                            }`}>
+                              {hasText ? (
+                                <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
+                              ) : (
+                                <span className="question-html font-black">{fallbackLetter}</span>
+                              )}
+                            </span>
+
+                            <div className="flex items-center shrink-0">
+                              <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all ${
+                                isSelected
+                                  ? 'border-indigo-600 bg-indigo-600 text-white shadow-xs'
+                                  : isNightMode
+                                    ? 'border-slate-600 bg-slate-900 group-hover:border-slate-500'
+                                    : 'border-slate-300 bg-white group-hover:border-indigo-300'
+                              }`}>
+                                {isSelected ? (
+                                  <div className="h-2 w-2 rounded-full bg-white" />
+                                ) : null}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Navigation Bar at Bottom of Question Card */}
+                  <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50/70'} flex flex-wrap items-center justify-between gap-3 border-t p-4 sm:p-5`}>
+                    <button
+                      type="button"
+                      data-testid="quiz-prev-button"
+                      onClick={handlePrev}
+                      disabled={currentQuestionIndex === 0}
+                      className={`${
+                        isNightMode ? 'text-slate-300 hover:bg-slate-800 border-slate-700' : 'text-gray-700 hover:bg-gray-100 border-gray-200 bg-white'
+                      } inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl border px-4 py-2.5 text-xs sm:text-sm font-black shadow-xs transition disabled:cursor-not-allowed disabled:opacity-40`}
+                    >
+                      <ArrowRight size={16} />
+                      السابق
+                    </button>
+
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        data-testid="quiz-save-progress-button"
+                        onClick={handleSaveQuizProgress}
+                        disabled={isSubmittingResult}
+                        className={`${
+                          isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-200 hover:bg-emerald-900' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                        } inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                        title="حفظ تقدم الإجابات يدوياً"
+                      >
+                        <Save size={15} />
+                        <span>حفظ</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!currentQuestion) return;
+                          setFlaggedQuestionIds((prev) =>
+                            prev.includes(currentQuestion.id)
+                              ? prev.filter((id) => id !== currentQuestion.id)
+                              : [...prev, currentQuestion.id]
+                          );
+                        }}
+                        className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-black transition shadow-xs ${
+                          currentQuestion && flaggedQuestionIds.includes(currentQuestion.id)
+                            ? 'border-amber-400 bg-amber-500 text-white shadow-amber-200'
+                            : isNightMode
+                              ? 'border-amber-800/80 bg-amber-950/40 text-amber-200 hover:bg-amber-900/60'
+                              : 'border-amber-200 bg-amber-50/80 text-amber-800 hover:bg-amber-100'
+                        }`}
+                        title="حفظ السؤال للمراجعة قبل التسليم"
+                      >
+                        <Bookmark size={15} />
+                        <span>{currentQuestion && flaggedQuestionIds.includes(currentQuestion.id) ? 'تعليم للمراجعة 🚩' : 'حفظ للمراجعة'}</span>
+                      </button>
+                    </div>
+
+                    {currentQuestionIndex === quizQuestions.length - 1 ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowFinishDialog(true)}
+                        disabled={isSubmittingResult}
+                        className="inline-flex min-w-[100px] items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs sm:text-sm font-black text-white shadow-xs transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <CheckCircle2 size={16} />
+                        {isSubmittingResult ? 'جارٍ الحفظ...' : 'إنهاء'}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        data-testid="quiz-next-button"
+                        onClick={handleNext}
+                        disabled={Boolean(isNextBlocked)}
+                        title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}
+                        className="inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs sm:text-sm font-black text-white shadow-xs transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        التالي
+                        <ArrowLeft size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              {currentQuestionIndex === quizQuestions.length - 1 ? (
-                <button
-                  type="button"
-                  data-testid="quiz-finish-button"
-                  onClick={() => setShowFinishDialog(true)}
-                  disabled={isSubmittingResult}
-                  className="inline-flex min-w-[86px] items-center justify-center rounded-xl bg-emerald-600 px-3 py-1.5 text-xs sm:text-sm font-black text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSubmittingResult ? 'جارٍ الحفظ...' : 'إنهاء'}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  data-testid="quiz-next-button"
-                  onClick={handleNext}
-                  disabled={Boolean(isNextBlocked)}
-                  title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}
-                  className="inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs sm:text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  التالي
-                  <ArrowLeft size={15} />
-                </button>
-              )}
+              {/* Column 2: Dedicated Question Board Sidebar (لوحة الأسئلة) */}
+              <div className="lg:col-span-4 xl:col-span-3 space-y-4 lg:sticky lg:top-6">
+                {/* 1. Timer Card */}
+                <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl p-4 sm:p-5 shadow-sm border`}>
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-100 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <Clock size={18} className="text-amber-500" />
+                      <span className={`text-xs font-black ${isNightMode ? 'text-slate-300' : 'text-gray-700'}`}>
+                        العد التنازلي المتبقي
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      data-testid="quiz-pause-button"
+                      onClick={handlePauseQuiz}
+                      disabled={isSubmittingResult}
+                      className={`${
+                        isNightMode ? 'border-amber-800/70 bg-amber-950/40 text-amber-300 hover:bg-amber-900/60' : 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
+                      } inline-flex items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                      title="إيقاف مؤقت للاختبار"
+                    >
+                      <PauseCircle size={14} />
+                      <span>إيقاف مؤقت</span>
+                    </button>
+                  </div>
+
+                  {/* Big Digital Countdown */}
+                  {timeLeft !== null && !isFinished ? (
+                    <div className={`flex items-center justify-center rounded-2xl py-3 px-4 text-center font-mono ${
+                      timeLeft <= 180
+                        ? 'bg-red-500/10 border-2 border-red-500 text-red-600 animate-pulse'
+                        : isNightMode ? 'bg-slate-950 border border-slate-800 text-amber-300' : 'bg-amber-50/70 border border-amber-200 text-amber-800'
+                    }`}>
+                      <span className="text-2xl sm:text-3xl font-black tracking-widest">
+                        {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="text-center py-2 text-xs font-bold text-gray-400">
+                      بدون وقت محدد
+                    </div>
+                  )}
+
+                  {/* Section Timer for Mock Exams */}
+                  {sectionTimeLeft !== null && !isFinished && currentMockExamSection && (
+                    <div className={`mt-2.5 flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold border ${
+                      sectionTimeLeft <= 60
+                        ? 'bg-red-100 border-red-200 text-red-700 animate-pulse'
+                        : isNightMode ? 'bg-violet-950/70 border-violet-900 text-violet-200' : 'bg-violet-50 border-violet-200 text-violet-700'
+                    }`}>
+                      <span className="truncate">{currentMockExamSection.title}:</span>
+                      <span className="font-mono font-black">{Math.floor(sectionTimeLeft / 60)}:{String(sectionTimeLeft % 60).padStart(2, '0')}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Question Board Card (لوحة الأسئلة) */}
+                <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl p-4 sm:p-5 shadow-sm border space-y-4`}>
+                  <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <LayoutGrid size={18} className="text-indigo-600" />
+                      <h3 className={`font-black text-sm sm:text-base ${isNightMode ? 'text-white' : 'text-gray-900'}`}>
+                        لوحة الأسئلة
+                      </h3>
+                    </div>
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-black ${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-indigo-50 text-indigo-700 border border-indigo-100'}`}>
+                      {quizQuestions.length} سؤال
+                    </span>
+                  </div>
+
+                  {/* Status Legend with Live Counters */}
+                  <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-black">
+                    <div className={`p-2 rounded-xl border ${isNightMode ? 'border-emerald-900/60 bg-emerald-950/40 text-emerald-300' : 'border-emerald-100 bg-emerald-50/80 text-emerald-700'}`}>
+                      <div className="text-base font-black">{answeredQuestionCount}</div>
+                      <div className="text-[10px] mt-0.5 opacity-90">تمت الإجابة</div>
+                    </div>
+                    <div className={`p-2 rounded-xl border ${isNightMode ? 'border-slate-800 bg-slate-950/60 text-slate-300' : 'border-gray-200 bg-gray-50 text-gray-600'}`}>
+                      <div className="text-base font-black">{quizQuestions.length - answeredQuestionCount}</div>
+                      <div className="text-[10px] mt-0.5 opacity-90">لم يجب</div>
+                    </div>
+                    <div className={`p-2 rounded-xl border ${isNightMode ? 'border-purple-900/60 bg-purple-950/40 text-purple-300' : 'border-purple-100 bg-purple-50/80 text-purple-700'}`}>
+                      <div className="text-base font-black">{reviewQuestionCount + flaggedQuestionIds.length}</div>
+                      <div className="text-[10px] mt-0.5 opacity-90">للمراجعة</div>
+                    </div>
+                  </div>
+
+                  {/* Question Grid Buttons with Scroll */}
+                  <div className="max-h-[300px] overflow-y-auto pr-1 pl-0.5 py-1">
+                    <div className="grid grid-cols-5 gap-2">
+                      {quizQuestions.map((question, index) => {
+                        const isAnswered = selectedOptions[question.id] !== undefined;
+                        const isMarkedForReview = reviewLater.includes(question.id) || flaggedQuestionIds.includes(question.id);
+                        const isCurrent = index === currentQuestionIndex;
+                        const title = isCurrent
+                          ? `السؤال ${index + 1} الحالي`
+                          : isAnswered
+                            ? `السؤال ${index + 1} تمت الإجابة`
+                            : isMarkedForReview
+                              ? `السؤال ${index + 1} للمراجعة`
+                              : `السؤال ${index + 1} لم يجب`;
+
+                        return (
+                          <button
+                            key={question.id}
+                            type="button"
+                            data-testid={`quiz-question-map-${index + 1}`}
+                            onClick={() => setCurrentQuestionIndex(index)}
+                            className={`h-9 rounded-xl border-2 text-xs font-black transition-all flex items-center justify-center shadow-xs focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
+                            aria-label={title}
+                            title={title}
+                          >
+                            {index + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Prominent Finish Button in Sidebar */}
+                  <div className="pt-2 border-t border-gray-100 dark:border-slate-800">
+                    <button
+                      type="button"
+                      data-testid="quiz-finish-button"
+                      onClick={() => setShowFinishDialog(true)}
+                      disabled={isSubmittingResult}
+                      className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 py-3.5 px-4 text-sm font-black text-white shadow-md transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <CheckCircle2 size={18} />
+                      <span>{isSubmittingResult ? 'جارٍ تسليم الاختبار...' : 'إنهاء وتسليم الاختبار'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
           </div>
         ) : (
           <div className="space-y-6 animate-fade-in">
@@ -1928,23 +2051,28 @@ export const QuizPage: React.FC = () => {
 
       {zoomedImageUrl ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-3 sm:p-4"
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 backdrop-blur-sm p-3 sm:p-6 animate-fade-in cursor-zoom-out"
           onClick={() => setZoomedImageUrl(null)}
         >
-          <button
-            type="button"
-            onClick={() => setZoomedImageUrl(null)}
-            className="absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
-          >
-            إغلاق
-          </button>
-          <img
-            src={zoomedImageUrl}
-            alt="تكبير صورة السؤال"
-            className="max-h-[82vh] sm:max-h-[90vh] max-w-[96vw] rounded-2xl bg-white object-contain"
-            referrerPolicy="no-referrer"
-            onClick={(event) => event.stopPropagation()}
-          />
+          <div className="relative max-h-[92vh] max-w-[96vw] flex flex-col items-center">
+            <button
+              type="button"
+              onClick={() => setZoomedImageUrl(null)}
+              className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-5 py-2 text-sm font-black text-gray-900 shadow-2xl hover:bg-white hover:scale-105 transition-all cursor-pointer"
+            >
+              <XCircle size={18} className="text-rose-600" />
+              <span>إغلاق التكبير</span>
+            </button>
+            <div className="overflow-auto max-h-[85vh] max-w-full rounded-2xl bg-white p-2 sm:p-3 shadow-2xl border border-white/20">
+              <img
+                src={zoomedImageUrl}
+                alt="تكبير صورة السؤال"
+                className="max-h-[80vh] w-auto max-w-full rounded-xl object-contain"
+                referrerPolicy="no-referrer"
+                onClick={(event) => event.stopPropagation()}
+              />
+            </div>
+          </div>
         </div>
       ) : null}
 
