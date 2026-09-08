@@ -56,13 +56,18 @@ export type QuizAttemptGroup = {
 
 const formatQuizDate = (date?: string | number) => {
   if (!date) return 'متاح الآن';
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return 'متاح الآن';
-  return parsed.toLocaleDateString('ar-SA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  try {
+    const raw = typeof date === 'string' ? date.trim().replace(/\//g, '-') : date;
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return typeof date === 'string' ? date : 'متاح الآن';
+    return parsed.toLocaleDateString('ar-SA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch {
+    return typeof date === 'string' ? date : 'متاح الآن';
+  }
 };
 
 const formatCreatedDate = (date?: number) => {
@@ -147,8 +152,13 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
 
       if (quiz.dueDate) {
-        const deadline = new Date(`${quiz.dueDate}T23:59:59`);
-        if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
+        try {
+          const rawDate = typeof quiz.dueDate === 'string' ? quiz.dueDate.trim().replace(/\//g, '-') : quiz.dueDate;
+          const deadline = new Date(typeof rawDate === 'string' && !rawDate.includes('T') ? `${rawDate}T23:59:59` : rawDate);
+          if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
+        } catch {
+          // Keep accessible if date parsing fails
+        }
       }
 
       const targetUserIds = quiz.targetUserIds || [];
@@ -171,6 +181,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       }
 
       const access = quiz.access || { type: 'free' as const };
+      if (hasExplicitTargets || isServerVerifiedDirectedAudience) return true;
       if (access.type === 'free') return true;
       if (access.type === 'paid') return hasScopedPackageAccess('tests', quiz.pathId, quiz.subjectId) || checkAccess(quiz.id, true);
       if (access.type === 'private') {
@@ -266,12 +277,16 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   }, [activeAttemptCategory, isAttemptsView]);
 
   const directedQuizzes = useMemo(
-    () => pathFilteredPreparedQuizzes.filter((quiz) => {
-      const mode = quiz.mode || 'regular';
-      const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
-      return mode === 'central' || hasExplicitTargets;
-    }),
-    [pathFilteredPreparedQuizzes],
+    () => quizzes
+      .filter((quiz) => canAccessQuiz(quiz))
+      .filter((quiz) => {
+        const mode = quiz.mode || 'regular';
+        const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+        const isServerVerified = quiz.viewerAudienceVerified === true;
+        return mode === 'central' || hasExplicitTargets || isServerVerified;
+      })
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    [canAccessQuiz, quizzes],
   );
 
   const saherQuizzes = useMemo(
@@ -1036,7 +1051,11 @@ const SchoolTestsPanel: React.FC<{
 
                   <div className="mt-3.5 flex-1 rounded-xl bg-gray-50/80 p-3 text-xs font-bold leading-relaxed text-gray-600 border border-gray-100">
                     <span className="text-indigo-600 font-black ml-1">💬 رسالة المشرف:</span>
-                    {quiz.supervisorMessage || quiz.description || 'اختبار موجه من المدرسة للمتابعة والقياس.'}
+                    {typeof quiz.supervisorMessage === 'string' && quiz.supervisorMessage
+                      ? quiz.supervisorMessage
+                      : typeof quiz.description === 'string' && quiz.description
+                        ? quiz.description
+                        : 'اختبار موجه من المدرسة للمتابعة والقياس.'}
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-500">
