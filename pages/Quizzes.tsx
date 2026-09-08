@@ -5,6 +5,7 @@ import {
   Clock,
   Eye,
   FileText,
+  ListChecks,
   LockKeyhole,
   RotateCcw,
   Sparkles,
@@ -53,13 +54,20 @@ export type QuizAttemptGroup = {
   bestAttempt: QuizResult;
 };
 
-const formatQuizDate = (date?: string) => {
+const formatQuizDate = (date?: string | number) => {
   if (!date) return 'متاح الآن';
-  return new Date(date).toLocaleDateString('ar-SA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  try {
+    const raw = typeof date === 'string' ? date.trim().replace(/\//g, '-') : date;
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return typeof date === 'string' ? date : 'متاح الآن';
+    return parsed.toLocaleDateString('ar-SA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch {
+    return typeof date === 'string' ? date : 'متاح الآن';
+  }
 };
 
 const formatCreatedDate = (date?: number) => {
@@ -144,8 +152,13 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
 
       if (quiz.dueDate) {
-        const deadline = new Date(`${quiz.dueDate}T23:59:59`);
-        if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
+        try {
+          const rawDate = typeof quiz.dueDate === 'string' ? quiz.dueDate.trim().replace(/\//g, '-') : quiz.dueDate;
+          const deadline = new Date(typeof rawDate === 'string' && !rawDate.includes('T') ? `${rawDate}T23:59:59` : rawDate);
+          if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
+        } catch {
+          // Keep accessible if date parsing fails
+        }
       }
 
       const targetUserIds = quiz.targetUserIds || [];
@@ -168,6 +181,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       }
 
       const access = quiz.access || { type: 'free' as const };
+      if (hasExplicitTargets || isServerVerifiedDirectedAudience) return true;
       if (access.type === 'free') return true;
       if (access.type === 'paid') return hasScopedPackageAccess('tests', quiz.pathId, quiz.subjectId) || checkAccess(quiz.id, true);
       if (access.type === 'private') {
@@ -263,12 +277,16 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   }, [activeAttemptCategory, isAttemptsView]);
 
   const directedQuizzes = useMemo(
-    () => pathFilteredPreparedQuizzes.filter((quiz) => {
-      const mode = quiz.mode || 'regular';
-      const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
-      return mode === 'central' || hasExplicitTargets;
-    }),
-    [pathFilteredPreparedQuizzes],
+    () => quizzes
+      .filter((quiz) => canAccessQuiz(quiz))
+      .filter((quiz) => {
+        const mode = quiz.mode || 'regular';
+        const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+        const isServerVerified = quiz.viewerAudienceVerified === true;
+        return mode === 'central' || hasExplicitTargets || isServerVerified;
+      })
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    [canAccessQuiz, quizzes],
   );
 
   const saherQuizzes = useMemo(
@@ -941,8 +959,10 @@ const SchoolTestsPanel: React.FC<{
   examResults: QuizResult[];
   getPathName: (pathId?: string) => string;
 }> = ({ quizzes, examResults, getPathName }) => {
-  const completedCount = quizzes.filter((quiz) => examResults.some((result) => result.quizId === quiz.id)).length;
-  const pendingCount = quizzes.length - completedCount;
+  const safeQuizzes = quizzes || [];
+  const safeResults = examResults || [];
+  const completedCount = safeQuizzes.filter((quiz) => safeResults.some((result) => result?.quizId === (quiz?.id || (quiz as any)?._id))).length;
+  const pendingCount = safeQuizzes.length - completedCount;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-20">
@@ -963,7 +983,7 @@ const SchoolTestsPanel: React.FC<{
 
           <div className="flex items-center gap-2">
             <div className="rounded-2xl border border-indigo-100 bg-white px-4 py-2.5 text-center shadow-xs">
-              <div className="text-lg font-black text-indigo-600">{quizzes.length}</div>
+              <div className="text-lg font-black text-indigo-600">{safeQuizzes.length}</div>
               <div className="text-[10px] font-bold text-gray-400">إجمالي الموجه</div>
             </div>
             <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-2.5 text-center shadow-xs">
@@ -991,19 +1011,24 @@ const SchoolTestsPanel: React.FC<{
             ) : null}
           </div>
           <span className="rounded-full border border-indigo-100 bg-white px-3.5 py-1 text-xs font-black text-indigo-700 shadow-2xs">
-            {quizzes.length} اختبار مدرسي
+            {safeQuizzes.length} اختبار مدرسي
           </span>
         </div>
 
-        {quizzes.length > 0 ? (
+        {safeQuizzes.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
-            {quizzes.map((quiz) => {
-              const completedResult = examResults.find((result) => result.quizId === quiz.id);
-              const route = buildQuizRouteWithContext(quiz.id, { returnTo: '/dashboard?tab=school-tests', source: 'tests' });
+            {safeQuizzes.map((quiz, index) => {
+              if (!quiz) return null;
+              const quizId = quiz.id || (quiz as any)._id || `school-quiz-${index}`;
+              const completedResult = safeResults.find((result) => result?.quizId === quizId);
+              const route = buildQuizRouteWithContext(quizId, { returnTo: '/dashboard?tab=school-tests', source: 'tests' });
+              const questionCount = quiz.quizKind === 'mock'
+                ? (quiz.mockExam?.sections?.reduce((sum, section) => sum + (section.questionIds?.length || 0), 0) || (quiz.questionIds || []).length)
+                : (quiz.questionIds || []).length;
               return (
                 <article
-                  key={quiz.id}
-                  data-testid={`student-directed-test-${quiz.id}`}
+                  key={quizId}
+                  data-testid={`student-directed-test-${quizId}`}
                   className="flex flex-col rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md"
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -1020,18 +1045,22 @@ const SchoolTestsPanel: React.FC<{
                           : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
                       }`}
                     >
-                      {completedResult ? `تم الحل (${completedResult.score}%)` : 'مدرسي'}
+                      {completedResult ? (completedResult.score != null ? `تم الحل (${completedResult.score}%)` : 'تم الحل') : 'مدرسي'}
                     </span>
                   </div>
 
                   <div className="mt-3.5 flex-1 rounded-xl bg-gray-50/80 p-3 text-xs font-bold leading-relaxed text-gray-600 border border-gray-100">
                     <span className="text-indigo-600 font-black ml-1">💬 رسالة المشرف:</span>
-                    {quiz.supervisorMessage || quiz.description || 'اختبار موجه من المدرسة للمتابعة والقياس.'}
+                    {typeof quiz.supervisorMessage === 'string' && quiz.supervisorMessage
+                      ? quiz.supervisorMessage
+                      : typeof quiz.description === 'string' && quiz.description
+                        ? quiz.description
+                        : 'اختبار موجه من المدرسة للمتابعة والقياس.'}
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-500">
                     <span className="flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1">
-                      <ListChecks size={13} /> {quiz.questionIds.length} سؤال
+                      <ListChecks size={13} /> {questionCount} سؤال
                     </span>
                     {quiz.dueDate ? (
                       <span className="flex items-center gap-1 rounded-lg bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100">
@@ -1043,10 +1072,10 @@ const SchoolTestsPanel: React.FC<{
                   <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3.5">
                     {completedResult ? (
                       <Link
-                        to={`/results?attempt=${encodeURIComponent(completedResult.date)}`}
+                        to={`/results?attempt=${encodeURIComponent(completedResult.date || '')}`}
                         className="text-xs font-black text-emerald-700 hover:underline"
                       >
-                        عرض التقرير الكامل ({completedResult.score}%)
+                        عرض التقرير الكامل {completedResult.score != null ? `(${completedResult.score}%)` : ''}
                       </Link>
                     ) : (
                       <span className="text-xs font-bold text-gray-400">لم يؤدَ بعد</span>

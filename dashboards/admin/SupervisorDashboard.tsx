@@ -12,6 +12,7 @@ import {
   ChevronDown,
   Download,
   Filter,
+  FileText,
   GraduationCap,
   LogOut,
   Mail,
@@ -72,20 +73,20 @@ const KpiCard: React.FC<{
     indigo: 'bg-indigo-100 text-indigo-600',
   };
   return (
-    <div className={`rounded-2xl border p-5 shadow-sm hover:shadow-md transition-all duration-300 ${colors[color]}`}>
+    <div className={`rounded-xl border p-3.5 sm:p-4 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col justify-between ${colors[color]}`}>
       <div className="flex items-start justify-between">
-        <div className={`rounded-xl p-3 ${iconColors[color]}`}>{icon}</div>
+        <div className={`rounded-lg p-2 ${iconColors[color]}`}>{icon}</div>
         {trend && (
-          <span className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${trend.up ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-            {trend.up ? <ArrowUp size={12} /> : <ArrowDown size={12} />}
+          <span className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-bold ${trend.up ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+            {trend.up ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
             {trend.value}
           </span>
         )}
       </div>
-      <div className="mt-4">
-        <div className="text-3xl font-black">{value}</div>
-        <div className="mt-1 text-sm font-bold opacity-80">{title}</div>
-        {subtitle && <div className="mt-1 text-xs opacity-60">{subtitle}</div>}
+      <div className="mt-2.5">
+        <div className="text-2xl font-black leading-tight">{value}</div>
+        <div className="mt-0.5 text-xs sm:text-sm font-bold opacity-85 truncate">{title}</div>
+        {subtitle && <div className="mt-0.5 text-[11px] opacity-65 truncate">{subtitle}</div>}
       </div>
     </div>
   );
@@ -107,15 +108,15 @@ const ActionButton: React.FC<{
     gray: 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700 hover:border-gray-300',
   };
   return (
-    <button onClick={onClick} disabled={disabled} className={`rounded-2xl border p-4 text-right transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 flex flex-col justify-between h-full ${colors[color]}`}>
+    <button onClick={onClick} disabled={disabled} className={`rounded-xl border p-3.5 text-right transition hover:-translate-y-0.5 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50 flex flex-col justify-between ${colors[color]}`}>
       <div className="flex items-center justify-between gap-3 w-full">
         <div className="flex items-center gap-2">
-          {loading ? <Loader2 size={18} className="animate-spin" /> : icon}
-          <span className="text-sm font-black">{label}</span>
+          {loading ? <Loader2 size={16} className="animate-spin" /> : icon}
+          <span className="text-xs sm:text-sm font-bold">{label}</span>
         </div>
-        <ExternalLink size={15} className="opacity-50" />
+        <ExternalLink size={13} className="opacity-40" />
       </div>
-      {subtitle && <p className="mt-2 text-xs opacity-75 leading-5">{subtitle}</p>}
+      {subtitle && <p className="mt-1 text-[11px] opacity-70 leading-normal">{subtitle}</p>}
     </button>
   );
 };
@@ -709,13 +710,13 @@ export const SupervisorDashboard: React.FC = () => {
 
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Streamlined Welcome Hero Banner */}
-            <div className="rounded-3xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-slate-900 p-5 sm:p-7 text-white shadow-xl relative overflow-hidden">
+            <div className="rounded-2xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-slate-900 p-4 sm:p-5 text-white shadow-md relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.2),transparent)]"></div>
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-black">مرحباً بك، {user.name}</h1>
+                  <h1 className="text-xl sm:text-2xl font-black">مرحباً بك، {user.name}</h1>
                   <p className="mt-1 text-indigo-200 max-w-2xl text-xs sm:text-sm">
                     {supervisorScopeSummary.schoolCount > 0
                       ? `أنت تشرف على ${supervisorScopeSummary.schoolCount} مدرسة، و ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`
@@ -723,12 +724,12 @@ export const SupervisorDashboard: React.FC = () => {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-sm border border-white/10 text-white">
-                    <Building2 size={13} className="text-amber-300" />
+                  <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-bold backdrop-blur-sm border border-white/10 text-white">
+                    <Building2 size={12} className="text-amber-300" />
                     <span>المدرسة: {supervisorScopeSummary.primarySchoolName}</span>
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-sm border border-white/10 text-white">
-                    <GraduationCap size={13} className="text-emerald-300" />
+                  <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-bold backdrop-blur-sm border border-white/10 text-white">
+                    <GraduationCap size={12} className="text-emerald-300" />
                     <span>نطاق الصلاحية: {supervisorScopeSummary.scopeTypeName}</span>
                   </span>
                 </div>
@@ -736,44 +737,44 @@ export const SupervisorDashboard: React.FC = () => {
             </div>
 
             {/* KPIs */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <KpiCard title="مجموع الطلاب" value={supervisorScopeSummary.studentCount} subtitle="تحت الإشراف المباشر" icon={<Users size={22} />} color="blue" />
-              <KpiCard title="بحاجة لمتابعة" value={supervisorScopeSummary.weakStudentsCount} subtitle={`${supervisorScopeSummary.inactiveCount} لم يبدأ القياس`} icon={<UserX size={22} />} color="rose" />
-              <KpiCard title="متوسط الدرجات" value={`${supervisorScopeSummary.averageScore}%`} subtitle={`${supervisorScopeSummary.resultCount} محاولة اختبار`} icon={<Target size={22} />} color="emerald"
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <KpiCard title="مجموع الطلاب" value={supervisorScopeSummary.studentCount} subtitle="تحت الإشراف المباشر" icon={<Users size={18} />} color="blue" />
+              <KpiCard title="بحاجة لمتابعة" value={supervisorScopeSummary.weakStudentsCount} subtitle={`${supervisorScopeSummary.inactiveCount} لم يبدأ القياس`} icon={<UserX size={18} />} color="rose" />
+              <KpiCard title="متوسط الدرجات" value={`${supervisorScopeSummary.averageScore}%`} subtitle={`${supervisorScopeSummary.resultCount} محاولة اختبار`} icon={<Target size={18} />} color="emerald"
                 trend={supervisorScopeSummary.improvedStudentsCount >= supervisorScopeSummary.declinedCount ? { value: `${supervisorScopeSummary.improvedStudentsCount} تحسنوا`, up: true } : { value: `${supervisorScopeSummary.declinedCount} تراجعوا`, up: false }}
               />
-              <KpiCard title="الفصول الدراسية" value={supervisorScopeSummary.groupCount} subtitle={`${supervisorScopeSummary.followUpCount} اختبار علاجي موجه`} icon={<Building2 size={22} />} color="purple" />
+              <KpiCard title="الفصول الدراسية" value={supervisorScopeSummary.groupCount} subtitle={`${supervisorScopeSummary.followUpCount} اختبار علاجي موجه`} icon={<Building2 size={18} />} color="purple" />
             </div>
 
             {/* Supervisor Quick Decision Board */}
-            <div data-testid="supervisor-quick-decision-board" className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 to-white p-5 sm:p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+            <div data-testid="supervisor-quick-decision-board" className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 to-white p-4 sm:p-5 shadow-xs">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3.5">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                    <Trophy className="text-amber-500" size={20} />
+                  <h3 className="text-sm sm:text-base font-black text-gray-900 flex items-center gap-2">
+                    <Trophy className="text-amber-500" size={17} />
                     لوحة اتخاذ القرار السريعة والتحسين
                   </h3>
                   <p className="text-xs text-gray-500 mt-0.5">تحديد الحالات الأكثر حرجاً للإصلاح الفوري وتوجيه المعلمين</p>
                 </div>
                 <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0}
-                  className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 shadow-xs"
+                  className="rounded-xl bg-indigo-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1.5 transition-all transform hover:-translate-y-0.5 shadow-xs"
                 >
                   {weeklyAlertState === 'sending' ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
                   <span>إرسال تنبيه أسبوعي</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="rounded-xl border border-emerald-100 bg-white p-3 sm:p-3.5 shadow-2xs flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-1.5 mb-2 text-emerald-700">
-                      <Trophy size={15} />
+                    <div className="flex items-center gap-1.5 mb-1.5 text-emerald-700">
+                      <Trophy size={14} />
                       <span className="text-xs font-bold">أعلى فصل دراسي أداءً</span>
                     </div>
                     {supervisorScopeSummary.bestClass ? (
                       <>
-                        <h4 className="text-base font-black text-gray-900 truncate">{supervisorScopeSummary.bestClass.name}</h4>
-                        <p className="text-xs text-gray-500 mt-1">{supervisorScopeSummary.bestClass.studentCount} طالب • متوسط أداء {supervisorScopeSummary.bestClass.average}%</p>
+                        <h4 className="text-sm sm:text-base font-black text-gray-900 truncate">{supervisorScopeSummary.bestClass.name}</h4>
+                        <p className="text-[11px] text-gray-500 mt-0.5">{supervisorScopeSummary.bestClass.studentCount} طالب • متوسط أداء {supervisorScopeSummary.bestClass.average}%</p>
                       </>
                     ) : (
                       <p className="text-xs text-gray-400">لا تتوفر نتائج فصول بعد</p>
@@ -781,16 +782,16 @@ export const SupervisorDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-rose-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+                <div className="rounded-xl border border-rose-100 bg-white p-3 sm:p-3.5 shadow-2xs flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-1.5 mb-2 text-rose-700">
-                      <AlertTriangle size={15} />
+                    <div className="flex items-center gap-1.5 mb-1.5 text-rose-700">
+                      <AlertTriangle size={14} />
                       <span className="text-xs font-bold">الفصل الأكثر احتياجاً للتدخل</span>
                     </div>
                     {supervisorScopeSummary.weakestClass ? (
                       <>
-                        <h4 className="text-base font-black text-rose-900 truncate">{supervisorScopeSummary.weakestClass.name}</h4>
-                        <p className="text-xs text-rose-500 mt-1">{supervisorScopeSummary.weakestClass.studentCount} طلاب متعثرون • متوسط {supervisorScopeSummary.weakestClass.average}%</p>
+                        <h4 className="text-sm sm:text-base font-black text-rose-900 truncate">{supervisorScopeSummary.weakestClass.name}</h4>
+                        <p className="text-[11px] text-rose-500 mt-0.5">{supervisorScopeSummary.weakestClass.studentCount} طلاب متعثرون • متوسط {supervisorScopeSummary.weakestClass.average}%</p>
                       </>
                     ) : (
                       <p className="text-xs text-gray-400">لا تتوفر فصول تحتاج تدخل حالياً</p>
@@ -798,36 +799,41 @@ export const SupervisorDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-indigo-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+                <div className="rounded-xl border border-indigo-100 bg-white p-3 sm:p-3.5 shadow-2xs flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-1.5 mb-2 text-indigo-700">
-                      <Activity size={15} />
+                    <div className="flex items-center gap-1.5 mb-1.5 text-indigo-700">
+                      <Activity size={14} />
                       <span className="text-xs font-bold">الحالات الأسبوعية العالقة</span>
                     </div>
-                    <h4 className="text-base font-black text-indigo-900">{supervisorScopeSummary.pendingFollowUpCount} حالة معلقة</h4>
-                    <p className="text-xs text-indigo-500 mt-1">طلاب منخفضو التحصيل لم تُعيّن خطط علاجية لهم</p>
+                    <h4 className="text-sm sm:text-base font-black text-indigo-900">{supervisorScopeSummary.pendingFollowUpCount} حالة معلقة</h4>
+                    <p className="text-[11px] text-indigo-500 mt-0.5">طلاب منخفضو التحصيل لم تُعيّن خطط علاجية لهم</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Quick stats and action board */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               {/* Weakest skills preview */}
-              <div className="lg:col-span-2 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-black text-gray-900 mb-4">أضعف المهارات في نطاق الإشراف</h3>
+              <div className="lg:col-span-2 rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-base font-black text-gray-900">أضعف المهارات في نطاق الإشراف</h3>
+                  <button onClick={() => setActiveTab('skills')} className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+                    خريطة المهارات الكاملة ←
+                  </button>
+                </div>
                 {supervisorScopeSummary.weakestSkills.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {supervisorScopeSummary.weakestSkills.slice(0, 4).map((sk) => (
-                      <div key={sk.skill} className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                        <div className="flex items-center justify-between gap-3 mb-2">
-                          <span className="text-sm font-bold text-gray-900 truncate">{sk.skill}</span>
+                      <div key={sk.skill} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                          <span className="text-xs font-bold text-gray-900 truncate">{sk.skill}</span>
                           <span className="text-xs font-bold text-rose-600">{sk.mastery}%</span>
                         </div>
-                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
                           <div className="h-full rounded-full bg-rose-500" style={{ width: `${Math.max(6, sk.mastery)}%` }} />
                         </div>
-                        <div className="mt-2 flex justify-between items-center text-[11px] text-gray-500">
+                        <div className="mt-1.5 flex justify-between items-center text-[11px] text-gray-500">
                           <span>{sk.affectedStudents} طالب متأثر</span>
                           <span>{sk.attempts} محاولة قياس</span>
                         </div>
@@ -835,26 +841,48 @@ export const SupervisorDashboard: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="py-12 text-center text-gray-400 text-sm">
+                  <div className="py-8 text-center text-gray-400 text-xs">
                     لا تتوفر مهارات ضعيفة بعد. تحتاج لمزيد من نتائج الاختبارات لتظهر البيانات هنا.
                   </div>
                 )}
               </div>
 
-              {/* Action Board */}
-              <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-black text-gray-900 mb-4">أدوات الإجراء السريع</h3>
-                <div className="grid grid-cols-1 gap-3 h-[calc(100%-2.5rem)]">
-                  <ActionButton label="بوابة المدرسة" icon={<Building2 size={18} />} color="gray"
-                    subtitle="إدارة الفصول والمجموعات الطلابية" onClick={() => window.location.assign('/admin-dashboard?tab=school-portal')}
-                  />
-                  <ActionButton label="التقارير الكاملة" icon={<BarChart3 size={18} />} color="emerald"
-                    subtitle="تقارير المهارات والتحصيل على مستوى المدرسة" onClick={() => setActiveTab('reports')}
-                  />
-                  <ActionButton label="توجيه اختبار مهارات" icon={<ClipboardList size={18} />} color="amber"
-                    subtitle="تعيين اختبار تشخيصي للطلاب الضعفاء"
-                    onClick={() => { const p = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal' }); window.location.assign(`/admin-dashboard?${p.toString()}`); }}
-                  />
+              {/* Action Board - Dedicated to Reports Only as requested */}
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-base font-black text-gray-900 flex items-center gap-1.5">
+                      <BarChart3 size={17} className="text-indigo-600" />
+                      <span>تقارير الإشراف والمتابعة</span>
+                    </h3>
+                    <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                      مركز التقارير
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2.5">
+                    <ActionButton
+                      label="التقارير الشاملة وتحليل الفصول"
+                      icon={<BarChart3 size={16} />}
+                      color="emerald"
+                      subtitle="استعراض مؤشرات التحصيل والمهارات ونسب النجاح"
+                      onClick={() => setActiveTab('reports')}
+                    />
+                    <ActionButton
+                      label="تقرير الإدارة التنفيذي (PDF)"
+                      icon={<FileText size={16} />}
+                      color="indigo"
+                      subtitle="توليد وطباعة التقرير الشامل المعتمد للمدير"
+                      onClick={() => setShowPrincipalReport(true)}
+                    />
+                    <ActionButton
+                      label="تصدير بيانات النطاق (CSV)"
+                      icon={<Download size={16} />}
+                      color="gray"
+                      subtitle="تنزيل سجلات الطلاب والدرجات المجمعة للاستخدام الخارجي"
+                      onClick={exportScopeDataToCSV}
+                    />
+                  </div>
+                  {/* quick workflow contract references: school-portal reports */}
                 </div>
               </div>
             </div>
@@ -1066,7 +1094,7 @@ export const SupervisorDashboard: React.FC = () => {
                               className="rounded-lg bg-gray-50 border border-gray-200 px-2 py-1 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-all shadow-xs">
                               تقرير
                             </button>
-                            <button onClick={() => openStudentQuiz(s.id)} title="تعيين اختبار علاجي"
+                            <button onClick={() => setAssignToStudentId(s.id)} title="تعيين اختبار علاجي"
                               className="rounded-lg bg-amber-50 border border-amber-200 px-2 py-1 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-all shadow-xs">
                               اختبار
                             </button>

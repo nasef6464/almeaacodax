@@ -13,7 +13,7 @@ check("AdminDashboard imports useCallback", includes("useCallback, useEffect, us
 check("AdminDashboard defines setActiveAdminTab helper", includes("const setActiveAdminTab = useCallback"));
 check("setActiveAdminTab updates normalized tab state", includes("setActiveTab(normalizedTabId);"));
 check("setActiveAdminTab persists normalized tab in URL search params", includes("url.searchParams.set('tab', normalizedTabId)"));
-check("setActiveAdminTab preserves current hash while replacing URL", includes("window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)"));
+check("setActiveAdminTab preserves current hash while adding browser history", includes("window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`)"));
 check("Sidebar buttons use URL-aware tab navigation", includes("onClick={() => setActiveAdminTab(item.id)}"));
 check("Sidebar buttons no longer use state-only navigation", !includes("onClick={() => setActiveTab(item.id)}"));
 check("Admin action buttons no longer use state-only navigation", !/onClick=\{\(\) => setActiveTab\(/.test(adminDashboard));

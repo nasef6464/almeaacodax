@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { reportClientEvent } from '../services/clientTelemetry';
+import { APP_VERSION } from '../utils/appVersion';
 
 type Props = {
     children: React.ReactNode;
@@ -28,7 +29,33 @@ export class AppErrorBoundary extends React.Component<Props, State> {
                 componentStack: info.componentStack,
             },
         });
+
+        this.recoverFromStaleChunk(errorObject);
     }
+
+    private recoverFromStaleChunk = (error: Error) => {
+        const message = error.message || '';
+        const isChunkLoadFailure =
+            /failed to fetch dynamically imported module|importing a module script failed|chunkloaderror/i.test(message);
+
+        if (!isChunkLoadFailure || typeof window === 'undefined') return;
+
+        // A deployment can replace hashed Vite assets while a learner still has
+        // the previous page shell open. Reload only once per app version/path so
+        // the current manifest is fetched without creating a recovery loop.
+        const recoveryKey = `almeaa:chunk-recovery:${APP_VERSION}:${window.location.pathname}`;
+        try {
+            if (window.sessionStorage.getItem(recoveryKey)) return;
+            window.sessionStorage.setItem(recoveryKey, '1');
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('_almeaa_reload', String(Date.now()));
+            window.location.replace(url.toString());
+        } catch {
+            // The visible error boundary remains the safe fallback when storage
+            // or navigation is unavailable.
+        }
+    };
 
     private recoverToHome = () => {
         this.setState({ hasError: false });
