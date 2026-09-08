@@ -5,6 +5,7 @@ import {
   Clock,
   Eye,
   FileText,
+  ListChecks,
   LockKeyhole,
   RotateCcw,
   Sparkles,
