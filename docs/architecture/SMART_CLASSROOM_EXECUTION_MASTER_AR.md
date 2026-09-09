@@ -548,6 +548,10 @@ Exit: المشرف يرى نطاقه فقط ولا تتغير إمكانيات �
 
 Dependency: `SC-03` closed.
 
+الحالة: `CLOSED / VERIFIED` على `dbbb4bec12073ea3cf4c5fa0ad2a7588b766cd90`؛ Backend Integration CI
+[34413934984](https://github.com/nasef6464/almeaacodax/actions/runs/34413934984) تثبت الفصل
+بين المصادر، وعدم تسرب نتيجة مدرسة أخرى، ورفض الطالب لقراءة Intelligence المشرف.
+
 - `QuizResult.learningContext` للأحداث الجديدة.
 - platform vs school side-by-side.
 - skill heatmap وweak students وbounded trends.

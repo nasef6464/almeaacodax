@@ -1,8 +1,8 @@
 # ALMEAA School OS + Smart Classroom — سجل الأهداف التنفيذي
 
-> الحالة: `G3 CLOSED / VERIFIED`
+> الحالة: `G4 CLOSED / VERIFIED`
 > آخر مراجعة: 2026-09-09
-> Current Goal: `G4 — School Intelligence`
+> Current Goal: `G5 — Intervention & Proven Improvement`
 > Runtime truth عند المراجعة: `main@9cf72176059e09466335f6d6ff20b51b43969e61`؛ يجب التحقق من HEAD عند البدء.
 
 هذا الملف هو سجل الأهداف المختصر القابل للاسترجاع. القرار المعماري المفصل موجود في
@@ -33,8 +33,8 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | `G1 — School Identity & Commercial Access` | `SC-01A + SC-01B` | الحساب الواحد يملك School context صحيحًا، والمعلم مقيد بفصل/مادة، والمدرسة مقيدة بوحدات العقد من الخادم. | legacy parity بلا توسيع صلاحيات، ورفض assignment/module غير المسموح في API وSocket، مع controls إدارية بسيطة. | `CLOSED / VERIFIED` |
 | `G2 — Usable Smart Classroom` | `SC-02A + SC-02B` | رحلة واحدة تعمل: معلم يختار 1–10 أسئلة، يبدأ جلسة، طلاب مصرحون يدخلون، يجيبون، ثم يصدر تقرير ثابت عبر Teacher/Projector/Student surfaces. | HTTP + authorized realtime + reconnect + desktop/projector/mobile E2E بمدرستين، وتصحيح خادمي وإجابات idempotent بلا تسريب answer. | `CLOSED / VERIFIED` |
 | `G3 — Supervisor Operations & Reports` | `SC-03` | الفصول الذكية اليوم، تاريخ الجلسات، وتقارير session/class/teacher داخل لوحة المشرف الحالية. | المشرف يرى نطاقه فقط، واللوحة القديمة لم تفقد قدراتها، وPDF/Excel يخرجان من read model واحد. | `CLOSED / VERIFIED` |
-| `G4 — School Intelligence` | `SC-04` | School وPlatform analytics جنبًا إلى جنب مع skill heatmap وweak students وtrends محدودة. | لا blended score، وlegacy context يظهر بصدق، وcross-school reads مرفوضة، ولا rollup دون benchmark. | `NOT STARTED` |
-| `G5 — Intervention & Proven Improvement` | `SC-05A + SC-05B` | Weak Skill → Target Students → Action → Follow-up → Before/After improvement. | تدخل فعلي من نوع تدريب/اختبار/محتوى/مسار/واجب/دعم، مع evidence counts وthreshold قابل للضبط ونتيجة قابلة للتتبع. | `NOT STARTED` |
+| `G4 — School Intelligence` | `SC-04` | School وPlatform analytics جنبًا إلى جنب مع skill heatmap وweak students وtrends محدودة. | لا blended score، وlegacy context يظهر بصدق، وcross-school reads مرفوضة، ولا rollup دون benchmark. | `CLOSED / VERIFIED` |
+| `G5 — Intervention & Proven Improvement` | `SC-05A + SC-05B` | Weak Skill → Target Students → Action → Follow-up → Before/After improvement. | تدخل فعلي من نوع تدريب/اختبار/محتوى/مسار/واجب/دعم، مع evidence counts وthreshold قابل للضبط ونتيجة قابلة للتتبع. | `IN PROGRESS` |
 | `G6 — Controlled Pilot & Commercial Limits` | `SC-06` | Pilot حقيقي يثبت قابلية الاستخدام ويحدد limits اللازمة للعقد من القياس. | تقرير Pilot لاتصال ضعيف وتزامن وlatency/reconnect/write volume؛ لا ادعاء production scale من isolated CI. | `BLOCKED — يحتاج تفويض بيئة وبيانات Pilot بعد G5` |
 
 ## حدود لا تتغير
@@ -79,8 +79,8 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | `G1` | `CLOSED / VERIFIED` | `cd1cdb40244690ba85ee468f4c95505d3990f4f4` | policy smoke PASS; Backend Integration CI PASS | begin G2 assessment only |
 | `G2` | `CLOSED / VERIFIED` | `ba4e20b31051029411732419c555a9dd73c6b149` | Backend CI [34395166600](https://github.com/nasef6464/almeaacodax/actions/runs/34395166600) PASS: HTTP School A/B lifecycle + authenticated Socket room join, forced reconnect and rejoin; UI/API contract `12/12` PASS; Playwright surfaces audit PASS للمعلم/الطالب/العارض | begin G3 assessment only |
 | `G3` | `CLOSED / VERIFIED` | `9feded45cb38caa9aeaff29648dce4bde96f3019` | Backend CI [34412721414](https://github.com/nasef6464/almeaacodax/actions/runs/34412721414) PASS؛ scoped session/class/teacher reports؛ Excel/PDF من نفس read model | begin G4 assessment only |
-| `G4` | `IN PROGRESS` | — | — | inspect dual-source analytics boundary |
-| `G5` | `NOT STARTED` | — | — | بعد إغلاق G4 |
+| `G4` | `CLOSED / VERIFIED` | `dbbb4bec12073ea3cf4c5fa0ad2a7588b766cd90` | Backend CI [34413934984](https://github.com/nasef6464/almeaacodax/actions/runs/34413934984) PASS: source contexts at write time; bounded raw dual analytics; school/class scope and cross-school result exclusion | begin G5 assessment only |
+| `G5` | `IN PROGRESS` | — | — | inspect intervention/action ownership and evidence boundary |
 | `G6` | `BLOCKED` | — | يحتاج Pilot authorization | بعد إغلاق G5 وتفويض المالك |
 
 ## خريطة الملفات المرجعية
