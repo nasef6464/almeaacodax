@@ -3,6 +3,9 @@ import { Course, InteractiveVideoProgress, Lesson } from '../types';
 import {
   PlayCircle,
   CheckCircle,
+  CheckCircle2,
+  Award,
+  Video,
   Heart,
   Lock,
   ChevronDown,
@@ -37,6 +40,18 @@ import { mergeInteractiveVideoProgress, normalizeInteractiveVideoProgress } from
 const CustomVideoPlayer = React.lazy(() =>
   import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
 );
+
+const formatLessonDuration = (lesson: { duration?: any; type?: string }) => {
+  const d = lesson.duration;
+  if (!d || d === 0 || d === '0' || d === '0:00' || d === '00:00' || d === '0 min' || d === '0 دقيقة') {
+    return lesson.type === 'quiz' ? 'اختبار تقييمي' : 'درس مرئي';
+  }
+  const str = String(d).trim();
+  if (/^\d+$/.test(str)) {
+    return `${str} دقيقة`;
+  }
+  return str;
+};
 
 const resolveIconColor = (value: string | undefined, fallback: string) => {
   const trimmed = String(value || '').trim();
@@ -904,12 +919,16 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                       >
                         {module.lessons.map((lesson) => {
                           const isCompleted = completedLessons.includes(lesson.id);
+                          const isActive = activeLesson?.id === lesson.id;
+                          const isQuiz = lesson.type === 'quiz' || lesson.type === 'test' || Boolean(lesson.quizId);
+                          const isFile = lesson.type === 'file' || lesson.type === 'pdf';
+                          const formattedDuration = formatLessonDuration(lesson);
                           return (
                             <button
                               key={lesson.id}
                               onClick={() => handleLessonClick(lesson)}
                               className={`w-full p-3.5 sm:p-4 flex items-center justify-between gap-3 group transition-all border-r-4 ${
-                                activeLesson?.id === lesson.id
+                                isActive
                                   ? isDarkMode
                                     ? 'border-indigo-500 bg-indigo-500/15 text-white'
                                     : 'border-indigo-600 bg-indigo-50/80 text-indigo-950 font-black'
@@ -919,26 +938,63 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                               }`}
                             >
                               <div className="flex items-center gap-3 min-w-0">
-                                <div className={`shrink-0 transition-colors ${
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all shadow-xs ${
                                   isCompleted
-                                    ? 'text-emerald-500'
-                                    : activeLesson?.id === lesson.id
-                                      ? isDarkMode ? 'text-indigo-400' : 'text-indigo-600'
-                                      : isDarkMode ? 'text-slate-500' : 'text-slate-400'
+                                    ? 'bg-emerald-500 text-white shadow-sm ring-2 ring-emerald-300/40'
+                                    : isActive
+                                      ? isQuiz
+                                        ? 'bg-purple-600 text-white shadow-md shadow-purple-500/30 ring-2 ring-purple-400/50'
+                                        : 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 ring-2 ring-indigo-400/50'
+                                      : isQuiz
+                                        ? isDarkMode
+                                          ? 'bg-purple-950/50 text-purple-300 border border-purple-800/60'
+                                          : 'bg-purple-50 text-purple-600 border border-purple-200'
+                                        : isFile
+                                          ? isDarkMode
+                                            ? 'bg-amber-950/50 text-amber-300 border border-amber-800/60'
+                                            : 'bg-amber-50 text-amber-600 border border-amber-200'
+                                          : isDarkMode
+                                            ? 'bg-blue-950/50 text-blue-300 border border-blue-800/60'
+                                            : 'bg-blue-50 text-blue-600 border border-blue-200'
                                 }`}>
-                                  {isCompleted ? <CheckCircle size={18} /> : lesson.type === 'video' ? <PlayCircle size={18} /> : <HelpCircle size={18} />}
+                                  {isCompleted ? (
+                                    <CheckCircle2 size={16} />
+                                  ) : isQuiz ? (
+                                    <Award size={16} />
+                                  ) : isFile ? (
+                                    <FileText size={16} />
+                                  ) : (
+                                    <PlayCircle size={16} />
+                                  )}
                                 </div>
                                 <div className="text-right min-w-0">
-                                  <p className={`text-xs font-bold leading-snug truncate ${
-                                    activeLesson?.id === lesson.id
-                                      ? isDarkMode ? 'text-indigo-300 font-black' : 'text-indigo-700 font-black'
-                                      : isDarkMode ? 'text-slate-200' : 'text-slate-700'
-                                  }`}>
-                                    {renderLessonEdgeIcon('start')}
-                                    <span>{lesson.title}</span>
-                                    {renderLessonEdgeIcon('end')}
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <p className={`text-xs font-bold leading-snug truncate ${
+                                      isActive
+                                        ? isDarkMode ? 'text-indigo-300 font-black' : 'text-indigo-700 font-black'
+                                        : isDarkMode ? 'text-slate-200' : 'text-slate-700'
+                                    }`}>
+                                      {renderLessonEdgeIcon('start')}
+                                      <span>{lesson.title}</span>
+                                      {renderLessonEdgeIcon('end')}
+                                    </p>
+                                    {isActive ? (
+                                      <span className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
+                                        isQuiz
+                                          ? isDarkMode ? 'bg-purple-900/60 text-purple-200 border border-purple-700' : 'bg-purple-100 text-purple-700 border border-purple-200'
+                                          : isDarkMode ? 'bg-indigo-900/60 text-indigo-200 border border-indigo-700' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                                      }`}>
+                                        {isQuiz ? 'الاختبار الحالي' : 'الدرس الحالي'}
+                                      </span>
+                                    ) : isCompleted ? (
+                                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                        مكتمل ✓
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                  <p className={`text-[10px] mt-0.5 font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    {formattedDuration}
                                   </p>
-                                  <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>{lesson.duration}</p>
                                 </div>
                               </div>
                               {lesson.isLocked && <Lock size={14} className={isDarkMode ? 'text-amber-400 shrink-0' : 'text-amber-500 shrink-0'} />}
