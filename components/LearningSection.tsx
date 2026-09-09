@@ -1003,35 +1003,42 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors leading-snug line-clamp-1">{skill.title}</h3>
-                                            
-                                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100/80 gap-2">
-                                                <div className="flex items-center gap-2 text-xs font-bold">
-                                                    <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
-                                                        skill.isLocked 
-                                                            ? 'bg-amber-50 text-amber-700' 
-                                                            : 'bg-emerald-50 text-emerald-700'
-                                                    }`}>
-                                                        {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
-                                                    </span>
-                                                    <span className="text-gray-300">•</span>
-                                                    <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
-                                                </div>
+                                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors leading-snug line-clamp-2">{skill.title}</h3>
+                                        </div>
+                                    </div>
 
-                                                <div className="shrink-0 flex items-center gap-1">
-                                                    {skill.isLocked ? (
-                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
-                                                            <span>اضغط للاشتراك</span>
-                                                            <ChevronLeft size={13} className="text-amber-500 transform group-hover:-translate-x-0.5 transition-transform" />
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                                            <span>اضغط للبدء</span>
-                                                            <ChevronLeft size={13} className="transform group-hover:-translate-x-0.5 transition-transform" />
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
+                                    <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100/80 gap-2 w-full">
+                                        <div className="flex items-center gap-2 text-xs font-bold">
+                                            <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
+                                                skill.isLocked 
+                                                    ? 'bg-amber-50 text-amber-700' 
+                                                    : 'bg-emerald-50 text-emerald-700'
+                                            }`}>
+                                                {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
+                                            </span>
+                                            <span className="text-gray-300">•</span>
+                                            <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
+                                        </div>
+
+                                        <div className="shrink-0 flex items-center gap-1">
+                                            {skill.isLocked ? (
+                                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
+                                                    <span>اضغط للاشتراك</span>
+                                                    <ChevronLeft size={13} className="text-amber-500 transform group-hover:-translate-x-0.5 transition-transform" />
+                                                </span>
+                                            ) : (
+                                                <span
+                                                    className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all duration-200 group-hover:shadow-xs"
+                                                    style={{
+                                                        backgroundColor: theme.soft,
+                                                        color: theme.text,
+                                                        borderColor: theme.border,
+                                                    }}
+                                                >
+                                                    <span>اضغط للبدء</span>
+                                                    <ChevronLeft size={13} className="transform group-hover:-translate-x-1 transition-transform" />
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 

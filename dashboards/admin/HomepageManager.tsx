@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2, Upload } from 'lucide-react';
+import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2, Upload, Megaphone, Sparkles, BarChart2, Layers, Star, ArrowLeft } from 'lucide-react';
 import { api } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useStore } from '../../store/useStore';
@@ -165,7 +165,7 @@ const createEmptyTestimonial = (): HomepageTestimonial => ({
 
 export const HomepageManager: React.FC = () => {
     const { logout } = useAuth();
-    const { paths, courses, lessons, subjects } = useStore();
+    const { paths, courses, lessons, subjects, announcementAds } = useStore();
     const [settings, setSettings] = useState<HomepageSettings>(defaultHomepageSettings);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -173,6 +173,7 @@ export const HomepageManager: React.FC = () => {
     const [success, setSuccess] = useState<string | null>(null);
     const [courseSearch, setCourseSearch] = useState('');
     const [articleSearch, setArticleSearch] = useState('');
+    const activeAdsCount = (announcementAds || []).filter((ad) => ad.isActive).length;
 
     useEffect(() => {
         let cancelled = false;
@@ -514,9 +515,88 @@ export const HomepageManager: React.FC = () => {
             {error && <div className="rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-sm text-rose-700">{error}</div>}
             {success && <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm text-emerald-700">{success}</div>}
 
+            {/* Announcement Ads Spotlight Card */}
+            <div className="rounded-3xl border border-amber-200/90 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-indigo-500/10 p-5 shadow-xs backdrop-blur-sm">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3.5">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-md shadow-amber-500/25">
+                            <Megaphone size={22} />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-base font-black text-gray-950">إعلانات وتنبيهات الصفحة والمنصة</h3>
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-black text-amber-800">
+                                    {activeAdsCount} نشط
+                                </span>
+                            </div>
+                            <p className="mt-1 text-xs font-medium text-gray-600 leading-relaxed">
+                                تظهر الإعلانات تلقائيًا كـ <strong>شارة تفاعلية في الهيرو</strong> أعلى عنوان الصفحة، <strong>شريط علوي زجاجي</strong> أعلى المنصة، أو <strong>نافذة منبثقة مركزية</strong>.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                window.location.hash = '/admin';
+                            }}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 text-xs font-black shadow-md shadow-amber-500/20 transition hover:shadow-lg active:scale-[0.98]"
+                        >
+                            <span>لوحة إدارة الإعلانات</span>
+                            <ArrowLeft size={14} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Quick Navigation Jump Bar */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
+                <span className="text-xs font-bold text-gray-400 shrink-0 ml-1">انتقال سريع:</span>
+                <button
+                    type="button"
+                    onClick={() => document.getElementById('brand-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 border border-gray-200/80 text-xs font-bold text-gray-700 shadow-xs transition shrink-0"
+                >
+                    <Sparkles size={14} className="text-indigo-600" />
+                    <span>الهوية والشعار</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => document.getElementById('hero-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 border border-gray-200/80 text-xs font-bold text-gray-700 shadow-xs transition shrink-0"
+                >
+                    <Sparkles size={14} className="text-amber-500" />
+                    <span>قسم البداية (Hero)</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => document.getElementById('stats-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 border border-gray-200/80 text-xs font-bold text-gray-700 shadow-xs transition shrink-0"
+                >
+                    <BarChart2 size={14} className="text-blue-600" />
+                    <span>العدادات والأرقام</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => document.getElementById('testimonials-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 border border-gray-200/80 text-xs font-bold text-gray-700 shadow-xs transition shrink-0"
+                >
+                    <Star size={14} className="text-amber-500" />
+                    <span>آراء الطلاب</span>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => document.getElementById('content-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 border border-gray-200/80 text-xs font-bold text-gray-700 shadow-xs transition shrink-0"
+                >
+                    <Layers size={14} className="text-emerald-600" />
+                    <span>المحتوى المميز</span>
+                </button>
+            </div>
+
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-2 space-y-6">
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                    <section id="brand-section" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 scroll-mt-6">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                                 <ImageIcon size={18} />
@@ -609,7 +689,7 @@ export const HomepageManager: React.FC = () => {
                         </div>
                     </section>
 
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                    <section id="hero-section" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 scroll-mt-6">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
                                 <ImageIcon size={18} />
@@ -681,7 +761,7 @@ export const HomepageManager: React.FC = () => {
                         <TextAreaField label="الوصف الرئيسي" value={settings.hero.description || ''} onChange={(value) => updateHeroField('description', value)} rows={4} />
                     </section>
 
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                    <section id="stats-section" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 scroll-mt-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h2 className="font-bold text-gray-900">العدادات العلوية</h2>
@@ -742,7 +822,7 @@ export const HomepageManager: React.FC = () => {
                         </div>
                     </section>
 
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                    <section id="testimonials-section" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 scroll-mt-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h2 className="font-bold text-gray-900">آراء الطلاب</h2>
@@ -862,7 +942,7 @@ export const HomepageManager: React.FC = () => {
                         <TextAreaField label="وصف الآراء" value={settings.sections.testimonialsSubtitle || ''} onChange={(value) => updateSectionField('testimonialsSubtitle', value)} rows={2} />
                     </section>
 
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+                    <section id="content-section" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 scroll-mt-6">
                         <h2 className="font-bold text-gray-900">المسارات المميزة</h2>
                         <p className="text-sm text-gray-500">إذا لم تحدد شيئًا، ستظهر كل المسارات المفعلة في الصفحة الرئيسية.</p>
                         <div className="space-y-2 max-h-72 overflow-y-auto">
