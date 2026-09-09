@@ -26,6 +26,7 @@
     "smoke:video-question-picker-runtime": "tsx ../scripts/video-question-picker-runtime.ts",
     "smoke:interactive-video-progress-runtime": "tsx ../scripts/interactive-video-progress-runtime.ts",
     "verify:smart-classroom-g0": "tsx src/scripts/verifySmartClassroomG0.ts",
+    "verify:school-g1-foundation": "tsx src/scripts/verifySchoolG1Foundation.ts",
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
     "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts",
