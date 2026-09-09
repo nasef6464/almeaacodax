@@ -723,6 +723,9 @@ export const api = {
     request<{ contract: { status: string; modules: string[] } }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { method: "PUT", body: payload, token }),
   updateTeachingAssignment: (payload: unknown, token?: string | null) =>
     request<unknown>("/school-access/assignments", { method: "PUT", body: payload, token }),
+  joinClassroomSession: (id: string, pin: string, token?: string | null) => request<{ joined: boolean }>(`/classroom/sessions/${id}/join`, { method: "POST", body: { pin }, token }),
+  getClassroomCurrentQuestion: (id: string, token?: string | null) => request<any>(`/classroom/sessions/${id}/current`, { token }),
+  answerClassroomQuestion: (id: string, questionId: string, selectedOptionIndex: number, token?: string | null) => request<any>(`/classroom/sessions/${id}/answers/${questionId}`, { method: "PUT", body: { selectedOptionIndex }, token }),
   ...createAnnouncementAdsApi(request),
   ...createAccessCodesApi(request),
   ...createStudyPlansApi(request),
