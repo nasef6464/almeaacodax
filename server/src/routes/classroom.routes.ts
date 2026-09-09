@@ -80,3 +80,15 @@ classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "
   const report = { sessionId: sessionId(session), schoolId: session.schoolId, classId: session.classId, participantCount: participants, responseCount: responses.length, correctCount: responses.filter((response: any) => response.isCorrect).length, endedAt: new Date().toISOString() };
   session.status = "ended"; session.endedAt = new Date(); session.activeQuestionIndex = null; session.reportSnapshot = report; await session.save(); res.json({ report });
 }));
+
+classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
+  const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
+  if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
+  const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
+  const isTeacher = req.authUser!.role === "admin" || String(session.teacherId) === req.authUser!.id;
+  const isStudent = student?.role === "student" && String(student.schoolId) === String(session.schoolId) && (student.groupIds || []).map(String).includes(String(session.classId));
+  if (!isTeacher && !isStudent) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+  const responses = await ClassroomResponseModel.find({ sessionId: sessionId(session) }).lean();
+  const distribution = responses.reduce((summary: Record<string, number>, response: any) => { const key = String(response.selectedOptionIndex); summary[key] = (summary[key] || 0) + 1; return summary; }, {});
+  res.json({ sessionId: sessionId(session), status: session.status, activeQuestionIndex: session.activeQuestionIndex, responseCount: responses.length, distribution, report: session.status === "ended" ? session.reportSnapshot : null });
+}));
