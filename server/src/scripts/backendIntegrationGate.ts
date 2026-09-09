@@ -11,6 +11,8 @@ import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { QuestionModel } from "../models/Question.js";
+import { SchoolContractModel } from "../models/SchoolContract.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
 import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
@@ -288,6 +290,46 @@ async function loginRole(role: Role, csrf: CsrfContext) {
   assert.equal(result.body?.user?.role, expectedRole, `${role}: login returned wrong role`);
   assert.equal(typeof result.body?.token, "string", `${role}: test-mode bearer token missing`);
   tokens.set(role, result.body.token);
+}
+
+async function runSmartClassroomJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school");
+  const classId = groupIds.get("class");
+  const teacherId = userIds.get("teacher");
+  assert.ok(schoolId && classId && teacherId, "smart classroom fixture scope missing");
+  const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
+  await SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] });
+  await TeachingAssignmentModel.create({ schoolId, teacherId, classId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" });
+  await QuestionModel.create({ id: questionId, text: "Smart classroom question", options: ["Wrong", "Correct"], correctOptionIndex: 1, subject: ASSESSMENT_SUBJECT_ID, type: "mcq", approvalStatus: "approved" });
+
+  const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId] } });
+  expectStatus("assigned teacher creates smart classroom session", created, 201);
+  const sessionId = String(created.body?.sessionId || ""); const pin = String(created.body?.pin || "");
+  assert.ok(sessionId && /^\d{6}$/.test(pin), "smart classroom session did not issue ephemeral PIN");
+
+  const outsiderJoin = await jsonRequest(`/classroom/sessions/${sessionId}/join`, { method: "POST", token: tokens.get("outsider"), csrf, body: { pin } });
+  expectStatus("other school student cannot join smart classroom", outsiderJoin, 403);
+  const published = await jsonRequest(`/classroom/sessions/${sessionId}/publish/0`, { method: "POST", token: tokens.get("teacher"), csrf });
+  expectStatus("teacher publishes smart classroom question", published, 200);
+  const beforeJoin = await jsonRequest(`/classroom/sessions/${sessionId}/current`, { token: tokens.get("student") });
+  expectStatus("student must join before reading live question", beforeJoin, 403);
+  const joined = await jsonRequest(`/classroom/sessions/${sessionId}/join`, { method: "POST", token: tokens.get("student"), csrf, body: { pin } });
+  expectStatus("assigned student joins smart classroom", joined, 200);
+  const current = await jsonRequest(`/classroom/sessions/${sessionId}/current`, { token: tokens.get("student") });
+  expectStatus("joined student reads safe live question", current, 200);
+  assert.equal(current.body?.question?.correctOptionIndex, undefined, "student live question leaked answer key");
+  const invalidAnswer = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 2 } });
+  expectStatus("invalid smart classroom answer option is rejected", invalidAnswer, 400);
+  const answer = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
+  expectStatus("student submits smart classroom answer", answer, 200);
+  const repeated = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
+  expectStatus("smart classroom answer is idempotent", repeated, 200);
+  assert.equal(repeated.body?.responseId, answer.body?.responseId, "repeated smart classroom answer created a second response");
+  const ended = await jsonRequest(`/classroom/sessions/${sessionId}/end`, { method: "POST", token: tokens.get("teacher"), csrf });
+  expectStatus("teacher ends smart classroom session", ended, 200);
+  assert.equal(ended.body?.report?.responseCount, 1, "smart classroom immutable report has wrong response count");
+  const afterEnd = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
+  expectStatus("ended smart classroom rejects further answers", afterEnd, 404);
 }
 
 async function runAssessmentJourney(csrf: CsrfContext) {
@@ -1239,6 +1281,7 @@ async function main() {
       await loginRole(role, csrf);
     }
 
+    await runSmartClassroomJourney(csrf);
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);
