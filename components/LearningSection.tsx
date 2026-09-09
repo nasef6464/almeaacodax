@@ -27,15 +27,29 @@ interface LearningSectionProps {
     subject: string;
     grade?: string;
     title?: string;
-    colorTheme?: 'indigo' | 'amber' | 'emerald' | 'purple' | 'rose';
+    colorTheme?: string;
 }
 
 const themePaletteMap: Record<string, { base: string; soft: string; border: string; text: string }> = {
-    indigo: { base: '#4f46e5', soft: '#e0e7ff', border: '#c7d2fe', text: '#4338ca' },
-    amber: { base: '#f59e0b', soft: '#fef3c7', border: '#fde68a', text: '#b45309' },
+    indigo: { base: '#4f46e5', soft: '#eef2ff', border: '#e0e7ff', text: '#4338ca' },
+    blue: { base: '#2563eb', soft: '#eff6ff', border: '#dbeafe', text: '#1d4ed8' },
+    sky: { base: '#0284c7', soft: '#f0f9ff', border: '#bae6fd', text: '#0369a1' },
+    cyan: { base: '#0891b2', soft: '#ecfeff', border: '#a5f3fc', text: '#0e7490' },
+    teal: { base: '#0d9488', soft: '#f0fdfa', border: '#99f6e4', text: '#0f766e' },
     emerald: { base: '#10b981', soft: '#d1fae5', border: '#a7f3d0', text: '#047857' },
-    purple: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    green: { base: '#16a34a', soft: '#f0fdf4', border: '#bbf7d0', text: '#15803d' },
+    lime: { base: '#65a30d', soft: '#f7fee7', border: '#d9f99d', text: '#4d7c0f' },
+    yellow: { base: '#ca8a04', soft: '#fefce8', border: '#fef08a', text: '#a16207' },
+    amber: { base: '#f59e0b', soft: '#fef3c7', border: '#fde68a', text: '#b45309' },
+    orange: { base: '#ea580c', soft: '#fff7ed', border: '#fed7aa', text: '#c2410c' },
+    red: { base: '#dc2626', soft: '#fef2f2', border: '#fecaca', text: '#b91c1c' },
     rose: { base: '#f43f5e', soft: '#ffe4e6', border: '#fecdd3', text: '#be123c' },
+    pink: { base: '#db2777', soft: '#fdf2f8', border: '#fbcfe8', text: '#be185d' },
+    fuchsia: { base: '#c026d3', soft: '#fdf4ff', border: '#f5d0fe', text: '#a21caf' },
+    purple: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    violet: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    slate: { base: '#475569', soft: '#f8fafc', border: '#cbd5e1', text: '#334155' },
+    gray: { base: '#6b7280', soft: '#f3f4f6', border: '#d1d5db', text: '#4b5563' },
 };
 
 const resolveThemePalette = (value?: string) => {
@@ -43,7 +57,7 @@ const resolveThemePalette = (value?: string) => {
     if (value.startsWith('#')) {
         return { base: value, soft: `${value}18`, border: `${value}33`, text: value };
     }
-    return themePaletteMap[value] || themePaletteMap.indigo;
+    return themePaletteMap[value.toLowerCase()] || themePaletteMap.indigo;
 };
 
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {

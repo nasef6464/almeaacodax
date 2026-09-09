@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart } from 'lucide-react';
+import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -113,21 +113,34 @@ const defaultHomepageSettings: HomepageSettings = {
 };
 
 const colorMap: Record<string, { soft: string; text: string; base: string; border: string }> = {
-    indigo: { soft: '#e0e7ff', text: '#4338ca', base: '#4f46e5', border: '#c7d2fe' },
-    amber: { soft: '#fef3c7', text: '#b45309', base: '#f59e0b', border: '#fde68a' },
+    indigo: { soft: '#eef2ff', text: '#4338ca', base: '#4f46e5', border: '#e0e7ff' },
+    blue: { soft: '#eff6ff', text: '#1d4ed8', base: '#2563eb', border: '#dbeafe' },
+    sky: { soft: '#f0f9ff', text: '#0369a1', base: '#0284c7', border: '#bae6fd' },
+    cyan: { soft: '#ecfeff', text: '#0e7490', base: '#0891b2', border: '#a5f3fc' },
+    teal: { soft: '#f0fdfa', text: '#0f766e', base: '#0d9488', border: '#99f6e4' },
     emerald: { soft: '#d1fae5', text: '#047857', base: '#10b981', border: '#a7f3d0' },
-    purple: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    green: { soft: '#f0fdf4', text: '#15803d', base: '#16a34a', border: '#bbf7d0' },
+    lime: { soft: '#f7fee7', text: '#4d7c0f', base: '#65a30d', border: '#d9f99d' },
+    yellow: { soft: '#fefce8', text: '#a16207', base: '#ca8a04', border: '#fef08a' },
+    amber: { soft: '#fef3c7', text: '#b45309', base: '#f59e0b', border: '#fde68a' },
+    orange: { soft: '#fff7ed', text: '#c2410c', base: '#ea580c', border: '#fed7aa' },
+    red: { soft: '#fef2f2', text: '#b91c1c', base: '#dc2626', border: '#fecaca' },
     rose: { soft: '#ffe4e6', text: '#be123c', base: '#f43f5e', border: '#fecdd3' },
-    blue: { soft: '#dbeafe', text: '#1d4ed8', base: '#2563eb', border: '#bfdbfe' },
+    pink: { soft: '#fdf2f8', text: '#be185d', base: '#db2777', border: '#fbcfe8' },
+    fuchsia: { soft: '#fdf4ff', text: '#a21caf', base: '#c026d3', border: '#f5d0fe' },
+    purple: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    violet: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    slate: { soft: '#f8fafc', text: '#334155', base: '#475569', border: '#cbd5e1' },
     gray: { soft: '#f3f4f6', text: '#4b5563', base: '#6b7280', border: '#d1d5db' },
 };
 
 const resolveColor = (value?: string) => {
     if (!value) return colorMap.indigo;
-    if (value.startsWith('#')) {
-        return { soft: `${value}18`, text: value, base: value, border: `${value}33` };
+    const trimmed = String(value).trim();
+    if (trimmed.startsWith('#')) {
+        return { soft: `${trimmed}18`, text: trimmed, base: trimmed, border: `${trimmed}33` };
     }
-    return colorMap[value] || colorMap.indigo;
+    return colorMap[trimmed.toLowerCase()] || colorMap.indigo;
 };
 
 const resolveHeroColor = (value: string | undefined, fallback: string) => {
@@ -665,15 +678,20 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
         return (
             <Link to={link || '#'} className="group block h-full w-full">
                 <div
-                    className="w-full min-h-44 sm:h-48 bg-white border-2 border-gray-100 flex flex-col items-center justify-center shadow-sm hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden"
+                    className="w-full min-h-[176px] bg-white border-2 flex flex-col items-center justify-between p-6 shadow-sm hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:scale-[1.02] active:scale-[0.98] rounded-3xl relative overflow-hidden"
                     style={{ borderColor: palette.border || palette.base }}
                 >
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="mb-4 p-4 rounded-2xl group-hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: palette.soft, color: palette.text }}>
+                    <div className="absolute inset-0 bg-radial-at-tr from-transparent via-transparent to-black/[0.02] pointer-events-none" />
+                    <div className="relative z-10 flex flex-col items-center text-center w-full">
+                        <div className="mb-3.5 p-3.5 rounded-2xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-xs" style={{ backgroundColor: palette.soft, color: palette.text }}>
                             {icon}
                         </div>
-                        <h3 className="text-lg sm:text-xl font-bold tracking-wide text-gray-900 mb-2 text-center px-3 break-words">{title}</h3>
-                        <p className="text-gray-500 text-xs font-medium px-6 text-center leading-relaxed">{subtitle}</p>
+                        <h3 className="text-lg sm:text-xl font-black tracking-tight text-gray-900 mb-1.5 break-words">{title}</h3>
+                        <p className="text-gray-500 text-xs font-medium px-2 leading-relaxed line-clamp-2">{subtitle}</p>
+                    </div>
+                    <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 text-xs font-black transition-colors duration-300" style={{ color: palette.text }}>
+                        <span>استكشف المسار</span>
+                        <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                     </div>
                 </div>
             </Link>
@@ -683,13 +701,17 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
     if (iconStyle === 'minimal') {
         return (
             <Link to={link || '#'} className="group block h-full w-full">
-                <div className="w-full min-h-44 sm:h-48 bg-gray-50 flex flex-col items-center justify-center hover:bg-white transition-all duration-300 transform group-hover:-translate-y-1 rounded-2xl relative overflow-hidden">
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="mb-3" style={{ color: palette.text }}>
+                <div className="w-full min-h-[176px] bg-gray-50 flex flex-col items-center justify-between p-6 hover:bg-white hover:border-gray-200 border border-gray-100 transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] rounded-3xl relative overflow-hidden">
+                    <div className="relative z-10 flex flex-col items-center text-center w-full">
+                        <div className="mb-3.5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300" style={{ color: palette.text }}>
                             {icon}
                         </div>
-                        <h3 className="text-lg sm:text-xl font-extrabold text-gray-800 mb-2 text-center px-3 break-words">{title}</h3>
-                        <p className="text-gray-500 text-xs text-center px-4">{subtitle}</p>
+                        <h3 className="text-lg sm:text-xl font-extrabold text-gray-900 mb-1.5 break-words">{title}</h3>
+                        <p className="text-gray-500 text-xs text-center px-2 line-clamp-2">{subtitle}</p>
+                    </div>
+                    <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
+                        <span>استكشف المسار</span>
+                        <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                     </div>
                 </div>
             </Link>
@@ -700,15 +722,20 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
         return (
             <Link to={link || '#'} className="group block h-full w-full">
                 <div
-                    className="w-full min-h-44 sm:h-48 text-white flex flex-col items-center justify-center shadow-[8px_8px_0px_#00000020] hover:shadow-[12px_12px_0px_#00000030] transition-all duration-300 transform group-hover:-translate-y-2 rounded-[2rem] border-4 border-white relative overflow-hidden"
+                    className="w-full min-h-[176px] text-white flex flex-col items-center justify-between p-6 shadow-[8px_8px_0px_#00000020] hover:shadow-[12px_12px_0px_#00000030] transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:scale-[1.02] active:scale-[0.98] rounded-[2rem] border-4 border-white relative overflow-hidden"
                     style={{ backgroundColor: palette.base }}
                 >
-                    <div className="absolute top-2 right-2 text-white/30 transform rotate-12 text-6xl">✨</div>
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="mb-4 bg-white text-gray-800 p-4 rounded-full shadow-md group-hover:rotate-12 transition-transform">
+                    <div className="absolute top-2 right-2 text-white/25 transform rotate-12 text-5xl pointer-events-none">✨</div>
+                    <div className="relative z-10 flex flex-col items-center text-center w-full">
+                        <div className="mb-3.5 bg-white text-gray-800 p-3.5 rounded-2xl shadow-md group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300">
                             {icon}
                         </div>
-                        <h3 className="text-xl sm:text-2xl font-black drop-shadow-md mb-2 text-center px-3 break-words">{title}</h3>
+                        <h3 className="text-xl font-black drop-shadow-sm mb-1.5 break-words">{title}</h3>
+                        <p className="text-white/85 text-xs font-medium px-2 leading-relaxed line-clamp-2">{subtitle}</p>
+                    </div>
+                    <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-black text-white group-hover:bg-white group-hover:text-gray-900 transition-all duration-300 shadow-xs">
+                        <span>استكشف المسار</span>
+                        <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                     </div>
                 </div>
             </Link>
@@ -718,17 +745,24 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
     return (
         <Link to={link || '#'} className="group block h-full w-full">
             <div
-                className="w-full min-h-44 sm:h-48 text-white flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden"
+                className="w-full min-h-[176px] text-white flex flex-col items-center justify-between p-6 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:scale-[1.02] active:scale-[0.98] rounded-3xl relative overflow-hidden border border-white/15"
                 style={{ backgroundColor: palette.base }}
             >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 transform group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black opacity-10 rounded-full -ml-8 -mb-8 transform group-hover:scale-110 transition-transform duration-500" />
-                <div className="relative z-10 flex flex-col items-center">
-                    <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm group-hover:bg-white/30 transition-colors shadow-sm">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_60%)] pointer-events-none" />
+                <div className="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full blur-xl group-hover:scale-125 group-hover:bg-white/15 transition-all duration-700 pointer-events-none" />
+                <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-black/10 rounded-full blur-lg group-hover:scale-125 transition-all duration-700 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col items-center text-center w-full">
+                    <div className="mb-3.5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/20">
                         {icon}
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold tracking-wide drop-shadow-md mb-2 text-center px-3 break-words">{title}</h3>
-                    <p className="text-white/90 text-xs font-medium px-6 text-center leading-relaxed max-w-[200px]">{subtitle}</p>
+                    <h3 className="text-xl font-black drop-shadow-xs mb-1.5 break-words tracking-tight">{title}</h3>
+                    <p className="text-white/85 text-xs font-medium px-2 leading-relaxed max-w-[240px] line-clamp-2">{subtitle}</p>
+                </div>
+
+                <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-sm text-[11px] font-black text-white group-hover:bg-white group-hover:text-gray-900 transition-all duration-300 shadow-xs border border-white/20">
+                    <span>استكشف المسار</span>
+                    <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                 </div>
             </div>
         </Link>
