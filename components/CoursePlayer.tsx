@@ -877,135 +877,162 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {course.modules?.map((module) => (
-                <div key={module.id} className={`border-b ${isDarkMode ? 'border-slate-800/60' : 'border-slate-100'}`}>
-                  <button
-                    onClick={() => toggleModule(module.id)}
-                    className={`w-full flex items-center justify-between gap-3 p-4 text-right transition-colors ${
-                      expandedModules.includes(module.id)
-                        ? isDarkMode
-                          ? 'bg-indigo-500/10 text-white'
-                          : 'bg-indigo-50/60 text-indigo-950'
-                        : isDarkMode
-                          ? 'text-slate-300 hover:bg-slate-800/40'
-                          : 'text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                        expandedModules.includes(module.id)
-                          ? 'bg-indigo-600 text-white'
-                          : isDarkMode
-                            ? 'bg-slate-800 text-slate-400'
-                            : 'bg-slate-100 text-slate-500'
-                      }`}>
-                        <BookOpen size={16} />
-                      </div>
-                      <span className="font-bold text-sm leading-snug truncate">{module.title}</span>
-                    </div>
-                    <span className={isDarkMode ? 'text-slate-400' : 'text-slate-400'}>
-                      {expandedModules.includes(module.id) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </span>
-                  </button>
+              {course.modules?.map((module) => {
+                const isExpanded = expandedModules.includes(module.id);
+                const lessonCount = module.lessons?.length || 0;
+                const lessonCountText = lessonCount === 1 ? 'درس واحد' : lessonCount === 2 ? 'درسان' : lessonCount <= 10 ? `${lessonCount} دروس` : `${lessonCount} درس`;
 
-                  <AnimatePresence>
-                    {expandedModules.includes(module.id) && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className={`overflow-hidden py-1 ${isDarkMode ? 'bg-[#0f172a]/50' : 'bg-slate-50/50'}`}
-                      >
-                        {module.lessons.map((lesson) => {
-                          const isCompleted = completedLessons.includes(lesson.id);
-                          const isActive = activeLesson?.id === lesson.id;
-                          const isQuiz = lesson.type === 'quiz' || Boolean((lesson as any).quizId);
-                          const isFile = lesson.type === 'file';
-                          const formattedDuration = formatLessonDuration(lesson);
-                          return (
-                            <button
-                              key={lesson.id}
-                              onClick={() => handleLessonClick(lesson)}
-                              className={`w-full p-3.5 sm:p-4 flex items-center justify-between gap-3 group transition-all border-r-4 ${
-                                isActive
-                                  ? isDarkMode
-                                    ? 'border-indigo-500 bg-indigo-500/15 text-white'
-                                    : 'border-indigo-600 bg-indigo-50/80 text-indigo-950 font-black'
-                                  : isDarkMode
-                                    ? 'border-transparent text-slate-300 hover:bg-slate-800/60 hover:text-white'
-                                    : 'border-transparent text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
-                              }`}
-                            >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all shadow-xs ${
-                                  isCompleted
-                                    ? 'bg-emerald-500 text-white shadow-sm ring-2 ring-emerald-300/40'
-                                    : isActive
-                                      ? isQuiz
-                                        ? 'bg-purple-600 text-white shadow-md shadow-purple-500/30 ring-2 ring-purple-400/50'
-                                        : 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 ring-2 ring-indigo-400/50'
-                                      : isQuiz
-                                        ? isDarkMode
-                                          ? 'bg-purple-950/50 text-purple-300 border border-purple-800/60'
-                                          : 'bg-purple-50 text-purple-600 border border-purple-200'
-                                        : isFile
+                return (
+                  <div key={module.id} className={`border-b ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                    <button
+                      onClick={() => toggleModule(module.id)}
+                      className={`w-full flex items-center justify-between gap-3 p-3.5 sm:p-4 text-right transition-all border-y ${
+                        isExpanded
+                          ? isDarkMode
+                            ? 'bg-slate-800/90 hover:bg-slate-800 text-white border-slate-700/80 shadow-xs'
+                            : 'bg-slate-100 hover:bg-slate-200/70 text-slate-900 border-slate-200/90 shadow-xs'
+                          : isDarkMode
+                            ? 'bg-slate-850 hover:bg-slate-800/60 text-slate-300 border-transparent'
+                            : 'bg-slate-50/80 hover:bg-slate-100 text-slate-700 border-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                          isExpanded
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : isDarkMode
+                              ? 'bg-slate-700/70 text-slate-300'
+                              : 'bg-slate-200/80 text-slate-600'
+                        }`}>
+                          <BookOpen size={16} />
+                        </div>
+                        <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                          <span className={`text-sm leading-snug truncate ${
+                            isExpanded
+                              ? isDarkMode ? 'text-white font-black' : 'text-slate-900 font-black'
+                              : isDarkMode ? 'text-slate-200 font-bold' : 'text-slate-800 font-bold'
+                          }`}>
+                            {module.title}
+                          </span>
+                          {lessonCount > 0 && (
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 border ${
+                              isExpanded
+                                ? isDarkMode
+                                  ? 'bg-slate-900/80 text-indigo-300 border-slate-700'
+                                  : 'bg-white text-slate-600 border-slate-200 shadow-xs'
+                                : isDarkMode
+                                  ? 'bg-slate-800 text-slate-400 border-slate-700'
+                                  : 'bg-white/80 text-slate-500 border-slate-200/70'
+                            }`}>
+                              {lessonCountText}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <span className={`shrink-0 transition-transform ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </span>
+                    </button>
+
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className={`overflow-hidden py-1.5 px-1 ${isDarkMode ? 'bg-[#0b1329]/60' : 'bg-white'}`}
+                        >
+                          {module.lessons.map((lesson) => {
+                            const isCompleted = completedLessons.includes(lesson.id);
+                            const isActive = activeLesson?.id === lesson.id;
+                            const isQuiz = lesson.type === 'quiz' || Boolean((lesson as any).quizId);
+                            const isFile = lesson.type === 'file';
+                            const formattedDuration = formatLessonDuration(lesson);
+                            return (
+                              <button
+                                key={lesson.id}
+                                onClick={() => handleLessonClick(lesson)}
+                                className={`w-full p-3 sm:p-3.5 my-1 rounded-xl flex items-center justify-between gap-3 group transition-all border-r-4 ${
+                                  isActive
+                                    ? isDarkMode
+                                      ? 'border-indigo-500 bg-indigo-500/15 text-white'
+                                      : 'border-indigo-600 bg-indigo-50/80 text-indigo-950 font-black'
+                                    : isDarkMode
+                                      ? 'border-transparent text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                                      : 'border-transparent text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all shadow-xs ${
+                                    isCompleted
+                                      ? 'bg-emerald-500 text-white shadow-sm ring-2 ring-emerald-300/40'
+                                      : isActive
+                                        ? isQuiz
+                                          ? 'bg-purple-600 text-white shadow-md shadow-purple-500/30 ring-2 ring-purple-400/50'
+                                          : 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 ring-2 ring-indigo-400/50'
+                                        : isQuiz
                                           ? isDarkMode
-                                            ? 'bg-amber-950/50 text-amber-300 border border-amber-800/60'
-                                            : 'bg-amber-50 text-amber-600 border border-amber-200'
-                                          : isDarkMode
-                                            ? 'bg-blue-950/50 text-blue-300 border border-blue-800/60'
-                                            : 'bg-blue-50 text-blue-600 border border-blue-200'
-                                }`}>
-                                  {isCompleted ? (
-                                    <CheckCircle2 size={16} />
-                                  ) : isQuiz ? (
-                                    <Award size={16} />
-                                  ) : isFile ? (
-                                    <FileText size={16} />
-                                  ) : (
-                                    <PlayCircle size={16} />
-                                  )}
-                                </div>
-                                <div className="text-right min-w-0">
-                                  <div className="flex items-center gap-1.5 flex-wrap">
-                                    <p className={`text-xs font-bold leading-snug truncate ${
-                                      isActive
-                                        ? isDarkMode ? 'text-indigo-300 font-black' : 'text-indigo-700 font-black'
-                                        : isDarkMode ? 'text-slate-200' : 'text-slate-700'
-                                    }`}>
-                                      {renderLessonEdgeIcon('start')}
-                                      <span>{lesson.title}</span>
-                                      {renderLessonEdgeIcon('end')}
-                                    </p>
-                                    {isActive ? (
-                                      <span className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
-                                        isQuiz
-                                          ? isDarkMode ? 'bg-purple-900/60 text-purple-200 border border-purple-700' : 'bg-purple-100 text-purple-700 border border-purple-200'
-                                          : isDarkMode ? 'bg-indigo-900/60 text-indigo-200 border border-indigo-700' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
-                                      }`}>
-                                        {isQuiz ? 'الاختبار الحالي' : 'الدرس الحالي'}
-                                      </span>
-                                    ) : isCompleted ? (
-                                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                        مكتمل ✓
-                                      </span>
-                                    ) : null}
+                                            ? 'bg-purple-950/50 text-purple-300 border border-purple-800/60'
+                                            : 'bg-purple-50 text-purple-600 border border-purple-200'
+                                          : isFile
+                                            ? isDarkMode
+                                              ? 'bg-amber-950/50 text-amber-300 border border-amber-800/60'
+                                              : 'bg-amber-50 text-amber-600 border border-amber-200'
+                                            : isDarkMode
+                                              ? 'bg-blue-950/50 text-blue-300 border border-blue-800/60'
+                                              : 'bg-blue-50 text-blue-600 border border-blue-200'
+                                  }`}>
+                                    {isCompleted ? (
+                                      <CheckCircle2 size={16} />
+                                    ) : isQuiz ? (
+                                      <Award size={16} />
+                                    ) : isFile ? (
+                                      <FileText size={16} />
+                                    ) : (
+                                      <PlayCircle size={16} />
+                                    )}
                                   </div>
-                                  <p className={`text-[10px] mt-0.5 font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                                    {formattedDuration}
-                                  </p>
+                                  <div className="text-right min-w-0">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <p className={`text-xs font-bold leading-snug truncate ${
+                                        isActive
+                                          ? isDarkMode ? 'text-indigo-300 font-black' : 'text-indigo-700 font-black'
+                                          : isDarkMode ? 'text-slate-200' : 'text-slate-700'
+                                      }`}>
+                                        {renderLessonEdgeIcon('start')}
+                                        <span>{lesson.title}</span>
+                                        {renderLessonEdgeIcon('end')}
+                                      </p>
+                                      {isActive ? (
+                                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
+                                          isQuiz
+                                            ? isDarkMode ? 'bg-purple-900/60 text-purple-200 border border-purple-700' : 'bg-purple-100 text-purple-700 border border-purple-200'
+                                            : isDarkMode ? 'bg-indigo-900/60 text-indigo-200 border border-indigo-700' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                                        }`}>
+                                          {isQuiz ? 'الاختبار الحالي' : 'الدرس الحالي'}
+                                        </span>
+                                      ) : isCompleted ? (
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                          مكتمل ✓
+                                        </span>
+                                      ) : null}
+                                    </div>
+                                    <p className={`text-[10px] mt-0.5 font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                      {formattedDuration}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              {lesson.isLocked && <Lock size={14} className={isDarkMode ? 'text-amber-400 shrink-0' : 'text-amber-500 shrink-0'} />}
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
+                                {lesson.isLocked && <Lock size={14} className={isDarkMode ? 'text-amber-400 shrink-0' : 'text-amber-500 shrink-0'} />}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
             </div>
 
             <div className={`p-4 border-t ${isDarkMode ? 'border-slate-800 bg-[#1e293b]' : 'border-slate-200 bg-white'}`}>

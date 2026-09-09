@@ -575,85 +575,100 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-6"
                     >
-                        {course.modules?.map((module, mIdx) => (
-                            <div key={module.id} className="space-y-3">
-                                <div className="flex items-center gap-2 text-gray-800 font-black">
-                                    <ChevronRight size={18} className="text-gray-400" />
-                                    <span>{module.title}</span>
-                                </div>
-                                <div className="space-y-2">
-                                    {module.lessons.map((lesson, lIdx) => {
-                                        const isCompleted = completedLessons.includes(lesson.id);
-                                        const isLocked = Boolean(lesson.isLocked);
-                                        const isQuiz = lesson.type === 'quiz';
-                                        const isFile = lesson.type === 'file';
-                                        return (
-                                        <div 
-                                            key={lesson.id} 
-                                            className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl transition-all border group cursor-pointer ${
-                                              isLocked
-                                                ? 'bg-amber-50/50 border-amber-200/60 hover:bg-amber-50'
-                                                : isCompleted
-                                                  ? 'bg-emerald-50/30 border-emerald-200/60 hover:bg-emerald-50/60'
-                                                  : isQuiz
-                                                    ? 'bg-purple-50/20 border-purple-100 hover:bg-purple-50/50'
-                                                    : 'bg-white border-slate-200/80 hover:border-indigo-300 hover:bg-indigo-50/20'
-                                            }`}
-                                            onClick={() => handleLessonClick(lesson)}
-                                        >
-                                            <div className="flex items-center gap-3.5 min-w-0">
-                                                <span className="text-xs font-black text-slate-400 w-5 shrink-0 text-center">{lIdx + 1}</span>
-                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs transition-colors ${
-                                                    isCompleted
-                                                      ? 'bg-emerald-500 text-white'
-                                                      : isQuiz
-                                                        ? 'bg-purple-100 text-purple-700 border border-purple-200'
-                                                        : isFile
-                                                          ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                                                          : 'bg-blue-50 text-blue-600 border border-blue-200'
-                                                }`}>
-                                                    {isCompleted ? <CheckCircle2 size={18} /> : isQuiz ? <Award size={18} /> : isFile ? <FileText size={18} /> : <PlayCircle size={18} />}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2 flex-wrap">
-                                                      <p className="text-sm font-black text-slate-800 inline-flex items-center gap-1 truncate">
-                                                          {renderCourseLessonEdgeIcon('start')}
-                                                          <span>{lesson.title}</span>
-                                                          {renderCourseLessonEdgeIcon('end')}
-                                                      </p>
-                                                      {isCompleted ? (
-                                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                                          مكتمل ✓
-                                                        </span>
-                                                      ) : isLocked ? (
-                                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
-                                                          يحتاج اشتراك
-                                                        </span>
-                                                      ) : (
-                                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                                                          isQuiz ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'
-                                                        }`}>
-                                                          {isQuiz ? 'اختبار محاكي' : 'مفتوح الآن'}
-                                                        </span>
-                                                      )}
-                                                    </div>
-                                                    <p className="text-xs text-slate-500 font-medium mt-0.5">{formatLessonDuration(lesson)}</p>
-                                                </div>
+                        {course.modules?.map((module, mIdx) => {
+                            const lessonCount = module.lessons?.length || 0;
+                            const lessonCountText = lessonCount === 1 ? 'درس واحد' : lessonCount === 2 ? 'درسان' : lessonCount <= 10 ? `${lessonCount} دروس` : `${lessonCount} درس`;
+
+                            return (
+                                <div key={module.id} className="space-y-3">
+                                    <div className="flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-100/90 border border-slate-200/90 shadow-xs">
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                                                <BookOpen size={16} />
                                             </div>
-                                            <div className="flex items-center gap-3 shrink-0">
-                                                {isLocked ? (
-                                                    <Lock size={16} className="text-amber-500" />
-                                                ) : isCompleted ? (
-                                                    <CheckCircle2 size={18} className="text-emerald-500" />
-                                                ) : (
-                                                    <span className="text-xs font-bold text-indigo-600 hover:text-indigo-700">ابدأ الآن ←</span>
-                                                )}
-                                            </div>
+                                            <span className="text-sm font-black text-slate-900 truncate">{module.title}</span>
+                                            {lessonCount > 0 && (
+                                                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200 shadow-xs">
+                                                    {lessonCountText}
+                                                </span>
+                                            )}
                                         </div>
-                                    )})}
+                                        <span className="text-xs font-bold text-slate-500">الفصل {mIdx + 1}</span>
+                                    </div>
+                                    <div className="space-y-2">
+                                        {module.lessons.map((lesson, lIdx) => {
+                                            const isCompleted = completedLessons.includes(lesson.id);
+                                            const isLocked = Boolean(lesson.isLocked);
+                                            const isQuiz = lesson.type === 'quiz';
+                                            const isFile = lesson.type === 'file';
+                                            return (
+                                            <div 
+                                                key={lesson.id} 
+                                                className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl transition-all border group cursor-pointer ${
+                                                  isLocked
+                                                    ? 'bg-amber-50/50 border-amber-200/60 hover:bg-amber-50'
+                                                    : isCompleted
+                                                      ? 'bg-emerald-50/30 border-emerald-200/60 hover:bg-emerald-50/60'
+                                                      : isQuiz
+                                                        ? 'bg-purple-50/20 border-purple-100 hover:bg-purple-50/50'
+                                                        : 'bg-white border-slate-200/80 hover:border-indigo-300 hover:bg-indigo-50/20'
+                                                }`}
+                                                onClick={() => handleLessonClick(lesson)}
+                                            >
+                                                <div className="flex items-center gap-3.5 min-w-0">
+                                                    <span className="text-xs font-black text-slate-400 w-5 shrink-0 text-center">{lIdx + 1}</span>
+                                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs transition-colors ${
+                                                        isCompleted
+                                                          ? 'bg-emerald-500 text-white'
+                                                          : isQuiz
+                                                            ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                                                            : isFile
+                                                              ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                                              : 'bg-blue-50 text-blue-600 border border-blue-200'
+                                                    }`}>
+                                                        {isCompleted ? <CheckCircle2 size={18} /> : isQuiz ? <Award size={18} /> : isFile ? <FileText size={18} /> : <PlayCircle size={18} />}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                          <p className="text-sm font-black text-slate-800 inline-flex items-center gap-1 truncate">
+                                                              {renderCourseLessonEdgeIcon('start')}
+                                                              <span>{lesson.title}</span>
+                                                              {renderCourseLessonEdgeIcon('end')}
+                                                          </p>
+                                                          {isCompleted ? (
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                                              مكتمل ✓
+                                                            </span>
+                                                          ) : isLocked ? (
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
+                                                              يحتاج اشتراك
+                                                            </span>
+                                                          ) : (
+                                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                                                              isQuiz ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'
+                                                            }`}>
+                                                              {isQuiz ? 'اختبار محاكي' : 'مفتوح الآن'}
+                                                            </span>
+                                                          )}
+                                                        </div>
+                                                        <p className="text-xs text-slate-500 font-medium mt-0.5">{formatLessonDuration(lesson)}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3 shrink-0">
+                                                    {isLocked ? (
+                                                        <Lock size={16} className="text-amber-500" />
+                                                    ) : isCompleted ? (
+                                                        <CheckCircle2 size={18} className="text-emerald-500" />
+                                                    ) : (
+                                                        <span className="text-xs font-bold text-indigo-600 hover:text-indigo-700">ابدأ الآن ←</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )})}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </motion.div>
                 );
             case 'tests':
