@@ -7,10 +7,10 @@
 - Canonical goal registry: `docs/architecture/SMART_CLASSROOM_GOALS_AR.md`. Detailed architecture: `docs/architecture/SMART_CLASSROOM_EXECUTION_MASTER_AR.md`. Agent start: `docs/architecture/SMART_CLASSROOM_AGENT_ENTRY_AR.md`.
 - Delivery was condensed from nine administrative stop points into six vertical implementation goals plus a separately authorized Pilot. The original `SC-*` identifiers remain technical checkpoints inside those goals so no acceptance or security evidence is removed.
 - Product North Star: `ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT`. Smart Classroom remains formative and separate from formal `QuizResult`.
-- Current Goal: `G1 — School Identity & Commercial Access` (`SC-01A + SC-01B`); G0 is `CLOSED / VERIFIED WITH FOCUSED CI`.
+- Current Goal: `G1 — School Identity & Commercial Access` (`SC-01A + SC-01B`), status `IN PROGRESS`; G0 is `CLOSED / VERIFIED WITH FOCUSED CI`.
 - G0 implementation: Barcode list/live-control/report now use a fail-closed staff scope; ownership is derived server-side; Socket requires an authenticated active user and authorized `user:/school:/class:` room; legacy individual session bookings are explicitly Platform-only and Admin-managed because their stored activity lacks school/class context. ADR: `SMART_CLASSROOM_G0_SECURITY_ADR_AR.md`.
 - Evidence: runtime `c87e7b3e07eda578c4e7870fef27d32714404286`; Smart Classroom G0 policy smoke PASS, Barcode contract `42/42` PASS, session-booking contract `5/5` PASS, school-RBAC contract `4/4` PASS, and Backend Integration CI PASS. Deep E2E was canceled by its 55-minute workflow limit during the final Barcode journey, after all previous suites passed; it is recorded as incomplete, not green evidence.
-- Next exact action: inspect G1 reuse and implement only `SchoolMembership` compatibility plus minimal `TeachingAssignment`/entitlement foundation under a focused contract.
+- G1 start: runtime `c6334aa9` adds additive `SchoolMembership`, `TeachingAssignment`, and `SchoolContract` models plus fail-closed policy tests. Legacy `User.schoolId/groupIds` and `B2BPackage` remain unchanged; repository/resolver and admin controls are next.
 - `G6 — Controlled Pilot & Commercial Limits` remains `BLOCKED` until G5 closes and the owner explicitly authorizes a Pilot environment/data scope.
 
 ## Historical execution ledger before the Smart Classroom goal
