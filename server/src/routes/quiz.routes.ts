@@ -2086,6 +2086,7 @@ quizRouter.post(
           passed,
           attemptNumber,
           source: payload.source || "",
+          learningContext: "platform_self_study",
           totalQuestions,
           correctAnswers,
           wrongAnswers,
