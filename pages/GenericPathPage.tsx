@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
-import { Award, CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
+import { Award, CheckCircle2, ChevronRight, CreditCard, GraduationCap, LayoutGrid, Lock, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { normalizePathId } from '../utils/normalizePathId';
@@ -32,20 +32,30 @@ const resolvePackageContentTypes = (pkg: { packageContentTypes?: string[] }) => 
 
 const themeColorMap: Record<string, string> = {
     purple: '#7c3aed',
+    violet: '#7c3aed',
     blue: '#2563eb',
+    sky: '#0284c7',
+    cyan: '#0891b2',
+    teal: '#0d9488',
     emerald: '#10b981',
+    green: '#16a34a',
+    lime: '#65a30d',
+    yellow: '#ca8a04',
     amber: '#f59e0b',
-    indigo: '#4f46e5',
+    orange: '#ea580c',
+    red: '#dc2626',
     rose: '#f43f5e',
-    teal: '#14b8a6',
-    orange: '#f97316',
+    pink: '#db2777',
+    fuchsia: '#c026d3',
+    indigo: '#4f46e5',
+    slate: '#475569',
     gray: '#6b7280',
 };
 
 const resolveThemeColor = (value?: string, fallback = '#4f46e5') => {
     if (!value) return fallback;
     if (value.startsWith('#')) return value;
-    return themeColorMap[value] || fallback;
+    return themeColorMap[value.toLowerCase()] || fallback;
 };
 
 const normalizeArabicLookup = (value?: string | null) =>
@@ -705,26 +715,32 @@ export const GenericPathPage: React.FC = () => {
         <Link
             key="mock-exams-card"
             to={`/category/${path.id}?tab=mock-exams`}
-            className="block min-h-[124px] rounded-[1.45rem] bg-indigo-600 p-4 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            className="group relative block min-h-[136px] rounded-3xl bg-indigo-600 p-5 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] overflow-hidden border border-white/15"
         >
-            <div className="mb-2 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 shadow-sm backdrop-blur-sm">
-                <Award size={24} />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)] pointer-events-none" />
+            <div className="relative z-10">
+                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/15">
+                    <Award size={24} />
+                </div>
+                <h3 className="mb-1 text-xl font-black leading-tight">اختبارات محاكية</h3>
+                <div className="text-xs font-bold text-white/80">تجربة كاملة للمسار</div>
             </div>
-            <h3 className="mb-1 text-xl font-black leading-tight">اختبارات محاكية</h3>
-            <div className="text-sm font-bold text-white/80">تجربة كاملة للمسار</div>
         </Link>
     ) : null;
     const renderPackageEntryCard = () => showPackageCard ? (
         <Link
             key="packages-card"
             to={`/category/${path.id}?tab=packages`}
-            className="block min-h-[124px] rounded-[1.45rem] bg-emerald-600 p-4 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            className="group relative block min-h-[136px] rounded-3xl bg-emerald-600 p-5 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] overflow-hidden border border-white/15"
         >
-            <div className="mb-2 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 shadow-sm backdrop-blur-sm">
-                <CreditCard size={24} />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)] pointer-events-none" />
+            <div className="relative z-10">
+                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/15">
+                    <CreditCard size={24} />
+                </div>
+                <h3 className="mb-1 text-xl font-black leading-tight">عروض وباقات</h3>
+                <div className="text-xs font-bold text-white/80">فتح محتوى المسار</div>
             </div>
-            <h3 className="mb-1 text-xl font-black leading-tight">عروض وباقات</h3>
-            <div className="text-sm font-bold text-white/80">فتح محتوى المسار</div>
         </Link>
     ) : null;
 
@@ -1038,17 +1054,24 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             <Link
                 key={s.id} 
                 to={buildSubjectUrl(levelId, s.id)}
-                className="block min-h-[124px] rounded-[1.45rem] p-4 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                className="group relative block min-h-[136px] rounded-3xl p-5 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] overflow-hidden border border-white/15"
                 style={{ backgroundColor: sColor }}
             >
-                <div className="mb-3 inline-block rounded-2xl bg-white/20 p-3 shadow-sm backdrop-blur-sm">
-                    {icon}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)] pointer-events-none" />
+                <div className="relative z-10">
+                    <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/15">
+                        {icon}
+                    </div>
+                    <h3 className="mb-1 text-xl font-black leading-tight">{s.name}</h3>
+                    <div className="text-white/85 text-xs font-bold flex gap-2 justify-center items-center">
+                        <span>تأسيس</span>
+                        <span className="text-white/40">•</span>
+                        <span>نماذج</span>
+                        <span className="text-white/40">•</span>
+                        <span>تدريب</span>
+                    </div>
+                    {footer}
                 </div>
-                <h3 className="mb-1 text-xl font-black">{s.name}</h3>
-                <div className="text-white/80 text-sm font-bold flex gap-2 justify-center">
-                    <span>تأسيس</span> • <span>نماذج</span> • <span>تدريب</span>
-                </div>
-                {footer}
             </Link>
         );
     };
@@ -1270,28 +1293,36 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             );
         } else {
             const currentSubject = selectedSubject;
+            const activeSubjectColor = resolveThemeColor(currentSubject?.color || style.color, style.color);
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-6 sm:py-8 relative overflow-hidden shadow-sm" style={{ backgroundColor: style.color }}>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_60%)] pointer-events-none" />
-                        <div className="max-w-7xl mx-auto px-4 relative z-10">
-                            <button onClick={() => handleSubjectSelect(null, null)} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:text-white mb-4 transition-all">
-                                <ChevronRight size={16} /> عودة لصفحة المسار
-                            </button>
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-                                <div>
-                                    <span className="inline-block text-[11px] font-bold bg-white/15 text-white/90 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur-sm">
+                    <header className="text-white py-4 sm:py-5 relative overflow-hidden shadow-xs" style={{ backgroundColor: activeSubjectColor }}>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)] pointer-events-none" />
+                        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="inline-flex items-center text-[11px] font-bold bg-white/15 text-white/95 px-2.5 py-0.5 rounded-full backdrop-blur-sm">
                                         مسار {path.name}
                                     </span>
-                                    <h1 className="text-2xl sm:text-3xl font-black mb-1 leading-tight break-words">{currentSubject?.name}</h1>
-                                    <p className="text-white/80 text-sm">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
                                 </div>
+                                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black leading-tight break-words">{currentSubject?.name}</h1>
+                                <p className="text-white/80 text-xs sm:text-sm mt-0.5">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
+                            </div>
+                            <div className="shrink-0 self-start sm:self-center">
+                                <button 
+                                    type="button"
+                                    onClick={() => handleSubjectSelect(null, null)} 
+                                    className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-2 rounded-xl text-xs font-bold text-white/95 hover:text-white transition-all backdrop-blur-sm shadow-xs"
+                                >
+                                    <ChevronRight size={16} /> 
+                                    <span>عودة لصفحة المسار</span>
+                                </button>
                             </div>
                         </div>
                     </header>
-                    <div className="max-w-7xl mx-auto px-4 py-8">
+                    <div className="max-w-7xl mx-auto px-4 py-6">
                         {renderSubjectAccessGuide(selectedSubjectId)}
-                        <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
+                        <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={activeSubjectColor as any} />
                         {renderPackagePaymentModal()}
                     </div>
                 </div>
@@ -1316,12 +1347,18 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                             return (
                                 <div 
                                     key={level.id} 
-                                    className="min-h-[124px] rounded-[1.45rem] p-4 text-center cursor-pointer transition-all hover:-translate-y-1 hover:shadow-xl text-white shadow-md"
+                                    className="group relative block min-h-[136px] rounded-3xl p-5 text-center cursor-pointer text-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] overflow-hidden border border-white/15"
                                     style={{ backgroundColor: style.color }}
                                     onClick={() => handleLevelSelect(level.id)}
                                 >
-                                    <h3 className="mb-1 text-xl font-black leading-tight break-words">{level.name}</h3>
-                                    <p className="text-white/80 font-medium text-sm">مقررات وتأسيس المرحلة</p>
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)] pointer-events-none" />
+                                    <div className="relative z-10">
+                                        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/15">
+                                            <GraduationCap size={24} />
+                                        </div>
+                                        <h3 className="mb-1 text-xl font-black leading-tight break-words">{level.name}</h3>
+                                        <div className="text-white/80 text-xs font-bold">مقررات وتأسيس المرحلة</div>
+                                    </div>
                                 </div>
                             )
                         })}
@@ -1368,30 +1405,38 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     // Scene 4: Subject selected within a level
     const currentLevel = levels.find(l => l.id === selectedLevelId);
     const currentSubject = selectedSubject;
+    const activeSubjectColor = resolveThemeColor(currentSubject?.color || style.color, style.color);
     
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
-            <header className="text-white py-6 sm:py-8 relative overflow-hidden shadow-sm" style={{ backgroundColor: style.color }}>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_60%)] pointer-events-none" />
-                <div className="max-w-7xl mx-auto px-4 relative z-10">
-                    <button onClick={() => updateUrl(null, null)} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:text-white mb-4 transition-all">
-                        <ChevronRight size={16} /> عودة لصفحة المسار
-                    </button>
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-                        <div>
-                            <span className="inline-block text-[11px] font-bold bg-white/15 text-white/90 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur-sm">
+            <header className="text-white py-4 sm:py-5 relative overflow-hidden shadow-xs" style={{ backgroundColor: activeSubjectColor }}>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)] pointer-events-none" />
+                <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="inline-flex items-center text-[11px] font-bold bg-white/15 text-white/95 px-2.5 py-0.5 rounded-full backdrop-blur-sm">
                                 {currentLevel?.name} • مسار {path.name}
                             </span>
-                            <h1 className="text-2xl sm:text-3xl font-black mb-1 leading-tight break-words">{currentSubject?.name}</h1>
-                            <p className="text-white/80 text-sm">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
                         </div>
+                        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black leading-tight break-words">{currentSubject?.name}</h1>
+                        <p className="text-white/80 text-xs sm:text-sm mt-0.5">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
+                    </div>
+                    <div className="shrink-0 self-start sm:self-center">
+                        <button 
+                            type="button"
+                            onClick={() => updateUrl(null, null)} 
+                            className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-2 rounded-xl text-xs font-bold text-white/95 hover:text-white transition-all backdrop-blur-sm shadow-xs"
+                        >
+                            <ChevronRight size={16} /> 
+                            <span>عودة لصفحة المسار</span>
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto px-4 py-6">
                 {renderSubjectAccessGuide(selectedSubjectId)}
-                <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
+                <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={activeSubjectColor as any} />
                 {renderPackagePaymentModal()}
             </div>
         </div>
