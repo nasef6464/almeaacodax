@@ -44,6 +44,7 @@ import { StudentIntelligenceProfile } from './StudentIntelligenceProfile';
 import { ClassSkillsMapPanel } from './ClassSkillsMapPanel';
 import { ClassReportPanel } from './ClassReportPanel';
 import { QuizAssignWidget } from './QuizAssignWidget';
+import { SmartClassroomReportsPanel } from './SmartClassroomReportsPanel';
 
 type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests' | 'live-monitoring';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
@@ -1235,6 +1236,7 @@ export const SupervisorDashboard: React.FC = () => {
         {/* ===== REPORTS TAB ===== */}
         {activeTab === 'reports' && (
           <div className="space-y-6">
+            <SmartClassroomReportsPanel />
             {/* تقرير الفصل الجديد */}
             <ClassReportPanel
               students={supervisorScopeSummary.allStudentsList}

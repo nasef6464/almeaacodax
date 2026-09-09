@@ -15,6 +15,7 @@ import { resolveSchoolEntitlement } from "../modules/schools/application/schoolE
 import { projectClassroomQuestionForStudent } from "../modules/schools/application/classroomQuestionProjection.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { emitClassroomEvent } from "../sockets/classroomEvents.js";
+import { buildClassroomSessionReport, classroomScopeFilter, resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
 
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
@@ -53,6 +54,27 @@ classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"])
     .limit(100)
     .lean();
   res.json({ questions: questions.map((question: any) => ({ questionId: String(question.id || question._id), text: question.text, imageUrl: question.imageUrl, options: question.options, type: question.type, skillIds: question.skillIds || [] })) });
+}));
+
+classroomRouter.get("/supervisor/today", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
+  const scope = await resolveClassroomSupervisorScope(req.authUser!);
+  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const sessions = await ClassroomSessionModel.find({ $and: [classroomScopeFilter(scope), { createdAt: { $gte: start } }] }).sort({ createdAt: -1 }).lean();
+  res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
+}));
+
+classroomRouter.get("/supervisor/history", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
+  const scope = await resolveClassroomSupervisorScope(req.authUser!);
+  const limit = z.coerce.number().int().min(1).max(100).catch(30).parse(req.query.limit);
+  const sessions = await ClassroomSessionModel.find(classroomScopeFilter(scope)).sort({ createdAt: -1 }).limit(limit).lean();
+  res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
+}));
+
+classroomRouter.get("/supervisor/sessions/:id/report", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
+  const scope = await resolveClassroomSupervisorScope(req.authUser!);
+  const session = await ClassroomSessionModel.findOne({ $and: [{ _id: req.params.id }, classroomScopeFilter(scope)] }).lean();
+  if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session report not found" });
+  res.json({ report: await buildClassroomSessionReport(session) });
 }));
 
 classroomRouter.post("/sessions/:id/publish/:index", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
