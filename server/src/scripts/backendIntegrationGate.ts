@@ -341,6 +341,9 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   const schoolSupervisorHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("supervisor") });
   expectStatus("school supervisor reads in-scope classroom history", schoolSupervisorHistory, 200);
   assert.equal(schoolSupervisorHistory.body?.sessions?.some((report: any) => report.sessionId === sessionId), true, "school supervisor history omitted in-scope session");
+  const schoolSupervisorTeachers = await jsonRequest("/classroom/supervisor/teachers", { token: tokens.get("supervisor") });
+  expectStatus("school supervisor reads in-scope teacher classroom summary", schoolSupervisorTeachers, 200);
+  assert.equal(schoolSupervisorTeachers.body?.teachers?.some((report: any) => report.teacherId === teacherId && report.sessions === 1), true, "teacher classroom summary omitted in-scope teacher");
   const classSupervisorReport = await jsonRequest(`/classroom/supervisor/sessions/${sessionId}/report`, { token: tokens.get("classSupervisor") });
   expectStatus("class supervisor reads assigned-class classroom report", classSupervisorReport, 200);
   assert.equal(classSupervisorReport.body?.report?.roster?.joined, 1, "classroom report lost joined roster count");

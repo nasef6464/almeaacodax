@@ -39,3 +39,11 @@ export const buildClassroomSessionReport = async (session: any) => {
   });
   return { sessionId, schoolId: session.schoolId, classId: session.classId, teacherId: session.teacherId, status: session.status, startedAt: session.createdAt, endedAt: session.endedAt, roster: { expected: expectedStudentIds.size, joined: joinedStudentIds.size, absentFromSession: Math.max(0, expectedStudentIds.size - joinedStudentIds.size) }, questions: questionReports, totals: { responses: responses.length, correct: responses.filter((response: any) => response.isCorrect).length } };
 };
+
+export const buildClassroomTeacherReports = async (scope: Awaited<ReturnType<typeof resolveClassroomSupervisorScope>>) => {
+  const sessions = await ClassroomSessionModel.find(classroomScopeFilter(scope)).sort({ createdAt: -1 }).lean();
+  const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
+  const byTeacher = new Map<string, { teacherId: string; sessions: number; joined: number; responses: number; correct: number }>();
+  reports.forEach((report) => { const current = byTeacher.get(report.teacherId) || { teacherId: report.teacherId, sessions: 0, joined: 0, responses: 0, correct: 0 }; current.sessions += 1; current.joined += report.roster.joined; current.responses += report.totals.responses; current.correct += report.totals.correct; byTeacher.set(report.teacherId, current); });
+  return Array.from(byTeacher.values()).map((report) => ({ ...report, accuracy: report.responses ? Math.round((report.correct / report.responses) * 100) : null }));
+};
