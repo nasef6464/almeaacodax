@@ -338,6 +338,14 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   const ended = await jsonRequest(`/classroom/sessions/${sessionId}/end`, { method: "POST", token: tokens.get("teacher"), csrf });
   expectStatus("teacher ends smart classroom session", ended, 200);
   assert.equal(ended.body?.report?.responseCount, 1, "smart classroom immutable report has wrong response count");
+  const schoolSupervisorHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("supervisor") });
+  expectStatus("school supervisor reads in-scope classroom history", schoolSupervisorHistory, 200);
+  assert.equal(schoolSupervisorHistory.body?.sessions?.some((report: any) => report.sessionId === sessionId), true, "school supervisor history omitted in-scope session");
+  const classSupervisorReport = await jsonRequest(`/classroom/supervisor/sessions/${sessionId}/report`, { token: tokens.get("classSupervisor") });
+  expectStatus("class supervisor reads assigned-class classroom report", classSupervisorReport, 200);
+  assert.equal(classSupervisorReport.body?.report?.roster?.joined, 1, "classroom report lost joined roster count");
+  const studentHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("student") });
+  expectStatus("student cannot read supervisor classroom history", studentHistory, 403);
   const afterEnd = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
   expectStatus("ended smart classroom rejects further answers", afterEnd, 404);
 }
