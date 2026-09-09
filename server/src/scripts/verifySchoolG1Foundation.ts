@@ -15,5 +15,7 @@ assert.equal(canTeachAssignedClass({ schoolId: "school-a", teacherId: "teacher-a
 assert.equal(canTeachAssignedClass(null, "teacher-a", "school-a", "class-a", "math"), false);
 assert.equal(await canJoinAuthorizedWorkspace({ id: "teacher-a", schoolId: null, schoolIds: ["school-a"] }, "school:school-a", { findDirectlySupervisedGroupIds: async () => [] }), true);
 assert.equal(await canJoinAuthorizedWorkspace({ id: "teacher-a", schoolId: null, schoolIds: ["school-a"] }, "school:school-b", { findDirectlySupervisedGroupIds: async () => [] }), false);
+assert.equal(await canJoinAuthorizedWorkspace({ id: "student-a", schoolId: "school-a", groupIds: ["class-a"] }, "classroom:session-a", { findDirectlySupervisedGroupIds: async () => [], findClassroomSessionScope: async () => ({ schoolId: "school-a", classId: "class-a", teacherId: "teacher-a" }) }), true);
+assert.equal(await canJoinAuthorizedWorkspace({ id: "student-b", schoolId: "school-b", groupIds: ["class-b"] }, "classroom:session-a", { findDirectlySupervisedGroupIds: async () => [], findClassroomSessionScope: async () => ({ schoolId: "school-a", classId: "class-a", teacherId: "teacher-a" }) }), false);
 
-console.log("School G1 foundation policy: PASS (10 checks)");
+console.log("School G1 foundation policy: PASS (12 checks)");

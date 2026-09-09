@@ -7,9 +7,10 @@ export type WorkspaceAuthUser = {
 
 export type WorkspaceAuthorizationRepository = {
   findDirectlySupervisedGroupIds(userId: string): Promise<string[]>;
+  findClassroomSessionScope?(sessionId: string): Promise<{ schoolId: string; classId: string; teacherId: string } | null>;
 };
 
-const workspaceIdPattern = /^(user|school|class):([a-zA-Z0-9_-]{1,128})$/;
+const workspaceIdPattern = /^(user|school|class|classroom):([a-zA-Z0-9_-]{1,128})$/;
 
 /**
  * G0 permits only identity and existing school/class scope rooms. Future
@@ -26,6 +27,12 @@ export const canJoinAuthorizedWorkspace = async (
   const [, kind, resourceId] = match;
   if (kind === "user") return resourceId === String(authUser.id);
   if (kind === "school") return new Set([String(authUser.schoolId || ""), ...(authUser.schoolIds || []).map(String)]).has(resourceId);
+  if (kind === "classroom") {
+    const session = await repository.findClassroomSessionScope?.(resourceId);
+    if (!session) return false;
+    if (String(session.teacherId) === String(authUser.id)) return true;
+    return String(authUser.schoolId || "") === String(session.schoolId) && (authUser.groupIds || []).map(String).includes(String(session.classId));
+  }
 
   const directGroupIds = new Set((authUser.groupIds || []).map(String));
   if (directGroupIds.has(resourceId)) return true;

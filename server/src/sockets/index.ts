@@ -6,6 +6,7 @@ import { createRedisClient, createRedisDuplicate, isRedisConfigured } from "../c
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
@@ -80,6 +81,10 @@ export function createSocketServer(server: HttpServer) {
         async findDirectlySupervisedGroupIds(userId) {
           const groups = await GroupModel.find({ supervisorIds: userId }).select("id _id").lean();
           return groups.map((group: any) => String(group.id || group._id));
+        },
+        async findClassroomSessionScope(sessionId) {
+          const session = await ClassroomSessionModel.findById(sessionId).select("schoolId classId teacherId").lean() as any;
+          return session ? { schoolId: String(session.schoolId), classId: String(session.classId), teacherId: String(session.teacherId) } : null;
         },
       });
 
