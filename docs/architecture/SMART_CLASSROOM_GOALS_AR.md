@@ -83,6 +83,9 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | `G5` | `CLOSED / VERIFIED` | `684c6912c883f3acd199d7491d57791d2fba1abc` | Backend CI [34414569977](https://github.com/nasef6464/almeaacodax/actions/runs/34414569977) PASS: entitled scoped study-plan intervention; raw baseline/follow-up; minimum-evidence guard; cross-school target and student reads rejected | await separate G6 Pilot authorization |
 | `G6` | `BLOCKED` | — | يحتاج Pilot environment/data authorization | تحديد البيئة والمدرسة/الفصول والمعلمين والبيانات المسموحة ثم بدء Pilot فقط |
 
+حزمة التشغيل الآمن قبل التفويض: `SMART_CLASSROOM_G6_PILOT_RUNBOOK_AR.md`. لا تعد
+دليل Pilot ولا تسمح بتشغيل اختبار على بيئة خارجية دون قرار المالك في القسم الأول.
+
 ## خريطة الملفات المرجعية
 
 | الملف | وظيفته | هل يقرر التنفيذ؟ |
