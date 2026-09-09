@@ -31,7 +31,8 @@ export const canJoinAuthorizedWorkspace = async (
     const session = await repository.findClassroomSessionScope?.(resourceId);
     if (!session) return false;
     if (String(session.teacherId) === String(authUser.id)) return true;
-    return String(authUser.schoolId || "") === String(session.schoolId) && (authUser.groupIds || []).map(String).includes(String(session.classId));
+    const schoolIds = new Set([String(authUser.schoolId || ""), ...(authUser.schoolIds || []).map(String)]);
+    return schoolIds.has(String(session.schoolId)) && (authUser.groupIds || []).map(String).includes(String(session.classId));
   }
 
   const directGroupIds = new Set((authUser.groupIds || []).map(String));

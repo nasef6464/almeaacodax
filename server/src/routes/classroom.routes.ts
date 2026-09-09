@@ -2,6 +2,7 @@ import { createHmac, randomInt } from "node:crypto";
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
+import { Types } from "mongoose";
 import { env } from "../config/env.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { ClassroomResponseModel } from "../models/ClassroomResponse.js";
@@ -18,7 +19,7 @@ import { emitClassroomEvent } from "../sockets/classroomEvents.js";
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
 const sessionId = (doc: any) => String(doc.id || doc._id);
-const createSchema = z.object({ schoolId: z.string().min(1), classId: z.string().min(1), questionIds: z.array(z.string()).min(1).max(10) });
+const createSchema = z.object({ schoolId: z.string().min(1), classId: z.string().min(1), questionIds: z.array(z.string().min(1)).min(1).max(10).refine((ids) => new Set(ids).size === ids.length, "Question IDs must be unique") });
 const answerSchema = z.object({ selectedOptionIndex: z.number().int().min(0) });
 const joinSchema = z.object({ pin: z.string().regex(/^\d{6}$/) });
 
@@ -30,13 +31,28 @@ classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"])
     const assigned = await TeachingAssignmentModel.exists({ schoolId: payload.schoolId, teacherId: req.authUser!.id, classId: payload.classId, status: "active" });
     if (!assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this class" });
   }
-  const questions = await QuestionModel.find({ $or: [{ id: { $in: payload.questionIds } }, { _id: { $in: payload.questionIds } }], type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" }).lean();
+  const objectIds = payload.questionIds.filter((id) => Types.ObjectId.isValid(id));
+  const questions = await QuestionModel.find({ $or: [{ id: { $in: payload.questionIds } }, ...(objectIds.length ? [{ _id: { $in: objectIds } }] : [])], type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" }).lean();
   if (questions.length !== payload.questionIds.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Questions must be approved MCQ or true/false" });
   const byId = new Map(questions.map((question: any) => [String(question.id || question._id), question]));
   const snapshots = payload.questionIds.map((id) => { const q: any = byId.get(id); return { questionId: id, text: q.text, imageUrl: q.imageUrl, options: q.options, type: q.type, correctOptionIndex: q.correctOptionIndex, skillIds: q.skillIds || [] }; });
   const pin = String(randomInt(100000, 1000000));
   const session = await ClassroomSessionModel.create({ schoolId: payload.schoolId, classId: payload.classId, teacherId: req.authUser!.id, questionSnapshots: snapshots, pinHash: hashPin(pin), pinExpiresAt: new Date(Date.now() + 30 * 60_000) });
   res.status(StatusCodes.CREATED).json({ sessionId: sessionId(session), pin, status: session.status });
+}));
+
+classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
+  const schoolId = z.string().min(1).parse(req.query.schoolId);
+  if (req.authUser!.role !== "admin") {
+    const assigned = await TeachingAssignmentModel.exists({ schoolId, teacherId: req.authUser!.id, status: "active" });
+    if (!assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
+  }
+  const questions = await QuestionModel.find({ type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" })
+    .select("id text imageUrl options type skillIds")
+    .sort({ updatedAt: -1 })
+    .limit(100)
+    .lean();
+  res.json({ questions: questions.map((question: any) => ({ questionId: String(question.id || question._id), text: question.text, imageUrl: question.imageUrl, options: question.options, type: question.type, skillIds: question.skillIds || [] })) });
 }));
 
 classroomRouter.post("/sessions/:id/publish/:index", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
@@ -60,6 +76,8 @@ classroomRouter.get("/sessions/:id/current", requireAuth, asyncHandler(async (re
   if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active question" });
   const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
   if (!student || student.role !== "student" || String(student.schoolId) !== String(session.schoolId) || !(student.groupIds || []).map(String).includes(String(session.classId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+  const participant = await ClassroomParticipantModel.exists({ sessionId: sessionId(session), studentId: req.authUser!.id });
+  if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before viewing questions" });
   res.json({ sessionId: sessionId(session), question: projectClassroomQuestionForStudent(session.questionSnapshots[session.activeQuestionIndex], true) });
 }));
 
@@ -69,6 +87,9 @@ classroomRouter.put("/sessions/:id/answers/:questionId", requireAuth, asyncHandl
   const question = session.questionSnapshots[session.activeQuestionIndex]; if (!question || String(question.questionId) !== req.params.questionId) return res.status(StatusCodes.CONFLICT).json({ message: "Question is not active" });
   const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
   if (!student || student.role !== "student" || String(student.schoolId) !== String(session.schoolId) || !(student.groupIds || []).map(String).includes(String(session.classId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+  const participant = await ClassroomParticipantModel.exists({ sessionId: sessionId(session), studentId: req.authUser!.id });
+  if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before answering" });
+  if (payload.selectedOptionIndex >= question.options.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Selected option is invalid" });
   const response = await ClassroomResponseModel.findOneAndUpdate({ sessionId: sessionId(session), questionId: question.questionId, studentId: req.authUser!.id }, { $setOnInsert: { selectedOptionIndex: payload.selectedOptionIndex, isCorrect: payload.selectedOptionIndex === question.correctOptionIndex } }, { upsert: true, new: true });
   const responseCount = await ClassroomResponseModel.countDocuments({ sessionId: sessionId(session), questionId: question.questionId });
   emitClassroomEvent(sessionId(session), "response:updated", { responseCount }); res.json({ accepted: true, responseId: String(response._id) });

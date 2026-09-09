@@ -1536,6 +1536,7 @@ const App: React.FC = () => {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/quiz/:quizId" element={<QuizPage />} />
           <Route path="/classroom/:sessionId" element={<ClassroomStudentLive />} />
+          <Route path="/classroom/teacher" element={<ClassroomTeacherConsole />} />
           <Route path="/classroom/:sessionId/teacher" element={<ClassroomTeacherConsole />} />
           <Route path="/classroom/:sessionId/projector" element={<ClassroomProjectorView />} />
           <Route path="/results" element={<Results />} />
