@@ -22,6 +22,7 @@ import { activityRouter } from "./activity.routes.js";
 import { publicTestsRouter } from "./publicTests.routes.js";
 import { productConfigRouter } from "./productConfig.routes.js";
 import { schoolAccessRouter } from "./schoolAccess.routes.js";
+import { classroomRouter } from "./classroom.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
 
@@ -43,6 +44,7 @@ apiRouter.use("/seo", seoRouter);
 apiRouter.use("/notifications", notificationRouter);
 apiRouter.use("/product-config", productConfigRouter);
 apiRouter.use("/school-access", schoolAccessRouter);
+apiRouter.use("/classroom", classroomRouter);
 apiRouter.use("/", quizResultsRouter);
 apiRouter.use("/certificates", certificateRouter);
 apiRouter.use("/discussions", discussionRouter);
