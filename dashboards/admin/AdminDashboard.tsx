@@ -56,7 +56,6 @@ const LiveSessionsManager = lazyNamed(() => import('./LiveSessionsManager'), 'Li
 const BackupManager = lazyNamed(() => import('./BackupManager'), 'BackupManager');
 const OperationsCommandCenter = lazyNamed(() => import('./OperationsCommandCenter'), 'OperationsCommandCenter');
 const AiAssistantManager = lazyNamed(() => import('./AiAssistantManager'), 'AiAssistantManager');
-const MockExamManager = lazyNamed(() => import('./MockExamManager'), 'MockExamManager');
 const AnnouncementAdsManager = lazyNamed(() => import('./AnnouncementAdsManager'), 'AnnouncementAdsManager');
 const PublicBarcodeTestsManager = lazyNamed(() => import('./PublicBarcodeTestsManager'), 'PublicBarcodeTestsManager');
 
@@ -859,7 +858,6 @@ export const AdminDashboard: React.FC = () => {
             { id: 'lessons', label: 'مركز الدروس', icon: <BookOpen size={20} /> },
             { id: 'library', label: 'مركز المكتبة وملفات الدعم', icon: <BookOpen size={20} /> },
             { id: 'quizzes', label: 'مركز الاختبارات', icon: <FileQuestion size={20} /> },
-            { id: 'mock-exams', label: 'مركز الاختبارات المحاكية', icon: <Award size={20} /> },
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
@@ -872,11 +870,11 @@ export const AdminDashboard: React.FC = () => {
         ];
 
         if (user.role === Role.TEACHER) {
-            return adminItems.filter((item) => ['overview', 'lessons', 'library', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'lessons', 'library', 'quizzes', 'questions', 'skills'].includes(item.id));
         }
 
         if (user.role === Role.SUPERVISOR) {
-            return adminItems.filter((item) => ['overview', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'quizzes', 'questions', 'skills'].includes(item.id));
         }
 
         return adminItems;
@@ -2030,7 +2028,7 @@ export const AdminDashboard: React.FC = () => {
             case 'quizzes':
                 return <QuizzesManager key={`quizzes-${tabRequestVersion}`} />;
             case 'mock-exams':
-                return <MockExamManager />;
+                return <QuizzesManager key={`quizzes-mock-${tabRequestVersion}`} />;
             case 'barcode-tests':
                 return <PublicBarcodeTestsManager />;
             case 'questions':
