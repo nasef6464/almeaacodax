@@ -19,6 +19,7 @@ import {
   type SavedQuizPageProgress,
   writeQuizProgressDraft,
 } from '../utils/quizProgressDraft';
+import { QuestionImageZoomModal } from '../components/QuestionImageZoomModal';
 
 interface QuestionThreadItem {
   id: string;
@@ -2061,32 +2062,12 @@ export const QuizPage: React.FC = () => {
         </div>
       ) : null}
 
-      {zoomedImageUrl ? (
-        <div
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 backdrop-blur-sm p-3 sm:p-6 animate-fade-in cursor-zoom-out"
-          onClick={() => setZoomedImageUrl(null)}
-        >
-          <div className="relative max-h-[92vh] max-w-[96vw] flex flex-col items-center">
-            <button
-              type="button"
-              onClick={() => setZoomedImageUrl(null)}
-              className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-5 py-2 text-sm font-black text-gray-900 shadow-2xl hover:bg-white hover:scale-105 transition-all cursor-pointer"
-            >
-              <XCircle size={18} className="text-rose-600" />
-              <span>إغلاق التكبير</span>
-            </button>
-            <div className="overflow-auto max-h-[85vh] max-w-full rounded-2xl bg-white p-2 sm:p-3 shadow-2xl border border-white/20">
-              <img
-                src={zoomedImageUrl}
-                alt="تكبير صورة السؤال"
-                className="max-h-[80vh] w-auto max-w-full rounded-xl object-contain"
-                referrerPolicy="no-referrer"
-                onClick={(event) => event.stopPropagation()}
-              />
-            </div>
-          </div>
-        </div>
-      ) : null}
+      {/* Interactive Question Image Magnifier Modal */}
+      <QuestionImageZoomModal
+        imageUrl={zoomedImageUrl}
+        onClose={() => setZoomedImageUrl(null)}
+        altText="صورة السؤال أو الرسم الهندسي"
+      />
 
       {/* Qiyas Formula Sheet Modal */}
       {showFormulaSheet && (

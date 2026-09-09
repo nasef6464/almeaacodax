@@ -26,6 +26,7 @@ import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
 import { ShareScorecard } from '../components/ShareScorecard';
+import { QuestionImageZoomModal } from '../components/QuestionImageZoomModal';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Question, QuizQuestionReview, QuizResult } from '../types';
@@ -1877,28 +1878,12 @@ const ReviewSolutions = ({
 
       </div>
 
-      {/* Lightbox Image Modal */}
-      {zoomedImageUrl ? (
-        <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 p-3 sm:p-4 backdrop-blur-sm animate-fade-in"
-          onClick={() => setZoomedImageUrl(null)}
-        >
-          <button
-            type="button"
-            onClick={() => setZoomedImageUrl(null)}
-            className="absolute left-4 top-4 rounded-full bg-white/90 px-4 py-2 text-xs sm:text-sm font-black text-slate-800 shadow-lg hover:bg-white transition-all"
-          >
-            ✕ إغلاق
-          </button>
-          <img
-            src={zoomedImageUrl}
-            alt="تكبير صورة السؤال"
-            className="max-h-[85vh] max-w-[95vw] rounded-2xl bg-white object-contain shadow-2xl animate-scale-up"
-            referrerPolicy="no-referrer"
-            onClick={(event) => event.stopPropagation()}
-          />
-        </div>
-      ) : null}
+      {/* Interactive Question Image Magnifier Modal */}
+      <QuestionImageZoomModal
+        imageUrl={zoomedImageUrl}
+        onClose={() => setZoomedImageUrl(null)}
+        altText="صورة السؤال أو الرسم الهندسي"
+      />
     </div>
   );
 };
