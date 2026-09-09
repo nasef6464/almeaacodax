@@ -63,6 +63,37 @@ PILOT_WEAK_NETWORK_SCENARIO: وصف متفق عليه (انقطاع/عودة أ�
 
 ## 4. خطوات التشغيل
 
+### أداة القياس المقيدة
+
+الأداة `scripts/run-smart-classroom-pilot.mjs` تقرأ سيناريو من ملف محلي وتكتب
+JSON لا يحتوي tokens أو PINs. المثال هو
+`SMART_CLASSROOM_G6_SCENARIO.example.json`؛ لا تحفظ عليه بيانات مدرسة حقيقية.
+
+لا تعمل الأداة إلا عند وجود كل القيم التالية صراحةً:
+
+```text
+PILOT_ALLOW_EXTERNAL_RUN=YES
+PILOT_WRITE_AUTHORIZATION=YES
+PILOT_API_BASE=https://approved-api.example/api
+PILOT_SCENARIO_FILE=/absolute/path/to/approved-scenario.json
+PILOT_OUTPUT_FILE=/absolute/path/to/pilot-report.json
+PILOT_CLASS_A_STUDENT_TOKEN=...  # secret channel only
+PILOT_CLASS_A_PIN=...            # secret channel only
+PILOT_CLASS_B_STUDENT_TOKEN=...
+PILOT_CLASS_B_PIN=...
+GIT_COMMIT_SHA=<deployed runtime sha>
+```
+
+تشغّل فقط بعد إكمال preflight:
+
+```text
+node scripts/run-smart-classroom-pilot.mjs
+```
+
+تسجل الأداة join/current/answer/aggregate، وتفرض reconnect ثم room rejoin لكل
+سيناريو. لا تنفذ تحقق cross-school السلبي تلقائيًا لأن ذلك يحتاج حسابًا وسيناريو
+مصرحًا بهما؛ يسجل هذا الاختبار يدويًا في تقرير القبول.
+
 ### Preflight (بدون كتابة بيانات)
 
 1. وثّق `GIT_SHA` ونسخة frontend/backend وبيئة Pilot.
