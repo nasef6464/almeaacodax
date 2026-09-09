@@ -1272,24 +1272,31 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             const currentSubject = selectedSubject;
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-6 sm:py-8 relative overflow-hidden shadow-sm" style={{ backgroundColor: style.color }}>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_60%)] pointer-events-none" />
-                        <div className="max-w-7xl mx-auto px-4 relative z-10">
-                            <button onClick={() => handleSubjectSelect(null, null)} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:text-white mb-4 transition-all">
-                                <ChevronRight size={16} /> عودة لصفحة المسار
-                            </button>
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-                                <div>
-                                    <span className="inline-block text-[11px] font-bold bg-white/15 text-white/90 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur-sm">
+                    <header className="text-white py-4 sm:py-5 relative overflow-hidden shadow-xs" style={{ backgroundColor: style.color }}>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)] pointer-events-none" />
+                        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="inline-flex items-center text-[11px] font-bold bg-white/15 text-white/95 px-2.5 py-0.5 rounded-full backdrop-blur-sm">
                                         مسار {path.name}
                                     </span>
-                                    <h1 className="text-2xl sm:text-3xl font-black mb-1 leading-tight break-words">{currentSubject?.name}</h1>
-                                    <p className="text-white/80 text-sm">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
                                 </div>
+                                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black leading-tight break-words">{currentSubject?.name}</h1>
+                                <p className="text-white/80 text-xs sm:text-sm mt-0.5">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
+                            </div>
+                            <div className="shrink-0 self-start sm:self-center">
+                                <button 
+                                    type="button"
+                                    onClick={() => handleSubjectSelect(null, null)} 
+                                    className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-2 rounded-xl text-xs font-bold text-white/95 hover:text-white transition-all backdrop-blur-sm shadow-xs"
+                                >
+                                    <ChevronRight size={16} /> 
+                                    <span>عودة لصفحة المسار</span>
+                                </button>
                             </div>
                         </div>
                     </header>
-                    <div className="max-w-7xl mx-auto px-4 py-8">
+                    <div className="max-w-7xl mx-auto px-4 py-6">
                         {renderSubjectAccessGuide(selectedSubjectId)}
                         <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
                         {renderPackagePaymentModal()}
@@ -1371,25 +1378,32 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
-            <header className="text-white py-6 sm:py-8 relative overflow-hidden shadow-sm" style={{ backgroundColor: style.color }}>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_60%)] pointer-events-none" />
-                <div className="max-w-7xl mx-auto px-4 relative z-10">
-                    <button onClick={() => updateUrl(null, null)} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:text-white mb-4 transition-all">
-                        <ChevronRight size={16} /> عودة لصفحة المسار
-                    </button>
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-                        <div>
-                            <span className="inline-block text-[11px] font-bold bg-white/15 text-white/90 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur-sm">
+            <header className="text-white py-4 sm:py-5 relative overflow-hidden shadow-xs" style={{ backgroundColor: style.color }}>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)] pointer-events-none" />
+                <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="inline-flex items-center text-[11px] font-bold bg-white/15 text-white/95 px-2.5 py-0.5 rounded-full backdrop-blur-sm">
                                 {currentLevel?.name} • مسار {path.name}
                             </span>
-                            <h1 className="text-2xl sm:text-3xl font-black mb-1 leading-tight break-words">{currentSubject?.name}</h1>
-                            <p className="text-white/80 text-sm">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
                         </div>
+                        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black leading-tight break-words">{currentSubject?.name}</h1>
+                        <p className="text-white/80 text-xs sm:text-sm mt-0.5">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
+                    </div>
+                    <div className="shrink-0 self-start sm:self-center">
+                        <button 
+                            type="button"
+                            onClick={() => updateUrl(null, null)} 
+                            className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-2 rounded-xl text-xs font-bold text-white/95 hover:text-white transition-all backdrop-blur-sm shadow-xs"
+                        >
+                            <ChevronRight size={16} /> 
+                            <span>عودة لصفحة المسار</span>
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto px-4 py-6">
                 {renderSubjectAccessGuide(selectedSubjectId)}
                 <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
                 {renderPackagePaymentModal()}
