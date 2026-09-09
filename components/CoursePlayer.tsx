@@ -920,8 +920,8 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                         {module.lessons.map((lesson) => {
                           const isCompleted = completedLessons.includes(lesson.id);
                           const isActive = activeLesson?.id === lesson.id;
-                          const isQuiz = lesson.type === 'quiz' || lesson.type === 'test' || Boolean(lesson.quizId);
-                          const isFile = lesson.type === 'file' || lesson.type === 'pdf';
+                          const isQuiz = lesson.type === 'quiz' || Boolean((lesson as any).quizId);
+                          const isFile = lesson.type === 'file';
                           const formattedDuration = formatLessonDuration(lesson);
                           return (
                             <button
