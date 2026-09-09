@@ -113,5 +113,6 @@ classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (
   if (!isTeacher && !isStudent) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
   const responses = await ClassroomResponseModel.find({ sessionId: sessionId(session) }).lean();
   const distribution = responses.reduce((summary: Record<string, number>, response: any) => { const key = String(response.selectedOptionIndex); summary[key] = (summary[key] || 0) + 1; return summary; }, {});
-  res.json({ sessionId: sessionId(session), status: session.status, activeQuestionIndex: session.activeQuestionIndex, responseCount: responses.length, distribution, report: session.status === "ended" ? session.reportSnapshot : null });
+  const questions = isTeacher ? session.questionSnapshots.map((question: any, index: number) => ({ index, ...projectClassroomQuestionForStudent(question, true) })) : undefined;
+  res.json({ sessionId: sessionId(session), status: session.status, activeQuestionIndex: session.activeQuestionIndex, responseCount: responses.length, distribution, report: session.status === "ended" ? session.reportSnapshot : null, questions });
 }));
