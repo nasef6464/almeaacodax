@@ -59,12 +59,22 @@ const runScenario = async (item) => {
   return { label: item.label, schoolId: item.schoolId || null, classId: item.classId || null, weakNetworkMethod: item.weakNetworkMethod || 'not-specified', records: records.map(({ body, ...safe }) => safe), reconnect };
 };
 
+const runNegativeJoin = async (item) => {
+  for (const field of ['label', 'sessionId', 'studentTokenEnv', 'pinEnv']) if (!item[field]) throw new Error(`Negative join field ${field} is required`);
+  const expectedStatus = Number(item.expectedStatus || 403);
+  const result = await request('negative-join', `/classroom/sessions/${encodeURIComponent(item.sessionId)}/join`, required(item.studentTokenEnv), { method: 'POST', body: { pin: required(item.pinEnv) } });
+  const record = { label: item.label, sessionId: item.sessionId, expectedStatus, status: result.status, durationMs: result.durationMs, passed: result.status === expectedStatus };
+  if (!record.passed) throw new Error(`Negative join ${item.label} expected ${expectedStatus}, received ${result.status}`);
+  return record;
+};
+
 const percentile = (values, percentileValue) => {
   if (!values.length) return null;
   const ordered = [...values].sort((left, right) => left - right); return ordered[Math.min(ordered.length - 1, Math.ceil((percentileValue / 100) * ordered.length) - 1)];
 };
 const startedAt = new Date().toISOString();
 const results = await Promise.all(scenario.scenarios.map(runScenario));
+const negativeJoins = await Promise.all((scenario.negativeJoins || []).map(runNegativeJoin));
 const metrics = results.flatMap((result) => result.records);
 const report = {
   pilotRunId: scenario.pilotRunId || `pilot-${Date.now()}`,
@@ -74,12 +84,14 @@ const report = {
   gitSha: process.env.GIT_COMMIT_SHA || 'not-supplied',
   scenarioCount: results.length,
   results,
+  negativeJoins,
   summary: {
     requests: metrics.length,
     successfulRequests: metrics.filter((item) => item.status >= 200 && item.status < 300).length,
     latencyMs: { p50: percentile(metrics.map((item) => item.durationMs), 50), p95: percentile(metrics.map((item) => item.durationMs), 95) },
     reconnect: { attempted: results.length, recovered: results.filter((item) => item.reconnect.recovered).length, p95Ms: percentile(results.filter((item) => item.reconnect.recovered).map((item) => item.reconnect.durationMs), 95) },
     writeRequests: metrics.filter((item) => item.label === 'join' || item.label === 'answer').length,
+    negativeJoinChecks: { attempted: negativeJoins.length, rejectedAsExpected: negativeJoins.filter((item) => item.passed).length },
   },
   limits: 'observations_only_owner_decision_required',
 };

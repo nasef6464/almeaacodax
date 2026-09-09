@@ -21,5 +21,14 @@
       "weakNetworkMethod": "approved browser/network throttle description",
       "answer": { "questionId": "approved-question-b", "selectedOptionIndex": 0 }
     }
+  ],
+  "negativeJoins": [
+    {
+      "label": "school-a-student-cannot-join-school-b",
+      "sessionId": "approved-session-b",
+      "studentTokenEnv": "PILOT_CLASS_A_STUDENT_TOKEN",
+      "pinEnv": "PILOT_CLASS_B_PIN",
+      "expectedStatus": 403
+    }
   ]
 }

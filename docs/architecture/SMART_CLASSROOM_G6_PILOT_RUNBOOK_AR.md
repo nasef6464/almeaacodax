@@ -91,8 +91,8 @@ node scripts/run-smart-classroom-pilot.mjs
 ```
 
 تسجل الأداة join/current/answer/aggregate، وتفرض reconnect ثم room rejoin لكل
-سيناريو. لا تنفذ تحقق cross-school السلبي تلقائيًا لأن ذلك يحتاج حسابًا وسيناريو
-مصرحًا بهما؛ يسجل هذا الاختبار يدويًا في تقرير القبول.
+سيناريو. كما تنفذ `negativeJoins` من ملف السيناريو وتفشل إذا لم يرجع رفض النطاق
+المتوقع (403 افتراضيًا). لا تسجل body أو token أو PIN في تقريرها.
 
 ### Preflight (بدون كتابة بيانات)
 
