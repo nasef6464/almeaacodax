@@ -493,6 +493,8 @@ Integration CI نجحت. بوابة Deep E2E ألغيت عند حدّها الز
 
 Dependency: `SC-00` closed.
 
+الحالة: `CLOSED / VERIFIED` على `cd1cdb40244690ba85ee468f4c95505d3990f4f4`.
+
 - `SchoolMembership` schema/indexes.
 - fail-closed resolver يجمع الحالي والجديد دون توسيع صلاحية.
 - inventory read-only + parity contract.
@@ -503,6 +505,8 @@ Exit: الحساب يرى Platform/School contexts الصحيحة، وكل legac
 ### `SC-01B` — Teaching Assignment + Minimal Entitlement
 
 Dependency: `SC-01A` closed.
+
+الحالة: `CLOSED / VERIFIED` ضمن G1؛ contract/assignment/entitlement resolver وadmin controls موجودة، وBackend Integration CI نجحت.
 
 - `TeachingAssignment`.
 - minimal `SchoolContract` modules/validity.
