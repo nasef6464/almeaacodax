@@ -1,6 +1,6 @@
 # ALMEAA School OS + Smart Classroom — سجل الأهداف التنفيذي
 
-> الحالة: `APPROVED / IMPLEMENTATION NOT STARTED`
+> الحالة: `G0 IMPLEMENTED LOCALLY / CI PENDING`
 > آخر مراجعة: 2026-09-09
 > Current Goal: `G0 — Secure the Reused Foundation`
 > Runtime truth عند المراجعة: `main@9cf72176059e09466335f6d6ff20b51b43969e61`؛ يجب التحقق من HEAD عند البدء.
@@ -29,7 +29,7 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 
 | Goal | Checkpoints | النتيجة القابلة للتسليم | Exit Evidence | Status |
 |---|---|---|---|---|
-| `G0 — Secure the Reused Foundation` | `SC-00` | تأمين Barcode/bookings/Socket التي سيعاد استخدامها وتثبيت فصل التكويني عن الرسمي. | School A/Teacher A لا يقرأ أو يتحكم في School B، وunauthorized room join مرفوض، والـpublic Barcode baseline سليم، وADR معتمد. | `NEXT / NOT STARTED` |
+| `G0 — Secure the Reused Foundation` | `SC-00` | تأمين Barcode/bookings/Socket التي سيعاد استخدامها وتثبيت فصل التكويني عن الرسمي. | School A/Teacher A لا يقرأ أو يتحكم في School B، وunauthorized room join مرفوض، والـpublic Barcode baseline سليم، وADR معتمد. | `IMPLEMENTED LOCALLY / CI PENDING` |
 | `G1 — School Identity & Commercial Access` | `SC-01A + SC-01B` | الحساب الواحد يملك School context صحيحًا، والمعلم مقيد بفصل/مادة، والمدرسة مقيدة بوحدات العقد من الخادم. | legacy parity بلا توسيع صلاحيات، ورفض assignment/module غير المسموح في API وSocket، مع controls إدارية بسيطة. | `NOT STARTED` |
 | `G2 — Usable Smart Classroom` | `SC-02A + SC-02B` | رحلة واحدة تعمل: معلم يختار 1–10 أسئلة، يبدأ جلسة، طلاب مصرحون يدخلون، يجيبون، ثم يصدر تقرير ثابت عبر Teacher/Projector/Student surfaces. | HTTP + authorized realtime + reconnect + desktop/projector/mobile E2E بمدرستين، وتصحيح خادمي وإجابات idempotent بلا تسريب answer. | `NOT STARTED` |
 | `G3 — Supervisor Operations & Reports` | `SC-03` | الفصول الذكية اليوم، تاريخ الجلسات، وتقارير session/class/teacher داخل لوحة المشرف الحالية. | المشرف يرى نطاقه فقط، واللوحة القديمة لم تفقد قدراتها، وPDF/Excel يخرجان من read model واحد. | `NOT STARTED` |
@@ -75,7 +75,7 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 
 | Goal | Status | Runtime commit | CI / Evidence | Next exact action |
 |---|---|---|---|---|
-| `G0` | `NOT STARTED` | — | baseline review only | افحص ونفّذ `SC-00` |
+| `G0` | `PARTIAL / CI PENDING` | pending commit | focused smokes + typechecks pass; builds pending CI | push runtime commit and verify exact CI |
 | `G1` | `NOT STARTED` | — | — | بعد إغلاق G0 |
 | `G2` | `NOT STARTED` | — | — | بعد إغلاق G1 |
 | `G3` | `NOT STARTED` | — | — | بعد إغلاق G2 |

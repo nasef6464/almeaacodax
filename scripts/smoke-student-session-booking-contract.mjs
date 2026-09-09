@@ -44,7 +44,7 @@ check("activity API exposes authenticated create/list endpoints", () => {
   assertIncludes(activityRoute, '"/admin/session-bookings"');
   assertIncludes(activityRoute, 'activityRouter.patch(');
   assertIncludes(activityRoute, 'requireAuth');
-  assertIncludes(activityRoute, 'requireRole(["admin", "supervisor", "teacher"])');
+  assertIncludes(activityRoute, 'requireRole(["admin"])');
 });
 
 check("session booking metadata is stored with activity", () => {
@@ -63,6 +63,7 @@ check("admin live sessions manager exposes booking queue", () => {
   assertIncludes(liveSessionsManager, "updateSessionBooking");
   assertIncludes(liveSessionsManager, "api.getAdminSessionBookings");
   assertIncludes(liveSessionsManager, "api.updateAdminSessionBooking");
+  assertIncludes(liveSessionsManager, "canManagePlatformBookings");
 });
 
 let failed = 0;

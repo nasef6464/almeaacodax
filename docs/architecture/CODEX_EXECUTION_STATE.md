@@ -7,8 +7,10 @@
 - Canonical goal registry: `docs/architecture/SMART_CLASSROOM_GOALS_AR.md`. Detailed architecture: `docs/architecture/SMART_CLASSROOM_EXECUTION_MASTER_AR.md`. Agent start: `docs/architecture/SMART_CLASSROOM_AGENT_ENTRY_AR.md`.
 - Delivery was condensed from nine administrative stop points into six vertical implementation goals plus a separately authorized Pilot. The original `SC-*` identifiers remain technical checkpoints inside those goals so no acceptance or security evidence is removed.
 - Product North Star: `ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT`. Smart Classroom remains formative and separate from formal `QuizResult`.
-- Current Goal: `G0 — Secure the Reused Foundation` (`SC-00`), status `NEXT / NOT STARTED`.
-- Next exact action after owner authorization: scope reused Barcode/bookings control paths, enforce authenticated and authorized Socket room joins, add cross-school negative evidence, preserve the public Barcode baseline, and record the formative-vs-formal ADR.
+- Current Goal: `G0 — Secure the Reused Foundation` (`SC-00`), status `IMPLEMENTED LOCALLY / CI PENDING`.
+- G0 implementation: Barcode list/live-control/report now use a fail-closed staff scope; ownership is derived server-side; Socket requires an authenticated active user and authorized `user:/school:/class:` room; legacy individual session bookings are explicitly Platform-only and Admin-managed because their stored activity lacks school/class context. ADR: `SMART_CLASSROOM_G0_SECURITY_ADR_AR.md`.
+- Local evidence: Smart Classroom G0 policy smoke PASS, Barcode contract `42/42` PASS, session-booking contract `5/5` PASS, school-RBAC contract `4/4` PASS, server and frontend typecheck PASS. Local server/frontend builds remained stalled with no error and were stopped; exact-runtime CI is required before closure.
+- Next exact action: commit/push G0 owned files and verify required CI on that runtime commit; only then close G0 and select G1.
 - `G6 — Controlled Pilot & Commercial Limits` remains `BLOCKED` until G5 closes and the owner explicitly authorizes a Pilot environment/data scope.
 
 ## Historical execution ledger before the Smart Classroom goal

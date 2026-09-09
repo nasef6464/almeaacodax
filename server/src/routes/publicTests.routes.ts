@@ -9,6 +9,12 @@ import { PublicBarcodeSubmissionModel } from "../models/PublicBarcodeSubmission.
 import { QuestionModel } from "../models/Question.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
+import { resolveSupervisorSchoolReportScope } from "../modules/quizzes/application/quizSupervisorReportScope.js";
+import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
+import {
+  buildPublicBarcodeTestScopeFilter,
+  resolvePublicBarcodeTestOwner,
+} from "../modules/public-tests/application/publicBarcodeTestScope.js";
 
 export const publicTestsRouter = Router();
 
@@ -182,6 +188,16 @@ const assertTargetScope = async (authUser: any, targetGroupIds: string[], target
   }
 };
 
+const resolvePublicBarcodeScopeFilter = async (authUser: any) => {
+  const schoolScope = await resolveSupervisorSchoolReportScope(authUser, quizSupervisorScopeRepository);
+  return buildPublicBarcodeTestScopeFilter({
+    id: String(authUser.id),
+    role: String(authUser.role),
+    schoolIds: schoolScope.schoolIds,
+    groupIds: schoolScope.groupIds,
+  });
+};
+
 publicTestsRouter.post(
   "/admin",
   requireAuth,
@@ -212,6 +228,7 @@ publicTestsRouter.post(
 
     const now = Date.now();
     const pinCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const owner = resolvePublicBarcodeTestOwner(req.authUser!);
     const test = await PublicBarcodeTestModel.create({
       ...payload,
       pinCode,
@@ -223,6 +240,8 @@ publicTestsRouter.post(
       slug: payload.slug || createSlug(payload.title),
       questionIds: approvedQuestionIds,
       createdBy: req.authUser!.id,
+      ownerType: owner.ownerType,
+      ownerId: owner.ownerId,
     });
 
     return res.status(StatusCodes.CREATED).json({
@@ -249,7 +268,7 @@ publicTestsRouter.get(
       })
       .parse(req.query || {});
 
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = { $and: [{}, await resolvePublicBarcodeScopeFilter(req.authUser!)] };
     if (query.pathId) filter.pathId = query.pathId;
     if (query.subjectId) filter.subjectId = query.subjectId;
     if (query.status) filter.status = query.status;
@@ -417,7 +436,9 @@ publicTestsRouter.post(
       showLeaderboard: z.boolean().optional(),
     });
     const payload = actionSchema.parse(req.body || {});
-    const test = await PublicBarcodeTestModel.findOne({ id });
+    const test = await PublicBarcodeTestModel.findOne({
+      $and: [{ id }, await resolvePublicBarcodeScopeFilter(req.authUser!)],
+    });
     if (!test) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Public barcode test not found" });
     }
@@ -546,7 +567,9 @@ publicTestsRouter.get(
   requireAuth,
   requireRole(["admin", "supervisor", "teacher"]),
   asyncHandler(async (req, res) => {
-    const test = await PublicBarcodeTestModel.findOne({ id: req.params.id }).lean();
+    const test = await PublicBarcodeTestModel.findOne({
+      $and: [{ id: req.params.id }, await resolvePublicBarcodeScopeFilter(req.authUser!)],
+    }).lean();
     if (!test) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test not found" });
     }

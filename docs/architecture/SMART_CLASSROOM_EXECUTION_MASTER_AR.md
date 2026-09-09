@@ -464,7 +464,7 @@ commits صغيرة لكل checkpoint، لكن لا يحتاج انتظارًا �
 
 ### `SC-00` — Security & Reuse Boundary
 
-الحالة: `NEXT / NOT STARTED`.
+الحالة: `IMPLEMENTED LOCALLY / CI PENDING`.
 
 Purpose: تأمين الموجود الذي سيعاد استخدامه وتثبيت ADR الفصل التكويني.
 
@@ -477,6 +477,10 @@ Scope:
 
 Expected files: `server/src/routes/publicTests.routes.ts`،
 `server/src/routes/activity.routes.ts`، `server/src/sockets/index.ts`، policies/tests وADR.
+
+قرار التنفيذ: Barcode server-scoped عند list/live-control/report، Socket authenticated
+ومقيد بغرف user/school/class المعروفة فقط، وsession bookings الحالية Platform-only
+Admin-managed لغياب school/class truth. راجع `SMART_CLASSROOM_G0_SECURITY_ADR_AR.md`.
 
 Exit: School A/Teacher A لا يقرأ أو يتحكم في School B، وunauthorized socket room
 join مرفوض، وpublic Barcode journey والـbaseline تبقى متوافقة.
