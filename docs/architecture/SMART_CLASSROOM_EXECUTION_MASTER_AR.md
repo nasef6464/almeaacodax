@@ -563,6 +563,8 @@ Exit: لا blended score، وlegacy unknown ظاهر بصدق، وcross-school r
 
 Dependency: `SC-04` closed.
 
+الحالة: `CLOSED / VERIFIED` ضمن G5 على `684c6912c883f3acd199d7491d57791d2fba1abc`؛ التدخل الأول يعيد استخدام StudyPlan القائم ويثبت scope وentitlement وbaseline.
+
 - `SchoolIntervention` minimal lifecycle.
 - تدريب، اختبار علاجي، محتوى/مسار، واجب، أو دعم.
 - reuse existing targeting/access/live lesson infrastructure.
@@ -572,6 +574,8 @@ Exit: Weak Skill → Target Students → Assigned Action مثبت end-to-end.
 ### `SC-05B` — Measure Improvement
 
 Dependency: `SC-05A` closed.
+
+الحالة: `CLOSED / VERIFIED` ضمن G5؛ follow-up يعاد من ClassroomResponse الخام، وminimum evidence قابل للضبط قبل أي وصف للنتيجة بأنها measured.
 
 - baseline/follow-up windows.
 - before/after delta مع evidence counts.

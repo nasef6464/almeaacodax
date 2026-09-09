@@ -16,7 +16,7 @@
 - Runtime base عند اعتماد الخطة: `main@9cf72176059e09466335f6d6ff20b51b43969e61`؛ تحقق من HEAD ولا تفترض بقاءه.
 - Gates 1–6 مغلقة ولا تعاد.
 - G0 / SC-00 مغلق بدليل CI مركّز على `c87e7b3e`; Deep E2E لم يكتمل بسبب حد الزمن.
-- Current Goal: `G5 — Intervention & Proven Improvement` (`SC-05A + SC-05B`); G0–G4 مغلقة بدليلها المسجل في سجل الأهداف.
+- Current Goal: `G6 — Controlled Pilot & Commercial Limits` (`SC-06`) وهو `BLOCKED` حتى تفويض المالك لبيئة Pilot وبياناتها؛ G0–G5 مغلقة بدليلها المسجل في سجل الأهداف.
 - Gemini V2 وCodex vision السابق reference فقط؛ Master V3 هو القرار النهائي.
 
 ## North Star
