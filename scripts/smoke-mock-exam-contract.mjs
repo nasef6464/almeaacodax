@@ -6,6 +6,8 @@ const quizPlacementSource = await readFile(new URL('../utils/quizPlacement.ts', 
 const adapterSource = await readFile(new URL('../services/adapter.ts', import.meta.url), 'utf8');
 const learningPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
 const adminSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8');
+const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
+const adminDashboardSource = await readFile(new URL('../dashboards/admin/AdminDashboard.tsx', import.meta.url), 'utf8');
 const pathPageSource = await readFile(new URL('../pages/GenericPathPage.tsx', import.meta.url), 'utf8');
 const mockPageSource = await readFile(new URL('../pages/MockExams.tsx', import.meta.url), 'utf8');
 const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
@@ -77,6 +79,19 @@ check('admin mock exam manager creates independent path mock exams from question
   assertIncludes(adminSource, 'skillFilter');
   assertIncludes(adminSource, 'difficultyFilter');
   assertIncludes(adminSource, 'toggleQuestion(section.id, question.id)');
+});
+
+check('admin assessment center exposes mock authoring as one internal workspace', () => {
+  assertIncludes(quizzesManagerSource, "{ key: 'quizzes' as const, label: 'كل الاختبارات'");
+  assertIncludes(quizzesManagerSource, "{ key: 'mock-exams' as const, label: 'المحاكيات'");
+  assertIncludes(quizzesManagerSource, "{ key: 'assignments' as const, label: 'توجيه الاختبارات'");
+  assertIncludes(quizzesManagerSource, "defaultKind={mainView === 'mock-exams' ? 'mock' : 'test'}");
+  assertIncludes(quizzesManagerSource, "setQuizKindFilter(tab.key === 'mock-exams' ? 'mock' : 'all')");
+  assertNotIncludes(quizzesManagerSource, "import { MockExamManager } from './MockExamManager'");
+  assertNotIncludes(adminDashboardSource, "label: 'مركز الاختبارات المحاكية'");
+  assertNotIncludes(adminDashboardSource, "import('./MockExamManager')");
+  assertIncludes(adminDashboardSource, "case 'mock-exams':");
+  assertIncludes(adminDashboardSource, 'return <QuizzesManager key={`quizzes-mock-${tabRequestVersion}`} />;');
 });
 
 check('admin mock exam save publishes a typed mock without training placement', () => {

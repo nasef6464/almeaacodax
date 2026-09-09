@@ -213,15 +213,20 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
   const [draftMode, setDraftMode] = useState<'regular' | 'saher' | 'central' | null>(null);
   // فلتر quizKind (drill | test | mock | all)
-  const [quizKindFilter, setQuizKindFilter] = useState<'all' | 'drill' | 'test' | 'mock'>('all');
+  const [quizKindFilter, setQuizKindFilter] = useState<'all' | 'drill' | 'test' | 'mock'>(() =>
+    initialManagerParams.get('tab') === 'mock-exams' ? 'mock' : 'all',
+  );
   // فتح UnifiedQuizBuilder كـ overlay لإنشاء جديد
   const [isUnifiedBuilderOpen, setIsUnifiedBuilderOpen] = useState(false);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const [mockSectionAnalytics, setMockSectionAnalytics] = useState<MockSectionAnalytics | null>(null);
   const [mockSectionAnalyticsLoading, setMockSectionAnalyticsLoading] = useState(false);
   const [mockSectionAnalyticsError, setMockSectionAnalyticsError] = useState('');
-  // تبديل بين مركز الاختبارات ولوحة التوجيه
-  const [mainView, setMainView] = useState<'quizzes' | 'assignments'>('quizzes');
+  // مساحة عمل موحدة للاختبارات العادية والموجهة والمحاكية.
+  // الرابط الإداري القديم ?tab=mock-exams يظل صالحًا لكنه يفتح المحاكيات داخل المركز الموحد.
+  const [mainView, setMainView] = useState<'quizzes' | 'assignments' | 'mock-exams'>(() =>
+    initialManagerParams.get('tab') === 'mock-exams' ? 'mock-exams' : 'quizzes',
+  );
   // توجيه: الاختبار المحدد للتوجيه
   const [assigningQuiz, setAssigningQuiz] = useState<Quiz | null>(null);
   const [assignTargetGroupIds, setAssignTargetGroupIds] = useState<string[]>([]);
@@ -737,7 +742,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
           allowedGroupIds={undefined}
           allowedPathIds={user.role === 'teacher' ? (user.managedPathIds?.length ? user.managedPathIds : undefined) : undefined}
-          defaultKind="test"
+          defaultKind={mainView === 'mock-exams' ? 'mock' : 'test'}
           initialPathId={selectedPathId || activePathId}
           initialSubjectId={selectedSubjectId || activeSubjectId}
           initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
@@ -766,25 +771,30 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Plus size={18} />
-            {isSupervisor ? 'إنشاء اختبار موجّه' : 'إنشاء اختبار جديد'}
+            {mainView === 'mock-exams' ? 'إنشاء محاكي جديد' : isSupervisor ? 'إنشاء اختبار موجّه' : 'إنشاء اختبار جديد'}
           </button>
-          {!filterType && !isSupervisor && <button onClick={() => handleCreateByMode('saher')} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors">
+          {!filterType && !isSupervisor && mainView === 'quizzes' && <button onClick={() => handleCreateByMode('saher')} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors">
             + اختبار ساهر
           </button>}
-          {!filterType && !isSupervisor && <button onClick={() => handleCreateByMode('central')} className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors">
+          {!filterType && !isSupervisor && mainView === 'quizzes' && <button onClick={() => handleCreateByMode('central')} className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors">
             + اختبار موجّه
           </button>}
         </div>
       </div>
 
-      {/* ── شريط التبديل: مركز الاختبارات / توجيه الاختبارات ─────────────── */}
+      {/* ── مساحة العمل الموحدة للاختبارات ───────────────────────────────── */}
       {!filterType && (
         <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
           {([
-            { key: 'quizzes' as const, label: 'مركز الاختبارات', icon: <FileQuestion size={14}/> },
+            { key: 'quizzes' as const, label: 'كل الاختبارات', icon: <FileQuestion size={14}/> },
+            { key: 'mock-exams' as const, label: 'المحاكيات', icon: <Award size={14}/> },
             { key: 'assignments' as const, label: 'توجيه الاختبارات', icon: <SendHorizontal size={14}/>, badge: globalQuizzes.filter(q => (q.targetGroupIds?.length || 0) + (q.targetUserIds?.length || 0) > 0).length },
           ]).map(tab => (
-            <button key={tab.key} type="button" onClick={() => { setMainView(tab.key); setAssigningQuiz(null); }}
+            <button key={tab.key} type="button" onClick={() => {
+              setMainView(tab.key);
+              setQuizKindFilter(tab.key === 'mock-exams' ? 'mock' : 'all');
+              setAssigningQuiz(null);
+            }}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black transition-all ${
                 mainView === tab.key ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-500 hover:text-indigo-600'
               }`}>
@@ -798,6 +808,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           ))}
         </div>
       )}
+
+      {(mainView === 'quizzes' || mainView === 'mock-exams' || filterType) ? <div className="contents">
 
       {openedFromSchoolPortal && (
         <div data-testid="school-portal-directed-quiz-context" className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
@@ -1114,7 +1126,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {/* ── quizKind Tabs ────────────────────────────────────────────── */}
-        <div className="flex gap-0 border-b border-gray-100 overflow-x-auto">
+        {mainView === 'quizzes' && <div className="flex gap-0 border-b border-gray-100 overflow-x-auto">
           {([
             { key: 'all' as const, label: 'الكل', count: counts.all, icon: null },
             { key: 'drill' as const, label: 'تدريب', count: counts.byKind.drill, icon: <Dumbbell size={13} /> },
@@ -1137,7 +1149,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
               }`}>{count}</span>
             </button>
           ))}
-        </div>
+        </div>}
         <div className="overflow-x-auto">
           <table className="w-full text-right">
             <thead className="bg-gray-50 border-b border-gray-100">
@@ -1643,6 +1655,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </div>
         </div>
       ) : null}
+      </div> : null}
       {/* ══════════════════════════════════════════════════════════════════════ */}
       {/* ── لوحة توجيه الاختبارات ─────────────────────────────────────────── */}
       {/* ══════════════════════════════════════════════════════════════════════ */}
