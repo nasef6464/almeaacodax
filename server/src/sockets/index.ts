@@ -5,6 +5,7 @@ import { env } from "../config/env.js";
 import { createRedisClient, createRedisDuplicate, isRedisConfigured } from "../config/redis.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
@@ -48,10 +49,12 @@ export function createSocketServer(server: HttpServer) {
       const currentUser = await UserModel.findById(tokenUser.id).select("id _id role isActive schoolId groupIds").lean();
       if (!currentUser || currentUser.isActive === false) return next(new Error("Authentication required"));
 
+      const explicitMemberships = await SchoolMembershipModel.find({ userId: String((currentUser as any).id || currentUser._id), status: "active" }).select("schoolId").lean();
       socket.data.authUser = {
         id: String((currentUser as any).id || currentUser._id),
         role: String(currentUser.role),
         schoolId: currentUser.schoolId ? String(currentUser.schoolId) : null,
+        schoolIds: explicitMemberships.map((membership: any) => String(membership.schoolId)),
         groupIds: Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [],
       };
       return next();

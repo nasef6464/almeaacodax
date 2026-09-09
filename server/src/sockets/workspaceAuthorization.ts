@@ -1,6 +1,7 @@
 export type WorkspaceAuthUser = {
   id: string;
   schoolId?: string | null;
+  schoolIds?: string[];
   groupIds?: string[];
 };
 
@@ -24,7 +25,7 @@ export const canJoinAuthorizedWorkspace = async (
 
   const [, kind, resourceId] = match;
   if (kind === "user") return resourceId === String(authUser.id);
-  if (kind === "school") return resourceId === String(authUser.schoolId || "");
+  if (kind === "school") return new Set([String(authUser.schoolId || ""), ...(authUser.schoolIds || []).map(String)]).has(resourceId);
 
   const directGroupIds = new Set((authUser.groupIds || []).map(String));
   if (directGroupIds.has(resourceId)) return true;
