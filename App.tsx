@@ -47,6 +47,8 @@ const LiveSessions = React.lazy(() => import('./pages/LiveSessions'));
 const LiveSessionLobby = React.lazy(() => import('./pages/LiveSessionLobby'));
 const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ default: module.QuizPage })));
 const ClassroomStudentLive = React.lazy(() => import('./pages/ClassroomStudentLive').then(module => ({ default: module.ClassroomStudentLive })));
+const ClassroomTeacherConsole = React.lazy(() => import('./pages/ClassroomTeacherConsole').then(module => ({ default: module.ClassroomTeacherConsole })));
+const ClassroomProjectorView = React.lazy(() => import('./pages/ClassroomProjectorView').then(module => ({ default: module.ClassroomProjectorView })));
 const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
 const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
 const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
@@ -1534,6 +1536,8 @@ const App: React.FC = () => {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/quiz/:quizId" element={<QuizPage />} />
           <Route path="/classroom/:sessionId" element={<ClassroomStudentLive />} />
+          <Route path="/classroom/:sessionId/teacher" element={<ClassroomTeacherConsole />} />
+          <Route path="/classroom/:sessionId/projector" element={<ClassroomProjectorView />} />
           <Route path="/results" element={<Results />} />
           
           {/* Admin Routes */}
