@@ -10,6 +10,7 @@ import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
+import { setClassroomSocketServer } from "./classroomEvents.js";
 
 const configuredSocketOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
   .map((origin) => origin.trim())
@@ -41,6 +42,7 @@ export function createSocketServer(server: HttpServer) {
       credentials: true,
     },
   });
+  setClassroomSocketServer(io);
 
   io.use(async (socket, next) => {
     try {

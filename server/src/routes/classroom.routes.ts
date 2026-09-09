@@ -13,6 +13,7 @@ import { UserModel } from "../models/User.js";
 import { resolveSchoolEntitlement } from "../modules/schools/application/schoolEntitlementResolver.js";
 import { projectClassroomQuestionForStudent } from "../modules/schools/application/classroomQuestionProjection.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { emitClassroomEvent } from "../sockets/classroomEvents.js";
 
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
@@ -42,7 +43,7 @@ classroomRouter.post("/sessions/:id/publish/:index", requireAuth, requireRole(["
   const session = await ClassroomSessionModel.findById(req.params.id); const index = Number(req.params.index);
   if (!session || !Number.isInteger(index) || index < 0 || index >= session.questionSnapshots.length) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session or question not found" });
   if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
-  session.status = "live"; session.activeQuestionIndex = index; await session.save(); res.json({ status: session.status, activeQuestionIndex: index });
+  session.status = "live"; session.activeQuestionIndex = index; await session.save(); emitClassroomEvent(sessionId(session), "question:published", { activeQuestionIndex: index }); res.json({ status: session.status, activeQuestionIndex: index });
 }));
 
 classroomRouter.post("/sessions/:id/join", requireAuth, asyncHandler(async (req, res) => {
@@ -69,7 +70,8 @@ classroomRouter.put("/sessions/:id/answers/:questionId", requireAuth, asyncHandl
   const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
   if (!student || student.role !== "student" || String(student.schoolId) !== String(session.schoolId) || !(student.groupIds || []).map(String).includes(String(session.classId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
   const response = await ClassroomResponseModel.findOneAndUpdate({ sessionId: sessionId(session), questionId: question.questionId, studentId: req.authUser!.id }, { $setOnInsert: { selectedOptionIndex: payload.selectedOptionIndex, isCorrect: payload.selectedOptionIndex === question.correctOptionIndex } }, { upsert: true, new: true });
-  res.json({ accepted: true, responseId: String(response._id) });
+  const responseCount = await ClassroomResponseModel.countDocuments({ sessionId: sessionId(session), questionId: question.questionId });
+  emitClassroomEvent(sessionId(session), "response:updated", { responseCount }); res.json({ accepted: true, responseId: String(response._id) });
 }));
 
 classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
@@ -78,7 +80,7 @@ classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "
   if (session.status === "ended") return res.json({ report: session.reportSnapshot, alreadyEnded: true });
   const responses = await ClassroomResponseModel.find({ sessionId: sessionId(session) }).lean(); const participants = await ClassroomParticipantModel.countDocuments({ sessionId: sessionId(session) });
   const report = { sessionId: sessionId(session), schoolId: session.schoolId, classId: session.classId, participantCount: participants, responseCount: responses.length, correctCount: responses.filter((response: any) => response.isCorrect).length, endedAt: new Date().toISOString() };
-  session.status = "ended"; session.endedAt = new Date(); session.activeQuestionIndex = null; session.reportSnapshot = report; await session.save(); res.json({ report });
+  session.status = "ended"; session.endedAt = new Date(); session.activeQuestionIndex = null; session.reportSnapshot = report; await session.save(); emitClassroomEvent(sessionId(session), "session:ended", { report }); res.json({ report });
 }));
 
 classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
