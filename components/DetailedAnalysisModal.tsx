@@ -23,21 +23,21 @@ const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 const getSimpleLevel = (percentage: number) => {
   if (percentage >= 80) {
     return {
-      label: 'مطمئن',
-      className: 'bg-emerald-50 text-emerald-700',
+      label: 'إتقان ممتاز',
+      className: 'bg-emerald-50 text-emerald-800 border border-emerald-200',
     };
   }
 
   if (percentage >= 60) {
     return {
-      label: 'مراجعة بسيطة',
-      className: 'bg-amber-50 text-amber-700',
+      label: 'متوسط',
+      className: 'bg-amber-50 text-amber-800 border border-amber-200',
     };
   }
 
   return {
-    label: 'ابدأ بها',
-    className: 'bg-rose-50 text-rose-700',
+    label: 'يحتاج دعم',
+    className: 'bg-rose-50 text-rose-800 border border-rose-200',
   };
 };
 
@@ -153,45 +153,29 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
               return (
                 <div
                   key={`${skill.name}-${idx}`}
-                  className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs transition-all hover:shadow-sm hover:border-indigo-100"
+                  className="rounded-2xl border border-slate-200/80 bg-slate-50/40 hover:bg-slate-50/80 p-3.5 sm:p-4 shadow-2xs transition-all"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="mb-2 flex flex-wrap items-center gap-1.5 text-[11px] font-black">
-                        {skill.subjectName ? (
-                          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-slate-600">
-                            {skill.subjectName}
-                          </span>
-                        ) : null}
-                        {skill.sectionName ? (
-                          <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-indigo-700">
-                            {skill.sectionName}
-                          </span>
-                        ) : null}
-                        <span className={`rounded-md px-2 py-0.5 ${levelMeta.className}`}>
-                          {levelMeta.label}
-                        </span>
-                      </div>
-                      <h3 className="break-words text-sm sm:text-base font-black text-slate-900">
-                        {skill.name}
-                      </h3>
-                      {skill.recommendation && skill.name !== weakestSkill?.name ? (
-                        <p className="mt-1.5 text-xs font-bold leading-5 text-slate-500">{skill.recommendation}</p>
-                      ) : null}
-                    </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="break-words text-sm sm:text-base font-black text-slate-900 min-w-0 flex-1 truncate">
+                      {skill.name}
+                    </h3>
 
-                    <div className="shrink-0 rounded-2xl bg-slate-50 border border-slate-100 px-3.5 py-2 text-center">
-                      <div className="text-base sm:text-lg font-black text-slate-900">{skill.percentage}%</div>
-                      <div className="text-[10px] font-bold text-slate-400">
-                        {skill.percentage >= 80 ? 'إتقان عالٍ' : skill.percentage >= 60 ? 'متوسط' : 'يحتاج دعم'}
-                      </div>
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black ${levelMeta.className}`}>
+                        {levelMeta.label}
+                      </span>
+                      <span className={`text-base font-black w-11 text-left ${
+                        skill.percentage >= 80 ? 'text-emerald-700' : skill.percentage >= 60 ? 'text-amber-700' : 'text-rose-700'
+                      }`}>
+                        {skill.percentage}%
+                      </span>
                     </div>
                   </div>
 
-                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200/70">
                     <div
-                      className={`h-full ${skill.percentage >= 80 ? 'bg-emerald-500' : skill.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'} transition-all duration-500 ease-out`}
-                      style={{ width: `${skill.percentage}%` }}
+                      className={`h-full ${skill.percentage >= 80 ? 'bg-emerald-500' : skill.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'} rounded-full transition-all duration-500 ease-out`}
+                      style={{ width: `${Math.max(4, Math.min(100, skill.percentage))}%` }}
                     />
                   </div>
                 </div>
