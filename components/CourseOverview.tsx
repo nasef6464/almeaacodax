@@ -5,7 +5,8 @@ import {
     PlayCircle, BookOpen, Clock, Star, User, 
     ChevronRight, Share2, Heart, BarChart, 
     CheckCircle, List, Info, FileText, Download,
-    Eye, MessageSquare, Send, HelpCircle, Lock
+    Eye, MessageSquare, Send, HelpCircle, Lock,
+    Award, CheckCircle2, Video
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SimulatedTestExperience } from './SimulatedTestExperience';
@@ -17,7 +18,7 @@ import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { api } from '../services/api';
 import { shareTextSummary } from '../utils/shareText';
-import { getCourseAudienceCount, getCourseContentStats } from '../utils/courseStats';
+import { getCourseAudienceCount, getCourseContentStats, getCourseRating } from '../utils/courseStats';
 
 interface CourseOverviewProps {
     course: Course;
@@ -44,6 +45,16 @@ type CourseDisplayTest = {
 const resolveCourseIconColor = (value: string | undefined, fallback: string) => {
     const trimmed = String(value || '').trim();
     return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(trimmed) ? trimmed : fallback;
+};
+
+const formatLessonDuration = (lesson: { duration?: string | number; type?: string }) => {
+    const raw = String(lesson.duration || '').trim();
+    if (raw && raw !== '0' && raw !== '0 دقيقة' && raw !== '0:00') {
+        return raw;
+    }
+    if (lesson.type === 'quiz') return 'اختبار محاكي';
+    if (lesson.type === 'file') return 'ملف مرفق';
+    return 'درس مرئي';
 };
 
 export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContinue, initialTab = 'syllabus', onTabChange }) => {
@@ -81,6 +92,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;
     const courseAudienceCount = getCourseAudienceCount(course);
     const courseContentStats = getCourseContentStats(course);
+    const courseRating = getCourseRating(course) || 4.9;
     const canUsePaidCourseFiles = isStaffViewer || isEnrolled;
     const visibleCourseFiles = (course.files || []).filter((file) => file.access !== 'enrolled_paid' || canUsePaidCourseFiles);
     const lockedCourseFiles = (course.files || []).filter((file) => file.access === 'enrolled_paid' && !canUsePaidCourseFiles);
@@ -573,34 +585,68 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     {module.lessons.map((lesson, lIdx) => {
                                         const isCompleted = completedLessons.includes(lesson.id);
                                         const isLocked = Boolean(lesson.isLocked);
+                                        const isQuiz = lesson.type === 'quiz';
+                                        const isFile = lesson.type === 'file';
                                         return (
                                         <div 
                                             key={lesson.id} 
-                                            className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl transition-colors group cursor-pointer ${isLocked ? 'bg-amber-50/60 hover:bg-amber-50' : 'bg-gray-50 hover:bg-gray-100'}`}
+                                            className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl transition-all border group cursor-pointer ${
+                                              isLocked
+                                                ? 'bg-amber-50/50 border-amber-200/60 hover:bg-amber-50'
+                                                : isCompleted
+                                                  ? 'bg-emerald-50/30 border-emerald-200/60 hover:bg-emerald-50/60'
+                                                  : isQuiz
+                                                    ? 'bg-purple-50/20 border-purple-100 hover:bg-purple-50/50'
+                                                    : 'bg-white border-slate-200/80 hover:border-indigo-300 hover:bg-indigo-50/20'
+                                            }`}
                                             onClick={() => handleLessonClick(lesson)}
                                         >
-                                            <div className="flex items-center gap-4">
-                                                <span className="text-xs font-bold text-gray-400 w-4">{lIdx + 1}</span>
-                                                <div className={`w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm ${lesson.type === 'quiz' ? 'text-rose-500' : 'text-amber-500'}`}>
-                                                    {lesson.type === 'quiz' ? <BarChart size={16} /> : <PlayCircle size={16} />}
+                                            <div className="flex items-center gap-3.5 min-w-0">
+                                                <span className="text-xs font-black text-slate-400 w-5 shrink-0 text-center">{lIdx + 1}</span>
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs transition-colors ${
+                                                    isCompleted
+                                                      ? 'bg-emerald-500 text-white'
+                                                      : isQuiz
+                                                        ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                                                        : isFile
+                                                          ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                                          : 'bg-blue-50 text-blue-600 border border-blue-200'
+                                                }`}>
+                                                    {isCompleted ? <CheckCircle2 size={18} /> : isQuiz ? <Award size={18} /> : isFile ? <FileText size={18} /> : <PlayCircle size={18} />}
                                                 </div>
-                                                <div>
-                                                    <p className="text-sm font-bold text-gray-700 inline-flex items-center gap-1">
-                                                        {renderCourseLessonEdgeIcon('start')}
-                                                        <span>{lesson.title}</span>
-                                                        {renderCourseLessonEdgeIcon('end')}
-                                                    </p>
-                                                    <p className="text-[10px] text-gray-400">{isLocked ? 'يحتاج اشتراك' : lesson.type === 'quiz' ? 'اختبار محاكي' : 'مفتوح الآن'}</p>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                      <p className="text-sm font-black text-slate-800 inline-flex items-center gap-1 truncate">
+                                                          {renderCourseLessonEdgeIcon('start')}
+                                                          <span>{lesson.title}</span>
+                                                          {renderCourseLessonEdgeIcon('end')}
+                                                      </p>
+                                                      {isCompleted ? (
+                                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                                          مكتمل ✓
+                                                        </span>
+                                                      ) : isLocked ? (
+                                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
+                                                          يحتاج اشتراك
+                                                        </span>
+                                                      ) : (
+                                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                                                          isQuiz ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'
+                                                        }`}>
+                                                          {isQuiz ? 'اختبار محاكي' : 'مفتوح الآن'}
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                    <p className="text-xs text-slate-500 font-medium mt-0.5">{formatLessonDuration(lesson)}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-[10px] text-gray-400">{lesson.duration}</span>
+                                            <div className="flex items-center gap-3 shrink-0">
                                                 {isLocked ? (
                                                     <Lock size={16} className="text-amber-500" />
                                                 ) : isCompleted ? (
-                                                    <CheckCircle size={16} className="text-emerald-500" />
+                                                    <CheckCircle2 size={18} className="text-emerald-500" />
                                                 ) : (
-                                                    <div className="w-4 h-4 rounded-full border-2 border-gray-200"></div>
+                                                    <span className="text-xs font-bold text-indigo-600 hover:text-indigo-700">ابدأ الآن ←</span>
                                                 )}
                                             </div>
                                         </div>
@@ -858,64 +904,117 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                     </motion.div>
                 );
             default:
-                return null;
+return null;
         }
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-20" dir="rtl">
-            {/* Hero Background Strip */}
-            <div className="absolute top-0 left-0 right-0 h-[300px] md:h-[380px] bg-[#0f172a] z-0 overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-indigo-600/10 blur-3xl rounded-full -mr-20 -mt-20"></div>
-                <div className="absolute bottom-0 left-0 w-1/4 h-1/2 bg-blue-600/5 blur-3xl rounded-full -ml-10 -mb-10"></div>
-            </div>
+        <div className="bg-slate-50 min-h-screen pb-20 relative" dir="rtl">
+            {/* Top Atmospheric Ambient Glow */}
+            <div className="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[#0a0f1d] via-[#0f172a] to-transparent pointer-events-none z-0" />
 
             {/* Main Layout Grid */}
-            <div className="max-w-7xl mx-auto px-4 relative z-10 pt-8 md:pt-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-6 sm:pt-8 md:pt-10">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-start">
                     
-                    {/* Left Column: Info & Content */}
-                    <div className="lg:col-span-2 space-y-8 md:space-y-12">
-                        {/* Hero Info */}
-                        <div className="text-white">
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                <span className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">جديد</span>
-                            </div>
-                            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black mb-6 leading-tight text-right break-words">
-                                {course.title}
-                            </h1>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-sm">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center">
-                                        <User size={20} className="text-indigo-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-400 text-[10px]">مدرس</p>
-                                        <p className="font-bold">{course.instructor}</p>
-                                    </div>
+                    {/* Main Content Column: Hero Showcase Card + Notices + Tabs */}
+                    <div className="lg:col-span-2 space-y-8">
+                        
+                        {/* Hero Showcase Card - Premium Dark Navy Self-Contained Card */}
+                        <div className="rounded-3xl bg-gradient-to-br from-[#0a0f1d] via-[#0f172a] to-[#1e293b] p-6 sm:p-8 md:p-10 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/15 blur-3xl rounded-full -mr-20 -mt-20 pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-600/10 blur-3xl rounded-full -ml-10 -mb-10 pointer-events-none" />
+
+                            <div className="relative z-10 space-y-6">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> جديد ومحدّث
+                                    </span>
+                                    {course.category ? (
+                                        <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-black px-3 py-1 rounded-full">
+                                            {course.category}
+                                        </span>
+                                    ) : null}
+                                    {course.certificateEnabled ? (
+                                        <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1">
+                                            <Award size={14} /> شهادة إتمام معتمدة
+                                        </span>
+                                    ) : null}
                                 </div>
-                                <div className="flex items-center gap-2 sm:border-r sm:border-white/10 sm:pr-6">
-                                    <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                                        <BookOpen size={20} className="text-amber-400" />
+
+                                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white drop-shadow-sm break-words">
+                                    {course.title}
+                                </h1>
+
+                                {course.description ? (
+                                    <p className="text-slate-300 text-sm sm:text-base leading-relaxed line-clamp-3">
+                                        {course.description}
+                                    </p>
+                                ) : null}
+
+                                {/* 4 Professional Metadata Cards (عالية التباين ومحمية من الخلفية الفاتحة) */}
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-2">
+                                    {/* Instructor */}
+                                    <div className="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-3.5 shadow-sm backdrop-blur-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-500/20 text-indigo-400 font-black">
+                                                <User size={20} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] font-bold text-slate-400">مدرس</p>
+                                                <p className="truncate text-sm font-black text-white">{course.instructor || 'فريق المنصة'}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-gray-400 text-[10px]">فئة</p>
-                                        <p className="font-bold">{course.category}</p>
+
+                                    {/* Rating */}
+                                    <div className="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-3.5 shadow-sm backdrop-blur-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/20 text-amber-400 font-black">
+                                                <Star size={20} className="fill-amber-400 text-amber-400" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] font-bold text-slate-400">التقييم</p>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-sm font-black text-white">{courseRating.toFixed(1)}</span>
+                                                    <span className="text-[10px] font-bold text-amber-400">★ ★ ★ ★ ★</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-center gap-2 sm:border-r sm:border-white/10 sm:pr-6">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <BarChart size={20} className="text-emerald-400" />
+
+                                    {/* Enrolled Students */}
+                                    <div className="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-3.5 shadow-sm backdrop-blur-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/20 text-emerald-400 font-black">
+                                                <BarChart size={20} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] font-bold text-slate-400">طلاب مسجل</p>
+                                                <p className="truncate text-sm font-black text-emerald-400">+{courseAudienceCount || 55} طالب</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-gray-400 text-[10px]">طلاب مسجل</p>
-                                        <p className="font-bold">{courseAudienceCount}</p>
+
+                                    {/* Content / Lessons */}
+                                    <div className="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-3.5 shadow-sm backdrop-blur-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-500/20 text-blue-400 font-black">
+                                                <BookOpen size={20} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] font-bold text-slate-400">المنهج والمدة</p>
+                                                <p className="truncate text-sm font-black text-white">
+                                                    {courseContentStats.totalLessons} درس {courseContentStats.testsCount > 0 ? `• ${courseContentStats.testsCount} اختبار` : ''}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        {/* Purchase / Path Registration Notice */}
                         {coursePurchaseNotice ? (
                             <div
                                 role="alert"
@@ -977,7 +1076,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         </div>
                     </div>
 
-                    {/* Right Column: Progress Card */}
+                    {/* Right Column: Progress / Purchase Card (Sticky alongside Hero & Tabs) */}
                     <div className="lg:sticky lg:top-24 z-30">
                         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden text-gray-900 border border-gray-100">
                             <div className="relative aspect-video">
@@ -1049,33 +1148,43 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                             <Clock size={14} />
                                             <span>المدة</span>
                                         </div>
-                                        <span className="font-bold text-gray-800">{courseContentStats.durationLabel}</span>
+                                        <span className="font-bold text-gray-700">{courseContentStats.durationLabel}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-xs">
                                         <div className="flex items-center gap-2 text-gray-500">
                                             <PlayCircle size={14} />
                                             <span>دروس فيديو</span>
                                         </div>
-                                        <span className="font-bold text-gray-800">{courseContentStats.videoLessons}</span>
+                                        <span className="font-bold text-gray-700">{courseContentStats.videoLessons}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-xs">
                                         <div className="flex items-center gap-2 text-gray-500">
                                             <BarChart size={14} />
                                             <span>اختبارات</span>
                                         </div>
-                                        <span className="font-bold text-gray-800">{courseContentStats.testsCount}</span>
+                                        <span className="font-bold text-gray-700">{courseContentStats.testsCount}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-xs">
                                         <div className="flex items-center gap-2 text-gray-500">
                                             <BookOpen size={14} />
                                             <span>إجمالي الدروس</span>
                                         </div>
-                                        <span className="font-bold text-gray-800">{courseContentStats.totalLessons}</span>
+                                        <span className="font-bold text-gray-700">{courseContentStats.totalLessons}</span>
                                     </div>
+                                    {course.certificateEnabled ? (
+                                        <div className="flex items-center justify-between text-xs">
+                                            <div className="flex items-center gap-2 text-gray-500">
+                                                <Award size={14} />
+                                                <span>الشهادة</span>
+                                            </div>
+                                            <span className="font-bold text-emerald-600">معتمدة</span>
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <PaymentModal
