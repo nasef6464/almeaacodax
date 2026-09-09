@@ -77,7 +77,7 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 |---|---|---|---|---|
 | `G0` | `CLOSED / VERIFIED WITH FOCUSED CI` | `c87e7b3e07eda578c4e7870fef27d32714404286` | focused smokes PASS; Backend Integration CI PASS; Deep E2E canceled by workflow time limit after all suites except final Barcode journey | begin G1 assessment only |
 | `G1` | `CLOSED / VERIFIED` | `cd1cdb40244690ba85ee468f4c95505d3990f4f4` | policy smoke PASS; Backend Integration CI PASS | begin G2 assessment only |
-| `G2` | `IN PROGRESS` | `ea724b29074a370373b48f4254e326a3e23abda3` | session lifecycle وthree surfaces وrealtime authorization موجودة؛ G2 security/read-model smoke وCI على revision النهائي ما زالا مطلوبين للإغلاق | أكمل اختبار الرحلة بمدرستين ثم closure evidence |
+| `G2` | `IN PROGRESS` | `d57c1376021fc2bc73385fa52c312f880f96384b` | isolated HTTP two-school lifecycle PASS داخل Backend CI [34394732870](https://github.com/nasef6464/almeaacodax/actions/runs/34394732870)؛ UI/API contract `12/12` PASS؛ Playwright surfaces audit PASS للمعلم/الطالب/العارض | إثبات reconnect ضد Socket حي ثم closure evidence |
 | `G3` | `NOT STARTED` | — | — | بعد إغلاق G2 |
 | `G4` | `NOT STARTED` | — | — | بعد إغلاق G3 |
 | `G5` | `NOT STARTED` | — | — | بعد إغلاق G4 |
