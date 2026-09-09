@@ -299,9 +299,9 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   const teacherId = userIds.get("teacher");
   assert.ok(schoolId && classId && teacherId, "smart classroom fixture scope missing");
   const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
-  await SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] });
+  await SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM", "SCHOOL_INTELLIGENCE", "INTERVENTION_CENTER"] });
   await TeachingAssignmentModel.create({ schoolId, teacherId, classId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" });
-  await QuestionModel.create({ id: questionId, text: "Smart classroom question", options: ["Wrong", "Correct"], correctOptionIndex: 1, subject: ASSESSMENT_SUBJECT_ID, type: "mcq", approvalStatus: "approved" });
+  await QuestionModel.create({ id: questionId, text: "Smart classroom question", options: ["Wrong", "Correct"], correctOptionIndex: 1, subject: ASSESSMENT_SUBJECT_ID, type: "mcq", approvalStatus: "approved", skillIds: ["platform-v3-smart-classroom-skill"] });
 
   const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId] } });
   expectStatus("assigned teacher creates smart classroom session", created, 201);
@@ -1232,7 +1232,7 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   expectStatus("school supervisor cannot target another school's student", schoolSupervisorOutsideTarget, 403);
 }
 
-async function runSchoolIntelligenceJourney() {
+async function runSchoolIntelligenceJourney(csrf: CsrfContext) {
   const studentId = userIds.get("student");
   const outsideSchoolStudentId = scopeStudentIds.get("outsideSchool");
   assert.ok(studentId && outsideSchoolStudentId, "school intelligence fixture students missing");
@@ -1269,6 +1269,18 @@ async function runSchoolIntelligenceJourney() {
   assert.equal(classSupervisorIntelligence.body?.intelligence?.platformSelfStudy?.attempts, expectedPlatformAttempts, "class intelligence included another school's platform result");
   const studentIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("student") });
   expectStatus("student cannot read supervisor intelligence", studentIntelligence, 403);
+
+  const intervention = await jsonRequest("/classroom/supervisor/interventions", { method: "POST", token: tokens.get("supervisor"), csrf, body: { schoolId: groupIds.get("school"), classId: groupIds.get("class"), skillId: "platform-v3-smart-classroom-skill", targetStudentIds: [studentId], pathId: ASSESSMENT_PATH_ID, minimumEvidence: 2 } });
+  expectStatus("school supervisor assigns a scoped intervention study plan", intervention, 201);
+  assert.equal(intervention.body?.intervention?.actionType, "study_plan", "intervention did not reuse a study plan action");
+  assert.equal(intervention.body?.studyPlanIds?.length, 1, "intervention did not create the target student's study plan");
+  const outcome = await jsonRequest(`/classroom/supervisor/interventions/${intervention.body?.intervention?._id}/outcome`, { token: tokens.get("supervisor") });
+  expectStatus("school supervisor measures intervention outcome", outcome, 200);
+  assert.equal(outcome.body?.comparison?.confidence, "insufficient_evidence", "intervention claimed improvement without minimum evidence");
+  const classSupervisorOutsideIntervention = await jsonRequest("/classroom/supervisor/interventions", { method: "POST", token: tokens.get("classSupervisor"), csrf, body: { schoolId: groupIds.get("school"), classId: groupIds.get("class"), skillId: "platform-v3-smart-classroom-skill", targetStudentIds: [outsideSchoolStudentId], pathId: ASSESSMENT_PATH_ID } });
+  expectStatus("class supervisor cannot target another school's student for intervention", classSupervisorOutsideIntervention, 403);
+  const studentInterventions = await jsonRequest("/classroom/supervisor/interventions", { token: tokens.get("student") });
+  expectStatus("student cannot read supervisor interventions", studentInterventions, 403);
 }
 
 type MongoIndex = {
@@ -1359,7 +1371,7 @@ async function main() {
     await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
-    await runSchoolIntelligenceJourney();
+    await runSchoolIntelligenceJourney(csrf);
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);

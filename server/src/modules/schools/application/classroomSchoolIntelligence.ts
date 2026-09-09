@@ -85,15 +85,18 @@ export const buildClassroomSchoolIntelligence = async (scope: ClassroomSuperviso
   ]);
 
   const questionSkills = new Map<string, string[]>();
+  const sessionContexts = new Map<string, { schoolId: string; classId: string }>();
   sessions.forEach((session: any) => (session.questionSnapshots || []).forEach((question: any) => {
     questionSkills.set(`${idOf(session._id)}:${idOf(question.questionId)}`, (question.skillIds || []).map(idOf).filter(Boolean));
+    sessionContexts.set(idOf(session._id), { schoolId: idOf(session.schoolId), classId: idOf(session.classId) });
   }));
   const studentNames = new Map(students.map((student: any) => [idOf(student.id || student._id), String(student.name || "طالب")])) ;
   const formativeSkillRecords = responses.map((response: any) => ({ skillIds: questionSkills.get(`${idOf(response.sessionId)}:${idOf(response.questionId)}`) || [], correct: Boolean(response.isCorrect) }));
-  const weakStudents = new Map<string, { studentId: string; name: string; evidenceCount: number; correct: number }>();
+  const weakStudents = new Map<string, { studentId: string; name: string; schoolId: string; classId: string; evidenceCount: number; correct: number }>();
   responses.forEach((response: any) => {
     const studentId = idOf(response.studentId);
-    const current = weakStudents.get(studentId) || { studentId, name: studentNames.get(studentId) || "طالب", evidenceCount: 0, correct: 0 };
+    const context = sessionContexts.get(idOf(response.sessionId)) || { schoolId: "", classId: "" };
+    const current = weakStudents.get(studentId) || { studentId, name: studentNames.get(studentId) || "طالب", ...context, evidenceCount: 0, correct: 0 };
     current.evidenceCount += 1;
     if (response.isCorrect) current.correct += 1;
     weakStudents.set(studentId, current);
@@ -130,4 +133,18 @@ export const buildClassroomSchoolIntelligence = async (scope: ClassroomSuperviso
     legacyUnknown: { attempts: legacyResults.length, message: "سجلات تاريخية غير مصنفة ولا تدخل في أي مقارنة." },
     comparisonPolicy: "separate_sources_only_no_blended_score",
   };
+};
+
+/** Evidence remains raw classroom responses so intervention outcomes are auditable and recomputable. */
+export const buildClassroomSkillEvidence = async (input: { schoolId: string; classId?: string; skillId: string; studentIds: string[]; from?: Date; to?: Date }) => {
+  const sessionFilter: Record<string, unknown> = { schoolId: input.schoolId };
+  if (input.classId) sessionFilter.classId = input.classId;
+  if (input.from || input.to) sessionFilter.createdAt = { ...(input.from ? { $gte: input.from } : {}), ...(input.to ? { $lte: input.to } : {}) };
+  const sessions = await ClassroomSessionModel.find(sessionFilter).select("_id questionSnapshots").sort({ createdAt: -1 }).limit(SESSION_LIMIT).lean();
+  const questionKeys = new Set(sessions.flatMap((session: any) => (session.questionSnapshots || []).filter((question: any) => (question.skillIds || []).map(idOf).includes(input.skillId)).map((question: any) => `${idOf(session._id)}:${idOf(question.questionId)}`)));
+  if (!questionKeys.size || !input.studentIds.length) return { evidenceCount: 0, correct: 0, accuracy: null, measuredAt: new Date() };
+  const responses = await ClassroomResponseModel.find({ sessionId: { $in: sessions.map((session: any) => idOf(session._id)) }, studentId: { $in: input.studentIds } }).select("sessionId questionId isCorrect").limit(RESPONSE_LIMIT).lean();
+  const matching = responses.filter((response: any) => questionKeys.has(`${idOf(response.sessionId)}:${idOf(response.questionId)}`));
+  const correct = matching.filter((response: any) => response.isCorrect).length;
+  return { evidenceCount: matching.length, correct, accuracy: percentage(correct, matching.length), measuredAt: new Date() };
 };
