@@ -466,19 +466,7 @@ export const GenericPathPage: React.FC = () => {
         params.set('tab', tab);
         return `/category/${path.id}?${params.toString()}`;
     };
-    const renderSubjectNextAction = () => (
-        <div className="mb-6">
-            <StudentNextActionStrip
-                title="ابدأ من التأسيس"
-                description="افتح أول موضوع، شاهد شرحًا قصيرًا، ثم انتقل لتدريب بسيط."
-                primaryLabel="افتح أول موضوع"
-                primaryHref={buildSubjectLearningRoute('skills')}
-                secondaryLabel="تدريب"
-                secondaryHref={buildSubjectLearningRoute('questions')}
-                tone="indigo"
-            />
-        </div>
-    );
+    const renderSubjectNextAction = () => null;
     const getPackageKindLabel = (contentTypes: string[]) =>
         contentTypes.includes('all')
             ? 'باقة شاملة'
@@ -1284,18 +1272,25 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             const currentSubject = selectedSubject;
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-5 sm:py-6 relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <header className="text-white py-6 sm:py-8 relative overflow-hidden shadow-sm" style={{ backgroundColor: style.color }}>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_60%)] pointer-events-none" />
                         <div className="max-w-7xl mx-auto px-4 relative z-10">
-                            <button onClick={() => handleSubjectSelect(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
-                                <ChevronRight size={20} /> عودة لصفحة المسار
+                            <button onClick={() => handleSubjectSelect(null, null)} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:text-white mb-4 transition-all">
+                                <ChevronRight size={16} /> عودة لصفحة المسار
                             </button>
-                            <h1 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">{currentSubject?.name} - {path.name}</h1>
-                            <p className="text-white/80">مساحة التعلم الخاصة بك</p>
+                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
+                                <div>
+                                    <span className="inline-block text-[11px] font-bold bg-white/15 text-white/90 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur-sm">
+                                        مسار {path.name}
+                                    </span>
+                                    <h1 className="text-2xl sm:text-3xl font-black mb-1 leading-tight break-words">{currentSubject?.name}</h1>
+                                    <p className="text-white/80 text-sm">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
+                                </div>
+                            </div>
                         </div>
                     </header>
                     <div className="max-w-7xl mx-auto px-4 py-8">
                         {renderSubjectAccessGuide(selectedSubjectId)}
-                        {renderSubjectNextAction()}
                         <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
                         {renderPackagePaymentModal()}
                     </div>
@@ -1376,19 +1371,26 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
-            <header className="text-white py-5 sm:py-6 relative overflow-hidden" style={{ backgroundColor: style.color }}>
+            <header className="text-white py-6 sm:py-8 relative overflow-hidden shadow-sm" style={{ backgroundColor: style.color }}>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_60%)] pointer-events-none" />
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
-                    <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
-                        <ChevronRight size={20} /> عودة لصفحة المسار
+                    <button onClick={() => updateUrl(null, null)} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:text-white mb-4 transition-all">
+                        <ChevronRight size={16} /> عودة لصفحة المسار
                     </button>
-                    <h1 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">{currentSubject?.name} - {currentLevel?.name}</h1>
-                    <p className="text-white/80">تأسيس شامل، تدريب مكثف، واختبارات محاكية</p>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
+                        <div>
+                            <span className="inline-block text-[11px] font-bold bg-white/15 text-white/90 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur-sm">
+                                {currentLevel?.name} • مسار {path.name}
+                            </span>
+                            <h1 className="text-2xl sm:text-3xl font-black mb-1 leading-tight break-words">{currentSubject?.name}</h1>
+                            <p className="text-white/80 text-sm">مساحة التعلم الذكية: تأسيس، تدريب، واختبارات</p>
+                        </div>
+                    </div>
                 </div>
             </header>
 
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {renderSubjectAccessGuide(selectedSubjectId)}
-                {renderSubjectNextAction()}
                 <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
                 {renderPackagePaymentModal()}
             </div>
