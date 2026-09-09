@@ -734,6 +734,7 @@ export const api = {
   getSupervisorClassroomToday: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/today", { token, cache: "no-store" }),
   getSupervisorClassroomHistory: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/history", { token, cache: "no-store" }),
   getSupervisorClassroomTeachers: (token?: string | null) => request<{ teachers: any[] }>("/classroom/supervisor/teachers", { token, cache: "no-store" }),
+  getSupervisorClassroomIntelligence: (token?: string | null) => request<{ intelligence: any }>("/classroom/supervisor/intelligence", { token, cache: "no-store" }),
   getSupervisorClassroomReport: (id: string, token?: string | null) => request<{ report: any }>(`/classroom/supervisor/sessions/${encodeURIComponent(id)}/report`, { token, cache: "no-store" }),
   ...createAnnouncementAdsApi(request),
   ...createAccessCodesApi(request),

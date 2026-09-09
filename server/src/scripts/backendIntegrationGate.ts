@@ -1232,6 +1232,45 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   expectStatus("school supervisor cannot target another school's student", schoolSupervisorOutsideTarget, 403);
 }
 
+async function runSchoolIntelligenceJourney() {
+  const studentId = userIds.get("student");
+  const outsideSchoolStudentId = scopeStudentIds.get("outsideSchool");
+  assert.ok(studentId && outsideSchoolStudentId, "school intelligence fixture students missing");
+
+  const [platformResult, schoolAssessmentResult] = await Promise.all([
+    QuizResultModel.findOne({ userId: studentId, quizId: ASSESSMENT_QUIZ_ID }).lean(),
+    QuizResultModel.findOne({ userId: studentId, quizId: SUPERVISOR_QUIZ_ID }).lean(),
+  ]);
+  assert.equal(platformResult?.learningContext, "platform_self_study", "personal platform result was not classified at write time");
+  assert.equal(schoolAssessmentResult?.learningContext, "school_assessment", "class-targeted school result was not classified at write time");
+
+  await QuizResultModel.create({
+    userId: outsideSchoolStudentId,
+    quizId: `platform-v3-outside-intelligence-${RUN_MARKER}`,
+    quizTitle: "Outside school intelligence result",
+    score: 0,
+    totalQuestions: 1,
+    learningContext: "platform_self_study",
+  });
+  const expectedPlatformAttempts = await QuizResultModel.countDocuments({ userId: studentId, learningContext: "platform_self_study" });
+  const expectedSchoolAttempts = await QuizResultModel.countDocuments({ userId: studentId, learningContext: "school_assessment" });
+
+  const supervisorIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("supervisor") });
+  expectStatus("school supervisor reads dual-source intelligence", supervisorIntelligence, 200);
+  assert.equal(supervisorIntelligence.body?.intelligence?.comparisonPolicy, "separate_sources_only_no_blended_score", "school intelligence exposed a blended score");
+  assert.equal(supervisorIntelligence.body?.intelligence?.platformSelfStudy?.attempts, expectedPlatformAttempts, "school intelligence included another school's platform results");
+  assert.equal(supervisorIntelligence.body?.intelligence?.schoolPerformance?.officialAssessments?.attempts, expectedSchoolAttempts, "school intelligence lost scoped school-assessment results");
+  assert.equal(supervisorIntelligence.body?.intelligence?.schoolPerformance?.smartClassroom?.responses, 1, "school intelligence lost formative classroom responses");
+  assert.ok(Array.isArray(supervisorIntelligence.body?.intelligence?.schoolPerformance?.smartClassroom?.skillHeatmap), "school intelligence skill heatmap missing");
+  assert.ok(Array.isArray(supervisorIntelligence.body?.intelligence?.schoolPerformance?.smartClassroom?.weakStudents), "school intelligence weak-student read model missing");
+
+  const classSupervisorIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("classSupervisor") });
+  expectStatus("class supervisor reads assigned-class intelligence only", classSupervisorIntelligence, 200);
+  assert.equal(classSupervisorIntelligence.body?.intelligence?.platformSelfStudy?.attempts, expectedPlatformAttempts, "class intelligence included another school's platform result");
+  const studentIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("student") });
+  expectStatus("student cannot read supervisor intelligence", studentIntelligence, 403);
+}
+
 type MongoIndex = {
   key: Record<string, unknown>;
   unique?: boolean;
@@ -1320,6 +1359,7 @@ async function main() {
     await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
+    await runSchoolIntelligenceJourney();
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);

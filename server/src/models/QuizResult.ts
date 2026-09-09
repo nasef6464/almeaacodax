@@ -28,6 +28,8 @@ const quizResultSchema = new Schema(
     source:         { type: String, default: "" },
     // Old records remain explicitly unknown; new platform submissions set their context at write time.
     learningContext: { type: String, enum: ["platform_self_study", "school_assessment", "legacy_unknown"], default: "legacy_unknown", index: true },
+    schoolId:       { type: String, default: undefined, index: true },
+    classId:        { type: String, default: undefined, index: true },
     timeSpentSeconds: { type: Number, default: 0 },
     timeSpent:      { type: String, default: "" },
     date:           { type: String, default: "" },

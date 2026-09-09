@@ -16,6 +16,7 @@ import { projectClassroomQuestionForStudent } from "../modules/schools/applicati
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { emitClassroomEvent } from "../sockets/classroomEvents.js";
 import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomScopeFilter, resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
+import { buildClassroomSchoolIntelligence } from "../modules/schools/application/classroomSchoolIntelligence.js";
 
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
@@ -73,6 +74,11 @@ classroomRouter.get("/supervisor/history", requireAuth, requireRole(["admin", "s
 classroomRouter.get("/supervisor/teachers", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
   const scope = await resolveClassroomSupervisorScope(req.authUser!);
   res.json({ teachers: await buildClassroomTeacherReports(scope) });
+}));
+
+classroomRouter.get("/supervisor/intelligence", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
+  const scope = await resolveClassroomSupervisorScope(req.authUser!);
+  res.json({ intelligence: await buildClassroomSchoolIntelligence(scope) });
 }));
 
 classroomRouter.get("/supervisor/sessions/:id/report", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
