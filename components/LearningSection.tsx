@@ -973,25 +973,26 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     style={{ borderColor: skill.isLocked ? undefined : theme.border }}
                                     onClick={() => handleItemClick(skill, 'skill')}
                                 >
-                                    <div className="flex items-center justify-between w-full gap-3">
-                                        <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                                            <div
-                                                className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-xs ${
-                                                    skill.isLocked
-                                                        ? 'bg-amber-50 text-amber-600'
-                                                        : 'bg-indigo-50 text-indigo-600'
-                                                }`}
-                                                style={!skill.isLocked ? { backgroundColor: theme.soft, color: theme.text } : undefined}
-                                            >
-                                                {skill.isLocked ? (
-                                                    <Lock size={20} />
-                                                ) : (
-                                                    <Play size={20} className="fill-current" />
-                                                )}
-                                            </div>
-                                            <div className="truncate flex-1 min-w-0">
-                                                <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors truncate">{skill.title}</h3>
-                                                <div className="flex items-center gap-2 mt-1 text-xs font-bold">
+                                    <div className="flex items-start gap-3.5 w-full">
+                                        <div
+                                            className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-xs ${
+                                                skill.isLocked
+                                                    ? 'bg-amber-50 text-amber-600'
+                                                    : 'bg-indigo-50 text-indigo-600'
+                                            }`}
+                                            style={!skill.isLocked ? { backgroundColor: theme.soft, color: theme.text } : undefined}
+                                        >
+                                            {skill.isLocked ? (
+                                                <Lock size={20} />
+                                            ) : (
+                                                <Play size={20} className="fill-current" />
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors leading-snug line-clamp-1">{skill.title}</h3>
+                                            
+                                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100/80 gap-2">
+                                                <div className="flex items-center gap-2 text-xs font-bold">
                                                     <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
                                                         skill.isLocked 
                                                             ? 'bg-amber-50 text-amber-700' 
@@ -1002,37 +1003,22 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                     <span className="text-gray-300">•</span>
                                                     <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
                                                 </div>
+
+                                                <div className="shrink-0 flex items-center gap-1">
+                                                    {skill.isLocked ? (
+                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
+                                                            <span>اضغط للاشتراك</span>
+                                                            <ChevronLeft size={13} className="text-amber-500 transform group-hover:-translate-x-0.5 transition-transform" />
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                            <span>اضغط للبدء</span>
+                                                            <ChevronLeft size={13} className="transform group-hover:-translate-x-0.5 transition-transform" />
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div className="shrink-0 flex items-center gap-1.5">
-                                            {skill.isLocked ? (
-                                                <span className="hidden sm:inline-flex items-center text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
-                                                    اضغط للاشتراك
-                                                </span>
-                                            ) : (
-                                                <span className="hidden sm:inline-flex items-center text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                                    اضغط للبدء
-                                                </span>
-                                            )}
-                                            <ChevronLeft size={16} className={`transform group-hover:-translate-x-1 transition-transform ${skill.isLocked ? 'text-amber-500' : 'text-slate-400 group-hover:text-indigo-600'}`} />
-                                        </div>
-                                    </div>
-
-                                    {/* Mobile helper action row */}
-                                    <div className="sm:hidden mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
-                                        {skill.isLocked ? (
-                                            <span className="text-amber-700 flex items-center gap-1">
-                                                <Lock size={12} />
-                                                اضغط للاشتراك في الباقة
-                                            </span>
-                                        ) : (
-                                            <span className="text-indigo-600 flex items-center gap-1">
-                                                <Play size={12} className="fill-current" />
-                                                اضغط للبدء
-                                            </span>
-                                        )}
-                                        <ChevronLeft size={14} className={skill.isLocked ? 'text-amber-500' : 'text-indigo-500'} />
                                     </div>
 
                                     {/* Admin Debug Only - Keep for Diagnostics */}
