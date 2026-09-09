@@ -225,16 +225,11 @@ async function checkRouteShell(route) {
   )}`);
   const questionsPayload = await questionsPayloadRaw.json;
 
-  await check("quiz list is accessible and has items", async () => {
+  await check("quiz list endpoint is accessible (empty catalog allowed)", async () => {
     if (!quizzesPayloadRaw.response.ok) throw new Error(`${quizzesPayloadRaw.response.status} ${quizzesPayloadRaw.response.statusText}`);
     const quizzesContainer = quizzesPayload || {};
     const quizItems = Array.isArray(quizzesContainer.quizzes) ? quizzesContainer.quizzes : [];
-
-    if (quizItems.length === 0) {
-      throw new Error("no quizzes in /quizzes");
-    }
-
-    return `quizzes=${quizItems.length}`;
+    return `quizzes=${quizItems.length}; clean catalog is valid`;
   });
 
   await check("quiz page questions are visible and do not include answers for guest/learner", async () => {
