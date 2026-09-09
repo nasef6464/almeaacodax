@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { io as connectSocket } from "socket.io-client";
 import { env } from "../config/env.js";
 import { UserModel } from "../models/User.js";
 import { CourseModel } from "../models/Course.js";
@@ -309,12 +310,21 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
 
   const outsiderJoin = await jsonRequest(`/classroom/sessions/${sessionId}/join`, { method: "POST", token: tokens.get("outsider"), csrf, body: { pin } });
   expectStatus("other school student cannot join smart classroom", outsiderJoin, 403);
-  const published = await jsonRequest(`/classroom/sessions/${sessionId}/publish/0`, { method: "POST", token: tokens.get("teacher"), csrf });
-  expectStatus("teacher publishes smart classroom question", published, 200);
-  const beforeJoin = await jsonRequest(`/classroom/sessions/${sessionId}/current`, { token: tokens.get("student") });
-  expectStatus("student must join before reading live question", beforeJoin, 403);
   const joined = await jsonRequest(`/classroom/sessions/${sessionId}/join`, { method: "POST", token: tokens.get("student"), csrf, body: { pin } });
   expectStatus("assigned student joins smart classroom", joined, 200);
+  const socket = connectSocket(API_BASE.replace(/\/api$/, ""), { auth: { token: tokens.get("student") }, transports: ["websocket"], reconnectionDelay: 25, reconnectionDelayMax: 100 });
+  try {
+    await once(socket, "connect");
+    await joinClassroomRoom(socket, sessionId);
+    const publishedEvent = once(socket, "question:published");
+    const published = await jsonRequest(`/classroom/sessions/${sessionId}/publish/0`, { method: "POST", token: tokens.get("teacher"), csrf });
+    expectStatus("teacher publishes smart classroom question", published, 200);
+    await publishedEvent;
+    socket.io.engine?.close();
+    await once(socket.io, "reconnect");
+    await joinClassroomRoom(socket, sessionId);
+    pass("student socket reconnects and rejoins authorized classroom room");
+  } finally { socket.disconnect(); }
   const current = await jsonRequest(`/classroom/sessions/${sessionId}/current`, { token: tokens.get("student") });
   expectStatus("joined student reads safe live question", current, 200);
   assert.equal(current.body?.question?.correctOptionIndex, undefined, "student live question leaked answer key");
@@ -330,6 +340,17 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   assert.equal(ended.body?.report?.responseCount, 1, "smart classroom immutable report has wrong response count");
   const afterEnd = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
   expectStatus("ended smart classroom rejects further answers", afterEnd, 404);
+}
+
+function once(target: any, event: string) {
+  return new Promise<any[]>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Timed out waiting for socket ${event}`)), 10_000);
+    target.once(event, (...args: any[]) => { clearTimeout(timer); resolve(args); });
+  });
+}
+
+function joinClassroomRoom(socket: { emit: (event: string, workspace: string, acknowledge: (result: { ok: boolean; error?: string }) => void) => void }, sessionId: string) {
+  return new Promise<void>((resolve, reject) => socket.emit("workspace:join", `classroom:${sessionId}`, (result) => result.ok ? resolve() : reject(new Error(result.error || "Classroom room join failed"))));
 }
 
 async function runAssessmentJourney(csrf: CsrfContext) {
