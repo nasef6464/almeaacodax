@@ -1,6 +1,6 @@
 # ADR — G0 Security & Reuse Boundary
 
-> الحالة: `IMPLEMENTED / CI PENDING`
+> الحالة: `CLOSED / VERIFIED WITH FOCUSED CI`
 > التاريخ: 2026-09-09
 
 ## السياق
@@ -40,5 +40,7 @@
 - `smoke:smart-classroom-g0` يتضمن School A/B policy checks وSocket negative cases.
 - `smoke:barcode-public-tests` و`smoke:student-session-booking` يحميان الرحلات
   القائمة.
-- الإغلاق النهائي يحتاج exact-runtime CI؛ حالة build المحلي معلقة دون error في
-  هذه البيئة وتبقى `NOT PROVEN` حتى دليل CI.
+- `Platform V3 Backend Integration Gate` نجح على runtime
+  `c87e7b3e07eda578c4e7870fef27d32714404286`، ويثبت build/typecheck وintegration
+  الأساسي. Deep E2E أُلغي بحد workflow الزمني أثناء آخر Barcode journey، لذلك لا
+  يُعرض كنجاح كامل لهذه البوابة.

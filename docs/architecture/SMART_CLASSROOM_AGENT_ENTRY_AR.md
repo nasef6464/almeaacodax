@@ -15,8 +15,8 @@
 
 - Runtime base عند اعتماد الخطة: `main@9cf72176059e09466335f6d6ff20b51b43969e61`؛ تحقق من HEAD ولا تفترض بقاءه.
 - Gates 1–6 مغلقة ولا تعاد.
-- Smart Classroom Goal لم يبدأ Runtime.
-- Current Goal: `G0 — Secure the Reused Foundation` (`SC-00`).
+- G0 / SC-00 مغلق بدليل CI مركّز على `c87e7b3e`; Deep E2E لم يكتمل بسبب حد الزمن.
+- Current Goal: `G1 — School Identity & Commercial Access` (`SC-01A + SC-01B`).
 - Gemini V2 وCodex vision السابق reference فقط؛ Master V3 هو القرار النهائي.
 
 ## North Star

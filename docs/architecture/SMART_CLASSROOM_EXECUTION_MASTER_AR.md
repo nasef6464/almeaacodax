@@ -464,7 +464,7 @@ commits صغيرة لكل checkpoint، لكن لا يحتاج انتظارًا �
 
 ### `SC-00` — Security & Reuse Boundary
 
-الحالة: `IMPLEMENTED LOCALLY / CI PENDING`.
+الحالة: `CLOSED / VERIFIED WITH FOCUSED CI`.
 
 Purpose: تأمين الموجود الذي سيعاد استخدامه وتثبيت ADR الفصل التكويني.
 
@@ -484,6 +484,10 @@ Admin-managed لغياب school/class truth. راجع `SMART_CLASSROOM_G0_SECURI
 
 Exit: School A/Teacher A لا يقرأ أو يتحكم في School B، وunauthorized socket room
 join مرفوض، وpublic Barcode journey والـbaseline تبقى متوافقة.
+
+Evidence: runtime `c87e7b3e07eda578c4e7870fef27d32714404286`، focused smokes وBackend
+Integration CI نجحت. بوابة Deep E2E ألغيت عند حدّها الزمني أثناء آخر Barcode journey؛
+لا تعد دليلاً مكتملًا ولا تمنع نتيجة G0 المركزة.
 
 ### `SC-01A` — Membership Compatibility
 
