@@ -50,7 +50,7 @@ activityRouter.use(requireAuth);
 
 activityRouter.get(
   "/admin/session-bookings",
-  requireRole(["admin", "supervisor", "teacher"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const query = adminBookingsQuerySchema.parse(req.query);
     const filter: Record<string, unknown> = { type: "session_booked" };
@@ -82,7 +82,7 @@ activityRouter.get(
 
 activityRouter.patch(
   "/admin/session-bookings/:id",
-  requireRole(["admin", "supervisor", "teacher"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = updateBookingSchema.parse(req.body || {});
     const update: Record<string, unknown> = {};
@@ -106,7 +106,7 @@ activityRouter.patch(
 
 activityRouter.post(
   "/admin/session-bookings/:id/convert",
-  requireRole(["admin", "supervisor", "teacher"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const convertSchema = z.object({
       provider: z.enum(["zoom", "google_meet", "teams", "live_youtube"]).optional().default("zoom"),

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
-import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Users, Library, Eye, Lock, Package, CreditCard, ShoppingCart } from 'lucide-react';
+import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Users, Library, Eye, Lock, Package, CreditCard, ShoppingCart, ChevronLeft, Download, Play } from 'lucide-react';
 import { ProgressBar } from './ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { PackageContentType } from '../types';
@@ -722,13 +722,15 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
     return (
         <div className="w-full">
-            {/* Tabs */}
-            <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-center gap-2 md:gap-4 mb-12">
-                {(settings.showCourses ?? true) && <TabButton active={activeTab === 'courses'} onClick={() => handleTabChange('courses')} icon={<MonitorPlay size={20} />} label="الدورات" colorTheme={colorTheme} />}
-                {(settings.showSkills ?? true) && <TabButton active={activeTab === 'skills'} onClick={() => handleTabChange('skills')} icon={<Video size={20} />} label="التأسيس" colorTheme={colorTheme} />}
-                {(settings.showBanks ?? true) && <TabButton active={activeTab === 'banks'} onClick={() => handleTabChange('banks')} icon={<BookOpen size={20} />} label="التدريب" colorTheme={colorTheme} />}
-                {(settings.showTests ?? true) && <TabButton active={activeTab === 'tests'} onClick={() => handleTabChange('tests')} icon={<FileText size={20} />} label="الاختبارات" colorTheme={colorTheme} />}
-                {(settings.showLibrary ?? true) && <TabButton active={activeTab === 'library'} onClick={() => handleTabChange('library')} icon={<Library size={20} />} label="المكتبة" colorTheme={colorTheme} />}
+            {/* Modern Segmented Pill Tabs */}
+            <div className="flex justify-center mb-8">
+                <div className="inline-flex p-1.5 bg-white/95 backdrop-blur-sm rounded-2xl border border-slate-200/90 shadow-sm gap-1.5 max-w-full overflow-x-auto">
+                    {(settings.showCourses ?? true) && <TabButton active={activeTab === 'courses'} onClick={() => handleTabChange('courses')} icon={<MonitorPlay size={18} />} label="الدورات" colorTheme={colorTheme} />}
+                    {(settings.showSkills ?? true) && <TabButton active={activeTab === 'skills'} onClick={() => handleTabChange('skills')} icon={<Video size={18} />} label="التأسيس" colorTheme={colorTheme} />}
+                    {(settings.showBanks ?? true) && <TabButton active={activeTab === 'banks'} onClick={() => handleTabChange('banks')} icon={<BookOpen size={18} />} label="التدريب" colorTheme={colorTheme} />}
+                    {(settings.showTests ?? true) && <TabButton active={activeTab === 'tests'} onClick={() => handleTabChange('tests')} icon={<FileText size={18} />} label="الاختبارات" colorTheme={colorTheme} />}
+                    {(settings.showLibrary ?? true) && <TabButton active={activeTab === 'library'} onClick={() => handleTabChange('library')} icon={<Library size={18} />} label="المكتبة" colorTheme={colorTheme} />}
+                </div>
             </div>
             {scopedBootstrapState === 'loading' ? (
                 <div className="mb-6 rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-800" role="status">
@@ -819,7 +821,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'courses' && enabledTabs.courses && (
                     <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {sectionCourses.map((baseCourse) => {
                             const isPurchasedByViewer =
                                 accessibleCourseIds.has(baseCourse.id) ||
@@ -849,66 +851,66 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             return (
                             <Card
                                 key={course.id}
-                                className="flex flex-col overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 rounded-3xl"
+                                className="flex flex-col overflow-hidden border border-gray-100 hover:shadow-lg transition-all duration-300 rounded-2xl shadow-xs"
                                 style={{ borderColor: theme.border }}
                             >
-                                <div className="relative h-48 bg-gray-100 group overflow-hidden">
+                                <div className="relative h-40 sm:h-44 bg-gray-100 group overflow-hidden">
                                     <img 
                                         src={course.thumbnail} 
                                         alt={course.title} 
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                 </div>
-                                <div className="flex flex-1 flex-col bg-white p-5">
-                                    <div className="mb-4 flex items-start justify-between gap-3">
+                                <div className="flex flex-1 flex-col bg-white p-4">
+                                    <div className="mb-3 flex items-start justify-between gap-3">
                                         <div>
-                                            <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${isFreeCourse ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                                            <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                                                <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-black ${isFreeCourse ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
                                                     {isFreeCourse ? 'مجاني' : 'مدفوع'}
                                                 </span>
                                                 {isPurchased && (
-                                                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">مفعل لك</span>
+                                                    <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[11px] font-black text-indigo-700">مفعل لك</span>
                                                 )}
                                             </div>
-                                            <h3 className="text-xl font-black leading-snug text-gray-900">{course.title}</h3>
+                                            <h3 className="text-base sm:text-lg font-black leading-snug text-gray-900">{course.title}</h3>
                                         </div>
                                         <div className="shrink-0 text-left">
                                             {isFreeCourse ? (
-                                                <div className="text-lg font-black text-emerald-600">مجاني</div>
+                                                <div className="text-base font-black text-emerald-600">مجاني</div>
                                             ) : (
                                                 <div>
-                                                    {hasDiscount && <div className="text-sm font-bold text-gray-400 line-through">{originalPrice} {courseCurrency}</div>}
-                                                    <div className="text-lg font-black text-amber-600">{coursePrice} {courseCurrency}</div>
+                                                    {hasDiscount && <div className="text-xs font-bold text-gray-400 line-through">{originalPrice} {courseCurrency}</div>}
+                                                    <div className="text-base font-black text-amber-600">{coursePrice} {courseCurrency}</div>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-                                    <div className="mb-4 flex flex-wrap gap-3 text-xs font-bold text-gray-500">
-                                        <span className="inline-flex items-center gap-1"><User size={14} /> {courseInstructor}</span>
-                                        <span className="inline-flex items-center gap-1"><Users size={14} /> {audienceCount} طالب</span>
+                                    <div className="mb-3 flex flex-wrap gap-3 text-xs font-bold text-gray-500">
+                                        <span className="inline-flex items-center gap-1"><User size={13} /> {courseInstructor}</span>
+                                        <span className="inline-flex items-center gap-1"><Users size={13} /> {audienceCount} طالب</span>
                                     </div>
                                     {(isPurchased || course.progress > 0) && (
-                                        <div className="mb-4">
-                                            <div className="mb-2 flex justify-between text-xs font-bold text-gray-500">
+                                        <div className="mb-3">
+                                            <div className="mb-1.5 flex justify-between text-xs font-bold text-gray-500">
                                                 <span>{course.progress}% مكتمل</span>
                                             </div>
                                             <ProgressBar percentage={course.progress} showPercentage={false} color={safeColorTheme as any} />
                                         </div>
                                     )}
-                                    <div className="mt-auto">
+                                    <div className="mt-auto pt-2 border-t border-slate-100">
                                         <div className="grid grid-cols-2 gap-2">
                                             <Link
                                                 to={`/course/${course.id}`}
-                                                className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white py-3 text-sm font-black text-gray-700 transition hover:bg-gray-50"
+                                                className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white py-2 px-3 text-xs font-black text-gray-700 transition hover:bg-gray-50"
                                             >
-                                                معاينة الدورة
+                                                معاينة
                                             </Link>
                                             <button
                                                 type="button"
                                                 onClick={() => navigate(primaryActionPath)}
-                                                className={`flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-black text-white shadow-md transition hover:-translate-y-0.5 ${isFreeCourse || isPurchased ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-500 hover:bg-amber-600'}`}
+                                                className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs font-black text-white shadow-xs transition hover:-translate-y-0.5 ${isFreeCourse || isPurchased ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-500 hover:bg-amber-600'}`}
                                             >
-                                                {!isFreeCourse && !isPurchased && <ShoppingCart size={16} />}
+                                                {!isFreeCourse && !isPurchased && <ShoppingCart size={14} />}
                                                 {primaryActionLabel}
                                             </button>
                                         </div>
@@ -953,66 +955,104 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 </div>
                             </div>
                         )}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {mappedSkills.map((skill) => {
                             const lockedFoundationMessage = skill.isLocked ? getLockedContentMessage('foundation') : null;
+                            const hasProgress = skill.completed > 0;
+                            const progressPercentage = Math.round((skill.completed / skill.totalLessons) * 100);
 
                             return (
                                 <button
                                     type="button"
                                     key={skill.id}
-                                    className="p-5 border-2 border-gray-100 hover:shadow-lg transition-all cursor-pointer group rounded-3xl relative overflow-hidden bg-white text-right"
-                                    style={{ borderColor: theme.border }}
+                                    className={`p-4 border hover:shadow-md transition-all cursor-pointer group rounded-2xl relative overflow-hidden bg-white text-right flex flex-col justify-between shadow-xs min-h-[96px] ${
+                                        skill.isLocked 
+                                            ? 'border-slate-200/90 hover:border-amber-400' 
+                                            : 'border-slate-200/90 hover:border-indigo-400'
+                                    }`}
+                                    style={{ borderColor: skill.isLocked ? undefined : theme.border }}
                                     onClick={() => handleItemClick(skill, 'skill')}
                                 >
-                                    {skill.isLocked && (
-                                        <div className="absolute top-3 left-3 text-gray-400">
-                                            <Lock size={20} />
+                                    <div className="flex items-center justify-between w-full gap-3">
+                                        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                                            <div
+                                                className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-xs ${
+                                                    skill.isLocked
+                                                        ? 'bg-amber-50 text-amber-600'
+                                                        : 'bg-indigo-50 text-indigo-600'
+                                                }`}
+                                                style={!skill.isLocked ? { backgroundColor: theme.soft, color: theme.text } : undefined}
+                                            >
+                                                {skill.isLocked ? (
+                                                    <Lock size={20} />
+                                                ) : (
+                                                    <Play size={20} className="fill-current" />
+                                                )}
+                                            </div>
+                                            <div className="truncate flex-1 min-w-0">
+                                                <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors truncate">{skill.title}</h3>
+                                                <div className="flex items-center gap-2 mt-1 text-xs font-bold">
+                                                    <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
+                                                        skill.isLocked 
+                                                            ? 'bg-amber-50 text-amber-700' 
+                                                            : 'bg-emerald-50 text-emerald-700'
+                                                    }`}>
+                                                        {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
+                                                    </span>
+                                                    <span className="text-gray-300">•</span>
+                                                    <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    )}
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div
-                                            className="w-14 h-14 rounded-2xl flex items-center justify-center transition-colors group-hover:text-white"
-                                            style={{ backgroundColor: theme.soft, color: theme.text }}
-                                        >
-                                            <PlayCircle size={28} />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-800 text-lg">{skill.title}</h3>
-                                            {showPublicAdminDiagnostics ? (
-                                                <span className="text-xs text-gray-500 font-medium">
-                                                    {skill.totalLessons} درس • {skill.totalQuizzes || 0} تدريب قصير
+
+                                        <div className="shrink-0 flex items-center gap-1.5">
+                                            {skill.isLocked ? (
+                                                <span className="hidden sm:inline-flex items-center text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
+                                                    اضغط للاشتراك
                                                 </span>
                                             ) : (
-                                                <span className="text-xs text-gray-400 font-medium">ابدأ من هنا</span>
+                                                <span className="hidden sm:inline-flex items-center text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                    اضغط للبدء
+                                                </span>
                                             )}
+                                            <ChevronLeft size={16} className={`transform group-hover:-translate-x-1 transition-transform ${skill.isLocked ? 'text-amber-500' : 'text-slate-400 group-hover:text-indigo-600'}`} />
                                         </div>
                                     </div>
-                                    <div className="mb-4 flex flex-wrap gap-2">
-                                        <span className={`rounded-full px-3 py-1 text-[11px] font-black ${skill.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-                                            {skill.isLocked ? 'مدفوع / ضمن باقة' : 'مجاني ومفتوح الآن'}
-                                        </span>
+
+                                    {/* Mobile helper action row */}
+                                    <div className="sm:hidden mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
+                                        {skill.isLocked ? (
+                                            <span className="text-amber-700 flex items-center gap-1">
+                                                <Lock size={12} />
+                                                اضغط للاشتراك في الباقة
+                                            </span>
+                                        ) : (
+                                            <span className="text-indigo-600 flex items-center gap-1">
+                                                <Play size={12} className="fill-current" />
+                                                اضغط للبدء
+                                            </span>
+                                        )}
+                                        <ChevronLeft size={14} className={skill.isLocked ? 'text-amber-500' : 'text-indigo-500'} />
                                     </div>
-                                    {skill.isLocked && lockedFoundationMessage && (
-                                        <div className="mb-4 rounded-2xl border border-amber-100 bg-amber-50 p-3 text-right">
-                                            <div className="text-xs font-black text-amber-700">خطوة الفتح</div>
-                                            <div className="mt-1 text-sm font-bold text-gray-900">{lockedFoundationMessage.title}</div>
-                                            <div className="mt-1 text-xs leading-6 text-gray-600">{lockedFoundationMessage.description}</div>
+
+                                    {/* Admin Debug Only - Keep for Diagnostics */}
+                                    {showPublicAdminDiagnostics && skill.isLocked && lockedFoundationMessage && (
+                                        <div className="mt-3 w-full rounded-xl border border-amber-100 bg-amber-50 p-2.5 text-right">
+                                            <div className="text-[11px] font-black text-amber-700">خطوة الفتح (وضع التشخيص)</div>
+                                            <div className="mt-0.5 text-xs font-bold text-gray-900 truncate">{lockedFoundationMessage.title}</div>
+                                            <div className="mt-0.5 text-[11px] leading-5 text-gray-600 line-clamp-2">{lockedFoundationMessage.description}</div>
                                         </div>
                                     )}
-                                    <div className="space-y-2">
-                                        {showPublicAdminDiagnostics ? (
-                                            <>
-                                                <div className="flex justify-between text-xs font-bold text-gray-600">
-                                                    <span>التقدم</span>
-                                                    <span>{Math.round((skill.completed / skill.totalLessons) * 100)}%</span>
-                                                </div>
-                                                <ProgressBar percentage={(skill.completed / skill.totalLessons) * 100} showPercentage={false} color={safeColorTheme as any} />
-                                            </>
-                                        ) : (
-                                            <div className="text-xs font-bold text-gray-400">اضغط لفتح هذا المسار التعليمي</div>
-                                        )}
-                                    </div>
+
+                                    {hasProgress ? (
+                                        <div className="mt-2.5 w-full pt-2 border-t border-slate-100">
+                                            <div className="flex justify-between text-[11px] font-bold text-gray-500 mb-1">
+                                                <span>نسبة الإنجاز</span>
+                                                <span className="text-indigo-600">{progressPercentage}%</span>
+                                            </div>
+                                            <ProgressBar percentage={progressPercentage} showPercentage={false} color={safeColorTheme as any} />
+                                        </div>
+                                    ) : null}
                                 </button>
                             );
                         })}
@@ -1154,54 +1194,56 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 )}
 
                 {activeTab === 'library' && enabledTabs.library && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {sectionLibraryItems.map((item: any) => {
                             const lockedLibraryMessage = item.isLocked ? getLockedContentMessage('library') : null;
 
                             return (
-                                <Card
+                                <div
                                     key={item.id}
-                                    className="p-6 border-2 border-gray-100 hover:shadow-lg transition-all flex flex-col rounded-3xl relative"
+                                    className="p-4 border border-slate-200/90 hover:border-indigo-300 hover:shadow-md transition-all flex flex-col justify-between rounded-2xl bg-white relative group shadow-xs"
                                     style={{ borderColor: theme.border }}
                                 >
                                     {item.isLocked && (
-                                        <div className="absolute top-4 left-4 text-gray-400">
-                                            <Lock size={20} />
+                                        <div className="absolute top-3 left-3 text-amber-500">
+                                            <Lock size={16} />
                                         </div>
                                     )}
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${item.type === 'pdf' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
-                                            <FileText size={28} />
+                                    <div className="flex items-start gap-3 mb-3">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${item.type === 'pdf' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
+                                            <FileText size={20} />
                                         </div>
-                                        {showPublicAdminDiagnostics ? (
-                                            <span className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg">{item.size}</span>
-                                        ) : (
-                                            <span className="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg">ملف</span>
-                                        )}
-                                    </div>
-                                    <h3 className="font-bold text-xl text-gray-900 mb-2">{item.title}</h3>
-                                    {showPublicAdminDiagnostics ? (
-                                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
-                                            <User size={16} />
-                                            <span>{item.downloads} تحميل</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
+                                                    {item.type ? item.type.toUpperCase() : 'ملف'}
+                                                </span>
+                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${item.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                                                    {item.isLocked ? 'ضمن باقة' : 'متاح'}
+                                                </span>
+                                                {showPublicAdminDiagnostics ? (
+                                                    item.downloads ? (
+                                                        <span className="text-[10px] text-gray-400 font-bold mr-auto">
+                                                            {item.downloads} تحميل
+                                                        </span>
+                                                    ) : null
+                                                ) : null}
+                                            </div>
+                                            <h3 className="font-bold text-sm sm:text-base text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
                                         </div>
-                                    ) : (
-                                        <div className="mb-6 text-center text-xs text-gray-400">ملف متاح للعرض أو التحميل</div>
-                                    )}
-                                    <div className="mb-4 flex flex-wrap gap-2">
-                                        <span className={`rounded-full px-3 py-1 text-[11px] font-black ${item.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-                                            {item.isLocked ? 'مغلقة حتى التفعيل' : 'متاحة للعرض والتحميل'}
-                                        </span>
                                     </div>
+
                                     {showPublicAdminDiagnostics && item.isLocked && lockedLibraryMessage && (
-                                        <div className="mb-4 rounded-2xl border border-amber-100 bg-amber-50 p-3 text-right">
-                                            <div className="text-xs font-black text-amber-700">سبب الإغلاق</div>
-                                            <div className="mt-1 text-sm font-bold text-gray-900">{lockedLibraryMessage.title}</div>
-                                            <div className="mt-1 text-xs leading-6 text-gray-600">{lockedLibraryMessage.description}</div>
+                                        <div className="mb-3 rounded-xl border border-amber-100 bg-amber-50 p-2.5 text-right">
+                                            <div className="text-[11px] font-black text-amber-700">سبب الإغلاق</div>
+                                            <div className="mt-0.5 text-xs font-bold text-gray-900 truncate">{lockedLibraryMessage.title}</div>
+                                            <div className="mt-0.5 text-[11px] leading-5 text-gray-600 line-clamp-2">{lockedLibraryMessage.description}</div>
                                         </div>
                                     )}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-auto">
+
+                                    <div className="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-100 mt-auto">
                                         <button
+                                            type="button"
                                             onClick={() => {
                                                 if (item.isLocked) {
                                                     handleItemClick(item, 'library');
@@ -1209,11 +1251,17 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                     openExternalUrl(item.url);
                                                 }
                                             }}
-                                            className={`bg-indigo-50 text-indigo-700 py-3 rounded-xl font-bold hover:bg-indigo-600 hover:text-white transition-colors shadow-sm ${item.isLocked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs ${
+                                                item.isLocked
+                                                    ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                            }`}
                                         >
-                                            {item.isLocked ? 'تفعيل ثم تحميل' : 'تحميل'}
+                                            <Download size={14} />
+                                            <span>{item.isLocked ? 'تفعيل' : 'تحميل'}</span>
                                         </button>
                                         <button
+                                            type="button"
                                             onClick={() => {
                                                 if (item.isLocked) {
                                                     handleItemClick(item, 'library');
@@ -1223,13 +1271,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                     setViewingFile(item);
                                                 }
                                             }}
-                                            className="bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center justify-center gap-2 shadow-sm"
+                                            className="py-2 px-3 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-1.5 shadow-xs"
                                         >
-                                            <Eye size={18} />
-                                            {item.isLocked ? 'اعرف طريقة الفتح' : 'عرض'}
+                                            <Eye size={14} />
+                                            <span>{item.isLocked ? 'الباقة' : 'عرض'}</span>
                                         </button>
                                     </div>
-                                </Card>
+                                </div>
                             );
                         })}
                         {sectionLibraryItems.length === 0 && (
@@ -1298,14 +1346,15 @@ const TabButton = ({ active, onClick, icon, label, colorTheme }: any) => {
     const palette = resolveThemePalette(colorTheme);
     return (
         <button 
+            type="button"
             onClick={onClick}
-            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${
-                active ? 'text-white shadow-lg transform -translate-y-1' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+            className={`flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 ${
+                active ? 'text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
             }`}
             style={active ? { backgroundColor: palette.base } : undefined}
         >
             {icon}
-            {label}
+            <span>{label}</span>
         </button>
     );
 };

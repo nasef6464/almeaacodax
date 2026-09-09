@@ -36,7 +36,8 @@ const downloadCsv = (fileName: string, rows: string[][]) => {
 };
 
 export const LiveSessionsManager: React.FC = () => {
-    const { lessons, paths, subjects, updateLesson, addLesson, deleteLesson } = useStore();
+    const { lessons, paths, subjects, updateLesson, addLesson, deleteLesson, user } = useStore();
+    const canManagePlatformBookings = user?.role === 'admin';
     const [isEditing, setIsEditing] = useState(false);
     const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
     const [copyMessage, setCopyMessage] = useState('');
@@ -85,8 +86,8 @@ export const LiveSessionsManager: React.FC = () => {
     };
 
     useEffect(() => {
-        void loadSessionBookings();
-    }, []);
+        if (canManagePlatformBookings) void loadSessionBookings();
+    }, [canManagePlatformBookings]);
 
     const createNewLesson = () => {
         setCurrentLesson({
@@ -400,7 +401,7 @@ export const LiveSessionsManager: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
                 {[
                     { id: 'schedule', label: 'جدول الحصص المباشرة', icon: '📅', count: liveLessons.length },
-                    { id: 'private-bookings', label: 'طلبات الحصص الخاصة', icon: '🎟️', count: pendingBookings.length },
+                    ...(canManagePlatformBookings ? [{ id: 'private-bookings', label: 'طلبات الحصص الخاصة', icon: '🎟️', count: pendingBookings.length }] : []),
                     { id: 'readiness-analytics', label: 'جاهزية وتقارير البث', icon: '📊', count: null },
                 ].map((tab) => (
                     <button
@@ -623,7 +624,7 @@ export const LiveSessionsManager: React.FC = () => {
             )}
 
             {/* TAB 2: PRIVATE BOOKINGS */}
-            {activeTab === 'private-bookings' && (
+            {canManagePlatformBookings && activeTab === 'private-bookings' && (
                 <div className="bg-white rounded-2xl border border-indigo-100 shadow-sm overflow-hidden">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-indigo-50 bg-indigo-50/50 px-5 py-4">
                         <div>

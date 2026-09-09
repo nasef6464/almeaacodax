@@ -160,30 +160,30 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
         }
 
         return (
-            <div className="space-y-4 max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-right">
-                        <div className="text-xs font-black text-indigo-600">{displayListTitle}</div>
-                        <div className="mt-2 text-2xl font-black text-indigo-900">{tests.length}</div>
+            <div className="space-y-3 max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50/70 p-3 text-right">
+                        <div className="text-[11px] font-black text-indigo-600">{displayListTitle}</div>
+                        <div className="mt-1 text-xl font-black text-indigo-900">{tests.length}</div>
                     </div>
-                    <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-right">
-                        <div className="text-xs font-black text-emerald-600">مفتوح الآن</div>
-                        <div className="mt-2 text-2xl font-black text-emerald-800">{openTestsCount}</div>
+                    <div className="rounded-xl border border-emerald-100 bg-emerald-50/70 p-3 text-right">
+                        <div className="text-[11px] font-black text-emerald-600">مفتوح الآن</div>
+                        <div className="mt-1 text-xl font-black text-emerald-800">{openTestsCount}</div>
                     </div>
-                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-right">
-                        <div className="text-xs font-black text-amber-600">{lockedCountLabel || 'ضمن باقة'}</div>
-                        <div className="mt-2 text-2xl font-black text-amber-800">{lockedTestsCount}</div>
+                    <div className="rounded-xl border border-amber-100 bg-amber-50/70 p-3 text-right">
+                        <div className="text-[11px] font-black text-amber-600">{lockedCountLabel || 'ضمن باقة'}</div>
+                        <div className="mt-1 text-xl font-black text-amber-800">{lockedTestsCount}</div>
                     </div>
                 </div>
                 {readyTests.map((test) => (
-                    <div key={test.id} onClick={() => handleTestClick(test)} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group">
-                        <div className="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${test.isUnavailable ? 'bg-rose-50 text-rose-600' : test.isLocked ? 'bg-gray-100 text-gray-500' : 'bg-emerald-50 text-emerald-600'}`}>
-                                {test.isUnavailable ? <AlertTriangle size={24} /> : test.isLocked ? <Lock size={24} /> : <Unlock size={24} />}
+                    <div key={test.id} onClick={() => handleTestClick(test)} className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer group">
+                        <div className="flex items-center gap-3.5 w-full sm:w-auto min-w-0">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${test.isUnavailable ? 'bg-rose-50 text-rose-600' : test.isLocked ? 'bg-slate-100 text-slate-500' : 'bg-emerald-50 text-emerald-600'}`}>
+                                {test.isUnavailable ? <AlertTriangle size={20} /> : test.isLocked ? <Lock size={20} /> : <Unlock size={20} />}
                             </div>
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="font-bold text-lg text-gray-800 group-hover:text-indigo-600 transition-colors">{test.title}</h3>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                    <h3 className="font-bold text-sm sm:text-base text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{test.title}</h3>
                                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.isUnavailable ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-100' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-100' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'}`}>
                                         {test.isUnavailable ? (test.unavailableLabel || 'يحتاج مراجعة') : test.isLocked ? 'ضمن باقة' : 'مفتوح الآن'}
                                     </span>
@@ -191,19 +191,20 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                         {test.type === 'trial' ? 'تجريبي' : test.type === 'comprehensive' ? 'شامل' : test.type === 'bank' ? 'بنك أسئلة' : 'محاكي'}
                                     </span>
                                 </div>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                                    <span className="flex items-center gap-1"><Clock size={14} /> {test.duration}</span>
-                                    <span className="flex items-center gap-1"><CheckCircle size={14} /> {test.questions} سؤال</span>
-                                    <span className="flex items-center gap-1"><Star size={14} /> {test.level}</span>
+                                <div className="flex flex-wrap gap-3 text-xs text-gray-500 font-medium">
+                                    <span className="flex items-center gap-1"><Clock size={13} /> {test.duration}</span>
+                                    <span className="flex items-center gap-1"><CheckCircle size={13} /> {test.questions} سؤال</span>
+                                    <span className="flex items-center gap-1"><Star size={13} /> {test.level}</span>
                                 </div>
                             </div>
                         </div>
                         <button
+                            type="button"
                             disabled={Boolean(test.isUnavailable)}
-                            className={`px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0 ${test.isUnavailable ? 'cursor-not-allowed bg-gray-100 text-gray-500' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white'}`}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-center shadow-xs ${test.isUnavailable ? 'cursor-not-allowed bg-gray-100 text-gray-500' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
                         >
-                            {test.isUnavailable ? 'غير جاهز' : test.isLocked ? 'فتح الباقة' : listAction}
-                            <ChevronRight size={18} className="transform rotate-180" />
+                            <span>{test.isUnavailable ? 'غير جاهز' : test.isLocked ? 'فتح الباقة' : listAction}</span>
+                            <ChevronRight size={16} className="transform rotate-180" />
                         </button>
                     </div>
                 ))}

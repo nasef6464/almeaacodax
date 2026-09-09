@@ -11,6 +11,7 @@ const learningSection = read("components/LearningSection.tsx");
 const store = read("store/useStore.ts");
 const learningProgressSlice = read("store/slices/learningProgressSlice.ts");
 const api = read("services/api.ts");
+const authApi = read("services/apiGroups/authApi.ts");
 const authRoutes = read("server/src/routes/auth.routes.ts");
 
 add(
@@ -32,8 +33,8 @@ add(
 );
 add(
   "Client preferences API accepts completed lessons",
-  api.includes("completedLessons?: string[]") &&
-    api.includes("/auth/me/preferences"),
+  (api.includes("completedLessons?: string[]") || authApi.includes("completedLessons?: string[]")) &&
+    (api.includes("/auth/me/preferences") || authApi.includes("/auth/me/preferences")),
 );
 add(
   "Backend preferences endpoint persists completed lessons",

@@ -89,6 +89,19 @@ Google OAuth on Staging remains a separate staging-only follow-up because the ba
 - Status: `VERIFIED`; PR `#36` is ready for normal merge preserving history.
 - Next after merge: verify production deployment/health, then inspect the end-to-end Course System journey from authoring and configuration through free/paid/package access, purchase and student presentation; close one proved gap at a time.
 
+## Selected next product goal — School OS + Smart Classroom
+
+- Product direction reviewed on 2026-09-09 against current `main`, the existing school/assessment/Barcode/realtime capabilities, Gemini V2, and the reconciled Codex/ChatGPT decision.
+- Planning status: `APPROVED PLAN / RUNTIME NOT STARTED`; this checkpoint records selection only and does not claim schema, API, RBAC, scoring, payment, production-data, or cutover changes.
+- Canonical goal order and current status: `docs/architecture/SMART_CLASSROOM_GOALS_AR.md`.
+- Detailed decision: `docs/architecture/SMART_CLASSROOM_EXECUTION_MASTER_AR.md`.
+- Current Goal after explicit owner authorization: `G0 — Secure the Reused Foundation` (`SC-00`).
+- The six implementation Goals must preserve Gates 1–6 and the verified school/assessment contracts. `G6` Pilot still requires separate environment/data authorization.
+
 ## Agent handoff rule
 
-At the start of any future Codex/agent goal, read current Git HEAD, this checkpoint, and `docs/architecture/POST_GATE6_RELEASE_READINESS_START_NOTE.md` before interpreting older execution-state paragraphs. Current Git HEAD plus this checkpoint outrank stale notes that name already-integrated gates as active.
+At the start of a Smart Classroom goal, read current Git HEAD, this checkpoint,
+`SMART_CLASSROOM_GOALS_AR.md`, and `SMART_CLASSROOM_AGENT_ENTRY_AR.md` before
+interpreting older execution-state paragraphs. For other goals, continue to use
+`POST_GATE6_RELEASE_READINESS_START_NOTE.md` where relevant. Current Git HEAD plus
+this checkpoint outrank stale notes that name already-integrated gates as active.
