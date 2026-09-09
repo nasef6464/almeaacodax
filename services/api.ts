@@ -38,7 +38,7 @@ const API_BASE_URL = (
   isStagingEnv ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
 ).replace(/\/$/, "");
 
-type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface RequestOptions {
   method?: HttpMethod;
@@ -717,6 +717,10 @@ export const api = {
       method: "DELETE",
       token,
     }),
+  getSchoolContract: (schoolId: string, token?: string | null) =>
+    request<{ contract: { status: string; modules: string[] } | null }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { token }),
+  updateSchoolContract: (schoolId: string, payload: unknown, token?: string | null) =>
+    request<{ contract: { status: string; modules: string[] } }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { method: "PUT", body: payload, token }),
   ...createAnnouncementAdsApi(request),
   ...createAccessCodesApi(request),
   ...createStudyPlansApi(request),

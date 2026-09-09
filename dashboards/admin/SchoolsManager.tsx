@@ -37,6 +37,7 @@ import { SchoolWideSupervisorsPanel } from './SchoolsManager/SchoolWideSuperviso
 import { SchoolOverviewOperationsPanel } from './SchoolsManager/SchoolOverviewOperationsPanel';
 import { SchoolCommandCenterPanel } from './SchoolsManager/SchoolCommandCenterPanel';
 import { SchoolDashboardPanel } from './SchoolsManager/SchoolDashboardPanel';
+import { SchoolContractPanel } from './SchoolsManager/SchoolContractPanel';
 
 import { SchoolPortfolioFilterPanel } from './SchoolsManager/SchoolPortfolioFilterPanel';
 import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
@@ -1245,6 +1246,7 @@ export const SchoolsManager: React.FC = () => {
                     onCancelDelete={() => setIsDeleteSchoolConfirmOpen(false)}
                     onConfirmDelete={confirmDeleteSelectedSchool}
                 />
+                <SchoolContractPanel schoolId={selectedSchool.id} />
 
                 <div data-testid="school-workspace-tabs" className="hidden">
                     {[
