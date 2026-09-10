@@ -123,9 +123,6 @@
   إعادة تعيين دورة بطلب مباشر.
 - local: server check/build، TypeScript مستقل لمنشئ الدورة،
   `smoke:course-builder` و`smoke:account-workspaces-g7` PASS.
-- فحص TypeScript الشامل للواجهة بقي محجوبًا بخطأ parsing سابق وغير مملوك في
-  `AnnouncementAdsManager.tsx`؛ لم يكن ضمن تغييرات G13، بينما فحص الملف
-  المتأثر مباشرة نجح.
 
 ## G14 — مركز إدارة المدربين
 

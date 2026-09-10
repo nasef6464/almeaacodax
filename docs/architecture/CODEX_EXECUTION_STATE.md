@@ -19,10 +19,7 @@
   runtime Backend Integration [34507622744](https://github.com/nasef6464/almeaacodax/actions/runs/34507622744)
   PASS on isolated Mongo: real HTTP trainer directory, qualified/unscoped/inactive
   filtering, valid/invalid/inactive assignment, and direct reassignment denial.
-- Known unrelated workspace condition: the root frontend typecheck reaches an
-  existing parse error in unowned `dashboards/admin/AnnouncementAdsManager.tsx`.
-  It is not part of G13; the focused affected-file check passed. G14 remains the
-  next planned goal.
+- G14 remains the next planned goal.
 
 ## Schools UI cleanup — legacy School Portal retirement
 
