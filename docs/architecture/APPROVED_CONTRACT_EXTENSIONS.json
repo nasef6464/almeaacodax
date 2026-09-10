@@ -32,6 +32,10 @@
     "schoolAccessRouter|GET|/context",
     "schoolAccessRouter|GET|/contracts/:schoolId",
     "schoolAccessRouter|PUT|/contracts/:schoolId",
+    "schoolAccessRouter|GET|/director-workspace",
+    "schoolAccessRouter|GET|/director/schools/:schoolId/overview-access",
+    "schoolAccessRouter|GET|/directors/:schoolId",
+    "schoolAccessRouter|PUT|/directors/:schoolId/:userId",
     "schoolAccessRouter|GET|/entitlements/:schoolId/:module",
     "schoolAccessRouter|PUT|/memberships",
     "schoolAccessRouter|GET|/teacher-workspace"

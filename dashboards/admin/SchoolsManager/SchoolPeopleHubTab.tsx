@@ -1,18 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {
-    Download,
-    Filter,
-    GraduationCap,
-    Key,
-    MoreVertical,
-    Plus,
-    Search,
-    ShieldCheck,
-    Trash2,
-    Upload,
-    UserCheck,
-    Users,
-} from 'lucide-react';
+import { Download, Filter, Plus, Search, Upload, Users } from 'lucide-react';
 import type { Group, Role, User } from '../../../types';
 import { SchoolDirectorDelegationPanel } from './SchoolDirectorDelegationPanel';
 
@@ -302,19 +289,13 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
                                             </td>
 
                                             <td className="px-4 py-3">
-                                                <span
-                                                    className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-black ${
-                                                        roleTone === 'purple'
-                                                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                                                            : roleTone === 'blue'
-                                                                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                                                                : roleTone === 'amber'
-                                                                    ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                                                                    : roleTone === 'emerald'
-                                                                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                                                                        : 'bg-slate-100 text-slate-700 border border-slate-200'
-                                                    }`}
-                                                >
+                                                <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-black border ${
+                                                    roleTone === 'purple' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                                    roleTone === 'blue' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                    roleTone === 'amber' ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                                                    roleTone === 'emerald' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
+                                                    'bg-slate-100 text-slate-700 border-slate-200'
+                                                }`}>
                                                     {roleLabel}
                                                 </span>
                                             </td>
