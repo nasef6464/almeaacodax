@@ -17,8 +17,8 @@
 ## الحقيقة الحالية
 
 - Smart Classroom `G0–G6` مغلق ولا يعاد تنفيذه.
-- Account Workspaces `G7` و`G8` و`G9` مغلقة؛ G9 مثبت على runtime `68768d00` وCI `34456463696`.
-- الهدف الحالي المفوض هو `G10 — Usable School Director Dashboard`، ثم يستمر التفويض حتى `G12` بالتسلسل.
+- Account Workspaces `G7` إلى `G10` مغلقة؛ G10 مثبت على runtime `5bd31bb1` وCI `34459589249`.
+- الهدف الحالي المفوض هو `G11 — Delegated School Operations`، ثم يستمر التفويض إلى `G12` بالتسلسل.
 - Git والكود وCI evidence يتقدمون على أي وصف قديم.
 
 ## ثوابت المنتج

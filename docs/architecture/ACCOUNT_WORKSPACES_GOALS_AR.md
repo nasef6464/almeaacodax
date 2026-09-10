@@ -1,8 +1,8 @@
 # ALMEAA — سجل أهداف الحسابات ومساحات العمل
 
-> الحالة: `G9 CLOSED / G10 AUTHORIZED`
+> الحالة: `G10 CLOSED / G11 AUTHORIZED`
 > آخر مراجعة: 2026-09-10
-> Current Goal: `G10 — Usable School Director Dashboard` مفوض وجاهز للتنفيذ.
+> Current Goal: `G11 — Delegated School Operations` مفوض وجاهز للتنفيذ.
 > يعتمد هذا المسار على إغلاق Smart Classroom `G0–G6` ولا يعيد تنفيذها.
 
 هذا هو سجل الأهداف القابل للاسترجاع لخطة مدرب المنصة، معلم المدرسة، ومدير
@@ -26,8 +26,8 @@
 | `G7 — Platform Trainer Workspace` | `AW-01` | اسم وهوية ظاهرة باسم «مدرب منصة» ولوحة مستقلة، مع تقييد المحتوى خادميًا بالمسارات والمواد المسندة. | مدرب الكمي ينشئ/يعدل داخل الكمي فقط؛ محاولة مادة غير مسندة ترجع `403`؛ لا تظهر له أدوات المدارس أو الإدارة العامة. | `CLOSED / VERIFIED` |
 | `G8 — School Teacher Workspace` | `AW-02` | لوحة مستقلة لمعلم المدرسة مبنية على `SchoolMembership` و`TeachingAssignment` وتجمع الفصول والاختبارات المدرسية وSmart Classroom. | معلم A لا يرى فصل B ولا يبدأ له حصة أو اختبارًا؛ لا يملك أدوات مدرب المنصة إلا بسياق مستقل مصرح. | `CLOSED / VERIFIED` |
 | `G9 — School Director Identity & Delegated Access` | `AW-03` | `school_admin` additive، عضويات متعددة المدارس، وصلاحيات صريحة لكل عضوية يديرها صاحب المنصة. | مدير A لا يصل إلى B؛ المنح والسحب محفوظان ومدققان؛ سحب الصلاحية يسبب `403` فورًا؛ لا توسعة لصلاحيات legacy. | `CLOSED / VERIFIED` |
-| `G10 — Usable School Director Dashboard` | `AW-04` | لوحة تنفيذية مستقلة مع إحصاءات مجمعة وقائمة طلاب وإضافة طالب ونقله بين فصول المدرسة نفسها. | رحلة UI→API→DB كاملة؛ الإضافة لا تنشئ staff؛ النقل atomic/idempotent؛ cross-school والحذف مرفوضان. | `READY / AUTHORIZED` |
-| `G11 — Delegated School Operations` | `AW-05` | صاحب المنصة يستطيع منح إدارة الفصول، تكليف المعلمين، التقارير التفصيلية، والتصدير كوحدات صلاحية اختيارية. | كل أداة تتطلب permission للمدرسة وmodule entitlement للعقد؛ grant يسمح وrevoke يمنع؛ الأدوات غير المفوضة لا تظهر ولا تعمل عبر API. | `BLOCKED BY G10` |
+| `G10 — Usable School Director Dashboard` | `AW-04` | لوحة تنفيذية مستقلة مع إحصاءات مجمعة وقائمة طلاب وإضافة طالب ونقله بين فصول المدرسة نفسها. | رحلة UI→API→DB كاملة؛ الإضافة لا تنشئ staff؛ النقل idempotent ويحافظ على عضوية فصل مفردة؛ cross-school والحذف مرفوضان. | `CLOSED / VERIFIED` |
+| `G11 — Delegated School Operations` | `AW-05` | صاحب المنصة يستطيع منح إدارة الفصول، تكليف المعلمين، التقارير التفصيلية، والتصدير كوحدات صلاحية اختيارية. | كل أداة تتطلب permission للمدرسة وmodule entitlement للعقد؛ grant يسمح وrevoke يمنع؛ الأدوات غير المفوضة لا تظهر ولا تعمل عبر API. | `READY / AUTHORIZED` |
 | `G12 — Academic Delegation & Persona Closure` | `AW-06` | تفويض اختياري للاختبارات وSmart Classroom والتدخلات، مع context switch للحساب الهجين وإغلاق تجاري للشخصيات. | اختبار مدرستين وحساب هجين يثبت فصل المساحات؛ لا blended permissions؛ labels/exports صحيحة؛ لا نقل مدارس إلا بتفويض خاص وعضويتين فعالتين. | `BLOCKED BY G11` |
 
 ## G7 — Platform Trainer Workspace (`AW-01`)
@@ -122,7 +122,8 @@
   وجلسات Smart Classroom المكتملة.
 - قائمة طلاب محدودة للعمليات المصرح بها.
 - إضافة طالب إلى مدرسة وفصل تابعين لها باستخدام خدمات المستخدم والمجموعات الحالية.
-- نقل طالب بين فصول المدرسة نفسها بصورة atomic وidempotent مع audit log.
+- نقل طالب بين فصول المدرسة نفسها بصورة idempotent تحافظ على عضوية فصل مفردة،
+  مع audit log ومرايا علاقات متوافقة مع النموذج الحالي.
 
 ### حدود الأمان
 
@@ -214,8 +215,8 @@
 | `G7` | `CLOSED / VERIFIED` | `4299d77f942dcb1fef55beacc97b84aad11989d4` | Backend Integration [34442365096](https://github.com/nasef6464/almeaacodax/actions/runs/34442365096) PASS: scoped authoring/read denial, empty-scope fail-closed, full HTTP/RBAC and commercial course gates. Local typecheck/build and focused content/quiz/course contracts PASS. | G8 |
 | `G8` | `CLOSED / VERIFIED` | `7932bfb268bcc18d9b44ea01707b4b4cac173303` | Backend Integration [34445758906](https://github.com/nasef6464/almeaacodax/actions/runs/34445758906) PASS: active membership + assignment workspace, hybrid personas, invalid school/class pairing denial, existing Smart Classroom lifecycle, full HTTP/RBAC/commercial gates. Frontend/server builds, focused typecheck, G7/G8/Smart Classroom contracts PASS; Playwright desktop `1365×900` and mobile RTL `390×844` showed 0 console errors. | G9 |
 | `G9` | `CLOSED / VERIFIED` | `68768d006b0041df9a426ae1353ce3ea9cf15d79` | Backend Integration [34456463696](https://github.com/nasef6464/almeaacodax/actions/runs/34456463696) PASS على Mongo معزولة: حساب `school_admin`، تفويض admin-only، عزل A/B، revoke فوري `403`، membership inactive، وaudit log. server check/build، frontend build/targeted typecheck، G7/G8/G9 والعقد المدرسي `30/30` PASS؛ Playwright desktop/mobile أثبت التصميم الجديد وفصل المدير عن المشرف والمعلم. | G10 |
-| `G10` | `READY / AUTHORIZED` | — | تفويض G7–G12 مستمر | تنفيذ لوحة المدير وإضافة/نقل الطلاب داخل المدرسة |
-| `G11` | `BLOCKED BY G10` | — | — | يبدأ بعد إغلاق G10 |
+| `G10` | `CLOSED / VERIFIED` | `5bd31bb1c9bc0ed2b91fe67c820a2cd76f482988` | Backend Integration [34459589249](https://github.com/nasef6464/almeaacodax/actions/runs/34459589249) PASS على Mongo معزولة: overview/roster، إضافة طالب، إعادة الإضافة دون duplicate، نقل داخل المدرسة بعضوية فصل مفردة، منع self-grant وcross-school والحذف، وaudit log. server check/build وintegration harness typecheck، frontend build، G7–G10 والعقد المدرسي `30/30` PASS؛ Playwright desktop/mobile RTL أثبت التصميم والعمليات وحالات الصلاحية مع 0 console errors. | G11 |
+| `G11` | `READY / AUTHORIZED` | — | تفويض G7–G12 مستمر | تنفيذ الصلاحيات التشغيلية الاختيارية مع entitlement gates |
 | `G12` | `BLOCKED BY G11` | — | — | يبدأ بعد إغلاق G11 |
 
 ## الاسترجاع لأي Agent
@@ -230,4 +231,4 @@
 ## قرار البداية
 
 فوض المالك صراحة تنفيذ `G7–G12` بالتسلسل في 2026-09-10. أُغلق G7 بالدليل
-المذكور أعلاه، وأُغلق G9 بالدليل، والهدف الحالي هو `G10`؛ يستمر التنفيذ هدفًا واحدًا في كل branch/PR.
+المذكور أعلاه، وأُغلقت G7–G10 بالدليل، والهدف الحالي هو `G11`؛ يستمر التنفيذ هدفًا واحدًا في كل branch/PR.
