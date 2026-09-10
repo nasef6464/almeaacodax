@@ -63,6 +63,12 @@ import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../mo
 import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
 import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
 import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
+import {
+  assertManagedContentScope,
+  buildManagedContentScopeFilter,
+  combineMongoFilters,
+  resolveManagedContentScope,
+} from "../services/managedContentScope.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -191,34 +197,6 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
-};
-
-const assertTeacherManagedScope = async (
-  authUser: { id: string; role: string },
-  payload: { pathId?: unknown; subjectId?: unknown; subject?: unknown },
-) => {
-  if (authUser.role !== "teacher") {
-    return;
-  }
-
-  const teacher = await UserModel.findById(authUser.id).select("managedPathIds managedSubjectIds");
-  const managedPathIds = new Set((teacher?.managedPathIds || []).map(String));
-  const managedSubjectIds = new Set((teacher?.managedSubjectIds || []).map(String));
-
-  if (managedPathIds.size === 0 && managedSubjectIds.size === 0) {
-    return;
-  }
-
-  const pathId = String(payload.pathId || "");
-  const subjectId = String(payload.subjectId || payload.subject || "");
-  const matchesPath = !!pathId && managedPathIds.has(pathId);
-  const matchesSubject = !!subjectId && managedSubjectIds.has(subjectId);
-
-  if (!matchesPath && !matchesSubject) {
-    const error = new Error("Content is outside the teacher managed scope") as Error & { statusCode?: number };
-    error.statusCode = StatusCodes.FORBIDDEN;
-    throw error;
-  }
 };
 
 const assertSupervisorDirectedQuizScope = async (
@@ -654,6 +632,8 @@ quizRouter.get(
       };
     }
 
+    const managedScope = await resolveManagedContentScope(req.authUser);
+
     const scopeFilter: Record<string, any> = {};
     if (query.pathId) scopeFilter.pathId = query.pathId;
     if (query.ids) {
@@ -690,8 +670,10 @@ quizRouter.get(
       ];
     }
 
-    const filterParts = [baseFilter, scopeFilter].filter((item) => Object.keys(item).length > 0);
-    const filter = await withLearnerVisiblePaths(filterParts.length > 0 ? { $and: filterParts } : {}, req.authUser);
+    const filter = await withLearnerVisiblePaths(
+      combineMongoFilters(baseFilter, scopeFilter, buildManagedContentScopeFilter(managedScope)),
+      req.authUser,
+    );
     const skip = (query.page - 1) * query.limit;
     const queryBuilder = QuestionModel.find(filter)
       .sort({ createdAt: -1 })
@@ -761,7 +743,7 @@ quizRouter.post(
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const payload = questionSchema.parse(req.body);
-    await assertTeacherManagedScope(req.authUser!, payload);
+    await assertManagedContentScope(req.authUser!, payload);
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await QuestionModel.create({
       ...payload,
@@ -793,7 +775,7 @@ quizRouter.patch(
       ...payload,
     });
 
-    await assertTeacherManagedScope(req.authUser!, mergedPayload);
+    await assertManagedContentScope(req.authUser!, mergedPayload);
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
@@ -805,11 +787,13 @@ quizRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
-    const deleted = await QuestionModel.findOneAndDelete(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-
-    if (!deleted) {
+    const existing = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
+    if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
+    await assertManagedContentScope(req.authUser!, existing.toObject());
+    const deleted = await QuestionModel.findOneAndDelete({ _id: existing._id });
+    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
 
     const deletedId = String(deleted.id || deleted._id);
 
@@ -925,12 +909,16 @@ quizRouter.get(
         ],
       };
     }
+    const managedScope = await resolveManagedContentScope(req.authUser);
     const scopeFilter: Record<string, unknown> = {};
     if (requestedPathId) scopeFilter.pathId = requestedPathId;
     if (requestedSubjectId) scopeFilter.subjectId = requestedSubjectId;
     const visibleFilter = await withLearnerVisiblePaths(baseFilter, req.authUser);
-    const filterParts = [visibleFilter, scopeFilter].filter((item) => Object.keys(item).length > 0);
-    const filter = filterParts.length > 1 ? { $and: filterParts } : filterParts[0] || {};
+    const filter = combineMongoFilters(
+      visibleFilter,
+      scopeFilter,
+      buildManagedContentScopeFilter(managedScope),
+    );
     const pagination = resolvePagination(req.query, { limit: 200 });
     const [items, total] = await Promise.all([
       QuizModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
@@ -1791,7 +1779,7 @@ quizRouter.post(
       payload.questionIds = uniqueStrings([...(payload.questionIds || []), ...inlineQuestionIds]);
     }
 
-    await assertTeacherManagedScope(req.authUser!, payload);
+    await assertManagedContentScope(req.authUser!, payload);
     await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
@@ -1864,7 +1852,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     payload.questionIds = uniqueStrings([...existingQuestionIds, ...(payload.questionIds || []), ...inlineQuestionIds]);
   }
 
-  await assertTeacherManagedScope(req.authUser!, {
+  await assertManagedContentScope(req.authUser!, {
     ...existing.toObject(),
     ...payload,
   });
@@ -1924,6 +1912,8 @@ quizRouter.post(
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
+
+    await assertManagedContentScope(req.authUser!, existing.toObject());
 
     const rawQuestions = Array.isArray(req.body.questions) ? req.body.questions : [req.body];
     const newQuestionIds = await processInlineQuestions(
@@ -2326,11 +2316,13 @@ quizRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await QuizModel.findOneAndDelete(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-
-    if (!deleted) {
+    const existing = await QuizModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
+    if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
+    await assertManagedContentScope(req.authUser!, existing.toObject());
+    const deleted = await QuizModel.findOneAndDelete({ _id: existing._id });
+    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
 
     const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
     await TopicModel.updateMany({ quizIds: { $in: deletedIds } }, { $pull: { quizIds: { $in: deletedIds } } });

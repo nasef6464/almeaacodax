@@ -17,7 +17,7 @@ export const RoleSwitcher: React.FC = () => {
   const roles = [
     { id: Role.ADMIN, label: 'مدير النظام', icon: <Shield size={16} />, path: '/admin-dashboard' },
     { id: Role.SUPERVISOR, label: 'مشرف', icon: <UserCheck size={16} />, path: '/supervisor-dashboard' },
-    { id: Role.TEACHER, label: 'معلم', icon: <BookOpen size={16} />, path: '/instructor-dashboard' },
+    { id: Role.TEACHER, label: 'مدرب منصة', icon: <BookOpen size={16} />, path: '/instructor-dashboard' },
     { id: Role.PARENT, label: 'ولي أمر', icon: <Users size={16} />, path: '/parent-dashboard' },
     { id: Role.STUDENT, label: 'طالب', icon: <User size={16} />, path: '/dashboard' },
   ];
@@ -63,7 +63,7 @@ export const RoleSwitcher: React.FC = () => {
               <button
                 onClick={() => {
                   const summary = injectCompleteHumanE2ESimulation();
-                  alert(`تم حقن المحاكاة الشاملة للأدوار الـ 5 بنجاح! 🚀\n\n1. المدير: ${summary.admin.name}\n2. المشرف: ${summary.supervisor.name}\n3. المعلم: ${summary.teacher.name}\n4. الطالب: ${summary.student.name}\n5. ولي الأمر: ${summary.parent.name}\n\nيمكنك الآن التنقل بين الأدوار وتجربة المنصة بالكامل!`);
+                  alert(`تم حقن المحاكاة الشاملة للأدوار الـ 5 بنجاح! 🚀\n\n1. المدير: ${summary.admin.name}\n2. المشرف: ${summary.supervisor.name}\n3. مدرب المنصة: ${summary.teacher.name}\n4. الطالب: ${summary.student.name}\n5. ولي الأمر: ${summary.parent.name}\n\nيمكنك الآن التنقل بين الأدوار وتجربة المنصة بالكامل!`);
                   setIsOpen(false);
                 }}
                 className="flex w-full items-center gap-3 border-r-4 border-transparent px-4 py-2.5 text-right transition-colors text-emerald-700 hover:bg-emerald-50 font-bold"

@@ -51,9 +51,19 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
 const roleLabels: Record<Role, string> = {
     [Role.ADMIN]: 'مدير',
     [Role.SUPERVISOR]: 'مشرف',
-    [Role.TEACHER]: 'معلم',
+    [Role.TEACHER]: 'مدرب منصة / معلم مدرسة',
     [Role.PARENT]: 'ولي أمر',
     [Role.STUDENT]: 'طالب',
+};
+
+const resolveUserRoleLabel = (currentUser: User) => {
+    if (currentUser.role !== Role.TEACHER) return roleLabels[currentUser.role];
+    const hasPlatformScope = Boolean(currentUser.managedPathIds?.length || currentUser.managedSubjectIds?.length);
+    const hasSchoolScope = Boolean(currentUser.schoolId || currentUser.groupIds?.length);
+    if (hasPlatformScope && hasSchoolScope) return 'مدرب منصة + معلم مدرسة';
+    if (hasPlatformScope) return 'مدرب منصة';
+    if (hasSchoolScope) return 'معلم مدرسة';
+    return 'حساب معلم غير مهيأ';
 };
 
 const createWorkbookDownload = async (
@@ -352,14 +362,14 @@ export const UsersManager: React.FC = () => {
                 const userGroups = groups.filter((group) => currentUser.groupIds?.includes(group.id)).map((group) => group.name).join('، ');
                 const { pathNames, subjectNames } = resolveTeacherScope(currentUser);
                 const linkedStudents = linkableStudents.filter((student) => currentUser.linkedStudentIds?.includes(student.id)).map((student) => student.name).join('، ');
-                return [currentUser.name, currentUser.email || '', roleLabels[currentUser.role], currentUser.isActive === false ? 'متوقف' : 'نشط', schoolName, userGroups, [...pathNames, ...subjectNames].join('، '), linkedStudents];
+                return [currentUser.name, currentUser.email || '', resolveUserRoleLabel(currentUser), currentUser.isActive === false ? 'متوقف' : 'نشط', schoolName, userGroups, [...pathNames, ...subjectNames].join('، '), linkedStudents];
             }),
         ];
         const roleRows: Array<Array<string | number>> = [
             ['الدور', 'العدد'],
             ...Object.values(Role).map((role) => [roleLabels[role], usersByRole[role] || 0]),
             ['مستخدمون متوقفون', inactiveUsersCount],
-            ['معلمون بنطاق تدريس محدد', scopedTeachersCount],
+            ['مدربو منصة بنطاق محتوى محدد', scopedTeachersCount],
         ];
         void createWorkbookDownload('platform-users-operational-report.xlsx', [
             { name: 'users', rows: userRows },
@@ -367,11 +377,11 @@ export const UsersManager: React.FC = () => {
         ]);
     };
 
-    const getRoleBadge = (role: Role) => {
-        switch (role) {
+    const getRoleBadge = (currentUser: User) => {
+        switch (currentUser.role) {
             case Role.ADMIN: return <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">مدير</span>;
             case Role.SUPERVISOR: return <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">مشرف</span>;
-            case Role.TEACHER: return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">معلم</span>;
+            case Role.TEACHER: return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">{resolveUserRoleLabel(currentUser)}</span>;
             case Role.PARENT: return <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">ولي أمر</span>;
             case Role.STUDENT: return <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">طالب</span>;
             default: return null;
@@ -499,7 +509,7 @@ export const UsersManager: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">إدارة المستخدمين</h1>
-                    <p className="text-gray-500 text-sm mt-1">إدارة الأدوار، نطاق المعلمين، المدارس والفصول، وربط ولي الأمر والطلاب.</p>
+                    <p className="text-gray-500 text-sm mt-1">إدارة الأدوار، نطاق مدربي المنصة، المدارس والفصول، وربط ولي الأمر والطلاب.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <button onClick={exportUsersWorkbook} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"><Download size={18} /><span>تصدير المستخدمين</span></button>
@@ -514,7 +524,7 @@ export const UsersManager: React.FC = () => {
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                     ['الطلاب', usersByRole[Role.STUDENT] || 0],
-                    ['المعلمون', usersByRole[Role.TEACHER] || 0],
+                    ['المدربون والمعلمون', usersByRole[Role.TEACHER] || 0],
                     ['المشرفون', usersByRole[Role.SUPERVISOR] || 0],
                     ['أولياء الأمور', usersByRole[Role.PARENT] || 0],
                     ['حسابات متوقفة', inactiveUsersCount],
@@ -534,11 +544,11 @@ export const UsersManager: React.FC = () => {
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">الدور</label>
                             <select value={newUser.role} onChange={(event) => setNewUser((current) => ({ ...current, role: event.target.value as Role, linkedStudentIds: event.target.value === Role.PARENT ? current.linkedStudentIds : [], managedPathIds: event.target.value === Role.TEACHER ? current.managedPathIds : [], managedSubjectIds: event.target.value === Role.TEACHER ? current.managedSubjectIds : [] }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
-                                <option value={Role.STUDENT}>طالب</option><option value={Role.TEACHER}>معلم</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.ADMIN}>مدير</option>
+                                <option value={Role.STUDENT}>طالب</option><option value={Role.TEACHER}>مدرب منصة</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.ADMIN}>مدير</option>
                             </select>
                         </div>
                     </div>
-                    {newUser.role === Role.TEACHER && <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label className="block text-sm font-bold text-gray-700 mb-2">المسارات المسندة</label><MultiSelectField value={newUser.managedPathIds} options={pathOptions} placeholder="أضف المسارات المتاحة للمعلم" onChange={(nextPathIds) => setNewUser((current) => ({ ...current, managedPathIds: nextPathIds, managedSubjectIds: current.managedSubjectIds.filter((subjectId) => { const subject = subjects.find((item) => item.id === subjectId); return subject && nextPathIds.includes(subject.pathId); }) }))} /></div><div><label className="block text-sm font-bold text-gray-700 mb-2">المواد المسندة</label><MultiSelectField value={newUser.managedSubjectIds} options={teacherSubjectOptions} placeholder="اختر المواد التابعة للمسارات" onChange={(nextSubjectIds) => setNewUser((current) => ({ ...current, managedSubjectIds: nextSubjectIds }))} /></div></div>}
+                    {newUser.role === Role.TEACHER && <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label className="block text-sm font-bold text-gray-700 mb-2">المسارات المسندة</label><MultiSelectField value={newUser.managedPathIds} options={pathOptions} placeholder="أضف المسارات المتاحة للمدرب" onChange={(nextPathIds) => setNewUser((current) => ({ ...current, managedPathIds: nextPathIds, managedSubjectIds: current.managedSubjectIds.filter((subjectId) => { const subject = subjects.find((item) => item.id === subjectId); return subject && nextPathIds.includes(subject.pathId); }) }))} /></div><div><label className="block text-sm font-bold text-gray-700 mb-2">المواد المسندة</label><MultiSelectField value={newUser.managedSubjectIds} options={teacherSubjectOptions} placeholder="اختر مواد المدرب التابعة للمسارات" onChange={(nextSubjectIds) => setNewUser((current) => ({ ...current, managedSubjectIds: nextSubjectIds }))} /></div></div>}
                     {newUser.role === Role.PARENT && <div><label className="block text-sm font-bold text-gray-700 mb-2">الأبناء المرتبطون</label><MultiSelectField value={newUser.linkedStudentIds} options={linkableStudents.map((student) => ({ value: student.id, label: student.name }))} placeholder="اختر الطلاب المرتبطين بولي الأمر" onChange={(linkedStudentIds) => setNewUser((current) => ({ ...current, linkedStudentIds }))} /></div>}
                     {createError && <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-100 text-sm text-red-700">{createError}</div>}
                     <div className="flex justify-end"><button onClick={handleCreateUser} disabled={isSubmitting} className="bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white px-5 py-2 rounded-lg transition-colors shadow-sm">{isSubmitting ? 'جارٍ الإنشاء...' : 'حفظ المستخدم'}</button></div>
@@ -547,7 +557,7 @@ export const UsersManager: React.FC = () => {
 
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1"><Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} /><input type="text" placeholder="ابحث بالاسم أو البريد الإلكتروني..." className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" value={searchTerm} onChange={(event) => handleSearchTermChange(event.target.value)} /></div>
-                <div className="flex items-center gap-2"><Filter size={18} className="text-gray-400" /><select className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" value={roleFilter} onChange={(event) => handleRoleFilterChange(event.target.value as Role | 'all')}><option value="all">جميع الأدوار</option><option value={Role.ADMIN}>مدير</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.TEACHER}>معلم</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.STUDENT}>طالب</option></select></div>
+                <div className="flex items-center gap-2"><Filter size={18} className="text-gray-400" /><select className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" value={roleFilter} onChange={(event) => handleRoleFilterChange(event.target.value as Role | 'all')}><option value="all">جميع الأدوار</option><option value={Role.ADMIN}>مدير</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.TEACHER}>مدرب منصة / معلم مدرسة</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.STUDENT}>طالب</option></select></div>
             </div>
 
             <div className="flex flex-wrap justify-between items-center gap-3 text-sm">
@@ -566,7 +576,7 @@ export const UsersManager: React.FC = () => {
                     const isSavingRelationship = relationshipActionUserId === currentUser.id;
                     return <tr key={currentUser.id} className="hover:bg-gray-50/50 transition-colors">
                         <td className="px-6 py-4"><div className="flex items-center gap-3"><img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" /><div>{isEditing ? <input type="text" value={nameDrafts[currentUser.id] ?? currentUser.name} onChange={(event) => setNameDrafts((current) => ({ ...current, [currentUser.id]: event.target.value }))} onBlur={() => saveUserName(currentUser)} onKeyDown={(event) => { if (event.key === 'Enter') stopEditingUser(currentUser); }} className="w-full min-w-[180px] px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500" /> : <p className="font-bold text-gray-900">{currentUser.name}</p>}<p className="text-xs text-gray-500">{currentUser.email || 'لا يوجد بريد'}</p></div></div></td>
-                        <td className="px-6 py-4">{isEditing ? <select className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500" disabled={isSavingRelationship} value={currentUser.role} onChange={(event) => handleRoleChange(currentUser, event.target.value as Role)}>{Object.values(Role).map((role) => <option key={role} value={role}>{roleLabels[role]}</option>)}</select> : getRoleBadge(currentUser.role)}</td>
+                        <td className="px-6 py-4">{isEditing ? <select className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500" disabled={isSavingRelationship} value={currentUser.role} onChange={(event) => handleRoleChange(currentUser, event.target.value as Role)}>{Object.values(Role).map((role) => <option key={role} value={role}>{roleLabels[role]}</option>)}</select> : getRoleBadge(currentUser)}</td>
                         <td className="px-6 py-4">
                             {isEditing && currentUser.role === Role.STUDENT ? <div className="space-y-2 min-w-[220px]"><select disabled={isSavingRelationship} className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-60" value={currentSchoolId} onChange={(event) => handleStudentSchoolChange(currentUser, event.target.value)}><option value="">بدون مدرسة</option>{schools.map((school) => <option key={school.id} value={school.id}>{school.name}</option>)}</select><select disabled={isSavingRelationship} className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-60" value={currentClassId} onChange={(event) => handleStudentClassChange(currentUser, event.target.value)}><option value="">بدون فصل</option>{availableClasses.map((group) => <option key={group.id} value={group.id}>{group.name}</option>)}</select>{isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ المدرسة والفصل…</p>}</div>
                             : isEditing && currentUser.role === Role.SUPERVISOR ? <div className="space-y-2 min-w-[260px]"><MultiSelectField disabled={isSavingRelationship} value={currentSupervisorGroupIds} options={[...schools, ...classes].map((group) => ({ value: group.id, label: `${group.type === 'SCHOOL' ? 'مدرسة' : 'فصل'} - ${group.name}` }))} placeholder="اختر مدرسة أو فصلًا أو أكثر" onChange={(nextGroupIds) => handleSupervisorGroupsChange(currentUser, nextGroupIds)} size="sm" /><p className="text-[11px] text-gray-400">يمكن إسناد المشرف لمدرسة كاملة أو فصل/عدة فصول، ويحفظ الربط فعليًا قبل تحديث الواجهة.</p>{isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ نطاق المشرف…</p>}</div>

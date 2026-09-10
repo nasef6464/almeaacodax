@@ -274,7 +274,10 @@ export const HomepageManager: React.FC = () => {
         };
     }, [availableArticleLessons.length, availableCourses.length, availablePaths.length, settings.featuredArticleLessonIds, settings.featuredCourseIds, settings.featuredPathIds, settings.stats, settings.testimonials]);
 
-    const updateHeroField = (field: keyof HomepageSettings['hero'], value: string) => {
+    const updateHeroField = <Field extends keyof HomepageSettings['hero']>(
+        field: Field,
+        value: HomepageSettings['hero'][Field],
+    ) => {
         setSettings((prev) => ({
             ...prev,
             hero: {

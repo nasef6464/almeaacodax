@@ -427,31 +427,31 @@ const SUPERVISOR_TAB_METAS: Record<string, { title: string; description: string 
 
 const INSTRUCTOR_TAB_METAS: Record<string, { title: string; description: string }> = {
   overview: {
-    title: 'لوحة المعلم | نظرة عامة - منصة المئة',
-    description: 'لوحة تشغيل المعلم لمتابعة المساهمات والمحتوى التعليمي.',
+    title: 'لوحة مدرب المنصة | نظرة عامة - منصة المئة',
+    description: 'لوحة مدرب المنصة لمتابعة المساهمات والمحتوى التعليمي داخل نطاقه.',
   },
   lessons: {
-    title: 'لوحة المعلم | مركز الدروس التعليمية - منصة المئة',
+    title: 'لوحة مدرب المنصة | مركز الدروس التعليمية - منصة المئة',
     description: 'إدارة الدروس والشروحات التفاعلية ومتابعة الاعتماد.',
   },
   quizzes: {
-    title: 'لوحة المعلم | الاختبارات والتدريبات - منصة المئة',
+    title: 'لوحة مدرب المنصة | الاختبارات والتدريبات - منصة المئة',
     description: 'إنشاء وإدارة الاختبارات الموجهة للطلاب وتقييم المحتوى.',
   },
   'mock-exams': {
-    title: 'لوحة المعلم | الاختبارات المحاكية - منصة المئة',
+    title: 'لوحة مدرب المنصة | الاختبارات المحاكية - منصة المئة',
     description: 'إعداد نماذج المحاكاة والمراجعات لاختبارات قياس.',
   },
   questions: {
-    title: 'لوحة المعلم | بنك الأسئلة - منصة المئة',
+    title: 'لوحة مدرب المنصة | بنك الأسئلة - منصة المئة',
     description: 'إضافة ومراجعة بنك الأسئلة والخيارات والحلول النموذجية.',
   },
   library: {
-    title: 'لوحة المعلم | المكتبة وملفات الدعم - منصة المئة',
+    title: 'لوحة مدرب المنصة | المكتبة وملفات الدعم - منصة المئة',
     description: 'رفع وإدارة الملفات والمذكرات الداعمة للطلاب.',
   },
   skills: {
-    title: 'لوحة المعلم | شجرة المهارات - منصة المئة',
+    title: 'لوحة مدرب المنصة | شجرة المهارات - منصة المئة',
     description: 'استعراض وربط المهارات ونقاط القوة والتحسين.',
   },
 };
@@ -606,8 +606,8 @@ const resolvePageMeta = (
   if (effectivePath === '/instructor-dashboard' || effectivePath.startsWith('/instructor-dashboard/')) {
     const tabMeta = INSTRUCTOR_TAB_METAS[tab] || (tab ? null : INSTRUCTOR_TAB_METAS.overview);
     return {
-      title: tabMeta ? tabMeta.title : (tab ? `${tab} | لوحة المعلم - منصة المئة` : 'لوحة المعلم | منصة المئة'),
-      description: tabMeta ? tabMeta.description : 'لوحة تشغيل المعلم لإدارة المحتوى والدروس والأسئلة والاختبارات داخل منصة المئة.',
+      title: tabMeta ? tabMeta.title : (tab ? `${tab} | لوحة مدرب المنصة - منصة المئة` : 'لوحة مدرب المنصة | منصة المئة'),
+      description: tabMeta ? tabMeta.description : 'لوحة مدرب المنصة لإدارة المحتوى والدروس والأسئلة والاختبارات داخل نطاقه.',
       isPrivate: true,
       canonicalPath: '/instructor-dashboard',
     };
@@ -1513,8 +1513,16 @@ const App: React.FC = () => {
     }
   }, [user?.role]);
 
-  const staffDashboard = (
-    <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>
+  const adminDashboard = (
+    <RequireRole allowedRoles={['admin']}>
+      <Suspense fallback={<LoadingFallback />}>
+        <AdminDashboard />
+      </Suspense>
+    </RequireRole>
+  );
+
+  const instructorDashboard = (
+    <RequireRole allowedRoles={['teacher']}>
       <Suspense fallback={<LoadingFallback />}>
         <AdminDashboard />
       </Suspense>
@@ -1542,8 +1550,8 @@ const App: React.FC = () => {
           <Route path="/results" element={<Results />} />
           
           {/* Admin Routes */}
-          <Route path="/admin-dashboard" element={staffDashboard} />
-          <Route path="/instructor-dashboard" element={staffDashboard} />
+          <Route path="/admin-dashboard" element={adminDashboard} />
+          <Route path="/instructor-dashboard" element={instructorDashboard} />
           <Route path="/supervisor-dashboard" element={
             <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>
               <Suspense fallback={<LoadingFallback />}>

@@ -40,6 +40,12 @@ import {
   getScopedContentBootstrapOperationalData,
   PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT,
 } from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
+import {
+  assertManagedContentScope,
+  buildManagedContentScopeFilter,
+  combineMongoFilters,
+  resolveManagedContentScope,
+} from "../services/managedContentScope.js";
 
 const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
@@ -715,11 +721,13 @@ contentRouter.get(
       const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
       const { finalTopicFilter, finalLessonFilter, finalLibraryFilter } =
         buildContentBootstrapVisibilityFilters({ canSeeAllContent, activePathIds });
+      const managedScope = await resolveManagedContentScope(req.authUser);
+      const managedFilter = buildManagedContentScopeFilter(managedScope);
 
       const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
-        isOperationsOnly ? Promise.resolve([]) : TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
-        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
-        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
+        isOperationsOnly ? Promise.resolve([]) : TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter)).sort({ subjectId: 1, order: 1 }).lean(),
+        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LessonModel.find(combineMongoFilters(finalLessonFilter, managedFilter)).sort({ createdAt: -1 }).lean(),
+        isOperationsOnly || isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(combineMongoFilters(finalLibraryFilter, managedFilter)).sort({ createdAt: -1 }).lean(),
         includeOperationalData
           ? getScopedContentBootstrapOperationalData(req.authUser)
           : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),
@@ -899,6 +907,7 @@ contentRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = topicSchema.parse(req.body);
+    await assertManagedContentScope(req.authUser!, payload);
     const created = await TopicModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
   }),
@@ -914,6 +923,8 @@ contentRouter.patch(
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
     }
+
+    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
 
     const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
     if (!canManageTopic) {
@@ -942,6 +953,8 @@ contentRouter.delete(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
     }
 
+    await assertManagedContentScope(req.authUser!, existing.toObject());
+
     const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
     if (!canManageTopic) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this topic" });
@@ -963,6 +976,7 @@ contentRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = sanitizeLessonPayload(lessonSchema.parse(req.body));
+    await assertManagedContentScope(req.authUser!, payload);
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await LessonModel.create({
       ...payload,
@@ -982,8 +996,13 @@ contentRouter.patch(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = sanitizeLessonPayload(lessonSchema.partial().parse(req.body));
+    const existing = await LessonModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
+    }
+    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
-    const updated = await LessonModel.findOneAndUpdate(buildOwnedDocumentQuery(req.params.id, req.authUser!), sanitizedPayload, {
+    const updated = await LessonModel.findOneAndUpdate({ _id: existing._id }, sanitizedPayload, {
       new: true,
     });
 
@@ -1000,11 +1019,13 @@ contentRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await LessonModel.findOneAndDelete(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-
-    if (!deleted) {
+    const existing = await LessonModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
+    if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
     }
+    await assertManagedContentScope(req.authUser!, existing.toObject());
+    const deleted = await LessonModel.findOneAndDelete({ _id: existing._id });
+    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
 
     const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
     await TopicModel.updateMany({ lessonIds: { $in: deletedIds } }, { $pull: { lessonIds: { $in: deletedIds } } });
@@ -1019,6 +1040,7 @@ contentRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = librarySchema.parse(req.body);
+    await assertManagedContentScope(req.authUser!, payload);
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await LibraryItemModel.create({
       ...payload,
@@ -1038,9 +1060,14 @@ contentRouter.patch(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = libraryUpdateSchema.parse(req.body);
+    const existing = await LibraryItemModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
+    }
+    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
     const updated = await LibraryItemModel.findOneAndUpdate(
-      buildOwnedDocumentQuery(req.params.id, req.authUser!),
+      { _id: existing._id },
       sanitizedPayload,
       {
         new: true,
@@ -1060,11 +1087,13 @@ contentRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await LibraryItemModel.findOneAndDelete(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-
-    if (!deleted) {
+    const existing = await LibraryItemModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
+    if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
     }
+    await assertManagedContentScope(req.authUser!, existing.toObject());
+    const deleted = await LibraryItemModel.findOneAndDelete({ _id: existing._id });
+    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
 
     const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
     await TopicModel.updateMany({ libraryItemIds: { $in: deletedIds } }, { $pull: { libraryItemIds: { $in: deletedIds } } });
