@@ -72,6 +72,7 @@ async function createUser(email: string, password: string, role: "admin" | "teac
   return UserModel.create({
     name: `${role}-${RUN_MARKER}`, email, passwordHash: await bcrypt.hash(password, 10), role,
     isActive: true, emailVerified: true, emailVerifiedAt: Date.now(), enrolledCourses: [], completedLessons: [],
+    managedSubjectIds: role === "teacher" ? ["integration-subject"] : [],
     subscription: { plan: "free", purchasedCourses: [], purchasedPackages: [] },
   });
 }

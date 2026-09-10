@@ -11,6 +11,12 @@ import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
+import {
+  assertManagedContentScope,
+  buildManagedContentScopeFilter,
+  combineMongoFilters,
+  resolveManagedContentScope,
+} from "../services/managedContentScope.js";
 
 const badRequest = (message: string) => {
   const error = new Error(message) as Error & { statusCode?: number };
@@ -559,8 +565,12 @@ courseRouter.get(
     }
 
     const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
-    const filterParts = [visibilityFilter, scopedFilter].filter((item) => Object.keys(item).length > 0);
-    const filter = filterParts.length > 1 ? { $and: filterParts } : filterParts[0] || {};
+    const managedScope = await resolveManagedContentScope(req.authUser);
+    const filter = combineMongoFilters(
+      visibilityFilter,
+      scopedFilter,
+      buildManagedContentScopeFilter(managedScope),
+    );
     const [items, total] = await Promise.all([
       CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
       CourseModel.countDocuments(filter),
@@ -590,10 +600,13 @@ courseRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+    const managedScope = await resolveManagedContentScope(req.authUser);
     const identityFilter = buildCourseIdentityQuery(req.params.id);
-    const item = await CourseModel.findOne({
-      $and: [identityFilter, visibilityFilter],
-    }).lean();
+    const item = await CourseModel.findOne(combineMongoFilters(
+      identityFilter,
+      visibilityFilter,
+      buildManagedContentScopeFilter(managedScope),
+    )).lean();
     if (!item) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
     }
@@ -622,6 +635,7 @@ courseRouter.post(
       title: String(payload.title || "").trim() || "Untitled Course",
       instructor: String(payload.instructor || "").trim() || "Platform Team",
     };
+    await assertManagedContentScope(req.authUser!, normalizedPayload);
     await assertCurriculumImportScope({
       coursePathId: normalizedPayload.pathId,
       courseSubjectId: normalizedPayload.subjectId,
@@ -666,6 +680,11 @@ const handleCourseUpdate = asyncHandler(async (req, res) => {
     ? (normalizedPayload.modules as CurriculumModule[])
     : ((existing as { modules?: CurriculumModule[] }).modules || []);
 
+  await assertManagedContentScope(req.authUser!, {
+    ...(existing as Record<string, unknown>),
+    ...normalizedPayload,
+  });
+
   await assertCurriculumImportScope({
     coursePathId: nextPathId,
     courseSubjectId: nextSubjectId,
@@ -708,10 +727,12 @@ courseRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await CourseModel.findOneAndDelete(buildOwnedCourseQuery(req.params.id, req.authUser!));
-    if (!deleted) {
+    const existing = await CourseModel.findOne(buildOwnedCourseQuery(req.params.id, req.authUser!));
+    if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
     }
+    await assertManagedContentScope(req.authUser!, existing.toObject());
+    await CourseModel.deleteOne({ _id: existing._id });
     return res.status(StatusCodes.NO_CONTENT).send();
   }),
 );

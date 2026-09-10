@@ -986,9 +986,9 @@ export const AdminDashboard: React.FC = () => {
     const renderSidebar = () => (
         <div className="py-6 space-y-1">
             <div className="mb-8 px-6">
-                <h2 className="text-xl font-bold text-gray-900">لوحة الإدارة</h2>
+                <h2 className="text-xl font-bold text-gray-900">{user.role === Role.TEACHER ? 'لوحة مدرب المنصة' : 'لوحة الإدارة'}</h2>
                 <p className="text-sm text-gray-500 mt-1">
-                    {user.role === Role.ADMIN ? 'التحكم الكامل بالمنصة' : user.role === Role.TEACHER ? 'لوحة تشغيل المعلم والمحتوى' : 'لوحة متابعة المشرف'}
+                    {user.role === Role.ADMIN ? 'التحكم الكامل بالمنصة' : user.role === Role.TEACHER ? 'إدارة المحتوى داخل المسارات والمواد المسندة' : 'لوحة متابعة المشرف'}
                 </p>
             </div>
             {enhancedMenuItems.map((item) => (
@@ -1027,7 +1027,7 @@ export const AdminDashboard: React.FC = () => {
                         bg: 'bg-blue-50',
                     },
                     {
-                        title: 'المعلمون النشطون',
+                        title: 'مدربو المنصة النشطون',
                         value: overviewStats.totalTeachers.toLocaleString('ar-EG'),
                         trend: 'بصلاحيات تدريس',
                         color: 'text-emerald-600',
@@ -1373,7 +1373,7 @@ export const AdminDashboard: React.FC = () => {
                             <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-400">
                                 <Activity size={42} className="mb-3 text-gray-200" />
                                 <p className="font-medium">لا يوجد محتوى معلق الآن</p>
-                                <p className="text-xs mt-1">كل ما أضيفه المعلمون تمت مراجعته أو لا يزال في المسودة.</p>
+                                <p className="text-xs mt-1">كل ما أضافه مدربو المنصة تمت مراجعته أو لا يزال في المسودة.</p>
                             </div>
                         ) : (
                             reviewQueue.map((item) => (
@@ -1384,7 +1384,7 @@ export const AdminDashboard: React.FC = () => {
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm text-gray-800 font-bold truncate">{item.title}</p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {item.type} • المصدر: {item.ownerType === 'teacher' ? 'معلم' : item.ownerType === 'school' ? 'مدرسة' : 'المنصة'}
+                                            {item.type} • المصدر: {item.ownerType === 'teacher' ? 'مدرب منصة' : item.ownerType === 'school' ? 'مدرسة' : 'المنصة'}
                                         </p>
                                         {user.role === Role.ADMIN && (
                                             <div className="mt-3 flex flex-wrap gap-2">
@@ -1416,11 +1416,11 @@ export const AdminDashboard: React.FC = () => {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-5">
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900">نشاط المعلمين واعتماد المحتوى</h3>
-                                    <p className="text-sm text-gray-500 mt-1">المعلمون الأكثر إضافة للمحتوى والنطاقات المسندة لهم الآن.</p>
+                                    <h3 className="text-lg font-bold text-gray-900">نشاط مدربي المنصة واعتماد المحتوى</h3>
+                                    <p className="text-sm text-gray-500 mt-1">مدربو المنصة الأكثر إضافة للمحتوى والنطاقات المسندة لهم الآن.</p>
                                 </div>
                                 <div className="text-sm text-emerald-600 font-bold">
-                                    {teacherContributionStats.length.toLocaleString('ar-EG')} معلم
+                                    {teacherContributionStats.length.toLocaleString('ar-EG')} مدرب
                                 </div>
                             </div>
 
@@ -1445,7 +1445,7 @@ export const AdminDashboard: React.FC = () => {
                                     </div>
                                 )) : (
                                     <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">
-                                        لا توجد مساهمات معلمين ظاهرة بعد داخل المنصة.
+                                        لا توجد مساهمات لمدربي المنصة بعد.
                                     </div>
                                 )}
                             </div>
@@ -1459,7 +1459,7 @@ export const AdminDashboard: React.FC = () => {
                                     <h3 className="text-lg font-bold text-gray-900">نطاق عملي الحالي</h3>
                                     <p className="text-sm text-gray-500 mt-1">أي إضافة جديدة منك ستظهر أولًا في طابور المراجعة حتى اعتمادها من الإدارة.</p>
                                 </div>
-                                <div className="text-sm text-indigo-600 font-bold">معلم مادة</div>
+                                <div className="text-sm text-indigo-600 font-bold">مدرب منصة</div>
                             </div>
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

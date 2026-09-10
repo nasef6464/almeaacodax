@@ -59,6 +59,9 @@ const MOCK_ASSESSMENT_QUESTION_ID = `platform-v3-integration-mock-question-${RUN
 const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}`;
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
 const TEACHER_QUESTION_ID = `platform-v3-integration-teacher-question-${RUN_MARKER}`;
+const TEACHER_COURSE_ID = `platform-v3-integration-teacher-course-${RUN_MARKER}`;
+const TEACHER_LESSON_ID = `platform-v3-integration-teacher-lesson-${RUN_MARKER}`;
+const TEACHER_LIBRARY_ID = `platform-v3-integration-teacher-library-${RUN_MARKER}`;
 const SUPERVISOR_QUIZ_ID = `platform-v3-integration-supervisor-quiz-${RUN_MARKER}`;
 
 const credentials = new Map<Role, { email: string; password: string }>();
@@ -1029,6 +1032,140 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
     },
   });
   expectStatus("teacher cannot create a quiz outside managed scope", teacherOutsideScope, 403);
+
+  const trainerCourse = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: TEACHER_COURSE_ID,
+      title: "Platform trainer scoped course",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+    },
+  });
+  expectStatus("platform trainer creates a course inside managed scope", trainerCourse, 201);
+  assert.equal(trainerCourse.body?.approvalStatus, "pending_review", "trainer course bypassed review");
+
+  const trainerOutsideCourse = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: `${TEACHER_COURSE_ID}-outside`,
+      title: "Platform trainer outside course",
+      pathId: `outside-path-${RUN_MARKER}`,
+      subjectId: `outside-subject-${RUN_MARKER}`,
+    },
+  });
+  expectStatus("platform trainer cannot create a course outside managed scope", trainerOutsideCourse, 403);
+
+  const trainerLesson = await jsonRequest("/content/lessons", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: TEACHER_LESSON_ID,
+      title: "Platform trainer scoped lesson",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      type: "text",
+      skillIds: [`trainer-lesson-skill-${RUN_MARKER}`],
+    },
+  });
+  expectStatus("platform trainer creates a lesson inside managed scope", trainerLesson, 201);
+
+  const trainerOutsideLesson = await jsonRequest("/content/lessons", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: `${TEACHER_LESSON_ID}-outside`,
+      title: "Platform trainer outside lesson",
+      pathId: `outside-path-${RUN_MARKER}`,
+      subjectId: `outside-subject-${RUN_MARKER}`,
+      type: "text",
+      skillIds: [`trainer-outside-lesson-skill-${RUN_MARKER}`],
+    },
+  });
+  expectStatus("platform trainer cannot create a lesson outside managed scope", trainerOutsideLesson, 403);
+
+  const trainerLibraryItem = await jsonRequest("/content/library-items", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: TEACHER_LIBRARY_ID,
+      title: "Platform trainer scoped library item",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      skillIds: [`trainer-library-skill-${RUN_MARKER}`],
+    },
+  });
+  expectStatus("platform trainer creates a library item inside managed scope", trainerLibraryItem, 201);
+
+  const trainerOutsideLibraryItem = await jsonRequest("/content/library-items", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: `${TEACHER_LIBRARY_ID}-outside`,
+      title: "Platform trainer outside library item",
+      pathId: `outside-path-${RUN_MARKER}`,
+      subjectId: `outside-subject-${RUN_MARKER}`,
+      skillIds: [`trainer-outside-library-skill-${RUN_MARKER}`],
+    },
+  });
+  expectStatus("platform trainer cannot create a library item outside managed scope", trainerOutsideLibraryItem, 403);
+
+  const trainerCourses = await jsonRequest("/courses?limit=200", { token: tokens.get("teacher") });
+  expectStatus("platform trainer reads scoped course catalog", trainerCourses, 200);
+  assert.equal(
+    trainerCourses.body?.courses?.some(
+      (course: any) => String(course.id || course._id || "") === TEACHER_COURSE_ID,
+    ),
+    true,
+    "trainer course list omitted in-scope course",
+  );
+  assert.equal(
+    trainerCourses.body?.courses?.some(
+      (course: any) => String(course.id || course._id || "") === COURSE_ID,
+    ),
+    false,
+    "trainer course list leaked a course without managed scope",
+  );
+
+  const trainerContent = await jsonRequest("/content/bootstrap?scope=full", { token: tokens.get("teacher") });
+  expectStatus("platform trainer reads scoped learning content", trainerContent, 200);
+  assert.equal(trainerContent.body?.lessons?.some((lesson: any) => lesson.id === TEACHER_LESSON_ID), true);
+  assert.equal(trainerContent.body?.libraryItems?.some((item: any) => item.id === TEACHER_LIBRARY_ID), true);
+
+  const teacherId = userIds.get("teacher");
+  assert.ok(teacherId, "teacher id missing for empty-scope proof");
+  await UserModel.updateOne(
+    { _id: teacherId },
+    { $set: { managedPathIds: [], managedSubjectIds: [] } },
+  );
+  const emptyScopeCreate = await jsonRequest("/quizzes/questions", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: `${TEACHER_QUESTION_ID}-empty-scope`,
+      text: "Platform trainer must fail closed without assignments",
+      options: ["Wrong", "Correct"],
+      correctOptionIndex: 1,
+      skillIds: [`trainer-empty-scope-${RUN_MARKER}`],
+      pathId: ASSESSMENT_PATH_ID,
+      subject: ASSESSMENT_SUBJECT_ID,
+      type: "mcq",
+    },
+  });
+  expectStatus("platform trainer without managed assignments fails closed", emptyScopeCreate, 403);
+  await UserModel.updateOne(
+    { _id: teacherId },
+    { $set: { managedPathIds: [ASSESSMENT_PATH_ID], managedSubjectIds: [ASSESSMENT_SUBJECT_ID] } },
+  );
 
   const supervisorQuiz = await jsonRequest("/quizzes", {
     method: "POST",
