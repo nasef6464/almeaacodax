@@ -62,6 +62,7 @@ const AUTH_BOOTSTRAP_PRIVATE_PREFIXES = [
   '/dashboard',
   '/admin-dashboard',
   '/instructor-dashboard',
+  '/school-teacher-dashboard',
   '/supervisor-dashboard',
   '/parent-dashboard',
   '/plan',

@@ -27,6 +27,7 @@ import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
 import { Role } from '../../types';
 import { api } from '../../services/api';
+import { TeacherWorkspaceSwitcher } from '../../components/teacher/TeacherWorkspaceSwitcher';
 
 const lazyNamed = <TProps extends object>(
     loader: () => Promise<any>,
@@ -990,6 +991,7 @@ export const AdminDashboard: React.FC = () => {
                 <p className="text-sm text-gray-500 mt-1">
                     {user.role === Role.ADMIN ? 'التحكم الكامل بالمنصة' : user.role === Role.TEACHER ? 'إدارة المحتوى داخل المسارات والمواد المسندة' : 'لوحة متابعة المشرف'}
                 </p>
+                {user.role === Role.TEACHER && <TeacherWorkspaceSwitcher />}
             </div>
             {enhancedMenuItems.map((item) => (
                 <button

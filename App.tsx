@@ -15,6 +15,7 @@ import { PlatformFontBootstrap } from './components/PlatformFontBootstrap';
 import { APP_VERSION } from './utils/appVersion';
 import { installGlobalClientTelemetry } from './services/clientTelemetry';
 import { PwaInstallBanner } from './components/PwaInstallBanner';
+import { TeacherWorkspaceGate } from './components/teacher/TeacherWorkspaceContext';
 
 import { RoleSwitcher } from './components/RoleSwitcher';
 
@@ -49,6 +50,7 @@ const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ d
 const ClassroomStudentLive = React.lazy(() => import('./pages/ClassroomStudentLive').then(module => ({ default: module.ClassroomStudentLive })));
 const ClassroomTeacherConsole = React.lazy(() => import('./pages/ClassroomTeacherConsole').then(module => ({ default: module.ClassroomTeacherConsole })));
 const ClassroomProjectorView = React.lazy(() => import('./pages/ClassroomProjectorView').then(module => ({ default: module.ClassroomProjectorView })));
+const SchoolTeacherDashboard = React.lazy(() => import('./dashboards/SchoolTeacherDashboard').then(module => ({ default: module.SchoolTeacherDashboard })));
 const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
 const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
 const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
@@ -89,6 +91,7 @@ const DATA_BOOTSTRAP_START_PREFIXES = [
   '/dashboard',
   '/admin-dashboard',
   '/instructor-dashboard',
+  '/school-teacher-dashboard',
   '/supervisor-dashboard',
   '/parent-dashboard',
   '/category',
@@ -145,6 +148,7 @@ const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [
   '/dashboard',
   '/admin-dashboard',
   '/instructor-dashboard',
+  '/school-teacher-dashboard',
   '/supervisor-dashboard',
   '/parent-dashboard',
   '/reports',
@@ -259,6 +263,7 @@ const SEO_PRIVATE_PREFIXES = [
   '/dashboard',
   '/admin-dashboard',
   '/instructor-dashboard',
+  '/school-teacher-dashboard',
   '/supervisor-dashboard',
   '/parent-dashboard',
   '/quiz',
@@ -610,6 +615,15 @@ const resolvePageMeta = (
       description: tabMeta ? tabMeta.description : 'لوحة مدرب المنصة لإدارة المحتوى والدروس والأسئلة والاختبارات داخل نطاقه.',
       isPrivate: true,
       canonicalPath: '/instructor-dashboard',
+    };
+  }
+
+  if (effectivePath === '/school-teacher-dashboard' || effectivePath.startsWith('/school-teacher-dashboard/')) {
+    return {
+      title: 'لوحة معلم المدرسة | منصة المئة',
+      description: 'مساحة معلم المدرسة للفصول المسندة والاختبارات المدرسية والفصل الذكي.',
+      isPrivate: true,
+      canonicalPath: '/school-teacher-dashboard',
     };
   }
 
@@ -1523,9 +1537,11 @@ const App: React.FC = () => {
 
   const instructorDashboard = (
     <RequireRole allowedRoles={['teacher']}>
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminDashboard />
-      </Suspense>
+      <TeacherWorkspaceGate workspace="platform">
+        <Suspense fallback={<LoadingFallback />}>
+          <AdminDashboard />
+        </Suspense>
+      </TeacherWorkspaceGate>
     </RequireRole>
   );
 
@@ -1544,14 +1560,23 @@ const App: React.FC = () => {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/quiz/:quizId" element={<QuizPage />} />
           <Route path="/classroom/:sessionId" element={<ClassroomStudentLive />} />
-          <Route path="/classroom/teacher" element={<ClassroomTeacherConsole />} />
-          <Route path="/classroom/:sessionId/teacher" element={<ClassroomTeacherConsole />} />
+          <Route path="/classroom/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
+          <Route path="/classroom/:sessionId/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
           <Route path="/classroom/:sessionId/projector" element={<ClassroomProjectorView />} />
           <Route path="/results" element={<Results />} />
           
           {/* Admin Routes */}
           <Route path="/admin-dashboard" element={adminDashboard} />
           <Route path="/instructor-dashboard" element={instructorDashboard} />
+          <Route path="/school-teacher-dashboard" element={
+            <RequireRole allowedRoles={['teacher']}>
+              <TeacherWorkspaceGate workspace="school">
+                <Suspense fallback={<LoadingFallback />}>
+                  <SchoolTeacherDashboard />
+                </Suspense>
+              </TeacherWorkspaceGate>
+            </RequireRole>
+          } />
           <Route path="/supervisor-dashboard" element={
             <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>
               <Suspense fallback={<LoadingFallback />}>

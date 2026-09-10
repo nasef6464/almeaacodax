@@ -11,3 +11,8 @@ export const resolveSchoolContexts = async (user: LegacySchoolUser) => {
   }
   return contexts;
 };
+
+export const hasActiveSchoolRole = async (user: LegacySchoolUser, schoolId: string, role: string) => {
+  const contexts = await resolveSchoolContexts(user);
+  return contexts.some((context) => context.schoolId === schoolId && context.role === role);
+};
