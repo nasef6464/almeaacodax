@@ -38,12 +38,13 @@ const loadAllUsersByRole = async (role: Role): Promise<User[]> => {
 };
 
 export const loadSchoolAdminUsers = async (): Promise<User[]> => {
-    const [firstPage, students, parents, supervisors, teachers] = await Promise.all([
+    const [firstPage, students, parents, supervisors, teachers, schoolDirectors] = await Promise.all([
         api.getAdminUsers({ page: 1, limit: 100 }),
         loadAllUsersByRole(Role.STUDENT),
         loadAllUsersByRole(Role.PARENT),
         loadAllUsersByRole(Role.SUPERVISOR),
         loadAllUsersByRole(Role.TEACHER),
+        loadAllUsersByRole(Role.SCHOOL_ADMIN),
     ]);
 
     const usersById = new Map<string, User>();
@@ -53,6 +54,7 @@ export const loadSchoolAdminUsers = async (): Promise<User[]> => {
         ...parents,
         ...supervisors,
         ...teachers,
+        ...schoolDirectors,
     ].forEach((user) => {
         if (user.id) {
             usersById.set(user.id, user);

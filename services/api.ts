@@ -254,7 +254,7 @@ const getStoredSessionRole = (): string | null => {
   }
 };
 
-const canUsePublicLearningCache = () => !["admin", "teacher", "supervisor"].includes(getStoredSessionRole() || "");
+const canUsePublicLearningCache = () => !["admin", "teacher", "supervisor", "school_admin"].includes(getStoredSessionRole() || "");
 
 const writePublicCache = <T>(key: string, value: T, ttlMs: number) => {
   const storage = getPublicCacheStorage();
@@ -723,6 +723,16 @@ export const api = {
     request<{ contract: { status: string; modules: string[] } }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { method: "PUT", body: payload, token }),
   updateTeachingAssignment: (payload: unknown, token?: string | null) =>
     request<unknown>("/school-access/assignments", { method: "PUT", body: payload, token }),
+  getSchoolDirectors: (schoolId: string, token?: string | null) =>
+    request<{
+      permissions: string[];
+      defaults: string[];
+      directors: Array<{ userId: string; schoolId: string; status: "active" | "inactive"; permissions: string[]; user: { id?: string; _id?: string; name: string; email: string; role: string; isActive?: boolean } | null }>;
+    }>(`/school-access/directors/${encodeURIComponent(schoolId)}`, { token, cache: "no-store" }),
+  updateSchoolDirectorAccess: (schoolId: string, userId: string, payload: { status: "active" | "inactive"; permissions: string[] }, token?: string | null) =>
+    request<{ membership: unknown }>(`/school-access/directors/${encodeURIComponent(schoolId)}/${encodeURIComponent(userId)}`, { method: "PUT", body: payload, token }),
+  getSchoolDirectorWorkspace: (token?: string | null) =>
+    request<{ schools: Array<{ schoolId: string; schoolName: string; permissions: string[]; status: string; updatedAt: string | null }> }>("/school-access/director-workspace", { token, cache: "no-store" }),
   getSchoolTeacherWorkspace: (token?: string | null) =>
     request<{
       personas: { platformTrainer: boolean; schoolTeacher: boolean };

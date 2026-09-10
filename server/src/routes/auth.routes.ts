@@ -22,6 +22,7 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { env } from "../config/env.js";
 import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
 import { isPackageSeatAvailable } from "../services/packageSeatCapacity.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -53,7 +54,7 @@ const adminCreateUserSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: passwordStrengthSchema,
-  role: z.enum(["student", "teacher", "admin", "supervisor", "parent"]),
+  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]),
   schoolId: z.string().nullable().optional(),
   groupIds: z.array(z.string()).optional(),
   linkedStudentIds: z.array(z.string()).optional(),
@@ -64,7 +65,7 @@ const adminCreateUserSchema = z.object({
 const adminUpdateUserSchema = z.object({
   name: z.string().min(2).optional(),
   avatar: z.string().optional(),
-  role: z.enum(["student", "teacher", "admin", "supervisor", "parent"]).optional(),
+  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]).optional(),
   isActive: z.boolean().optional(),
   schoolId: z.string().nullable().optional(),
   groupIds: z.array(z.string()).optional(),
@@ -77,7 +78,7 @@ const adminUsersQuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
   search: z.string().trim().max(120).optional(),
-  role: z.enum(["student", "teacher", "admin", "supervisor", "parent"]).optional(),
+  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]).optional(),
   isActive: z.preprocess((value) => {
     if (value === undefined || value === null || value === "") {
       return undefined;
@@ -855,6 +856,14 @@ authRouter.patch(
       if (previousRole === "supervisor") {
         staleMembershipUpdates.push(
           GroupModel.updateMany({ supervisorIds: membershipUserId }, { $pull: { supervisorIds: membershipUserId } }),
+        );
+      }
+      if (previousRole === "school_admin") {
+        staleMembershipUpdates.push(
+          SchoolMembershipModel.updateMany(
+            { userId: String(targetUser.id || targetUser._id || targetId), role: "school_admin", status: "active" },
+            { $set: { status: "inactive" } },
+          ),
         );
       }
       if (staleMembershipUpdates.length > 0) {
