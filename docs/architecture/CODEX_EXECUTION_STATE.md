@@ -1,5 +1,29 @@
 # ALMEAA — Codex Execution State
 
+## Product Goal G13 — Trainer Directory & Course Assignment Integrity
+
+- Status: `CLOSED / VERIFIED` on 2026-09-10. Runtime commit:
+  `487693b223c0355fc914eedd3c34525b21566914` on
+  `codex/g13-trainer-directory`.
+- The course builder now loads a separate server-paginated directory of active,
+  scoped Platform Trainers instead of relying on the partial global users store.
+  Search, paging, loading, error, and an explicit Platform Team option are
+  present; no User system, role, or data migration was introduced.
+- The admin-users route has an additive `platformTrainer=true` query guarded to
+  Platform Admin and filtered to active `teacher` users with managed paths or
+  subjects. Course create and relevant admin updates verify the assigned trainer
+  is active, is a `teacher`, and owns the course path or subject. Non-admin
+  updates cannot rewrite `assignedTeacherId`.
+- Evidence: local server check/build, focused standalone Course Builder TypeScript
+  check, `smoke:course-builder`, and `smoke:account-workspaces-g7` PASS. Exact
+  runtime Backend Integration [34507622744](https://github.com/nasef6464/almeaacodax/actions/runs/34507622744)
+  PASS on isolated Mongo: real HTTP trainer directory, qualified/unscoped/inactive
+  filtering, valid/invalid/inactive assignment, and direct reassignment denial.
+- Known unrelated workspace condition: the root frontend typecheck reaches an
+  existing parse error in unowned `dashboards/admin/AnnouncementAdsManager.tsx`.
+  It is not part of G13; the focused affected-file check passed. G14 remains the
+  next planned goal.
+
 ## Schools UI cleanup — legacy School Portal retirement
 
 - Reviewed on 2026-09-10. The legacy `SchoolPortalManager` decision-center page and its admin tab,
