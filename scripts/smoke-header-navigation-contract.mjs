@@ -9,6 +9,13 @@ const homepageManagerSource = read('dashboards/admin/HomepageManager.tsx');
 const typesSource = read('types.ts');
 const modelSource = read('server/src/models/HomepageSettings.ts');
 const contentRoutesSource = read('server/src/routes/content.routes.ts');
+const presentationSchemasSource = fs.existsSync(path.join(root, 'server/src/modules/content/http/platformPresentationSchemas.ts'))
+  ? read('server/src/modules/content/http/platformPresentationSchemas.ts')
+  : '';
+const presentationDefaultsSource = fs.existsSync(path.join(root, 'server/src/modules/content/presentation/platformPresentationDefaults.ts'))
+  ? read('server/src/modules/content/presentation/platformPresentationDefaults.ts')
+  : '';
+const effectiveContentSource = `${contentRoutesSource}\n${presentationSchemasSource}\n${presentationDefaultsSource}`;
 const sanitizerSource = read('utils/sanitizeMojibakeArabic.ts');
 
 const checks = [];
@@ -26,8 +33,8 @@ check('homepage settings define admin-controlled navigation', () => {
   includes(typesSource, 'showAutoPaths?: boolean');
   includes(typesSource, 'items?: HomepageNavigationItem[]');
   includes(modelSource, 'homepageNavigationSchema');
-  includes(contentRoutesSource, 'navigation: z');
-  includes(contentRoutesSource, 'showAutoPaths: true');
+  includes(effectiveContentSource, 'navigation: z');
+  includes(effectiveContentSource, 'showAutoPaths: true');
 });
 
 check('admin homepage manager can show/hide and label top navigation items', () => {

@@ -77,6 +77,8 @@ const text = {
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeStageId, setActiveStageId] = useState<string | null>(null);
+  const [expandedMobileStageId, setExpandedMobileStageId] = useState<string | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -189,29 +191,47 @@ export const Header: React.FC = () => {
 
         if (pathLevels.length > 0) {
           pathLevels.forEach((level) => {
+            const levelSubjects = pathSubjects.filter((subject) => subject.levelId === level.id);
             menuNode.children.push({
               id: level.id,
               label: level.name,
               link: `/category/${path.id}?level=${level.id}`,
               isGroup: true,
+              levelId: level.id,
+              pathId: path.id,
+              subjects: levelSubjects.map((subject) => ({
+                id: subject.id,
+                label: subject.name,
+                link: `/category/${path.id}?level=${level.id}&subject=${subject.id}`,
+                icon: subject.icon,
+                color: subject.color,
+                isChild: true,
+              })),
             });
+          });
 
-            const levelSubjects = pathSubjects.filter((subject) => subject.levelId === level.id);
-            levelSubjects.forEach((subject) => {
+          const unassignedSubjects = pathSubjects.filter(
+            (subject) => !subject.levelId || !pathLevels.some((l) => l.id === subject.levelId)
+          );
+          if (unassignedSubjects.length > 0) {
+            unassignedSubjects.forEach((subject) => {
               menuNode.children.push({
                 id: subject.id,
                 label: subject.name,
                 link: `/category/${path.id}?subject=${subject.id}`,
-                isChild: true,
+                icon: subject.icon,
+                color: subject.color,
               });
             });
-          });
+          }
         } else {
           pathSubjects.forEach((subject) => {
             menuNode.children.push({
               id: subject.id,
               label: subject.name,
               link: `/category/${path.id}?subject=${subject.id}`,
+              icon: subject.icon,
+              color: subject.color,
             });
           });
         }
@@ -477,7 +497,10 @@ export const Header: React.FC = () => {
                   key={`nav-${item.id}-${index}`}
                   className="relative group px-3 py-2"
                   onMouseEnter={() => setActiveDropdown(item.id)}
-                  onMouseLeave={() => setActiveDropdown(null)}
+                  onMouseLeave={() => {
+                    setActiveDropdown(null);
+                    setActiveStageId(null);
+                  }}
                 >
                   <Link
                     to={item.link || '#'}
@@ -491,22 +514,96 @@ export const Header: React.FC = () => {
                   </Link>
 
                   {item.children && activeDropdown === item.id ? (
-                    <div className="absolute top-full right-0 w-64 sm:w-72 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl border border-slate-100 dark:border-slate-800 border-t-2 border-t-amber-500 py-2.5 animate-fade-in z-50 backdrop-blur-md">
+                    <div className="absolute top-full right-0 w-72 sm:w-80 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl border border-slate-100 dark:border-slate-800 border-t-2 border-t-amber-500 py-2.5 animate-fade-in z-50 backdrop-blur-md">
                       {item.children.map((child: Record<string, any>, childIndex: number) => {
                         if (child.isDivider) {
                           return <div key={`divider-${childIndex}`} className="h-px bg-slate-100 dark:bg-slate-800 my-1.5 mx-3" />;
                         }
 
                         if (child.isGroup) {
+                          const hasSubjects = Array.isArray(child.subjects) && child.subjects.length > 0;
+                          const isStageOpen = activeStageId === child.id;
+
                           return (
-                            <Link
-                              key={`child-${child.id}-${childIndex}`}
-                              to={child.link || '#'}
-                              className="mx-2 my-1 px-3 py-1.5 text-xs font-black text-indigo-950 dark:text-indigo-200 bg-slate-100/90 dark:bg-slate-800/90 rounded-md border-r-4 border-indigo-600 flex items-center justify-between transition-colors hover:bg-slate-200/80 dark:hover:bg-slate-700/80"
+                            <div
+                              key={`stage-${child.id}-${childIndex}`}
+                              className="mx-2 my-1"
+                              onMouseEnter={() => {
+                                if (hasSubjects) setActiveStageId(child.id);
+                              }}
                             >
-                              <span>{child.label}</span>
-                              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-1.5 py-0.5 rounded">مرحلة</span>
-                            </Link>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (hasSubjects) {
+                                    setActiveStageId((prev) => (prev === child.id ? null : child.id));
+                                  } else {
+                                    navigate(child.link || '#');
+                                    setActiveDropdown(null);
+                                    setActiveStageId(null);
+                                  }
+                                }}
+                                className={`w-full px-3 py-2 text-xs font-black rounded-xl flex items-center justify-between transition-all cursor-pointer select-none text-right ${
+                                  isStageOpen
+                                    ? 'bg-indigo-600 text-white shadow-xs'
+                                    : 'bg-slate-100/90 dark:bg-slate-800/90 text-indigo-950 dark:text-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-700 dark:hover:text-indigo-300'
+                                }`}
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="text-sm shrink-0">📂</span>
+                                  <span className="truncate">{child.label}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <span
+                                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-colors ${
+                                      isStageOpen
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                                    }`}
+                                  >
+                                    مرحلة
+                                  </span>
+                                  {hasSubjects ? (
+                                    <ChevronDown
+                                      size={14}
+                                      className={`transition-transform duration-200 ${
+                                        isStageOpen ? 'rotate-180 text-white' : 'text-gray-400'
+                                      }`}
+                                    />
+                                  ) : null}
+                                </div>
+                              </button>
+
+                              {hasSubjects && isStageOpen ? (
+                                <div className="mt-1 mr-2 pr-3 py-1 space-y-0.5 border-r-2 border-indigo-500/70 dark:border-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-lg animate-fade-in">
+                                  {child.subjects.map((sub: Record<string, any>) => (
+                                    <Link
+                                      key={`sub-${sub.id}`}
+                                      to={sub.link}
+                                      onClick={() => {
+                                        setActiveDropdown(null);
+                                        setActiveStageId(null);
+                                      }}
+                                      className="block px-2.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white/80 dark:hover:bg-slate-800/80 rounded-md transition-all flex items-center gap-2"
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                                      <span className="truncate">{sub.label}</span>
+                                    </Link>
+                                  ))}
+                                  <Link
+                                    to={child.link}
+                                    onClick={() => {
+                                      setActiveDropdown(null);
+                                      setActiveStageId(null);
+                                    }}
+                                    className="block px-2.5 py-1.5 text-[11px] font-black text-indigo-600 dark:text-indigo-400 hover:underline pt-1 border-t border-indigo-100/70 dark:border-indigo-900/40"
+                                  >
+                                    استعراض كامل {child.label} ←
+                                  </Link>
+                                </div>
+                              ) : null}
+                            </div>
                           );
                         }
 
@@ -515,6 +612,10 @@ export const Header: React.FC = () => {
                             <Link
                               key={`child-${child.id}-${childIndex}`}
                               to={child.link || '#'}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                setActiveStageId(null);
+                              }}
                               className="mx-2 my-1.5 px-3 py-2 text-xs font-black rounded-xl bg-gradient-to-r from-purple-50 via-purple-100/50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 text-purple-900 dark:text-purple-200 border border-purple-200/80 dark:border-purple-800/60 flex items-center justify-between shadow-xs hover:from-purple-100 hover:to-indigo-100 transition-all hover:scale-[1.01]"
                             >
                               <span className="flex items-center gap-2">
@@ -531,6 +632,10 @@ export const Header: React.FC = () => {
                             <Link
                               key={`child-${child.id}-${childIndex}`}
                               to={child.link || '#'}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                setActiveStageId(null);
+                              }}
                               className="mx-2 my-1.5 px-3 py-2 text-xs font-black rounded-xl bg-gradient-to-r from-amber-50 via-amber-100/50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 text-amber-950 dark:text-amber-200 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-between shadow-xs hover:from-amber-100 hover:to-orange-100 transition-all hover:scale-[1.01]"
                             >
                               <span className="flex items-center gap-2">
@@ -546,11 +651,11 @@ export const Header: React.FC = () => {
                           <Link
                             key={`child-${child.id}-${childIndex}`}
                             to={child.link || '#'}
-                            className={`block py-1.5 text-xs font-bold transition-colors ${
-                              child.isChild
-                                ? 'text-slate-600 dark:text-slate-300 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 pr-7 pl-3 mx-2 rounded-lg'
-                                : 'text-slate-700 dark:text-slate-200 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 px-3 mx-2 rounded-lg'
-                            }`}
+                            onClick={() => {
+                              setActiveDropdown(null);
+                              setActiveStageId(null);
+                            }}
+                            className="block py-2 text-xs font-bold transition-colors text-slate-700 dark:text-slate-200 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 px-3 mx-2 rounded-lg"
                           >
                             {child.label}
                           </Link>
@@ -686,15 +791,72 @@ export const Header: React.FC = () => {
                         .filter((child: Record<string, any>) => !child.isDivider)
                         .map((child: Record<string, any>, childIndex: number) => {
                           if (child.isGroup) {
+                            const hasSubjects = Array.isArray(child.subjects) && child.subjects.length > 0;
+                            const isExpanded = expandedMobileStageId === child.id;
+
                             return (
-                              <Link
-                                key={`mobile-child-${child.id}-${childIndex}`}
-                                to={child.link || '#'}
-                                className="block py-1.5 px-3 text-xs font-black text-indigo-950 dark:text-indigo-200 bg-slate-100 dark:bg-slate-800 rounded border-r-4 border-indigo-600 my-1"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                              >
-                                {child.label}
-                              </Link>
+                              <div key={`mobile-stage-${child.id}-${childIndex}`} className="my-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (hasSubjects) {
+                                      setExpandedMobileStageId((prev) => (prev === child.id ? null : child.id));
+                                    } else {
+                                      navigate(child.link || '#');
+                                      setIsMobileMenuOpen(false);
+                                    }
+                                  }}
+                                  className={`w-full py-2 px-3 text-xs font-black rounded-lg flex items-center justify-between transition-colors text-right ${
+                                    isExpanded
+                                      ? 'bg-indigo-600 text-white shadow-xs'
+                                      : 'bg-slate-100 dark:bg-slate-800 text-indigo-950 dark:text-indigo-200'
+                                  }`}
+                                >
+                                  <span className="flex items-center gap-2">
+                                    <span>📂</span>
+                                    <span>{child.label}</span>
+                                  </span>
+                                  <span className="flex items-center gap-1.5">
+                                    <span
+                                      className={`text-[10px] px-1.5 py-0.5 rounded ${
+                                        isExpanded
+                                          ? 'bg-white/20 text-white'
+                                          : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                                      }`}
+                                    >
+                                      مرحلة
+                                    </span>
+                                    {hasSubjects ? (
+                                      <ChevronDown
+                                        size={14}
+                                        className={`transition-transform duration-200 ${isExpanded ? 'rotate-180 text-white' : 'text-gray-400'}`}
+                                      />
+                                    ) : null}
+                                  </span>
+                                </button>
+
+                                {hasSubjects && isExpanded ? (
+                                  <div className="mr-3 pr-3 py-1 space-y-1 border-r-2 border-indigo-400 dark:border-indigo-600 mt-1">
+                                    {child.subjects.map((sub: Record<string, any>) => (
+                                      <Link
+                                        key={`mobile-sub-${sub.id}`}
+                                        to={sub.link}
+                                        className="block py-1.5 px-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-indigo-600"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                      >
+                                        • {sub.label}
+                                      </Link>
+                                    ))}
+                                    <Link
+                                      to={child.link}
+                                      className="block py-1 px-2 text-[11px] font-black text-indigo-600 dark:text-indigo-400"
+                                      onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                      استعراض كامل {child.label} ←
+                                    </Link>
+                                  </div>
+                                ) : null}
+                              </div>
                             );
                           }
                           if (child.isMockExam || child.id?.includes('mock')) {
@@ -733,7 +895,7 @@ export const Header: React.FC = () => {
                             <Link
                               key={`mobile-child-${child.id}-${childIndex}`}
                               to={child.link || '#'}
-                              className={`block py-1 text-xs font-medium ${child.isChild ? 'text-slate-600 dark:text-slate-300 pr-3' : 'text-slate-700 dark:text-slate-200'}`}
+                              className="block py-1.5 px-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-indigo-600"
                               onClick={() => setIsMobileMenuOpen(false)}
                             >
                               {child.label}
