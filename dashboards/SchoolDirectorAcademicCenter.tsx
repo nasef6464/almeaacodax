@@ -157,6 +157,7 @@ export const SchoolDirectorAcademicCenter: React.FC<{
                 {counts.assessments}
               </span>
             </h3>
+            <div className="mt-3 grid gap-2">
               <input value={assessment.title} onChange={(e) => setAssessment({ ...assessment, title: e.target.value })} placeholder="عنوان الاختبار" className="rounded-xl border bg-white px-3 py-2 text-sm" />
               <select value={assessment.classId} onChange={(e) => setAssessment({ ...assessment, classId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
                 {classes.map((item) => (<option key={item.classId} value={item.classId}>{item.className}</option>))}

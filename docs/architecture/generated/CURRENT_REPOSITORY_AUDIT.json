@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T11:44:11.245Z",
-  "gitHead": "fb0d0799c25c5edd0947e48df6066f5274e4cd16",
+  "generatedAt": "2026-09-10T11:52:04.581Z",
+  "gitHead": "08190461db9ee88db221677876ff42495be2b0bb",
   "summary": {
     "trackedFiles": 1363,
     "sourceFiles": 940,
     "runtimeSourceFiles": 567,
-    "sourceLines": 187086,
-    "runtimeSourceLines": 147577,
+    "sourceLines": 187087,
+    "runtimeSourceLines": 147578,
     "frontendRoutes": 55,
     "backendRouteEntries": 285,
     "routerMounts": 30,
@@ -32,8 +32,8 @@
     },
     "web-source": {
       "files": 315,
-      "bytes": 5736484,
-      "lines": 107954
+      "bytes": 5736531,
+      "lines": 107955
     },
     "source-other": {
       "files": 11,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 282,
-      "bytes": 4413365,
-      "lines": 102221
+      "bytes": 4413107,
+      "lines": 102213
     },
     "public-asset": {
       "files": 4,
@@ -94,8 +94,8 @@
     },
     "schools": {
       "files": 129,
-      "lines": 22177,
-      "bytes": 1211044
+      "lines": 22178,
+      "bytes": 1211091
     },
     "paths": {
       "files": 13,
@@ -13562,9 +13562,9 @@
       "file": "dashboards/SchoolDirectorAcademicCenter.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 13452,
-      "lines": 264,
-      "sha256": "36d3e4c3095ff6ebc9d99ec58d9e1badaeb5da47b72c352a98f7b3ef89fc7e55"
+      "bytes": 13499,
+      "lines": 265,
+      "sha256": "c74fc94348f9052e690ad9f897f26efe7620ec680a99a97b3144df79658d0b5a"
     },
     {
       "file": "dashboards/SchoolDirectorDashboard.tsx",
@@ -16068,15 +16068,15 @@
       "domain": "shared",
       "bytes": 60257,
       "lines": 2193,
-      "sha256": "d21f7501baf152b7fca9612f0b2d21ca1a59be81da87f76dd5fc9d878c0ccacb"
+      "sha256": "adcce544a3de1db1c37887ffc48235c831f4f619f3ad41aa88da8d1464a6e0a6"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 744764,
-      "lines": 23587,
-      "sha256": "8529ae0c5c1bc50dcbe30119b4fdf16ffd670e0711d1514f2b96965f48f4b2f6"
+      "bytes": 744506,
+      "lines": 23579,
+      "sha256": "cc0eb00aa1f6e7cfefaba6b135b8a8feb2174625df354fac31273dfa68e75b6b"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -16084,7 +16084,7 @@
       "domain": "shared",
       "bytes": 4077,
       "lines": 75,
-      "sha256": "bd530c11d330e5d5f10d1269955231a36032774d83e3d0a8d4fc6b7c3c9644fd"
+      "sha256": "3db05153c5703143db9c23987c61b6187011b5d197243ac4a164b60340b0737b"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
@@ -16092,7 +16092,7 @@
       "domain": "shared",
       "bytes": 120408,
       "lines": 3345,
-      "sha256": "3506126aa88a4e491c987dad949837f5994c455d165fb0a18e5b956db798dbb1"
+      "sha256": "04da88246e387399cda7e561fa535c38673b30e0b8533508edfcb8e2b5c6f4b2"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",

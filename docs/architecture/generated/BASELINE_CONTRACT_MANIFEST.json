@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T11:44:11.245Z",
-  "gitHead": "fb0d0799c25c5edd0947e48df6066f5274e4cd16",
+  "generatedAt": "2026-09-10T11:52:04.581Z",
+  "gitHead": "08190461db9ee88db221677876ff42495be2b0bb",
   "frontendRoutes": [
     "*",
     "/",
