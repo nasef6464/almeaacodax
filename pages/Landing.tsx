@@ -478,15 +478,19 @@ export const Landing: React.FC = () => {
                                 />
 
                                 {/* Floating Rating Badge Card */}
-                                <div className="absolute -top-3 -right-2 sm:-top-5 sm:-right-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-xl border border-white/80 flex items-center gap-3 animate-float">
+                                <a
+                                    href="#testimonials"
+                                    className="absolute -top-3 -right-2 sm:-top-5 sm:-right-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl border border-white/80 flex items-center gap-3 animate-float transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 cursor-pointer group"
+                                    title="شاهد آراء وتقييمات الطلاب المعتمدة"
+                                >
                                     <div className="flex -space-x-2 space-x-reverse overflow-hidden">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 flex items-center justify-center text-white text-xs font-black ring-2 ring-white">
+                                        <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 flex items-center justify-center text-white text-[11px] font-black ring-2 ring-white">
                                             99%
                                         </div>
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-600 flex items-center justify-center text-white text-xs font-black ring-2 ring-white">
+                                        <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-600 flex items-center justify-center text-white text-[11px] font-black ring-2 ring-white">
                                             98%
                                         </div>
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xs font-black ring-2 ring-white">
+                                        <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white text-[11px] font-black ring-2 ring-white">
                                             97%
                                         </div>
                                     </div>
@@ -494,28 +498,35 @@ export const Landing: React.FC = () => {
                                         <div className="flex items-center gap-1">
                                             <Star size={13} className="text-amber-400 fill-amber-400" />
                                             <span className="text-xs font-black text-gray-900">4.9 من 5</span>
-                                            <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-full">معتمد</span>
+                                            <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.2 rounded-full">معتمد</span>
                                         </div>
-                                        <div className="text-[10px] font-bold text-gray-500">تقييم الطلاب للتدريب</div>
+                                        <div className="text-[10px] font-bold text-gray-500 group-hover:text-indigo-600 transition-colors flex items-center gap-0.5 justify-end">
+                                            <span>تقييم الطلاب</span>
+                                            <span className="text-[9px]">▾</span>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
 
                                 {/* Floating Progress & Readiness Card */}
-                                <div className="absolute -bottom-4 right-2 sm:-bottom-6 sm:-right-6 z-20 bg-white/95 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl shadow-2xl border border-white/80 max-w-[195px] sm:max-w-[215px] animate-bounce-slow">
-                                    <div className="flex items-center gap-2.5 mb-2.5 border-b border-gray-100 pb-2">
-                                        <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-xs">
-                                            <Target size={16} />
+                                <a
+                                    href="#paths"
+                                    className="absolute -bottom-4 right-2 sm:-bottom-6 sm:-right-6 z-20 bg-white/95 backdrop-blur-md p-3 sm:p-3.5 rounded-2xl shadow-2xl border border-white/80 max-w-[195px] sm:max-w-[215px] animate-bounce-slow transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 cursor-pointer block group"
+                                    title="استكشف المسارات التعليمية والجاهزية"
+                                >
+                                    <div className="flex items-center gap-2.5 mb-2 border-b border-gray-100 pb-1.5">
+                                        <div className="w-7 h-7 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-xs">
+                                            <Target size={15} />
                                         </div>
                                         <div className="min-w-0">
-                                            <div className="text-xs font-black text-gray-900 truncate">{homepageSettings.hero.floatingCardTitle || defaultHomepageSettings.hero.floatingCardTitle}</div>
+                                            <div className="text-xs font-black text-gray-900 truncate group-hover:text-indigo-600 transition-colors">{homepageSettings.hero.floatingCardTitle || defaultHomepageSettings.hero.floatingCardTitle}</div>
                                             <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 <span>{homepageSettings.hero.floatingCardSubtitle || defaultHomepageSettings.hero.floatingCardSubtitle}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <div className="h-2 bg-gray-100 rounded-full w-full overflow-hidden p-0.5">
+                                    <div className="space-y-1">
+                                        <div className="h-1.5 bg-gray-100 rounded-full w-full overflow-hidden p-0.5">
                                             <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full w-3/4 animate-pulse" />
                                         </div>
                                         <div className="flex justify-between text-[10px] font-bold text-gray-600">
@@ -523,51 +534,59 @@ export const Landing: React.FC = () => {
                                             <span className="text-indigo-600 font-black">{homepageSettings.hero.floatingCardProgressValue || defaultHomepageSettings.hero.floatingCardProgressValue}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
 
                                 {/* Floating A+ Badge */}
-                                <div className="absolute top-10 left-2 sm:top-14 sm:-left-6 z-20 bg-gradient-to-br from-amber-400 to-amber-500 text-white p-2.5 sm:p-3 rounded-2xl shadow-xl shadow-amber-500/20 animate-float flex items-center gap-1 border-2 border-white">
-                                    <span className="font-black text-lg sm:text-xl">A+</span>
-                                    <Sparkles size={16} className="text-amber-100 fill-amber-100" />
-                                </div>
+                                <a
+                                    href="#why-choose"
+                                    className="absolute top-10 left-2 sm:top-14 sm:-left-6 z-20 bg-gradient-to-br from-amber-400 to-amber-500 text-white p-2 sm:p-2.5 rounded-2xl shadow-xl shadow-amber-500/20 animate-float flex items-center gap-1 border-2 border-white transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+                                    title="لماذا تختار منصة المئة؟"
+                                >
+                                    <span className="font-black text-base sm:text-lg">A+</span>
+                                    <Sparkles size={15} className="text-amber-100 fill-amber-100" />
+                                </a>
 
                                 {/* Floating Achievement Strip */}
-                                <div className="absolute bottom-16 left-2 sm:bottom-20 sm:-left-6 z-10 bg-white/95 backdrop-blur-md px-3 py-2 rounded-2xl shadow-lg border border-white/80 animate-float animation-delay-2000 flex items-center gap-2">
-                                    <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                                        <Trophy size={15} />
+                                <a
+                                    href="#testimonials"
+                                    className="absolute bottom-16 left-2 sm:bottom-20 sm:-left-6 z-10 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-lg border border-white/80 animate-float animation-delay-2000 flex items-center gap-2 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer group"
+                                    title="شاهد تجارب وقصص نجاح الطلاب"
+                                >
+                                    <div className="w-6 h-6 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                        <Trophy size={14} />
                                     </div>
                                     <div>
-                                        <div className="text-[10px] font-black text-gray-800">تحسن ملحوظ</div>
+                                        <div className="text-[10px] font-black text-gray-800 group-hover:text-indigo-600 transition-colors">تحسن ملحوظ</div>
                                         <div className="text-[9px] font-bold text-emerald-600">+15 درجة في القياس</div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Redesigned Live Stats & Counters Section */}
-            <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 py-12 text-white">
+            {/* Compact Live Stats & Counters Section */}
+            <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 py-5 sm:py-6 text-white border-y border-white/5">
                 <div className="absolute inset-0 opacity-15" style={{ backgroundImage: 'radial-gradient(#6366f1 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
                 <div className="absolute top-0 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         {homepageStats.slice(0, 4).map((stat) => {
                             const isRating = stat.source === 'rating';
                             const isStudents = stat.source === 'students';
                             const isCourses = stat.source === 'courses';
 
                             const icon = isRating ? (
-                                <Star size={22} className="text-amber-400 fill-amber-400" />
+                                <Star size={18} className="text-amber-400 fill-amber-400" />
                             ) : isStudents ? (
-                                <Users size={22} className="text-blue-400" />
+                                <Users size={18} className="text-blue-400" />
                             ) : isCourses ? (
-                                <BookOpen size={22} className="text-emerald-400" />
+                                <BookOpen size={18} className="text-emerald-400" />
                             ) : (
-                                <Zap size={22} className="text-purple-400" />
+                                <Zap size={18} className="text-purple-400" />
                             );
 
                             const iconBg = isRating
@@ -581,15 +600,15 @@ export const Landing: React.FC = () => {
                             return (
                                 <div
                                     key={stat.id}
-                                    className="group relative overflow-hidden rounded-3xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/25 p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl backdrop-blur-md flex flex-col items-center text-center"
+                                    className="group relative overflow-hidden rounded-2xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/25 py-3 sm:py-3.5 px-3 sm:px-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl backdrop-blur-md flex flex-col items-center text-center"
                                 >
-                                    <div className={`mb-3.5 inline-flex h-12 w-12 items-center justify-center rounded-2xl border shadow-xs transition-transform duration-300 group-hover:scale-110 ${iconBg}`}>
+                                    <div className={`mb-2 inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border shadow-xs transition-transform duration-300 group-hover:scale-110 ${iconBg}`}>
                                         {icon}
                                     </div>
-                                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white mb-1 group-hover:text-amber-300 transition-colors">
+                                    <div className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-white mb-0.5 group-hover:text-amber-300 transition-colors">
                                         {isRating ? `${stat.displayValue} ⭐` : stat.displayValue}
                                     </div>
-                                    <div className="text-xs sm:text-sm font-bold text-indigo-200/90">{stat.label}</div>
+                                    <div className="text-[11px] sm:text-xs font-bold text-indigo-200/90">{stat.label}</div>
                                 </div>
                             );
                         })}
@@ -597,7 +616,7 @@ export const Landing: React.FC = () => {
                 </div>
             </section>
 
-            <section className="py-20 bg-gray-50">
+            <section id="paths" className="py-20 bg-gray-50 scroll-mt-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">كل ما تحتاجه للتفوق</h2>
@@ -742,7 +761,7 @@ export const Landing: React.FC = () => {
                 </div>
             </section>
 
-            <section className="py-20 bg-white">
+            <section id="why-choose" className="py-20 bg-white scroll-mt-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
                         <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -779,7 +798,7 @@ export const Landing: React.FC = () => {
                 </div>
             </section>
 
-            <section className="py-20 bg-gradient-to-b from-indigo-950 via-indigo-900 to-indigo-950 text-white relative overflow-hidden">
+            <section id="testimonials" className="py-20 bg-gradient-to-b from-indigo-950 via-indigo-900 to-indigo-950 text-white relative overflow-hidden scroll-mt-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-14">
                         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold mb-4 backdrop-blur-sm">
