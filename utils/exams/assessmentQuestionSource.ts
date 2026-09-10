@@ -70,15 +70,26 @@ const HYDRATE_CHUNK_SIZE = MAX_PAGE_LIMIT;
 
 export const normalizeAssessmentQuestion = (value: unknown): Question => {
   const question = (value || {}) as Record<string, unknown>;
+  const rawText = String(question.text || '');
+  const extractedImgUrl =
+    (typeof question.imageUrl === 'string' && question.imageUrl.trim()) ||
+    (typeof question.image === 'string' && question.image.trim()) ||
+    (typeof question.img === 'string' && question.img.trim()) ||
+    (typeof question.questionImage === 'string' && question.questionImage.trim()) ||
+    (typeof question.mediaUrl === 'string' && question.mediaUrl.trim()) ||
+    (rawText.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1]) ||
+    (rawText.match(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/i)?.[1]) ||
+    undefined;
+
   return {
     ...question,
     id: String(question.id || question._id || ''),
-    text: String(question.text || ''),
+    text: rawText,
     options: Array.isArray(question.options) ? question.options.map(String) : [],
     correctOptionIndex: Number(question.correctOptionIndex ?? 0),
     explanation: question.explanation ? String(question.explanation) : '',
     videoUrl: question.videoUrl ? String(question.videoUrl) : undefined,
-    imageUrl: question.imageUrl ? String(question.imageUrl) : undefined,
+    imageUrl: extractedImgUrl ? String(extractedImgUrl) : undefined,
     skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
     pathId: question.pathId ? String(question.pathId) : undefined,
     subject: String(question.subject || question.subjectId || ''),

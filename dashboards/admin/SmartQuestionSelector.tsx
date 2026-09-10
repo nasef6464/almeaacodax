@@ -24,7 +24,32 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   Medium: "bg-amber-100 text-amber-700 border-amber-200",
   Hard: "bg-rose-100 text-rose-700 border-rose-200",
 };
+const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 const CLIENT_PAGE_SIZE = 100;
+
+export const getEffectiveImageUrl = (question: Partial<Question> | undefined | null): string | null => {
+  if (!question) return null;
+  const anyQ = question as Record<string, any>;
+  if (typeof question.imageUrl === "string" && question.imageUrl.trim()) return question.imageUrl.trim();
+  if (typeof anyQ.image === "string" && anyQ.image.trim()) return anyQ.image.trim();
+  if (typeof anyQ.img === "string" && anyQ.img.trim()) return anyQ.img.trim();
+  if (typeof anyQ.questionImage === "string" && anyQ.questionImage.trim()) return anyQ.questionImage.trim();
+  if (typeof anyQ.mediaUrl === "string" && anyQ.mediaUrl.trim()) return anyQ.mediaUrl.trim();
+  const raw = String(question.text || "");
+  const htmlMatch = raw.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (htmlMatch?.[1]) return htmlMatch[1];
+  const mdMatch = raw.match(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/i);
+  if (mdMatch?.[1]) return mdMatch[1];
+  const urlMatch = raw.trim().match(/^https?:\/\/\S+\.(?:png|jpe?g|webp|gif|svg)(?:\?\S*)?$/i);
+  if (urlMatch?.[0]) return urlMatch[0];
+  return null;
+};
+
+const cleanQuestionHtmlText = (value?: string | null) => {
+  return String(value || "")
+    .replace(/<img[^>]*>/gi, "")
+    .trim();
+};
 
 export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   pathId, subjectId, selectedIds, onChange, maxQuestions = 100,
@@ -574,8 +599,10 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
               ) : (
                 visibleFilteredQuestions.map((q, idx) => {
                   const isSelected = selectedIds.includes(q.id);
+                  const effectiveImgUrl = getEffectiveImageUrl(q);
                   const rawText = q.text || "";
-                  const cleanSnippet = rawText.replace(/<[^>]+>/g, "").trim();
+                  const textWithoutImg = cleanQuestionHtmlText(rawText);
+                  const cleanSnippet = textWithoutImg.replace(/<[^>]+>/g, "").trim();
                   const hasText = cleanSnippet.length > 0;
                   const questionNum = (manualPage - 1) * CLIENT_PAGE_SIZE + idx + 1;
                   const skillName = q.skillId ? skillNameMap.get(q.skillId) : null;
@@ -635,10 +662,10 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                         </div>
 
                         <div className="flex items-center gap-2 text-xs text-gray-400 font-mono">
-                          {q.imageUrl && (
+                          {effectiveImgUrl && (
                             <button
                               type="button"
-                              onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                              onClick={() => setZoomImageUrl(effectiveImgUrl)}
                               title="معاينة الصورة مكبرة"
                               className="p-1 rounded-lg hover:bg-gray-200 text-indigo-600 font-bold flex items-center gap-1 text-[11px]"
                             >
@@ -651,64 +678,75 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
                       {/* محتوى بطاقة السؤال */}
                       <div className="p-4 space-y-3 text-right" dir="rtl">
-                        {/* نص السؤال */}
+                        {/* نص السؤال إن وجد */}
                         {hasText ? (
                           <div
                             className="text-sm font-bold text-gray-900 leading-relaxed border-r-2 border-indigo-400 pr-2.5"
-                            dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(rawText) }}
+                            dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(textWithoutImg) }}
                           />
-                        ) : (
-                          <div className="text-xs font-bold text-indigo-600 flex items-center gap-1">
+                        ) : effectiveImgUrl ? (
+                          <div className="text-xs font-bold text-indigo-700 flex items-center gap-1.5">
                             <Layers size={13} />
-                            <span>سؤال مصور (المسألة موجودة بالصورة أدناه):</span>
+                            <span>سؤال مصور (المسألة بالصورة أدناه):</span>
+                          </div>
+                        ) : (
+                          <div className="text-xs font-bold text-gray-400">
+                            <span>سؤال بدون نص محدد</span>
                           </div>
                         )}
 
-                        {/* صورة السؤال المباشرة والواضحة */}
-                        {q.imageUrl && (
-                          <div className="relative group rounded-xl border border-gray-200 bg-gray-50/50 p-2 max-w-xl mx-auto sm:mx-0">
+                        {/* صورة السؤال المباشرة والواضحة بتصميم مشغل الفيديو */}
+                        {effectiveImgUrl && (
+                          <div className="max-w-2xl overflow-hidden rounded-xl border border-indigo-100 bg-slate-50 p-2 shadow-xs group relative">
                             <img
-                              src={q.imageUrl}
+                              src={effectiveImgUrl}
                               alt="صورة السؤال"
-                              className="max-h-60 w-auto mx-auto object-contain rounded-lg cursor-zoom-in bg-white"
-                              onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                              className="max-h-56 w-full object-contain cursor-zoom-in hover:scale-[1.01] transition-transform bg-white rounded-lg"
                               loading="lazy"
+                              onClick={() => setZoomImageUrl(effectiveImgUrl)}
                             />
                             <button
                               type="button"
-                              onClick={() => setZoomImageUrl(q.imageUrl || null)}
-                              className="absolute bottom-3 left-3 bg-black/70 hover:bg-black text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all shadow"
+                              onClick={() => setZoomImageUrl(effectiveImgUrl)}
+                              className="absolute bottom-3 left-3 bg-black/75 hover:bg-black text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all shadow-md"
                             >
-                              <Eye size={12} /> تكبير
+                              <Eye size={12} /> تكبير الصورة
                             </button>
                           </div>
                         )}
 
-                        {/* خيارات الإجابة (MCQ) */}
+                        {/* خيارات الإجابة (MCQ) - أفقية بجانب بعضها لتوفير المساحة الرأسية */}
                         {q.options && q.options.length > 0 && (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                          <div className={`grid gap-2 pt-1 ${
+                            q.options.length === 2
+                              ? "grid-cols-2"
+                              : q.options.length === 3
+                                ? "grid-cols-3"
+                                : "grid-cols-2 sm:grid-cols-4"
+                          }`}>
                             {q.options.map((opt, optIdx) => {
                               const isCorrect = optIdx === q.correctOptionIndex;
                               return (
                                 <div
                                   key={optIdx}
-                                  className={`flex items-start gap-2 px-3 py-2 rounded-xl border text-xs leading-relaxed transition-all ${
+                                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${
                                     isCorrect
                                       ? "bg-emerald-50/90 border-emerald-300 text-emerald-900 font-bold"
                                       : "bg-gray-50/70 border-gray-100 text-gray-700 font-medium"
                                   }`}
                                 >
-                                  <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black mt-0.5 ${
+                                  <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
                                     isCorrect ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-600"
                                   }`}>
                                     {OPTION_LETTERS[optIdx] || String(optIdx + 1)}
                                   </span>
                                   <span
-                                    className="flex-1"
+                                    className="flex-1 truncate"
+                                    title={normalizeQuestionHtml(opt)}
                                     dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(opt) || "—" }}
                                   />
                                   {isCorrect && (
-                                    <CheckCircle2 size={14} className="shrink-0 text-emerald-600 mt-0.5" />
+                                    <CheckCircle2 size={14} className="shrink-0 text-emerald-600" />
                                   )}
                                 </div>
                               );
@@ -818,8 +856,9 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                   );
                 }
 
-                const plainText = (q.text || "").replace(/<[^>]+>/g, "").trim();
-                const displayTitle = plainText ? plainText.slice(0, 50) : (q.imageUrl ? "سؤال مصور" : `سؤال #${q.id.slice(-5)}`);
+                const effectiveThumbUrl = getEffectiveImageUrl(q);
+                const plainText = cleanQuestionHtmlText(q.text || "").replace(/<[^>]+>/g, "").trim();
+                const displayTitle = plainText ? plainText.slice(0, 50) : (effectiveThumbUrl ? "سؤال مصور" : `سؤال #${q.id.slice(-5)}`);
 
                 return (
                   <div
@@ -838,11 +877,11 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                     <span className="text-gray-400 font-mono text-[10px] w-4 shrink-0">{index + 1}</span>
 
                     {/* مصغر الصورة إن وجد */}
-                    {q.imageUrl && (
+                    {effectiveThumbUrl && (
                       <img
-                        src={q.imageUrl}
+                        src={effectiveThumbUrl}
                         alt="مصغر"
-                        onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                        onClick={() => setZoomImageUrl(effectiveThumbUrl)}
                         className="w-8 h-8 rounded-lg border border-gray-200 object-contain bg-white shrink-0 cursor-pointer"
                         title="انقر للتكبير"
                       />
