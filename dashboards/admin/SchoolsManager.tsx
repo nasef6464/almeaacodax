@@ -1271,8 +1271,6 @@ export const SchoolsManager: React.FC = () => {
                     onCancelDelete={() => setIsDeleteSchoolConfirmOpen(false)}
                     onConfirmDelete={confirmDeleteSelectedSchool}
                 />
-                <SchoolContractPanel schoolId={selectedSchool.id} />
-                <TeachingAssignmentPanel schoolId={selectedSchool.id} classes={schoolClasses} teachers={teachers} />
 
                 <div data-testid="school-workspace-tabs" className="hidden">
                     {[
@@ -1492,37 +1490,40 @@ export const SchoolsManager: React.FC = () => {
 
                         {/* ── 3. الفصول والإسناد ── */}
                         {activeTab === 'academic' && (
-                            <SchoolClassesPanel
-                                schoolClasses={schoolClasses}
-                                schoolStudents={schoolStudents}
-                                parents={parents}
-                                supervisors={supervisors}
-                                teachers={teachers}
-                                publishedCourses={publishedCourses}
-                                bulkClassNames={bulkClassNames}
-                                setBulkClassNames={setBulkClassNames}
-                                schoolActionPending={schoolActionPending}
-                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
-                                rosterActionPending={rosterActionPending}
-                                onDownloadSchoolRoster={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
-                                onCreateSingleClass={() => void handleCreateSingleClass()}
-                                onCreateBulkClasses={handleCreateBulkClasses}
-                                onDownloadClassReport={downloadClassReport}
-                                onPrintClassReport={printClassReport}
-                                onRenameClass={openClassRenameModal}
-                                onDeleteClass={(classroom) => void handleDeleteClass(classroom)}
-                                onFocusClassStudentForm={(classroom) => focusClassStudentForm(classroom.name)}
-                                onFocusClassRoster={(classroom) => focusClassRoster(classroom.id)}
-                                onOpenImport={() => setActiveTab('import')}
-                                onOpenPackages={() => setActiveTab('contract')}
-                                onAssignSupervisor={handleAssignSchoolSupervisor}
-                                onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
-                                onRemoveSupervisor={confirmRemoveClassSupervisor}
-                                onAssignTeacher={handleAssignTeacherToClass}
-                                onRemoveTeacher={handleRemoveTeacherFromClass}
-                                onAssignCourse={assignCourseToGroup}
-                                onRemoveCourse={removeCourseFromGroup}
-                            />
+                            <div className="space-y-6">
+                                <TeachingAssignmentPanel schoolId={selectedSchool.id} classes={schoolClasses} teachers={teachers} />
+                                <SchoolClassesPanel
+                                    schoolClasses={schoolClasses}
+                                    schoolStudents={schoolStudents}
+                                    parents={parents}
+                                    supervisors={supervisors}
+                                    teachers={teachers}
+                                    publishedCourses={publishedCourses}
+                                    bulkClassNames={bulkClassNames}
+                                    setBulkClassNames={setBulkClassNames}
+                                    schoolActionPending={schoolActionPending}
+                                    isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                    rosterActionPending={rosterActionPending}
+                                    onDownloadSchoolRoster={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
+                                    onCreateSingleClass={() => void handleCreateSingleClass()}
+                                    onCreateBulkClasses={handleCreateBulkClasses}
+                                    onDownloadClassReport={downloadClassReport}
+                                    onPrintClassReport={printClassReport}
+                                    onRenameClass={openClassRenameModal}
+                                    onDeleteClass={(classroom) => void handleDeleteClass(classroom)}
+                                    onFocusClassStudentForm={(classroom) => focusClassStudentForm(classroom.name)}
+                                    onFocusClassRoster={(classroom) => focusClassRoster(classroom.id)}
+                                    onOpenImport={() => setActiveTab('import')}
+                                    onOpenPackages={() => setActiveTab('contract')}
+                                    onAssignSupervisor={handleAssignSchoolSupervisor}
+                                    onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
+                                    onRemoveSupervisor={confirmRemoveClassSupervisor}
+                                    onAssignTeacher={handleAssignTeacherToClass}
+                                    onRemoveTeacher={handleRemoveTeacherFromClass}
+                                    onAssignCourse={assignCourseToGroup}
+                                    onRemoveCourse={removeCourseFromGroup}
+                                />
+                            </div>
                         )}
 
                         {/* ── 4. الخدمات ووحدات العقد ── */}
@@ -1536,6 +1537,7 @@ export const SchoolsManager: React.FC = () => {
                         {/* ── 5. العقد والباقات ── */}
                         {(activeTab === 'contract' || activeTab === 'packages') && (
                             <div className="space-y-6">
+                                <SchoolContractPanel schoolId={selectedSchool.id} />
                                 <SchoolPackagesPanel
                                     selectedSchool={selectedSchool}
                                     schoolPackages={schoolPackages}
