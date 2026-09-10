@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw, ChevronRight, ChevronLeft, Eye } from "lucide-react";
+import { Search, Filter, Zap, BookOpen, Brain, X, CheckCircle2, GripVertical, BarChart2, AlertCircle, Loader2, RefreshCw, ChevronRight, ChevronLeft, Eye, CheckSquare, Layers } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { Question } from "../../types";
 import { api } from "../../services/api";
 import { assessmentQuestionSource } from "../../utils/exams/assessmentQuestionSource";
+import { normalizeQuestionHtml } from "../../utils/questionHtml";
 
 type SelectionMode = "manual" | "skills" | "smart";
 type Difficulty = "all" | "Easy" | "Medium" | "Hard";
@@ -54,7 +55,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [manualPage, setManualPage] = useState(1);
-  const [hoveredQuestionId, setHoveredQuestionId] = useState<string | null>(null);
+  const [zoomImageUrl, setZoomImageUrl] = useState<string | null>(null);
   const selectedSkillKey = useMemo(() => [...selectedSkillIds].sort().join("|"), [selectedSkillIds]);
   const questionSourceFilters = useMemo(() => ({
     pathId,
@@ -230,359 +231,691 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     }
   };
 
-  const handleRefetch = () => {
-    setRefreshKey((value) => value + 1);
-  };
+  const skillNameMap = useMemo(() => {
+    const map = new Map<string, string>();
+    skills.forEach((s) => map.set(s.id, s.name));
+    return map;
+  }, [skills]);
 
-  // ── مشتق: السؤال المعروض في لوحة المعاينة ─────────────────────────────────
-  const previewQuestion: Question | null = useMemo(() => {
-    if (hoveredQuestionId) return allQuestionsMap.get(hoveredQuestionId) ?? null;
-    if (selectedIds.length > 0) return allQuestionsMap.get(selectedIds[selectedIds.length - 1]) ?? null;
-    return null;
-  }, [hoveredQuestionId, selectedIds, allQuestionsMap]);
+  const sectionNameMap = useMemo(() => {
+    const map = new Map<string, string>();
+    sections.forEach((s) => map.set(s.id, s.name));
+    return map;
+  }, [sections]);
+
+  const allCurrentPageSelected = visibleFilteredQuestions.length > 0 && visibleFilteredQuestions.every((q) => selectedIds.includes(q.id));
+  const toggleSelectAllCurrentPage = () => {
+    if (allCurrentPageSelected) {
+      const currentPageIds = new Set(visibleFilteredQuestions.map((q) => q.id));
+      onChange(selectedIds.filter((id) => !currentPageIds.has(id)));
+    } else {
+      const remainingSlots = maxQuestions - selectedIds.length;
+      const toAdd = visibleFilteredQuestions
+        .map((q) => q.id)
+        .filter((id) => !selectedIds.includes(id))
+        .slice(0, remainingSlots);
+      onChange([...selectedIds, ...toAdd]);
+    }
+  };
 
   const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'ه', 'و'];
 
   return (
-    <div data-testid="assessment-question-selector" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-      {/* ══════════════════════════════════════════════
-          اللوحة اليسرى: الفلاتر + قائمة الأسئلة
-      ══════════════════════════════════════════════ */}
-      <div className="flex flex-col gap-3">
-        {/* أزرار الطريقة */}
-        <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
+    <div data-testid="assessment-question-selector" className="space-y-4">
+      {/* ── الشريط العلوي لاختيار الوضع والملخص ───────────────────────────── */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-50/90 p-2.5 rounded-2xl border border-gray-200/80">
+        <div className="flex gap-1.5 bg-gray-200/80 p-1 rounded-xl">
           {[
-            { id: "manual" as SelectionMode, label: "يدوي", icon: <Filter size={13}/> },
-            { id: "skills" as SelectionMode, label: "بالمهارات", icon: <BookOpen size={13}/> },
-            { id: "smart" as SelectionMode, label: "ذكي تلقائي", icon: <Brain size={13}/> },
+            { id: "manual" as SelectionMode, label: "تصفح الأسئلة", icon: <Filter size={14} /> },
+            { id: "skills" as SelectionMode, label: "تصفية بالمهارات", icon: <BookOpen size={14} /> },
+            { id: "smart" as SelectionMode, label: "توليد ذكي تلقائي", icon: <Brain size={14} /> },
           ].map((tab) => (
-            <button key={tab.id} type="button" onClick={() => setMode(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold transition-all ${mode === tab.id ? "bg-white text-indigo-700 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
-              {tab.icon}{tab.label}
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setMode(tab.id)}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-black transition-all ${
+                mode === tab.id
+                  ? "bg-white text-indigo-700 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {tab.icon}
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>
 
-        {!pathId && (
-          <div className="py-6 text-center text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-xl font-bold">
-            ⚠️ اختر المسار أولاً لتظهر الأسئلة
-          </div>
-        )}
-
-        {loadingQuestions && (
-          <div className="py-6 text-center text-xs text-indigo-600 flex items-center justify-center gap-2 font-bold">
-            <Loader2 size={16} className="animate-spin"/> جارٍ تحميل الأسئلة...
-          </div>
-        )}
-
-        {loadError && !loadingQuestions && (
-          <div className="flex items-center justify-between bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
-            <span className="text-xs font-bold text-rose-600 flex items-center gap-1">
-              <AlertCircle size={13}/> {loadError}
-            </span>
-            <button type="button" onClick={handleRefetch}
-              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-              <RefreshCw size={12}/> إعادة المحاولة
-            </button>
-          </div>
-        )}
-
-        {!loadingQuestions && !loadError && pathId && apiQuestions.length > 0 && (
-          <div className="flex items-center justify-between text-[11px] text-gray-400 font-bold px-1">
-            <span>{totalAvailable} مطابق للفلاتر</span>
-            <span>الصفحة {manualPage}</span>
-          </div>
-        )}
-
-        {mode === "smart" && (
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-bold text-gray-600 mb-1 block">عدد الأسئلة</label>
-                <input type="number" min={1} max={maxQuestions} value={smartCount}
-                  onChange={(e) => setSmartCount(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-bold text-center focus:outline-none focus:border-indigo-400"/>
-              </div>
-              <div>
-                <label className="text-xs font-bold text-gray-600 mb-1 block">توزيع الصعوبة</label>
-                <select value={smartMode} onChange={(e) => setSmartMode(e.target.value as SmartMode)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-400 bg-white">
-                  <option value="balanced">متوازن (30/50/20)</option>
-                  <option value="easy">أسهل (60/30/10)</option>
-                  <option value="hard">أصعب (10/30/60)</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="text-xs font-bold text-gray-600 mb-1 block">المهارات (تضيق التوليد)</label>
-              <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
-                {availableSkills.slice(0, 20).map((skill) => (
-                  <button key={skill.id} type="button"
-                    onClick={() => setSelectedSkillIds((prev) => prev.includes(skill.id) ? prev.filter((id) => id !== skill.id) : [...prev, skill.id])}
-                    className={`text-xs px-2 py-0.5 rounded-full border font-bold transition-all ${selectedSkillIds.includes(skill.id) ? "bg-indigo-600 text-white border-indigo-600" : "border-gray-200 text-gray-600 hover:border-indigo-400"}`}>
-                    {skill.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-            {smartError && <p className="text-rose-600 text-xs font-bold flex items-center gap-1"><AlertCircle size={13}/>{smartError}</p>}
-            <button type="button" onClick={handleSmartGenerate} disabled={smartLoading || !pathId}
-              className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-sm transition-all disabled:opacity-50">
-              {smartLoading ? <><Loader2 size={15} className="animate-spin"/>جارٍ التوليد...</> : <><Zap size={15}/>توليد {smartCount} سؤال</>}
-            </button>
-          </div>
-        )}
-
-        {mode !== "smart" && !loadingQuestions && (
-          <div className="space-y-2">
-            <div className="relative">
-              <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-              <input data-testid="assessment-question-search" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="ابحث في السؤال..." dir="rtl"
-                className="w-full pr-9 pl-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"/>
-            </div>
-            <select value={selectedSectionId} onChange={(e) => { setSelectedSectionId(e.target.value); setSelectedSkillIds([]); }}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-indigo-400">
-              <option value="">كل الأقسام</option>
-              {availableSections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
-            {mode === "skills" && (
-              <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto border border-gray-100 rounded-lg p-2 bg-gray-50">
-                {availableSkills.slice(0, 30).map((skill) => (
-                  <button key={skill.id} type="button"
-                    onClick={() => setSelectedSkillIds((prev) => prev.includes(skill.id) ? prev.filter((id) => id !== skill.id) : [...prev, skill.id])}
-                    className={`text-xs px-2 py-0.5 rounded-full border font-medium transition-all ${selectedSkillIds.includes(skill.id) ? "bg-indigo-600 text-white border-indigo-600" : "border-gray-200 text-gray-500"}`}>
-                    {skill.name}
-                  </button>
-                ))}
-              </div>
+        <div className="flex items-center gap-2.5 text-xs">
+          <span className="font-bold text-gray-500">
+            {totalAvailable > 0 && !loadingQuestions && (
+              <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 text-gray-700 font-bold">
+                {totalAvailable} سؤال متاح
+              </span>
             )}
-            <div className="flex gap-1">
-              {(["all", "Easy", "Medium", "Hard"] as Difficulty[]).map((d) => (
-                <button key={d} type="button" onClick={() => setDifficulty(d)}
-                  className={`flex-1 text-xs font-bold py-1.5 rounded-lg border transition-all ${difficulty === d ? d === "all" ? "bg-gray-700 text-white border-gray-700" : DIFFICULTY_COLORS[d] + " border-current" : "border-gray-200 text-gray-500"}`}>
-                  {d === "all" ? "الكل" : DIFFICULTY_LABELS[d]}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {mode !== "smart" && !loadingQuestions && pathId && (
-          <div className="space-y-2">
-            <div className="overflow-y-auto space-y-1.5 max-h-72 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
-              {visibleFilteredQuestions.length === 0
-                ? (
-                  <div className="py-6 text-center text-xs text-gray-400">
-                    <BarChart2 size={24} className="mx-auto mb-2 opacity-30"/>
-                    <p className="font-bold">
-                      "لا توجد أسئلة تطابق الفلتر"
-                    </p>
-                  </div>
-                )
-                : visibleFilteredQuestions.map((q) => {
-                    const isSelected = selectedIds.includes(q.id);
-                    const isHovered = hoveredQuestionId === q.id;
-                    const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
-                    return (
-                      <button key={q.id} type="button" data-testid={`assessment-question-select-${q.id}`}
-                        onClick={() => { toggleQuestion(q.id); setHoveredQuestionId(q.id); }}
-                        onMouseEnter={() => setHoveredQuestionId(q.id)}
-                        disabled={!isSelected && selectedIds.length >= maxQuestions}
-                        className={`w-full text-right px-3 py-2.5 rounded-lg border flex items-start gap-2 text-xs transition-all ${
-                          isHovered
-                            ? "border-indigo-400 bg-indigo-50/80 shadow-sm"
-                            : isSelected
-                            ? "bg-indigo-50 border-indigo-300 text-indigo-900"
-                            : "bg-white border-gray-100 text-gray-700 hover:border-indigo-200 disabled:opacity-40"
-                        }`}>
-                        <CheckCircle2 size={14} className={`shrink-0 mt-0.5 ${isSelected ? "text-indigo-600" : "text-gray-300"}`}/>
-                        <span className="flex-1 line-clamp-2 font-medium leading-relaxed">{plainText || "—"}</span>
-                        {isHovered && <Eye size={12} className="shrink-0 mt-0.5 text-indigo-400"/>}
-                        {q.difficulty && (
-                          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
-                            {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })
-              }
-            </div>
-            {totalManualPages > 1 && (
-              <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 px-1">
-                <button type="button" data-testid="assessment-question-page-previous" onClick={() => setManualPage((page) => Math.max(1, page - 1))} disabled={manualPage <= 1}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
-                  <ChevronRight size={12}/> السابق
-                </button>
-                <span>صفحة {manualPage} من {totalManualPages}</span>
-                <button type="button" data-testid="assessment-question-page-next" onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))} disabled={manualPage >= totalManualPages}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 bg-white disabled:opacity-40">
-                  التالي <ChevronLeft size={12}/>
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+          </span>
+          <span className="font-black text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
+            المختارة: {selectedIds.length} / {maxQuestions}
+          </span>
+        </div>
       </div>
 
-      {/* ══════════════════════════════════════════════
-          اللوحة الوسطى: معاينة السؤال المحدد
-      ══════════════════════════════════════════════ */}
-      <div className="hidden lg:flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <Eye size={14} className="text-indigo-500"/>
-          <h4 className="text-sm font-black text-gray-700">معاينة السؤال</h4>
-          {previewQuestion && (
-            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${DIFFICULTY_COLORS[previewQuestion.difficulty] || "border-gray-200 text-gray-400"}`}>
-              {DIFFICULTY_LABELS[previewQuestion.difficulty] || previewQuestion.difficulty}
-            </span>
-          )}
+      {!pathId && (
+        <div className="py-8 text-center text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl font-bold">
+          ⚠️ اختر المسار أولاً لتظهر الأسئلة
         </div>
+      )}
 
-        <div className="flex-1 overflow-y-auto rounded-2xl border border-gray-100 bg-white p-4 shadow-sm min-h-[420px]">
-          {!previewQuestion ? (
-            <div className="h-full flex flex-col items-center justify-center text-center text-gray-300 gap-3">
-              <Eye size={36} className="opacity-30"/>
-              <p className="text-xs font-bold">مرّر على سؤال من القائمة<br/>لتظهر المعاينة هنا</p>
-            </div>
-          ) : (
-            <div className="space-y-4 text-right" dir="rtl">
-              {/* نص السؤال */}
-              <div
-                className="text-sm font-bold text-gray-900 leading-relaxed border-r-4 border-indigo-400 pr-3"
-                dangerouslySetInnerHTML={{ __html: previewQuestion.text || "—" }}
-              />
+      {/* ── التقسيم الرئيسي: تصفح الأسئلة (يمين) + السلة المختارة (يسار) ──────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-              {/* صورة السؤال */}
-              {previewQuestion.imageUrl && (
-                <img
-                  src={previewQuestion.imageUrl}
-                  alt="صورة السؤال"
-                  className="max-w-full rounded-xl border border-gray-100 shadow-sm max-h-40 object-contain"
-                />
-              )}
+        {/* ══════════════════════════════════════════════════════════════════════
+            القسم الرئيسي: استعراض الأسئلة والبحث والفلاتر (8 أعمدة)
+        ══════════════════════════════════════════════════════════════════════ */}
+        <div className="lg:col-span-8 flex flex-col gap-3.5">
 
-              {/* الخيارات */}
-              {previewQuestion.options && previewQuestion.options.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-[11px] font-black text-gray-400 uppercase tracking-wide">الخيارات</p>
-                  {previewQuestion.options.map((opt, idx) => {
-                    const isCorrect = idx === previewQuestion.correctOptionIndex;
+          {/* حالة التوليد الذكي */}
+          {mode === "smart" && (
+            <div className="bg-gradient-to-br from-indigo-50/90 to-purple-50/70 border border-indigo-100 rounded-2xl p-5 space-y-4 shadow-sm">
+              <div className="flex items-center gap-2 text-indigo-800 font-black text-sm">
+                <Brain size={18} className="text-indigo-600" />
+                <span>التوليد التلقائي الذكي للاختبار</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="text-xs font-bold text-gray-700 mb-1 block">عدد الأسئلة المطلوب إضافتها</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={maxQuestions}
+                    value={smartCount}
+                    onChange={(e) => setSmartCount(Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-black text-center focus:outline-none focus:border-indigo-400 bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-700 mb-1 block">توزيع مستويات الصعوبة</label>
+                  <select
+                    value={smartMode}
+                    onChange={(e) => setSmartMode(e.target.value as SmartMode)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-bold focus:outline-none focus:border-indigo-400 bg-white"
+                  >
+                    <option value="balanced">متوازن (30% سهل / 50% متوسط / 20% صعب)</option>
+                    <option value="easy">أسهل (60% سهل / 30% متوسط / 10% صعب)</option>
+                    <option value="hard">أصعب (10% سهل / 30% متوسط / 60% صعب)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-700 mb-1.5 block">المهارات المستهدفة للتوليد</label>
+                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 bg-white/80 rounded-xl border border-indigo-100">
+                  {availableSkills.slice(0, 30).map((skill) => {
+                    const isSkillActive = selectedSkillIds.includes(skill.id);
                     return (
-                      <div key={idx}
-                        className={`flex items-start gap-2.5 px-3 py-2.5 rounded-xl border text-xs transition-all ${
-                          isCorrect
-                            ? "bg-emerald-50 border-emerald-300 text-emerald-800"
-                            : "bg-gray-50 border-gray-100 text-gray-600"
-                        }`}>
-                        <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
-                          isCorrect ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-500"
-                        }`}>
-                          {OPTION_LETTERS[idx] || String(idx + 1)}
-                        </span>
-                        <span
-                          className="flex-1 leading-relaxed font-medium"
-                          dangerouslySetInnerHTML={{ __html: opt || "—" }}
-                        />
-                        {isCorrect && (
-                          <CheckCircle2 size={14} className="shrink-0 mt-0.5 text-emerald-500"/>
-                        )}
-                      </div>
+                      <button
+                        key={skill.id}
+                        type="button"
+                        onClick={() => setSelectedSkillIds((prev) => prev.includes(skill.id) ? prev.filter((id) => id !== skill.id) : [...prev, skill.id])}
+                        className={`text-xs px-2.5 py-1 rounded-full border font-bold transition-all ${
+                          isSkillActive
+                            ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                            : "border-gray-200 text-gray-700 hover:border-indigo-300 bg-white"
+                        }`}
+                      >
+                        {skill.name}
+                      </button>
                     );
                   })}
                 </div>
+              </div>
+
+              {smartError && (
+                <p className="text-rose-600 text-xs font-bold flex items-center gap-1">
+                  <AlertCircle size={14} /> {smartError}
+                </p>
               )}
 
-              {/* الشرح */}
-              {previewQuestion.explanation && (
-                <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
-                  <p className="text-[11px] font-black text-amber-700 mb-1">💡 الشرح</p>
-                  <div
-                    className="text-xs text-amber-800 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: previewQuestion.explanation }}
+              <button
+                type="button"
+                onClick={handleSmartGenerate}
+                disabled={smartLoading || !pathId}
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl text-sm transition-all disabled:opacity-50 shadow"
+              >
+                {smartLoading ? (
+                  <><Loader2 size={16} className="animate-spin" /> جارٍ التوليد الذكي للأسئلة...</>
+                ) : (
+                  <><Zap size={16} /> توليد {smartCount} سؤال تلقائياً وإضافتها للاختيار</>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* شريط الفلاتر والبحث في نمط التصفح اليدوي أو بالمهارات */}
+          {mode !== "smart" && (
+            <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 space-y-3 shadow-xs">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5">
+                {/* البحث السريع */}
+                <div className="md:col-span-6 relative">
+                  <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    data-testid="assessment-question-search"
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="ابحث في نص السؤال أو الرموز..."
+                    dir="rtl"
+                    className="w-full pr-9 pl-8 py-2 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                   />
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchTerm("")}
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
+
+                {/* القسم */}
+                <div className="md:col-span-3">
+                  <select
+                    value={selectedSectionId}
+                    onChange={(e) => { setSelectedSectionId(e.target.value); setSelectedSkillIds([]); }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs font-bold bg-white focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="">كل الأقسام</option>
+                    {availableSections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                </div>
+
+                {/* مستوى الصعوبة */}
+                <div className="md:col-span-3 flex gap-1">
+                  {(["all", "Easy", "Medium", "Hard"] as Difficulty[]).map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setDifficulty(d)}
+                      className={`flex-1 text-[11px] font-black py-1.5 rounded-lg border transition-all ${
+                        difficulty === d
+                          ? d === "all"
+                            ? "bg-gray-800 text-white border-gray-800 shadow-xs"
+                            : DIFFICULTY_COLORS[d] + " border-current shadow-xs"
+                          : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50/50"
+                      }`}
+                    >
+                      {d === "all" ? "الكل" : DIFFICULTY_LABELS[d]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* شريط المهارات (يظهر بوضوح في نمط بالمهارات) */}
+              {mode === "skills" && (
+                <div className="pt-2 border-t border-gray-100 space-y-1.5">
+                  <div className="flex items-center justify-between text-xs font-bold text-gray-600">
+                    <span className="flex items-center gap-1 text-indigo-700">
+                      <BookOpen size={13} /> المهارات المتاحة للتصفية ({availableSkills.length})
+                    </span>
+                    {selectedSkillIds.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSkillIds([])}
+                        className="text-[11px] text-rose-600 hover:underline font-bold"
+                      >
+                        إلغاء تحديد المهارات ({selectedSkillIds.length})
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-2 bg-gray-50 rounded-xl border border-gray-100">
+                    {availableSkills.map((skill) => {
+                      const isSkillSelected = selectedSkillIds.includes(skill.id);
+                      return (
+                        <button
+                          key={skill.id}
+                          type="button"
+                          onClick={() => setSelectedSkillIds((prev) => prev.includes(skill.id) ? prev.filter((id) => id !== skill.id) : [...prev, skill.id])}
+                          className={`text-xs px-2.5 py-1 rounded-full border font-bold transition-all ${
+                            isSkillSelected
+                              ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
+                              : "border-gray-200 text-gray-600 hover:border-indigo-300 bg-white"
+                          }`}
+                        >
+                          {skill.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* شريط الإجراءات السريعة وحالة التصفية */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleSelectAllCurrentPage}
+                    disabled={visibleFilteredQuestions.length === 0}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 hover:bg-indigo-100 text-indigo-700 font-black text-xs transition-all disabled:opacity-40"
+                  >
+                    <CheckSquare size={13} />
+                    <span>
+                      {allCurrentPageSelected
+                        ? "إلغاء تحديد أسئلة الصفحة"
+                        : `تحديد كل أسئلة الصفحة (${visibleFilteredQuestions.length})`}
+                    </span>
+                  </button>
+
+                  <span className="text-gray-400 font-bold hidden sm:inline">
+                    • مطابقة الفلتر: {totalAvailable} سؤال
+                  </span>
+                </div>
+
+                {totalManualPages > 1 && (
+                  <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
+                    <button
+                      type="button"
+                      data-testid="assessment-question-page-previous"
+                      onClick={() => setManualPage((page) => Math.max(1, page - 1))}
+                      disabled={manualPage <= 1}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40"
+                    >
+                      <ChevronRight size={13} /> السابق
+                    </button>
+                    <span className="px-2 font-mono">صفحة {manualPage} من {totalManualPages}</span>
+                    <button
+                      type="button"
+                      data-testid="assessment-question-page-next"
+                      onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))}
+                      disabled={manualPage >= totalManualPages}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40"
+                    >
+                      التالي <ChevronLeft size={13} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* تنبيهات التحميل والخطأ */}
+          {loadingQuestions && (
+            <div className="py-12 text-center text-xs text-indigo-700 flex flex-col items-center justify-center gap-2.5 font-bold bg-white rounded-2xl border border-gray-100">
+              <Loader2 size={24} className="animate-spin text-indigo-600" />
+              <span>جارٍ تحميل الأسئلة من بنك الأسئلة...</span>
+            </div>
+          )}
+
+          {loadError && !loadingQuestions && (
+            <div className="flex items-center justify-between bg-rose-50 border border-rose-200 rounded-2xl px-4 py-3">
+              <span className="text-xs font-bold text-rose-700 flex items-center gap-1.5">
+                <AlertCircle size={15} /> {loadError}
+              </span>
+              <button
+                type="button"
+                onClick={handleRefetch}
+                className="text-xs font-black text-indigo-700 hover:text-indigo-900 flex items-center gap-1 bg-white px-3 py-1 rounded-lg border border-rose-100 shadow-xs"
+              >
+                <RefreshCw size={13} /> إعادة المحاولة
+              </button>
+            </div>
+          )}
+
+          {/* ── قائمة بطاقات الأسئلة الواسعة والمباشرة ───────────────────── */}
+          {!loadingQuestions && !loadError && pathId && (
+            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-1 rounded-2xl">
+              {visibleFilteredQuestions.length === 0 ? (
+                <div className="py-16 text-center text-xs text-gray-400 bg-white rounded-2xl border border-gray-200">
+                  <BarChart2 size={36} className="mx-auto mb-2.5 opacity-30 text-indigo-400" />
+                  <p className="font-bold text-sm text-gray-600">لا توجد أسئلة تطابق الفلتر الحالي</p>
+                  <p className="text-gray-400 mt-1">جرّب تغيير مستوى الصعوبة أو تصفية المهارات أو نص البحث</p>
+                </div>
+              ) : (
+                visibleFilteredQuestions.map((q, idx) => {
+                  const isSelected = selectedIds.includes(q.id);
+                  const rawText = q.text || "";
+                  const cleanSnippet = rawText.replace(/<[^>]+>/g, "").trim();
+                  const hasText = cleanSnippet.length > 0;
+                  const questionNum = (manualPage - 1) * CLIENT_PAGE_SIZE + idx + 1;
+                  const skillName = q.skillId ? skillNameMap.get(q.skillId) : null;
+                  const sectionName = q.sectionId ? sectionNameMap.get(q.sectionId) : null;
+
+                  return (
+                    <div
+                      key={q.id}
+                      className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                        isSelected
+                          ? "bg-indigo-50/40 border-indigo-300 shadow-sm ring-1 ring-indigo-200"
+                          : "bg-white border-gray-200/90 hover:border-indigo-300 hover:shadow-xs"
+                      }`}
+                    >
+                      {/* رأس بطاقة السؤال */}
+                      <div className="px-4 py-2.5 bg-gray-50/80 border-b border-gray-100 flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5">
+                          {/* زر التحديد الأساسي المتوافق مع الـ Contract */}
+                          <button
+                            type="button"
+                            data-testid={`assessment-question-select-${q.id}`}
+                            onClick={() => toggleQuestion(q.id)}
+                            disabled={!isSelected && selectedIds.length >= maxQuestions}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs transition-all ${
+                              isSelected
+                                ? "bg-indigo-600 text-white shadow-sm hover:bg-indigo-700"
+                                : "bg-white border border-gray-300 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300 disabled:opacity-40"
+                            }`}
+                          >
+                            <CheckCircle2 size={14} className={isSelected ? "text-white" : "text-gray-400"} />
+                            <span>{isSelected ? "محدد للاختبار" : "تحديد السؤال"}</span>
+                          </button>
+
+                          <span className="text-xs font-black text-gray-400 font-mono">#{questionNum}</span>
+
+                          {/* شارة الصعوبة */}
+                          {q.difficulty && (
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
+                              {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
+                            </span>
+                          )}
+
+                          {/* شارة المهارة */}
+                          {skillName && (
+                            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-100">
+                              <BookOpen size={10} />
+                              {skillName}
+                            </span>
+                          )}
+
+                          {/* شارة القسم */}
+                          {sectionName && (
+                            <span className="hidden md:inline-flex text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                              {sectionName}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs text-gray-400 font-mono">
+                          {q.imageUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                              title="معاينة الصورة مكبرة"
+                              className="p-1 rounded-lg hover:bg-gray-200 text-indigo-600 font-bold flex items-center gap-1 text-[11px]"
+                            >
+                              <Eye size={13} /> تكبير الصورة
+                            </button>
+                          )}
+                          <span>#{q.id.slice(-6)}</span>
+                        </div>
+                      </div>
+
+                      {/* محتوى بطاقة السؤال */}
+                      <div className="p-4 space-y-3 text-right" dir="rtl">
+                        {/* نص السؤال */}
+                        {hasText ? (
+                          <div
+                            className="text-sm font-bold text-gray-900 leading-relaxed border-r-2 border-indigo-400 pr-2.5"
+                            dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(rawText) }}
+                          />
+                        ) : (
+                          <div className="text-xs font-bold text-indigo-600 flex items-center gap-1">
+                            <Layers size={13} />
+                            <span>سؤال مصور (المسألة موجودة بالصورة أدناه):</span>
+                          </div>
+                        )}
+
+                        {/* صورة السؤال المباشرة والواضحة */}
+                        {q.imageUrl && (
+                          <div className="relative group rounded-xl border border-gray-200 bg-gray-50/50 p-2 max-w-xl mx-auto sm:mx-0">
+                            <img
+                              src={q.imageUrl}
+                              alt="صورة السؤال"
+                              className="max-h-60 w-auto mx-auto object-contain rounded-lg cursor-zoom-in bg-white"
+                              onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                              loading="lazy"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                              className="absolute bottom-3 left-3 bg-black/70 hover:bg-black text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all shadow"
+                            >
+                              <Eye size={12} /> تكبير
+                            </button>
+                          </div>
+                        )}
+
+                        {/* خيارات الإجابة (MCQ) */}
+                        {q.options && q.options.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                            {q.options.map((opt, optIdx) => {
+                              const isCorrect = optIdx === q.correctOptionIndex;
+                              return (
+                                <div
+                                  key={optIdx}
+                                  className={`flex items-start gap-2 px-3 py-2 rounded-xl border text-xs leading-relaxed transition-all ${
+                                    isCorrect
+                                      ? "bg-emerald-50/90 border-emerald-300 text-emerald-900 font-bold"
+                                      : "bg-gray-50/70 border-gray-100 text-gray-700 font-medium"
+                                  }`}
+                                >
+                                  <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black mt-0.5 ${
+                                    isCorrect ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-600"
+                                  }`}>
+                                    {OPTION_LETTERS[optIdx] || String(optIdx + 1)}
+                                  </span>
+                                  <span
+                                    className="flex-1"
+                                    dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(opt) || "—" }}
+                                  />
+                                  {isCorrect && (
+                                    <CheckCircle2 size={14} className="shrink-0 text-emerald-600 mt-0.5" />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* الشرح إن وجد */}
+                        {q.explanation && (
+                          <div className="text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded-xl p-2.5 flex items-start gap-2">
+                            <span className="shrink-0 font-black">💡 الشرح:</span>
+                            <div className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.explanation) }} />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
           )}
+
+          {/* ترقيم الصفحات السفلي */}
+          {totalManualPages > 1 && mode !== "smart" && (
+            <div className="flex items-center justify-between text-xs font-bold text-gray-500 bg-white p-2.5 rounded-xl border border-gray-100">
+              <button
+                type="button"
+                onClick={() => setManualPage((page) => Math.max(1, page - 1))}
+                disabled={manualPage <= 1}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40"
+              >
+                <ChevronRight size={13} /> السابق
+              </button>
+              <span className="font-mono">صفحة {manualPage} من {totalManualPages}</span>
+              <button
+                type="button"
+                onClick={() => setManualPage((page) => Math.min(totalManualPages, page + 1))}
+                disabled={manualPage >= totalManualPages}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40"
+              >
+                التالي <ChevronLeft size={13} />
+              </button>
+            </div>
+          )}
         </div>
-      </div>
 
-
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h4 className="text-sm font-black text-gray-900">
-            المختارة <span className="text-indigo-600 mr-1">({selectedIds.length}/{maxQuestions})</span>
-          </h4>
-          <div className="flex items-center gap-2 text-[10px] text-gray-500">
-            {["Easy","Medium","Hard"].map((d) => (
-              <span key={d} className="flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full inline-block ${d==="Easy"?"bg-emerald-400":d==="Medium"?"bg-amber-400":"bg-rose-400"}`}/>
-                {selectedQuestions.filter((q) => q.difficulty === d).length}
-              </span>
-            ))}
+        {/* ══════════════════════════════════════════════════════════════════════
+            القسم الأيسر: السلة الجانبية للأسئلة المختارة (4 أعمدة)
+        ══════════════════════════════════════════════════════════════════════ */}
+        <div className="lg:col-span-4 flex flex-col gap-3 lg:sticky lg:top-1 bg-white rounded-2xl border border-gray-200/90 p-4 shadow-xs">
+          <div className="flex items-center justify-between">
+            <h4 className="text-sm font-black text-gray-900">
+              الأسئلة المختارة <span className="text-indigo-600 mr-1">({selectedIds.length}/{maxQuestions})</span>
+            </h4>
+            <div className="flex items-center gap-2 text-[10px] text-gray-500 font-bold">
+              {["Easy","Medium","Hard"].map((d) => (
+                <span key={d} className="flex items-center gap-1">
+                  <span className={`w-2 h-2 rounded-full inline-block ${d==="Easy"?"bg-emerald-400":d==="Medium"?"bg-amber-400":"bg-rose-400"}`}/>
+                  {selectedQuestions.filter((q) => q.difficulty === d).length}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="w-full bg-gray-100 rounded-full h-1.5">
-          <div className="bg-indigo-500 h-1.5 rounded-full transition-all" style={{ width: `${Math.min(100, (selectedIds.length / maxQuestions) * 100)}%` }}/>
-        </div>
 
-        {(missingSelectedIds.length > 0 || duplicateSelectedIds.length > 0 || selectionHydrationError) && (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-800 space-y-1">
-            {selectionHydrationError && <p>تعذر التحقق من بعض الأسئلة المختارة: {selectionHydrationError}</p>}
-            {missingSelectedIds.length > 0 && <p>{missingSelectedIds.length} سؤال مختار غير موجود/غير متاح حاليًا. لن يتم إخفاؤه بصمت.</p>}
-            {duplicateSelectedIds.length > 0 && <p>تم اكتشاف IDs مكررة في الاختيار القديم: {duplicateSelectedIds.length}</p>}
+          {/* شريط نسبة الاكتمال */}
+          <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div
+              className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${Math.min(100, (selectedIds.length / maxQuestions) * 100)}%` }}
+            />
           </div>
-        )}
 
-        <div className="overflow-y-auto space-y-1.5 max-h-80 border border-gray-100 rounded-xl p-2 bg-gray-50/50">
-          {selectedIds.length === 0
-            ? <div className="py-10 text-center text-xs text-gray-400"><BarChart2 size={28} className="mx-auto mb-2 opacity-30"/><p className="font-bold">لم تختر أسئلة بعد</p></div>
-            : selectedIds.map((id, index) => {
+          {/* فحص النزاهة القانوني للـ Contract */}
+          {(missingSelectedIds.length > 0 || duplicateSelectedIds.length > 0 || selectionHydrationError) && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-800 space-y-1">
+              {selectionHydrationError && <p>تعذر التحقق من بعض الأسئلة المختارة: {selectionHydrationError}</p>}
+              {missingSelectedIds.length > 0 && <p>{missingSelectedIds.length} سؤال غير متاح حاليًا. لن يتم إخفاؤه بصمت.</p>}
+              {duplicateSelectedIds.length > 0 && <p>تم اكتشاف IDs مكررة في الاختيار القديم: {duplicateSelectedIds.length}</p>}
+            </div>
+          )}
+
+          {/* قائمة العناصر المختارة بالسحب والإفلات */}
+          <div className="overflow-y-auto space-y-2 max-h-[520px] border border-gray-100 rounded-xl p-2 bg-gray-50/50">
+            {selectedIds.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400">
+                <BarChart2 size={32} className="mx-auto mb-2 opacity-30 text-indigo-400" />
+                <p className="font-bold">لم تختر أسئلة بعد</p>
+                <p className="text-[11px] text-gray-400 mt-1">اضغط "تحديد السؤال" من القائمة لإضافته هنا</p>
+              </div>
+            ) : (
+              selectedIds.map((id, index) => {
                 const q = allQuestionsMap.get(id);
                 if (!q) {
                   return (
                     <div key={`${id}-${index}`} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-amber-200 bg-amber-50 text-xs">
-                      <AlertCircle size={13} className="text-amber-600 shrink-0"/>
+                      <AlertCircle size={13} className="text-amber-600 shrink-0" />
                       <span className="text-gray-400 font-mono text-[10px] w-5 shrink-0">{index + 1}</span>
                       <span className="flex-1 font-bold text-amber-800 line-clamp-1">سؤال غير متاح حاليًا — {id}</span>
-                      <button type="button" onClick={() => removeSelectedAt(index)}
-                        className="shrink-0 text-amber-500 hover:text-rose-500 transition-colors"><X size={13}/></button>
+                      <button
+                        type="button"
+                        onClick={() => removeSelectedAt(index)}
+                        className="shrink-0 text-amber-500 hover:text-rose-500 transition-colors"
+                      >
+                        <X size={13} />
+                      </button>
                     </div>
                   );
                 }
 
-                const plainText = (q.text || "").replace(/<[^>]+>/g, "").slice(0, 80);
+                const plainText = (q.text || "").replace(/<[^>]+>/g, "").trim();
+                const displayTitle = plainText ? plainText.slice(0, 50) : (q.imageUrl ? "سؤال مصور" : `سؤال #${q.id.slice(-5)}`);
+
                 return (
-                  <div key={`${q.id}-${index}`} data-testid={`assessment-selected-question-${q.id}`} draggable
+                  <div
+                    key={`${q.id}-${index}`}
+                    data-testid={`assessment-selected-question-${q.id}`}
+                    draggable
                     onDragStart={(e) => { setDraggedId(q.id); e.dataTransfer.effectAllowed = "move"; }}
                     onDragOver={(e) => { e.preventDefault(); setDragOverId(q.id); }}
                     onDrop={(e) => handleDrop(e, q.id)}
                     onDragLeave={() => setDragOverId(null)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border bg-white text-xs transition-all cursor-grab ${dragOverId === q.id ? "border-indigo-400 bg-indigo-50" : "border-gray-100"}`}>
-                    <GripVertical size={13} className="text-gray-300 shrink-0"/>
-                    <span className="text-gray-400 font-mono text-[10px] w-5 shrink-0">{index + 1}</span>
-                    <span className="flex-1 font-medium line-clamp-1 text-gray-700">{plainText || "—"}</span>
+                    className={`flex items-center gap-2 px-2.5 py-2 rounded-xl border bg-white text-xs transition-all cursor-grab ${
+                      dragOverId === q.id ? "border-indigo-500 bg-indigo-50 shadow-xs" : "border-gray-200 hover:border-gray-300 shadow-2xs"
+                    }`}
+                  >
+                    <GripVertical size={13} className="text-gray-400 shrink-0" />
+                    <span className="text-gray-400 font-mono text-[10px] w-4 shrink-0">{index + 1}</span>
+
+                    {/* مصغر الصورة إن وجد */}
+                    {q.imageUrl && (
+                      <img
+                        src={q.imageUrl}
+                        alt="مصغر"
+                        onClick={() => setZoomImageUrl(q.imageUrl || null)}
+                        className="w-8 h-8 rounded-lg border border-gray-200 object-contain bg-white shrink-0 cursor-pointer"
+                        title="انقر للتكبير"
+                      />
+                    )}
+
+                    <span className="flex-1 font-bold line-clamp-1 text-gray-800">{displayTitle}</span>
+
                     {q.difficulty && (
-                      <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
+                      <span className={`shrink-0 text-[9px] font-black px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[q.difficulty] || ""}`}>
                         {DIFFICULTY_LABELS[q.difficulty] || q.difficulty}
                       </span>
                     )}
-                    <button type="button" onClick={() => removeSelectedAt(index)}
-                      className="shrink-0 text-gray-300 hover:text-rose-500 transition-colors"><X size={13}/></button>
+
+                    <button
+                      type="button"
+                      onClick={() => removeSelectedAt(index)}
+                      className="shrink-0 p-1 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                      title="حذف من الاختبار"
+                    >
+                      <X size={13} />
+                    </button>
                   </div>
                 );
               })
-          }
+            )}
+          </div>
+
+          {selectedIds.length > 0 && (
+            <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
+              <span className="text-gray-500 font-bold">يمكنك سحب الأسئلة لإعادة الترتيب</span>
+              <button
+                type="button"
+                onClick={() => onChange([])}
+                className="text-xs text-rose-600 hover:text-rose-700 hover:underline font-black"
+              >
+                مسح الكل ({selectedIds.length})
+              </button>
+            </div>
+          )}
         </div>
-        {selectedIds.length > 0 && (
-          <button type="button" onClick={() => onChange([])} className="text-xs text-gray-400 hover:text-rose-500 font-bold py-1">
-            مسح الكل ({selectedIds.length})
-          </button>
-        )}
       </div>
+
+      {/* ── نافذة منبثقة لتكبير صورة السؤال (Zoom Lightbox) ───────────────── */}
+      {zoomImageUrl && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setZoomImageUrl(null)}
+        >
+          <div
+            className="relative max-w-4xl max-h-[90vh] bg-white rounded-2xl p-3 shadow-2xl overflow-hidden flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-full flex items-center justify-between pb-2 mb-2 border-b border-gray-100 text-xs font-bold text-gray-700">
+              <span className="flex items-center gap-1.5">
+                <Eye size={14} className="text-indigo-600" />
+                معاينة مكبرة لصورة السؤال
+              </span>
+              <button
+                type="button"
+                onClick={() => setZoomImageUrl(null)}
+                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-rose-600 transition-all"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <img
+              src={zoomImageUrl}
+              alt="معاينة مكبرة"
+              className="max-h-[80vh] w-auto object-contain rounded-xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
