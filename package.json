@@ -6,6 +6,7 @@
   "scripts": {
     "smoke:smart-classroom-g2-contract": "node scripts/smoke-smart-classroom-g2-contract.mjs",
     "smoke:account-workspaces-g7": "node scripts/smoke-account-workspaces-g7-contract.mjs",
+    "smoke:account-workspaces-g8": "node scripts/smoke-account-workspaces-g8-contract.mjs",
     "audit:smart-classroom-surfaces": "node scripts/live-smart-classroom-surfaces-audit.mjs",
         "dev": "vite",
         "build": "vite build",

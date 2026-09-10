@@ -14,6 +14,7 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { QuestionModel } from "../models/Question.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
 import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
@@ -303,8 +304,26 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   assert.ok(schoolId && classId && teacherId, "smart classroom fixture scope missing");
   const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
   await SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM", "SCHOOL_INTELLIGENCE", "INTERVENTION_CENTER"] });
+  await SchoolMembershipModel.create({ userId: teacherId, schoolId, role: "teacher", status: "active" });
   await TeachingAssignmentModel.create({ schoolId, teacherId, classId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" });
   await QuestionModel.create({ id: questionId, text: "Smart classroom question", options: ["Wrong", "Correct"], correctOptionIndex: 1, subject: ASSESSMENT_SUBJECT_ID, type: "mcq", approvalStatus: "approved", skillIds: ["platform-v3-smart-classroom-skill"] });
+
+  const outsideSchoolId = groupIds.get("outsideSchool");
+  assert.ok(outsideSchoolId, "outside school fixture missing");
+  await SchoolMembershipModel.create({ userId: teacherId, schoolId: outsideSchoolId, role: "teacher", status: "active" });
+  await TeachingAssignmentModel.create({ schoolId: outsideSchoolId, teacherId, classId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" });
+  await SchoolContractModel.create({ schoolId: outsideSchoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] });
+  const workspaceAssessmentId = `school-teacher-assessment-${RUN_MARKER}`;
+  await QuizModel.create({ _id: workspaceAssessmentId, id: workspaceAssessmentId, title: "Assigned school assessment", pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetGroupIds: [classId], isPublished: true, approvalStatus: "approved" });
+  const teacherWorkspace = await jsonRequest("/school-access/teacher-workspace", { token: tokens.get("teacher") });
+  expectStatus("school teacher reads assigned workspace", teacherWorkspace, 200);
+  assert.equal(teacherWorkspace.body?.personas?.platformTrainer, true, "hybrid teacher lost platform trainer context");
+  assert.equal(teacherWorkspace.body?.personas?.schoolTeacher, true, "assigned teacher lost school context");
+  assert.deepEqual(teacherWorkspace.body?.schools?.map((entry: any) => entry.schoolId), [schoolId], "teacher workspace leaked a school without a valid class assignment");
+  assert.equal(teacherWorkspace.body?.schools?.[0]?.assignments?.[0]?.classId, classId, "teacher workspace omitted assigned class");
+  assert.equal(teacherWorkspace.body?.schools?.[0]?.assessments?.[0]?.assessmentId, workspaceAssessmentId, "teacher workspace omitted assigned school assessment");
+  const crossSchoolClass = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId: outsideSchoolId, classId, questionIds: [questionId] } });
+  expectStatus("school teacher cannot pair another school with assigned class", crossSchoolClass, 400);
 
   const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId] } });
   expectStatus("assigned teacher creates smart classroom session", created, 201);

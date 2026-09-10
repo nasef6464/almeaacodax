@@ -21,6 +21,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { emitClassroomEvent } from "../sockets/classroomEvents.js";
 import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomScopeFilter, resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
 import { buildClassroomSchoolIntelligence, buildClassroomSkillEvidence } from "../modules/schools/application/classroomSchoolIntelligence.js";
+import { hasActiveSchoolRole } from "../modules/schools/application/schoolContextResolver.js";
 
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
@@ -35,9 +36,16 @@ classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"])
   const payload = createSchema.parse(req.body);
   const entitlement = await resolveSchoolEntitlement(payload.schoolId, "SMART_CLASSROOM");
   if (!entitlement.allowed) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+  const classroom = Types.ObjectId.isValid(payload.classId)
+    ? await GroupModel.exists({ _id: payload.classId, type: "CLASS", parentId: payload.schoolId })
+    : null;
+  if (!classroom) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Class does not belong to this school" });
   if (req.authUser!.role !== "admin") {
-    const assigned = await TeachingAssignmentModel.exists({ schoolId: payload.schoolId, teacherId: req.authUser!.id, classId: payload.classId, status: "active" });
-    if (!assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this class" });
+    const [hasTeacherContext, assigned] = await Promise.all([
+      hasActiveSchoolRole(req.authUser!, payload.schoolId, "teacher"),
+      TeachingAssignmentModel.exists({ schoolId: payload.schoolId, teacherId: req.authUser!.id, classId: payload.classId, status: "active" }),
+    ]);
+    if (!hasTeacherContext || !assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school and class" });
   }
   const objectIds = payload.questionIds.filter((id) => Types.ObjectId.isValid(id));
   const questions = await QuestionModel.find({ $or: [{ id: { $in: payload.questionIds } }, ...(objectIds.length ? [{ _id: { $in: objectIds } }] : [])], type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" }).lean();
@@ -52,8 +60,13 @@ classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"])
 classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
   const schoolId = z.string().min(1).parse(req.query.schoolId);
   if (req.authUser!.role !== "admin") {
-    const assigned = await TeachingAssignmentModel.exists({ schoolId, teacherId: req.authUser!.id, status: "active" });
-    if (!assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
+    const assignments = await TeachingAssignmentModel.find({ schoolId, teacherId: req.authUser!.id, status: "active" }).select("classId").lean();
+    const assignedClassIds = assignments.map((assignment) => String(assignment.classId)).filter((id) => Types.ObjectId.isValid(id));
+    const [hasTeacherContext, assigned] = await Promise.all([
+      hasActiveSchoolRole(req.authUser!, schoolId, "teacher"),
+      assignedClassIds.length ? GroupModel.exists({ _id: { $in: assignedClassIds }, type: "CLASS", parentId: schoolId }) : null,
+    ]);
+    if (!hasTeacherContext || !assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
   }
   const questions = await QuestionModel.find({ type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" })
     .select("id text imageUrl options type skillIds")

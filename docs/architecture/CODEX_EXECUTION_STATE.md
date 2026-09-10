@@ -4,7 +4,7 @@
 
 - Reviewed on 2026-09-10 against `origin/main@5dfdd16c` and the approved trainer,
   school-teacher, and school-director product decision.
-- Status: `G7 CLOSED / G8 AUTHORIZED`. G7 introduced no role migration, school
+- Status: `G8 CLOSED / G9 AUTHORIZED`. G7/G8 introduced no role migration, school
   schema, payment/scoring, production-data, deployment, or cutover change.
 - Canonical registry: `docs/architecture/ACCOUNT_WORKSPACES_GOALS_AR.md`.
   Architecture: `PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md`. Agent entry:
@@ -20,8 +20,17 @@
   and writes are bounded by fresh `managedPathIds`/`managedSubjectIds`, with empty
   assignment fail-closed. Local root/server typechecks and builds plus focused
   course, content, quiz, HTML/client-security contracts passed.
-- Current Goal: `G8 — School Teacher Workspace (AW-02)` is explicitly authorized;
-  the owner authorized sequential execution through G12 on 2026-09-10.
+- Owner authorization: sequential execution through G12 was granted on 2026-09-10.
+- G8 closure: exact runtime `7932bfb268bcc18d9b44ea01707b4b4cac173303`
+  passed Backend Integration [34445758906](https://github.com/nasef6464/almeaacodax/actions/runs/34445758906).
+  The School Teacher workspace derives schools, assigned classes, school-targeted
+  assessments, and Smart Classroom availability from active SchoolMembership,
+  TeachingAssignment, class parentage, and contract data. The Smart Classroom
+  route now also requires the teacher school context and exact school/class pair.
+  Hybrid Platform Trainer + School Teacher contexts remain separate through a
+  persona gate/switcher. Production builds and focused typechecks/contracts passed;
+  desktop/mobile RTL browser audit showed the assigned journey with zero errors.
+- Current Goal: `G9 — School Director Identity & Delegated Access (AW-03)` is authorized.
 - Product decision: مدير المدرسة يملك أساسًا overview + student view/add/move
   داخل المدرسة؛ كل توسع permission صريحة لكل SchoolMembership ومن allowlist،
   ويحتاج contract entitlement أيضًا عندما يكون capability وحدة تجارية. لا hard
