@@ -18,7 +18,7 @@ check("Sidebar buttons use URL-aware tab navigation", includes("onClick={() => s
 check("Sidebar buttons no longer use state-only navigation", !includes("onClick={() => setActiveTab(item.id)}"));
 check("Admin action buttons no longer use state-only navigation", !/onClick=\{\(\) => setActiveTab\(/.test(adminDashboard));
 check("Supervisor quiz shortcut uses URL-aware navigation", includes("action: () => setActiveAdminTab('quizzes')"));
-check("Supervisor school portal shortcuts use URL-aware navigation", includes("action: () => setActiveAdminTab('school-portal')"));
+check("School follow-up shortcuts stay inside supported workspaces", includes("action: () => setActiveAdminTab('schools')"));
 
 const requiredTabs = [
   "overview",
@@ -31,7 +31,6 @@ const requiredTabs = [
   "skills",
   "users",
   "schools",
-  "school-portal",
   "financial",
   "notifications",
   "homepage",

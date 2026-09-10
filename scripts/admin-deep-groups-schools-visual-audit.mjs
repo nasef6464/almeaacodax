@@ -165,18 +165,6 @@ async function main() {
     await screenshot(page, "schools-action-open");
     pushCheck("schools safe action", groupsAction.clicked ? "PASS" : "REVIEW", groupsAction.clicked ? `clicked: ${groupsAction.text}` : "no safe action found");
 
-    await gotoTab(page, "school-portal");
-    await screenshot(page, "school-portal-initial");
-    pushCheck("school portal tab open", "PASS", "tab loaded");
-
-    const schoolSearch = await runSearchExercise(page, "فصل");
-    await screenshot(page, "school-portal-search");
-    pushCheck("school portal search/filter", schoolSearch ? "PASS" : "REVIEW", schoolSearch ? "search input exercised" : "no obvious search input");
-
-    const schoolAction = await clickSafeAction(page);
-    await screenshot(page, "school-portal-action-open");
-    pushCheck("school portal safe action", schoolAction.clicked ? "PASS" : "REVIEW", schoolAction.clicked ? `clicked: ${schoolAction.text}` : "no safe action found");
-
     await gotoTab(page, "users");
     await screenshot(page, "users-initial");
     pushCheck("users tab open", "PASS", "tab loaded");

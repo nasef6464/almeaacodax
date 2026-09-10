@@ -32,7 +32,7 @@ interface SchoolOverviewExecutiveTabProps {
     onGoToServices: () => void;
     onGoToContract: () => void;
     onAddClass: () => void;
-    onOpenPortal: () => void;
+    onOpenReports: () => void;
 }
 
 const SERVICE_BADGES = [
@@ -56,7 +56,7 @@ export const SchoolOverviewExecutiveTab: React.FC<SchoolOverviewExecutiveTabProp
     onGoToServices,
     onGoToContract,
     onAddClass,
-    onOpenPortal,
+    onOpenReports,
 }) => {
     const schoolId = school.id || (school as any)._id;
     const [contractModules, setContractModules] = useState<string[]>(['SCHOOL_CORE']);
@@ -123,10 +123,10 @@ export const SchoolOverviewExecutiveTab: React.FC<SchoolOverviewExecutiveTabProp
                     <div className="flex items-center gap-3">
                         <button
                             type="button"
-                            onClick={onOpenPortal}
+                            onClick={onOpenReports}
                             className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-1.5 cursor-pointer"
                         >
-                            <span>فتح بوابة المتابعة</span>
+                            <span>فتح تقارير المدرسة</span>
                             <ChevronLeft size={14} />
                         </button>
                     </div>

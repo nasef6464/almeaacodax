@@ -67,7 +67,7 @@ Smart Classroom أداة قياس تكويني داخل الحلقة، وليس 
 - نظام Users أو تسجيل دخول موازٍ.
 - School أو Class model موازٍ لـ`Group`.
 - Question Bank أو Quiz engine جديد.
-- إعادة كتابة `SupervisorDashboard` أو `SchoolPortalManager`.
+- إعادة كتابة `SupervisorDashboard`.
 - قلب بيانات `role=teacher` التاريخية.
 - `tenantId` عالمي أو SaaS multi-tenancy أو microservices.
 - فيديو/WebRTC داخلي، دردشة، سبورة تعاونية أو gamification كبيرة.
@@ -79,7 +79,7 @@ Smart Classroom أداة قياس تكويني داخل الحلقة، وليس 
 - `User` و`Group(SCHOOL/CLASS)`.
 - بنك الأسئلة والمهارات والموافقة على الأسئلة.
 - `Quiz`, `QuizResult`, directed assessments وAssessment snapshots.
-- `SchoolPortalManager`, `SupervisorDashboard`, `SchoolsManager`.
+- `SupervisorDashboard`, `SchoolsManager`.
 - `B2BPackage`, `AccessCode`, `AccessGrant` لترخيص المحتوى.
 - ProductConfig لقدرات الـdeployment.
 - Socket.IO + Redis كقناة fan-out بعد تأمينها.
@@ -678,7 +678,6 @@ types.ts
 App.tsx
 dashboards/admin/AdminDashboard.tsx
 dashboards/admin/SchoolsManager.tsx
-dashboards/admin/SchoolPortalManager.tsx
 dashboards/admin/SupervisorDashboard.tsx
 server/src/routes/index.ts
 server/src/routes/publicTests.routes.ts               # SC-00 only

@@ -23,7 +23,7 @@ const sources = {
     read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
   ].join("\n"),
-  schoolPortal: read("dashboards/admin/SchoolPortalManager.tsx"),
+  supervisorDashboard: read("dashboards/admin/SupervisorDashboard.tsx"),
   usersManager: read("dashboards/admin/UsersManager.tsx"),
   supervisorSmoke: read("scripts/smoke-supervisor-dashboard-contract.mjs"),
   schoolManagementSmoke: read("scripts/smoke-school-management-contract.mjs"),
@@ -156,12 +156,11 @@ check("Local store persists both user-side and group-side relationship changes",
   assertIncludes(sources.store, "removeCourseFromGroup");
 });
 
-check("Supervisor portal scopes students, groups, quiz results, and targeted quizzes by relationship", () => {
-  assertIncludes(sources.schoolPortal, "const userGroupIds = new Set(user.groupIds || [])");
-  assertIncludes(sources.schoolPortal, "const studentIds = new Set(students.map((student) => student.id))");
-  assertIncludes(sources.schoolPortal, "const results = examResults.filter");
-  assertIncludes(sources.schoolPortal, "targetGroupIds");
-  assertIncludes(sources.schoolPortal, "targetUserIds");
+check("Supervisor dashboard scopes students, groups, quiz results, and targeted quizzes by relationship", () => {
+  assertIncludes(sources.supervisorDashboard, "scopedStudentIdSet");
+  assertIncludes(sources.supervisorDashboard, "scopedResults");
+  assertIncludes(sources.supervisorDashboard, "openStudentQuiz");
+  assertIncludes(sources.supervisorDashboard, "targetUserId");
   assertIncludes(sources.supervisorSmoke, "scopedStudentIdSet");
   assertIncludes(sources.supervisorSmoke, "groupSnapshots");
 });

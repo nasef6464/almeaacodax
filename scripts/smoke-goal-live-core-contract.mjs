@@ -145,7 +145,7 @@ check("report action gate proves the important next action buttons by role", () 
 });
 
 check("supervisor live gate covers school command center and directed quiz analysis", () => {
-  assertIncludes(files.supervisorLive, '"/admin-dashboard?tab=school-portal"');
+  assertIncludes(files.supervisorLive, '"/supervisor-dashboard"');
   assertIncludes(files.supervisorLive, '"/reports"');
   assertIncludes(files.supervisorLive, "directed-quiz-entry");
   assertIncludes(files.supervisorLive, "scope-notice-visible-for-current-supervisor");

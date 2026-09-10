@@ -33,7 +33,6 @@ const tabs = [
   "skills",
   "users",
   "schools",
-  "school-portal",
   "memberships",
   "financial",
   "notifications",

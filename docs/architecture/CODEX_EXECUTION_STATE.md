@@ -1,5 +1,18 @@
 # ALMEAA — Codex Execution State
 
+## Schools UI cleanup — legacy School Portal retirement
+
+- Reviewed on 2026-09-10. The legacy `SchoolPortalManager` decision-center page and its admin tab,
+  menu entries, navigation actions, contextual banner, obsolete contract smoke, and obsolete live audit
+  were removed. No API, schema, scoring, notification authorization, or persisted data changed.
+- School setup, contracts, rosters, and school-level reports remain in `SchoolsManager`. Scoped student
+  follow-up, alerts, reports, and directed assessments remain in `SupervisorDashboard`; its directed
+  assessment context now identifies `supervisor-dashboard` instead of the retired page.
+- Local evidence: admin-tab, school-management, supervisor-dashboard, relationship-scope, performance,
+  and operational-admin contract smokes pass. The full typecheck/build were started but exceeded the local
+  command-session limit without reporting a compiler error; `smoke:goal-live-core` remains blocked by the
+  pre-existing Arabic mojibake guard before any live audit begins.
+
 ## Product Goal AW — Account Workspaces delivery
 
 - Reviewed on 2026-09-10 against exact runtime `fb5790067bfa9a297a88e4005bdca3373f7ce466` and the approved trainer,

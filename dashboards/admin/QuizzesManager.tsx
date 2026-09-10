@@ -196,7 +196,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const initialManagerParams = useMemo(() => getQuizManagerParams(), []);
   const openedFromReports = initialManagerParams.get('source') === 'reports';
-  const openedFromSchoolPortal = initialManagerParams.get('source') === 'school-portal';
+  const openedFromSupervisorDashboard = initialManagerParams.get('source') === 'supervisor-dashboard';
   const [selectedPathId, setSelectedPathId] = useState(initialManagerParams.get('pathId') || '');
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || initialManagerParams.get('subjectId') || '');
   const [selectedSectionId, setSelectedSectionId] = useState(initialManagerParams.get('sectionId') || '');
@@ -727,7 +727,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
         initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
         initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
-        initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}
+        initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSupervisorDashboard || isSupervisor ? 'central' : 'regular'}
         onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
         onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
       />
@@ -748,7 +748,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
           initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
           initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
-          initialMode={openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}
+          initialMode={openedFromReports || openedFromSupervisorDashboard || isSupervisor ? 'central' : 'regular'}
           onClose={() => setIsUnifiedBuilderOpen(false)}
         />
       )}
@@ -811,11 +811,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
       {(mainView === 'quizzes' || mainView === 'mock-exams' || filterType) ? <div className="contents">
 
-      {openedFromSchoolPortal && (
-        <div data-testid="school-portal-directed-quiz-context" className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
+      {openedFromSupervisorDashboard && (
+        <div data-testid="supervisor-directed-quiz-context" className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h3 className="text-sm font-black text-violet-900">اختبار موجه مركزي من بوابة مدرستي</h3>
+              <h3 className="text-sm font-black text-violet-900">اختبار موجه مركزي من لوحة المشرف</h3>
               <p className="mt-1 text-xs font-bold leading-6 text-violet-800">
                 أنت الآن داخل مركز الاختبارات لإنشاء اختبار موجه مركزي لنطاق المدرسة أو الفصل. المشرف يختار الأسئلة والنطاق فقط بدون إدارة بنك الأسئلة.
                 بعد الحفظ تظهر النتائج في تقارير المشرف، ولا يراها إلا الطلاب المستهدفون داخل نطاق المدرسة أو الفصل.

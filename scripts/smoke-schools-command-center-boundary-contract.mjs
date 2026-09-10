@@ -38,7 +38,7 @@ check('manager delegates command-center presentation with explicit orchestration
   assertIncludes(manager, 'await handleCreateSingleClass();');
   assertIncludes(manager, 'setIsSingleStudentOpen(true);');
   assertIncludes(manager, "document.querySelector('[data-testid=\"school-relations-quick-supervisor-card\"]')");
-  assertIncludes(manager, "url.searchParams.set('tab', 'school-portal')");
+  assertIncludes(manager, "onOpenReports={() => { setActiveTab('reports'); setExpandedSchoolStep(null); }}");
 });
 
 check('command-center child preserves readiness, delivery and primary-action contracts', () => {
@@ -55,7 +55,7 @@ check('command-center child preserves readiness, delivery and primary-action con
   assertIncludes(panel, 'data-testid="school-primary-add-supervisor"');
   assertIncludes(panel, 'data-testid="school-primary-open-packages"');
   assertIncludes(panel, 'data-testid="school-primary-open-reports"');
-  assertIncludes(panel, 'data-testid="school-primary-open-portal"');
+  assertIncludes(panel, 'data-testid="school-primary-open-reports"');
   assertIncludes(panel, 'مركز تشغيل المدرسة');
   assertIncludes(panel, 'مسار تسليم المدرسة');
   assertIncludes(panel, 'ملف التسليم');
@@ -73,7 +73,7 @@ check('command-center child remains presentation-only', () => {
   assertIncludes(panel, 'onCommercialDecision(card)');
   assertIncludes(panel, 'onSelectJourneyStep(step.tab)');
   assertIncludes(panel, 'void onAddClass()');
-  assertIncludes(panel, 'onOpenPortal');
+  assertIncludes(panel, 'onOpenReports');
 });
 
 check('extraction reduces manager hotspot without creating an oversized child', () => {

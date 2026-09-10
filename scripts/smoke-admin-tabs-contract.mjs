@@ -41,14 +41,10 @@ check("notifications tab is wired to NotificationsManager", () => {
   assert(switchSection.includes("return <NotificationsManager />;"), "notifications tab does not render NotificationsManager");
 });
 
-check("admin can open school portal tab from internal admin actions", () => {
-  assert(switchSection.includes("case 'school-portal':"), "school-portal tab is missing in renderContent switch");
-  assert(
-    source.includes("[Role.ADMIN, Role.SUPERVISOR].includes(user.role)") &&
-      source.includes("item.id === 'school-portal'"),
-    "school-portal must be present in the enhanced admin/supervisor menu allowlist",
-  );
-  assert(source.includes("setActiveAdminTab('school-portal')"), "admin overview actions no longer target school-portal");
+check("legacy school portal has no menu, route, or internal action", () => {
+  assert(!switchSection.includes("case 'school-portal':"), "legacy school portal render case must be removed");
+  assert(!source.includes("item.id === 'school-portal'"), "legacy school portal menu entry must be removed");
+  assert(!source.includes("setActiveAdminTab('school-portal')"), "internal actions must not target the legacy school portal");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

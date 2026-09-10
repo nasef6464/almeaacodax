@@ -106,7 +106,6 @@ assertIncludes('dashboards/admin/QuizzesManager.tsx', 'reportContextStudent');
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('@e965/xlsx');");
 for (const file of [
   'dashboards/admin/UsersManager.tsx',
-  'dashboards/admin/SchoolPortalManager.tsx',
   'dashboards/admin/QuizzesManager.tsx',
   'dashboards/admin/QuestionBankManager.tsx',
   'dashboards/admin/LibraryManager.tsx',

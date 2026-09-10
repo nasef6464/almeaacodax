@@ -414,7 +414,7 @@ export const SupervisorDashboard: React.FC = () => {
 
   const openStudentReport = (id: string) => window.location.assign(`/reports?studentId=${encodeURIComponent(id)}`);
   const openStudentQuiz = (id: string) => {
-    const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal', targetUserId: id });
+    const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'supervisor-dashboard', targetUserId: id });
     window.location.assign(`/admin-dashboard?${params.toString()}`);
   };
 
@@ -885,7 +885,6 @@ export const SupervisorDashboard: React.FC = () => {
                       onClick={exportScopeDataToCSV}
                     />
                   </div>
-                  {/* quick workflow contract references: school-portal reports */}
                 </div>
               </div>
             </div>
@@ -1520,7 +1519,7 @@ export const SupervisorDashboard: React.FC = () => {
                       <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                         <span className="text-xs font-bold text-gray-400">قائمة المستهدفين بالدعم</span>
                         <button onClick={() => {
-                          const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal' });
+                          const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'supervisor-dashboard' });
                           window.location.assign(`/admin-dashboard?${params.toString()}`);
                         }} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">توجيه خطة جماعية ←</button>
                       </div>

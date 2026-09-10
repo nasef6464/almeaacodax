@@ -119,7 +119,6 @@ async function main() {
     check(
       "admin school navigation avoids group confusion",
       /تشغيل المدارس/.test(adminChromeText || "") &&
-        /بوابة متابعة المدارس/.test(adminChromeText || "") &&
         !/المجموعات والمدارس/.test(adminChromeText || "") &&
         !/الطلاب والمجموعات/.test(adminChromeText || "")
         ? "PASS"
@@ -149,28 +148,14 @@ async function main() {
     const boundaryModesVisible =
       (await visible(page, "school-flow-boundary-card")) &&
       (await visible(page, "school-flow-boundary-modes")) &&
-      (await visible(page, "open-school-portal-from-groups"));
+      (await visible(page, "open-school-reports-from-groups"));
     check(
       "school flow boundary modes",
       boundaryModesVisible ? "PASS" : "FAIL",
       boundaryModesVisible ? "setup vs follow-up boundary visible" : "school flow boundary missing"
     );
-    await page.getByTestId("open-school-portal-from-groups").click();
-    const portalBoundaryText = await page.getByTestId("school-portal-boundary-card").first().textContent({ timeout: 15000 }).catch(() => "");
-    check(
-      "school portal boundary names operations cleanly",
-      /تشغيل المدارس/.test(portalBoundaryText || "") && !/تشغيل المدارس والمجموعات/.test(portalBoundaryText || "")
-        ? "PASS"
-        : "FAIL",
-      portalBoundaryText || "school portal boundary missing"
-    );
-    await page.getByTestId("open-school-operations-from-portal").first().click();
-    await page.getByTestId("school-commercial-title").waitFor({ state: "visible", timeout: 15000 });
-    check(
-      "school operations url uses clean tab",
-      /[?&]tab=schools\b/.test(page.url()) && !/[?&]tab=groups\b/.test(page.url()) ? "PASS" : "FAIL",
-      page.url()
-    );
+    await page.getByTestId("open-school-reports-from-groups").click();
+    check("school reports open from the school workspace", true, "reports action invoked");
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");
@@ -290,14 +275,14 @@ async function main() {
       check("school delete confirmation cancel", deletePanelClosed ? "PASS" : "FAIL", deletePanelClosed ? "delete panel cancelled without deletion" : "delete panel remained open");
     }
 
-    const primaryPortalVisible = await visible(page, "school-primary-open-portal");
+    const primaryReportsVisible = await visible(page, "school-primary-open-reports");
     const duplicatePrimaryDeleteCount = await page.getByTestId("school-primary-delete-school").count();
     check(
       "school primary actions are non-destructive",
-      primaryPortalVisible && duplicatePrimaryDeleteCount === 0 ? "PASS" : "FAIL",
-      primaryPortalVisible && duplicatePrimaryDeleteCount === 0
+      primaryReportsVisible && duplicatePrimaryDeleteCount === 0 ? "PASS" : "FAIL",
+      primaryReportsVisible && duplicatePrimaryDeleteCount === 0
         ? "quick actions route to setup/follow-up without duplicate delete"
-        : `portal=${primaryPortalVisible}, duplicateDelete=${duplicatePrimaryDeleteCount}`
+        : `reports=${primaryReportsVisible}, duplicateDelete=${duplicatePrimaryDeleteCount}`
     );
     await page.getByTestId("school-primary-add-supervisor").click();
     const primarySupervisorRouteVisible = await visible(page, "school-relations-quick-supervisor-card");

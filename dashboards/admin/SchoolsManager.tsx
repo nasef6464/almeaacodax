@@ -1411,12 +1411,7 @@ export const SchoolsManager: React.FC = () => {
                                     onGoToServices={() => { setActiveTab('services'); setExpandedSchoolStep(null); }}
                                     onGoToContract={() => { setActiveTab('contract'); setExpandedSchoolStep('packages'); }}
                                     onAddClass={() => void handleCreateSingleClass()}
-                                    onOpenPortal={() => {
-                                        const url = new URL('/admin-dashboard', window.location.origin);
-                                        url.searchParams.set('tab', 'school-portal');
-                                        window.history.pushState(null, '', `${url.pathname}${url.search}`);
-                                        window.dispatchEvent(new HashChangeEvent('hashchange'));
-                                    }}
+                                    onOpenReports={() => { setActiveTab('reports'); setExpandedSchoolStep(null); }}
                                 />
 
                                 <div data-testid="school-classes-panel" className="space-y-8">
@@ -1697,12 +1692,7 @@ export const SchoolsManager: React.FC = () => {
                             document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 50);
                     }}
-                    onOpenPortal={() => {
-                        const url = new URL('/admin-dashboard', window.location.origin);
-                        url.searchParams.set('tab', 'school-portal');
-                        window.history.pushState(null, '', `${url.pathname}${url.search}`);
-                        window.dispatchEvent(new HashChangeEvent('hashchange'));
-                    }}
+                    onOpenReports={() => { setActiveTab('reports'); setExpandedSchoolStep(null); }}
                 />
 
                 <div className={`${expandedSchoolStep ? 'bg-white p-6 rounded-xl shadow-sm border border-gray-100' : 'hidden'}`}>
@@ -2015,7 +2005,7 @@ export const SchoolsManager: React.FC = () => {
                     <div className="min-w-0 flex-1">
                         <div className="text-xs font-black text-slate-500">رحلة المدرسة التجارية</div>
                         <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
-                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات المرتبطة بالمسارات، الأكواد، وتقرير التسليم. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء المستمر بدون خلطها مع الإعدادات.
+                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات المرتبطة بالمسارات، الأكواد، وتقرير التسليم. بعد التشغيل افتح تقارير المدرسة لقراءة الأداء المستمر بدون خلطها مع الإعدادات.
                         </p>
                         <div data-testid="school-flow-boundary-modes" className="mt-3 grid gap-2 md:grid-cols-2">
                             <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
@@ -2023,24 +2013,19 @@ export const SchoolsManager: React.FC = () => {
                                 <p className="mt-1 text-xs font-bold leading-5 text-amber-900">إنشاء المدرسة، الفصول، الطلاب، المشرفين، الباقة/المسارات، الأكواد، وملف التسليم.</p>
                             </div>
                             <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2">
-                                <div className="text-xs font-black text-indigo-700">البوابة: متابعة بعد التشغيل</div>
+                                <div className="text-xs font-black text-indigo-700">التقارير: متابعة بعد التشغيل</div>
                                 <p className="mt-1 text-xs font-bold leading-5 text-indigo-900">قراءة الأداء، متابعة الفصول، طباعة التقارير، واكتشاف الطلاب المحتاجين لتدخل.</p>
                             </div>
                         </div>
                     </div>
                     <button
                         type="button"
-                        onClick={() => {
-                            const url = new URL('/admin-dashboard', window.location.origin);
-                            url.searchParams.set('tab', 'school-portal');
-                            window.history.pushState(null, '', `${url.pathname}${url.search}`);
-                            window.dispatchEvent(new HashChangeEvent('hashchange'));
-                        }}
-                        data-testid="open-school-portal-from-groups"
+                        onClick={() => setActiveTab('reports')}
+                        data-testid="open-school-reports-from-groups"
                         className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-slate-800"
                     >
                         <ShieldCheck size={16} />
-                        فتح بوابة متابعة المدارس
+                        فتح تقارير المدارس
                     </button>
                 </div>
             </div>

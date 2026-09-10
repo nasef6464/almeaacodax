@@ -30,7 +30,7 @@ interface SchoolCommandCenterPanelProps {
     onAddClass: () => Promise<void> | void;
     onAddStudent: () => void;
     onAddSupervisor: () => void;
-    onOpenPortal: () => void;
+    onOpenReports: () => void;
 }
 
 export const SchoolCommandCenterPanel: React.FC<SchoolCommandCenterPanelProps> = ({
@@ -56,7 +56,7 @@ export const SchoolCommandCenterPanel: React.FC<SchoolCommandCenterPanelProps> =
     onAddClass,
     onAddStudent,
     onAddSupervisor,
-    onOpenPortal,
+    onOpenReports,
 }) => (
     <div data-testid="school-command-center" className="hidden">
         <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -347,11 +347,11 @@ export const SchoolCommandCenterPanel: React.FC<SchoolCommandCenterPanelProps> =
             </button>
             <button
                 type="button"
-                data-testid="school-primary-open-portal"
-                onClick={onOpenPortal}
+                data-testid="school-primary-open-reports"
+                onClick={onOpenReports}
                 className="rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-100"
             >
-                بوابة المتابعة
+                تقارير المدرسة
             </button>
         </div>
     </div>

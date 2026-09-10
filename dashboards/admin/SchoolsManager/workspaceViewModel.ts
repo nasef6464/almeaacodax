@@ -199,7 +199,7 @@ export const buildSchoolWorkspaceViewModel = ({
         ? 'جاهزة للتسليم التجاري'
         : `لا تسلم المدرسة قبل إغلاق ${handoverBlockingGaps.length} بند`;
     const handoverDecisionCopy = handoverBlockingGaps.length === 0
-        ? 'كل عناصر التشغيل الأساسية مكتملة. يمكنك تحميل ملف التسليم أو فتح بوابة المتابعة بعد بدء الطلاب.'
+        ? 'كل عناصر التشغيل الأساسية مكتملة. يمكنك تحميل ملف التسليم أو فتح تقارير المدرسة بعد بدء الطلاب.'
         : 'هذه هي البنود التي تمنع التسليم النظيف للمدرسة. ابدأ بأول بند، وسيأخذك الزر مباشرة للمكان الصحيح.';
 
     const isSaveVerificationBusy = saveVerificationState === 'saving' || saveVerificationState === 'verifying';

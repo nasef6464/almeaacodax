@@ -71,17 +71,6 @@ assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "Math.min(usersTotalPages, current + 1)",
 ]);
 
-assertAllIncludes("dashboards/admin/SchoolPortalManager.tsx", [
-  "selectedSchoolId",
-  "selectedClassId",
-  "reportMode",
-  "reportStudents",
-  "reportClasses",
-  "reportFollowUpQuizzes",
-  "showAggregatedSections",
-  "showIndividualSections",
-]);
-
 assertAllIncludes("pages/QuizPage.tsx", [
   "questionHydrationStartedAt",
   "waitingForQuestionHydration",

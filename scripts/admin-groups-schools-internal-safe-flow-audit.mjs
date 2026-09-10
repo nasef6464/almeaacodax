@@ -146,38 +146,6 @@ async function run() {
     await closeDialogIfAny(page);
     await snap(page, "schools-after-close");
 
-    await gotoTab(page, "school-portal");
-    await snap(page, "school-home");
-    addCheck("school portal open", "PASS", "loaded");
-
-    const schoolAction = await openButtonByText(page, ["إضافة", "اضافة", "جديد", "إنشاء", "create", "فتح الإدارة", "فتح إدارة المدارس", "العلاقات"]);
-    const hasSchoolPortalEntry = await hasText(page, "فتح إدارة المدارس");
-    const explicitEntryVisible = hasSchoolPortalEntry || /فتح الإدارة|فتح إدارة المدارس/i.test(schoolAction);
-    addCheck(
-      "school portal explicit manage entry",
-      explicitEntryVisible ? "PASS" : "REVIEW",
-      explicitEntryVisible ? "button visible" : "button not visible on this deployment",
-    );
-
-    await snap(page, "school-action");
-    addCheck(
-      "school portal entry action",
-      schoolAction || explicitEntryVisible ? "PASS" : "REVIEW",
-      schoolAction || (explicitEntryVisible ? "explicit manage entry available" : "no clear entry button"),
-    );
-
-    const schoolForm = await inspectFormState(page);
-    const schoolFormPass = schoolForm.formCount > 0 || schoolForm.visibleInputs > 0 || explicitEntryVisible;
-    addCheck(
-      "school portal form state",
-      schoolFormPass ? "PASS" : "REVIEW",
-      schoolFormPass
-        ? `forms=${schoolForm.formCount}, inputs=${schoolForm.visibleInputs}, hasSave=${schoolForm.hasSave}, saveDisabled=${schoolForm.saveDisabled}, mode=operational-portal`
-        : `forms=${schoolForm.formCount}, inputs=${schoolForm.visibleInputs}, hasSave=${schoolForm.hasSave}, saveDisabled=${schoolForm.saveDisabled}`,
-    );
-    await closeDialogIfAny(page);
-    await snap(page, "school-after-close");
-
     await gotoTab(page, "users");
     await snap(page, "users-home");
     addCheck("users open", "PASS", "loaded");

@@ -67,7 +67,7 @@ RISKS
 EXIT EVIDENCE
 
 IMPLEMENTATION CONSTRAINTS
-- استخدم الموجود أولًا: User وGroup SCHOOL/CLASS وQuestion Bank وQuiz/QuizResult وSchoolPortalManager وSupervisorDashboard وB2B/Access وSocket.io/Redis.
+- استخدم الموجود أولًا: User وGroup SCHOOL/CLASS وQuestion Bank وQuiz/QuizResult وSupervisorDashboard وSchoolsManager وB2B/Access وSocket.io/Redis.
 - حافظ على modular monolith. لا microservices، ولا tenantId عالمي، ولا Users/Question Bank/Quiz engine/School system موازٍ، ولا rewrite للوحة المشرف، ولا role migration كبيرة.
 - لا تغيّر public API contracts أو scoring أو payments أو production data/cutover خارج التفويض الصريح لهذا الهدف.
 - كل policy يجب أن تكون fail-closed وألا توسع صلاحية legacy account.

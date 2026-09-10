@@ -40,7 +40,6 @@ const lazyNamed = <TProps extends object>(
 
 const UsersManager = lazyNamed(() => import('./UsersManager'), 'UsersManager');
 const SchoolsManager = lazyNamed(() => import('./SchoolsManager'), 'SchoolsManager');
-const SchoolPortalManager = lazyNamed(() => import('./SchoolPortalManager'), 'SchoolPortalManager');
 const PathsManager = lazyNamed(() => import('./PathsManager'), 'PathsManager');
 const QuestionBankManager = lazyNamed(() => import('./QuestionBankManager'), 'QuestionBankManager');
 const LessonsManager = lazyNamed(() => import('./LessonsManager'), 'LessonsManager');
@@ -838,16 +837,16 @@ export const AdminDashboard: React.FC = () => {
             title: 'متابعة الفصول والطلاب',
             value: supervisorScopeSummary.groupCount,
             hint: 'راجع الفصول والطلاب المرتبطين بحسابك.',
-            actionLabel: 'بوابة المدرسة',
-            action: () => setActiveAdminTab('school-portal'),
+            actionLabel: 'إدارة المدارس',
+            action: () => setActiveAdminTab('schools'),
             tone: 'indigo',
         },
         {
             title: 'رسالة متابعة جاهزة',
             value: supervisorScopeSummary.studentCount,
             hint: 'جهز قائمة الطلاب من التقرير ثم أرسل تنبيهًا مناسبًا.',
-            actionLabel: 'قائمة الطلاب',
-            action: () => setActiveAdminTab('school-portal'),
+            actionLabel: 'فتح التقارير',
+            action: () => { window.location.hash = '#/reports'; },
             tone: 'amber',
         },
     ], [supervisorScopeSummary.followUpCount, supervisorScopeSummary.groupCount, supervisorScopeSummary.studentCount, supervisorScopeSummary.weakStudentsCount]);
@@ -960,17 +959,6 @@ export const AdminDashboard: React.FC = () => {
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'barcode-tests', label: 'اختبارات باركود', icon: <QrCode size={20} /> },
-                ...nextItems.slice(targetIndex),
-            ];
-        }
-
-        if ([Role.ADMIN, Role.SUPERVISOR].includes(user.role) && !nextItems.some((item) => item.id === 'school-portal')) {
-            const schoolsIndex = nextItems.findIndex((item) => item.id === 'schools');
-            const overviewIndex = nextItems.findIndex((item) => item.id === 'overview');
-            const targetIndex = schoolsIndex === -1 ? (overviewIndex === -1 ? 0 : overviewIndex + 1) : schoolsIndex + 1;
-            nextItems = [
-                ...nextItems.slice(0, targetIndex),
-                { id: 'school-portal', label: user.role === Role.ADMIN ? 'بوابة متابعة المدارس' : 'بوابة مدرستي', icon: <Building2 size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1529,8 +1517,8 @@ export const AdminDashboard: React.FC = () => {
                                 <a href="#/reports" className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
                                     التقارير
                                 </a>
-                                <button onClick={() => setActiveAdminTab('school-portal')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
-                                    بوابة المتابعة
+                                <button onClick={() => setActiveAdminTab('schools')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
+                                    إدارة المدارس
                                 </button>
                                 <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
                                     توجيه اختبار
@@ -1667,7 +1655,7 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                                     <div className="mb-3 flex items-center justify-between">
                                         <h4 className="text-sm font-black text-gray-900">الفصول والنطاقات</h4>
-                                        <button onClick={() => setActiveAdminTab('school-portal')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة</button>
+                                        <button onClick={() => setActiveAdminTab('schools')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة المدارس</button>
                                     </div>
                                     <div className="space-y-3">
                                         {supervisorScopeSummary.groupSnapshots.length ? supervisorScopeSummary.groupSnapshots.map((group) => (
@@ -2052,8 +2040,6 @@ export const AdminDashboard: React.FC = () => {
             case 'schools':
             case 'groups':
                 return <SchoolsManager />;
-            case 'school-portal':
-                return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} />;
             case 'memberships':
                 return <MembershipsManager />;
             case 'financial':

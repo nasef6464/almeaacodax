@@ -69,19 +69,16 @@ const ROUTES = [
     ],
   },
   {
-    name: "school-portal-decision-center",
-    path: "/admin-dashboard?tab=school-portal",
-    clickSelector: '[data-testid="supervisor-create-directed-assessment"]',
-    expectedClickHref: "tab=quizzes",
+    name: "supervisor-decision-center",
+    path: "/supervisor-dashboard",
     allowScopeNotice: true,
     requireSupervisorScopeCard: true,
     requireSupervisorRoleContract: true,
     minBodyLength: 1200,
     minControlCount: 12,
     expectedTextGroups: [
-      ["مركز قرارات المشرف", "ماذا أفعل الآن", "أدوات سريعة"],
-      ["اختبار موجه", "متابعة", "تصدير"],
-      ["خطة التدخل", "خطة متابعة", "الفصول"],
+      ["لوحة الإشراف", "متابعة الطلاب", "أضعف المهارات"],
+      ["إرسال تنبيه أسبوعي", "التقارير", "الفصول"],
     ],
   },
   {
@@ -97,7 +94,7 @@ const ROUTES = [
   },
   {
     name: "directed-quiz-entry",
-    path: "/admin-dashboard?tab=quizzes&source=school-portal&mode=central",
+    path: "/admin-dashboard?tab=quizzes&source=supervisor-dashboard&mode=central",
     minBodyLength: 400,
     minControlCount: 8,
     expectedTextGroups: [

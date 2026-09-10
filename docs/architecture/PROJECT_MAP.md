@@ -117,7 +117,7 @@ The root frontend package and `server` package are intentionally preserved durin
 | Domain | Owns | Current high-signal locations | Main refactor direction |
 |---|---|---|---|
 | Auth | login, account, password, identity, roles | `server/src/routes/auth.routes.ts`, auth UI/context | isolate account/auth HTTP + application services |
-| Schools | schools, classes/groups, supervisors, teachers, parent links | `SchoolsManager`, `SchoolPortalManager`, group/school models/routes | split school command/read modules and relationship services |
+| Schools | schools, classes/groups, supervisors, teachers, parent links | `SchoolsManager`, `SupervisorDashboard`, group/school models/routes | split school command/read modules and relationship services |
 | Courses | courses, subjects, sections, curriculum setup | course routes, builders/managers | separate catalog/config from learning delivery |
 | Learning | lessons, topics, player, library, review | `LearningSection`, learning pages, content routes | route-scoped learning modules and paginated data access |
 | Questions | question bank, skills, authoring/import | `QuestionBankManager`, question tools | dedicated question application service and editor modules |

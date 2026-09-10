@@ -64,7 +64,7 @@
 | طلب حصة خاصة | `BookSession` + `Activity(session_booked)` + تحويل الطلب إلى Lesson | قاعدة أولية لـLive Tutoring بعد ضبط النطاق والعقد |
 | الوصول التجاري للمحتوى | `B2BPackage` + `AccessCode` + `AccessGrant` + السعة والانتهاء | الحفاظ كترخيص محتوى؛ لا تحميله معنى العقد كله |
 | White-label وإعدادات النشر | ProductConfig مغلق كـStrong MVP | يبقى مستوى الـdeployment، وليس بديلًا لعقد مدرسة |
-| لوحة المشرف | `SchoolPortalManager` و`SupervisorDashboard` والتدخلات والتقارير | امتداد داخل نفس الرحلة، لا لوحة بديلة |
+| لوحة المشرف | `SupervisorDashboard` والتدخلات والتقارير | امتداد داخل نفس الرحلة، لا لوحة بديلة |
 
 ### PARTIAL — موجود لكنه لا يحقق الهدف الجديد كاملًا
 
@@ -306,7 +306,7 @@ capturedAt
 
 ### مشرف المدرسة
 
-تبقى `بوابة مدرستي` كما هي: المتابعة، الطلاب، الاختبارات الموجهة، التدخلات، والتقارير. يضاف إليها فقط:
+تبقى `SupervisorDashboard` هي واجهة المشرف: المتابعة، الطلاب، الاختبارات الموجهة، التدخلات، والتقارير. يضاف إليها فقط:
 
 - «الفصول الذكية اليوم».
 - «الجلسات الجارية».
@@ -568,7 +568,6 @@ Teacher opens scheduled class
 - `App.tsx`
 - `dashboards/admin/AdminDashboard.tsx`
 - `dashboards/admin/SchoolsManager.tsx`
-- `dashboards/admin/SchoolPortalManager.tsx`
 - `dashboards/admin/SupervisorDashboard.tsx`
 - `dashboards/admin/PublicBarcodeTestsManager.tsx`
 - `dashboards/admin/LiveSessionsManager.tsx` عند بدء Add-on فقط
@@ -641,7 +640,7 @@ Teacher opens scheduled class
 Baseline وقت كتابة التقرير:
 
 - `smoke:school-management`: PASS `30/30`.
-- `smoke:school-portal-command`: PASS `16/16`.
+- تم تقاعد `smoke:school-portal-command` مع البوابة القديمة؛ يغطي `smoke:supervisor-dashboard` رحلة المشرف الحالية.
 - `smoke:rbac-school-scope`: PASS `4/4`.
 - `smoke:reports-role`: PASS `20/20`.
 - `smoke:barcode-public-tests`: PASS `42/42`.
@@ -697,7 +696,7 @@ Secure current reusable pieces
 - docs/architecture/ROLE_SCOPE_CONTRACT_AR.md
 - docs/architecture/SCHOOL_MVP_COMPLETION_REPORT_AR.md
 
-Gates 1–6 مغلقة ولا يعاد تنفيذها. حافظ على SchoolPortalManager وSupervisorDashboard وSchoolsManager والاختبارات والتقارير الحالية. لا تبدأ Big Bang rewrite، ولا Role migration مدمرة، ولا tenantId عالمي، ولا microservices.
+Gates 1–6 مغلقة ولا يعاد تنفيذها. حافظ على SupervisorDashboard وSchoolsManager والاختبارات والتقارير الحالية. لا تبدأ Big Bang rewrite، ولا Role migration مدمرة، ولا tenantId عالمي، ولا microservices.
 
 ابدأ Phase 0 فقط:
 1. أنشئ capability/evidence matrix للمكونات التي سيعاد استخدامها.
