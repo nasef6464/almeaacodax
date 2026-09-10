@@ -39,6 +39,195 @@ const resolveHomepageHeroImage = (imageUrl?: string) => {
     return trimmed;
 };
 
+export interface PlatformShowcaseItem {
+    id: string;
+    title: string;
+    subtitle: string;
+    url: string;
+    alt: string;
+    badge: string;
+    badgeColor: string;
+    link: string;
+    cta: string;
+    description: string;
+    pack?: 'daylight' | 'neon';
+}
+
+export const PLATFORM_DAYLIGHT_IMAGES: PlatformShowcaseItem[] = [
+    {
+        id: 'daylight-tablet',
+        title: 'استوديو التعلم والإنطلاق الذكي',
+        subtitle: 'بيئة تدريب تفاعلية متطورة',
+        url: '/images/smart-learning-tablet.jpg',
+        alt: 'طالب منصة المئة يتدرب على التابلت مع مؤشرات حية',
+        badge: 'بيئة التعلم',
+        badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
+        link: '/dashboard',
+        cta: 'ابدأ جلستك التدريبية',
+        description: 'واجهة تفاعلية تجمع بين حل الأسئلة، تتبع مؤشرات الأداء، والانطلاق السريع نحو أهدافك.',
+        pack: 'daylight',
+    },
+    {
+        id: 'daylight-qudrat',
+        title: 'إتقان القدرات والمسائل الكمية',
+        subtitle: 'شروحات وحلول ذهبية للمئة',
+        url: '/images/daylight-qudrat-math.jpg',
+        alt: 'إتقان القدرات العامة والمسائل الكمية - منصة المئة',
+        badge: 'مسار القدرات',
+        badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+        link: '/category/p_qudrat',
+        cta: 'ابدأ تدريب القدرات',
+        description: 'نماذج ثلاثية الأبعاد واستراتيجيات حل المسائل الحسابية والهندسية بلمح البصر دون تعقيد.',
+        pack: 'daylight',
+    },
+    {
+        id: 'daylight-tahsili',
+        title: 'مختبر التحصيلي العلمي',
+        subtitle: 'فيزياء، كيمياء، أحياء، رياضيات',
+        url: '/images/daylight-tahsili-science.jpg',
+        alt: 'مختبر التحصيلي العلمي - منصة المئة',
+        badge: 'مسار التحصيلي',
+        badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        link: '/category/p_tahsili',
+        cta: 'استكشف التحصيلي',
+        description: 'تبسيط تجارب العلوم والمفاهيم المعقدة من خلال شروحات مرئية تفاعلية ترسخ الفهم في الذاكرة.',
+        pack: 'daylight',
+    },
+    {
+        id: 'daylight-mock',
+        title: 'محاكاة اختبارات قياس بالوقت',
+        subtitle: 'بيئة قياس الفعلية بالثانية',
+        url: '/images/daylight-mock-simulation.jpg',
+        alt: 'محاكاة اختبارات قياس الحقيقية - منصة المئة',
+        badge: 'محاكاة قياس',
+        badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+        link: '/mock-exams',
+        cta: 'خُض الاختبار التجريبي',
+        description: 'مؤقت دقيق، تصحيح فوري لكل قسم، ومحاكاة تامة لضغط ووقت الاختبار الحقيقي لتعتاد عليه.',
+        pack: 'daylight',
+    },
+    {
+        id: 'daylight-ai',
+        title: 'المعلم الآلي الذكي AI',
+        subtitle: 'معك لحظة بلحظة خطوة بخطوة',
+        url: '/images/daylight-ai-tutor.jpg',
+        alt: 'المعلم الآلي الذكي وحل الأسئلة - منصة المئة',
+        badge: 'معلم AI ذكي',
+        badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
+        link: '/dashboard',
+        cta: 'جرّب المعلم الآلي',
+        description: 'روبوت تعليمي يحلل طريقة تفكيرك، يقترح لك حلولاً بديلة، ويقدم تلميحات ذكية حتى تصل للحل بنفسك.',
+        pack: 'daylight',
+    },
+    {
+        id: 'daylight-celebration',
+        title: 'التتويج بدرجة الـ 100%',
+        subtitle: 'الكأس الذهبي والقبول الجامعي',
+        url: '/images/daylight-celebration-100.jpg',
+        alt: 'فرحة تحقيق الـ 100% والتفوق - منصة المئة',
+        badge: 'طريق الـ 100%',
+        badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+        link: '/pricing',
+        cta: 'انضم لرحلة التفوق',
+        description: 'احتفل بالنتيجة التي تستحقها وافتح أبواب كليات الطب والهندسة والعلوم المتقدمة بثقة كاملة.',
+        pack: 'daylight',
+    },
+    {
+        id: 'daylight-arena',
+        title: 'صالة التنافس المدرسي والفصول',
+        subtitle: 'تحديات فرق ومدارس الرياض والمملكة',
+        url: '/images/daylight-school-arena.jpg',
+        alt: 'حلبة التنافس المدرسي والفصول الذكية - منصة المئة',
+        badge: 'الفصول والمدارس',
+        badgeColor: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+        link: '/admin-dashboard?tab=schools',
+        cta: 'بوابة المدارس',
+        description: 'لوحات تصدر تفاعلية تجمع الطلاب في تحديات حماسية ترفع مستوى التحصيل لكافة الفصل والمدرسة.',
+        pack: 'daylight',
+    },
+];
+
+export const PLATFORM_SHOWCASE_IMAGES: PlatformShowcaseItem[] = [
+    {
+        id: 'qudrat',
+        title: 'بطل القدرات العامة',
+        subtitle: 'تأسيس وتدريب كمي ولفظي',
+        url: '/images/qudrat-champion.jpg',
+        alt: 'بطل القدرات العامة - منصة المئة',
+        badge: 'مسار القدرات',
+        badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+        link: '/category/p_qudrat',
+        cta: 'ابدأ تدريب القدرات',
+        description: 'شروحات استراتيجيات الحل السريع للمسائل الكمية واستيعاب المقروء والتناظر اللفظي بأعلى دقة.',
+        pack: 'neon',
+    },
+    {
+        id: 'tahsili',
+        title: 'شعلة التحصيلي العلمي',
+        subtitle: 'فيزياء، كيمياء، أحياء، رياضيات',
+        url: '/images/tahsili-excellence.jpg',
+        alt: 'شعلة التحصيلي العلمي - منصة المئة',
+        badge: 'مسار التحصيلي',
+        badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        link: '/category/p_tahsili',
+        cta: 'استكشف التحصيلي',
+        description: 'تغطية شاملة ومفاهيم مركزة تضمن إتقان مقررات المرحلة الثانوية العلمية وتحقيق أعلى الدرجات.',
+        pack: 'neon',
+    },
+    {
+        id: 'mock-exams',
+        title: 'محاكاة قياس المحوسبة',
+        subtitle: 'بيئة اختبار حقيقية بالوقت والتصحيح',
+        url: '/images/mock-exam-simulation.jpg',
+        alt: 'محاكاة اختبارات قياس الحقيقية - منصة المئة',
+        badge: 'محاكاة قياس',
+        badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
+        link: '/mock-exams',
+        cta: 'خُض الاختبار التجريبي',
+        description: 'اختبارات محاكاة ذكية بنفس خوارزميات قياس الفعلية، مؤقت زمني دقيق، وتحليل فوري للدرجات.',
+        pack: 'neon',
+    },
+    {
+        id: 'ai-tutor',
+        title: 'المساعد الذكي الفوري',
+        subtitle: 'ذكاء اصطناعي متخصص في القياس',
+        url: '/images/ai-smart-tutor.jpg',
+        alt: 'المساعد الذكي وحل المسائل - منصة المئة',
+        badge: 'ذكاء اصطناعي AI',
+        badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
+        link: '/dashboard',
+        cta: 'جرّب المساعد الذكي',
+        description: 'حل المسائل خطوة بخطوة، توضيح فوري للأخطاء، وتوصيات مخصصة لسد الفجوات التعليمية.',
+        pack: 'neon',
+    },
+    {
+        id: 'score-100',
+        title: 'تتويج الـ 100% والقمة',
+        subtitle: 'القبول الجامعي في كبرى التخصصات',
+        url: '/images/score-celebration.jpg',
+        alt: 'تتويج الـ 100% والقبول الجامعي - منصة المئة',
+        badge: 'طريق الـ 100%',
+        badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+        link: '/pricing',
+        cta: 'انضم لرحلة التفوق',
+        description: 'برامج مكثفة ومتابعة نوعية حتى تكسر حاجز الدرجات الاستثنائية وتضمن مقعدك في أرقى الجامعات.',
+        pack: 'neon',
+    },
+    {
+        id: 'classroom',
+        title: 'حلبة الفصول التفاعلية',
+        subtitle: 'تنافس مدرسي وبطولات تفاعلية',
+        url: '/images/classroom-arena.jpg',
+        alt: 'حلبة الفصول التفاعلية ومسابقات القدرات - منصة المئة',
+        badge: 'الفصول الذكية',
+        badgeColor: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+        link: '/admin-dashboard?tab=schools',
+        cta: 'استكشف بوابة المدارس',
+        description: 'مسابقات مباشرة بين الطلاب والفصول، لوحات شرف حية، وروح تنافسية تشعل الحماس.',
+        pack: 'neon',
+    },
+];
+
 const defaultHomepageSettings: HomepageSettings = {
     key: 'default',
     hero: {
@@ -160,6 +349,7 @@ export const Landing: React.FC = () => {
     const [dismissedBannerAdId, setDismissedBannerAdId] = useState<string | null>(null);
     const [selectedArticle, setSelectedArticle] = useState<PlatformArticle | null>(null);
     const [isArticleModalOpen, setIsArticleModalOpen] = useState(false);
+    const [showcaseTab, setShowcaseTab] = useState<'daylight' | 'neon'>('daylight');
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
 
     useEffect(() => {
@@ -392,15 +582,24 @@ export const Landing: React.FC = () => {
     }, [announcementAds, dismissedBannerAdId]);
 
     const heroGallery = useMemo(() => {
-        const list: { url: string; alt: string }[] = [];
+        const list: { url: string; alt: string; title?: string }[] = [];
         const primaryUrl = resolveHomepageHeroImage(homepageSettings.hero.imageUrl || defaultHomepageSettings.hero.imageUrl);
         const primaryAlt = homepageSettings.hero.imageAlt || defaultHomepageSettings.hero.imageAlt || 'طالب يستخدم منصة المئة';
-        list.push({ url: primaryUrl, alt: primaryAlt });
+        list.push({ url: primaryUrl, alt: primaryAlt, title: 'الرئيسية' });
 
-        if (Array.isArray(homepageSettings.hero.galleryImages)) {
+        const allPlatformPresets = [...PLATFORM_DAYLIGHT_IMAGES, ...PLATFORM_SHOWCASE_IMAGES];
+
+        if (Array.isArray(homepageSettings.hero.galleryImages) && homepageSettings.hero.galleryImages.length > 0) {
             homepageSettings.hero.galleryImages.forEach((img, idx) => {
                 if (img && typeof img === 'string' && img.trim() && img !== primaryUrl) {
-                    list.push({ url: img, alt: `${primaryAlt} - ${idx + 2}` });
+                    const preset = allPlatformPresets.find((p) => p.url === img);
+                    list.push({ url: img, alt: preset?.alt || `${primaryAlt} - ${idx + 2}`, title: preset?.title || `صورة ${idx + 2}` });
+                }
+            });
+        } else {
+            allPlatformPresets.forEach((item) => {
+                if (item.url !== primaryUrl && !list.some((existing) => existing.url === item.url)) {
+                    list.push({ url: item.url, alt: item.alt, title: item.title });
                 }
             });
         }
@@ -593,6 +792,33 @@ export const Landing: React.FC = () => {
                                         </>
                                     )}
                                 </div>
+
+                                {/* Interactive Image Thumbnails Bar */}
+                                {heroGallery.length > 1 && (
+                                    <div className="mt-3.5 flex items-center justify-center gap-2 overflow-x-auto pb-1 px-1">
+                                        {heroGallery.map((thumb, tIdx) => {
+                                            const isCur = tIdx === (currentHeroIndex % heroGallery.length);
+                                            return (
+                                                <button
+                                                    key={`hero-thumb-strip-${tIdx}`}
+                                                    type="button"
+                                                    onClick={() => setCurrentHeroIndex(tIdx)}
+                                                    className={`relative rounded-xl overflow-hidden border-2 transition-all duration-300 shrink-0 cursor-pointer shadow-xs ${
+                                                        isCur ? 'border-amber-500 scale-105 shadow-md ring-2 ring-amber-400/50' : 'border-white/90 bg-white opacity-70 hover:opacity-100 hover:border-indigo-300'
+                                                    }`}
+                                                    style={{ width: '56px', height: '38px' }}
+                                                    title={thumb.title || thumb.alt}
+                                                >
+                                                    <img
+                                                        src={resolveHomepageHeroImage(thumb.url)}
+                                                        alt={thumb.alt}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
 
                                 {/* Floating Rating Badge Card */}
                                 <a
@@ -975,6 +1201,94 @@ export const Landing: React.FC = () => {
                                 description="خرائط مفاهيم وملخصات سريعة واختبارات محاكية تحاكي بيئة اختبار قياس الفعلية."
                             />
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── معرض ركائز التفوق لمنصة المئة (صور احترافية للقدرات والتحصيلي) ── */}
+            <section id="showcase-pillars" className="py-20 bg-gradient-to-b from-white via-indigo-50/30 to-white scroll-mt-16 overflow-hidden border-t border-slate-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black mb-3">
+                            <Sparkles size={14} className="text-amber-500" />
+                            <span>رحلة التميز نحو الـ 100% في القياس والتحصيلي</span>
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3 tracking-tight">
+                            محطات التفوق الذكي في منصة المئة
+                        </h2>
+                        <p className="text-gray-600 text-base max-w-2xl mx-auto mb-6">
+                            منهجية متكاملة تبدأ من التأسيس النظري المتقن وتنتهي بتحقيق الدرجة الكاملة والقبول في أرقى الجامعات.
+                        </p>
+
+                        {/* مفاتيح التبديل بين باقتي التصاميم (النهاري والسيبراني) */}
+                        <div className="inline-flex items-center gap-2 p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200 shadow-inner">
+                            <button
+                                type="button"
+                                onClick={() => setShowcaseTab('daylight')}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                                    showcaseTab === 'daylight'
+                                        ? 'bg-white text-indigo-700 shadow-md ring-1 ring-indigo-100'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                <span>☀️ استوديو المئة النهاري 3D</span>
+                                <span className="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                    {PLATFORM_DAYLIGHT_IMAGES.length}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowcaseTab('neon')}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                                    showcaseTab === 'neon'
+                                        ? 'bg-white text-indigo-700 shadow-md ring-1 ring-indigo-100'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                <span>🌙 النمط السيبراني الليلي</span>
+                                <span className="bg-purple-50 text-purple-600 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                    {PLATFORM_SHOWCASE_IMAGES.length}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                        {(showcaseTab === 'daylight' ? PLATFORM_DAYLIGHT_IMAGES : PLATFORM_SHOWCASE_IMAGES).map((item) => (
+                            <div
+                                key={item.id}
+                                className="group relative rounded-3xl overflow-hidden bg-white border border-slate-200/80 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col justify-between"
+                            >
+                                <div className="relative aspect-[3/2] overflow-hidden bg-slate-900">
+                                    <img
+                                        src={item.url}
+                                        alt={item.alt}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        loading="lazy"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+                                    <span className={`absolute top-3.5 right-3.5 px-3 py-1 rounded-full text-xs font-black border shadow-xs ${item.badgeColor}`}>
+                                        {item.badge}
+                                    </span>
+                                </div>
+                                <div className="p-6 text-right flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="text-lg font-black text-slate-900 mb-1.5 group-hover:text-indigo-600 transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        <div className="text-xs font-bold text-amber-600 mb-3">{item.subtitle}</div>
+                                        <p className="text-xs text-slate-600 leading-relaxed mb-5">{item.description}</p>
+                                    </div>
+                                    <Link
+                                        to={item.link}
+                                        className="inline-flex items-center justify-between w-full rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-200 px-4 py-3 text-xs font-black text-slate-800 hover:text-indigo-700 transition-all shadow-2xs"
+                                    >
+                                        <span>{item.cta}</span>
+                                        <ArrowLeft size={15} className="group-hover:-translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

@@ -9,6 +9,25 @@ import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.jpg?v=20260512';
 
+const PLATFORM_PRESET_IMAGES = [
+    // باقة استوديو المئة النهاري 3D
+    { title: 'استوديو التابلت الذكي', pack: 'daylight', url: '/images/smart-learning-tablet.jpg' },
+    { title: 'بطل القدرات والكمي', pack: 'daylight', url: '/images/daylight-qudrat-math.jpg' },
+    { title: 'مختبر التحصيلي العلمي', pack: 'daylight', url: '/images/daylight-tahsili-science.jpg' },
+    { title: 'محاكاة قياس بالوقت', pack: 'daylight', url: '/images/daylight-mock-simulation.jpg' },
+    { title: 'المعلم الآلي الذكي AI', pack: 'daylight', url: '/images/daylight-ai-tutor.jpg' },
+    { title: 'فرحة الـ 100% والتفوق', pack: 'daylight', url: '/images/daylight-celebration-100.jpg' },
+    { title: 'حلبة التنافس المدرسي', pack: 'daylight', url: '/images/daylight-school-arena.jpg' },
+
+    // النمط السيبراني الليلي
+    { title: 'بطل القدرات السيبراني', pack: 'neon', url: '/images/qudrat-champion.jpg' },
+    { title: 'شعلة التحصيلي العلمي', pack: 'neon', url: '/images/tahsili-excellence.jpg' },
+    { title: 'محاكاة قياس المحوسبة', pack: 'neon', url: '/images/mock-exam-simulation.jpg' },
+    { title: 'المساعد الذكي الفوري', pack: 'neon', url: '/images/ai-smart-tutor.jpg' },
+    { title: 'تتويج الـ 100% والقمة', pack: 'neon', url: '/images/score-celebration.jpg' },
+    { title: 'حلبة الفصول التفاعلية', pack: 'neon', url: '/images/classroom-arena.jpg' },
+];
+
 const COLOR_SWATCHES = [
     '#111827',
     '#374151',
@@ -931,6 +950,83 @@ export const HomepageManager: React.FC = () => {
                                                 />
                                             </label>
                                         )}
+                                    </div>
+                                </div>
+
+                                {/* Presets from Platform Library */}
+                                <div className="space-y-2.5 pt-3 border-t border-gray-100">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <div className="flex items-center gap-1.5 text-xs font-black text-indigo-950">
+                                            <Sparkles size={14} className="text-amber-500" />
+                                            <span>مكتبة صور المنصة الرسمية (13 صورة احترافية للقدرات والتحصيلي):</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const daylightUrls = PLATFORM_PRESET_IMAGES.filter((p) => p.pack === 'daylight').map((p) => p.url);
+                                                    setSettings((prev) => ({
+                                                        ...prev,
+                                                        hero: {
+                                                            ...prev.hero,
+                                                            galleryImages: daylightUrls,
+                                                        },
+                                                    }));
+                                                }}
+                                                className="text-[11px] font-black text-amber-800 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-200 transition-colors cursor-pointer"
+                                            >
+                                                ☀️ تطبيق باقة الاستوديو النهاري (7 صور)
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const neonUrls = PLATFORM_PRESET_IMAGES.filter((p) => p.pack === 'neon').map((p) => p.url);
+                                                    setSettings((prev) => ({
+                                                        ...prev,
+                                                        hero: {
+                                                            ...prev.hero,
+                                                            galleryImages: neonUrls,
+                                                        },
+                                                    }));
+                                                }}
+                                                className="text-[11px] font-black text-purple-800 bg-purple-50 hover:bg-purple-100 px-2.5 py-1 rounded-lg border border-purple-200 transition-colors cursor-pointer"
+                                            >
+                                                🌙 تطبيق النمط السيبراني (6 صور)
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                                        {PLATFORM_PRESET_IMAGES.map((preset) => (
+                                            <div key={preset.url} className="rounded-xl border border-gray-200/80 bg-gray-50/60 p-1.5 space-y-1.5 group hover:border-indigo-300 transition-colors">
+                                                <div className="relative aspect-[3/2] rounded-lg overflow-hidden border border-gray-200 bg-gray-100 shadow-2xs">
+                                                    <img src={preset.url} alt={preset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                                </div>
+                                                <div className="text-[10px] font-black text-gray-800 truncate text-center">{preset.title}</div>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateHeroField('imageUrl', preset.url)}
+                                                        className="flex-1 py-1 rounded-md bg-white hover:bg-indigo-50 border border-gray-200 text-indigo-700 text-[10px] font-black text-center shadow-2xs transition-colors cursor-pointer"
+                                                        title="تعيين كصورة رئيسية"
+                                                    >
+                                                        رئيسية
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const current = settings.hero.galleryImages || [];
+                                                            if (!current.includes(preset.url)) {
+                                                                updateHeroField('galleryImages', [...current, preset.url]);
+                                                            }
+                                                        }}
+                                                        className="flex-1 py-1 rounded-md bg-white hover:bg-amber-50 border border-gray-200 text-amber-700 text-[10px] font-black text-center shadow-2xs transition-colors cursor-pointer"
+                                                        title="إضافة للمعرض الدوار"
+                                                    >
+                                                        + معرض
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
