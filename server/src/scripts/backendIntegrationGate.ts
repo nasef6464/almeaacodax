@@ -426,6 +426,82 @@ async function runSchoolDirectorDashboardJourney(csrf: CsrfContext) {
   pass("school director add and idempotent move operations are audit logged");
 }
 
+async function runSchoolDirectorDelegatedOperationsJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school");
+  const classId = groupIds.get("class");
+  const outsideSchoolId = groupIds.get("outsideSchool");
+  const studentId = scopeStudentIds.get("assigned");
+  const outsideStudentId = scopeStudentIds.get("outsideSchool");
+  const teacherId = userIds.get("teacher");
+  const directorId = userIds.get("schoolAdmin");
+  assert.ok(schoolId && classId && outsideSchoolId && studentId && outsideStudentId && teacherId && directorId, "delegated school operations fixtures missing");
+  const permissions = [
+    "SCHOOL_OVERVIEW_VIEW", "SCHOOL_REPORTS_AGGREGATE_VIEW", "SCHOOL_STUDENTS_VIEW", "SCHOOL_STUDENTS_ADD", "SCHOOL_STUDENTS_MOVE_CLASS",
+    "SCHOOL_STUDENTS_UPDATE_BASIC", "SCHOOL_STUDENTS_DEACTIVATE", "SCHOOL_CLASSES_MANAGE", "SCHOOL_TEACHERS_ASSIGN", "SCHOOL_REPORTS_DETAILED_VIEW", "SCHOOL_REPORTS_EXPORT",
+  ];
+  const grant = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, { method: "PUT", token: tokens.get("admin"), csrf, body: { status: "active", permissions } });
+  expectStatus("platform admin grants delegated school operations", grant, 200);
+
+  const workspaceBeforeExport = await jsonRequest("/school-access/director-workspace", { token: tokens.get("schoolAdmin") });
+  expectStatus("director workspace exposes effective contract modules", workspaceBeforeExport, 200);
+  assert.equal(workspaceBeforeExport.body?.schools?.[0]?.modules?.includes("SCHOOL_CORE"), true, "director workspace omitted active core module");
+  assert.equal(workspaceBeforeExport.body?.schools?.[0]?.modules?.includes("EXECUTIVE_ANALYTICS"), false, "director workspace exposed inactive export module");
+
+  const updated = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { name: "Director Updated Student", phone: "0500000000" } });
+  expectStatus("director updates bounded student basic fields", updated, 200);
+  assert.equal(updated.body?.student?.phone, "0500000000", "student basic update was not persisted");
+  const outsideUpdate = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${outsideStudentId}`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { name: "Forbidden" } });
+  expectStatus("director cannot update another school student", outsideUpdate, 404);
+
+  const deactivated = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}/active`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { isActive: false } });
+  expectStatus("director deactivates student without delete", deactivated, 200);
+  assert.equal(await UserModel.exists({ _id: studentId, isActive: false }).then(Boolean), true, "student deactivation was not persisted");
+  const reactivated = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}/active`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { isActive: true } });
+  expectStatus("director reactivates student", reactivated, 200);
+
+  const createdClass = await jsonRequest(`/school-access/director/schools/${schoolId}/classes`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { name: `Director Class ${RUN_MARKER}` } });
+  expectStatus("director creates class in granted school", createdClass, 201);
+  const createdClassId = String(createdClass.body?.classroom?.classId || "");
+  const renamedClass = await jsonRequest(`/school-access/director/schools/${schoolId}/classes/${createdClassId}`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { name: `Director Renamed Class ${RUN_MARKER}` } });
+  expectStatus("director renames class in granted school", renamedClass, 200);
+  const outsideClass = await jsonRequest(`/school-access/director/schools/${schoolId}/classes/${outsideSchoolId}`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { name: "Forbidden" } });
+  expectStatus("director cannot rename object outside school classes", outsideClass, 404);
+
+  const teachers = await jsonRequest(`/school-access/director/schools/${schoolId}/teachers`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director lists only active school teachers for assignment", teachers, 200);
+  assert.equal(teachers.body?.teachers?.some((teacher: any) => teacher.teacherId === teacherId), true, "school teacher missing from assignment picker");
+  const assignment = await jsonRequest(`/school-access/director/schools/${schoolId}/assignments`, { method: "PUT", token: tokens.get("schoolAdmin"), csrf, body: { teacherId, classId: createdClassId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" } });
+  expectStatus("director assigns school teacher to school class", assignment, 200);
+  const crossSchoolAssignment = await jsonRequest(`/school-access/director/schools/${outsideSchoolId}/assignments`, { method: "PUT", token: tokens.get("schoolAdmin"), csrf, body: { teacherId, classId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" } });
+  expectStatus("director cannot assign through ungranted school", crossSchoolAssignment, 403);
+
+  const detailed = await jsonRequest(`/school-access/director/schools/${schoolId}/reports/detailed`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director reads school-bounded detailed intelligence", detailed, 200);
+  assert.equal(detailed.body?.school?.schoolId, schoolId, "detailed report returned wrong school");
+  const exportWithoutModule = await jsonRequest(`/school-access/director/schools/${schoolId}/reports/students.csv`, { token: tokens.get("schoolAdmin") });
+  expectStatus("export permission alone cannot bypass contract module", exportWithoutModule, 403);
+  await SchoolContractModel.updateOne({ schoolId }, { $addToSet: { modules: "EXECUTIVE_ANALYTICS" } });
+  const exported = await jsonRequest(`/school-access/director/schools/${schoolId}/reports/students.csv`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director exports bounded school roster when dual gate passes", exported, 200);
+  assert.match(String(exported.body || ""), /Director Updated Student/, "school export omitted scoped student");
+  assert.doesNotMatch(String(exported.body || ""), /outside-school-student/, "school export leaked outside student");
+
+  const revokedPermissions = permissions.filter((permission) => permission !== "SCHOOL_CLASSES_MANAGE");
+  const revoke = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, { method: "PUT", token: tokens.get("admin"), csrf, body: { status: "active", permissions: revokedPermissions } });
+  expectStatus("platform admin revokes one delegated capability", revoke, 200);
+  const classAfterRevoke = await jsonRequest(`/school-access/director/schools/${schoolId}/classes`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { name: `Denied Class ${RUN_MARKER}` } });
+  expectStatus("revoked class capability fails immediately", classAfterRevoke, 403);
+  await SchoolContractModel.updateOne({ schoolId }, { $pull: { modules: "SCHOOL_INTELLIGENCE" } });
+  const reportAfterContractRevoke = await jsonRequest(`/school-access/director/schools/${schoolId}/reports/detailed`, { token: tokens.get("schoolAdmin") });
+  expectStatus("disabled contract module fails detailed report immediately", reportAfterContractRevoke, 403);
+  await SchoolContractModel.updateOne({ schoolId }, { $addToSet: { modules: "SCHOOL_INTELLIGENCE" } });
+
+  const auditCount = await AdminAuditLogModel.countDocuments({ actorId: directorId, action: { $in: ["schools.director.student.update_basic", "schools.director.student.deactivate", "schools.director.student.reactivate", "schools.director.class.create", "schools.director.class.update", "schools.director.teacher.assign"] }, "metadata.schoolId": schoolId });
+  assert.ok(auditCount >= 6, "delegated school mutations were not audit logged");
+  assert.equal(await AdminAuditLogModel.countDocuments({ actorId: directorId, action: "schools.director.report.export_students", "metadata.schoolId": schoolId }), 1, "school roster export was not audit logged");
+  pass("delegated school operations enforce permission plus contract entitlement");
+}
+
 async function runSmartClassroomJourney(csrf: CsrfContext) {
   const schoolId = groupIds.get("school");
   const classId = groupIds.get("class");
@@ -1652,6 +1728,7 @@ async function main() {
     await runSchoolDirectorIdentityJourney(csrf);
     await runSmartClassroomJourney(csrf);
     await runSchoolDirectorDashboardJourney(csrf);
+    await runSchoolDirectorDelegatedOperationsJourney(csrf);
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);

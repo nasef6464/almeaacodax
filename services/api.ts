@@ -220,6 +220,23 @@ async function request<T>(path: string, options: RequestOptions = {}, retryingAf
   return JSON.parse(raw) as T;
 }
 
+async function downloadText(path: string, token?: string | null) {
+  const resolvedToken = token === undefined ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken()) : token;
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "GET",
+    cache: "no-store",
+    credentials: "include",
+    headers: resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : undefined,
+  });
+  if (!response.ok) {
+    const raw = await response.text().catch(() => "");
+    let message = raw || "تعذر تنزيل الملف.";
+    try { const payload = JSON.parse(raw); message = payload.message || payload.error || message; } catch { /* plain-text response */ }
+    throw new Error(message);
+  }
+  return { text: await response.text(), disposition: response.headers.get("content-disposition") || "" };
+}
+
 const readPublicCache = <T>(key: string): T | null => {
   const storage = getPublicCacheStorage();
   if (!storage) {
@@ -732,15 +749,31 @@ export const api = {
   updateSchoolDirectorAccess: (schoolId: string, userId: string, payload: { status: "active" | "inactive"; permissions: string[] }, token?: string | null) =>
     request<{ membership: unknown }>(`/school-access/directors/${encodeURIComponent(schoolId)}/${encodeURIComponent(userId)}`, { method: "PUT", body: payload, token }),
   getSchoolDirectorWorkspace: (token?: string | null) =>
-    request<{ schools: Array<{ schoolId: string; schoolName: string; permissions: string[]; status: string; updatedAt: string | null }> }>("/school-access/director-workspace", { token, cache: "no-store" }),
+    request<{ schools: Array<{ schoolId: string; schoolName: string; permissions: string[]; modules: string[]; status: string; updatedAt: string | null }> }>("/school-access/director-workspace", { token, cache: "no-store" }),
   getSchoolDirectorOverview: (schoolId: string, token?: string | null) =>
     request<{ school: { schoolId: string; schoolName: string }; metrics: { students: number; classes: number; teachers: number; supervisors: number; schoolAssessments: number; completedSmartClasses: number }; classes: Array<{ classId: string; className: string }> }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/overview`, { token, cache: "no-store" }),
   getSchoolDirectorStudents: (schoolId: string, search = '', token?: string | null) =>
-    request<{ students: Array<{ studentId: string; name: string; email: string; isActive: boolean; classId: string | null; className: string | null }>; total: number }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students${search ? `?search=${encodeURIComponent(search)}` : ''}`, { token, cache: "no-store" }),
+    request<{ students: Array<{ studentId: string; name: string; email: string; phone: string; isActive: boolean; classId: string | null; className: string | null }>; total: number }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students${search ? `?search=${encodeURIComponent(search)}` : ''}`, { token, cache: "no-store" }),
   addSchoolDirectorStudent: (schoolId: string, payload: { name: string; email: string; password: string; classId: string }, token?: string | null) =>
-    request<{ student: { studentId: string; name: string; email: string; isActive: boolean; classId: string | null; className: string | null }; created: boolean }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students`, { method: "POST", body: payload, token }),
+    request<{ student: { studentId: string; name: string; email: string; phone: string; isActive: boolean; classId: string | null; className: string | null }; created: boolean }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students`, { method: "POST", body: payload, token }),
   moveSchoolDirectorStudent: (schoolId: string, studentId: string, classId: string, token?: string | null) =>
-    request<{ student: { studentId: string; name: string; email: string; isActive: boolean; classId: string | null; className: string | null }; idempotent: boolean }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students/${encodeURIComponent(studentId)}/class`, { method: "PUT", body: { classId }, token }),
+    request<{ student: { studentId: string; name: string; email: string; phone: string; isActive: boolean; classId: string | null; className: string | null }; idempotent: boolean }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students/${encodeURIComponent(studentId)}/class`, { method: "PUT", body: { classId }, token }),
+  updateSchoolDirectorStudentBasic: (schoolId: string, studentId: string, payload: { name?: string; phone?: string }, token?: string | null) =>
+    request<{ student: { studentId: string; name: string; email: string; phone: string; isActive: boolean; classId: string | null; className: string | null } }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students/${encodeURIComponent(studentId)}`, { method: "PATCH", body: payload, token }),
+  setSchoolDirectorStudentActive: (schoolId: string, studentId: string, isActive: boolean, token?: string | null) =>
+    request<{ student: { studentId: string; name: string; email: string; phone: string; isActive: boolean; classId: string | null; className: string | null } }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students/${encodeURIComponent(studentId)}/active`, { method: "PATCH", body: { isActive }, token }),
+  createSchoolDirectorClass: (schoolId: string, name: string, token?: string | null) =>
+    request<{ classroom: { classId: string; className: string } }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/classes`, { method: "POST", body: { name }, token }),
+  updateSchoolDirectorClass: (schoolId: string, classId: string, name: string, token?: string | null) =>
+    request<{ classroom: { classId: string; className: string } }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/classes/${encodeURIComponent(classId)}`, { method: "PATCH", body: { name }, token }),
+  getSchoolDirectorTeachers: (schoolId: string, token?: string | null) =>
+    request<{ teachers: Array<{ teacherId: string; name: string; email: string; isActive: boolean }>; assignments: Array<{ assignmentId: string; teacherId: string; classId: string; subjectId: string; status: string }> }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/teachers`, { token, cache: "no-store" }),
+  updateSchoolDirectorTeachingAssignment: (schoolId: string, payload: { teacherId: string; classId: string; subjectId?: string; status: "active" | "inactive" }, token?: string | null) =>
+    request<{ assignment: { assignmentId: string; teacherId: string; classId: string; subjectId: string; status: string } }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/assignments`, { method: "PUT", body: payload, token }),
+  getSchoolDirectorDetailedReport: (schoolId: string, token?: string | null) =>
+    request<{ school: { schoolId: string; schoolName: string }; intelligence: any }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/reports/detailed`, { token, cache: "no-store" }),
+  downloadSchoolDirectorStudentsCsv: (schoolId: string, token?: string | null) =>
+    downloadText(`/school-access/director/schools/${encodeURIComponent(schoolId)}/reports/students.csv`, token),
   getSchoolTeacherWorkspace: (token?: string | null) =>
     request<{
       personas: { platformTrainer: boolean; schoolTeacher: boolean };
