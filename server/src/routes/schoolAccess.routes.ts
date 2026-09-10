@@ -14,6 +14,13 @@ import { GroupModel } from "../models/Group.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { buildSchoolDirectorWorkspace, requireSchoolDirectorPermission } from "../modules/schools/application/schoolDirectorAccess.js";
 import { defaultSchoolDirectorPermissions, schoolDirectorPermissions } from "../modules/schools/domain/schoolDirectorPermissions.js";
+import {
+  addSchoolDirectorStudent,
+  buildSchoolDirectorOverview,
+  listSchoolDirectorStudents,
+  moveSchoolDirectorStudent,
+  SchoolDirectorOperationError,
+} from "../modules/schools/application/schoolDirectorWorkspace.js";
 
 export const schoolAccessRouter = Router();
 const contractSchema = z.object({ schoolId: z.string().min(1), status: z.enum(["active", "inactive", "expired"]), modules: z.array(z.enum(schoolModules)).min(1), validFrom: z.coerce.date().nullable().optional(), validUntil: z.coerce.date().nullable().optional() });
@@ -22,6 +29,13 @@ const directorMembershipSchema = z.object({
   status: z.enum(["active", "inactive"]).default("active"),
   permissions: z.array(z.enum(schoolDirectorPermissions)).default(defaultSchoolDirectorPermissions),
 });
+const directorStudentSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  email: z.string().email(),
+  password: z.string().min(8).max(160).refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), "Password must include a letter and number"),
+  classId: z.string().min(1),
+});
+const directorStudentMoveSchema = z.object({ classId: z.string().min(1) });
 const assignmentSchema = z.object({ schoolId: z.string().min(1), teacherId: z.string().min(1), classId: z.string().min(1), subjectId: z.string().default(""), status: z.enum(["active", "inactive"]).default("active") });
 
 schoolAccessRouter.get("/context", requireAuth, asyncHandler(async (req, res) => res.json({ contexts: await resolveSchoolContexts(req.authUser!) })));
@@ -35,6 +49,52 @@ schoolAccessRouter.get("/director/schools/:schoolId/overview-access", requireAut
   const membership = await requireSchoolDirectorPermission(req.authUser!.id, req.params.schoolId, "SCHOOL_OVERVIEW_VIEW");
   if (!membership) return res.status(StatusCodes.FORBIDDEN).json({ message: "School permission denied" });
   return res.json({ allowed: true, schoolId: req.params.schoolId });
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/overview", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const membership = await requireSchoolDirectorPermission(req.authUser!.id, req.params.schoolId, "SCHOOL_OVERVIEW_VIEW");
+  if (!membership) return res.status(StatusCodes.FORBIDDEN).json({ message: "School permission denied" });
+  try {
+    return res.json(await buildSchoolDirectorOverview(req.params.schoolId));
+  } catch (error) {
+    if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message });
+    throw error;
+  }
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/students", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const membership = await requireSchoolDirectorPermission(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_VIEW");
+  if (!membership) return res.status(StatusCodes.FORBIDDEN).json({ message: "School permission denied" });
+  try {
+    return res.json(await listSchoolDirectorStudents(req.params.schoolId, String(req.query.search || "")));
+  } catch (error) {
+    if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message });
+    throw error;
+  }
+}));
+schoolAccessRouter.post("/director/schools/:schoolId/students", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const membership = await requireSchoolDirectorPermission(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_ADD");
+  if (!membership) return res.status(StatusCodes.FORBIDDEN).json({ message: "School permission denied" });
+  const payload = directorStudentSchema.parse(req.body);
+  try {
+    const result = await addSchoolDirectorStudent(req.params.schoolId, payload);
+    await recordAdminAuditLog(req, { action: "schools.director.student.add", resourceType: "student", resourceId: result.student.studentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, created: result.created } });
+    return res.status(result.created ? StatusCodes.CREATED : StatusCodes.OK).json(result);
+  } catch (error) {
+    if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message });
+    throw error;
+  }
+}));
+schoolAccessRouter.put("/director/schools/:schoolId/students/:studentId/class", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const membership = await requireSchoolDirectorPermission(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_MOVE_CLASS");
+  if (!membership) return res.status(StatusCodes.FORBIDDEN).json({ message: "School permission denied" });
+  const payload = directorStudentMoveSchema.parse(req.body);
+  try {
+    const result = await moveSchoolDirectorStudent(req.params.schoolId, req.params.studentId, payload.classId);
+    await recordAdminAuditLog(req, { action: "schools.director.student.move_class", resourceType: "student", resourceId: result.student.studentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, idempotent: result.idempotent } });
+    return res.json(result);
+  } catch (error) {
+    if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message });
+    throw error;
+  }
 }));
 schoolAccessRouter.get("/entitlements/:schoolId/:module", requireAuth, asyncHandler(async (req, res) => {
   const contexts = await resolveSchoolContexts(req.authUser!);
