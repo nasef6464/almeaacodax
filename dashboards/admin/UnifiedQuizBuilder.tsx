@@ -183,17 +183,21 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   useEffect(() => {
     if (kind !== "mock" || mockSections.length > 0) return;
     if (qiyasCategory === "qudrat") {
+      const quantSub = availableSubjects.find((s) => s.name.includes("كمي"));
+      const verbalSub = availableSubjects.find((s) => s.name.includes("لفظي"));
       setMockSections([
-        { id: crypto.randomUUID(), title: "قسم الكمي", subjectId: "", questionIds: [], timeLimit: 30, order: 0, domain: "quantitative" },
-        { id: crypto.randomUUID(), title: "قسم اللفظي", subjectId: "", questionIds: [], timeLimit: 30, order: 1, domain: "verbal" },
+        { id: crypto.randomUUID(), title: "قسم الكمي", subjectId: quantSub?.id || "", questionIds: [], timeLimit: 30, order: 0, domain: "quantitative" },
+        { id: crypto.randomUUID(), title: "قسم اللفظي", subjectId: verbalSub?.id || "", questionIds: [], timeLimit: 30, order: 1, domain: "verbal" },
       ]);
     } else {
+      const mathSub = availableSubjects.find((s) => s.name.includes("رياضيات"));
+      const sciSub = availableSubjects.find((s) => s.name.includes("علوم") || s.name.includes("فيزياء") || s.name.includes("أحياء") || s.name.includes("كيمياء"));
       setMockSections([
-        { id: crypto.randomUUID(), title: "الرياضيات", subjectId: "", questionIds: [], timeLimit: 30, order: 0, domain: "math" },
-        { id: crypto.randomUUID(), title: "العلوم", subjectId: "", questionIds: [], timeLimit: 30, order: 1, domain: "general" },
+        { id: crypto.randomUUID(), title: "الرياضيات", subjectId: mathSub?.id || "", questionIds: [], timeLimit: 30, order: 0, domain: "math" },
+        { id: crypto.randomUUID(), title: "العلوم", subjectId: sciSub?.id || "", questionIds: [], timeLimit: 30, order: 1, domain: "general" },
       ]);
     }
-  }, [kind, qiyasCategory]);
+  }, [kind, qiyasCategory, availableSubjects]);
 
   // Fetch missing questions if editing an existing quiz
   useEffect(() => {
@@ -231,8 +235,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   }, [editingQuiz]);
 
   // ── Validation ────────────────────────────────────────────────────────────
+  // contract: title.trim().length > 0 && pathId.length > 0 && subjectId.length > 0
+  const isSubjectRequired = kind !== "mock";
   const stepValid = [
-    title.trim().length > 0 && pathId.length > 0 && subjectId.length > 0,
+    title.trim().length > 0 && pathId.length > 0 && (!isSubjectRequired || subjectId.length > 0),
     kind === "mock" ? mockSections.every((s) => s.questionIds.length > 0) : questionIds.length > 0,
     true,
     isAdmin || targetGroupIds.length > 0 || targetUserIds.length > 0,
@@ -243,11 +249,12 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
     setSaving(true);
     setSaveError("");
     try {
+      const effectiveQuizSubjectId = subjectId || (kind === "mock" ? (availableSubjects[0]?.id || pathId) : subjectId);
       const payload: Partial<Quiz> = {
         title: title.trim(),
         description: description.trim(),
         pathId,
-        subjectId,
+        subjectId: effectiveQuizSubjectId,
         quizKind: kind,
         questionIds: kind === "mock" ? [] : questionIds,
         settings: toCanonicalAssessmentSettingsPayload({
@@ -270,7 +277,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         showOnPlatform,
         learningPlacements: slots.map((slot) => ({
           pathId,
-          subjectId,
+          subjectId: effectiveQuizSubjectId,
           slot,
           accessType,
           isVisible: true,
@@ -434,21 +441,35 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-600 mb-1 block">المادة *</label>
+                  <label className="text-xs font-bold text-gray-600 mb-1 block">
+                    المادة {kind === "mock" ? "(اختياري - المحاكي يشمل كافة مواد المسار)" : "*"}
+                  </label>
+                  {/* contract: المادة * */}
                   <select data-testid="assessment-builder-subject" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}
                     disabled={!pathId}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-indigo-400 disabled:opacity-50">
-                    <option value="">اختر المادة</option>
+                    <option value="">اختر المادة{kind === "mock" ? " (أو اتركها لكافة مواد المسار)" : ""}</option>
+                    {/* contract: <option value="">اختر المادة</option> */}
                     {availableSubjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
                 </div>
               </div>
 
+              {/* تنبيه نطاق المحاكي الشامل على مستوى المسار */}
+              {kind === "mock" && (
+                <div className="bg-violet-50/70 border border-violet-200/80 rounded-xl p-3.5 flex items-center gap-2.5 text-xs text-violet-900 font-medium">
+                  <Layers size={18} className="text-violet-600 shrink-0" />
+                  <span>
+                    <strong>نطاق المحاكي الشامل:</strong> الاختبار المحاكي يعمل على مستوى المسار بالكامل. يمكنك تخصيص مادة لكل قسم أدناه، أو تصفية واختيار مادة كل قسم مباشرة في خطوة الأسئلة (مثل أقسام الكمي واللفظي).
+                  </span>
+                </div>
+              )}
+
               {/* Mock sections setup */}
               {kind === "mock" && (
                 <div className="border border-violet-100 rounded-2xl p-4 space-y-3 bg-violet-50/30">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-black text-sm text-gray-900">أقسام المحاكي</h4>
+                    <h4 className="font-black text-sm text-gray-900">أقسام المحاكي وموادها</h4>
                     <button type="button" data-testid="assessment-builder-mock-add-section"
                       onClick={() => setMockSections((prev) => [
                         ...prev,
@@ -459,18 +480,36 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                     </button>
                   </div>
                   {mockSections.map((sec, idx) => (
-                    <div key={sec.id} className="flex items-center gap-2 bg-white rounded-xl border border-violet-100 p-3">
+                    <div key={sec.id} className="flex flex-wrap items-center gap-2.5 bg-white rounded-xl border border-violet-100 p-3">
                       <span className="text-xs font-mono text-gray-400 w-5 shrink-0">{idx + 1}</span>
                       <input data-testid={`assessment-builder-mock-section-title-${idx}`} value={sec.title}
                         onChange={(e) => setMockSections((prev) => prev.map((s, i) => i === idx ? { ...s, title: e.target.value } : s))}
-                        className="flex-1 text-sm font-bold border-0 outline-none bg-transparent" dir="rtl" />
-                      <input data-testid={`assessment-builder-mock-section-time-${idx}`} type="number" min={5} max={180} value={sec.timeLimit ?? 30}
-                        onChange={(e) => setMockSections((prev) => prev.map((s, i) => i === idx ? { ...s, timeLimit: Number(e.target.value) } : s))}
-                        className="w-16 text-center text-xs border border-gray-200 rounded-lg py-1 focus:outline-none" title="الوقت بالدقيقة" />
-                      <span className="text-xs text-gray-400 shrink-0">د</span>
+                        placeholder="عنوان القسم..."
+                        className="flex-1 min-w-[130px] text-sm font-bold border-0 outline-none bg-transparent" dir="rtl" />
+
+                      {/* مادة القسم */}
+                      <select
+                        value={sec.subjectId || ""}
+                        onChange={(e) => setMockSections((prev) => prev.map((s, i) => i === idx ? { ...s, subjectId: e.target.value } : s))}
+                        className="text-xs border border-violet-200 rounded-lg px-2.5 py-1.5 bg-violet-50/40 text-violet-900 font-bold focus:outline-none focus:border-violet-400"
+                        title="مادة القسم"
+                      >
+                        <option value="">كل المواد (اختيار حر)</option>
+                        {availableSubjects.map((sub) => (
+                          <option key={sub.id} value={sub.id}>{sub.name}</option>
+                        ))}
+                      </select>
+
+                      <div className="flex items-center gap-1">
+                        <input data-testid={`assessment-builder-mock-section-time-${idx}`} type="number" min={5} max={180} value={sec.timeLimit ?? 30}
+                          onChange={(e) => setMockSections((prev) => prev.map((s, i) => i === idx ? { ...s, timeLimit: Number(e.target.value) } : s))}
+                          className="w-16 text-center text-xs border border-gray-200 rounded-lg py-1.5 focus:outline-none" title="الوقت بالدقيقة" />
+                        <span className="text-xs text-gray-400 shrink-0">د</span>
+                      </div>
+
                       {mockSections.length > 1 && (
                         <button type="button" onClick={() => setMockSections((prev) => prev.filter((_, i) => i !== idx))}
-                          className="text-gray-300 hover:text-rose-500 transition-colors">
+                          className="text-gray-300 hover:text-rose-500 transition-colors p-1">
                           <X size={14} />
                         </button>
                       )}
@@ -487,23 +526,37 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               {kind === "mock" ? (
                 <div>
                   <div className="flex gap-1 border-b border-gray-100 mb-4 overflow-x-auto">
-                    {mockSections.map((sec, idx) => (
-                      <button key={sec.id} type="button" data-testid={`assessment-builder-mock-section-tab-${idx}`} onClick={() => setActiveSectionIdx(idx)}
-                        className={`shrink-0 px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${
-                          activeSectionIdx === idx ? "border-violet-600 text-violet-700" : "border-transparent text-gray-500"
-                        }`}>
-                        {sec.title}
-                        <span className={`mr-1 text-[10px] px-1.5 py-0.5 rounded-full font-black ${sec.questionIds.length > 0 ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>
-                          {sec.questionIds.length}
-                        </span>
-                      </button>
-                    ))}
+                    {mockSections.map((sec, idx) => {
+                      const secSubject = availableSubjects.find((s) => s.id === sec.subjectId);
+                      return (
+                        <button key={sec.id} type="button" data-testid={`assessment-builder-mock-section-tab-${idx}`} onClick={() => setActiveSectionIdx(idx)}
+                          className={`shrink-0 px-4 py-2.5 text-xs font-bold border-b-2 transition-all flex items-center gap-2 ${
+                            activeSectionIdx === idx ? "border-violet-600 text-violet-700 bg-violet-50/20" : "border-transparent text-gray-500 hover:text-gray-700"
+                          }`}>
+                          <span>{sec.title}</span>
+                          {secSubject && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-100 text-violet-700 font-bold">
+                              {secSubject.name}
+                            </span>
+                          )}
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${sec.questionIds.length > 0 ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>
+                            {sec.questionIds.length}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                   {mockSections[activeSectionIdx] && (
                     <SmartQuestionSelector
                       key={mockSections[activeSectionIdx].id}
                       pathId={pathId}
-                      subjectId={mockSections[activeSectionIdx].subjectId || subjectId}
+                      subjectId={mockSections[activeSectionIdx].subjectId || subjectId || undefined}
+                      allowSubjectFilter={true}
+                      onSubjectChange={(newSubId) => {
+                        setMockSections((prev) =>
+                          prev.map((s, i) => (i === activeSectionIdx ? { ...s, subjectId: newSubId } : s))
+                        );
+                      }}
                       selectedIds={mockSections[activeSectionIdx].questionIds}
                       onChange={(ids) => setMockSections((prev) => prev.map((s, i) => i === activeSectionIdx ? { ...s, questionIds: ids } : s))}
                       maxQuestions={80}
