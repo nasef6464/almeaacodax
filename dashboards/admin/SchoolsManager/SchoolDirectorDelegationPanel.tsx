@@ -9,7 +9,13 @@ type DirectorPermission =
     | 'SCHOOL_REPORTS_AGGREGATE_VIEW'
     | 'SCHOOL_STUDENTS_VIEW'
     | 'SCHOOL_STUDENTS_ADD'
-    | 'SCHOOL_STUDENTS_MOVE_CLASS';
+    | 'SCHOOL_STUDENTS_MOVE_CLASS'
+    | 'SCHOOL_STUDENTS_UPDATE_BASIC'
+    | 'SCHOOL_STUDENTS_DEACTIVATE'
+    | 'SCHOOL_CLASSES_MANAGE'
+    | 'SCHOOL_TEACHERS_ASSIGN'
+    | 'SCHOOL_REPORTS_DETAILED_VIEW'
+    | 'SCHOOL_REPORTS_EXPORT';
 
 type DirectorMembership = {
     userId: string;
@@ -25,6 +31,12 @@ const permissionOptions: Array<{ id: DirectorPermission; label: string; detail: 
     { id: 'SCHOOL_STUDENTS_VIEW', label: 'عرض الطلاب', detail: 'قائمة طلاب المدارس المفوض بها.' },
     { id: 'SCHOOL_STUDENTS_ADD', label: 'إضافة طلاب', detail: 'إنشاء أو ضم طالب داخل المدرسة.' },
     { id: 'SCHOOL_STUDENTS_MOVE_CLASS', label: 'نقل طالب بين الفصول', detail: 'داخل المدرسة نفسها فقط.' },
+    { id: 'SCHOOL_STUDENTS_UPDATE_BASIC', label: 'تعديل بيانات الطالب', detail: 'الاسم والجوال فقط — تتطلب SCHOOL_CORE.' },
+    { id: 'SCHOOL_STUDENTS_DEACTIVATE', label: 'تعطيل وإعادة تفعيل الطالب', detail: 'بدون حذف — تتطلب SCHOOL_CORE.' },
+    { id: 'SCHOOL_CLASSES_MANAGE', label: 'إدارة الفصول', detail: 'إنشاء وتسمية الفصول — تتطلب SCHOOL_CORE.' },
+    { id: 'SCHOOL_TEACHERS_ASSIGN', label: 'تكليف المعلمين', detail: 'داخل المدرسة فقط — تتطلب SCHOOL_CORE.' },
+    { id: 'SCHOOL_REPORTS_DETAILED_VIEW', label: 'التقارير التفصيلية', detail: 'تتطلب وحدة SCHOOL_INTELLIGENCE.' },
+    { id: 'SCHOOL_REPORTS_EXPORT', label: 'تصدير بيانات المدرسة', detail: 'تتطلب وحدة EXECUTIVE_ANALYTICS.' },
 ];
 
 export const SchoolDirectorDelegationPanel: React.FC<{ schoolId: string; directorAccounts: User[]; onActiveDirectorIdsChange?: (ids: string[]) => void }> = ({

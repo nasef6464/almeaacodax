@@ -6,6 +6,7 @@ import { QuizModel } from "../../../models/Quiz.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
+import { buildClassroomSchoolIntelligence } from "./classroomSchoolIntelligence.js";
 
 const idOf = (value: any) => String(value?.id || value?._id || value || "");
 const uniqueStrings = (values: unknown[]) => Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
@@ -41,6 +42,7 @@ const projectStudent = (student: any, classes: any[]) => {
     studentId: idOf(student),
     name: String(student.name || "طالب"),
     email: String(student.email || ""),
+    phone: String(student.phone || ""),
     isActive: student.isActive !== false,
     classId: classroom ? idOf(classroom) : null,
     className: classroom ? String(classroom.name || "فصل") : null,
@@ -78,7 +80,7 @@ export const listSchoolDirectorStudents = async (schoolId: string, search = "") 
     const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     filter.$and = [{ $or: [{ name: { $regex: escaped, $options: "i" } }, { email: { $regex: escaped, $options: "i" } }] }];
   }
-  const students = await UserModel.find(filter).select("id name email isActive schoolId groupIds").sort({ name: 1 }).limit(500).lean();
+  const students = await UserModel.find(filter).select("id name email phone isActive schoolId groupIds").sort({ name: 1 }).limit(500).lean();
   return { students: students.map((student) => projectStudent(student, scope.classes)), total: students.length };
 };
 
@@ -107,7 +109,7 @@ export const addSchoolDirectorStudent = async (schoolId: string, payload: { name
   ]);
   await GroupModel.updateMany({ type: "CLASS", parentId: scope.schoolId }, { $pull: { studentIds: studentId } });
   await GroupModel.updateOne({ _id: classroom._id }, { $addToSet: { studentIds: studentId } });
-  const updated = await UserModel.findById(student._id).select("id name email isActive schoolId groupIds").lean();
+  const updated = await UserModel.findById(student._id).select("id name email phone isActive schoolId groupIds").lean();
   return { student: projectStudent(updated, scope.classes), created };
 };
 
@@ -128,6 +130,94 @@ export const moveSchoolDirectorStudent = async (schoolId: string, studentId: str
     GroupModel.updateOne({ _id: scope.school._id }, { $addToSet: { studentIds: idOf(student) } }),
     SchoolMembershipModel.findOneAndUpdate({ userId: idOf(student), schoolId: scope.schoolId, role: "student" }, { $set: { status: "active" } }, { upsert: true, runValidators: true }),
   ]);
-  const updated = await UserModel.findById(student._id).select("id name email isActive schoolId groupIds").lean();
+  const updated = await UserModel.findById(student._id).select("id name email phone isActive schoolId groupIds").lean();
   return { student: projectStudent(updated, scope.classes), idempotent: alreadyAssigned };
+};
+
+const loadScopedStudent = async (schoolId: string, studentId: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  const student = await UserModel.findOne({ $and: [documentQuery(studentId), schoolStudentFilter(scope.school, scope.schoolId, scope.classes)] }).select("id name email phone role isActive schoolId groupIds");
+  if (!student) throw new SchoolDirectorOperationError("Student is outside this school", 404);
+  return { scope, student };
+};
+
+export const updateSchoolDirectorStudentBasic = async (schoolId: string, studentId: string, payload: { name?: string; phone?: string }) => {
+  const { scope, student } = await loadScopedStudent(schoolId, studentId);
+  const update: Record<string, string> = {};
+  if (payload.name !== undefined) update.name = payload.name.trim();
+  if (payload.phone !== undefined) update.phone = payload.phone.trim();
+  const updated = await UserModel.findByIdAndUpdate(student._id, { $set: update }, { new: true, runValidators: true }).select("id name email phone isActive schoolId groupIds").lean();
+  return { student: { ...projectStudent(updated, scope.classes), phone: String((updated as any)?.phone || "") } };
+};
+
+export const setSchoolDirectorStudentActive = async (schoolId: string, studentId: string, isActive: boolean) => {
+  const { scope, student } = await loadScopedStudent(schoolId, studentId);
+  await Promise.all([
+    UserModel.updateOne({ _id: student._id }, { $set: { isActive } }),
+    SchoolMembershipModel.updateOne({ userId: idOf(student), schoolId: scope.schoolId, role: "student" }, { $set: { status: isActive ? "active" : "inactive" } }),
+  ]);
+  const updated = await UserModel.findById(student._id).select("id name email phone isActive schoolId groupIds").lean();
+  return { student: { ...projectStudent(updated, scope.classes), phone: String((updated as any)?.phone || "") } };
+};
+
+export const createSchoolDirectorClass = async (schoolId: string, ownerId: string, name: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  const duplicate = scope.classes.some((classroom) => String(classroom.name || "").trim().toLowerCase() === name.trim().toLowerCase());
+  if (duplicate) throw new SchoolDirectorOperationError("A class with this name already exists", 409);
+  const classroom = await GroupModel.create({ name: name.trim(), type: "CLASS", parentId: scope.schoolId, ownerId, supervisorIds: [], studentIds: [], courseIds: [] });
+  return { classroom: { classId: idOf(classroom), className: classroom.name } };
+};
+
+export const updateSchoolDirectorClass = async (schoolId: string, classId: string, name: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  const classroom = scope.classes.find((candidate) => idOf(candidate) === classId || String(candidate.id || "") === classId);
+  if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 404);
+  const duplicate = scope.classes.some((candidate) => idOf(candidate) !== idOf(classroom) && String(candidate.name || "").trim().toLowerCase() === name.trim().toLowerCase());
+  if (duplicate) throw new SchoolDirectorOperationError("A class with this name already exists", 409);
+  const updated = await GroupModel.findByIdAndUpdate(classroom._id, { $set: { name: name.trim() } }, { new: true, runValidators: true }).select("id name").lean();
+  return { classroom: { classId: idOf(updated), className: String((updated as any)?.name || name.trim()) } };
+};
+
+export const listSchoolDirectorTeachers = async (schoolId: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  const memberships = await SchoolMembershipModel.find({ schoolId: scope.schoolId, role: "teacher", status: "active" }).select("userId").limit(500).lean();
+  const teacherIds = uniqueStrings(memberships.map((membership: any) => membership.userId));
+  const teachers = teacherIds.length ? await UserModel.find({ role: "teacher", $or: [{ id: { $in: teacherIds } }, { _id: { $in: teacherIds.filter((id) => mongoose.isValidObjectId(id)) } }] }).select("id name email isActive").limit(500).lean() : [];
+  const assignments = await TeachingAssignmentModel.find({ schoolId: scope.schoolId }).select("teacherId classId subjectId status").limit(1_000).lean();
+  return {
+    teachers: teachers.map((teacher: any) => ({ teacherId: idOf(teacher), name: String(teacher.name || "معلم"), email: String(teacher.email || ""), isActive: teacher.isActive !== false })),
+    assignments: assignments.map((assignment: any) => ({ assignmentId: idOf(assignment), teacherId: String(assignment.teacherId), classId: String(assignment.classId), subjectId: String(assignment.subjectId || ""), status: String(assignment.status) })),
+  };
+};
+
+export const upsertSchoolDirectorTeachingAssignment = async (schoolId: string, payload: { teacherId: string; classId: string; subjectId?: string; status: "active" | "inactive" }) => {
+  const scope = await loadSchoolScope(schoolId);
+  const classroom = scope.classes.find((candidate) => idOf(candidate) === payload.classId || String(candidate.id || "") === payload.classId);
+  if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 400);
+  const teacherMembership = await SchoolMembershipModel.exists({ schoolId: scope.schoolId, userId: payload.teacherId, role: "teacher", status: "active" });
+  if (!teacherMembership) throw new SchoolDirectorOperationError("Teacher is not active in this school", 400);
+  const assignment = await TeachingAssignmentModel.findOneAndUpdate(
+    { schoolId: scope.schoolId, teacherId: payload.teacherId, classId: idOf(classroom), subjectId: payload.subjectId || "" },
+    { $set: { status: payload.status } },
+    { new: true, upsert: true, runValidators: true },
+  );
+  return { assignment: { assignmentId: idOf(assignment), teacherId: String(assignment.teacherId), classId: String(assignment.classId), subjectId: String(assignment.subjectId || ""), status: String(assignment.status) } };
+};
+
+export const buildSchoolDirectorDetailedReport = async (schoolId: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  const intelligence = await buildClassroomSchoolIntelligence({ all: false as const, schoolIds: [scope.schoolId], classIds: [] });
+  return { school: { schoolId: scope.schoolId, schoolName: String(scope.school.name || "مدرسة") }, intelligence };
+};
+
+const csvCell = (value: unknown) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+
+export const buildSchoolDirectorStudentExport = async (schoolId: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  const roster = await listSchoolDirectorStudents(scope.schoolId);
+  const rows = [
+    ["student_id", "name", "email", "status", "class_id", "class_name"],
+    ...roster.students.map((student) => [student.studentId, student.name, student.email, student.isActive ? "active" : "inactive", student.classId || "", student.className || ""]),
+  ];
+  return { fileName: `school-students-${scope.schoolId}.csv`, csv: `\uFEFF${rows.map((row) => row.map(csvCell).join(",")).join("\n")}` };
 };

@@ -12,13 +12,21 @@ import { buildSchoolTeacherWorkspace } from "../modules/schools/application/scho
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
-import { buildSchoolDirectorWorkspace, requireSchoolDirectorPermission } from "../modules/schools/application/schoolDirectorAccess.js";
+import { buildSchoolDirectorWorkspace, requireSchoolDirectorCapability, requireSchoolDirectorPermission } from "../modules/schools/application/schoolDirectorAccess.js";
 import { defaultSchoolDirectorPermissions, schoolDirectorPermissions } from "../modules/schools/domain/schoolDirectorPermissions.js";
 import {
   addSchoolDirectorStudent,
   buildSchoolDirectorOverview,
   listSchoolDirectorStudents,
   moveSchoolDirectorStudent,
+  updateSchoolDirectorStudentBasic,
+  setSchoolDirectorStudentActive,
+  createSchoolDirectorClass,
+  updateSchoolDirectorClass,
+  listSchoolDirectorTeachers,
+  upsertSchoolDirectorTeachingAssignment,
+  buildSchoolDirectorDetailedReport,
+  buildSchoolDirectorStudentExport,
   SchoolDirectorOperationError,
 } from "../modules/schools/application/schoolDirectorWorkspace.js";
 
@@ -36,6 +44,10 @@ const directorStudentSchema = z.object({
   classId: z.string().min(1),
 });
 const directorStudentMoveSchema = z.object({ classId: z.string().min(1) });
+const directorStudentBasicSchema = z.object({ name: z.string().trim().min(2).max(120).optional(), phone: z.string().trim().max(40).optional() }).refine((payload) => payload.name !== undefined || payload.phone !== undefined, "At least one field is required");
+const directorStudentActiveSchema = z.object({ isActive: z.boolean() });
+const directorClassSchema = z.object({ name: z.string().trim().min(2).max(120) });
+const directorAssignmentSchema = z.object({ teacherId: z.string().min(1), classId: z.string().min(1), subjectId: z.string().trim().max(120).optional().default(""), status: z.enum(["active", "inactive"]).default("active") });
 const assignmentSchema = z.object({ schoolId: z.string().min(1), teacherId: z.string().min(1), classId: z.string().min(1), subjectId: z.string().default(""), status: z.enum(["active", "inactive"]).default("active") });
 
 schoolAccessRouter.get("/context", requireAuth, asyncHandler(async (req, res) => res.json({ contexts: await resolveSchoolContexts(req.authUser!) })));
@@ -95,6 +107,75 @@ schoolAccessRouter.put("/director/schools/:schoolId/students/:studentId/class", 
     if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message });
     throw error;
   }
+}));
+schoolAccessRouter.patch("/director/schools/:schoolId/students/:studentId", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_UPDATE_BASIC", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorStudentBasicSchema.parse(req.body);
+  try {
+    const result = await updateSchoolDirectorStudentBasic(req.params.schoolId, req.params.studentId, payload);
+    await recordAdminAuditLog(req, { action: "schools.director.student.update_basic", resourceType: "student", resourceId: result.student.studentId, metadata: { schoolId: req.params.schoolId, fields: Object.keys(payload) } });
+    return res.json(result);
+  } catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.patch("/director/schools/:schoolId/students/:studentId/active", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_DEACTIVATE", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorStudentActiveSchema.parse(req.body);
+  try {
+    const result = await setSchoolDirectorStudentActive(req.params.schoolId, req.params.studentId, payload.isActive);
+    await recordAdminAuditLog(req, { action: payload.isActive ? "schools.director.student.reactivate" : "schools.director.student.deactivate", resourceType: "student", resourceId: result.student.studentId, metadata: { schoolId: req.params.schoolId } });
+    return res.json(result);
+  } catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.post("/director/schools/:schoolId/classes", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_CLASSES_MANAGE", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorClassSchema.parse(req.body);
+  try {
+    const result = await createSchoolDirectorClass(req.params.schoolId, req.authUser!.id, payload.name);
+    await recordAdminAuditLog(req, { action: "schools.director.class.create", resourceType: "group", resourceId: result.classroom.classId, metadata: { schoolId: req.params.schoolId } });
+    return res.status(StatusCodes.CREATED).json(result);
+  } catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.patch("/director/schools/:schoolId/classes/:classId", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_CLASSES_MANAGE", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorClassSchema.parse(req.body);
+  try {
+    const result = await updateSchoolDirectorClass(req.params.schoolId, req.params.classId, payload.name);
+    await recordAdminAuditLog(req, { action: "schools.director.class.update", resourceType: "group", resourceId: result.classroom.classId, metadata: { schoolId: req.params.schoolId } });
+    return res.json(result);
+  } catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/teachers", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_TEACHERS_ASSIGN", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  return res.json(await listSchoolDirectorTeachers(req.params.schoolId));
+}));
+schoolAccessRouter.put("/director/schools/:schoolId/assignments", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_TEACHERS_ASSIGN", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorAssignmentSchema.parse(req.body);
+  try {
+    const result = await upsertSchoolDirectorTeachingAssignment(req.params.schoolId, payload);
+    await recordAdminAuditLog(req, { action: "schools.director.teacher.assign", resourceType: "teaching_assignment", resourceId: result.assignment.assignmentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, teacherId: payload.teacherId, status: payload.status } });
+    return res.json(result);
+  } catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/reports/detailed", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_REPORTS_DETAILED_VIEW", "SCHOOL_INTELLIGENCE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  return res.json(await buildSchoolDirectorDetailedReport(req.params.schoolId));
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/reports/students.csv", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_REPORTS_EXPORT", "EXECUTIVE_ANALYTICS");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const result = await buildSchoolDirectorStudentExport(req.params.schoolId);
+  await recordAdminAuditLog(req, { action: "schools.director.report.export_students", resourceType: "school", resourceId: req.params.schoolId, metadata: { schoolId: req.params.schoolId, format: "csv" } });
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="${result.fileName}"`);
+  return res.send(result.csv);
 }));
 schoolAccessRouter.get("/entitlements/:schoolId/:module", requireAuth, asyncHandler(async (req, res) => {
   const contexts = await resolveSchoolContexts(req.authUser!);
