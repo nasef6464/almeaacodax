@@ -53,7 +53,7 @@ export type SingleStudentDraft = {
     password: string;
 };
 
-export type SchoolWorkspaceTab = 'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports';
+export type SchoolWorkspaceTab = 'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports' | 'people' | 'academic' | 'services' | 'contract' | 'settings';
 
 export type SchoolListMode = 'active' | 'needs_setup' | 'ready' | 'all';
 
