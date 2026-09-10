@@ -51,6 +51,7 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
 const roleLabels: Record<Role, string> = {
     [Role.ADMIN]: 'مدير',
     [Role.SUPERVISOR]: 'مشرف',
+    [Role.SCHOOL_ADMIN]: 'مدير مدرسة',
     [Role.TEACHER]: 'مدرب منصة / معلم مدرسة',
     [Role.PARENT]: 'ولي أمر',
     [Role.STUDENT]: 'طالب',
@@ -381,6 +382,7 @@ export const UsersManager: React.FC = () => {
         switch (currentUser.role) {
             case Role.ADMIN: return <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">مدير</span>;
             case Role.SUPERVISOR: return <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">مشرف</span>;
+            case Role.SCHOOL_ADMIN: return <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">مدير مدرسة</span>;
             case Role.TEACHER: return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">{resolveUserRoleLabel(currentUser)}</span>;
             case Role.PARENT: return <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">ولي أمر</span>;
             case Role.STUDENT: return <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">طالب</span>;
@@ -544,7 +546,7 @@ export const UsersManager: React.FC = () => {
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">الدور</label>
                             <select value={newUser.role} onChange={(event) => setNewUser((current) => ({ ...current, role: event.target.value as Role, linkedStudentIds: event.target.value === Role.PARENT ? current.linkedStudentIds : [], managedPathIds: event.target.value === Role.TEACHER ? current.managedPathIds : [], managedSubjectIds: event.target.value === Role.TEACHER ? current.managedSubjectIds : [] }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
-                                <option value={Role.STUDENT}>طالب</option><option value={Role.TEACHER}>مدرب منصة</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.ADMIN}>مدير</option>
+                                <option value={Role.STUDENT}>طالب</option><option value={Role.TEACHER}>مدرب منصة</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.SCHOOL_ADMIN}>مدير مدرسة</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.ADMIN}>مدير المنصة</option>
                             </select>
                         </div>
                     </div>
@@ -557,7 +559,7 @@ export const UsersManager: React.FC = () => {
 
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1"><Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} /><input type="text" placeholder="ابحث بالاسم أو البريد الإلكتروني..." className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" value={searchTerm} onChange={(event) => handleSearchTermChange(event.target.value)} /></div>
-                <div className="flex items-center gap-2"><Filter size={18} className="text-gray-400" /><select className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" value={roleFilter} onChange={(event) => handleRoleFilterChange(event.target.value as Role | 'all')}><option value="all">جميع الأدوار</option><option value={Role.ADMIN}>مدير</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.TEACHER}>مدرب منصة / معلم مدرسة</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.STUDENT}>طالب</option></select></div>
+                <div className="flex items-center gap-2"><Filter size={18} className="text-gray-400" /><select className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" value={roleFilter} onChange={(event) => handleRoleFilterChange(event.target.value as Role | 'all')}><option value="all">جميع الأدوار</option><option value={Role.ADMIN}>مدير المنصة</option><option value={Role.SCHOOL_ADMIN}>مدير مدرسة</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.TEACHER}>مدرب منصة / معلم مدرسة</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.STUDENT}>طالب</option></select></div>
             </div>
 
             <div className="flex flex-wrap justify-between items-center gap-3 text-sm">

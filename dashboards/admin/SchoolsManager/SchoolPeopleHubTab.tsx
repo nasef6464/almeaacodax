@@ -14,6 +14,7 @@ import {
     Users,
 } from 'lucide-react';
 import type { Group, Role, User } from '../../../types';
+import { SchoolDirectorDelegationPanel } from './SchoolDirectorDelegationPanel';
 
 interface SchoolPeopleHubTabProps {
     school: Group;
@@ -22,6 +23,7 @@ interface SchoolPeopleHubTabProps {
     supervisors: User[];
     teachers: User[];
     parents: User[];
+    directorAccounts: User[];
     onOpenSingleStudent: () => void;
     onOpenImport: () => void;
     onDownloadRoster: () => void;
@@ -39,6 +41,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
     supervisors,
     teachers,
     parents,
+    directorAccounts,
     onOpenSingleStudent,
     onOpenImport,
     onDownloadRoster,
@@ -50,6 +53,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedClassId, setSelectedClassId] = useState<string>('all');
     const [page, setPage] = useState(1);
+    const [activeDirectorIds, setActiveDirectorIds] = useState<string[]>([]);
     const pageSize = 15;
 
     // Build unified list of people in this school
@@ -63,18 +67,28 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
             classId?: string;
         }> = [];
 
-        // 1. School Supervisors (school-wide or class-scoped)
+        // 1. School Directors are a separate account type, never inferred from Supervisor scope.
+        directorAccounts.filter((user) => activeDirectorIds.includes(user.id)).forEach((user) => {
+            peopleList.push({
+                user,
+                schoolRole: 'director',
+                roleLabel: 'مدير مدرسة',
+                roleTone: 'purple',
+            });
+        });
+
+        // 2. School Supervisors (school-wide or class-scoped)
         supervisors.forEach((user) => {
             const isSchoolWide = (school.supervisorIds || []).includes(user.id);
             peopleList.push({
                 user,
-                schoolRole: isSchoolWide ? 'director' : 'supervisor',
-                roleLabel: isSchoolWide ? 'مدير/مشرف عام' : 'مشرف فصول',
-                roleTone: isSchoolWide ? 'purple' : 'blue',
+                schoolRole: 'supervisor',
+                roleLabel: isSchoolWide ? 'مشرف عام' : 'مشرف فصول',
+                roleTone: 'blue',
             });
         });
 
-        // 2. School Teachers
+        // 3. School Teachers
         teachers.forEach((user) => {
             peopleList.push({
                 user,
@@ -84,7 +98,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
             });
         });
 
-        // 3. School Students
+        // 4. School Students
         schoolStudents.forEach((user) => {
             const studentClass = schoolClasses.find((cls) => (cls.studentIds || []).includes(user.id));
             peopleList.push({
@@ -97,7 +111,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
             });
         });
 
-        // 4. Parents
+        // 5. Parents
         parents.forEach((user) => {
             peopleList.push({
                 user,
@@ -108,7 +122,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
         });
 
         return peopleList;
-    }, [school, schoolClasses, schoolStudents, supervisors, teachers, parents]);
+    }, [school, schoolClasses, schoolStudents, supervisors, teachers, parents, directorAccounts, activeDirectorIds]);
 
     // Filter people
     const filteredPeople = useMemo(() => {
@@ -144,6 +158,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
 
     return (
         <div className="space-y-6" data-testid="school-people-hub-tab">
+            <SchoolDirectorDelegationPanel schoolId={school.id} directorAccounts={directorAccounts} onActiveDirectorIdsChange={setActiveDirectorIds} />
             {/* Header & Quick Action Strip */}
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-white p-5 rounded-2xl border border-slate-100 shadow-xs">
                 <div>
@@ -185,8 +200,8 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
             <div className="flex gap-2 overflow-x-auto pb-1 text-xs font-bold">
                 {[
                     { id: 'all', label: 'الكل', count: allSchoolPeople.length },
-                    { id: 'directors', label: 'المدراء والمشرفون العامون', count: allSchoolPeople.filter((p) => p.schoolRole === 'director').length },
-                    { id: 'supervisors', label: 'المشرفون', count: allSchoolPeople.filter((p) => p.schoolRole === 'supervisor' || p.schoolRole === 'director').length },
+                    { id: 'directors', label: 'مديرو المدارس', count: allSchoolPeople.filter((p) => p.schoolRole === 'director').length },
+                    { id: 'supervisors', label: 'المشرفون', count: allSchoolPeople.filter((p) => p.schoolRole === 'supervisor').length },
                     { id: 'teachers', label: 'المعلمون', count: teachers.length },
                     { id: 'students', label: 'الطلاب', count: schoolStudents.length },
                     { id: 'parents', label: 'أولياء الأمور', count: parents.length },

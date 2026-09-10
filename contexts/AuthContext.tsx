@@ -4,7 +4,7 @@ import { Role } from '../types';
 import { useStore } from '../store/useStore';
 import { DEV_TOKEN_PREFIX } from '../utils/devSession';
 
-type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'parent';
+type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'school_admin' | 'parent';
 
 interface BackendAuthUser {
   _id?: string;
@@ -75,6 +75,7 @@ const roleMap: Record<BackendRole, Role> = {
   teacher: Role.TEACHER,
   student: Role.STUDENT,
   supervisor: Role.SUPERVISOR,
+  school_admin: Role.SCHOOL_ADMIN,
   parent: Role.PARENT,
 };
 
@@ -90,6 +91,7 @@ const devRoleNames: Record<BackendRole, string> = {
   teacher: 'معلم تجريبي',
   student: 'طالب تجريبي',
   supervisor: 'مشرف تجريبي',
+  school_admin: 'مدير مدرسة تجريبي',
   parent: 'ولي أمر تجريبي',
 };
 
