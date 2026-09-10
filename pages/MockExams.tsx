@@ -4,9 +4,14 @@ import { Award, BookOpen, CheckCircle2, Clock, ListChecks, Target } from 'lucide
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isPathMockExam } from '../utils/mockExam';
+import { getPathIcon as resolvePathIcon } from '../dashboards/admin/PathsManager/pathDisplayPresentation';
 
-const getPathIcon = (name?: string) =>
-  (name || '').includes('تحصيلي') ? <BookOpen size={28} /> : <Target size={28} />;
+const renderPathIcon = (path: any) => {
+  if (path?.icon || path?.iconUrl) {
+    return resolvePathIcon(path, 'w-7 h-7 object-contain');
+  }
+  return (path?.name || '').includes('تحصيلي') ? <BookOpen size={28} /> : <Target size={28} />;
+};
 
 const getPathSortRank = (name?: string) => {
   const value = name || '';
@@ -63,7 +68,7 @@ export const MockExams: React.FC = () => {
                 <Card key={path.id} className="h-full border border-gray-100 bg-white p-5 shadow-sm">
                     <div className="flex items-start gap-4">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-                        {getPathIcon(path.name)}
+                        {renderPathIcon(path)}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center justify-between gap-2">

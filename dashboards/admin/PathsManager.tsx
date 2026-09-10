@@ -18,7 +18,8 @@ import { Course, PackageContentType, PathDisplaySettings } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 import { isQuizVisibleInLearningSlot } from '../../utils/quizLearningPlacement';
-import { getPathIcon, getSubjectIcon, resolveColor, resolvePathDisplaySettings } from './PathsManager/pathDisplayPresentation';
+import { getPathIcon, getSubjectIcon, getLevelIcon, resolveColor, resolvePathDisplaySettings } from './PathsManager/pathDisplayPresentation';
+import { EducationalIconPicker } from './PathsManager/EducationalIconPicker';
 import { buildPathReadinessSummary } from './PathsManager/pathReadiness';
 import { resolvePathsManagerUrlState } from './PathsManager/pathsManagerUrlState';
 
@@ -71,6 +72,8 @@ export const PathsManager: React.FC = () => {
   const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<any>(null);
   const [newLevelName, setNewLevelName] = useState('');
+  const [newLevelIcon, setNewLevelIcon] = useState('🎓');
+  const [newLevelIconUrl, setNewLevelIconUrl] = useState('');
   
   // Delete Confirmation Modal State
   const [deleteDialog, setDeleteDialog] = useState<{isOpen: boolean, id: string | null, type: string, title: string, message: string}>({isOpen: false, id: null, type: '', title: '', message: ''});
@@ -400,18 +403,24 @@ export const PathsManager: React.FC = () => {
 
     if (editingLevel) {
       useStore.getState().updateLevel(editingLevel.id, {
-        name: newLevelName.trim()
+        name: newLevelName.trim(),
+        icon: newLevelIcon || undefined,
+        iconUrl: newLevelIconUrl || undefined,
       });
     } else {
       const newLevel = {
         id: `l_${Date.now()}`,
         pathId: selectedPathId,
-        name: newLevelName.trim()
+        name: newLevelName.trim(),
+        icon: newLevelIcon || undefined,
+        iconUrl: newLevelIconUrl || undefined,
       };
       useStore.getState().addLevel(newLevel);
     }
     setEditingLevel(null);
     setNewLevelName('');
+    setNewLevelIcon('🎓');
+    setNewLevelIconUrl('');
     setIsLevelModalOpen(false);
   };
 
@@ -419,6 +428,8 @@ export const PathsManager: React.FC = () => {
     e.stopPropagation();
     setEditingLevel(level);
     setNewLevelName(level.name);
+    setNewLevelIcon(level.icon || '🎓');
+    setNewLevelIconUrl(level.iconUrl || '');
     setIsLevelModalOpen(true);
   };
 
@@ -953,37 +964,6 @@ export const PathsManager: React.FC = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">الأيقونة (إيموجي أو صورة)</label>
-                    <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={newPathIcon}
-                          onChange={(e) => setNewPathIcon(e.target.value)}
-                          className="w-16 px-2 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-center text-xl"
-                          placeholder="📚"
-                          maxLength={2}
-                          disabled={!!newPathIconUrl}
-                        />
-                        <div className="flex-1 relative">
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={(e) => handleIconUpload(e, setNewPathIconUrl)} 
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                              title="رفع أيقونة صورة"
-                            />
-                            <div className="w-full h-full min-h-[46px] border border-gray-300 rounded-xl flex items-center justify-center bg-gray-50 text-sm font-bold text-indigo-600 hover:bg-gray-100 transition-colors">
-                                {newPathIconUrl ? 'تغيير الصورة المرفوعة' : 'رفع صورة...'}
-                            </div>
-                        </div>
-                        {newPathIconUrl && (
-                            <button onClick={() => setNewPathIconUrl('')} className="p-2 text-red-500 hover:bg-red-50 rounded-xl">
-                                <X size={20} />
-                            </button>
-                        )}
-                    </div>
-                  </div>
-                  <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">نمط الأيقونة والتصميم</label>
                     <select
                       value={newPathIconStyle}
@@ -995,6 +975,21 @@ export const PathsManager: React.FC = () => {
                       <option value="minimal">بسيط (بدون خلفيات)</option>
                       <option value="playful">مرح (ألوان زاهية وظلال)</option>
                     </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <EducationalIconPicker
+                      selectedIcon={newPathIcon}
+                      selectedIconUrl={newPathIconUrl}
+                      color={newPathColor}
+                      onSelectIcon={(icon) => {
+                        setNewPathIcon(icon);
+                        setNewPathIconUrl('');
+                      }}
+                      onUploadIconUrl={(e) => handleIconUpload(e, setNewPathIconUrl)}
+                      onClearIconUrl={() => setNewPathIconUrl('')}
+                      defaultFallback="📚"
+                      label="أيقونة المسار التعليمي"
+                    />
                   </div>
                 </div>
                 <div>
@@ -1188,7 +1183,12 @@ export const PathsManager: React.FC = () => {
                           return (
                               <div key={`lvl-${level.id}-${lidx}`} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
                                   <div className="flex justify-between items-start mb-4">
-                                      <h3 className="text-xl font-bold text-gray-800">{level.name}</h3>
+                                      <div className="flex items-center gap-3">
+                                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs border border-indigo-100">
+                                              {getLevelIcon(level, 'w-5 h-5')}
+                                          </div>
+                                          <h3 className="text-xl font-bold text-gray-800">{level.name}</h3>
+                                      </div>
                                       <div className="flex gap-2">
                                           <button
                                             onClick={(e) => openEditLevel(level, e)}
@@ -1216,8 +1216,9 @@ export const PathsManager: React.FC = () => {
                                       <h4 className="font-bold text-sm text-gray-700">مواد هذه المرحلة:</h4>
                                       <div className="flex flex-wrap gap-2">
                                           {levelSubjects.map((sub, sidx) => (
-                                              <span key={`lsub-${sub.id}-${sidx}`} className="bg-gray-50 px-3 py-1 rounded-lg text-sm text-gray-600 border border-gray-100">
-                                                  {sub.name}
+                                              <span key={`lsub-${sub.id}-${sidx}`} className="inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1 rounded-lg text-sm text-gray-700 border border-gray-100">
+                                                  <span className="flex items-center justify-center text-xs">{getSubjectIcon(sub, 'w-4 h-4')}</span>
+                                                  <span>{sub.name}</span>
                                               </span>
                                           ))}
                                           {levelSubjects.length === 0 && <span className="text-sm text-gray-400">لا توجد مواد</span>}
@@ -1683,35 +1684,19 @@ export const PathsManager: React.FC = () => {
                   )}
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">الأيقونة (إيموجي أو صورة)</label>
-                    <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={newSubjectIcon}
-                          onChange={(e) => setNewSubjectIcon(e.target.value)}
-                          className="w-16 px-2 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-center text-xl"
-                          placeholder="📖"
-                          maxLength={2}
-                          disabled={!!newSubjectIconUrl}
-                        />
-                        <div className="flex-1 relative">
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={(e) => handleIconUpload(e, setNewSubjectIconUrl)} 
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                              title="رفع أيقونة صورة"
-                            />
-                            <div className="w-full h-full min-h-[46px] border border-gray-300 rounded-xl flex items-center justify-center bg-gray-50 text-sm font-bold text-indigo-600 hover:bg-gray-100 transition-colors">
-                                {newSubjectIconUrl ? 'تغيير الصورة المرفوعة' : 'رفع صورة...'}
-                            </div>
-                        </div>
-                        {newSubjectIconUrl && (
-                            <button onClick={() => setNewSubjectIconUrl('')} className="p-2 text-red-500 hover:bg-red-50 rounded-xl">
-                                <X size={20} />
-                            </button>
-                        )}
-                    </div>
+                    <EducationalIconPicker
+                      selectedIcon={newSubjectIcon}
+                      selectedIconUrl={newSubjectIconUrl}
+                      color={newSubjectColor}
+                      onSelectIcon={(icon) => {
+                        setNewSubjectIcon(icon);
+                        setNewSubjectIconUrl('');
+                      }}
+                      onUploadIconUrl={(e) => handleIconUpload(e, setNewSubjectIconUrl)}
+                      onClearIconUrl={() => setNewSubjectIconUrl('')}
+                      defaultFallback="📖"
+                      label="أيقونة المادة التعليمية"
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-bold text-gray-700 mb-2">نمط الأيقونة والتصميم</label>
@@ -1957,27 +1942,43 @@ export const PathsManager: React.FC = () => {
 
         {/* Modal for adding Level */}
         {isLevelModalOpen && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
-              <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
                 <h3 className="font-bold text-lg text-gray-800">{editingLevel ? 'تعديل المرحلة' : 'إضافة مرحلة دراسية'}</h3>
-                <button type="button" onClick={() => { setIsLevelModalOpen(false); setEditingLevel(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <button type="button" onClick={() => { setIsLevelModalOpen(false); setEditingLevel(null); setNewLevelName(''); setNewLevelIcon('🎓'); setNewLevelIconUrl(''); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
               </div>
-              <div className="p-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">اسم المرحلة</label>
-                <input
-                  type="text"
-                  value={newLevelName}
-                  onChange={(e) => setNewLevelName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="مثال: الصف الأول المتوسط..."
-                  autoFocus
+              <div className="p-6 space-y-4 overflow-y-auto flex-1">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">اسم المرحلة</label>
+                  <input
+                    type="text"
+                    value={newLevelName}
+                    onChange={(e) => setNewLevelName(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="مثال: الصف الأول المتوسط، المرحلة الثانوية..."
+                    autoFocus
+                  />
+                </div>
+
+                <EducationalIconPicker
+                  selectedIcon={newLevelIcon}
+                  selectedIconUrl={newLevelIconUrl}
+                  color={currentPath?.color || 'indigo'}
+                  onSelectIcon={(icon) => {
+                    setNewLevelIcon(icon);
+                    setNewLevelIconUrl('');
+                  }}
+                  onUploadIconUrl={(e) => handleIconUpload(e, setNewLevelIconUrl)}
+                  onClearIconUrl={() => setNewLevelIconUrl('')}
+                  defaultFallback="🎓"
+                  label="أيقونة المرحلة الدراسية"
                 />
               </div>
-              <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-                <button type="button" onClick={() => { setIsLevelModalOpen(false); setEditingLevel(null); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
+              <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+                <button type="button" onClick={() => { setIsLevelModalOpen(false); setEditingLevel(null); setNewLevelName(''); setNewLevelIcon('🎓'); setNewLevelIconUrl(''); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                   إلغاء
                 </button>
                 <button type="button" onClick={handleAddLevel} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors">

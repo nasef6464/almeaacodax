@@ -11,6 +11,7 @@ import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
+import { getLevelIcon, getSubjectIcon } from '../dashboards/admin/PathsManager/pathDisplayPresentation';
 
 const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
 const LightweightModalFallback = () => null;
@@ -959,7 +960,11 @@ export const GenericPathPage: React.FC = () => {
 const renderSubjectCard = (s: any, levelId: string | null) => {
         const sColor = resolveThemeColor(s.color || style.color, style.color);
         const iconStyle = s.iconStyle || (path as any).iconStyle || 'default';
-        const icon = s.iconUrl ? <img src={s.iconUrl} className="w-10 h-10 object-contain mx-auto" alt={s.name} /> : <div className="text-3xl">{s.icon || '📚'}</div>;
+        const icon = (
+            <div className="flex items-center justify-center text-3xl mx-auto">
+                {getSubjectIcon(s, "w-10 h-10 object-contain mx-auto")}
+            </div>
+        );
         const summary = getSubjectContentSummary(s.id);
         const topContentRows = showPublicAdminDiagnostics
             ? contentAccessRows
@@ -1107,9 +1112,10 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                     <Link
                                         key={subject.id}
                                         to={buildSubjectUrl(levelId, subject.id)}
-                                        className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-black text-gray-800 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                                        className="flex items-center gap-2.5 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-black text-gray-800 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                                     >
-                                        {subject.name}
+                                        <span className="flex items-center justify-center text-lg">{getSubjectIcon(subject, 'w-5 h-5')}</span>
+                                        <span>{subject.name}</span>
                                     </Link>
                                 ))}
                             </div>
@@ -1354,7 +1360,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_55%)] pointer-events-none" />
                                     <div className="relative z-10">
                                         <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/15">
-                                            <GraduationCap size={24} />
+                                            {getLevelIcon(level, 'w-6 h-6 object-contain text-white')}
                                         </div>
                                         <h3 className="mb-1 text-xl font-black leading-tight break-words">{level.name}</h3>
                                         <div className="text-white/80 text-xs font-bold">مقررات وتأسيس المرحلة</div>
