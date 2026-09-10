@@ -15,6 +15,7 @@ import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
   combineMongoFilters,
+  matchesManagedContentScope,
   resolveManagedContentScope,
 } from "../services/managedContentScope.js";
 
@@ -178,6 +179,7 @@ const sanitizeWorkflowUpdate = (
     delete nextPayload.ownerType;
     delete nextPayload.ownerId;
     delete nextPayload.createdBy;
+    delete nextPayload.assignedTeacherId;
     delete nextPayload.approvedBy;
     delete nextPayload.approvedAt;
     delete nextPayload.reviewerNotes;
@@ -219,6 +221,44 @@ const buildCourseVisibilityFilter = (authUser?: { role?: string; id?: string }) 
 const buildCourseIdentityQuery = (id: string) => {
   const normalizedId = String(id || "").trim();
   return { $or: [{ _id: normalizedId }, { id: normalizedId }] };
+};
+
+const buildUserIdentityQuery = (id: string) => {
+  const normalizedId = String(id || "").trim();
+  if (!normalizedId) return { id: "__missing__" };
+  return mongoose.Types.ObjectId.isValid(normalizedId)
+    ? { $or: [{ id: normalizedId }, { _id: normalizedId }] }
+    : { id: normalizedId };
+};
+
+/**
+ * An admin can assign a course to a platform trainer, but that assignment must
+ * remain compatible with the trainer's current server-side content scope. This
+ * protects the relationship even if a client bypasses the course-builder UI.
+ */
+const assertAssignedTrainerCanOwnCourse = async (course: {
+  assignedTeacherId?: unknown;
+  pathId?: unknown;
+  subjectId?: unknown;
+  subject?: unknown;
+}) => {
+  const trainerId = String(course.assignedTeacherId || "").trim();
+  if (!trainerId) return;
+
+  const trainer = await UserModel.findOne(buildUserIdentityQuery(trainerId))
+    .select("id _id role isActive")
+    .lean();
+  if (!trainer || trainer.role !== "teacher" || trainer.isActive === false) {
+    throw badRequest("لا يمكن تعيين هذا الحساب كمدرب منصة نشط.");
+  }
+
+  const scope = await resolveManagedContentScope({
+    id: String((trainer as any).id || (trainer as any)._id || trainerId),
+    role: String(trainer.role),
+  });
+  if (!matchesManagedContentScope(scope, course)) {
+    throw badRequest("لا يمكن تعيين هذا المدرب لأن الدورة خارج المسارات أو المواد المسندة إليه.");
+  }
 };
 
 const normalizeStringList = (value: unknown) =>
@@ -636,6 +676,9 @@ courseRouter.post(
       instructor: String(payload.instructor || "").trim() || "Platform Team",
     };
     await assertManagedContentScope(req.authUser!, normalizedPayload);
+    if (req.authUser?.role === "admin") {
+      await assertAssignedTrainerCanOwnCourse(normalizedPayload);
+    }
     await assertCurriculumImportScope({
       coursePathId: normalizedPayload.pathId,
       courseSubjectId: normalizedPayload.subjectId,
@@ -684,6 +727,15 @@ const handleCourseUpdate = asyncHandler(async (req, res) => {
     ...(existing as Record<string, unknown>),
     ...normalizedPayload,
   });
+
+  const assignmentOrScopeChanged = ["assignedTeacherId", "pathId", "subjectId", "subject"]
+    .some((field) => Object.prototype.hasOwnProperty.call(normalizedPayload, field));
+  if (req.authUser?.role === "admin" && assignmentOrScopeChanged) {
+    await assertAssignedTrainerCanOwnCourse({
+      ...(existing as Record<string, unknown>),
+      ...normalizedPayload,
+    });
+  }
 
   await assertCurriculumImportScope({
     coursePathId: nextPathId,
