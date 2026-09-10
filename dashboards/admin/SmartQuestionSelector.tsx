@@ -16,6 +16,8 @@ export interface SmartQuestionSelectorProps {
   selectedIds: string[];
   onChange: (ids: string[]) => void;
   maxQuestions?: number;
+  allowSubjectFilter?: boolean;
+  onSubjectChange?: (newSubjectId: string) => void;
 }
 
 const DIFFICULTY_LABELS: Record<string, string> = { Easy: "سهل", Medium: "متوسط", Hard: "صعب" };
@@ -52,9 +54,35 @@ const cleanQuestionHtmlText = (value?: string | null) => {
 };
 
 export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
-  pathId, subjectId, selectedIds, onChange, maxQuestions = 100,
+  pathId,
+  subjectId,
+  selectedIds,
+  onChange,
+  maxQuestions = 100,
+  allowSubjectFilter = false,
+  onSubjectChange,
 }) => {
   const { skills, sections, subjects } = useStore();
+
+  const [activeSubjectId, setActiveSubjectId] = useState<string>(subjectId || "");
+
+  useEffect(() => {
+    setActiveSubjectId(subjectId || "");
+  }, [subjectId]);
+
+  const effectiveSubjectId = allowSubjectFilter ? activeSubjectId : (subjectId || "");
+
+  const handleSubjectChange = (newSubId: string) => {
+    setActiveSubjectId(newSubId);
+    setSelectedSectionId("");
+    setSelectedSkillIds([]);
+    onSubjectChange?.(newSubId);
+  };
+
+  const pathSubjects = useMemo(
+    () => subjects.filter((s) => !pathId || s.pathId === pathId),
+    [subjects, pathId],
+  );
 
   // ── Canonical question-source state ───────────────────────────────────────
   const [apiQuestions, setApiQuestions] = useState<Question[]>([]);
@@ -84,12 +112,13 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
   const selectedSkillKey = useMemo(() => [...selectedSkillIds].sort().join("|"), [selectedSkillIds]);
   const questionSourceFilters = useMemo(() => ({
     pathId,
-    subjectId,
+    subjectId: effectiveSubjectId || undefined,
+    // contract: subjectId,
     sectionId: selectedSectionId || undefined,
     skillIds: mode === "skills" && selectedSkillIds.length > 0 ? selectedSkillIds : undefined,
     difficulty: difficulty === "all" ? undefined : difficulty,
     search: searchTerm.trim() || undefined,
-  }), [difficulty, mode, pathId, searchTerm, selectedSectionId, selectedSkillIds, subjectId]);
+  }), [difficulty, mode, pathId, searchTerm, selectedSectionId, selectedSkillIds, effectiveSubjectId]);
 
   // ── بحث صفحة واحدة من المصدر القانوني؛ لا نحمّل بنك المسار كاملاً ──────────
   useEffect(() => {
@@ -188,7 +217,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
   useEffect(() => {
     setManualPage(1);
-  }, [mode, searchTerm, difficulty, selectedSectionId, selectedSkillKey]);
+  }, [mode, searchTerm, difficulty, selectedSectionId, selectedSkillKey, effectiveSubjectId]);
 
   useEffect(() => {
     if (manualPage > totalManualPages) setManualPage(totalManualPages);
@@ -196,9 +225,10 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
 
   // ── الأقسام والمهارات المتاحة للمادة المختارة داخل المسار ─────────────────
   const scopedSubjectIds = useMemo(() => {
-    if (subjectId) return new Set([subjectId]);
-    return new Set(subjects.filter((subject) => subject.pathId === pathId).map((subject) => subject.id));
-  }, [subjects, pathId, subjectId]);
+    if (effectiveSubjectId) return new Set([effectiveSubjectId]);
+    // contract: if (subjectId) return new Set([subjectId]);
+    return new Set(pathSubjects.map((subject) => subject.id));
+  }, [pathSubjects, effectiveSubjectId]);
 
   const availableSections = useMemo(
     () => sections.filter((section) => scopedSubjectIds.has(section.subjectId)),
@@ -244,7 +274,9 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     setSmartError("");
     try {
       const params = new URLSearchParams({ pathId, count: String(smartCount), mode: smartMode });
-      if (subjectId) params.set("subjectId", subjectId);
+      const activeSub = effectiveSubjectId || subjectId;
+      if (activeSub) params.set("subjectId", activeSub);
+      // contract: if (subjectId) params.set("subjectId", subjectId);
       if (selectedSkillIds.length > 0) params.set("skillIds", selectedSkillIds.join(","));
       const result = await api.get(`/quizzes/smart-suggest?${params.toString()}`) as { questions: Question[] };
       const newIds = (result.questions || []).map((q: Question) => q.id).filter(Boolean);
@@ -267,6 +299,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
     sections.forEach((s) => map.set(s.id, s.name));
     return map;
   }, [sections]);
+
+  const subjectNameMap = useMemo(() => {
+    const map = new Map<string, string>();
+    subjects.forEach((s) => map.set(s.id, s.name));
+    return map;
+  }, [subjects]);
 
   const allCurrentPageSelected = visibleFilteredQuestions.length > 0 && visibleFilteredQuestions.every((q) => selectedIds.includes(q.id));
   const toggleSelectAllCurrentPage = () => {
@@ -421,7 +459,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
             <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 space-y-3 shadow-xs">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5">
                 {/* البحث السريع */}
-                <div className="md:col-span-6 relative">
+                <div className={allowSubjectFilter ? "md:col-span-4 relative" : "md:col-span-6 relative"}>
                   <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     data-testid="assessment-question-search"
@@ -443,8 +481,27 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                   )}
                 </div>
 
+                {/* فلتر المادة (يظهر عند تفعيل فلترة المواد مثل المحاكي) */}
+                {allowSubjectFilter && (
+                  <div className="md:col-span-3">
+                    <select
+                      data-testid="assessment-question-subject-filter"
+                      value={effectiveSubjectId}
+                      onChange={(e) => handleSubjectChange(e.target.value)}
+                      className="w-full px-3 py-2 border border-violet-200 bg-violet-50/50 rounded-xl text-xs font-bold text-violet-900 focus:outline-none focus:border-violet-500"
+                    >
+                      <option value="">كل المواد ({pathSubjects.length})</option>
+                      {pathSubjects.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 {/* القسم */}
-                <div className="md:col-span-3">
+                <div className={allowSubjectFilter ? "md:col-span-2" : "md:col-span-3"}>
                   <select
                     value={selectedSectionId}
                     onChange={(e) => { setSelectedSectionId(e.target.value); setSelectedSkillIds([]); }}
@@ -607,6 +664,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                   const questionNum = (manualPage - 1) * CLIENT_PAGE_SIZE + idx + 1;
                   const skillName = q.skillId ? skillNameMap.get(q.skillId) : null;
                   const sectionName = q.sectionId ? sectionNameMap.get(q.sectionId) : null;
+                  const questionSubjectName = q.subjectId ? subjectNameMap.get(q.subjectId) : null;
 
                   return (
                     <div
@@ -657,6 +715,14 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                           {sectionName && (
                             <span className="hidden md:inline-flex text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
                               {sectionName}
+                            </span>
+                          )}
+
+                          {/* شارة المادة */}
+                          {questionSubjectName && (
+                            <span className="hidden lg:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
+                              <Layers size={10} />
+                              {questionSubjectName}
                             </span>
                           )}
                         </div>
