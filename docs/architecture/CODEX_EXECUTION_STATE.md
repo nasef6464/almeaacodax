@@ -1,5 +1,25 @@
 # ALMEAA — Codex Execution State
 
+## Product Goal AW — Account Workspaces planning baseline
+
+- Reviewed on 2026-09-10 against `origin/main@5dfdd16c` and the approved trainer,
+  school-teacher, and school-director product decision.
+- Status: `PLAN APPROVED / RUNTIME NOT STARTED`. No role/schema/API/RBAC/runtime,
+  production-data, payment, scoring, deployment, or cutover change is claimed.
+- Canonical registry: `docs/architecture/ACCOUNT_WORKSPACES_GOALS_AR.md`.
+  Architecture: `PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md`. Agent entry:
+  `ACCOUNT_WORKSPACES_AGENT_ENTRY_AR.md`. Terra prompt:
+  `ACCOUNT_WORKSPACES_TERRA_EXECUTION_PROMPT_AR.md`.
+- Sequence continues after Smart Classroom: `G7` Platform Trainer, `G8` School
+  Teacher, `G9` Director Identity/Delegation, `G10` Director Dashboard/Student
+  Operations, `G11` Delegated Operations, `G12` Academic Delegation/Closure.
+- Current Goal: لا يوجد Goal Runtime مفوض. Next authorized candidate بعد أمر
+  المالك هو `G7 — Platform Trainer Workspace (AW-01)` فقط.
+- Product decision: مدير المدرسة يملك أساسًا overview + student view/add/move
+  داخل المدرسة؛ كل توسع permission صريحة لكل SchoolMembership ومن allowlist،
+  ويحتاج contract entitlement أيضًا عندما يكون capability وحدة تجارية. لا hard
+  delete أو cross-school transfer افتراضيًا.
+
 ## Product Goal SC — School OS + Smart Classroom planning baseline
 
 - Reviewed on 2026-09-09 against `main@9cf72176059e09466335f6d6ff20b51b43969e61`, the current school capabilities, Gemini V2, and the reconciled Codex/ChatGPT decision.

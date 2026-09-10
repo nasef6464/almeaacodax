@@ -2,6 +2,7 @@
 
 > الحالة: `APPROVED FOR IMPLEMENTATION / NO RUNTIME CHANGE YET`
 > المصدر: الكود الحالي وخطة School OS + Smart Classroom المعتمدة.
+> سجل الأهداف: `ACCOUNT_WORKSPACES_GOALS_AR.md` (`G7–G12`).
 
 ## 1. القرار المنتجى
 
@@ -162,27 +163,19 @@
 9. CI على commit التنفيذ بالضبط، ثم تحديث `CODEX_EXECUTION_STATE.md` وخرائط
    البيانات فقط إذا تغيرت الملكية أو query responsibility فعليًا.
 
-## 6. ترتيب PRs المقترح
+## 6. ترتيب الأهداف وPRs
 
-| PR | المخرجات | شرط الإغلاق |
+| Goal / PR | المخرجات | شرط الإغلاق |
 |---|---|---|
-| PR-A | T1: منصة المدرب + server-side content scope | مدرب كمي مع منع كتابة خارج نطاقه |
-| PR-B | T2: لوحة معلم المدرسة | فصل/تكليف معزولان |
-| PR-C | D1: `school_admin` + permissions لكل membership + إدارة التفويض | عزل مدارس ومنح/سحب خادمي موثق |
-| PR-D | D2/D3: Dashboard + إضافة طالب ونقله داخل المدرسة + labels/context | رحلة أساسية كاملة مع منع cross-school والحذف |
-| PR-E | الصلاحيات الاختيارية ولوحاتها، واحدة أو مجموعة مترابطة في كل مرة | لا تفعيل قبل اكتمال API/UI/RBAC لكل capability |
+| `G7 / AW-01` | T1: منصة المدرب + server-side content scope | مدرب كمي مع منع كتابة خارج نطاقه |
+| `G8 / AW-02` | T2: لوحة معلم المدرسة | فصل/تكليف معزولان وحساب هجين آمن |
+| `G9 / AW-03` | D1: `school_admin` + permissions لكل membership + إدارة التفويض | عزل مدارس ومنح/سحب خادمي موثق |
+| `G10 / AW-04` | D2: Dashboard + إضافة طالب ونقله داخل المدرسة | رحلة أساسية كاملة مع منع cross-school والحذف |
+| `G11 / AW-05` | فصول/تكليف معلمين/تقارير اختيارية | dual gate: contract entitlement + director permission |
+| `G12 / AW-06` | اختبارات/Smart/تدخلات + labels/context والإغلاق | قبول جميع الشخصيات بلا تداخل صلاحيات |
 
-## 7. برومبت تنفيذ مختصر لـTerra
+## 7. برومبت Terra
 
-```text
-نفذ PR واحد فقط من خطة PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md.
-ابدأ من main الحالي وعلى branch جديد. افحص الكود وأعد استخدام User وSchoolMembership
-وTeachingAssignment وSchoolPortal/Smart Classroom؛ لا تنشئ users system أو tenantId.
-كل صلاحية يجب أن تكون server-authoritative ومحددة لكل مدرسة في membership ومن
-allowlist ثابتة، لا من قيم يرسلها العميل. لا تعتمد على إخفاء الأزرار. أضف اختبارات
-RBAC سلبية وخصوصًا cross-school وسحب الصلاحية. لا hard delete ولا نقل بين مدارس
-إلا بالـcapability الخاصة وعضويتين فعالتين. لا تغيّر scoring أو payments أو البيانات
-القديمة. قبل commit: typecheck/build وfocused smokes. بعده: stage الملفات المحددة
-فقط، commit/push، CI على exact commit، ثم حدّث CODEX_EXECUTION_STATE.md بالنتيجة
-الصادقة فقط.
-```
+البرومبت الكامل قليل السياق والمخصص لبدء `G7` موجود في
+`ACCOUNT_WORKSPACES_TERRA_EXECUTION_PROMPT_AR.md`. بعد كل إغلاق يستخدم Agent
+برومبت المتابعة الموجود في الملف نفسه، مع Goal التالية فقط.
