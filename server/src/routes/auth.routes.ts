@@ -794,9 +794,18 @@ authRouter.get(
       UserModel.find(mongoQuery).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
       UserModel.countDocuments(mongoQuery),
     ]);
+    const pageUserIds = users.map((user: any) => String(user.id || user._id));
+    const pageMemberships = authUser.role === "admin" && pageUserIds.length
+      ? await SchoolMembershipModel.find({ userId: { $in: pageUserIds }, status: "active" }).select("userId schoolId role permissions").limit(2_000).lean()
+      : [];
+    const contextsByUser = new Map<string, any[]>();
+    pageMemberships.forEach((membership: any) => {
+      const key = String(membership.userId); const current = contextsByUser.get(key) || [];
+      current.push({ schoolId: String(membership.schoolId), role: String(membership.role), permissions: (membership.permissions || []).map(String) }); contextsByUser.set(key, current);
+    });
 
     return res.json({
-      users: users.map(serializeUser),
+      users: users.map((user: any) => ({ ...serializeUser(user), schoolContexts: contextsByUser.get(String(user.id || user._id)) || [] })),
       pagination: buildPaginatedResponse(users, pagination, total),
     });
   }),

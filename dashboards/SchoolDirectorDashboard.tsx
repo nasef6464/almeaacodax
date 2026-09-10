@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { BarChart3, BookOpenCheck, Building2, GraduationCap, Loader2, Pencil, Plus, Power, Search, ShieldCheck, Sparkles, Users, UsersRound } from 'lucide-react';
 import { api } from '../services/api';
 import { SchoolDirectorDelegatedOperations } from './SchoolDirectorDelegatedOperations';
+import { SchoolDirectorAcademicCenter } from './SchoolDirectorAcademicCenter';
 
 type DirectorSchool = { schoolId: string; schoolName: string; permissions: string[]; modules: string[]; status: string };
 type Overview = Awaited<ReturnType<typeof api.getSchoolDirectorOverview>>;
@@ -120,6 +121,7 @@ export const SchoolDirectorDashboard: React.FC = () => {
     {overview && <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">{metricCards(overview).map(({ label, value, icon: Icon, tone }) => <article key={label} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className={`flex h-9 w-9 items-center justify-center rounded-xl ${tone}`}><Icon size={18} /></div><p className="mt-3 text-xs font-bold text-slate-500">{label}</p><p className="mt-1 text-2xl font-black">{value}</p></article>)}</section>}
 
     {overview && <SchoolDirectorDelegatedOperations school={selectedSchool} classes={overview.classes} onRefresh={() => refresh(selectedSchool, search)} />}
+    {overview && <SchoolDirectorAcademicCenter school={selectedSchool} schools={schools} classes={overview.classes} students={students} onRefresh={() => refresh(selectedSchool, search)} />}
 
     <section className="mt-7 rounded-3xl border border-slate-100 bg-white p-5 shadow-sm sm:p-6"><div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div><p className="flex items-center gap-2 text-xs font-black text-indigo-600"><BarChart3 size={16} /> تشغيل الطلاب</p><h2 className="mt-1 text-xl font-black">طلاب {selectedSchool.schoolName}</h2></div><div className="flex flex-col gap-2 sm:flex-row"><div className="relative"><Search className="absolute right-3 top-2.5 text-slate-400" size={17} /><input value={search} onChange={(event) => setSearch(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void refresh(selectedSchool, search)} placeholder="ابحث بالاسم أو البريد" className="w-full rounded-xl border border-slate-200 py-2 pr-9 pl-3 text-sm outline-none focus:border-indigo-500" /></div>{hasPermission('SCHOOL_STUDENTS_ADD') && <button type="button" onClick={() => setShowAdd((value) => !value)} className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white"><Plus size={17} /> إضافة طالب</button>}</div></div>
 

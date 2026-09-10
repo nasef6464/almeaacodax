@@ -10,6 +10,11 @@ export const schoolDirectorPermissions = [
   "SCHOOL_TEACHERS_ASSIGN",
   "SCHOOL_REPORTS_DETAILED_VIEW",
   "SCHOOL_REPORTS_EXPORT",
+  "SCHOOL_ASSESSMENTS_MANAGE",
+  "SCHOOL_SMART_CLASSROOM_VIEW",
+  "SCHOOL_INTERVENTIONS_VIEW",
+  "SCHOOL_INTERVENTIONS_MANAGE",
+  "SCHOOL_STUDENTS_TRANSFER_SCHOOL",
 ] as const;
 
 export type SchoolDirectorPermission = (typeof schoolDirectorPermissions)[number];

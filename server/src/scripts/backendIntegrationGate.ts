@@ -502,6 +502,56 @@ async function runSchoolDirectorDelegatedOperationsJourney(csrf: CsrfContext) {
   pass("delegated school operations enforce permission plus contract entitlement");
 }
 
+async function runSchoolDirectorAcademicClosureJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school"); const classId = groupIds.get("class"); const outsideSchoolId = groupIds.get("outsideSchool"); const directorId = userIds.get("schoolAdmin");
+  assert.ok(schoolId && classId && outsideSchoolId && directorId, "academic closure fixtures missing");
+  const academicPermissions = ["SCHOOL_OVERVIEW_VIEW", "SCHOOL_STUDENTS_VIEW", "SCHOOL_ASSESSMENTS_MANAGE", "SCHOOL_SMART_CLASSROOM_VIEW", "SCHOOL_INTERVENTIONS_VIEW", "SCHOOL_INTERVENTIONS_MANAGE", "SCHOOL_STUDENTS_TRANSFER_SCHOOL"];
+  await SchoolContractModel.updateOne({ schoolId }, { $addToSet: { modules: { $each: ["SCHOOL_ASSESSMENTS", "INTERVENTION_CENTER", "SMART_CLASSROOM"] } } });
+  const grantSource = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, { method: "PUT", token: tokens.get("admin"), csrf, body: { status: "active", permissions: academicPermissions } });
+  expectStatus("admin grants academic director capabilities", grantSource, 200);
+  const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
+  const assessment = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { title: "Director School Assessment", classId, subjectId: ASSESSMENT_SUBJECT_ID, questionIds: [questionId] } });
+  expectStatus("director creates school assessment from approved bank", assessment, 201);
+  const assessments = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director lists school-bounded assessments", assessments, 200);
+  assert.equal(assessments.body?.assessments?.some((item: any) => String(item.title) === "Director School Assessment"), true, "created school assessment missing");
+  const smart = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/smart-classrooms`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director views school smart classroom history", smart, 200);
+  assert.equal(smart.body?.sessions?.every((item: any) => String(item.schoolId) === schoolId), true, "smart classroom view leaked another school");
+  const studentId = scopeStudentIds.get("assigned"); assert.ok(studentId, "intervention student missing");
+  const intervention = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/interventions`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { classId, studentId, skillId: "platform-v3-smart-classroom-skill", pathId: ASSESSMENT_PATH_ID } });
+  expectStatus("director creates existing-engine intervention", intervention, 201);
+  const interventions = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/interventions`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director lists school-bounded interventions", interventions, 200);
+
+  const transferStudent = await UserModel.findOne({ email: `director-added-${RUN_MARKER}@example.invalid` }).select("_id id").lean();
+  assert.ok(transferStudent, "G10 transfer fixture missing");
+  const targetClass = await GroupModel.create({ name: "Academic transfer target", type: "CLASS", parentId: outsideSchoolId, ownerId: userIds.get("admin"), studentIds: [] });
+  const deniedTransfer = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${String((transferStudent as any).id || transferStudent._id)}/transfer`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { targetSchoolId: outsideSchoolId, targetClassId: String(targetClass._id), confirmation: "TRANSFER" } });
+  expectStatus("school transfer denied without active target membership", deniedTransfer, 403);
+  const grantTarget = await jsonRequest(`/school-access/directors/${outsideSchoolId}/${directorId}`, { method: "PUT", token: tokens.get("admin"), csrf, body: { status: "active", permissions: ["SCHOOL_STUDENTS_TRANSFER_SCHOOL"] } });
+  expectStatus("admin grants transfer permission in target school", grantTarget, 200);
+  const targetClasses = await jsonRequest(`/school-access/director/schools/${outsideSchoolId}/transfer-target-classes`, { token: tokens.get("schoolAdmin") });
+  expectStatus("transfer target classes use transfer capability without overview access", targetClasses, 200);
+  const transferred = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${String((transferStudent as any).id || transferStudent._id)}/transfer`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { targetSchoolId: outsideSchoolId, targetClassId: String(targetClass._id), confirmation: "TRANSFER" } });
+  expectStatus("director transfers student with two active school grants", transferred, 200);
+  assert.ok(await UserModel.exists({ _id: transferStudent._id, schoolId: outsideSchoolId, groupIds: String(targetClass._id) }), "transferred student persistence missing");
+  assert.ok(await SchoolMembershipModel.exists({ userId: String((transferStudent as any).id || transferStudent._id), schoolId: outsideSchoolId, role: "student", status: "active" }), "target student membership missing");
+
+  await SchoolContractModel.updateOne({ schoolId }, { $pull: { modules: "SCHOOL_ASSESSMENTS" } });
+  const assessmentAfterModuleRevoke = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
+  expectStatus("academic permission cannot bypass revoked assessment module", assessmentAfterModuleRevoke, 403);
+  const adminUsers = await jsonRequest("/auth/admin/users?role=school_admin&limit=20", { token: tokens.get("admin") });
+  expectStatus("admin user export source includes explicit school contexts", adminUsers, 200);
+  const directorRow = adminUsers.body?.users?.find((item: any) => String(item.id || item._id) === directorId);
+  assert.ok(directorRow?.schoolContexts?.some((context: any) => context.schoolId === schoolId && context.role === "school_admin"), "director export context missing");
+  const hybrid = await jsonRequest("/school-access/teacher-workspace", { token: tokens.get("teacher") });
+  expectStatus("hybrid teacher retains separate platform and school personas", hybrid, 200);
+  assert.deepEqual(hybrid.body?.personas, { platformTrainer: true, schoolTeacher: true }, "hybrid teacher personas blended or missing");
+  assert.ok(await AdminAuditLogModel.exists({ actorId: directorId, action: "schools.director.student.transfer_school" }), "school transfer audit missing");
+  pass("academic delegation and persona closure preserve separated school contexts");
+}
+
 async function runSmartClassroomJourney(csrf: CsrfContext) {
   const schoolId = groupIds.get("school");
   const classId = groupIds.get("class");
@@ -1729,6 +1779,7 @@ async function main() {
     await runSmartClassroomJourney(csrf);
     await runSchoolDirectorDashboardJourney(csrf);
     await runSchoolDirectorDelegatedOperationsJourney(csrf);
+    await runSchoolDirectorAcademicClosureJourney(csrf);
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);

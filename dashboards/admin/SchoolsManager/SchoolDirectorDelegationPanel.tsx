@@ -15,7 +15,12 @@ type DirectorPermission =
     | 'SCHOOL_CLASSES_MANAGE'
     | 'SCHOOL_TEACHERS_ASSIGN'
     | 'SCHOOL_REPORTS_DETAILED_VIEW'
-    | 'SCHOOL_REPORTS_EXPORT';
+    | 'SCHOOL_REPORTS_EXPORT'
+    | 'SCHOOL_ASSESSMENTS_MANAGE'
+    | 'SCHOOL_SMART_CLASSROOM_VIEW'
+    | 'SCHOOL_INTERVENTIONS_VIEW'
+    | 'SCHOOL_INTERVENTIONS_MANAGE'
+    | 'SCHOOL_STUDENTS_TRANSFER_SCHOOL';
 
 type DirectorMembership = {
     userId: string;
@@ -37,6 +42,11 @@ const permissionOptions: Array<{ id: DirectorPermission; label: string; detail: 
     { id: 'SCHOOL_TEACHERS_ASSIGN', label: 'تكليف المعلمين', detail: 'داخل المدرسة فقط — تتطلب SCHOOL_CORE.' },
     { id: 'SCHOOL_REPORTS_DETAILED_VIEW', label: 'التقارير التفصيلية', detail: 'تتطلب وحدة SCHOOL_INTELLIGENCE.' },
     { id: 'SCHOOL_REPORTS_EXPORT', label: 'تصدير بيانات المدرسة', detail: 'تتطلب وحدة EXECUTIVE_ANALYTICS.' },
+    { id: 'SCHOOL_ASSESSMENTS_MANAGE', label: 'إدارة اختبارات المدرسة', detail: 'تتطلب وحدة SCHOOL_ASSESSMENTS.' },
+    { id: 'SCHOOL_SMART_CLASSROOM_VIEW', label: 'عرض الفصول الذكية', detail: 'تتطلب وحدة SMART_CLASSROOM.' },
+    { id: 'SCHOOL_INTERVENTIONS_VIEW', label: 'عرض التدخلات', detail: 'تتطلب وحدة INTERVENTION_CENTER.' },
+    { id: 'SCHOOL_INTERVENTIONS_MANAGE', label: 'إنشاء تدخل علاجي', detail: 'تتطلب وحدة INTERVENTION_CENTER.' },
+    { id: 'SCHOOL_STUDENTS_TRANSFER_SCHOOL', label: 'نقل بين المدارس', detail: 'حساس: يلزم منحه في المدرستين مع SCHOOL_CORE.' },
 ];
 
 export const SchoolDirectorDelegationPanel: React.FC<{ schoolId: string; directorAccounts: User[]; onActiveDirectorIdsChange?: (ids: string[]) => void }> = ({

@@ -3,10 +3,15 @@ import mongoose from "mongoose";
 import { ClassroomSessionModel } from "../../../models/ClassroomSession.js";
 import { GroupModel } from "../../../models/Group.js";
 import { QuizModel } from "../../../models/Quiz.js";
+import { QuestionModel } from "../../../models/Question.js";
+import { SchoolInterventionModel } from "../../../models/SchoolIntervention.js";
+import { StudyPlanModel } from "../../../models/StudyPlan.js";
+import { PathModel } from "../../../models/Path.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
 import { buildClassroomSchoolIntelligence } from "./classroomSchoolIntelligence.js";
+import { buildClassroomSkillEvidence } from "./classroomSchoolIntelligence.js";
 
 const idOf = (value: any) => String(value?.id || value?._id || value || "");
 const uniqueStrings = (values: unknown[]) => Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
@@ -220,4 +225,70 @@ export const buildSchoolDirectorStudentExport = async (schoolId: string) => {
     ...roster.students.map((student) => [student.studentId, student.name, student.email, student.isActive ? "active" : "inactive", student.classId || "", student.className || ""]),
   ];
   return { fileName: `school-students-${scope.schoolId}.csv`, csv: `\uFEFF${rows.map((row) => row.map(csvCell).join(",")).join("\n")}` };
+};
+
+export const buildSchoolDirectorAcademicWorkspace = async (schoolId: string, include: { assessments?: boolean; sessions?: boolean; interventions?: boolean }) => {
+  const scope = await loadSchoolScope(schoolId);
+  const classIds = scope.classes.map(idOf);
+  const [assessments, sessions, interventions] = await Promise.all([
+    include.assessments && classIds.length ? QuizModel.find({ targetGroupIds: { $in: classIds } }).select("id title subjectId targetGroupIds isPublished dueDate").sort({ createdAt: -1 }).limit(100).lean() : [],
+    include.sessions ? ClassroomSessionModel.find({ schoolId: scope.schoolId }).select("_id schoolId classId teacherId status createdAt endedAt").sort({ createdAt: -1 }).limit(100).lean() : [],
+    include.interventions ? SchoolInterventionModel.find({ schoolId: scope.schoolId }).select("_id classId skillId targetStudentIds actionRef status baseline outcomeSnapshot createdAt").sort({ createdAt: -1 }).limit(100).lean() : [],
+  ]);
+  return { assessments, sessions, interventions, classes: scope.classes.map((item) => ({ classId: idOf(item), className: String(item.name || "فصل") })) };
+};
+
+export const buildSchoolDirectorClassOptions = async (schoolId: string) => {
+  const scope = await loadSchoolScope(schoolId);
+  return { classes: scope.classes.map((item) => ({ classId: idOf(item), className: String(item.name || "فصل") })) };
+};
+
+export const createSchoolDirectorAssessment = async (schoolId: string, actorId: string, payload: { title: string; classId: string; subjectId?: string; questionIds: string[] }) => {
+  const scope = await loadSchoolScope(schoolId);
+  const classroom = scope.classes.find((item) => idOf(item) === payload.classId);
+  if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 400);
+  const questionIds = uniqueStrings(payload.questionIds);
+  const questions = await QuestionModel.find({ approvalStatus: "approved", $or: [{ id: { $in: questionIds } }, { _id: { $in: questionIds.filter((id) => mongoose.isValidObjectId(id)) } }] }).select("id _id").lean();
+  if (questions.length !== questionIds.length) throw new SchoolDirectorOperationError("Approved questions not found", 400);
+  const assessmentId = new mongoose.Types.ObjectId().toString();
+  const assessment = await QuizModel.create({ id: assessmentId, title: payload.title.trim(), subjectId: payload.subjectId || "", questionIds, targetGroupIds: [idOf(classroom)], ownerType: "school", ownerId: scope.schoolId, createdBy: actorId, isPublished: true, approvalStatus: "approved", quizKind: "test" });
+  return { assessment: { assessmentId: idOf(assessment), title: String(assessment.title), classId: idOf(classroom) } };
+};
+
+export const createSchoolDirectorIntervention = async (schoolId: string, actorId: string, payload: { classId: string; studentId: string; skillId: string; pathId: string }) => {
+  const scope = await loadSchoolScope(schoolId);
+  const classroom = scope.classes.find((item) => idOf(item) === payload.classId);
+  if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 400);
+  const { student } = await loadScopedStudent(scope.schoolId, payload.studentId);
+  if (!(student.groupIds || []).map(String).includes(idOf(classroom))) throw new SchoolDirectorOperationError("Student does not belong to this class", 400);
+  const path = await PathModel.findOne(documentQuery(payload.pathId)).select("id _id").lean();
+  if (!path) throw new SchoolDirectorOperationError("Learning path not found", 400);
+  const targetStudentId = idOf(student);
+  const baseline = await buildClassroomSkillEvidence({ schoolId: scope.schoolId, classId: idOf(classroom), skillId: payload.skillId, studentIds: [targetStudentId] });
+  const now = new Date(); const end = new Date(now); end.setDate(end.getDate() + 13); const dateKey = (date: Date) => date.toISOString().slice(0, 10);
+  const plan = await StudyPlanModel.create({ id: `school_intervention_${targetStudentId}_${Date.now()}`, userId: targetStudentId, name: `خطة علاج مهارة ${payload.skillId}`, pathId: idOf(path), subjectIds: [], courseIds: [], startDate: dateKey(now), endDate: dateKey(end), skipCompletedQuizzes: true, offDays: [], dailyMinutes: 30, preferredStartTime: "17:00", status: "active" });
+  const intervention = await SchoolInterventionModel.create({ schoolId: scope.schoolId, classId: idOf(classroom), skillId: payload.skillId, targetStudentIds: [targetStudentId], actionType: "study_plan", actionRef: idOf(path), assignedBy: actorId, baseline });
+  return { intervention: { interventionId: idOf(intervention), status: String(intervention.status) }, studyPlanId: idOf(plan) };
+};
+
+export const transferSchoolDirectorStudent = async (sourceSchoolId: string, targetSchoolId: string, studentId: string, targetClassId: string) => {
+  if (sourceSchoolId === targetSchoolId) throw new SchoolDirectorOperationError("Use class move inside the same school", 400);
+  const [{ scope: source, student }, target] = await Promise.all([loadScopedStudent(sourceSchoolId, studentId), loadSchoolScope(targetSchoolId)]);
+  const targetClass = target.classes.find((item) => idOf(item) === targetClassId);
+  if (!targetClass) throw new SchoolDirectorOperationError("Target class does not belong to target school", 400);
+  const sourceClassIds = uniqueStrings(source.classes.flatMap((item) => [item.id, item._id]));
+  const targetClassIds = uniqueStrings(target.classes.flatMap((item) => [item.id, item._id]));
+  const nextGroupIds = uniqueStrings([...(student.groupIds || []).filter((id: string) => !sourceClassIds.includes(String(id)) && !targetClassIds.includes(String(id))), idOf(targetClass)]);
+  await UserModel.updateOne({ _id: student._id }, { $set: { schoolId: target.schoolId, groupIds: nextGroupIds } });
+  await Promise.all([
+    GroupModel.updateOne({ _id: source.school._id }, { $pull: { studentIds: idOf(student) } }),
+    GroupModel.updateMany({ type: "CLASS", parentId: source.schoolId }, { $pull: { studentIds: idOf(student) } }),
+    SchoolMembershipModel.updateOne({ userId: idOf(student), schoolId: source.schoolId, role: "student" }, { $set: { status: "inactive" } }),
+  ]);
+  await Promise.all([
+    GroupModel.updateOne({ _id: target.school._id }, { $addToSet: { studentIds: idOf(student) } }),
+    GroupModel.updateOne({ _id: targetClass._id }, { $addToSet: { studentIds: idOf(student) } }),
+    SchoolMembershipModel.findOneAndUpdate({ userId: idOf(student), schoolId: target.schoolId, role: "student" }, { $set: { status: "active" } }, { upsert: true, runValidators: true }),
+  ]);
+  return { studentId: idOf(student), sourceSchoolId: source.schoolId, targetSchoolId: target.schoolId, targetClassId: idOf(targetClass) };
 };

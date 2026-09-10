@@ -774,6 +774,13 @@ export const api = {
     request<{ school: { schoolId: string; schoolName: string }; intelligence: any }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/reports/detailed`, { token, cache: "no-store" }),
   downloadSchoolDirectorStudentsCsv: (schoolId: string, token?: string | null) =>
     downloadText(`/school-access/director/schools/${encodeURIComponent(schoolId)}/reports/students.csv`, token),
+  getSchoolDirectorAcademicAssessments: (schoolId: string, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/academic/assessments`, { token, cache: "no-store" }),
+  createSchoolDirectorAssessment: (schoolId: string, payload: { title: string; classId: string; subjectId?: string; questionIds: string[] }, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/academic/assessments`, { method: "POST", body: payload, token }),
+  getSchoolDirectorSmartClassrooms: (schoolId: string, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/academic/smart-classrooms`, { token, cache: "no-store" }),
+  getSchoolDirectorInterventions: (schoolId: string, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/academic/interventions`, { token, cache: "no-store" }),
+  createSchoolDirectorIntervention: (schoolId: string, payload: { classId: string; studentId: string; skillId: string; pathId: string }, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/academic/interventions`, { method: "POST", body: payload, token }),
+  transferSchoolDirectorStudent: (sourceSchoolId: string, studentId: string, payload: { targetSchoolId: string; targetClassId: string; confirmation: "TRANSFER" }, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(sourceSchoolId)}/students/${encodeURIComponent(studentId)}/transfer`, { method: "POST", body: payload, token }),
+  getSchoolDirectorTransferTargetClasses: (schoolId: string, token?: string | null) => request<any>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/transfer-target-classes`, { token, cache: "no-store" }),
   getSchoolTeacherWorkspace: (token?: string | null) =>
     request<{
       personas: { platformTrainer: boolean; schoolTeacher: boolean };

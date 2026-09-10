@@ -835,6 +835,7 @@ export interface User {
     linkedStudentIds?: string[];
     managedPathIds?: string[];
     managedSubjectIds?: string[];
+    schoolContexts?: Array<{ schoolId: string; role: string; permissions: string[] }>;
     interactiveVideoProgress?: InteractiveVideoProgress[];
 }
 
