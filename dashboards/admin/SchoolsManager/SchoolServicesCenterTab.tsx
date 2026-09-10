@@ -144,7 +144,7 @@ export const SchoolServicesCenterTab: React.FC<SchoolServicesCenterTabProps> = (
         api.getSchoolContract(schoolId)
             .then((res) => {
                 if (!isMounted) return;
-                const contract = res?.contract;
+                const contract = res?.contract as any;
                 if (contract) {
                     setModules(contract.modules || ['SCHOOL_CORE']);
                     setStatus(contract.status || 'active');

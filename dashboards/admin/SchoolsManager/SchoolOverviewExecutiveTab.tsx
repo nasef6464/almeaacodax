@@ -68,11 +68,12 @@ export const SchoolOverviewExecutiveTab: React.FC<SchoolOverviewExecutiveTabProp
         api.getSchoolContract(schoolId)
             .then((res) => {
                 if (!isMounted) return;
-                if (res?.contract) {
-                    setContractModules(res.contract.modules || ['SCHOOL_CORE']);
-                    setContractStatus(res.contract.status || 'active');
-                    if (res.contract.validUntil) {
-                        setValidUntil(new Date(res.contract.validUntil).toLocaleDateString('ar-SA'));
+                const contract = res?.contract as any;
+                if (contract) {
+                    setContractModules(contract.modules || ['SCHOOL_CORE']);
+                    setContractStatus(contract.status || 'active');
+                    if (contract.validUntil) {
+                        setValidUntil(new Date(contract.validUntil).toLocaleDateString('ar-SA'));
                     }
                 }
             })

@@ -1589,7 +1589,16 @@ export const SchoolsManager: React.FC = () => {
                             <SchoolSettingsSafetyTab
                                 school={selectedSchool}
                                 onUpdateSchoolName={async (newName) => {
-                                    await handleUpdateSchoolName(newName);
+                                    if (!newName.trim() || newName.trim() === selectedSchool.name) return;
+                                    setSchoolActionPending('rename-school');
+                                    try {
+                                        const persistedSchool = await updateGroupAsync(selectedSchool.id, { name: newName.trim() });
+                                        const verifiedSchool = await refreshSchoolWorkspace(persistedSchool.id);
+                                        setSelectedSchool(verifiedSchool);
+                                        setManagementNotice('تم تحديث اسم المدرسة بنجاح.');
+                                    } finally {
+                                        setSchoolActionPending(null);
+                                    }
                                 }}
                                 onDeleteSchool={() => {
                                     setIsDeleteSchoolConfirmOpen(true);

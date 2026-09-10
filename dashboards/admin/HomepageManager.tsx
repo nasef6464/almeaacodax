@@ -529,6 +529,7 @@ export const HomepageManager: React.FC = () => {
                 hero: {
                     ...settings.hero,
                     imageUrl: withCacheBust(settings.hero.imageUrl),
+                    // hero: { ...settings.hero, imageUrl: withCacheBust(settings.hero.imageUrl) }
                     galleryImages: (settings.hero.galleryImages || []).map((img) => withCacheBust(img)),
                 },
                 sections: { ...settings.sections },
