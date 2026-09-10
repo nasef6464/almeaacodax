@@ -20,8 +20,7 @@
   and writes are bounded by fresh `managedPathIds`/`managedSubjectIds`, with empty
   assignment fail-closed. Local root/server typechecks and builds plus focused
   course, content, quiz, HTML/client-security contracts passed.
-- Current Goal: `G8 — School Teacher Workspace (AW-02)` is explicitly authorized;
-  the owner authorized sequential execution through G12 on 2026-09-10.
+- Owner authorization: sequential execution through G12 was granted on 2026-09-10.
 - G8 closure: exact runtime `7932bfb268bcc18d9b44ea01707b4b4cac173303`
   passed Backend Integration [34445758906](https://github.com/nasef6464/almeaacodax/actions/runs/34445758906).
   The School Teacher workspace derives schools, assigned classes, school-targeted
