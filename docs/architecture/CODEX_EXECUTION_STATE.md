@@ -1,11 +1,11 @@
 # ALMEAA — Codex Execution State
 
-## Product Goal AW — Account Workspaces planning baseline
+## Product Goal AW — Account Workspaces delivery
 
 - Reviewed on 2026-09-10 against `origin/main@5dfdd16c` and the approved trainer,
   school-teacher, and school-director product decision.
-- Status: `PLAN APPROVED / RUNTIME NOT STARTED`. No role/schema/API/RBAC/runtime,
-  production-data, payment, scoring, deployment, or cutover change is claimed.
+- Status: `G7 CLOSED / G8 AUTHORIZED`. G7 introduced no role migration, school
+  schema, payment/scoring, production-data, deployment, or cutover change.
 - Canonical registry: `docs/architecture/ACCOUNT_WORKSPACES_GOALS_AR.md`.
   Architecture: `PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md`. Agent entry:
   `ACCOUNT_WORKSPACES_AGENT_ENTRY_AR.md`. Terra prompt:
@@ -13,8 +13,15 @@
 - Sequence continues after Smart Classroom: `G7` Platform Trainer, `G8` School
   Teacher, `G9` Director Identity/Delegation, `G10` Director Dashboard/Student
   Operations, `G11` Delegated Operations, `G12` Academic Delegation/Closure.
-- Current Goal: لا يوجد Goal Runtime مفوض. Next authorized candidate بعد أمر
-  المالك هو `G7 — Platform Trainer Workspace (AW-01)` فقط.
+- G7 closure: exact runtime `4299d77f942dcb1fef55beacc97b84aad11989d4`
+  passed Backend Integration [34442365096](https://github.com/nasef6464/almeaacodax/actions/runs/34442365096).
+  The existing `teacher` compatibility role now renders as Platform Trainer in
+  its dedicated workspace; server-side Course/Lesson/Library/Question/Quiz reads
+  and writes are bounded by fresh `managedPathIds`/`managedSubjectIds`, with empty
+  assignment fail-closed. Local root/server typechecks and builds plus focused
+  course, content, quiz, HTML/client-security contracts passed.
+- Current Goal: `G8 — School Teacher Workspace (AW-02)` is explicitly authorized;
+  the owner authorized sequential execution through G12 on 2026-09-10.
 - Product decision: مدير المدرسة يملك أساسًا overview + student view/add/move
   داخل المدرسة؛ كل توسع permission صريحة لكل SchoolMembership ومن allowlist،
   ويحتاج contract entitlement أيضًا عندما يكون capability وحدة تجارية. لا hard

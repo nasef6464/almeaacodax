@@ -17,8 +17,8 @@
 ## الحقيقة الحالية
 
 - Smart Classroom `G0–G6` مغلق ولا يعاد تنفيذه.
-- Account Workspaces `G7–G12` خطة فقط ولم يبدأ Runtime.
-- أول هدف جاهز بعد تفويض المالك هو `G7 — Platform Trainer Workspace`.
+- Account Workspaces `G7` مغلق ومثبت على runtime `4299d77f` وCI `34442365096`.
+- الهدف الحالي المفوض هو `G8 — School Teacher Workspace`، ثم يستمر التفويض حتى `G12` بالتسلسل.
 - Git والكود وCI evidence يتقدمون على أي وصف قديم.
 
 ## ثوابت المنتج
@@ -62,4 +62,5 @@ vertical slice
 → handoff
 ```
 
-توقف بعد إغلاق Goal المصرح بها. لا تبدأ التالية تلقائيًا.
+توقف بعد كل Goal لإغلاق branch/PR وتحديث الدليل، ثم ابدأ التالية تلقائيًا ما دام
+تفويض المالك الحالي لـ`G7–G12` قائمًا ولا يوجد blocker حقيقي.

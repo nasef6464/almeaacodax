@@ -1,8 +1,8 @@
 # ALMEAA — سجل أهداف الحسابات ومساحات العمل
 
-> الحالة: `PLAN APPROVED / RUNTIME NOT STARTED`
+> الحالة: `G7 CLOSED / G8 AUTHORIZED`
 > آخر مراجعة: 2026-09-10
-> Current Goal: لا يوجد هدف Runtime مفوض بعد؛ أول هدف جاهز هو `G7`.
+> Current Goal: `G8 — School Teacher Workspace` مفوض وجاهز للتنفيذ.
 > يعتمد هذا المسار على إغلاق Smart Classroom `G0–G6` ولا يعيد تنفيذها.
 
 هذا هو سجل الأهداف القابل للاسترجاع لخطة مدرب المنصة، معلم المدرسة، ومدير
@@ -23,8 +23,8 @@
 
 | Goal | Checkpoint | النتيجة القابلة للتسليم | Exit Evidence | Status |
 |---|---|---|---|---|
-| `G7 — Platform Trainer Workspace` | `AW-01` | اسم وهوية ظاهرة باسم «مدرب منصة» ولوحة مستقلة، مع تقييد المحتوى خادميًا بالمسارات والمواد المسندة. | مدرب الكمي ينشئ/يعدل داخل الكمي فقط؛ محاولة مادة غير مسندة ترجع `403`؛ لا تظهر له أدوات المدارس أو الإدارة العامة. | `READY / NOT STARTED` |
-| `G8 — School Teacher Workspace` | `AW-02` | لوحة مستقلة لمعلم المدرسة مبنية على `SchoolMembership` و`TeachingAssignment` وتجمع الفصول والاختبارات المدرسية وSmart Classroom. | معلم A لا يرى فصل B ولا يبدأ له حصة أو اختبارًا؛ لا يملك أدوات مدرب المنصة إلا بسياق مستقل مصرح. | `BLOCKED BY G7` |
+| `G7 — Platform Trainer Workspace` | `AW-01` | اسم وهوية ظاهرة باسم «مدرب منصة» ولوحة مستقلة، مع تقييد المحتوى خادميًا بالمسارات والمواد المسندة. | مدرب الكمي ينشئ/يعدل داخل الكمي فقط؛ محاولة مادة غير مسندة ترجع `403`؛ لا تظهر له أدوات المدارس أو الإدارة العامة. | `CLOSED / VERIFIED` |
+| `G8 — School Teacher Workspace` | `AW-02` | لوحة مستقلة لمعلم المدرسة مبنية على `SchoolMembership` و`TeachingAssignment` وتجمع الفصول والاختبارات المدرسية وSmart Classroom. | معلم A لا يرى فصل B ولا يبدأ له حصة أو اختبارًا؛ لا يملك أدوات مدرب المنصة إلا بسياق مستقل مصرح. | `READY / AUTHORIZED` |
 | `G9 — School Director Identity & Delegated Access` | `AW-03` | `school_admin` additive، عضويات متعددة المدارس، وصلاحيات صريحة لكل عضوية يديرها صاحب المنصة. | مدير A لا يصل إلى B؛ المنح والسحب محفوظان ومدققان؛ سحب الصلاحية يسبب `403` فورًا؛ لا توسعة لصلاحيات legacy. | `BLOCKED BY G8` |
 | `G10 — Usable School Director Dashboard` | `AW-04` | لوحة تنفيذية مستقلة مع إحصاءات مجمعة وقائمة طلاب وإضافة طالب ونقله بين فصول المدرسة نفسها. | رحلة UI→API→DB كاملة؛ الإضافة لا تنشئ staff؛ النقل atomic/idempotent؛ cross-school والحذف مرفوضان. | `BLOCKED BY G9` |
 | `G11 — Delegated School Operations` | `AW-05` | صاحب المنصة يستطيع منح إدارة الفصول، تكليف المعلمين، التقارير التفصيلية، والتصدير كوحدات صلاحية اختيارية. | كل أداة تتطلب permission للمدرسة وmodule entitlement للعقد؛ grant يسمح وrevoke يمنع؛ الأدوات غير المفوضة لا تظهر ولا تعمل عبر API. | `BLOCKED BY G10` |
@@ -211,8 +211,8 @@
 
 | Goal | Status | Runtime commit | CI / Evidence | Next exact action |
 |---|---|---|---|---|
-| `G7` | `READY / NOT STARTED` | — | خطة فقط؛ لا runtime claim | ينتظر تفويض المالك لبدء G7 |
-| `G8` | `BLOCKED BY G7` | — | — | يبدأ بعد إغلاق G7 |
+| `G7` | `CLOSED / VERIFIED` | `4299d77f942dcb1fef55beacc97b84aad11989d4` | Backend Integration [34442365096](https://github.com/nasef6464/almeaacodax/actions/runs/34442365096) PASS: scoped authoring/read denial, empty-scope fail-closed, full HTTP/RBAC and commercial course gates. Local typecheck/build and focused content/quiz/course contracts PASS. | G8 |
+| `G8` | `READY / AUTHORIZED` | — | المالك فوض تنفيذ G7–G12 بالتسلسل في 2026-09-10 | تنفيذ School Teacher vertical slice |
 | `G9` | `BLOCKED BY G8` | — | — | يبدأ بعد إغلاق G8 |
 | `G10` | `BLOCKED BY G9` | — | — | يبدأ بعد إغلاق G9 |
 | `G11` | `BLOCKED BY G10` | — | — | يبدأ بعد إغلاق G10 |
@@ -229,5 +229,5 @@
 
 ## قرار البداية
 
-المعتمد الآن هو الخطة وملفات الأهداف فقط. لا يبدأ Runtime تلقائيًا. أول أمر تنفيذ
-صريح يجب أن يكون: `ابدأ G7`.
+فوض المالك صراحة تنفيذ `G7–G12` بالتسلسل في 2026-09-10. أُغلق G7 بالدليل
+المذكور أعلاه، والهدف الحالي هو `G8`؛ يستمر التنفيذ هدفًا واحدًا في كل branch/PR.
