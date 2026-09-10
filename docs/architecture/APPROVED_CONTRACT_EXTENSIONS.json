@@ -5,7 +5,8 @@
     "/classroom/:sessionId",
     "/classroom/:sessionId/projector",
     "/classroom/:sessionId/teacher",
-    "/classroom/teacher"
+    "/classroom/teacher",
+    "/school-teacher-dashboard"
   ],
   "backendRouteSignatures": [
     "router|GET|/session/:quizId",
@@ -31,8 +32,13 @@
     "schoolAccessRouter|GET|/context",
     "schoolAccessRouter|GET|/contracts/:schoolId",
     "schoolAccessRouter|PUT|/contracts/:schoolId",
+    "schoolAccessRouter|GET|/director-workspace",
+    "schoolAccessRouter|GET|/director/schools/:schoolId/overview-access",
+    "schoolAccessRouter|GET|/directors/:schoolId",
+    "schoolAccessRouter|PUT|/directors/:schoolId/:userId",
     "schoolAccessRouter|GET|/entitlements/:schoolId/:module",
-    "schoolAccessRouter|PUT|/memberships"
+    "schoolAccessRouter|PUT|/memberships",
+    "schoolAccessRouter|GET|/teacher-workspace"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",

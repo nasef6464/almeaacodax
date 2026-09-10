@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart, Megaphone, Quote, Sparkles, Trophy, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart, Megaphone, Quote, Sparkles, Trophy, X, ChevronLeft, ChevronRight, Clock, Check, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -8,6 +8,8 @@ import { HomepageSettings } from '../types';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
 import { resolveIconComponent } from '../dashboards/admin/PathsManager/pathDisplayPresentation';
+import { DEFAULT_PLATFORM_ARTICLES, type PlatformArticle } from '../data/defaultArticles';
+import { ArticleReaderModal } from '../components/ArticleReaderModal';
 
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.jpg?v=20260512';
@@ -156,6 +158,8 @@ export const Landing: React.FC = () => {
     const { paths, courses, quizzes, questions, lessons, subjects, user, announcementAds } = useStore();
     const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>(defaultHomepageSettings);
     const [dismissedBannerAdId, setDismissedBannerAdId] = useState<string | null>(null);
+    const [selectedArticle, setSelectedArticle] = useState<PlatformArticle | null>(null);
+    const [isArticleModalOpen, setIsArticleModalOpen] = useState(false);
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
 
     useEffect(() => {
@@ -266,6 +270,36 @@ export const Landing: React.FC = () => {
 
         return publishedArticleLessons.slice(0, 3);
     }, [homepageSettings.featuredArticleLessonIds, publishedArticleLessons]);
+
+    const displayArticles = useMemo<PlatformArticle[]>(() => {
+        if (featuredArticleLessons.length > 0) {
+            return featuredArticleLessons.map((lesson) => {
+                const subject = subjects.find((item) => item.id === lesson.subjectId);
+                const path = paths.find((item) => item.id === lesson.pathId);
+                const summary =
+                    lesson.description ||
+                    lesson.content?.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 160) ||
+                    'شرح مبسط ومراجعة سريعة تساعدك على التقدم داخل المسار.';
+                return {
+                    id: lesson.id,
+                    title: lesson.title,
+                    summary,
+                    category: subject?.name || path?.name || 'مقال تعليمي',
+                    categoryColor: 'indigo',
+                    readTime: '5 دقائق',
+                    authorName: 'فريق منصة المئة الأكاديمي',
+                    authorRole: 'محتوى معتمد',
+                    date: 'محتوى حديث',
+                    tags: ['تأسيس', 'مراجعة'],
+                    content: [lesson.content || summary],
+                    highlights: ['مراجعة شاملة مدعومة بالأمثلة', 'ربط مباشر بمسار التعلم في المنصة'],
+                    keyTakeaway: summary,
+                    trackId: lesson.pathId,
+                };
+            });
+        }
+        return DEFAULT_PLATFORM_ARTICLES.slice(0, 3);
+    }, [featuredArticleLessons, paths, subjects]);
 
     const totalStudents = publishedCourses.reduce((sum, course) => sum + getCourseAudienceCount(course), 0);
     const totalQA = publishedCourses.reduce((sum, course) => sum + (course.qa?.length || 0), 0);
@@ -780,102 +814,166 @@ export const Landing: React.FC = () => {
                 </div>
             </section>
 
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-slate-50 dark:bg-slate-900/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="text-right">
-                            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">{sectionTexts.featuredArticlesTitle}</h2>
-                            <p className="text-gray-500">{sectionTexts.featuredArticlesSubtitle}</p>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900 text-indigo-700 dark:text-indigo-300 text-xs font-black mb-3">
+                                <BookOpen size={13} />
+                                <span>مقالات واستراتيجيات قياس</span>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-2">{sectionTexts.featuredArticlesTitle}</h2>
+                            <p className="text-gray-500 dark:text-gray-400">{sectionTexts.featuredArticlesSubtitle}</p>
                         </div>
-                        <Link to="/blog" className="self-start sm:self-auto text-indigo-600 font-bold hover:underline flex items-center gap-2">
-                            استعرض المقالات <ArrowDown className="transform rotate-90" size={16} />
+                        <Link to="/blog" className="self-start sm:self-auto text-indigo-600 dark:text-indigo-400 font-black hover:underline flex items-center gap-2 group">
+                            استعرض جميع المقالات (10 مقالات) <ArrowDown className="transform rotate-90 group-hover:translate-x-[-3px] transition-transform" size={16} />
                         </Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {featuredArticleLessons.map((lesson) => {
-                            const subject = subjects.find((item) => item.id === lesson.subjectId);
-                            const path = paths.find((item) => item.id === lesson.pathId);
-                            const articleLink =
-                                lesson.pathId && lesson.subjectId ? `/category/${lesson.pathId}?subject=${lesson.subjectId}&tab=skills` : '/blog';
-                            const articleSummary =
-                                lesson.description ||
-                                lesson.content?.replace(/\s+/g, ' ').slice(0, 150) ||
-                                'شرح مبسط ومراجعة سريعة تساعدك على التقدم داخل المسار.';
-
-                            return (
-                                <Link key={`farticle-${lesson.id}`} to={articleLink} className="group">
-                                    <Card className="h-full border border-gray-100 hover:shadow-xl transition-all duration-300 rounded-3xl group-hover:-translate-y-1">
-                                        <div className="p-6 text-right h-full flex flex-col">
-                                            <div className="flex items-center justify-between gap-3 mb-4">
-                                                <span className="inline-flex items-center gap-2 rounded-full bg-indigo-50 text-indigo-700 px-3 py-1 text-xs font-bold">
-                                                    <BookOpen size={14} />
-                                                    {subject?.name || path?.name || 'شرح عام'}
-                                                </span>
-                                                <span className="text-[11px] text-gray-400 font-bold">
-                                                    {path?.name || 'مسار عام'}
-                                                </span>
-                                            </div>
-
-                                            <h3 className="font-bold text-gray-900 mb-3 leading-8 group-hover:text-indigo-600 transition-colors line-clamp-2">
-                                                {lesson.title}
-                                            </h3>
-
-                                            <p className="text-sm text-gray-600 leading-7 line-clamp-4 flex-1">
-                                                {articleSummary}
-                                            </p>
-
-                                            <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
-                                                <span className="text-xs text-gray-400 font-medium">
-                                                    {lesson.type === 'text' ? 'مقالة تعليمية' : 'شرح نصي'}
-                                                </span>
-                                                <span className="text-indigo-600 font-bold text-sm">اقرأ الآن</span>
-                                            </div>
+                        {displayArticles.map((article) => (
+                            <div
+                                key={`farticle-${article.id}`}
+                                onClick={() => {
+                                    setSelectedArticle(article);
+                                    setIsArticleModalOpen(true);
+                                }}
+                                className="group cursor-pointer"
+                            >
+                                <Card className="h-full border border-gray-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-2xl transition-all duration-300 rounded-3xl group-hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden bg-white dark:bg-slate-900">
+                                    <div className="p-6 text-right h-full flex flex-col">
+                                        <div className="flex items-center justify-between gap-2 mb-4">
+                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-3 py-1 text-xs font-bold">
+                                                <BookOpen size={12} />
+                                                {article.category}
+                                            </span>
+                                            <span className="text-[11px] text-gray-400 font-bold flex items-center gap-1">
+                                                <Clock size={12} />
+                                                {article.readTime}
+                                            </span>
                                         </div>
-                                    </Card>
-                                </Link>
-                            );
-                        })}
-                    </div>
 
-                    {featuredArticleLessons.length === 0 && (
-                        <div className="text-center py-12 text-gray-500">لا توجد مقالات أو شروحات نصية منشورة حاليًا.</div>
-                    )}
+                                        <h3 className="font-black text-gray-900 dark:text-white mb-3 text-lg leading-8 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
+                                            {article.title}
+                                        </h3>
+
+                                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3 flex-1 mb-4">
+                                            {article.summary}
+                                        </p>
+
+                                        <div className="pt-4 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between">
+                                            <div className="text-right">
+                                                <span className="block text-xs font-black text-gray-800 dark:text-gray-200">{article.authorName}</span>
+                                                <span className="block text-[10px] text-gray-400">{article.authorRole}</span>
+                                            </div>
+                                            <span className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-black text-xs group-hover:translate-x-[-2px] transition-transform">
+                                                اقرأ الآن
+                                                <ArrowLeft size={14} />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Card>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
-            <section id="why-choose" className="py-20 bg-white scroll-mt-16">
+            <section id="why-choose" className="py-20 bg-white dark:bg-slate-900 scroll-mt-16 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-                        <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <FeatureCard icon={<Video className="text-purple-500" size={20} />} title="شرح مباشر وتفاعلي" description="احضر الحصص وتابع الشرح بخطوات منظمة تناسب مستواك." />
-                            <FeatureCard icon={<Users className="text-blue-500" size={20} />} title="نخبة المعلمين" description="معلمون ومتخصصون في القدرات والتحصيلي بخبرة عملية وأكاديمية." />
-                            <FeatureCard icon={<BarChart className="text-emerald-500" size={20} />} title="تحليل الأداء" description="تقارير دقيقة توضح نقاط قوتك وضعفك لتعرف أين تبدأ." />
-                            <FeatureCard icon={<ShoppingCart className="text-indigo-500" size={20} />} title="باقات واضحة" description="باقات للمسارات والمدارس والمجموعات، حتى يعرف الطالب ما الذي يفتحه كل اشتراك." />
-                            <FeatureCard icon={<Users className="text-cyan-500" size={20} />} title="مدارس ومجموعات" description="لوحات متابعة للمشرفين والمدارس تكشف الفصول المتقدمة والطلاب الذين يحتاجون تدخلًا." />
-                            <FeatureCard icon={<Book className="text-amber-500" size={20} />} title="ملفات ومراجعات" description="ملخصات ومراجعات داعمة تساعدك قبل الاختبار وبعد التدريب." />
-                        </div>
-                        <div className="lg:w-1/2 text-right">
-                            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">{sectionTexts.whyChooseTitle}</h2>
-                            <p className="text-base sm:text-lg text-gray-600 mb-8 leading-relaxed">{sectionTexts.whyChooseDescription}</p>
-                            <ul className="space-y-4 mb-8">
+                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                        {/* Right: compelling SaaS text & trust metrics */}
+                        <div className="lg:w-5/12 text-right">
+                            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs font-black mb-4">
+                                <Sparkles size={14} className="text-amber-500" />
+                                <span>تجربة تعليمية استثنائية متكاملة</span>
+                            </div>
+                            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white mb-5 leading-tight">{sectionTexts.whyChooseTitle}</h2>
+                            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">{sectionTexts.whyChooseDescription}</p>
+
+                            {/* Trust metrics */}
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                                    <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 mb-0.5">+25 درجة</div>
+                                    <div className="text-xs font-bold text-gray-500 dark:text-gray-400">متوسط ارتفاع درجات الطلاب في أول شهر</div>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                                    <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mb-0.5">98.4%</div>
+                                    <div className="text-xs font-bold text-gray-500 dark:text-gray-400">نسبة رضا المشتركين والمدارس الشريكة</div>
+                                </div>
+                            </div>
+
+                            <ul className="space-y-3.5 mb-8">
                                 <li className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><CheckCircle size={14} /></div>
-                                    <span className="text-gray-700 font-medium">تحديثات مستمرة للأسئلة والتدريب</span>
+                                    <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 shrink-0"><Check size={14} /></div>
+                                    <span className="text-gray-700 dark:text-gray-200 font-bold text-sm">تحديث أسبوعي مستمر لبنوك الأسئلة وفق نماذج قياس الحديثة</span>
                                 </li>
                                 <li className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><CheckCircle size={14} /></div>
-                                    <span className="text-gray-700 font-medium">مسارات تأسيس وتدريب ومراجعة في مكان واحد</span>
+                                    <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 shrink-0"><Check size={14} /></div>
+                                    <span className="text-gray-700 dark:text-gray-200 font-bold text-sm">مسارات تأسيس وتدريب ومحاكاة واختبارات قياس في منصة واحدة</span>
                                 </li>
                                 <li className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><CheckCircle size={14} /></div>
-                                    <span className="text-gray-700 font-medium">دعم فني وأكاديمي متواصل</span>
+                                    <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 shrink-0"><Check size={14} /></div>
+                                    <span className="text-gray-700 dark:text-gray-200 font-bold text-sm">دعم فني وأكاديمي على مدار الساعة مع نخبة المدربين</span>
                                 </li>
                             </ul>
-                            <Link to="/dashboard" className="inline-flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-800 group">
-                                اكتشف المزيد
-                                <ArrowDown className="transform rotate-90 group-hover:translate-x-[-5px] transition-transform" size={20} />
+
+                            <Link to="/dashboard" className="inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm transition-all shadow-lg shadow-indigo-600/25 group">
+                                <span>ابدأ رحلة التفوق الآن</span>
+                                <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
                             </Link>
+                        </div>
+
+                        {/* Left: 6 High-Conversion Feature Cards */}
+                        <div className="lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                            <FeatureCard
+                                icon={<Video size={22} className="text-purple-600 dark:text-purple-400" />}
+                                iconBg="bg-purple-100 dark:bg-purple-950/80 border-purple-200 dark:border-purple-800"
+                                badge="تفاعلي 100%"
+                                badgeColor="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
+                                title="شرح مباشر وتفاعلي"
+                                description="حصص حية ومسجلة بتقنيات تفاعلية وخطوات تأسيس منهجية تناسب كافة المستويات."
+                            />
+                            <FeatureCard
+                                icon={<Users size={22} className="text-blue-600 dark:text-blue-400" />}
+                                iconBg="bg-blue-100 dark:bg-blue-950/80 border-blue-200 dark:border-blue-800"
+                                badge="نخبة معتمدة"
+                                badgeColor="bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                                title="أفضل خبراء القياس"
+                                description="معلمون ومستشارون متخصصون في اختبارات قياس والتحصيلي بخبرة تزيد عن 15 عاماً."
+                            />
+                            <FeatureCard
+                                icon={<BarChart size={22} className="text-emerald-600 dark:text-emerald-400" />}
+                                iconBg="bg-emerald-100 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800"
+                                badge="ذكاء اصطناعي"
+                                badgeColor="bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                                title="تحليل الأداء"
+                                description="لوحة قياس وتقارير دقيقة تشخص ثغراتك وتحدد بالضبط ما يحتاج لتركيزك دون إضاعة دقيقة واحدة."
+                            />
+                            <FeatureCard
+                                icon={<ShoppingCart size={22} className="text-indigo-600 dark:text-indigo-400" />}
+                                iconBg="bg-indigo-100 dark:bg-indigo-950/80 border-indigo-200 dark:border-indigo-800"
+                                badge="اشتراك شفاف"
+                                badgeColor="bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                                title="باقات وعروض واضحة"
+                                description="باقات مخصصة للطلاب والمدارس والمجموعات توضح كل ميزة تفتحها دون أي تكاليف خفية."
+                            />
+                            <FeatureCard
+                                icon={<Award size={22} className="text-cyan-600 dark:text-cyan-400" />}
+                                iconBg="bg-cyan-100 dark:bg-cyan-950/80 border-cyan-200 dark:border-cyan-800"
+                                badge="حلول مؤسسية"
+                                badgeColor="bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300"
+                                title="مدارس وفصول ذكية"
+                                description="مساحة عمل متكاملة للمدارس والمشرفين لمتابعة تقدم الفصول والتدخل العلاجي السريع."
+                            />
+                            <FeatureCard
+                                icon={<Book size={22} className="text-amber-600 dark:text-amber-400" />}
+                                iconBg="bg-amber-100 dark:bg-amber-950/80 border-amber-200 dark:border-amber-800"
+                                badge="شاملة ومحدثة"
+                                badgeColor="bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                title="ملفات وتجميعات حصرية"
+                                description="خرائط مفاهيم وملخصات سريعة واختبارات محاكية تحاكي بيئة اختبار قياس الفعلية."
+                            />
                         </div>
                     </div>
                 </div>
@@ -898,9 +996,14 @@ export const Landing: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                <div className="absolute top-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl pointer-events-none" />
             </section>
+
+            <ArticleReaderModal
+                article={selectedArticle}
+                isOpen={isArticleModalOpen}
+                onClose={() => setIsArticleModalOpen(false)}
+            />
         </div>
     );
 };
@@ -1003,14 +1106,36 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
     );
 };
 
-const FeatureCard = ({ icon, title, description }: any) => (
-    <Card className="p-5 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow flex flex-col gap-3 h-full">
-        <div className="w-9 h-9 bg-gray-50 rounded-xl flex items-center justify-center mb-2">
-            {icon}
+interface FeatureCardProps {
+    icon: React.ReactNode;
+    iconBg?: string;
+    badge?: string;
+    badgeColor?: string;
+    title: string;
+    description: string;
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, iconBg, badge, badgeColor, title, description }) => (
+    <div className="group relative bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 p-5 sm:p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl flex flex-col justify-between h-full">
+        <div>
+            <div className="flex items-center justify-between gap-3 mb-4">
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-xs transition-transform duration-300 group-hover:scale-110 ${iconBg || 'bg-gray-50 border-gray-100'}`}>
+                    {icon}
+                </div>
+                {badge && (
+                    <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border border-current/20 ${badgeColor || 'bg-slate-100 text-slate-700'}`}>
+                        {badge}
+                    </span>
+                )}
+            </div>
+            <h3 className="font-black text-gray-900 dark:text-white text-base sm:text-lg mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                {title}
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-relaxed font-normal">
+                {description}
+            </p>
         </div>
-        <h3 className="font-bold text-gray-900 text-base sm:text-lg">{title}</h3>
-        <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
-    </Card>
+    </div>
 );
 
 const TestimonialCard = ({ name, degree, text, image }: any) => (
