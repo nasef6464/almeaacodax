@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart, Megaphone, Quote, Sparkles, Trophy, X } from 'lucide-react';
+import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart, Megaphone, Quote, Sparkles, Trophy, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -60,6 +60,9 @@ const defaultHomepageSettings: HomepageSettings = {
         tertiaryCtaColor: '',
         imageUrl: DEFAULT_HERO_BOY_IMAGE,
         imageAlt: 'طالب يستخدم منصة المئة',
+        galleryImages: [],
+        autoRotateImages: true,
+        rotateIntervalSeconds: 6,
         floatingCardTitle: 'منصة المئة',
         floatingCardSubtitle: 'مستواك: متقدم',
         floatingCardProgressLabel: 'التقدم',
@@ -353,6 +356,35 @@ export const Landing: React.FC = () => {
             .sort((a, b) => (a.priority || 0) - (b.priority || 0) || (b.createdAt || 0) - (a.createdAt || 0))[0] || null;
     }, [announcementAds, dismissedBannerAdId]);
 
+    const heroGallery = useMemo(() => {
+        const list: { url: string; alt: string }[] = [];
+        const primaryUrl = resolveHomepageHeroImage(homepageSettings.hero.imageUrl || defaultHomepageSettings.hero.imageUrl);
+        const primaryAlt = homepageSettings.hero.imageAlt || defaultHomepageSettings.hero.imageAlt || 'طالب يستخدم منصة المئة';
+        list.push({ url: primaryUrl, alt: primaryAlt });
+
+        if (Array.isArray(homepageSettings.hero.galleryImages)) {
+            homepageSettings.hero.galleryImages.forEach((img, idx) => {
+                if (img && typeof img === 'string' && img.trim() && img !== primaryUrl) {
+                    list.push({ url: img, alt: `${primaryAlt} - ${idx + 2}` });
+                }
+            });
+        }
+        return list;
+    }, [homepageSettings.hero.imageUrl, homepageSettings.hero.imageAlt, homepageSettings.hero.galleryImages]);
+
+    const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+    const [isHeroHovered, setIsHeroHovered] = useState(false);
+    const autoRotate = homepageSettings.hero.autoRotateImages !== false && heroGallery.length > 1;
+    const rotateInterval = Math.max(3, Math.min(60, Number(homepageSettings.hero.rotateIntervalSeconds) || 6));
+
+    useEffect(() => {
+        if (!autoRotate || isHeroHovered) return;
+        const timer = setInterval(() => {
+            setCurrentHeroIndex((prev) => (prev + 1) % heroGallery.length);
+        }, rotateInterval * 1000);
+        return () => clearInterval(timer);
+    }, [autoRotate, isHeroHovered, heroGallery.length, rotateInterval]);
+
     return (
         <div className={`bg-white ${bodyFontClass}`}>
             <section className="relative bg-gradient-to-b from-indigo-50/70 via-white to-white pt-12 pb-24 overflow-hidden">
@@ -471,11 +503,61 @@ export const Landing: React.FC = () => {
 
                         <div className="lg:w-1/2 relative w-full">
                             <div className="relative w-full max-w-lg mx-auto">
-                                <img
-                                    src={resolveHomepageHeroImage(homepageSettings.hero.imageUrl || defaultHomepageSettings.hero.imageUrl)}
-                                    alt={homepageSettings.hero.imageAlt || defaultHomepageSettings.hero.imageAlt || 'طالب يستخدم منصة المئة'}
-                                    className="w-full h-auto rounded-3xl shadow-2xl border-4 border-white relative z-10 transform transition-transform hover:scale-[1.01]"
-                                />
+                                <div
+                                    className="relative w-full aspect-[4/3] sm:aspect-[3/2] rounded-3xl shadow-2xl border-4 border-white overflow-hidden bg-slate-900/5 group select-none"
+                                    onMouseEnter={() => setIsHeroHovered(true)}
+                                    onMouseLeave={() => setIsHeroHovered(false)}
+                                >
+                                    {heroGallery.map((imgItem, idx) => {
+                                        const isActive = idx === (currentHeroIndex % heroGallery.length);
+                                        return (
+                                            <img
+                                                key={`hero-img-${idx}`}
+                                                src={resolveHomepageHeroImage(imgItem.url)}
+                                                alt={imgItem.alt || homepageSettings.hero.imageAlt || defaultHomepageSettings.hero.imageAlt || 'طالب يستخدم منصة المئة'}
+                                                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${
+                                                    isActive ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-105 pointer-events-none z-0'
+                                                }`}
+                                            />
+                                        );
+                                    })}
+
+                                    {heroGallery.length > 1 && (
+                                        <>
+                                            <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-slate-950/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-lg">
+                                                {heroGallery.map((_, idx) => (
+                                                    <button
+                                                        key={`hero-dot-${idx}`}
+                                                        type="button"
+                                                        onClick={() => setCurrentHeroIndex(idx)}
+                                                        className={`transition-all duration-300 rounded-full ${
+                                                            idx === (currentHeroIndex % heroGallery.length)
+                                                                ? 'w-6 h-1.5 bg-amber-400 shadow-xs'
+                                                                : 'w-1.5 h-1.5 bg-white/60 hover:bg-white'
+                                                        }`}
+                                                        title={`صورة ${idx + 1}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setCurrentHeroIndex((prev) => (prev - 1 + heroGallery.length) % heroGallery.length)}
+                                                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-slate-950/50 hover:bg-slate-950/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all backdrop-blur-xs border border-white/20 shadow-md"
+                                                title="الصورة السابقة"
+                                            >
+                                                <ChevronRight size={16} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setCurrentHeroIndex((prev) => (prev + 1) % heroGallery.length)}
+                                                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-slate-950/50 hover:bg-slate-950/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all backdrop-blur-xs border border-white/20 shadow-md"
+                                                title="الصورة التالية"
+                                            >
+                                                <ChevronLeft size={16} />
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
 
                                 {/* Floating Rating Badge Card */}
                                 <a
