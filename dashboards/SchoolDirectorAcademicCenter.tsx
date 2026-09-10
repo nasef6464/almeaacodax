@@ -28,6 +28,7 @@ export const SchoolDirectorAcademicCenter: React.FC<{
   const [assessment, setAssessment] = useState({
     title: "",
     classId: classes[0]?.classId || "",
+    pathId: "",
     subjectId: "",
     questionIds: "",
   });
@@ -72,6 +73,7 @@ export const SchoolDirectorAcademicCenter: React.FC<{
     setAssessment({
       title: "",
       classId: classes[0]?.classId || "",
+      pathId: "",
       subjectId: "",
       questionIds: "",
     });
@@ -178,6 +180,14 @@ export const SchoolDirectorAcademicCenter: React.FC<{
                 ))}
               </select>
               <input
+                value={assessment.pathId}
+                onChange={(e) =>
+                  setAssessment({ ...assessment, pathId: e.target.value })
+                }
+                placeholder="معرّف المسار التعليمي"
+                className="rounded-xl border bg-white px-3 py-2 text-sm"
+              />
+              <input
                 value={assessment.questionIds}
                 onChange={(e) =>
                   setAssessment({ ...assessment, questionIds: e.target.value })
@@ -186,7 +196,13 @@ export const SchoolDirectorAcademicCenter: React.FC<{
                 className="rounded-xl border bg-white px-3 py-2 text-sm"
               />
               <button
-                disabled={pending === "assessment"}
+                disabled={
+                  pending === "assessment" ||
+                  !assessment.title.trim() ||
+                  !assessment.classId ||
+                  !assessment.pathId.trim() ||
+                  !assessment.questionIds.trim()
+                }
                 onClick={() =>
                   void run(
                     "assessment",

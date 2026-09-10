@@ -510,7 +510,7 @@ async function runSchoolDirectorAcademicClosureJourney(csrf: CsrfContext) {
   const grantSource = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, { method: "PUT", token: tokens.get("admin"), csrf, body: { status: "active", permissions: academicPermissions } });
   expectStatus("admin grants academic director capabilities", grantSource, 200);
   const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
-  const assessment = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { title: "Director School Assessment", classId, subjectId: ASSESSMENT_SUBJECT_ID, questionIds: [questionId] } });
+  const assessment = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { title: "Director School Assessment", classId, pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, questionIds: [questionId] } });
   expectStatus("director creates school assessment from approved bank", assessment, 201);
   const assessments = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
   expectStatus("director lists school-bounded assessments", assessments, 200);
