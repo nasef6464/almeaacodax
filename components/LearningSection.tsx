@@ -1010,8 +1010,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100/80 gap-2 w-full">
                                         <div className="flex items-center gap-2 text-xs font-bold">
                                             <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
-                                                skill.isLocked 
-                                                    ? 'bg-amber-50 text-amber-700' 
+                                                skill.isLocked
+                                                    ? 'bg-amber-50 text-amber-700'
                                                     : 'bg-emerald-50 text-emerald-700'
                                             }`}>
                                                 {skill.isLocked ? 'ضمن باقة' : 'مجاني'}

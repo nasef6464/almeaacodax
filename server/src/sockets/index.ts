@@ -5,9 +5,12 @@ import { env } from "../config/env.js";
 import { createRedisClient, createRedisDuplicate, isRedisConfigured } from "../config/redis.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
+import { setClassroomSocketServer } from "./classroomEvents.js";
 
 const configuredSocketOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
   .map((origin) => origin.trim())
@@ -39,6 +42,7 @@ export function createSocketServer(server: HttpServer) {
       credentials: true,
     },
   });
+  setClassroomSocketServer(io);
 
   io.use(async (socket, next) => {
     try {
@@ -48,10 +52,12 @@ export function createSocketServer(server: HttpServer) {
       const currentUser = await UserModel.findById(tokenUser.id).select("id _id role isActive schoolId groupIds").lean();
       if (!currentUser || currentUser.isActive === false) return next(new Error("Authentication required"));
 
+      const explicitMemberships = await SchoolMembershipModel.find({ userId: String((currentUser as any).id || currentUser._id), status: "active" }).select("schoolId").lean();
       socket.data.authUser = {
         id: String((currentUser as any).id || currentUser._id),
         role: String(currentUser.role),
         schoolId: currentUser.schoolId ? String(currentUser.schoolId) : null,
+        schoolIds: explicitMemberships.map((membership: any) => String(membership.schoolId)),
         groupIds: Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [],
       };
       return next();
@@ -77,6 +83,10 @@ export function createSocketServer(server: HttpServer) {
         async findDirectlySupervisedGroupIds(userId) {
           const groups = await GroupModel.find({ supervisorIds: userId }).select("id _id").lean();
           return groups.map((group: any) => String(group.id || group._id));
+        },
+        async findClassroomSessionScope(sessionId) {
+          const session = await ClassroomSessionModel.findById(sessionId).select("schoolId classId teacherId").lean() as any;
+          return session ? { schoolId: String(session.schoolId), classId: String(session.classId), teacherId: String(session.teacherId) } : null;
         },
       });
 

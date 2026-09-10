@@ -47,6 +47,7 @@ import { buildQuizSubmissionSnapshot } from "../modules/quizzes/application/quiz
 import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/quizSubmissionAnswerReview.js";
 import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
 import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
+import { resolveQuizSubmissionLearningContext } from "../modules/quizzes/application/quizSubmissionLearningContext.js";
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
@@ -2021,6 +2022,11 @@ quizRouter.post(
     }
 
     const { attemptNumber, submissionKey } = attemptState;
+    const learningContext = await resolveQuizSubmissionLearningContext({
+      quiz,
+      learnerId: userId,
+      learnerSchoolId: authUser.schoolId,
+    });
     const questionIds = getQuizQuestionIds(quiz);
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
     const questionById = buildQuizQuestionLookup(questions);
@@ -2086,6 +2092,7 @@ quizRouter.post(
           passed,
           attemptNumber,
           source: payload.source || "",
+          ...learningContext,
           totalQuestions,
           correctAnswers,
           wrongAnswers,

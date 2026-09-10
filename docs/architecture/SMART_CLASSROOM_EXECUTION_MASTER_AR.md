@@ -493,6 +493,8 @@ Integration CI نجحت. بوابة Deep E2E ألغيت عند حدّها الز
 
 Dependency: `SC-00` closed.
 
+الحالة: `CLOSED / VERIFIED` على `cd1cdb40244690ba85ee468f4c95505d3990f4f4`.
+
 - `SchoolMembership` schema/indexes.
 - fail-closed resolver يجمع الحالي والجديد دون توسيع صلاحية.
 - inventory read-only + parity contract.
@@ -503,6 +505,8 @@ Exit: الحساب يرى Platform/School contexts الصحيحة، وكل legac
 ### `SC-01B` — Teaching Assignment + Minimal Entitlement
 
 Dependency: `SC-01A` closed.
+
+الحالة: `CLOSED / VERIFIED` ضمن G1؛ contract/assignment/entitlement resolver وadmin controls موجودة، وBackend Integration CI نجحت.
 
 - `TeachingAssignment`.
 - minimal `SchoolContract` modules/validity.
@@ -544,6 +548,10 @@ Exit: المشرف يرى نطاقه فقط ولا تتغير إمكانيات �
 
 Dependency: `SC-03` closed.
 
+الحالة: `CLOSED / VERIFIED` على `dbbb4bec12073ea3cf4c5fa0ad2a7588b766cd90`؛ Backend Integration CI
+[34413934984](https://github.com/nasef6464/almeaacodax/actions/runs/34413934984) تثبت الفصل
+بين المصادر، وعدم تسرب نتيجة مدرسة أخرى، ورفض الطالب لقراءة Intelligence المشرف.
+
 - `QuizResult.learningContext` للأحداث الجديدة.
 - platform vs school side-by-side.
 - skill heatmap وweak students وbounded trends.
@@ -555,6 +563,8 @@ Exit: لا blended score، وlegacy unknown ظاهر بصدق، وcross-school r
 
 Dependency: `SC-04` closed.
 
+الحالة: `CLOSED / VERIFIED` ضمن G5 على `684c6912c883f3acd199d7491d57791d2fba1abc`؛ التدخل الأول يعيد استخدام StudyPlan القائم ويثبت scope وentitlement وbaseline.
+
 - `SchoolIntervention` minimal lifecycle.
 - تدريب، اختبار علاجي، محتوى/مسار، واجب، أو دعم.
 - reuse existing targeting/access/live lesson infrastructure.
@@ -564,6 +574,8 @@ Exit: Weak Skill → Target Students → Assigned Action مثبت end-to-end.
 ### `SC-05B` — Measure Improvement
 
 Dependency: `SC-05A` closed.
+
+الحالة: `CLOSED / VERIFIED` ضمن G5؛ follow-up يعاد من ClassroomResponse الخام، وminimum evidence قابل للضبط قبل أي وصف للنتيجة بأنها measured.
 
 - baseline/follow-up windows.
 - before/after delta مع evidence counts.

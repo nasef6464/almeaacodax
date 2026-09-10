@@ -6,6 +6,9 @@ type QuizSubmissionResultDocumentInput = {
   passed: boolean;
   attemptNumber: number;
   source: string;
+  learningContext: "platform_self_study" | "school_assessment" | "legacy_unknown";
+  schoolId?: string;
+  classId?: string;
   totalQuestions: number;
   correctAnswers: number;
   wrongAnswers: number;

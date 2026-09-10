@@ -38,7 +38,7 @@ const API_BASE_URL = (
   isStagingEnv ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
 ).replace(/\/$/, "");
 
-type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface RequestOptions {
   method?: HttpMethod;
@@ -717,6 +717,28 @@ export const api = {
       method: "DELETE",
       token,
     }),
+  getSchoolContract: (schoolId: string, token?: string | null) =>
+    request<{ contract: { status: string; modules: string[] } | null }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { token }),
+  updateSchoolContract: (schoolId: string, payload: unknown, token?: string | null) =>
+    request<{ contract: { status: string; modules: string[] } }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { method: "PUT", body: payload, token }),
+  updateTeachingAssignment: (payload: unknown, token?: string | null) =>
+    request<unknown>("/school-access/assignments", { method: "PUT", body: payload, token }),
+  createClassroomSession: (payload: { schoolId: string; classId: string; questionIds: string[] }, token?: string | null) => request<{ sessionId: string; pin: string; status: string }>("/classroom/sessions", { method: "POST", body: payload, token }),
+  getClassroomQuestions: (schoolId: string, token?: string | null) => request<{ questions: Array<{ questionId: string; text: string; options: string[]; type: string }> }>(`/classroom/questions?schoolId=${encodeURIComponent(schoolId)}`, { token }),
+  joinClassroomSession: (id: string, pin: string, token?: string | null) => request<{ joined: boolean }>(`/classroom/sessions/${id}/join`, { method: "POST", body: { pin }, token }),
+  getClassroomCurrentQuestion: (id: string, token?: string | null) => request<any>(`/classroom/sessions/${id}/current`, { token }),
+  answerClassroomQuestion: (id: string, questionId: string, selectedOptionIndex: number, token?: string | null) => request<any>(`/classroom/sessions/${id}/answers/${questionId}`, { method: "PUT", body: { selectedOptionIndex }, token }),
+  publishClassroomQuestion: (id: string, index: number, token?: string | null) => request<any>(`/classroom/sessions/${id}/publish/${index}`, { method: "POST", token }),
+  endClassroomSession: (id: string, token?: string | null) => request<any>(`/classroom/sessions/${id}/end`, { method: "POST", token }),
+  getClassroomAggregate: (id: string, token?: string | null) => request<any>(`/classroom/sessions/${id}/aggregate`, { token }),
+  getSupervisorClassroomToday: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/today", { token, cache: "no-store" }),
+  getSupervisorClassroomHistory: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/history", { token, cache: "no-store" }),
+  getSupervisorClassroomTeachers: (token?: string | null) => request<{ teachers: any[] }>("/classroom/supervisor/teachers", { token, cache: "no-store" }),
+  getSupervisorClassroomIntelligence: (token?: string | null) => request<{ intelligence: any }>("/classroom/supervisor/intelligence", { token, cache: "no-store" }),
+  getSupervisorInterventions: (token?: string | null) => request<{ interventions: any[] }>("/classroom/supervisor/interventions", { token, cache: "no-store" }),
+  createSupervisorIntervention: (payload: unknown, token?: string | null) => request<any>("/classroom/supervisor/interventions", { method: "POST", body: payload, token }),
+  getSupervisorInterventionOutcome: (id: string, token?: string | null) => request<any>(`/classroom/supervisor/interventions/${encodeURIComponent(id)}/outcome`, { token, cache: "no-store" }),
+  getSupervisorClassroomReport: (id: string, token?: string | null) => request<{ report: any }>(`/classroom/supervisor/sessions/${encodeURIComponent(id)}/report`, { token, cache: "no-store" }),
   ...createAnnouncementAdsApi(request),
   ...createAccessCodesApi(request),
   ...createStudyPlansApi(request),

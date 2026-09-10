@@ -1,8 +1,8 @@
 # ALMEAA School OS + Smart Classroom — سجل الأهداف التنفيذي
 
-> الحالة: `G0 CLOSED / VERIFIED WITH FOCUSED CI`
+> الحالة: `G5 CLOSED / VERIFIED`
 > آخر مراجعة: 2026-09-09
-> Current Goal: `G1 — School Identity & Commercial Access`
+> Current Goal: `G6 — Controlled Pilot & Commercial Limits` (`BLOCKED — يحتاج تفويض بيئة وبيانات Pilot`)
 > Runtime truth عند المراجعة: `main@9cf72176059e09466335f6d6ff20b51b43969e61`؛ يجب التحقق من HEAD عند البدء.
 
 هذا الملف هو سجل الأهداف المختصر القابل للاسترجاع. القرار المعماري المفصل موجود في
@@ -30,11 +30,11 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | Goal | Checkpoints | النتيجة القابلة للتسليم | Exit Evidence | Status |
 |---|---|---|---|---|
 | `G0 — Secure the Reused Foundation` | `SC-00` | تأمين Barcode/bookings/Socket التي سيعاد استخدامها وتثبيت فصل التكويني عن الرسمي. | School A/Teacher A لا يقرأ أو يتحكم في School B، وunauthorized room join مرفوض، والـpublic Barcode baseline سليم، وADR معتمد. | `CLOSED / VERIFIED WITH FOCUSED CI` |
-| `G1 — School Identity & Commercial Access` | `SC-01A + SC-01B` | الحساب الواحد يملك School context صحيحًا، والمعلم مقيد بفصل/مادة، والمدرسة مقيدة بوحدات العقد من الخادم. | legacy parity بلا توسيع صلاحيات، ورفض assignment/module غير المسموح في API وSocket، مع controls إدارية بسيطة. | `NOT STARTED` |
-| `G2 — Usable Smart Classroom` | `SC-02A + SC-02B` | رحلة واحدة تعمل: معلم يختار 1–10 أسئلة، يبدأ جلسة، طلاب مصرحون يدخلون، يجيبون، ثم يصدر تقرير ثابت عبر Teacher/Projector/Student surfaces. | HTTP + authorized realtime + reconnect + desktop/projector/mobile E2E بمدرستين، وتصحيح خادمي وإجابات idempotent بلا تسريب answer. | `NOT STARTED` |
-| `G3 — Supervisor Operations & Reports` | `SC-03` | الفصول الذكية اليوم، تاريخ الجلسات، وتقارير session/class/teacher داخل لوحة المشرف الحالية. | المشرف يرى نطاقه فقط، واللوحة القديمة لم تفقد قدراتها، وPDF/Excel يخرجان من read model واحد. | `NOT STARTED` |
-| `G4 — School Intelligence` | `SC-04` | School وPlatform analytics جنبًا إلى جنب مع skill heatmap وweak students وtrends محدودة. | لا blended score، وlegacy context يظهر بصدق، وcross-school reads مرفوضة، ولا rollup دون benchmark. | `NOT STARTED` |
-| `G5 — Intervention & Proven Improvement` | `SC-05A + SC-05B` | Weak Skill → Target Students → Action → Follow-up → Before/After improvement. | تدخل فعلي من نوع تدريب/اختبار/محتوى/مسار/واجب/دعم، مع evidence counts وthreshold قابل للضبط ونتيجة قابلة للتتبع. | `NOT STARTED` |
+| `G1 — School Identity & Commercial Access` | `SC-01A + SC-01B` | الحساب الواحد يملك School context صحيحًا، والمعلم مقيد بفصل/مادة، والمدرسة مقيدة بوحدات العقد من الخادم. | legacy parity بلا توسيع صلاحيات، ورفض assignment/module غير المسموح في API وSocket، مع controls إدارية بسيطة. | `CLOSED / VERIFIED` |
+| `G2 — Usable Smart Classroom` | `SC-02A + SC-02B` | رحلة واحدة تعمل: معلم يختار 1–10 أسئلة، يبدأ جلسة، طلاب مصرحون يدخلون، يجيبون، ثم يصدر تقرير ثابت عبر Teacher/Projector/Student surfaces. | HTTP + authorized realtime + reconnect + desktop/projector/mobile E2E بمدرستين، وتصحيح خادمي وإجابات idempotent بلا تسريب answer. | `CLOSED / VERIFIED` |
+| `G3 — Supervisor Operations & Reports` | `SC-03` | الفصول الذكية اليوم، تاريخ الجلسات، وتقارير session/class/teacher داخل لوحة المشرف الحالية. | المشرف يرى نطاقه فقط، واللوحة القديمة لم تفقد قدراتها، وPDF/Excel يخرجان من read model واحد. | `CLOSED / VERIFIED` |
+| `G4 — School Intelligence` | `SC-04` | School وPlatform analytics جنبًا إلى جنب مع skill heatmap وweak students وtrends محدودة. | لا blended score، وlegacy context يظهر بصدق، وcross-school reads مرفوضة، ولا rollup دون benchmark. | `CLOSED / VERIFIED` |
+| `G5 — Intervention & Proven Improvement` | `SC-05A + SC-05B` | Weak Skill → Target Students → Action → Follow-up → Before/After improvement. | تدخل فعلي من نوع تدريب/اختبار/محتوى/مسار/واجب/دعم، مع evidence counts وthreshold قابل للضبط ونتيجة قابلة للتتبع. | `CLOSED / VERIFIED` |
 | `G6 — Controlled Pilot & Commercial Limits` | `SC-06` | Pilot حقيقي يثبت قابلية الاستخدام ويحدد limits اللازمة للعقد من القياس. | تقرير Pilot لاتصال ضعيف وتزامن وlatency/reconnect/write volume؛ لا ادعاء production scale من isolated CI. | `BLOCKED — يحتاج تفويض بيئة وبيانات Pilot بعد G5` |
 
 ## حدود لا تتغير
@@ -76,12 +76,15 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | Goal | Status | Runtime commit | CI / Evidence | Next exact action |
 |---|---|---|---|---|
 | `G0` | `CLOSED / VERIFIED WITH FOCUSED CI` | `c87e7b3e07eda578c4e7870fef27d32714404286` | focused smokes PASS; Backend Integration CI PASS; Deep E2E canceled by workflow time limit after all suites except final Barcode journey | begin G1 assessment only |
-| `G1` | `NOT STARTED` | — | — | بعد إغلاق G0 |
-| `G2` | `NOT STARTED` | — | — | بعد إغلاق G1 |
-| `G3` | `NOT STARTED` | — | — | بعد إغلاق G2 |
-| `G4` | `NOT STARTED` | — | — | بعد إغلاق G3 |
-| `G5` | `NOT STARTED` | — | — | بعد إغلاق G4 |
-| `G6` | `BLOCKED` | — | يحتاج Pilot authorization | بعد إغلاق G5 وتفويض المالك |
+| `G1` | `CLOSED / VERIFIED` | `cd1cdb40244690ba85ee468f4c95505d3990f4f4` | policy smoke PASS; Backend Integration CI PASS | begin G2 assessment only |
+| `G2` | `CLOSED / VERIFIED` | `ba4e20b31051029411732419c555a9dd73c6b149` | Backend CI [34395166600](https://github.com/nasef6464/almeaacodax/actions/runs/34395166600) PASS: HTTP School A/B lifecycle + authenticated Socket room join, forced reconnect and rejoin; UI/API contract `12/12` PASS; Playwright surfaces audit PASS للمعلم/الطالب/العارض | begin G3 assessment only |
+| `G3` | `CLOSED / VERIFIED` | `9feded45cb38caa9aeaff29648dce4bde96f3019` | Backend CI [34412721414](https://github.com/nasef6464/almeaacodax/actions/runs/34412721414) PASS؛ scoped session/class/teacher reports؛ Excel/PDF من نفس read model | begin G4 assessment only |
+| `G4` | `CLOSED / VERIFIED` | `dbbb4bec12073ea3cf4c5fa0ad2a7588b766cd90` | Backend CI [34413934984](https://github.com/nasef6464/almeaacodax/actions/runs/34413934984) PASS: source contexts at write time; bounded raw dual analytics; school/class scope and cross-school result exclusion | begin G5 assessment only |
+| `G5` | `CLOSED / VERIFIED` | `684c6912c883f3acd199d7491d57791d2fba1abc` | Backend CI [34414569977](https://github.com/nasef6464/almeaacodax/actions/runs/34414569977) PASS: entitled scoped study-plan intervention; raw baseline/follow-up; minimum-evidence guard; cross-school target and student reads rejected | await separate G6 Pilot authorization |
+| `G6` | `BLOCKED` | `5843eff88b749d2c903a185418226e8e2065e1fa` (merge-ready; Pilot not run) | Preflight CI [34415332078](https://github.com/nasef6464/almeaacodax/actions/runs/34415332078) PASS; exact merge-runtime Backend Integration [34425597691](https://github.com/nasef6464/almeaacodax/actions/runs/34425597691) PASS, and Public UI [34425496148](https://github.com/nasef6464/almeaacodax/actions/runs/34425496148), Recovery, Safety, Production Readiness, Dependency Audit, and Phase/Handover PASS. Production health on 2026-09-10 still reported `b131d8eb405e`, which is not a descendant of the G1–G6 runtime; no authorized Pilot was run. | اعتماد دمج/نشر runtime الموثق، ثم تحديد البيئة والمدرسة/الفصول والمعلمين والبيانات المسموحة وبدء Pilot فقط |
+
+حزمة التشغيل الآمن قبل التفويض: `SMART_CLASSROOM_G6_PILOT_RUNBOOK_AR.md`. لا تعد
+دليل Pilot ولا تسمح بتشغيل اختبار على بيئة خارجية دون قرار المالك في القسم الأول.
 
 ## خريطة الملفات المرجعية
 

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { io as connectSocket } from "socket.io-client";
 import { env } from "../config/env.js";
 import { UserModel } from "../models/User.js";
 import { CourseModel } from "../models/Course.js";
@@ -11,6 +12,8 @@ import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { QuestionModel } from "../models/Question.js";
+import { SchoolContractModel } from "../models/SchoolContract.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
 import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
@@ -288,6 +291,77 @@ async function loginRole(role: Role, csrf: CsrfContext) {
   assert.equal(result.body?.user?.role, expectedRole, `${role}: login returned wrong role`);
   assert.equal(typeof result.body?.token, "string", `${role}: test-mode bearer token missing`);
   tokens.set(role, result.body.token);
+}
+
+async function runSmartClassroomJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school");
+  const classId = groupIds.get("class");
+  const teacherId = userIds.get("teacher");
+  assert.ok(schoolId && classId && teacherId, "smart classroom fixture scope missing");
+  const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
+  await SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM", "SCHOOL_INTELLIGENCE", "INTERVENTION_CENTER"] });
+  await TeachingAssignmentModel.create({ schoolId, teacherId, classId, subjectId: ASSESSMENT_SUBJECT_ID, status: "active" });
+  await QuestionModel.create({ id: questionId, text: "Smart classroom question", options: ["Wrong", "Correct"], correctOptionIndex: 1, subject: ASSESSMENT_SUBJECT_ID, type: "mcq", approvalStatus: "approved", skillIds: ["platform-v3-smart-classroom-skill"] });
+
+  const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId] } });
+  expectStatus("assigned teacher creates smart classroom session", created, 201);
+  const sessionId = String(created.body?.sessionId || ""); const pin = String(created.body?.pin || "");
+  assert.ok(sessionId && /^\d{6}$/.test(pin), "smart classroom session did not issue ephemeral PIN");
+
+  const outsiderJoin = await jsonRequest(`/classroom/sessions/${sessionId}/join`, { method: "POST", token: tokens.get("outsider"), csrf, body: { pin } });
+  expectStatus("other school student cannot join smart classroom", outsiderJoin, 403);
+  const joined = await jsonRequest(`/classroom/sessions/${sessionId}/join`, { method: "POST", token: tokens.get("student"), csrf, body: { pin } });
+  expectStatus("assigned student joins smart classroom", joined, 200);
+  const socket = connectSocket(API_BASE.replace(/\/api$/, ""), { auth: { token: tokens.get("student") }, transports: ["websocket"], reconnectionDelay: 25, reconnectionDelayMax: 100 });
+  try {
+    await once(socket, "connect");
+    await joinClassroomRoom(socket, sessionId);
+    const publishedEvent = once(socket, "question:published");
+    const published = await jsonRequest(`/classroom/sessions/${sessionId}/publish/0`, { method: "POST", token: tokens.get("teacher"), csrf });
+    expectStatus("teacher publishes smart classroom question", published, 200);
+    await publishedEvent;
+    socket.io.engine?.close();
+    await once(socket.io, "reconnect");
+    await joinClassroomRoom(socket, sessionId);
+    pass("student socket reconnects and rejoins authorized classroom room");
+  } finally { socket.disconnect(); }
+  const current = await jsonRequest(`/classroom/sessions/${sessionId}/current`, { token: tokens.get("student") });
+  expectStatus("joined student reads safe live question", current, 200);
+  assert.equal(current.body?.question?.correctOptionIndex, undefined, "student live question leaked answer key");
+  const invalidAnswer = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 2 } });
+  expectStatus("invalid smart classroom answer option is rejected", invalidAnswer, 400);
+  const answer = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
+  expectStatus("student submits smart classroom answer", answer, 200);
+  const repeated = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
+  expectStatus("smart classroom answer is idempotent", repeated, 200);
+  assert.equal(repeated.body?.responseId, answer.body?.responseId, "repeated smart classroom answer created a second response");
+  const ended = await jsonRequest(`/classroom/sessions/${sessionId}/end`, { method: "POST", token: tokens.get("teacher"), csrf });
+  expectStatus("teacher ends smart classroom session", ended, 200);
+  assert.equal(ended.body?.report?.responseCount, 1, "smart classroom immutable report has wrong response count");
+  const schoolSupervisorHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("supervisor") });
+  expectStatus("school supervisor reads in-scope classroom history", schoolSupervisorHistory, 200);
+  assert.equal(schoolSupervisorHistory.body?.sessions?.some((report: any) => report.sessionId === sessionId), true, "school supervisor history omitted in-scope session");
+  const schoolSupervisorTeachers = await jsonRequest("/classroom/supervisor/teachers", { token: tokens.get("supervisor") });
+  expectStatus("school supervisor reads in-scope teacher classroom summary", schoolSupervisorTeachers, 200);
+  assert.equal(schoolSupervisorTeachers.body?.teachers?.some((report: any) => report.teacherId === teacherId && report.sessions === 1), true, "teacher classroom summary omitted in-scope teacher");
+  const classSupervisorReport = await jsonRequest(`/classroom/supervisor/sessions/${sessionId}/report`, { token: tokens.get("classSupervisor") });
+  expectStatus("class supervisor reads assigned-class classroom report", classSupervisorReport, 200);
+  assert.equal(classSupervisorReport.body?.report?.roster?.joined, 1, "classroom report lost joined roster count");
+  const studentHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("student") });
+  expectStatus("student cannot read supervisor classroom history", studentHistory, 403);
+  const afterEnd = await jsonRequest(`/classroom/sessions/${sessionId}/answers/${questionId}`, { method: "PUT", token: tokens.get("student"), csrf, body: { selectedOptionIndex: 1 } });
+  expectStatus("ended smart classroom rejects further answers", afterEnd, 404);
+}
+
+function once(target: any, event: string) {
+  return new Promise<any[]>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Timed out waiting for socket ${event}`)), 10_000);
+    target.once(event, (...args: any[]) => { clearTimeout(timer); resolve(args); });
+  });
+}
+
+function joinClassroomRoom(socket: { emit: (event: string, workspace: string, acknowledge: (result: { ok: boolean; error?: string }) => void) => void }, sessionId: string) {
+  return new Promise<void>((resolve, reject) => socket.emit("workspace:join", `classroom:${sessionId}`, (result) => result.ok ? resolve() : reject(new Error(result.error || "Classroom room join failed"))));
 }
 
 async function runAssessmentJourney(csrf: CsrfContext) {
@@ -1158,6 +1232,57 @@ async function runSchoolScopeJourney(csrf: CsrfContext) {
   expectStatus("school supervisor cannot target another school's student", schoolSupervisorOutsideTarget, 403);
 }
 
+async function runSchoolIntelligenceJourney(csrf: CsrfContext) {
+  const studentId = userIds.get("student");
+  const outsideSchoolStudentId = scopeStudentIds.get("outsideSchool");
+  assert.ok(studentId && outsideSchoolStudentId, "school intelligence fixture students missing");
+
+  const [platformResult, schoolAssessmentResult] = await Promise.all([
+    QuizResultModel.findOne({ userId: studentId, quizId: ASSESSMENT_QUIZ_ID }).lean(),
+    QuizResultModel.findOne({ userId: studentId, quizId: SUPERVISOR_QUIZ_ID }).lean(),
+  ]);
+  assert.equal(platformResult?.learningContext, "platform_self_study", "personal platform result was not classified at write time");
+  assert.equal(schoolAssessmentResult?.learningContext, "school_assessment", "class-targeted school result was not classified at write time");
+
+  await QuizResultModel.create({
+    userId: outsideSchoolStudentId,
+    quizId: `platform-v3-outside-intelligence-${RUN_MARKER}`,
+    quizTitle: "Outside school intelligence result",
+    score: 0,
+    totalQuestions: 1,
+    learningContext: "platform_self_study",
+  });
+  const expectedPlatformAttempts = await QuizResultModel.countDocuments({ userId: studentId, learningContext: "platform_self_study" });
+  const expectedSchoolAttempts = await QuizResultModel.countDocuments({ userId: studentId, learningContext: "school_assessment" });
+
+  const supervisorIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("supervisor") });
+  expectStatus("school supervisor reads dual-source intelligence", supervisorIntelligence, 200);
+  assert.equal(supervisorIntelligence.body?.intelligence?.comparisonPolicy, "separate_sources_only_no_blended_score", "school intelligence exposed a blended score");
+  assert.equal(supervisorIntelligence.body?.intelligence?.platformSelfStudy?.attempts, expectedPlatformAttempts, "school intelligence included another school's platform results");
+  assert.equal(supervisorIntelligence.body?.intelligence?.schoolPerformance?.officialAssessments?.attempts, expectedSchoolAttempts, "school intelligence lost scoped school-assessment results");
+  assert.equal(supervisorIntelligence.body?.intelligence?.schoolPerformance?.smartClassroom?.responses, 1, "school intelligence lost formative classroom responses");
+  assert.ok(Array.isArray(supervisorIntelligence.body?.intelligence?.schoolPerformance?.smartClassroom?.skillHeatmap), "school intelligence skill heatmap missing");
+  assert.ok(Array.isArray(supervisorIntelligence.body?.intelligence?.schoolPerformance?.smartClassroom?.weakStudents), "school intelligence weak-student read model missing");
+
+  const classSupervisorIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("classSupervisor") });
+  expectStatus("class supervisor reads assigned-class intelligence only", classSupervisorIntelligence, 200);
+  assert.equal(classSupervisorIntelligence.body?.intelligence?.platformSelfStudy?.attempts, expectedPlatformAttempts, "class intelligence included another school's platform result");
+  const studentIntelligence = await jsonRequest("/classroom/supervisor/intelligence", { token: tokens.get("student") });
+  expectStatus("student cannot read supervisor intelligence", studentIntelligence, 403);
+
+  const intervention = await jsonRequest("/classroom/supervisor/interventions", { method: "POST", token: tokens.get("supervisor"), csrf, body: { schoolId: groupIds.get("school"), classId: groupIds.get("class"), skillId: "platform-v3-smart-classroom-skill", targetStudentIds: [studentId], pathId: ASSESSMENT_PATH_ID, minimumEvidence: 2 } });
+  expectStatus("school supervisor assigns a scoped intervention study plan", intervention, 201);
+  assert.equal(intervention.body?.intervention?.actionType, "study_plan", "intervention did not reuse a study plan action");
+  assert.equal(intervention.body?.studyPlanIds?.length, 1, "intervention did not create the target student's study plan");
+  const outcome = await jsonRequest(`/classroom/supervisor/interventions/${intervention.body?.intervention?._id}/outcome`, { token: tokens.get("supervisor") });
+  expectStatus("school supervisor measures intervention outcome", outcome, 200);
+  assert.equal(outcome.body?.comparison?.confidence, "insufficient_evidence", "intervention claimed improvement without minimum evidence");
+  const classSupervisorOutsideIntervention = await jsonRequest("/classroom/supervisor/interventions", { method: "POST", token: tokens.get("classSupervisor"), csrf, body: { schoolId: groupIds.get("school"), classId: groupIds.get("class"), skillId: "platform-v3-smart-classroom-skill", targetStudentIds: [outsideSchoolStudentId], pathId: ASSESSMENT_PATH_ID } });
+  expectStatus("class supervisor cannot target another school's student for intervention", classSupervisorOutsideIntervention, 403);
+  const studentInterventions = await jsonRequest("/classroom/supervisor/interventions", { token: tokens.get("student") });
+  expectStatus("student cannot read supervisor interventions", studentInterventions, 403);
+}
+
 type MongoIndex = {
   key: Record<string, unknown>;
   unique?: boolean;
@@ -1239,12 +1364,14 @@ async function main() {
       await loginRole(role, csrf);
     }
 
+    await runSmartClassroomJourney(csrf);
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);
     await runMockAssessmentJourney(csrf);
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
+    await runSchoolIntelligenceJourney(csrf);
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);

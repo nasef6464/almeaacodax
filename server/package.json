@@ -26,6 +26,8 @@
     "smoke:video-question-picker-runtime": "tsx ../scripts/video-question-picker-runtime.ts",
     "smoke:interactive-video-progress-runtime": "tsx ../scripts/interactive-video-progress-runtime.ts",
     "verify:smart-classroom-g0": "tsx src/scripts/verifySmartClassroomG0.ts",
+    "verify:school-g1-foundation": "tsx src/scripts/verifySchoolG1Foundation.ts",
+    "verify:smart-classroom-g2": "tsx src/scripts/verifySmartClassroomG2.ts",
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
     "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts",
@@ -62,6 +64,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.6.0",
+    "socket.io-client": "^4.8.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
