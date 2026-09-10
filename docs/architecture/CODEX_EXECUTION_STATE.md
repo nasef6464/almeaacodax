@@ -2,9 +2,9 @@
 
 ## Product Goal AW — Account Workspaces delivery
 
-- Reviewed on 2026-09-10 against `origin/main@783f0c4c` and the approved trainer,
+- Reviewed on 2026-09-10 against exact runtime `fb5790067bfa9a297a88e4005bdca3373f7ce466` and the approved trainer,
   school-teacher, and school-director product decision.
-- Status: `G11 CLOSED / G12 AUTHORIZED`. G7–G11 introduced no destructive role migration, school
+- Status: `G7–G12 CLOSED / VERIFIED`. The sequence introduced no destructive role migration, school
   schema, payment/scoring, production-data, deployment, or cutover change.
 - Canonical registry: `docs/architecture/ACCOUNT_WORKSPACES_GOALS_AR.md`.
   Architecture: `PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md`. Agent entry:
@@ -57,11 +57,23 @@
   immediate permission/module revoke, cross-school denial, and no Director deletes.
   Frontend/server builds, G7–G11 contracts, school management `30/30`, and responsive
   browser QA with zero console errors passed.
-- Current Goal: `G12 — Academic Delegation & Persona Closure (AW-06)` is authorized.
+- G12 closure: exact runtime `fb5790067bfa9a297a88e4005bdca3373f7ce466`
+  passed Backend Integration [34465893298](https://github.com/nasef6464/almeaacodax/actions/runs/34465893298).
+  Five optional academic/transfer capabilities use the same per-school permission
+  plus contract-module gate. The Director can create a school-targeted Quiz from
+  approved questions with explicit learning context, read bounded Smart Classroom
+  history, create/read existing-engine interventions, and transfer a student only
+  after active grants in both schools and explicit confirmation. The isolated
+  two-school journey proved module revoke, transfer denial/allow, persistence,
+  audit, actual school contexts in admin exports, and separate hybrid personas.
+  Frontend/server builds, strict harness, G7–G12 contracts, school management
+  `30/30`, and desktop/mobile RTL browser QA passed.
+- Current Goal: لا يوجد Goal تنفيذ نشط في Account Workspaces.
 - Product decision: مدير المدرسة يملك أساسًا overview + student view/add/move
   داخل المدرسة؛ كل توسع permission صريحة لكل SchoolMembership ومن allowlist،
   ويحتاج contract entitlement أيضًا عندما يكون capability وحدة تجارية. لا hard
-  delete أو cross-school transfer افتراضيًا.
+  delete أو cross-school transfer افتراضيًا؛ النقل الاختياري يحتاج تفويضًا
+  فعالًا في المدرستين و`SCHOOL_CORE` وتأكيدًا صريحًا وسجل تدقيق.
 
 ## Product Goal SC — School OS + Smart Classroom planning baseline
 

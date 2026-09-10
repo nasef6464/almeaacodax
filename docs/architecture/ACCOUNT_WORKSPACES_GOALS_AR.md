@@ -1,8 +1,8 @@
 # ALMEAA — سجل أهداف الحسابات ومساحات العمل
 
-> الحالة: `G11 CLOSED / G12 AUTHORIZED`
+> الحالة: `G7–G12 CLOSED / VERIFIED`
 > آخر مراجعة: 2026-09-10
-> Current Goal: `G12 — Academic Delegation & Persona Closure` مفوض وجاهز للتنفيذ.
+> Current Goal: لا يوجد هدف تنفيذ نشط في هذا المسار؛ `G7–G12` مغلقة بالدليل.
 > يعتمد هذا المسار على إغلاق Smart Classroom `G0–G6` ولا يعيد تنفيذها.
 
 هذا هو سجل الأهداف القابل للاسترجاع لخطة مدرب المنصة، معلم المدرسة، ومدير
@@ -28,7 +28,7 @@
 | `G9 — School Director Identity & Delegated Access` | `AW-03` | `school_admin` additive، عضويات متعددة المدارس، وصلاحيات صريحة لكل عضوية يديرها صاحب المنصة. | مدير A لا يصل إلى B؛ المنح والسحب محفوظان ومدققان؛ سحب الصلاحية يسبب `403` فورًا؛ لا توسعة لصلاحيات legacy. | `CLOSED / VERIFIED` |
 | `G10 — Usable School Director Dashboard` | `AW-04` | لوحة تنفيذية مستقلة مع إحصاءات مجمعة وقائمة طلاب وإضافة طالب ونقله بين فصول المدرسة نفسها. | رحلة UI→API→DB كاملة؛ الإضافة لا تنشئ staff؛ النقل idempotent ويحافظ على عضوية فصل مفردة؛ cross-school والحذف مرفوضان. | `CLOSED / VERIFIED` |
 | `G11 — Delegated School Operations` | `AW-05` | صاحب المنصة يستطيع منح إدارة الفصول، تكليف المعلمين، التقارير التفصيلية، والتصدير كوحدات صلاحية اختيارية. | كل أداة تتطلب permission للمدرسة وmodule entitlement للعقد؛ grant يسمح وrevoke يمنع؛ الأدوات غير المفوضة لا تظهر ولا تعمل عبر API. | `CLOSED / VERIFIED` |
-| `G12 — Academic Delegation & Persona Closure` | `AW-06` | تفويض اختياري للاختبارات وSmart Classroom والتدخلات، مع context switch للحساب الهجين وإغلاق تجاري للشخصيات. | اختبار مدرستين وحساب هجين يثبت فصل المساحات؛ لا blended permissions؛ labels/exports صحيحة؛ لا نقل مدارس إلا بتفويض خاص وعضويتين فعالتين. | `READY / AUTHORIZED` |
+| `G12 — Academic Delegation & Persona Closure` | `AW-06` | تفويض اختياري للاختبارات وSmart Classroom والتدخلات، مع context switch للحساب الهجين وإغلاق تجاري للشخصيات. | اختبار مدرستين وحساب هجين يثبت فصل المساحات؛ لا blended permissions؛ labels/exports صحيحة؛ لا نقل مدارس إلا بتفويض خاص وعضويتين فعالتين. | `CLOSED / VERIFIED` |
 
 ## G7 — Platform Trainer Workspace (`AW-01`)
 
@@ -217,7 +217,7 @@
 | `G9` | `CLOSED / VERIFIED` | `68768d006b0041df9a426ae1353ce3ea9cf15d79` | Backend Integration [34456463696](https://github.com/nasef6464/almeaacodax/actions/runs/34456463696) PASS على Mongo معزولة: حساب `school_admin`، تفويض admin-only، عزل A/B، revoke فوري `403`، membership inactive، وaudit log. server check/build، frontend build/targeted typecheck، G7/G8/G9 والعقد المدرسي `30/30` PASS؛ Playwright desktop/mobile أثبت التصميم الجديد وفصل المدير عن المشرف والمعلم. | G10 |
 | `G10` | `CLOSED / VERIFIED` | `5bd31bb1c9bc0ed2b91fe67c820a2cd76f482988` | Backend Integration [34459589249](https://github.com/nasef6464/almeaacodax/actions/runs/34459589249) PASS على Mongo معزولة: overview/roster، إضافة طالب، إعادة الإضافة دون duplicate، نقل داخل المدرسة بعضوية فصل مفردة، منع self-grant وcross-school والحذف، وaudit log. server check/build وintegration harness typecheck، frontend build، G7–G10 والعقد المدرسي `30/30` PASS؛ Playwright desktop/mobile RTL أثبت التصميم والعمليات وحالات الصلاحية مع 0 console errors. | G11 |
 | `G11` | `CLOSED / VERIFIED` | `f55f7409a2e6cc7359196bf531c65f58ed16209b` | Backend Integration [34461641784](https://github.com/nasef6464/almeaacodax/actions/runs/34461641784) PASS على Mongo معزولة: تعديل/تعطيل واسترجاع الطالب، إنشاء/تسمية الفصل، تكليف المعلم، التقرير التفصيلي وCSV؛ dual gate permission+entitlement، revoke فوري، عزل مدرستين، ومنع الحذف مع audit للتغييرات والتصدير. server/frontend builds وstrict harness، G7–G11 والعقد المدرسي `30/30` PASS؛ Playwright mobile RTL أثبت مركز التشغيل والتقرير مع 0 console errors. | G12 |
-| `G12` | `READY / AUTHORIZED` | — | تفويض G7–G12 مستمر | تنفيذ التفويض الأكاديمي وإغلاق الشخصيات تجاريًا |
+| `G12` | `CLOSED / VERIFIED` | `fb5790067bfa9a297a88e4005bdca3373f7ce466` | Backend Integration [34465893298](https://github.com/nasef6464/almeaacodax/actions/runs/34465893298) PASS على Mongo معزولة: إنشاء اختبار مدرسة من بنك الأسئلة المعتمد بسياق مسار صريح، قراءات Smart Classroom والتدخلات محدودة بالمدرسة، إنشاء تدخل وخطة علاجية، dual gate permission+entitlement وإلغاء module إلى `403`، نقل طالب بين مدرستين بعد تفويض فعال في الطرفين فقط مع persistence وaudit، وظهور school contexts الفعلية وفصل شخصية الحساب الهجين. server/frontend builds وstrict harness، G7–G12 والعقد المدرسي `30/30` PASS؛ Playwright desktop/mobile RTL أثبت الواجهة واستجابة تبديل المدارس. | لا يوجد هدف نشط؛ راجع تقرير الإغلاق التجاري |
 
 ## الاسترجاع لأي Agent
 
@@ -230,5 +230,6 @@
 
 ## قرار البداية
 
-فوض المالك صراحة تنفيذ `G7–G12` بالتسلسل في 2026-09-10. أُغلق G7 بالدليل
-المذكور أعلاه، وأُغلقت G7–G11 بالدليل، والهدف الحالي هو `G12`؛ يستمر التنفيذ هدفًا واحدًا في كل branch/PR.
+فوض المالك صراحة تنفيذ `G7–G12` بالتسلسل في 2026-09-10. أُغلقت
+الأهداف الستة بالدليل، وآخر runtime هو `fb5790067` وCI هو `34465893298`.
+لا يبدأ توسع جديد من هذا السجل دون هدف وتفويض مستقلين.
