@@ -4,7 +4,7 @@
 
 - Reviewed on 2026-09-10 against `origin/main@783f0c4c` and the approved trainer,
   school-teacher, and school-director product decision.
-- Status: `G10 CLOSED / G11 AUTHORIZED`. G7–G10 introduced no destructive role migration, school
+- Status: `G11 CLOSED / G12 AUTHORIZED`. G7–G11 introduced no destructive role migration, school
   schema, payment/scoring, production-data, deployment, or cutover change.
 - Canonical registry: `docs/architecture/ACCOUNT_WORKSPACES_GOALS_AR.md`.
   Architecture: `PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md`. Agent entry:
@@ -47,7 +47,17 @@
   and denial of self-grant, outside-school access, and hard delete. Frontend/server
   builds, G7–G10 contracts, the existing school management contract `30/30`, and
   desktop/mobile browser QA with zero console errors passed.
-- Current Goal: `G11 — Delegated School Operations (AW-05)` is authorized.
+- G11 closure: exact runtime `f55f7409a2e6cc7359196bf531c65f58ed16209b`
+  passed Backend Integration [34461641784](https://github.com/nasef6464/almeaacodax/actions/runs/34461641784).
+  Six optional Director capabilities now use one allowlist and a fresh dual gate:
+  per-school permission plus an active contract module. The existing Director design
+  gained a permission/module-aware operations center for reversible student status,
+  basic student fields, class create/rename, teacher assignments, bounded detailed
+  intelligence, and audited CSV export. The two-school journey proved persistence,
+  immediate permission/module revoke, cross-school denial, and no Director deletes.
+  Frontend/server builds, G7–G11 contracts, school management `30/30`, and responsive
+  browser QA with zero console errors passed.
+- Current Goal: `G12 — Academic Delegation & Persona Closure (AW-06)` is authorized.
 - Product decision: مدير المدرسة يملك أساسًا overview + student view/add/move
   داخل المدرسة؛ كل توسع permission صريحة لكل SchoolMembership ومن allowlist،
   ويحتاج contract entitlement أيضًا عندما يكون capability وحدة تجارية. لا hard
