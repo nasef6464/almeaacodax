@@ -66,6 +66,9 @@ const defaultHomepageSettings: HomepageSettings = {
         tertiaryCtaColor: '',
         imageUrl: DEFAULT_HERO_BOY_IMAGE,
         imageAlt: 'طالب يستخدم منصة المئة',
+        galleryImages: [],
+        autoRotateImages: true,
+        rotateIntervalSeconds: 6,
         floatingCardTitle: 'منصة المئة',
         floatingCardSubtitle: 'مستواك: متقدم',
         floatingCardProgressLabel: 'التقدم',
@@ -342,6 +345,75 @@ export const HomepageManager: React.FC = () => {
         reader.readAsDataURL(file);
     };
 
+    const handleGalleryImageUpload = (file?: File | null) => {
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            setError('اختر ملف صورة فقط.');
+            return;
+        }
+
+        if (file.size > 900 * 1024) {
+            setError('حجم الصورة كبير. الأفضل ضغطها إلى أقل من 900KB قبل الرفع.');
+            return;
+        }
+
+        const currentGallery = settings.hero.galleryImages || [];
+        if (currentGallery.length >= 8) {
+            setError('الحد الأقصى لمعرض صور الهيرو هو 8 صور.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const dataUrl = String(reader.result || '');
+            setSettings((prev) => ({
+                ...prev,
+                hero: {
+                    ...prev.hero,
+                    galleryImages: [...(prev.hero.galleryImages || []), dataUrl],
+                },
+            }));
+            setError(null);
+            setSuccess('تمت إضافة الصورة إلى معرض صور البداية. اضغط حفظ التعديلات لنشرها.');
+        };
+        reader.onerror = () => setError('تعذر قراءة الصورة. جرّب صورة أخرى.');
+        reader.readAsDataURL(file);
+    };
+
+    const removeGalleryImage = (index: number) => {
+        setSettings((prev) => ({
+            ...prev,
+            hero: {
+                ...prev.hero,
+                galleryImages: (prev.hero.galleryImages || []).filter((_, i) => i !== index),
+            },
+        }));
+    };
+
+    const setGalleryImageAsPrimary = (index: number) => {
+        setSettings((prev) => {
+            const gallery = [...(prev.hero.galleryImages || [])];
+            const selectedImage = gallery[index];
+            const oldPrimary = prev.hero.imageUrl || defaultHomepageSettings.hero.imageUrl;
+
+            gallery.splice(index, 1);
+            if (oldPrimary && !gallery.includes(oldPrimary)) {
+                gallery.unshift(oldPrimary);
+            }
+
+            return {
+                ...prev,
+                hero: {
+                    ...prev.hero,
+                    imageUrl: selectedImage,
+                    galleryImages: gallery,
+                },
+            };
+        });
+        setSuccess('تم تعيين الصورة كصورة رئيسية للبداية.');
+    };
+
     const updateSectionField = (field: keyof HomepageSettings['sections'], value: string) => {
         setSettings((prev) => ({
             ...prev,
@@ -451,7 +523,11 @@ export const HomepageManager: React.FC = () => {
             const payload: HomepageSettings = {
                 ...settings,
                 brand: { ...defaultHomepageSettings.brand, ...settings.brand, logoUrl: withCacheBust(settings.brand?.logoUrl) },
-                hero: { ...settings.hero, imageUrl: withCacheBust(settings.hero.imageUrl) },
+                hero: {
+                    ...settings.hero,
+                    imageUrl: withCacheBust(settings.hero.imageUrl),
+                    galleryImages: (settings.hero.galleryImages || []).map((img) => withCacheBust(img)),
+                },
                 sections: { ...settings.sections },
                 typography: { ...defaultHomepageSettings.typography, ...settings.typography },
                 navigation: { ...defaultHomepageSettings.navigation, ...settings.navigation },
@@ -736,6 +812,125 @@ export const HomepageManager: React.FC = () => {
                                     <img src={settings.hero.imageUrl} alt="" className="h-40 w-full rounded-2xl object-cover border border-white shadow-sm" />
                                 ) : null}
                             </div>
+
+                            {/* Hero Multi-Image Gallery Showcase */}
+                            <div className="md:col-span-2 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 via-white to-blue-50/40 p-4 sm:p-5 space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-indigo-100/80 pb-3">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                                            <Sparkles size={16} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-black text-gray-900">معرض صور الهيرو المتغيرة (Smart Photo Rotator)</h3>
+                                            <p className="text-xs text-gray-500">أضف عدة صور لتبديلها بسلاسة وهدوء وإعطاء حيوية وتنوع للصفحة الرئيسية.</p>
+                                        </div>
+                                    </div>
+                                    <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-black text-white hover:bg-indigo-700 transition-colors shadow-xs">
+                                        <Plus size={15} />
+                                        إضافة صورة للمعرض
+                                        <input
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/webp"
+                                            className="hidden"
+                                            onChange={(event) => handleGalleryImageUpload(event.target.files?.[0])}
+                                        />
+                                    </label>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-200/80">
+                                        <input
+                                            type="checkbox"
+                                            id="autoRotateImages"
+                                            checked={settings.hero.autoRotateImages !== false}
+                                            onChange={(e) => updateHeroField('autoRotateImages', e.target.checked)}
+                                            className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <label htmlFor="autoRotateImages" className="text-xs font-bold text-gray-800 cursor-pointer">
+                                            تفعيل التدوير التلقائي للصور (Crossfade)
+                                        </label>
+                                    </div>
+
+                                    <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-xl border border-gray-200/80">
+                                        <span className="text-xs font-bold text-gray-700">سرعة التبديل:</span>
+                                        <select
+                                            value={settings.hero.rotateIntervalSeconds || 6}
+                                            onChange={(e) => updateHeroField('rotateIntervalSeconds', Number(e.target.value))}
+                                            className="text-xs font-bold bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1 text-gray-800 focus:ring-indigo-500"
+                                        >
+                                            <option value={4}>كل 4 ثوانٍ (سريع)</option>
+                                            <option value={6}>كل 6 ثوانٍ (متوازن - موصى به)</option>
+                                            <option value={8}>كل 8 ثوانٍ (هادئ)</option>
+                                            <option value={12}>كل 12 ثانية (بطيء جداً)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Gallery Thumbnails Grid */}
+                                <div className="space-y-2">
+                                    <span className="text-xs font-bold text-gray-600 block">الصور المعروضة حالياً في الهيرو:</span>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        {/* Primary Image Slot */}
+                                        <div className="relative group rounded-xl overflow-hidden border-2 border-indigo-500 shadow-xs aspect-[4/3] bg-gray-100">
+                                            <img
+                                                src={settings.hero.imageUrl || DEFAULT_HERO_BOY_IMAGE}
+                                                alt="الصورة الرئيسية"
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <span className="absolute top-1.5 right-1.5 bg-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+                                                الرئيسية
+                                            </span>
+                                        </div>
+
+                                        {/* Additional Gallery Images */}
+                                        {(settings.hero.galleryImages || []).map((galleryImg, gIdx) => (
+                                            <div key={`gallery-thumb-${gIdx}`} className="relative group rounded-xl overflow-hidden border border-gray-200 shadow-xs aspect-[4/3] bg-gray-100">
+                                                <img
+                                                    src={galleryImg}
+                                                    alt={`صورة ${gIdx + 2}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <span className="absolute top-1.5 right-1.5 bg-slate-900/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md">
+                                                    #{gIdx + 2}
+                                                </span>
+                                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setGalleryImageAsPrimary(gIdx)}
+                                                        className="px-2 py-1 bg-white text-indigo-700 hover:bg-indigo-50 rounded-lg text-[10px] font-black transition-colors"
+                                                        title="تعيين كصورة رئيسية"
+                                                    >
+                                                        رئيسية
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeGalleryImage(gIdx)}
+                                                        className="p-1.5 bg-rose-600 text-white hover:bg-rose-700 rounded-lg transition-colors"
+                                                        title="حذف من المعرض"
+                                                    >
+                                                        <Trash2 size={13} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        {/* Placeholder if only 1 image */}
+                                        {(!settings.hero.galleryImages || settings.hero.galleryImages.length === 0) && (
+                                            <label className="border-2 border-dashed border-gray-300 hover:border-indigo-400 rounded-xl aspect-[4/3] flex flex-col items-center justify-center text-center p-3 cursor-pointer bg-white/50 hover:bg-indigo-50/30 transition-all">
+                                                <Plus size={20} className="text-gray-400 mb-1" />
+                                                <span className="text-[11px] font-bold text-gray-500">إضافة صورة أخرى</span>
+                                                <input
+                                                    type="file"
+                                                    accept="image/png,image/jpeg,image/webp"
+                                                    className="hidden"
+                                                    onChange={(event) => handleGalleryImageUpload(event.target.files?.[0])}
+                                                />
+                                            </label>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
                             <TextField label="مقدمة العنوان" value={settings.hero.titlePrefix || ''} onChange={(value) => updateHeroField('titlePrefix', value)} />
                             <TextField label="الكلمة المميزة" value={settings.hero.titleHighlight || ''} onChange={(value) => updateHeroField('titleHighlight', value)} />
                             <TextField label="نهاية العنوان" value={settings.hero.titleSuffix || ''} onChange={(value) => updateHeroField('titleSuffix', value)} />

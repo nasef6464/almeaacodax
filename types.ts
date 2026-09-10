@@ -695,6 +695,9 @@ export interface HomepageHeroSettings {
     tertiaryCtaColor?: string;
     imageUrl?: string;
     imageAlt?: string;
+    galleryImages?: string[];
+    autoRotateImages?: boolean;
+    rotateIntervalSeconds?: number;
     floatingCardTitle?: string;
     floatingCardSubtitle?: string;
     floatingCardProgressLabel?: string;
