@@ -194,7 +194,7 @@ schoolAccessRouter.post("/director/schools/:schoolId/academic/assessments", requ
   const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_ASSESSMENTS_MANAGE", "SCHOOL_ASSESSMENTS");
   if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
   const payload = directorAssessmentSchema.parse(req.body);
-  try { const result = await createSchoolDirectorAssessment(req.params.schoolId, req.authUser!.id, payload); await recordAdminAuditLog(req, { action: "schools.director.assessment.create", resourceType: "quiz", resourceId: result.assessment.assessmentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId } }); return res.status(StatusCodes.CREATED).json(result); }
+  try { const result = await createSchoolDirectorAssessment(req.params.schoolId, req.authUser!.id, payload as any); await recordAdminAuditLog(req, { action: "schools.director.assessment.create", resourceType: "quiz", resourceId: result.assessment.assessmentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId } }); return res.status(StatusCodes.CREATED).json(result); }
   catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
 }));
 schoolAccessRouter.get("/director/schools/:schoolId/academic/smart-classrooms", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
@@ -211,7 +211,7 @@ schoolAccessRouter.post("/director/schools/:schoolId/academic/interventions", re
   const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_INTERVENTIONS_MANAGE", "INTERVENTION_CENTER");
   if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
   const payload = directorInterventionSchema.parse(req.body);
-  try { const result = await createSchoolDirectorIntervention(req.params.schoolId, req.authUser!.id, payload); await recordAdminAuditLog(req, { action: "schools.director.intervention.create", resourceType: "school_intervention", resourceId: result.intervention.interventionId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, studentId: payload.studentId } }); return res.status(StatusCodes.CREATED).json(result); }
+  try { const result = await createSchoolDirectorIntervention(req.params.schoolId, req.authUser!.id, payload as any); await recordAdminAuditLog(req, { action: "schools.director.intervention.create", resourceType: "school_intervention", resourceId: result.intervention.interventionId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, studentId: payload.studentId } }); return res.status(StatusCodes.CREATED).json(result); }
   catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
 }));
 schoolAccessRouter.post("/director/schools/:schoolId/students/:studentId/transfer", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {

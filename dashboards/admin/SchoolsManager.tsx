@@ -1225,10 +1225,25 @@ export const SchoolsManager: React.FC = () => {
             });
         };
 
+        const schoolTabLabels: Record<string, string> = {
+            overview: 'نظرة عامة والجاهزية',
+            dashboard: 'لوحة التشغيل',
+            people: 'المجتمع المدرسي والمنسوبين',
+            relations: 'المجتمع المدرسي والمنسوبين',
+            academic: 'الفصول والإسناد الدراسي',
+            services: 'الخدمات ووحدات العقد',
+            contract: 'العقد والباقات والأكواد',
+            packages: 'العقد والباقات والأكواد',
+            reports: 'تقارير التسليم والجاهزية',
+            settings: 'إعدادات المدرسة والأمان',
+            import: 'استيراد الطلاب من Excel',
+        };
+
         return (
             <div data-testid="school-workspace-shell" className="min-w-0 max-w-full space-y-6 overflow-x-hidden animate-fade-in">
                 <SchoolWorkspaceControlsPanel
                     schoolName={selectedSchool.name}
+                    activeTabLabel={schoolTabLabels[activeTab] || 'نظرة عامة والجاهزية'}
                     saveVerificationState={saveVerificationState}
                     saveVerificationButtonLabel={saveVerificationButtonLabel}
                     isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
@@ -1920,6 +1935,11 @@ export const SchoolsManager: React.FC = () => {
                     aria-label="Close school actions menu"
                 />
             )}
+            <nav aria-label="مسار التنقل" className="flex items-center gap-1.5 text-xs text-gray-500 font-bold mb-1">
+                <span>لوحة الإدارة</span>
+                <span className="text-gray-300">/</span>
+                <span className="text-indigo-600 font-black">تشغيل المدارس والتعاقدات</span>
+            </nav>
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <h1 data-testid="school-commercial-title" className="text-2xl font-bold text-gray-900">تشغيل المدارس والتعاقدات</h1>

@@ -5,52 +5,25 @@ type SaveVerificationState = 'idle' | 'saving' | 'verifying' | 'success' | 'erro
 
 interface SchoolWorkspaceControlsPanelProps {
     schoolName: string;
+    activeTabLabel?: string;
     saveVerificationState: SaveVerificationState;
     saveVerificationButtonLabel: string;
     isSchoolWorkspaceBusy: boolean;
     isDeleteConfirmOpen: boolean;
-    classCount: number;
-    studentCount: number;
-    supervisorCount: number;
-    packageCount: number;
-    codeCount: number;
-    readinessScore: number;
-    readinessTotal: number;
-    isDeletePending: boolean;
-    onBack: () => void;
-    onSaveAndVerify: () => void;
-    onRename: () => void;
-    onDownloadHandover: () => void;
-    onCopyHandover: () => void;
-    onPrintReport: () => void;
-    onRequestDelete: () => void;
-    onCancelDelete: () => void;
-    onConfirmDelete: () => void;
+    classCount: number; studentCount: number; supervisorCount: number;
+    packageCount: number; codeCount: number; readinessScore: number;
+    readinessTotal: number; isDeletePending: boolean;
+    onBack: () => void; onSaveAndVerify: () => void; onRename: () => void;
+    onDownloadHandover: () => void; onCopyHandover: () => void; onPrintReport: () => void;
+    onRequestDelete: () => void; onCancelDelete: () => void; onConfirmDelete: () => void;
 }
 
 export const SchoolWorkspaceControlsPanel: React.FC<SchoolWorkspaceControlsPanelProps> = ({
-    schoolName,
-    saveVerificationState,
-    saveVerificationButtonLabel,
-    isSchoolWorkspaceBusy,
-    isDeleteConfirmOpen,
-    classCount,
-    studentCount,
-    supervisorCount,
-    packageCount,
-    codeCount,
-    readinessScore,
-    readinessTotal,
-    isDeletePending,
-    onBack,
-    onSaveAndVerify,
-    onRename,
-    onDownloadHandover,
-    onCopyHandover,
-    onPrintReport,
-    onRequestDelete,
-    onCancelDelete,
-    onConfirmDelete,
+    schoolName, activeTabLabel, saveVerificationState, saveVerificationButtonLabel,
+    isSchoolWorkspaceBusy, isDeleteConfirmOpen, classCount, studentCount, supervisorCount,
+    packageCount, codeCount, readinessScore, readinessTotal, isDeletePending,
+    onBack, onSaveAndVerify, onRename, onDownloadHandover, onCopyHandover, onPrintReport,
+    onRequestDelete, onCancelDelete, onConfirmDelete,
 }) => {
     const deleteImpactRows: Array<[string, string | number]> = [
         ['فصول', classCount],
@@ -60,78 +33,62 @@ export const SchoolWorkspaceControlsPanel: React.FC<SchoolWorkspaceControlsPanel
         ['أكواد', codeCount],
         ['جاهزية', `${readinessScore}/${readinessTotal}`],
     ];
+    const currentTabLabel = activeTabLabel || 'نظرة عامة والجاهزية';
 
     return (
         <>
-            <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                <button type="button" onClick={onBack} className="text-gray-500 hover:text-gray-900">
-                    &rarr; عودة لقائمة المدارس
-                </button>
-                <h1 className="min-w-[220px] flex-1 text-2xl font-bold text-gray-900">{schoolName}</h1>
-                <button
-                    type="button"
-                    data-testid="school-save-verify-button"
-                    onClick={onSaveAndVerify}
-                    disabled={isSchoolWorkspaceBusy}
-                    className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
-                        saveVerificationState === 'error'
-                            ? 'bg-red-50 text-red-700 hover:bg-red-100'
-                            : saveVerificationState === 'success'
-                                ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                                : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                    } disabled:cursor-not-allowed disabled:opacity-60`}
-                    title="حفظ ثم إعادة قراءة بيانات المدرسة من الخادم للتأكد"
-                >
-                    <CheckCircle size={16} />
-                    {saveVerificationButtonLabel}
-                </button>
-                <button
-                    type="button"
-                    onClick={onRename}
-                    disabled={isSchoolWorkspaceBusy}
-                    className="inline-flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm font-bold text-gray-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
-                    title="تعديل اسم المدرسة"
-                >
-                    <Edit2 size={16} />
-                    تعديل الاسم
-                </button>
-                <button
-                    type="button"
-                    onClick={onDownloadHandover}
-                    className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-colors"
-                    title="تحميل ملف تسليم شامل للمدرسة"
-                >
-                    <Download size={16} />
-                    ملف تسليم المدرسة
-                </button>
-                <button
-                    type="button"
-                    onClick={onCopyHandover}
-                    className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 transition-colors"
-                    title="نسخ رسالة جاهزة لإرسالها لإدارة المدرسة"
-                >
-                    <Clipboard size={16} />
-                    نسخ رسالة التسليم
-                </button>
-                <button
-                    type="button"
-                    onClick={onPrintReport}
-                    className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
-                    title="طباعة تقرير جاهزية وتشغيل المدرسة"
-                >
-                    <Printer size={16} />
-                    طباعة التقرير
-                </button>
-                <button
-                    type="button"
-                    data-testid="school-delete-button"
-                    onClick={onRequestDelete}
-                    className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
-                    title="حذف المدرسة وفصلها عن الطلاب والمشرفين"
-                >
-                    <Trash2 size={16} />
-                    حذف المدرسة
-                </button>
+            <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold flex-wrap">
+                    <span>لوحة الإدارة</span>
+                    <span className="text-gray-300">/</span>
+                    <button type="button" onClick={onBack} className="hover:text-indigo-600 transition-colors cursor-pointer">
+                        تشغيل المدارس
+                    </button>
+                    <span className="text-gray-300">/</span>
+                    <span className="text-gray-700">{schoolName}</span>
+                    <span className="text-gray-300">/</span>
+                    <span className="text-indigo-600 font-black">{currentTabLabel}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100">
+                    <button type="button" onClick={onBack} className="text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
+                        &rarr; عودة لقائمة المدارس
+                    </button>
+                    <h1 className="min-w-[220px] flex-1 text-xl md:text-2xl font-black text-gray-900 flex items-center gap-2 flex-wrap">
+                        <span>{schoolName}</span>
+                        <span className="text-gray-300 font-normal text-lg">—</span>
+                        <span className="text-indigo-600 text-lg font-bold">{currentTabLabel}</span>
+                    </h1>
+                    <button
+                        type="button"
+                        data-testid="school-save-verify-button"
+                        onClick={onSaveAndVerify}
+                        disabled={isSchoolWorkspaceBusy}
+                        className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
+                            saveVerificationState === 'error' ? 'bg-red-50 text-red-700 hover:bg-red-100' :
+                            saveVerificationState === 'success' ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' :
+                            'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                        } disabled:cursor-not-allowed disabled:opacity-60`}
+                        title="حفظ ثم إعادة قراءة بيانات المدرسة من الخادم للتأكد"
+                    >
+                        <CheckCircle size={16} />
+                        {saveVerificationButtonLabel}
+                    </button>
+                    <button type="button" onClick={onRename} disabled={isSchoolWorkspaceBusy} className="inline-flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm font-bold text-gray-600 hover:bg-amber-50 hover:text-amber-700 transition-colors" title="تعديل اسم المدرسة">
+                        <Edit2 size={16} /> تعديل الاسم
+                    </button>
+                    <button type="button" onClick={onDownloadHandover} className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-colors" title="تحميل ملف تسليم شامل للمدرسة">
+                        <Download size={16} /> ملف تسليم المدرسة
+                    </button>
+                    <button type="button" onClick={onCopyHandover} className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 transition-colors" title="نسخ رسالة جاهزة لإرسالها لإدارة المدرسة">
+                        <Clipboard size={16} /> نسخ رسالة التسليم
+                    </button>
+                    <button type="button" onClick={onPrintReport} className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors" title="طباعة تقرير جاهزية وتشغيل المدرسة">
+                        <Printer size={16} /> طباعة التقرير
+                    </button>
+                    <button type="button" data-testid="school-delete-button" onClick={onRequestDelete} className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors" title="حذف المدرسة وفصلها عن الطلاب والمشرفين">
+                        <Trash2 size={16} /> حذف المدرسة
+                    </button>
+                </div>
             </div>
 
             {isDeleteConfirmOpen && (
