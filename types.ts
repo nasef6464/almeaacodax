@@ -209,6 +209,9 @@ export interface CategoryLevel {
     id: string;
     pathId: string;
     name: string;
+    icon?: string;
+    iconUrl?: string;
+    color?: string;
 }
 
 export interface SubjectSettings {

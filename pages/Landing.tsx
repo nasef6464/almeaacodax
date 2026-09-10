@@ -7,6 +7,7 @@ import { api } from '../services/api';
 import { HomepageSettings } from '../types';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
+import { resolveIconComponent } from '../dashboards/admin/PathsManager/pathDisplayPresentation';
 
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.jpg?v=20260512';
@@ -191,7 +192,7 @@ export const Landing: React.FC = () => {
         if (!path?.icon) {
             return <Zap size={24} />;
         }
-        return <span className="text-xl">{path.icon}</span>;
+        return resolveIconComponent(path.icon, 'w-6 h-6', '⚡');
     };
 
     const homepagePaths = paths.filter(

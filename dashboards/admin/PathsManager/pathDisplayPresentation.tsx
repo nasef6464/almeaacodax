@@ -1,5 +1,8 @@
 import React from 'react';
 import type { PathDisplaySettings } from '../../../types';
+import { resolveIconComponent, LUCIDE_ICONS_MAP, EDUCATIONAL_ICONS, ICON_CATEGORIES } from './educationalIcons';
+
+export { resolveIconComponent, LUCIDE_ICONS_MAP, EDUCATIONAL_ICONS, ICON_CATEGORIES };
 
 const colorMap: Record<string, { soft: string; text: string; border: string }> = {
   gray: { soft: '#f3f4f6', text: '#4b5563', border: '#d1d5db' },
@@ -30,12 +33,34 @@ export const resolvePathDisplaySettings = (path?: { settings?: PathDisplaySettin
   ...(path?.settings || {}),
 });
 
-export const getPathIcon = (path: any) => {
-  if (path?.iconUrl) return <img src={path.iconUrl} alt={path.name} className="w-8 h-8 object-contain" />;
-  return path?.icon || '📚';
+export const getPathIcon = (path: any, className = 'w-8 h-8 object-contain') => {
+  if (path?.iconUrl) return <img src={path.iconUrl} alt={path.name || 'مسار'} className={className} />;
+  return resolveIconComponent(path?.icon, className, '📚');
 };
 
-export const getSubjectIcon = (subject: any) => {
-  if (subject?.iconUrl) return <img src={subject.iconUrl} alt={subject.name} className="w-8 h-8 object-contain" />;
-  return subject?.icon || '📖';
+export const getSubjectIcon = (subject: any, className = 'w-8 h-8 object-contain') => {
+  if (subject?.iconUrl) return <img src={subject.iconUrl} alt={subject.name || 'مادة'} className={className} />;
+  return resolveIconComponent(subject?.icon, className, '📖');
+};
+
+export const getLevelIcon = (level: any, className = 'w-6 h-6 object-contain') => {
+  if (level?.iconUrl) return <img src={level.iconUrl} alt={level.name || 'مرحلة'} className={className} />;
+  if (level?.icon) return resolveIconComponent(level.icon, className, '🎓');
+  
+  // Intelligent stage name fallback
+  const name = String(level?.name || '');
+  if (name.includes('ابتدائي')) return resolveIconComponent('🎒', className, '🎒');
+  if (name.includes('متوسط')) return resolveIconComponent('🏫', className, '🏫');
+  if (name.includes('ثانوي')) return resolveIconComponent('🎓', className, '🎓');
+  return resolveIconComponent('🎓', className, '🎓');
+};
+
+export const renderPlatformIcon = (
+  icon?: string,
+  iconUrl?: string,
+  fallback = '📚',
+  className = 'w-6 h-6 object-contain'
+) => {
+  if (iconUrl) return <img src={iconUrl} alt="" className={className} />;
+  return resolveIconComponent(icon, className, fallback);
 };
