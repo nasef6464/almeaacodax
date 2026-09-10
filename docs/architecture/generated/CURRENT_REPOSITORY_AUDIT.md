@@ -1,26 +1,26 @@
 # Current Repository Architecture Audit
 
-Generated from commit `ba0efee19b0fc19b0a5f7b9c3cd6580018ed6e7f` using the TypeScript AST for imports and route extraction.
+Generated from commit `47cc22dc1233bea83149202f0cf3e7f31eaaf0f1` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1354 |
-| Source files (including scripts/tooling) | 932 |
-| Runtime source files | 562 |
-| Source lines | 185,332 |
-| Runtime source lines | 145,909 |
-| Frontend route literals | 54 |
-| Backend HTTP route entries | 266 |
+| Tracked files | 1359 |
+| Source files (including scripts/tooling) | 937 |
+| Runtime source files | 565 |
+| Source lines | 186,357 |
+| Runtime source lines | 146,866 |
+| Frontend route literals | 55 |
+| Backend HTTP route entries | 278 |
 | Router mount points | 30 |
-| Runtime relative import edges | 1658 |
+| Runtime relative import edges | 1673 |
 | Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 5 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 1043 |
+| Cross-domain runtime import edges | 1050 |
 | Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 551 |
+| Candidate migration-map entries | 554 |
 
 ## Largest runtime source hotspots
 
@@ -37,15 +37,15 @@ Generated from commit `ba0efee19b0fc19b0a5f7b9c3cd6580018ed6e7f` using the TypeS
 | `dashboards/admin/FinancialManager.tsx` | 2135 | 144154 | payments |
 | `dashboards/admin/AdminDashboard.tsx` | 2084 | 126040 | shared |
 | `dashboards/admin/QuizzesManager.tsx` | 1911 | 106739 | quizzes |
+| `server/src/scripts/backendIntegrationGate.ts` | 1890 | 107065 | operations |
 | `server/src/routes/payment.routes.ts` | 1886 | 71269 | payments |
 | `dashboards/admin/PlatformIntegrationsManagerLegacy.tsx` | 1845 | 101223 | operations |
 | `dashboards/admin/SupervisorDashboard.tsx` | 1782 | 114630 | schools |
 | `store/useStore.ts` | 1772 | 88949 | shared |
-| `server/src/scripts/backendIntegrationGate.ts` | 1749 | 92319 | operations |
 | `dashboards/admin/SchoolPortalManager.tsx` | 1736 | 101813 | schools |
 | `pages/Plan.tsx` | 1732 | 79122 | shared |
 | `server/src/scripts/seedOperationalScenario.ts` | 1725 | 62356 | operations |
-| `App.tsx` | 1665 | 75319 | shared |
+| `App.tsx` | 1683 | 76262 | shared |
 | `server/src/routes/ai.routes.ts` | 1648 | 65293 | ai |
 | `server/src/scripts/seedOperationalScenarioApi.ts` | 1609 | 59044 | operations |
 | `dashboards/admin/QuestionBankManager.tsx` | 1603 | 77062 | questions |
@@ -60,7 +60,7 @@ Generated from commit `ba0efee19b0fc19b0a5f7b9c3cd6580018ed6e7f` using the TypeS
 | `server/src/scripts/smokeOperationalJourneysApi.ts` | 1293 | 51179 | operations |
 | `dashboards/admin/LessonsManager.tsx` | 1263 | 62420 | learning |
 | `dashboards/admin/PublicBarcodeTestsManager.tsx` | 1250 | 66200 | exams |
-| `components/CourseOverview.tsx` | 1217 | 75239 | courses |
+| `components/Header.tsx` | 1219 | 63642 | shared |
 
 ## Baseline safety evidence
 

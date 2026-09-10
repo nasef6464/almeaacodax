@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T09:07:42.421Z",
-  "gitHead": "ba0efee19b0fc19b0a5f7b9c3cd6580018ed6e7f",
+  "generatedAt": "2026-09-10T10:08:12.868Z",
+  "gitHead": "47cc22dc1233bea83149202f0cf3e7f31eaaf0f1",
   "frontendRoutes": [
     "*",
     "/",
@@ -51,6 +51,7 @@
     "/reset-password",
     "/results",
     "/review",
+    "/school-director-dashboard",
     "/school-teacher-dashboard",
     "/section/:catId",
     "/signup",
@@ -1495,8 +1496,80 @@
     },
     {
       "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "PUT",
+      "path": "/director/schools/:schoolId/assignments",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "POST",
+      "path": "/director/schools/:schoolId/classes",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "PATCH",
+      "path": "/director/schools/:schoolId/classes/:classId",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/overview",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
       "method": "GET",
       "path": "/director/schools/:schoolId/overview-access",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/reports/detailed",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/reports/students.csv",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/students",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "POST",
+      "path": "/director/schools/:schoolId/students",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "PATCH",
+      "path": "/director/schools/:schoolId/students/:studentId",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "PATCH",
+      "path": "/director/schools/:schoolId/students/:studentId/active",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "PUT",
+      "path": "/director/schools/:schoolId/students/:studentId/class",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/teachers",
       "receiver": "schoolAccessRouter"
     },
     {
@@ -2044,7 +2117,7 @@
     "WHATSAPP_WEBHOOK_URL"
   ],
   "routeSourceHashes": {
-    "App.tsx": "fe5d9fe398dac7a4fce2584eaeaa525d7e17fb313952e25f2c213cc509fb45fc",
+    "App.tsx": "9ba4ff75a6cfb5f526b3275146c4734d2bf3e70c2fda05903730a5a7108d90ee",
     "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
     "server/src/routes/activity.routes.ts": "5ca824db806c9d2876519d88994234d7a4927050c3029c74a6a91308efb39124",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
@@ -2069,7 +2142,7 @@
     "server/src/routes/quiz.routes.ts": "f03e296efd18f9ad0a5ecbfb837e8f20a4bea9f2848ab5ec6287c36ce48627e7",
     "server/src/routes/quizResults.routes.ts": "759f2fc513eb2ed8055a04c406a17947f91d4867cfd1f4e01aba458c73d3c6fe",
     "server/src/routes/review.routes.ts": "cfae31aef790e32e6d58526f7c19b8d0c5a6c9c544572cccb3ba502549045966",
-    "server/src/routes/schoolAccess.routes.ts": "2dd169968e8152d7cce103fce9ba1bef657275a7d9255af21cffaa98042fafa9",
+    "server/src/routes/schoolAccess.routes.ts": "3b4900f77ae6f6698d8f7b93ead13b7c1608bdb4edabb0132a774d35a3760e58",
     "server/src/routes/search.routes.ts": "2499d52eb8028894d8622cb1bebf896d90f3c3b03caf7e39cf231bf84381b104",
     "server/src/routes/seo.routes.ts": "74ba2c2e0a532bc67b4d1c5cbf4e0409f4fe0019b7c09f198aa122669c3640c6",
     "server/src/routes/taxonomy.routes.ts": "ebaa9cf5bcaa80418e593d24c2a73038952fef0560371cbd6a871e6c1bfa7818"

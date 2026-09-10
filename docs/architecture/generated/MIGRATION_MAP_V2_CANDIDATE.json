@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T09:07:42.421Z",
-  "sourceGitHead": "ba0efee19b0fc19b0a5f7b9c3cd6580018ed6e7f",
+  "generatedAt": "2026-09-10T10:08:12.868Z",
+  "sourceGitHead": "47cc22dc1233bea83149202f0cf3e7f31eaaf0f1",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -1070,6 +1070,18 @@
       "source": "dashboards/admin/UsersManager.tsx",
       "target": "apps/web/src/features/users/admin/UsersManager.tsx",
       "domain": "users",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/SchoolDirectorDashboard.tsx",
+      "target": "apps/web/src/features/schools/SchoolDirectorDashboard.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/SchoolDirectorDelegatedOperations.tsx",
+      "target": "apps/web/src/features/schools/SchoolDirectorDelegatedOperations.tsx",
+      "domain": "schools",
       "confidence": "candidate"
     },
     {
@@ -2401,6 +2413,12 @@
     {
       "source": "server/src/modules/schools/application/schoolDirectorAccess.ts",
       "target": "apps/api/src/modules/schools/application/schoolDirectorAccess.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/schools/application/schoolDirectorWorkspace.ts",
+      "target": "apps/api/src/modules/schools/application/schoolDirectorWorkspace.ts",
       "domain": "schools",
       "confidence": "review-required"
     },
