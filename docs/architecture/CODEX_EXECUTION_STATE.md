@@ -4,7 +4,7 @@
 
 - Reviewed on 2026-09-10 against `origin/main@5dfdd16c` and the approved trainer,
   school-teacher, and school-director product decision.
-- Status: `G8 CLOSED / G9 AUTHORIZED`. G7/G8 introduced no role migration, school
+- Status: `G9 CLOSED / G10 AUTHORIZED`. G7–G9 introduced no destructive role migration, school
   schema, payment/scoring, production-data, deployment, or cutover change.
 - Canonical registry: `docs/architecture/ACCOUNT_WORKSPACES_GOALS_AR.md`.
   Architecture: `PLATFORM_TRAINER_AND_SCHOOL_DIRECTOR_PLAN_AR.md`. Agent entry:
@@ -30,7 +30,15 @@
   Hybrid Platform Trainer + School Teacher contexts remain separate through a
   persona gate/switcher. Production builds and focused typechecks/contracts passed;
   desktop/mobile RTL browser audit showed the assigned journey with zero errors.
-- Current Goal: `G9 — School Director Identity & Delegated Access (AW-03)` is authorized.
+- G9 closure: exact runtime `68768d006b0041df9a426ae1353ce3ea9cf15d79`
+  passed Backend Integration [34456463696](https://github.com/nasef6464/almeaacodax/actions/runs/34456463696).
+  `school_admin` is additive; active per-school SchoolMembership permissions are
+  resolved fresh server-side, only Platform Admin can grant/revoke them, and every
+  change is audit logged. The isolated journey proved empty/inactive memberships,
+  School A/B isolation, immediate permission revoke to `403`, and no self-grant.
+  The redesigned School People Hub now creates/links directors and clearly separates
+  Director, Supervisor, and Teacher identities on desktop/mobile RTL.
+- Current Goal: `G10 — Usable School Director Dashboard (AW-04)` is authorized.
 - Product decision: مدير المدرسة يملك أساسًا overview + student view/add/move
   داخل المدرسة؛ كل توسع permission صريحة لكل SchoolMembership ومن allowlist،
   ويحتاج contract entitlement أيضًا عندما يكون capability وحدة تجارية. لا hard
