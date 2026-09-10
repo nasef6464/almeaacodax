@@ -51,6 +51,7 @@ const ClassroomStudentLive = React.lazy(() => import('./pages/ClassroomStudentLi
 const ClassroomTeacherConsole = React.lazy(() => import('./pages/ClassroomTeacherConsole').then(module => ({ default: module.ClassroomTeacherConsole })));
 const ClassroomProjectorView = React.lazy(() => import('./pages/ClassroomProjectorView').then(module => ({ default: module.ClassroomProjectorView })));
 const SchoolTeacherDashboard = React.lazy(() => import('./dashboards/SchoolTeacherDashboard').then(module => ({ default: module.SchoolTeacherDashboard })));
+const SchoolDirectorDashboard = React.lazy(() => import('./dashboards/SchoolDirectorDashboard').then(module => ({ default: module.SchoolDirectorDashboard })));
 const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
 const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
 const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
@@ -264,6 +265,7 @@ const SEO_PRIVATE_PREFIXES = [
   '/admin-dashboard',
   '/instructor-dashboard',
   '/school-teacher-dashboard',
+  '/school-director-dashboard',
   '/supervisor-dashboard',
   '/parent-dashboard',
   '/quiz',
@@ -624,6 +626,15 @@ const resolvePageMeta = (
       description: 'مساحة معلم المدرسة للفصول المسندة والاختبارات المدرسية والفصل الذكي.',
       isPrivate: true,
       canonicalPath: '/school-teacher-dashboard',
+    };
+  }
+
+  if (effectivePath === '/school-director-dashboard' || effectivePath.startsWith('/school-director-dashboard/')) {
+    return {
+      title: 'لوحة مدير المدرسة | منصة المئة',
+      description: 'مساحة مدير المدرسة للمؤشرات التنفيذية وعمليات الطلاب داخل المدارس المفوضة.',
+      isPrivate: true,
+      canonicalPath: '/school-director-dashboard',
     };
   }
 
@@ -1575,6 +1586,13 @@ const App: React.FC = () => {
                   <SchoolTeacherDashboard />
                 </Suspense>
               </TeacherWorkspaceGate>
+            </RequireRole>
+          } />
+          <Route path="/school-director-dashboard" element={
+            <RequireRole allowedRoles={['school_admin']}>
+              <Suspense fallback={<LoadingFallback />}>
+                <SchoolDirectorDashboard />
+              </Suspense>
             </RequireRole>
           } />
           <Route path="/supervisor-dashboard" element={

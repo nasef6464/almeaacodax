@@ -124,6 +124,8 @@ export const Header: React.FC = () => {
         return '/instructor-dashboard';
       case 'supervisor':
         return '/supervisor-dashboard';
+      case 'school_admin':
+        return '/school-director-dashboard';
       case 'parent':
         return '/parent-dashboard';
       default:
@@ -287,7 +289,7 @@ export const Header: React.FC = () => {
 
     return menu.sort((a, b) => getNavOrder(a.id, a.id === 'more' ? 100 : 50) - getNavOrder(b.id, b.id === 'more' ? 100 : 50));
   }, [homepageSettings?.navigation, levels, paths, subjects, user?.role]);
-  const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor';
+  const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor' || user?.role === 'school_admin';
   const showNavigationLoading = Boolean(user) && paths.length === 0 && navigationMenu.length <= 2 && !navigationLoadingExpired;
   const isStrongPassword = (value: string) => value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
 

@@ -363,6 +363,69 @@ async function runSchoolDirectorIdentityJourney(csrf: CsrfContext) {
   pass("school director grants and revocation are audit logged");
 }
 
+async function runSchoolDirectorDashboardJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school");
+  const classId = groupIds.get("class");
+  const siblingClassId = groupIds.get("siblingClass");
+  const outsideSchoolId = groupIds.get("outsideSchool");
+  const outsideStudentId = scopeStudentIds.get("outsideSchool");
+  const directorId = userIds.get("schoolAdmin");
+  assert.ok(schoolId && classId && siblingClassId && outsideSchoolId && outsideStudentId && directorId, "school director dashboard fixture scope missing");
+  const permissions = ["SCHOOL_OVERVIEW_VIEW", "SCHOOL_REPORTS_AGGREGATE_VIEW", "SCHOOL_STUDENTS_VIEW", "SCHOOL_STUDENTS_ADD", "SCHOOL_STUDENTS_MOVE_CLASS"];
+  const grant = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, { method: "PUT", token: tokens.get("admin"), csrf, body: { status: "active", permissions } });
+  expectStatus("platform admin authorizes usable director dashboard", grant, 200);
+
+  const selfGrant = await jsonRequest(`/school-access/directors/${outsideSchoolId}/${directorId}`, { method: "PUT", token: tokens.get("schoolAdmin"), csrf, body: { status: "active", permissions } });
+  expectStatus("school director cannot grant self another school", selfGrant, 403);
+  const overview = await jsonRequest(`/school-access/director/schools/${schoolId}/overview`, { token: tokens.get("schoolAdmin") });
+  expectStatus("school director reads aggregate school overview", overview, 200);
+  assert.equal(overview.body?.school?.schoolId, schoolId, "director overview returned wrong school");
+  assert.ok(Number(overview.body?.metrics?.students) >= 1, "director overview omitted students");
+  assert.equal(overview.body?.classes?.some((classroom: any) => classroom.classId === siblingClassId), true, "director overview omitted school class selector");
+
+  const before = await jsonRequest(`/school-access/director/schools/${schoolId}/students`, { token: tokens.get("schoolAdmin") });
+  expectStatus("school director reads only school student roster", before, 200);
+  assert.equal(before.body?.students?.some((student: any) => student.studentId === outsideStudentId), false, "director roster leaked another school student");
+
+  const studentEmail = `director-added-${RUN_MARKER}@example.invalid`;
+  const studentPayload = { name: "Director Added Student", email: studentEmail, password: `Temp${randomBytes(8).toString("hex")}9`, classId };
+  const created = await jsonRequest(`/school-access/director/schools/${schoolId}/students`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: studentPayload });
+  expectStatus("school director creates student inside granted school", created, 201);
+  const studentId = String(created.body?.student?.studentId || "");
+  assert.ok(studentId, "director-created student id missing");
+  const persistedMembership = await SchoolMembershipModel.findOne({ userId: studentId, schoolId, role: "student", status: "active" }).lean();
+  assert.ok(persistedMembership, "director-created student membership was not persisted");
+
+  const repeatedAdd = await jsonRequest(`/school-access/director/schools/${schoolId}/students`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: studentPayload });
+  expectStatus("repeated director student add is idempotent", repeatedAdd, 200);
+  assert.equal(repeatedAdd.body?.created, false, "repeated student add created a duplicate account");
+  assert.equal(await UserModel.countDocuments({ email: studentEmail }), 1, "repeated student add duplicated database user");
+
+  const wrongClass = await jsonRequest(`/school-access/director/schools/${schoolId}/students`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { ...studentPayload, email: `wrong-class-${RUN_MARKER}@example.invalid`, classId: outsideSchoolId } });
+  expectStatus("school director cannot add student to class outside school", wrongClass, 400);
+  const crossSchoolAdd = await jsonRequest(`/school-access/director/schools/${outsideSchoolId}/students`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { ...studentPayload, email: `cross-school-${RUN_MARKER}@example.invalid` } });
+  expectStatus("school director cannot add student to ungranted school", crossSchoolAdd, 403);
+
+  const moved = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}/class`, { method: "PUT", token: tokens.get("schoolAdmin"), csrf, body: { classId: siblingClassId } });
+  expectStatus("school director moves student within same school", moved, 200);
+  assert.equal(moved.body?.student?.classId, siblingClassId, "student move did not persist destination class");
+  assert.equal(moved.body?.idempotent, false, "first student move was incorrectly idempotent");
+  const repeatedMove = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}/class`, { method: "PUT", token: tokens.get("schoolAdmin"), csrf, body: { classId: siblingClassId } });
+  expectStatus("repeated same-class move is idempotent", repeatedMove, 200);
+  assert.equal(repeatedMove.body?.idempotent, true, "repeated same-class move was not marked idempotent");
+  const classMembershipCount = await GroupModel.countDocuments({ type: "CLASS", parentId: schoolId, studentIds: studentId });
+  assert.equal(classMembershipCount, 1, "student remained in multiple classes after move");
+
+  const outsideStudentMove = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${outsideStudentId}/class`, { method: "PUT", token: tokens.get("schoolAdmin"), csrf, body: { classId } });
+  expectStatus("school director cannot move another school student", outsideStudentMove, 404);
+  const deleteAttempt = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}`, { method: "DELETE", token: tokens.get("schoolAdmin"), csrf });
+  expectStatus("school director has no student delete endpoint", deleteAttempt, 404);
+
+  const auditCount = await AdminAuditLogModel.countDocuments({ actorId: directorId, action: { $in: ["schools.director.student.add", "schools.director.student.move_class"] }, "metadata.schoolId": schoolId });
+  assert.ok(auditCount >= 4, "director student operations were not audit logged");
+  pass("school director add and idempotent move operations are audit logged");
+}
+
 async function runSmartClassroomJourney(csrf: CsrfContext) {
   const schoolId = groupIds.get("school");
   const classId = groupIds.get("class");
@@ -1588,6 +1651,7 @@ async function main() {
 
     await runSchoolDirectorIdentityJourney(csrf);
     await runSmartClassroomJourney(csrf);
+    await runSchoolDirectorDashboardJourney(csrf);
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);

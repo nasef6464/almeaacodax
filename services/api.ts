@@ -733,6 +733,14 @@ export const api = {
     request<{ membership: unknown }>(`/school-access/directors/${encodeURIComponent(schoolId)}/${encodeURIComponent(userId)}`, { method: "PUT", body: payload, token }),
   getSchoolDirectorWorkspace: (token?: string | null) =>
     request<{ schools: Array<{ schoolId: string; schoolName: string; permissions: string[]; status: string; updatedAt: string | null }> }>("/school-access/director-workspace", { token, cache: "no-store" }),
+  getSchoolDirectorOverview: (schoolId: string, token?: string | null) =>
+    request<{ school: { schoolId: string; schoolName: string }; metrics: { students: number; classes: number; teachers: number; supervisors: number; schoolAssessments: number; completedSmartClasses: number }; classes: Array<{ classId: string; className: string }> }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/overview`, { token, cache: "no-store" }),
+  getSchoolDirectorStudents: (schoolId: string, search = '', token?: string | null) =>
+    request<{ students: Array<{ studentId: string; name: string; email: string; isActive: boolean; classId: string | null; className: string | null }>; total: number }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students${search ? `?search=${encodeURIComponent(search)}` : ''}`, { token, cache: "no-store" }),
+  addSchoolDirectorStudent: (schoolId: string, payload: { name: string; email: string; password: string; classId: string }, token?: string | null) =>
+    request<{ student: { studentId: string; name: string; email: string; isActive: boolean; classId: string | null; className: string | null }; created: boolean }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students`, { method: "POST", body: payload, token }),
+  moveSchoolDirectorStudent: (schoolId: string, studentId: string, classId: string, token?: string | null) =>
+    request<{ student: { studentId: string; name: string; email: string; isActive: boolean; classId: string | null; className: string | null }; idempotent: boolean }>(`/school-access/director/schools/${encodeURIComponent(schoolId)}/students/${encodeURIComponent(studentId)}/class`, { method: "PUT", body: { classId }, token }),
   getSchoolTeacherWorkspace: (token?: string | null) =>
     request<{
       personas: { platformTrainer: boolean; schoolTeacher: boolean };
