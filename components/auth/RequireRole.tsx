@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 
 interface RequireRoleProps {
-  allowedRoles: Array<'student' | 'teacher' | 'admin' | 'supervisor' | 'parent'>;
+  allowedRoles: Array<'student' | 'teacher' | 'admin' | 'supervisor' | 'school_admin' | 'parent'>;
   children: React.ReactNode;
 }
 

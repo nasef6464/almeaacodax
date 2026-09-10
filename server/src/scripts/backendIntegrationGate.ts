@@ -15,6 +15,7 @@ import { QuestionModel } from "../models/Question.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { AdminAuditLogModel } from "../models/AdminAuditLog.js";
 import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
 import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assessmentAttemptModel.js";
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
@@ -30,7 +31,7 @@ import { reconcileAssessmentMirrorAudits } from "../modules/quizzes/application/
 import { inventoryLegacyAssessmentResults } from "../modules/quizzes/application/assessmentLegacyBackfillInventory.js";
 import { backfillHistoricalAssessmentResults } from "../modules/quizzes/application/assessmentResultOnlyBackfill.js";
 
-type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "parent" | "admin";
+type Role = "student" | "outsider" | "teacher" | "supervisor" | "classSupervisor" | "schoolAdmin" | "parent" | "admin";
 
 type JsonResult = {
   status: number;
@@ -141,7 +142,7 @@ async function getCsrf(): Promise<CsrfContext> {
 }
 
 async function seedIsolatedUsers() {
-  const roles: Role[] = ["student", "outsider", "teacher", "supervisor", "classSupervisor", "parent", "admin"];
+  const roles: Role[] = ["student", "outsider", "teacher", "supervisor", "classSupervisor", "schoolAdmin", "parent", "admin"];
 
   for (const role of roles) {
     const password = randomBytes(24).toString("base64url");
@@ -152,7 +153,7 @@ async function seedIsolatedUsers() {
       name: `Platform V3 ${role}`,
       email,
       passwordHash: await bcrypt.hash(password, 10),
-      role: role === "outsider" ? "student" : role === "classSupervisor" ? "supervisor" : role,
+      role: role === "outsider" ? "student" : role === "classSupervisor" ? "supervisor" : role === "schoolAdmin" ? "school_admin" : role,
       isActive: true,
       emailVerified: true,
       emailVerifiedAt: Date.now(),
@@ -291,10 +292,75 @@ async function loginRole(role: Role, csrf: CsrfContext) {
     body: credential,
   });
   expectStatus(`${role} login`, result, 200);
-  const expectedRole = role === "outsider" ? "student" : role === "classSupervisor" ? "supervisor" : role;
+  const expectedRole = role === "outsider" ? "student" : role === "classSupervisor" ? "supervisor" : role === "schoolAdmin" ? "school_admin" : role;
   assert.equal(result.body?.user?.role, expectedRole, `${role}: login returned wrong role`);
   assert.equal(typeof result.body?.token, "string", `${role}: test-mode bearer token missing`);
   tokens.set(role, result.body.token);
+}
+
+async function runSchoolDirectorIdentityJourney(csrf: CsrfContext) {
+  const schoolId = groupIds.get("school");
+  const outsideSchoolId = groupIds.get("outsideSchool");
+  const directorId = userIds.get("schoolAdmin");
+  assert.ok(schoolId && outsideSchoolId && directorId, "school director fixture scope missing");
+
+  const emptyWorkspace = await jsonRequest("/school-access/director-workspace", { token: tokens.get("schoolAdmin") });
+  expectStatus("unassigned school director reaches isolated workspace", emptyWorkspace, 200);
+  assert.deepEqual(emptyWorkspace.body?.schools, [], "unassigned director received a school");
+
+  const supervisorGrant = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, {
+    method: "PUT",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: { status: "active", permissions: ["SCHOOL_OVERVIEW_VIEW"] },
+  });
+  expectStatus("non-admin cannot grant school director permissions", supervisorGrant, 403);
+
+  const grant = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, {
+    method: "PUT",
+    token: tokens.get("admin"),
+    csrf,
+    body: { status: "active", permissions: ["SCHOOL_OVERVIEW_VIEW", "SCHOOL_STUDENTS_VIEW"] },
+  });
+  expectStatus("platform admin grants per-school director permissions", grant, 200);
+
+  const workspace = await jsonRequest("/school-access/director-workspace", { token: tokens.get("schoolAdmin") });
+  expectStatus("school director reads delegated workspace", workspace, 200);
+  assert.deepEqual(workspace.body?.schools?.map((school: any) => school.schoolId), [schoolId], "director workspace leaked another school");
+  assert.deepEqual(workspace.body?.schools?.[0]?.permissions?.sort(), ["SCHOOL_OVERVIEW_VIEW", "SCHOOL_STUDENTS_VIEW"].sort(), "director workspace returned wrong permissions");
+
+  const allowed = await jsonRequest(`/school-access/director/schools/${schoolId}/overview-access`, { token: tokens.get("schoolAdmin") });
+  expectStatus("school director reaches granted school", allowed, 200);
+  const crossSchool = await jsonRequest(`/school-access/director/schools/${outsideSchoolId}/overview-access`, { token: tokens.get("schoolAdmin") });
+  expectStatus("school director cannot cross into another school", crossSchool, 403);
+
+  const removePermission = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, {
+    method: "PUT",
+    token: tokens.get("admin"),
+    csrf,
+    body: { status: "active", permissions: ["SCHOOL_STUDENTS_VIEW"] },
+  });
+  expectStatus("platform admin removes one director permission", removePermission, 200);
+  const immediatelyDenied = await jsonRequest(`/school-access/director/schools/${schoolId}/overview-access`, { token: tokens.get("schoolAdmin") });
+  expectStatus("revoked director permission is denied immediately", immediatelyDenied, 403);
+
+  const deactivate = await jsonRequest(`/school-access/directors/${schoolId}/${directorId}`, {
+    method: "PUT",
+    token: tokens.get("admin"),
+    csrf,
+    body: { status: "inactive", permissions: ["SCHOOL_OVERVIEW_VIEW"] },
+  });
+  expectStatus("platform admin deactivates school membership", deactivate, 200);
+  const inactiveDenied = await jsonRequest(`/school-access/director/schools/${schoolId}/overview-access`, { token: tokens.get("schoolAdmin") });
+  expectStatus("inactive school director membership is denied", inactiveDenied, 403);
+
+  const auditCount = await AdminAuditLogModel.countDocuments({
+    action: { $in: ["schools.director_access.grant", "schools.director_access.revoke"] },
+    "metadata.schoolId": schoolId,
+    "metadata.userId": directorId,
+  });
+  assert.ok(auditCount >= 3, "school director permission changes were not audit logged");
+  pass("school director grants and revocation are audit logged");
 }
 
 async function runSmartClassroomJourney(csrf: CsrfContext) {
@@ -1516,10 +1582,11 @@ async function main() {
     expectStatus("login without CSRF is rejected", noCsrfLogin, 403);
     assert.equal(noCsrfLogin.body?.code, "CSRF_TOKEN_INVALID", "login without CSRF returned unexpected error code");
 
-    for (const role of ["student", "outsider", "teacher", "supervisor", "classSupervisor", "parent", "admin"] as Role[]) {
+    for (const role of ["student", "outsider", "teacher", "supervisor", "classSupervisor", "schoolAdmin", "parent", "admin"] as Role[]) {
       await loginRole(role, csrf);
     }
 
+    await runSchoolDirectorIdentityJourney(csrf);
     await runSmartClassroomJourney(csrf);
     await runAssessmentJourney(csrf);
     await runAssessmentDualWritePrimitiveJourney();

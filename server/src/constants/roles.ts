@@ -3,6 +3,7 @@ export const roles = [
   "teacher",
   "admin",
   "supervisor",
+  "school_admin",
   "parent",
 ] as const;
 

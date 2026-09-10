@@ -321,11 +321,12 @@ export const SchoolsManager: React.FC = () => {
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
     const students = useMemo(() => users.filter((currentUser) => currentUser.role === Role.STUDENT), [users]);
     const supervisors = useMemo(
-        () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR || currentUser.role === Role.TEACHER),
+        () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR),
         [users],
     );
     const teachers = useMemo(() => users.filter((currentUser) => currentUser.role === Role.TEACHER), [users]);
     const parents = useMemo(() => users.filter((currentUser) => currentUser.role === Role.PARENT), [users]);
+    const directorAccounts = useMemo(() => users.filter((currentUser) => currentUser.role === Role.SCHOOL_ADMIN), [users]);
     const publishedCourses = useMemo(() => courses.filter((course) => course.isPublished !== false), [courses]);
     const importPreviewStats = useMemo(() => {
         const duplicateEmails = getDuplicateImportEmails(importRows);
@@ -1459,6 +1460,7 @@ export const SchoolsManager: React.FC = () => {
                                 supervisors={supervisors}
                                 teachers={teachers}
                                 parents={parents}
+                                directorAccounts={directorAccounts}
                                 onOpenSingleStudent={() => {
                                     setIsSingleStudentOpen(true);
                                     window.setTimeout(() => {
