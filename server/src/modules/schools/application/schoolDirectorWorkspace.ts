@@ -248,10 +248,13 @@ export const createSchoolDirectorAssessment = async (schoolId: string, actorId: 
   const classroom = scope.classes.find((item) => idOf(item) === payload.classId);
   if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 400);
   const questionIds = uniqueStrings(payload.questionIds);
-  const questions = await QuestionModel.find({ approvalStatus: "approved", $or: [{ id: { $in: questionIds } }, { _id: { $in: questionIds.filter((id) => mongoose.isValidObjectId(id)) } }] }).select("id _id").lean();
+  const questions = await QuestionModel.find({ approvalStatus: "approved", $or: [{ id: { $in: questionIds } }, { _id: { $in: questionIds.filter((id) => mongoose.isValidObjectId(id)) } }] }).select("id _id pathId subject skillIds").lean();
   if (questions.length !== questionIds.length) throw new SchoolDirectorOperationError("Approved questions not found", 400);
+  const pathIds = uniqueStrings(questions.map((question: any) => question.pathId));
+  if (pathIds.length !== 1) throw new SchoolDirectorOperationError("Assessment questions must belong to one learning path", 400);
+  const skillIds = uniqueStrings(questions.flatMap((question: any) => question.skillIds || []));
   const assessmentId = new mongoose.Types.ObjectId().toString();
-  const assessment = await QuizModel.create({ id: assessmentId, title: payload.title.trim(), subjectId: payload.subjectId || "", questionIds, targetGroupIds: [idOf(classroom)], ownerType: "school", ownerId: scope.schoolId, createdBy: actorId, isPublished: true, approvalStatus: "approved", quizKind: "test" });
+  const assessment = await QuizModel.create({ _id: assessmentId, id: assessmentId, title: payload.title.trim(), pathId: pathIds[0], subjectId: payload.subjectId || String((questions[0] as any).subject || ""), questionIds, skillIds, targetGroupIds: [idOf(classroom)], ownerType: "school", ownerId: scope.schoolId, createdBy: actorId, isPublished: true, showOnPlatform: false, approvalStatus: "approved", quizKind: "test" });
   return { assessment: { assessmentId: idOf(assessment), title: String(assessment.title), classId: idOf(classroom) } };
 };
 
