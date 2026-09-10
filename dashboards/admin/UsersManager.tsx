@@ -20,6 +20,7 @@ type AdminUserPayload = {
     linkedStudentIds?: string[];
     managedPathIds?: string[];
     managedSubjectIds?: string[];
+    schoolContexts?: Array<{ schoolId: string; role: string; permissions: string[] }>;
     subscription?: {
         plan?: 'free' | 'premium';
         purchasedCourses?: string[];
@@ -41,6 +42,7 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
     linkedStudentIds: user.linkedStudentIds ?? [],
     managedPathIds: user.managedPathIds ?? [],
     managedSubjectIds: user.managedSubjectIds ?? [],
+    schoolContexts: user.schoolContexts ?? [],
     subscription: {
         plan: user.subscription?.plan ?? 'free',
         purchasedCourses: user.subscription?.purchasedCourses ?? [],
@@ -357,13 +359,14 @@ export const UsersManager: React.FC = () => {
 
     const exportUsersWorkbook = () => {
         const userRows: Array<Array<string | number>> = [
-            ['الاسم', 'البريد الإلكتروني', 'الدور', 'الحالة', 'المدرسة', 'الفصل/المجموعة', 'نطاق المعلم', 'الأبناء المرتبطون'],
+            ['الاسم', 'البريد الإلكتروني', 'الشخصية/مساحة العمل', 'الحالة', 'المدرسة القديمة', 'السياقات المدرسية الفعلية', 'الفصل/المجموعة', 'نطاق المدرب', 'الأبناء المرتبطون'],
             ...filteredUsers.map((currentUser) => {
                 const schoolName = resolveSchoolName(currentUser) || '';
                 const userGroups = groups.filter((group) => currentUser.groupIds?.includes(group.id)).map((group) => group.name).join('، ');
                 const { pathNames, subjectNames } = resolveTeacherScope(currentUser);
                 const linkedStudents = linkableStudents.filter((student) => currentUser.linkedStudentIds?.includes(student.id)).map((student) => student.name).join('، ');
-                return [currentUser.name, currentUser.email || '', resolveUserRoleLabel(currentUser), currentUser.isActive === false ? 'متوقف' : 'نشط', schoolName, userGroups, [...pathNames, ...subjectNames].join('، '), linkedStudents];
+                const schoolContexts = (currentUser.schoolContexts || []).map((context) => `${context.role}@${schools.find((group) => group.id === context.schoolId)?.name || context.schoolId}`).join('، ');
+                return [currentUser.name, currentUser.email || '', resolveUserRoleLabel(currentUser), currentUser.isActive === false ? 'متوقف' : 'نشط', schoolName, schoolContexts, userGroups, [...pathNames, ...subjectNames].join('، '), linkedStudents];
             }),
         ];
         const roleRows: Array<Array<string | number>> = [

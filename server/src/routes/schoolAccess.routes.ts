@@ -27,6 +27,11 @@ import {
   upsertSchoolDirectorTeachingAssignment,
   buildSchoolDirectorDetailedReport,
   buildSchoolDirectorStudentExport,
+  buildSchoolDirectorAcademicWorkspace,
+  buildSchoolDirectorClassOptions,
+  createSchoolDirectorAssessment,
+  createSchoolDirectorIntervention,
+  transferSchoolDirectorStudent,
   SchoolDirectorOperationError,
 } from "../modules/schools/application/schoolDirectorWorkspace.js";
 
@@ -48,6 +53,9 @@ const directorStudentBasicSchema = z.object({ name: z.string().trim().min(2).max
 const directorStudentActiveSchema = z.object({ isActive: z.boolean() });
 const directorClassSchema = z.object({ name: z.string().trim().min(2).max(120) });
 const directorAssignmentSchema = z.object({ teacherId: z.string().min(1), classId: z.string().min(1), subjectId: z.string().trim().max(120).optional().default(""), status: z.enum(["active", "inactive"]).default("active") });
+const directorAssessmentSchema = z.object({ title: z.string().trim().min(3).max(180), classId: z.string().min(1), pathId: z.string().trim().max(120).optional().default(""), subjectId: z.string().trim().max(120).optional().default(""), questionIds: z.array(z.string().min(1)).min(1).max(100) });
+const directorInterventionSchema = z.object({ classId: z.string().min(1), studentId: z.string().min(1), skillId: z.string().min(1), pathId: z.string().min(1) });
+const directorTransferSchema = z.object({ targetSchoolId: z.string().min(1), targetClassId: z.string().min(1), confirmation: z.literal("TRANSFER") });
 const assignmentSchema = z.object({ schoolId: z.string().min(1), teacherId: z.string().min(1), classId: z.string().min(1), subjectId: z.string().default(""), status: z.enum(["active", "inactive"]).default("active") });
 
 schoolAccessRouter.get("/context", requireAuth, asyncHandler(async (req, res) => res.json({ contexts: await resolveSchoolContexts(req.authUser!) })));
@@ -176,6 +184,50 @@ schoolAccessRouter.get("/director/schools/:schoolId/reports/students.csv", requi
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", `attachment; filename="${result.fileName}"`);
   return res.send(result.csv);
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/academic/assessments", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_ASSESSMENTS_MANAGE", "SCHOOL_ASSESSMENTS");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  return res.json(await buildSchoolDirectorAcademicWorkspace(req.params.schoolId, { assessments: true }));
+}));
+schoolAccessRouter.post("/director/schools/:schoolId/academic/assessments", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_ASSESSMENTS_MANAGE", "SCHOOL_ASSESSMENTS");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorAssessmentSchema.parse(req.body);
+  try { const result = await createSchoolDirectorAssessment(req.params.schoolId, req.authUser!.id, payload); await recordAdminAuditLog(req, { action: "schools.director.assessment.create", resourceType: "quiz", resourceId: result.assessment.assessmentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId } }); return res.status(StatusCodes.CREATED).json(result); }
+  catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/academic/smart-classrooms", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  return res.json(await buildSchoolDirectorAcademicWorkspace(req.params.schoolId, { sessions: true }));
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/academic/interventions", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_INTERVENTIONS_VIEW", "INTERVENTION_CENTER");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  return res.json(await buildSchoolDirectorAcademicWorkspace(req.params.schoolId, { interventions: true }));
+}));
+schoolAccessRouter.post("/director/schools/:schoolId/academic/interventions", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_INTERVENTIONS_MANAGE", "INTERVENTION_CENTER");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
+  const payload = directorInterventionSchema.parse(req.body);
+  try { const result = await createSchoolDirectorIntervention(req.params.schoolId, req.authUser!.id, payload); await recordAdminAuditLog(req, { action: "schools.director.intervention.create", resourceType: "school_intervention", resourceId: result.intervention.interventionId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, studentId: payload.studentId } }); return res.status(StatusCodes.CREATED).json(result); }
+  catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.post("/director/schools/:schoolId/students/:studentId/transfer", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const payload = directorTransferSchema.parse(req.body);
+  const [sourceCapability, targetCapability] = await Promise.all([
+    requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_TRANSFER_SCHOOL", "SCHOOL_CORE"),
+    requireSchoolDirectorCapability(req.authUser!.id, payload.targetSchoolId, "SCHOOL_STUDENTS_TRANSFER_SCHOOL", "SCHOOL_CORE"),
+  ]);
+  if (!sourceCapability || !targetCapability) return res.status(StatusCodes.FORBIDDEN).json({ message: "Transfer requires active permission and contract in both schools" });
+  try { const result = await transferSchoolDirectorStudent(req.params.schoolId, payload.targetSchoolId, req.params.studentId, payload.targetClassId); await recordAdminAuditLog(req, { action: "schools.director.student.transfer_school", resourceType: "student", resourceId: result.studentId, metadata: result }); return res.json(result); }
+  catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
+}));
+schoolAccessRouter.get("/director/schools/:schoolId/transfer-target-classes", requireAuth, requireRole(["school_admin"]), asyncHandler(async (req, res) => {
+  const capability = await requireSchoolDirectorCapability(req.authUser!.id, req.params.schoolId, "SCHOOL_STUDENTS_TRANSFER_SCHOOL", "SCHOOL_CORE");
+  if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School transfer capability or contract module denied" });
+  return res.json(await buildSchoolDirectorClassOptions(req.params.schoolId));
 }));
 schoolAccessRouter.get("/entitlements/:schoolId/:module", requireAuth, asyncHandler(async (req, res) => {
   const contexts = await resolveSchoolContexts(req.authUser!);
