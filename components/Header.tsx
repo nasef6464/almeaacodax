@@ -27,7 +27,6 @@ import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { ThemeToggle } from './ThemeToggle';
 import { SearchModal } from './SearchModal';
 import { NotificationBell } from './NotificationBell';
-import { calculateStreak } from '../utils/streak';
 
 const NavIcons: Record<string, React.ReactNode> = {
   home: <Home size={18} />,
@@ -113,7 +112,7 @@ export const Header: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { paths, subjects, levels, cartItems, recentActivity } = useStore();
+  const { paths, subjects, levels, cartItems } = useStore();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null) => {
@@ -238,6 +237,7 @@ export const Header: React.FC = () => {
             label: `اختبارات محاكية ${path.name}`,
             link: `/category/${path.id}?tab=mock-exams`,
             iconName: 'award',
+            isMockExam: true,
           });
 
           menuNode.children.push({
@@ -245,6 +245,7 @@ export const Header: React.FC = () => {
             label: `${text.offersPrefix} ${path.name}`,
             link: `/category/${path.id}?tab=packages`,
             iconName: 'gift',
+            isPackage: true,
           });
         } else {
           delete menuNode.children;
@@ -431,23 +432,27 @@ export const Header: React.FC = () => {
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
 
-            <Link to="/" className="flex items-center gap-2 min-w-0">
+            <Link to="/" className="flex items-center gap-2.5 min-w-0 group">
               {brandLogoUrl ? (
                 <img
                   src={brandLogoUrl}
                   alt={brandLogoAlt}
-                  className="h-9 w-9 sm:h-11 sm:w-11 rounded-full object-contain bg-white border border-amber-100 shadow-sm"
+                  className="h-9 w-9 sm:h-11 sm:w-11 rounded-full object-contain bg-white border border-amber-100 shadow-sm shrink-0"
                 />
               ) : null}
-              <div className="text-lg sm:text-2xl font-black text-amber-500 flex items-baseline min-w-0">
-                <span className="text-blue-900">{brandLogoText}</span>
-                <span className="mx-1">{brandLogoAccentText}</span>
-                {isStagingEnv ? (
-                  <span className="mr-1.5 rounded-md bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-black text-amber-700 tracking-wider border border-amber-300/40 select-none">
-                    STAGING
-                  </span>
-                ) : null}
-                <span className="hidden sm:block text-xs font-normal text-gray-400 -mt-2">{text.subtitle}</span>
+              <div className="flex flex-col justify-center min-w-0 leading-tight">
+                <div className="text-lg sm:text-2xl font-black text-amber-500 flex items-center min-w-0">
+                  <span className="text-blue-900 dark:text-blue-400">{brandLogoText}</span>
+                  <span className="mx-1">{brandLogoAccentText}</span>
+                  {isStagingEnv ? (
+                    <span className="mr-1.5 rounded-md bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-black text-amber-700 tracking-wider border border-amber-300/40 select-none">
+                      STAGING
+                    </span>
+                  ) : null}
+                </div>
+                <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-400 tracking-tight leading-none mt-0.5">
+                  {text.subtitle}
+                </span>
               </div>
             </Link>
           </div>
@@ -484,22 +489,65 @@ export const Header: React.FC = () => {
                   </Link>
 
                   {item.children && activeDropdown === item.id ? (
-                    <div className="absolute top-full right-0 w-56 bg-white shadow-xl rounded-b-xl border-t-2 border-amber-500 py-2 animate-fade-in z-50">
+                    <div className="absolute top-full right-0 w-64 sm:w-72 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl border border-slate-100 dark:border-slate-800 border-t-2 border-t-amber-500 py-2.5 animate-fade-in z-50 backdrop-blur-md">
                       {item.children.map((child: Record<string, any>, childIndex: number) => {
                         if (child.isDivider) {
-                          return <div key={`divider-${childIndex}`} className="h-px bg-gray-100 my-1 mx-2" />;
+                          return <div key={`divider-${childIndex}`} className="h-px bg-slate-100 dark:bg-slate-800 my-1.5 mx-3" />;
+                        }
+
+                        if (child.isGroup) {
+                          return (
+                            <Link
+                              key={`child-${child.id}-${childIndex}`}
+                              to={child.link || '#'}
+                              className="mx-2 my-1 px-3 py-1.5 text-xs font-black text-indigo-950 dark:text-indigo-200 bg-slate-100/90 dark:bg-slate-800/90 rounded-md border-r-4 border-indigo-600 flex items-center justify-between transition-colors hover:bg-slate-200/80 dark:hover:bg-slate-700/80"
+                            >
+                              <span>{child.label}</span>
+                              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-1.5 py-0.5 rounded">مرحلة</span>
+                            </Link>
+                          );
+                        }
+
+                        if (child.isMockExam || child.id?.includes('mock')) {
+                          return (
+                            <Link
+                              key={`child-${child.id}-${childIndex}`}
+                              to={child.link || '#'}
+                              className="mx-2 my-1.5 px-3 py-2 text-xs font-black rounded-xl bg-gradient-to-r from-purple-50 via-purple-100/50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 text-purple-900 dark:text-purple-200 border border-purple-200/80 dark:border-purple-800/60 flex items-center justify-between shadow-xs hover:from-purple-100 hover:to-indigo-100 transition-all hover:scale-[1.01]"
+                            >
+                              <span className="flex items-center gap-2">
+                                <Award size={15} className="text-purple-600 dark:text-purple-400 shrink-0" />
+                                {child.label}
+                              </span>
+                              <span className="text-[10px] bg-purple-600 text-white font-black px-1.5 py-0.5 rounded-full shadow-xs">محاكاة</span>
+                            </Link>
+                          );
+                        }
+
+                        if (child.isPackage || child.id?.includes('packages')) {
+                          return (
+                            <Link
+                              key={`child-${child.id}-${childIndex}`}
+                              to={child.link || '#'}
+                              className="mx-2 my-1.5 px-3 py-2 text-xs font-black rounded-xl bg-gradient-to-r from-amber-50 via-amber-100/50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 text-amber-950 dark:text-amber-200 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-between shadow-xs hover:from-amber-100 hover:to-orange-100 transition-all hover:scale-[1.01]"
+                            >
+                              <span className="flex items-center gap-2">
+                                <Gift size={15} className="text-amber-600 dark:text-amber-400 shrink-0" />
+                                {child.label}
+                              </span>
+                              <span className="text-[10px] bg-amber-500 text-white font-black px-1.5 py-0.5 rounded-full shadow-xs">عرض خاص</span>
+                            </Link>
+                          );
                         }
 
                         return (
                           <Link
                             key={`child-${child.id}-${childIndex}`}
                             to={child.link || '#'}
-                            className={`block px-4 py-2 text-sm transition-colors ${
-                              child.isGroup
-                                ? 'bg-gray-50 text-gray-800 font-bold border-b border-gray-100'
-                                : child.isChild
-                                  ? 'text-gray-600 hover:bg-blue-50 hover:text-blue-700 pr-8'
-                                  : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700 font-medium'
+                            className={`block py-1.5 text-xs font-bold transition-colors ${
+                              child.isChild
+                                ? 'text-slate-600 dark:text-slate-300 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 pr-7 pl-3 mx-2 rounded-lg'
+                                : 'text-slate-700 dark:text-slate-200 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 px-3 mx-2 rounded-lg'
                             }`}
                           >
                             {child.label}
@@ -513,7 +561,7 @@ export const Header: React.FC = () => {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <ThemeToggle />
 
             <button
@@ -525,9 +573,6 @@ export const Header: React.FC = () => {
               <Search size={20} />
             </button>
 
-            {/* جرس الإشعارات — للمستخدمين المسجلين فقط */}
-            {user && <NotificationBell />}
-
             <Link to="/cart" className="relative text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
               <ShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
@@ -535,32 +580,33 @@ export const Header: React.FC = () => {
               </span>
             </Link>
 
-            {user ? (
-              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-100 rounded-full text-orange-600 shadow-sm" title="أيام متتالية">
-                <span className="text-[13px] font-black">{calculateStreak(recentActivity)}</span>
-                <span className="text-base leading-none drop-shadow-sm">🔥</span>
-              </div>
-            ) : null}
-
             <div className="relative">
               {user ? (
                 <>
-                  <button
-                    onClick={() => setIsUserMenuOpen((value) => !value)}
-                    className="flex items-center gap-2 hover:bg-gray-50 p-1 sm:pr-3 rounded-full border border-transparent hover:border-gray-100 transition-all"
-                  >
-                    <div className="hidden lg:block text-left">
-                      <span className="block text-xs text-gray-500 font-normal">{text.account}</span>
-                      <span className="block text-sm font-bold text-gray-800 leading-none">
-                        {user.displayName || text.guest}
-                      </span>
-                    </div>
-                    <img
-                      src={user.photoURL}
-                      alt="User"
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white shadow-sm"
-                    />
-                  </button>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-slate-50 dark:bg-slate-800/80 pl-1 pr-1 sm:pr-3 py-1 rounded-full border border-slate-200/80 dark:border-slate-700/60 shadow-xs">
+                    {/* جرس الإشعارات مدمج على بطاقة الحساب والاسم لتوفير المساحة الأفقية */}
+                    <NotificationBell />
+
+                    <div className="hidden sm:block h-5 w-px bg-slate-200 dark:bg-slate-700" />
+
+                    <button
+                      onClick={() => setIsUserMenuOpen((value) => !value)}
+                      className="flex items-center gap-2 hover:opacity-85 transition-opacity"
+                      aria-label="قائمة المستخدم"
+                    >
+                      <div className="hidden lg:block text-right">
+                        <span className="block text-[10px] text-gray-400 font-medium leading-none">{text.account}</span>
+                        <span className="block text-xs font-black text-gray-800 dark:text-gray-100 leading-tight mt-0.5 max-w-[120px] truncate">
+                          {user.displayName || text.guest}
+                        </span>
+                      </div>
+                      <img
+                        src={user.photoURL}
+                        alt="User"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border-2 border-white dark:border-slate-700 shadow-sm shrink-0"
+                      />
+                    </button>
+                  </div>
 
                   {isUserMenuOpen ? (
                     <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-xl rounded-xl border border-gray-100 py-2 animate-fade-in z-50">
@@ -636,16 +682,62 @@ export const Header: React.FC = () => {
                     <div className="pr-9 space-y-2 border-r-2 border-gray-100 mr-1">
                       {item.children
                         .filter((child: Record<string, any>) => !child.isDivider)
-                        .map((child: Record<string, any>, childIndex: number) => (
-                          <Link
-                            key={`mobile-child-${child.id}-${childIndex}`}
-                            to={child.link || '#'}
-                            className={`block py-1 ${child.isGroup ? 'font-bold text-gray-800' : 'text-gray-600'}`}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
+                        .map((child: Record<string, any>, childIndex: number) => {
+                          if (child.isGroup) {
+                            return (
+                              <Link
+                                key={`mobile-child-${child.id}-${childIndex}`}
+                                to={child.link || '#'}
+                                className="block py-1.5 px-3 text-xs font-black text-indigo-950 dark:text-indigo-200 bg-slate-100 dark:bg-slate-800 rounded border-r-4 border-indigo-600 my-1"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                {child.label}
+                              </Link>
+                            );
+                          }
+                          if (child.isMockExam || child.id?.includes('mock')) {
+                            return (
+                              <Link
+                                key={`mobile-child-${child.id}-${childIndex}`}
+                                to={child.link || '#'}
+                                className="flex items-center justify-between py-2 px-3 text-xs font-black rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 text-purple-900 dark:text-purple-200 border border-purple-200 dark:border-purple-800 my-1"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Award size={14} className="text-purple-600" />
+                                  {child.label}
+                                </span>
+                                <span className="text-[10px] bg-purple-600 text-white font-bold px-1.5 py-0.5 rounded">محاكاة</span>
+                              </Link>
+                            );
+                          }
+                          if (child.isPackage || child.id?.includes('packages')) {
+                            return (
+                              <Link
+                                key={`mobile-child-${child.id}-${childIndex}`}
+                                to={child.link || '#'}
+                                className="flex items-center justify-between py-2 px-3 text-xs font-black rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700 my-1"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Gift size={14} className="text-amber-600" />
+                                  {child.label}
+                                </span>
+                                <span className="text-[10px] bg-amber-500 text-white font-bold px-1.5 py-0.5 rounded">عرض</span>
+                              </Link>
+                            );
+                          }
+                          return (
+                            <Link
+                              key={`mobile-child-${child.id}-${childIndex}`}
+                              to={child.link || '#'}
+                              className={`block py-1 text-xs font-medium ${child.isChild ? 'text-slate-600 dark:text-slate-300 pr-3' : 'text-slate-700 dark:text-slate-200'}`}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              {child.label}
+                            </Link>
+                          );
+                        })}
                     </div>
                   ) : null}
                 </div>

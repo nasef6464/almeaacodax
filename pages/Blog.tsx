@@ -5,6 +5,8 @@ import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import type { Lesson } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { DEFAULT_PLATFORM_ARTICLES, type PlatformArticle } from '../data/defaultArticles';
+import { ArticleReaderModal } from '../components/ArticleReaderModal';
 
 type BlogFilter = 'all' | string;
 
@@ -20,6 +22,7 @@ interface BlogEntry {
     dateLabel: string;
     actionLink: string;
     actionLabel: string;
+    rawArticle?: PlatformArticle;
 }
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
@@ -47,7 +50,9 @@ const formatDateLabel = (timestamp?: number) => {
 const Blog: React.FC = () => {
     const [filter, setFilter] = useState<BlogFilter>('all');
     const [searchQuery, setSearchQuery] = useState('');
-    const { lessons, courses, paths, subjects, user } = useStore();
+    const [selectedArticle, setSelectedArticle] = useState<PlatformArticle | null>(null);
+    const [isArticleModalOpen, setIsArticleModalOpen] = useState(false);
+    const { lessons, paths, subjects, user } = useStore();
 
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(String(user.role));
     const visiblePathIds = useMemo(
@@ -90,36 +95,21 @@ const Blog: React.FC = () => {
             return publicTextLessons.sort((a, b) => a.title.localeCompare(b.title, 'ar'));
         }
 
-        return courses
-            .filter((course) => {
-                if (course.isPackage) return false;
-                if (course.isPublished === false || course.showOnPlatform === false) return false;
-                if (course.approvalStatus && course.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
-
-                return !course.pathId || visiblePathIds.has(course.pathId);
-            })
-            .map((course) => {
-                const path = paths.find((item) => item.id === course.pathId);
-                const subject = subjects.find((item) => item.id === course.subjectId);
-
-                return {
-                    id: `course-${course.id}`,
-                    title: displayText(course.title) || 'محتوى منشور',
-                    summary:
-                        plainSummary(course.description).slice(0, 220) ||
-                        'محتوى منشور داخل المنصة يمكن للطالب الوصول إليه من نفس المسار التعليمي.',
-                    pathId: course.pathId,
-                    pathName: displayText(path?.name || course.category) || 'مسار عام',
-                    subjectId: course.subjectId,
-                    subjectName: displayText(subject?.name || path?.name || course.category) || 'عام',
-                    typeLabel: 'محتوى من الدورات',
-                    dateLabel: 'محتوى منشور داخل الدورات',
-                    actionLink: `/course/${course.id}`,
-                    actionLabel: 'افتح صفحة الدورة',
-                };
-            })
-            .slice(0, 12);
-    }, [canSeeHiddenPaths, courses, lessons, paths, subjects, visiblePathIds]);
+        return DEFAULT_PLATFORM_ARTICLES.map((article) => ({
+            id: article.id,
+            title: article.title,
+            summary: article.summary,
+            pathId: article.trackId,
+            pathName: article.category,
+            subjectId: article.trackId,
+            subjectName: article.tags.join(' • '),
+            typeLabel: 'مقالة معتمدة',
+            dateLabel: article.date,
+            actionLink: '#',
+            actionLabel: 'اقرأ المقال الآن',
+            rawArticle: article,
+        }));
+    }, [lessons, paths, subjects, visiblePathIds]);
 
     const availableFilters = useMemo(() => {
         const names = new Set<string>();
@@ -249,13 +239,27 @@ const Blog: React.FC = () => {
                                     {entry.dateLabel}
                                 </span>
                             </div>
-                            <Link
-                                to={entry.actionLink}
-                                aria-label={`فتح المقال ${entry.title}`}
-                                className="text-sm font-bold text-indigo-600 hover:text-indigo-700 w-full sm:w-auto"
-                            >
-                                {entry.actionLabel}
-                            </Link>
+                            {entry.rawArticle ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedArticle(entry.rawArticle || null);
+                                        setIsArticleModalOpen(true);
+                                    }}
+                                    aria-label={`قراءة المقال ${entry.title}`}
+                                    className="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors w-full sm:w-auto text-right sm:text-left cursor-pointer"
+                                >
+                                    {entry.actionLabel}
+                                </button>
+                            ) : (
+                                <Link
+                                    to={entry.actionLink}
+                                    aria-label={`فتح المقال ${entry.title}`}
+                                    className="text-sm font-bold text-indigo-600 hover:text-indigo-700 w-full sm:w-auto"
+                                >
+                                    {entry.actionLabel}
+                                </Link>
+                            )}
                         </div>
                     </Card>
                 ))}
@@ -275,6 +279,12 @@ const Blog: React.FC = () => {
                     </Link>
                 </Card>
             )}
+
+            <ArticleReaderModal
+                article={selectedArticle}
+                isOpen={isArticleModalOpen}
+                onClose={() => setIsArticleModalOpen(false)}
+            />
         </div>
     );
 };

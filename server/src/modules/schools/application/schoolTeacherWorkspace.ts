@@ -53,8 +53,8 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
           .lean()
       : [],
   ]);
-  const schoolById = new Map(schools.map((school: any) => [String(school._id), school]));
-  const classById = new Map(classes.map((classroom: any) => [String(classroom._id), classroom]));
+  const schoolById = new Map<string, any>(schools.map((school: any): [string, any] => [String(school._id), school]));
+  const classById = new Map<string, any>(classes.map((classroom: any): [string, any] => [String(classroom._id), classroom]));
   const validAssignments = assignments.filter((assignment) => {
     const classroom: any = classById.get(String(assignment.classId));
     return classroom && String(classroom.parentId) === String(assignment.schoolId);
