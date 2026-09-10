@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T11:52:04.581Z",
-  "gitHead": "08190461db9ee88db221677876ff42495be2b0bb",
+  "generatedAt": "2026-09-10T18:24:37.605Z",
+  "gitHead": "4dc1f4f9125dd5e7e10897ed98f83b0cd8a516c7",
   "frontendRoutes": [
     "*",
     "/",
@@ -161,6 +161,18 @@
       "method": "POST",
       "path": "/study-plan",
       "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/trainers",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/trainers/:id",
+      "receiver": "authRouter"
     },
     {
       "file": "server/src/routes/auth.routes.ts",
@@ -2159,34 +2171,34 @@
     "WHATSAPP_WEBHOOK_URL"
   ],
   "routeSourceHashes": {
-    "App.tsx": "9ba4ff75a6cfb5f526b3275146c4734d2bf3e70c2fda05903730a5a7108d90ee",
+    "App.tsx": "a69c45223213f7397ccba951ec597c5ee6506db6d4bfab30bfefab4d9e8cea94",
     "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
-    "server/src/routes/activity.routes.ts": "5ca824db806c9d2876519d88994234d7a4927050c3029c74a6a91308efb39124",
+    "server/src/routes/activity.routes.ts": "0064ba5bfa47873cd04cd56171ada0f3d8097f3d7424e08c68bbf3ee4e05080a",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
-    "server/src/routes/auth.routes.ts": "a16de55466ec77e901736459445b1911f797cc1f8fbb3bc6cb8f05a2ca781939",
-    "server/src/routes/backup.routes.ts": "b9d7b79be3cc3dc0ccfa1c97579eea044216215b98d678420f27be91d575ac2c",
+    "server/src/routes/auth.routes.ts": "da089e817ec360b990b45294e010b2f2bcf06e5637f7a639986d22013edbb6c0",
+    "server/src/routes/backup.routes.ts": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd",
     "server/src/routes/certificates.routes.ts": "a27e7f499c927ecbb9cb10ae16bfb45dc6eaf03a7ebc851ad1785491563b43f3",
     "server/src/routes/classroom.routes.ts": "20ceec97a14a5a5d648e0c604073b23515a7c830331171d6dd71cff47c9ecfc9",
     "server/src/routes/content.routes.ts": "c4237fa8f46b1a1dd62c3ad22a508a977a5d17aed94bd2b10ae32150ef6e7e81",
-    "server/src/routes/course.routes.ts": "d51874bf3b2b00ad89d5ea47d8e014efecc242fdbdea9e6f2356d8f57bd59a61",
-    "server/src/routes/discussions.routes.ts": "5e5539ae7381947a121d18a648e910d65a0724569db870cf63eef22191534e69",
+    "server/src/routes/course.routes.ts": "3f4f2a72326a8bf4cf8d4f3479d920f3a19571bd5dbefe7febf5268a7c92caa9",
+    "server/src/routes/discussions.routes.ts": "73aa2402cc15ffc059fbd71c747999c22dd2443b2e832794c5cdbfe61d3a4bd7",
     "server/src/routes/health.routes.ts": "dacc99ddbacd3638820daaeba9623f1d1e196b300c2081d9b69975ac0f1df1cf",
-    "server/src/routes/index.ts": "c897ad1a87cd067324400ffde3c03377d2357d43af7c85a1eac77c2fa29093c9",
-    "server/src/routes/leaderboard.routes.ts": "c4665380acff524a396e0f369eb04333208fc3a1683f2973c6417c756a1f72ff",
+    "server/src/routes/index.ts": "ad9cc9d07f0c575a8887e760942815fcd17e4c5ec729ca8446a50749a7911e63",
+    "server/src/routes/leaderboard.routes.ts": "18f8b08b3c73d74c929aaefea226b99fb7085a1ccd23779a70139f82346fab30",
     "server/src/routes/live-exams.routes.ts": "012964a2474fde5a5c28532bbedca62e8b164dcaacb950db233aea5f63490d64",
     "server/src/routes/notification.routes.ts": "9a4d2dbf2bb0ae6551db7dd5f365b4f401927c186fc5cf7121a9f87dccf5be21",
     "server/src/routes/operations.routes.ts": "1ab34db92d48055705f3af88324b4e763b9082504f3b1049196d9149bb75364b",
     "server/src/routes/parent.routes.ts": "8911fb79c9aee82c70710e841e590242d84bf72d8c9b2f015810bb25bd1bcde3",
     "server/src/routes/payment.routes.ts": "278f9263a5be8796a8611cad3e2a546999a123b1d26b6c9b954b81b1d520ab17",
     "server/src/routes/productConfig.routes.ts": "c320823e126c1700360f5200fb82b7697d7d5bce7212ce11bf8fd262f714518f",
-    "server/src/routes/publicTests.routes.ts": "85d6df1c6e8594cc6e20c96c6c301771e01b56d0bb789b9f82e688c510da344c",
+    "server/src/routes/publicTests.routes.ts": "6dbbcd5502398027664212897e115e331150c43088f045f80c336f798544c33c",
     "server/src/routes/questionAnalytics.routes.ts": "5bfe2f9c8c400574b284696cd0ee3f2d60186b17278aad6ac56c880574027bb5",
     "server/src/routes/quiz.routes.ts": "f03e296efd18f9ad0a5ecbfb837e8f20a4bea9f2848ab5ec6287c36ce48627e7",
     "server/src/routes/quizResults.routes.ts": "759f2fc513eb2ed8055a04c406a17947f91d4867cfd1f4e01aba458c73d3c6fe",
-    "server/src/routes/review.routes.ts": "cfae31aef790e32e6d58526f7c19b8d0c5a6c9c544572cccb3ba502549045966",
+    "server/src/routes/review.routes.ts": "6dd3f20eb8beb4f864fb81e7efd7b5c53260402f4faec87ae1b5f6d4c8af56ff",
     "server/src/routes/schoolAccess.routes.ts": "a78a4fe0717bc391880c68bfcff9b6fa44a3e4b7c6174c0c0852e3ee215d1300",
-    "server/src/routes/search.routes.ts": "2499d52eb8028894d8622cb1bebf896d90f3c3b03caf7e39cf231bf84381b104",
-    "server/src/routes/seo.routes.ts": "74ba2c2e0a532bc67b4d1c5cbf4e0409f4fe0019b7c09f198aa122669c3640c6",
+    "server/src/routes/search.routes.ts": "ffc0bec0a0985c5646c48f96574ff0b8790d12f16b930e173560807d4b47580b",
+    "server/src/routes/seo.routes.ts": "5040a1d8a8f69879b9e978b57663b62e478559dc80ad73db1ac830752e604554",
     "server/src/routes/taxonomy.routes.ts": "ebaa9cf5bcaa80418e593d24c2a73038952fef0560371cbd6a871e6c1bfa7818"
   }
 }

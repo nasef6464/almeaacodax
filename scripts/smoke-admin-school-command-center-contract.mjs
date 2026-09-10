@@ -42,7 +42,7 @@ const checks = [
       adminDashboard.includes("supervisorActionCards") &&
       adminDashboard.includes("اختبار موجه للنطاق") &&
       adminDashboard.includes("رسالة متابعة جاهزة") &&
-      adminDashboard.includes("بوابة المدرسة"),
+      (adminDashboard.includes("بوابة المدرسة") || adminDashboard.includes("إدارة المدارس")),
   },
   {
     name: "user manager uses multi-select supervisor assignments",

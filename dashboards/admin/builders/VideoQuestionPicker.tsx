@@ -270,26 +270,13 @@ export const VideoQuestionPicker: React.FC<VideoQuestionPickerProps> = ({
 
                     <div className="mt-3 space-y-2">
                       {question.text ? (
-                        <div
-                          className="question-html text-sm font-black leading-7 text-gray-900 line-clamp-3"
-                          dangerouslySetInnerHTML={{ __html: normalizedText }}
-                        />
+                        <div className="question-html text-sm font-black leading-7 text-gray-900 line-clamp-3" dangerouslySetInnerHTML={{ __html: normalizedText }} />
                       ) : (
                         <div className="text-sm font-black text-indigo-700">سؤال بصورة فقط</div>
                       )}
-
                       {question.imageUrl && (
                         <div className="max-w-md overflow-hidden rounded-xl border border-indigo-100 bg-slate-50 p-2 shadow-xs">
-                          <img
-                            src={question.imageUrl}
-                            alt="معاينة صورة السؤال"
-                            className="max-h-44 w-full object-contain cursor-pointer hover:scale-[1.02] transition-transform"
-                            loading="lazy"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setPreviewingQuestion(question);
-                            }}
-                          />
+                          <img src={question.imageUrl} alt="معاينة صورة السؤال" className="max-h-44 w-full object-contain cursor-pointer hover:scale-[1.02] transition-transform" loading="lazy" onClick={(e) => { e.stopPropagation(); setPreviewingQuestion(question); }} />
                         </div>
                       )}
                     </div>
@@ -298,19 +285,8 @@ export const VideoQuestionPicker: React.FC<VideoQuestionPickerProps> = ({
                       {(question.type === 'essay' ? [] : question.options || []).map((option, index) => {
                         const isCorrect = index === question.correctOptionIndex;
                         return (
-                          <div
-                            key={`${question.id}-${index}`}
-                            className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold border transition-colors ${
-                              isCorrect
-                                ? 'bg-emerald-50/80 text-emerald-800 border-emerald-200'
-                                : 'bg-slate-50/60 text-slate-700 border-gray-100'
-                            }`}
-                          >
-                            <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0 ${
-                              isCorrect ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'
-                            }`}>
-                              {['أ', 'ب', 'ج', 'د'][index] || index + 1}
-                            </span>
+                          <div key={`${question.id}-${index}`} className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold border transition-colors ${isCorrect ? 'bg-emerald-50/80 text-emerald-800 border-emerald-200' : 'bg-slate-50/60 text-slate-700 border-gray-100'}`}>
+                            <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0 ${isCorrect ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>{['أ', 'ب', 'ج', 'د'][index] || index + 1}</span>
                             <span className="truncate">{option || `خيار ${index + 1}`}</span>
                             {isCorrect && <span className="mr-auto text-[10px] font-black text-emerald-600">صحيح</span>}
                           </div>
@@ -326,22 +302,13 @@ export const VideoQuestionPicker: React.FC<VideoQuestionPickerProps> = ({
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 bg-gray-50 p-4">
           <div className="flex items-center gap-2 text-sm font-bold text-gray-600">
-            <button type="button" disabled={!pagination.hasPrev || loading} onClick={() => setPage((value) => Math.max(1, value - 1))} className="rounded-lg border bg-white p-2 disabled:opacity-40 cursor-pointer" aria-label="الصفحة السابقة">
-              <ChevronRight size={17} />
-            </button>
+            <button type="button" disabled={!pagination.hasPrev || loading} onClick={() => setPage((value) => Math.max(1, value - 1))} className="rounded-lg border bg-white p-2 disabled:opacity-40 cursor-pointer" aria-label="الصفحة السابقة"><ChevronRight size={17} /></button>
             <span>صفحة {pagination.page} من {pagination.totalPages}</span>
-            <button type="button" disabled={!pagination.hasNext || loading} onClick={() => setPage((value) => value + 1)} className="rounded-lg border bg-white p-2 disabled:opacity-40 cursor-pointer" aria-label="الصفحة التالية">
-              <ChevronLeft size={17} />
-            </button>
+            <button type="button" disabled={!pagination.hasNext || loading} onClick={() => setPage((value) => value + 1)} className="rounded-lg border bg-white p-2 disabled:opacity-40 cursor-pointer" aria-label="الصفحة التالية"><ChevronLeft size={17} /></button>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm font-bold text-gray-500">{selected.size} محدد</span>
-            <button
-              type="button"
-              disabled={selected.size === 0}
-              onClick={confirm}
-              className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-300 shadow-sm cursor-pointer"
-            >
+            <button type="button" disabled={selected.size === 0} onClick={confirm} className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-300 shadow-sm cursor-pointer">
               ربط السؤال{selected.size === 1 ? '' : 'ات المحددة'} ({selected.size})
             </button>
           </div>
@@ -349,97 +316,45 @@ export const VideoQuestionPicker: React.FC<VideoQuestionPickerProps> = ({
       </div>
 
       {previewingQuestion && (
-        <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-fade-in"
-          dir="rtl"
-          onClick={() => setPreviewingQuestion(null)}
-        >
-          <div
-            className="w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl space-y-4"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-fade-in" dir="rtl" onClick={() => setPreviewingQuestion(null)}>
+          <div className="w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl space-y-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between border-b pb-3">
               <h4 className="text-base font-black text-gray-900">معاينة تفاصيل السؤال</h4>
-              <button
-                onClick={() => setPreviewingQuestion(null)}
-                className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 cursor-pointer"
-              >
-                <X size={18} />
-              </button>
+              <button onClick={() => setPreviewingQuestion(null)} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 cursor-pointer"><X size={18} /></button>
             </div>
-
             {previewingQuestion.imageUrl && (
               <div className="overflow-hidden rounded-2xl border border-gray-200 bg-slate-50 p-2">
-                <img
-                  src={previewingQuestion.imageUrl}
-                  alt="معاينة السؤال"
-                  className="max-h-72 w-full object-contain"
-                />
+                <img src={previewingQuestion.imageUrl} alt="معاينة السؤال" className="max-h-72 w-full object-contain" />
               </div>
             )}
-
             {previewingQuestion.text && (
-              <div
-                className="question-html text-base font-black leading-8 text-gray-900 bg-slate-50 p-4 rounded-2xl border border-slate-100"
-                dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(previewingQuestion.text) }}
-              />
+              <div className="question-html text-base font-black leading-8 text-gray-900 bg-slate-50 p-4 rounded-2xl border border-slate-100" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(previewingQuestion.text) }} />
             )}
-
             <div className="space-y-2">
               <div className="text-xs font-bold text-gray-500">الخيارات:</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {(previewingQuestion.options || []).map((opt, idx) => {
                   const isCorrect = idx === previewingQuestion.correctOptionIndex;
                   return (
-                    <div
-                      key={idx}
-                      className={`p-3 rounded-xl border text-sm font-bold flex items-center gap-2 ${
-                        isCorrect
-                          ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                          : 'bg-white border-gray-200 text-gray-800'
-                      }`}
-                    >
-                      <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-black ${
-                        isCorrect ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {['أ', 'ب', 'ج', 'د'][idx] || idx + 1}
-                      </span>
+                    <div key={idx} className={`p-3 rounded-xl border text-sm font-bold flex items-center gap-2 ${isCorrect ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-gray-200 text-gray-800'}`}>
+                      <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-black ${isCorrect ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-600'}`}>{['أ', 'ب', 'ج', 'د'][idx] || idx + 1}</span>
                       <span>{opt}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
-
             {previewingQuestion.explanation && (
               <div className="rounded-xl bg-amber-50 p-3 text-xs leading-6 text-amber-900 border border-amber-200">
                 <span className="font-bold block mb-1">الشرح / التوضيح:</span>
                 {previewingQuestion.explanation}
               </div>
             )}
-
             <div className="flex items-center justify-between pt-3 border-t">
-              <button
-                type="button"
-                onClick={() => {
-                  toggleQuestion(previewingQuestion);
-                  setPreviewingQuestion(null);
-                }}
-                className={`px-5 py-2.5 rounded-xl font-black text-sm transition-all cursor-pointer ${
-                  selected.has(previewingQuestion.id)
-                    ? 'bg-red-50 text-red-700 hover:bg-red-100 border border-red-200'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs'
-                }`}
-              >
+              <button type="button" onClick={() => { toggleQuestion(previewingQuestion); setPreviewingQuestion(null); }} className={`px-5 py-2.5 rounded-xl font-black text-sm transition-all cursor-pointer ${selected.has(previewingQuestion.id) ? 'bg-red-50 text-red-700 hover:bg-red-100 border border-red-200' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs'}`}>
                 {selected.has(previewingQuestion.id) ? 'إلغاء تحديد هذا السؤال' : 'تحديد هذا السؤال للدرس'}
               </button>
-              <button
-                type="button"
-                onClick={() => setPreviewingQuestion(null)}
-                className="px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer"
-              >
-                إغلاق المعاينة
-              </button>
+              <button type="button" onClick={() => setPreviewingQuestion(null)} className="px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer">إغلاق المعاينة</button>
             </div>
           </div>
         </div>
