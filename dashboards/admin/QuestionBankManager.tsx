@@ -218,6 +218,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [questionUsageById, setQuestionUsageById] = useState<Record<string, QuestionUsageMetric>>({});
   const [isLoadingQuestionUsage, setIsLoadingQuestionUsage] = useState(false);
   const [questionUsageError, setQuestionUsageError] = useState<string | null>(null);
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(() => new Set());
+  const [isBulkOperating, setIsBulkOperating] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
     options: ['', '', '', ''],
@@ -448,6 +450,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     if (confirm('هل أنت متأكد من حذف هذا السؤال نهائيًا؟')) {
       try {
         await deleteQuestion(id);
+        setSelectedQuestionIds((prev) => {
+          if (!prev.has(id)) return prev;
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
         refreshPagedQuestions();
       } catch (error) {
         setImportError(error instanceof Error ? error.message : 'تعذر حذف السؤال الآن.');
@@ -932,6 +940,92 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     }
   };
 
+  const toggleSelectQuestion = (id: string) => {
+    setSelectedQuestionIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const allDisplayedSelected = useMemo(
+    () => displayedQuestions.length > 0 && displayedQuestions.every((q) => selectedQuestionIds.has(q.id)),
+    [displayedQuestions, selectedQuestionIds]
+  );
+
+  const toggleSelectAllDisplayed = () => {
+    setSelectedQuestionIds((prev) => {
+      const next = new Set(prev);
+      if (allDisplayedSelected) {
+        displayedQuestions.forEach((q) => next.delete(q.id));
+      } else {
+        displayedQuestions.forEach((q) => next.add(q.id));
+      }
+      return next;
+    });
+  };
+
+  const handleBulkApprove = async () => {
+    if (selectedQuestionIds.size === 0) return;
+    setIsBulkOperating(true);
+    try {
+      const ids = Array.from(selectedQuestionIds);
+      await Promise.all(
+        ids.map((id) =>
+          updateQuestion(id, {
+            approvalStatus: 'approved',
+            approvedAt: Date.now(),
+          })
+        )
+      );
+      setSelectedQuestionIds(new Set());
+      refreshPagedQuestions();
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر اعتماد الأسئلة المحددة.');
+    } finally {
+      setIsBulkOperating(false);
+    }
+  };
+
+  const handleBulkReject = async () => {
+    if (selectedQuestionIds.size === 0) return;
+    setIsBulkOperating(true);
+    try {
+      const ids = Array.from(selectedQuestionIds);
+      await Promise.all(
+        ids.map((id) =>
+          updateQuestion(id, {
+            approvalStatus: 'rejected',
+          })
+        )
+      );
+      setSelectedQuestionIds(new Set());
+      refreshPagedQuestions();
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر رفض الأسئلة المحددة.');
+    } finally {
+      setIsBulkOperating(false);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedQuestionIds.size === 0) return;
+    if (confirm(`هل أنت متأكد من حذف ${selectedQuestionIds.size} سؤالاً نهائياً؟ لا يمكن التراجع عن هذا الإجراء.`)) {
+      setIsBulkOperating(true);
+      try {
+        const ids = Array.from(selectedQuestionIds);
+        await Promise.all(ids.map((id) => deleteQuestion(id)));
+        setSelectedQuestionIds(new Set());
+        refreshPagedQuestions();
+      } catch (error) {
+        setImportError(error instanceof Error ? error.message : 'تعذر حذف الأسئلة المحددة.');
+      } finally {
+        setIsBulkOperating(false);
+      }
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -1373,12 +1467,80 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
       )}
 
+      {selectedQuestionIds.size > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 animate-fade-in shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-black shadow-xs">
+              {selectedQuestionIds.size}
+            </span>
+            <span className="text-sm font-black text-indigo-950">
+              سؤال تم تحديده
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {canReview && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleBulkApprove}
+                  disabled={isBulkOperating}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                  title="اعتماد جميع الأسئلة المحددة"
+                >
+                  <CheckCircle2 size={15} />
+                  اعتماد جماعي ({selectedQuestionIds.size})
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBulkReject}
+                  disabled={isBulkOperating}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                  title="رفض جميع الأسئلة المحددة"
+                >
+                  <AlertCircle size={15} />
+                  رفض جماعي ({selectedQuestionIds.size})
+                </button>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={handleBulkDelete}
+              disabled={isBulkOperating}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+              title="حذف جميع الأسئلة المحددة نهائياً"
+            >
+              <Trash2 size={15} />
+              حذف جماعي ({selectedQuestionIds.size})
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedQuestionIds(new Set())}
+              disabled={isBulkOperating}
+              className="inline-flex items-center gap-1 px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <X size={14} />
+              إلغاء التحديد
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-right">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4 text-sm font-bold text-gray-600 w-1/2">نص السؤال</th>
+                <th className="px-4 py-4 text-center w-12">
+                  <input
+                    type="checkbox"
+                    checked={allDisplayedSelected}
+                    onChange={toggleSelectAllDisplayed}
+                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    title={allDisplayedSelected ? 'إلغاء تحديد كل أسئلة الصفحة' : 'تحديد جميع أسئلة هذه الصفحة'}
+                  />
+                </th>
+                <th className="px-6 py-4 text-sm font-bold text-gray-600 min-w-[320px]">نص السؤال</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">المهارات الفرعية</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الصعوبة</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الاستخدام والأداء</th>
@@ -1388,6 +1550,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             </thead>
             <tbody className="divide-y divide-gray-100">
               {displayedQuestions.map((question) => {
+                const isSelected = selectedQuestionIds.has(question.id);
                 const statusMeta = getStatusMeta(question);
                 const normalizedQuestionText = normalizeQuestionHtml(question.text);
                 const hasInlineMedia = hasInlineQuestionMedia(normalizedQuestionText);
@@ -1395,14 +1558,22 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 const questionIdentity = String(question.id || (question as Question & { _id?: string })._id || '');
                 const usageMetric = questionUsageById[questionIdentity];
                 return (
-                  <tr key={question.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={question.id} className={`hover:bg-gray-50 transition-colors ${isSelected ? 'bg-indigo-50/40' : ''}`}>
+                    <td className="px-4 py-4 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelectQuestion(question.id)}
+                        className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                      />
+                    </td>
                     <td className="px-6 py-4">
                       <div>
                         {hasMediaPreview ? (
                           <div className="space-y-2" data-testid="question-row-media-preview">
                             {question.text ? (
                               <div
-                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-36 max-w-[340px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2.5 shadow-xs' : 'line-clamp-2'}`}
+                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-60 max-w-[480px] sm:max-w-[560px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2.5 shadow-xs' : 'line-clamp-2'}`}
                                 data-testid={hasInlineMedia ? 'question-row-inline-media-preview' : undefined}
                                 dangerouslySetInnerHTML={{ __html: normalizedQuestionText }}
                               />
@@ -1410,11 +1581,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                               <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
                             )}
                             {question.imageUrl ? (
-                              <div className="w-full max-w-[320px] sm:max-w-[360px] overflow-hidden rounded-xl border border-indigo-100/80 bg-slate-50 p-1.5 shadow-xs" data-testid="question-row-image-below-text">
+                              <div className="w-full max-w-[480px] sm:max-w-[560px] overflow-hidden rounded-xl border border-indigo-100/80 bg-slate-50 p-2 shadow-xs" data-testid="question-row-image-below-text">
                                 <img
                                   src={question.imageUrl}
                                   alt="معاينة صورة السؤال"
-                                  className="h-32 sm:h-36 w-full object-contain cursor-pointer hover:scale-[1.02] transition-transform duration-200"
+                                  className="h-48 sm:h-56 w-full object-contain cursor-pointer hover:scale-[1.02] transition-transform duration-200"
                                   loading="lazy"
                                   onClick={() => handlePreviewQuestion(question)}
                                 />
@@ -1593,7 +1764,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
               })}
               {displayedQuestions.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
                     لا توجد أسئلة مطابقة للبحث.
                   </td>
                 </tr>
