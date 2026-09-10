@@ -27,15 +27,29 @@ interface LearningSectionProps {
     subject: string;
     grade?: string;
     title?: string;
-    colorTheme?: 'indigo' | 'amber' | 'emerald' | 'purple' | 'rose';
+    colorTheme?: string;
 }
 
 const themePaletteMap: Record<string, { base: string; soft: string; border: string; text: string }> = {
-    indigo: { base: '#4f46e5', soft: '#e0e7ff', border: '#c7d2fe', text: '#4338ca' },
-    amber: { base: '#f59e0b', soft: '#fef3c7', border: '#fde68a', text: '#b45309' },
+    indigo: { base: '#4f46e5', soft: '#eef2ff', border: '#e0e7ff', text: '#4338ca' },
+    blue: { base: '#2563eb', soft: '#eff6ff', border: '#dbeafe', text: '#1d4ed8' },
+    sky: { base: '#0284c7', soft: '#f0f9ff', border: '#bae6fd', text: '#0369a1' },
+    cyan: { base: '#0891b2', soft: '#ecfeff', border: '#a5f3fc', text: '#0e7490' },
+    teal: { base: '#0d9488', soft: '#f0fdfa', border: '#99f6e4', text: '#0f766e' },
     emerald: { base: '#10b981', soft: '#d1fae5', border: '#a7f3d0', text: '#047857' },
-    purple: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    green: { base: '#16a34a', soft: '#f0fdf4', border: '#bbf7d0', text: '#15803d' },
+    lime: { base: '#65a30d', soft: '#f7fee7', border: '#d9f99d', text: '#4d7c0f' },
+    yellow: { base: '#ca8a04', soft: '#fefce8', border: '#fef08a', text: '#a16207' },
+    amber: { base: '#f59e0b', soft: '#fef3c7', border: '#fde68a', text: '#b45309' },
+    orange: { base: '#ea580c', soft: '#fff7ed', border: '#fed7aa', text: '#c2410c' },
+    red: { base: '#dc2626', soft: '#fef2f2', border: '#fecaca', text: '#b91c1c' },
     rose: { base: '#f43f5e', soft: '#ffe4e6', border: '#fecdd3', text: '#be123c' },
+    pink: { base: '#db2777', soft: '#fdf2f8', border: '#fbcfe8', text: '#be185d' },
+    fuchsia: { base: '#c026d3', soft: '#fdf4ff', border: '#f5d0fe', text: '#a21caf' },
+    purple: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    violet: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    slate: { base: '#475569', soft: '#f8fafc', border: '#cbd5e1', text: '#334155' },
+    gray: { base: '#6b7280', soft: '#f3f4f6', border: '#d1d5db', text: '#4b5563' },
 };
 
 const resolveThemePalette = (value?: string) => {
@@ -43,7 +57,7 @@ const resolveThemePalette = (value?: string) => {
     if (value.startsWith('#')) {
         return { base: value, soft: `${value}18`, border: `${value}33`, text: value };
     }
-    return themePaletteMap[value] || themePaletteMap.indigo;
+    return themePaletteMap[value.toLowerCase()] || themePaletteMap.indigo;
 };
 
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
@@ -989,35 +1003,42 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors leading-snug line-clamp-1">{skill.title}</h3>
-                                            
-                                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100/80 gap-2">
-                                                <div className="flex items-center gap-2 text-xs font-bold">
-                                                    <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
-                                                        skill.isLocked 
-                                                            ? 'bg-amber-50 text-amber-700' 
-                                                            : 'bg-emerald-50 text-emerald-700'
-                                                    }`}>
-                                                        {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
-                                                    </span>
-                                                    <span className="text-gray-300">•</span>
-                                                    <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
-                                                </div>
+                                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors leading-snug line-clamp-2">{skill.title}</h3>
+                                        </div>
+                                    </div>
 
-                                                <div className="shrink-0 flex items-center gap-1">
-                                                    {skill.isLocked ? (
-                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
-                                                            <span>اضغط للاشتراك</span>
-                                                            <ChevronLeft size={13} className="text-amber-500 transform group-hover:-translate-x-0.5 transition-transform" />
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                                            <span>اضغط للبدء</span>
-                                                            <ChevronLeft size={13} className="transform group-hover:-translate-x-0.5 transition-transform" />
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
+                                    <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100/80 gap-2 w-full">
+                                        <div className="flex items-center gap-2 text-xs font-bold">
+                                            <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
+                                                skill.isLocked
+                                                    ? 'bg-amber-50 text-amber-700'
+                                                    : 'bg-emerald-50 text-emerald-700'
+                                            }`}>
+                                                {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
+                                            </span>
+                                            <span className="text-gray-300">•</span>
+                                            <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
+                                        </div>
+
+                                        <div className="shrink-0 flex items-center gap-1">
+                                            {skill.isLocked ? (
+                                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 group-hover:bg-amber-100 transition-colors">
+                                                    <span>اضغط للاشتراك</span>
+                                                    <ChevronLeft size={13} className="text-amber-500 transform group-hover:-translate-x-0.5 transition-transform" />
+                                                </span>
+                                            ) : (
+                                                <span
+                                                    className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all duration-200 group-hover:shadow-xs"
+                                                    style={{
+                                                        backgroundColor: theme.soft,
+                                                        color: theme.text,
+                                                        borderColor: theme.border,
+                                                    }}
+                                                >
+                                                    <span>اضغط للبدء</span>
+                                                    <ChevronLeft size={13} className="transform group-hover:-translate-x-1 transition-transform" />
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 

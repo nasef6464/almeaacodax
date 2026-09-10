@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart } from 'lucide-react';
+import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart, Megaphone, Quote, Sparkles, Trophy, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -113,21 +113,34 @@ const defaultHomepageSettings: HomepageSettings = {
 };
 
 const colorMap: Record<string, { soft: string; text: string; base: string; border: string }> = {
-    indigo: { soft: '#e0e7ff', text: '#4338ca', base: '#4f46e5', border: '#c7d2fe' },
-    amber: { soft: '#fef3c7', text: '#b45309', base: '#f59e0b', border: '#fde68a' },
+    indigo: { soft: '#eef2ff', text: '#4338ca', base: '#4f46e5', border: '#e0e7ff' },
+    blue: { soft: '#eff6ff', text: '#1d4ed8', base: '#2563eb', border: '#dbeafe' },
+    sky: { soft: '#f0f9ff', text: '#0369a1', base: '#0284c7', border: '#bae6fd' },
+    cyan: { soft: '#ecfeff', text: '#0e7490', base: '#0891b2', border: '#a5f3fc' },
+    teal: { soft: '#f0fdfa', text: '#0f766e', base: '#0d9488', border: '#99f6e4' },
     emerald: { soft: '#d1fae5', text: '#047857', base: '#10b981', border: '#a7f3d0' },
-    purple: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    green: { soft: '#f0fdf4', text: '#15803d', base: '#16a34a', border: '#bbf7d0' },
+    lime: { soft: '#f7fee7', text: '#4d7c0f', base: '#65a30d', border: '#d9f99d' },
+    yellow: { soft: '#fefce8', text: '#a16207', base: '#ca8a04', border: '#fef08a' },
+    amber: { soft: '#fef3c7', text: '#b45309', base: '#f59e0b', border: '#fde68a' },
+    orange: { soft: '#fff7ed', text: '#c2410c', base: '#ea580c', border: '#fed7aa' },
+    red: { soft: '#fef2f2', text: '#b91c1c', base: '#dc2626', border: '#fecaca' },
     rose: { soft: '#ffe4e6', text: '#be123c', base: '#f43f5e', border: '#fecdd3' },
-    blue: { soft: '#dbeafe', text: '#1d4ed8', base: '#2563eb', border: '#bfdbfe' },
+    pink: { soft: '#fdf2f8', text: '#be185d', base: '#db2777', border: '#fbcfe8' },
+    fuchsia: { soft: '#fdf4ff', text: '#a21caf', base: '#c026d3', border: '#f5d0fe' },
+    purple: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    violet: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    slate: { soft: '#f8fafc', text: '#334155', base: '#475569', border: '#cbd5e1' },
     gray: { soft: '#f3f4f6', text: '#4b5563', base: '#6b7280', border: '#d1d5db' },
 };
 
 const resolveColor = (value?: string) => {
     if (!value) return colorMap.indigo;
-    if (value.startsWith('#')) {
-        return { soft: `${value}18`, text: value, base: value, border: `${value}33` };
+    const trimmed = String(value).trim();
+    if (trimmed.startsWith('#')) {
+        return { soft: `${trimmed}18`, text: trimmed, base: trimmed, border: `${trimmed}33` };
     }
-    return colorMap[value] || colorMap.indigo;
+    return colorMap[trimmed.toLowerCase()] || colorMap.indigo;
 };
 
 const resolveHeroColor = (value: string | undefined, fallback: string) => {
@@ -136,8 +149,9 @@ const resolveHeroColor = (value: string | undefined, fallback: string) => {
 };
 
 export const Landing: React.FC = () => {
-    const { paths, courses, quizzes, questions, lessons, subjects, user } = useStore();
+    const { paths, courses, quizzes, questions, lessons, subjects, user, announcementAds } = useStore();
     const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>(defaultHomepageSettings);
+    const [dismissedBannerAdId, setDismissedBannerAdId] = useState<string | null>(null);
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
 
     useEffect(() => {
@@ -327,29 +341,79 @@ export const Landing: React.FC = () => {
     const tertiaryCtaLabel = String(homepageSettings.hero.tertiaryCtaLabel || '').trim();
     const tertiaryCtaLink = String(homepageSettings.hero.tertiaryCtaLink || '').trim() || '/courses';
 
+    const activeAnnouncement = useMemo(() => {
+        const now = Date.now();
+        return (announcementAds || [])
+            .filter((ad) => {
+                if (!ad.isActive || ad.id === dismissedBannerAdId) return false;
+                if (ad.startsAt && ad.startsAt > now) return false;
+                if (ad.endsAt && ad.endsAt < now) return false;
+                return true;
+            })
+            .sort((a, b) => (a.priority || 0) - (b.priority || 0) || (b.createdAt || 0) - (a.createdAt || 0))[0] || null;
+    }, [announcementAds, dismissedBannerAdId]);
+
     return (
         <div className={`bg-white ${bodyFontClass}`}>
-            <section className="relative bg-gradient-to-b from-indigo-50 via-white to-white pt-16 pb-24 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-                    <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-                    <div className="absolute top-[20%] left-[-10%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-                    <div className="absolute bottom-[-10%] right-[20%] w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+            <section className="relative bg-gradient-to-b from-indigo-50/70 via-white to-white pt-12 pb-24 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                    <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-amber-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+                    <div className="absolute top-[20%] left-[-10%] w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+                    <div className="absolute bottom-[-10%] right-[20%] w-96 h-96 bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    {/* Active Announcement Pill Banner */}
+                    {activeAnnouncement ? (
+                        <div className="mb-6 flex justify-center lg:justify-start">
+                            <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border border-amber-200/80 bg-gradient-to-r from-amber-500/10 via-amber-400/20 to-orange-500/10 px-4 py-1.5 shadow-sm backdrop-blur-md transition-all hover:border-amber-300">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
+                                </span>
+                                <span className="inline-flex items-center gap-1 rounded-md bg-amber-500 px-2 py-0.5 text-[11px] font-black text-white shadow-xs">
+                                    <Megaphone size={11} /> إعلان
+                                </span>
+                                <span className="truncate text-xs font-bold text-gray-800 sm:text-sm">
+                                    {activeAnnouncement.title}
+                                </span>
+                                {activeAnnouncement.ctaUrl ? (
+                                    <Link
+                                        to={activeAnnouncement.ctaUrl}
+                                        className="mr-1 inline-flex items-center gap-1 text-xs font-black text-indigo-700 hover:text-indigo-900 transition-colors shrink-0"
+                                    >
+                                        <span>{activeAnnouncement.ctaLabel || 'تفاصيل'}</span>
+                                        <ArrowLeft size={12} />
+                                    </Link>
+                                ) : null}
+                                <button
+                                    type="button"
+                                    onClick={() => setDismissedBannerAdId(activeAnnouncement.id)}
+                                    className="p-1 text-gray-400 hover:text-gray-600 rounded-full transition-colors"
+                                    title="إغلاق الإعلان"
+                                >
+                                    <X size={13} />
+                                </button>
+                            </div>
+                        </div>
+                    ) : null}
+
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12">
                         <div className="lg:w-1/2 text-center lg:text-right">
-                            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-blue-100 shadow-sm" style={{ color: heroColors.badgeTextColor }}>
-                                <span className="relative flex h-3 w-3">
+                            <div className="inline-flex items-center gap-2.5 bg-blue-50/90 text-blue-600 px-4 py-2 rounded-full text-xs sm:text-sm font-black mb-6 border border-blue-100 shadow-xs backdrop-blur-sm" style={{ color: heroColors.badgeTextColor }}>
+                                <span className="relative flex h-2.5 w-2.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500" />
                                 </span>
-                                {homepageSettings.hero.badgeText || defaultHomepageSettings.hero.badgeText}
+                                <span>{homepageSettings.hero.badgeText || defaultHomepageSettings.hero.badgeText}</span>
                             </div>
 
-                            <h1 className={`text-4xl sm:text-5xl lg:text-7xl ${headingWeightClass} ${headingFontClass} text-gray-900 leading-tight mb-6`}>
+                            <h1 className={`text-4xl sm:text-5xl lg:text-6xl xl:text-7xl ${headingWeightClass} ${headingFontClass} text-gray-900 leading-[1.18] mb-6 tracking-tight`}>
                                 <span style={{ color: heroColors.titlePrefixColor }}>{homepageSettings.hero.titlePrefix || defaultHomepageSettings.hero.titlePrefix}</span>{' '}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600" style={{ color: heroColors.titleHighlightColor, backgroundImage: 'none' }}>
+                                <span
+                                    className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 drop-shadow-xs"
+                                    style={{ color: heroColors.titleHighlightColor, backgroundImage: homepageSettings.hero.titleHighlightColor ? 'none' : undefined }}
+                                >
                                     {homepageSettings.hero.titleHighlight || defaultHomepageSettings.hero.titleHighlight}
                                 </span>
                                 <br />
@@ -363,7 +427,7 @@ export const Landing: React.FC = () => {
                             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
                                 <Link
                                     to={homepageSettings.hero.primaryCtaLink || defaultHomepageSettings.hero.primaryCtaLink || '/dashboard'}
-                                    className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-lg font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                    className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-lg font-black px-8 py-4 rounded-2xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/35 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-2 border border-white/20"
                                     style={{ backgroundColor: heroColors.primaryCtaColor }}
                                 >
                                     <Zap size={20} fill="currentColor" />
@@ -371,7 +435,7 @@ export const Landing: React.FC = () => {
                                 </Link>
                                 <Link
                                     to={homepageSettings.hero.secondaryCtaLink || defaultHomepageSettings.hero.secondaryCtaLink || '/courses'}
-                                    className="w-full sm:w-auto bg-white text-gray-700 border border-gray-200 text-lg font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+                                    className="w-full sm:w-auto bg-white text-gray-800 border border-gray-200 text-lg font-bold px-8 py-4 rounded-2xl hover:bg-gray-50 hover:border-gray-300 shadow-xs transition-all flex items-center justify-center gap-2"
                                     style={{ color: heroColors.secondaryCtaColor }}
                                 >
                                     <BookOpen size={20} />
@@ -380,7 +444,7 @@ export const Landing: React.FC = () => {
                                 {tertiaryCtaLabel ? (
                                     <Link
                                         to={tertiaryCtaLink}
-                                        className="w-full sm:w-auto bg-white border border-indigo-100 text-lg font-bold px-8 py-4 rounded-xl hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                                        className="w-full sm:w-auto bg-white border border-indigo-100 text-lg font-bold px-8 py-4 rounded-2xl hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
                                         style={{ color: heroColors.tertiaryCtaColor }}
                                     >
                                         <ArrowDown size={20} />
@@ -389,7 +453,7 @@ export const Landing: React.FC = () => {
                                 ) : null}
                             </div>
 
-                            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-gray-500 font-medium">
+                            <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-gray-500 font-bold">
                                 <div className="flex items-center gap-2">
                                     <CheckCircle size={18} className="text-emerald-500" />
                                     <span>ضمان تحسن المستوى</span>
@@ -397,6 +461,10 @@ export const Landing: React.FC = () => {
                                 <div className="flex items-center gap-2">
                                     <CheckCircle size={18} className="text-emerald-500" />
                                     <span>مدربون معتمدون</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Star size={18} className="text-amber-500 fill-amber-500" />
+                                    <span>+15,000 طالب متفوق</span>
                                 </div>
                             </div>
                         </div>
@@ -406,35 +474,72 @@ export const Landing: React.FC = () => {
                                 <img
                                     src={resolveHomepageHeroImage(homepageSettings.hero.imageUrl || defaultHomepageSettings.hero.imageUrl)}
                                     alt={homepageSettings.hero.imageAlt || defaultHomepageSettings.hero.imageAlt || 'طالب يستخدم منصة المئة'}
-                                    className="w-full h-auto rounded-3xl shadow-2xl border-4 border-white relative z-10 transform transition-transform hover:scale-[1.02]"
+                                    className="w-full h-auto rounded-3xl shadow-2xl border-4 border-white relative z-10 transform transition-transform hover:scale-[1.01]"
                                 />
 
-                                <div className="absolute -bottom-4 right-2 sm:-bottom-6 sm:-right-6 z-20 bg-white/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl shadow-xl border border-white/50 max-w-[180px] sm:max-w-[200px] animate-bounce-slow">
-                                    <div className="flex items-center gap-2 mb-2 border-b border-gray-100 pb-2">
-                                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
-                                            <Target size={16} />
+                                {/* Floating Rating Badge Card */}
+                                <div className="absolute -top-3 -right-2 sm:-top-5 sm:-right-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-xl border border-white/80 flex items-center gap-3 animate-float">
+                                    <div className="flex -space-x-2 space-x-reverse overflow-hidden">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 flex items-center justify-center text-white text-xs font-black ring-2 ring-white">
+                                            99%
                                         </div>
-                                        <div>
-                                            <div className="text-xs font-bold text-gray-800">{homepageSettings.hero.floatingCardTitle || defaultHomepageSettings.hero.floatingCardTitle}</div>
-                                            <div className="text-[10px] text-emerald-500 font-bold">{homepageSettings.hero.floatingCardSubtitle || defaultHomepageSettings.hero.floatingCardSubtitle}</div>
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-600 flex items-center justify-center text-white text-xs font-black ring-2 ring-white">
+                                            98%
+                                        </div>
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xs font-black ring-2 ring-white">
+                                            97%
                                         </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <div className="h-1.5 bg-gray-100 rounded-full w-full overflow-hidden">
-                                            <div className="h-full bg-blue-500 w-3/4" />
+                                    <div className="text-right">
+                                        <div className="flex items-center gap-1">
+                                            <Star size={13} className="text-amber-400 fill-amber-400" />
+                                            <span className="text-xs font-black text-gray-900">4.9 من 5</span>
+                                            <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-full">معتمد</span>
                                         </div>
-                                        <div className="flex justify-between text-[10px] text-gray-500">
+                                        <div className="text-[10px] font-bold text-gray-500">تقييم الطلاب للتدريب</div>
+                                    </div>
+                                </div>
+
+                                {/* Floating Progress & Readiness Card */}
+                                <div className="absolute -bottom-4 right-2 sm:-bottom-6 sm:-right-6 z-20 bg-white/95 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl shadow-2xl border border-white/80 max-w-[195px] sm:max-w-[215px] animate-bounce-slow">
+                                    <div className="flex items-center gap-2.5 mb-2.5 border-b border-gray-100 pb-2">
+                                        <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-xs">
+                                            <Target size={16} />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="text-xs font-black text-gray-900 truncate">{homepageSettings.hero.floatingCardTitle || defaultHomepageSettings.hero.floatingCardTitle}</div>
+                                            <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                <span>{homepageSettings.hero.floatingCardSubtitle || defaultHomepageSettings.hero.floatingCardSubtitle}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <div className="h-2 bg-gray-100 rounded-full w-full overflow-hidden p-0.5">
+                                            <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full w-3/4 animate-pulse" />
+                                        </div>
+                                        <div className="flex justify-between text-[10px] font-bold text-gray-600">
                                             <span>{homepageSettings.hero.floatingCardProgressLabel || defaultHomepageSettings.hero.floatingCardProgressLabel}</span>
-                                            <span>{homepageSettings.hero.floatingCardProgressValue || defaultHomepageSettings.hero.floatingCardProgressValue}</span>
+                                            <span className="text-indigo-600 font-black">{homepageSettings.hero.floatingCardProgressValue || defaultHomepageSettings.hero.floatingCardProgressValue}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="absolute top-6 left-2 sm:top-10 sm:-left-10 z-20 bg-white p-3 rounded-2xl shadow-lg animate-float">
-                                    <div className="text-amber-500 font-black text-xl">A+</div>
+                                {/* Floating A+ Badge */}
+                                <div className="absolute top-10 left-2 sm:top-14 sm:-left-6 z-20 bg-gradient-to-br from-amber-400 to-amber-500 text-white p-2.5 sm:p-3 rounded-2xl shadow-xl shadow-amber-500/20 animate-float flex items-center gap-1 border-2 border-white">
+                                    <span className="font-black text-lg sm:text-xl">A+</span>
+                                    <Sparkles size={16} className="text-amber-100 fill-amber-100" />
                                 </div>
-                                <div className="absolute bottom-16 left-2 sm:bottom-20 sm:-left-4 z-0 bg-indigo-600 text-white p-3 rounded-2xl shadow-lg animate-float animation-delay-2000">
-                                    <Book size={24} />
+
+                                {/* Floating Achievement Strip */}
+                                <div className="absolute bottom-16 left-2 sm:bottom-20 sm:-left-6 z-10 bg-white/95 backdrop-blur-md px-3 py-2 rounded-2xl shadow-lg border border-white/80 animate-float animation-delay-2000 flex items-center gap-2">
+                                    <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                        <Trophy size={15} />
+                                    </div>
+                                    <div>
+                                        <div className="text-[10px] font-black text-gray-800">تحسن ملحوظ</div>
+                                        <div className="text-[9px] font-bold text-emerald-600">+15 درجة في القياس</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -442,18 +547,54 @@ export const Landing: React.FC = () => {
                 </div>
             </section>
 
-            <section className="bg-blue-900 text-white py-10 relative overflow-hidden">
+            {/* Redesigned Live Stats & Counters Section */}
+            <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 py-12 text-white">
+                <div className="absolute inset-0 opacity-15" style={{ backgroundImage: 'radial-gradient(#6366f1 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
+                <div className="absolute top-0 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center divide-x divide-blue-800 divide-x-reverse">
-                        {homepageStats.slice(0, 4).map((stat) => (
-                            <div key={stat.id}>
-                                <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">{stat.displayValue}</div>
-                                <div className="text-blue-200 text-sm font-bold">{stat.label}</div>
-                            </div>
-                        ))}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        {homepageStats.slice(0, 4).map((stat) => {
+                            const isRating = stat.source === 'rating';
+                            const isStudents = stat.source === 'students';
+                            const isCourses = stat.source === 'courses';
+
+                            const icon = isRating ? (
+                                <Star size={22} className="text-amber-400 fill-amber-400" />
+                            ) : isStudents ? (
+                                <Users size={22} className="text-blue-400" />
+                            ) : isCourses ? (
+                                <BookOpen size={22} className="text-emerald-400" />
+                            ) : (
+                                <Zap size={22} className="text-purple-400" />
+                            );
+
+                            const iconBg = isRating
+                                ? 'bg-amber-400/15 text-amber-400 border-amber-400/25'
+                                : isStudents
+                                ? 'bg-blue-400/15 text-blue-400 border-blue-400/25'
+                                : isCourses
+                                ? 'bg-emerald-400/15 text-emerald-400 border-emerald-400/25'
+                                : 'bg-purple-400/15 text-purple-400 border-purple-400/25';
+
+                            return (
+                                <div
+                                    key={stat.id}
+                                    className="group relative overflow-hidden rounded-3xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/25 p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl backdrop-blur-md flex flex-col items-center text-center"
+                                >
+                                    <div className={`mb-3.5 inline-flex h-12 w-12 items-center justify-center rounded-2xl border shadow-xs transition-transform duration-300 group-hover:scale-110 ${iconBg}`}>
+                                        {icon}
+                                    </div>
+                                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white mb-1 group-hover:text-amber-300 transition-colors">
+                                        {isRating ? `${stat.displayValue} ⭐` : stat.displayValue}
+                                    </div>
+                                    <div className="text-xs sm:text-sm font-bold text-indigo-200/90">{stat.label}</div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fbbf24 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
             </section>
 
             <section className="py-20 bg-gray-50">
@@ -638,21 +779,25 @@ export const Landing: React.FC = () => {
                 </div>
             </section>
 
-            <section className="py-20 bg-indigo-900 text-white relative overflow-hidden">
+            <section className="py-20 bg-gradient-to-b from-indigo-950 via-indigo-900 to-indigo-950 text-white relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold mb-4">{sectionTexts.testimonialsTitle}</h2>
-                        <p className="text-indigo-200">{sectionTexts.testimonialsSubtitle}</p>
+                    <div className="text-center mb-14">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold mb-4 backdrop-blur-sm">
+                            <Sparkles size={14} />
+                            <span>تجارب حقيقية تصنع الفارق</span>
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-black mb-3 text-white tracking-tight">{sectionTexts.testimonialsTitle}</h2>
+                        <p className="text-indigo-200 text-base max-w-2xl mx-auto">{sectionTexts.testimonialsSubtitle}</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                         {testimonials.slice(0, 3).map((testimonial) => (
                             <TestimonialCard key={testimonial.id} name={testimonial.name} degree={testimonial.degree} text={testimonial.text} image={testimonial.image} />
                         ))}
                     </div>
                 </div>
-                <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-500 opacity-10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl" />
+                <div className="absolute top-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl pointer-events-none" />
             </section>
         </div>
     );
@@ -665,15 +810,20 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
         return (
             <Link to={link || '#'} className="group block h-full w-full">
                 <div
-                    className="w-full min-h-44 sm:h-48 bg-white border-2 border-gray-100 flex flex-col items-center justify-center shadow-sm hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden"
+                    className="w-full min-h-[176px] bg-white border-2 flex flex-col items-center justify-between p-6 shadow-sm hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:scale-[1.02] active:scale-[0.98] rounded-3xl relative overflow-hidden"
                     style={{ borderColor: palette.border || palette.base }}
                 >
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="mb-4 p-4 rounded-2xl group-hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: palette.soft, color: palette.text }}>
+                    <div className="absolute inset-0 bg-radial-at-tr from-transparent via-transparent to-black/[0.02] pointer-events-none" />
+                    <div className="relative z-10 flex flex-col items-center text-center w-full">
+                        <div className="mb-3.5 p-3.5 rounded-2xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-xs" style={{ backgroundColor: palette.soft, color: palette.text }}>
                             {icon}
                         </div>
-                        <h3 className="text-lg sm:text-xl font-bold tracking-wide text-gray-900 mb-2 text-center px-3 break-words">{title}</h3>
-                        <p className="text-gray-500 text-xs font-medium px-6 text-center leading-relaxed">{subtitle}</p>
+                        <h3 className="text-lg sm:text-xl font-black tracking-tight text-gray-900 mb-1.5 break-words">{title}</h3>
+                        <p className="text-gray-500 text-xs font-medium px-2 leading-relaxed line-clamp-2">{subtitle}</p>
+                    </div>
+                    <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 text-xs font-black transition-colors duration-300" style={{ color: palette.text }}>
+                        <span>استكشف المسار</span>
+                        <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                     </div>
                 </div>
             </Link>
@@ -683,13 +833,17 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
     if (iconStyle === 'minimal') {
         return (
             <Link to={link || '#'} className="group block h-full w-full">
-                <div className="w-full min-h-44 sm:h-48 bg-gray-50 flex flex-col items-center justify-center hover:bg-white transition-all duration-300 transform group-hover:-translate-y-1 rounded-2xl relative overflow-hidden">
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="mb-3" style={{ color: palette.text }}>
+                <div className="w-full min-h-[176px] bg-gray-50 flex flex-col items-center justify-between p-6 hover:bg-white hover:border-gray-200 border border-gray-100 transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] rounded-3xl relative overflow-hidden">
+                    <div className="relative z-10 flex flex-col items-center text-center w-full">
+                        <div className="mb-3.5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300" style={{ color: palette.text }}>
                             {icon}
                         </div>
-                        <h3 className="text-lg sm:text-xl font-extrabold text-gray-800 mb-2 text-center px-3 break-words">{title}</h3>
-                        <p className="text-gray-500 text-xs text-center px-4">{subtitle}</p>
+                        <h3 className="text-lg sm:text-xl font-extrabold text-gray-900 mb-1.5 break-words">{title}</h3>
+                        <p className="text-gray-500 text-xs text-center px-2 line-clamp-2">{subtitle}</p>
+                    </div>
+                    <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
+                        <span>استكشف المسار</span>
+                        <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                     </div>
                 </div>
             </Link>
@@ -700,15 +854,20 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
         return (
             <Link to={link || '#'} className="group block h-full w-full">
                 <div
-                    className="w-full min-h-44 sm:h-48 text-white flex flex-col items-center justify-center shadow-[8px_8px_0px_#00000020] hover:shadow-[12px_12px_0px_#00000030] transition-all duration-300 transform group-hover:-translate-y-2 rounded-[2rem] border-4 border-white relative overflow-hidden"
+                    className="w-full min-h-[176px] text-white flex flex-col items-center justify-between p-6 shadow-[8px_8px_0px_#00000020] hover:shadow-[12px_12px_0px_#00000030] transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:scale-[1.02] active:scale-[0.98] rounded-[2rem] border-4 border-white relative overflow-hidden"
                     style={{ backgroundColor: palette.base }}
                 >
-                    <div className="absolute top-2 right-2 text-white/30 transform rotate-12 text-6xl">✨</div>
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="mb-4 bg-white text-gray-800 p-4 rounded-full shadow-md group-hover:rotate-12 transition-transform">
+                    <div className="absolute top-2 right-2 text-white/25 transform rotate-12 text-5xl pointer-events-none">✨</div>
+                    <div className="relative z-10 flex flex-col items-center text-center w-full">
+                        <div className="mb-3.5 bg-white text-gray-800 p-3.5 rounded-2xl shadow-md group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300">
                             {icon}
                         </div>
-                        <h3 className="text-xl sm:text-2xl font-black drop-shadow-md mb-2 text-center px-3 break-words">{title}</h3>
+                        <h3 className="text-xl font-black drop-shadow-sm mb-1.5 break-words">{title}</h3>
+                        <p className="text-white/85 text-xs font-medium px-2 leading-relaxed line-clamp-2">{subtitle}</p>
+                    </div>
+                    <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-black text-white group-hover:bg-white group-hover:text-gray-900 transition-all duration-300 shadow-xs">
+                        <span>استكشف المسار</span>
+                        <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                     </div>
                 </div>
             </Link>
@@ -718,17 +877,24 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
     return (
         <Link to={link || '#'} className="group block h-full w-full">
             <div
-                className="w-full min-h-44 sm:h-48 text-white flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden"
+                className="w-full min-h-[176px] text-white flex flex-col items-center justify-between p-6 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2.5 hover:scale-[1.02] active:scale-[0.98] rounded-3xl relative overflow-hidden border border-white/15"
                 style={{ backgroundColor: palette.base }}
             >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 transform group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black opacity-10 rounded-full -ml-8 -mb-8 transform group-hover:scale-110 transition-transform duration-500" />
-                <div className="relative z-10 flex flex-col items-center">
-                    <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm group-hover:bg-white/30 transition-colors shadow-sm">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_60%)] pointer-events-none" />
+                <div className="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full blur-xl group-hover:scale-125 group-hover:bg-white/15 transition-all duration-700 pointer-events-none" />
+                <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-black/10 rounded-full blur-lg group-hover:scale-125 transition-all duration-700 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col items-center text-center w-full">
+                    <div className="mb-3.5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 shadow-xs backdrop-blur-md group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white/30 transition-all duration-300 border border-white/20">
                         {icon}
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold tracking-wide drop-shadow-md mb-2 text-center px-3 break-words">{title}</h3>
-                    <p className="text-white/90 text-xs font-medium px-6 text-center leading-relaxed max-w-[200px]">{subtitle}</p>
+                    <h3 className="text-xl font-black drop-shadow-xs mb-1.5 break-words tracking-tight">{title}</h3>
+                    <p className="text-white/85 text-xs font-medium px-2 leading-relaxed max-w-[240px] line-clamp-2">{subtitle}</p>
+                </div>
+
+                <div className="relative z-10 mt-4 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-sm text-[11px] font-black text-white group-hover:bg-white group-hover:text-gray-900 transition-all duration-300 shadow-xs border border-white/20">
+                    <span>استكشف المسار</span>
+                    <ArrowLeft size={13} className="transition-transform duration-300 group-hover:-translate-x-1.5" />
                 </div>
             </div>
         </Link>
@@ -746,17 +912,44 @@ const FeatureCard = ({ icon, title, description }: any) => (
 );
 
 const TestimonialCard = ({ name, degree, text, image }: any) => (
-    <div className="bg-white/10 backdrop-blur-md border border-white/10 p-5 sm:p-6 rounded-2xl">
-        <div className="mb-4 flex items-center gap-3 sm:gap-4">
-            <img src={image} alt={name} className="w-12 h-12 rounded-full border-2 border-amber-400" />
-            <div>
-                <h4 className="font-bold text-sm sm:text-base">{name}</h4>
-                <span className="text-amber-400 text-xs font-bold">{degree}</span>
+    <div className="group relative bg-white/[0.07] hover:bg-white/[0.12] backdrop-blur-xl border border-white/10 hover:border-amber-400/40 p-6 sm:p-7 rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between overflow-hidden">
+        <Quote size={52} className="absolute -top-3 -left-3 text-white/[0.04] group-hover:text-amber-400/10 transition-colors pointer-events-none" />
+
+        <div>
+            <div className="mb-5 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3.5">
+                    <div className="relative">
+                        <img src={image} alt={name} className="w-12 h-12 rounded-full border-2 border-amber-400/80 object-cover shadow-sm" />
+                        <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-white text-[9px] shadow-xs font-black">
+                            ✓
+                        </span>
+                    </div>
+                    <div className="text-right">
+                        <h4 className="font-black text-sm sm:text-base text-white group-hover:text-amber-200 transition-colors">{name}</h4>
+                        <span className="text-white/60 text-[11px] font-bold">مشترك معتمد</span>
+                    </div>
+                </div>
+
+                {degree ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 px-3 py-1 text-xs font-black text-amber-300 border border-amber-400/30 shadow-xs">
+                        <Trophy size={12} />
+                        {degree}
+                    </span>
+                ) : null}
             </div>
+
+            <p className="text-indigo-100/90 text-sm sm:text-base leading-relaxed font-medium mb-6 italic">"{text}"</p>
         </div>
-        <p className="text-indigo-100 text-sm leading-relaxed italic">"{text}"</p>
-        <div className="flex gap-1 text-amber-400 mt-4">
-            {[...Array(5)].map((_, i) => <Star key={`star-${name}-${i}`} size={14} fill="currentColor" />)}
+
+        <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+            <div className="flex gap-1 text-amber-400">
+                {[...Array(5)].map((_, i) => (
+                    <Star key={`star-${name}-${i}`} size={15} fill="currentColor" className="drop-shadow-xs" />
+                ))}
+            </div>
+            <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
+                <CheckCircle size={12} /> تجربة موثقة
+            </span>
         </div>
     </div>
 );
