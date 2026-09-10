@@ -110,7 +110,7 @@ check('directed exam entry opens an unsaved normalized draft instead of persisti
   assertIncludes(quizzesManagerSource, "defaultKind={draftMode === 'saher' || draftMode === 'central' ? 'test' : undefined}");
   assertIncludes(
     quizzesManagerSource,
-    "initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSchoolPortal || isSupervisor ? 'central' : 'regular'}",
+    "initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSupervisorDashboard || isSupervisor ? 'central' : 'regular'}",
   );
   assertNotIncludes(quizzesManagerSource, 'addQuiz(draftQuiz)');
 });
