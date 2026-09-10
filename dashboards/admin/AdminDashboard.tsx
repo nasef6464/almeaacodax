@@ -1012,6 +1012,11 @@ export const AdminDashboard: React.FC = () => {
 
     const renderOverview = () => (
         <div className="space-y-6 animate-fade-in">
+            <nav aria-label="مسار التنقل" className="flex items-center gap-1.5 text-xs text-gray-500 font-bold mb-1">
+                <span>لوحة الإدارة</span>
+                <span className="text-gray-300">/</span>
+                <span className="text-indigo-600 font-black">نظرة عامة (Overview)</span>
+            </nav>
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-gray-900">نظرة عامة (Overview)</h1>
                 <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
@@ -1791,6 +1796,11 @@ export const AdminDashboard: React.FC = () => {
 
     const renderSystemOperations = () => (
         <div className="space-y-6 animate-fade-in">
+            <nav aria-label="مسار التنقل" className="flex items-center gap-1.5 text-xs text-gray-500 font-bold mb-1">
+                <span>لوحة الإدارة</span>
+                <span className="text-gray-300">/</span>
+                <span className="text-indigo-600 font-black">{activeTab === 'settings' ? 'الإعدادات التشغيلية' : 'مراقبة النظام'}</span>
+            </nav>
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">

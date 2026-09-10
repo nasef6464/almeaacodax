@@ -158,74 +158,18 @@ export const SchoolDirectorAcademicCenter: React.FC<{
               </span>
             </h3>
             <div className="mt-3 grid gap-2">
-              <input
-                value={assessment.title}
-                onChange={(e) =>
-                  setAssessment({ ...assessment, title: e.target.value })
-                }
-                placeholder="عنوان الاختبار"
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              />
-              <select
-                value={assessment.classId}
-                onChange={(e) =>
-                  setAssessment({ ...assessment, classId: e.target.value })
-                }
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              >
-                {classes.map((item) => (
-                  <option key={item.classId} value={item.classId}>
-                    {item.className}
-                  </option>
-                ))}
+              <input value={assessment.title} onChange={(e) => setAssessment({ ...assessment, title: e.target.value })} placeholder="عنوان الاختبار" className="rounded-xl border bg-white px-3 py-2 text-sm" />
+              <select value={assessment.classId} onChange={(e) => setAssessment({ ...assessment, classId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
+                {classes.map((item) => (<option key={item.classId} value={item.classId}>{item.className}</option>))}
               </select>
-              <input
-                value={assessment.pathId}
-                onChange={(e) =>
-                  setAssessment({ ...assessment, pathId: e.target.value })
-                }
-                placeholder="معرّف المسار التعليمي"
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              />
-              <input
-                value={assessment.questionIds}
-                onChange={(e) =>
-                  setAssessment({ ...assessment, questionIds: e.target.value })
-                }
-                placeholder="معرّفات أسئلة معتمدة، مفصولة بفاصلة"
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              />
+              <input value={assessment.pathId} onChange={(e) => setAssessment({ ...assessment, pathId: e.target.value })} placeholder="معرّف المسار التعليمي" className="rounded-xl border bg-white px-3 py-2 text-sm" />
+              <input value={assessment.questionIds} onChange={(e) => setAssessment({ ...assessment, questionIds: e.target.value })} placeholder="معرّفات أسئلة معتمدة، مفصولة بفاصلة" className="rounded-xl border bg-white px-3 py-2 text-sm" />
               <button
-                disabled={
-                  pending === "assessment" ||
-                  !assessment.title.trim() ||
-                  !assessment.classId ||
-                  !assessment.pathId.trim() ||
-                  !assessment.questionIds.trim()
-                }
-                onClick={() =>
-                  void run(
-                    "assessment",
-                    async () => {
-                      await api.createSchoolDirectorAssessment(
-                        school.schoolId,
-                        {
-                          ...assessment,
-                          questionIds: assessment.questionIds
-                            .split(",")
-                            .map((id) => id.trim())
-                            .filter(Boolean),
-                        },
-                      );
-                      setAssessment({
-                        ...assessment,
-                        title: "",
-                        questionIds: "",
-                      });
-                    },
-                    "تم إنشاء اختبار المدرسة من بنك الأسئلة الحالي.",
-                  )
-                }
+                disabled={pending === "assessment" || !assessment.title.trim() || !assessment.classId || !assessment.pathId.trim() || !assessment.questionIds.trim()}
+                onClick={() => void run("assessment", async () => {
+                  await api.createSchoolDirectorAssessment(school.schoolId, { ...assessment, questionIds: assessment.questionIds.split(",").map((id) => id.trim()).filter(Boolean) });
+                  setAssessment({ ...assessment, title: "", questionIds: "" });
+                }, "تم إنشاء اختبار المدرسة من بنك الأسئلة الحالي.")}
                 className="rounded-xl bg-indigo-700 py-2 text-sm font-black text-white"
               >
                 إنشاء الاختبار
@@ -258,72 +202,15 @@ export const SchoolDirectorAcademicCenter: React.FC<{
             </h3>
             {can("SCHOOL_INTERVENTIONS_MANAGE", "INTERVENTION_CENTER") && (
               <div className="mt-3 grid gap-2">
-                <select
-                  value={intervention.studentId}
-                  onChange={(e) =>
-                    setIntervention({
-                      ...intervention,
-                      studentId: e.target.value,
-                    })
-                  }
-                  className="rounded-xl border bg-white px-3 py-2 text-sm"
-                >
-                  {students.map((item) => (
-                    <option key={item.studentId} value={item.studentId}>
-                      {item.name}
-                    </option>
-                  ))}
+                <select value={intervention.studentId} onChange={(e) => setIntervention({ ...intervention, studentId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
+                  {students.map((item) => (<option key={item.studentId} value={item.studentId}>{item.name}</option>))}
                 </select>
-                <select
-                  value={intervention.classId}
-                  onChange={(e) =>
-                    setIntervention({
-                      ...intervention,
-                      classId: e.target.value,
-                    })
-                  }
-                  className="rounded-xl border bg-white px-3 py-2 text-sm"
-                >
-                  {classes.map((item) => (
-                    <option key={item.classId} value={item.classId}>
-                      {item.className}
-                    </option>
-                  ))}
+                <select value={intervention.classId} onChange={(e) => setIntervention({ ...intervention, classId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
+                  {classes.map((item) => (<option key={item.classId} value={item.classId}>{item.className}</option>))}
                 </select>
-                <input
-                  value={intervention.skillId}
-                  onChange={(e) =>
-                    setIntervention({
-                      ...intervention,
-                      skillId: e.target.value,
-                    })
-                  }
-                  placeholder="معرّف المهارة"
-                  className="rounded-xl border bg-white px-3 py-2 text-sm"
-                />
-                <input
-                  value={intervention.pathId}
-                  onChange={(e) =>
-                    setIntervention({ ...intervention, pathId: e.target.value })
-                  }
-                  placeholder="معرّف المسار العلاجي"
-                  className="rounded-xl border bg-white px-3 py-2 text-sm"
-                />
-                <button
-                  onClick={() =>
-                    void run(
-                      "intervention",
-                      async () => {
-                        await api.createSchoolDirectorIntervention(
-                          school.schoolId,
-                          intervention,
-                        );
-                      },
-                      "تم إنشاء التدخل وربط خطة علاجية بالطالب.",
-                    )
-                  }
-                  className="rounded-xl bg-emerald-700 py-2 text-sm font-black text-white"
-                >
+                <input value={intervention.skillId} onChange={(e) => setIntervention({ ...intervention, skillId: e.target.value })} placeholder="معرّف المهارة" className="rounded-xl border bg-white px-3 py-2 text-sm" />
+                <input value={intervention.pathId} onChange={(e) => setIntervention({ ...intervention, pathId: e.target.value })} placeholder="معرّف المسار العلاجي" className="rounded-xl border bg-white px-3 py-2 text-sm" />
+                <button onClick={() => void run("intervention", async () => { await api.createSchoolDirectorIntervention(school.schoolId, intervention); }, "تم إنشاء التدخل وربط خطة علاجية بالطالب.")} className="rounded-xl bg-emerald-700 py-2 text-sm font-black text-white">
                   إنشاء تدخل
                 </button>
               </div>
@@ -338,95 +225,34 @@ export const SchoolDirectorAcademicCenter: React.FC<{
               <ShieldAlert size={18} /> نقل طالب بين مدرستين — عملية حساسة
             </h3>
             <div className="mt-3 grid gap-2 md:grid-cols-4">
-              <select
-                value={transfer.studentId}
-                onChange={(e) =>
-                  setTransfer({ ...transfer, studentId: e.target.value })
-                }
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              >
+              <select value={transfer.studentId} onChange={(e) => setTransfer({ ...transfer, studentId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
                 <option value="">اختر الطالب</option>
-                {students.map((item) => (
-                  <option key={item.studentId} value={item.studentId}>
-                    {item.name}
-                  </option>
-                ))}
+                {students.map((item) => (<option key={item.studentId} value={item.studentId}>{item.name}</option>))}
               </select>
               <select
                 value={transfer.targetSchoolId}
                 onChange={(e) => {
                   const id = e.target.value;
-                  setTransfer({
-                    ...transfer,
-                    targetSchoolId: id,
-                    targetClassId: "",
-                  });
-                  if (id)
-                    void api
-                      .getSchoolDirectorTransferTargetClasses(id)
-                      .then((data) => setTargetClasses(data.classes || []))
-                      .catch(() => {
-                        setTargetClasses([]);
-                        setMessage("تعذر تحميل فصول المدرسة الهدف.");
-                      });
+                  setTransfer({ ...transfer, targetSchoolId: id, targetClassId: "" });
+                  if (id) void api.getSchoolDirectorTransferTargetClasses(id).then((data) => setTargetClasses(data.classes || [])).catch(() => { setTargetClasses([]); setMessage("تعذر تحميل فصول المدرسة الهدف."); });
                 }}
                 className="rounded-xl border bg-white px-3 py-2 text-sm"
               >
                 <option value="">المدرسة الهدف</option>
-                {targetSchools.map((item) => (
-                  <option key={item.schoolId} value={item.schoolId}>
-                    {item.schoolName}
-                  </option>
-                ))}
+                {targetSchools.map((item) => (<option key={item.schoolId} value={item.schoolId}>{item.schoolName}</option>))}
               </select>
-              <select
-                value={transfer.targetClassId}
-                onChange={(e) =>
-                  setTransfer({ ...transfer, targetClassId: e.target.value })
-                }
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              >
+              <select value={transfer.targetClassId} onChange={(e) => setTransfer({ ...transfer, targetClassId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
                 <option value="">الفصل الهدف</option>
-                {targetClasses.map((item) => (
-                  <option key={item.classId} value={item.classId}>
-                    {item.className}
-                  </option>
-                ))}
+                {targetClasses.map((item) => (<option key={item.classId} value={item.classId}>{item.className}</option>))}
               </select>
-              <input
-                value={transfer.confirmation}
-                onChange={(e) =>
-                  setTransfer({ ...transfer, confirmation: e.target.value })
-                }
-                placeholder="اكتب TRANSFER للتأكيد"
-                className="rounded-xl border bg-white px-3 py-2 text-sm"
-              />
+              <input value={transfer.confirmation} onChange={(e) => setTransfer({ ...transfer, confirmation: e.target.value })} placeholder="اكتب TRANSFER للتأكيد" className="rounded-xl border bg-white px-3 py-2 text-sm" />
             </div>
             <button
-              disabled={
-                transfer.confirmation !== "TRANSFER" ||
-                !transfer.studentId ||
-                !transfer.targetClassId ||
-                pending === "transfer"
-              }
-              onClick={() =>
-                void run(
-                  "transfer",
-                  async () => {
-                    await api.transferSchoolDirectorStudent(
-                      school.schoolId,
-                      transfer.studentId,
-                      {
-                        targetSchoolId: transfer.targetSchoolId,
-                        targetClassId: transfer.targetClassId,
-                        confirmation: "TRANSFER",
-                      },
-                    );
-                    await onRefresh();
-                  },
-                  "تم نقل الطالب وتسجيل العملية في سجل التدقيق.",
-                )
-              }
+              disabled={transfer.confirmation !== "TRANSFER" || !transfer.studentId || !transfer.targetClassId || pending === "transfer"}
+              onClick={() => void run("transfer", async () => {
+                await api.transferSchoolDirectorStudent(school.schoolId, transfer.studentId, { targetSchoolId: transfer.targetSchoolId, targetClassId: transfer.targetClassId, confirmation: "TRANSFER" });
+                await onRefresh();
+              }, "تم نقل الطالب وتسجيل العملية في سجل التدقيق.")}
               className="mt-3 rounded-xl bg-rose-700 px-5 py-2 text-sm font-black text-white disabled:opacity-40"
             >
               تأكيد النقل بين المدرستين

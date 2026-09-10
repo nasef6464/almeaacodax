@@ -218,7 +218,12 @@ export const NewSchoolWizardModal: React.FC<NewSchoolWizardModalProps> = ({
                             <Sparkles size={24} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-white">معالج تأسيس المدرسة الذكية</h3>
+                            <div className="flex items-center gap-1.5 text-xs text-indigo-200 font-bold mb-1">
+                                <span>تشغيل المدارس والتعاقدات</span>
+                                <span>/</span>
+                                <span className="text-white font-bold">معالج التأسيس المتكامل</span>
+                            </div>
+                            <h3 className="text-lg font-black text-white">معالج تأسيس جهة تعليمية جديدة وتجهيز التعاقد ✨</h3>
                             <p className="text-xs text-indigo-200 mt-0.5">
                                 رحلة مبسطة من 4 خطوات لتسجيل وتفعيل المدرسة والفصول والخدمات فورياً
                             </p>

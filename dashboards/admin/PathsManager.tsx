@@ -22,6 +22,7 @@ import { getPathIcon, getSubjectIcon, getLevelIcon, resolveColor, resolvePathDis
 import { EducationalIconPicker } from './PathsManager/EducationalIconPicker';
 import { buildPathReadinessSummary } from './PathsManager/pathReadiness';
 import { resolvePathsManagerUrlState } from './PathsManager/pathsManagerUrlState';
+import { AdminBreadcrumbHeader } from './components/AdminBreadcrumbHeader';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
@@ -761,34 +762,43 @@ export const PathsManager: React.FC = () => {
       <>
         {renderDeleteModal()}
         <div className="space-y-6 animate-fade-in relative">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">إدارة المسارات التعليمية</h2>
-            <p className="text-gray-500 text-sm mt-1">اختر المسار لإدارة مواده وباقاته.</p>
-          </div>
-          <button 
-            onClick={() => {
-              setEditingPath(null);
-              setNewPathName('');
-              setNewPathColor('indigo');
-              setNewPathIcon('📚');
-              setNewPathIconUrl('');
-              setNewPathIconStyle('default');
-              setNewPathParentId('');
-              setNewPathDesc('');
-              setNewPathShowInNavbar(false);
-              setNewPathIsActive(false);
-              setNewPathShowSubjectCards(true);
-              setNewPathShowMockExamCard(true);
-              setNewPathShowPackageCard(true);
-              setIsPathModalOpen(true);
-            }}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
-          >
-            <Plus size={18} />
-            إضافة مسار جديد
-          </button>
-        </div>
+        <AdminBreadcrumbHeader
+          breadcrumbs={[
+            { label: 'لوحة الإدارة' },
+            { label: 'إدارة المسارات التعليمية (مساحات العمل)', active: true },
+          ]}
+          title="إدارة المسارات التعليمية ومساحات العمل"
+          subtitle="إدارة مسارات المنصة، تقسيم المراحل الدراسية، إضافة وتخصيص المواد، وإعداد الباقات الشاملة"
+          badge={
+            <span className="px-3 py-1 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
+              {paths.length} مسار تعليمي
+            </span>
+          }
+          actions={
+            <button 
+              onClick={() => {
+                setEditingPath(null);
+                setNewPathName('');
+                setNewPathColor('indigo');
+                setNewPathIcon('📚');
+                setNewPathIconUrl('');
+                setNewPathIconStyle('default');
+                setNewPathParentId('');
+                setNewPathDesc('');
+                setNewPathShowInNavbar(false);
+                setNewPathIsActive(false);
+                setNewPathShowSubjectCards(true);
+                setNewPathShowMockExamCard(true);
+                setNewPathShowPackageCard(true);
+                setIsPathModalOpen(true);
+              }}
+              className="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
+            >
+              <Plus size={18} />
+              إضافة مسار جديد
+            </button>
+          }
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {paths.map((path, index) => {
@@ -893,7 +903,14 @@ export const PathsManager: React.FC = () => {
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
-                <h3 className="font-bold text-lg text-gray-800">{editingPath ? 'تعديل المسار' : 'إضافة مسار جديد'}</h3>
+                <div>
+                  <div className="text-xs font-bold text-indigo-600 mb-1">
+                    {editingPath ? 'إدارة المسارات / تعديل المسار' : 'إدارة المسارات / إضافة مسار جديد'}
+                  </div>
+                  <h3 className="font-bold text-lg text-gray-800">
+                    {editingPath ? `تعديل المسار: ${editingPath.name}` : 'إضافة مسار تعليمي جديد (مساحة عمل)'}
+                  </h3>
+                </div>
                 <button onClick={() => { setIsPathModalOpen(false); setEditingPath(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
@@ -1088,28 +1105,72 @@ export const PathsManager: React.FC = () => {
   // VIEW 2: Path Overview (Subjects & Packages)
   // ---------------------------------------------------------------------------
   if (selectedPathId && !selectedSubjectId) {
+    const pathTabMeta: Record<string, { label: string; title: string; subtitle: string }> = {
+      levels: {
+        label: 'المراحل الدراسية',
+        title: `مسار ${currentPath?.name || ''} — المراحل الدراسية والتصنيف`,
+        subtitle: 'تقسيم المسار إلى مراحل دراسية وتصنيف المواد الدراسية التابعة لكل مرحلة',
+      },
+      subjects: {
+        label: 'المواد الدراسية',
+        title: `مسار ${currentPath?.name || ''} — المواد الدراسية والمناهج`,
+        subtitle: 'إدارة وتخصيص المواد الدراسية ومناهج المسار ومساحات العمل التعليمية',
+      },
+      packages: {
+        label: 'الباقات الشاملة',
+        title: `مسار ${currentPath?.name || ''} — الباقات والعضويات الشاملة`,
+        subtitle: 'إنشاء وإدارة الباقات الشاملة والعضويات وربطها بمواد المسار',
+      },
+      settings: {
+        label: 'إعدادات المسار',
+        title: `مسار ${currentPath?.name || ''} — إعدادات المسار والظهور`,
+        subtitle: 'تخصيص هوية المسار وألوانه وأيقونته وخيارات ظهور البطاقات للطلاب',
+      },
+    };
+    const currentMeta = pathTabMeta[pathTab] || pathTabMeta.subjects;
+
     return (
       <>
         {renderDeleteModal()}
         <div className="space-y-6 animate-fade-in pb-12">
-        {/* Path Header */}
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setSelectedPathId(null)}
-              className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
-            >
-              <ChevronLeft size={20} className="rotate-180" />
-            </button>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{getPathIcon(currentPath)}</span>
-                <h2 className="text-xl font-bold text-gray-800">إدارة: {currentPath?.name}</h2>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">إدارة مواد المسار والباقات الشاملة.</p>
+        <AdminBreadcrumbHeader
+          breadcrumbs={[
+            { label: 'لوحة الإدارة' },
+            { label: 'إدارة المسارات', onClick: () => setSelectedPathId(null) },
+            { label: currentPath?.name || 'المسار', onClick: () => setPathTab('subjects') },
+            { label: currentMeta.label, active: true },
+          ]}
+          title={currentMeta.title}
+          subtitle={currentMeta.subtitle}
+          icon={getPathIcon(currentPath)}
+          badge={
+            <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+              currentPath?.isActive === false ? 'bg-gray-100 text-gray-600' : 'bg-sky-50 text-sky-700'
+            }`}>
+              {currentPath?.isActive === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}
+            </span>
+          }
+          onBack={() => setSelectedPathId(null)}
+          backLabel="عودة لقائمة المسارات"
+          actions={
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => currentPath && handlePreviewPath(currentPath.id, e)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gray-50 border border-gray-200 px-3.5 py-2 text-xs font-black text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                title="معاينة صفحة المسار للطلاب"
+              >
+                <Eye size={15} /> معاينة المسار
+              </button>
+              <button
+                onClick={(e) => currentPath && openEditPath(currentPath, e)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 border border-indigo-100 px-3.5 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 transition-colors cursor-pointer"
+                title="تعديل اسم أو أيقونة أو لون المسار"
+              >
+                <Settings size={15} /> تعديل المسار
+              </button>
             </div>
-          </div>
-        </div>
+          }
+        />
 
         {/* Path Tabs */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex-shrink-0">
@@ -1605,7 +1666,14 @@ export const PathsManager: React.FC = () => {
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
-                <h3 className="font-bold text-lg text-gray-800">{editingSubject ? 'تعديل المادة' : 'إضافة مادة جديدة'}</h3>
+                <div>
+                  <div className="text-xs font-bold text-indigo-600 mb-1">
+                    {`مسار ${currentPath?.name || ''} / المواد الدراسية`}
+                  </div>
+                  <h3 className="font-bold text-lg text-gray-800">
+                    {editingSubject ? `تعديل المادة: ${editingSubject.name}` : `إضافة مادة دراسية جديدة لمسار ${currentPath?.name || ''}`}
+                  </h3>
+                </div>
                 <button onClick={() => { setIsSubjectModalOpen(false); setEditingSubject(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
@@ -1731,6 +1799,9 @@ export const PathsManager: React.FC = () => {
             <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
                 <div>
+                  <div className="text-xs font-bold text-indigo-600 mb-1">
+                    {`مسار ${currentPath?.name || ''} / الباقات والعضويات`}
+                  </div>
                   <h3 className="font-bold text-lg text-gray-800">{editingPackage ? 'تعديل عضوية أو باقة عامة' : 'إنشاء عضوية أو باقة عامة'}</h3>
                   <p className="text-xs text-gray-500 mt-1">استخدم هذا النموذج لباقات المسار، أو فعّل خيار "عضوية عامة تفتح كل المنصة" لإنشاء عضوية عامة منفصلة عن باقات التعلم.</p>
                 </div>
@@ -1945,7 +2016,12 @@ export const PathsManager: React.FC = () => {
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
             <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
-                <h3 className="font-bold text-lg text-gray-800">{editingLevel ? 'تعديل المرحلة' : 'إضافة مرحلة دراسية'}</h3>
+                <div>
+                  <div className="text-xs font-bold text-indigo-600 mb-1">
+                    {`مسار ${currentPath?.name || ''} / المراحل الدراسية`}
+                  </div>
+                  <h3 className="font-bold text-lg text-gray-800">{editingLevel ? 'تعديل المرحلة' : 'إضافة مرحلة دراسية'}</h3>
+                </div>
                 <button type="button" onClick={() => { setIsLevelModalOpen(false); setEditingLevel(null); setNewLevelName(''); setNewLevelIcon('🎓'); setNewLevelIconUrl(''); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
@@ -1996,30 +2072,75 @@ export const PathsManager: React.FC = () => {
   // ---------------------------------------------------------------------------
   // VIEW 3: Subject Workspace (Courses, Skills, Questions, etc.)
   // ---------------------------------------------------------------------------
+  const subjectTabMeta: Record<string, { label: string; title: string; subtitle: string }> = {
+    courses: {
+      label: 'إدارة الدورات',
+      title: `${currentSubject?.name || 'المادة'} — الدورات التدريبية والحقائب`,
+      subtitle: 'إدارة الدورات والحقائب التدريبية الملحقة بالمادة وجداولها',
+    },
+    skills: {
+      label: 'إدارة التأسيس',
+      title: `${currentSubject?.name || 'المادة'} — مواضيع ودروس التأسيس`,
+      subtitle: 'بناء شجرة مهارات ومواضيع التأسيس وتعيين الدروس لها',
+    },
+    questions: {
+      label: 'إدارة التدريب',
+      title: `${currentSubject?.name || 'المادة'} — بنك أسئلة التدريب والمهارات`,
+      subtitle: 'إدارة وتصنيف بنك أسئلة التدريب وضبط مستويات الصعوبة',
+    },
+    exams: {
+      label: 'إدارة الاختبارات',
+      title: `${currentSubject?.name || 'المادة'} — اختبارات وتقييمات المادة`,
+      subtitle: 'إدارة الاختبارات القصيرة والشاملة للمادة وتحديد صلاحيات النشر',
+    },
+    library: {
+      label: 'إدارة المكتبة',
+      title: `${currentSubject?.name || 'المادة'} — مكتبة المراجع والملفات الإثرائية`,
+      subtitle: 'إدارة المذكرات والملفات والمراجع التابعة للمادة',
+    },
+    settings: {
+      label: 'إعدادات المادة',
+      title: `${currentSubject?.name || 'المادة'} — إعدادات المادة وخيارات العرض`,
+      subtitle: 'تحديد ظهور وتفعيل أقسام المادة في واجهة الطالب',
+    },
+  };
+  const activeSubjectMeta = subjectTabMeta[subjectTab] || subjectTabMeta.courses;
+
   return (
     <div className="space-y-6 animate-fade-in pb-12">
-      {/* Subject Header (Breadcrumb style) */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => setSelectedSubjectId(null)}
-            className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
+      <AdminBreadcrumbHeader
+        breadcrumbs={[
+          { label: 'لوحة الإدارة' },
+          { label: 'إدارة المسارات', onClick: () => { setSelectedPathId(null); setSelectedSubjectId(null); } },
+          { label: currentPath?.name || 'المسار', onClick: () => setSelectedSubjectId(null) },
+          { label: currentSubject?.name || 'المادة', onClick: () => setSubjectTab('courses') },
+          { label: activeSubjectMeta.label, active: true },
+        ]}
+        title={activeSubjectMeta.title}
+        subtitle={activeSubjectMeta.subtitle}
+        icon={getSubjectIcon(currentSubject)}
+        badge={
+          <span className="px-2.5 py-1 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
+            {subjectWorkspaceTotals.total} عنصر ({subjectWorkspaceTotals.visible} ظاهر)
+          </span>
+        }
+        onBack={() => setSelectedSubjectId(null)}
+        backLabel="عودة لمواد المسار"
+        actions={
+          <button
+            onClick={() => {
+              if (currentPath) {
+                const subjectQuery = currentSubject ? `?subject=${currentSubject.id}` : '';
+                window.open(`/#/category/${currentPath.id}${subjectQuery}`, '_blank', 'noopener,noreferrer');
+              }
+            }}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-gray-50 border border-gray-200 px-3.5 py-2 text-xs font-black text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+            title="معاينة المادة في صفحة المسار للطلاب"
           >
-            <ChevronLeft size={20} className="rotate-180" />
+            <Eye size={15} /> معاينة صفحة المادة
           </button>
-          <div>
-            <div className="flex items-center gap-2 text-sm font-bold text-gray-400 mb-1">
-              <span>{currentPath?.name}</span>
-              <ChevronLeft size={14} />
-              <span className="text-indigo-600">المواد</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">{getSubjectIcon(currentSubject)}</span>
-              <h2 className="text-xl font-bold text-gray-800">مساحة عمل: {currentSubject?.name}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
+        }
+      />
 
       {currentSubject && (
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.2fr_2fr]">
