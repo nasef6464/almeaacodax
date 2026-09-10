@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T10:08:12.868Z",
-  "sourceGitHead": "47cc22dc1233bea83149202f0cf3e7f31eaaf0f1",
+  "generatedAt": "2026-09-10T11:44:11.245Z",
+  "sourceGitHead": "fb0d0799c25c5edd0947e48df6066f5274e4cd16",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -357,6 +357,12 @@
       "target": "apps/web/src/features/questions/admin/ClassSkillsMapPanel.tsx",
       "domain": "questions",
       "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/components/AdminBreadcrumbHeader.tsx",
+      "target": "apps/web/src/features/shared/admin/components/AdminBreadcrumbHeader.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
     },
     {
       "source": "dashboards/admin/CourseBuilder.tsx",
@@ -1070,6 +1076,12 @@
       "source": "dashboards/admin/UsersManager.tsx",
       "target": "apps/web/src/features/users/admin/UsersManager.tsx",
       "domain": "users",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/SchoolDirectorAcademicCenter.tsx",
+      "target": "apps/web/src/features/schools/SchoolDirectorAcademicCenter.tsx",
+      "domain": "schools",
       "confidence": "candidate"
     },
     {

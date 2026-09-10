@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T10:08:12.868Z",
-  "gitHead": "47cc22dc1233bea83149202f0cf3e7f31eaaf0f1",
+  "generatedAt": "2026-09-10T11:44:11.245Z",
+  "gitHead": "fb0d0799c25c5edd0947e48df6066f5274e4cd16",
   "frontendRoutes": [
     "*",
     "/",
@@ -1496,6 +1496,36 @@
     },
     {
       "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/academic/assessments",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "POST",
+      "path": "/director/schools/:schoolId/academic/assessments",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/academic/interventions",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "POST",
+      "path": "/director/schools/:schoolId/academic/interventions",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/academic/smart-classrooms",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
       "method": "PUT",
       "path": "/director/schools/:schoolId/assignments",
       "receiver": "schoolAccessRouter"
@@ -1568,8 +1598,20 @@
     },
     {
       "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "POST",
+      "path": "/director/schools/:schoolId/students/:studentId/transfer",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
       "method": "GET",
       "path": "/director/schools/:schoolId/teachers",
+      "receiver": "schoolAccessRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAccess.routes.ts",
+      "method": "GET",
+      "path": "/director/schools/:schoolId/transfer-target-classes",
       "receiver": "schoolAccessRouter"
     },
     {
@@ -2121,7 +2163,7 @@
     "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
     "server/src/routes/activity.routes.ts": "5ca824db806c9d2876519d88994234d7a4927050c3029c74a6a91308efb39124",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
-    "server/src/routes/auth.routes.ts": "88cb3e0e281a01da6fa6b3556a4811338ea05d1c520868245f1cc8136ae05e32",
+    "server/src/routes/auth.routes.ts": "a16de55466ec77e901736459445b1911f797cc1f8fbb3bc6cb8f05a2ca781939",
     "server/src/routes/backup.routes.ts": "b9d7b79be3cc3dc0ccfa1c97579eea044216215b98d678420f27be91d575ac2c",
     "server/src/routes/certificates.routes.ts": "a27e7f499c927ecbb9cb10ae16bfb45dc6eaf03a7ebc851ad1785491563b43f3",
     "server/src/routes/classroom.routes.ts": "20ceec97a14a5a5d648e0c604073b23515a7c830331171d6dd71cff47c9ecfc9",
@@ -2142,7 +2184,7 @@
     "server/src/routes/quiz.routes.ts": "f03e296efd18f9ad0a5ecbfb837e8f20a4bea9f2848ab5ec6287c36ce48627e7",
     "server/src/routes/quizResults.routes.ts": "759f2fc513eb2ed8055a04c406a17947f91d4867cfd1f4e01aba458c73d3c6fe",
     "server/src/routes/review.routes.ts": "cfae31aef790e32e6d58526f7c19b8d0c5a6c9c544572cccb3ba502549045966",
-    "server/src/routes/schoolAccess.routes.ts": "3b4900f77ae6f6698d8f7b93ead13b7c1608bdb4edabb0132a774d35a3760e58",
+    "server/src/routes/schoolAccess.routes.ts": "a78a4fe0717bc391880c68bfcff9b6fa44a3e4b7c6174c0c0852e3ee215d1300",
     "server/src/routes/search.routes.ts": "2499d52eb8028894d8622cb1bebf896d90f3c3b03caf7e39cf231bf84381b104",
     "server/src/routes/seo.routes.ts": "74ba2c2e0a532bc67b4d1c5cbf4e0409f4fe0019b7c09f198aa122669c3640c6",
     "server/src/routes/taxonomy.routes.ts": "ebaa9cf5bcaa80418e593d24c2a73038952fef0560371cbd6a871e6c1bfa7818"

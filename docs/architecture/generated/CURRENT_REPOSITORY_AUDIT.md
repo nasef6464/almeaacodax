@@ -1,26 +1,26 @@
 # Current Repository Architecture Audit
 
-Generated from commit `47cc22dc1233bea83149202f0cf3e7f31eaaf0f1` using the TypeScript AST for imports and route extraction.
+Generated from commit `fb0d0799c25c5edd0947e48df6066f5274e4cd16` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1359 |
-| Source files (including scripts/tooling) | 937 |
-| Runtime source files | 565 |
-| Source lines | 186,357 |
-| Runtime source lines | 146,866 |
+| Tracked files | 1363 |
+| Source files (including scripts/tooling) | 940 |
+| Runtime source files | 567 |
+| Source lines | 187,086 |
+| Runtime source lines | 147,577 |
 | Frontend route literals | 55 |
-| Backend HTTP route entries | 278 |
+| Backend HTTP route entries | 285 |
 | Router mount points | 30 |
-| Runtime relative import edges | 1673 |
+| Runtime relative import edges | 1680 |
 | Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 5 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 1050 |
+| Cross-domain runtime import edges | 1055 |
 | Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 554 |
+| Candidate migration-map entries | 556 |
 
 ## Largest runtime source hotspots
 
@@ -28,16 +28,16 @@ Generated from commit `47cc22dc1233bea83149202f0cf3e7f31eaaf0f1` using the TypeS
 |---|---:|---:|---|
 | `pages/Reports.tsx` | 2587 | 186155 | reports |
 | `server/src/routes/content.routes.ts` | 2560 | 97959 | content |
+| `dashboards/admin/PathsManager.tsx` | 2366 | 133357 | paths |
 | `server/src/routes/quiz.routes.ts` | 2350 | 95287 | quizzes |
 | `pages/Dashboard.tsx` | 2301 | 141211 | shared |
-| `dashboards/admin/PathsManager.tsx` | 2245 | 126376 | paths |
 | `pages/Results.tsx` | 2185 | 108197 | reports |
-| `dashboards/admin/SchoolsManager.tsx` | 2153 | 109863 | schools |
+| `dashboards/admin/SchoolsManager.tsx` | 2173 | 111171 | schools |
 | `pages/QuizPage.tsx` | 2152 | 117168 | quizzes |
 | `dashboards/admin/FinancialManager.tsx` | 2135 | 144154 | payments |
-| `dashboards/admin/AdminDashboard.tsx` | 2084 | 126040 | shared |
+| `dashboards/admin/AdminDashboard.tsx` | 2094 | 126828 | shared |
+| `server/src/scripts/backendIntegrationGate.ts` | 1941 | 113831 | operations |
 | `dashboards/admin/QuizzesManager.tsx` | 1911 | 106739 | quizzes |
-| `server/src/scripts/backendIntegrationGate.ts` | 1890 | 107065 | operations |
 | `server/src/routes/payment.routes.ts` | 1886 | 71269 | payments |
 | `dashboards/admin/PlatformIntegrationsManagerLegacy.tsx` | 1845 | 101223 | operations |
 | `dashboards/admin/SupervisorDashboard.tsx` | 1782 | 114630 | schools |
@@ -50,8 +50,8 @@ Generated from commit `47cc22dc1233bea83149202f0cf3e7f31eaaf0f1` using the TypeS
 | `server/src/scripts/seedOperationalScenarioApi.ts` | 1609 | 59044 | operations |
 | `dashboards/admin/QuestionBankManager.tsx` | 1603 | 77062 | questions |
 | `dashboards/admin/AdvancedCourseBuilder.tsx` | 1567 | 94724 | courses |
+| `server/src/routes/auth.routes.ts` | 1554 | 55903 | auth |
 | `dashboards/admin/MockExamManager.tsx` | 1550 | 82630 | exams |
-| `server/src/routes/auth.routes.ts` | 1545 | 55081 | auth |
 | `dashboards/admin/QuizBuilder.tsx` | 1494 | 82025 | quizzes |
 | `pages/GenericPathPage.tsx` | 1451 | 87864 | paths |
 | `dashboards/admin/HomepageManager.tsx` | 1445 | 89804 | content |
