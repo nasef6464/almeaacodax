@@ -947,8 +947,8 @@ export const Landing: React.FC = () => {
                                 iconBg="bg-emerald-100 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800"
                                 badge="ذكاء اصطناعي"
                                 badgeColor="bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
-                                title="تحليل فوري دقيق للأداء"
-                                description="لوحة قياس تشخص ثغراتك وتحدد بالضبط ما يحتاج لتركيزك دون إضاعة دقيقة واحدة."
+                                title="تحليل الأداء"
+                                description="لوحة قياس وتقارير دقيقة تشخص ثغراتك وتحدد بالضبط ما يحتاج لتركيزك دون إضاعة دقيقة واحدة."
                             />
                             <FeatureCard
                                 icon={<ShoppingCart size={22} className="text-indigo-600 dark:text-indigo-400" />}
