@@ -87,7 +87,7 @@ schoolAccessRouter.post("/director/schools/:schoolId/students", requireAuth, req
   if (!membership) return res.status(StatusCodes.FORBIDDEN).json({ message: "School permission denied" });
   const payload = directorStudentSchema.parse(req.body);
   try {
-    const result = await addSchoolDirectorStudent(req.params.schoolId, payload);
+    const result = await addSchoolDirectorStudent(req.params.schoolId, payload as { name: string; email: string; password: string; classId: string });
     await recordAdminAuditLog(req, { action: "schools.director.student.add", resourceType: "student", resourceId: result.student.studentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, created: result.created } });
     return res.status(result.created ? StatusCodes.CREATED : StatusCodes.OK).json(result);
   } catch (error) {
@@ -158,7 +158,7 @@ schoolAccessRouter.put("/director/schools/:schoolId/assignments", requireAuth, r
   if (!capability) return res.status(StatusCodes.FORBIDDEN).json({ message: "School capability or contract module denied" });
   const payload = directorAssignmentSchema.parse(req.body);
   try {
-    const result = await upsertSchoolDirectorTeachingAssignment(req.params.schoolId, payload);
+    const result = await upsertSchoolDirectorTeachingAssignment(req.params.schoolId, payload as { teacherId: string; classId: string; subjectId?: string; status: "active" | "inactive" });
     await recordAdminAuditLog(req, { action: "schools.director.teacher.assign", resourceType: "teaching_assignment", resourceId: result.assignment.assignmentId, metadata: { schoolId: req.params.schoolId, classId: payload.classId, teacherId: payload.teacherId, status: payload.status } });
     return res.json(result);
   } catch (error) { if (error instanceof SchoolDirectorOperationError) return res.status(error.status).json({ message: error.message }); throw error; }
