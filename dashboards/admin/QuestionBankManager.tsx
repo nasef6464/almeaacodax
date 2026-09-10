@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target } from 'lucide-react';
+import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target, AlertCircle, CheckCircle2, Filter, RotateCcw, Video } from 'lucide-react';
 import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
@@ -197,7 +197,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [selectedSkillId, setSelectedSkillId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [hasExplanationVideo, setHasExplanationVideo] = useState(false);
+  const [videoFilter, setVideoFilter] = useState<'all' | 'with_video' | 'without_video'>('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
+  const hasExplanationVideo = videoFilter === 'with_video';
+  const setHasExplanationVideo = (value: boolean) => setVideoFilter(value ? 'with_video' : 'all');
   const [isEditing, setIsEditing] = useState(false);
   const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -282,7 +285,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId, hasExplanationVideo]);
+  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId, hasExplanationVideo, selectedDifficulty, videoFilter]);
 
   useEffect(() => {
     let active = true;
@@ -299,6 +302,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           sectionId: selectedSectionId || undefined,
           skillId: selectedSkillId || undefined,
           search: searchTerm || undefined,
+          difficulty: selectedDifficulty || undefined,
           hasExplanationVideo: hasExplanationVideo || undefined,
         });
 
@@ -321,9 +325,23 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     return () => {
       active = false;
     };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, hasExplanationVideo, questionsRefreshKey]);
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, hasExplanationVideo, selectedDifficulty, questionsRefreshKey]);
 
-  const displayedQuestions = pagedQuestions ?? filteredQuestions;
+  const displayedQuestions = useMemo(() => {
+    const base = pagedQuestions ?? filteredQuestions;
+    return base.filter((question) => {
+      if (videoFilter === 'with_video' && !Boolean(question.videoUrl && String(question.videoUrl).trim())) {
+        return false;
+      }
+      if (videoFilter === 'without_video' && Boolean(question.videoUrl && String(question.videoUrl).trim())) {
+        return false;
+      }
+      if (selectedDifficulty && question.difficulty !== selectedDifficulty) {
+        return false;
+      }
+      return true;
+    });
+  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty]);
   const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
 
   useEffect(() => {
@@ -914,24 +932,6 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     }
   };
 
-  if (isEditing) {
-    return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in">
-        <UnifiedQuestionBuilder
-          initialQuestion={currentQuestion as Question}
-          subjectId={selectedSubjectId || ''}
-          sectionId={selectedSectionId || ''}
-          generateOnOpen={generateAiDraftOnOpen}
-          onSave={handleSave}
-          onCancel={() => {
-            setGenerateAiDraftOnOpen(false);
-            setIsEditing(false);
-          }}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -1151,106 +1151,220 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
-        {!subjectId && (
-          <>
-            <select
-              value={selectedPathId}
-              onChange={(event) => {
-                setSelectedPathId(event.target.value);
+      <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+        {/* الصف الأول: الفلاتر الأكاديمية ومربع البحث */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 items-center">
+          {!subjectId && (
+            <>
+              <select
+                value={selectedPathId}
+                onChange={(event) => {
+                  setSelectedPathId(event.target.value);
+                  setSelectedSubjectId('');
+                  setSelectedSectionId('');
+                  setSelectedSkillId('');
+                }}
+                className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium"
+              >
+                <option value="">كل المسارات</option>
+                {allowedPaths.map((path) => (
+                  <option key={path.id} value={path.id}>
+                    {path.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedSubjectId}
+                onChange={(event) => {
+                  setSelectedSubjectId(event.target.value);
+                  setSelectedSectionId('');
+                  setSelectedSkillId('');
+                }}
+                className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium disabled:opacity-50"
+                aria-label="فلتر المادة - اختر المسار أولا"
+                title="اختر المسار أولا لتفعيل فلتر المواد"
+                disabled={!selectedPathId}
+              >
+                <option value="">كل المواد</option>
+                {allowedSubjects
+                  .filter((subject) => subject.pathId === selectedPathId)
+                  .map((subject) => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </option>
+                  ))}
+              </select>
+            </>
+          )}
+
+          <select
+            value={selectedSectionId}
+            onChange={(event) => {
+              setSelectedSectionId(event.target.value);
+              setSelectedSkillId('');
+            }}
+            className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium disabled:opacity-50"
+            aria-label="فلتر المهارات الرئيسية - اختر المادة أولا"
+            title="اختر المادة أولا لتفعيل فلتر المهارات الرئيسية"
+            disabled={!selectedSubjectId}
+          >
+            <option value="">كل المهارات الرئيسية</option>
+            {availableMainSkills.map((section) => (
+              <option key={section.id} value={section.id}>
+                {section.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={selectedSkillId}
+            onChange={(event) => setSelectedSkillId(event.target.value)}
+            className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium disabled:opacity-50"
+            aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
+            title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
+            disabled={!selectedSubjectId}
+          >
+            <option value="">كل المهارات الفرعية</option>
+            {availableSubSkills.map((subSkill) => (
+              <option key={subSkill.id} value={subSkill.id}>
+                {subSkill.name}
+              </option>
+            ))}
+          </select>
+
+          <div className={`relative ${subjectId ? 'col-span-full sm:col-span-2' : 'col-span-1 sm:col-span-2 lg:col-span-4 xl:col-span-1'}`}>
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="ابحث في نص السؤال..."
+              data-testid="question-bank-search-input"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              className="w-full pl-4 pr-10 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-800"
+            />
+          </div>
+        </div>
+
+        {/* الصف الثاني: فلاتر الفيديو وفلاتر مستوى الصعوبة وأزرار التصفية السريعة */}
+        <div className="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {/* فلتر الفيديو */}
+            <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-gray-200">
+              <span className="text-xs font-bold text-gray-500 px-2 flex items-center gap-1">
+                <Video size={14} className="text-indigo-600" />
+                فيديو الشرح:
+              </span>
+              <button
+                type="button"
+                onClick={() => setVideoFilter('all')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  videoFilter === 'all'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                الكل
+              </button>
+              <button
+                type="button"
+                data-testid="question-bank-has-explanation-video-filter"
+                onClick={() => setVideoFilter('with_video')}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  videoFilter === 'with_video'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-emerald-700 bg-emerald-50/70 hover:bg-emerald-100'
+                }`}
+              >
+                <Video size={13} />
+                يحتوي فيديو شرح
+              </button>
+              <button
+                type="button"
+                onClick={() => setVideoFilter('without_video')}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  videoFilter === 'without_video'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-amber-700 bg-amber-50/70 hover:bg-amber-100'
+                }`}
+              >
+                <AlertCircle size={13} />
+                لا يحتوي فيديو
+              </button>
+            </div>
+
+            {/* فلتر مستوى الصعوبة */}
+            <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-gray-200">
+              <span className="text-xs font-bold text-gray-500 px-2 flex items-center gap-1">
+                <Filter size={13} className="text-purple-600" />
+                الصعوبة:
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedDifficulty('')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  !selectedDifficulty
+                    ? 'bg-purple-600 text-white shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                الكل
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedDifficulty('Easy')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  selectedDifficulty === 'Easy'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-emerald-700 hover:bg-emerald-50'
+                }`}
+              >
+                سهل
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedDifficulty('Medium')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  selectedDifficulty === 'Medium'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-amber-700 hover:bg-amber-50'
+                }`}
+              >
+                متوسط
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedDifficulty('Hard')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  selectedDifficulty === 'Hard'
+                    ? 'bg-rose-600 text-white shadow-xs'
+                    : 'text-rose-700 hover:bg-rose-50'
+                }`}
+              >
+                صعب
+              </button>
+            </div>
+          </div>
+
+          {/* زر إعادة ضبط الفلاتر */}
+          {(videoFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
+            <button
+              type="button"
+              onClick={() => {
+                setVideoFilter('all');
+                setSelectedDifficulty('');
+                setSearchTerm('');
+                setSelectedPathId('');
                 setSelectedSubjectId('');
                 setSelectedSectionId('');
                 setSelectedSkillId('');
               }}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-red-600 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
             >
-              <option value="">كل المسارات</option>
-              {allowedPaths.map((path) => (
-                <option key={path.id} value={path.id}>
-                  {path.name}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedSubjectId}
-              onChange={(event) => {
-                setSelectedSubjectId(event.target.value);
-                setSelectedSectionId('');
-                setSelectedSkillId('');
-              }}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="فلتر المادة - اختر المسار أولا"
-              title="اختر المسار أولا لتفعيل فلتر المواد"
-              disabled={!selectedPathId}
-            >
-              <option value="">كل المواد</option>
-              {allowedSubjects
-                .filter((subject) => subject.pathId === selectedPathId)
-                .map((subject) => (
-                  <option key={subject.id} value={subject.id}>
-                    {subject.name}
-                  </option>
-                ))}
-            </select>
-          </>
-        )}
-
-        <select
-          value={selectedSectionId}
-          onChange={(event) => {
-            setSelectedSectionId(event.target.value);
-            setSelectedSkillId('');
-          }}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          aria-label="فلتر المهارات الرئيسية - اختر المادة أولا"
-          title="اختر المادة أولا لتفعيل فلتر المهارات الرئيسية"
-          disabled={!selectedSubjectId}
-        >
-          <option value="">كل المهارات الرئيسية</option>
-          {availableMainSkills.map((section) => (
-            <option key={section.id} value={section.id}>
-              {section.name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={selectedSkillId}
-          onChange={(event) => setSelectedSkillId(event.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
-          title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
-          disabled={!selectedSubjectId}
-        >
-          <option value="">كل المهارات الفرعية</option>
-          {availableSubSkills.map((subSkill) => (
-            <option key={subSkill.id} value={subSkill.id}>
-              {subSkill.name}
-            </option>
-          ))}
-        </select>
-
-        <div className="relative flex-1">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="ابحث في نص السؤال..."
-            data-testid="question-bank-search-input"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+              <RotateCcw size={13} />
+              إعادة ضبط الفلاتر
+            </button>
+          )}
         </div>
-        <label className="inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800 whitespace-nowrap">
-          <input
-            type="checkbox"
-            checked={hasExplanationVideo}
-            onChange={(event) => setHasExplanationVideo(event.target.checked)}
-            className="accent-emerald-600"
-            data-testid="question-bank-has-explanation-video-filter"
-          />
-          يحتوي فيديو شرح
-        </label>
       </div>
 
       {questionUsageError && (
@@ -1288,7 +1402,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                           <div className="space-y-2" data-testid="question-row-media-preview">
                             {question.text ? (
                               <div
-                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-28 max-w-[260px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2' : 'line-clamp-2'}`}
+                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-36 max-w-[340px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2.5 shadow-xs' : 'line-clamp-2'}`}
                                 data-testid={hasInlineMedia ? 'question-row-inline-media-preview' : undefined}
                                 dangerouslySetInnerHTML={{ __html: normalizedQuestionText }}
                               />
@@ -1296,12 +1410,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                               <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
                             )}
                             {question.imageUrl ? (
-                              <div className="w-full max-w-[220px] overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50 p-1" data-testid="question-row-image-below-text">
+                              <div className="w-full max-w-[320px] sm:max-w-[360px] overflow-hidden rounded-xl border border-indigo-100/80 bg-slate-50 p-1.5 shadow-xs" data-testid="question-row-image-below-text">
                                 <img
                                   src={question.imageUrl}
                                   alt="معاينة صورة السؤال"
-                                  className="h-24 w-full object-contain"
+                                  className="h-32 sm:h-36 w-full object-contain cursor-pointer hover:scale-[1.02] transition-transform duration-200"
                                   loading="lazy"
+                                  onClick={() => handlePreviewQuestion(question)}
                                 />
                               </div>
                             ) : null}
@@ -1312,21 +1427,43 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                         ) : (
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}
-                        <div className="text-[11px] text-gray-400 mt-1">
-                          {question.ownerType === 'teacher'
-                            ? 'سؤال معلم'
-                            : question.ownerType === 'school'
-                              ? 'سؤال مدرسة'
-                              : 'سؤال المنصة'}
+                        <div className="flex flex-wrap items-center gap-2 mt-2 pt-1.5 border-t border-gray-100">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-600">
+                            {question.ownerType === 'teacher'
+                              ? 'سؤال معلم'
+                              : question.ownerType === 'school'
+                                ? 'سؤال مدرسة'
+                                : 'سؤال المنصة'}
+                          </span>
+                          {question.videoUrl && String(question.videoUrl).trim() ? (
+                            <a
+                              href={question.videoUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 hover:bg-emerald-100 transition-colors"
+                              title="مشاهدة فيديو الشرح"
+                            >
+                              <Video size={11} className="text-emerald-600" />
+                              فيديو متوفر
+                            </a>
+                          ) : (
+                            <span
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/70"
+                              title="هذا السؤال لا يحتوي على فيديو شرح"
+                            >
+                              <AlertCircle size={10} className="text-amber-500" />
+                              بدون فيديو
+                            </span>
+                          )}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1 max-w-[200px]">
                         {question.skillIds?.map((skillId) => {
                           const subSkill = skills.find((skill) => skill.id === skillId);
                           return subSkill ? (
-                            <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold">
+                            <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold border border-indigo-100/60">
                               {subSkill.name}
                             </span>
                           ) : null;
@@ -1334,25 +1471,51 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                         {!question.skillIds?.length && <span className="text-xs text-gray-400">غير مربوط</span>}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-bold ${
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
                           question.difficulty === 'Easy'
-                            ? 'bg-emerald-50 text-emerald-600'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200/70'
                             : question.difficulty === 'Medium'
-                              ? 'bg-amber-50 text-amber-600'
-                              : 'bg-red-50 text-red-600'
+                              ? 'bg-amber-50 text-amber-700 border-amber-200/70'
+                              : 'bg-red-50 text-red-700 border-red-200/70'
                         }`}
                       >
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          question.difficulty === 'Easy'
+                            ? 'bg-emerald-500'
+                            : question.difficulty === 'Medium'
+                              ? 'bg-amber-500'
+                              : 'bg-red-500'
+                        }`} />
                         {difficultyLabel(question.difficulty)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       {usageMetric ? (
-                        <div className="min-w-[150px] space-y-1 text-xs font-bold text-gray-600">
-                          <div>المحاولات: <span className="text-gray-900">{usageMetric.attempts.toLocaleString('ar-EG')}</span></div>
-                          <div>الدقة: <span className="text-gray-900">{usageMetric.accuracyPercent === null ? 'لا توجد بيانات' : `${usageMetric.accuracyPercent}%`}</span></div>
-                          <div>متوسط الوقت: <span className="text-gray-900">{usageMetric.averageTimeSeconds === null ? 'لا توجد بيانات' : `${usageMetric.averageTimeSeconds} ث`}</span></div>
+                        <div className="min-w-[150px] p-2.5 rounded-xl bg-slate-50 border border-slate-100 space-y-1 text-xs font-bold text-gray-600">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">المحاولات:</span>
+                            <span className="text-gray-900 font-black">{usageMetric.attempts.toLocaleString('ar-EG')}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">الدقة:</span>
+                            <span className={`font-black ${
+                              usageMetric.accuracyPercent === null
+                                ? 'text-gray-900'
+                                : usageMetric.accuracyPercent >= 70
+                                  ? 'text-emerald-600'
+                                  : usageMetric.accuracyPercent >= 40
+                                    ? 'text-amber-600'
+                                    : 'text-red-600'
+                            }`}>
+                              {usageMetric.accuracyPercent === null ? 'لا توجد بيانات' : `${usageMetric.accuracyPercent}%`}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">متوسط الوقت:</span>
+                            <span className="text-gray-900 font-black">{usageMetric.averageTimeSeconds === null ? 'لا توجد بيانات' : `${usageMetric.averageTimeSeconds} ث`}</span>
+                          </div>
                         </div>
                       ) : (
                         <span className="text-xs font-bold text-gray-400">
@@ -1596,6 +1759,20 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             </div>
           </div>
         </div>
+      )}
+
+      {isEditing && (
+        <UnifiedQuestionBuilder
+          initialQuestion={currentQuestion as Question}
+          subjectId={selectedSubjectId || ''}
+          sectionId={selectedSectionId || ''}
+          generateOnOpen={generateAiDraftOnOpen}
+          onSave={handleSave}
+          onCancel={() => {
+            setGenerateAiDraftOnOpen(false);
+            setIsEditing(false);
+          }}
+        />
       )}
     </div>
   );

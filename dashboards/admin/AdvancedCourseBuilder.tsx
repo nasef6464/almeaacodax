@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Course, Module, Lesson, LessonType, InteractiveQuestion, Role, CourseAssessment, CourseFile } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { RichTextEditor } from '../../components/RichTextEditor';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useStore } from '../../store/useStore';
+import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 import { 
   Plus, GripVertical, Trash2, Edit2, Video, FileText, HelpCircle, 
@@ -34,8 +35,21 @@ const toOptionalFiniteNumber = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 
+type PlatformTrainerDirectoryItem = {
+  id?: string;
+  _id?: string;
+  name?: string;
+  email?: string;
+  role?: Role;
+  isActive?: boolean;
+  managedPathIds?: string[];
+  managedSubjectIds?: string[];
+};
+
+const getTrainerId = (trainer: PlatformTrainerDirectoryItem) => String(trainer.id || trainer._id || '');
+
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
-  const { paths, subjects, sections, skills, lessons, quizzes, users } = useStore();
+  const { user, paths, subjects, sections, skills, lessons, quizzes } = useStore();
   const categoryOptions = ['دورة تعليمية', 'برنامج تدريبي', 'مسار تطوير مهارات'] as const;
   const levelOptions: Array<'Beginner' | 'Intermediate' | 'Advanced'> = ['Beginner', 'Intermediate', 'Advanced'];
   const [activeTab, setActiveTab] = useState<'curriculum' | 'settings'>('curriculum');
@@ -64,7 +78,51 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     qa: [],
     files: []
   });
-  const instructorUsers = users.filter((item) => item.role === Role.TEACHER || item.role === Role.ADMIN);
+  const canAssignPlatformTrainer = user.role === Role.ADMIN;
+  const [trainerSearch, setTrainerSearch] = useState('');
+  const [trainerPage, setTrainerPage] = useState(1);
+  const [trainerDirectory, setTrainerDirectory] = useState<PlatformTrainerDirectoryItem[]>([]);
+  const [trainerTotalPages, setTrainerTotalPages] = useState(1);
+  const [isTrainerDirectoryLoading, setIsTrainerDirectoryLoading] = useState(false);
+  const [trainerDirectoryError, setTrainerDirectoryError] = useState('');
+
+  useEffect(() => {
+    if (!canAssignPlatformTrainer) return;
+
+    let isMounted = true;
+    const timer = window.setTimeout(() => {
+      setIsTrainerDirectoryLoading(true);
+      setTrainerDirectoryError('');
+      api.getPlatformTrainers({
+        page: trainerPage,
+        limit: 25,
+        search: trainerSearch.trim() || undefined,
+      })
+        .then((response) => {
+          if (!isMounted) return;
+          setTrainerDirectory((response.users || []) as PlatformTrainerDirectoryItem[]);
+          const pagination = response.pagination;
+          setTrainerTotalPages(Math.max(1, Number(pagination?.totalPages || 1)));
+          if (pagination?.page && pagination.page !== trainerPage) {
+            setTrainerPage(pagination.page);
+          }
+        })
+        .catch((error) => {
+          if (!isMounted) return;
+          console.error('Failed to load platform trainer directory:', error);
+          setTrainerDirectory([]);
+          setTrainerDirectoryError('تعذر تحميل مدربي المنصة الآن. حاول مرة أخرى.');
+        })
+        .finally(() => {
+          if (isMounted) setIsTrainerDirectoryLoading(false);
+        });
+    }, 200);
+
+    return () => {
+      isMounted = false;
+      window.clearTimeout(timer);
+    };
+  }, [canAssignPlatformTrainer, trainerPage, trainerSearch]);
   const scopedLessons = lessons.filter((lesson) => {
     const matchesPath = !courseData.pathId || !lesson.pathId || lesson.pathId === courseData.pathId;
     const matchesSubject = !courseData.subjectId || !lesson.subjectId || lesson.subjectId === courseData.subjectId;
@@ -1008,42 +1066,71 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">المدرب / المعلم</label>
-                        <select
-                          value={courseData.assignedTeacherId || ''}
-                          onChange={(e) => {
-                            const selected = instructorUsers.find((item) => item.id === e.target.value);
-                            setCourseData({
-                              ...courseData,
-                              assignedTeacherId: e.target.value,
-                              ownerType: e.target.value ? 'teacher' : courseData.ownerType,
-                              ownerId: e.target.value || courseData.ownerId,
-                              instructor: selected?.name || courseData.instructor || '',
-                            });
-                          }}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                          <option value="">فريق المنصة</option>
-                          {instructorUsers.map((teacher) => (
-                            <option key={teacher.id} value={teacher.id}>{teacher.name} - {teacher.email}</option>
-                          ))}
-                        </select>
+                    {canAssignPlatformTrainer ? (
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-1">مدرب المنصة المكلف</label>
+                          <input
+                            type="search"
+                            value={trainerSearch}
+                            onChange={(event) => {
+                              setTrainerSearch(event.target.value);
+                              setTrainerPage(1);
+                            }}
+                            placeholder="ابحث بالاسم أو البريد الإلكتروني"
+                            className="mb-2 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                          />
+                          <select
+                            value={courseData.assignedTeacherId || ''}
+                            disabled={isTrainerDirectoryLoading}
+                            onChange={(event) => {
+                              const selected = trainerDirectory.find((item) => getTrainerId(item) === event.target.value);
+                              setCourseData({
+                                ...courseData,
+                                assignedTeacherId: event.target.value,
+                                ownerType: event.target.value ? 'teacher' : 'platform',
+                                ownerId: event.target.value || user.id,
+                                instructor: selected?.name || (event.target.value ? courseData.instructor || '' : 'فريق المنصة'),
+                              });
+                            }}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:cursor-wait disabled:opacity-60"
+                          >
+                            <option value="">فريق المنصة</option>
+                            {courseData.assignedTeacherId && !trainerDirectory.some((item) => getTrainerId(item) === courseData.assignedTeacherId) ? (
+                              <option value={courseData.assignedTeacherId}>{courseData.instructor || 'المدرب المكلّف حاليًا'}</option>
+                            ) : null}
+                            {trainerDirectory.map((trainer) => {
+                              const trainerId = getTrainerId(trainer);
+                              return <option key={trainerId} value={trainerId}>{trainer.name || 'مدرب بدون اسم'} — {trainer.email || 'بدون بريد'}</option>;
+                            })}
+                          </select>
+                          <div className="mt-2 flex items-center justify-between gap-2 text-xs">
+                            <span className={trainerDirectoryError ? 'font-bold text-red-600' : 'text-gray-500'}>
+                              {trainerDirectoryError || (isTrainerDirectoryLoading ? 'جارٍ تحميل المدربين…' : 'تظهر الحسابات النشطة ذات المسارات أو المواد المسندة فقط.')}
+                            </span>
+                            {trainerTotalPages > 1 ? (
+                              <span className="flex items-center gap-2 whitespace-nowrap">
+                                <button type="button" onClick={() => setTrainerPage((page) => Math.max(1, page - 1))} disabled={trainerPage <= 1 || isTrainerDirectoryLoading} className="font-bold text-indigo-600 disabled:text-gray-300">السابق</button>
+                                <span>{trainerPage}/{trainerTotalPages}</span>
+                                <button type="button" onClick={() => setTrainerPage((page) => Math.min(trainerTotalPages, page + 1))} disabled={trainerPage >= trainerTotalPages || isTrainerDirectoryLoading} className="font-bold text-indigo-600 disabled:text-gray-300">التالي</button>
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-1">نسبة المدرب من دخل الدورة %</label>
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={courseData.revenueSharePercentage ?? ''}
+                            onChange={(e) => setCourseData({...courseData, revenueSharePercentage: toOptionalFiniteNumber(e.target.value)})}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="مثال: 35"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">نسبة المدرب من دخل الدورة %</label>
-                        <input
-                          type="number"
-                          min={0}
-                          max={100}
-                          value={courseData.revenueSharePercentage ?? ''}
-                          onChange={(e) => setCourseData({...courseData, revenueSharePercentage: toOptionalFiniteNumber(e.target.value)})}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="مثال: 35"
-                        />
-                      </div>
-                    </div>
+                    ) : null}
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>

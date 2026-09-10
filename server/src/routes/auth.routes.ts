@@ -96,6 +96,23 @@ const adminUsersQuerySchema = z.object({
 
     return value;
   }, z.boolean().optional()),
+  platformTrainer: z.preprocess((value) => {
+    if (value === undefined || value === null || value === "") {
+      return undefined;
+    }
+
+    if (typeof value === "boolean") {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      const lowered = value.toLowerCase();
+      if (lowered === "true") return true;
+      if (lowered === "false") return false;
+    }
+
+    return value;
+  }, z.boolean().optional()),
 });
 
 const preferencesSchema = z.object({
@@ -714,20 +731,47 @@ authRouter.get(
     const search = query.search?.trim();
     const mongoQuery: Record<string, unknown> = {};
 
-    if (query.role) {
+    if (query.platformTrainer) {
+      if (authUser.role !== "admin") {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          message: "Only platform administrators can browse the platform trainer directory.",
+        });
+      }
+
+      mongoQuery.role = "teacher";
+      mongoQuery.isActive = true;
+    }
+
+    if (query.role && !query.platformTrainer) {
       mongoQuery.role = query.role;
     }
 
-    if (typeof query.isActive === "boolean") {
+    if (typeof query.isActive === "boolean" && !query.platformTrainer) {
       mongoQuery.isActive = query.isActive;
     }
 
+    const andConditions: Record<string, unknown>[] = [];
     if (search) {
       const escapedSearch = escapeRegExp(search);
-      mongoQuery.$or = [
+      andConditions.push({ $or: [
         { name: { $regex: escapedSearch, $options: "i" } },
         { email: { $regex: escapedSearch, $options: "i" } },
-      ];
+      ] });
+    }
+
+    if (query.platformTrainer) {
+      andConditions.push({
+        $or: [
+          { "managedPathIds.0": { $exists: true } },
+          { "managedSubjectIds.0": { $exists: true } },
+        ],
+      });
+    }
+
+    if (andConditions.length === 1) {
+      Object.assign(mongoQuery, andConditions[0]);
+    } else if (andConditions.length > 1) {
+      mongoQuery.$and = andConditions;
     }
 
     if (authUser.role !== "admin") {

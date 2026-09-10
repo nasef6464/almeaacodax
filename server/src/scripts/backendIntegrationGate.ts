@@ -1334,6 +1334,112 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   });
   expectStatus("platform trainer cannot create a course outside managed scope", trainerOutsideCourse, 403);
 
+  const teacherId = userIds.get("teacher");
+  const adminId = userIds.get("admin");
+  assert.ok(teacherId && adminId, "trainer-directory fixture ids missing");
+  const [unscopedTrainer, inactiveTrainer] = await Promise.all([
+    UserModel.create({
+      name: "Unscoped platform trainer candidate",
+      email: `platform-v3-unscoped-trainer-${RUN_MARKER}@example.invalid`,
+      passwordHash: await bcrypt.hash(randomBytes(24).toString("base64url"), 10),
+      role: "teacher",
+      isActive: true,
+    }),
+    UserModel.create({
+      name: "Inactive platform trainer candidate",
+      email: `platform-v3-inactive-trainer-${RUN_MARKER}@example.invalid`,
+      passwordHash: await bcrypt.hash(randomBytes(24).toString("base64url"), 10),
+      role: "teacher",
+      isActive: false,
+      managedPathIds: [ASSESSMENT_PATH_ID],
+      managedSubjectIds: [ASSESSMENT_SUBJECT_ID],
+    }),
+  ]);
+
+  const trainerDirectory = await jsonRequest(
+    `/auth/admin/users?platformTrainer=true&search=${encodeURIComponent(credentials.get("teacher")!.email)}&limit=10`,
+    { token: tokens.get("admin") },
+  );
+  expectStatus("admin reads the server-filtered platform trainer directory", trainerDirectory, 200);
+  assert.equal(
+    trainerDirectory.body?.users?.some((candidate: any) => String(candidate.id || candidate._id || "") === teacherId),
+    true,
+    "platform trainer directory omitted the scoped active trainer",
+  );
+  assert.equal(
+    trainerDirectory.body?.users?.every((candidate: any) => candidate.role === "teacher" && candidate.isActive !== false),
+    true,
+    "platform trainer directory leaked a non-active trainer identity",
+  );
+  assert.equal(
+    trainerDirectory.body?.users?.some((candidate: any) => String(candidate.id || candidate._id || "") === String(unscopedTrainer._id)),
+    false,
+    "platform trainer directory leaked an unscoped teacher",
+  );
+  assert.equal(
+    trainerDirectory.body?.users?.some((candidate: any) => String(candidate.id || candidate._id || "") === String(inactiveTrainer._id)),
+    false,
+    "platform trainer directory leaked an inactive teacher",
+  );
+
+  const trainerDirectoryDenied = await jsonRequest("/auth/admin/users?platformTrainer=true", {
+    token: tokens.get("teacher"),
+  });
+  expectStatus("platform trainer directory is admin-only", trainerDirectoryDenied, 403);
+
+  const adminAssignedCourse = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: `${TEACHER_COURSE_ID}-admin-assigned`,
+      title: "Admin assigned platform trainer course",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      assignedTeacherId: teacherId,
+    },
+  });
+  expectStatus("admin assigns an in-scope platform trainer to a course", adminAssignedCourse, 201);
+  assert.equal(String(adminAssignedCourse.body?.assignedTeacherId || ""), teacherId, "assigned trainer did not persist");
+
+  const invalidTrainerAssignment = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: `${TEACHER_COURSE_ID}-invalid-assignment`,
+      title: "Invalid trainer assignment must be blocked",
+      pathId: `outside-path-${RUN_MARKER}`,
+      subjectId: `outside-subject-${RUN_MARKER}`,
+      assignedTeacherId: teacherId,
+    },
+  });
+  expectStatus("admin cannot assign trainer outside their content scope", invalidTrainerAssignment, 400);
+  assert.match(String(invalidTrainerAssignment.body?.message || ""), /خارج المسارات أو المواد/, "invalid assignment did not explain the scope conflict");
+
+  const inactiveTrainerAssignment = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("admin"),
+    csrf,
+    body: {
+      id: `${TEACHER_COURSE_ID}-inactive-assignment`,
+      title: "Inactive trainer assignment must be blocked",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      assignedTeacherId: String(inactiveTrainer._id),
+    },
+  });
+  expectStatus("admin cannot assign an inactive trainer", inactiveTrainerAssignment, 400);
+
+  const trainerCannotReassignCourse = await jsonRequest(`/courses/${TEACHER_COURSE_ID}`, {
+    method: "PATCH",
+    token: tokens.get("teacher"),
+    csrf,
+    body: { assignedTeacherId: adminId },
+  });
+  expectStatus("trainer cannot reassign course ownership through a direct request", trainerCannotReassignCourse, 200);
+  assert.equal(String(trainerCannotReassignCourse.body?.assignedTeacherId || ""), teacherId, "trainer reassigned course ownership");
+
   const trainerLesson = await jsonRequest("/content/lessons", {
     method: "POST",
     token: tokens.get("teacher"),
@@ -1414,7 +1520,6 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   assert.equal(trainerContent.body?.lessons?.some((lesson: any) => lesson.id === TEACHER_LESSON_ID), true);
   assert.equal(trainerContent.body?.libraryItems?.some((item: any) => item.id === TEACHER_LIBRARY_ID), true);
 
-  const teacherId = userIds.get("teacher");
   assert.ok(teacherId, "teacher id missing for empty-scope proof");
   await UserModel.updateOne(
     { _id: teacherId },

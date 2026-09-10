@@ -26,12 +26,84 @@ const fromDateInput = (value: string, boundary: 'start' | 'end' = 'start') => {
   return new Date(`${value}${suffix}`).getTime();
 };
 
+const PLATFORM_PRESET_IMAGES = [
+  // باقة استوديو المئة النهاري 3D
+  {
+    title: 'استوديو التابلت الذكي',
+    subtitle: 'تدريب تفاعلي ومؤشرات حية',
+    url: '/images/smart-learning-tablet.jpg',
+  },
+  {
+    title: 'إتقان القدرات والكمي',
+    subtitle: 'حلول ذكية للمسائل',
+    url: '/images/daylight-qudrat-math.jpg',
+  },
+  {
+    title: 'مختبر التحصيلي العلمي',
+    subtitle: 'علوم ورياضيات',
+    url: '/images/daylight-tahsili-science.jpg',
+  },
+  {
+    title: 'محاكاة قياس بالوقت',
+    subtitle: 'بيئة اختبارية مطابقة',
+    url: '/images/daylight-mock-simulation.jpg',
+  },
+  {
+    title: 'المعلم الآلي الذكي AI',
+    subtitle: 'توجيه وتحليل فوري',
+    url: '/images/daylight-ai-tutor.jpg',
+  },
+  {
+    title: 'فرحة الـ 100% والتفوق',
+    subtitle: 'الكأس الذهبي والقبول',
+    url: '/images/daylight-celebration-100.jpg',
+  },
+  {
+    title: 'حلبة التنافس المدرسي',
+    subtitle: 'مسابقات الفصول والمدارس',
+    url: '/images/daylight-school-arena.jpg',
+  },
+
+  // النمط السيبراني الليلي
+  {
+    title: 'بطل القدرات العامة',
+    subtitle: 'كمي ولفظي',
+    url: '/images/qudrat-champion.jpg',
+  },
+  {
+    title: 'التميز التحصيلي',
+    subtitle: 'علوم ورياضيات',
+    url: '/images/tahsili-excellence.jpg',
+  },
+  {
+    title: 'محاكاة اختبارات قياس',
+    subtitle: 'بيئة اختبارية مطابقة',
+    url: '/images/mock-exam-simulation.jpg',
+  },
+  {
+    title: 'المعلم الذكي AI',
+    subtitle: 'تحليل وتدريب موجه',
+    url: '/images/ai-smart-tutor.jpg',
+  },
+  {
+    title: 'فرحة التفوق 100%',
+    subtitle: 'حقق المئة واستعد للجامعة',
+    url: '/images/score-celebration.jpg',
+  },
+  {
+    title: 'ميدان التنافس والفصول',
+    subtitle: 'تحديات جماعية للمدارس',
+    url: '/images/classroom-arena.jpg',
+  },
+];
+
 const AD_TEMPLATES = [
   {
     title: 'مفاجأة سارة - خصم خاص على الاشتراكات',
     body: 'استفد من العرض الحصري لمنصة المئة واشترك الآن للوصول الكامل إلى بنك الأسئلة والشروحات التفاعلية.',
     ctaLabel: 'استفد من العرض الآن',
     ctaUrl: '/pricing',
+    imageUrl: '/images/score-celebration.jpg',
     audience: 'all' as AnnouncementAudience,
     displayMode: 'modal' as AnnouncementDisplayMode,
     frequency: 'session' as AnnouncementFrequency,
@@ -42,6 +114,7 @@ const AD_TEMPLATES = [
     body: 'ابدأ خطتك المكثفة مع شروحات الكمي واللفظي واختبارات المحاكاة الذكية المقاسة بالوقت.',
     ctaLabel: 'ابدأ التدريب فوراً',
     ctaUrl: '/category/p_qudrat',
+    imageUrl: '/images/qudrat-champion.jpg',
     audience: 'student' as AnnouncementAudience,
     displayMode: 'modal' as AnnouncementDisplayMode,
     frequency: 'session' as AnnouncementFrequency,
@@ -52,6 +125,7 @@ const AD_TEMPLATES = [
     body: 'قيّم مهاراتك في اختبارات نافس الوزارية مع تصحيح فوري ورصد للمفاهيم التي تحتاج تقوية.',
     ctaLabel: 'خُض الاختبار التجريبي',
     ctaUrl: '/category/p_nafes',
+    imageUrl: '/images/mock-exam-simulation.jpg',
     audience: 'student' as AnnouncementAudience,
     displayMode: 'top-banner' as AnnouncementDisplayMode,
     frequency: 'always' as AnnouncementFrequency,
@@ -62,6 +136,7 @@ const AD_TEMPLATES = [
     body: 'اربط مدرستك وفصولك الذكية بمنصة المئة لتحصل على تقارير تفصيلية ومتابعة مستمرة لطلابك.',
     ctaLabel: 'استكشف بوابة المدارس',
     ctaUrl: '/admin-dashboard?tab=schools',
+    imageUrl: '/images/classroom-arena.jpg',
     audience: 'staff' as AnnouncementAudience,
     displayMode: 'modal' as AnnouncementDisplayMode,
     frequency: 'session' as AnnouncementFrequency,
@@ -347,7 +422,7 @@ export const AnnouncementAdsManager: React.FC = () => {
                   </div>
                 </div>
 
-                <label className="space-y-1.5 md:col-span-2">
+                <div className="space-y-1.5 md:col-span-2">
                   <span className="text-xs font-bold text-slate-700">رابط الصورة أو رفع صورة</span>
                   <div className="grid grid-cols-1 gap-2.5 md:grid-cols-[1fr_auto]">
                     <input aria-label="رابط صورة الإعلان" title="رابط صورة الإعلان" value={selectedAd.imageUrl || ''} onChange={(event) => updateSelected({ imageUrl: event.target.value })} className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs font-bold outline-none focus:border-indigo-400" />
@@ -359,7 +434,41 @@ export const AnnouncementAdsManager: React.FC = () => {
                   <span className="block text-[11px] font-medium leading-5 text-slate-400">
                     الأبعاد المناسبة: 1200x675، ويفضل WebP/JPG أقل من 900KB حتى لا يبطئ الإعلان فتح الموقع.
                   </span>
-                </label>
+
+                  {/* ── مكتبة صور المنصة الرسمية ── */}
+                  <div className="pt-2 space-y-1.5">
+                    <span className="text-[11px] font-bold text-slate-600">صور المنصة الموصى بها (قدرات، تحصيلي، محاكاة):</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                      {PLATFORM_PRESET_IMAGES.map((preset) => {
+                        const isSelected = selectedAd.imageUrl === preset.url;
+                        return (
+                          <button
+                            key={preset.url}
+                            type="button"
+                            onClick={() => updateSelected({ imageUrl: preset.url })}
+                            className={`group relative flex flex-col items-start rounded-xl border p-1.5 text-right transition-all cursor-pointer ${
+                              isSelected
+                                ? 'border-indigo-600 bg-indigo-50/70 ring-2 ring-indigo-500/20'
+                                : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                            }`}
+                          >
+                            <img
+                              src={preset.url}
+                              alt={preset.title}
+                              className="h-12 w-full rounded-lg object-cover shadow-2xs group-hover:scale-[1.02] transition-transform"
+                            />
+                            <span className="mt-1 line-clamp-1 text-[10px] font-black text-slate-700">
+                              {preset.title}
+                            </span>
+                            <span className="line-clamp-1 text-[9px] text-slate-400">
+                              {preset.subtitle}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-2.5 pt-4 border-t border-slate-100">

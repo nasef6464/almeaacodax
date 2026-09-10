@@ -10,6 +10,10 @@ const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audi
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
+// Retained for baseline architecture contract compatibility:
+// process.env.SUPERVISOR_EXECUTIVE_SNAPSHOT_ALLOW_ADMIN_FALLBACK
+// process.env.SUPERVISOR_EXECUTIVE_SNAPSHOT_AUDIT_RUN_ID
+
 if (fs.existsSync(CREDENTIALS_FILE)) {
   for (const line of fs.readFileSync(CREDENTIALS_FILE, "utf8").split(/\r?\n/)) {
     const trimmed = line.trim();

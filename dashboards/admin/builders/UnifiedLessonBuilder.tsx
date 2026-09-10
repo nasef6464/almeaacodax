@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Lesson, LessonType, Question } from '../../../types';
-import { Plus, Save, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
+import { Plus, Save, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube, Play } from 'lucide-react';
 import { UnifiedQuizBuilder } from '../UnifiedQuizBuilder';
 import { UnifiedQuestionBuilder } from './UnifiedQuestionBuilder';
 import { VideoQuestionPicker } from './VideoQuestionPicker';
+import { VideoModal } from '../../../components/VideoModal';
 import { useStore } from '../../../store/useStore';
 import { sanitizeVideoUrl } from '../../../utils/videoLinks';
 import { createVideoQuestionSnapshot, isValidVideoQuestionSnapshot } from '../../../utils/videoQuestionSnapshot';
@@ -28,6 +29,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
   const [questionPickerTargetId, setQuestionPickerTargetId] = useState<string | null | undefined>(undefined);
   const [validationError, setValidationError] = useState('');
   const [questionCreationNotice, setQuestionCreationNotice] = useState('');
+  const [showVideoPreview, setShowVideoPreview] = useState(false);
   const { quizzes, questions, paths, subjects, sections, skills, addQuestion } = useStore();
 
   const availableMainSkills = useMemo(
@@ -396,7 +398,20 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">رابط الفيديو</label>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <label className="block text-sm font-bold text-gray-700">رابط الفيديو</label>
+                    {lesson.videoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setShowVideoPreview(true)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer border border-blue-200"
+                        title="تشغيل ومعاينة الفيديو في المشغل"
+                      >
+                        <Play size={13} className="fill-current" />
+                        عرض مباشر للفيديو
+                      </button>
+                    )}
+                  </div>
                   <input
                     type="text"
                     value={lesson.videoUrl || ''}
@@ -903,6 +918,16 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
             }
             setQuestionPickerTargetId(undefined);
           }}
+        />
+      )}
+
+      {showVideoPreview && lesson.videoUrl && (
+        <VideoModal
+          videoUrl={lesson.videoUrl}
+          title={lesson.title || 'معاينة الفيديو'}
+          interactiveQuestions={lesson.interactiveQuestions || []}
+          questionBank={questions}
+          onClose={() => setShowVideoPreview(false)}
         />
       )}
     </div>

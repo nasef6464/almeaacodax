@@ -6,6 +6,8 @@ export interface PaginationOptions {
   isActive?: boolean;
   pathId?: string;
   subjectId?: string;
+  /** Restrict the admin user directory to active platform trainers with a content scope. */
+  platformTrainer?: boolean;
 }
 
 export interface QuizResultsPaginationOptions extends PaginationOptions {

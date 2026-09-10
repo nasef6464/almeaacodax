@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Question } from '../../../types';
 import { RichTextEditor } from '../../../components/RichTextEditor';
 import { Save, X, Wand2, Loader2 } from 'lucide-react';
@@ -223,19 +224,19 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     void handleGenerateWithFeedback();
   }, [generateOnOpen]);
 
-  return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[94vh] overflow-hidden shadow-2xl flex flex-col" data-testid="question-builder-modal">
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+  const modalContent = (
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in" dir="rtl">
+      <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[92vh] overflow-hidden shadow-2xl flex flex-col my-auto border border-slate-200" data-testid="question-builder-modal">
+        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/90 sticky top-0 z-10">
           <h3 className="font-bold text-gray-800 text-lg flex items-center gap-2">
             منشئ الأسئلة الموحد
           </h3>
-          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-200">
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-200 transition-colors" title="إغلاق">
             <X size={20} />
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5">
           {validationError && (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
               {validationError}
@@ -252,7 +253,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
             <button
               onClick={handleGenerateWithFeedback}
               disabled={isGenerating}
-              className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-indigo-100 disabled:opacity-50"
+              className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-indigo-100 disabled:opacity-50 transition-colors cursor-pointer"
             >
               {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
               {isGenerating ? 'جارٍ التوليد...' : 'توليد بالذكاء الاصطناعي'}
@@ -261,7 +262,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           <RichTextEditor
             value={question.text || ''}
             onChange={value => setQuestion(prev => ({ ...prev, text: value }))}
-            minHeightClass="h-96"
+            minHeightClass="h-44 sm:h-56"
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -461,15 +462,20 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           </div>
         </div>
 
-        <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-          <button onClick={onCancel} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
+        <div className="p-4 sm:px-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 sticky bottom-0 z-10">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-5 py-2.5 text-gray-700 bg-white border border-gray-200 font-bold hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+          >
             إلغاء
           </button>
           <button
+            type="button"
             onClick={handleValidatedSave}
             disabled={isSaving}
             data-testid="question-builder-save"
-            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60 shadow-sm cursor-pointer"
           >
             <Save size={18} /> {isSaving ? 'جارٍ حفظ السؤال...' : 'حفظ السؤال'}
           </button>
@@ -477,4 +483,6 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
 };
