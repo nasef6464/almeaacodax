@@ -328,7 +328,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   // ─────────────────────────────────────────────────────────────────────────
   const builderModal = (
     <div data-testid="assessment-builder" className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+      <div className="w-full max-w-6xl xl:max-w-7xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
 
         {/* Header */}
         <div className={`bg-gradient-to-r ${KIND_CONFIG[kind].gradient} px-6 py-4 text-white flex items-center justify-between shrink-0`}>
