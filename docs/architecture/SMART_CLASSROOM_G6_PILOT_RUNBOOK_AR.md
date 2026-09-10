@@ -1,6 +1,7 @@
 # ALMEAA Smart Classroom — G6 Controlled Pilot Runbook
 
-> الحالة: `PREPARED / NOT AUTHORIZED TO RUN`
+> الحالة: `REUSABLE RUNBOOK`; أحدث تشغيل مفوض موثق في
+> `SMART_CLASSROOM_G6_PILOT_REPORT_AR.md`.
 >
 > هذا المستند يجهز تجربة Pilot ولا يمثل موافقة على بيئة حية أو بيانات مدرسة. لا
 > يشغّل أي Agent اختبارًا على عنوان خارجي أو حساب حقيقي بمجرد قراءة هذا الملف.

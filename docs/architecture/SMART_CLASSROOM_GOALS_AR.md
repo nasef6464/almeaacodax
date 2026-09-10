@@ -1,9 +1,9 @@
 # ALMEAA School OS + Smart Classroom — سجل الأهداف التنفيذي
 
-> الحالة: `G5 CLOSED / VERIFIED`
-> آخر مراجعة: 2026-09-09
-> Current Goal: `G6 — Controlled Pilot & Commercial Limits` (`BLOCKED — يحتاج تفويض بيئة وبيانات Pilot`)
-> Runtime truth عند المراجعة: `main@9cf72176059e09466335f6d6ff20b51b43969e61`؛ يجب التحقق من HEAD عند البدء.
+> الحالة: `G6 CLOSED / VERIFIED FOR A SMALL SYNTHETIC PRODUCTION PILOT`
+> آخر مراجعة: 2026-09-10
+> Current Goal: لا يوجد هدف تطوير نشط؛ راجع قرار الحد التجاري في تقرير G6 قبل أي توسع.
+> Runtime truth عند المراجعة: `main@61de57df0dfe5b8a3c76412bb21f28694c73510c`.
 
 هذا الملف هو سجل الأهداف المختصر القابل للاسترجاع. القرار المعماري المفصل موجود في
 `SMART_CLASSROOM_EXECUTION_MASTER_AR.md`، وتعليمات الدخول في
@@ -35,7 +35,7 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | `G3 — Supervisor Operations & Reports` | `SC-03` | الفصول الذكية اليوم، تاريخ الجلسات، وتقارير session/class/teacher داخل لوحة المشرف الحالية. | المشرف يرى نطاقه فقط، واللوحة القديمة لم تفقد قدراتها، وPDF/Excel يخرجان من read model واحد. | `CLOSED / VERIFIED` |
 | `G4 — School Intelligence` | `SC-04` | School وPlatform analytics جنبًا إلى جنب مع skill heatmap وweak students وtrends محدودة. | لا blended score، وlegacy context يظهر بصدق، وcross-school reads مرفوضة، ولا rollup دون benchmark. | `CLOSED / VERIFIED` |
 | `G5 — Intervention & Proven Improvement` | `SC-05A + SC-05B` | Weak Skill → Target Students → Action → Follow-up → Before/After improvement. | تدخل فعلي من نوع تدريب/اختبار/محتوى/مسار/واجب/دعم، مع evidence counts وthreshold قابل للضبط ونتيجة قابلة للتتبع. | `CLOSED / VERIFIED` |
-| `G6 — Controlled Pilot & Commercial Limits` | `SC-06` | Pilot حقيقي يثبت قابلية الاستخدام ويحدد limits اللازمة للعقد من القياس. | تقرير Pilot لاتصال ضعيف وتزامن وlatency/reconnect/write volume؛ لا ادعاء production scale من isolated CI. | `BLOCKED — يحتاج تفويض بيئة وبيانات Pilot بعد G5` |
+| `G6 — Controlled Pilot & Commercial Limits` | `SC-06` | Pilot حقيقي يثبت قابلية الاستخدام ويحدد limits اللازمة للعقد من القياس. | تقرير Pilot لاتصال ضعيف وتزامن وlatency/reconnect/write volume؛ لا ادعاء production scale من isolated CI. | `CLOSED / VERIFIED — small synthetic production pilot` |
 
 ## حدود لا تتغير
 
@@ -81,7 +81,7 @@ ASSESS → DETECT → INTERVENE → MEASURE IMPROVEMENT
 | `G3` | `CLOSED / VERIFIED` | `9feded45cb38caa9aeaff29648dce4bde96f3019` | Backend CI [34412721414](https://github.com/nasef6464/almeaacodax/actions/runs/34412721414) PASS؛ scoped session/class/teacher reports؛ Excel/PDF من نفس read model | begin G4 assessment only |
 | `G4` | `CLOSED / VERIFIED` | `dbbb4bec12073ea3cf4c5fa0ad2a7588b766cd90` | Backend CI [34413934984](https://github.com/nasef6464/almeaacodax/actions/runs/34413934984) PASS: source contexts at write time; bounded raw dual analytics; school/class scope and cross-school result exclusion | begin G5 assessment only |
 | `G5` | `CLOSED / VERIFIED` | `684c6912c883f3acd199d7491d57791d2fba1abc` | Backend CI [34414569977](https://github.com/nasef6464/almeaacodax/actions/runs/34414569977) PASS: entitled scoped study-plan intervention; raw baseline/follow-up; minimum-evidence guard; cross-school target and student reads rejected | await separate G6 Pilot authorization |
-| `G6` | `BLOCKED` | `5843eff88b749d2c903a185418226e8e2065e1fa` (merge-ready; Pilot not run) | Preflight CI [34415332078](https://github.com/nasef6464/almeaacodax/actions/runs/34415332078) PASS; exact merge-runtime Backend Integration [34425597691](https://github.com/nasef6464/almeaacodax/actions/runs/34425597691) PASS, and Public UI [34425496148](https://github.com/nasef6464/almeaacodax/actions/runs/34425496148), Recovery, Safety, Production Readiness, Dependency Audit, and Phase/Handover PASS. Production health on 2026-09-10 still reported `b131d8eb405e`, which is not a descendant of the G1–G6 runtime; no authorized Pilot was run. | اعتماد دمج/نشر runtime الموثق، ثم تحديد البيئة والمدرسة/الفصول والمعلمين والبيانات المسموحة وبدء Pilot فقط |
+| `G6` | `CLOSED / VERIFIED` | `main@61de57df0dfe5b8a3c76412bb21f28694c73510c` | Preflight CI [34415332078](https://github.com/nasef6464/almeaacodax/actions/runs/34415332078) PASS؛ exact merge-runtime Backend Integration [34425597691](https://github.com/nasef6464/almeaacodax/actions/runs/34425597691) PASS؛ production health ready/scale-ready 200؛ Pilot مفوض ببيانات اصطناعية: two classes/teachers، رفض 403، idempotency، reconnect/rejoin، report/intelligence/intervention measured. [التقرير](SMART_CLASSROOM_G6_PILOT_REPORT_AR.md) | لا ترفع الحد التجاري إلا بقياس تزامن مفوض جديد |
 
 حزمة التشغيل الآمن قبل التفويض: `SMART_CLASSROOM_G6_PILOT_RUNBOOK_AR.md`. لا تعد
 دليل Pilot ولا تسمح بتشغيل اختبار على بيئة خارجية دون قرار المالك في القسم الأول.
