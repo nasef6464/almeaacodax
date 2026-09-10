@@ -3,6 +3,7 @@ import { Lesson, LessonType } from '../../types';
 import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload, CheckCircle2, AlertTriangle, Mic, Video } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
+import { VideoModal } from '../../components/VideoModal';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 
 interface LessonsManagerProps {
@@ -119,7 +120,7 @@ const getLessonReadinessMeta = (lesson: Lesson) => {
 };
 
 export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => {
-  const { user, lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, skills, topics } = useStore();
+  const { user, lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, skills, topics, questions } = useStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const canReview = user.role === 'admin';
   const managedPathIds = user.managedPathIds || [];
@@ -142,6 +143,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [previewLesson, setPreviewLesson] = useState<Lesson | null>(null);
+  const [activeVideoLesson, setActiveVideoLesson] = useState<Lesson | null>(null);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
@@ -927,9 +929,30 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                   <tr key={lesson.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${lesson.type === 'video' ? 'bg-indigo-50 text-indigo-500' : 'bg-emerald-50 text-emerald-500'}`}>
-                          {lesson.type === 'video' ? <Play size={18} className="ml-1" /> : <FileText size={18} />}
-                        </div>
+                        {lesson.type === 'video' ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (lesson.videoUrl && lesson.videoUrl.trim()) {
+                                setActiveVideoLesson(lesson);
+                              } else {
+                                alert('لا يوجد رابط فيديو مرتبط بهذا الدرس بعد.');
+                              }
+                            }}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                              lesson.videoUrl && lesson.videoUrl.trim()
+                                ? 'bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:scale-110 cursor-pointer'
+                                : 'bg-indigo-50 text-indigo-400 hover:bg-indigo-100 cursor-pointer'
+                            }`}
+                            title={lesson.videoUrl && lesson.videoUrl.trim() ? 'تشغيل الفيديو في مشغل المنصة' : 'لا يوجد رابط فيديو'}
+                          >
+                            <Play size={16} className="ml-0.5 fill-current" />
+                          </button>
+                        ) : (
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-emerald-50 text-emerald-500">
+                            <FileText size={18} />
+                          </div>
+                        )}
                         <div>
                           <div className="font-bold text-gray-800">{lesson.title}</div>
                           <div className="text-[11px] text-gray-400 mt-1">
@@ -1017,6 +1040,16 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                         >
                           {lesson.isLocked ? <Lock size={18} /> : <LockOpen size={18} />}
                         </button>
+                        {lesson.type === 'video' && lesson.videoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => setActiveVideoLesson(lesson)}
+                            className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                            title="عرض مباشر للفيديو في المشغل"
+                          >
+                            <Play size={18} className="fill-current" />
+                          </button>
+                        )}
                         <button onClick={() => handleDuplicate(lesson)} className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="نسخ">
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
@@ -1127,6 +1160,16 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
+              {previewLesson.videoUrl && (
+                <button
+                  type="button"
+                  onClick={() => setActiveVideoLesson(previewLesson)}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-black text-white hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
+                >
+                  <Play size={16} className="fill-current" />
+                  عرض مباشر للفيديو في المشغل
+                </button>
+              )}
               <button
                 onClick={() => {
                   const topic = topics.find((item) => item.lessonIds?.includes(previewLesson.id));
@@ -1256,6 +1299,16 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
             </div>
           </div>
         </div>
+      )}
+
+      {activeVideoLesson && activeVideoLesson.videoUrl && (
+        <VideoModal
+          videoUrl={activeVideoLesson.videoUrl}
+          title={activeVideoLesson.title}
+          interactiveQuestions={activeVideoLesson.interactiveQuestions || []}
+          questionBank={questions}
+          onClose={() => setActiveVideoLesson(null)}
+        />
       )}
     </div>
   );
