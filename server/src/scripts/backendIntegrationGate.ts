@@ -1121,12 +1121,16 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   const trainerCourses = await jsonRequest("/courses?limit=200", { token: tokens.get("teacher") });
   expectStatus("platform trainer reads scoped course catalog", trainerCourses, 200);
   assert.equal(
-    trainerCourses.body?.courses?.some((course: any) => course.id === TEACHER_COURSE_ID),
+    trainerCourses.body?.courses?.some(
+      (course: any) => String(course.id || course._id || "") === TEACHER_COURSE_ID,
+    ),
     true,
     "trainer course list omitted in-scope course",
   );
   assert.equal(
-    trainerCourses.body?.courses?.some((course: any) => course.id === COURSE_ID),
+    trainerCourses.body?.courses?.some(
+      (course: any) => String(course.id || course._id || "") === COURSE_ID,
+    ),
     false,
     "trainer course list leaked a course without managed scope",
   );
