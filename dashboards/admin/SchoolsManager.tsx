@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     BookOpen,
     Building2,
@@ -15,6 +15,7 @@ import {
     Printer,
     Search,
     ShieldCheck,
+    Sparkles,
     Trash2,
     Upload,
     Users,
@@ -39,6 +40,11 @@ import { SchoolCommandCenterPanel } from './SchoolsManager/SchoolCommandCenterPa
 import { SchoolDashboardPanel } from './SchoolsManager/SchoolDashboardPanel';
 import { SchoolContractPanel } from './SchoolsManager/SchoolContractPanel';
 import { TeachingAssignmentPanel } from './SchoolsManager/TeachingAssignmentPanel';
+import { NewSchoolWizardModal } from './SchoolsManager/NewSchoolWizardModal';
+import { SchoolServicesCenterTab } from './SchoolsManager/SchoolServicesCenterTab';
+import { SchoolPeopleHubTab } from './SchoolsManager/SchoolPeopleHubTab';
+import { SchoolOverviewExecutiveTab } from './SchoolsManager/SchoolOverviewExecutiveTab';
+import { SchoolSettingsSafetyTab } from './SchoolsManager/SchoolSettingsSafetyTab';
 
 import { SchoolPortfolioFilterPanel } from './SchoolsManager/SchoolPortfolioFilterPanel';
 import { PACKAGE_CONTENT_OPTIONS } from './SchoolsManager/contracts';
@@ -238,6 +244,8 @@ export const SchoolsManager: React.FC = () => {
         schoolStudentPageSize,
         resetSchoolRosterFilters,
     } = useSchoolRosterFilters();
+
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
 
     const {
         editNameModalState,
@@ -1333,97 +1341,289 @@ export const SchoolsManager: React.FC = () => {
                 />
 
                 <div className="flex-1 w-full flex flex-col min-h-0 relative">
-                    {/* ── تبويبات المدرسة ── */}
-                    <div className="flex gap-1 mb-4 overflow-x-auto bg-white rounded-2xl border border-gray-100 p-1.5 shadow-sm">
+                    {/* ── تبويبات مساحة عمل المدرسة الموحدة ── */}
+                    <div className="flex gap-1.5 mb-4 overflow-x-auto bg-white rounded-2xl border border-gray-100 p-1.5 shadow-sm">
                         {([
-                            { id: 'dashboard', label: '🏠 نظرة عامة' },
-                            { id: 'overview', label: '🏫 الفصول والطلاب' },
-                            { id: 'import', label: '📥 استيراد' },
-                            { id: 'relations', label: '🤝 المشرفون' },
-                            { id: 'packages', label: '📦 الباقات' },
+                            { id: 'overview', label: '🏠 نظرة عامة' },
+                            { id: 'people', label: '👥 المجتمع المدرسي' },
+                            { id: 'academic', label: '🏫 الفصول والإسناد' },
+                            { id: 'services', label: '⚡ الخدمات والوحدات' },
+                            { id: 'contract', label: '📦 العقد والباقات' },
                             { id: 'reports', label: '📊 التقارير' },
-                        ] as const).map((tab) => (
-                            <button
-                                key={tab.id}
-                                type="button"
-                                onClick={() => {
-                                    setManagementError(null);
-                                    setManagementNotice(null);
-                                    setActiveTab(tab.id as typeof activeTab);
-                                    setExpandedSchoolStep(tab.id === 'dashboard' ? null : tab.id as any);
-                                }}
-                                className={`shrink-0 rounded-xl px-4 py-2 text-sm font-bold transition-colors whitespace-nowrap ${
-                                    activeTab === tab.id
-                                        ? 'bg-indigo-600 text-white shadow-sm'
-                                        : 'text-gray-600 hover:bg-gray-100'
-                                }`}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
+                            { id: 'settings', label: '⚙️ الإعدادات' },
+                        ] as const).map((tab) => {
+                            const isActive =
+                                activeTab === tab.id ||
+                                (tab.id === 'overview' && activeTab === 'dashboard') ||
+                                (tab.id === 'contract' && activeTab === 'packages') ||
+                                (tab.id === 'people' && (activeTab === 'relations' || activeTab === 'import')) ||
+                                (tab.id === 'academic' && expandedSchoolStep === 'overview');
+
+                            return (
+                                <button
+                                    key={tab.id}
+                                    type="button"
+                                    onClick={() => {
+                                        setManagementError(null);
+                                        setManagementNotice(null);
+                                        setActiveTab(tab.id as typeof activeTab);
+                                        setExpandedSchoolStep(tab.id === 'academic' ? 'overview' : null);
+                                    }}
+                                    className={`shrink-0 rounded-xl px-4 py-2.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                                        isActive
+                                            ? 'bg-indigo-600 text-white shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    {tab.label}
+                                </button>
+                            );
+                        })}
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-                        {/* ── لوحة التحكم — أول تبويب ── */}
-                        {activeTab === 'dashboard' && (
-                            <SchoolDashboardPanel
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
+                        {/* ── 1. نظرة عامة ── */}
+                        {(activeTab === 'dashboard' || activeTab === 'overview') && (
+                            <div className="space-y-6">
+                                <SchoolOverviewExecutiveTab
+                                    school={selectedSchool}
+                                    schoolClasses={schoolClasses}
+                                    schoolStudents={schoolStudents}
+                                    supervisors={supervisors}
+                                    teachers={teachers}
+                                    activePackages={activeSchoolPackages}
+                                    onGoToClasses={() => { setActiveTab('academic'); setExpandedSchoolStep('overview'); }}
+                                    onGoToPeople={() => { setActiveTab('people'); setExpandedSchoolStep(null); }}
+                                    onGoToServices={() => { setActiveTab('services'); setExpandedSchoolStep(null); }}
+                                    onGoToContract={() => { setActiveTab('contract'); setExpandedSchoolStep('packages'); }}
+                                    onAddClass={() => void handleCreateSingleClass()}
+                                    onOpenPortal={() => {
+                                        const url = new URL('/admin-dashboard', window.location.origin);
+                                        url.searchParams.set('tab', 'school-portal');
+                                        window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                                        window.dispatchEvent(new HashChangeEvent('hashchange'));
+                                    }}
+                                />
+
+                                <div data-testid="school-classes-panel" className="space-y-8">
+                                    <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                                        <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                            <div>
+                                                <p className="text-xs font-black text-slate-500">لوحة تشغيل المدرسة</p>
+                                                <h3 className="text-lg font-black text-gray-900">ابدأ من هنا بدل البحث داخل الصفحة</h3>
+                                            </div>
+                                            <span className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-slate-600">
+                                                {nextOperatingStep.title}
+                                            </span>
+                                        </div>
+                                        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                                            {overviewFocusActions.map((action) => (
+                                                <button
+                                                    key={action.id}
+                                                    type="button"
+                                                    data-testid={`school-overview-focus-${action.id}`}
+                                                    onClick={() => {
+                                                        if (action.tab) {
+                                                            setActiveTab(action.tab);
+                                                        } else {
+                                                            setActiveTab('overview');
+                                                        }
+                                                        window.setTimeout(() => {
+                                                            document.querySelector(`[data-testid="${action.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                        }, 80);
+                                                    }}
+                                                    className={`rounded-2xl border p-4 text-right transition-all hover:-translate-y-0.5 hover:shadow-sm ${
+                                                        action.tone === 'emerald'
+                                                            ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
+                                                            : action.tone === 'amber'
+                                                                ? 'border-amber-100 bg-amber-50 hover:bg-amber-100'
+                                                                : 'border-slate-100 bg-slate-50 hover:bg-slate-100'
+                                                    }`}
+                                                >
+                                                    <div className="text-xs font-black text-slate-500">{action.label}</div>
+                                                    <div className="mt-2 text-sm font-black text-gray-900">{action.value}</div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ── 2. المجتمع المدرسي ── */}
+                        {(activeTab === 'people' || activeTab === 'relations') && (
+                            <SchoolPeopleHubTab
                                 school={selectedSchool}
                                 schoolClasses={schoolClasses}
                                 schoolStudents={schoolStudents}
                                 supervisors={supervisors}
-                                activePackages={activeSchoolPackages}
-                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
-                                onGoToClasses={() => { setActiveTab('overview'); setExpandedSchoolStep('overview'); }}
-                                onGoToStudents={() => { setActiveTab('overview'); setExpandedSchoolStep('overview'); }}
-                                onGoToPackages={() => { setActiveTab('packages'); setExpandedSchoolStep('packages'); }}
-                                onGoToImport={() => { setActiveTab('import'); setExpandedSchoolStep('import'); }}
-                                onAddClass={() => void handleCreateSingleClass()}
+                                teachers={teachers}
+                                parents={parents}
+                                onOpenSingleStudent={() => {
+                                    setIsSingleStudentOpen(true);
+                                    window.setTimeout(() => {
+                                        document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 50);
+                                }}
+                                onOpenImport={() => setActiveTab('import')}
+                                onDownloadRoster={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
+                                onAssignStudentToClass={handleAssignStudentToClass}
+                                onRemoveStudentScope={handleRemoveStudentScope}
+                                rosterActionPending={rosterActionPending}
                             />
                         )}
 
-                        {activeTab === 'overview' && (
-                            <div data-testid="school-classes-panel" className="space-y-8">
-                                <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                                    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                                        <div>
-                                            <p className="text-xs font-black text-slate-500">لوحة تشغيل المدرسة</p>
-                                            <h3 className="text-lg font-black text-gray-900">ابدأ من هنا بدل البحث داخل الصفحة</h3>
-                                        </div>
-                                        <span className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-slate-600">
-                                            {nextOperatingStep.title}
-                                        </span>
-                                    </div>
-                                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                                        {overviewFocusActions.map((action) => (
-                                            <button
-                                                key={action.id}
-                                                type="button"
-                                                data-testid={`school-overview-focus-${action.id}`}
-                                                onClick={() => {
-                                                    if (action.tab) {
-                                                        setActiveTab(action.tab);
-                                                    } else {
-                                                        setActiveTab('overview');
-                                                    }
-                                                    window.setTimeout(() => {
-                                                        document.querySelector(`[data-testid="${action.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                    }, 80);
-                                                }}
-                                                className={`rounded-2xl border p-4 text-right transition-all hover:-translate-y-0.5 hover:shadow-sm ${
-                                                    action.tone === 'emerald'
-                                                        ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
-                                                        : action.tone === 'amber'
-                                                            ? 'border-amber-100 bg-amber-50 hover:bg-amber-100'
-                                                            : 'border-slate-100 bg-slate-50 hover:bg-slate-100'
-                                                }`}
-                                            >
-                                                <div className="text-xs font-black text-slate-500">{action.label}</div>
-                                                <div className="mt-2 text-sm font-black text-gray-900">{action.value}</div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                        {/* ── 3. الفصول والإسناد ── */}
+                        {activeTab === 'academic' && (
+                            <SchoolClassesPanel
+                                schoolClasses={schoolClasses}
+                                schoolStudents={schoolStudents}
+                                parents={parents}
+                                supervisors={supervisors}
+                                teachers={teachers}
+                                publishedCourses={publishedCourses}
+                                bulkClassNames={bulkClassNames}
+                                setBulkClassNames={setBulkClassNames}
+                                schoolActionPending={schoolActionPending}
+                                isSchoolWorkspaceBusy={isSchoolWorkspaceBusy}
+                                rosterActionPending={rosterActionPending}
+                                onDownloadSchoolRoster={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
+                                onCreateSingleClass={() => void handleCreateSingleClass()}
+                                onCreateBulkClasses={handleCreateBulkClasses}
+                                onDownloadClassReport={downloadClassReport}
+                                onPrintClassReport={printClassReport}
+                                onRenameClass={openClassRenameModal}
+                                onDeleteClass={(classroom) => void handleDeleteClass(classroom)}
+                                onFocusClassStudentForm={(classroom) => focusClassStudentForm(classroom.name)}
+                                onFocusClassRoster={(classroom) => focusClassRoster(classroom.id)}
+                                onOpenImport={() => setActiveTab('import')}
+                                onOpenPackages={() => setActiveTab('contract')}
+                                onAssignSupervisor={handleAssignSchoolSupervisor}
+                                onCreateSupervisor={(classroom) => focusQuickSupervisorEntry(classroom.id, classroom.name)}
+                                onRemoveSupervisor={confirmRemoveClassSupervisor}
+                                onAssignTeacher={handleAssignTeacherToClass}
+                                onRemoveTeacher={handleRemoveTeacherFromClass}
+                                onAssignCourse={assignCourseToGroup}
+                                onRemoveCourse={removeCourseFromGroup}
+                            />
+                        )}
+
+                        {/* ── 4. الخدمات ووحدات العقد ── */}
+                        {activeTab === 'services' && (
+                            <div className="space-y-6">
+                                <SchoolServicesCenterTab school={selectedSchool} />
+                                <SchoolContractPanel schoolId={selectedSchool.id} />
                             </div>
+                        )}
+
+                        {/* ── 5. العقد والباقات ── */}
+                        {(activeTab === 'contract' || activeTab === 'packages') && (
+                            <div className="space-y-6">
+                                <SchoolPackagesPanel
+                                    selectedSchool={selectedSchool}
+                                    schoolPackages={schoolPackages}
+                                    activeSchoolPackages={activeSchoolPackages}
+                                    schoolCodes={schoolCodes}
+                                    activeSchoolCodes={activeSchoolCodes}
+                                    totalSeats={totalSeats}
+                                    usedSeats={usedSeats}
+                                    packageActionPending={packageActionPending}
+                                    handleCreateSchoolPackage={handleCreateSchoolPackage}
+                                    handleUpdateSchoolPackage={handleUpdateSchoolPackage}
+                                    handleDeleteSchoolPackage={handleDeleteSchoolPackage}
+                                    handleExpireAllSchoolPackages={handleExpireAllSchoolPackages}
+                                    downloadPackagesReport={downloadPackagesReport}
+                                    publishedCourses={publishedCourses}
+                                    paths={paths}
+                                    subjects={subjects}
+                                    teachers={teachers}
+                                    assignCourseToGroup={assignCourseToGroup}
+                                    selectedPackageIdForCode={selectedPackageIdForCode}
+                                    setSelectedPackageIdForCode={setSelectedPackageIdForCode}
+                                    handleCreateSchoolAccessCode={handleCreateSchoolAccessCode}
+                                    accessCodeActionPending={accessCodeActionPending}
+                                    newCodeMaxUses={newCodeMaxUses}
+                                    setNewCodeMaxUses={setNewCodeMaxUses}
+                                    newCodeDurationDays={newCodeDurationDays}
+                                    setNewCodeDurationDays={setNewCodeDurationDays}
+                                    tableSchoolCodes={tableSchoolCodes}
+                                    handleCopyCode={handleCopyCode}
+                                    copiedCodeId={copiedCodeId}
+                                    handleDeleteSchoolAccessCode={handleDeleteSchoolAccessCode}
+                                    isLoadingPagedAccessCodes={isLoadingPagedAccessCodes}
+                                    pagedAccessCodesError={pagedAccessCodesError}
+                                    pagedAccessCodesPagination={pagedAccessCodesPagination}
+                                />
+                            </div>
+                        )}
+
+                        {/* ── 6. التقارير ── */}
+                        {activeTab === 'reports' && (
+                            <SchoolReportsPanel
+                                readinessScore={readinessScore}
+                                readinessTotal={readinessChecks.length}
+                                readinessStatusLabel={readinessStatusLabel}
+                                readinessNextStep={readinessNextStep}
+                                readinessPercent={readinessPercent}
+                                schoolClassCount={schoolClasses.length}
+                                schoolStudentCount={schoolStudents.length}
+                                schoolSupervisorCount={schoolSupervisors.length}
+                                activePackageCount={activeSchoolPackages.length}
+                                activeCodeCount={activeSchoolCodes.length}
+                                handoverBlockingGaps={handoverBlockingGaps}
+                                onNavigateTab={(tab) => setActiveTab(tab)}
+                                downloadSchoolHandover={downloadSchoolHandover}
+                                downloadSchoolGapReport={downloadSchoolGapReport}
+                                printSchoolReport={printSchoolReport}
+                                isLoadingReport={isLoadingReport}
+                                reportError={reportError}
+                                schoolReport={schoolReport}
+                                subjects={subjects}
+                                sections={sections}
+                                downloadSchoolPerformanceReport={downloadSchoolPerformanceReport}
+                            />
+                        )}
+
+                        {/* ── 7. الإعدادات والأمان ── */}
+                        {activeTab === 'settings' && (
+                            <SchoolSettingsSafetyTab
+                                school={selectedSchool}
+                                onUpdateSchoolName={async (newName) => {
+                                    if (!newName.trim() || newName.trim() === selectedSchool.name) return;
+                                    setSchoolActionPending('rename-school');
+                                    try {
+                                        const persistedSchool = await updateGroupAsync(selectedSchool.id, { name: newName.trim() });
+                                        const verifiedSchool = await refreshSchoolWorkspace(persistedSchool.id);
+                                        setSelectedSchool(verifiedSchool);
+                                        setManagementNotice('تم تحديث اسم المدرسة بنجاح.');
+                                    } finally {
+                                        setSchoolActionPending(null);
+                                    }
+                                }}
+                                onDeleteSchool={() => {
+                                    setIsDeleteSchoolConfirmOpen(true);
+                                    window.setTimeout(() => {
+                                        document.querySelector('[data-testid="school-delete-confirm-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 80);
+                                }}
+                                isBusy={Boolean(schoolActionPending)}
+                            />
+                        )}
+
+                        {/* ── استيراد Excel ── */}
+                        {activeTab === 'import' && (
+                            <SchoolImportPanel
+                                importRows={importRows}
+                                importSummary={importSummary}
+                                isImporting={isImporting}
+                                importCredentials={importCredentials}
+                                importError={importError}
+                                importPreviewStats={importPreviewStats}
+                                handleImportFile={handleImportFile}
+                                handleStartImport={handleStartImport}
+                                downloadTemplate={downloadTemplate}
+                                downloadCredentials={downloadCredentials}
+                            />
                         )}
                     </div>
                 </div>
@@ -1744,7 +1944,7 @@ export const SchoolsManager: React.FC = () => {
                             بعد الإضافة ستفتح مساحة المدرسة مباشرة لتبدأ بالفصول، ثم الطلاب، ثم المشرفين، ثم الباقة المرتبطة بالمسارات والأكواد، وتنتهي بتقرير التسليم.
                         </p>
                     </div>
-                    <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <input
                             value={newSchoolName}
                             onChange={(event) => setNewSchoolName(event.target.value)}
@@ -1754,7 +1954,7 @@ export const SchoolsManager: React.FC = () => {
                                 }
                             }}
                             placeholder="مثال: مدارس التربية النموذجية"
-                            className="min-h-[48px] rounded-xl border border-amber-100 bg-white px-4 py-3 text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-amber-300"
+                            className="min-h-[48px] flex-1 rounded-xl border border-amber-100 bg-white px-4 py-3 text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-amber-300"
                             data-testid="school-new-name-input"
                         />
                         <button
@@ -1765,6 +1965,14 @@ export const SchoolsManager: React.FC = () => {
                             data-testid="school-create-button"
                         >
                             <Plus size={18} /> إنشاء وفتح التشغيل
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsWizardOpen(true)}
+                            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-5 py-3 text-sm font-black text-white shadow-sm hover:from-indigo-700 hover:to-indigo-800 transition-all cursor-pointer"
+                            data-testid="school-open-wizard-button"
+                        >
+                            <Sparkles size={18} /> معالج التأسيس المتكامل ✨
                         </button>
                     </div>
                 </div>
@@ -1923,6 +2131,19 @@ export const SchoolsManager: React.FC = () => {
                 initialValue={editNameModalState.initialValue}
                 onClose={closeEditNameModal}
                 onSave={editNameModalState.onSave}
+            />
+
+            <NewSchoolWizardModal
+                isOpen={isWizardOpen}
+                onClose={() => setIsWizardOpen(false)}
+                onSchoolCreated={async (newSchool) => {
+                    setSelectedSchool(newSchool);
+                    setActiveTab('overview');
+                    setIsWizardOpen(false);
+                    await refreshSchoolWorkspace(newSchool.id);
+                }}
+                createGroupAsync={createGroupAsync}
+                userId={user?.id || ''}
             />
         </div>
     );
