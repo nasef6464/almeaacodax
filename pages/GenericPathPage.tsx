@@ -1214,7 +1214,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                 </div>
                                                 <div>
                                                     <h2 className="text-base sm:text-lg font-black leading-snug">
-                                                        <span className="inline-block px-3 py-1 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-900 shadow-2xs">
+                                                        <span className="inline-block px-3 py-1 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-950 dark:text-amber-100 font-extrabold shadow-2xs">
                                                             {quiz.title}
                                                         </span>
                                                     </h2>

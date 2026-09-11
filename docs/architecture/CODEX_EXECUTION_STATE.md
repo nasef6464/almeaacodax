@@ -1,5 +1,18 @@
 # ALMEAA — Codex Execution State
 
+## Authentication Modal & Registration Flow Elevation
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commits: `0e0b8a1b`, `d454e27e`, `623f1ab8` merged in `f3c83038` on `main` (PR #111).
+- Scope:
+  1. Student Registration Persistence: Fixed `signUpWithEmail` in `AuthContext.tsx` and `Header.tsx` to pass the typed student full name (`signupName`) directly to `api.register` and session state instead of discarding it and falling back to the email prefix.
+  2. Elimination of Layout Shifts in Login: Made password input stably visible at all times in the login modal instead of popping up abruptly only after typing 4 characters.
+  3. Interactive Password Visibility: Added show/hide password toggle (`Eye`/`EyeOff`) to all password inputs across both login and sign-up flows.
+  4. Google 1-Click Auth on Both Views: Rendered Google authentication on both Login ("الدخول بحساب Google") and Sign-up ("التسجيل السريع بحساب Google") tabs.
+  5. Sign-Up Form Rigor & Feedback: Added "تأكيد كلمة المرور" (Confirm Password) with live mismatch alert, live password criteria indicators (8+ characters, letters + numbers), and legal agreement notice with links to Terms and Privacy.
+  6. Input Positioning & Guidance: Fixed badge padding to prevent overlapping with typed text; provided clear guidance when National ID or phone numbers are entered.
+- Preserved: All existing auth endpoints, session token handling, WhatsApp OTP flows, and role routes unchanged.
+- Evidence: Full production Vite build passed (`dist` generated cleanly in 2m 3s); 4GB TypeScript typecheck passed with zero errors; `smoke:global-student-journey` (13/13), `smoke:quiz-access` (19/19), `smoke:mock-exams` (11/11), `smoke:frontend` (34/34 routes passed); GitHub Actions CI passed 100% on PR #111 (`Admin + data integrity`, `Admin + schools + reports + payments`, `Auth + security`, `Cross-phase + handover`, `Core build + architecture`, `Student + assessment`, `Branch public UI — desktop + mobile`, `baseline-quality-gate`, `Vercel preview deployment`).
+
 ## Foundation Topics & Assessment/Mock Cards Visual Elevation
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `ea49be54` merged in `d4d49131` on `main`.

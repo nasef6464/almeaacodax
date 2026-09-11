@@ -184,7 +184,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                                     <h3 className="text-sm sm:text-base font-bold truncate">
-                                        <span className="inline-block px-2.5 py-0.5 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-800 group-hover:bg-indigo-50/80 group-hover:border-indigo-200 group-hover:text-indigo-900 transition-all shadow-2xs truncate">
+                                        <span className="inline-block px-3 py-0.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-100 font-extrabold group-hover:bg-indigo-100/90 group-hover:border-indigo-300 group-hover:text-indigo-900 transition-all shadow-2xs truncate">
                                             {test.title}
                                         </span>
                                     </h3>
