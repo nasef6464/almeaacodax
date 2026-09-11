@@ -1,5 +1,15 @@
 # ALMEAA — Codex Execution State
 
+## Card Title Capsules Vibrant Semantic Color System Elevation
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `9274c6d8` merged in `41c339ce` on `main` (PR #112).
+- Scope:
+  1. Foundation Topics (`LearningSection`): Upgraded topic title capsule background to a distinct, vibrant yet soft sky/blue tone (`bg-blue-50/90 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 text-blue-950 dark:text-blue-100 font-extrabold group-hover:bg-blue-100/90 group-hover:border-blue-300 group-hover:text-blue-900`) that makes topic names cleanly and prominently distinct from the white card surface.
+  2. Regular Tests & Practice Drills (`SimulatedTestExperience` & `Quizzes.tsx`): Upgraded title capsules to an academic soft indigo tone (`bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-100 font-extrabold`) for clear and comfortable reading.
+  3. Mock Exams (`GenericPathPage` & `MockExamStudentHub`): Upgraded title capsules to a warm, prestigious amber/gold tone (`bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-950 dark:text-amber-100 font-extrabold`) reflecting official simulation tests and awards.
+- Preserved: All API contracts, route structures, responsive layouts, and dark mode compliance.
+- Evidence: Full production Vite build passed (`dist` generated in 56s); `smoke:global-student-journey` (13/13), `smoke:mock-exams` (11/11), `smoke:quiz-access` (19/19) all passed; GitHub Actions CI passed 100% on PR #112 (`Admin + data integrity`, `Admin + schools + reports + payments`, `Auth + security`, `Cross-phase + handover`, `Core build + architecture`, `Student + assessment`, `Branch public UI — desktop + mobile`, `baseline-quality-gate`, `readiness`, `Vercel preview deployment`).
+
 ## Authentication Modal & Registration Flow Elevation
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commits: `0e0b8a1b`, `d454e27e`, `623f1ab8` merged in `f3c83038` on `main` (PR #111).

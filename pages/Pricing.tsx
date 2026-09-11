@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { CreditCard, ExternalLink, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import PricingComparisonMatrix, { EducationalStageKey } from '../components/PricingComparisonMatrix';
 
 const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
 
@@ -32,6 +33,50 @@ const Pricing: React.FC = () => {
   );
 
   const freeMembershipLink = user?.id && user.id !== 'guest' ? '/dashboard' : '/login';
+
+  const handleSelectTier = (tierKey: 'free' | 'standard' | 'pro', stageKey: EducationalStageKey) => {
+    if (tierKey === 'free') {
+      window.location.href = freeMembershipLink;
+      return;
+    }
+
+    const stageTitles: Record<EducationalStageKey, string> = {
+      high: 'المرحلة الثانوية',
+      middle: 'المرحلة المتوسطة',
+      primary: 'المرحلة الابتدائية',
+    };
+
+    const tierTitles = {
+      standard: 'باقة التأسيس والتدريب',
+      pro: 'الباقة الشاملة والتميز',
+    };
+
+    const prices: Record<EducationalStageKey, { standard: number; pro: number }> = {
+      high: { standard: 99, pro: 189 },
+      middle: { standard: 79, pro: 149 },
+      primary: { standard: 69, pro: 129 },
+    };
+
+    const selectedPrice = prices[stageKey][tierKey];
+    const title = `${tierTitles[tierKey]} - ${stageTitles[stageKey]}`;
+
+    const matchingCourse = courses.find(
+      (c) => c.isPackage && (c.title?.includes(stageTitles[stageKey]) || c.description?.includes(stageTitles[stageKey])),
+    ) || courses.find((c) => c.isPackage);
+
+    setSelectedMembership({
+      id: matchingCourse?.id || `package_${stageKey}_${tierKey}`,
+      packageId: matchingCourse?.id || `package_${stageKey}_${tierKey}`,
+      title,
+      price: selectedPrice,
+      currency: 'SAR',
+      purchaseType: 'package',
+      isPackage: true,
+      contentTypes: tierKey === 'pro' ? ['all'] : ['courses', 'foundation', 'banks'],
+      packageContentTypes: tierKey === 'pro' ? ['all'] : ['courses', 'foundation', 'banks'],
+      accessContext: `اشتراك ${title}`,
+    });
+  };
 
   return (
     <div data-testid="pricing-memberships-page" className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
@@ -100,12 +145,15 @@ const Pricing: React.FC = () => {
 
         {memberships.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm leading-7 text-amber-800">
-            لا توجد عضويات عامة منشورة من الإدارة حاليا. يستطيع الطالب استخدام العضوية المجانية أو شراء باقات المسارات من صفحات المسارات.
+            تستطيع استخدام العضوية المجانية أو اختيار الباقة المناسبة لمرحلتك من جدول المقارنة أدناه.
           </div>
         ) : null}
 
+        {/* Smart Age-Appropriate Comparison Matrix */}
+        <PricingComparisonMatrix onSelectTier={handleSelectTier} />
+
         {isAdmin ? (
-          <div className="mt-4 rounded-2xl border border-indigo-100 bg-white p-4 text-sm leading-7 text-gray-700 shadow-sm">
+          <div className="mt-10 rounded-2xl border border-indigo-100 bg-white p-4 text-sm leading-7 text-gray-700 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <span className="mt-1 rounded-full bg-indigo-50 p-2 text-indigo-600">
@@ -114,7 +162,7 @@ const Pricing: React.FC = () => {
                 <div>
                   <div className="font-black text-gray-900">إدارة العضويات العامة</div>
                   <div className="text-gray-600">
-                    العضويات العامة تظهر هنا بعد نشرها من تبويب العضويات. باقات المسارات والمدارس تبقى منفصلة في أماكنها.
+                    العضويات العامة تظهر هنا بعد نشرها من تبويب العضويات. باقات المسارات والمدارس تدار في أماكنها.
                   </div>
                 </div>
               </div>
