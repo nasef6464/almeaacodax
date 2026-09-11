@@ -154,9 +154,27 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [accessType, setAccessType] = useState<"free" | "paid" | "package">(
     (editingQuiz?.access?.type as "free" | "paid" | "package") ?? "free",
   );
-  const [slots, setSlots] = useState<Array<"tests" | "training" | "course">>(
-    (editingQuiz?.learningPlacements?.map((p) => p.slot as "tests" | "training" | "course")) ?? ["tests"],
-  );
+  const [price, setPrice] = useState<number>(editingQuiz?.access?.price ?? 0);
+  const [slots, setSlots] = useState<Array<"tests" | "training" | "course">>(() => {
+    if (editingQuiz?.learningPlacements?.length) {
+      return editingQuiz.learningPlacements.map((p) => p.slot as "tests" | "training" | "course");
+    }
+    if (kind === "drill") return ["training"];
+    if (kind === "test") return ["tests"];
+    return [];
+  });
+
+  // Sync default slots when switching kind during creation
+  useEffect(() => {
+    if (editingQuiz) return;
+    if (kind === "drill") {
+      setSlots(["training"]);
+    } else if (kind === "test") {
+      setSlots(["tests"]);
+    } else {
+      setSlots([]);
+    }
+  }, [kind, editingQuiz]);
 
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -323,7 +341,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           randomizeQuestions: shuffleQuestions,
           randomizeOptions: shuffleOptions,
         }, defaults),
-        access: { type: accessType === "package" ? "paid" : accessType } as any,
+        access: {
+          type: accessType === "package" ? "paid" : accessType,
+          ...(accessType === "paid" && price > 0 ? { price } : {}),
+        } as any,
         mode: editingQuiz?.mode ?? initialMode,
         skillIds: editingQuiz?.skillIds ?? initialSkillIds ?? [],
         targetGroupIds: targetGroupIdsRef.current,
@@ -331,14 +352,16 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         dueDate: dueDate || undefined,
         isPublished,
         showOnPlatform,
-        learningPlacements: slots.map((slot) => ({
-          pathId,
-          subjectId: effectiveQuizSubjectId,
-          slot,
-          accessType,
-          isVisible: true,
-          order: 0,
-        })),
+        learningPlacements: kind === "mock"
+          ? []
+          : slots.map((slot) => ({
+              pathId,
+              subjectId: effectiveQuizSubjectId,
+              slot,
+              accessType,
+              isVisible: true,
+              order: 0,
+            })),
         ...(kind === "mock"
           ? {
               mockExam: {
@@ -356,10 +379,16 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
             }
           : {
               // drill → يظهر في التدريبات فقط
-              // test  → يظهر في الاختبارات + التدريبات (both)
-              placement: kind === "drill" ? ("training" as const) : ("both" as const),
-              showInTraining: kind === "drill" || kind === "test",
-              showInMock: kind === "test",
+              // test  → يظهر بحسب مواضع العرض المختارة
+              placement: kind === "drill"
+                ? ("training" as const)
+                : slots.includes("training") && slots.includes("tests")
+                ? ("both" as const)
+                : slots.includes("training")
+                ? ("training" as const)
+                : ("mock" as const),
+              showInTraining: kind === "drill" || slots.includes("training"),
+              showInMock: kind === "test" && (slots.includes("tests") || slots.length === 0),
             }),
         approvalStatus: isTeacher ? "pending_review" : "approved",
       };
@@ -835,44 +864,220 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 </div>
               </div>
 
-              {/* Admin: access + slots */}
-              {isAdmin && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
-                      <Lock size={14} />نوع الوصول الافتراضي
-                    </label>
-                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-3 space-y-1">
-                      <p className="text-xs font-black text-indigo-800 flex items-center gap-1.5">
-                        💡 السعر يُحدَّد من مكان العرض
-                      </p>
-                      <p className="text-[11px] text-indigo-600 leading-relaxed">
-                        الاختبار محتوى مستقل. المجانية أو الدفع تُحدَّد عند إضافته لدورة أو إرساله لمجموعة أو طالب.
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
-                      <Globe size={14} />مواضع العرض
-                    </label>
-                    <div className="space-y-2">
-                      {[
-                        { id: "tests" as const, label: "صفحة الاختبارات" },
-                        { id: "training" as const, label: "التدريبات" },
-                        { id: "course" as const, label: "داخل دورة" },
-                      ].map(({ id, label }) => (
-                        <label key={id} className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" checked={slots.includes(id)}
-                            onChange={(e) => {
-                              if (e.target.checked) setSlots([...slots, id]);
-                              else setSlots(slots.filter((s) => s !== id));
-                            }}
-                            className="w-4 h-4 text-indigo-600 rounded border-gray-300" />
-                          <span className="text-xs font-bold text-gray-700">{label}</span>
+              {/* Placement & Access Controls */}
+              {(isAdmin || isSupervisor) && (
+                <div className="space-y-4">
+                  {kind === "mock" ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Mock Placement Card */}
+                      <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-purple-50/50 p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-black text-indigo-900 flex items-center gap-1.5">
+                            <Layers size={15} className="text-indigo-600" />
+                            موضع عرض الاختبار المحاكي
+                          </label>
+                          <span className="text-[10px] font-black bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">
+                            مخصص للمسار
+                          </span>
+                        </div>
+                        <p className="text-xs font-bold text-gray-800">
+                          بوابة وتبويب الاختبارات المحاكية (على مستوى المسار)
+                        </p>
+                        <p className="text-[11px] text-gray-600 leading-relaxed">
+                          الاختبار المحاكي له بيئة عرض مخصصة ومستقلة؛ يظهر تلقائياً في بوابة المحاكيات العامة (<code className="text-[10px] bg-white px-1 py-0.5 rounded text-indigo-700">/mock-exams</code>) وتبويب «اختبارات محاكية» داخل صفحة المسار ولوحة الطالب.
+                        </p>
+                      </div>
+
+                      {/* Mock Access Mode */}
+                      <div className="space-y-2">
+                        <label className="text-xs font-black text-gray-700 flex items-center gap-1.5">
+                          <Lock size={14} className="text-indigo-600" />
+                          نوع الوصول للاختبار المحاكي
                         </label>
-                      ))}
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setAccessType("free")}
+                            className={`p-3 rounded-xl border text-right transition-all ${
+                              accessType === "free"
+                                ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-200"
+                                : "border-gray-200 bg-white hover:bg-gray-50"
+                            }`}
+                          >
+                            <p className="text-xs font-black text-emerald-800">مفتوح مجاني</p>
+                            <p className="text-[10px] text-gray-500 mt-0.5">متاح لكافة الطلاب فوراً</p>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setAccessType("paid")}
+                            className={`p-3 rounded-xl border text-right transition-all ${
+                              accessType === "paid" || accessType === "package"
+                                ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-200"
+                                : "border-gray-200 bg-white hover:bg-gray-50"
+                            }`}
+                          >
+                            <p className="text-xs font-black text-amber-800">باقة المحاكيات (مدفوع)</p>
+                            <p className="text-[10px] text-gray-500 mt-0.5">يتطلب باقة المسار أو شراء</p>
+                          </button>
+                        </div>
+
+                        {(accessType === "paid" || accessType === "package") && (
+                          <div className="mt-2 pt-2 border-t border-gray-100">
+                            <label className="text-[11px] font-bold text-gray-600 mb-1 block">
+                              سعر الشراء المنفرد (ر.س) - اختياري
+                            </label>
+                            <input
+                              type="number"
+                              min={0}
+                              value={price || ""}
+                              onChange={(e) => setPrice(Number(e.target.value) || 0)}
+                              placeholder="0 (مضمن بالباقة فقط)"
+                              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-indigo-400 bg-white"
+                            />
+                            <p className="text-[10px] text-gray-400 mt-1">
+                              إذا تُرِك 0، يتاح الاختبار لمشتركي باقة المحاكيات للمسار فقط دون شراء منفرد.
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  ) : kind === "drill" ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Drill Access Note */}
+                      <div>
+                        <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
+                          <Lock size={14} className="text-indigo-600" />
+                          نوع الوصول للتدريب
+                        </label>
+                        <div className="rounded-xl border border-indigo-100 bg-indigo-50/70 p-3 space-y-1">
+                          <p className="text-xs font-black text-indigo-800 flex items-center gap-1.5">
+                            💡 تدريب مهاري حر ومستقل
+                          </p>
+                          <p className="text-[11px] text-indigo-600 leading-relaxed">
+                            التدريب مصمم لتمكين الطلاب من التمرن. عند إدراجه في التدريبات يكون متاحاً للطلاب، وعند ربطه بدورة يخضع لاشتراك الدورة.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Drill Slots */}
+                      <div>
+                        <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
+                          <Globe size={14} className="text-indigo-600" />
+                          مواضع العرض
+                        </label>
+                        <div className="space-y-2">
+                          {[
+                            { id: "training" as const, label: "قسم التدريبات (التدرب الحر)", desc: "يظهر في تبويب التدريبات للمادة والمسار" },
+                            { id: "course" as const, label: "داخل دورة تدريبية", desc: "يمكن إدراجه كتدريب بعد الدرس أو بنهاية الوحدة" },
+                          ].map(({ id, label, desc }) => (
+                            <label key={id} className="flex items-start gap-2.5 cursor-pointer p-2 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                              <input
+                                type="checkbox"
+                                checked={slots.includes(id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) setSlots([...slots, id]);
+                                  else setSlots(slots.filter((s) => s !== id));
+                                }}
+                                className="w-4 h-4 mt-0.5 text-indigo-600 rounded border-gray-300"
+                              />
+                              <div>
+                                <span className="text-xs font-bold text-gray-800 block">{label}</span>
+                                <span className="text-[10px] text-gray-400">{desc}</span>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* kind === 'test' */
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Test Access */}
+                      <div>
+                        <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
+                          <Lock size={14} className="text-indigo-600" />
+                          نوع الوصول
+                        </label>
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setAccessType("free")}
+                              className={`p-2.5 rounded-xl border text-right transition-all ${
+                                accessType === "free"
+                                  ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-200"
+                                  : "border-gray-200 bg-white hover:bg-gray-50"
+                              }`}
+                            >
+                              <p className="text-xs font-black text-emerald-800">مجاني</p>
+                              <p className="text-[10px] text-gray-500">متاح لجميع الطلاب</p>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setAccessType("paid")}
+                              className={`p-2.5 rounded-xl border text-right transition-all ${
+                                accessType === "paid" || accessType === "package"
+                                  ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-200"
+                                  : "border-gray-200 bg-white hover:bg-gray-50"
+                              }`}
+                            >
+                              <p className="text-xs font-black text-amber-800">باقة / مدفوع</p>
+                              <p className="text-[10px] text-gray-500">ضمن باقة الاختبارات</p>
+                            </button>
+                          </div>
+
+                          {(accessType === "paid" || accessType === "package") && (
+                            <div className="pt-1">
+                              <label className="text-[11px] font-bold text-gray-600 mb-1 block">
+                                سعر الشراء المنفرد (ر.س) - اختياري
+                              </label>
+                              <input
+                                type="number"
+                                min={0}
+                                value={price || ""}
+                                onChange={(e) => setPrice(Number(e.target.value) || 0)}
+                                placeholder="0 (مضمن بالباقة)"
+                                className="w-full px-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-indigo-400 bg-white"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Test Slots */}
+                      <div>
+                        <label className="text-xs font-black text-gray-700 mb-2 flex items-center gap-1.5">
+                          <Globe size={14} className="text-indigo-600" />
+                          مواضع العرض والاستدعاء
+                        </label>
+                        <div className="space-y-1.5">
+                          {[
+                            { id: "tests" as const, label: "صفحة الاختبارات العامة", desc: "تظهر في قائمة اختبارات المسار وتبويب الاختبارات" },
+                            { id: "training" as const, label: "التدريبات", desc: "إتاحة الاختبار أيضاً للتدرب الحر" },
+                            { id: "course" as const, label: "داخل دورة تعليمية", desc: "ربط الاختبار كاختبار تقييمي لدورة" },
+                          ].map(({ id, label, desc }) => (
+                            <label key={id} className="flex items-start gap-2.5 cursor-pointer p-2 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                              <input
+                                type="checkbox"
+                                checked={slots.includes(id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) setSlots([...slots, id]);
+                                  else setSlots(slots.filter((s) => s !== id));
+                                }}
+                                className="w-4 h-4 mt-0.5 text-indigo-600 rounded border-gray-300"
+                              />
+                              <div>
+                                <span className="text-xs font-bold text-gray-800 block">{label}</span>
+                                <span className="text-[10px] text-gray-400">{desc}</span>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
