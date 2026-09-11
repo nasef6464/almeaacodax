@@ -1,5 +1,26 @@
 # ALMEAA — Codex Execution State
 
+## Referral & Affiliate Ambassador Program and Daily 60s Speed Drill with Streaks
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `377fe9f2`.
+- Scope:
+  1. Referral & Affiliate Ambassador Program (نظام سفراء المئة والخصم بالمشاركة):
+     - Added `ReferralAmbassadorCard.tsx` and `ReferralAmbassadorModal.tsx` to the student overview dashboard.
+     - Each student receives a unique derived referral code (`ALM-XXXXX`) and direct invitation link with one-click copy.
+     - Direct social share integrations with WhatsApp and X (Twitter) pre-filled with engaging invitation copy.
+     - Automatic referral code recognition and welcome banner on the public pricing page (`/pricing?ref=CODE`) giving 10% discount on packages.
+     - Outlines transparent 3-step reward mechanism (10% discount for colleague + 10% wallet reward & free subscription extensions for the student ambassador).
+  2. Daily 60-Second Speed Drill & Streaks (تحدي الـ 60 ثانية اليومي والستريك):
+     - Added `DailySpeedDrillCard.tsx`, `DailySpeedDrillModal.tsx`, and curated speed drill questions bank `dailySpeedDrillData.ts`.
+     - 5-question speed drill targeting Qiyas GAT (القدرات: لفظي وكمي) and Tahsili (التحصيلي) with an active 60-second countdown timer per question and color alerts.
+     - Deterministic daily question picker (`getDailyQuestions`) providing a unified daily challenge for all students across the Kingdom.
+     - Gamified completion screen displaying score, time spent, +25 points reward, and automatic daily streak boost (`🔥 Daily Streak`).
+     - Tactical Solutions Review section revealing real-test speed tricks (طرق الحل السريع في أقل من 30 ثانية) for every question.
+  3. Architecture, Hotspot Budget & Contract Integrity:
+     - All 5 new modules are strictly under 400 lines (117 to 358 lines), preserving the repository hotspot budget limit at 83/83.
+     - Preserved all payment models, smoke tests, route definitions, and existing contracts intact.
+- Evidence: Full production Vite build passed (`dist` in 42s); 4GB TypeScript typecheck passed with zero errors; `smoke:global-student-journey` (13/13), `smoke:membership-pricing` (6/6), `smoke:payment-package` (11/11), `smoke:package-course-split` (7/7), and `smoke:seo` all passed.
+
 ## Smart Feature Comparison Matrix by Educational Stage (Elementary, Middle, High School)
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commits: `e7f8f109`, `cdb05c41` merged in `f546ec49` on `main` (PR #113).
