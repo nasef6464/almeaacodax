@@ -22,6 +22,18 @@ try {
   });
 
   const teacher = await context.newPage();
+  await teacher.addInitScript(() => {
+    sessionStorage.setItem("the-hundred-auth-profile", JSON.stringify({
+      id: "teacher-1",
+      email: "teacher@school.test",
+      displayName: "معلم تجريبي",
+      photoURL: "",
+      role: "teacher",
+      schoolId: "school-1",
+      groupIds: ["class-1"],
+      token: "mock-token",
+    }));
+  });
   await teacher.goto(`${baseUrl}/classroom/${sessionId}/teacher`, { waitUntil: "networkidle" });
   await assertText(teacher, "لوحة تحكم المعلم");
   await assertText(teacher, "ما ناتج ٢ + ٢؟");

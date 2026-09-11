@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { BookOpenCheck, CalendarClock, ChevronLeft, Presentation, School, UsersRound } from 'lucide-react';
 import { TeacherWorkspaceSwitcher } from '../components/teacher/TeacherWorkspaceSwitcher';
 import { useTeacherWorkspaceOptional } from '../components/teacher/TeacherWorkspaceContext';
+import { SmartClassroomReportsSection } from '../components/classroom/SmartClassroomReportsSection';
 
 export const SchoolTeacherDashboard: React.FC = () => {
   const workspace = useTeacherWorkspaceOptional();
@@ -57,6 +58,13 @@ export const SchoolTeacherDashboard: React.FC = () => {
             ))}
           </div>
         </section>
+
+        {/* Smart Classroom Persistent Reports & Archive */}
+        <SmartClassroomReportsSection
+          schoolId={selectedSchool.schoolId}
+          assignments={selectedSchool.assignments}
+          smartClassroomEnabled={selectedSchool.smartClassroomEnabled}
+        />
 
         <section className="mt-8 pb-10">
           <h2 className="text-xl font-black">اختبارات المدرسة الموجهة لفصولي</h2>
