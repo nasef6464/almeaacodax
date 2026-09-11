@@ -1,5 +1,16 @@
 # ALMEAA — Codex Execution State
 
+## Foundation Topics & Assessment/Mock Cards Visual Elevation
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `ea49be54` merged in `d4d49131` on `main`.
+- Scope:
+  1. Foundation Topics (`LearningSection`): Added a soft, non-dark, light capsule background under topic titles (`bg-slate-100/80 border border-slate-200/60 text-slate-800 group-hover:bg-indigo-50/80 group-hover:border-indigo-200 group-hover:text-indigo-900`) that cleanly distinguishes only the topic name without visual distraction or eye strain.
+  2. Mock Exams Page (`GenericPathPage`): Fixed top banner header padding (`pt-12 pb-8 sm:pt-16 sm:pb-11`) to prevent fixed navbar clipping; enhanced mock exam cards with soft title capsule badges, structured metadata tags with micro-icons (`FileQuestion`, `Clock`, `Layers`, `Sparkles`/`Lock`), and modern gradient CTA buttons.
+  3. Tests and Drills (`SimulatedTestExperience`): Added soft title capsule backgrounds, micro-icons for duration/questions/level, and modernized CTA buttons.
+  4. Platform and School Assessments (`Quizzes.tsx` & `MockExamStudentHub`): Standardized title capsule highlight and elevated card aesthetics across student views.
+- Preserved: All API contracts, mock exam data models, route structures, and permission boundaries intact.
+- Verification: `smoke:mock-exams` (11/11), `smoke:learning-placement-admin` (6/6), `smoke:global-student-journey` (13/13), `smoke:quiz-access` (19/19), `smoke:my-quizzes` (10/10), `smoke:student-learning-journey` (7/7), and full production Vite build passed.
+
 ## Product Goal G13 — Trainer Directory & Course Assignment Integrity
 
 - Status: `CLOSED / VERIFIED` on 2026-09-10. Runtime commit:
