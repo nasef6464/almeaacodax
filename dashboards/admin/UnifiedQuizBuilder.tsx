@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import {
   X, ChevronRight, ChevronLeft, BookOpen, Award, Settings,
   Check, Loader2, AlertCircle, FileText, Users, Calendar, Lock, Globe,
-  Clock, RotateCcw, Shuffle, Eye,
+  Clock, RotateCcw, Shuffle, Eye, Layers,
 } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { Quiz } from "../../types";
@@ -183,15 +183,15 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   useEffect(() => {
     if (kind !== "mock" || mockSections.length > 0) return;
     if (qiyasCategory === "qudrat") {
-      const quantSub = availableSubjects.find((s) => s.name.includes("كمي"));
-      const verbalSub = availableSubjects.find((s) => s.name.includes("لفظي"));
+      const quantSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("كمي"));
+      const verbalSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("لفظي"));
       setMockSections([
         { id: crypto.randomUUID(), title: "قسم الكمي", subjectId: quantSub?.id || "", questionIds: [], timeLimit: 30, order: 0, domain: "quantitative" },
         { id: crypto.randomUUID(), title: "قسم اللفظي", subjectId: verbalSub?.id || "", questionIds: [], timeLimit: 30, order: 1, domain: "verbal" },
       ]);
     } else {
-      const mathSub = availableSubjects.find((s) => s.name.includes("رياضيات"));
-      const sciSub = availableSubjects.find((s) => s.name.includes("علوم") || s.name.includes("فيزياء") || s.name.includes("أحياء") || s.name.includes("كيمياء"));
+      const mathSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("رياضيات"));
+      const sciSub = availableSubjects.find((s) => typeof s?.name === "string" && (s.name.includes("علوم") || s.name.includes("فيزياء") || s.name.includes("أحياء") || s.name.includes("كيمياء")));
       setMockSections([
         { id: crypto.randomUUID(), title: "الرياضيات", subjectId: mathSub?.id || "", questionIds: [], timeLimit: 30, order: 0, domain: "math" },
         { id: crypto.randomUUID(), title: "العلوم", subjectId: sciSub?.id || "", questionIds: [], timeLimit: 30, order: 1, domain: "general" },
