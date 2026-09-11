@@ -1671,15 +1671,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-gray-400 font-medium">الدقة:</span>
-                            <span className={`font-black ${
-                              usageMetric.accuracyPercent === null
-                                ? 'text-gray-900'
-                                : usageMetric.accuracyPercent >= 70
-                                  ? 'text-emerald-600'
-                                  : usageMetric.accuracyPercent >= 40
-                                    ? 'text-amber-600'
-                                    : 'text-red-600'
-                            }`}>
+                            <span className="text-gray-900 font-black">
                               {usageMetric.accuracyPercent === null ? 'لا توجد بيانات' : `${usageMetric.accuracyPercent}%`}
                             </span>
                           </div>

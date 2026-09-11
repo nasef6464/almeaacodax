@@ -636,7 +636,7 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
               </span>
               <button
                 type="button"
-                onClick={handleRefetch}
+                onClick={() => setRefreshKey((k) => k + 1)}
                 className="text-xs font-black text-indigo-700 hover:text-indigo-900 flex items-center gap-1 bg-white px-3 py-1 rounded-lg border border-rose-100 shadow-xs"
               >
                 <RefreshCw size={13} /> إعادة المحاولة
@@ -662,9 +662,12 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                   const cleanSnippet = textWithoutImg.replace(/<[^>]+>/g, "").trim();
                   const hasText = cleanSnippet.length > 0;
                   const questionNum = (manualPage - 1) * CLIENT_PAGE_SIZE + idx + 1;
-                  const skillName = q.skillId ? skillNameMap.get(q.skillId) : null;
+                  const anyQ = q as any;
+                  const skillId = anyQ.skillId || (q.skillIds && q.skillIds[0]);
+                  const skillName = skillId ? skillNameMap.get(skillId) : null;
                   const sectionName = q.sectionId ? sectionNameMap.get(q.sectionId) : null;
-                  const questionSubjectName = q.subjectId ? subjectNameMap.get(q.subjectId) : null;
+                  const subjectIdVal = anyQ.subjectId || q.subject;
+                  const questionSubjectName = subjectIdVal ? (subjectNameMap.get(subjectIdVal) || q.subject) : null;
 
                   return (
                     <div

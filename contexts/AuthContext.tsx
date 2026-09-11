@@ -51,7 +51,7 @@ interface AuthContextType {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<SessionUser>;
-  signUpWithEmail: (email: string, password: string) => Promise<SessionUser>;
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<SessionUser>;
   logout: () => Promise<void>;
   devSwitchRole?: (role: BackendRole) => void;
 }
@@ -394,9 +394,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sessionUser;
   };
 
-  const signUpWithEmail = async (email: string, password: string) => {
-    const inferredName = email.split('@')[0] || 'Student';
-    const response = (await api.register(inferredName, email, password)) as {
+  const signUpWithEmail = async (email: string, password: string, name?: string) => {
+    const finalName = name?.trim() || email.split('@')[0] || 'Student';
+    const response = (await api.register(finalName, email, password)) as {
       token?: string;
       user: BackendAuthUser;
     };
