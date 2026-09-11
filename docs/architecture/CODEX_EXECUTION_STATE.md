@@ -2,7 +2,7 @@
 
 ## Referral & Affiliate Ambassador Program and Daily 60s Speed Drill with Streaks
 
-- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `377fe9f2`.
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `377fe9f2` merged in `eeab7578` on `main` (PR #114).
 - Scope:
   1. Referral & Affiliate Ambassador Program (نظام سفراء المئة والخصم بالمشاركة):
      - Added `ReferralAmbassadorCard.tsx` and `ReferralAmbassadorModal.tsx` to the student overview dashboard.
