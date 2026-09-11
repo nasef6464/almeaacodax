@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import {
   X, ChevronRight, ChevronLeft, BookOpen, Award, Settings,
   Check, Loader2, AlertCircle, FileText, Users, Calendar, Lock, Globe,
-  Clock, RotateCcw, Shuffle, Eye, Layers,
+  Clock, RotateCcw, Shuffle, Eye, Layers, Zap,
 } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { Quiz } from "../../types";
@@ -111,6 +111,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [qiyasCategory, setQiyasCategory] = useState<"qudrat" | "tahsili">(
     editingQuiz?.mockExam?.qiyasCategory === "tahsili" ? "tahsili" : "qudrat",
   );
+  const [presentationMode, setPresentationMode] = useState<"qiyas_strict" | "flexible">(
+    editingQuiz?.mockExam?.presentationMode ?? "qiyas_strict",
+  );
   const [mockSections, setMockSections] = useState<MockSection[]>(
     editingQuiz?.mockExam?.sections?.map((s) => ({
       id: s.id,
@@ -198,6 +201,59 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
       ]);
     }
   }, [kind, qiyasCategory, availableSubjects]);
+
+  // ── Apply Qiyas Templates ──────────────────────────────────────────────────
+  const applyTemplate = (templateType: "qudrat_4" | "qudrat_5" | "tahsili_4" | "tahsili_5") => {
+    if (templateType === "qudrat_4" || templateType === "qudrat_5") {
+      setQiyasCategory("qudrat");
+      const quantSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("كمي"));
+      const verbalSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("لفظي"));
+      const count = templateType === "qudrat_4" ? 4 : 5;
+      const newSections: MockSection[] = Array.from({ length: count }, (_, i) => {
+        const isQuant = i % 2 === 0;
+        const sub = isQuant ? quantSub : verbalSub;
+        const domain = isQuant ? ("quantitative" as const) : ("verbal" as const);
+        const title = isQuant ? `القسم ${i + 1} (كمي)` : `القسم ${i + 1} (لفظي)`;
+        return {
+          id: crypto.randomUUID(),
+          title,
+          subjectId: sub?.id || "",
+          questionIds: [],
+          timeLimit: 25,
+          order: i,
+          domain,
+        };
+      });
+      setMockSections(newSections);
+    } else {
+      setQiyasCategory("tahsili");
+      const mathSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("رياضيات"));
+      const physSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("فيزياء"));
+      const chemSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("كيمياء"));
+      const bioSub = availableSubjects.find((s) => typeof s?.name === "string" && s.name.includes("أحياء"));
+      const count = templateType === "tahsili_4" ? 4 : 5;
+      const subs = [
+        { name: "رياضيات", sub: mathSub, domain: "math" as const },
+        { name: "فيزياء", sub: physSub, domain: "physics" as const },
+        { name: "كيمياء", sub: chemSub, domain: "chemistry" as const },
+        { name: "أحياء", sub: bioSub, domain: "biology" as const },
+        { name: "شامل تحصيلي", sub: mathSub || physSub || chemSub || bioSub, domain: "general" as const },
+      ];
+      const newSections: MockSection[] = Array.from({ length: count }, (_, i) => {
+        const item = subs[i % subs.length];
+        return {
+          id: crypto.randomUUID(),
+          title: `القسم ${i + 1} (${item.name})`,
+          subjectId: item.sub?.id || "",
+          questionIds: [],
+          timeLimit: 25,
+          order: i,
+          domain: item.domain,
+        };
+      });
+      setMockSections(newSections);
+    }
+  };
 
   // Fetch missing questions if editing an existing quiz
   useEffect(() => {
@@ -290,7 +346,8 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 pathId,
                 sections: mockSections,
                 qiyasCategory,
-                isStrictSectionLock: true,
+                isStrictSectionLock: presentationMode === "qiyas_strict",
+                presentationMode,
               } as any,
               placement: "mock" as const,
               // ضروري: isMockQuiz() يتحقق من showInMock لإظهار الاختبار في QuizzesManager
@@ -462,6 +519,108 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                   <span>
                     <strong>نطاق المحاكي الشامل:</strong> الاختبار المحاكي يعمل على مستوى المسار بالكامل. يمكنك تخصيص مادة لكل قسم أدناه، أو تصفية واختيار مادة كل قسم مباشرة في خطوة الأسئلة (مثل أقسام الكمي واللفظي).
                   </span>
+                </div>
+              )}
+
+              {/* قوالب قياس القياسية السريعة (اختياري) */}
+              {kind === "mock" && (
+                <div className="bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200/80 rounded-2xl p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Zap size={18} className="text-violet-600 shrink-0" />
+                      <span className="text-xs font-black text-violet-950">قوالب قياس القياسية السريعة (اختياري)</span>
+                    </div>
+                    <span className="text-[11px] text-violet-700 bg-white px-2.5 py-0.5 rounded-full border border-violet-200 font-bold">
+                      بنقرة واحدة
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-violet-700/90 leading-relaxed">
+                    توليد هيكل أقسام اختبار قياس الرسمي تلقائياً بمدة 25 دقيقة لكل قسم وتوزيع المواد المقترحة، ويمكنك تعديلها بحرية بعد التطبيق:
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button
+                      type="button"
+                      data-testid="apply-template-qudrat-4"
+                      onClick={() => applyTemplate("qudrat_4")}
+                      className="p-2.5 bg-white hover:bg-violet-600 hover:text-white border border-violet-200 rounded-xl text-right transition-all group shadow-xs hover:shadow-sm"
+                    >
+                      <div className="text-xs font-black text-gray-800 group-hover:text-white">قدرات (4 أقسام)</div>
+                      <div className="text-[10px] text-gray-500 group-hover:text-violet-100 mt-0.5">4 × 25 دقيقة (كمي ولفظي)</div>
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="apply-template-qudrat-5"
+                      onClick={() => applyTemplate("qudrat_5")}
+                      className="p-2.5 bg-white hover:bg-violet-600 hover:text-white border border-violet-200 rounded-xl text-right transition-all group shadow-xs hover:shadow-sm"
+                    >
+                      <div className="text-xs font-black text-gray-800 group-hover:text-white">قدرات (5 أقسام)</div>
+                      <div className="text-[10px] text-gray-500 group-hover:text-violet-100 mt-0.5">5 × 25 دقيقة (المعيار الكامل)</div>
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="apply-template-tahsili-4"
+                      onClick={() => applyTemplate("tahsili_4")}
+                      className="p-2.5 bg-white hover:bg-violet-600 hover:text-white border border-violet-200 rounded-xl text-right transition-all group shadow-xs hover:shadow-sm"
+                    >
+                      <div className="text-xs font-black text-gray-800 group-hover:text-white">تحصيلي (4 أقسام)</div>
+                      <div className="text-[10px] text-gray-500 group-hover:text-violet-100 mt-0.5">4 × 25 دقيقة (المواد الأربعة)</div>
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="apply-template-tahsili-5"
+                      onClick={() => applyTemplate("tahsili_5")}
+                      className="p-2.5 bg-white hover:bg-violet-600 hover:text-white border border-violet-200 rounded-xl text-right transition-all group shadow-xs hover:shadow-sm"
+                    >
+                      <div className="text-xs font-black text-gray-800 group-hover:text-white">تحصيلي (5 أقسام)</div>
+                      <div className="text-[10px] text-gray-500 group-hover:text-violet-100 mt-0.5">5 × 25 دقيقة (المعيار الكامل)</div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* نمط تجربة الاختبار للطالب */}
+              {kind === "mock" && (
+                <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-2.5">
+                  <label className="text-xs font-black text-gray-800 block">نمط تجربة الاختبار للطالب</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <button
+                      type="button"
+                      data-testid="presentation-mode-qiyas-strict"
+                      onClick={() => setPresentationMode("qiyas_strict")}
+                      className={`p-3 rounded-xl border text-right transition-all flex flex-col gap-1 ${
+                        presentationMode === "qiyas_strict"
+                          ? "border-violet-600 bg-violet-50/70 text-violet-950 ring-2 ring-violet-500/20"
+                          : "border-gray-200 hover:border-gray-300 text-gray-700 bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black">محاكي قياس الصارم (CBT المعياري)</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-200/60 text-violet-800 font-bold">معياري</span>
+                      </div>
+                      <p className="text-[11px] text-gray-500 leading-relaxed">
+                        إغلاق صارم للقسم بعد انتهاء وقته، منع العودة للأقسام السابقة، لوحة تنقل محصورة فقط بأسئلة القسم الحالي.
+                      </p>
+                    </button>
+
+                    <button
+                      type="button"
+                      data-testid="presentation-mode-flexible"
+                      onClick={() => setPresentationMode("flexible")}
+                      className={`p-3 rounded-xl border text-right transition-all flex flex-col gap-1 ${
+                        presentationMode === "flexible"
+                          ? "border-indigo-600 bg-indigo-50/70 text-indigo-950 ring-2 ring-indigo-500/20"
+                          : "border-gray-200 hover:border-gray-300 text-gray-700 bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black">النمط المرن (حر)</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 font-bold">تدريبي مرن</span>
+                      </div>
+                      <p className="text-[11px] text-gray-500 leading-relaxed">
+                        يتيح للطالب التنقل بحرية بين كافة الأقسام والأسئلة في أي وقت دون قفل صارم على القسم الحالي.
+                      </p>
+                    </button>
+                  </div>
                 </div>
               )}
 
