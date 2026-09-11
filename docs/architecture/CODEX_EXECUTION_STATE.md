@@ -1,5 +1,31 @@
 # ALMEAA — Codex Execution State
 
+## Smart Classroom Live Radar, Student Floating Modal, Challenge Questions & Session Report Archive
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `77cae318` merged in `ac75ae34` on `main` (PR #115).
+- Scope:
+  1. Student Auto Pop-up Floating Modal (`SmartClassroomFloatingWidget.tsx`):
+     - Added global floating dock and dialog to `MainLayout.tsx` for fast PIN entry (`000000`) and session linking.
+     - Real-time listening via `useClassroomRealtime` with smart fallback polling.
+     - Automatic Modal Pop-up: When teacher publishes a question, the modal pops up automatically over the student's screen on tablets and desktops without requiring any student interaction.
+     - High-urgency styling with golden/purple glowing gradient when question is marked as a Challenge Question ("⚡ سؤال تحدي ذكي").
+     - Responsive touch-friendly option buttons (أ، ب، ج، د), fast submission, and instant submission feedback.
+  2. Teacher Console & Live Analytics Radar (`ClassroomTeacherConsole.tsx` & `ClassroomTeacherLiveRadar.tsx`):
+     - Integrated live response radar displaying submitted answers count, total roster, and accuracy rate.
+     - Live option distribution breakdown bar chart (أ، ب، ج، د) with real-time percentage indicators.
+     - Automatic Distractor & Common Misconception Detection (كشف المشتت الشائع) revealing the most chosen incorrect option with an educational tip for whiteboard explanation.
+     - 1-click toggle for Challenge Questions ("⚡ تعيين كسؤال تحدي").
+     - Prominent 6-digit PIN display with copy button and direct launch link for the interactive whiteboard / projector view (`/classroom/:sessionId/projector`).
+  3. School Teacher Dashboard Session History & Report Archive (`SmartClassroomReportsSection.tsx` & `SchoolTeacherDashboard.tsx`):
+     - Dedicated Smart Classroom Reports section added to `SchoolTeacherDashboard.tsx`.
+     - Displays total sessions, student participants, total answers, and overall class accuracy rate.
+     - Interactive session cards and detailed modal report view with per-question statistics, roster attendance, Excel export, and PDF print.
+  4. Architectural & Contract Integrity:
+     - All 3 new components and modified surfaces strictly under 400 lines (83 to 378 lines), respecting the progressive budget hotspot limit (83/83).
+     - Preserved all 12 smart classroom G2 checks in `smoke-smart-classroom-g2-contract.mjs`, all 11 G0 policy checks in `smoke-smart-classroom-g0-contract.mjs`, and Playwright surface audit in `live-smart-classroom-surfaces-audit.mjs`.
+     - Preserved all 4 unowned files untouched and unstaged.
+- Evidence: Full production Vite build passed (`dist` generated in 41s); TypeScript typecheck passed with zero errors on both server and client; `smoke:smart-classroom-g2-contract` (12/12), `smoke:smart-classroom-g0` (11/11), and `live-smart-classroom-surfaces-audit` all passed; GitHub Actions CI passed 100% on PR #115 across all workflows; real Playwright browser screenshots captured and documented in `walkthrough.md`.
+
 ## Referral & Affiliate Ambassador Program and Daily 60s Speed Drill with Streaks
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `377fe9f2` merged in `eeab7578` on `main` (PR #114).

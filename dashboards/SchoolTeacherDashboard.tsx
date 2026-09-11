@@ -1,13 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpenCheck, CalendarClock, ChevronLeft, Presentation, School, UsersRound } from 'lucide-react';
+import { BookOpenCheck, CalendarClock, ChevronLeft, Presentation, School, Trophy, UsersRound } from 'lucide-react';
 import { TeacherWorkspaceSwitcher } from '../components/teacher/TeacherWorkspaceSwitcher';
 import { useTeacherWorkspaceOptional } from '../components/teacher/TeacherWorkspaceContext';
 import { SmartClassroomReportsSection } from '../components/classroom/SmartClassroomReportsSection';
+import { ClassSkillGapsRadar } from '../components/classroom/ClassSkillGapsRadar';
+import { StudentAppreciationCertificateModal } from '../components/classroom/StudentAppreciationCertificateModal';
 
 export const SchoolTeacherDashboard: React.FC = () => {
   const workspace = useTeacherWorkspaceOptional();
   const [selectedSchoolId, setSelectedSchoolId] = useState(workspace?.schools[0]?.schoolId || '');
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+
   const selectedSchool = useMemo(
     () => workspace?.schools.find((school) => school.schoolId === selectedSchoolId) || workspace?.schools[0],
     [selectedSchoolId, workspace],
@@ -24,14 +28,24 @@ export const SchoolTeacherDashboard: React.FC = () => {
               <h1 className="mt-1 text-3xl font-black">لوحة معلم المدرسة</h1>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-indigo-100">فصولك وتكليفاتك واختبارات المدرسة والفصل الذكي، وفق الإسناد المعتمد فقط.</p>
             </div>
-            {workspace.schools.length > 1 && (
-              <label className="text-sm font-bold">
-                المدرسة
-                <select value={selectedSchool.schoolId} onChange={(event) => setSelectedSchoolId(event.target.value)} className="mt-2 block w-full min-w-56 rounded-xl border-0 bg-white px-4 py-3 text-slate-900">
-                  {workspace.schools.map((school) => <option key={school.schoolId} value={school.schoolId}>{school.schoolName}</option>)}
-                </select>
-              </label>
-            )}
+            
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCertificateModal(true)}
+                className="flex items-center justify-center gap-2 rounded-2xl bg-amber-500 hover:bg-amber-600 px-4 py-3 text-sm font-black text-white shadow-md transition-all active:scale-95"
+              >
+                <Trophy size={18} /> إصدار شهادة تقدير للطلاب
+              </button>
+
+              {workspace.schools.length > 1 && (
+                <label className="text-sm font-bold">
+                  <select value={selectedSchool.schoolId} onChange={(event) => setSelectedSchoolId(event.target.value)} className="block w-full min-w-48 rounded-xl border-0 bg-white px-4 py-3 text-slate-900 font-bold">
+                    {workspace.schools.map((school) => <option key={school.schoolId} value={school.schoolId}>{school.schoolName}</option>)}
+                  </select>
+                </label>
+              )}
+            </div>
           </div>
           <TeacherWorkspaceSwitcher />
         </header>
@@ -59,6 +73,12 @@ export const SchoolTeacherDashboard: React.FC = () => {
           </div>
         </section>
 
+        {/* Class Skill Gaps Heatmap / Radar */}
+        <ClassSkillGapsRadar
+          schoolId={selectedSchool.schoolId}
+          assignments={selectedSchool.assignments}
+        />
+
         {/* Smart Classroom Persistent Reports & Archive */}
         <SmartClassroomReportsSection
           schoolId={selectedSchool.schoolId}
@@ -77,6 +97,14 @@ export const SchoolTeacherDashboard: React.FC = () => {
             ))}
           </div>
         </section>
+
+        {/* Student Appreciation Certificate Generator Modal */}
+        <StudentAppreciationCertificateModal
+          isOpen={showCertificateModal}
+          onClose={() => setShowCertificateModal(false)}
+          defaultSchoolName={selectedSchool.schoolName}
+          defaultClassName={selectedSchool.assignments[0]?.className || 'الصف الثالث الثانوي (أ)'}
+        />
       </div>
     </main>
   );
