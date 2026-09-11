@@ -82,9 +82,9 @@ const Pricing: React.FC = () => {
     <div data-testid="pricing-memberships-page" className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
-          <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">عضويات وباقات المنصة</h1>
+          <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">عضويات المنصة</h1>
           <p className="mt-3 text-sm text-gray-600 sm:text-base">
-            اختر باقتك المفضلة أو قارن المزايا بدقة حسب مرحلتك الدراسية (ابتدائي، متوسط، ثانوي).
+            العضوية هنا اشتراك عام على مستوى المنصة. باقات المسارات والمدارس تدار بشكل مستقل داخل المسارات والمدارس.
           </p>
         </div>
 
