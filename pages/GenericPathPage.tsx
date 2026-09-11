@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
-import { Award, CheckCircle2, ChevronRight, CreditCard, GraduationCap, LayoutGrid, Lock, Unlock } from 'lucide-react';
+import { Award, CheckCircle2, ChevronLeft, ChevronRight, Clock, CreditCard, FileQuestion, GraduationCap, Layers, LayoutGrid, Lock, Sparkles, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { normalizePathId } from '../utils/normalizePathId';
@@ -1163,7 +1163,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
 
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className="text-white py-7 sm:py-9 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                <header className="text-white pt-12 pb-8 sm:pt-16 sm:pb-11 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-6 transition-colors">
                             <ChevronRight size={20} /> عودة للمسار
@@ -1206,26 +1206,44 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                     .slice(0, 4)
                                     .join('، ');
                                 return (
-                                    <Card key={quiz.id} className="p-5 border border-gray-100 shadow-sm">
+                                    <Card key={quiz.id} className="p-5 sm:p-6 border border-slate-200/90 rounded-2xl shadow-xs hover:border-indigo-300 hover:shadow-md transition-all bg-white">
                                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-                                                    <Award size={24} />
+                                            <div className="flex items-start sm:items-center gap-4">
+                                                <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 shadow-2xs">
+                                                    <Award size={26} />
                                                 </div>
                                                 <div>
-                                                    <h2 className="text-lg font-black text-gray-900">{quiz.title}</h2>
-                                                    <div className="mt-2 flex flex-wrap gap-2 text-xs font-bold text-gray-500">
-                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamQuestionCount(quiz)} سؤال</span>
-                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamTimeLimit(quiz)} دقيقة</span>
-                                                        <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{sectionCount > 1 ? `${sectionCount} أقسام` : (quizSubject?.name || 'مسار كامل')}</span>
-                                                        <span className={`rounded-full px-3 py-1 ${isPaidMockExam ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                                                    <h2 className="text-base sm:text-lg font-black leading-snug">
+                                                        <span className="inline-block px-3 py-1 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-900 shadow-2xs">
+                                                            {quiz.title}
+                                                        </span>
+                                                    </h2>
+                                                    <div className="mt-2.5 flex flex-wrap gap-2 text-xs font-bold text-slate-600">
+                                                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100/90 border border-slate-200/60 px-2.5 py-1 text-slate-700">
+                                                            <FileQuestion size={13} className="text-slate-500" />
+                                                            {getMockExamQuestionCount(quiz)} سؤال
+                                                        </span>
+                                                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100/90 border border-slate-200/60 px-2.5 py-1 text-slate-700">
+                                                            <Clock size={13} className="text-slate-500" />
+                                                            {getMockExamTimeLimit(quiz)} دقيقة
+                                                        </span>
+                                                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 border border-indigo-100 px-2.5 py-1 text-indigo-700 font-black">
+                                                            <Layers size={13} className="text-indigo-500" />
+                                                            {sectionCount > 1 ? `${sectionCount} أقسام` : (quizSubject?.name || 'مسار كامل')}
+                                                        </span>
+                                                        <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-black border ${
+                                                            isPaidMockExam
+                                                                ? 'bg-amber-50 text-amber-800 border-amber-200/80'
+                                                                : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
+                                                        }`}>
+                                                            {isPaidMockExam ? <Lock size={12} className="text-amber-600" /> : <Sparkles size={12} className="text-emerald-600" />}
                                                             {isPaidMockExam ? `ضمن باقة الاختبارات${quiz.access?.price ? ` • ${quiz.access.price} ر.س` : ''}` : 'مفتوح مجاني'}
                                                         </span>
                                                     </div>
                                                     {sectionSummary ? (
-                                                        <div className="mt-2 flex flex-wrap gap-1.5">
+                                                        <div className="mt-2.5 flex flex-wrap gap-1.5">
                                                             {sectionSummary.split('، ').map((sectionName) => (
-                                                                <span key={`${quiz.id}-${sectionName}`} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-gray-500 ring-1 ring-gray-100">
+                                                                <span key={`${quiz.id}-${sectionName}`} className="rounded-lg bg-slate-50 px-2.5 py-1 text-[11px] font-bold text-slate-600 border border-slate-200/50">
                                                                     {sectionName}
                                                                 </span>
                                                             ))}
@@ -1233,21 +1251,25 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                     ) : null}
                                                 </div>
                                             </div>
-                                            {hasAccessToMockExam ? (
-                                                <button
-                                                    onClick={() => navigate(buildQuizRouteWithContext(quiz.id, { returnTo: `/category/${path.id}?tab=mock-exams`, source: 'mock-exam' }))}
-                                                    className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
-                                                >
-                                                    ابدأ الاختبار
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => openMockExamPayment(quiz)}
-                                                    className="rounded-xl bg-amber-500 px-5 py-3 text-sm font-black text-white transition hover:bg-amber-600"
-                                                >
-                                                    فتح بالباقة
-                                                </button>
-                                            )}
+                                            <div className="shrink-0 flex items-center gap-2 self-end md:self-center">
+                                                {hasAccessToMockExam ? (
+                                                    <button
+                                                        onClick={() => navigate(buildQuizRouteWithContext(quiz.id, { returnTo: `/category/${path.id}?tab=mock-exams`, source: 'mock-exam' }))}
+                                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 px-6 py-3 text-sm font-black text-white shadow-xs hover:shadow-md transition-all cursor-pointer"
+                                                    >
+                                                        <span>ابدأ الاختبار</span>
+                                                        <ChevronLeft size={16} />
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => openMockExamPayment(quiz)}
+                                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-6 py-3 text-sm font-black text-white shadow-xs hover:shadow-md transition-all cursor-pointer"
+                                                    >
+                                                        <Lock size={14} />
+                                                        <span>فتح بالباقة</span>
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </Card>
                                 );

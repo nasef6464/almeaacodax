@@ -182,8 +182,12 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                 {test.isUnavailable ? <AlertTriangle size={20} /> : test.isLocked ? <Lock size={20} /> : <Unlock size={20} />}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <h3 className="font-bold text-sm sm:text-base text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{test.title}</h3>
+                                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                                    <h3 className="text-sm sm:text-base font-bold truncate">
+                                        <span className="inline-block px-2.5 py-0.5 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-800 group-hover:bg-indigo-50/80 group-hover:border-indigo-200 group-hover:text-indigo-900 transition-all shadow-2xs truncate">
+                                            {test.title}
+                                        </span>
+                                    </h3>
                                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.isUnavailable ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-100' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-100' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'}`}>
                                         {test.isUnavailable ? (test.unavailableLabel || 'يحتاج مراجعة') : test.isLocked ? 'ضمن باقة' : 'مفتوح الآن'}
                                     </span>
@@ -191,20 +195,26 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                         {test.type === 'trial' ? 'تجريبي' : test.type === 'comprehensive' ? 'شامل' : test.type === 'bank' ? 'بنك أسئلة' : 'محاكي'}
                                     </span>
                                 </div>
-                                <div className="flex flex-wrap gap-3 text-xs text-gray-500 font-medium">
-                                    <span className="flex items-center gap-1"><Clock size={13} /> {test.duration}</span>
-                                    <span className="flex items-center gap-1"><CheckCircle size={13} /> {test.questions} سؤال</span>
-                                    <span className="flex items-center gap-1"><Star size={13} /> {test.level}</span>
+                                <div className="flex flex-wrap gap-2 text-xs text-slate-600 font-bold mt-1">
+                                    <span className="inline-flex items-center gap-1 rounded-lg bg-slate-50 border border-slate-200/60 px-2 py-0.5 text-slate-700">
+                                        <Clock size={12} className="text-slate-500" /> {test.duration}
+                                    </span>
+                                    <span className="inline-flex items-center gap-1 rounded-lg bg-slate-50 border border-slate-200/60 px-2 py-0.5 text-slate-700">
+                                        <CheckCircle size={12} className="text-slate-500" /> {test.questions} سؤال
+                                    </span>
+                                    <span className="inline-flex items-center gap-1 rounded-lg bg-slate-50 border border-slate-200/60 px-2 py-0.5 text-slate-700">
+                                        <Star size={12} className="text-amber-500" /> {test.level}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <button
                             type="button"
                             disabled={Boolean(test.isUnavailable)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-center shadow-xs ${test.isUnavailable ? 'cursor-not-allowed bg-gray-100 text-gray-500' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
+                            className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-center shadow-xs cursor-pointer ${test.isUnavailable ? 'cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-200' : test.isLocked ? 'bg-amber-50 text-amber-800 border border-amber-200/80 hover:bg-amber-100' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-2xs hover:shadow-xs'}`}
                         >
                             <span>{test.isUnavailable ? 'غير جاهز' : test.isLocked ? 'فتح الباقة' : listAction}</span>
-                            <ChevronRight size={16} className="transform rotate-180" />
+                            <ChevronRight size={15} className="transform rotate-180" />
                         </button>
                     </div>
                 ))}
