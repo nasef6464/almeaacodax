@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from 'react';
 import { Header } from './Header';
 import { Phone } from 'lucide-react';
@@ -6,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
 
 const ChatWidget = React.lazy(() => import('./ChatWidget').then((module) => ({ default: module.ChatWidget })));
+const SmartClassroomFloatingWidget = React.lazy(() => import('./classroom/SmartClassroomFloatingWidget').then((m) => ({ default: m.SmartClassroomFloatingWidget })));
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -78,6 +78,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             <React.Suspense fallback={null}>
                 <ChatWidget />
+            </React.Suspense>
+
+            <React.Suspense fallback={null}>
+                <SmartClassroomFloatingWidget />
             </React.Suspense>
 
             {showFloatingContact && whatsappHref ? (
