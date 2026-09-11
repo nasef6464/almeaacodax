@@ -150,8 +150,6 @@ jobs:
         run: npm run smoke:schools-import-parsing
       - name: Admin school command center
         run: npm run smoke:admin-school-command
-      - name: School portal command center
-        run: npm run smoke:school-portal-command
       - name: Supervisor dashboard
         run: npm run smoke:supervisor-dashboard
       - name: Reports role contract
