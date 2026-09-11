@@ -24,6 +24,8 @@ import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
 import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';
 import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
+import { DailySpeedDrillCard } from '../components/DailySpeedDrillCard';
+import { ReferralAmbassadorCard } from '../components/ReferralAmbassadorCard';
 
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
@@ -1760,7 +1762,7 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes, addActivity } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     
     const [copiedCode, setCopiedCode] = useState(false);
@@ -1860,6 +1862,26 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
               window.location.assign(`/quiz/${quizId}`);
             }}
           />
+        )}
+
+        {/* Daily 60s Speed Drill & Referral Ambassador Program */}
+        {user.role === Role.STUDENT && (
+          <div className="space-y-3">
+            <DailySpeedDrillCard
+              userId={user.id}
+              onDrillCompleted={(record) => {
+                addActivity({
+                  type: 'quiz_complete',
+                  title: `أكمل تحدي الـ 60 ثانية اليومي بنتيجة ${record.score}/5 ⚡`,
+                  link: '/dashboard',
+                });
+              }}
+            />
+            <ReferralAmbassadorCard
+              userId={user.id}
+              userName={user.name}
+            />
+          </div>
         )}
 
         {/* Student Tools: Parent Code & Notifications */}
