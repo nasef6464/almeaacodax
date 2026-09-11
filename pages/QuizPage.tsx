@@ -100,6 +100,51 @@ const supplementMissingQuizQuestions = (
   return [...loadedQuestions, ...contextualSlice, ...genericFallbackQuestions];
 };
 
+const extractPassage = (question?: Question | null): { passageText: string | null; questionText: string } => {
+  if (!question) return { passageText: null, questionText: '' };
+
+  if (question.passage && question.passage.trim().length > 0) {
+    return { passageText: question.passage.trim(), questionText: question.text || '' };
+  }
+
+  const raw = question.text || '';
+
+  // 1. Check for <blockquote>...</blockquote>
+  const blockquoteMatch = raw.match(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/i);
+  if (blockquoteMatch) {
+    const passage = blockquoteMatch[1].trim();
+    const remaining = raw.replace(blockquoteMatch[0], '').trim();
+    return { passageText: passage, questionText: remaining || raw };
+  }
+
+  // 2. Check for <div class="passage">...</div> or similar
+  const passageDivMatch = raw.match(/<div[^>]*class=["'][^"']*(?:passage|reading-text|reading-passage)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
+  if (passageDivMatch) {
+    const passage = passageDivMatch[1].trim();
+    const remaining = raw.replace(passageDivMatch[0], '').trim();
+    return { passageText: passage, questionText: remaining || raw };
+  }
+
+  // 3. Check for [قطعة: ...] or [النص: ...]
+  const bracketMatch = raw.match(/\[(?:قطعة|النص|القطعة)\s*:\s*([\s\S]*?)\]/i);
+  if (bracketMatch) {
+    const passage = bracketMatch[1].trim();
+    const remaining = raw.replace(bracketMatch[0], '').trim();
+    return { passageText: passage, questionText: remaining || raw };
+  }
+
+  // 4. Check for "القطعة:" or "النص القرائي:" prefix preceding "السؤال:"
+  const textPrefixMatch = raw.match(/^(?:القطعة|النص|النص القرائي|قطعة استيعاب المقروء)\s*:\s*([\s\S]*?)(?:(?:<br\s*\/?>|\n)+\s*(?:السؤال\s*:|المطلوب\s*:)\s*([\s\S]*)|$)/i);
+  if (textPrefixMatch && textPrefixMatch[1]?.trim()) {
+    return {
+      passageText: textPrefixMatch[1].trim(),
+      questionText: textPrefixMatch[2]?.trim() || raw,
+    };
+  }
+
+  return { passageText: null, questionText: raw };
+};
+
 export const QuizPage: React.FC = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
@@ -157,6 +202,8 @@ export const QuizPage: React.FC = () => {
   const [questionTimeSpent, setQuestionTimeSpent] = useState<Record<string, number>>({});
   // Sections that have been locked (time expired or manually advanced)
   const [lockedSectionIds, setLockedSectionIds] = useState<Set<string>>(new Set());
+  const [showSectionConfirmModal, setShowSectionConfirmModal] = useState(false);
+  const [passageFontSize, setPassageFontSize] = useState<'sm' | 'base' | 'lg'>('base');
   const activeQuizLoadKeyRef = useRef('');
   const autoSubmitTriggeredRef = useRef(false);
   const [isNightMode, setIsNightMode] = useState(() => {
@@ -589,6 +636,13 @@ export const QuizPage: React.FC = () => {
       mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
     [currentQuestionIndex, mockExamSectionSummaries],
   );
+  const isStrictQiyasMode = useMemo(() => {
+    return Boolean(
+      quiz?.mockExam?.enabled &&
+      quiz.mockExam.presentationMode !== 'flexible' &&
+      quiz.mockExam.isStrictSectionLock !== false
+    );
+  }, [quiz]);
 
   // \u2500\u2500 Global exam timer \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   useEffect(() => {
@@ -653,6 +707,10 @@ export const QuizPage: React.FC = () => {
   }, [sectionTimeLeft]);
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
+  const { passageText, questionText } = useMemo(
+    () => extractPassage(currentQuestion),
+    [currentQuestion],
+  );
 
   const correctAnswersCount = useMemo(
     () =>
@@ -835,8 +893,43 @@ export const QuizPage: React.FC = () => {
     return getQuizQuestionMapButtonClass('unanswered', isNightMode);
   };
 
+  const handleConfirmSectionAdvance = () => {
+    if (!currentMockExamSection) {
+      setShowSectionConfirmModal(false);
+      return;
+    }
+    const currentId = currentMockExamSection.id;
+    setLockedSectionIds((prev) => new Set([...prev, currentId]));
+    setShowSectionConfirmModal(false);
+
+    const currentIdx = mockExamSectionSummaries.findIndex((s) => s.id === currentId);
+    const nextSection = mockExamSectionSummaries.slice(currentIdx + 1).find((s) => !lockedSectionIds.has(s.id) && s.id !== currentId);
+    if (nextSection && nextSection.firstQuestionIndex >= 0) {
+      setCurrentQuestionIndex(nextSection.firstQuestionIndex);
+    } else {
+      setShowFinishDialog(true);
+    }
+  };
+
   const handleNext = () => {
     if (isNextBlocked) return;
+
+    if (isStrictQiyasMode && currentMockExamSection) {
+      const isLastQuestionOfSection =
+        currentQuestionIndex === currentMockExamSection.questionIndexes[currentMockExamSection.questionIndexes.length - 1];
+      if (isLastQuestionOfSection) {
+        const currentSecIdx = mockExamSectionSummaries.findIndex((s) => s.id === currentMockExamSection.id);
+        const hasNextSection = mockExamSectionSummaries.slice(currentSecIdx + 1).some((s) => !lockedSectionIds.has(s.id));
+        if (hasNextSection) {
+          setShowSectionConfirmModal(true);
+          return;
+        } else {
+          setShowFinishDialog(true);
+          return;
+        }
+      }
+    }
+
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < quizQuestions.length) {
       // Block crossing into a locked section
@@ -862,6 +955,8 @@ export const QuizPage: React.FC = () => {
     // Block going back into a locked section
     const targetSection = mockExamSectionSummaries.find((s) => s.questionIndexes.includes(prevIndex));
     if (targetSection && lockedSectionIds.has(targetSection.id)) return;
+    // In strict Qiyas mode, prevent navigating backward out of current section
+    if (isStrictQiyasMode && currentMockExamSection && targetSection?.id !== currentMockExamSection.id) return;
     setCurrentQuestionIndex(prevIndex);
   };
 
@@ -1333,10 +1428,16 @@ export const QuizPage: React.FC = () => {
                         key={section.id}
                         type="button"
                         data-testid={`quiz-mock-section-${sectionIndex}`}
-                        disabled={isLocked}
-                        title={isLocked ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه' : undefined}
+                        disabled={isLocked || (isStrictQiyasMode && !isActive)}
+                        title={
+                          isLocked
+                            ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه'
+                            : isStrictQiyasMode && !isActive
+                              ? 'في محاكي قياس الصارم، يتم الانتقال بين الأقسام بالترتيب'
+                              : undefined
+                        }
                         onClick={() => {
-                          if (isLocked || section.firstQuestionIndex < 0) return;
+                          if (isLocked || (isStrictQiyasMode && !isActive) || section.firstQuestionIndex < 0) return;
                           setCurrentQuestionIndex(section.firstQuestionIndex);
                         }}
                         className={`shrink-0 rounded-xl border px-4 py-2 text-xs font-black transition-colors ${
@@ -1388,7 +1489,13 @@ export const QuizPage: React.FC = () => {
                           isNightMode ? 'bg-slate-800 text-indigo-300' : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
                         }`}
                       >
-                        {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
+                        {currentMockExamSection
+                          ? `${currentMockExamSection.title} • السؤال ${
+                              isStrictQiyasMode
+                                ? `${currentMockExamSection.questionIndexes.indexOf(currentQuestionIndex) + 1} من ${currentMockExamSection.total}`
+                                : `${currentQuestionIndex + 1} من ${quizQuestions.length}`
+                            }`
+                          : `السؤال ${currentQuestionIndex + 1} من ${quizQuestions.length}`}
                       </span>
                       {currentQuestion?.difficulty && (
                         <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : getQuizDifficultyBadgeClass(currentQuestion?.difficulty)} text-xs px-2.5 py-1 rounded-xl font-bold`}>
@@ -1418,6 +1525,68 @@ export const QuizPage: React.FC = () => {
 
                   {/* Question Content */}
                   <div className="p-4 sm:p-7 space-y-6">
+                    {/* Dedicated Reading Passage Pane (استيعاب المقروء) */}
+                    {passageText && (
+                      <div className={`rounded-2xl border p-4 sm:p-5 shadow-xs ${
+                        isNightMode
+                          ? 'border-amber-900/50 bg-amber-950/20 text-amber-100'
+                          : 'border-amber-200/80 bg-amber-50/40 text-amber-950'
+                      }`}>
+                        <div className={`flex items-center justify-between pb-3 mb-3 border-b ${
+                          isNightMode ? 'border-amber-900/40' : 'border-amber-200/60'
+                        }`}>
+                          <div className="flex items-center gap-2 font-black text-sm text-amber-800 dark:text-amber-300">
+                            <BookOpen size={18} className="text-amber-600 dark:text-amber-400" />
+                            <span>النص القرائي (استيعاب المقروء)</span>
+                          </div>
+                          <div className={`flex items-center gap-1 rounded-lg p-1 border text-xs ${
+                            isNightMode ? 'bg-slate-900/80 border-slate-700' : 'bg-white/90 border-amber-200'
+                          }`}>
+                            <button
+                              type="button"
+                              onClick={() => setPassageFontSize((prev) => (prev === 'lg' ? 'base' : 'sm'))}
+                              className={`px-2 py-0.5 rounded font-black transition-colors ${
+                                passageFontSize === 'sm' ? 'bg-amber-600 text-white' : 'hover:bg-amber-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300'
+                              }`}
+                              title="تصغير خط القطعة"
+                            >
+                              A-
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPassageFontSize('base')}
+                              className={`px-2 py-0.5 rounded font-black transition-colors ${
+                                passageFontSize === 'base' ? 'bg-amber-600 text-white' : 'hover:bg-amber-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300'
+                              }`}
+                              title="الحجم الافتراضي"
+                            >
+                              A
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPassageFontSize((prev) => (prev === 'sm' ? 'base' : 'lg'))}
+                              className={`px-2 py-0.5 rounded font-black transition-colors ${
+                                passageFontSize === 'lg' ? 'bg-amber-600 text-white' : 'hover:bg-amber-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300'
+                              }`}
+                              title="تكبير خط القطعة"
+                            >
+                              A+
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          className={`max-h-[340px] overflow-y-auto pr-2 font-normal leading-loose break-words select-text ${
+                            passageFontSize === 'sm'
+                              ? 'text-sm'
+                              : passageFontSize === 'lg'
+                                ? 'text-lg font-medium'
+                                : 'text-base'
+                          } ${isNightMode ? 'text-slate-200' : 'text-gray-800'}`}
+                          dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(passageText) }}
+                        />
+                      </div>
+                    )}
+
                     <div
                       data-testid="quiz-current-question"
                       data-question-id={currentQuestion?.id || ''}
@@ -1425,7 +1594,7 @@ export const QuizPage: React.FC = () => {
                       className={`question-html text-base sm:text-lg lg:text-xl font-medium leading-relaxed break-words [&_img]:cursor-zoom-in [&_img]:rounded-xl [&_img]:max-h-[300px] [&_img]:mx-auto [&_img]:my-2 ${
                         isNightMode ? 'text-slate-100' : 'text-gray-900'
                       }`}
-                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
+                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(questionText) }}
                     />
 
                     {/* Question Diagram / Image with Zoom */}
@@ -1519,7 +1688,8 @@ export const QuizPage: React.FC = () => {
                       type="button"
                       data-testid="quiz-prev-button"
                       onClick={handlePrev}
-                      disabled={currentQuestionIndex === 0}
+                      disabled={currentQuestionIndex === 0 || (isStrictQiyasMode && currentQuestionIndex === currentMockExamSection?.firstQuestionIndex)}
+                      title={isStrictQiyasMode && currentQuestionIndex === currentMockExamSection?.firstQuestionIndex ? 'لا يمكن العودة للقسم السابق في محاكي قياس الصارم' : undefined}
                       className={`${
                         isNightMode ? 'text-slate-300 hover:bg-slate-800 border-slate-700' : 'text-gray-700 hover:bg-gray-100 border-gray-200 bg-white'
                       } inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl border px-4 py-2.5 text-xs sm:text-sm font-black shadow-xs transition disabled:cursor-not-allowed disabled:opacity-40`}
@@ -1576,6 +1746,18 @@ export const QuizPage: React.FC = () => {
                       >
                         <CheckCircle2 size={16} />
                         {isSubmittingResult ? 'جارٍ الحفظ...' : 'إنهاء'}
+                      </button>
+                    ) : (isStrictQiyasMode && currentMockExamSection && currentQuestionIndex === currentMockExamSection.questionIndexes[currentMockExamSection.questionIndexes.length - 1]) ? (
+                      <button
+                        type="button"
+                        data-testid="quiz-next-button"
+                        onClick={handleNext}
+                        disabled={Boolean(isNextBlocked)}
+                        title="إنهاء القسم والانتقال للقسم التالي"
+                        className="inline-flex min-w-[110px] items-center justify-center gap-1.5 rounded-xl bg-violet-600 px-5 py-2.5 text-xs sm:text-sm font-black text-white shadow-xs transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <span>إنهاء القسم والانتقال</span>
+                        <ArrowLeft size={16} />
                       </button>
                     ) : (
                       <button
@@ -1660,22 +1842,35 @@ export const QuizPage: React.FC = () => {
                       </h3>
                     </div>
                     <span className={`px-2.5 py-0.5 rounded-full text-xs font-black ${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-indigo-50 text-indigo-700 border border-indigo-100'}`}>
-                      {quizQuestions.length} سؤال
+                      {isStrictQiyasMode && currentMockExamSection ? `${currentMockExamSection.total} سؤال بالقسم` : `${quizQuestions.length} سؤال`}
                     </span>
                   </div>
 
                   {/* Status Legend with Live Counters */}
                   <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-black">
                     <div className={`p-2 rounded-xl border ${isNightMode ? 'border-emerald-900/60 bg-emerald-950/40 text-emerald-300' : 'border-emerald-100 bg-emerald-50/80 text-emerald-700'}`}>
-                      <div className="text-base font-black">{answeredQuestionCount}</div>
+                      <div className="text-base font-black">
+                        {isStrictQiyasMode && currentMockExamSection ? currentMockExamSection.answered : answeredQuestionCount}
+                      </div>
                       <div className="text-[10px] mt-0.5 opacity-90">تمت الإجابة</div>
                     </div>
                     <div className={`p-2 rounded-xl border ${isNightMode ? 'border-slate-800 bg-slate-950/60 text-slate-300' : 'border-gray-200 bg-gray-50 text-gray-600'}`}>
-                      <div className="text-base font-black">{quizQuestions.length - answeredQuestionCount}</div>
+                      <div className="text-base font-black">
+                        {isStrictQiyasMode && currentMockExamSection
+                          ? currentMockExamSection.total - currentMockExamSection.answered
+                          : quizQuestions.length - answeredQuestionCount}
+                      </div>
                       <div className="text-[10px] mt-0.5 opacity-90">لم يجب</div>
                     </div>
                     <div className={`p-2 rounded-xl border ${isNightMode ? 'border-purple-900/60 bg-purple-950/40 text-purple-300' : 'border-purple-100 bg-purple-50/80 text-purple-700'}`}>
-                      <div className="text-base font-black">{reviewQuestionCount + flaggedQuestionIds.length}</div>
+                      <div className="text-base font-black">
+                        {isStrictQiyasMode && currentMockExamSection
+                          ? currentMockExamSection.questionIndexes.filter((idx) => {
+                              const q = quizQuestions[idx];
+                              return q ? (reviewLater.includes(q.id) || flaggedQuestionIds.includes(q.id)) : false;
+                            }).length
+                          : reviewQuestionCount + flaggedQuestionIds.length}
+                      </div>
                       <div className="text-[10px] mt-0.5 opacity-90">للمراجعة</div>
                     </div>
                   </div>
@@ -1683,17 +1878,20 @@ export const QuizPage: React.FC = () => {
                   {/* Question Grid Buttons with Scroll */}
                   <div className="max-h-[300px] overflow-y-auto pr-1 pl-0.5 py-1">
                     <div className="grid grid-cols-5 gap-2">
-                      {quizQuestions.map((question, index) => {
+                      {(isStrictQiyasMode && currentMockExamSection ? currentMockExamSection.questionIndexes : quizQuestions.map((_, i) => i)).map((index, pos) => {
+                        const question = quizQuestions[index];
+                        if (!question) return null;
                         const isAnswered = selectedOptions[question.id] !== undefined;
                         const isMarkedForReview = reviewLater.includes(question.id) || flaggedQuestionIds.includes(question.id);
                         const isCurrent = index === currentQuestionIndex;
+                        const displayNum = isStrictQiyasMode ? pos + 1 : index + 1;
                         const title = isCurrent
-                          ? `السؤال ${index + 1} الحالي`
+                          ? `السؤال ${displayNum} الحالي`
                           : isAnswered
-                            ? `السؤال ${index + 1} تمت الإجابة`
+                            ? `السؤال ${displayNum} تمت الإجابة`
                             : isMarkedForReview
-                              ? `السؤال ${index + 1} للمراجعة`
-                              : `السؤال ${index + 1} لم يجب`;
+                              ? `السؤال ${displayNum} للمراجعة`
+                              : `السؤال ${displayNum} لم يجب`;
 
                         return (
                           <button
@@ -1705,7 +1903,7 @@ export const QuizPage: React.FC = () => {
                             aria-label={title}
                             title={title}
                           >
-                            {index + 1}
+                            {displayNum}
                           </button>
                         );
                       })}
@@ -2023,6 +2221,57 @@ export const QuizPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Section Advance Confirmation Modal for Strict Qiyas Mode */}
+      {showSectionConfirmModal && currentMockExamSection && !isFinished && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" dir="rtl">
+          <div className="w-full max-w-lg rounded-3xl border-2 border-violet-950 bg-white p-6 text-center shadow-2xl space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-violet-50 text-violet-600">
+              <AlertCircle size={30} />
+            </div>
+            <h3 className="text-xl font-black text-slate-900">
+              إنهاء {currentMockExamSection.title} والانتقال؟
+            </h3>
+            <div className="text-sm text-slate-600 leading-relaxed space-y-2">
+              <p className="font-bold text-amber-700 bg-amber-50 p-3 rounded-xl border border-amber-200">
+                ⚠️ تنبيه قياس المعياري: بمجرد تأكيد الانتقال للقسم التالي، سيتم إغلاق هذا القسم نهائياً ولن تتمكن من العودة إليه أو تعديل إجاباته.
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1 text-xs font-black">
+                <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="text-gray-500">تمت الإجابة</div>
+                  <div className="text-sm text-emerald-600 font-black mt-0.5">
+                    {currentMockExamSection.answered} من {currentMockExamSection.total}
+                  </div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="text-gray-500">بدون إجابة</div>
+                  <div className="text-sm text-rose-600 font-black mt-0.5">
+                    {currentMockExamSection.total - currentMockExamSection.answered}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="pt-2 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                data-testid="quiz-section-confirm-cancel"
+                onClick={() => setShowSectionConfirmModal(false)}
+                className="rounded-xl border border-gray-300 bg-white px-4 py-3 font-black text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                العودة لمراجعة القسم
+              </button>
+              <button
+                type="button"
+                data-testid="quiz-section-confirm-next"
+                onClick={handleConfirmSectionAdvance}
+                className="rounded-xl bg-violet-600 px-4 py-3 font-black text-white hover:bg-violet-700 transition-colors shadow-sm"
+              >
+                نعم، إنهاء القسم والانتقال
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showFinishDialog && !isFinished ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" dir="rtl">

@@ -473,6 +473,7 @@ export interface MockExamConfig {
     qiyasCategory?: 'qudrat' | 'tahsili' | 'specialized';
     targetScore?: number;
     isStrictSectionLock?: boolean;
+    presentationMode?: 'qiyas_strict' | 'flexible';
 }
 
 export interface Quiz extends ContentWorkflow {
@@ -539,6 +540,7 @@ export interface PublicBarcodeTestConfig {
 export interface Question extends ContentWorkflow {
     id: string;
     text: string;
+    passage?: string;
     options: string[];
     correctOptionIndex: number;
     explanation?: string;
