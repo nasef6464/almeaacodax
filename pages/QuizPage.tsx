@@ -1803,7 +1803,31 @@ export const QuizPage: React.FC = () => {
                   </div>
 
                   {/* Big Digital Countdown */}
-                  {timeLeft !== null && !isFinished ? (
+                  {isStrictQiyasMode && sectionTimeLeft !== null && !isFinished && currentMockExamSection ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-black text-violet-700 dark:text-violet-300 px-1">
+                        <span className="truncate">وقت {currentMockExamSection.title}</span>
+                        <span className="text-[10px] bg-violet-100 dark:bg-violet-900/50 px-2 py-0.5 rounded-full font-bold shrink-0">مؤقت القسم</span>
+                      </div>
+                      <div className={`flex items-center justify-center rounded-2xl py-3 px-4 text-center font-mono ${
+                        sectionTimeLeft <= 60
+                          ? 'bg-red-500/10 border-2 border-red-500 text-red-600 animate-pulse'
+                          : isNightMode ? 'bg-slate-950 border border-violet-800 text-violet-300' : 'bg-violet-50/80 border-2 border-violet-200 text-violet-800'
+                      }`}>
+                        <span className="text-2xl sm:text-3xl font-black tracking-widest">
+                          {Math.floor(sectionTimeLeft / 60)}:{String(sectionTimeLeft % 60).padStart(2, '0')}
+                        </span>
+                      </div>
+                      {timeLeft !== null && (
+                        <div className={`flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold border ${
+                          isNightMode ? 'bg-slate-950/80 border-slate-800 text-slate-400' : 'bg-gray-50 border-gray-200 text-gray-500'
+                        }`}>
+                          <span>الوقت الإجمالي للاختبار:</span>
+                          <span className="font-mono font-black">{Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : timeLeft !== null && !isFinished ? (
                     <div className={`flex items-center justify-center rounded-2xl py-3 px-4 text-center font-mono ${
                       timeLeft <= 180
                         ? 'bg-red-500/10 border-2 border-red-500 text-red-600 animate-pulse'
@@ -1816,18 +1840,6 @@ export const QuizPage: React.FC = () => {
                   ) : (
                     <div className="text-center py-2 text-xs font-bold text-gray-400">
                       بدون وقت محدد
-                    </div>
-                  )}
-
-                  {/* Section Timer for Mock Exams */}
-                  {sectionTimeLeft !== null && !isFinished && currentMockExamSection && (
-                    <div className={`mt-2.5 flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold border ${
-                      sectionTimeLeft <= 60
-                        ? 'bg-red-100 border-red-200 text-red-700 animate-pulse'
-                        : isNightMode ? 'bg-violet-950/70 border-violet-900 text-violet-200' : 'bg-violet-50 border-violet-200 text-violet-700'
-                    }`}>
-                      <span className="truncate">{currentMockExamSection.title}:</span>
-                      <span className="font-mono font-black">{Math.floor(sectionTimeLeft / 60)}:{String(sectionTimeLeft % 60).padStart(2, '0')}</span>
                     </div>
                   )}
                 </div>
