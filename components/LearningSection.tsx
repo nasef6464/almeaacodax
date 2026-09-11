@@ -1003,7 +1003,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-indigo-600 transition-colors leading-snug line-clamp-2">{skill.title}</h3>
+                                            <h3 className="text-sm sm:text-base font-bold leading-snug line-clamp-2">
+                                                <span className="inline-block px-2.5 py-1 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-800 group-hover:bg-indigo-50/80 group-hover:border-indigo-200 group-hover:text-indigo-900 transition-all shadow-2xs">
+                                                    {skill.title}
+                                                </span>
+                                            </h3>
                                         </div>
                                     </div>
 

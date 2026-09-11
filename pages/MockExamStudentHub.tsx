@@ -219,8 +219,12 @@ const MockExamCard: React.FC<{
           <Award size={22} />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-black text-gray-900 leading-tight">{exam.title}</h3>
-          {path && <p className={`mt-0.5 text-xs font-bold ${isDirected ? 'text-blue-600' : 'text-indigo-600'}`}>{path.name}</p>}
+          <h3 className="text-sm font-black text-gray-900 leading-tight">
+            <span className="inline-block px-2.5 py-0.5 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-900 shadow-2xs">
+              {exam.title}
+            </span>
+          </h3>
+          {path && <p className={`mt-1.5 text-xs font-bold ${isDirected ? 'text-blue-600' : 'text-indigo-600'}`}>{path.name}</p>}
         </div>
       </div>
 
