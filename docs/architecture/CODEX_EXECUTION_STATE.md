@@ -1,5 +1,18 @@
 # ALMEAA — Codex Execution State
 
+## Smart Feature Comparison Matrix by Educational Stage (Elementary, Middle, High School)
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commits: `e7f8f109`, `cdb05c41` merged in `f546ec49` on `main` (PR #113).
+- Scope:
+  1. Smart Age-Appropriate Feature Comparison Matrix: Added `PricingComparisonMatrix.tsx` and data module `pricingComparisonData.ts` to `/pricing` (both strictly under 400 lines to conform to architecture hotspot budgets).
+  2. Multi-Stage Tabs & Decision Maker Persona Tailoring:
+     - High School (المرحلة الثانوية: 15 - 18 سنة): Focuses on Qiyas GAT (القدرات) and Tahsili (التحصيلي), real-time mock simulations matching Qiyas exam UI, 1446-1447H compilations (التجميعات), speed-solving tactics (<1 min), and AI weakness diagnostics.
+     - Middle School (المرحلة المتوسطة: 12 - 14 سنة): Focuses on core conceptual foundations in Math, Science, and Arabic, Grade 9 Nafes national assessments, immediate self-evaluation, and weekly parent progress reports.
+     - Elementary School (المرحلة الابتدائية: 6 - 11 سنة): Tailored for parents and younger learners with 100% distraction-free environment, cartoon/story explanations, audio-assisted question reading, gamified badges/rewards, Nafes grades 3 & 6 simulations, and mobile parent notifications.
+  3. Interactive 3-Tier Comparison per Stage: Free Discovery, Standard Subject Foundation, and Pro All-Inclusive Pass with prominent "الأكثر طلباً" badges and integrated CTAs triggering `PaymentModal` or registration.
+  4. Architectural & Contract Integrity: Preserved `smoke:membership-pricing` contract requirements (`عضويات المنصة`, `العضوية هنا اشتراك عام على مستوى المنصة`, `باقات المسارات والمدارس تدار بشكل مستقل`) and hotspot budget (83/83).
+- Evidence: Full production Vite build passed (`dist` generated in 43s); `smoke:membership-pricing` (6/6), `smoke:package-course-split` (7/7), `smoke:global-student-journey` (13/13), `smoke:seo` all passed; GitHub Actions CI passed 100% on PR #113 across all workflows (`Admin + data integrity`, `Admin + schools + reports + payments`, `Auth + security`, `Core build + architecture`, `Cross-phase + handover`, `Homepage + admin UX`, `Production readiness`, `Student + assessment`, `Branch public UI — desktop + mobile`, `baseline-quality-gate`, `Vercel preview deployment`).
+
 ## Card Title Capsules Vibrant Semantic Color System Elevation
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `9274c6d8` merged in `41c339ce` on `main` (PR #112).
