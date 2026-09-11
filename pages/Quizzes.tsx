@@ -699,7 +699,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               return (
                 <div key={quiz.id} data-testid={`student-directed-test-${quiz.id}`} className="rounded-2xl border border-indigo-100 bg-white p-5 transition-all hover:border-indigo-300 hover:shadow-md flex flex-col">
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="min-w-0"><h3 className="text-base font-black text-gray-900 leading-snug"><span className="inline-block px-2.5 py-0.5 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-900">{quiz.title}</span></h3><p className="mt-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full inline-block">{pathName}</p></div>
+                    <div className="min-w-0"><h3 className="text-base font-black text-gray-900 leading-snug"><span className="inline-block px-3 py-0.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-100 font-extrabold shadow-2xs">{quiz.title}</span></h3><p className="mt-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full inline-block">{pathName}</p></div>
                     <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-black ${completedResult ? 'bg-emerald-100 text-emerald-700' : isTrueMockExam(quiz) ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>{completedResult ? 'تم الحل' : isTrueMockExam(quiz) ? 'مدرسي محاكي' : 'مدرسي'}</span>
                   </div>
                   <p className="line-clamp-2 text-xs font-bold leading-5 text-gray-500 flex-grow">{quiz.supervisorMessage || quiz.description || 'اختبار موجه من المدرسة للمتابعة والقياس.'}</p>
@@ -807,7 +807,7 @@ const QuizSection = ({ title, emptyMessage, items, subjects, paths, badgeClassNa
           <div key={quiz.id} className="border border-slate-200/90 rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:border-indigo-300 hover:shadow-xs transition-all bg-white">
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-block px-2.5 py-0.5 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-900 font-bold text-sm sm:text-base shadow-2xs">
+                <span className="inline-block px-3 py-0.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-100 font-extrabold text-sm sm:text-base shadow-2xs">
                   {quiz.title}
                 </span>
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">{paths.find((path) => path.id === quiz.pathId)?.name || 'بدون مسار'}</span>
@@ -1044,7 +1044,7 @@ const SchoolTestsPanel: React.FC<{
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h3 className="text-base font-black text-gray-900 leading-tight">
-                        <span className="inline-block px-2.5 py-0.5 rounded-xl bg-slate-100/80 border border-slate-200/60 text-slate-900 shadow-2xs">
+                        <span className="inline-block px-3 py-0.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-100 font-extrabold shadow-2xs">
                           {quiz.title}
                         </span>
                       </h3>
