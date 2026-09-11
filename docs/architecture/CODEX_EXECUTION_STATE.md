@@ -1,5 +1,39 @@
 # ALMEAA — Codex Execution State
 
+## Referral & Affiliate Ambassador Program and Daily 60s Speed Drill with Streaks
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `377fe9f2`.
+- Scope:
+  1. Referral & Affiliate Ambassador Program (نظام سفراء المئة والخصم بالمشاركة):
+     - Added `ReferralAmbassadorCard.tsx` and `ReferralAmbassadorModal.tsx` to the student overview dashboard.
+     - Each student receives a unique derived referral code (`ALM-XXXXX`) and direct invitation link with one-click copy.
+     - Direct social share integrations with WhatsApp and X (Twitter) pre-filled with engaging invitation copy.
+     - Automatic referral code recognition and welcome banner on the public pricing page (`/pricing?ref=CODE`) giving 10% discount on packages.
+     - Outlines transparent 3-step reward mechanism (10% discount for colleague + 10% wallet reward & free subscription extensions for the student ambassador).
+  2. Daily 60-Second Speed Drill & Streaks (تحدي الـ 60 ثانية اليومي والستريك):
+     - Added `DailySpeedDrillCard.tsx`, `DailySpeedDrillModal.tsx`, and curated speed drill questions bank `dailySpeedDrillData.ts`.
+     - 5-question speed drill targeting Qiyas GAT (القدرات: لفظي وكمي) and Tahsili (التحصيلي) with an active 60-second countdown timer per question and color alerts.
+     - Deterministic daily question picker (`getDailyQuestions`) providing a unified daily challenge for all students across the Kingdom.
+     - Gamified completion screen displaying score, time spent, +25 points reward, and automatic daily streak boost (`🔥 Daily Streak`).
+     - Tactical Solutions Review section revealing real-test speed tricks (طرق الحل السريع في أقل من 30 ثانية) for every question.
+  3. Architecture, Hotspot Budget & Contract Integrity:
+     - All 5 new modules are strictly under 400 lines (117 to 358 lines), preserving the repository hotspot budget limit at 83/83.
+     - Preserved all payment models, smoke tests, route definitions, and existing contracts intact.
+- Evidence: Full production Vite build passed (`dist` in 42s); 4GB TypeScript typecheck passed with zero errors; `smoke:global-student-journey` (13/13), `smoke:membership-pricing` (6/6), `smoke:payment-package` (11/11), `smoke:package-course-split` (7/7), and `smoke:seo` all passed.
+
+## Smart Feature Comparison Matrix by Educational Stage (Elementary, Middle, High School)
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commits: `e7f8f109`, `cdb05c41` merged in `f546ec49` on `main` (PR #113).
+- Scope:
+  1. Smart Age-Appropriate Feature Comparison Matrix: Added `PricingComparisonMatrix.tsx` and data module `pricingComparisonData.ts` to `/pricing` (both strictly under 400 lines to conform to architecture hotspot budgets).
+  2. Multi-Stage Tabs & Decision Maker Persona Tailoring:
+     - High School (المرحلة الثانوية: 15 - 18 سنة): Focuses on Qiyas GAT (القدرات) and Tahsili (التحصيلي), real-time mock simulations matching Qiyas exam UI, 1446-1447H compilations (التجميعات), speed-solving tactics (<1 min), and AI weakness diagnostics.
+     - Middle School (المرحلة المتوسطة: 12 - 14 سنة): Focuses on core conceptual foundations in Math, Science, and Arabic, Grade 9 Nafes national assessments, immediate self-evaluation, and weekly parent progress reports.
+     - Elementary School (المرحلة الابتدائية: 6 - 11 سنة): Tailored for parents and younger learners with 100% distraction-free environment, cartoon/story explanations, audio-assisted question reading, gamified badges/rewards, Nafes grades 3 & 6 simulations, and mobile parent notifications.
+  3. Interactive 3-Tier Comparison per Stage: Free Discovery, Standard Subject Foundation, and Pro All-Inclusive Pass with prominent "الأكثر طلباً" badges and integrated CTAs triggering `PaymentModal` or registration.
+  4. Architectural & Contract Integrity: Preserved `smoke:membership-pricing` contract requirements (`عضويات المنصة`, `العضوية هنا اشتراك عام على مستوى المنصة`, `باقات المسارات والمدارس تدار بشكل مستقل`) and hotspot budget (83/83).
+- Evidence: Full production Vite build passed (`dist` generated in 43s); `smoke:membership-pricing` (6/6), `smoke:package-course-split` (7/7), `smoke:global-student-journey` (13/13), `smoke:seo` all passed; GitHub Actions CI passed 100% on PR #113 across all workflows (`Admin + data integrity`, `Admin + schools + reports + payments`, `Auth + security`, `Core build + architecture`, `Cross-phase + handover`, `Homepage + admin UX`, `Production readiness`, `Student + assessment`, `Branch public UI — desktop + mobile`, `baseline-quality-gate`, `Vercel preview deployment`).
+
 ## Card Title Capsules Vibrant Semantic Color System Elevation
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `9274c6d8` merged in `41c339ce` on `main` (PR #112).

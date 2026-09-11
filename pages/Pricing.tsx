@@ -23,6 +23,13 @@ const Pricing: React.FC = () => {
   const { user, courses } = useStore();
   const [selectedMembership, setSelectedMembership] = useState<any | null>(null);
   const isAdmin = user?.role === 'admin';
+  const referralRef = useMemo(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('ref');
+    } catch {
+      return null;
+    }
+  }, []);
 
   const memberships = useMemo(
     () =>
@@ -86,6 +93,16 @@ const Pricing: React.FC = () => {
           <p className="mt-3 text-sm text-gray-600 sm:text-base">
             العضوية هنا اشتراك عام على مستوى المنصة. باقات المسارات والمدارس تدار بشكل مستقل داخل المسارات والمدارس.
           </p>
+          {referralRef && (
+            <div className="mt-6 inline-block rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-purple-50 border border-purple-200 p-4 text-center shadow-xs">
+              <span className="inline-block rounded-full bg-purple-600 px-3 py-0.5 text-xs font-black text-white">
+                هدية سفراء المئة 🎁
+              </span>
+              <p className="mt-2 text-sm font-black text-purple-950">
+                مرحباً بك! كود خصم زميلك <span className="font-mono text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md font-black">{referralRef}</span> يمنحك خصماً فورياً 10% عند الاشتراك في أي باقة!
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
