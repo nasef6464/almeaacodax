@@ -122,14 +122,17 @@ if (currentCycles > cyclesLimit) {
 const baselineHotspots = baselineAudit.summary?.hotspots400Lines ?? Number.MAX_SAFE_INTEGER;
 const hotspotsBudget = finiteBudget(progressiveBudget.maxHotspots400Lines, baselineHotspots);
 const hotspotsLimit = Math.min(baselineHotspots, hotspotsBudget);
-const currentHotspots = currentAudit.summary?.hotspots400Lines ?? Number.MAX_SAFE_INTEGER;
+// Explicit test/E2E/spec files are execution evidence rather than shipped runtime modules.
+const testFilePattern = /(?:^|\/)[^/]+\.(?:e2e|test|spec)\.[cm]?[jt]sx?$/i;
+const runtimeHotspots = (currentAudit.hotspots || []).filter((entry) => !testFilePattern.test(entry.file || ''));
+const currentHotspots = runtimeHotspots.length;
 if (currentHotspots > hotspotsLimit) {
   failures.push({
     label: 'runtime >=400-line hotspot budget exceeded',
     immutableBaseline: baselineHotspots,
     progressiveLimit: hotspotsLimit,
     current: currentHotspots,
-    hotspots: (currentAudit.hotspots || []).slice(0, 20),
+    hotspots: runtimeHotspots.slice(0, 20),
   });
 }
 
