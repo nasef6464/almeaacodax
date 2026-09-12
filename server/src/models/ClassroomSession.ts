@@ -42,7 +42,14 @@ const classroomSessionSchema = new Schema(
     endedAt: { type: Date, default: null },
     reportSnapshot: { type: Schema.Types.Mixed, default: null },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    // Production index changes are intentionally migration-controlled. In
+    // non-production environments Mongoose can still build indexes normally so
+    // CI/dev catch invariant regressions. Production uses the guarded
+    // ensureSmartClassroomIndexes migration after duplicate-live preflight.
+    autoIndex: process.env.NODE_ENV !== "production",
+  },
 );
 
 classroomSessionSchema.index({ schoolId: 1, classId: 1, status: 1, createdAt: -1 });
@@ -54,4 +61,3 @@ classroomSessionSchema.index(
   }
 );
 export const ClassroomSessionModel = mongoose.model("ClassroomSession", classroomSessionSchema);
-
