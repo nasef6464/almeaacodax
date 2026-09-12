@@ -7,6 +7,7 @@ import { env } from "../config/env.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { UserModel } from "../models/User.js";
 import { createSocketServer } from "../sockets/index.js";
 import { signAccessToken } from "../utils/jwt.js";
@@ -102,6 +103,7 @@ async function run() {
   await Promise.all([
     UserModel.deleteMany({ email: { $in: testEmails } }),
     SchoolContractModel.deleteMany({ schoolId }),
+    TeachingAssignmentModel.deleteMany({ schoolId }),
   ]);
 
   const [student, teacher, supervisor] = await Promise.all([
@@ -144,6 +146,7 @@ async function run() {
     SchoolMembershipModel.create({ userId: studentId, schoolId, role: "student", status: "active" }),
     SchoolMembershipModel.create({ userId: teacherId, schoolId, role: "teacher", status: "active" }),
     SchoolMembershipModel.create({ userId: supervisorId, schoolId, role: "supervisor", status: "active" }),
+    TeachingAssignmentModel.create({ schoolId, teacherId, classId, subjectId: `subject_${RUN_ID}`, status: "active" }),
   ]);
 
   const session = await ClassroomSessionModel.create({
@@ -174,7 +177,7 @@ async function run() {
   const scopedTeacherHistoryEndpoint = `${teacherHistoryEndpoint}?schoolId=${encodeURIComponent(schoolId)}`;
 
   assert.equal((await get(studentEndpoint, studentToken)).status, 200, "active student should reach Smart Classroom HTTP routes");
-  assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "active session owner should reach its classroom HTTP route");
+  assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "active assigned session owner should reach its classroom HTTP route");
   assert.equal((await get(teacherEndpoint, supervisorToken)).status, 200, "active entitled supervisor should reach scoped classroom aggregate data");
   assert.equal((await get(teacherHistoryEndpoint, teacherToken)).status, 400, "teacher history must require an explicit school scope");
   assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 200, "active teacher should read history for an active school membership");
@@ -184,7 +187,7 @@ async function run() {
   activeStudentSocket.disconnect();
 
   const activeTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
-  assert.equal((await joinWorkspace(activeTeacherSocket, `classroom:${sessionId}`)).ok, true, "active session owner should join its classroom room");
+  assert.equal((await joinWorkspace(activeTeacherSocket, `classroom:${sessionId}`)).ok, true, "active assigned session owner should join its classroom room");
   activeTeacherSocket.disconnect();
 
   const activeSupervisorSocket = await connectAuthorized(baseUrl, supervisorToken);
@@ -276,6 +279,37 @@ async function run() {
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible teacher HTTP access");
   assert.equal((await get(teacherEndpoint, supervisorToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible supervisor HTTP access");
 
+  await TeachingAssignmentModel.updateOne(
+    { schoolId, teacherId, classId },
+    { $set: { status: "inactive" } },
+  );
+  assert.equal(
+    (await get(teacherEndpoint, teacherToken)).status,
+    403,
+    "inactive teaching assignment must revoke runtime access to an already-owned classroom session",
+  );
+  assert.equal(
+    (await get(scopedTeacherHistoryEndpoint, teacherToken)).status,
+    200,
+    "assignment revocation must not erase the teacher's historical school reports while school membership remains active",
+  );
+  const assignmentRevokedTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
+  assert.equal(
+    (await joinWorkspace(assignmentRevokedTeacherSocket, `classroom:${sessionId}`)).ok,
+    false,
+    "teacher ownership must not bypass an inactive class assignment on reconnect",
+  );
+  assignmentRevokedTeacherSocket.disconnect();
+
+  await TeachingAssignmentModel.updateOne(
+    { schoolId, teacherId, classId },
+    { $set: { status: "active" } },
+  );
+  assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "restoring the teaching assignment should restore eligible runtime access");
+  const restoredTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
+  assert.equal((await joinWorkspace(restoredTeacherSocket, `classroom:${sessionId}`)).ok, true, "restoring the teaching assignment should restore realtime ownership access");
+  restoredTeacherSocket.disconnect();
+
   await UserModel.updateMany(
     { _id: { $in: [student._id, teacher._id, supervisor._id] } },
     { $set: { isActive: false } },
@@ -289,12 +323,12 @@ async function run() {
   await expectConnectionRejected(baseUrl, teacherToken);
   await expectConnectionRejected(baseUrl, supervisorToken);
 
-  console.log("Smart Classroom account, membership and module-entitlement revocation E2E: PASS");
+  console.log("Smart Classroom account, membership, assignment and module-entitlement revocation E2E: PASS");
 }
 
 run()
   .catch((error) => {
-    console.error("Smart Classroom account, membership and module-entitlement revocation E2E: FAIL", error);
+    console.error("Smart Classroom account, membership, assignment and module-entitlement revocation E2E: FAIL", error);
     process.exitCode = 1;
   })
   .finally(async () => {
@@ -304,6 +338,7 @@ run()
       const users = await UserModel.find({ email: { $in: [studentEmail, teacherEmail, supervisorEmail] } }).select("_id").lean();
       const userIds = users.map((user: any) => String(user._id));
       if (userIds.length) await SchoolMembershipModel.deleteMany({ userId: { $in: userIds }, schoolId });
+      await TeachingAssignmentModel.deleteMany({ schoolId });
       await SchoolContractModel.deleteMany({ schoolId });
       await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail, supervisorEmail] } });
     } catch (error) {
