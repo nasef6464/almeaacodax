@@ -11,7 +11,18 @@ const check = (name, condition) => {
   assert.ok(pass, name);
 };
 
-const routes = read('server/src/routes/classroom.routes.ts');
+// Classroom HTTP behavior is intentionally split across focused registrars. Keep
+// this contract architectural-layout agnostic by evaluating the composed route
+// surface rather than requiring every invariant to live in one monolithic file.
+const routes = [
+  'server/src/routes/classroom.routes.ts',
+  'server/src/routes/classroom/classroomRouteSupport.ts',
+  'server/src/routes/classroom/registerClassroomTeacherRoutes.ts',
+  'server/src/routes/classroom/registerClassroomTemplateRoutes.ts',
+  'server/src/routes/classroom/registerClassroomStudentRoutes.ts',
+  'server/src/routes/classroom/registerClassroomSupervisorRoutes.ts',
+  'server/src/routes/classroom/registerClassroomAggregateRoutes.ts',
+].map(read).join('\n');
 const classroomAuth = read('server/src/middleware/classroomAuth.ts');
 const lifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
 const questionAccess = read('server/src/modules/schools/application/classroomQuestionAccess.ts');
@@ -45,7 +56,7 @@ check('teacher realtime ownership requires active class assignment', socketPolic
 check('supervisor HTTP scope is filtered by current SMART_CLASSROOM entitlement', reportBuilder.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && reportBuilder.includes('entitledSchools.has(entry.schoolId)'));
 check('realtime student and teacher school scope is entitlement filtered', socketIndex.includes('currentRole === "student" || currentRole === "teacher"') && socketIndex.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && socketIndex.includes('roleSchoolIds = entitlementChecks.filter((entry) => entry.allowed)'));
 check('realtime supervisor classroom scope requires module entitlement', socketIndex.includes('async canSupervisorViewClassroom') && socketIndex.includes('if (!entitlement.allowed) return false'));
-check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
+check('student PIN join is live-only', routes.includes('pinHash: hashClassroomPin(payload.pin)') && routes.includes('status: "live"'));
 check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
 check('instant join uses lifecycle guard', routes.includes('canStudentJoinClassroom(session.status as ClassroomSessionStatus)'));
 check('lifecycle policy only permits students into live sessions', lifecycle.includes('status === "live"'));
@@ -53,7 +64,7 @@ check('question bank uses tenant-aware visibility policy', routes.includes('clas
 check('question snapshot persists pathId', routes.includes('pathId: question.pathId || ""'));
 check('append publishes only truly new canonical questions', routes.includes('const newQuestionIds = trulyNewSnapshots.map') && routes.includes('session.publishedQuestionIds = newQuestionIds'));
 check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
-check('director can only read aggregate through capability', routes.includes('isDirector = Boolean(capability)'));
+check('director can only read aggregate through capability', routes.includes('requireSchoolDirectorCapability(') && routes.includes('isDirector = Boolean('));
 check('finalized report builder prefers immutable persisted snapshots', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('session.status === "ended"') && reportBuilder.includes('session.status === "archived"'));
 check('teacher summary reports only aggregate finalized sessions', reportBuilder.includes('{ status: { $in: ["ended", "archived"] } }'));
 check('reports UI has no localStorage report fallback', !reportUsesLocalStorage && !reportUi.includes('smart_classroom_reports_'));
