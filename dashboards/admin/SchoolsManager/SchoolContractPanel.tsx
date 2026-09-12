@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     ShieldCheck, Check, School, BookOpen, FileText,
     Layers, Video, Zap, BrainCircuit, Activity,
@@ -34,44 +34,89 @@ const MODULE_ORDER = [
     'LIVE_TUTORING', 'WHITE_LABEL', 'EXECUTIVE_ANALYTICS'
 ];
 
+const normalizeModules = (items: string[]) => Array.from(new Set(['SCHOOL_CORE', ...items])).sort();
+
 export const SchoolContractPanel: React.FC<{ schoolId: string }> = ({ schoolId }) => {
     const [modules, setModules] = useState<string[]>(['SCHOOL_CORE']);
     const [status, setStatus] = useState('active');
     const [notice, setNotice] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [serverSnapshot, setServerSnapshot] = useState<{ status: string; modules: string[] } | null>(null);
+
+    const loadContract = async () => {
+        setIsLoading(true);
+        try {
+            const { contract } = await api.getSchoolContract(schoolId);
+            if (contract) {
+                const nextModules = normalizeModules(contract.modules || []);
+                setModules(nextModules);
+                setStatus(contract.status || 'active');
+                setServerSnapshot({ status: contract.status || 'active', modules: nextModules });
+                setNotice('');
+            } else {
+                setModules(['SCHOOL_CORE']);
+                setStatus('active');
+                setServerSnapshot(null);
+                setNotice('لا يوجد عقد محفوظ بعد. سيُنشأ عند الحفظ الأول.');
+            }
+        } catch {
+            setNotice('تعذر قراءة العقد من الخادم. لم يتم تغيير أي بيانات محليًا.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        void api.getSchoolContract(schoolId).then(({ contract }) => {
-            if (contract) {
-                setModules(contract.modules || ['SCHOOL_CORE']);
-                setStatus(contract.status || 'active');
-            }
-        }).catch(() => setNotice('تعذر قراءة العقد الآن.'));
+        void loadContract();
     }, [schoolId]);
 
     const toggle = (moduleId: string) => {
-        if (moduleId === 'SCHOOL_CORE') return;
-        setModules((current) =>
-            current.includes(moduleId)
-                ? current.filter((item) => item !== moduleId)
-                : [...current, moduleId]
-        );
+        if (moduleId === 'SCHOOL_CORE' || isSaving || isLoading) return;
+        setModules((current) => current.includes(moduleId)
+            ? current.filter((item) => item !== moduleId)
+            : [...current, moduleId]);
     };
+
+    const normalizedDraftModules = useMemo(() => normalizeModules(modules), [modules]);
+    const hasChanges = useMemo(() => {
+        if (!serverSnapshot) return true;
+        return serverSnapshot.status !== status
+            || serverSnapshot.modules.join('|') !== normalizedDraftModules.join('|');
+    }, [serverSnapshot, status, normalizedDraftModules]);
 
     const save = async () => {
         setIsSaving(true);
-        setNotice('جارٍ حفظ العقد...');
+        setNotice('جارٍ حفظ العقد والتحقق من الخادم...');
         try {
-            await api.updateSchoolContract(schoolId, { status, modules });
-            setNotice('تم حفظ وتحديث وحدات العقد بنجاح.');
-        } catch {
-            setNotice('تعذر حفظ العقد. يرجى المحاولة لاحقاً.');
+            await api.updateSchoolContract(schoolId, {
+                status,
+                modules: normalizedDraftModules,
+            });
+
+            const verification = await api.getSchoolContract(schoolId);
+            const verified = verification?.contract;
+            if (!verified) throw new Error('لم يرجع الخادم عقدًا بعد الحفظ.');
+
+            const verifiedModules = normalizeModules(verified.modules || []);
+            const missingModule = normalizedDraftModules.find((moduleId) => !verifiedModules.includes(moduleId));
+            const unexpectedModule = verifiedModules.find((moduleId) => !normalizedDraftModules.includes(moduleId));
+            if (verified.status !== status || missingModule || unexpectedModule) {
+                throw new Error('تعذر مطابقة العقد المحفوظ مع التعديلات المطلوبة. أعد تحميل الصفحة قبل إجراء تعديل آخر.');
+            }
+
+            setModules(verifiedModules);
+            setStatus(verified.status);
+            setServerSnapshot({ status: verified.status, modules: verifiedModules });
+            setNotice('تم حفظ العقد وإعادة قراءته من الخادم بنجاح.');
+        } catch (error: any) {
+            setNotice(error?.message || 'تعذر حفظ العقد. لم يتم اعتبار العملية مكتملة.');
         } finally {
             setIsSaving(false);
         }
     };
 
-    const activeCount = modules.length;
+    const activeCount = normalizedDraftModules.length;
     const totalCount = MODULE_ORDER.length;
 
     return (
@@ -86,13 +131,13 @@ export const SchoolContractPanel: React.FC<{ schoolId: string }> = ({ schoolId }
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h3 className="font-black text-slate-900 text-base">عقد المدرسة والوحدات المفعلة</h3>
+                            <h3 className="font-black text-slate-900 text-base">العقد المرجعي والوحدات المفعلة</h3>
                             <span className="text-[11px] font-black bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">
                                 {activeCount} من {totalCount} مفعلة
                             </span>
                         </div>
                         <p className="mt-0.5 text-xs text-slate-500">
-                            تُحدد هذه الوحدات الميزات المتاحة لمدير ومعلمي المدرسة على مستوى المنصة.
+                            هذه الشاشة هي مصدر تعديل وحدات العقد. لا يُعتبر الحفظ ناجحًا إلا بعد إعادة قراءة نفس الحالة من الخادم.
                         </p>
                     </div>
                 </div>
@@ -101,11 +146,12 @@ export const SchoolContractPanel: React.FC<{ schoolId: string }> = ({ schoolId }
                     <select
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
-                        className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-800 outline-none focus:border-indigo-500 shadow-2xs"
+                        disabled={isLoading || isSaving}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-800 outline-none focus:border-indigo-500 shadow-2xs disabled:opacity-50"
                     >
-                        <option value="active">🟢 نشط وسارٍ</option>
-                        <option value="inactive">🟡 موقوف مؤقتاً</option>
-                        <option value="expired">🔴 منتهٍ</option>
+                        <option value="active">نشط وسارٍ</option>
+                        <option value="inactive">موقوف مؤقتاً</option>
+                        <option value="expired">منتهٍ</option>
                     </select>
                 </div>
             </div>
@@ -115,69 +161,55 @@ export const SchoolContractPanel: React.FC<{ schoolId: string }> = ({ schoolId }
                     const info = MODULES_MAP[moduleId];
                     if (!info) return null;
                     const Icon = info.icon;
-                    const isChecked = modules.includes(moduleId);
+                    const isChecked = normalizedDraftModules.includes(moduleId);
                     const isLocked = Boolean(info.required);
 
                     return (
-                        <div
+                        <label
                             key={moduleId}
-                            onClick={() => toggle(moduleId)}
-                            className={`group relative flex items-start gap-3 rounded-2xl border p-3 transition-all cursor-pointer select-none ${
+                            className={`group relative flex items-start gap-3 rounded-2xl border p-3 transition-all select-none ${
                                 isChecked
                                     ? 'border-indigo-300/80 bg-white text-slate-900 shadow-xs ring-1 ring-indigo-200/50'
                                     : 'border-slate-200/80 bg-slate-50/60 text-slate-500 hover:border-slate-300 hover:bg-white'
-                            } ${isLocked ? 'cursor-default' : ''}`}
+                            } ${isLocked || isSaving || isLoading ? 'cursor-default' : 'cursor-pointer'}`}
                         >
                             <input
                                 className="sr-only"
                                 type="checkbox"
                                 checked={isChecked}
-                                disabled={isLocked}
+                                disabled={isLocked || isSaving || isLoading}
                                 onChange={() => toggle(moduleId)}
                             />
-                            <div className={`mt-0.5 w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                                isChecked
-                                    ? 'bg-indigo-600 text-white shadow-2xs'
-                                    : 'bg-slate-200/70 text-slate-400 group-hover:bg-slate-200'
-                            }`}>
+                            <div className={`mt-0.5 w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors ${isChecked ? 'bg-indigo-600 text-white shadow-2xs' : 'bg-slate-200/70 text-slate-400 group-hover:bg-slate-200'}`}>
                                 <Icon size={16} />
                             </div>
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-1.5">
                                     <span className="font-black text-xs text-slate-900 truncate">{info.title}</span>
-                                    {isLocked && (
-                                        <span className="text-[10px] font-black bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded-md">
-                                            إلزامي
-                                        </span>
-                                    )}
+                                    {isLocked && <span className="text-[10px] font-black bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md">إلزامي</span>}
                                 </div>
                                 <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed line-clamp-1">{info.desc}</p>
                             </div>
-                            <div className={`mt-1 w-4 h-4 rounded-full flex items-center justify-center shrink-0 border transition-all ${
-                                isChecked
-                                    ? 'border-indigo-600 bg-indigo-600 text-white'
-                                    : 'border-slate-300 bg-white'
-                            }`}>
+                            <div className={`mt-1 w-4 h-4 rounded-full flex items-center justify-center shrink-0 border transition-all ${isChecked ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300 bg-white'}`}>
                                 {isChecked && <Check size={11} strokeWidth={3} />}
                             </div>
-                        </div>
+                        </label>
                     );
                 })}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-indigo-100/60">
-                <span className="text-xs font-bold text-slate-600">{notice}</span>
+                <span className="text-xs font-bold text-slate-600">{isLoading ? 'جارٍ قراءة العقد من الخادم...' : notice}</span>
                 <button
                     type="button"
                     onClick={() => void save()}
-                    disabled={isSaving}
-                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-xs font-black text-white shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                    disabled={isSaving || isLoading || !hasChanges}
+                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-xs font-black text-white shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {isSaving ? <Loader2 size={14} className="animate-spin" /> : <ShieldCheck size={15} />}
-                    <span>حفظ وتطبيق العقد</span>
+                    <span>{hasChanges ? 'حفظ وتطبيق العقد' : 'العقد مطابق للخادم'}</span>
                 </button>
             </div>
         </section>
     );
 };
-
