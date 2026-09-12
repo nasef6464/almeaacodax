@@ -13,6 +13,8 @@
     "router|GET|/session/:quizId",
     "productConfigRouter|GET|/",
     "questionAnalyticsRouter|GET|/",
+    "authRouter|GET|/admin/trainers",
+    "authRouter|GET|/admin/trainers/:id",
     "classroomRouter|GET|/questions",
     "classroomRouter|POST|/sessions",
     "classroomRouter|GET|/sessions/:id/aggregate",
@@ -75,5 +77,11 @@
     "LEARNING_MANAGER_AUDIT_RUN_ID",
     "PILOT_ALLOW_EXTERNAL_RUN",
     "PILOT_WRITE_AUTHORIZATION"
+  ],
+  "hotspotFiles": [
+    "dashboards/SchoolTeacherDashboard.tsx",
+    "components/classroom/ClassroomActiveSessionPanel.tsx",
+    "components/classroom/SmartClassroomReportsSection.tsx",
+    "components/classroom/SmartClassroomSessionSchedulerModal.tsx"
   ]
 }
