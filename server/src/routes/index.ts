@@ -23,11 +23,9 @@ import { publicTestsRouter } from "./publicTests.routes.js";
 import { productConfigRouter } from "./productConfig.routes.js";
 import { schoolAdminIntegrityRouter } from "./schoolAdminIntegrity.routes.js";
 import { schoolAccessRouter } from "./schoolAccess.routes.js";
-import { classroomRouter } from "./classroom.routes.js";
+import { classroomRouter } from "./classroomRoot.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
-import { requireActiveAuth, requireAuth } from "../middleware/auth.js";
-import { requireActiveClassroomSchoolContext } from "../middleware/classroomAuth.js";
 
 export const apiRouter = Router();
 
@@ -50,12 +48,7 @@ apiRouter.use("/product-config", productConfigRouter);
 // mutations cannot create cross-school/orphan relationships.
 apiRouter.use("/school-access", schoolAdminIntegrityRouter);
 apiRouter.use("/school-access", schoolAccessRouter);
-// Classroom contains student-only handlers that intentionally use requireAuth
-// without a per-route role middleware. Refresh the principal once at the route
-// group boundary so deleted/disabled accounts lose HTTP classroom access
-// immediately, then honor explicit school-membership revocation for students.
-// Downstream requireRole reuses the same DB-backed identity.
-apiRouter.use("/classroom", requireAuth, requireActiveAuth, requireActiveClassroomSchoolContext, classroomRouter);
+apiRouter.use("/classroom", classroomRouter);
 apiRouter.use("/", quizResultsRouter);
 apiRouter.use("/certificates", certificateRouter);
 apiRouter.use("/discussions", discussionRouter);
