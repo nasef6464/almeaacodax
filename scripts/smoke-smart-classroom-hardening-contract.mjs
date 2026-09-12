@@ -1,0 +1,85 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const checks = [];
+const check = (name, condition) => {
+  const pass = Boolean(condition);
+  checks.push({ name, pass });
+  assert.ok(pass, name);
+};
+
+// Classroom HTTP behavior is intentionally split across focused registrars. Keep
+// this contract architectural-layout agnostic by evaluating the composed route
+// surface rather than requiring every invariant to live in one monolithic file.
+const routes = [
+  'server/src/routes/classroom.routes.ts',
+  'server/src/routes/classroom/classroomRouteSupport.ts',
+  'server/src/routes/classroom/registerClassroomTeacherRoutes.ts',
+  'server/src/routes/classroom/registerClassroomTemplateRoutes.ts',
+  'server/src/routes/classroom/registerClassroomStudentRoutes.ts',
+  'server/src/routes/classroom/registerClassroomSupervisorRoutes.ts',
+  'server/src/routes/classroom/registerClassroomAggregateRoutes.ts',
+].map(read).join('\n');
+const classroomAuth = read('server/src/middleware/classroomAuth.ts');
+const lifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
+const questionAccess = read('server/src/modules/schools/application/classroomQuestionAccess.ts');
+const reportBuilder = read('server/src/modules/schools/application/classroomSupervisorReport.ts');
+const reportUi = read('components/classroom/SmartClassroomReportsSection.tsx');
+const teacherConsole = read('pages/ClassroomTeacherConsole.tsx');
+const templates = read('components/classroom/ClassroomPreparedTemplatesManager.tsx');
+const scheduler = read('components/classroom/SmartClassroomSessionSchedulerModal.tsx');
+const widget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
+const projector = read('pages/ClassroomProjectorView.tsx');
+const socketPolicy = read('server/src/sockets/workspaceAuthorization.ts');
+const socketIndex = read('server/src/sockets/index.ts');
+const schoolIntegrity = read('server/src/routes/schoolAdminIntegrity.routes.ts');
+const routeIndex = read('server/src/routes/index.ts');
+
+const selectStart = widget.indexOf('const handleSelectAnswer');
+const submitStart = widget.indexOf('const handleSubmitAll');
+const postSubmitMarker = widget.indexOf('const currentActiveQ');
+const selectBody = selectStart >= 0 && submitStart > selectStart ? widget.slice(selectStart, submitStart) : '';
+const submitBody = submitStart >= 0 && postSubmitMarker > submitStart ? widget.slice(submitStart, postSubmitMarker) : '';
+const reportUsesLocalStorage = /localStorage\s*\.\s*(getItem|setItem|removeItem)\s*\(/.test(reportUi);
+const teacherWritesLocalReportArchive = /localStorage\s*\.\s*setItem\s*\(\s*[`'"]smart_classroom_reports_/.test(teacherConsole) || teacherConsole.includes('smart_classroom_reports_${');
+
+check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
+check('teacher history requires an explicit active school scope', classroomAuth.includes('req.path === "/teacher/history"') && classroomAuth.includes('schoolId is required for teacher classroom history') && classroomAuth.includes('hasActiveSchoolRole(actor, requestedSchoolId, "teacher")'));
+check('teacher template deletion requires active school membership', classroomAuth.includes('templateDeleteMatch') && classroomAuth.includes('ClassroomTemplateModel.findById') && classroomAuth.includes('hasActiveSchoolRole(actor, String(template.schoolId), "teacher")'));
+check('runtime classroom access requires current SMART_CLASSROOM entitlement', classroomAuth.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && classroomAuth.includes('if (!(await smartClassroomEnabled(schoolId))) return rejectDisabledModule(res)'));
+check('disabled module still allows explicit session end cleanup', classroomAuth.includes('!req.path.endsWith("/end")') && classroomAuth.includes('Smart Classroom is not enabled for this school'));
+check('teacher-owned runtime session access requires active class assignment', classroomAuth.includes('TeachingAssignmentModel.exists') && classroomAuth.includes('Teacher classroom assignment is inactive') && classroomAuth.includes('classId: String(session.classId)'));
+check('teacher realtime ownership requires active class assignment', socketPolicy.includes('canTeacherOwnClassroom') && socketIndex.includes('async canTeacherOwnClassroom') && socketIndex.includes('TeachingAssignmentModel.exists'));
+check('supervisor HTTP scope is filtered by current SMART_CLASSROOM entitlement', reportBuilder.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && reportBuilder.includes('entitledSchools.has(entry.schoolId)'));
+check('realtime student and teacher school scope is entitlement filtered', socketIndex.includes('currentRole === "student" || currentRole === "teacher"') && socketIndex.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && socketIndex.includes('roleSchoolIds = entitlementChecks.filter((entry) => entry.allowed)'));
+check('realtime supervisor classroom scope requires module entitlement', socketIndex.includes('async canSupervisorViewClassroom') && socketIndex.includes('if (!entitlement.allowed) return false'));
+check('student PIN join is live-only', routes.includes('pinHash: hashClassroomPin(payload.pin)') && routes.includes('status: "live"'));
+check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
+check('instant join uses lifecycle guard', routes.includes('canStudentJoinClassroom(session.status as ClassroomSessionStatus)'));
+check('lifecycle policy only permits students into live sessions', lifecycle.includes('status === "live"'));
+check('question bank uses tenant-aware visibility policy', routes.includes('classroomQuestionVisibilityFilter(schoolId, req.authUser!.id)') && questionAccess.includes('ownerType: "school"'));
+check('question snapshot persists pathId', routes.includes('pathId: question.pathId || ""'));
+check('append publishes only truly new canonical questions', routes.includes('const newQuestionIds = trulyNewSnapshots.map') && routes.includes('session.publishedQuestionIds = newQuestionIds'));
+check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
+check('director can only read aggregate through capability', routes.includes('requireSchoolDirectorCapability(') && routes.includes('isDirector = Boolean('));
+check('finalized report builder prefers immutable persisted snapshots', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('session.status === "ended"') && reportBuilder.includes('session.status === "archived"'));
+check('teacher summary reports only aggregate finalized sessions', reportBuilder.includes('{ status: { $in: ["ended", "archived"] } }'));
+check('reports UI has no localStorage report fallback', !reportUsesLocalStorage && !reportUi.includes('smart_classroom_reports_'));
+check('teacher console does not persist a competing local report archive', !teacherWritesLocalReportArchive);
+check('reports UI displays finalized history only', reportUi.includes("report.status === 'ended'") && reportUi.includes("report.status === 'archived'"));
+check('reports UI consumes canonical roster/totals/question evidence', reportUi.includes('report.roster.joined') && reportUi.includes('report.totals.responses') && reportUi.includes('question.answered'));
+check('prepared templates are server-backed', templates.includes('/classroom/templates') && !templates.includes('localStorage'));
+check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
+check('launch modal tells truth: launch now, not future scheduler', scheduler.includes('autoStart: true') && scheduler.includes('ليست جدولة مستقبلية'));
+check('student option selection is local until submit', selectBody.length > 0 && !selectBody.includes('answerClassroomQuestion'));
+check('student submit sends answers through one explicit path', submitBody.includes('answerClassroomQuestion'));
+check('projector back link targets teacher console', projector.includes('to={`/classroom/${sessionId}/teacher`}'));
+check('projector follows global active question by snapshot index', projector.includes('findIndex((question: any) => question.index === result.activeQuestionIndex)'));
+check('socket classroom policy is role-aware', socketPolicy.includes('role === "student"') && socketPolicy.includes('role === "school_admin"') && socketPolicy.includes('role === "supervisor"'));
+check('admin relationship mutations validate school/class/teacher integrity', schoolIntegrity.includes('Class does not belong to this school') && schoolIntegrity.includes('Teacher must have an active membership in this school'));
+check('integrity router is mounted before legacy school router', routeIndex.indexOf('apiRouter.use("/school-access", schoolAdminIntegrityRouter)') < routeIndex.indexOf('apiRouter.use("/school-access", schoolAccessRouter)'));
+
+console.log(`Smart Classroom hardening contract: PASS (${checks.length}/${checks.length})`);

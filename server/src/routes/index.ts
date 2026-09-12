@@ -21,8 +21,9 @@ import { parentRouter } from "./parent.routes.js";
 import { activityRouter } from "./activity.routes.js";
 import { publicTestsRouter } from "./publicTests.routes.js";
 import { productConfigRouter } from "./productConfig.routes.js";
+import { schoolAdminIntegrityRouter } from "./schoolAdminIntegrity.routes.js";
 import { schoolAccessRouter } from "./schoolAccess.routes.js";
-import { classroomRouter } from "./classroom.routes.js";
+import { classroomRouter } from "./classroomRoot.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
 
@@ -43,6 +44,9 @@ apiRouter.use("/backups", backupRouter);
 apiRouter.use("/seo", seoRouter);
 apiRouter.use("/notifications", notificationRouter);
 apiRouter.use("/product-config", productConfigRouter);
+// Integrity-enforced admin mutations are mounted first so legacy generic
+// mutations cannot create cross-school/orphan relationships.
+apiRouter.use("/school-access", schoolAdminIntegrityRouter);
 apiRouter.use("/school-access", schoolAccessRouter);
 apiRouter.use("/classroom", classroomRouter);
 apiRouter.use("/", quizResultsRouter);

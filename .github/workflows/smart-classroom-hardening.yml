@@ -1,0 +1,93 @@
+name: Smart Classroom Hardening
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'server/src/routes/classroom.routes.ts'
+      - 'server/src/routes/schoolAdminIntegrity.routes.ts'
+      - 'server/src/routes/index.ts'
+      - 'server/src/middleware/auth.ts'
+      - 'server/src/middleware/classroomAuth.ts'
+      - 'server/src/models/Classroom**'
+      - 'server/src/modules/schools/**'
+      - 'server/src/sockets/**'
+      - 'server/src/scripts/*SmartClassroom*'
+      - 'components/classroom/**'
+      - 'pages/Classroom**'
+      - 'hooks/useClassroomRealtime.ts'
+      - 'services/api.ts'
+      - 'scripts/smoke-smart-classroom**'
+      - 'server/package.json'
+      - '.github/workflows/smart-classroom-hardening.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      NODE_ENV: test
+      MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_smart_classroom_ci
+      JWT_SECRET: smart-classroom-ci-secret-2026-only
+      CLIENT_URL: http://localhost:3000
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+      RATE_LIMIT_REDIS_ENABLED: 'false'
+      NOTIFICATION_QUEUE_ENABLED: 'false'
+      AI_PROVIDER: none
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: Server typecheck
+        run: npm --prefix server run check
+
+      - name: Smart Classroom hardening contract
+        run: node scripts/smoke-smart-classroom-hardening-contract.mjs
+
+      - name: Server build
+        run: npm --prefix server run build
+
+      - name: Frontend build
+        run: npm run build
+
+      - name: Smart Classroom isolated E2E
+        run: npm --prefix server run simulate:smart-classroom-hardening
+
+      - name: Smart Classroom active-account revocation
+        run: npm --prefix server run verify:smart-classroom-active-auth
+
+      - name: Smart Classroom realtime event delivery
+        run: npm --prefix server run verify:smart-classroom-realtime
+
+      - name: Finalized report immutability
+        run: npm --prefix server run verify:smart-classroom-report-immutability
