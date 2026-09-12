@@ -166,9 +166,9 @@ const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAut
       managedSubjectIds: backendUser?.managedSubjectIds ?? existing.managedSubjectIds,
       interactiveVideoProgress: backendUser?.interactiveVideoProgress ?? existing.interactiveVideoProgress,
       subscription: {
-        ...existing.subscription,
-        plan: backendUser?.subscription?.plan ?? existing.subscription.plan,
-        expiresAt: backendUser?.subscription?.expiresAt ?? existing.subscription.expiresAt,
+        ...existing?.subscription,
+        plan: backendUser?.subscription?.plan ?? existing?.subscription?.plan ?? 'free',
+        expiresAt: backendUser?.subscription?.expiresAt ?? existing?.subscription?.expiresAt,
         purchasedCourses: toArray(backendUser?.subscription?.purchasedCourses),
         purchasedPackages: toArray(backendUser?.subscription?.purchasedPackages),
       },
