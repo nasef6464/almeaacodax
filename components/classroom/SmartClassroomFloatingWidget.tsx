@@ -32,6 +32,12 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   
   const [isOpen, setIsOpen] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [activeSessionAlert, setActiveSessionAlert] = useState<{
+    sessionId: string;
+    className: string;
+    teacherName: string;
+    status: string;
+  } | null>(null);
   
   const [questionsList, setQuestionsList] = useState<ClassroomExamQuestion[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -41,6 +47,35 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   const [message, setMessage] = useState('');
   
   const lastQuestionIdRef = useRef<string>('');
+
+  // Proactive check: does the student have an active classroom session right now?
+  useEffect(() => {
+    if (!user || user.role !== 'student' || joined) return;
+    let mounted = true;
+
+    const checkActive = async () => {
+      try {
+        const res = await api.getStudentActiveClassroomSession();
+        if (mounted && res.hasActiveSession && res.session) {
+          setActiveSessionAlert(res.session);
+        } else if (mounted) {
+          setActiveSessionAlert(null);
+        }
+      } catch {
+        // safe ignore
+      }
+    };
+
+    void checkActive();
+    const interval = setInterval(() => {
+      void checkActive();
+    }, 6000);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, [user, joined]);
 
   const loadCurrentQuestion = useCallback(async () => {
     if (!sessionId || !joined) return;
@@ -82,24 +117,46 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
     return () => clearInterval(interval);
   }, [joined, sessionId, loadCurrentQuestion]);
 
-  const handleJoin = async () => {
-    if (!sessionId.trim() || pin.length !== 6) {
-      setMessage('يرجى إدخال معرّف الحصة ورمز الـ 6 أرقام كاملاً.');
-      return;
+  // 1-Click Instant Join from Proactive Alert
+  const handleInstantJoin = async () => {
+    if (!activeSessionAlert) return;
+    const targetSessionId = activeSessionAlert.sessionId;
+    try {
+      await api.instantJoinClassroomSession(targetSessionId);
+    } catch {
+      // Allow continuing even if already participant
     }
+    sessionStorage.setItem('classroom_session_id', targetSessionId);
+    sessionStorage.setItem('classroom_joined', 'true');
+    setSessionId(targetSessionId);
+    setJoined(true);
+    setActiveSessionAlert(null);
+    setIsOpen(true);
+    playChime();
+    await loadCurrentQuestion();
+  };
+
+  // Join by 6-digit PIN
+  const handleJoinByPin = async (enteredPin: string) => {
+    if (enteredPin.length !== 6) return;
     setMessage('جارٍ التحقق والانضمام…');
     try {
-      await api.joinClassroomSession(sessionId.trim(), pin.trim());
-      sessionStorage.setItem('classroom_session_id', sessionId.trim());
-      sessionStorage.setItem('classroom_pin', pin.trim());
-      sessionStorage.setItem('classroom_joined', 'true');
-      setJoined(true);
-      setShowJoinModal(false);
-      setIsOpen(true);
-      setMessage('تم الانضمام بنجاح! بانتظار نشر الأسئلة.');
-      await loadCurrentQuestion();
-    } catch {
-      setMessage('تعذر الانضمام للحصة. تأكد من الرمز وأنك مسجل في الفصل.');
+      const res = await api.joinClassroomSessionByPin(enteredPin);
+      if (res.joined && res.sessionId) {
+        sessionStorage.setItem('classroom_session_id', res.sessionId);
+        sessionStorage.setItem('classroom_pin', enteredPin);
+        sessionStorage.setItem('classroom_joined', 'true');
+        setSessionId(res.sessionId);
+        setPin(enteredPin);
+        setJoined(true);
+        setShowJoinModal(false);
+        setIsOpen(true);
+        playChime();
+        setMessage('تم الانضمام بنجاح!');
+        await loadCurrentQuestion();
+      }
+    } catch (err: any) {
+      setMessage(err?.message || 'رمز الحصة غير صحيح أو منتهي.');
     }
   };
 
@@ -149,6 +206,57 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
 
   return (
     <>
+      {/* Proactive 1-Click Join Toast for Assigned Students */}
+      {activeSessionAlert && !isOpen && !joined && (
+        <div
+          className="fixed bottom-6 right-6 z-50 max-w-sm rounded-3xl border-2 border-indigo-500 bg-slate-900 p-4 text-white shadow-2xl transition-all"
+          dir="rtl"
+        >
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white animate-pulse">
+                <Presentation size={20} />
+              </span>
+              <div>
+                <span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300">
+                  حصة ذكية نشطة الآن 🟢
+                </span>
+                <h4 className="text-xs font-black text-white mt-0.5">
+                  أ. {activeSessionAlert.teacherName} ({activeSessionAlert.className})
+                </h4>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveSessionAlert(null)}
+              className="rounded-lg p-1 text-slate-400 hover:text-white"
+            >
+              <X size={15} />
+            </button>
+          </div>
+
+          <div className="mt-3 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void handleInstantJoin()}
+              className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-black text-white shadow-md hover:bg-indigo-500 active:scale-95 transition-all"
+            >
+              انضمام فوري للحصة 🚀
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveSessionAlert(null);
+                setShowJoinModal(true);
+              }}
+              className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700"
+            >
+              بالرمز
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Floating Dock Button (Bottom-Left) */}
       <div className="fixed bottom-6 left-6 z-40 flex flex-col items-start gap-2" dir="rtl">
         {!isOpen && (
@@ -181,13 +289,13 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
         )}
       </div>
 
-      {/* Quick Join Dialog Modal */}
+      {/* Quick Join Dialog Modal (PIN Only) */}
       {showJoinModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs" dir="rtl">
           <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
               <h3 className="flex items-center gap-2 font-black text-slate-900 dark:text-white">
-                <Presentation className="text-indigo-600" size={20} /> انضم لحصة معلمك المباشرة
+                <Presentation className="text-indigo-600" size={20} /> انضمام لحصة الفصل
               </h3>
               <button type="button" onClick={() => setShowJoinModal(false)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100">
                 <X size={18} />
@@ -195,41 +303,30 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
             </div>
 
             <p className="mt-3 text-xs leading-relaxed text-slate-500">
-              أدخل معرّف الحصة أو الرابط ورمز الـ 6 أرقام (PIN) الظاهر على السبورة التفاعلية.
+              أدخل رمز الحصة الرقمي (6 أرقام) الظاهر على سبورة الفصل:
             </p>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600">معرّف الحصة (Session ID)</label>
-                <input
-                  value={sessionId}
-                  onChange={(e) => setSessionId(e.target.value.trim())}
-                  placeholder="مثال: 66f... أو الصق رابط الحصة"
-                  className="mt-1 w-full rounded-xl border border-slate-200 p-3 text-xs dark:border-slate-700 dark:bg-slate-800"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-600">رمز الانضمام (6 أرقام)</label>
                 <input
                   inputMode="numeric"
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="000000"
-                  className="mt-1 w-full rounded-xl border border-slate-200 p-3 text-center text-xl font-black tracking-widest text-indigo-700 dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400"
+                  className="w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-widest text-indigo-700 dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400"
                 />
               </div>
 
               <button
                 type="button"
-                onClick={() => void handleJoin()}
-                disabled={!sessionId.trim() || pin.length !== 6}
-                className="w-full rounded-xl bg-indigo-600 p-3 text-sm font-black text-white hover:bg-indigo-700 disabled:opacity-50"
+                onClick={() => void handleJoinByPin(pin)}
+                disabled={pin.length !== 6}
+                className="w-full rounded-xl bg-indigo-600 p-3.5 text-sm font-black text-white hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95"
               >
-                انضم الآن للحصة
+                انضم الآن للحصة 🚀
               </button>
 
-              {message && <p className="text-center text-xs font-bold text-indigo-700 dark:text-indigo-400">{message}</p>}
+              {message && <p className="text-center text-xs font-bold text-rose-600 dark:text-rose-400">{message}</p>}
             </div>
           </div>
         </div>

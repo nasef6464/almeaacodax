@@ -26,7 +26,8 @@ import { hasActiveSchoolRole } from "../modules/schools/application/schoolContex
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
 const sessionId = (doc: any) => String(doc.id || doc._id);
-const createSchema = z.object({ schoolId: z.string().min(1), classId: z.string().min(1), questionIds: z.array(z.string().min(1)).min(1).max(10).refine((ids) => new Set(ids).size === ids.length, "Question IDs must be unique") });
+const createSchema = z.object({ schoolId: z.string().min(1), classId: z.string().min(1), questionIds: z.array(z.string().min(1)).min(1).max(30).refine((ids) => new Set(ids).size === ids.length, "Question IDs must be unique") });
+const appendQuestionsSchema = z.object({ questionIds: z.array(z.string().min(1)).min(1).max(20), autoPublishFirst: z.boolean().optional().default(false) });
 const answerSchema = z.object({ selectedOptionIndex: z.number().int().min(0) });
 const joinSchema = z.object({ pin: z.string().regex(/^\d{6}$/) });
 const interventionSchema = z.object({ schoolId: z.string().min(1), classId: z.string().optional().default(""), skillId: z.string().min(1), targetStudentIds: z.array(z.string().min(1)).min(1).max(50), pathId: z.string().min(1), dailyMinutes: z.number().int().min(15).max(240).optional().default(90), followUpAt: z.string().datetime().optional(), remediationThreshold: z.number().min(0).max(100).optional(), minimumEvidence: z.number().int().min(1).max(500).optional() });
@@ -51,7 +52,22 @@ classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"])
   const questions = await QuestionModel.find({ $or: [{ id: { $in: payload.questionIds } }, ...(objectIds.length ? [{ _id: { $in: objectIds } }] : [])], type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" }).lean();
   if (questions.length !== payload.questionIds.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Questions must be approved MCQ or true/false" });
   const byId = new Map(questions.map((question: any) => [String(question.id || question._id), question]));
-  const snapshots = payload.questionIds.map((id) => { const q: any = byId.get(id); return { questionId: id, text: q.text, imageUrl: q.imageUrl, options: q.options, type: q.type, correctOptionIndex: q.correctOptionIndex, skillIds: q.skillIds || [] }; });
+  const snapshots = payload.questionIds.map((id) => {
+    const q: any = byId.get(id);
+    return {
+      questionId: id,
+      text: q.text,
+      imageUrl: q.imageUrl || "",
+      options: q.options || [],
+      type: q.type,
+      correctOptionIndex: q.correctOptionIndex,
+      skillIds: q.skillIds || [],
+      explanation: q.explanation || "",
+      sectionId: q.sectionId || "",
+      subject: q.subject || "",
+      difficulty: q.difficulty || "Medium",
+    };
+  });
   const pin = String(randomInt(100000, 1000000));
   const session = await ClassroomSessionModel.create({ schoolId: payload.schoolId, classId: payload.classId, teacherId: req.authUser!.id, questionSnapshots: snapshots, pinHash: hashPin(pin), pinExpiresAt: new Date(Date.now() + 30 * 60_000) });
   res.status(StatusCodes.CREATED).json({ sessionId: sessionId(session), pin, status: session.status });
@@ -71,10 +87,12 @@ classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"])
   const filter: Record<string, any> = { type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" };
   if (typeof req.query.pathId === "string" && req.query.pathId.trim()) filter.pathId = req.query.pathId.trim();
   if (typeof req.query.subject === "string" && req.query.subject.trim()) filter.subject = req.query.subject.trim();
+  if (typeof req.query.sectionId === "string" && req.query.sectionId.trim()) filter.sectionId = req.query.sectionId.trim();
+  if (typeof req.query.skillId === "string" && req.query.skillId.trim()) filter.skillIds = req.query.skillId.trim();
   if (typeof req.query.difficulty === "string" && req.query.difficulty.trim()) filter.difficulty = req.query.difficulty.trim();
   if (typeof req.query.search === "string" && req.query.search.trim()) filter.text = { $regex: req.query.search.trim(), $options: "i" };
   const questions = await QuestionModel.find(filter)
-    .select("id text imageUrl options type skillIds pathId subject sectionId difficulty examType")
+    .select("id text imageUrl options type skillIds pathId subject sectionId difficulty examType explanation")
     .sort({ updatedAt: -1 })
     .limit(100)
     .lean();
@@ -91,7 +109,49 @@ classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"])
       sectionId: question.sectionId || "",
       difficulty: question.difficulty || "Medium",
       examType: question.examType || "general",
+      explanation: question.explanation || "",
     })),
+  });
+}));
+
+classroomRouter.get("/student/active-session", requireAuth, asyncHandler(async (req, res) => {
+  const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role name").lean() as any;
+  if (!student || student.role !== "student" || !student.schoolId) {
+    return res.json({ hasActiveSession: false });
+  }
+  const studentClassIds = (student.groupIds || []).map(String).filter((id: string) => Types.ObjectId.isValid(id));
+  if (studentClassIds.length === 0) {
+    return res.json({ hasActiveSession: false });
+  }
+  const session = await ClassroomSessionModel.findOne({
+    schoolId: String(student.schoolId),
+    classId: { $in: studentClassIds },
+    status: { $in: ["live", "scheduled"] },
+    pinExpiresAt: { $gt: new Date() },
+  }).sort({ createdAt: -1 }).lean() as any;
+
+  if (!session) {
+    return res.json({ hasActiveSession: false });
+  }
+
+  const [teacher, classroomGroup] = await Promise.all([
+    UserModel.findById(session.teacherId).select("name displayName email").lean() as any,
+    GroupModel.findById(session.classId).select("name").lean() as any,
+  ]);
+
+  res.json({
+    hasActiveSession: true,
+    session: {
+      sessionId: sessionId(session),
+      schoolId: session.schoolId,
+      classId: session.classId,
+      className: classroomGroup?.name || "فصلك الدراسي",
+      teacherName: teacher?.displayName || teacher?.name || "معلم المادة",
+      status: session.status,
+      activeQuestionIndex: session.activeQuestionIndex,
+      totalQuestions: session.questionSnapshots?.length || 0,
+      createdAt: session.createdAt,
+    },
   });
 }));
 
@@ -184,6 +244,49 @@ classroomRouter.post("/sessions/:id/publish/:index", requireAuth, requireRole(["
   session.status = "live"; session.activeQuestionIndex = index; await session.save(); emitClassroomEvent(sessionId(session), "question:published", { activeQuestionIndex: index }); res.json({ status: session.status, activeQuestionIndex: index });
 }));
 
+classroomRouter.post("/sessions/join-by-pin", requireAuth, asyncHandler(async (req, res) => {
+  const payload = joinSchema.parse(req.body);
+  const hashed = hashPin(payload.pin);
+  const session = await ClassroomSessionModel.findOne({
+    pinHash: hashed,
+    status: { $in: ["live", "scheduled", "draft"] },
+    pinExpiresAt: { $gt: new Date() },
+  }).sort({ createdAt: -1 }).lean() as any;
+
+  if (!session) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة نشطة بهذا الرمز أو قد انتهت صلاحيته." });
+  }
+
+  const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
+  if (
+    !student ||
+    student.role !== "student" ||
+    String(student.schoolId) !== String(session.schoolId) ||
+    !(student.groupIds || []).map(String).includes(String(session.classId))
+  ) {
+    return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الرمز مخصص لحصة فصل دراسي آخر أو مدرسة أخرى." });
+  }
+
+  await ClassroomParticipantModel.updateOne(
+    { sessionId: sessionId(session), studentId: req.authUser!.id },
+    { $setOnInsert: { joinedAt: new Date() } },
+    { upsert: true }
+  );
+
+  res.json({ joined: true, sessionId: sessionId(session), schoolId: session.schoolId, classId: session.classId });
+}));
+
+classroomRouter.post("/sessions/:id/instant-join", requireAuth, asyncHandler(async (req, res) => {
+  const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
+  if (!session || session.status === "ended") return res.status(StatusCodes.NOT_FOUND).json({ message: "الحصة غير نشطة أو انتهت" });
+  const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
+  if (!student || student.role !== "student" || String(student.schoolId) !== String(session.schoolId) || !(student.groupIds || []).map(String).includes(String(session.classId))) {
+    return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بالانضمام لهذه الحصة المخصصة لفصل آخر" });
+  }
+  await ClassroomParticipantModel.updateOne({ sessionId: sessionId(session), studentId: req.authUser!.id }, { $setOnInsert: { joinedAt: new Date() } }, { upsert: true });
+  res.json({ joined: true, sessionId: sessionId(session), schoolId: session.schoolId, classId: session.classId });
+}));
+
 classroomRouter.post("/sessions/:id/join", requireAuth, asyncHandler(async (req, res) => {
   const payload = joinSchema.parse(req.body); const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
   if (!session || session.status === "ended" || session.pinExpiresAt < new Date() || hashPin(payload.pin) !== session.pinHash) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
@@ -228,6 +331,64 @@ classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "
   session.status = "ended"; session.endedAt = new Date(); session.activeQuestionIndex = null; session.reportSnapshot = report; await session.save(); emitClassroomEvent(sessionId(session), "session:ended", { report }); res.json({ report });
 }));
 
+classroomRouter.post("/sessions/:id/append-questions", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
+  const payload = appendQuestionsSchema.parse(req.body);
+  const session = await ClassroomSessionModel.findById(req.params.id);
+  if (!session || session.status === "ended") {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "الحصة غير موجودة أو منتهية بالفعل" });
+  }
+  if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) {
+    return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بتعديل هذه الحصة" });
+  }
+
+  const objectIds = payload.questionIds.filter((id) => Types.ObjectId.isValid(id));
+  const questions = await QuestionModel.find({
+    $or: [{ id: { $in: payload.questionIds } }, ...(objectIds.length ? [{ _id: { $in: objectIds } }] : [])],
+    type: { $in: ["mcq", "true_false"] },
+    approvalStatus: "approved",
+  }).lean();
+
+  const byId = new Map(questions.map((question: any) => [String(question.id || question._id), question]));
+  const newSnapshots = payload.questionIds
+    .map((id) => {
+      const q: any = byId.get(id);
+      if (!q) return null;
+      return {
+        questionId: id,
+        text: q.text,
+        imageUrl: q.imageUrl || "",
+        options: q.options || [],
+        type: q.type,
+        correctOptionIndex: q.correctOptionIndex,
+        skillIds: q.skillIds || [],
+        explanation: q.explanation || "",
+        sectionId: q.sectionId || "",
+        subject: q.subject || "",
+        difficulty: q.difficulty || "Medium",
+      };
+    })
+    .filter(Boolean);
+
+  if (newSnapshots.length === 0) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: "لم يتم العثور على أسئلة معتمدة صالحة للإضافة" });
+  }
+
+  const startIndex = session.questionSnapshots.length;
+  session.questionSnapshots.push(...(newSnapshots as any));
+  if (payload.autoPublishFirst) {
+    session.status = "live";
+    session.activeQuestionIndex = startIndex;
+    emitClassroomEvent(sessionId(session), "question:published", { activeQuestionIndex: startIndex });
+  }
+  await session.save();
+
+  res.json({
+    appendedCount: newSnapshots.length,
+    totalQuestions: session.questionSnapshots.length,
+    activeQuestionIndex: session.activeQuestionIndex,
+  });
+}));
+
 classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
   const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
   if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
@@ -237,6 +398,27 @@ classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (
   if (!isTeacher && !isStudent) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
   const responses = await ClassroomResponseModel.find({ sessionId: sessionId(session) }).lean();
   const distribution = responses.reduce((summary: Record<string, number>, response: any) => { const key = String(response.selectedOptionIndex); summary[key] = (summary[key] || 0) + 1; return summary; }, {});
-  const questions = isTeacher ? session.questionSnapshots.map((question: any, index: number) => ({ index, ...projectClassroomQuestionForStudent(question, true) })) : undefined;
+  
+  // Teachers and Projector views get full question details including explanation, correct index, and skills
+  const questions = session.questionSnapshots.map((question: any, index: number) => {
+    if (isTeacher) {
+      return {
+        index,
+        questionId: question.questionId,
+        text: question.text,
+        imageUrl: question.imageUrl || "",
+        options: question.options,
+        type: question.type,
+        correctOptionIndex: question.correctOptionIndex,
+        explanation: question.explanation || "",
+        skillIds: question.skillIds || [],
+        sectionId: question.sectionId || "",
+        subject: question.subject || "",
+        difficulty: question.difficulty || "Medium",
+      };
+    }
+    return { index, ...projectClassroomQuestionForStudent(question, true) };
+  });
+
   res.json({ sessionId: sessionId(session), status: session.status, activeQuestionIndex: session.activeQuestionIndex, responseCount: responses.length, distribution, report: session.status === "ended" ? session.reportSnapshot : null, questions });
 }));
