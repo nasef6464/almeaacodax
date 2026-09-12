@@ -66,6 +66,13 @@ const refreshActiveAuthUser = async (req: Request) => {
 };
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  // A route group may already have refreshed the principal from Mongo through
+  // requireActiveAuth. Nested route middleware must never downgrade that
+  // current identity back to stale role/school claims from the original JWT.
+  if (res.locals.activeAuthRefreshed === true && req.authUser) {
+    return next();
+  }
+
   if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
       id: "local-dev-admin",
@@ -91,8 +98,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
  * Refreshes the authenticated principal from Mongo and rejects disabled/deleted
  * accounts. Use this on authenticated route groups that contain handlers which
  * intentionally do not have their own role middleware (for example student
- * Smart Classroom routes). The refresh marker lets downstream requireRole
- * reuse the same principal without issuing a second user lookup in one request.
+ * Smart Classroom routes). The refresh marker lets downstream auth middleware
+ * reuse the same principal without issuing a second user lookup or restoring
+ * stale JWT claims in one request.
  */
 export async function requireActiveAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.authUser) {
