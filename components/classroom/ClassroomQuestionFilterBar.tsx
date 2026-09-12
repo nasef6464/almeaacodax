@@ -3,12 +3,12 @@ import { Filter, RotateCcw, Search } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 export interface ClassroomFilterState {
-  pathId: string;
-  subjectId: string;
-  sectionId: string;
-  skillId: string;
-  difficulty: string;
-  search: string;
+  pathId?: string;
+  subjectId?: string;
+  sectionId?: string;
+  skillId?: string;
+  difficulty?: string;
+  search?: string;
   track?: string; // backwards compatibility
   subject?: string; // backwards compatibility
 }
