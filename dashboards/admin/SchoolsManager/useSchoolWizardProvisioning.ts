@@ -21,6 +21,7 @@ interface SchoolWizardProvisioningInput {
 
 const groupId = (group: Group) => group.id || (group as any)._id;
 const userIdFrom = (user: any) => String(user?.id || user?._id || '').trim();
+const emailFrom = (user: any) => String(user?.email || '').trim().toLowerCase();
 
 export const useSchoolWizardProvisioning = (input: SchoolWizardProvisioningInput) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,23 +115,43 @@ export const useSchoolWizardProvisioning = (input: SchoolWizardProvisioningInput
         }
     };
 
+    const resolveDirectorAccount = async (schoolId: string) => {
+        const normalizedEmail = input.directorEmail.trim().toLowerCase();
+        const directory = await api.getAdminUsers({
+            page: 1,
+            limit: 25,
+            search: normalizedEmail,
+            role: 'school_admin',
+            isActive: true,
+        });
+        const existing = (directory?.users || []).find((user: any) => emailFrom(user) === normalizedEmail);
+        if (existing) {
+            const existingId = userIdFrom(existing);
+            if (!existingId) throw new Error('تم العثور على حساب المدير الحالي لكن معرّفه غير صالح.');
+            return existingId;
+        }
+
+        const response = await api.createAdminUser({
+            name: input.directorName.trim(),
+            email: normalizedEmail,
+            password: input.directorPassword,
+            role: 'school_admin',
+            schoolId,
+            groupIds: [],
+        });
+        const createdId = userIdFrom((response as any)?.user);
+        if (!createdId) {
+            throw new Error('تم إنشاء المدرسة لكن الخادم لم يرجع معرّف حساب المدير. لم يتم اعتبار التأسيس مكتملًا.');
+        }
+        return createdId;
+    };
+
     const ensureDirector = async (schoolId: string) => {
         if (!directorRequested || directorLinked) return;
-        setProgressMessage('4/4 إنشاء حساب مدير المدرسة وربط الصلاحيات...');
+        setProgressMessage('4/4 ربط حساب مدير المدرسة والصلاحيات...');
         let resolvedDirectorId = directorUserId;
         if (!resolvedDirectorId) {
-            const response = await api.createAdminUser({
-                name: input.directorName.trim(),
-                email: input.directorEmail.trim().toLowerCase(),
-                password: input.directorPassword,
-                role: 'school_admin',
-                schoolId,
-                groupIds: [],
-            });
-            resolvedDirectorId = userIdFrom((response as any)?.user);
-            if (!resolvedDirectorId) {
-                throw new Error('تم إنشاء المدرسة لكن الخادم لم يرجع معرّف حساب المدير. لم يتم اعتبار التأسيس مكتملًا.');
-            }
+            resolvedDirectorId = await resolveDirectorAccount(schoolId);
             setDirectorUserId(resolvedDirectorId);
         }
 
@@ -143,7 +164,7 @@ export const useSchoolWizardProvisioning = (input: SchoolWizardProvisioningInput
         const verified = await api.getSchoolDirectors(schoolId);
         const membership = (verified?.directors || []).find((item) => String(item.userId) === resolvedDirectorId);
         if (!membership || membership.status !== 'active') {
-            throw new Error('تم إنشاء حساب المدير لكن تعذر تأكيد عضويته النشطة في المدرسة. أعد المحاولة لإكمال الربط فقط.');
+            throw new Error('تعذر تأكيد عضوية مدير المدرسة النشطة. أعد المحاولة لإكمال الربط فقط.');
         }
         setDirectorLinked(true);
     };
