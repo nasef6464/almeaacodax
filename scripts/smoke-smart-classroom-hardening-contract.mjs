@@ -15,6 +15,7 @@ const routes = read('server/src/routes/classroom.routes.ts');
 const lifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
 const questionAccess = read('server/src/modules/schools/application/classroomQuestionAccess.ts');
 const reportUi = read('components/classroom/SmartClassroomReportsSection.tsx');
+const teacherConsole = read('pages/ClassroomTeacherConsole.tsx');
 const templates = read('components/classroom/ClassroomPreparedTemplatesManager.tsx');
 const scheduler = read('components/classroom/SmartClassroomSessionSchedulerModal.tsx');
 const widget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
@@ -29,6 +30,7 @@ const postSubmitMarker = widget.indexOf('const currentActiveQ');
 const selectBody = selectStart >= 0 && submitStart > selectStart ? widget.slice(selectStart, submitStart) : '';
 const submitBody = submitStart >= 0 && postSubmitMarker > submitStart ? widget.slice(submitStart, postSubmitMarker) : '';
 const reportUsesLocalStorage = /localStorage\s*\.\s*(getItem|setItem|removeItem)\s*\(/.test(reportUi);
+const teacherWritesLocalReportArchive = /localStorage\s*\.\s*setItem\s*\(\s*[`'"]smart_classroom_reports_/.test(teacherConsole) || teacherConsole.includes('smart_classroom_reports_${');
 
 check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
 check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
@@ -41,6 +43,7 @@ check('append publishes only truly new canonical questions', routes.includes('co
 check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
 check('director can only read aggregate through capability', routes.includes('isDirector = Boolean(capability)'));
 check('reports UI has no localStorage report fallback', !reportUsesLocalStorage && !reportUi.includes('smart_classroom_reports_'));
+check('teacher console does not persist a competing local report archive', !teacherWritesLocalReportArchive);
 check('reports UI consumes canonical roster/totals/question evidence', reportUi.includes('report.roster.joined') && reportUi.includes('report.totals.responses') && reportUi.includes('question.answered'));
 check('prepared templates are server-backed', templates.includes('/classroom/templates') && !templates.includes('localStorage'));
 check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
