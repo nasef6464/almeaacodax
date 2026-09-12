@@ -13,6 +13,8 @@
     "router|GET|/session/:quizId",
     "productConfigRouter|GET|/",
     "questionAnalyticsRouter|GET|/",
+    "authRouter|GET|/admin/trainers",
+    "authRouter|GET|/admin/trainers/:id",
     "classroomRouter|GET|/questions",
     "classroomRouter|POST|/sessions",
     "classroomRouter|GET|/sessions/:id/aggregate",
