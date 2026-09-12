@@ -46,5 +46,12 @@ const classroomSessionSchema = new Schema(
 );
 
 classroomSessionSchema.index({ schoolId: 1, classId: 1, status: 1, createdAt: -1 });
+classroomSessionSchema.index(
+  { schoolId: 1, classId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { status: "live" },
+  }
+);
 export const ClassroomSessionModel = mongoose.model("ClassroomSession", classroomSessionSchema);
 

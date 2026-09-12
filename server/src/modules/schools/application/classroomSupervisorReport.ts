@@ -35,9 +35,34 @@ export const buildClassroomSessionReport = async (session: any) => {
   const questionReports = (session.questionSnapshots || []).map((question: any, index: number) => {
     const questionResponses = responses.filter((response: any) => idOf(response.questionId) === idOf(question.questionId));
     const correct = questionResponses.filter((response: any) => response.isCorrect).length;
-    return { index, questionId: question.questionId, text: question.text, skillIds: question.skillIds || [], answered: questionResponses.length, correct, wrong: questionResponses.length - correct, unanswered: Math.max(0, joinedStudentIds.size - questionResponses.length) };
+    return {
+      index,
+      questionId: question.questionId,
+      text: question.text,
+      skillIds: question.skillIds || [],
+      subject: question.subject || "",
+      answered: questionResponses.length,
+      correct,
+      wrong: questionResponses.length - correct,
+      unanswered: Math.max(0, joinedStudentIds.size - questionResponses.length),
+    };
   });
-  return { sessionId, schoolId: session.schoolId, classId: session.classId, teacherId: session.teacherId, status: session.status, startedAt: session.createdAt, endedAt: session.endedAt, roster: { expected: expectedStudentIds.size, joined: joinedStudentIds.size, absentFromSession: Math.max(0, expectedStudentIds.size - joinedStudentIds.size) }, questions: questionReports, totals: { responses: responses.length, correct: responses.filter((response: any) => response.isCorrect).length } };
+  return {
+    sessionId,
+    schoolId: session.schoolId,
+    classId: session.classId,
+    className: session.className || "",
+    subjectName: session.subjectName || "",
+    day: session.day || "",
+    period: session.period ?? null,
+    teacherId: session.teacherId,
+    status: session.status,
+    startedAt: session.createdAt,
+    endedAt: session.endedAt,
+    roster: { expected: expectedStudentIds.size, joined: joinedStudentIds.size, absentFromSession: Math.max(0, expectedStudentIds.size - joinedStudentIds.size) },
+    questions: questionReports,
+    totals: { responses: responses.length, correct: responses.filter((response: any) => response.isCorrect).length },
+  };
 };
 
 export const buildClassroomTeacherReports = async (scope: Awaited<ReturnType<typeof resolveClassroomSupervisorScope>>) => {

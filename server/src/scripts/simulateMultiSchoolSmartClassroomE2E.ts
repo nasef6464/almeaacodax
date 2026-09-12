@@ -16,6 +16,8 @@ import { ClassroomParticipantModel } from "../models/ClassroomParticipant.js";
 import { ClassroomResponseModel } from "../models/ClassroomResponse.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { canJoinAuthorizedWorkspace } from "../sockets/workspaceAuthorization.js";
+import { createSocketServer } from "../sockets/index.js";
+import { io as connectSocket, Socket } from "socket.io-client";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
@@ -95,17 +97,22 @@ async function run() {
   // Spin up HTTP server on an ephemeral port
   const app = createApp();
   server = http.createServer(app);
+  createSocketServer(server);
   await new Promise<void>((resolve) => {
     server.listen(0, "127.0.0.1", () => resolve());
   });
   const address = server.address() as any;
-  apiBaseUrl = `http://127.0.0.1:${address.port}/api`;
-  console.log(`✅ 2. Ephemeral API test server listening on ${apiBaseUrl}`);
+  const socketBaseUrl = `http://127.0.0.1:${address.port}`;
+  apiBaseUrl = `${socketBaseUrl}/api`;
+  console.log(`✅ 2. Ephemeral API & Socket.IO test server listening on ${socketBaseUrl}`);
   await initCsrf();
+  await ClassroomSessionModel.syncIndexes();
 
   let schoolAId: string | null = null;
   let schoolBId: string | null = null;
   let sessionId: string | null = null;
+  let clientSocket: Socket | null = null;
+  const receivedSocketEvents: Array<{ event: string; payload: any }> = [];
 
   try {
     // -------------------------------------------------------------
@@ -432,6 +439,27 @@ async function run() {
     assert.ok(sessionId && pin, "SessionId and PIN returned");
     console.log(`✅ Session created & started: ID=${sessionId}, PIN=${pin}`);
 
+    // Concurrency Guard Test: attempt to directly insert a duplicate live session for same school & class
+    console.log("🔒 --- Testing Concurrency Guard (Database Partial Unique Index) ---");
+    let duplicateErrorCaught = false;
+    try {
+      await ClassroomSessionModel.create({
+        schoolId: schoolAId,
+        classId: classA1Id,
+        teacherId: String(teacherA1._id),
+        status: "live",
+        pinHash: "dummy_pin_hash_for_concurrency_test",
+        pinExpiresAt: new Date(Date.now() + 3600000),
+        questionIds: [questionIds[0]],
+      });
+    } catch (err: any) {
+      if (err?.code === 11000 || String(err).includes("11000") || String(err).includes("duplicate key")) {
+        duplicateErrorCaught = true;
+      }
+    }
+    assert.equal(duplicateErrorCaught, true, "MongoDB engine-level partial unique index must reject duplicate live session");
+    console.log("🔒 [PASS] Concurrency Guard: DB engine rejected duplicate live session via partial unique index (code 11000)");
+
     // Attack 2: Student B1 (School B) tries to join School A session via PIN
     const attack2 = await request("/classroom/sessions/join-by-pin", {
       method: "POST",
@@ -532,6 +560,38 @@ async function run() {
     assert.equal(joinPinA2.body.joined, true, "Student A2 PIN join succeeded");
     console.log("✅ [PASS] Student A2 joined via 6-digit PIN successfully");
 
+    // Connect live socket.io client for Student A1
+    console.log("\n🔌 --- Connecting Real Socket.IO Client for Student A1 ---");
+    clientSocket = connectSocket(socketBaseUrl, {
+      auth: { token: tokenStudentA1 },
+      transports: ["websocket"],
+      reconnection: false,
+    });
+
+    await new Promise<void>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error("Socket connect timeout")), 5000);
+      clientSocket!.on("connect", () => {
+        clearTimeout(t);
+        resolve();
+      });
+      clientSocket!.on("connect_error", (err) => {
+        clearTimeout(t);
+        reject(err);
+      });
+    });
+
+    await new Promise<void>((resolve, reject) => {
+      clientSocket!.emit("workspace:join", `classroom:${sessionId}`, (res: any) => {
+        if (res?.ok) resolve();
+        else reject(new Error(res?.error || "Socket room join rejected"));
+      });
+    });
+
+    clientSocket.on("response:updated", (payload) => receivedSocketEvents.push({ event: "response:updated", payload }));
+    clientSocket.on("question:published", (payload) => receivedSocketEvents.push({ event: "question:published", payload }));
+    clientSocket.on("session:ended", (payload) => receivedSocketEvents.push({ event: "session:ended", payload }));
+    console.log(`✅ [PASS] Real Socket.IO client connected and joined room classroom:${sessionId}`);
+
     // =============================================================
     // TEST PHASE 3: SINGLE QUESTION PRIVACY & STUDENT ANSWERING
     // =============================================================
@@ -581,6 +641,30 @@ async function run() {
     const totalResponsesCount = await ClassroomResponseModel.countDocuments({ sessionId, questionId: questionIds[0] });
     assert.equal(totalResponsesCount, 2, "Idempotency preserved: No duplicate responses recorded");
     console.log("✅ [PASS] Idempotency: Duplicate submissions handled without duplicate DB rows");
+
+    // Student Answer Revision Test ($set instead of $setOnInsert)
+    console.log("\n🔄 --- Testing Student Answer Revision ($set) ---");
+    const revA1 = await request(`/classroom/sessions/${sessionId}/answers/${questionIds[0]}`, {
+      method: "PUT",
+      token: tokenStudentA1,
+      body: { selectedOptionIndex: 3 },
+    });
+    assert.equal(revA1.status, 200);
+    assert.equal(revA1.body.accepted, true);
+
+    const aggTeacherRev = await request(`/classroom/sessions/${sessionId}/aggregate`, { token: tokenTeacherA1 });
+    assert.equal(aggTeacherRev.status, 200);
+    assert.equal(aggTeacherRev.body.responseCount, 2, "Response count remains 2 after revision (idempotent row update)");
+    assert.equal(aggTeacherRev.body.distribution["3"], 1, "Student A1 revision to option 3 reflected in distribution");
+    assert.equal(aggTeacherRev.body.distribution["1"] || 0, 0, "Student A1 previous option 1 removed from distribution");
+    console.log("✅ [PASS] Student answer revision ($set) verified: Option 1 -> Option 3 updated without duplicate DB rows");
+
+    // Student A1 switches back to Option 1 (the correct one) for subsequent tests
+    await request(`/classroom/sessions/${sessionId}/answers/${questionIds[0]}`, {
+      method: "PUT",
+      token: tokenStudentA1,
+      body: { selectedOptionIndex: 1 },
+    });
 
     // =============================================================
     // TEST PHASE 4: TEACHER RADAR, PROJECTOR & EXPLANATION REVEAL
@@ -641,12 +725,69 @@ async function run() {
     });
     assert.equal(ansBatch.status, 200);
     assert.equal(ansBatch.body.accepted, true);
-    console.log("✅ [PASS] Student A1 successfully answered published batch question");
+
+    // Multi-Question Answering across published questions:
+    // Student A2 answers Question 2 (index 1 / batchQuestions[0]) with Option 0 (distractor)
+    const ansBatchA2 = await request(`/classroom/sessions/${sessionId}/answers/${batchQuestions[0]}`, {
+      method: "PUT",
+      token: tokenStudentA2,
+      body: { selectedOptionIndex: 0 },
+    });
+    assert.equal(ansBatchA2.status, 200);
+
+    // Student A1 answers Question 3 (index 2 / batchQuestions[1]) with Option 1 (correct)
+    const ansBatch2A1 = await request(`/classroom/sessions/${sessionId}/answers/${batchQuestions[1]}`, {
+      method: "PUT",
+      token: tokenStudentA1,
+      body: { selectedOptionIndex: 1 },
+    });
+    assert.equal(ansBatch2A1.status, 200);
+
+    // Student A2 answers Question 3 (index 2 / batchQuestions[1]) with Option 2 (distractor)
+    const ansBatch2A2 = await request(`/classroom/sessions/${sessionId}/answers/${batchQuestions[1]}`, {
+      method: "PUT",
+      token: tokenStudentA2,
+      body: { selectedOptionIndex: 2 },
+    });
+    assert.equal(ansBatch2A2.status, 200);
+    console.log("✅ [PASS] Multi-Question: Students answered batch Questions 2 and 3");
+
+    // Verify Per-Question Analytics Isolation in Teacher Aggregate
+    const aggBatch = await request(`/classroom/sessions/${sessionId}/aggregate`, { token: tokenTeacherA1 });
+    assert.equal(aggBatch.status, 200);
+
+    const q1Stats = aggBatch.body.questions.find((q: any) => q.questionId === questionIds[0]);
+    const q2Stats = aggBatch.body.questions.find((q: any) => q.questionId === batchQuestions[0]);
+    const q3Stats = aggBatch.body.questions.find((q: any) => q.questionId === batchQuestions[1]);
+
+    assert.ok(q1Stats && q2Stats && q3Stats, "All 3 answered questions have analytics");
+    assert.equal(q1Stats.responseCount, 2, "Q1 responseCount is 2");
+    assert.equal(q1Stats.distribution["1"], 1, "Q1 option 1 count is 1");
+    assert.equal(q1Stats.distribution["2"], 1, "Q1 option 2 count is 1");
+
+    assert.equal(q2Stats.responseCount, 2, "Q2 responseCount is 2");
+    assert.equal(q2Stats.distribution["1"], 1, "Q2 option 1 count is 1");
+    assert.equal(q2Stats.distribution["0"], 1, "Q2 option 0 count is 1");
+
+    assert.equal(q3Stats.responseCount, 2, "Q3 responseCount is 2");
+    assert.equal(q3Stats.distribution["1"], 1, "Q3 option 1 count is 1");
+    assert.equal(q3Stats.distribution["2"], 1, "Q3 option 2 count is 1");
+
+    assert.equal(aggBatch.body.totalSessionResponses, 6, "Total session responses across all questions equals 6");
+    console.log("✅ [PASS] Per-Question Analytics Isolation: Each question maintains strictly segregated distributions");
 
     // =============================================================
     // TEST PHASE 6: SESSION END & LIFECYCLE CLOSURE
     // =============================================================
     console.log("\n🏁 --- PHASE 6: Session End & Lifecycle Closure ---");
+
+    // Multi-Teacher Isolation: Teacher A2 attempts to end Teacher A1's session -> must be rejected
+    const attackTeacherA2End = await request(`/classroom/sessions/${sessionId}/end`, {
+      method: "POST",
+      token: tokenTeacherA2,
+    });
+    assert.equal(attackTeacherA2End.status, 403, "Negative: Teacher A2 must NOT end Teacher A1 session");
+    console.log("🔒 [PASS] Multi-Teacher Isolation: Teacher A2 cannot end Teacher A1's session (HTTP 403)");
 
     const endRes = await request(`/classroom/sessions/${sessionId}/end`, {
       method: "POST",
@@ -702,10 +843,35 @@ async function run() {
     );
     console.log("🔒 [PASS] Cross-Tenant Supervisor Isolation: Supervisor B has 0 visibility into School A");
 
+    // Verify DB-backed teacher and manager history endpoint
+    console.log("\n📚 --- Testing DB-backed Teacher and School Manager History ---");
+    const managerHistory = await request(`/classroom/teacher/history?schoolId=${schoolAId}`, { token: tokenManagerA });
+    assert.equal(managerHistory.status, 200);
+    assert.ok(Array.isArray(managerHistory.body.sessions), "Manager receives sessions array");
+    const hasEndedSessionManager = managerHistory.body.sessions.some((s: any) => String(s.sessionId) === sessionId);
+    assert.equal(hasEndedSessionManager, true, "School Manager A history includes the completed session");
+    console.log(`✅ [PASS] School Manager A retrieved DB-backed history (${managerHistory.body.sessions.length} sessions)`);
+
+    const teacherHistory = await request(`/classroom/teacher/history?schoolId=${schoolAId}`, { token: tokenTeacherA1 });
+    assert.equal(teacherHistory.status, 200);
+    assert.ok(Array.isArray(teacherHistory.body.sessions), "Teacher A1 receives sessions array");
+    const hasEndedSessionTeacher = teacherHistory.body.sessions.some((s: any) => String(s.sessionId) === sessionId);
+    assert.equal(hasEndedSessionTeacher, true, "Teacher A1 history includes the completed session");
+    console.log(`✅ [PASS] Teacher A1 retrieved DB-backed history (${teacherHistory.body.sessions.length} sessions)`);
+
+    // Verify Realtime Socket events received by student client
+    console.log("\n📡 --- Verifying Live Socket.IO Events ---");
+    assert.ok(receivedSocketEvents.length > 0, "Socket client must receive live events");
+    assert.ok(receivedSocketEvents.some((e) => e.event === "response:updated"), "Socket received response:updated event");
+    assert.ok(receivedSocketEvents.some((e) => e.event === "session:ended"), "Socket received session:ended event");
+    console.log(`✅ [PASS] Real Socket.IO client received ${receivedSocketEvents.length} live push events (response:updated, session:ended)`);
+    clientSocket?.disconnect();
+
     console.log("\n=======================================================");
     console.log("🎉 ALL MULTI-SCHOOL E2E ACCEPTANCE CHECKS PASSED (100%)");
     console.log("=======================================================\n");
   } finally {
+    clientSocket?.disconnect();
     // Cleanup seed records
     console.log("🧹 Cleaning up simulation data...");
     if (sessionId) {

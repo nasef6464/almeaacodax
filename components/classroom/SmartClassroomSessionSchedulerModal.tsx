@@ -91,13 +91,36 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
     }
   }, [selectedSchool, classId]);
 
-  // Load templates from localStorage
+  // Load templates from localStorage (harmonizing teacher-specific and default keys)
   useEffect(() => {
     if (!isOpen || !schoolId) return;
     try {
-      const storageKey = `smart_classroom_templates_${schoolId}_default`;
-      const saved = localStorage.getItem(storageKey);
-      const customTemplates: ClassroomPreparedTemplate[] = saved ? JSON.parse(saved) : [];
+      const prefix = `smart_classroom_templates_${schoolId}_`;
+      const customTemplates: ClassroomPreparedTemplate[] = [];
+      const seenIds = new Set<string>();
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(prefix)) {
+          try {
+            const raw = localStorage.getItem(key);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) {
+                for (const t of parsed) {
+                  if (t?.id && !seenIds.has(t.id)) {
+                    seenIds.add(t.id);
+                    customTemplates.push(t);
+                  }
+                }
+              }
+            }
+          } catch {
+            // ignore malformed
+          }
+        }
+      }
+
       const defaultTemplates: ClassroomPreparedTemplate[] = [
         {
           id: 'tpl_qudurat_speed_6',
@@ -118,7 +141,9 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
           badge: 'علاج الفجوات 🎯',
         },
       ];
-      const combined = [...customTemplates, ...defaultTemplates];
+
+      const filteredDefaults = defaultTemplates.filter((dt) => !seenIds.has(dt.id));
+      const combined = [...customTemplates, ...filteredDefaults];
       setTemplates(combined);
       if (combined.length > 0 && !selectedTemplateId) {
         setSelectedTemplateId(combined[0].id);
