@@ -23,6 +23,12 @@ const socketPolicy = read('server/src/sockets/workspaceAuthorization.ts');
 const schoolIntegrity = read('server/src/routes/schoolAdminIntegrity.routes.ts');
 const routeIndex = read('server/src/routes/index.ts');
 
+const selectStart = widget.indexOf('const handleSelectAnswer');
+const submitStart = widget.indexOf('const handleSubmitAll');
+const postSubmitMarker = widget.indexOf('const currentActiveQ');
+const selectBody = selectStart >= 0 && submitStart > selectStart ? widget.slice(selectStart, submitStart) : '';
+const submitBody = submitStart >= 0 && postSubmitMarker > submitStart ? widget.slice(submitStart, postSubmitMarker) : '';
+
 check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
 check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
 check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
@@ -38,8 +44,8 @@ check('reports UI consumes canonical roster/totals/question evidence', reportUi.
 check('prepared templates are server-backed', templates.includes('/classroom/templates') && !templates.includes('localStorage'));
 check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
 check('launch modal tells truth: launch now, not future scheduler', scheduler.includes('autoStart: true') && scheduler.includes('ليست جدولة مستقبلية'));
-check('student option selection is local until submit', !/handleSelectAnswer[\s\S]{0,600}answerClassroomQuestion/.test(widget));
-check('student submit sends answers through one explicit path', /handleSubmitAll[\s\S]{0,1800}answerClassroomQuestion/.test(widget));
+check('student option selection is local until submit', selectBody.length > 0 && !selectBody.includes('answerClassroomQuestion'));
+check('student submit sends answers through one explicit path', submitBody.includes('answerClassroomQuestion'));
 check('projector back link targets teacher console', projector.includes('to={`/classroom/${sessionId}/teacher`}'));
 check('projector follows global active question by snapshot index', projector.includes('findIndex((question: any) => question.index === result.activeQuestionIndex)'));
 check('socket classroom policy is role-aware', socketPolicy.includes('role === "student"') && socketPolicy.includes('role === "school_admin"') && socketPolicy.includes('role === "supervisor"'));
