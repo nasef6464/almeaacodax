@@ -249,7 +249,7 @@ async function run() {
   }
 
   const endedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
-  const endedOnClass = waitForEvent<any>(studentSocket, "session:ended");
+  const endedOnClass = waitForEvent<any>(studentSocket, "classroom:ended");
   const ended = await request(`/classroom/sessions/${sessionAId}/end`, { method: "POST", token: teacherAToken });
   assert.equal(ended.status, 200, JSON.stringify(ended.body));
   const [sessionEndPayload, classEndPayload] = await Promise.all([endedOnSession, endedOnClass]);
