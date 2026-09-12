@@ -8,6 +8,7 @@ on:
       - 'server/src/routes/schoolAdminIntegrity.routes.ts'
       - 'server/src/routes/index.ts'
       - 'server/src/middleware/auth.ts'
+      - 'server/src/middleware/classroomAuth.ts'
       - 'server/src/models/Classroom**'
       - 'server/src/modules/schools/**'
       - 'server/src/sockets/**'
