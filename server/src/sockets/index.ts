@@ -8,6 +8,7 @@ import { GroupModel } from "../models/Group.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
 import { requireSchoolDirectorCapability } from "../modules/schools/application/schoolDirectorAccess.js";
+import { resolveSchoolEntitlement } from "../modules/schools/application/schoolEntitlementResolver.js";
 import { resolveSchoolContexts } from "../modules/schools/application/schoolContextResolver.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
@@ -58,12 +59,26 @@ export function createSocketServer(server: HttpServer) {
       const currentRole = String(currentUser.role);
       const legacySchoolId = currentUser.schoolId ? String(currentUser.schoolId) : null;
       const contexts = await resolveSchoolContexts({ id: currentUserId, role: currentRole, schoolId: legacySchoolId });
-      const roleSchoolIds = Array.from(new Set(
+      let roleSchoolIds = Array.from(new Set(
         contexts
           .filter((context) => context.role === currentRole)
           .map((context) => String(context.schoolId))
           .filter(Boolean),
       ));
+
+      // Student/teacher realtime access is part of the commercial Smart Classroom
+      // module. A valid school membership must not keep Socket.IO rooms alive after
+      // the module is removed or the school contract expires.
+      if (currentRole === "student" || currentRole === "teacher") {
+        const entitlementChecks = await Promise.all(
+          roleSchoolIds.map(async (schoolId) => ({
+            schoolId,
+            allowed: (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed,
+          })),
+        );
+        roleSchoolIds = entitlementChecks.filter((entry) => entry.allowed).map((entry) => entry.schoolId);
+      }
+
       const authorizedLegacySchoolId = legacySchoolId && roleSchoolIds.includes(legacySchoolId)
         ? legacySchoolId
         : null;
@@ -75,7 +90,8 @@ export function createSocketServer(server: HttpServer) {
         schoolId: authorizedLegacySchoolId,
         schoolIds: roleSchoolIds,
         // Student class rooms drive auto-discovery. Do not keep stale class-room
-        // authorization when an explicit school membership has been revoked.
+        // authorization when an explicit school membership or module entitlement
+        // has been revoked.
         groupIds: currentRole === "student" && !authorizedLegacySchoolId ? [] : runtimeGroupIds,
       };
       return next();
@@ -115,6 +131,8 @@ export function createSocketServer(server: HttpServer) {
           ));
         },
         async canSupervisorViewClassroom(userId, schoolId, classId) {
+          const entitlement = await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM");
+          if (!entitlement.allowed) return false;
           const scope = await resolveClassroomSupervisorScope({
             id: userId,
             role: "supervisor",
