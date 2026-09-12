@@ -23,6 +23,7 @@ const scheduler = read('components/classroom/SmartClassroomSessionSchedulerModal
 const widget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
 const projector = read('pages/ClassroomProjectorView.tsx');
 const socketPolicy = read('server/src/sockets/workspaceAuthorization.ts');
+const socketIndex = read('server/src/sockets/index.ts');
 const schoolIntegrity = read('server/src/routes/schoolAdminIntegrity.routes.ts');
 const routeIndex = read('server/src/routes/index.ts');
 
@@ -37,6 +38,10 @@ const teacherWritesLocalReportArchive = /localStorage\s*\.\s*setItem\s*\(\s*[`'"
 check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
 check('teacher history requires an explicit active school scope', classroomAuth.includes('req.path === "/teacher/history"') && classroomAuth.includes('schoolId is required for teacher classroom history') && classroomAuth.includes('hasActiveSchoolRole(actor, requestedSchoolId, "teacher")'));
 check('teacher template deletion requires active school membership', classroomAuth.includes('templateDeleteMatch') && classroomAuth.includes('ClassroomTemplateModel.findById') && classroomAuth.includes('hasActiveSchoolRole(actor, String(template.schoolId), "teacher")'));
+check('runtime classroom access requires current SMART_CLASSROOM entitlement', classroomAuth.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && classroomAuth.includes('if (!(await smartClassroomEnabled(schoolId))) return rejectDisabledModule(res)'));
+check('disabled module still allows explicit session end cleanup', classroomAuth.includes('!req.path.endsWith("/end")') && classroomAuth.includes('Smart Classroom is not enabled for this school'));
+check('realtime student and teacher school scope is entitlement filtered', socketIndex.includes('currentRole === "student" || currentRole === "teacher"') && socketIndex.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && socketIndex.includes('roleSchoolIds = entitlementChecks.filter((entry) => entry.allowed)'));
+check('realtime supervisor classroom scope requires module entitlement', socketIndex.includes('async canSupervisorViewClassroom') && socketIndex.includes('if (!entitlement.allowed) return false'));
 check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
 check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
 check('instant join uses lifecycle guard', routes.includes('canStudentJoinClassroom(session.status as ClassroomSessionStatus)'));
