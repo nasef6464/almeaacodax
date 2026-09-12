@@ -14,6 +14,7 @@ import { signAccessToken } from "../utils/jwt.js";
 const RUN_ID = `active_auth_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 const studentEmail = `student_${RUN_ID}@example.com`;
 const teacherEmail = `teacher_${RUN_ID}@example.com`;
+const supervisorEmail = `supervisor_${RUN_ID}@example.com`;
 const schoolId = new mongoose.Types.ObjectId().toString();
 const classId = new mongoose.Types.ObjectId().toString();
 let server: http.Server | null = null;
@@ -97,12 +98,13 @@ async function get(url: string, token: string) {
 async function run() {
   assertSafeDatabase();
   await mongoose.connect(env.MONGODB_URI);
+  const testEmails = [studentEmail, teacherEmail, supervisorEmail];
   await Promise.all([
-    UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } }),
+    UserModel.deleteMany({ email: { $in: testEmails } }),
     SchoolContractModel.deleteMany({ schoolId }),
   ]);
 
-  const [student, teacher] = await Promise.all([
+  const [student, teacher, supervisor] = await Promise.all([
     UserModel.create({
       name: "Smart Classroom Revoked Student",
       email: studentEmail,
@@ -121,15 +123,27 @@ async function run() {
       groupIds: [],
       isActive: true,
     }),
+    UserModel.create({
+      name: "Smart Classroom Revoked Supervisor",
+      email: supervisorEmail,
+      passwordHash: "x",
+      role: "supervisor",
+      schoolId,
+      groupIds: [],
+      isActive: true,
+    }),
   ]);
   const studentId = String(student._id);
   const teacherId = String(teacher._id);
+  const supervisorId = String(supervisor._id);
+  const testUserIds = [studentId, teacherId, supervisorId];
 
-  await SchoolMembershipModel.deleteMany({ userId: { $in: [studentId, teacherId] }, schoolId });
+  await SchoolMembershipModel.deleteMany({ userId: { $in: testUserIds }, schoolId });
   await Promise.all([
     SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] }),
     SchoolMembershipModel.create({ userId: studentId, schoolId, role: "student", status: "active" }),
     SchoolMembershipModel.create({ userId: teacherId, schoolId, role: "teacher", status: "active" }),
+    SchoolMembershipModel.create({ userId: supervisorId, schoolId, role: "supervisor", status: "active" }),
   ]);
 
   const session = await ClassroomSessionModel.create({
@@ -146,6 +160,7 @@ async function run() {
 
   const studentToken = tokenFor(student);
   const teacherToken = tokenFor(teacher);
+  const supervisorToken = tokenFor(supervisor);
 
   const app = createApp();
   server = http.createServer(app);
@@ -160,6 +175,7 @@ async function run() {
 
   assert.equal((await get(studentEndpoint, studentToken)).status, 200, "active student should reach Smart Classroom HTTP routes");
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "active session owner should reach its classroom HTTP route");
+  assert.equal((await get(teacherEndpoint, supervisorToken)).status, 200, "active entitled supervisor should reach scoped classroom aggregate data");
   assert.equal((await get(teacherHistoryEndpoint, teacherToken)).status, 400, "teacher history must require an explicit school scope");
   assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 200, "active teacher should read history for an active school membership");
 
@@ -170,6 +186,10 @@ async function run() {
   const activeTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
   assert.equal((await joinWorkspace(activeTeacherSocket, `classroom:${sessionId}`)).ok, true, "active session owner should join its classroom room");
   activeTeacherSocket.disconnect();
+
+  const activeSupervisorSocket = await connectAuthorized(baseUrl, supervisorToken);
+  assert.equal((await joinWorkspace(activeSupervisorSocket, `classroom:${sessionId}`)).ok, true, "active entitled supervisor should join classroom realtime");
+  activeSupervisorSocket.disconnect();
 
   await SchoolMembershipModel.updateOne(
     { userId: studentId, schoolId, role: "student" },
@@ -221,6 +241,7 @@ async function run() {
 
   assert.equal((await get(studentEndpoint, studentToken)).status, 403, "student HTTP access must stop when SMART_CLASSROOM is removed from the school contract");
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 403, "teacher runtime access must stop when SMART_CLASSROOM is removed from the school contract");
+  assert.equal((await get(teacherEndpoint, supervisorToken)).status, 403, "supervisor aggregate access must stop when SMART_CLASSROOM is removed from the school contract");
   assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 403, "teacher classroom history must respect the school module entitlement");
 
   const entitlementRevokedStudentSocket = await connectAuthorized(baseUrl, studentToken);
@@ -239,23 +260,34 @@ async function run() {
   );
   entitlementRevokedTeacherSocket.disconnect();
 
+  const entitlementRevokedSupervisorSocket = await connectAuthorized(baseUrl, supervisorToken);
+  assert.equal(
+    (await joinWorkspace(entitlementRevokedSupervisorSocket, `classroom:${sessionId}`)).ok,
+    false,
+    "supervisor must not rejoin classroom realtime after SMART_CLASSROOM entitlement is removed",
+  );
+  entitlementRevokedSupervisorSocket.disconnect();
+
   await SchoolContractModel.updateOne(
     { schoolId },
     { $set: { status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] } },
   );
   assert.equal((await get(studentEndpoint, studentToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible student HTTP access");
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible teacher HTTP access");
+  assert.equal((await get(teacherEndpoint, supervisorToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible supervisor HTTP access");
 
   await UserModel.updateMany(
-    { _id: { $in: [student._id, teacher._id] } },
+    { _id: { $in: [student._id, teacher._id, supervisor._id] } },
     { $set: { isActive: false } },
   );
 
   assert.equal((await get(studentEndpoint, studentToken)).status, 401, "disabled student must lose classroom HTTP access with an unexpired JWT");
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 401, "disabled teacher must lose classroom HTTP access with an unexpired JWT");
+  assert.equal((await get(teacherEndpoint, supervisorToken)).status, 401, "disabled supervisor must lose classroom HTTP access with an unexpired JWT");
   assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 401, "disabled teacher must lose classroom history access with an unexpired JWT");
   await expectConnectionRejected(baseUrl, studentToken);
   await expectConnectionRejected(baseUrl, teacherToken);
+  await expectConnectionRejected(baseUrl, supervisorToken);
 
   console.log("Smart Classroom account, membership and module-entitlement revocation E2E: PASS");
 }
@@ -269,11 +301,11 @@ run()
     sockets.splice(0).forEach((socket) => socket.disconnect());
     try {
       if (sessionId) await ClassroomSessionModel.deleteOne({ _id: sessionId });
-      const users = await UserModel.find({ email: { $in: [studentEmail, teacherEmail] } }).select("_id").lean();
+      const users = await UserModel.find({ email: { $in: [studentEmail, teacherEmail, supervisorEmail] } }).select("_id").lean();
       const userIds = users.map((user: any) => String(user._id));
       if (userIds.length) await SchoolMembershipModel.deleteMany({ userId: { $in: userIds }, schoolId });
       await SchoolContractModel.deleteMany({ schoolId });
-      await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } });
+      await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail, supervisorEmail] } });
     } catch (error) {
       console.error("Active-auth E2E cleanup failed", error);
     }
