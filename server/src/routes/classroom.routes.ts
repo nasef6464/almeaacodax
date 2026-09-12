@@ -754,9 +754,9 @@ classroomRouter.post("/sessions/:id/append-questions", requireAuth, requireRole(
 
   session.questionSnapshots.push(...(trulyNewSnapshots as any));
   const newQuestionIds = trulyNewSnapshots.map((question: any) => String(question.questionId));
+  const wasNotLive = payload.autoPublishFirst && session.status !== "live";
 
   if (payload.autoPublishFirst) {
-    const wasNotLive = session.status !== "live";
     if (wasNotLive) {
       await safelyClosePreviousLiveSessions(session.schoolId, session.classId, String(session._id));
       session.pinExpiresAt = new Date(Date.now() + 30 * 60_000);
@@ -766,7 +766,21 @@ classroomRouter.post("/sessions/:id/append-questions", requireAuth, requireRole(
     session.activeQuestionIndex = firstIndex;
     session.publishedMode = "batch";
     session.publishedQuestionIds = newQuestionIds;
+  }
 
+  try {
+    await session.save();
+  } catch (error) {
+    if (isDuplicateLiveSessionError(error)) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "يوجد بالفعل فصل ذكي مباشر لهذا الفصل الدراسي" });
+    }
+    throw error;
+  }
+
+  // Realtime events are emitted only after the database commit succeeds. This
+  // prevents clients from observing a published/live state that was rejected by
+  // validation or the unique live-session invariant.
+  if (payload.autoPublishFirst) {
     emitClassroomEvent(sessionId(session), "question:published", {
       activeQuestionIndex: session.activeQuestionIndex,
       questionId: newQuestionIds[0],
@@ -784,15 +798,6 @@ classroomRouter.post("/sessions/:id/append-questions", requireAuth, requireRole(
     }
   }
 
-  try {
-    await session.save();
-  } catch (error) {
-    if (isDuplicateLiveSessionError(error)) {
-      return res.status(StatusCodes.CONFLICT).json({ message: "يوجد بالفعل فصل ذكي مباشر لهذا الفصل الدراسي" });
-    }
-    throw error;
-  }
-
   res.json({
     appendedCount: trulyNewSnapshots.length,
     publishedQuestionIds: payload.autoPublishFirst ? newQuestionIds : [],
@@ -807,9 +812,12 @@ classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (
 
   const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
   const isTeacher = req.authUser!.role === "admin" || String(session.teacherId) === req.authUser!.id;
-  const isStudent = student?.role === "student"
+  const isStudentInClass = student?.role === "student"
     && String(student.schoolId) === String(session.schoolId)
     && (student.groupIds || []).map(String).includes(String(session.classId));
+  const isStudent = isStudentInClass
+    ? Boolean(await ClassroomParticipantModel.exists({ sessionId: sessionId(session), studentId: req.authUser!.id }))
+    : false;
 
   let isSupervisor = false;
   if (req.authUser!.role === "supervisor") {
