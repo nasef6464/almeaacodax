@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
+import { ClassroomTemplateModel } from "../models/ClassroomTemplate.js";
 import { hasActiveSchoolRole } from "../modules/schools/application/schoolContextResolver.js";
 
 /**
@@ -43,6 +44,24 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
           return res.status(StatusCodes.FORBIDDEN).json({
             message: "Teacher school classroom access is inactive",
           });
+        }
+        return next();
+      }
+
+      // Template deletion is ownership-scoped downstream, but ownership alone
+      // must not let a teacher mutate school data after that school membership
+      // has been explicitly revoked.
+      const templateDeleteMatch = req.path.match(/^\/templates\/([^/]+)\/delete$/);
+      const requestedTemplateId = templateDeleteMatch?.[1] || "";
+      if (requestedTemplateId && Types.ObjectId.isValid(requestedTemplateId)) {
+        const template = await ClassroomTemplateModel.findById(requestedTemplateId).select("schoolId teacherId").lean() as any;
+        if (template && String(template.teacherId) === String(actor.id)) {
+          const allowed = await hasActiveSchoolRole(actor, String(template.schoolId), "teacher");
+          if (!allowed) {
+            return res.status(StatusCodes.FORBIDDEN).json({
+              message: "Teacher school classroom access is inactive",
+            });
+          }
         }
         return next();
       }
