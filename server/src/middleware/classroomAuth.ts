@@ -3,12 +3,23 @@ import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { ClassroomTemplateModel } from "../models/ClassroomTemplate.js";
+import { resolveSchoolEntitlement } from "../modules/schools/application/schoolEntitlementResolver.js";
 import { hasActiveSchoolRole } from "../modules/schools/application/schoolContextResolver.js";
+
+const smartClassroomEnabled = async (schoolId: string) => {
+  const entitlement = await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM");
+  return entitlement.allowed;
+};
+
+const rejectDisabledModule = (res: Response) => res.status(StatusCodes.FORBIDDEN).json({
+  message: "Smart Classroom is not enabled for this school",
+});
 
 /**
  * Smart Classroom is a school-scoped product. Legacy User.schoolId/groupIds
  * remain migration compatibility fields, but explicit SchoolMembership state
- * is authoritative once it exists.
+ * is authoritative once it exists. Operational access also requires the
+ * SMART_CLASSROOM module to be currently enabled on the school's contract.
  */
 export async function requireActiveClassroomSchoolContext(req: Request, res: Response, next: NextFunction) {
   const actor = req.authUser;
@@ -24,10 +35,22 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
           message: "School classroom access is inactive",
         });
       }
+      if (!(await smartClassroomEnabled(schoolId))) return rejectDisabledModule(res);
       return next();
     }
 
     if (actor.role === "teacher") {
+      // School-scoped teacher entry points that do not identify an existing
+      // session still need the commercial entitlement enforced at the API edge.
+      if (req.path === "/questions" || req.path === "/templates" || req.path === "/sessions") {
+        const requestedSchoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim()
+          ? req.query.schoolId.trim()
+          : typeof req.body?.schoolId === "string"
+            ? req.body.schoolId.trim()
+            : "";
+        if (requestedSchoolId && !(await smartClassroomEnabled(requestedSchoolId))) return rejectDisabledModule(res);
+      }
+
       // Teacher history must always be explicitly scoped to one active school.
       // Without this guard an old teacher JWT could ask for history without a
       // schoolId and the downstream route would filter by teacherId only,
@@ -45,12 +68,13 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
             message: "Teacher school classroom access is inactive",
           });
         }
+        if (!(await smartClassroomEnabled(requestedSchoolId))) return rejectDisabledModule(res);
         return next();
       }
 
       // Template deletion is ownership-scoped downstream, but ownership alone
       // must not let a teacher mutate school data after that school membership
-      // has been explicitly revoked.
+      // or Smart Classroom entitlement has been revoked.
       const templateDeleteMatch = req.path.match(/^\/templates\/([^/]+)\/delete$/);
       const requestedTemplateId = templateDeleteMatch?.[1] || "";
       if (requestedTemplateId && Types.ObjectId.isValid(requestedTemplateId)) {
@@ -62,6 +86,7 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
               message: "Teacher school classroom access is inactive",
             });
           }
+          if (!(await smartClassroomEnabled(String(template.schoolId)))) return rejectDisabledModule(res);
         }
         return next();
       }
@@ -80,6 +105,11 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
         return res.status(StatusCodes.FORBIDDEN).json({
           message: "Teacher school classroom access is inactive",
         });
+      }
+      // Even after commercial access is disabled, the owner may end the live
+      // session so cleanup/report finalization is never blocked.
+      if (!req.path.endsWith("/end") && !(await smartClassroomEnabled(String(session.schoolId)))) {
+        return rejectDisabledModule(res);
       }
     }
 
