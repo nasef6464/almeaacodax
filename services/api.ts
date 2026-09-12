@@ -836,6 +836,10 @@ export const api = {
   createSupervisorIntervention: (payload: unknown, token?: string | null) => request<any>("/classroom/supervisor/interventions", { method: "POST", body: payload, token }),
   getSupervisorInterventionOutcome: (id: string, token?: string | null) => request<any>(`/classroom/supervisor/interventions/${encodeURIComponent(id)}/outcome`, { token, cache: "no-store" }),
   getSupervisorClassroomReport: (id: string, token?: string | null) => request<{ report: any }>(`/classroom/supervisor/sessions/${encodeURIComponent(id)}/report`, { token, cache: "no-store" }),
+  getClassroomTeacherHistory: (schoolId?: string, token?: string | null) => {
+    const query = schoolId ? `?schoolId=${encodeURIComponent(schoolId)}` : "";
+    return request<{ sessions: any[] }>(`/classroom/teacher/history${query}`, { token, cache: "no-store" });
+  },
   ...createAnnouncementAdsApi(request),
   ...createAccessCodesApi(request),
   ...createStudyPlansApi(request),

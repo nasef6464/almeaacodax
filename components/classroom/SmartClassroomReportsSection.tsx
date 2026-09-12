@@ -20,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { api } from '../../services/api';
 
 export interface ClassroomSavedReport {
   sessionId: string;
@@ -67,15 +68,37 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const [selectedClassFilter, setSelectedClassFilter] = useState<string>('all');
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`smart_classroom_reports_${schoolId}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setReports(parsed);
+    let active = true;
+
+    api.getClassroomTeacherHistory(schoolId)
+      .then((res) => {
+        if (!active) return;
+        if (res?.sessions && Array.isArray(res.sessions)) {
+          setReports(res.sessions);
+        } else {
+          loadLocalFallback();
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        loadLocalFallback();
+      });
+
+    function loadLocalFallback() {
+      try {
+        const raw = localStorage.getItem(`smart_classroom_reports_${schoolId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) setReports(parsed);
+        }
+      } catch {
+        // safe fallback
       }
-    } catch {
-      // safe fallback
     }
+
+    return () => {
+      active = false;
+    };
   }, [schoolId]);
 
   // Filtered reports based on time and class
@@ -121,7 +144,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
           sessionsCount: 0,
         };
         current.totalAsked += q.answeredCount || 1;
-        current.correctCount += q.correctCount || (q.answeredCount ? Math.round((q.answeredCount * 0.6)) : 0);
+        current.correctCount += q.correctCount || 0;
         current.sessionsCount += 1;
         map.set(skillKey, current);
       });

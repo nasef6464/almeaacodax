@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -21,17 +21,28 @@ import {
   Zap,
 } from 'lucide-react';
 import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
 export const ClassroomProjectorView: React.FC = () => {
   const { sessionId = '' } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [selectedQuestionIdx, setSelectedQuestionIdx] = useState<number>(0);
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [publishing, setPublishing] = useState<boolean>(false);
+
+  // Guard: presenter projector view is reserved for teaching staff
+  useEffect(() => {
+    const isPresenter = user?.role && ['teacher', 'school_admin', 'supervisor', 'admin'].includes(user.role);
+    if (user && !isPresenter) {
+      navigate(`/classroom/${sessionId}`, { replace: true });
+    }
+  }, [user, sessionId, navigate]);
 
   const load = useCallback(async () => {
     try {
@@ -55,9 +66,10 @@ export const ClassroomProjectorView: React.FC = () => {
   const activeQuestionIndex = data?.activeQuestionIndex ?? 0;
   const currentQ = questions[selectedQuestionIdx] || questions[activeQuestionIndex] || questions[0];
 
-  // Distribution for current question
-  const totalResponses = data?.responseCount || 0;
-  const distribution: Record<string, number> = data?.distribution || {};
+  // Distribution for selected question: prefer question-specific analytics, fallback to active
+  const isCurrentActive = currentQ && currentQ.index === activeQuestionIndex;
+  const totalResponses = currentQ?.responseCount ?? (isCurrentActive ? (data?.responseCount || 0) : 0);
+  const distribution: Record<string, number> = currentQ?.distribution || (isCurrentActive ? (data?.distribution || {}) : {});
 
   // Calculate percentages and identify most common mistake
   const analytics = useMemo(() => {
@@ -111,8 +123,6 @@ export const ClassroomProjectorView: React.FC = () => {
       setPublishing(false);
     }
   };
-
-  const isCurrentActive = currentQ && currentQ.index === activeQuestionIndex;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans select-none" dir="rtl">

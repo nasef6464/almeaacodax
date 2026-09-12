@@ -1,8 +1,40 @@
 # ALMEAA — Codex Execution State
 
-## Smart Classroom Architectural Hardening, Zero-Exposure Privacy & Multi-School Multi-Role Simulation
+## Smart Classroom Per-Question Hardening, DB-Backed Teacher Reports, Concurrency Guard & Live Socket E2E
 
 - Status: `VERIFIED / READY FOR COMMIT & MERGE` on 2026-09-12.
+- Scope:
+  1. Per-Question Analytics Isolation (`server/src/routes/classroom.routes.ts` & `pages/ClassroomProjectorView.tsx`):
+     - `GET /sessions/:id/aggregate` computes responses, distributions, and accuracy strictly per question.
+     - Root aggregate response count and distribution reflect the active question (preventing cross-question distribution blending).
+     - `ClassroomProjectorView.tsx` displays distribution and response count for the specifically selected question with fallback to active question.
+  2. DB-Backed Teacher Reports (`server/src/routes/classroom.routes.ts`, `services/api.ts`, `components/classroom/SmartClassroomReportsSection.tsx`):
+     - Added `GET /classroom/teacher/history` returning authentic DB session reports with `day`, `period`, `subjectName`, `className`, question breakdowns, and accuracy.
+     - Removed `Math.round(answeredCount * 0.6)` estimation fallback; metrics are 100% computed from real database records.
+     - Replaced `localStorage` primary reliance with DB-first fetch and offline cache fallback.
+  3. Student Answer Revision ($set) (`server/src/routes/classroom.routes.ts`):
+     - Changed `PUT /sessions/:id/answers/:questionId` update operator from `$setOnInsert` to `$set`.
+     - Enables students to revise answers dynamically before moving to the next question with immediate distribution updates and zero duplicate rows.
+  4. Single Live Session Concurrency Guard (`server/src/models/ClassroomSession.ts` & `server/src/routes/classroom.routes.ts`):
+     - Added Mongoose partial unique index `{ schoolId: 1, classId: 1 }` with `{ unique: true, partialFilterExpression: { status: "live" } }`.
+     - `safelyClosePreviousLiveSessions` archives conflicting sessions with full `reportSnapshot` and emits `session:ended` event.
+  5. Security, Rate Limiting & Projector Guards:
+     - Applied `sensitiveActionRateLimiter` to `POST /sessions/join-by-pin`.
+     - Restricted `ClassroomProjectorView.tsx` strictly to teaching/administrative staff.
+     - Harmonized template storage keys across default and teacher-specific scopes in `SmartClassroomSessionSchedulerModal.tsx`.
+  6. E2E Multi-School Simulation Script (`server/src/scripts/simulateMultiSchoolSmartClassroomE2E.ts`):
+     - Connected real `socket.io-client` with room join, verified 11 live push events (`response:updated`, `session:ended`).
+     - Verified answer revision ($set) and idempotency.
+     - Verified per-question aggregate segregation across 3 distinct questions (Q1, Q2, Q3) with zero data pollution.
+     - Verified DB engine rejection of duplicate live sessions (code 11000).
+     - Verified multi-teacher isolation (Teacher A2 blocked with 403 when trying to end Teacher A1's session).
+     - Verified DB-backed history for Teacher A1 and School Manager A.
+  7. Automated Verification:
+     - `npm --prefix server run simulate:smart-classroom`: 100% PASS (All phases).
+     - `node scripts/smoke-smart-classroom-g2-contract.mjs`: PASS (12/12).
+     - `node scripts/smoke-smart-classroom-g0-contract.mjs`: PASS (11/11).
+     - `npm --prefix server run check`: PASS (0 errors).
+     - `npm run build`: PASS (Vite production build 0 errors).
 - Scope:
   1. Unified Mongoose Session Lifecycle & Persistent DB Metadata (`server/src/models/ClassroomSession.ts`):
      - Normalized status enum to `["draft", "scheduled", "live", "ended", "archived"]`.

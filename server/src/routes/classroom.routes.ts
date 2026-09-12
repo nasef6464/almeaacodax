@@ -23,9 +23,43 @@ import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomSco
 import { buildClassroomSchoolIntelligence, buildClassroomSkillEvidence } from "../modules/schools/application/classroomSchoolIntelligence.js";
 import { hasActiveSchoolRole } from "../modules/schools/application/schoolContextResolver.js";
 
+import { sensitiveActionRateLimiter } from "../middleware/rateLimiters.js";
+
 export const classroomRouter = Router();
 const hashPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
 const sessionId = (doc: any) => String(doc.id || doc._id);
+
+async function safelyClosePreviousLiveSessions(schoolId: string, classId: string, excludeSessionId?: string) {
+  const query: Record<string, any> = { schoolId, classId, status: "live" };
+  if (excludeSessionId) {
+    query._id = { $ne: excludeSessionId };
+  }
+  const liveSessions = await ClassroomSessionModel.find(query);
+  for (const prev of liveSessions) {
+    const sId = sessionId(prev);
+    const [responses, participants] = await Promise.all([
+      ClassroomResponseModel.find({ sessionId: sId }).lean(),
+      ClassroomParticipantModel.countDocuments({ sessionId: sId }),
+    ]);
+    const report = {
+      sessionId: sId,
+      schoolId: prev.schoolId,
+      classId: prev.classId,
+      participantCount: participants,
+      responseCount: responses.length,
+      correctCount: responses.filter((r: any) => r.isCorrect).length,
+      endedAt: new Date().toISOString(),
+    };
+    prev.status = "ended";
+    prev.endedAt = new Date();
+    prev.activeQuestionIndex = null;
+    prev.reportSnapshot = report;
+    await prev.save();
+    emitClassroomEvent(sId, "session:ended", { report });
+    emitClassroomEventToClass(prev.classId, "session:ended", { sessionId: sId });
+  }
+}
+
 const createSchema = z.object({
   schoolId: z.string().min(1),
   classId: z.string().min(1),
@@ -88,10 +122,7 @@ classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"])
 
   if (initialStatus === "live") {
     // Invariant: only one active session per school and class
-    await ClassroomSessionModel.updateMany(
-      { schoolId: payload.schoolId, classId: payload.classId, status: "live" },
-      { $set: { status: "ended", endedAt: new Date() } }
-    );
+    await safelyClosePreviousLiveSessions(payload.schoolId, payload.classId);
   }
 
   const session = await ClassroomSessionModel.create({
@@ -201,9 +232,24 @@ classroomRouter.get("/student/active-session", requireAuth, asyncHandler(async (
       status: session.status,
       activeQuestionIndex: session.activeQuestionIndex,
       totalQuestions: session.questionSnapshots?.length || 0,
-      createdAt: session.createdAt,
     },
   });
+}));
+
+classroomRouter.get("/teacher/history", requireAuth, requireRole(["teacher", "school_admin", "admin"]), asyncHandler(async (req, res) => {
+  const schoolId = typeof req.query.schoolId === "string" ? req.query.schoolId.trim() : "";
+  const filter: Record<string, any> = {};
+  if (req.authUser!.role === "teacher") {
+    filter.teacherId = req.authUser!.id;
+  }
+  if (schoolId) {
+    filter.schoolId = schoolId;
+  } else if (req.authUser!.schoolId) {
+    filter.schoolId = req.authUser!.schoolId;
+  }
+  const limit = z.coerce.number().int().min(1).max(100).catch(50).parse(req.query.limit);
+  const sessions = await ClassroomSessionModel.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
+  res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
 }));
 
 classroomRouter.get("/supervisor/today", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
@@ -301,10 +347,7 @@ classroomRouter.post("/sessions/:id/publish/:index", requireAuth, requireRole(["
   const wasNotLive = session.status !== "live";
   if (wasNotLive) {
     // Invariant: only one active live session per school and class
-    await ClassroomSessionModel.updateMany(
-      { schoolId: session.schoolId, classId: session.classId, status: "live", _id: { $ne: session._id } },
-      { $set: { status: "ended", endedAt: new Date() } }
-    );
+    await safelyClosePreviousLiveSessions(session.schoolId, session.classId, String(session._id));
   }
 
   const targetQuestion = session.questionSnapshots[index];
@@ -334,7 +377,7 @@ classroomRouter.post("/sessions/:id/publish/:index", requireAuth, requireRole(["
   res.json({ status: session.status, activeQuestionIndex: index });
 }));
 
-classroomRouter.post("/sessions/join-by-pin", requireAuth, asyncHandler(async (req, res) => {
+classroomRouter.post("/sessions/join-by-pin", sensitiveActionRateLimiter, requireAuth, asyncHandler(async (req, res) => {
   const payload = joinSchema.parse(req.body);
   const hashed = hashPin(payload.pin);
   const session = await ClassroomSessionModel.findOne({
@@ -408,10 +451,12 @@ classroomRouter.get("/sessions/:id/current", requireAuth, asyncHandler(async (re
     .map((item: any) => ({ index: item.index, ...projectClassroomQuestionForStudent(item.raw, true) }));
 
   const currentQ = safeQuestions.find((q: any) => q.index === session.activeQuestionIndex) || safeQuestions[0] || null;
+  const batchPosition = safeQuestions.findIndex((q: any) => q.index === session.activeQuestionIndex);
   res.json({
     sessionId: sessionId(session),
     question: currentQ,
-    currentIndex: session.activeQuestionIndex,
+    currentIndex: batchPosition >= 0 ? batchPosition : 0,
+    globalIndex: session.activeQuestionIndex,
     totalQuestions: safeQuestions.length,
     questions: safeQuestions,
   });
@@ -439,9 +484,14 @@ classroomRouter.put("/sessions/:id/answers/:questionId", requireAuth, asyncHandl
   const participant = await ClassroomParticipantModel.exists({ sessionId: sessionId(session), studentId: req.authUser!.id });
   if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before answering" });
   if (payload.selectedOptionIndex >= question.options.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Selected option is invalid" });
-  const response = await ClassroomResponseModel.findOneAndUpdate({ sessionId: sessionId(session), questionId: question.questionId, studentId: req.authUser!.id }, { $setOnInsert: { selectedOptionIndex: payload.selectedOptionIndex, isCorrect: payload.selectedOptionIndex === question.correctOptionIndex } }, { upsert: true, new: true });
+  const response = await ClassroomResponseModel.findOneAndUpdate(
+    { sessionId: sessionId(session), questionId: question.questionId, studentId: req.authUser!.id },
+    { $set: { selectedOptionIndex: payload.selectedOptionIndex, isCorrect: payload.selectedOptionIndex === question.correctOptionIndex, updatedAt: new Date() } },
+    { upsert: true, new: true }
+  );
   const responseCount = await ClassroomResponseModel.countDocuments({ sessionId: sessionId(session), questionId: question.questionId });
-  emitClassroomEvent(sessionId(session), "response:updated", { responseCount }); res.json({ accepted: true, responseId: String(response._id) });
+  emitClassroomEvent(sessionId(session), "response:updated", { responseCount, questionId: question.questionId });
+  res.json({ accepted: true, responseId: String(response._id) });
 }));
 
 classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
@@ -501,21 +551,18 @@ classroomRouter.post("/sessions/:id/append-questions", requireAuth, requireRole(
   const existingIds = new Set(session.questionSnapshots.map((q: any) => q.questionId));
   const trulyNewSnapshots = newSnapshots.filter((q: any) => !existingIds.has(q.questionId));
   session.questionSnapshots.push(...(trulyNewSnapshots as any));
-  const newIds = newSnapshots.map((q: any) => q.questionId);
+  const batchQuestionIds = Array.from(new Set(payload.questionIds));
 
   if (payload.autoPublishFirst) {
     const wasNotLive = session.status !== "live";
     if (wasNotLive) {
-      await ClassroomSessionModel.updateMany(
-        { schoolId: session.schoolId, classId: session.classId, status: "live", _id: { $ne: session._id } },
-        { $set: { status: "ended", endedAt: new Date() } }
-      );
+      await safelyClosePreviousLiveSessions(session.schoolId, session.classId, String(session._id));
     }
-    const firstIndex = session.questionSnapshots.findIndex((q: any) => q.questionId === newIds[0]);
+    const firstIndex = session.questionSnapshots.findIndex((q: any) => q.questionId === batchQuestionIds[0]);
     session.status = "live";
     session.activeQuestionIndex = firstIndex >= 0 ? firstIndex : 0;
     session.publishedMode = "batch";
-    session.publishedQuestionIds = newIds;
+    session.publishedQuestionIds = batchQuestionIds;
     emitClassroomEvent(sessionId(session), "question:published", { activeQuestionIndex: session.activeQuestionIndex, publishedMode: "batch" });
     if (wasNotLive) {
       emitClassroomEventToClass(session.classId, "classroom:started", {
@@ -530,7 +577,7 @@ classroomRouter.post("/sessions/:id/append-questions", requireAuth, requireRole(
   await session.save();
 
   res.json({
-    appendedCount: newSnapshots.length,
+    appendedCount: trulyNewSnapshots.length,
     totalQuestions: session.questionSnapshots.length,
     activeQuestionIndex: session.activeQuestionIndex,
   });
@@ -553,11 +600,15 @@ classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (
   if (!isTeacher && !isStudent && !isSupervisor) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
   const responses = await ClassroomResponseModel.find({ sessionId: sessionId(session) }).lean();
   
-  // Students must NOT see choice distribution while session is live
-  const distribution = (isStudent && session.status === "live")
-    ? {}
-    : responses.reduce((summary: Record<string, number>, response: any) => { const key = String(response.selectedOptionIndex); summary[key] = (summary[key] || 0) + 1; return summary; }, {});
-  
+  // Group responses by questionId for accurate per-question distribution
+  const responsesByQuestion = new Map<string, any[]>();
+  for (const resp of responses) {
+    const qId = String(resp.questionId);
+    const list = responsesByQuestion.get(qId) || [];
+    list.push(resp);
+    responsesByQuestion.set(qId, list);
+  }
+
   const publishedSet = new Set(
     session.publishedQuestionIds && session.publishedQuestionIds.length > 0
       ? session.publishedQuestionIds
@@ -566,9 +617,22 @@ classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (
           : [])
   );
 
-  // Teachers, Supervisors, and Projector views get full question details including explanation, correct index, and skills
-  const questions = session.questionSnapshots
+  // Build per-question detailed projections
+  const questions = (session.questionSnapshots || [])
     .map((question: any, index: number) => {
+      if (isStudent && session.status === "live" && !publishedSet.has(question.questionId)) {
+        return null;
+      }
+      const qResponses = responsesByQuestion.get(String(question.questionId)) || [];
+      const qDistribution = (isStudent && session.status === "live")
+        ? {}
+        : qResponses.reduce((summary: Record<string, number>, response: any) => {
+            const key = String(response.selectedOptionIndex);
+            summary[key] = (summary[key] || 0) + 1;
+            return summary;
+          }, {});
+      const correctCount = qResponses.filter((r: any) => r.isCorrect).length;
+
       if (isTeacher || isSupervisor) {
         return {
           index,
@@ -583,21 +647,50 @@ classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (
           sectionId: question.sectionId || "",
           subject: question.subject || "",
           difficulty: question.difficulty || "Medium",
+          responseCount: qResponses.length,
+          distribution: qDistribution,
+          correctCount,
         };
       }
-      if (isStudent && session.status === "live" && !publishedSet.has(question.questionId)) {
-        return null;
-      }
-      return { index, ...projectClassroomQuestionForStudent(question, true) };
+      return {
+        index,
+        ...projectClassroomQuestionForStudent(question, true),
+        responseCount: qResponses.length,
+        distribution: qDistribution,
+      };
     })
     .filter(Boolean);
+
+  // Active question context for root distribution & live radar
+  const reqQuestionId = typeof req.query.questionId === "string" ? req.query.questionId : null;
+  const activeQuestion = (reqQuestionId
+    ? session.questionSnapshots?.find((q: any) => q.questionId === reqQuestionId)
+    : null)
+    || (typeof session.activeQuestionIndex === "number" ? session.questionSnapshots?.[session.activeQuestionIndex] : null)
+    || session.questionSnapshots?.[0]
+    || null;
+
+  const activeResponses = activeQuestion
+    ? (responsesByQuestion.get(String(activeQuestion.questionId)) || [])
+    : [];
+  const activeDistribution = (isStudent && session.status === "live")
+    ? {}
+    : activeResponses.reduce((summary: Record<string, number>, response: any) => {
+        const key = String(response.selectedOptionIndex);
+        summary[key] = (summary[key] || 0) + 1;
+        return summary;
+      }, {});
+  const activeCorrectCount = activeResponses.filter((r: any) => r.isCorrect).length;
 
   res.json({
     sessionId: sessionId(session),
     status: session.status,
     activeQuestionIndex: session.activeQuestionIndex,
-    responseCount: responses.length,
-    distribution,
+    activeQuestionId: activeQuestion?.questionId || null,
+    responseCount: activeResponses.length,
+    distribution: activeDistribution,
+    correctCount: (isTeacher || isSupervisor || session.status === "ended") ? activeCorrectCount : undefined,
+    totalSessionResponses: responses.length,
     report: session.status === "ended" ? session.reportSnapshot : null,
     questions,
     meta: {
