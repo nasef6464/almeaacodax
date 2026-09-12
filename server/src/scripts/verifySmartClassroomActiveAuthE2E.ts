@@ -4,17 +4,20 @@ import mongoose from "mongoose";
 import { io as connectSocket, type Socket } from "socket.io-client";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
+import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { UserModel } from "../models/User.js";
 import { createSocketServer } from "../sockets/index.js";
 import { signAccessToken } from "../utils/jwt.js";
 
 const RUN_ID = `active_auth_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
-const email = `${RUN_ID}@example.com`;
+const studentEmail = `student_${RUN_ID}@example.com`;
+const teacherEmail = `teacher_${RUN_ID}@example.com`;
 const schoolId = new mongoose.Types.ObjectId().toString();
 const classId = new mongoose.Types.ObjectId().toString();
 let server: http.Server | null = null;
 const sockets: Socket[] = [];
+let sessionId = "";
 
 function databaseName(uri: string) {
   const withoutQuery = uri.split("?")[0] || "";
@@ -28,6 +31,15 @@ function assertSafeDatabase() {
   if (!/(?:test|ci|dev|local|sandbox)/i.test(name) && process.env.ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB !== "1") {
     throw new Error(`Refusing active-auth E2E against database '${name || "<default>"}'`);
   }
+}
+
+function tokenFor(user: any) {
+  return signAccessToken({
+    id: String(user._id),
+    email: String(user.email),
+    role: user.role,
+    name: String(user.name),
+  });
 }
 
 async function connectAuthorized(baseUrl: string, token: string) {
@@ -75,30 +87,60 @@ async function joinWorkspace(socket: Socket, room: string) {
   });
 }
 
+async function get(url: string, token: string) {
+  return fetch(url, {
+    headers: { authorization: `Bearer ${token}`, accept: "application/json" },
+  });
+}
+
 async function run() {
   assertSafeDatabase();
   await mongoose.connect(env.MONGODB_URI);
-  await UserModel.deleteMany({ email });
+  await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } });
 
-  const student = await UserModel.create({
-    name: "Smart Classroom Revoked Student",
-    email,
-    passwordHash: "x",
-    role: "student",
-    schoolId,
-    groupIds: [classId],
-    isActive: true,
-  });
+  const [student, teacher] = await Promise.all([
+    UserModel.create({
+      name: "Smart Classroom Revoked Student",
+      email: studentEmail,
+      passwordHash: "x",
+      role: "student",
+      schoolId,
+      groupIds: [classId],
+      isActive: true,
+    }),
+    UserModel.create({
+      name: "Smart Classroom Revoked Teacher",
+      email: teacherEmail,
+      passwordHash: "x",
+      role: "teacher",
+      schoolId,
+      groupIds: [],
+      isActive: true,
+    }),
+  ]);
   const studentId = String(student._id);
-  await SchoolMembershipModel.deleteMany({ userId: studentId, schoolId });
-  await SchoolMembershipModel.create({ userId: studentId, schoolId, role: "student", status: "active" });
+  const teacherId = String(teacher._id);
 
-  const token = signAccessToken({
-    id: studentId,
-    email: student.email,
-    role: student.role,
-    name: student.name,
+  await SchoolMembershipModel.deleteMany({ userId: { $in: [studentId, teacherId] }, schoolId });
+  await Promise.all([
+    SchoolMembershipModel.create({ userId: studentId, schoolId, role: "student", status: "active" }),
+    SchoolMembershipModel.create({ userId: teacherId, schoolId, role: "teacher", status: "active" }),
+  ]);
+
+  const session = await ClassroomSessionModel.create({
+    schoolId,
+    classId,
+    teacherId,
+    status: "live",
+    questionSnapshots: [],
+    publishedQuestionIds: [],
+    pinHash: `active-auth-${RUN_ID}`,
+    pinExpiresAt: new Date(Date.now() + 30 * 60_000),
   });
+  sessionId = String(session._id);
+
+  const studentToken = tokenFor(student);
+  const teacherToken = tokenFor(teacher);
 
   const app = createApp();
   server = http.createServer(app);
@@ -106,46 +148,67 @@ async function run() {
   await new Promise<void>((resolve) => server!.listen(0, "127.0.0.1", resolve));
   const port = (server.address() as any).port;
   const baseUrl = `http://127.0.0.1:${port}`;
-  const endpoint = `${baseUrl}/api/classroom/student/active-session`;
+  const studentEndpoint = `${baseUrl}/api/classroom/student/active-session`;
+  const teacherEndpoint = `${baseUrl}/api/classroom/sessions/${sessionId}/aggregate`;
 
-  const activeResponse = await fetch(endpoint, {
-    headers: { authorization: `Bearer ${token}`, accept: "application/json" },
-  });
-  assert.equal(activeResponse.status, 200, "active student should reach Smart Classroom HTTP routes");
+  assert.equal((await get(studentEndpoint, studentToken)).status, 200, "active student should reach Smart Classroom HTTP routes");
+  assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "active session owner should reach its classroom HTTP route");
 
-  const activeSocket = await connectAuthorized(baseUrl, token);
-  assert.equal((await joinWorkspace(activeSocket, `class:${classId}`)).ok, true, "active student should join its class discovery room");
-  activeSocket.disconnect();
+  const activeStudentSocket = await connectAuthorized(baseUrl, studentToken);
+  assert.equal((await joinWorkspace(activeStudentSocket, `class:${classId}`)).ok, true, "active student should join its class discovery room");
+  activeStudentSocket.disconnect();
+
+  const activeTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
+  assert.equal((await joinWorkspace(activeTeacherSocket, `classroom:${sessionId}`)).ok, true, "active session owner should join its classroom room");
+  activeTeacherSocket.disconnect();
 
   await SchoolMembershipModel.updateOne(
     { userId: studentId, schoolId, role: "student" },
     { $set: { status: "inactive" } },
   );
-
-  const inactiveMembershipResponse = await fetch(endpoint, {
-    headers: { authorization: `Bearer ${token}`, accept: "application/json" },
-  });
-  assert.equal(inactiveMembershipResponse.status, 403, "inactive explicit membership must override legacy User.schoolId");
-
-  const membershipRevokedSocket = await connectAuthorized(baseUrl, token);
   assert.equal(
-    (await joinWorkspace(membershipRevokedSocket, `class:${classId}`)).ok,
+    (await get(studentEndpoint, studentToken)).status,
+    403,
+    "inactive explicit student membership must override legacy User.schoolId",
+  );
+  const membershipRevokedStudentSocket = await connectAuthorized(baseUrl, studentToken);
+  assert.equal(
+    (await joinWorkspace(membershipRevokedStudentSocket, `class:${classId}`)).ok,
     false,
     "student with inactive school membership must not rejoin the class discovery room",
   );
-  membershipRevokedSocket.disconnect();
+  membershipRevokedStudentSocket.disconnect();
 
   await SchoolMembershipModel.updateOne(
-    { userId: studentId, schoolId, role: "student" },
+    { userId: teacherId, schoolId, role: "teacher" },
+    { $set: { status: "inactive" } },
+  );
+  assert.equal(
+    (await get(teacherEndpoint, teacherToken)).status,
+    403,
+    "inactive teacher membership must revoke access to an already-owned classroom session",
+  );
+  const membershipRevokedTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
+  assert.equal(
+    (await joinWorkspace(membershipRevokedTeacherSocket, `classroom:${sessionId}`)).ok,
+    false,
+    "teacher ownership must not bypass revoked school membership on reconnect",
+  );
+  membershipRevokedTeacherSocket.disconnect();
+
+  await SchoolMembershipModel.updateMany(
+    { userId: { $in: [studentId, teacherId] }, schoolId },
     { $set: { status: "active" } },
   );
-  await UserModel.updateOne({ _id: student._id }, { $set: { isActive: false } });
+  await UserModel.updateMany(
+    { _id: { $in: [student._id, teacher._id] } },
+    { $set: { isActive: false } },
+  );
 
-  const revokedResponse = await fetch(endpoint, {
-    headers: { authorization: `Bearer ${token}`, accept: "application/json" },
-  });
-  assert.equal(revokedResponse.status, 401, "disabled student must lose Smart Classroom HTTP access even with an unexpired JWT");
-  await expectConnectionRejected(baseUrl, token);
+  assert.equal((await get(studentEndpoint, studentToken)).status, 401, "disabled student must lose classroom HTTP access with an unexpired JWT");
+  assert.equal((await get(teacherEndpoint, teacherToken)).status, 401, "disabled teacher must lose classroom HTTP access with an unexpired JWT");
+  await expectConnectionRejected(baseUrl, studentToken);
+  await expectConnectionRejected(baseUrl, teacherToken);
 
   console.log("Smart Classroom account and school-membership revocation E2E: PASS");
 }
@@ -158,9 +221,11 @@ run()
   .finally(async () => {
     sockets.splice(0).forEach((socket) => socket.disconnect());
     try {
-      const user = await UserModel.findOne({ email }).select("_id").lean();
-      if (user) await SchoolMembershipModel.deleteMany({ userId: String(user._id), schoolId });
-      await UserModel.deleteMany({ email });
+      if (sessionId) await ClassroomSessionModel.deleteOne({ _id: sessionId });
+      const users = await UserModel.find({ email: { $in: [studentEmail, teacherEmail] } }).select("_id").lean();
+      const userIds = users.map((user: any) => String(user._id));
+      if (userIds.length) await SchoolMembershipModel.deleteMany({ userId: { $in: userIds }, schoolId });
+      await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } });
     } catch (error) {
       console.error("Active-auth E2E cleanup failed", error);
     }
