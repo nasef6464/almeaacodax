@@ -74,7 +74,14 @@ export const SchoolTeacherDashboard: React.FC = () => {
   const [questions, setQuestions] = useState<any[]>([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
   const [challengeQuestionIds, setChallengeQuestionIds] = useState<string[]>([]);
-  const [filters, setFilters] = useState<ClassroomFilterState>({ track: '', subject: '', difficulty: '', search: '' });
+  const [filters, setFilters] = useState<ClassroomFilterState>({
+    pathId: '',
+    subjectId: '',
+    sectionId: '',
+    skillId: '',
+    difficulty: '',
+    search: '',
+  });
   const [questionsLoading, setQuestionsLoading] = useState(false);
 
   // Sync tab with URL
@@ -98,6 +105,8 @@ export const SchoolTeacherDashboard: React.FC = () => {
     [selectedSchoolId, workspace],
   );
 
+  const storeQuestions = useStore((s) => s.questions) || [];
+
   // Load question bank when on prepared-questions tab
   useEffect(() => {
     if (activeTab !== 'prepared-questions' || !selectedSchool) return;
@@ -106,25 +115,86 @@ export const SchoolTeacherDashboard: React.FC = () => {
     api
       .getClassroomQuestions(selectedSchool.schoolId)
       .then((res) => {
-        setQuestions(res.questions || []);
+        if (res.questions && res.questions.length > 0) {
+          setQuestions(res.questions);
+        } else if (storeQuestions.length > 0) {
+          setQuestions(
+            storeQuestions.map((q) => ({
+              questionId: q.id,
+              text: q.text,
+              imageUrl: q.imageUrl || '',
+              options: q.options || [],
+              type: q.type || 'mcq',
+              skillIds: q.skillIds || [],
+              pathId: q.pathId || '',
+              subject: q.subject || '',
+              sectionId: q.sectionId || '',
+              difficulty: q.difficulty || 'Medium',
+              examType: q.examType || 'general',
+              explanation: q.explanation || '',
+            }))
+          );
+        }
       })
       .catch(() => {
-        // safe fallback
+        if (storeQuestions.length > 0) {
+          setQuestions(
+            storeQuestions.map((q) => ({
+              questionId: q.id,
+              text: q.text,
+              imageUrl: q.imageUrl || '',
+              options: q.options || [],
+              type: q.type || 'mcq',
+              skillIds: q.skillIds || [],
+              pathId: q.pathId || '',
+              subject: q.subject || '',
+              sectionId: q.sectionId || '',
+              difficulty: q.difficulty || 'Medium',
+              examType: q.examType || 'general',
+              explanation: q.explanation || '',
+            }))
+          );
+        }
       })
       .finally(() => {
         setQuestionsLoading(false);
       });
-  }, [activeTab, selectedSchool, questions.length]);
+  }, [activeTab, selectedSchool, questions.length, storeQuestions]);
 
-  if (!workspace || !selectedSchool) return null;
+  const poolQuestions = useMemo(() => {
+    if (questions.length > 0) return questions;
+    if (storeQuestions.length > 0) {
+      return storeQuestions.map((q) => ({
+        questionId: q.id,
+        text: q.text,
+        imageUrl: q.imageUrl || '',
+        options: q.options || [],
+        type: q.type || 'mcq',
+        skillIds: q.skillIds || [],
+        pathId: q.pathId || '',
+        subject: q.subject || '',
+        sectionId: q.sectionId || '',
+        difficulty: q.difficulty || 'Medium',
+        examType: q.examType || 'general',
+        explanation: q.explanation || '',
+      }));
+    }
+    return [];
+  }, [questions, storeQuestions]);
 
-  const filteredQuestions = questions.filter((q) => {
-    if (filters.track && q.examType !== filters.track && q.pathId !== filters.track) return false;
-    if (filters.subject && q.subject !== filters.subject) return false;
-    if (filters.difficulty && q.difficulty !== filters.difficulty) return false;
-    if (filters.search && !q.text?.toLowerCase().includes(filters.search.toLowerCase())) return false;
-    return true;
-  });
+  const filteredQuestions = useMemo(() => {
+    return poolQuestions.filter((q: any) => {
+      const activePathId = filters.pathId || filters.track;
+      if (activePathId && q.pathId !== activePathId && q.examType !== activePathId) return false;
+      const activeSubjectId = filters.subjectId || filters.subject;
+      if (activeSubjectId && q.subject !== activeSubjectId) return false;
+      if (filters.sectionId && q.sectionId !== filters.sectionId) return false;
+      if (filters.skillId && !q.skillIds?.includes(filters.skillId)) return false;
+      if (filters.difficulty && q.difficulty !== filters.difficulty) return false;
+      if (filters.search && !q.text?.toLowerCase().includes(filters.search.toLowerCase())) return false;
+      return true;
+    });
+  }, [poolQuestions, filters]);
 
   const toggleQuestionSelection = (id: string) => {
     setSelectedQuestionIds((prev) =>
@@ -495,8 +565,17 @@ export const SchoolTeacherDashboard: React.FC = () => {
           <ClassroomQuestionFilterBar
             filters={filters}
             onChange={setFilters}
-            onReset={() => setFilters({ track: '', subject: '', difficulty: '', search: '' })}
-            totalCount={questions.length}
+            onReset={() =>
+              setFilters({
+                pathId: '',
+                subjectId: '',
+                sectionId: '',
+                skillId: '',
+                difficulty: '',
+                search: '',
+              })
+            }
+            totalCount={poolQuestions.length}
             filteredCount={filteredQuestions.length}
           />
 

@@ -1,13 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CheckCircle2, Loader2, Presentation, Send, Zap } from 'lucide-react';
+import { CheckCircle2, Loader2, Presentation, Send, Sparkles, Zap } from 'lucide-react';
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
+import { useAuth } from '../contexts/AuthContext';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
 export const ClassroomStudentLive: React.FC = () => {
   const { sessionId = '' } = useParams();
+  const { user } = useAuth();
   const [pin, setPin] = useState(() => sessionStorage.getItem('classroom_pin') || '');
   const [question, setQuestion] = useState<any>(null);
   const [message, setMessage] = useState('');
@@ -15,6 +17,7 @@ export const ClassroomStudentLive: React.FC = () => {
   const [joined, setJoined] = useState(() => Boolean(sessionStorage.getItem('classroom_joined') === 'true' && sessionStorage.getItem('classroom_session_id') === sessionId));
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [joiningInstant, setJoiningInstant] = useState(false);
 
   const loadCurrent = useCallback(() => {
     return api.getClassroomCurrentQuestion(sessionId).then((current) => {
@@ -29,7 +32,45 @@ export const ClassroomStudentLive: React.FC = () => {
 
   useClassroomRealtime(joined ? sessionId : '', loadCurrent);
 
-  const join = async () => {
+  // Auto-attempt instant join on mount if student is logged in and not joined yet
+  useEffect(() => {
+    if (joined || !sessionId || !user || user.role !== 'student') return;
+    let mounted = true;
+    const attemptInstant = async () => {
+      try {
+        const res = await api.instantJoinClassroomSession(sessionId);
+        if (mounted && res.joined) {
+          setJoined(true);
+          sessionStorage.setItem('classroom_session_id', sessionId);
+          sessionStorage.setItem('classroom_joined', 'true');
+          await loadCurrent();
+        }
+      } catch {
+        // Fallback to manual join screen
+      }
+    };
+    void attemptInstant();
+    return () => { mounted = false; };
+  }, [sessionId, user, joined, loadCurrent]);
+
+  const instantJoin = async () => {
+    setJoiningInstant(true);
+    setMessage('جارٍ الانضمام للحصة…');
+    try {
+      await api.instantJoinClassroomSession(sessionId);
+      setJoined(true);
+      sessionStorage.setItem('classroom_session_id', sessionId);
+      sessionStorage.setItem('classroom_joined', 'true');
+      await loadCurrent();
+      setMessage('تم الانضمام بنجاح! 🚀');
+    } catch (err: any) {
+      setMessage(err?.message || 'تعذر الانضمام الفوري. تأكد أنك مسجل بهذا الفصل.');
+    } finally {
+      setJoiningInstant(false);
+    }
+  };
+
+  const joinByPin = async () => {
     try {
       await api.joinClassroomSession(sessionId, pin);
       setJoined(true);
@@ -62,28 +103,49 @@ export const ClassroomStudentLive: React.FC = () => {
   // Not Joined Screen
   if (!joined) {
     return (
-      <main className="mx-auto mt-12 max-w-sm p-5 text-center" dir="rtl">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-          <Presentation size={32} />
+      <main className="mx-auto mt-10 max-w-md p-6 text-center" dir="rtl">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 shadow-inner">
+          <Presentation size={36} />
         </div>
-        <h1 className="mt-4 text-2xl font-black text-slate-900">انضم للفصل الذكي</h1>
-        <p className="mt-2 text-sm text-slate-500">أدخل رمز الحصة الظاهر على الشاشة.</p>
+        <h1 className="mt-4 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">انضم للفصل الذكي</h1>
+        <p className="mt-2 text-sm text-slate-500">مرحباً بك في الحصة التفاعلية المباشرة</p>
+
+        {user?.role === 'student' && (
+          <div className="mt-6 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-5 dark:border-indigo-900/40 dark:bg-indigo-950/20">
+            <p className="text-xs font-bold text-indigo-700 dark:text-indigo-300">طالب في هذا الفصل؟</p>
+            <button
+              type="button"
+              onClick={() => void instantJoin()}
+              disabled={joiningInstant}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 p-4 font-black text-white shadow-lg hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95"
+            >
+              {joiningInstant ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
+              انضمام فوري بدون رمز 🚀
+            </button>
+          </div>
+        )}
+
+        <div className="mt-6 relative">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200 dark:border-slate-800" /></div>
+          <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 dark:bg-slate-900">أو عبر رمز الحصة</span></div>
+        </div>
+
         <input
           inputMode="numeric"
           value={pin}
           onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 6))}
-          className="mt-6 w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-[0.5em] text-indigo-700 shadow-inner focus:border-indigo-600 focus:outline-hidden"
+          className="mt-4 w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-[0.4em] text-indigo-700 shadow-inner focus:border-indigo-600 focus:outline-hidden dark:border-slate-800 dark:bg-slate-800 dark:text-indigo-400"
           placeholder="000000"
         />
         <button
           type="button"
-          onClick={() => void join()}
+          onClick={() => void joinByPin()}
           disabled={pin.length !== 6}
-          className="mt-4 w-full rounded-xl bg-indigo-600 p-4 font-black text-white shadow-md hover:bg-indigo-700 disabled:opacity-50"
+          className="mt-3 w-full rounded-xl bg-slate-800 p-3.5 font-black text-white shadow-md hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95"
         >
-          انضم الآن
+          انضمام بالرمز
         </button>
-        <p className="mt-3 text-sm font-bold text-slate-600">{message}</p>
+        {message && <p className="mt-3 text-sm font-bold text-slate-600 dark:text-slate-300">{message}</p>}
       </main>
     );
   }

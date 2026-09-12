@@ -1,5 +1,27 @@
 # ALMEAA — Codex Execution State
 
+## Smart Classroom Dual-Join (1-Click Proactive Notification & 6-Digit PIN), In-Session Question Pushing & Interactive Smart Board Projector View
+
+- Status: `VERIFIED / READY FOR COMMIT & MERGE` on 2026-09-12.
+- Scope:
+  1. Platform Question Bank Taxonomy Alignment (`ClassroomQuestionFilterBar.tsx` & `SchoolTeacherDashboard.tsx`):
+     - Replaced static strings with authoritative platform store taxonomy (`paths`, `subjects`, `sections`, `skills`, `difficulty`, `search`).
+     - Fixed question count resolving to 0 questions; now reliably loads and filters all available platform questions.
+  2. Dual Student Join Methods (1-Click Proactive Notification & 6-Digit PIN):
+     - Added backend endpoints `GET /classroom/student/active-session`, `POST /classroom/sessions/join-by-pin`, and `POST /classroom/sessions/:id/instant-join`.
+     - In `SmartClassroomFloatingWidget.tsx`, added proactive 1-click notification card in the bottom corner of the student screen: `🔔 بدأ أ. [اسم المعلم] الحصة التفاعلية الآن ([اسم الفصل])` with `انضمام فوري للحصة 🚀` (zero code needed).
+     - In `ClassroomStudentLive.tsx`, streamlined student tablet surface with 1-click auto instant-join and numeric 6-digit PIN input.
+  3. In-Session Dynamic Question Pushing (`ClassroomActiveSessionPanel.tsx`):
+     - Added `+ إرسال أسئلة / حزمة مهارة الآن 🚀` modal allowing teachers to dynamically push either single challenge questions or skill batches (5-6 questions) during live classroom instruction without leaving the session.
+     - Backend endpoint `POST /classroom/sessions/:id/append-questions` dynamically appends questions and auto-publishes to student tablets.
+  4. Interactive Smart Board & Projector View (`ClassroomProjectorView.tsx`):
+     - Replaced 3-line mock with high-contrast, large-font presentation screen for classroom projectors and smart boards.
+     - Features live response counters, option progress bars (أ، ب، ج، د), common mistake diagnostics (`⚠️ خطأ شائع: X% اختاروا البديل`), and model solution toggle (`عرض الشرح النموذجي والمهارة 💡`).
+  5. Architectural & Contract Integrity:
+     - 100% passing automated checks: `smoke:smart-classroom-g2-contract` (12/12) and `smoke:smart-classroom-g0` (11/11).
+     - Production Vite build and server typecheck passing with zero errors.
+- Evidence: Playwright verification captured and documented screenshots for projector view, explanation reveal, teacher console push modal, and student proactive notification.
+
 ## Class Skill Gaps Radar & Student Appreciation Certificate Generator
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `a1357e33` merged in `6e8d59bd` on `main` (PR #116).

@@ -370,6 +370,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
         void publish(question.index);
       }}
       onEnd={() => void end()}
+      onReload={() => void load()}
       message={message}
       isTeacher={user?.role === 'teacher'}
     />
