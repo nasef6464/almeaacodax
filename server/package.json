@@ -30,6 +30,7 @@
     "verify:smart-classroom-g2": "tsx src/scripts/verifySmartClassroomG2.ts",
     "simulate:smart-classroom": "tsx src/scripts/simulateMultiSchoolSmartClassroomE2E.ts",
     "simulate:smart-classroom-hardening": "tsx src/scripts/simulateSmartClassroomHardeningE2E.ts",
+    "verify:smart-classroom-report-immutability": "tsx src/scripts/verifySmartClassroomReportImmutability.ts",
     "migrate:smart-classroom-indexes": "tsx src/scripts/ensureSmartClassroomIndexes.ts",
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
