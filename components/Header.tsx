@@ -122,11 +122,15 @@ export const Header: React.FC = () => {
   const { paths, subjects, levels, cartItems } = useStore();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
 
-  const getDashboardPathForRole = (role?: string | null) => {
+  const getDashboardPathForRole = (role?: string | null, targetUser?: any) => {
+    const activeUser = targetUser || user;
     switch (role) {
       case 'admin':
         return '/admin-dashboard';
       case 'teacher':
+        if (activeUser?.schoolId || (activeUser?.groupIds && activeUser.groupIds.length > 0) || !(activeUser?.managedPathIds?.length)) {
+          return '/school-teacher-dashboard';
+        }
         return '/instructor-dashboard';
       case 'supervisor':
         return '/supervisor-dashboard';
@@ -744,7 +748,18 @@ export const Header: React.FC = () => {
                         <p className="text-xs text-gray-500">{user.email}</p>
                       </div>
 
-                      <UserMenuItem to={getDashboardPathForRole(user.role)} icon={<LayoutGrid size={18} />} label={text.dashboard} />
+                      {user.role === 'teacher' ? (
+                        <>
+                          {(user.schoolId || (user.groupIds && user.groupIds.length > 0) || !((user as any).managedPathIds?.length)) && (
+                            <UserMenuItem to="/school-teacher-dashboard" icon={<LayoutGrid size={18} />} label="لوحة معلم المدرسة" />
+                          )}
+                          {Boolean((user as any).managedPathIds?.length || (user as any).managedSubjectIds?.length) && (
+                            <UserMenuItem to="/instructor-dashboard" icon={<BookOpen size={18} />} label="لوحة مدرب المنصة" />
+                          )}
+                        </>
+                      ) : (
+                        <UserMenuItem to={getDashboardPathForRole(user.role, user)} icon={<LayoutGrid size={18} />} label={text.dashboard} />
+                      )}
                       <UserMenuItem to="/dashboard?tab=my-courses" icon={<BookOpen size={18} />} label={text.courses} />
                       <UserMenuItem to="/my-quizzes" icon={<FileText size={18} />} label={text.quizzes} />
                       <UserMenuItem to="/achievements" icon={<Award size={18} />} label={text.achievements} />

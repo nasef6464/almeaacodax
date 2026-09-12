@@ -172,6 +172,18 @@ export const createAuthApi = (request: ApiRequest) => {
         },
       })),
 
+    getAdminTrainers: (filters: PaginationOptions & { status?: "active" | "inactive" | "unconfigured"; persona?: "platform" | "hybrid" } = {}) =>
+      request<{ trainers: unknown[]; pagination?: PaginatedResponseShape }>(
+        withQuery("/auth/admin/trainers", { limit: 25, ...filters }),
+      ).then((payload) => ({
+        ...payload,
+        trainers: extractList(payload, "trainers"),
+        pagination: payload.pagination || { page: 1, limit: 25, total: 0, totalPages: 0, items: 0 },
+      })),
+
+    getAdminTrainer: (id: string) =>
+      request<{ trainer: unknown }>(`/auth/admin/trainers/${encodeURIComponent(id)}`),
+
     updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
       request<{ user: unknown }>(`/auth/admin/users/${id}`, {
         method: "PATCH",

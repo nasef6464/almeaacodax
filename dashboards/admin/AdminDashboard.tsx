@@ -39,6 +39,7 @@ const lazyNamed = <TProps extends object>(
     });
 
 const UsersManager = lazyNamed(() => import('./UsersManager'), 'UsersManager');
+const TrainersManager = lazyNamed(() => import('./TrainersManager'), 'TrainersManager');
 const SchoolsManager = lazyNamed(() => import('./SchoolsManager'), 'SchoolsManager');
 const PathsManager = lazyNamed(() => import('./PathsManager'), 'PathsManager');
 const QuestionBankManager = lazyNamed(() => import('./QuestionBankManager'), 'QuestionBankManager');
@@ -861,6 +862,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
+            { id: 'trainers', label: 'إدارة المدربين', icon: <User size={20} /> },
             { id: 'schools', label: 'تشغيل المدارس', icon: <Building2 size={20} /> },
             { id: 'memberships', label: 'العضويات', icon: <CreditCard size={20} /> },
             { id: 'financial', label: 'المالية والاشتراكات', icon: <CreditCard size={20} /> },
@@ -2037,6 +2039,8 @@ export const AdminDashboard: React.FC = () => {
                 return <SkillsTreeManager />;
             case 'users':
                 return <UsersManager />;
+            case 'trainers':
+                return <TrainersManager />;
             case 'schools':
             case 'groups':
                 return <SchoolsManager />;

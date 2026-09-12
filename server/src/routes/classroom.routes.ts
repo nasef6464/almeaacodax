@@ -68,12 +68,31 @@ classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"])
     ]);
     if (!hasTeacherContext || !assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
   }
-  const questions = await QuestionModel.find({ type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" })
-    .select("id text imageUrl options type skillIds")
+  const filter: Record<string, any> = { type: { $in: ["mcq", "true_false"] }, approvalStatus: "approved" };
+  if (typeof req.query.pathId === "string" && req.query.pathId.trim()) filter.pathId = req.query.pathId.trim();
+  if (typeof req.query.subject === "string" && req.query.subject.trim()) filter.subject = req.query.subject.trim();
+  if (typeof req.query.difficulty === "string" && req.query.difficulty.trim()) filter.difficulty = req.query.difficulty.trim();
+  if (typeof req.query.search === "string" && req.query.search.trim()) filter.text = { $regex: req.query.search.trim(), $options: "i" };
+  const questions = await QuestionModel.find(filter)
+    .select("id text imageUrl options type skillIds pathId subject sectionId difficulty examType")
     .sort({ updatedAt: -1 })
     .limit(100)
     .lean();
-  res.json({ questions: questions.map((question: any) => ({ questionId: String(question.id || question._id), text: question.text, imageUrl: question.imageUrl, options: question.options, type: question.type, skillIds: question.skillIds || [] })) });
+  res.json({
+    questions: questions.map((question: any) => ({
+      questionId: String(question.id || question._id),
+      text: question.text,
+      imageUrl: question.imageUrl || "",
+      options: question.options,
+      type: question.type,
+      skillIds: question.skillIds || [],
+      pathId: question.pathId || "",
+      subject: question.subject || "",
+      sectionId: question.sectionId || "",
+      difficulty: question.difficulty || "Medium",
+      examType: question.examType || "general",
+    })),
+  });
 }));
 
 classroomRouter.get("/supervisor/today", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
@@ -181,13 +200,15 @@ classroomRouter.get("/sessions/:id/current", requireAuth, asyncHandler(async (re
   if (!student || student.role !== "student" || String(student.schoolId) !== String(session.schoolId) || !(student.groupIds || []).map(String).includes(String(session.classId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
   const participant = await ClassroomParticipantModel.exists({ sessionId: sessionId(session), studentId: req.authUser!.id });
   if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before viewing questions" });
-  res.json({ sessionId: sessionId(session), question: projectClassroomQuestionForStudent(session.questionSnapshots[session.activeQuestionIndex], true) });
+  const safeQuestions = session.questionSnapshots.map((q: any, i: number) => ({ index: i, ...projectClassroomQuestionForStudent(q, true) }));
+  res.json({ sessionId: sessionId(session), question: safeQuestions[session.activeQuestionIndex] || safeQuestions[0] || null, currentIndex: session.activeQuestionIndex, totalQuestions: session.questionSnapshots.length, questions: safeQuestions });
 }));
 
 classroomRouter.put("/sessions/:id/answers/:questionId", requireAuth, asyncHandler(async (req, res) => {
   const payload = answerSchema.parse(req.body); const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
   if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
-  const question = session.questionSnapshots[session.activeQuestionIndex]; if (!question || String(question.questionId) !== req.params.questionId) return res.status(StatusCodes.CONFLICT).json({ message: "Question is not active" });
+  const question = session.questionSnapshots.find((q: any) => String(q.questionId) === req.params.questionId) || session.questionSnapshots[session.activeQuestionIndex];
+  if (!question) return res.status(StatusCodes.CONFLICT).json({ message: "Question is not active" });
   const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
   if (!student || student.role !== "student" || String(student.schoolId) !== String(session.schoolId) || !(student.groupIds || []).map(String).includes(String(session.classId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
   const participant = await ClassroomParticipantModel.exists({ sessionId: sessionId(session), studentId: req.authUser!.id });

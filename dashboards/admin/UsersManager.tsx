@@ -51,10 +51,10 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
 });
 
 const roleLabels: Record<Role, string> = {
-    [Role.ADMIN]: 'مدير',
+    [Role.ADMIN]: 'مدير المنصة',
     [Role.SUPERVISOR]: 'مشرف',
     [Role.SCHOOL_ADMIN]: 'مدير مدرسة',
-    [Role.TEACHER]: 'مدرب منصة / معلم مدرسة',
+    [Role.TEACHER]: 'معلم / مدرب',
     [Role.PARENT]: 'ولي أمر',
     [Role.STUDENT]: 'طالب',
 };
@@ -66,7 +66,7 @@ const resolveUserRoleLabel = (currentUser: User) => {
     if (hasPlatformScope && hasSchoolScope) return 'مدرب منصة + معلم مدرسة';
     if (hasPlatformScope) return 'مدرب منصة';
     if (hasSchoolScope) return 'معلم مدرسة';
-    return 'حساب معلم غير مهيأ';
+    return 'معلم مدرسة (غير مسند)';
 };
 
 const createWorkbookDownload = async (
@@ -138,7 +138,7 @@ export const UsersManager: React.FC = () => {
     } = useStore();
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all');
+    const [roleFilter, setRoleFilter] = useState<string>('all');
     const [editingUserId, setEditingUserId] = useState<string | null>(null);
     const [nameDrafts, setNameDrafts] = useState<Record<string, string>>({});
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -154,6 +154,9 @@ export const UsersManager: React.FC = () => {
     const [createError, setCreateError] = useState('');
     const [relationshipActionUserId, setRelationshipActionUserId] = useState<string | null>(null);
     const [relationshipActionError, setRelationshipActionError] = useState('');
+    const [newUserType, setNewUserType] = useState<'student' | 'school_teacher' | 'platform_trainer' | 'supervisor' | 'school_admin' | 'parent' | 'admin'>('student');
+    const [newUserSchoolId, setNewUserSchoolId] = useState('');
+    const [newUserClassId, setNewUserClassId] = useState('');
     const [newUser, setNewUser] = useState({
         name: '',
         email: '',
@@ -182,7 +185,15 @@ export const UsersManager: React.FC = () => {
         }));
     }, [newUser.managedPathIds, subjects]);
 
-    const filteredUsers = users;
+    const filteredUsers = useMemo(() => {
+        if (roleFilter === 'school_teacher') {
+            return users.filter((u) => u.role === Role.TEACHER && (Boolean(u.schoolId) || Boolean(u.groupIds?.length)));
+        }
+        if (roleFilter === 'platform_trainer') {
+            return users.filter((u) => u.role === Role.TEACHER && ((u.managedPathIds?.length || 0) > 0 || (u.managedSubjectIds?.length || 0) > 0) && !u.schoolId && !u.groupIds?.length);
+        }
+        return users;
+    }, [users, roleFilter]);
     const usersByRole = useMemo(() => {
         return Object.values(Role).reduce((acc, role) => {
             acc[role] = users.filter((user) => user.role === role).length;
@@ -210,12 +221,21 @@ export const UsersManager: React.FC = () => {
             setIsUsersLoading(true);
             setUsersLoadError('');
 
+            const effectiveRole = roleFilter === 'all'
+                ? undefined
+                : (roleFilter === 'platform_trainer' || roleFilter === 'school_teacher')
+                ? Role.TEACHER
+                : roleFilter as Role;
+
+            const effectivePlatformTrainer = roleFilter === 'platform_trainer' ? true : undefined;
+
             api.getAdminUsers({
                 page: usersPage,
                 limit: usersLimit,
                 search: searchTerm.trim() || undefined,
-                role: roleFilter === 'all' ? undefined : roleFilter,
-            })
+                role: effectiveRole,
+                platformTrainer: effectivePlatformTrainer,
+            } as any)
                 .then((response) => {
                     if (!isMounted) return;
                     hydrateUsers((response.users || []).map(buildStoreUser));
@@ -276,7 +296,7 @@ export const UsersManager: React.FC = () => {
         setUsersPage(1);
         setSearchTerm(value);
     };
-    const handleRoleFilterChange = (value: Role | 'all') => {
+    const handleRoleFilterChange = (value: string) => {
         setUsersPage(1);
         setRoleFilter(value);
     };
@@ -290,6 +310,46 @@ export const UsersManager: React.FC = () => {
                 if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
                 const persistedUser = buildStoreUser(persistedPayload);
                 hydrateUsers(users.map((item) => item.id === currentUser.id ? persistedUser : item));
+            })
+            .catch((error) => {
+                const message = error instanceof Error ? error.message : 'تعذر تغيير دور المستخدم الآن.';
+                console.error('Failed to persist user role change:', error);
+                setRelationshipActionError(message);
+                window.alert(message);
+            })
+            .finally(() => {
+                setRelationshipActionUserId((current) => current === currentUser.id ? null : current);
+            });
+    };
+
+    const handleCustomRoleChange = (currentUser: User, newRoleValue: string) => {
+        const isSchoolTeacher = newRoleValue === 'school_teacher';
+        const isPlatformTrainer = newRoleValue === 'platform_trainer';
+        const targetRole: Role = isSchoolTeacher || isPlatformTrainer ? Role.TEACHER : (newRoleValue as Role);
+
+        setRelationshipActionUserId(currentUser.id);
+        setRelationshipActionError('');
+
+        const updatePayload: Record<string, any> = { role: targetRole };
+        if (isSchoolTeacher) {
+            updatePayload.managedPathIds = [];
+            updatePayload.managedSubjectIds = [];
+        } else if (isPlatformTrainer) {
+            updatePayload.schoolId = null;
+            updatePayload.groupIds = [];
+        }
+
+        void api.updateAdminUser(currentUser.id, updatePayload)
+            .then((response) => {
+                const persistedPayload = (response as { user?: AdminUserPayload })?.user;
+                if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
+                const persistedUser = buildStoreUser(persistedPayload);
+                hydrateUsers(users.map((item) => item.id === currentUser.id ? persistedUser : item));
+                updateUser(currentUser.id, {
+                    role: targetRole,
+                    ...(isSchoolTeacher ? { managedPathIds: [], managedSubjectIds: [] } : {}),
+                    ...(isPlatformTrainer ? { schoolId: undefined, groupIds: [] } : {}),
+                });
             })
             .catch((error) => {
                 const message = error instanceof Error ? error.message : 'تعذر تغيير دور المستخدم الآن.';
@@ -331,17 +391,34 @@ export const UsersManager: React.FC = () => {
         try {
             setIsSubmitting(true);
             setCreateError('');
+            const isSchoolTeacher = newUserType === 'school_teacher';
+            const isPlatformTrainer = newUserType === 'platform_trainer';
             const response = await api.createAdminUser({
                 name: newUser.name.trim(),
                 email: newUser.email.trim(),
                 password: newUser.password,
                 role: newUser.role,
+                schoolId: isSchoolTeacher ? newUserSchoolId || null : null,
+                groupIds: isSchoolTeacher && newUserClassId ? [newUserClassId] : [],
                 linkedStudentIds: newUser.role === Role.PARENT ? newUser.linkedStudentIds : [],
-                managedPathIds: newUser.role === Role.TEACHER ? newUser.managedPathIds : [],
-                managedSubjectIds: newUser.role === Role.TEACHER ? newUser.managedSubjectIds : [],
+                managedPathIds: isPlatformTrainer ? newUser.managedPathIds : [],
+                managedSubjectIds: isPlatformTrainer ? newUser.managedSubjectIds : [],
             }) as { user?: AdminUserPayload };
-            if (response.user) addUser(buildStoreUser(response.user));
+            if (response.user) {
+                const createdUser = buildStoreUser(response.user);
+                addUser(createdUser);
+                if (isSchoolTeacher && newUserSchoolId && newUserClassId) {
+                    await api.updateTeachingAssignment({
+                        schoolId: newUserSchoolId,
+                        teacherId: createdUser.id,
+                        classId: newUserClassId,
+                    }).catch(() => {});
+                }
+            }
             setNewUser({ name: '', email: '', password: '', role: Role.STUDENT, linkedStudentIds: [], managedPathIds: [], managedSubjectIds: [] });
+            setNewUserSchoolId('');
+            setNewUserClassId('');
+            setNewUserType('student');
             setIsCreateOpen(false);
         } catch (error) {
             setCreateError(error instanceof Error ? error.message : 'تعذر إنشاء المستخدم الآن.');
@@ -383,10 +460,20 @@ export const UsersManager: React.FC = () => {
 
     const getRoleBadge = (currentUser: User) => {
         switch (currentUser.role) {
-            case Role.ADMIN: return <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">مدير</span>;
+            case Role.ADMIN: return <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">مدير المنصة</span>;
             case Role.SUPERVISOR: return <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">مشرف</span>;
             case Role.SCHOOL_ADMIN: return <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">مدير مدرسة</span>;
-            case Role.TEACHER: return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">{resolveUserRoleLabel(currentUser)}</span>;
+            case Role.TEACHER: {
+                const hasPlatformScope = Boolean(currentUser.managedPathIds?.length || currentUser.managedSubjectIds?.length);
+                const hasSchoolScope = Boolean(currentUser.schoolId || currentUser.groupIds?.length);
+                if (hasPlatformScope && hasSchoolScope) {
+                    return <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-bold">مدرب منصة + معلم مدرسة</span>;
+                }
+                if (hasPlatformScope) {
+                    return <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold">مدرب منصة</span>;
+                }
+                return <span className="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">معلم مدرسة</span>;
+            }
             case Role.PARENT: return <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">ولي أمر</span>;
             case Role.STUDENT: return <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">طالب</span>;
             default: return null;
@@ -480,14 +567,105 @@ export const UsersManager: React.FC = () => {
         });
     };
 
+    const handleTeacherSchoolChange = (currentUser: User, nextSchoolId: string) => {
+        void withRelationshipSave(currentUser.id, async () => {
+            const nextClassIds = nextSchoolId
+                ? (currentUser.groupIds || []).filter((id) => classes.some((c) => c.id === id && c.parentId === nextSchoolId))
+                : [];
+            await api.updateAdminUser(currentUser.id, {
+                schoolId: nextSchoolId || null,
+                groupIds: nextClassIds,
+            });
+            updateUser(currentUser.id, {
+                schoolId: nextSchoolId || undefined,
+                groupIds: nextClassIds,
+            });
+        });
+    };
+
+    const handleTeacherClassChange = (currentUser: User, nextClassId: string) => {
+        void withRelationshipSave(currentUser.id, async () => {
+            const nextClass = classes.find((c) => c.id === nextClassId);
+            const targetSchoolId = nextClass?.parentId || currentUser.schoolId;
+            const nextGroupIds = nextClassId ? [nextClassId] : [];
+            await api.updateAdminUser(currentUser.id, {
+                schoolId: targetSchoolId || null,
+                groupIds: nextGroupIds,
+            });
+            if (targetSchoolId && nextClassId) {
+                await api.updateTeachingAssignment({
+                    schoolId: targetSchoolId,
+                    teacherId: currentUser.id,
+                    classId: nextClassId,
+                }).catch(() => {});
+            }
+            updateUser(currentUser.id, {
+                schoolId: targetSchoolId || undefined,
+                groupIds: nextGroupIds,
+            });
+        });
+    };
+
     const renderTeacherScopeEditor = (currentUser: User) => {
+        const isSavingRelationship = relationshipActionUserId === currentUser.id;
         const selectedPathIds = currentUser.managedPathIds || [];
         const subjectOptions = resolveTeacherSubjects(selectedPathIds, subjects).map((subject) => ({ value: subject.id, label: subject.name }));
+        const currentSchoolId = currentUser.schoolId || '';
+        const currentClassId = classes.find((group) => currentUser.groupIds?.includes(group.id))?.id || '';
+        const availableClasses = classes.filter((group) => !currentSchoolId || group.parentId === currentSchoolId);
+
         return (
-            <div className="space-y-2 min-w-[280px]">
-                <MultiSelectField value={selectedPathIds} options={pathOptions} placeholder="أضف مسارًا واحدًا على الأقل" onChange={(nextPathIds) => handleTeacherPathsChange(currentUser, nextPathIds)} size="sm" />
-                <MultiSelectField value={currentUser.managedSubjectIds || []} options={subjectOptions} placeholder="اختر المواد التابعة للمسارات" onChange={(nextSubjectIds) => handleTeacherSubjectsChange(currentUser.id, nextSubjectIds)} size="sm" />
-                <p className="text-[11px] text-gray-400">المعلم يدخل المحتوى داخل هذا النطاق فقط، ويظهر بعد اعتماد الإدارة.</p>
+            <div className="space-y-3 min-w-[280px]">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-2.5 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                        <p className="text-[11px] font-black text-emerald-900">نطاق معلم المدرسة (B2B):</p>
+                        {currentUser.schoolId && <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-1.5 py-0.5 rounded">مسند لمدرسة</span>}
+                    </div>
+                    <select
+                        disabled={isSavingRelationship}
+                        className="w-full border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:ring-1 focus:ring-emerald-500"
+                        value={currentSchoolId}
+                        onChange={(event) => handleTeacherSchoolChange(currentUser, event.target.value)}
+                    >
+                        <option value="">بدون مدرسة (غير مسند)</option>
+                        {schools.map((school) => (
+                            <option key={school.id} value={school.id}>{school.name}</option>
+                        ))}
+                    </select>
+                    <select
+                        disabled={isSavingRelationship || !currentSchoolId}
+                        className="w-full border border-gray-300 rounded px-2 py-1 text-xs bg-white disabled:opacity-50 focus:ring-1 focus:ring-emerald-500"
+                        value={currentClassId}
+                        onChange={(event) => handleTeacherClassChange(currentUser, event.target.value)}
+                    >
+                        <option value="">بدون فصل مسند</option>
+                        {availableClasses.map((group) => (
+                            <option key={group.id} value={group.id}>{group.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 p-2.5 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                        <p className="text-[11px] font-black text-indigo-900">نطاق مدرب المنصة (B2C):</p>
+                        {Boolean(selectedPathIds.length) && <span className="text-[10px] font-bold text-indigo-700 bg-indigo-100/80 px-1.5 py-0.5 rounded">مسند لمسارات</span>}
+                    </div>
+                    <MultiSelectField
+                        value={selectedPathIds}
+                        options={pathOptions}
+                        placeholder="أضف مسارًا للتدريب"
+                        onChange={(nextPathIds) => handleTeacherPathsChange(currentUser, nextPathIds)}
+                        size="sm"
+                    />
+                    <MultiSelectField
+                        value={currentUser.managedSubjectIds || []}
+                        options={subjectOptions}
+                        placeholder="اختر مواد المدرب"
+                        onChange={(nextSubjectIds) => handleTeacherSubjectsChange(currentUser.id, nextSubjectIds)}
+                        size="sm"
+                    />
+                </div>
+                {isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ نطاق المعلم/المدرب…</p>}
             </div>
         );
     };
@@ -495,8 +673,31 @@ export const UsersManager: React.FC = () => {
     const renderAssignmentSummary = (currentUser: User) => {
         if (currentUser.role === Role.TEACHER) {
             const { pathNames, subjectNames } = resolveTeacherScope(currentUser);
-            if (!pathNames.length && !subjectNames.length) return <span className="text-sm text-gray-400">بدون نطاق تدريس</span>;
-            return <div className="flex flex-wrap gap-1">{pathNames.map((name) => <span key={`path-${name}`} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded text-xs">{name}</span>)}{subjectNames.map((name) => <span key={`subject-${name}`} className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">{name}</span>)}</div>;
+            const schoolName = resolveSchoolName(currentUser);
+            const className = resolveClassName(currentUser);
+            const hasSchool = Boolean(schoolName || className);
+            const hasPlatform = Boolean(pathNames.length || subjectNames.length);
+
+            if (!hasSchool && !hasPlatform) return <span className="text-xs text-gray-400">بدون نطاق إسناد</span>;
+
+            return (
+                <div className="flex flex-col gap-1.5 min-w-[140px]">
+                    {hasSchool && (
+                        <div className="flex flex-wrap gap-1 items-center">
+                            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded">مدرسة:</span>
+                            {schoolName && <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded text-xs">{schoolName}</span>}
+                            {className && <span className="px-1.5 py-0.5 bg-slate-100 text-slate-800 rounded text-xs">{className}</span>}
+                        </div>
+                    )}
+                    {hasPlatform && (
+                        <div className="flex flex-wrap gap-1 items-center">
+                            <span className="text-[10px] font-bold text-indigo-800 bg-indigo-100 px-1.5 py-0.5 rounded">منصة:</span>
+                            {pathNames.map((name) => <span key={`path-${name}`} className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-xs">{name}</span>)}
+                            {subjectNames.map((name) => <span key={`subject-${name}`} className="px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-xs">{name}</span>)}
+                        </div>
+                    )}
+                </div>
+            );
         }
         return (
             <div className="flex flex-wrap gap-1">
@@ -547,13 +748,107 @@ export const UsersManager: React.FC = () => {
                         <div><label className="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label><input type="email" value={newUser.email} onChange={(event) => setNewUser((current) => ({ ...current, email: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="name@example.com" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-2">كلمة المرور</label><input type="password" value={newUser.password} onChange={(event) => setNewUser((current) => ({ ...current, password: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="******" /></div>
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">الدور</label>
-                            <select value={newUser.role} onChange={(event) => setNewUser((current) => ({ ...current, role: event.target.value as Role, linkedStudentIds: event.target.value === Role.PARENT ? current.linkedStudentIds : [], managedPathIds: event.target.value === Role.TEACHER ? current.managedPathIds : [], managedSubjectIds: event.target.value === Role.TEACHER ? current.managedSubjectIds : [] }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
-                                <option value={Role.STUDENT}>طالب</option><option value={Role.TEACHER}>مدرب منصة</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.SCHOOL_ADMIN}>مدير مدرسة</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.ADMIN}>مدير المنصة</option>
+                            <label className="block text-sm font-bold text-gray-700 mb-2">الدور المطلوب</label>
+                            <select
+                                value={newUserType}
+                                onChange={(event) => {
+                                    const nextType = event.target.value as typeof newUserType;
+                                    setNewUserType(nextType);
+                                    const mappedRole: Role =
+                                        nextType === 'platform_trainer' || nextType === 'school_teacher'
+                                            ? Role.TEACHER
+                                            : nextType === 'student'
+                                            ? Role.STUDENT
+                                            : nextType === 'supervisor'
+                                            ? Role.SUPERVISOR
+                                            : nextType === 'school_admin'
+                                            ? Role.SCHOOL_ADMIN
+                                            : nextType === 'parent'
+                                            ? Role.PARENT
+                                            : Role.ADMIN;
+                                    setNewUser((current) => ({
+                                        ...current,
+                                        role: mappedRole,
+                                        linkedStudentIds: nextType === 'parent' ? current.linkedStudentIds : [],
+                                        managedPathIds: nextType === 'platform_trainer' ? current.managedPathIds : [],
+                                        managedSubjectIds: nextType === 'platform_trainer' ? current.managedSubjectIds : [],
+                                    }));
+                                }}
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                            >
+                                <option value="student">طالب</option>
+                                <option value="school_teacher">معلم مدرسة (B2B)</option>
+                                <option value="platform_trainer">مدرب منصة (B2C)</option>
+                                <option value="supervisor">مشرف</option>
+                                <option value="school_admin">مدير مدرسة</option>
+                                <option value="parent">ولي أمر</option>
+                                <option value="admin">مدير المنصة</option>
                             </select>
                         </div>
                     </div>
-                    {newUser.role === Role.TEACHER && <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label className="block text-sm font-bold text-gray-700 mb-2">المسارات المسندة</label><MultiSelectField value={newUser.managedPathIds} options={pathOptions} placeholder="أضف المسارات المتاحة للمدرب" onChange={(nextPathIds) => setNewUser((current) => ({ ...current, managedPathIds: nextPathIds, managedSubjectIds: current.managedSubjectIds.filter((subjectId) => { const subject = subjects.find((item) => item.id === subjectId); return subject && nextPathIds.includes(subject.pathId); }) }))} /></div><div><label className="block text-sm font-bold text-gray-700 mb-2">المواد المسندة</label><MultiSelectField value={newUser.managedSubjectIds} options={teacherSubjectOptions} placeholder="اختر مواد المدرب التابعة للمسارات" onChange={(nextSubjectIds) => setNewUser((current) => ({ ...current, managedSubjectIds: nextSubjectIds }))} /></div></div>}
+                    {newUserType === 'school_teacher' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl border border-emerald-200 bg-emerald-50/40 p-4">
+                            <div>
+                                <label className="block text-sm font-bold text-emerald-950 mb-2">المدرسة التابع لها المعلم</label>
+                                <select
+                                    value={newUserSchoolId}
+                                    onChange={(e) => {
+                                        setNewUserSchoolId(e.target.value);
+                                        setNewUserClassId('');
+                                    }}
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="">اختر المدرسة</option>
+                                    {schools.map((school) => (
+                                        <option key={school.id} value={school.id}>{school.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-emerald-950 mb-2">الفصل الدراسي المسند</label>
+                                <select
+                                    value={newUserClassId}
+                                    onChange={(e) => setNewUserClassId(e.target.value)}
+                                    disabled={!newUserSchoolId}
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white text-sm disabled:opacity-50 focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="">اختر الفصل</option>
+                                    {classes.filter((c) => !newUserSchoolId || c.parentId === newUserSchoolId).map((c) => (
+                                        <option key={c.id} value={c.id}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    )}
+                    {newUserType === 'platform_trainer' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl border border-indigo-200 bg-indigo-50/40 p-4">
+                            <div>
+                                <label className="block text-sm font-bold text-indigo-950 mb-2">المسارات المسندة للمدرب</label>
+                                <MultiSelectField
+                                    value={newUser.managedPathIds}
+                                    options={pathOptions}
+                                    placeholder="أضف المسارات المتاحة للمدرب"
+                                    onChange={(nextPathIds) => setNewUser((current) => ({
+                                        ...current,
+                                        managedPathIds: nextPathIds,
+                                        managedSubjectIds: current.managedSubjectIds.filter((subjectId) => {
+                                            const subject = subjects.find((item) => item.id === subjectId);
+                                            return subject && nextPathIds.includes(subject.pathId);
+                                        }),
+                                    }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-indigo-950 mb-2">المواد المسندة للمدرب</label>
+                                <MultiSelectField
+                                    value={newUser.managedSubjectIds}
+                                    options={teacherSubjectOptions}
+                                    placeholder="اختر مواد المدرب التابعة للمسارات"
+                                    onChange={(nextSubjectIds) => setNewUser((current) => ({ ...current, managedSubjectIds: nextSubjectIds }))}
+                                />
+                            </div>
+                        </div>
+                    )}
                     {newUser.role === Role.PARENT && <div><label className="block text-sm font-bold text-gray-700 mb-2">الأبناء المرتبطون</label><MultiSelectField value={newUser.linkedStudentIds} options={linkableStudents.map((student) => ({ value: student.id, label: student.name }))} placeholder="اختر الطلاب المرتبطين بولي الأمر" onChange={(linkedStudentIds) => setNewUser((current) => ({ ...current, linkedStudentIds }))} /></div>}
                     {createError && <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-100 text-sm text-red-700">{createError}</div>}
                     <div className="flex justify-end"><button onClick={handleCreateUser} disabled={isSubmitting} className="bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white px-5 py-2 rounded-lg transition-colors shadow-sm">{isSubmitting ? 'جارٍ الإنشاء...' : 'حفظ المستخدم'}</button></div>
@@ -562,7 +857,23 @@ export const UsersManager: React.FC = () => {
 
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1"><Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} /><input type="text" placeholder="ابحث بالاسم أو البريد الإلكتروني..." className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" value={searchTerm} onChange={(event) => handleSearchTermChange(event.target.value)} /></div>
-                <div className="flex items-center gap-2"><Filter size={18} className="text-gray-400" /><select className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" value={roleFilter} onChange={(event) => handleRoleFilterChange(event.target.value as Role | 'all')}><option value="all">جميع الأدوار</option><option value={Role.ADMIN}>مدير المنصة</option><option value={Role.SCHOOL_ADMIN}>مدير مدرسة</option><option value={Role.SUPERVISOR}>مشرف</option><option value={Role.TEACHER}>مدرب منصة / معلم مدرسة</option><option value={Role.PARENT}>ولي أمر</option><option value={Role.STUDENT}>طالب</option></select></div>
+                <div className="flex items-center gap-2">
+                    <Filter size={18} className="text-gray-400" />
+                    <select
+                        className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                        value={roleFilter}
+                        onChange={(event) => handleRoleFilterChange(event.target.value)}
+                    >
+                        <option value="all">جميع الأدوار</option>
+                        <option value={Role.ADMIN}>مدير المنصة</option>
+                        <option value={Role.SCHOOL_ADMIN}>مدير مدرسة</option>
+                        <option value={Role.SUPERVISOR}>مشرف</option>
+                        <option value="school_teacher">معلم مدرسة (B2B)</option>
+                        <option value="platform_trainer">مدرب منصة (B2C)</option>
+                        <option value={Role.PARENT}>ولي أمر</option>
+                        <option value={Role.STUDENT}>طالب</option>
+                    </select>
+                </div>
             </div>
 
             <div className="flex flex-wrap justify-between items-center gap-3 text-sm">
@@ -581,7 +892,30 @@ export const UsersManager: React.FC = () => {
                     const isSavingRelationship = relationshipActionUserId === currentUser.id;
                     return <tr key={currentUser.id} className="hover:bg-gray-50/50 transition-colors">
                         <td className="px-6 py-4"><div className="flex items-center gap-3"><img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" /><div>{isEditing ? <input type="text" value={nameDrafts[currentUser.id] ?? currentUser.name} onChange={(event) => setNameDrafts((current) => ({ ...current, [currentUser.id]: event.target.value }))} onBlur={() => saveUserName(currentUser)} onKeyDown={(event) => { if (event.key === 'Enter') stopEditingUser(currentUser); }} className="w-full min-w-[180px] px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500" /> : <p className="font-bold text-gray-900">{currentUser.name}</p>}<p className="text-xs text-gray-500">{currentUser.email || 'لا يوجد بريد'}</p></div></div></td>
-                        <td className="px-6 py-4">{isEditing ? <select className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500" disabled={isSavingRelationship} value={currentUser.role} onChange={(event) => handleRoleChange(currentUser, event.target.value as Role)}>{Object.values(Role).map((role) => <option key={role} value={role}>{roleLabels[role]}</option>)}</select> : getRoleBadge(currentUser)}</td>
+                        <td className="px-6 py-4">
+                            {isEditing ? (
+                                <select
+                                    className="border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white shadow-sm"
+                                    disabled={isSavingRelationship}
+                                    value={
+                                        currentUser.role === Role.TEACHER
+                                            ? (Boolean(currentUser.schoolId || currentUser.groupIds?.length) ? 'school_teacher' : 'platform_trainer')
+                                            : currentUser.role
+                                    }
+                                    onChange={(event) => handleCustomRoleChange(currentUser, event.target.value)}
+                                >
+                                    <option value={Role.STUDENT}>طالب</option>
+                                    <option value="school_teacher">معلم مدرسة (B2B)</option>
+                                    <option value="platform_trainer">مدرب منصة (B2C)</option>
+                                    <option value={Role.SUPERVISOR}>مشرف</option>
+                                    <option value={Role.SCHOOL_ADMIN}>مدير مدرسة</option>
+                                    <option value={Role.PARENT}>ولي أمر</option>
+                                    <option value={Role.ADMIN}>مدير المنصة</option>
+                                </select>
+                            ) : (
+                                getRoleBadge(currentUser)
+                            )}
+                        </td>
                         <td className="px-6 py-4">
                             {isEditing && currentUser.role === Role.STUDENT ? <div className="space-y-2 min-w-[220px]"><select disabled={isSavingRelationship} className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-60" value={currentSchoolId} onChange={(event) => handleStudentSchoolChange(currentUser, event.target.value)}><option value="">بدون مدرسة</option>{schools.map((school) => <option key={school.id} value={school.id}>{school.name}</option>)}</select><select disabled={isSavingRelationship} className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-60" value={currentClassId} onChange={(event) => handleStudentClassChange(currentUser, event.target.value)}><option value="">بدون فصل</option>{availableClasses.map((group) => <option key={group.id} value={group.id}>{group.name}</option>)}</select>{isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ المدرسة والفصل…</p>}</div>
                             : isEditing && currentUser.role === Role.SUPERVISOR ? <div className="space-y-2 min-w-[260px]"><MultiSelectField disabled={isSavingRelationship} value={currentSupervisorGroupIds} options={[...schools, ...classes].map((group) => ({ value: group.id, label: `${group.type === 'SCHOOL' ? 'مدرسة' : 'فصل'} - ${group.name}` }))} placeholder="اختر مدرسة أو فصلًا أو أكثر" onChange={(nextGroupIds) => handleSupervisorGroupsChange(currentUser, nextGroupIds)} size="sm" /><p className="text-[11px] text-gray-400">يمكن إسناد المشرف لمدرسة كاملة أو فصل/عدة فصول، ويحفظ الربط فعليًا قبل تحديث الواجهة.</p>{isSavingRelationship && <p className="text-[11px] font-bold text-amber-600">جاري حفظ نطاق المشرف…</p>}</div>

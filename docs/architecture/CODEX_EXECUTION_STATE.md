@@ -1,5 +1,27 @@
 # ALMEAA — Codex Execution State
 
+## Class Skill Gaps Radar & Student Appreciation Certificate Generator
+
+- Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `a1357e33` merged in `6e8d59bd` on `main` (PR #116).
+- Scope:
+  1. Class Skill Gaps Radar & Heatmap (`ClassSkillGapsRadar.tsx`):
+     - Integrated interactive visual skills radar into `SchoolTeacherDashboard.tsx`.
+     - Supports seamless switching between teacher's assigned classes with category filtering (كمي، لفظي، تأسيس).
+     - Color-coded mastery badges and progress indicators: Mastered (≥80% 🟢), Developing (60-79% 🟡), and Critical Gap (<60% 🔴).
+     - Real-time count of students at risk / needing review for each specific skill.
+     - Direct action button: "طرح سؤال تحدي لعلاج هذه الفجوة" linking teacher directly to launch a smart session focused on remedying the detected weakness.
+  2. Student Appreciation Certificate Generator (`StudentAppreciationCertificateModal.tsx`):
+     - Interactive modal in `SchoolTeacherDashboard.tsx` triggered by "إصدار شهادة تقدير للطلاب 🏆".
+     - Multiple honor categories: 🏆 وسام التفوق والتميز الدراسي, ⚡ بطل الحصص الذكية والتحديات السريعة, 🌟 وسام المثابرة والتطور المستمر.
+     - Live royal gold ornate certificate sheet preview featuring school branding, platform partnership crest, student name, class, teacher title, official gold stamp, date, and unique verification code.
+     - `@media print` styling for borderless, high-resolution A4 printing.
+     - Direct WhatsApp parent integration with pre-filled professional congratulations message.
+  3. Architectural & Contract Integrity:
+     - All 3 new and modified components strictly under 400 lines (111 to 265 lines), preserving the repository hotspot budget limit at 83/83.
+     - 100% passing automated checks: `smoke:smart-classroom-g2-contract` (12/12), `smoke:smart-classroom-g0` (11/11), `live-smart-classroom-surfaces-audit`.
+     - Preserved all 4 unowned files untouched and unstaged.
+- Evidence: Full production Vite build passed (`dist` generated in 42s); TypeScript check passed with zero errors across server and client; GitHub Actions CI passed 100% on PR #116; real Playwright browser screenshots captured and documented in `walkthrough.md`.
+
 ## Smart Classroom Live Radar, Student Floating Modal, Challenge Questions & Session Report Archive
 
 - Status: `CLOSED / VERIFIED` on 2026-09-11. Runtime commit: `77cae318` merged in `ac75ae34` on `main` (PR #115).
