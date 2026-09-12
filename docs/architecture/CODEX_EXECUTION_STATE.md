@@ -1,5 +1,35 @@
 # ALMEAA — Codex Execution State
 
+## Smart Classroom Architectural Hardening, Zero-Exposure Privacy & Multi-School Multi-Role Simulation
+
+- Status: `VERIFIED / READY FOR COMMIT & MERGE` on 2026-09-12.
+- Scope:
+  1. Unified Mongoose Session Lifecycle & Persistent DB Metadata (`server/src/models/ClassroomSession.ts`):
+     - Normalized status enum to `["draft", "scheduled", "live", "ended", "archived"]`.
+     - Strictly typed snapshot schema including `explanation`, `subject`, `sectionId`, `pathId`, `difficulty`, `correctOptionIndex`.
+     - DB-backed metadata (`day`, `period`, `subjectName`, `className`, `publishedMode`, `publishedQuestionIds`) replacing volatile `sessionStorage`.
+  2. Zero Student Exposure & Single/Batch Privacy Invariants (`server/src/routes/classroom.routes.ts`):
+     - Strict server filtering on `GET /sessions/:id/current`: students receive ONLY questions in `publishedQuestionIds`; zero future snapshot leakage.
+     - Redacted aggregate distribution (`{}`) for students during live sessions to eliminate answer gaming/crowd following.
+     - Answer guard on `PUT /sessions/:id/answers/:questionId`: requests for unpublished questions fail-closed with HTTP 403.
+     - Enforced single active live session invariant per class on session creation and batch publishing.
+  3. Client Fail-Closed Hardening:
+     - Updated `SmartClassroomFloatingWidget.tsx` and `ClassroomStudentLive.tsx` to fail-closed on 403/404 errors, clearing any stale join state.
+     - `ClassroomActiveSessionPanel.tsx` reads directly from backend `data?.meta` with graceful fallback.
+  4. Multi-School & Multi-Role E2E Simulation Script (`scripts/simulate-multi-school-smart-classroom-e2e.mjs`):
+     - 7 full testing phases spanning School A ("مدرسة الفلاح الأهلية") and School B ("مدرسة النجاح الأهلية").
+     - 7 direct negative cross-tenant attacks strictly rejected with HTTP 403/404 (zero data leakage).
+     - Dual-join validation (1-click proactive notification + 6-digit PIN).
+     - Live answering, idempotency, smart board distractor detection, model solution reveal.
+     - Dynamic in-session batch pushing with snapshot deduplication.
+     - Session termination post-guards and complete supervisor tenant isolation.
+  5. Automated Verification:
+     - `scripts/simulate-multi-school-smart-classroom-e2e.mjs`: 100% PASS (All 7 phases).
+     - `node scripts/smoke-smart-classroom-g2-contract.mjs`: PASS (12/12).
+     - `node scripts/smoke-smart-classroom-g0-contract.mjs`: PASS (11/11).
+     - `npm --prefix server run check`: PASS (Exit code 0, 0 TypeScript errors).
+     - `npm run build`: PASS (Production Vite build compiled in 47s).
+
 ## Smart Classroom Dual-Join (1-Click Proactive Notification & 6-Digit PIN), In-Session Question Pushing & Interactive Smart Board Projector View
 
 - Status: `VERIFIED / READY FOR COMMIT & MERGE` on 2026-09-12.

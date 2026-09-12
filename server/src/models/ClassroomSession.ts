@@ -1,10 +1,50 @@
 import mongoose, { Schema } from "mongoose";
 
-const questionSnapshotSchema = new Schema({ questionId: String, text: String, imageUrl: String, options: [String], type: String, correctOptionIndex: Number, skillIds: [String] }, { _id: false });
-const classroomSessionSchema = new Schema({
-  schoolId: { type: String, required: true, index: true }, classId: { type: String, required: true, index: true }, teacherId: { type: String, required: true, index: true },
-  status: { type: String, enum: ["draft", "live", "ended"], default: "draft", index: true }, questionSnapshots: { type: [questionSnapshotSchema], default: [] },
-  activeQuestionIndex: { type: Number, default: null }, pinHash: { type: String, required: true, index: true }, pinExpiresAt: { type: Date, required: true, index: true }, endedAt: { type: Date, default: null }, reportSnapshot: { type: Schema.Types.Mixed, default: null },
-}, { timestamps: true });
+const questionSnapshotSchema = new Schema(
+  {
+    questionId: { type: String, required: true },
+    text: { type: String, required: true },
+    imageUrl: { type: String, default: "" },
+    options: { type: [String], default: [] },
+    type: { type: String, default: "mcq" },
+    correctOptionIndex: { type: Number, required: true },
+    skillIds: { type: [String], default: [] },
+    explanation: { type: String, default: "" },
+    subject: { type: String, default: "" },
+    sectionId: { type: String, default: "" },
+    pathId: { type: String, default: "" },
+    difficulty: { type: String, default: "Medium" },
+  },
+  { _id: false },
+);
+
+const classroomSessionSchema = new Schema(
+  {
+    schoolId: { type: String, required: true, index: true },
+    classId: { type: String, required: true, index: true },
+    teacherId: { type: String, required: true, index: true },
+    status: {
+      type: String,
+      enum: ["draft", "scheduled", "live", "ended", "archived"],
+      default: "draft",
+      index: true,
+    },
+    day: { type: String, default: "" },
+    period: { type: Number, default: null },
+    subjectName: { type: String, default: "" },
+    className: { type: String, default: "" },
+    publishedMode: { type: String, enum: ["single", "batch"], default: "single" },
+    publishedQuestionIds: { type: [String], default: [] },
+    questionSnapshots: { type: [questionSnapshotSchema], default: [] },
+    activeQuestionIndex: { type: Number, default: null },
+    pinHash: { type: String, required: true, index: true },
+    pinExpiresAt: { type: Date, required: true, index: true },
+    endedAt: { type: Date, default: null },
+    reportSnapshot: { type: Schema.Types.Mixed, default: null },
+  },
+  { timestamps: true },
+);
+
 classroomSessionSchema.index({ schoolId: 1, classId: 1, status: 1, createdAt: -1 });
 export const ClassroomSessionModel = mongoose.model("ClassroomSession", classroomSessionSchema);
+

@@ -793,7 +793,21 @@ export const api = {
         assessments: Array<{ assessmentId: string; title: string; subjectId: string; classIds: string[]; dueDate: string | null; quizKind: string }>;
       }>;
     }>("/school-access/teacher-workspace", { token, cache: "no-store" }),
-  createClassroomSession: (payload: { schoolId: string; classId: string; questionIds: string[] }, token?: string | null) => request<{ sessionId: string; pin: string; status: string }>("/classroom/sessions", { method: "POST", body: payload, token }),
+  createClassroomSession: (
+    payload: {
+      schoolId: string;
+      classId: string;
+      questionIds: string[];
+      day?: string;
+      period?: number | null;
+      subjectName?: string;
+      className?: string;
+      publishedMode?: 'single' | 'batch';
+      autoStart?: boolean;
+    },
+    token?: string | null,
+  ) => request<{ sessionId: string; pin: string; status: string }>("/classroom/sessions", { method: "POST", body: payload, token }),
+
   getClassroomQuestions: (schoolId: string, params?: { pathId?: string; subject?: string; sectionId?: string; skillId?: string; difficulty?: string; search?: string }, token?: string | null) => {
     const query = new URLSearchParams({ schoolId });
     if (params?.pathId) query.set("pathId", params.pathId);

@@ -122,19 +122,24 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
     if (!activeSessionAlert) return;
     const targetSessionId = activeSessionAlert.sessionId;
     try {
-      await api.instantJoinClassroomSession(targetSessionId);
-    } catch {
-      // Allow continuing even if already participant
+      const res = await api.instantJoinClassroomSession(targetSessionId);
+      if (!res?.joined) {
+        throw new Error('تعذر الانضمام للحصة، يرجى المحاولة مرة أخرى.');
+      }
+      sessionStorage.setItem('classroom_session_id', targetSessionId);
+      sessionStorage.setItem('classroom_joined', 'true');
+      setSessionId(targetSessionId);
+      setJoined(true);
+      setActiveSessionAlert(null);
+      setIsOpen(true);
+      playChime();
+      await loadCurrentQuestion();
+    } catch (err: any) {
+      sessionStorage.removeItem('classroom_joined');
+      setMessage(err?.message || 'تعذر الانضمام للحصة. قد تكون الحصة مخصصة لفصل آخر أو انتهت.');
     }
-    sessionStorage.setItem('classroom_session_id', targetSessionId);
-    sessionStorage.setItem('classroom_joined', 'true');
-    setSessionId(targetSessionId);
-    setJoined(true);
-    setActiveSessionAlert(null);
-    setIsOpen(true);
-    playChime();
-    await loadCurrentQuestion();
   };
+
 
   // Join by 6-digit PIN
   const handleJoinByPin = async (enteredPin: string) => {
