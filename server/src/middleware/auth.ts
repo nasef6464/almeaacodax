@@ -47,6 +47,24 @@ function isStrictLocalRequest(req: Request) {
   return hasLoopbackIp && hasLoopbackHost;
 }
 
+const refreshActiveAuthUser = async (req: Request) => {
+  const currentUser = await UserModel.findById(req.authUser!.id).select("email name role isActive schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds");
+  if (!currentUser || currentUser.isActive === false) return false;
+
+  req.authUser = {
+    ...req.authUser!,
+    email: currentUser.email,
+    name: currentUser.name,
+    role: currentUser.role,
+    schoolId: currentUser.schoolId || undefined,
+    groupIds: Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [],
+    linkedStudentIds: Array.isArray(currentUser.linkedStudentIds) ? currentUser.linkedStudentIds.map(String) : [],
+    managedPathIds: Array.isArray(currentUser.managedPathIds) ? currentUser.managedPathIds.map(String) : [],
+    managedSubjectIds: Array.isArray(currentUser.managedSubjectIds) ? currentUser.managedSubjectIds.map(String) : [],
+  };
+  return true;
+};
+
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
@@ -67,6 +85,39 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
   req.authUser = authUser;
   return next();
+}
+
+/**
+ * Refreshes the authenticated principal from Mongo and rejects disabled/deleted
+ * accounts. Use this on authenticated route groups that contain handlers which
+ * intentionally do not have their own role middleware (for example student
+ * Smart Classroom routes). The refresh marker lets downstream requireRole
+ * reuse the same principal without issuing a second user lookup in one request.
+ */
+export async function requireActiveAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.authUser) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Authentication required",
+    });
+  }
+
+  if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && req.authUser.id === "local-dev-admin") {
+    res.locals.activeAuthRefreshed = true;
+    return next();
+  }
+
+  try {
+    const active = await refreshActiveAuthUser(req);
+    if (!active) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Authentication required",
+      });
+    }
+    res.locals.activeAuthRefreshed = true;
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
@@ -106,24 +157,15 @@ export function requireRole(allowedRoles: AppRole[]) {
         return next();
       }
 
-      const currentUser = await UserModel.findById(req.authUser.id).select("email name role isActive schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds");
-      if (!currentUser || currentUser.isActive === false) {
-        return res.status(StatusCodes.UNAUTHORIZED).json({
-          message: "Authentication required",
-        });
+      if (res.locals.activeAuthRefreshed !== true) {
+        const active = await refreshActiveAuthUser(req);
+        if (!active) {
+          return res.status(StatusCodes.UNAUTHORIZED).json({
+            message: "Authentication required",
+          });
+        }
+        res.locals.activeAuthRefreshed = true;
       }
-
-      req.authUser = {
-        ...req.authUser,
-        email: currentUser.email,
-        name: currentUser.name,
-        role: currentUser.role,
-        schoolId: currentUser.schoolId || undefined,
-        groupIds: Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [],
-        linkedStudentIds: Array.isArray(currentUser.linkedStudentIds) ? currentUser.linkedStudentIds.map(String) : [],
-        managedPathIds: Array.isArray(currentUser.managedPathIds) ? currentUser.managedPathIds.map(String) : [],
-        managedSubjectIds: Array.isArray(currentUser.managedSubjectIds) ? currentUser.managedSubjectIds.map(String) : [],
-      };
 
       const refreshedAuthUser = req.authUser;
       if (!refreshedAuthUser || !allowedRoles.includes(refreshedAuthUser.role)) {
