@@ -6,6 +6,7 @@ import { createRedisClient, createRedisDuplicate, isRedisConfigured } from "../c
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
 import { requireSchoolDirectorCapability } from "../modules/schools/application/schoolDirectorAccess.js";
 import { resolveSchoolEntitlement } from "../modules/schools/application/schoolEntitlementResolver.js";
@@ -121,6 +122,14 @@ export function createSocketServer(server: HttpServer) {
         async findClassroomSessionScope(sessionId) {
           const session = await ClassroomSessionModel.findById(sessionId).select("schoolId classId teacherId").lean() as any;
           return session ? { schoolId: String(session.schoolId), classId: String(session.classId), teacherId: String(session.teacherId) } : null;
+        },
+        async canTeacherOwnClassroom(userId, schoolId, classId) {
+          return Boolean(await TeachingAssignmentModel.exists({
+            teacherId: userId,
+            schoolId,
+            classId,
+            status: "active",
+          }));
         },
         async canSchoolDirectorViewClassroom(userId, schoolId) {
           return Boolean(await requireSchoolDirectorCapability(
