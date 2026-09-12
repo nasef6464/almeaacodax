@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { ClassroomTemplateModel } from "../models/ClassroomTemplate.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { resolveSchoolEntitlement } from "../modules/schools/application/schoolEntitlementResolver.js";
 import { hasActiveSchoolRole } from "../modules/schools/application/schoolContextResolver.js";
 
@@ -95,7 +96,7 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
       const requestedSessionId = sessionMatch?.[1] || "";
       if (!requestedSessionId || !Types.ObjectId.isValid(requestedSessionId)) return next();
 
-      const session = await ClassroomSessionModel.findById(requestedSessionId).select("schoolId teacherId").lean() as any;
+      const session = await ClassroomSessionModel.findById(requestedSessionId).select("schoolId classId teacherId").lean() as any;
       // Let the downstream route preserve its own not-found/non-owner response.
       // This guard only tightens authorization for the session owner.
       if (!session || String(session.teacherId) !== String(actor.id)) return next();
@@ -106,6 +107,24 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
           message: "Teacher school classroom access is inactive",
         });
       }
+
+      // Removing a teacher from a class must revoke operational control over an
+      // already-owned session. Keep /end available so the owner can still cleanly
+      // finalize a live session instead of leaving the class locked by a stale live row.
+      if (!req.path.endsWith("/end")) {
+        const assignment = await TeachingAssignmentModel.exists({
+          schoolId: String(session.schoolId),
+          classId: String(session.classId),
+          teacherId: String(actor.id),
+          status: "active",
+        });
+        if (!assignment) {
+          return res.status(StatusCodes.FORBIDDEN).json({
+            message: "Teacher classroom assignment is inactive",
+          });
+        }
+      }
+
       // Even after commercial access is disabled, the owner may end the live
       // session so cleanup/report finalization is never blocked.
       if (!req.path.endsWith("/end") && !(await smartClassroomEnabled(String(session.schoolId)))) {
