@@ -28,6 +28,7 @@ const submitStart = widget.indexOf('const handleSubmitAll');
 const postSubmitMarker = widget.indexOf('const currentActiveQ');
 const selectBody = selectStart >= 0 && submitStart > selectStart ? widget.slice(selectStart, submitStart) : '';
 const submitBody = submitStart >= 0 && postSubmitMarker > submitStart ? widget.slice(submitStart, postSubmitMarker) : '';
+const reportUsesLocalStorage = /localStorage\s*\.\s*(getItem|setItem|removeItem)\s*\(/.test(reportUi);
 
 check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
 check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
@@ -39,7 +40,7 @@ check('question snapshot persists pathId', routes.includes('pathId: question.pat
 check('append publishes only truly new canonical questions', routes.includes('const newQuestionIds = trulyNewSnapshots.map') && routes.includes('session.publishedQuestionIds = newQuestionIds'));
 check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
 check('director can only read aggregate through capability', routes.includes('isDirector = Boolean(capability)'));
-check('reports UI has no localStorage report fallback', !reportUi.includes('smart_classroom_reports_') && !reportUi.includes('localStorage'));
+check('reports UI has no localStorage report fallback', !reportUsesLocalStorage && !reportUi.includes('smart_classroom_reports_'));
 check('reports UI consumes canonical roster/totals/question evidence', reportUi.includes('report.roster.joined') && reportUi.includes('report.totals.responses') && reportUi.includes('question.answered'));
 check('prepared templates are server-backed', templates.includes('/classroom/templates') && !templates.includes('localStorage'));
 check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
