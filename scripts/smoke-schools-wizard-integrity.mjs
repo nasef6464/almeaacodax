@@ -17,7 +17,9 @@ check('does not swallow class creation failures', provisioning.includes('const f
 check('does not contain the old non-critical contract swallow', !modal.includes('Contract setup non-critical error') && !provisioning.includes('Contract setup non-critical error'));
 check('verifies contract state after saving', provisioning.includes('const verification = await api.getSchoolContract(schoolId)'));
 check('verifies every expected module', provisioning.includes('expectedModules.find((moduleId) => !verifiedModules.includes(moduleId))'));
-check('creates a real school_admin account', provisioning.includes("role: 'school_admin'"));
+check('searches existing active school_admin accounts by email before create', provisioning.includes('api.getAdminUsers({') && provisioning.includes("role: 'school_admin'") && provisioning.includes('search: normalizedEmail'));
+check('reuses exact-email director account when found', provisioning.includes('emailFrom(user) === normalizedEmail'));
+check('creates a school_admin account only when no matching account exists', provisioning.includes('api.createAdminUser({') && provisioning.includes("role: 'school_admin'"));
 check('attaches director access through the server membership API', provisioning.includes('api.updateSchoolDirectorAccess(schoolId, resolvedDirectorId'));
 check('verifies active director membership', provisioning.includes("membership.status !== 'active'"));
 check('does not persist director password into school metadata', !/metadata:\s*\{[\s\S]{0,700}directorPassword/.test(provisioning));
@@ -25,7 +27,7 @@ check('resets server checkpoints after completed/closed provisioning', provision
 check('modal remains below hotspot boundary', modal.split(/\r?\n/).length < 400);
 check('provisioning hook remains below hotspot boundary', provisioning.split(/\r?\n/).length < 400);
 check('leadership UI asks for an explicit temporary password', leadership.includes('كلمة المرور المؤقتة'));
-check('leadership UI documents real director account semantics', leadership.includes('حساب مدير مدرسة حقيقي'));
+check('leadership UI explains create-or-link behavior', leadership.includes('فسيتم ربط الحساب الموجود') && leadership.includes('سيُنشأ حساب جديد'));
 
 if (failures.length > 0) {
   console.error('School wizard integrity: FAIL');
