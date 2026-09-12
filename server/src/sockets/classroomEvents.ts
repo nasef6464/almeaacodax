@@ -5,7 +5,23 @@ export const emitClassroomEvent = (
   sessionId: string,
   event: "question:published" | "response:updated" | "session:ended" | "classroom:started",
   payload: Record<string, unknown>,
-) => io?.to(`classroom:${sessionId}`).emit(event, payload);
+) => {
+  const normalizedSessionId = String(sessionId || "").trim();
+  if (!normalizedSessionId) return;
+
+  // A classroom session room is shared by the teacher and joined students.
+  // Ending the session is therefore only a lifecycle notification here; the
+  // finalized report must be fetched through the authorized HTTP API instead
+  // of being broadcast to every socket in the room.
+  if (event === "session:ended") {
+    return io?.to(`classroom:${normalizedSessionId}`).emit(event, {
+      sessionId: normalizedSessionId,
+      status: "ended",
+    });
+  }
+
+  return io?.to(`classroom:${normalizedSessionId}`).emit(event, payload);
+};
 
 export const emitClassroomEventToClass = (
   classId: string,
@@ -19,4 +35,3 @@ export const emitClassroomEventToClass = (
   const publicEvent = event === "session:ended" ? "classroom:ended" : event;
   return io?.to(`class:${classId}`).emit(publicEvent, payload);
 };
-
