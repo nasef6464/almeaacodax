@@ -1,6 +1,30 @@
 import React from 'react';
 import { Download, Printer, X } from 'lucide-react';
-import type { ClassroomSavedReport } from './SmartClassroomReportsSection';
+
+interface ClassroomSavedReport {
+  sessionId: string;
+  schoolId: string;
+  classId: string;
+  className?: string;
+  subject?: string;
+  day?: string;
+  period?: string;
+  participantCount: number;
+  responseCount: number;
+  correctCount: number;
+  endedAt: string;
+  questions?: Array<{
+    questionId: string;
+    text: string;
+    options: string[];
+    answeredCount?: number;
+    correctCount?: number;
+    isChallenge?: boolean;
+    skillId?: string;
+    skillName?: string;
+    subject?: string;
+  }>;
+}
 
 interface SmartClassroomReportModalProps {
   report: ClassroomSavedReport;
