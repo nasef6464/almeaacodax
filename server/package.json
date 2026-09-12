@@ -28,7 +28,7 @@
     "verify:smart-classroom-g0": "tsx src/scripts/verifySmartClassroomG0.ts",
     "verify:school-g1-foundation": "tsx src/scripts/verifySchoolG1Foundation.ts",
     "verify:smart-classroom-g2": "tsx src/scripts/verifySmartClassroomG2.ts",
-    "simulate:smart-classroom": "tsx src/scripts/simulateMultiSchoolSmartClassroomE2E.ts",
+    "simulate:smart-classroom": "tsx src/scripts/simulateMultiSchoolSmartClassroomE2E.e2e.ts",
 
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
@@ -55,7 +55,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
     "rate-limit-redis": "^5.0.0",
-    "socket.io": "^4.8.1",
+    "socket.io": "^4.8.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {
