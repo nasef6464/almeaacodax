@@ -130,7 +130,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
               subject: q.subject || '',
               sectionId: q.sectionId || '',
               difficulty: q.difficulty || 'Medium',
-              examType: q.examType || 'general',
+              examType: (q as any).examType || 'general',
               explanation: q.explanation || '',
             }))
           );
@@ -150,7 +150,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
               subject: q.subject || '',
               sectionId: q.sectionId || '',
               difficulty: q.difficulty || 'Medium',
-              examType: q.examType || 'general',
+              examType: (q as any).examType || 'general',
               explanation: q.explanation || '',
             }))
           );
@@ -175,7 +175,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
         subject: q.subject || '',
         sectionId: q.sectionId || '',
         difficulty: q.difficulty || 'Medium',
-        examType: q.examType || 'general',
+        examType: (q as any).examType || 'general',
         explanation: q.explanation || '',
       }));
     }
