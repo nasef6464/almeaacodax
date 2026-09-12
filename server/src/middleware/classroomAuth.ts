@@ -27,6 +27,26 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
     }
 
     if (actor.role === "teacher") {
+      // Teacher history must always be explicitly scoped to one active school.
+      // Without this guard an old teacher JWT could ask for history without a
+      // schoolId and the downstream route would filter by teacherId only,
+      // exposing sessions from a school whose membership was later revoked.
+      if (req.path === "/teacher/history") {
+        const requestedSchoolId = typeof req.query.schoolId === "string" ? req.query.schoolId.trim() : "";
+        if (!requestedSchoolId) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "schoolId is required for teacher classroom history",
+          });
+        }
+        const allowed = await hasActiveSchoolRole(actor, requestedSchoolId, "teacher");
+        if (!allowed) {
+          return res.status(StatusCodes.FORBIDDEN).json({
+            message: "Teacher school classroom access is inactive",
+          });
+        }
+        return next();
+      }
+
       const sessionMatch = req.path.match(/^\/sessions\/([^/]+)(?:\/|$)/);
       const requestedSessionId = sessionMatch?.[1] || "";
       if (!requestedSessionId || !Types.ObjectId.isValid(requestedSessionId)) return next();
