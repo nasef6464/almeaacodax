@@ -22,7 +22,7 @@ export const NewSchoolWizardLeadershipStep: React.FC<NewSchoolWizardLeadershipSt
     return (
         <div className="space-y-4 animate-in fade-in duration-150">
             <div className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-4 text-xs font-bold leading-6 text-indigo-950">
-                إذا أدخلت بيانات المدير فسيُنشأ <strong>حساب مدير مدرسة حقيقي</strong> ويرتبط بالمدرسة بعضوية وصلاحيات الخادم.
+                إذا كان البريد مرتبطًا بحساب <strong>مدير مدرسة</strong> نشط فسيتم ربط الحساب الموجود بهذه المدرسة؛ وإلا سيُنشأ حساب جديد ثم تُثبت عضويته وصلاحياته من الخادم.
                 اترك الحقول الثلاثة فارغة إذا أردت تعيين المدير لاحقًا من المجتمع المدرسي.
             </div>
 
@@ -60,7 +60,7 @@ export const NewSchoolWizardLeadershipStep: React.FC<NewSchoolWizardLeadershipSt
                 />
                 {hasAnyDirectorField && (
                     <p className="mt-1.5 text-[11px] font-bold text-slate-500">
-                        عند استخدام هذه الخطوة تصبح الحقول الثلاثة مطلوبة. كلمة المرور لا تُحفظ داخل بيانات المدرسة الوصفية.
+                        عند استخدام هذه الخطوة تصبح الحقول الثلاثة مطلوبة. كلمة المرور تُستخدم فقط عند الحاجة لإنشاء حساب جديد ولا تُحفظ داخل بيانات المدرسة الوصفية.
                     </p>
                 )}
             </div>
