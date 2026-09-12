@@ -18,6 +18,7 @@ assert.ok(lineCount(source) <= 430, 'workspace view model must stay under 430 li
 assert.ok(managerSource.includes("from './SchoolsManager/workspaceViewModel';"), 'SchoolsManager must delegate workspace decisions');
 assert.ok(managerSource.includes('buildSchoolWorkspaceViewModel({'), 'SchoolsManager must call the extracted workspace model');
 assert.ok(lineCount(managerSource) <= 4350, `SchoolsManager workspace regression: ${lineCount(managerSource)} lines exceeds 4350`);
+assert.ok(!/tab: '(relations|import|packages)'/.test(source), 'workspace decisions must not emit legacy navigation aliases');
 
 const transpiled = ts.transpileModule(source, {
   compilerOptions: {
@@ -90,7 +91,12 @@ assert.equal(empty.readinessScore, 0, 'empty school readiness score must remain 
 assert.equal(empty.readinessStatusLabel, 'تحتاج تجهيز');
 assert.equal(empty.handoverBlockingGaps.length, 5, 'all five operational checks must block empty school handover');
 assert.equal(empty.nextOperatingStep.id, 'classes', 'classes must remain the first missing operating step');
+assert.equal(empty.nextOperatingStep.tab, 'academic', 'first setup action must route to the canonical academic tab');
 assert.equal(empty.commercialDecisionCards.at(-1).target, 'school-classes-panel');
+assert.equal(empty.readinessChecks.find((check) => check.label === 'طلاب مسجلون').tab, 'people');
+assert.equal(empty.readinessChecks.find((check) => check.label === 'مشرفون').tab, 'people');
+assert.equal(empty.readinessChecks.find((check) => check.label === 'باقة/مسارات').tab, 'contract');
+assert.equal(empty.readinessChecks.find((check) => check.label === 'أكواد دخول').tab, 'contract');
 assert.match(empty.schoolHandoverMessage, /مدرسة الاختبار/);
 assert.equal(empty.isSchoolWorkspaceBusy, false);
 assert.equal(empty.saveVerificationButtonLabel, 'حفظ وتأكيد البيانات');
@@ -114,6 +120,7 @@ assert.equal(ready.handoverDecisionTitle, 'جاهزة للتسليم التجا�
 assert.equal(ready.operationalWarnings.length, 0);
 assert.equal(ready.commercialOperatingSteps.every((step) => step.isReady), true);
 assert.equal(ready.nextOperatingStep.id, 'reports', 'when all steps are ready the final reports step remains the display fallback');
+assert.equal(ready.nextOperatingStep.tab, 'reports');
 assert.match(ready.schoolHandoverMessage, /5\/5/);
 
 const gaps = buildSchoolWorkspaceViewModel({
@@ -131,8 +138,10 @@ const gaps = buildSchoolWorkspaceViewModel({
 assert.equal(gaps.readinessChecks.find((check) => check.label === 'طلاب مسجلون').isReady, false);
 assert.ok(gaps.operationalWarnings.includes('تم استهلاك كل المقاعد المتاحة، راجع سعة الباقات.'));
 assert.ok(gaps.operationalWarnings.includes('يوجد طلاب بلا فصل، يفضل نقلهم لفصول قبل متابعة التقارير.'));
-assert.ok(gaps.operationalWarnings.includes('يوجد طلاب بلا ولي أمر مرتبط، راجع تبويب الربط والمتابعة قبل تسليم الحسابات.'));
+assert.ok(gaps.operationalWarnings.includes('يوجد طلاب بلا ولي أمر مرتبط، راجع المجتمع المدرسي قبل تسليم الحسابات.'));
 assert.equal(gaps.overviewFocusActions.find((item) => item.id === 'students').tone, 'amber');
+assert.equal(gaps.overviewFocusActions.find((item) => item.id === 'students').tab, 'people');
+assert.equal(gaps.overviewFocusActions.find((item) => item.id === 'access').tab, 'contract');
 
 for (const [state, expected] of [
   ['saving', 'جاري الحفظ...'],
