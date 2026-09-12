@@ -53,11 +53,11 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-500">الفصول المسندة</span>
+          <span className="text-xs font-bold text-slate-500">طلاب فصولي</span>
           <UsersRound size={20} className="text-emerald-600" />
         </div>
-        <div className="mt-3 text-2xl font-black text-slate-900">{selectedSchool.assignments.length}</div>
-        <p className="mt-1 text-[11px] text-slate-400">فصولك الفعالة بالمدرسة</p>
+        <div className="mt-3 text-2xl font-black text-slate-900">{selectedSchool.assignments.reduce((total: number, assignment: any) => total + Number(assignment.studentCount || 0), 0)}</div>
+        <p className="mt-1 text-[11px] text-slate-400">مسجلون فعليًا في فصولك المسندة</p>
       </div>
       <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs">
         <div className="flex items-center justify-between">
@@ -108,6 +108,9 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
               <p className="mt-2 text-xs text-slate-500">
                 المادة: {assignment.subjectId || 'تكليف دراسي عام'} · نظام التقييم الذكي
               </p>
+              <p className="mt-1 text-xs font-bold text-emerald-700">
+                {assignment.studentCount || 0} طالب في الفصل
+              </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between gap-2">
               <button
@@ -127,6 +130,33 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
               </button>
             </div>
           </div>
+        ))}
+      </div>
+    </div>
+
+    <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
+      <div className="mb-4">
+        <h2 className="text-base font-black text-slate-900">طلاب فصولي المسندة</h2>
+        <p className="mt-1 text-xs text-slate-500">هذه القائمة تقرأ من إسنادك المدرسي فقط؛ لا تظهر طلاب أي فصل أو مدرسة أخرى.</p>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {selectedSchool.assignments.map((assignment: any) => (
+          <section key={`${assignment.assignmentId}-roster`} className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-sm font-black text-slate-900">{assignment.className}</h3>
+              <span className="rounded-lg bg-emerald-100 px-2 py-1 text-xs font-black text-emerald-800">{assignment.studentCount || 0} طالب</span>
+            </div>
+            {assignment.students?.length ? (
+              <ul className="mt-3 space-y-2">
+                {assignment.students.map((student: any) => (
+                  <li key={student.studentId} className="flex items-center justify-between rounded-xl bg-white px-3 py-2 text-xs">
+                    <span className="font-bold text-slate-800">{student.name}</span>
+                    <span className={student.isActive ? 'text-emerald-700' : 'text-slate-400'}>{student.isActive ? 'نشط' : 'غير نشط'}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : <p className="mt-3 rounded-xl border border-dashed border-slate-200 bg-white p-3 text-center text-xs text-slate-400">لا يوجد طلاب مسجلون في هذا الفصل بعد.</p>}
+          </section>
         ))}
       </div>
     </div>
