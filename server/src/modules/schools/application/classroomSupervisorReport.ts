@@ -33,6 +33,14 @@ export const classroomScopeFilter = (scope: Awaited<ReturnType<typeof resolveCla
   scope.all ? {} : { $or: [{ schoolId: { $in: scope.schoolIds } }, { classId: { $in: scope.classIds } }] };
 
 export const buildClassroomSessionReport = async (session: any) => {
+  // A finalized report is evidence, not a live projection. Once a session has
+  // ended, use the persisted snapshot so later roster/class changes cannot
+  // rewrite historical attendance or skill evidence. Legacy ended sessions
+  // without a snapshot fall through to the DB-backed reconstruction below.
+  if ((session.status === "ended" || session.status === "archived") && session.reportSnapshot) {
+    return session.reportSnapshot;
+  }
+
   const reportSessionId = idOf(session.id || session._id);
   const [participants, responses, classroom, rosterUsers] = await Promise.all([
     ClassroomParticipantModel.find({ sessionId: reportSessionId }).lean(),
@@ -104,7 +112,12 @@ export const buildClassroomSessionReport = async (session: any) => {
 };
 
 export const buildClassroomTeacherReports = async (scope: Awaited<ReturnType<typeof resolveClassroomSupervisorScope>>) => {
-  const sessions = await ClassroomSessionModel.find(classroomScopeFilter(scope)).sort({ createdAt: -1 }).lean();
+  const sessions = await ClassroomSessionModel.find({
+    $and: [
+      classroomScopeFilter(scope),
+      { status: { $in: ["ended", "archived"] } },
+    ],
+  }).sort({ createdAt: -1 }).lean();
   const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
   const byTeacher = new Map<string, { teacherId: string; sessions: number; joined: number; responses: number; correct: number }>();
   reports.forEach((report) => {
