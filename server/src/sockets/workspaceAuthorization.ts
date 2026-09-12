@@ -9,6 +9,7 @@ export type WorkspaceAuthUser = {
 export type WorkspaceAuthorizationRepository = {
   findDirectlySupervisedGroupIds(userId: string): Promise<string[]>;
   findClassroomSessionScope?(sessionId: string): Promise<{ schoolId: string; classId: string; teacherId: string } | null>;
+  canTeacherOwnClassroom?(userId: string, schoolId: string, classId: string): Promise<boolean>;
   canSchoolDirectorViewClassroom?(userId: string, schoolId: string): Promise<boolean>;
   canSupervisorViewClassroom?(userId: string, schoolId: string, classId: string): Promise<boolean>;
 };
@@ -39,10 +40,16 @@ export const canJoinAuthorizedWorkspace = async (
     const sameSchool = schoolIds.has(String(session.schoolId));
     const sameClass = groupIds.has(String(session.classId));
 
-    // Ownership alone is not durable authorization. If a teacher's school
-    // membership is revoked after the session was created, reconnecting must not
-    // resurrect access merely because teacherId still points to that account.
-    if (role === "teacher" && String(session.teacherId) === String(authUser.id)) return sameSchool;
+    // Ownership alone is not durable authorization. Membership and the teacher's
+    // active class assignment must still be valid when reconnecting.
+    if (role === "teacher" && String(session.teacherId) === String(authUser.id)) {
+      if (!sameSchool) return false;
+      return Boolean(await repository.canTeacherOwnClassroom?.(
+        String(authUser.id),
+        String(session.schoolId),
+        String(session.classId),
+      ));
+    }
 
     if (role === "student") return sameSchool && sameClass;
     if (role === "school_admin") {
