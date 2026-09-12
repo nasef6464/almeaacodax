@@ -6,7 +6,6 @@ import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import type { TeacherWorkspaceData } from '../components/teacher/TeacherWorkspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ClassroomTeacherLiveRadar } from '../components/classroom/ClassroomTeacherLiveRadar';
-import type { ClassroomSavedReport } from '../components/classroom/SmartClassroomReportsSection';
 import { ClassroomQuestionFilterBar, ClassroomFilterState } from '../components/classroom/ClassroomQuestionFilterBar';
 import { ClassroomPreparedTemplatesManager, ClassroomPreparedTemplate } from '../components/classroom/ClassroomPreparedTemplatesManager';
 import { ClassroomActiveSessionPanel } from '../components/classroom/ClassroomActiveSessionPanel';
@@ -124,31 +123,6 @@ export const ClassroomTeacherConsole: React.FC = () => {
       const report = result.report;
       setData((current: any) => ({ ...current, report, status: 'ended' }));
       setMessage('تم إنهاء الجلسة وتثبيت التقرير بنجاح.');
-      
-      // Save report in persistent teacher archive
-      if (report && schoolId) {
-        try {
-          const currentReports: ClassroomSavedReport[] = JSON.parse(localStorage.getItem(`smart_classroom_reports_${schoolId}`) || '[]');
-          const newReport: ClassroomSavedReport = {
-            sessionId,
-            schoolId,
-            classId,
-            participantCount: report.participantCount || 0,
-            responseCount: report.responseCount || 0,
-            correctCount: report.correctCount || 0,
-            endedAt: report.endedAt || new Date().toISOString(),
-            questions: (data?.questions || []).map((q: any) => ({
-              questionId: q.questionId,
-              text: q.text,
-              options: q.options || [],
-              isChallenge: challengeIds.includes(q.questionId),
-            })),
-          };
-          localStorage.setItem(`smart_classroom_reports_${schoolId}`, JSON.stringify([newReport, ...currentReports.filter((r) => r.sessionId !== sessionId)].slice(0, 30)));
-        } catch {
-          // ignore
-        }
-      }
     } catch {
       setMessage('تعذر إنهاء الجلسة.');
     }
