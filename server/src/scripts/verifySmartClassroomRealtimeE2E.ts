@@ -248,12 +248,22 @@ async function run() {
     assert.equal("isCorrect" in payload, false, "shared classroom realtime payload must not expose a student's correctness");
   }
 
-  const endedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
+  const teacherEndedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
+  const studentEndedOnSession = waitForEvent<any>(studentSocket, "session:ended");
   const endedOnClass = waitForEvent<any>(studentSocket, "classroom:ended");
   const ended = await request(`/classroom/sessions/${sessionAId}/end`, { method: "POST", token: teacherAToken });
   assert.equal(ended.status, 200, JSON.stringify(ended.body));
-  const [sessionEndPayload, classEndPayload] = await Promise.all([endedOnSession, endedOnClass]);
-  assert.ok(sessionEndPayload.report, "session room should receive finalized report");
+  assert.ok(ended.body?.report, "authorized HTTP end response should return the finalized report to the teacher");
+  const [teacherSessionEnd, studentSessionEnd, classEndPayload] = await Promise.all([
+    teacherEndedOnSession,
+    studentEndedOnSession,
+    endedOnClass,
+  ]);
+  for (const payload of [teacherSessionEnd, studentSessionEnd]) {
+    assert.equal(String(payload.sessionId), sessionAId);
+    assert.equal(String(payload.status), "ended");
+    assert.equal("report" in payload, false, "shared classroom session room must not broadcast the finalized report");
+  }
   assert.equal(String(classEndPayload.sessionId), sessionAId);
 
   const ownSession = await request("/classroom/sessions", {
