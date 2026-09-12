@@ -1,25 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
-  Award,
-  BookOpenCheck,
-  Calendar,
   CheckCircle2,
-  ChevronLeft,
-  Clock,
   Download,
-  FileSpreadsheet,
-  Filter,
-  Layers,
   Presentation,
-  Printer,
-  Sparkles,
+  RefreshCw,
   Target,
   Users,
   X,
   Zap,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 
 export interface ClassroomSavedReport {
@@ -27,23 +17,34 @@ export interface ClassroomSavedReport {
   schoolId: string;
   classId: string;
   className?: string;
-  subject?: string;
+  subjectName?: string;
   day?: string;
-  period?: string;
-  participantCount: number;
-  responseCount: number;
-  correctCount: number;
-  endedAt: string;
-  questions?: Array<{
+  period?: number | null;
+  teacherId?: string;
+  status: string;
+  startedAt?: string;
+  endedAt?: string | null;
+  roster: {
+    expected: number;
+    joined: number;
+    absentFromSession: number;
+  };
+  totals: {
+    responses: number;
+    correct: number;
+  };
+  questions: Array<{
+    index: number;
     questionId: string;
     text: string;
-    options: string[];
-    answeredCount?: number;
-    correctCount?: number;
-    isChallenge?: boolean;
-    skillId?: string;
-    skillName?: string;
+    skillIds: string[];
+    pathId?: string;
+    sectionId?: string;
     subject?: string;
+    answered: number;
+    correct: number;
+    wrong: number;
+    unanswered: number;
   }>;
 }
 
@@ -56,6 +57,27 @@ interface SmartClassroomReportsSectionProps {
 
 type TimeFilter = 'all' | 'today' | 'week' | 'month';
 
+type SkillDiagnostic = {
+  skillId: string;
+  skillName: string;
+  totalAnswered: number;
+  correct: number;
+  sessions: Set<string>;
+  accuracy: number | null;
+  isWeak: boolean;
+};
+
+const isWithinPeriod = (endedAt: string | null | undefined, filter: TimeFilter) => {
+  if (filter === 'all') return true;
+  if (!endedAt) return false;
+  const ended = new Date(endedAt);
+  if (Number.isNaN(ended.getTime())) return false;
+  if (filter === 'today') return ended.toDateString() === new Date().toDateString();
+  const age = Date.now() - ended.getTime();
+  if (filter === 'week') return age <= 7 * 24 * 60 * 60 * 1000;
+  return age <= 30 * 24 * 60 * 60 * 1000;
+};
+
 export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSectionProps> = ({
   schoolId,
   assignments,
@@ -65,270 +87,203 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const [reports, setReports] = useState<ClassroomSavedReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<ClassroomSavedReport | null>(null);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
-  const [selectedClassFilter, setSelectedClassFilter] = useState<string>('all');
+  const [selectedClassFilter, setSelectedClassFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const loadReports = async () => {
+    if (!schoolId || !smartClassroomEnabled) return;
+    setLoading(true);
+    setError('');
+    try {
+      const result = await api.getClassroomTeacherHistory(schoolId);
+      const sessions = Array.isArray(result?.sessions) ? result.sessions : [];
+      setReports(sessions as ClassroomSavedReport[]);
+    } catch (err: any) {
+      setReports([]);
+      setError(err?.message || 'تعذر تحميل تقارير الحصص من الخادم.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let active = true;
+    void loadReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schoolId, smartClassroomEnabled]);
 
-    api.getClassroomTeacherHistory(schoolId)
-      .then((res) => {
-        if (!active) return;
-        if (res?.sessions && Array.isArray(res.sessions)) {
-          setReports(res.sessions);
-        } else {
-          loadLocalFallback();
-        }
-      })
-      .catch(() => {
-        if (!active) return;
-        loadLocalFallback();
-      });
+  const filteredReports = useMemo(
+    () => reports.filter((report) => {
+      if (selectedClassFilter !== 'all' && report.classId !== selectedClassFilter) return false;
+      return isWithinPeriod(report.endedAt, timeFilter);
+    }),
+    [reports, selectedClassFilter, timeFilter],
+  );
 
-    function loadLocalFallback() {
-      try {
-        const raw = localStorage.getItem(`smart_classroom_reports_${schoolId}`);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) setReports(parsed);
+  const totalSessions = filteredReports.length;
+  const totalParticipants = filteredReports.reduce((sum, report) => sum + (report.roster?.joined || 0), 0);
+  const totalResponses = filteredReports.reduce((sum, report) => sum + (report.totals?.responses || 0), 0);
+  const totalCorrect = filteredReports.reduce((sum, report) => sum + (report.totals?.correct || 0), 0);
+  const overallAccuracy = totalResponses > 0 ? Math.round((totalCorrect / totalResponses) * 100) : null;
+
+  const skillDiagnostics = useMemo(() => {
+    const map = new Map<string, Omit<SkillDiagnostic, 'accuracy' | 'isWeak'>>();
+
+    for (const report of filteredReports) {
+      for (const question of report.questions || []) {
+        const skillIds = Array.from(new Set((question.skillIds || []).filter(Boolean)));
+        const fallbackKeys = skillIds.length > 0 ? skillIds : (question.subject ? [`subject:${question.subject}`] : []);
+
+        for (const key of fallbackKeys) {
+          const current = map.get(key) || {
+            skillId: key,
+            skillName: key.startsWith('subject:') ? key.slice('subject:'.length) : key,
+            totalAnswered: 0,
+            correct: 0,
+            sessions: new Set<string>(),
+          };
+          current.totalAnswered += question.answered || 0;
+          current.correct += question.correct || 0;
+          current.sessions.add(report.sessionId);
+          map.set(key, current);
         }
-      } catch {
-        // safe fallback
       }
     }
 
-    return () => {
-      active = false;
-    };
-  }, [schoolId]);
-
-  // Filtered reports based on time and class
-  const filteredReports = useMemo(() => {
-    const now = Date.now();
-    return reports.filter((r) => {
-      // Class filter
-      if (selectedClassFilter !== 'all' && r.classId !== selectedClassFilter) {
-        return false;
-      }
-      // Time filter
-      const reportTime = new Date(r.endedAt).getTime();
-      if (timeFilter === 'today') {
-        const isToday = new Date(r.endedAt).toDateString() === new Date().toDateString();
-        if (!isToday) return false;
-      } else if (timeFilter === 'week') {
-        if (now - reportTime > 7 * 24 * 60 * 60 * 1000) return false;
-      } else if (timeFilter === 'month') {
-        if (now - reportTime > 30 * 24 * 60 * 60 * 1000) return false;
-      }
-      return true;
-    });
-  }, [reports, timeFilter, selectedClassFilter]);
-
-  const totalSessions = filteredReports.length;
-  const totalParticipants = filteredReports.reduce((acc, r) => acc + (r.participantCount || 0), 0);
-  const totalResponses = filteredReports.reduce((acc, r) => acc + (r.responseCount || 0), 0);
-  const totalCorrect = filteredReports.reduce((acc, r) => acc + (r.correctCount || 0), 0);
-  const overallAccuracy = totalResponses > 0 ? Math.round((totalCorrect / totalResponses) * 100) : null;
-
-  // Skill weakness diagnostic: aggregate questions and skills across filtered reports
-  const skillDiagnostics = useMemo(() => {
-    const map = new Map<string, { skillId: string; skillName: string; totalAsked: number; correctCount: number; sessionsCount: number }>();
-
-    filteredReports.forEach((report) => {
-      (report.questions || []).forEach((q) => {
-        const skillKey = q.skillId || q.subject || 'مهارة التحليل وحل المشكلات';
-        const current = map.get(skillKey) || {
-          skillId: skillKey,
-          skillName: q.skillName || skillKey,
-          totalAsked: 0,
-          correctCount: 0,
-          sessionsCount: 0,
+    return Array.from(map.values())
+      .map((entry): SkillDiagnostic => {
+        const accuracy = entry.totalAnswered > 0 ? Math.round((entry.correct / entry.totalAnswered) * 100) : null;
+        return {
+          ...entry,
+          accuracy,
+          isWeak: accuracy !== null && accuracy < 65,
         };
-        current.totalAsked += q.answeredCount || 1;
-        current.correctCount += q.correctCount || 0;
-        current.sessionsCount += 1;
-        map.set(skillKey, current);
-      });
-    });
-
-    const list = Array.from(map.values()).map((s) => {
-      const accuracy = s.totalAsked > 0 ? Math.round((s.correctCount / s.totalAsked) * 100) : 0;
-      return { ...s, accuracy, isWeak: accuracy < 65 };
-    });
-
-    return list.sort((a, b) => a.accuracy - b.accuracy);
+      })
+      .filter((entry) => entry.accuracy !== null)
+      .sort((a, b) => (a.accuracy ?? 101) - (b.accuracy ?? 101));
   }, [filteredReports]);
 
-  const weakSkills = skillDiagnostics.filter((s) => s.isWeak);
+  const weakSkills = skillDiagnostics.filter((skill) => skill.isWeak);
 
   const exportExcel = (report: ClassroomSavedReport) => {
-    const questionsRows = (report.questions || [])
-      .map(
-        (q, idx) => `
+    const rows = (report.questions || []).map((question, index) => `
       <tr>
-        <td>سؤال ${idx + 1}</td>
-        <td>${q.text}</td>
-        <td>${q.skillName || q.skillId || 'عام'}</td>
-        <td>${q.isChallenge ? 'سؤال تحدي ⚡' : 'عادي'}</td>
-        <td>${q.answeredCount || 0}</td>
-        <td>${q.correctCount || 0}</td>
+        <td>${index + 1}</td>
+        <td>${question.text}</td>
+        <td>${(question.skillIds || []).join('، ') || question.subject || '—'}</td>
+        <td>${question.answered || 0}</td>
+        <td>${question.correct || 0}</td>
+        <td>${question.wrong || 0}</td>
       </tr>
-    `,
-      )
-      .join('');
+    `).join('');
 
     const html = `
       <table border="1">
         <thead>
-          <tr>
-            <th colspan="6">تقرير الحصة الذكية - ${report.className || report.classId} (${report.day || ''} ${report.period ? `الحصة ${report.period}` : ''} - ${new Date(report.endedAt).toLocaleDateString('ar-SA')})</th>
-          </tr>
-          <tr>
-            <th>رقم السؤال</th><th>نص السؤال</th><th>المهارة المستهدفة</th><th>النوع</th><th>عدد الإجابات</th><th>الإجابات الصحيحة</th>
-          </tr>
+          <tr><th colspan="6">تقرير الحصة الذكية - ${report.className || report.classId}</th></tr>
+          <tr><th>#</th><th>السؤال</th><th>المهارات</th><th>الإجابات</th><th>الصحيح</th><th>الخطأ</th></tr>
         </thead>
-        <tbody>${questionsRows}</tbody>
+        <tbody>${rows}</tbody>
       </table>
     `;
-
     const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `classroom-report-${report.sessionId}.xls`;
-    a.click();
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `classroom-report-${report.sessionId}.xls`;
+    anchor.click();
     URL.revokeObjectURL(url);
   };
 
+  if (!smartClassroomEnabled) return null;
+
   return (
     <section className="mt-8 rounded-3xl border border-slate-100 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900" dir="rtl">
-      {/* Top Title & Filters Bar */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5 dark:border-slate-800">
+      <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 lg:flex-row lg:items-center lg:justify-between dark:border-slate-800">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-black text-slate-900 dark:text-white">
             <Presentation className="text-indigo-600" size={22} />
             سجل وتقارير الحصص الذكية وتشخيص المهارات
           </h2>
-          <p className="mt-1 text-xs text-slate-500">
-            أرشيف الحصص التفاعلية، وتحليلات دقة إجابات الفصول، والتشخيص الدقيق لنقاط ضعف الطلاب
-          </p>
+          <p className="mt-1 text-xs text-slate-500">كل الأرقام أدناه تأتي من سجل الخادم وقاعدة البيانات فقط.</p>
         </div>
 
-        {/* Time and Class Filters */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Class Filter */}
           {assignments.length > 1 && (
             <select
               value={selectedClassFilter}
-              onChange={(e) => setSelectedClassFilter(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              onChange={(event) => setSelectedClassFilter(event.target.value)}
+              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800"
             >
               <option value="all">جميع الفصول</option>
-              {assignments.map((a) => (
-                <option key={a.classId} value={a.classId}>
-                  {a.className}
-                </option>
+              {assignments.map((assignment) => (
+                <option key={assignment.classId} value={assignment.classId}>{assignment.className}</option>
               ))}
             </select>
           )}
 
-          {/* Time Filter Pills */}
-          <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-800 dark:bg-slate-800">
-            {[
-              { id: 'all', label: 'كامل الفترة' },
-              { id: 'month', label: 'آخر شهر' },
-              { id: 'week', label: 'آخر أسبوع' },
-              { id: 'today', label: 'اليوم' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setTimeFilter(tab.id as TimeFilter)}
-                className={`rounded-xl px-3 py-1.5 text-xs font-black transition-all ${
-                  timeFilter === tab.id
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <select
+            value={timeFilter}
+            onChange={(event) => setTimeFilter(event.target.value as TimeFilter)}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800"
+          >
+            <option value="all">كامل الفترة</option>
+            <option value="month">آخر شهر</option>
+            <option value="week">آخر أسبوع</option>
+            <option value="today">اليوم</option>
+          </select>
+
+          <button
+            type="button"
+            onClick={() => void loadReports()}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50 dark:bg-slate-700"
+          >
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> تحديث
+          </button>
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {error && (
+        <div className="mt-4 flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-800 dark:border-rose-900 dark:bg-rose-950/30 dark:text-rose-200">
+          <AlertTriangle size={18} className="mt-0.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-2xl bg-indigo-50/50 p-4 text-center dark:bg-indigo-950/20">
-          <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300">
-            الحصص المنفذة ({timeFilter === 'all' ? 'الكل' : timeFilter === 'today' ? 'اليوم' : timeFilter === 'week' ? 'الأسبوع' : 'الشهر'})
-          </span>
-          <div className="mt-1 text-2xl font-black text-indigo-900 dark:text-indigo-100">{totalSessions}</div>
-        </div>
-        <div className="rounded-2xl bg-emerald-50/50 p-4 text-center dark:bg-emerald-950/20">
-          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">الطلاب المشاركون</span>
-          <div className="mt-1 text-2xl font-black text-emerald-900 dark:text-emerald-100">{totalParticipants}</div>
-        </div>
-        <div className="rounded-2xl bg-amber-50/50 p-4 text-center dark:bg-amber-950/20">
-          <span className="text-xs font-bold text-amber-700 dark:text-amber-300">الإجابات المرصودة</span>
-          <div className="mt-1 text-2xl font-black text-amber-900 dark:text-amber-100">{totalResponses}</div>
-        </div>
-        <div className="rounded-2xl bg-purple-50/50 p-4 text-center dark:bg-purple-950/20">
-          <span className="text-xs font-bold text-purple-700 dark:text-purple-300">متوسط الإتقان</span>
-          <div className="mt-1 text-2xl font-black text-purple-900 dark:text-purple-100">
-            {overallAccuracy !== null ? `${overallAccuracy}%` : '—'}
-          </div>
-        </div>
+        <Kpi label="الحصص" value={totalSessions} />
+        <Kpi label="المشاركون" value={totalParticipants} />
+        <Kpi label="الإجابات" value={totalResponses} />
+        <Kpi label="متوسط الإتقان" value={overallAccuracy === null ? '—' : `${overallAccuracy}%`} />
       </div>
 
-      {/* Skill Weakness Diagnostics Card */}
-      {filteredReports.length > 0 && (
-        <div className="mt-6 rounded-2xl border border-rose-100 bg-rose-50/30 p-5 dark:border-rose-950/40 dark:bg-rose-950/20">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-rose-100 pb-3 dark:border-rose-900/40">
+      {skillDiagnostics.length > 0 && (
+        <div className="mt-6 rounded-2xl border border-slate-100 p-5 dark:border-slate-800">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="text-rose-600" size={18} />
-              <h3 className="text-sm font-black text-rose-950 dark:text-rose-200">
-                تشخيص فجوات المهارات في الفترة المحددة ({timeFilter === 'all' ? 'كامل الفترة' : timeFilter === 'today' ? 'اليوم' : timeFilter === 'week' ? 'آخر أسبوع' : 'آخر شهر'})
-              </h3>
+              <Target size={18} className="text-rose-600" />
+              <h3 className="text-sm font-black text-slate-900 dark:text-white">تشخيص المهارات من الإجابات الفعلية</h3>
             </div>
-            <span className="text-xs font-bold text-rose-700 dark:text-rose-300">
-              {weakSkills.length > 0 ? `${weakSkills.length} مهارات تحتاج معالجة` : 'جميع المهارات بنسبة إتقان جيدة ✨'}
-            </span>
+            <span className="text-xs font-bold text-slate-500">{weakSkills.length} مهارة تحت 65%</span>
           </div>
-
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {skillDiagnostics.slice(0, 6).map((skill) => (
-              <div
-                key={skill.skillId}
-                className={`rounded-xl border p-3.5 bg-white transition-all dark:bg-slate-800 ${
-                  skill.isWeak
-                    ? 'border-rose-200 dark:border-rose-900/60 shadow-xs'
-                    : 'border-slate-100 dark:border-slate-750'
-                }`}
-              >
+          <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {skillDiagnostics.slice(0, 9).map((skill) => (
+              <div key={skill.skillId} className="rounded-xl border border-slate-100 p-4 dark:border-slate-800">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-black text-slate-900 dark:text-white line-clamp-1">
-                    {skill.skillName}
-                  </span>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-black ${
-                      skill.isWeak
-                        ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-200'
-                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200'
-                    }`}
-                  >
-                    {skill.accuracy}% إتقان
+                  <span className="text-xs font-black text-slate-900 dark:text-white">{skill.skillName}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${skill.isWeak ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                    {skill.accuracy}%
                   </span>
                 </div>
-                <div className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                  تم اختبارها في {skill.sessionsCount} حصة · {skill.totalAsked} إجابة
-                </div>
-                {skill.isWeak && onPrepareIntervention && (
+                <p className="mt-2 text-[11px] text-slate-500">{skill.correct}/{skill.totalAnswered} صحيحة · {skill.sessions.size} حصة</p>
+                {skill.isWeak && onPrepareIntervention && !skill.skillId.startsWith('subject:') && (
                   <button
                     type="button"
                     onClick={() => onPrepareIntervention(skill.skillId)}
-                    className="mt-2.5 flex items-center gap-1 text-[11px] font-black text-rose-600 hover:text-rose-800 dark:text-rose-400"
+                    className="mt-3 inline-flex items-center gap-1 text-[11px] font-black text-rose-600"
                   >
-                    <Zap size={12} /> تحضير سؤال تحدي علاجي لهذه المهارة
+                    <Zap size={12} /> إعداد تدخل علاجي
                   </button>
                 )}
               </div>
@@ -337,170 +292,73 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         </div>
       )}
 
-      {/* Reports Sessions List */}
-      <div className="mt-6">
-        <h3 className="text-sm font-black text-slate-900 dark:text-white mb-3">
-          جلسات الحصص المؤرشفة ({filteredReports.length})
-        </h3>
-
-        {filteredReports.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-800/30">
-            <Presentation size={32} className="mx-auto text-slate-400 opacity-60" />
-            <p className="mt-3 font-bold">لا توجد تقارير حصص مطابقة للفترة المحددة.</p>
-            <p className="mt-1 text-xs text-slate-400">
-              يمكنك تغيير الفلتر الزمني أو بدء حصة ذكية جديدة للفصل.
-            </p>
-          </div>
+      <div className="mt-6 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
+        {loading && reports.length === 0 ? (
+          <div className="p-8 text-center text-sm font-bold text-slate-500">جارٍ تحميل السجل من الخادم…</div>
+        ) : filteredReports.length === 0 ? (
+          <div className="p-8 text-center text-sm font-bold text-slate-500">لا توجد حصص مطابقة للفلاتر الحالية.</div>
         ) : (
-          <div className="space-y-3">
-            {filteredReports.map((report) => {
-              const accuracy =
-                report.responseCount > 0 ? Math.round((report.correctCount / report.responseCount) * 100) : null;
-              return (
-                <div
-                  key={report.sessionId}
-                  className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-xs transition-all hover:border-indigo-200 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-800/40"
-                >
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-black text-slate-900 dark:text-white">
-                        {report.className || `فصل ${report.classId.slice(-4)}`}
-                      </span>
-                      {report.day && (
-                        <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-700 dark:bg-slate-750 dark:text-slate-300">
-                          {report.day}
-                        </span>
-                      )}
-                      {report.period && (
-                        <span className="rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
-                          الحصة {report.period}
-                        </span>
-                      )}
-                      <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
-                        {report.participantCount} طالب مشارك
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs text-slate-500">
-                      تاريخ الجلسة: {new Date(report.endedAt).toLocaleDateString('ar-SA')} ·{' '}
-                      {new Date(report.endedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="text-left">
-                      <span className="text-xs text-slate-500">نسبة الإتقان</span>
-                      <div className="font-black text-emerald-600">{accuracy !== null ? `${accuracy}%` : '—'}</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedReport(report)}
-                      className="rounded-xl bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-100 transition-colors"
-                    >
-                      عرض التقرير المفصل
-                    </button>
+          filteredReports.map((report) => {
+            const responses = report.totals?.responses || 0;
+            const correct = report.totals?.correct || 0;
+            const accuracy = responses ? Math.round((correct / responses) * 100) : null;
+            return (
+              <button
+                key={report.sessionId}
+                type="button"
+                onClick={() => setSelectedReport(report)}
+                className="flex w-full items-center justify-between gap-4 border-b border-slate-100 p-4 text-right last:border-b-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50"
+              >
+                <div>
+                  <div className="text-sm font-black text-slate-900 dark:text-white">{report.className || report.classId}</div>
+                  <div className="mt-1 text-xs text-slate-500">
+                    {report.subjectName || '—'} · {report.day || '—'}{report.period ? ` · الحصة ${report.period}` : ''}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+                <div className="flex items-center gap-4 text-xs font-bold text-slate-600 dark:text-slate-300">
+                  <span className="inline-flex items-center gap-1"><Users size={14} /> {report.roster?.joined || 0}/{report.roster?.expected || 0}</span>
+                  <span className="inline-flex items-center gap-1"><CheckCircle2 size={14} /> {accuracy === null ? '—' : `${accuracy}%`}</span>
+                </div>
+              </button>
+            );
+          })
         )}
       </div>
 
-      {/* Detailed Report Modal */}
       {selectedReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900" dir="rtl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-black text-slate-900 dark:text-white">
-                  تقرير الحصة الذكية - {selectedReport.className || selectedReport.classId}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  {selectedReport.day ? `${selectedReport.day} · ` : ''}
-                  {selectedReport.period ? `الحصة ${selectedReport.period} · ` : ''}
-                  انتهت بتاريخ: {new Date(selectedReport.endedAt).toLocaleString('ar-SA')}
-                </p>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">{selectedReport.className || selectedReport.classId}</h3>
+                <p className="mt-1 text-xs text-slate-500">{selectedReport.subjectName || '—'} · {selectedReport.questions.length} سؤال</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedReport(null)}
-                className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
-              >
-                <X size={20} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => exportExcel(selectedReport)} className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white">
+                  <Download size={14} /> Excel
+                </button>
+                <button type="button" onClick={() => setSelectedReport(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X size={18} /></button>
+              </div>
             </div>
 
-            {/* Modal Stats */}
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800">
-                <span className="text-xs text-slate-500">الطلاب المنضمون</span>
-                <div className="text-xl font-black">{selectedReport.participantCount}</div>
-              </div>
-              <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800">
-                <span className="text-xs text-slate-500">إجمالي الإجابات</span>
-                <div className="text-xl font-black">{selectedReport.responseCount}</div>
-              </div>
-              <div className="rounded-xl bg-emerald-50 p-3 text-center dark:bg-emerald-950/30">
-                <span className="text-xs text-emerald-800 dark:text-emerald-300">نسبة الإتقان العامة</span>
-                <div className="text-xl font-black text-emerald-700 dark:text-emerald-400">
-                  {selectedReport.responseCount > 0
-                    ? `${Math.round((selectedReport.correctCount / selectedReport.responseCount) * 100)}%`
-                    : '—'}
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              <Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} />
+              <Kpi label="الإجابات" value={selectedReport.totals.responses} />
+              <Kpi label="الصحيح" value={selectedReport.totals.correct} />
+            </div>
+
+            <div className="mt-5 space-y-3">
+              {selectedReport.questions.map((question) => (
+                <div key={question.questionId} className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800">
+                  <p className="text-sm font-black text-slate-900 dark:text-white">{question.index + 1}. {question.text}</p>
+                  <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold text-slate-500">
+                    <span>{question.answered} إجابة</span>
+                    <span>{question.correct} صحيحة</span>
+                    <span>{question.wrong} خاطئة</span>
+                    {question.skillIds.length > 0 && <span>المهارات: {question.skillIds.join('، ')}</span>}
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Questions Breakdown */}
-            <div className="mt-5">
-              <h4 className="text-sm font-black text-slate-800 dark:text-slate-200">تحليل أسئلة ومهارات الحصة:</h4>
-              <div className="mt-3 space-y-2">
-                {(selectedReport.questions || []).map((q, idx) => {
-                  const qAccuracy = q.answeredCount
-                    ? Math.round(((q.correctCount || 0) / q.answeredCount) * 100)
-                    : null;
-                  return (
-                    <div
-                      key={q.questionId || idx}
-                      className="rounded-xl border border-slate-100 bg-slate-50/50 p-3 text-xs dark:border-slate-800 dark:bg-slate-800/50"
-                    >
-                      <div className="flex items-center justify-between font-bold">
-                        <span className="flex items-center gap-1.5">
-                          <b>سؤال {idx + 1}:</b> {q.text}
-                          {q.isChallenge && (
-                            <span className="rounded-sm bg-amber-100 px-1 py-0.2 text-[10px] text-amber-800">
-                              ⚡ تحدي سريع
-                            </span>
-                          )}
-                        </span>
-                        <span className="text-emerald-700 font-black">{qAccuracy !== null ? `${qAccuracy}%` : '—'}</span>
-                      </div>
-                      <div className="mt-1.5 flex flex-wrap gap-4 text-slate-500 text-[11px]">
-                        <span>المهارة: {q.skillName || q.skillId || 'تحليل وحل مشكلات'}</span>
-                        <span>المجيبون: {q.answeredCount ?? '—'}</span>
-                        <span>الصحيح: {q.correctCount ?? '—'}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-6 flex justify-end gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
-              <button
-                type="button"
-                onClick={() => exportExcel(selectedReport)}
-                className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-black text-white hover:bg-emerald-700"
-              >
-                <Download size={14} /> تصدير Excel
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="flex items-center gap-1.5 rounded-xl bg-slate-800 px-4 py-2 text-xs font-black text-white hover:bg-slate-900"
-              >
-                <Printer size={14} /> طباعة التقرير
-              </button>
+              ))}
             </div>
           </div>
         </div>
@@ -508,3 +366,10 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
     </section>
   );
 };
+
+const Kpi: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
+  <div className="rounded-2xl bg-slate-50 p-4 text-center dark:bg-slate-800/60">
+    <div className="text-[11px] font-bold text-slate-500">{label}</div>
+    <div className="mt-1 text-xl font-black text-slate-900 dark:text-white">{value}</div>
+  </div>
+);
