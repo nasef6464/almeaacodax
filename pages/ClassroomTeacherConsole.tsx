@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Award, CheckCircle2, ChevronLeft, ChevronRight, Copy, ExternalLink, Presentation, RefreshCw, Users, Zap } from 'lucide-react';
+import { Award, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Copy, ExternalLink, Filter, Presentation, RefreshCw, Users, Zap } from 'lucide-react';
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import type { TeacherWorkspaceData } from '../components/teacher/TeacherWorkspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ClassroomTeacherLiveRadar } from '../components/classroom/ClassroomTeacherLiveRadar';
 import type { ClassroomSavedReport } from '../components/classroom/SmartClassroomReportsSection';
+import { ClassroomQuestionFilterBar, ClassroomFilterState } from '../components/classroom/ClassroomQuestionFilterBar';
+import { ClassroomPreparedTemplatesManager, ClassroomPreparedTemplate } from '../components/classroom/ClassroomPreparedTemplatesManager';
+import { ClassroomActiveSessionPanel } from '../components/classroom/ClassroomActiveSessionPanel';
 
-type ClassroomQuestion = { questionId: string; text: string; options: string[]; type: string; isChallenge?: boolean };
+type ClassroomQuestion = { questionId: string; text: string; options: string[]; type: string; isChallenge?: boolean; pathId?: string; subject?: string; sectionId?: string; difficulty?: string; examType?: string };
 
 export const ClassroomTeacherConsole: React.FC = () => {
   const { sessionId = '' } = useParams();
@@ -24,6 +27,9 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [questions, setQuestions] = useState<ClassroomQuestion[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [challengeIds, setChallengeIds] = useState<string[]>([]);
+  const [creationTab, setCreationTab] = useState<'templates' | 'bank'>('templates');
+  const [activeTemplateId, setActiveTemplateId] = useState<string>('');
+  const [filters, setFilters] = useState<ClassroomFilterState>({ track: '', subject: '', difficulty: '', search: '' });
   const selectedSchool = useMemo(() => workspace?.schools.find((school) => school.schoolId === schoolId), [schoolId, workspace]);
 
   const load = useCallback(async () => {
@@ -49,6 +55,23 @@ export const ClassroomTeacherConsole: React.FC = () => {
     return () => { active = false; };
   }, [classId, schoolId, sessionId]);
 
+  const filteredQuestions = useMemo(() => {
+    return questions.filter((q: any) => {
+      if (filters.track && q.examType !== filters.track && q.pathId !== filters.track) return false;
+      if (filters.subject && q.subject !== filters.subject) return false;
+      if (filters.difficulty && q.difficulty !== filters.difficulty) return false;
+      if (filters.search && !q.text?.toLowerCase().includes(filters.search.toLowerCase())) return false;
+      return true;
+    });
+  }, [questions, filters]);
+
+  const handleApplyTemplate = (tpl: ClassroomPreparedTemplate) => {
+    setSelectedIds(tpl.questionIds);
+    setChallengeIds(tpl.challengeIds);
+    setActiveTemplateId(tpl.id);
+    setMessage(`تم تفعيل حزمة "${tpl.title}" (${tpl.questionIds.length} أسئلة). جاهز لإطلاقها لهذا الفصل.`);
+  };
+
   const chooseSchool = (nextSchoolId: string) => {
     setSchoolId(nextSchoolId);
     const school = workspace?.schools.find((entry) => entry.schoolId === nextSchoolId);
@@ -56,13 +79,14 @@ export const ClassroomTeacherConsole: React.FC = () => {
     setQuestions([]);
     setSelectedIds([]);
     setChallengeIds([]);
+    setActiveTemplateId('');
   };
 
   const loadQuestions = async () => {
     try {
       const result = await api.getClassroomQuestions(schoolId);
       setQuestions(result.questions);
-      setMessage('اختر من 1 إلى 10 أسئلة معتمدة للحصة الذكية.');
+      setMessage('تم استعراض بنك الأسئلة المعتمد. يمكنك الفلترة والاختيار وحفظ الحزم.');
     } catch {
       setMessage('تعذر تحميل بنك الأسئلة. تحقق من المدرسة وصلاحية الإسناد.');
     }
@@ -188,66 +212,143 @@ export const ClassroomTeacherConsole: React.FC = () => {
               </label>
             </div>
 
-            <button
-              type="button"
-              onClick={() => void loadQuestions()}
-              disabled={!schoolId || !classId || !selectedSchool?.smartClassroomEnabled}
-              className="mt-4 rounded-xl bg-slate-800 px-5 py-3 font-black text-white disabled:opacity-50"
-            >
-              عرض الأسئلة المعتمدة
-            </button>
             {!selectedSchool?.smartClassroomEnabled && (
               <p className="mt-3 text-sm font-bold text-amber-700">وحدة الفصل الذكي غير مفعلة في عقد المدرسة.</p>
             )}
 
-            {questions.length > 0 && (
-              <div className="mt-6 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-black text-slate-700">اختر من 1 إلى 10 أسئلة ({selectedIds.length}/10):</span>
-                  <span className="text-xs text-slate-500">يمكنك وسم أي سؤال كـ "سؤال تحدي ⚡"</span>
-                </div>
-                {questions.map((question) => {
-                  const isChecked = selectedIds.includes(question.questionId);
-                  const isChallenge = challengeIds.includes(question.questionId);
-                  return (
-                    <div key={question.questionId} className={`flex items-start justify-between rounded-xl border p-4 transition-all ${
-                      isChecked ? 'border-indigo-500 bg-indigo-50/40' : 'border-slate-200 bg-white'
-                    }`}>
-                      <label className="flex flex-1 cursor-pointer items-start gap-3">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => setSelectedIds((ids) => ids.includes(question.questionId) ? ids.filter((id) => id !== question.questionId) : ids.length < 10 ? [...ids, question.questionId] : ids)}
-                          className="mt-1"
-                        />
-                        <span>
-                          <b className="text-slate-900">{question.text}</b>
-                          <small className="mt-1 block text-slate-500">{question.type} · {question.options.length} خيارات</small>
-                        </span>
-                      </label>
-                      {isChecked && (
-                        <button
-                          type="button"
-                          onClick={() => toggleChallenge(question.questionId)}
-                          className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-black transition-all ${
-                            isChallenge ? 'bg-amber-500 text-white' : 'border border-slate-300 bg-white text-slate-600'
-                          }`}
-                        >
-                          <Zap size={13} /> {isChallenge ? 'سؤال تحدي ⚡' : 'تعيين كتحدي'}
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
+            {/* Preparation Tabs */}
+            <div className="mt-6 flex border-b border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setCreationTab('templates')}
+                className={`flex items-center gap-2 border-b-2 px-5 py-3 text-xs sm:text-sm font-black transition-colors ${
+                  creationTab === 'templates'
+                    ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                    : 'border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                }`}
+              >
+                <Bookmark size={16} /> الحزم المحضرة مسبقاً (إطلاق فوري)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCreationTab('bank');
+                  if (questions.length === 0) void loadQuestions();
+                }}
+                className={`flex items-center gap-2 border-b-2 px-5 py-3 text-xs sm:text-sm font-black transition-colors ${
+                  creationTab === 'bank'
+                    ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                    : 'border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                }`}
+              >
+                <Filter size={16} /> بنك الأسئلة والفلترة الذكية
+              </button>
+            </div>
+
+            {/* Tab 1: Prepared Templates */}
+            {creationTab === 'templates' && (
+              <div className="mt-4">
+                <ClassroomPreparedTemplatesManager
+                  schoolId={schoolId}
+                  teacherId={user?.id}
+                  selectedIds={selectedIds}
+                  challengeIds={challengeIds}
+                  onApplyTemplate={handleApplyTemplate}
+                  activeTemplateId={activeTemplateId}
+                />
               </div>
             )}
+
+            {/* Tab 2: Question Bank with Multi-Level Filters */}
+            {creationTab === 'bank' && (
+              <div className="mt-4 space-y-4">
+                <ClassroomQuestionFilterBar
+                  filters={filters}
+                  onChange={setFilters}
+                  onReset={() => setFilters({ track: '', subject: '', difficulty: '', search: '' })}
+                  totalCount={questions.length}
+                  filteredCount={filteredQuestions.length}
+                />
+
+                {questions.length === 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => void loadQuestions()}
+                    disabled={!schoolId || !classId || !selectedSchool?.smartClassroomEnabled}
+                    className="w-full rounded-xl bg-slate-800 py-3 text-xs font-black text-white hover:bg-slate-700"
+                  >
+                    عرض وتحميل أسئلة بنك المنصة
+                  </button>
+                ) : (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+                      <span>اختر من 1 إلى 10 أسئلة ({selectedIds.length}/10):</span>
+                      <span>يمكنك تعيين أي سؤال كـ "سؤال تحدي ⚡"</span>
+                    </div>
+                    {filteredQuestions.map((question) => {
+                      const isChecked = selectedIds.includes(question.questionId);
+                      const isChallenge = challengeIds.includes(question.questionId);
+                      return (
+                        <div
+                          key={question.questionId}
+                          className={`flex items-start justify-between rounded-xl border p-3.5 transition-all ${
+                            isChecked
+                              ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/40'
+                              : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                          }`}
+                        >
+                          <label className="flex flex-1 cursor-pointer items-start gap-3">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() =>
+                                setSelectedIds((ids) =>
+                                  ids.includes(question.questionId)
+                                    ? ids.filter((id) => id !== question.questionId)
+                                    : ids.length < 10
+                                    ? [...ids, question.questionId]
+                                    : ids
+                                )
+                              }
+                              className="mt-1"
+                            />
+                            <span>
+                              <b className="text-slate-900 dark:text-white text-sm">{question.text}</b>
+                              <small className="mt-1 block text-slate-500">
+                                {question.subject || question.type} · {question.difficulty || 'متوسط'} · {question.options.length} خيارات
+                              </small>
+                            </span>
+                          </label>
+                          {isChecked && (
+                            <button
+                              type="button"
+                              onClick={() => toggleChallenge(question.questionId)}
+                              className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-black transition-all ${
+                                isChallenge
+                                  ? 'bg-amber-500 text-white'
+                                  : 'border border-slate-300 bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                              }`}
+                            >
+                              <Zap size={13} /> {isChallenge ? 'سؤال تحدي ⚡' : 'تعيين كتحدي'}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Launch Session Button */}
             <button
               type="button"
               onClick={() => void create()}
               disabled={!schoolId || !classId || !selectedIds.length}
-              className="mt-6 rounded-xl bg-indigo-600 px-5 py-3 font-black text-white disabled:opacity-50"
+              className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 py-4 text-sm sm:text-base font-black text-white shadow-xl hover:from-indigo-700 hover:to-indigo-800 active:scale-95 disabled:opacity-40"
             >
-              إنشاء الحصة ({selectedIds.length}/10)
+              <Presentation size={18} />
+              إطلاق الحصة لهذا الفصل ({selectedIds.length}/10 أسئلة) 🚀
             </button>
           </>
         )}
@@ -258,121 +359,19 @@ export const ClassroomTeacherConsole: React.FC = () => {
 
   // Active Session Live Console
   return (
-    <main className="mx-auto max-w-5xl p-4 sm:p-6" dir="rtl">
-      {/* Header Banner */}
-      <div className="flex flex-col gap-4 rounded-3xl bg-slate-900 p-6 text-white sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <span className="rounded-md bg-emerald-500/20 px-2.5 py-1 text-xs font-black text-emerald-400">
-            {data?.status === 'ended' ? 'حصة منتهية ومؤرشفة' : 'حصة ذكية مباشرة 🟢'}
-          </span>
-          <h1 className="mt-2 text-3xl font-black">لوحة تحكم المعلم</h1>
-          <p className="mt-1 text-xs text-slate-400">
-            الحالة: {data?.status || '...'} · رابط الطلاب: /classroom/{sessionId}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {storedPin && (
-            <div className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2 text-white">
-              <span className="text-xs text-slate-300">رمز الانضمام:</span>
-              <span className="font-mono text-xl font-black tracking-wider text-amber-400">{storedPin}</span>
-              <button type="button" onClick={() => copyPin(storedPin)} className="rounded-lg p-1 hover:bg-white/20 text-xs">
-                {copied ? 'تم النسخ!' : <Copy size={16} />}
-              </button>
-            </div>
-          )}
-          <Link
-            to={`/classroom/${sessionId}/projector`}
-            target="_blank"
-            className="flex items-center gap-1.5 rounded-2xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700"
-          >
-            <Presentation size={16} /> شاشة السبورة التفاعلية <ExternalLink size={14} />
-          </Link>
-        </div>
-      </div>
-
-      {/* Live Radar Analysis Component */}
-      <div className="mt-6">
-        <ClassroomTeacherLiveRadar
-          responseCount={data?.responseCount ?? 0}
-          distribution={data?.distribution || {}}
-          activeQuestion={currentQuestion ? {
-            ...currentQuestion,
-            isChallenge: challengeIds.includes(currentQuestion.questionId),
-          } : null}
-          onToggleChallenge={currentQuestion ? () => toggleChallenge(currentQuestion.questionId) : undefined}
-        />
-      </div>
-
-      {/* Questions Carousel / List */}
-      <section className="mt-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900 dark:text-white">أسئلة الحصة</h2>
-          <span className="text-xs text-slate-500">اضغط على أي سؤال لنشره فوراً للطلاب على أجهزتهم</span>
-        </div>
-
-        <div className="mt-4 space-y-2.5">
-          {(data?.questions || []).map((question: any) => {
-            const isActive = data?.activeQuestionIndex === question.index;
-            const isChallenge = challengeIds.includes(question.questionId);
-            return (
-              <button
-                key={question.questionId}
-                type="button"
-                onClick={() => void publish(question.index)}
-                disabled={data?.status === 'ended'}
-                className={`flex w-full items-center justify-between rounded-xl border p-4 text-right transition-all disabled:opacity-50 ${
-                  isActive
-                    ? 'border-indigo-600 bg-indigo-50/70 shadow-xs dark:bg-indigo-950/30'
-                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-800/40'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black ${
-                    isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
-                  }`}>
-                    {question.index + 1}
-                  </span>
-                  <div>
-                    <span className="font-bold text-slate-900 dark:text-white">
-                      سؤال {question.index + 1}: {question.text}
-                    </span>
-                    {isChallenge && (
-                      <span className="mr-2 inline-flex items-center gap-1 rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-black text-amber-800">
-                        ⚡ سؤال تحدي
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <span className={`text-xs font-black ${isActive ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-400'}`}>
-                  {isActive ? 'منشور حالياً 🟢' : 'انقر للنشر'}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Control Actions & End Session */}
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => void end()}
-          disabled={data?.status === 'ended'}
-          className="rounded-xl bg-rose-600 px-6 py-3 font-black text-white hover:bg-rose-700 disabled:opacity-50"
-        >
-          {data?.status === 'ended' ? 'الجلسة منتهية ومحفوظة' : 'إنهاء الجلسة وتثبيت التقرير'}
-        </button>
-
-        {user?.role === 'teacher' && (
-          <Link to="/school-teacher-dashboard" className="text-xs font-bold text-slate-500 hover:text-slate-800">
-            العودة للوحة معلم المدرسة →
-          </Link>
-        )}
-      </div>
-
-      {message && <p className="mt-4 text-sm font-bold text-slate-600">{message}</p>}
-    </main>
+    <ClassroomActiveSessionPanel
+      sessionId={sessionId}
+      data={data}
+      storedPin={storedPin}
+      challengeIds={challengeIds}
+      onToggleChallenge={toggleChallenge}
+      onPublish={(index) => {
+        const question = (data?.questions || []).find((q: any) => q.index === index) || { index };
+        void publish(question.index);
+      }}
+      onEnd={() => void end()}
+      message={message}
+      isTeacher={user?.role === 'teacher'}
+    />
   );
 };

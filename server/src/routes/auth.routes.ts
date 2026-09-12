@@ -23,6 +23,11 @@ import { env } from "../config/env.js";
 import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
 import { isPackageSeatAvailable } from "../services/packageSeatCapacity.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { CourseModel } from "../models/Course.js";
+import { LessonModel } from "../models/Lesson.js";
+import { QuestionModel } from "../models/Question.js";
+import { QuizModel } from "../models/Quiz.js";
+import { LibraryItemModel } from "../models/LibraryItem.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -115,6 +120,16 @@ const adminUsersQuerySchema = z.object({
   }, z.boolean().optional()),
 });
 
+const adminTrainersQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+  search: z.string().trim().max(120).optional(),
+  status: z.enum(["active", "inactive", "unconfigured"]).optional(),
+  pathId: z.string().trim().optional(),
+  subjectId: z.string().trim().optional(),
+  persona: z.enum(["platform", "hybrid"]).optional(),
+});
+
 const preferencesSchema = z.object({
   favorites: z.array(z.string()).optional(),
   reviewLater: z.array(z.string()).optional(),
@@ -175,6 +190,85 @@ const buildDocumentsQuery = (values: string[]) => {
     $or: normalized.flatMap((value) =>
       mongoose.Types.ObjectId.isValid(value) ? [{ id: value }, { _id: value }] : [{ id: value }],
     ),
+  };
+};
+
+const trainerOwnershipQuery = (trainerId: string) => ({
+  $or: [
+    { ownerId: trainerId },
+    { createdBy: trainerId },
+    { assignedTeacherId: trainerId },
+  ],
+});
+
+const summarizeTrainerContent = (items: Array<{ approvalStatus?: string; showOnPlatform?: boolean }>) => {
+  const statuses = { draft: 0, pending_review: 0, approved: 0, rejected: 0, published: 0 };
+  items.forEach((item) => {
+    const status = String(item.approvalStatus || "draft") as keyof typeof statuses;
+    if (status in statuses) statuses[status] += 1;
+    if (item.showOnPlatform !== false && status === "approved") statuses.published += 1;
+  });
+  return { total: items.length, ...statuses };
+};
+
+const getTrainerPortfolio = async (trainerId: string, includeItems = false) => {
+  const ownership = trainerOwnershipQuery(trainerId);
+  const limit = includeItems ? 100 : 1;
+  const [courses, lessons, questions, quizzes, libraryItems] = await Promise.all([
+    CourseModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
+    LessonModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
+    QuestionModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id text approvalStatus pathId subject updatedAt").lean(),
+    QuizModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
+    LibraryItemModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
+  ]);
+
+  if (!includeItems) {
+    const statusSummary = (model: any) => model.aggregate([
+      { $match: ownership },
+      { $group: { _id: { $ifNull: ["$approvalStatus", "draft"] }, count: { $sum: 1 } } },
+    ]);
+    const [courseCount, lessonCount, questionCount, quizCount, libraryCount, ...statusGroups] = await Promise.all([
+      CourseModel.countDocuments(ownership),
+      LessonModel.countDocuments(ownership),
+      QuestionModel.countDocuments(ownership),
+      QuizModel.countDocuments(ownership),
+      LibraryItemModel.countDocuments(ownership),
+      statusSummary(CourseModel),
+      statusSummary(LessonModel),
+      statusSummary(QuestionModel),
+      statusSummary(QuizModel),
+      statusSummary(LibraryItemModel),
+      CourseModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+      LessonModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+      QuestionModel.countDocuments({ ...ownership, approvalStatus: "approved" }),
+      QuizModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+      LibraryItemModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+    ]);
+    const publishedCounts = statusGroups.splice(-5) as number[];
+    const statuses = { draft: 0, pending_review: 0, approved: 0, rejected: 0, published: 0 };
+    statusGroups.flat().forEach((group: any) => {
+      const status = String(group._id || "draft") as keyof typeof statuses;
+      if (status in statuses) statuses[status] += Number(group.count || 0);
+    });
+    statuses.published = publishedCounts.reduce((total, count) => total + Number(count || 0), 0);
+    return {
+      stats: { total: courseCount + lessonCount + questionCount + quizCount + libraryCount, courses: courseCount, lessons: lessonCount, questions: questionCount, quizzes: quizCount, libraryItems: libraryCount, ...statuses },
+      items: undefined,
+    };
+  }
+
+  const allItems = [...courses, ...lessons, ...questions, ...quizzes, ...libraryItems] as Array<{ approvalStatus?: string; showOnPlatform?: boolean }>;
+  return {
+    stats: {
+      ...summarizeTrainerContent(allItems),
+      courses: courses.length,
+      lessons: lessons.length,
+      videos: lessons.filter((item: any) => item.type === "video").length,
+      questions: questions.length,
+      quizzes: quizzes.length,
+      libraryItems: libraryItems.length,
+    },
+    items: { courses, lessons, questions, quizzes, libraryItems },
   };
 };
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
@@ -851,6 +945,82 @@ authRouter.get(
     return res.json({
       users: users.map((user: any) => ({ ...serializeUser(user), schoolContexts: contextsByUser.get(String(user.id || user._id)) || [] })),
       pagination: buildPaginatedResponse(users, pagination, total),
+    });
+  }),
+);
+
+authRouter.get(
+  "/admin/trainers",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const query = adminTrainersQuerySchema.parse(req.query);
+    const pagination = resolvePagination({ page: query.page, limit: query.limit || 25 }, { limit: 25 });
+    const filters: Record<string, unknown>[] = [{ role: "teacher" }];
+    if (query.status === "active") filters.push({ isActive: { $ne: false } });
+    if (query.status === "inactive") filters.push({ isActive: false });
+    if (query.status === "unconfigured") {
+      filters.push({ managedPathIds: { $size: 0 }, managedSubjectIds: { $size: 0 } });
+    }
+    if (query.pathId) filters.push({ managedPathIds: query.pathId });
+    if (query.subjectId) filters.push({ managedSubjectIds: query.subjectId });
+    if (query.persona === "platform") {
+      filters.push({ schoolId: { $in: [null, ""] }, groupIds: { $size: 0 } });
+    }
+    if (query.persona === "hybrid") {
+      filters.push({ $or: [{ schoolId: { $nin: [null, ""] } }, { "groupIds.0": { $exists: true } }] });
+    }
+    if (query.search) {
+      const escaped = escapeRegExp(query.search);
+      filters.push({ $or: [{ name: { $regex: escaped, $options: "i" } }, { email: { $regex: escaped, $options: "i" } }] });
+    }
+    const mongoQuery = filters.length === 1 ? filters[0] : { $and: filters };
+    const [trainers, total] = await Promise.all([
+      UserModel.find(mongoQuery).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      UserModel.countDocuments(mongoQuery),
+    ]);
+    const records = await Promise.all(trainers.map(async (trainer: any) => {
+      const id = String(trainer.id || trainer._id);
+      const [portfolio, schoolContexts] = await Promise.all([
+        getTrainerPortfolio(id),
+        SchoolMembershipModel.find({ userId: id, status: "active" }).select("schoolId role permissions").lean(),
+      ]);
+      const hasPlatformScope = Boolean(trainer.managedPathIds?.length || trainer.managedSubjectIds?.length);
+      const hasSchoolContext = Boolean(trainer.schoolId || trainer.groupIds?.length || schoolContexts.length);
+      return {
+        ...serializeUser(trainer),
+        persona: hasPlatformScope && hasSchoolContext ? "hybrid" : hasPlatformScope ? "platform" : "unconfigured",
+        schoolContexts,
+        portfolio: portfolio.stats,
+      };
+    }));
+    return res.json({ trainers: records, pagination: buildPaginatedResponse(trainers, pagination, total) });
+  }),
+);
+
+authRouter.get(
+  "/admin/trainers/:id",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const trainer = await UserModel.findOne(buildDocumentQuery(String(req.params.id || "").trim())).lean();
+    if (!trainer || trainer.role !== "teacher") {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Trainer not found" });
+    }
+    const trainerId = String((trainer as any).id || (trainer as any)._id);
+    const [portfolio, schoolContexts] = await Promise.all([
+      getTrainerPortfolio(trainerId, true),
+      SchoolMembershipModel.find({ userId: trainerId, status: "active" }).select("schoolId role permissions").lean(),
+    ]);
+    const hasPlatformScope = Boolean((trainer as any).managedPathIds?.length || (trainer as any).managedSubjectIds?.length);
+    const hasSchoolContext = Boolean((trainer as any).schoolId || (trainer as any).groupIds?.length || schoolContexts.length);
+    return res.json({
+      trainer: {
+        ...serializeUser(trainer),
+        persona: hasPlatformScope && hasSchoolContext ? "hybrid" : hasPlatformScope ? "platform" : "unconfigured",
+        schoolContexts,
+        portfolio,
+      },
     });
   }),
 );

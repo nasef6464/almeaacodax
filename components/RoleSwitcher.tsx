@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useStore } from '../store/useStore';
 import { Role } from '../types';
-import { Shield, User, Users, BookOpen, UserCheck, ChevronUp, Sparkles } from 'lucide-react';
+import { Shield, User, Users, BookOpen, UserCheck, ChevronUp, Sparkles, School } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { injectB2BSimulation } from '../utils/simulateB2B';
@@ -18,15 +18,17 @@ export const RoleSwitcher: React.FC = () => {
     { id: Role.ADMIN, label: 'مدير النظام', icon: <Shield size={16} />, path: '/admin-dashboard' },
     { id: Role.SUPERVISOR, label: 'مشرف', icon: <UserCheck size={16} />, path: '/supervisor-dashboard' },
     { id: Role.TEACHER, label: 'مدرب منصة', icon: <BookOpen size={16} />, path: '/instructor-dashboard' },
+    { id: 'school_teacher' as any, label: 'معلم مدرسة', icon: <School size={16} />, path: '/school-teacher-dashboard' },
     { id: Role.PARENT, label: 'ولي أمر', icon: <Users size={16} />, path: '/parent-dashboard' },
     { id: Role.STUDENT, label: 'طالب', icon: <User size={16} />, path: '/dashboard' },
   ];
 
-  const handleRoleChange = (roleId: Role, path: string) => {
+  const handleRoleChange = (roleId: any, path: string) => {
+    const targetRole = roleId === 'school_teacher' ? Role.TEACHER : (roleId as Role);
     if (devSwitchRole) {
-      flushSync(() => devSwitchRole(roleId));
+      flushSync(() => devSwitchRole(targetRole));
     }
-    changeRole(roleId);
+    changeRole(targetRole);
     setIsOpen(false);
     navigate(path);
   };
