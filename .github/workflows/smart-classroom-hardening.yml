@@ -79,3 +79,6 @@ jobs:
 
       - name: Smart Classroom isolated E2E
         run: npm --prefix server run simulate:smart-classroom-hardening
+
+      - name: Finalized report immutability
+        run: npm --prefix server run verify:smart-classroom-report-immutability
