@@ -1,5 +1,13 @@
 import React from 'react';
-import { CheckCircle, Clipboard, Download, Edit2, Printer, Trash2 } from 'lucide-react';
+import {
+    CheckCircle,
+    Clipboard,
+    Download,
+    Edit2,
+    Printer,
+    ShieldCheck,
+    Trash2,
+} from 'lucide-react';
 
 type SaveVerificationState = 'idle' | 'saving' | 'verifying' | 'success' | 'error' | null;
 
@@ -30,11 +38,29 @@ interface SchoolWorkspaceControlsPanelProps {
 }
 
 export const SchoolWorkspaceControlsPanel: React.FC<SchoolWorkspaceControlsPanelProps> = ({
-    schoolName, activeTabLabel, saveVerificationState, saveVerificationButtonLabel,
-    isSchoolWorkspaceBusy, isDeleteConfirmOpen, classCount, studentCount, supervisorCount,
-    packageCount, codeCount, readinessScore, readinessTotal, isDeletePending,
-    onBack, onSaveAndVerify, onRename, onDownloadHandover, onCopyHandover, onPrintReport,
-    onRequestDelete, onCancelDelete, onConfirmDelete,
+    schoolName,
+    activeTabLabel,
+    saveVerificationState,
+    saveVerificationButtonLabel,
+    isSchoolWorkspaceBusy,
+    isDeleteConfirmOpen,
+    classCount,
+    studentCount,
+    supervisorCount,
+    packageCount,
+    codeCount,
+    readinessScore,
+    readinessTotal,
+    isDeletePending,
+    onBack,
+    onSaveAndVerify,
+    onRename,
+    onDownloadHandover,
+    onCopyHandover,
+    onPrintReport,
+    onRequestDelete,
+    onCancelDelete,
+    onConfirmDelete,
 }) => {
     const deleteImpactRows: Array<[string, string | number]> = [
         ['فصول', classCount],
@@ -45,74 +71,143 @@ export const SchoolWorkspaceControlsPanel: React.FC<SchoolWorkspaceControlsPanel
         ['جاهزية', `${readinessScore}/${readinessTotal}`],
     ];
     const currentTabLabel = activeTabLabel || 'نظرة عامة والجاهزية';
+    const readinessLabel = readinessTotal > 0 ? `${readinessScore}/${readinessTotal}` : '—';
 
     return (
         <>
-            <div className="flex flex-col gap-4 rounded-3xl border border-slate-200/80 bg-white p-5 md:p-6 shadow-xs" data-testid="school-workspace-controls-panel">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-bold flex-wrap">
-                        <span>لوحة الإدارة</span>
-                        <span className="text-slate-300">/</span>
-                        <button type="button" onClick={onBack} className="hover:text-indigo-600 transition-colors cursor-pointer">تشغيل المدارس</button>
-                        <span className="text-slate-300">/</span>
-                        <span className="text-slate-700">{schoolName}</span>
-                        <span className="text-slate-300">/</span>
-                        <span className="text-indigo-600 font-black">{currentTabLabel}</span>
+            <section
+                className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs"
+                data-testid="school-workspace-controls-panel"
+            >
+                <div className="border-b border-slate-100 bg-slate-50/70 px-5 py-3 md:px-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <nav className="flex flex-wrap items-center gap-1.5 text-xs font-bold text-slate-500" aria-label="مسار مساحة المدرسة">
+                            <span>لوحة الإدارة</span>
+                            <span className="text-slate-300">/</span>
+                            <button
+                                type="button"
+                                onClick={onBack}
+                                className="cursor-pointer transition-colors hover:text-indigo-700"
+                            >
+                                تشغيل المدارس
+                            </button>
+                            <span className="text-slate-300">/</span>
+                            <span className="font-black text-slate-700">{schoolName}</span>
+                        </nav>
+                        <button
+                            type="button"
+                            data-testid="school-back-to-portfolio-button"
+                            onClick={onBack}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-black text-slate-700 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                        >
+                            <span>&rarr;</span>
+                            <span>كل المدارس</span>
+                        </button>
                     </div>
-                    <button type="button" data-testid="school-back-to-portfolio-button" onClick={onBack} className="inline-flex items-center gap-1.5 text-slate-600 hover:text-indigo-700 bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shadow-2xs">
-                        <span>&rarr;</span>
-                        <span>عودة لقائمة المدارس</span>
-                    </button>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 flex-wrap">
-                        <div className="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl font-black shadow-xs">🏫</div>
-                        <div>
-                            <div className="flex items-center gap-2.5 flex-wrap">
-                                <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">{schoolName}</h1>
-                                <span className="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2.5 py-0.5 rounded-full border border-emerald-200">مرخص ونشط</span>
+                <div className="space-y-5 p-5 md:p-6">
+                    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                        <div className="flex min-w-0 items-center gap-3.5">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-xl text-white shadow-xs">
+                                🏫
                             </div>
-                            <p className="mt-0.5 text-xs text-slate-500 font-medium flex items-center gap-2">
-                                <span>القسم المفتوح:</span>
-                                <span className="font-bold text-indigo-700">{currentTabLabel}</span>
-                            </p>
+                            <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2.5">
+                                    <h1 className="truncate text-xl font-black tracking-tight text-slate-900 md:text-2xl">
+                                        {schoolName}
+                                    </h1>
+                                    <span className="inline-flex items-center gap-1 rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">
+                                        <ShieldCheck size={12} />
+                                        جاهزية {readinessLabel}
+                                    </span>
+                                </div>
+                                <p className="mt-1 text-xs font-medium text-slate-500">
+                                    {currentTabLabel}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                            <button
+                                type="button"
+                                data-testid="school-save-verify-button"
+                                onClick={onSaveAndVerify}
+                                disabled={isSchoolWorkspaceBusy}
+                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black transition-all ${
+                                    saveVerificationState === 'error'
+                                        ? 'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
+                                        : saveVerificationState === 'success'
+                                            ? 'border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                                            : 'bg-indigo-600 text-white shadow-xs hover:bg-indigo-700'
+                                } disabled:cursor-not-allowed disabled:opacity-60`}
+                                title="حفظ ثم إعادة قراءة بيانات المدرسة من الخادم للتأكد"
+                            >
+                                <CheckCircle size={15} />
+                                {saveVerificationButtonLabel}
+                            </button>
+                            <button
+                                type="button"
+                                data-testid="school-edit-name-button"
+                                onClick={onRename}
+                                disabled={isSchoolWorkspaceBusy}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                title="تعديل اسم المدرسة"
+                            >
+                                <Edit2 size={14} />
+                                تعديل الاسم
+                            </button>
                         </div>
                     </div>
-                    <button type="button" data-testid="school-delete-button" onClick={onRequestDelete} className="inline-flex items-center gap-1.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200/80 px-3.5 py-2 text-xs font-black text-red-700 transition-colors shadow-2xs cursor-pointer" title="حذف المدرسة وفصلها عن الطلاب والمشرفين">
-                        <Trash2 size={14} />
-                        <span>حذف المدرسة</span>
-                    </button>
-                </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-slate-100">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <button type="button" data-testid="school-save-verify-button" onClick={onSaveAndVerify} disabled={isSchoolWorkspaceBusy} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-black transition-all shadow-2xs ${saveVerificationState === 'error' ? 'bg-red-50 text-red-700 hover:bg-red-100 border border-red-200' : saveVerificationState === 'success' ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200' : 'bg-amber-500 hover:bg-amber-600 text-white'} disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer`} title="حفظ ثم إعادة قراءة بيانات المدرسة من الخادم للتأكد">
-                            <CheckCircle size={15} />
-                            {saveVerificationButtonLabel}
-                        </button>
-                        <button type="button" data-testid="school-edit-name-button" onClick={onRename} disabled={isSchoolWorkspaceBusy} className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors cursor-pointer" title="تعديل اسم المدرسة">
-                            <Edit2 size={14} />
-                            <span>تعديل الاسم</span>
+                    <div className="grid gap-3 border-t border-slate-100 pt-4 lg:grid-cols-[1fr_auto] lg:items-center">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="ml-1 text-[11px] font-black text-slate-400">التقارير والتسليم</span>
+                            <button
+                                type="button"
+                                data-testid="school-handover-workbook-button"
+                                onClick={onDownloadHandover}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-800 transition-colors hover:bg-emerald-100"
+                                title="تحميل ملف تسليم شامل للمدرسة"
+                            >
+                                <Download size={14} />
+                                ملف التسليم
+                            </button>
+                            <button
+                                type="button"
+                                data-testid="school-copy-handover-button"
+                                onClick={onCopyHandover}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-3.5 py-2 text-xs font-bold text-sky-800 transition-colors hover:bg-sky-100"
+                                title="نسخ رسالة جاهزة لإرسالها لإدارة المدرسة"
+                            >
+                                <Clipboard size={14} />
+                                نسخ رسالة التسليم
+                            </button>
+                            <button
+                                type="button"
+                                data-testid="school-print-report-button"
+                                onClick={onPrintReport}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors hover:bg-slate-50"
+                                title="طباعة تقرير جاهزية وتشغيل المدرسة"
+                            >
+                                <Printer size={14} />
+                                طباعة التقرير
+                            </button>
+                        </div>
+
+                        <button
+                            type="button"
+                            data-testid="school-delete-button"
+                            onClick={onRequestDelete}
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-white px-3.5 py-2 text-xs font-black text-red-700 transition-colors hover:bg-red-50"
+                            title="فتح مراجعة أثر حذف المدرسة"
+                        >
+                            <Trash2 size={14} />
+                            منطقة الحذف
                         </button>
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-2">
-                        <button type="button" data-testid="school-handover-workbook-button" onClick={onDownloadHandover} className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-3.5 py-2 text-xs font-bold text-emerald-800 transition-colors cursor-pointer shadow-2xs" title="تحميل ملف تسليم شامل للمدرسة">
-                            <Download size={14} />
-                            <span>ملف تسليم المدرسة</span>
-                        </button>
-                        <button type="button" data-testid="school-copy-handover-button" onClick={onCopyHandover} className="inline-flex items-center gap-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200/80 px-3.5 py-2 text-xs font-bold text-sky-800 transition-colors cursor-pointer shadow-2xs" title="نسخ رسالة جاهزة لإرسالها لإدارة المدرسة">
-                            <Clipboard size={14} />
-                            <span>نسخ رسالة التسليم</span>
-                        </button>
-                        <button type="button" data-testid="school-print-report-button" onClick={onPrintReport} className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 px-3.5 py-2 text-xs font-bold text-indigo-800 transition-colors cursor-pointer shadow-2xs" title="طباعة تقرير جاهزية وتشغيل المدرسة">
-                            <Printer size={14} />
-                            <span>طباعة التقرير</span>
-                        </button>
-                    </div>
                 </div>
-            </div>
+            </section>
 
             {isDeleteConfirmOpen && (
                 <div data-testid="school-delete-confirm-panel" className="rounded-2xl border border-red-200 bg-red-50 p-5">
@@ -137,10 +232,21 @@ export const SchoolWorkspaceControlsPanel: React.FC<SchoolWorkspaceControlsPanel
                         </div>
                     </div>
                     <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
-                        <button type="button" data-testid="school-delete-cancel" onClick={onCancelDelete} className="rounded-xl bg-white px-4 py-2.5 text-sm font-black text-gray-700 transition-colors hover:bg-gray-100">
+                        <button
+                            type="button"
+                            data-testid="school-delete-cancel"
+                            onClick={onCancelDelete}
+                            className="rounded-xl bg-white px-4 py-2.5 text-sm font-black text-gray-700 transition-colors hover:bg-gray-100"
+                        >
                             إلغاء والعودة للإدارة
                         </button>
-                        <button type="button" data-testid="school-delete-confirm" onClick={onConfirmDelete} disabled={isDeletePending} className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-red-700">
+                        <button
+                            type="button"
+                            data-testid="school-delete-confirm"
+                            onClick={onConfirmDelete}
+                            disabled={isDeletePending}
+                            className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
                             حذف المدرسة نهائيًا
                         </button>
                     </div>
