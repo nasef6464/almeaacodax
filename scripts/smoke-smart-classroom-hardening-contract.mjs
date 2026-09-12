@@ -12,6 +12,7 @@ const check = (name, condition) => {
 };
 
 const routes = read('server/src/routes/classroom.routes.ts');
+const classroomAuth = read('server/src/middleware/classroomAuth.ts');
 const lifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
 const questionAccess = read('server/src/modules/schools/application/classroomQuestionAccess.ts');
 const reportBuilder = read('server/src/modules/schools/application/classroomSupervisorReport.ts');
@@ -34,6 +35,7 @@ const reportUsesLocalStorage = /localStorage\s*\.\s*(getItem|setItem|removeItem)
 const teacherWritesLocalReportArchive = /localStorage\s*\.\s*setItem\s*\(\s*[`'"]smart_classroom_reports_/.test(teacherConsole) || teacherConsole.includes('smart_classroom_reports_${');
 
 check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
+check('teacher history requires an explicit active school scope', classroomAuth.includes('req.path === "/teacher/history"') && classroomAuth.includes('schoolId is required for teacher classroom history') && classroomAuth.includes('hasActiveSchoolRole(actor, requestedSchoolId, "teacher")'));
 check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
 check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
 check('instant join uses lifecycle guard', routes.includes('canStudentJoinClassroom(session.status as ClassroomSessionStatus)'));
