@@ -1,5 +1,6 @@
 import type { Router } from "express";
 import { StatusCodes } from "http-status-codes";
+import { Types } from "mongoose";
 import { z } from "zod";
 import { requireAuth } from "../../middleware/auth.js";
 import { sensitiveActionRateLimiter } from "../../middleware/rateLimiters.js";
@@ -27,7 +28,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role name").lean() as any;
     if (!student || student.role !== "student" || !student.schoolId) return res.json({ hasActiveSession: false });
 
-    const studentClassIds = (student.groupIds || []).map(String).filter((id: string) => id.length > 0);
+    const studentClassIds = (student.groupIds || []).map(String).filter((id: string) => Types.ObjectId.isValid(id));
     if (studentClassIds.length === 0) return res.json({ hasActiveSession: false });
 
     const session = await ClassroomSessionModel.findOne({
