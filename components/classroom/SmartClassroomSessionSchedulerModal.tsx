@@ -182,6 +182,11 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
         schoolId,
         classId,
         questionIds: questionIdsToLaunch,
+        day: selectedDay,
+        period: selectedPeriod ? Number(selectedPeriod) : null,
+        className: currentAssignment?.className || 'فصل مسند',
+        subjectName: currentAssignment?.subjectId || 'عام',
+        publishedMode: sessionMode === 'template' ? 'batch' : 'single',
       });
 
       // Store session scheduling metadata

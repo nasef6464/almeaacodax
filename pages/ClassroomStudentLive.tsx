@@ -57,13 +57,15 @@ export const ClassroomStudentLive: React.FC = () => {
     setJoiningInstant(true);
     setMessage('جارٍ الانضمام للحصة…');
     try {
-      await api.instantJoinClassroomSession(sessionId);
+      const res = await api.instantJoinClassroomSession(sessionId);
+      if (!res?.joined) throw new Error('تعذر الانضمام للحصة.');
       setJoined(true);
       sessionStorage.setItem('classroom_session_id', sessionId);
       sessionStorage.setItem('classroom_joined', 'true');
       await loadCurrent();
       setMessage('تم الانضمام بنجاح! 🚀');
     } catch (err: any) {
+      sessionStorage.removeItem('classroom_joined');
       setMessage(err?.message || 'تعذر الانضمام الفوري. تأكد أنك مسجل بهذا الفصل.');
     } finally {
       setJoiningInstant(false);
@@ -72,7 +74,8 @@ export const ClassroomStudentLive: React.FC = () => {
 
   const joinByPin = async () => {
     try {
-      await api.joinClassroomSession(sessionId, pin);
+      const res = await api.joinClassroomSession(sessionId, pin);
+      if (!res?.joined) throw new Error('تعذر الانضمام.');
       setJoined(true);
       sessionStorage.setItem('classroom_session_id', sessionId);
       sessionStorage.setItem('classroom_pin', pin);
@@ -80,9 +83,11 @@ export const ClassroomStudentLive: React.FC = () => {
       await loadCurrent();
       setMessage('تم الانضمام للحصة.');
     } catch {
+      sessionStorage.removeItem('classroom_joined');
       setMessage('تعذر الانضمام. تأكد من الرمز وأنك ضمن الفصل.');
     }
   };
+
 
   const answer = async () => {
     if (!question || selected === null || submitting || submitted) return;

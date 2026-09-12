@@ -71,15 +71,28 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [showInlineExplanation, setShowInlineExplanation] = useState(false);
 
   // Read metadata if saved during scheduling
-  const [meta, setMeta] = useState<{ day?: string; period?: string; className?: string; subject?: string } | null>(null);
+  const [sessionStorageMeta, setSessionStorageMeta] = useState<{ day?: string; period?: string; className?: string; subject?: string } | null>(null);
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(`classroom_meta_${sessionId}`);
-      if (raw) setMeta(JSON.parse(raw));
+      if (raw) setSessionStorageMeta(JSON.parse(raw));
     } catch {
       // ignore
     }
   }, [sessionId]);
+
+  const meta = useMemo(() => {
+    if (data?.meta && (data.meta.className || data.meta.day || data.meta.period || data.meta.subjectName)) {
+      return {
+        day: data.meta.day,
+        period: data.meta.period ? String(data.meta.period) : undefined,
+        className: data.meta.className,
+        subject: data.meta.subjectName,
+      };
+    }
+    return sessionStorageMeta;
+  }, [data?.meta, sessionStorageMeta]);
+
 
   const copyPin = (pin: string) => {
     navigator.clipboard.writeText(pin);
