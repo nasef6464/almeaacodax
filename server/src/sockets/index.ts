@@ -7,6 +7,8 @@ import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
+import { resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
+import { requireSchoolDirectorCapability } from "../modules/schools/application/schoolDirectorAccess.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
@@ -52,12 +54,16 @@ export function createSocketServer(server: HttpServer) {
       const currentUser = await UserModel.findById(tokenUser.id).select("id _id role isActive schoolId groupIds").lean();
       if (!currentUser || currentUser.isActive === false) return next(new Error("Authentication required"));
 
-      const explicitMemberships = await SchoolMembershipModel.find({ userId: String((currentUser as any).id || currentUser._id), status: "active" }).select("schoolId").lean();
+      const currentUserId = String((currentUser as any).id || currentUser._id);
+      const currentRole = String(currentUser.role);
+      const explicitMemberships = await SchoolMembershipModel.find({ userId: currentUserId, status: "active" }).select("schoolId role").lean();
       socket.data.authUser = {
-        id: String((currentUser as any).id || currentUser._id),
-        role: String(currentUser.role),
+        id: currentUserId,
+        role: currentRole,
         schoolId: currentUser.schoolId ? String(currentUser.schoolId) : null,
-        schoolIds: explicitMemberships.map((membership: any) => String(membership.schoolId)),
+        schoolIds: explicitMemberships
+          .filter((membership: any) => String(membership.role) === currentRole)
+          .map((membership: any) => String(membership.schoolId)),
         groupIds: Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [],
       };
       return next();
@@ -87,6 +93,22 @@ export function createSocketServer(server: HttpServer) {
         async findClassroomSessionScope(sessionId) {
           const session = await ClassroomSessionModel.findById(sessionId).select("schoolId classId teacherId").lean() as any;
           return session ? { schoolId: String(session.schoolId), classId: String(session.classId), teacherId: String(session.teacherId) } : null;
+        },
+        async canSchoolDirectorViewClassroom(userId, schoolId) {
+          return Boolean(await requireSchoolDirectorCapability(
+            userId,
+            schoolId,
+            "SCHOOL_SMART_CLASSROOM_VIEW",
+            "SMART_CLASSROOM",
+          ));
+        },
+        async canSupervisorViewClassroom(userId, schoolId, classId) {
+          const scope = await resolveClassroomSupervisorScope({
+            id: userId,
+            role: "supervisor",
+            schoolId: socket.data.authUser?.schoolId || null,
+          });
+          return scope.all || scope.schoolIds.includes(schoolId) || scope.classIds.includes(classId);
         },
       });
 
