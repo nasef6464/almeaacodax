@@ -391,17 +391,17 @@ async function run() {
     // -------------------------------------------------------------
     // ISSUE TOKENS
     // -------------------------------------------------------------
-    const tokenTeacherA1 = signAccessToken({ id: String(teacherA1._id), email: teacherA1.email, role: "teacher" });
-    const tokenTeacherA2 = signAccessToken({ id: String(teacherA2._id), email: teacherA2.email, role: "teacher" });
-    const tokenSupervisorA = signAccessToken({ id: String(supervisorA._id), email: supervisorA.email, role: "supervisor" });
-    const tokenManagerA = signAccessToken({ id: String(managerA._id), email: managerA.email, role: "school_admin" });
-    const tokenStudentA1 = signAccessToken({ id: String(studentA1._id), email: studentA1.email, role: "student" });
-    const tokenStudentA2 = signAccessToken({ id: String(studentA2._id), email: studentA2.email, role: "student" });
-    const tokenStudentA3 = signAccessToken({ id: String(studentA3._id), email: studentA3.email, role: "student" });
+    const tokenTeacherA1 = signAccessToken({ id: String(teacherA1._id), email: teacherA1.email, role: "teacher", name: teacherA1.name });
+    const tokenTeacherA2 = signAccessToken({ id: String(teacherA2._id), email: teacherA2.email, role: "teacher", name: teacherA2.name });
+    const tokenSupervisorA = signAccessToken({ id: String(supervisorA._id), email: supervisorA.email, role: "supervisor", name: supervisorA.name });
+    const tokenManagerA = signAccessToken({ id: String(managerA._id), email: managerA.email, role: "school_admin", name: managerA.name });
+    const tokenStudentA1 = signAccessToken({ id: String(studentA1._id), email: studentA1.email, role: "student", name: studentA1.name });
+    const tokenStudentA2 = signAccessToken({ id: String(studentA2._id), email: studentA2.email, role: "student", name: studentA2.name });
+    const tokenStudentA3 = signAccessToken({ id: String(studentA3._id), email: studentA3.email, role: "student", name: studentA3.name });
 
-    const tokenTeacherB1 = signAccessToken({ id: String(teacherB1._id), email: teacherB1.email, role: "teacher" });
-    const tokenSupervisorB = signAccessToken({ id: String(supervisorB._id), email: supervisorB.email, role: "supervisor" });
-    const tokenStudentB1 = signAccessToken({ id: String(studentB1._id), email: studentB1.email, role: "student" });
+    const tokenTeacherB1 = signAccessToken({ id: String(teacherB1._id), email: teacherB1.email, role: "teacher", name: teacherB1.name });
+    const tokenSupervisorB = signAccessToken({ id: String(supervisorB._id), email: supervisorB.email, role: "supervisor", name: supervisorB.name });
+    const tokenStudentB1 = signAccessToken({ id: String(studentB1._id), email: studentB1.email, role: "student", name: studentB1.name });
 
     // =============================================================
     // TEST PHASE 1: DIRECT CROSS-TENANT NEGATIVE ATTACKS (MUST FAIL 403)
