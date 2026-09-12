@@ -67,7 +67,12 @@ assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "setUsersPage(1)",
   "api.getAdminUsers({",
   "search: searchTerm.trim() || undefined",
-  "role: roleFilter === 'all' ? undefined : roleFilter",
+  "const effectiveRole = roleFilter === 'all'",
+  "roleFilter === 'platform_trainer' || roleFilter === 'school_teacher'",
+  "? Role.TEACHER",
+  "role: effectiveRole",
+  "const effectivePlatformTrainer = roleFilter === 'platform_trainer' ? true : undefined",
+  "platformTrainer: effectivePlatformTrainer",
   "Math.min(usersTotalPages, current + 1)",
 ]);
 
