@@ -1,26 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  AlertTriangle,
-  Award,
-  BookOpenCheck,
-  Calendar,
-  CheckCircle2,
-  ChevronLeft,
-  Clock,
-  Download,
-  FileSpreadsheet,
-  Filter,
-  Layers,
-  Presentation,
-  Printer,
-  Sparkles,
-  Target,
-  Users,
-  X,
-  Zap,
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { AlertTriangle, Presentation, Zap } from 'lucide-react';
 import { api } from '../../services/api';
+import { SmartClassroomReportModal } from './SmartClassroomReportModal';
 
 export interface ClassroomSavedReport {
   sessionId: string;
@@ -59,7 +40,6 @@ type TimeFilter = 'all' | 'today' | 'week' | 'month';
 export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSectionProps> = ({
   schoolId,
   assignments,
-  smartClassroomEnabled,
   onPrepareIntervention,
 }) => {
   const [reports, setReports] = useState<ClassroomSavedReport[]>([]);
@@ -101,19 +81,13 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
     };
   }, [schoolId]);
 
-  // Filtered reports based on time and class
   const filteredReports = useMemo(() => {
     const now = Date.now();
-    return reports.filter((r) => {
-      // Class filter
-      if (selectedClassFilter !== 'all' && r.classId !== selectedClassFilter) {
-        return false;
-      }
-      // Time filter
-      const reportTime = new Date(r.endedAt).getTime();
+    return reports.filter((report) => {
+      if (selectedClassFilter !== 'all' && report.classId !== selectedClassFilter) return false;
+      const reportTime = new Date(report.endedAt).getTime();
       if (timeFilter === 'today') {
-        const isToday = new Date(r.endedAt).toDateString() === new Date().toDateString();
-        if (!isToday) return false;
+        if (new Date(report.endedAt).toDateString() !== new Date().toDateString()) return false;
       } else if (timeFilter === 'week') {
         if (now - reportTime > 7 * 24 * 60 * 60 * 1000) return false;
       } else if (timeFilter === 'month') {
@@ -124,84 +98,41 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   }, [reports, timeFilter, selectedClassFilter]);
 
   const totalSessions = filteredReports.length;
-  const totalParticipants = filteredReports.reduce((acc, r) => acc + (r.participantCount || 0), 0);
-  const totalResponses = filteredReports.reduce((acc, r) => acc + (r.responseCount || 0), 0);
-  const totalCorrect = filteredReports.reduce((acc, r) => acc + (r.correctCount || 0), 0);
+  const totalParticipants = filteredReports.reduce((acc, report) => acc + (report.participantCount || 0), 0);
+  const totalResponses = filteredReports.reduce((acc, report) => acc + (report.responseCount || 0), 0);
+  const totalCorrect = filteredReports.reduce((acc, report) => acc + (report.correctCount || 0), 0);
   const overallAccuracy = totalResponses > 0 ? Math.round((totalCorrect / totalResponses) * 100) : null;
 
-  // Skill weakness diagnostic: aggregate questions and skills across filtered reports
   const skillDiagnostics = useMemo(() => {
     const map = new Map<string, { skillId: string; skillName: string; totalAsked: number; correctCount: number; sessionsCount: number }>();
-
     filteredReports.forEach((report) => {
-      (report.questions || []).forEach((q) => {
-        const skillKey = q.skillId || q.subject || 'مهارة التحليل وحل المشكلات';
+      (report.questions || []).forEach((question) => {
+        const skillKey = question.skillId || question.subject || 'مهارة التحليل وحل المشكلات';
         const current = map.get(skillKey) || {
           skillId: skillKey,
-          skillName: q.skillName || skillKey,
+          skillName: question.skillName || skillKey,
           totalAsked: 0,
           correctCount: 0,
           sessionsCount: 0,
         };
-        current.totalAsked += q.answeredCount || 1;
-        current.correctCount += q.correctCount || 0;
+        current.totalAsked += question.answeredCount || 1;
+        current.correctCount += question.correctCount || 0;
         current.sessionsCount += 1;
         map.set(skillKey, current);
       });
     });
-
-    const list = Array.from(map.values()).map((s) => {
-      const accuracy = s.totalAsked > 0 ? Math.round((s.correctCount / s.totalAsked) * 100) : 0;
-      return { ...s, accuracy, isWeak: accuracy < 65 };
-    });
-
-    return list.sort((a, b) => a.accuracy - b.accuracy);
+    return Array.from(map.values())
+      .map((skill) => {
+        const accuracy = skill.totalAsked > 0 ? Math.round((skill.correctCount / skill.totalAsked) * 100) : 0;
+        return { ...skill, accuracy, isWeak: accuracy < 65 };
+      })
+      .sort((a, b) => a.accuracy - b.accuracy);
   }, [filteredReports]);
 
-  const weakSkills = skillDiagnostics.filter((s) => s.isWeak);
-
-  const exportExcel = (report: ClassroomSavedReport) => {
-    const questionsRows = (report.questions || [])
-      .map(
-        (q, idx) => `
-      <tr>
-        <td>سؤال ${idx + 1}</td>
-        <td>${q.text}</td>
-        <td>${q.skillName || q.skillId || 'عام'}</td>
-        <td>${q.isChallenge ? 'سؤال تحدي ⚡' : 'عادي'}</td>
-        <td>${q.answeredCount || 0}</td>
-        <td>${q.correctCount || 0}</td>
-      </tr>
-    `,
-      )
-      .join('');
-
-    const html = `
-      <table border="1">
-        <thead>
-          <tr>
-            <th colspan="6">تقرير الحصة الذكية - ${report.className || report.classId} (${report.day || ''} ${report.period ? `الحصة ${report.period}` : ''} - ${new Date(report.endedAt).toLocaleDateString('ar-SA')})</th>
-          </tr>
-          <tr>
-            <th>رقم السؤال</th><th>نص السؤال</th><th>المهارة المستهدفة</th><th>النوع</th><th>عدد الإجابات</th><th>الإجابات الصحيحة</th>
-          </tr>
-        </thead>
-        <tbody>${questionsRows}</tbody>
-      </table>
-    `;
-
-    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `classroom-report-${report.sessionId}.xls`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const weakSkills = skillDiagnostics.filter((skill) => skill.isWeak);
 
   return (
     <section className="mt-8 rounded-3xl border border-slate-100 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900" dir="rtl">
-      {/* Top Title & Filters Bar */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5 dark:border-slate-800">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-black text-slate-900 dark:text-white">
@@ -213,25 +144,20 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
           </p>
         </div>
 
-        {/* Time and Class Filters */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Class Filter */}
           {assignments.length > 1 && (
             <select
               value={selectedClassFilter}
-              onChange={(e) => setSelectedClassFilter(e.target.value)}
+              onChange={(event) => setSelectedClassFilter(event.target.value)}
               className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
             >
               <option value="all">جميع الفصول</option>
-              {assignments.map((a) => (
-                <option key={a.classId} value={a.classId}>
-                  {a.className}
-                </option>
+              {assignments.map((assignment) => (
+                <option key={assignment.classId} value={assignment.classId}>{assignment.className}</option>
               ))}
             </select>
           )}
 
-          {/* Time Filter Pills */}
           <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-800 dark:bg-slate-800">
             {[
               { id: 'all', label: 'كامل الفترة' },
@@ -256,7 +182,6 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-2xl bg-indigo-50/50 p-4 text-center dark:bg-indigo-950/20">
           <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300">
@@ -280,7 +205,6 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         </div>
       </div>
 
-      {/* Skill Weakness Diagnostics Card */}
       {filteredReports.length > 0 && (
         <div className="mt-6 rounded-2xl border border-rose-100 bg-rose-50/30 p-5 dark:border-rose-950/40 dark:bg-rose-950/20">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-rose-100 pb-3 dark:border-rose-900/40">
@@ -306,9 +230,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-black text-slate-900 dark:text-white line-clamp-1">
-                    {skill.skillName}
-                  </span>
+                  <span className="text-xs font-black text-slate-900 dark:text-white line-clamp-1">{skill.skillName}</span>
                   <span
                     className={`rounded-full px-2 py-0.5 text-[10px] font-black ${
                       skill.isWeak
@@ -337,7 +259,6 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         </div>
       )}
 
-      {/* Reports Sessions List */}
       <div className="mt-6">
         <h3 className="text-sm font-black text-slate-900 dark:text-white mb-3">
           جلسات الحصص المؤرشفة ({filteredReports.length})
@@ -347,15 +268,14 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-800/30">
             <Presentation size={32} className="mx-auto text-slate-400 opacity-60" />
             <p className="mt-3 font-bold">لا توجد تقارير حصص مطابقة للفترة المحددة.</p>
-            <p className="mt-1 text-xs text-slate-400">
-              يمكنك تغيير الفلتر الزمني أو بدء حصة ذكية جديدة للفصل.
-            </p>
+            <p className="mt-1 text-xs text-slate-400">يمكنك تغيير الفلتر الزمني أو بدء حصة ذكية جديدة للفصل.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {filteredReports.map((report) => {
-              const accuracy =
-                report.responseCount > 0 ? Math.round((report.correctCount / report.responseCount) * 100) : null;
+              const accuracy = report.responseCount > 0
+                ? Math.round((report.correctCount / report.responseCount) * 100)
+                : null;
               return (
                 <div
                   key={report.sessionId}
@@ -406,104 +326,8 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         )}
       </div>
 
-      {/* Detailed Report Modal */}
       {selectedReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900" dir="rtl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-              <div>
-                <h3 className="text-lg font-black text-slate-900 dark:text-white">
-                  تقرير الحصة الذكية - {selectedReport.className || selectedReport.classId}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  {selectedReport.day ? `${selectedReport.day} · ` : ''}
-                  {selectedReport.period ? `الحصة ${selectedReport.period} · ` : ''}
-                  انتهت بتاريخ: {new Date(selectedReport.endedAt).toLocaleString('ar-SA')}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedReport(null)}
-                className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Modal Stats */}
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800">
-                <span className="text-xs text-slate-500">الطلاب المنضمون</span>
-                <div className="text-xl font-black">{selectedReport.participantCount}</div>
-              </div>
-              <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800">
-                <span className="text-xs text-slate-500">إجمالي الإجابات</span>
-                <div className="text-xl font-black">{selectedReport.responseCount}</div>
-              </div>
-              <div className="rounded-xl bg-emerald-50 p-3 text-center dark:bg-emerald-950/30">
-                <span className="text-xs text-emerald-800 dark:text-emerald-300">نسبة الإتقان العامة</span>
-                <div className="text-xl font-black text-emerald-700 dark:text-emerald-400">
-                  {selectedReport.responseCount > 0
-                    ? `${Math.round((selectedReport.correctCount / selectedReport.responseCount) * 100)}%`
-                    : '—'}
-                </div>
-              </div>
-            </div>
-
-            {/* Questions Breakdown */}
-            <div className="mt-5">
-              <h4 className="text-sm font-black text-slate-800 dark:text-slate-200">تحليل أسئلة ومهارات الحصة:</h4>
-              <div className="mt-3 space-y-2">
-                {(selectedReport.questions || []).map((q, idx) => {
-                  const qAccuracy = q.answeredCount
-                    ? Math.round(((q.correctCount || 0) / q.answeredCount) * 100)
-                    : null;
-                  return (
-                    <div
-                      key={q.questionId || idx}
-                      className="rounded-xl border border-slate-100 bg-slate-50/50 p-3 text-xs dark:border-slate-800 dark:bg-slate-800/50"
-                    >
-                      <div className="flex items-center justify-between font-bold">
-                        <span className="flex items-center gap-1.5">
-                          <b>سؤال {idx + 1}:</b> {q.text}
-                          {q.isChallenge && (
-                            <span className="rounded-sm bg-amber-100 px-1 py-0.2 text-[10px] text-amber-800">
-                              ⚡ تحدي سريع
-                            </span>
-                          )}
-                        </span>
-                        <span className="text-emerald-700 font-black">{qAccuracy !== null ? `${qAccuracy}%` : '—'}</span>
-                      </div>
-                      <div className="mt-1.5 flex flex-wrap gap-4 text-slate-500 text-[11px]">
-                        <span>المهارة: {q.skillName || q.skillId || 'تحليل وحل مشكلات'}</span>
-                        <span>المجيبون: {q.answeredCount ?? '—'}</span>
-                        <span>الصحيح: {q.correctCount ?? '—'}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-6 flex justify-end gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
-              <button
-                type="button"
-                onClick={() => exportExcel(selectedReport)}
-                className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-black text-white hover:bg-emerald-700"
-              >
-                <Download size={14} /> تصدير Excel
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="flex items-center gap-1.5 rounded-xl bg-slate-800 px-4 py-2 text-xs font-black text-white hover:bg-slate-900"
-              >
-                <Printer size={14} /> طباعة التقرير
-              </button>
-            </div>
-          </div>
-        </div>
+        <SmartClassroomReportModal report={selectedReport} onClose={() => setSelectedReport(null)} />
       )}
     </section>
   );

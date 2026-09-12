@@ -1,25 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import {
-  AlertTriangle,
-  ArrowLeft,
-  Award,
-  BarChart3,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  EyeOff,
-  Flame,
-  Maximize,
-  Minimize,
-  Presentation,
-  RefreshCw,
-  Send,
-  Sparkles,
-  Users,
-  Zap,
-} from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronLeft, ChevronRight, Eye, EyeOff, Flame, Maximize, Minimize, Presentation, Send, Sparkles, Users } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
@@ -36,7 +17,6 @@ export const ClassroomProjectorView: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [publishing, setPublishing] = useState<boolean>(false);
 
-  // Guard: presenter projector view is reserved for teaching staff
   useEffect(() => {
     const isPresenter = user?.role && ['teacher', 'school_admin', 'supervisor', 'admin'].includes(user.role);
     if (user && !isPresenter) {
@@ -65,43 +45,35 @@ export const ClassroomProjectorView: React.FC = () => {
   const questions = data?.questions || [];
   const activeQuestionIndex = data?.activeQuestionIndex ?? 0;
   const currentQ = questions[selectedQuestionIdx] || questions[activeQuestionIndex] || questions[0];
-
-  // Distribution for selected question: prefer question-specific analytics, fallback to active
   const isCurrentActive = currentQ && currentQ.index === activeQuestionIndex;
   const totalResponses = currentQ?.responseCount ?? (isCurrentActive ? (data?.responseCount || 0) : 0);
   const distribution: Record<string, number> = currentQ?.distribution || (isCurrentActive ? (data?.distribution || {}) : {});
 
-  // Calculate percentages and identify most common mistake
   const analytics = useMemo(() => {
     if (!currentQ || !currentQ.options) return { percentages: {}, maxWrongOption: null };
-
     const percentages: Record<number, number> = {};
     let maxWrongCount = 0;
     let maxWrongIndex: number | null = null;
     const correctIdx = typeof currentQ.correctOptionIndex === 'number' ? currentQ.correctOptionIndex : null;
-
     currentQ.options.forEach((_: any, idx: number) => {
       const count = distribution[String(idx)] || 0;
       percentages[idx] = totalResponses > 0 ? Math.round((count / totalResponses) * 100) : 0;
-
       if (correctIdx !== null && idx !== correctIdx && count > maxWrongCount) {
         maxWrongCount = count;
         maxWrongIndex = idx;
       }
     });
-
     const maxWrongPercent = maxWrongIndex !== null ? percentages[maxWrongIndex] : 0;
     return {
       percentages,
-      maxWrongOption:
-        maxWrongIndex !== null && maxWrongPercent >= 20
-          ? {
-              index: maxWrongIndex,
-              letter: OPTION_LETTERS[maxWrongIndex] || `${maxWrongIndex + 1}`,
-              percent: maxWrongPercent,
-              count: maxWrongCount,
-            }
-          : null,
+      maxWrongOption: maxWrongIndex !== null && maxWrongPercent >= 20
+        ? {
+            index: maxWrongIndex,
+            letter: OPTION_LETTERS[maxWrongIndex] || `${maxWrongIndex + 1}`,
+            percent: maxWrongPercent,
+            count: maxWrongCount,
+          }
+        : null,
     };
   }, [currentQ, distribution, totalResponses]);
 
@@ -126,7 +98,6 @@ export const ClassroomProjectorView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans select-none" dir="rtl">
-      {/* Top Smart Board Navigation Bar */}
       <header className="border-b border-slate-800 bg-slate-900/80 px-6 py-4 backdrop-blur-md sticky top-0 z-30">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -136,7 +107,6 @@ export const ClassroomProjectorView: React.FC = () => {
             >
               <ArrowLeft size={16} /> العودة للوحة المعلم
             </Link>
-
             <div className="flex items-center gap-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600/30 text-indigo-400">
                 <Presentation size={20} />
@@ -147,8 +117,6 @@ export const ClassroomProjectorView: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Quick Question Picker Pills */}
           <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto py-1">
             {questions.map((q: any, idx: number) => {
               const isSelected = idx === selectedQuestionIdx;
@@ -173,15 +141,12 @@ export const ClassroomProjectorView: React.FC = () => {
               );
             })}
           </div>
-
-          {/* Right Action Tools */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 rounded-xl bg-slate-800/80 px-3.5 py-1.5 text-xs font-bold text-slate-300 border border-slate-700">
               <Users size={16} className="text-indigo-400" />
               <span>إجابات الطلاب:</span>
               <span className="font-mono text-base font-black text-emerald-400">{totalResponses}</span>
             </div>
-
             <button
               type="button"
               onClick={toggleFullscreen}
@@ -194,7 +159,6 @@ export const ClassroomProjectorView: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Classroom Display Area */}
       <main className="flex-1 p-6 sm:p-10 max-w-7xl mx-auto w-full flex flex-col justify-between">
         {!currentQ ? (
           <div className="my-auto text-center p-12">
@@ -204,13 +168,11 @@ export const ClassroomProjectorView: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Question Header & Meta Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <span className="rounded-xl bg-indigo-500/20 px-3 py-1.5 text-xs font-black text-indigo-400 border border-indigo-500/30">
                   السؤال {currentQ.index + 1} من {questions.length}
                 </span>
-
                 {isCurrentActive ? (
                   <span className="flex items-center gap-1.5 rounded-xl bg-emerald-500/20 px-3 py-1.5 text-xs font-black text-emerald-300 border border-emerald-500/30 animate-pulse">
                     <span className="h-2 w-2 rounded-full bg-emerald-400" /> معروض حالياً على تابلت الطلاب
@@ -225,15 +187,12 @@ export const ClassroomProjectorView: React.FC = () => {
                     <Send size={13} /> إرسال هذا السؤال الآن للطلاب
                   </button>
                 )}
-
                 {currentQ.type === 'challenge' && (
                   <span className="flex items-center gap-1 rounded-xl bg-amber-500/20 px-3 py-1.5 text-xs font-black text-amber-300 border border-amber-500/30">
                     <Flame size={14} /> تحدي سرعة ⚡
                   </span>
                 )}
               </div>
-
-              {/* Teacher Board Tools Toggle */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -250,26 +209,21 @@ export const ClassroomProjectorView: React.FC = () => {
               </div>
             </div>
 
-            {/* Giant Question Card */}
             <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 sm:p-12 shadow-2xl backdrop-blur-md">
               <h2 className="text-2xl sm:text-4xl font-black leading-relaxed sm:leading-loose text-white tracking-wide">
                 {currentQ.text}
               </h2>
-
               {currentQ.imageUrl && (
                 <div className="mt-6 overflow-hidden rounded-2xl border border-slate-800 max-h-80 flex items-center justify-center bg-black/40">
                   <img src={currentQ.imageUrl} alt="توضيح السؤال" className="max-h-80 object-contain" />
                 </div>
               )}
-
-              {/* Options Grid (2 Columns on large screens) */}
               <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(currentQ.options || []).map((option: string, idx: number) => {
                   const percent = analytics.percentages[idx] || 0;
                   const count = distribution[String(idx)] || 0;
                   const isCorrect = showExplanation && currentQ.correctOptionIndex === idx;
                   const isCommonMistake = showExplanation && analytics.maxWrongOption?.index === idx;
-
                   return (
                     <div
                       key={idx}
@@ -281,14 +235,12 @@ export const ClassroomProjectorView: React.FC = () => {
                           : 'border-slate-800 bg-slate-850/70 hover:border-slate-700'
                       }`}
                     >
-                      {/* Background fill progress bar for votes */}
                       <div
                         className={`absolute inset-y-0 right-0 opacity-15 transition-all duration-700 ${
                           isCorrect ? 'bg-emerald-500' : isCommonMistake ? 'bg-rose-500' : 'bg-indigo-500'
                         }`}
                         style={{ width: `${percent}%` }}
                       />
-
                       <div className="relative z-10 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3.5">
                           <span
@@ -300,24 +252,16 @@ export const ClassroomProjectorView: React.FC = () => {
                           >
                             {OPTION_LETTERS[idx] || idx + 1}
                           </span>
-                          <span className="text-lg sm:text-xl font-bold text-white leading-normal">
-                            {option}
-                          </span>
+                          <span className="text-lg sm:text-xl font-bold text-white leading-normal">{option}</span>
                         </div>
-
-                        {/* Live Count & Percentage Badges */}
                         <div className="flex items-center gap-2 text-left shrink-0">
                           {isCorrect && (
                             <span className="flex items-center gap-1 rounded-lg bg-emerald-500/20 px-2 py-1 text-xs font-black text-emerald-400 border border-emerald-500/30">
                               <CheckCircle2 size={14} /> صحيح ✓
                             </span>
                           )}
-                          <span className="font-mono text-lg font-black text-slate-300">
-                            {percent}%
-                          </span>
-                          <span className="text-xs text-slate-500">
-                            ({count})
-                          </span>
+                          <span className="font-mono text-lg font-black text-slate-300">{percent}%</span>
+                          <span className="text-xs text-slate-500">({count})</span>
                         </div>
                       </div>
                     </div>
@@ -326,14 +270,11 @@ export const ClassroomProjectorView: React.FC = () => {
               </div>
             </div>
 
-            {/* Smart Diagnostics & Common Mistake Alert */}
             {analytics.maxWrongOption && (
               <div className="rounded-2xl border border-rose-500/40 bg-rose-950/20 p-5 text-rose-200 flex items-start gap-3 shadow-lg">
                 <AlertTriangle size={24} className="text-rose-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-base font-black text-rose-300">
-                    تشخيص الفصل: خطأ شائع ملحوظ في هذا السؤال!
-                  </h4>
+                  <h4 className="text-base font-black text-rose-300">تشخيص الفصل: خطأ شائع ملحوظ في هذا السؤال!</h4>
                   <p className="text-sm mt-1 text-rose-200 leading-relaxed">
                     نسبة <strong className="text-rose-100 font-black">{analytics.maxWrongOption.percent}%</strong> من الطلاب اختاروا البديل ({analytics.maxWrongOption.letter})، وهو أكثر خيار خاطئ تم اختياره ({analytics.maxWrongOption.count} طالباً). يرجى توضيح سبب الخلل في هذا المفهوم على السبورة.
                   </p>
@@ -341,7 +282,6 @@ export const ClassroomProjectorView: React.FC = () => {
               </div>
             )}
 
-            {/* Model Solution & Targeted Skill Reveal */}
             {showExplanation && (
               <div className="rounded-3xl border border-amber-500/40 bg-slate-900 p-6 sm:p-8 shadow-2xl text-right animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -355,7 +295,6 @@ export const ClassroomProjectorView: React.FC = () => {
                     </span>
                   )}
                 </div>
-
                 <div className="mt-5 text-base sm:text-lg text-slate-200 leading-relaxed">
                   {currentQ.explanation ? (
                     <div className="whitespace-pre-line font-medium">{currentQ.explanation}</div>
@@ -368,7 +307,6 @@ export const ClassroomProjectorView: React.FC = () => {
           </div>
         )}
 
-        {/* Bottom Pagination Controls for Smart Board */}
         <footer className="mt-8 pt-4 border-t border-slate-800/80 flex items-center justify-between">
           <button
             type="button"
@@ -381,13 +319,9 @@ export const ClassroomProjectorView: React.FC = () => {
           >
             <ChevronRight size={18} /> السؤال السابق
           </button>
-
           <div className="text-center">
-            <span className="text-xs text-slate-500 font-bold">
-              استخدم أزرار التنقل أو الأسهم لاستعراض الأسئلة على السبورة
-            </span>
+            <span className="text-xs text-slate-500 font-bold">استخدم أزرار التنقل أو الأسهم لاستعراض الأسئلة على السبورة</span>
           </div>
-
           <button
             type="button"
             disabled={selectedQuestionIdx >= questions.length - 1}
@@ -404,4 +338,3 @@ export const ClassroomProjectorView: React.FC = () => {
     </div>
   );
 };
-
