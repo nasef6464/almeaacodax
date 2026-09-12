@@ -5,6 +5,7 @@ import { io as connectSocket, type Socket } from "socket.io-client";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
+import { SchoolContractModel } from "../models/SchoolContract.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { UserModel } from "../models/User.js";
 import { createSocketServer } from "../sockets/index.js";
@@ -96,7 +97,10 @@ async function get(url: string, token: string) {
 async function run() {
   assertSafeDatabase();
   await mongoose.connect(env.MONGODB_URI);
-  await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } });
+  await Promise.all([
+    UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } }),
+    SchoolContractModel.deleteMany({ schoolId }),
+  ]);
 
   const [student, teacher] = await Promise.all([
     UserModel.create({
@@ -123,6 +127,7 @@ async function run() {
 
   await SchoolMembershipModel.deleteMany({ userId: { $in: [studentId, teacherId] }, schoolId });
   await Promise.all([
+    SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] }),
     SchoolMembershipModel.create({ userId: studentId, schoolId, role: "student", status: "active" }),
     SchoolMembershipModel.create({ userId: teacherId, schoolId, role: "teacher", status: "active" }),
   ]);
@@ -209,6 +214,38 @@ async function run() {
     { userId: { $in: [studentId, teacherId] }, schoolId },
     { $set: { status: "active" } },
   );
+  await SchoolContractModel.updateOne(
+    { schoolId },
+    { $set: { status: "active", modules: ["SCHOOL_CORE"] } },
+  );
+
+  assert.equal((await get(studentEndpoint, studentToken)).status, 403, "student HTTP access must stop when SMART_CLASSROOM is removed from the school contract");
+  assert.equal((await get(teacherEndpoint, teacherToken)).status, 403, "teacher runtime access must stop when SMART_CLASSROOM is removed from the school contract");
+  assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 403, "teacher classroom history must respect the school module entitlement");
+
+  const entitlementRevokedStudentSocket = await connectAuthorized(baseUrl, studentToken);
+  assert.equal(
+    (await joinWorkspace(entitlementRevokedStudentSocket, `class:${classId}`)).ok,
+    false,
+    "student must not rejoin class discovery after SMART_CLASSROOM entitlement is removed",
+  );
+  entitlementRevokedStudentSocket.disconnect();
+
+  const entitlementRevokedTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
+  assert.equal(
+    (await joinWorkspace(entitlementRevokedTeacherSocket, `classroom:${sessionId}`)).ok,
+    false,
+    "teacher must not rejoin classroom realtime after SMART_CLASSROOM entitlement is removed",
+  );
+  entitlementRevokedTeacherSocket.disconnect();
+
+  await SchoolContractModel.updateOne(
+    { schoolId },
+    { $set: { status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] } },
+  );
+  assert.equal((await get(studentEndpoint, studentToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible student HTTP access");
+  assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "restoring SMART_CLASSROOM should restore eligible teacher HTTP access");
+
   await UserModel.updateMany(
     { _id: { $in: [student._id, teacher._id] } },
     { $set: { isActive: false } },
@@ -220,12 +257,12 @@ async function run() {
   await expectConnectionRejected(baseUrl, studentToken);
   await expectConnectionRejected(baseUrl, teacherToken);
 
-  console.log("Smart Classroom account and school-membership revocation E2E: PASS");
+  console.log("Smart Classroom account, membership and module-entitlement revocation E2E: PASS");
 }
 
 run()
   .catch((error) => {
-    console.error("Smart Classroom account and school-membership revocation E2E: FAIL", error);
+    console.error("Smart Classroom account, membership and module-entitlement revocation E2E: FAIL", error);
     process.exitCode = 1;
   })
   .finally(async () => {
@@ -235,6 +272,7 @@ run()
       const users = await UserModel.find({ email: { $in: [studentEmail, teacherEmail] } }).select("_id").lean();
       const userIds = users.map((user: any) => String(user._id));
       if (userIds.length) await SchoolMembershipModel.deleteMany({ userId: { $in: userIds }, schoolId });
+      await SchoolContractModel.deleteMany({ schoolId });
       await UserModel.deleteMany({ email: { $in: [studentEmail, teacherEmail] } });
     } catch (error) {
       console.error("Active-auth E2E cleanup failed", error);
