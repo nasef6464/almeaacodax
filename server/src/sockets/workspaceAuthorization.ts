@@ -1,5 +1,6 @@
 export type WorkspaceAuthUser = {
   id: string;
+  role?: string;
   schoolId?: string | null;
   schoolIds?: string[];
   groupIds?: string[];
@@ -12,10 +13,6 @@ export type WorkspaceAuthorizationRepository = {
 
 const workspaceIdPattern = /^(user|school|class|classroom):([a-zA-Z0-9_-]{1,128})$/;
 
-/**
- * G0 permits only identity and existing school/class scope rooms. Future
- * classroom-session rooms must add their own authorization policy first.
- */
 export const canJoinAuthorizedWorkspace = async (
   authUser: WorkspaceAuthUser,
   workspaceId: unknown,
@@ -25,18 +22,34 @@ export const canJoinAuthorizedWorkspace = async (
   if (!match) return false;
 
   const [, kind, resourceId] = match;
+  const schoolIds = new Set([String(authUser.schoolId || ""), ...(authUser.schoolIds || []).map(String)].filter(Boolean));
+  const groupIds = new Set((authUser.groupIds || []).map(String));
+  const role = String(authUser.role || "");
+
   if (kind === "user") return resourceId === String(authUser.id);
-  if (kind === "school") return new Set([String(authUser.schoolId || ""), ...(authUser.schoolIds || []).map(String)]).has(resourceId);
+  if (kind === "school") return schoolIds.has(resourceId);
+
   if (kind === "classroom") {
     const session = await repository.findClassroomSessionScope?.(resourceId);
     if (!session) return false;
     if (String(session.teacherId) === String(authUser.id)) return true;
-    const schoolIds = new Set([String(authUser.schoolId || ""), ...(authUser.schoolIds || []).map(String)]);
-    return schoolIds.has(String(session.schoolId)) && (authUser.groupIds || []).map(String).includes(String(session.classId));
+
+    const sameSchool = schoolIds.has(String(session.schoolId));
+    const sameClass = groupIds.has(String(session.classId));
+
+    if (role === "student") return sameSchool && sameClass;
+    if (role === "school_admin") return sameSchool;
+    if (role === "supervisor") {
+      if (sameSchool) return true;
+      const supervisedGroupIds = await repository.findDirectlySupervisedGroupIds(String(authUser.id));
+      return supervisedGroupIds.map(String).includes(String(session.classId));
+    }
+    // Non-owner teachers and unrelated platform roles must not subscribe to another
+    // teacher's live classroom stream merely because they share a school.
+    return false;
   }
 
-  const directGroupIds = new Set((authUser.groupIds || []).map(String));
-  if (directGroupIds.has(resourceId)) return true;
+  if (groupIds.has(resourceId)) return true;
   const supervisedGroupIds = await repository.findDirectlySupervisedGroupIds(String(authUser.id));
   return supervisedGroupIds.map(String).includes(resourceId);
 };
