@@ -1,0 +1,49 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const checks = [];
+const check = (name, condition) => {
+  const pass = Boolean(condition);
+  checks.push({ name, pass });
+  assert.ok(pass, name);
+};
+
+const routes = read('server/src/routes/classroom.routes.ts');
+const lifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
+const questionAccess = read('server/src/modules/schools/application/classroomQuestionAccess.ts');
+const reportUi = read('components/classroom/SmartClassroomReportsSection.tsx');
+const templates = read('components/classroom/ClassroomPreparedTemplatesManager.tsx');
+const scheduler = read('components/classroom/SmartClassroomSessionSchedulerModal.tsx');
+const widget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
+const projector = read('pages/ClassroomProjectorView.tsx');
+const socketPolicy = read('server/src/sockets/workspaceAuthorization.ts');
+const schoolIntegrity = read('server/src/routes/schoolAdminIntegrity.routes.ts');
+const routeIndex = read('server/src/routes/index.ts');
+
+check('school director history is capability scoped', routes.includes('requireSchoolDirectorCapability(req.authUser!.id, schoolId, "SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM")'));
+check('student PIN join is live-only', routes.includes('pinHash: hashPin(payload.pin)') && routes.includes('status: "live"'));
+check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
+check('instant join uses lifecycle guard', routes.includes('canStudentJoinClassroom(session.status as ClassroomSessionStatus)'));
+check('lifecycle policy only permits students into live sessions', lifecycle.includes('status === "live"'));
+check('question bank uses tenant-aware visibility policy', routes.includes('classroomQuestionVisibilityFilter(schoolId, req.authUser!.id)') && questionAccess.includes('ownerType: "school"'));
+check('question snapshot persists pathId', routes.includes('pathId: question.pathId || ""'));
+check('append publishes only truly new canonical questions', routes.includes('const newQuestionIds = trulyNewSnapshots.map') && routes.includes('session.publishedQuestionIds = newQuestionIds'));
+check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
+check('director can only read aggregate through capability', routes.includes('isDirector = Boolean(capability)'));
+check('reports UI has no localStorage report fallback', !reportUi.includes('smart_classroom_reports_') && !reportUi.includes('localStorage'));
+check('reports UI consumes canonical roster/totals/question evidence', reportUi.includes('report.roster.joined') && reportUi.includes('report.totals.responses') && reportUi.includes('question.answered'));
+check('prepared templates are server-backed', templates.includes('/classroom/templates') && !templates.includes('localStorage'));
+check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
+check('launch modal tells truth: launch now, not future scheduler', scheduler.includes('autoStart: true') && scheduler.includes('ليست جدولة مستقبلية'));
+check('student option selection is local until submit', !/handleSelectAnswer[\s\S]{0,600}answerClassroomQuestion/.test(widget));
+check('student submit sends answers through one explicit path', /handleSubmitAll[\s\S]{0,1800}answerClassroomQuestion/.test(widget));
+check('projector back link targets teacher console', projector.includes('to={`/classroom/${sessionId}/teacher`}'));
+check('projector follows global active question by snapshot index', projector.includes('findIndex((question: any) => question.index === result.activeQuestionIndex)'));
+check('socket classroom policy is role-aware', socketPolicy.includes('role === "student"') && socketPolicy.includes('role === "school_admin"') && socketPolicy.includes('role === "supervisor"'));
+check('admin relationship mutations validate school/class/teacher integrity', schoolIntegrity.includes('Class does not belong to this school') && schoolIntegrity.includes('Teacher must have an active membership in this school'));
+check('integrity router is mounted before legacy school router', routeIndex.indexOf('apiRouter.use("/school-access", schoolAdminIntegrityRouter)') < routeIndex.indexOf('apiRouter.use("/school-access", schoolAccessRouter)'));
+
+console.log(`Smart Classroom hardening contract: PASS (${checks.length}/${checks.length})`);
