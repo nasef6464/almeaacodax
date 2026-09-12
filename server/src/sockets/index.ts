@@ -5,10 +5,10 @@ import { env } from "../config/env.js";
 import { createRedisClient, createRedisDuplicate, isRedisConfigured } from "../config/redis.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
-import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
 import { requireSchoolDirectorCapability } from "../modules/schools/application/schoolDirectorAccess.js";
+import { resolveSchoolContexts } from "../modules/schools/application/schoolContextResolver.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
@@ -56,15 +56,27 @@ export function createSocketServer(server: HttpServer) {
 
       const currentUserId = String((currentUser as any).id || currentUser._id);
       const currentRole = String(currentUser.role);
-      const explicitMemberships = await SchoolMembershipModel.find({ userId: currentUserId, status: "active" }).select("schoolId role").lean();
+      const legacySchoolId = currentUser.schoolId ? String(currentUser.schoolId) : null;
+      const contexts = await resolveSchoolContexts({ id: currentUserId, role: currentRole, schoolId: legacySchoolId });
+      const roleSchoolIds = Array.from(new Set(
+        contexts
+          .filter((context) => context.role === currentRole)
+          .map((context) => String(context.schoolId))
+          .filter(Boolean),
+      ));
+      const authorizedLegacySchoolId = legacySchoolId && roleSchoolIds.includes(legacySchoolId)
+        ? legacySchoolId
+        : null;
+      const runtimeGroupIds = Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [];
+
       socket.data.authUser = {
         id: currentUserId,
         role: currentRole,
-        schoolId: currentUser.schoolId ? String(currentUser.schoolId) : null,
-        schoolIds: explicitMemberships
-          .filter((membership: any) => String(membership.role) === currentRole)
-          .map((membership: any) => String(membership.schoolId)),
-        groupIds: Array.isArray(currentUser.groupIds) ? currentUser.groupIds.map(String) : [],
+        schoolId: authorizedLegacySchoolId,
+        schoolIds: roleSchoolIds,
+        // Student class rooms drive auto-discovery. Do not keep stale class-room
+        // authorization when an explicit school membership has been revoked.
+        groupIds: currentRole === "student" && !authorizedLegacySchoolId ? [] : runtimeGroupIds,
       };
       return next();
     } catch {
