@@ -230,17 +230,23 @@ async function run() {
   assert.equal(String(published.questionId), q2);
 
   const responseEvent = waitForEvent<any>(teacherASocket, "response:updated");
+  const studentResponseEvent = waitForEvent<any>(studentSocket, "response:updated");
   const answer = await request(`/classroom/sessions/${sessionAId}/answers/${q2}`, {
     method: "PUT",
     token: studentToken,
     body: { selectedOptionIndex: 0 },
   });
   assert.equal(answer.status, 200, JSON.stringify(answer.body));
-  const responseUpdated = await responseEvent;
+  const [responseUpdated, studentVisibleUpdate] = await Promise.all([responseEvent, studentResponseEvent]);
   assert.equal(String(responseUpdated.questionId), q2);
-  assert.equal(String(responseUpdated.studentId), String(student._id));
-  assert.equal(Number(responseUpdated.selectedOptionIndex), 0);
-  assert.equal(responseUpdated.isCorrect, true);
+  assert.equal(Number(responseUpdated.responseCount), 1);
+  assert.equal(String(studentVisibleUpdate.questionId), q2);
+  assert.equal(Number(studentVisibleUpdate.responseCount), 1);
+  for (const payload of [responseUpdated, studentVisibleUpdate]) {
+    assert.equal("studentId" in payload, false, "shared classroom realtime payload must not expose student identity");
+    assert.equal("selectedOptionIndex" in payload, false, "shared classroom realtime payload must not expose a student's answer");
+    assert.equal("isCorrect" in payload, false, "shared classroom realtime payload must not expose a student's correctness");
+  }
 
   const endedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
   const endedOnClass = waitForEvent<any>(studentSocket, "session:ended");
