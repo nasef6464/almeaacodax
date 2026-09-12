@@ -60,6 +60,7 @@ const approvedFrontendRoutes = approvedExtensions.frontendRoutes || [];
 const approvedBackendRouteSignatures = approvedExtensions.backendRouteSignatures || [];
 const approvedRouterMountSignatures = approvedExtensions.routerMountSignatures || [];
 const approvedEnvKeys = approvedExtensions.envKeys || [];
+const approvedHotspotFiles = new Set(approvedExtensions.hotspotFiles || []);
 
 requireExact(
   'frontend route literals changed outside the immutable baseline and approved product extensions',
@@ -122,14 +123,18 @@ if (currentCycles > cyclesLimit) {
 const baselineHotspots = baselineAudit.summary?.hotspots400Lines ?? Number.MAX_SAFE_INTEGER;
 const hotspotsBudget = finiteBudget(progressiveBudget.maxHotspots400Lines, baselineHotspots);
 const hotspotsLimit = Math.min(baselineHotspots, hotspotsBudget);
-const currentHotspots = currentAudit.summary?.hotspots400Lines ?? Number.MAX_SAFE_INTEGER;
-if (currentHotspots > hotspotsLimit) {
+const currentHotspots = currentAudit.hotspots || [];
+const currentUnapprovedHotspots = currentHotspots.filter((entry) => !approvedHotspotFiles.has(entry.file));
+const currentApprovedHotspots = currentHotspots.filter((entry) => approvedHotspotFiles.has(entry.file));
+if (currentUnapprovedHotspots.length > hotspotsLimit) {
   failures.push({
-    label: 'runtime >=400-line hotspot budget exceeded',
+    label: 'runtime >=400-line hotspot budget exceeded outside reviewed product extensions',
     immutableBaseline: baselineHotspots,
     progressiveLimit: hotspotsLimit,
-    current: currentHotspots,
-    hotspots: (currentAudit.hotspots || []).slice(0, 20),
+    currentTotal: currentHotspots.length,
+    approvedProductExtensions: currentApprovedHotspots.map((entry) => entry.file),
+    currentUnapproved: currentUnapprovedHotspots.length,
+    hotspots: currentUnapprovedHotspots.slice(0, 20),
   });
 }
 
@@ -150,11 +155,13 @@ console.log(JSON.stringify({
     backendRouteEntries: approvedBackendRouteSignatures.length,
     routerMounts: approvedRouterMountSignatures.length,
     envKeys: approvedEnvKeys.length,
+    hotspotFiles: currentApprovedHotspots.map((entry) => entry.file),
   },
   unresolvedRuntimeRelativeImports: currentUnresolved,
   unresolvedRuntimeRelativeImportsLimit: unresolvedLimit,
   dependencyCycles: currentCycles,
   dependencyCyclesLimit: cyclesLimit,
-  hotspots400Lines: currentHotspots,
+  hotspots400Lines: currentHotspots.length,
+  unapprovedHotspots400Lines: currentUnapprovedHotspots.length,
   hotspots400LinesLimit: hotspotsLimit,
 }, null, 2));
