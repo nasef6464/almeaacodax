@@ -14,6 +14,7 @@ const check = (name, condition) => {
 const routes = read('server/src/routes/classroom.routes.ts');
 const lifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
 const questionAccess = read('server/src/modules/schools/application/classroomQuestionAccess.ts');
+const reportBuilder = read('server/src/modules/schools/application/classroomSupervisorReport.ts');
 const reportUi = read('components/classroom/SmartClassroomReportsSection.tsx');
 const teacherConsole = read('pages/ClassroomTeacherConsole.tsx');
 const templates = read('components/classroom/ClassroomPreparedTemplatesManager.tsx');
@@ -42,8 +43,11 @@ check('question snapshot persists pathId', routes.includes('pathId: question.pat
 check('append publishes only truly new canonical questions', routes.includes('const newQuestionIds = trulyNewSnapshots.map') && routes.includes('session.publishedQuestionIds = newQuestionIds'));
 check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
 check('director can only read aggregate through capability', routes.includes('isDirector = Boolean(capability)'));
+check('finalized report builder prefers immutable persisted snapshots', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('session.status === "ended"') && reportBuilder.includes('session.status === "archived"'));
+check('teacher summary reports only aggregate finalized sessions', reportBuilder.includes('{ status: { $in: ["ended", "archived"] } }'));
 check('reports UI has no localStorage report fallback', !reportUsesLocalStorage && !reportUi.includes('smart_classroom_reports_'));
 check('teacher console does not persist a competing local report archive', !teacherWritesLocalReportArchive);
+check('reports UI displays finalized history only', reportUi.includes("report.status === 'ended'") && reportUi.includes("report.status === 'archived'"));
 check('reports UI consumes canonical roster/totals/question evidence', reportUi.includes('report.roster.joined') && reportUi.includes('report.totals.responses') && reportUi.includes('question.answered'));
 check('prepared templates are server-backed', templates.includes('/classroom/templates') && !templates.includes('localStorage'));
 check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
