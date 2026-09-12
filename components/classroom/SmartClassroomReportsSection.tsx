@@ -13,7 +13,7 @@ import {
 import { api } from '../../services/api';
 
 /**
- * Transitional public type kept only because older teacher-console code imports it.
+ * Compatibility input type for canonical and legacy server-side report snapshots.
  * The reports screen never reads localStorage; every server payload is normalized
  * into CanonicalClassroomReport before it is displayed or analyzed.
  */
@@ -194,7 +194,10 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
     try {
       const result = await api.getClassroomTeacherHistory(schoolId);
       const sessions = Array.isArray(result?.sessions) ? result.sessions : [];
-      setReports(sessions.map((session) => normalizeReport(session as ClassroomSavedReport)));
+      const finalizedReports = sessions
+        .map((session) => normalizeReport(session as ClassroomSavedReport))
+        .filter((report) => report.status === 'ended' || report.status === 'archived' || Boolean(report.endedAt));
+      setReports(finalizedReports);
     } catch (err: any) {
       setReports([]);
       setError(err?.message || 'تعذر تحميل تقارير الحصص من الخادم.');
