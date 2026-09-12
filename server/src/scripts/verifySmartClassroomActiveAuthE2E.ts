@@ -150,9 +150,13 @@ async function run() {
   const baseUrl = `http://127.0.0.1:${port}`;
   const studentEndpoint = `${baseUrl}/api/classroom/student/active-session`;
   const teacherEndpoint = `${baseUrl}/api/classroom/sessions/${sessionId}/aggregate`;
+  const teacherHistoryEndpoint = `${baseUrl}/api/classroom/teacher/history`;
+  const scopedTeacherHistoryEndpoint = `${teacherHistoryEndpoint}?schoolId=${encodeURIComponent(schoolId)}`;
 
   assert.equal((await get(studentEndpoint, studentToken)).status, 200, "active student should reach Smart Classroom HTTP routes");
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "active session owner should reach its classroom HTTP route");
+  assert.equal((await get(teacherHistoryEndpoint, teacherToken)).status, 400, "teacher history must require an explicit school scope");
+  assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 200, "active teacher should read history for an active school membership");
 
   const activeStudentSocket = await connectAuthorized(baseUrl, studentToken);
   assert.equal((await joinWorkspace(activeStudentSocket, `class:${classId}`)).ok, true, "active student should join its class discovery room");
@@ -188,6 +192,11 @@ async function run() {
     403,
     "inactive teacher membership must revoke access to an already-owned classroom session",
   );
+  assert.equal(
+    (await get(scopedTeacherHistoryEndpoint, teacherToken)).status,
+    403,
+    "inactive teacher membership must revoke access to historical classroom reports",
+  );
   const membershipRevokedTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
   assert.equal(
     (await joinWorkspace(membershipRevokedTeacherSocket, `classroom:${sessionId}`)).ok,
@@ -207,6 +216,7 @@ async function run() {
 
   assert.equal((await get(studentEndpoint, studentToken)).status, 401, "disabled student must lose classroom HTTP access with an unexpired JWT");
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 401, "disabled teacher must lose classroom HTTP access with an unexpired JWT");
+  assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status, 401, "disabled teacher must lose classroom history access with an unexpired JWT");
   await expectConnectionRejected(baseUrl, studentToken);
   await expectConnectionRejected(baseUrl, teacherToken);
 
