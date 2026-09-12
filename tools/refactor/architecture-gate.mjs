@@ -147,7 +147,7 @@ console.log(JSON.stringify({
   frontendRoutes: currentAudit.frontendRoutes?.length || 0,
   backendRouteEntries: currentAudit.backendRouteEntries?.length || 0,
   routerMounts: currentAudit.routerMounts?.length || 0,
-  envKeys: currentAudit.envKeys || [],
+  envKeys: currentAudit.envKeys?.length || 0,
   approvedContractExtensions: {
     frontendRoutes: approvedFrontendRoutes.length,
     backendRouteEntries: approvedBackendRouteSignatures.length,
