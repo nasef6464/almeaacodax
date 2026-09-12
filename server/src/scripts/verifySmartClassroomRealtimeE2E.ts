@@ -238,7 +238,9 @@ async function run() {
   assert.equal(answer.status, 200, JSON.stringify(answer.body));
   const responseUpdated = await responseEvent;
   assert.equal(String(responseUpdated.questionId), q2);
-  assert.equal(Number(responseUpdated.responseCount), 1);
+  assert.equal(String(responseUpdated.studentId), String(student._id));
+  assert.equal(Number(responseUpdated.selectedOptionIndex), 0);
+  assert.equal(responseUpdated.isCorrect, true);
 
   const endedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
   const endedOnClass = waitForEvent<any>(studentSocket, "session:ended");
