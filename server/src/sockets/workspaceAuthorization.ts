@@ -35,10 +35,14 @@ export const canJoinAuthorizedWorkspace = async (
     const session = await repository.findClassroomSessionScope?.(resourceId);
     if (!session) return false;
     if (role === "admin") return true;
-    if (String(session.teacherId) === String(authUser.id)) return true;
 
     const sameSchool = schoolIds.has(String(session.schoolId));
     const sameClass = groupIds.has(String(session.classId));
+
+    // Ownership alone is not durable authorization. If a teacher's school
+    // membership is revoked after the session was created, reconnecting must not
+    // resurrect access merely because teacherId still points to that account.
+    if (role === "teacher" && String(session.teacherId) === String(authUser.id)) return sameSchool;
 
     if (role === "student") return sameSchool && sameClass;
     if (role === "school_admin") {
