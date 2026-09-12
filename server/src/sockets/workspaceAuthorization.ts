@@ -9,6 +9,8 @@ export type WorkspaceAuthUser = {
 export type WorkspaceAuthorizationRepository = {
   findDirectlySupervisedGroupIds(userId: string): Promise<string[]>;
   findClassroomSessionScope?(sessionId: string): Promise<{ schoolId: string; classId: string; teacherId: string } | null>;
+  canSchoolDirectorViewClassroom?(userId: string, schoolId: string): Promise<boolean>;
+  canSupervisorViewClassroom?(userId: string, schoolId: string, classId: string): Promise<boolean>;
 };
 
 const workspaceIdPattern = /^(user|school|class|classroom):([a-zA-Z0-9_-]{1,128})$/;
@@ -32,17 +34,22 @@ export const canJoinAuthorizedWorkspace = async (
   if (kind === "classroom") {
     const session = await repository.findClassroomSessionScope?.(resourceId);
     if (!session) return false;
+    if (role === "admin") return true;
     if (String(session.teacherId) === String(authUser.id)) return true;
 
     const sameSchool = schoolIds.has(String(session.schoolId));
     const sameClass = groupIds.has(String(session.classId));
 
     if (role === "student") return sameSchool && sameClass;
-    if (role === "school_admin") return sameSchool;
+    if (role === "school_admin") {
+      return Boolean(await repository.canSchoolDirectorViewClassroom?.(String(authUser.id), String(session.schoolId)));
+    }
     if (role === "supervisor") {
-      if (sameSchool) return true;
-      const supervisedGroupIds = await repository.findDirectlySupervisedGroupIds(String(authUser.id));
-      return supervisedGroupIds.map(String).includes(String(session.classId));
+      return Boolean(await repository.canSupervisorViewClassroom?.(
+        String(authUser.id),
+        String(session.schoolId),
+        String(session.classId),
+      ));
     }
     // Non-owner teachers and unrelated platform roles must not subscribe to another
     // teacher's live classroom stream merely because they share a school.
