@@ -6,6 +6,8 @@ on:
     paths:
       - 'server/src/routes/classroom.routes.ts'
       - 'server/src/routes/schoolAdminIntegrity.routes.ts'
+      - 'server/src/routes/index.ts'
+      - 'server/src/middleware/auth.ts'
       - 'server/src/models/Classroom**'
       - 'server/src/modules/schools/**'
       - 'server/src/sockets/**'
@@ -79,6 +81,9 @@ jobs:
 
       - name: Smart Classroom isolated E2E
         run: npm --prefix server run simulate:smart-classroom-hardening
+
+      - name: Smart Classroom active-account revocation
+        run: npm --prefix server run verify:smart-classroom-active-auth
 
       - name: Smart Classroom realtime event delivery
         run: npm --prefix server run verify:smart-classroom-realtime
