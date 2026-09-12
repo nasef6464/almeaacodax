@@ -5,27 +5,60 @@ import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
 import { Types } from "mongoose";
 import { resolveSchoolContexts } from "./schoolContextResolver.js";
+import { resolveSchoolEntitlement } from "./schoolEntitlementResolver.js";
 
 export type ClassroomSupervisorUser = { id: string; role: string; schoolId?: string | null };
 
 const idOf = (value: unknown) => String(value || "");
 
-/** A school membership grants school-wide scope; a directly supervised class grants that class only. */
+/**
+ * A school membership grants school-wide scope; a directly supervised class
+ * grants that class only. Supervisor scope is also filtered by the school's
+ * current SMART_CLASSROOM entitlement so expired/disabled commercial access
+ * cannot keep historical or live classroom data visible through supervisor APIs.
+ */
 export const resolveClassroomSupervisorScope = async (user: ClassroomSupervisorUser) => {
   if (user.role === "admin") return { all: true as const, schoolIds: [], classIds: [] };
+
   const contexts = await resolveSchoolContexts(user);
-  const schoolIds = contexts.filter((context) => context.role === "supervisor").map((context) => context.schoolId);
+  const schoolIds = contexts
+    .filter((context) => context.role === "supervisor")
+    .map((context) => String(context.schoolId));
   const directlySupervised = await GroupModel.find({ supervisorIds: user.id }).select("id _id type parentId").lean();
-  const classIds = directlySupervised
+  const directClasses = directlySupervised
     .filter((group: any) => group.type === "CLASS")
-    .map((group: any) => idOf(group.id || group._id));
+    .map((group: any) => ({
+      classId: idOf(group.id || group._id),
+      schoolId: idOf(group.parentId),
+    }))
+    .filter((entry) => entry.classId && entry.schoolId);
+
   directlySupervised
     .filter((group: any) => group.type === "SCHOOL")
     .forEach((group: any) => schoolIds.push(idOf(group.id || group._id)));
+
+  const candidateSchoolIds = Array.from(new Set([
+    ...schoolIds.filter(Boolean),
+    ...directClasses.map((entry) => entry.schoolId),
+  ]));
+  const entitlementResults = await Promise.all(
+    candidateSchoolIds.map(async (schoolId) => ({
+      schoolId,
+      allowed: (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed,
+    })),
+  );
+  const entitledSchools = new Set(
+    entitlementResults.filter((entry) => entry.allowed).map((entry) => entry.schoolId),
+  );
+
   return {
     all: false as const,
-    schoolIds: Array.from(new Set(schoolIds.filter(Boolean))),
-    classIds: Array.from(new Set(classIds.filter(Boolean))),
+    schoolIds: Array.from(new Set(schoolIds.filter((schoolId) => entitledSchools.has(schoolId)))),
+    classIds: Array.from(new Set(
+      directClasses
+        .filter((entry) => entitledSchools.has(entry.schoolId))
+        .map((entry) => entry.classId),
+    )),
   };
 };
 
