@@ -8,6 +8,7 @@ import { ClassroomResponseModel } from "../../models/ClassroomResponse.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { UserModel } from "../../models/User.js";
+import { buildClassroomCompetitionStandings } from "../../modules/schools/application/classroomCompetitionScoring.js";
 import { resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { resolveSchoolContexts } from "../../modules/schools/application/schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
@@ -189,18 +190,12 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
       questionId: { $in: questionIds },
     }).select("studentId questionId isCorrect submittedAt").lean() as any[];
 
-    const byStudent = new Map<string, { studentId: string; answered: number; correct: number; lastSubmittedAt: Date | null }>();
-    for (const response of responses) {
-      const studentId = String(response.studentId);
-      const current = byStudent.get(studentId) || { studentId, answered: 0, correct: 0, lastSubmittedAt: null };
-      current.answered += 1;
-      if (response.isCorrect) current.correct += 1;
-      const submittedAt = response.submittedAt ? new Date(response.submittedAt) : null;
-      if (submittedAt && (!current.lastSubmittedAt || submittedAt > current.lastSubmittedAt)) current.lastSubmittedAt = submittedAt;
-      byStudent.set(studentId, current);
-    }
-
-    const studentIds = Array.from(byStudent.keys());
+    const standings = buildClassroomCompetitionStandings(responses.map((response: any) => ({
+      studentId: String(response.studentId),
+      isCorrect: Boolean(response.isCorrect),
+      submittedAt: response.submittedAt || null,
+    })));
+    const studentIds = standings.map((entry) => entry.studentId);
     const objectIds = studentIds.filter((id) => Types.ObjectId.isValid(id));
     const users = studentIds.length > 0
       ? await UserModel.find({
@@ -217,18 +212,11 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
       if (user._id) nameById.set(String(user._id), name);
     });
 
-    const leaderboard = Array.from(byStudent.values())
-      .map((entry) => ({
-        studentId: entry.studentId,
-        name: nameById.get(entry.studentId) || "طالب",
-        answered: entry.answered,
-        correct: entry.correct,
-        accuracy: entry.answered > 0 ? Math.round((entry.correct / entry.answered) * 100) : 0,
-        score: entry.correct * 100,
-        lastSubmittedAt: entry.lastSubmittedAt,
-      }))
-      .sort((a, b) => b.correct - a.correct || b.answered - a.answered || new Date(a.lastSubmittedAt || 0).getTime() - new Date(b.lastSubmittedAt || 0).getTime())
-      .map((entry, index) => ({ rank: index + 1, ...entry }));
+    const leaderboard = standings.map((entry, index) => ({
+      rank: index + 1,
+      ...entry,
+      name: nameById.get(entry.studentId) || "طالب",
+    }));
 
     const batch = activeBatch(session);
     res.json({
