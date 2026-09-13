@@ -76,12 +76,22 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       const key = String(response.selectedOptionIndex); summary[key] = (summary[key] || 0) + 1; return summary;
     }, {});
     const activeCorrectCount = activeResponses.filter((response: any) => response.isCorrect).length;
+    const batches = isStaff ? (session.questionBatches || []).map((batch: any, index: number) => ({
+      batchId: String(batch.batchId || ""),
+      number: index + 1,
+      label: batch.label || `الدفعة ${index + 1}`,
+      questionIds: (batch.questionIds || []).map(String),
+      startedAt: batch.startedAt || null,
+      endedAt: batch.endedAt || null,
+      active: Boolean(session.activeBatchId) && String(session.activeBatchId) === String(batch.batchId),
+    })) : undefined;
 
     res.json({
       sessionId: classroomSessionId(session), schoolId: session.schoolId, classId: session.classId, status: session.status, activeQuestionIndex: session.activeQuestionIndex,
-      activeQuestionId: activeQuestion?.questionId || null, responseCount: activeResponses.length, distribution: activeDistribution,
+      activeQuestionId: activeQuestion?.questionId || null, activeBatchId: isStaff ? session.activeBatchId || "" : undefined,
+      responseCount: activeResponses.length, distribution: activeDistribution,
       correctCount: isStaff || session.status === "ended" ? activeCorrectCount : undefined,
-      totalSessionResponses: responses.length, report: session.status === "ended" ? session.reportSnapshot : null, questions,
+      totalSessionResponses: responses.length, report: session.status === "ended" ? session.reportSnapshot : null, questions, batches,
       meta: { schoolId: session.schoolId, classId: session.classId, day: session.day || "", period: session.period || null, subjectName: session.subjectName || "", className: session.className || "", publishedMode: session.publishedMode || "single" },
     });
   }));
