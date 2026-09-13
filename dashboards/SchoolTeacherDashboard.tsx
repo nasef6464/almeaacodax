@@ -38,21 +38,6 @@ const SCHOOL_TEACHER_NAV_ITEMS: Array<{ id: SchoolTeacherTab; label: string; ico
   { id: 'certificates', label: 'شهادات التقدير والتحفيز', icon: <Trophy size={19} /> },
 ];
 
-const mapStoreQuestion = (q: any) => ({
-  questionId: q.id,
-  text: q.text,
-  imageUrl: q.imageUrl || '',
-  options: q.options || [],
-  type: q.type || 'mcq',
-  skillIds: q.skillIds || [],
-  pathId: q.pathId || '',
-  subject: q.subject || '',
-  sectionId: q.sectionId || '',
-  difficulty: q.difficulty || 'Medium',
-  examType: q.examType || 'general',
-  explanation: q.explanation || '',
-});
-
 export const SchoolTeacherDashboard: React.FC = () => {
   const navigate = useNavigate();
   const workspace = useTeacherWorkspaceOptional();
@@ -96,11 +81,8 @@ export const SchoolTeacherDashboard: React.FC = () => {
     if (!selectedSchool?.schoolId) return;
     try {
       const res = await api.getTeacherActiveClassroomSession(selectedSchool.schoolId);
-      if (res.hasActiveSession && res.session) {
-        setActiveTeacherSession(res.session);
-      } else {
-        setActiveTeacherSession(null);
-      }
+      if (res.hasActiveSession && res.session) setActiveTeacherSession(res.session);
+      else setActiveTeacherSession(null);
     } catch {
       setActiveTeacherSession(null);
     }
@@ -135,27 +117,26 @@ export const SchoolTeacherDashboard: React.FC = () => {
     }
   }, [searchParams, activeTab]);
 
-  const storeQuestions = useStore((state) => state.questions) || [];
-
   useEffect(() => {
-    if (activeTab !== 'prepared-questions' || !selectedSchool || questions.length > 0) return;
+    if (activeTab !== 'prepared-questions' || !selectedSchool?.schoolId) return;
+    let active = true;
     setQuestionsLoading(true);
-    api
-      .getClassroomQuestions(selectedSchool.schoolId)
+    setQuestions([]);
+    api.getClassroomQuestions(selectedSchool.schoolId)
       .then((res) => {
-        if (res.questions?.length) setQuestions(res.questions);
-        else if (storeQuestions.length > 0) setQuestions(storeQuestions.map(mapStoreQuestion));
+        if (!active) return;
+        setQuestions(Array.isArray(res.questions) ? res.questions : []);
       })
       .catch(() => {
-        if (storeQuestions.length > 0) setQuestions(storeQuestions.map(mapStoreQuestion));
+        if (active) setQuestions([]);
       })
-      .finally(() => setQuestionsLoading(false));
-  }, [activeTab, selectedSchool, questions.length, storeQuestions]);
+      .finally(() => {
+        if (active) setQuestionsLoading(false);
+      });
+    return () => { active = false; };
+  }, [activeTab, selectedSchool?.schoolId]);
 
-  const poolQuestions = useMemo(() => {
-    if (questions.length > 0) return questions;
-    return storeQuestions.length > 0 ? storeQuestions.map(mapStoreQuestion) : [];
-  }, [questions, storeQuestions]);
+  const poolQuestions = questions;
 
   const filteredQuestions = useMemo(() => poolQuestions.filter((question: any) => {
     const activePathId = filters.pathId || filters.track;
@@ -185,6 +166,14 @@ export const SchoolTeacherDashboard: React.FC = () => {
     setSelectedQuestionIds(template.questionIds);
     setChallengeQuestionIds(template.challengeIds);
   };
+  const handleSchoolChange = (nextSchoolId: string) => {
+    setSelectedSchoolId(nextSchoolId);
+    setQuestions([]);
+    setSelectedQuestionIds([]);
+    setChallengeQuestionIds([]);
+    setTargetClassForLaunch('');
+    setFilters({ pathId: '', subjectId: '', sectionId: '', skillId: '', difficulty: '', search: '' });
+  };
 
   const sidebar = (
     <div className="py-6 space-y-1" dir="rtl">
@@ -198,7 +187,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
           <div className="mt-3">
             <select
               value={selectedSchool.schoolId}
-              onChange={(event) => setSelectedSchoolId(event.target.value)}
+              onChange={(event) => handleSchoolChange(event.target.value)}
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-bold text-gray-800"
             >
               {workspace.schools.map((school) => (
