@@ -4,13 +4,15 @@ import { requireAuth } from "../../middleware/auth.js";
 import { ClassroomParticipantModel } from "../../models/ClassroomParticipant.js";
 import { ClassroomResponseModel } from "../../models/ClassroomResponse.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
+import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { UserModel } from "../../models/User.js";
 import { projectClassroomQuestionForStudent } from "../../modules/schools/application/classroomQuestionProjection.js";
 import { resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
+import { resolveSchoolContexts } from "../../modules/schools/application/schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
-import { classroomSessionId } from "./classroomRouteSupport.js";
+import { classroomSessionId, ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
 
 export function registerClassroomAggregateRoutes(classroomRouter: Router) {
   classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
@@ -21,11 +23,27 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     }
 
-    const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    const isTeacher = req.authUser!.role === "admin" || String(session.teacherId) === req.authUser!.id;
-    const isStudentInClass = student?.role === "student"
-      && String(student.schoolId) === String(session.schoolId)
-      && (student.groupIds || []).map(String).includes(String(session.classId));
+    const currentUser = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
+    let isTeacher = req.authUser!.role === "admin";
+    if (!isTeacher && req.authUser!.role === "teacher" && String(session.teacherId) === req.authUser!.id) {
+      const [hasSchoolAccess, hasClassAssignment] = await Promise.all([
+        ensureTeacherSchoolAccess(req.authUser!, String(session.schoolId)),
+        TeachingAssignmentModel.exists({
+          schoolId: String(session.schoolId),
+          classId: String(session.classId),
+          teacherId: req.authUser!.id,
+          status: "active",
+        }),
+      ]);
+      isTeacher = Boolean(hasSchoolAccess && hasClassAssignment);
+    }
+
+    let isStudentInClass = false;
+    if (currentUser?.role === "student") {
+      const contexts = await resolveSchoolContexts({ id: req.authUser!.id, role: "student", schoolId: currentUser.schoolId || null });
+      const hasSchoolContext = contexts.some((context) => context.role === "student" && String(context.schoolId) === String(session.schoolId));
+      isStudentInClass = hasSchoolContext && (currentUser.groupIds || []).map(String).includes(String(session.classId));
+    }
     const isStudent = isStudentInClass
       ? Boolean(await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id }))
       : false;
