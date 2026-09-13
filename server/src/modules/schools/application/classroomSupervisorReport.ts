@@ -66,10 +66,6 @@ export const classroomScopeFilter = (scope: Awaited<ReturnType<typeof resolveCla
   scope.all ? {} : { $or: [{ schoolId: { $in: scope.schoolIds } }, { classId: { $in: scope.classIds } }] };
 
 export const buildClassroomSessionReport = async (session: any) => {
-  // A finalized report is evidence, not a live projection. Once a session has
-  // ended, use the persisted snapshot so later roster/class changes cannot
-  // rewrite historical attendance or skill evidence. Legacy ended sessions
-  // without a snapshot fall through to the DB-backed reconstruction below.
   if ((session.status === "ended" || session.status === "archived") && session.reportSnapshot) {
     return session.reportSnapshot;
   }
@@ -92,9 +88,6 @@ export const buildClassroomSessionReport = async (session: any) => {
     }).select("id _id").lean(),
   ]);
 
-  // group.studentIds is retained for legacy compatibility, while User.groupIds is
-  // the runtime authorization source. Union them so reports remain correct during
-  // migration and never under-count a legitimate class roster because one side drifted.
   const expectedStudentIds = new Set<string>([
     ...(((classroom as any)?.studentIds || []).map(idOf)),
     ...rosterUsers.map((student: any) => idOf(student.id || student._id)),
@@ -137,6 +130,14 @@ export const buildClassroomSessionReport = async (session: any) => {
   const durationMinutes = Number.isFinite(startedMs) && Number.isFinite(endedMs)
     ? Math.max(0, Math.round((endedMs - startedMs) / 60_000))
     : null;
+  const batches = (session.questionBatches || []).map((batch: any, index: number) => ({
+    batchId: idOf(batch.batchId),
+    number: index + 1,
+    label: batch.label || `الدفعة ${index + 1}`,
+    questionIds: (batch.questionIds || []).map(idOf),
+    startedAt: batch.startedAt || null,
+    endedAt: batch.endedAt || null,
+  }));
 
   return {
     sessionId: reportSessionId,
@@ -156,6 +157,7 @@ export const buildClassroomSessionReport = async (session: any) => {
       joined: joinedStudentIds.size,
       absentFromSession: Math.max(0, expectedStudentIds.size - joinedStudentIds.size),
     },
+    batches,
     questions: questionReports,
     totals: {
       responses: responses.length,
