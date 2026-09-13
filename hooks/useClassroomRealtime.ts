@@ -8,16 +8,41 @@ export const useClassroomRealtime = (
   onSessionEnded?: () => void,
 ) => useEffect(() => {
   if (!sessionId) return;
+
   const socketUrl = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
-  const socket = io(socketUrl || undefined, { withCredentials: true });
-  socket.on('connect', () => socket.emit('workspace:join', `classroom:${sessionId}`, (result: { ok: boolean }) => {
-    if (!result.ok) socket.disconnect();
-  }));
+  const socket = io(socketUrl || undefined, {
+    withCredentials: true,
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 500,
+    reconnectionDelayMax: 5000,
+  });
+
+  const joinWorkspace = () => {
+    socket.emit('workspace:join', `classroom:${sessionId}`, (result: { ok: boolean }) => {
+      if (!result.ok) {
+        socket.disconnect();
+        return;
+      }
+
+      // Reconnects may happen after classroom events were missed while offline.
+      // Re-read the canonical server snapshot after the room is rejoined.
+      onChange();
+    });
+  };
+
+  socket.on('connect', joinWorkspace);
+  socket.io.on('reconnect', joinWorkspace);
   socket.on('question:published', onChange);
   socket.on('response:updated', onChange);
   socket.on('session:ended', () => {
     onSessionEnded?.();
     onChange();
   });
-  return () => { socket.disconnect(); };
+
+  return () => {
+    socket.off('connect', joinWorkspace);
+    socket.io.off('reconnect', joinWorkspace);
+    socket.disconnect();
+  };
 }, [sessionId, onChange, onSessionEnded]);
