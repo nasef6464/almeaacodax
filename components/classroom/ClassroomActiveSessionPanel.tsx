@@ -35,7 +35,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   message,
   isTeacher,
 }) => {
-  const { questions: storeQuestions, subjects, sections, skills } = useStore();
+  const { subjects, sections, skills } = useStore();
   const [copied, setCopied] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
   const [timerActive, setTimerActive] = useState(false);
@@ -48,6 +48,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [showInlineExplanation, setShowInlineExplanation] = useState(false);
   const [bankQuestions, setBankQuestions] = useState<any[]>([]);
   const [loadingBank, setLoadingBank] = useState(false);
+  const [bankError, setBankError] = useState('');
   const [sessionStorageMeta, setSessionStorageMeta] = useState<{
     day?: string;
     period?: string;
@@ -58,16 +59,25 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const schoolId = data?.schoolId || data?.meta?.schoolId || '';
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId) {
+      setBankQuestions([]);
+      setBankError('');
+      return;
+    }
     let active = true;
     setLoadingBank(true);
+    setBankQuestions([]);
+    setBankError('');
     api.getClassroomQuestions(schoolId)
       .then((res) => {
-        if (active && Array.isArray(res?.questions)) {
-          setBankQuestions(res.questions);
-        }
+        if (!active) return;
+        setBankQuestions(Array.isArray(res?.questions) ? res.questions : []);
       })
-      .catch(() => {})
+      .catch(() => {
+        if (!active) return;
+        setBankQuestions([]);
+        setBankError('تعذر تحميل بنك الأسئلة المصرح لهذه المدرسة. لن يتم عرض أسئلة من مصدر محلي بديل.');
+      })
       .finally(() => { if (active) setLoadingBank(false); });
     return () => { active = false; };
   }, [schoolId]);
@@ -137,8 +147,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
   const availablePushQuestions = useMemo(() => {
     const existingIds = new Set((data?.questions || []).map((question: any) => String(question.questionId)));
-    const pool = bankQuestions.length > 0 ? bankQuestions : storeQuestions;
-    return pool.filter((question: any) => {
+    return bankQuestions.filter((question: any) => {
       const qId = String(question.questionId || question.id);
       if (existingIds.has(qId)) return false;
       const qSubject = question.subject || question.subjectId;
@@ -147,7 +156,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       if (pushFilterSkill && !(question.skillIds || []).includes(pushFilterSkill)) return false;
       return true;
     });
-  }, [bankQuestions, storeQuestions, data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
+  }, [bankQuestions, data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
 
   const handlePushQuestionsSubmit = async () => {
     if (selectedForPush.length === 0 || pushingQuestions) return;
@@ -256,12 +265,14 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
           <div>
             <h2 className="text-xl font-black text-slate-900 dark:text-white">أسئلة الحصة التفاعلية</h2>
             <p className="text-xs text-slate-500">يمكنك نشر أي سؤال متتابع، أو بثه فوراً كـ "سؤال تحدي سريع ⚡" في أي لحظة أثناء الشرح</p>
+            {bankError && <p className="mt-2 text-xs font-bold text-rose-600">{bankError}</p>}
+            {loadingBank && <p className="mt-2 text-xs font-bold text-indigo-600">جارٍ تحديث بنك الأسئلة المصرح من الخادم…</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => { setSelectedForPush([]); setShowPushModal(true); }}
-              disabled={data?.status === 'ended'}
+              disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)}
               className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-xs transition-all active:scale-95 disabled:opacity-50"
             >
               <PlusCircle size={14} /> إرسال أسئلة / حزمة مهارة الآن 🚀
