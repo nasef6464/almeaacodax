@@ -21,6 +21,7 @@ const reportsUi = read('components/classroom/SmartClassroomReportsSection.tsx');
 const realtime = read('hooks/useClassroomRealtime.ts');
 const scheduler = read('components/classroom/SmartClassroomSessionSchedulerModal.tsx');
 const pushModal = read('components/classroom/ClassroomPushQuestionsModal.tsx');
+const contentRenderer = read('components/classroom/QuestionContentRenderer.tsx');
 const participantModel = read('server/src/models/ClassroomParticipant.ts');
 const responseModel = read('server/src/models/ClassroomResponse.ts');
 const sessionModel = read('server/src/models/ClassroomSession.ts');
@@ -35,6 +36,8 @@ check('teacher can create an empty session', teacherRoutes.includes('optional().
 check('scheduler exposes explicit empty-session mode', scheduler.includes("'empty'") && scheduler.includes('ابدأ الحصة فارغة'));
 check('direct teacher console also starts empty sessions live', teacherConsole.includes("autoStart: true") && teacherConsole.includes('ابدأ الحصة فارغة الآن') && !teacherConsole.includes('!selectedIds.length'));
 check('direct teacher bank previews standalone images', teacherConsole.includes('question.imageUrl') && teacherConsole.includes('alt="صورة السؤال"'));
+check('rich question renderer uses structural allowlist sanitization', contentRenderer.includes('ALLOWED_TAGS') && contentRenderer.includes('DOMParser') && contentRenderer.includes('element.removeAttribute'));
+check('rich question renderer restricts executable and image urls', contentRenderer.includes('isSafeUrl') && contentRenderer.includes('SAFE_IMAGE_DATA_URL') && contentRenderer.includes("parsed.protocol === 'https:'"));
 check('teacher can append and auto-publish a new batch', teacherRoutes.includes('/append-questions') && teacherRoutes.includes('publishedQuestionIds = newQuestionIds'));
 check('question batches are persisted on the session', sessionModel.includes('questionBatches') && sessionModel.includes('activeBatchId'));
 check('new pushed questions create a numbered batch', teacherRoutes.includes('newBatchId = randomUUID()') && teacherRoutes.includes('label: `الدفعة ${session.questionBatches.length + 1}`'));
