@@ -130,14 +130,41 @@ export const buildClassroomSessionReport = async (session: any) => {
   const durationMinutes = Number.isFinite(startedMs) && Number.isFinite(endedMs)
     ? Math.max(0, Math.round((endedMs - startedMs) / 60_000))
     : null;
-  const batches = (session.questionBatches || []).map((batch: any, index: number) => ({
-    batchId: idOf(batch.batchId),
-    number: index + 1,
-    label: batch.label || `الدفعة ${index + 1}`,
-    questionIds: (batch.questionIds || []).map(idOf),
-    startedAt: batch.startedAt || null,
-    endedAt: batch.endedAt || null,
-  }));
+  const questionReportById = new Map(questionReports.map((question: any) => [idOf(question.questionId), question]));
+  const batches = (session.questionBatches || []).map((batch: any, index: number) => {
+    const questionIds = (batch.questionIds || []).map(idOf);
+    const batchQuestions = questionIds.map((questionId: string) => questionReportById.get(questionId)).filter(Boolean) as any[];
+    const answered = batchQuestions.reduce((sum, question) => sum + Number(question.answered || 0), 0);
+    const correct = batchQuestions.reduce((sum, question) => sum + Number(question.correct || 0), 0);
+    const wrong = batchQuestions.reduce((sum, question) => sum + Number(question.wrong || 0), 0);
+    const unanswered = batchQuestions.reduce((sum, question) => sum + Number(question.unanswered || 0), 0);
+    const batchStartedAt = batch.startedAt || null;
+    const batchEndedAt = batch.endedAt || null;
+    const batchStartedMs = batchStartedAt ? new Date(batchStartedAt).getTime() : Number.NaN;
+    const batchEndedMs = batchEndedAt ? new Date(batchEndedAt).getTime() : Number.NaN;
+    const durationSeconds = Number.isFinite(batchStartedMs) && Number.isFinite(batchEndedMs)
+      ? Math.max(0, Math.round((batchEndedMs - batchStartedMs) / 1000))
+      : null;
+    const skillIds = Array.from(new Set(batchQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)));
+    return {
+      batchId: idOf(batch.batchId),
+      number: index + 1,
+      label: batch.label || `الدفعة ${index + 1}`,
+      questionIds,
+      startedAt: batchStartedAt,
+      endedAt: batchEndedAt,
+      durationSeconds,
+      totals: {
+        questions: batchQuestions.length,
+        answered,
+        correct,
+        wrong,
+        unanswered,
+        accuracy: answered > 0 ? Math.round((correct / answered) * 100) : null,
+      },
+      skillIds,
+    };
+  });
 
   return {
     sessionId: reportSessionId,
