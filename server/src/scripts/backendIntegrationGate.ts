@@ -556,7 +556,8 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   const schoolId = groupIds.get("school");
   const classId = groupIds.get("class");
   const teacherId = userIds.get("teacher");
-  assert.ok(schoolId && classId && teacherId, "smart classroom fixture scope missing");
+  const studentId = scopeStudentIds.get("assigned");
+  assert.ok(schoolId && classId && teacherId && studentId, "smart classroom fixture scope missing");
   const questionId = `platform-v3-smart-classroom-question-${RUN_MARKER}`;
   await SchoolContractModel.create({ schoolId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM", "SCHOOL_INTELLIGENCE", "INTERVENTION_CENTER"] });
   await SchoolMembershipModel.create({ userId: teacherId, schoolId, role: "teacher", status: "active" });
@@ -576,6 +577,8 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   assert.equal(teacherWorkspace.body?.personas?.schoolTeacher, true, "assigned teacher lost school context");
   assert.deepEqual(teacherWorkspace.body?.schools?.map((entry: any) => entry.schoolId), [schoolId], "teacher workspace leaked a school without a valid class assignment");
   assert.equal(teacherWorkspace.body?.schools?.[0]?.assignments?.[0]?.classId, classId, "teacher workspace omitted assigned class");
+  assert.equal(teacherWorkspace.body?.schools?.[0]?.assignments?.[0]?.studentCount, 1, "teacher workspace omitted the assigned class roster count");
+  assert.deepEqual(teacherWorkspace.body?.schools?.[0]?.assignments?.[0]?.students?.map((student: any) => student.studentId), [studentId], "teacher workspace roster leaked or omitted students outside the assigned class");
   assert.equal(teacherWorkspace.body?.schools?.[0]?.assessments?.[0]?.assessmentId, workspaceAssessmentId, "teacher workspace omitted assigned school assessment");
   const crossSchoolClass = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId: outsideSchoolId, classId, questionIds: [questionId] } });
   expectStatus("school teacher cannot pair another school with assigned class", crossSchoolClass, 400);
