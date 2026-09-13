@@ -10,6 +10,13 @@ import { useStore } from '../../store/useStore';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
+type ChallengeState = {
+  challengeQuestionIds?: string[];
+  competitionEnabled?: boolean;
+  timerEndsAt?: string | null;
+  expired?: boolean;
+};
+
 interface ClassroomActiveSessionPanelProps {
   sessionId: string;
   data: any;
@@ -37,8 +44,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 }) => {
   const { subjects, sections, skills } = useStore();
   const [copied, setCopied] = useState(false);
+  const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
-  const [timerActive, setTimerActive] = useState(false);
   const [showPushModal, setShowPushModal] = useState(false);
   const [pushingQuestions, setPushingQuestions] = useState(false);
   const [pushFilterSubject, setPushFilterSubject] = useState('');
@@ -83,6 +90,42 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   }, [schoolId]);
 
   useEffect(() => {
+    if (!sessionId || data?.status === 'ended') {
+      setChallengeState(null);
+      return;
+    }
+    let active = true;
+    const loadChallengeState = async () => {
+      try {
+        const state = await api.get<ChallengeState>(`/classroom/sessions/${encodeURIComponent(sessionId)}/challenge-state`);
+        if (active) setChallengeState(state);
+      } catch {
+        if (active) setChallengeState(null);
+      }
+    };
+    void loadChallengeState();
+    const interval = setInterval(() => void loadChallengeState(), 4000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, [sessionId, data?.status, data?.activeBatchId]);
+
+  useEffect(() => {
+    const syncTimer = () => {
+      if (!challengeState?.competitionEnabled || !challengeState.timerEndsAt) {
+        setTimerSeconds(null);
+        return;
+      }
+      const endMs = new Date(challengeState.timerEndsAt).getTime();
+      setTimerSeconds(Number.isFinite(endMs) ? Math.max(0, Math.ceil((endMs - Date.now()) / 1000)) : null);
+    };
+    syncTimer();
+    const interval = setInterval(syncTimer, 1000);
+    return () => clearInterval(interval);
+  }, [challengeState?.competitionEnabled, challengeState?.timerEndsAt]);
+
+  useEffect(() => {
     try {
       const raw = sessionStorage.getItem(`classroom_meta_${sessionId}`);
       if (raw) setSessionStorageMeta(JSON.parse(raw));
@@ -111,7 +154,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
   const currentQIndex = data?.activeQuestionIndex;
   const currentQuestion = (data?.questions || []).find((question: any) => question.index === currentQIndex);
-  const isCurrentChallenge = currentQuestion && challengeIds.includes(currentQuestion.questionId);
+  const canonicalChallengeIds = challengeState?.challengeQuestionIds || [];
+  const isCurrentChallenge = currentQuestion && (canonicalChallengeIds.includes(currentQuestion.questionId) || challengeIds.includes(currentQuestion.questionId));
   const distribution: Record<string, number> = data?.distribution || {};
   const totalResponses = data?.responseCount || 0;
 
@@ -135,12 +179,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     return {
       percentages,
       maxWrongOption: maxWrongIndex !== null && maxWrongPercent >= 20
-        ? {
-            index: maxWrongIndex,
-            letter: OPTION_LETTERS[maxWrongIndex] || `${maxWrongIndex + 1}`,
-            percent: maxWrongPercent,
-            count: maxWrongCount,
-          }
+        ? { index: maxWrongIndex, letter: OPTION_LETTERS[maxWrongIndex] || `${maxWrongIndex + 1}`, percent: maxWrongPercent, count: maxWrongCount }
         : null,
     };
   }, [currentQuestion, distribution, totalResponses]);
@@ -175,25 +214,16 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     setSelectedForPush(availablePushQuestions.slice(0, 5).map((question) => String(question.questionId || question.id)));
   };
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    if (timerActive && timerSeconds !== null && timerSeconds > 0) {
-      interval = setInterval(() => {
-        setTimerSeconds((prev) => (prev !== null && prev > 1 ? prev - 1 : 0));
-      }, 1000);
-    } else if (timerSeconds === 0) {
-      setTimerActive(false);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [timerActive, timerSeconds]);
-
-  const handleInstantChallenge = (question: any, durationSec = 45) => {
+  const handleInstantChallenge = async (question: any, durationSec = 45) => {
     if (!challengeIds.includes(question.questionId)) onToggleChallenge(question.questionId);
-    onPublish(question.index);
-    setTimerSeconds(durationSec);
-    setTimerActive(true);
+    await api.publishClassroomQuestion(sessionId, question.index);
+    const state = await api.post<ChallengeState>(`/classroom/sessions/${encodeURIComponent(sessionId)}/competition/configure`, {
+      challengeQuestionIds: [question.questionId],
+      durationSeconds: durationSec,
+      competitionEnabled: true,
+    });
+    setChallengeState(state);
+    onReload?.();
   };
 
   return (
@@ -201,9 +231,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       <div className="flex flex-col gap-4 rounded-3xl bg-slate-900 p-6 text-white sm:flex-row sm:items-center sm:justify-between shadow-xl">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-md bg-emerald-500/20 px-2.5 py-1 text-xs font-black text-emerald-400">
-              {data?.status === 'ended' ? 'حصة منتهية ومؤرشفة' : 'حصة ذكية تفاعلية مباشرة 🟢'}
-            </span>
+            <span className="rounded-md bg-emerald-500/20 px-2.5 py-1 text-xs font-black text-emerald-400">{data?.status === 'ended' ? 'حصة منتهية ومؤرشفة' : 'حصة ذكية تفاعلية مباشرة 🟢'}</span>
             {meta?.day && <span className="rounded-md bg-white/10 px-2.5 py-1 text-xs font-bold text-slate-300">{meta.day}</span>}
             {meta?.period && <span className="rounded-md bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300">الحصة {meta.period}</span>}
             {meta?.className && <span className="rounded-md bg-indigo-500/20 px-2.5 py-1 text-xs font-bold text-indigo-300">{meta.className}</span>}
@@ -214,28 +242,17 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         <div className="flex flex-wrap items-center gap-2">
           {storedPin && (
             <div className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2 text-white">
-              <span className="text-xs text-slate-300">رمز الانضمام:</span>
-              <span className="font-mono text-xl font-black tracking-wider text-amber-400">{storedPin}</span>
-              <button type="button" onClick={() => copyPin(storedPin)} className="rounded-lg p-1 hover:bg-white/20 text-xs transition-colors">
-                {copied ? 'تم النسخ!' : <Copy size={16} />}
-              </button>
+              <span className="text-xs text-slate-300">رمز الانضمام:</span><span className="font-mono text-xl font-black tracking-wider text-amber-400">{storedPin}</span>
+              <button type="button" onClick={() => copyPin(storedPin)} className="rounded-lg p-1 hover:bg-white/20 text-xs transition-colors">{copied ? 'تم النسخ!' : <Copy size={16} />}</button>
             </div>
           )}
-          <Link to={`/classroom/${sessionId}/projector`} target="_blank" className="flex items-center gap-1.5 rounded-2xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700 shadow-md transition-all active:scale-95">
-            <Presentation size={16} /> شاشة السبورة التفاعلية <ExternalLink size={14} />
-          </Link>
+          <Link to={`/classroom/${sessionId}/projector`} target="_blank" className="flex items-center gap-1.5 rounded-2xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700 shadow-md transition-all active:scale-95"><Presentation size={16} /> شاشة السبورة التفاعلية <ExternalLink size={14} /></Link>
         </div>
       </div>
 
-      {timerActive && timerSeconds !== null && (
-        <div className="mt-4 flex items-center justify-between rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 p-4 text-white shadow-lg animate-pulse">
-          <div className="flex items-center gap-3">
-            <Flame size={28} className="text-amber-200" />
-            <div>
-              <p className="text-sm font-black">تحدي السرعة اللحظي جارٍ الآن! ⚡</p>
-              <p className="text-xs text-amber-100">مؤقت سريع لرفع التفاعل؛ لا يتم احتساب نقاط إضافية تلقائيًا.</p>
-            </div>
-          </div>
+      {challengeState?.competitionEnabled && timerSeconds !== null && (
+        <div className="mt-4 flex items-center justify-between rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 p-4 text-white shadow-lg">
+          <div className="flex items-center gap-3"><Flame size={28} className="text-amber-200" /><div><p className="text-sm font-black">تحدي السرعة المتزامن جارٍ الآن</p><p className="text-xs text-amber-100">الوقت مثبت على الخادم ويظهر بنفس النهاية للمعلم والطلاب.</p></div></div>
           <div className="flex items-center gap-2"><Clock size={18} /><span className="font-mono text-2xl font-black">{timerSeconds}s</span></div>
         </div>
       )}
@@ -250,37 +267,21 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       </div>
 
       {currentQuestion && (
-        <ClassroomQuestionReviewPanel
-          sessionId={sessionId}
-          currentQuestion={currentQuestion}
-          currentQAnalytics={currentQAnalytics}
-          distribution={distribution}
-          showInlineExplanation={showInlineExplanation}
-          onToggleExplanation={() => setShowInlineExplanation((value) => !value)}
-        />
+        <ClassroomQuestionReviewPanel sessionId={sessionId} currentQuestion={currentQuestion} currentQAnalytics={currentQAnalytics} distribution={distribution} showInlineExplanation={showInlineExplanation} onToggleExplanation={() => setShowInlineExplanation((value) => !value)} />
       )}
 
       <section className="mt-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 className="text-xl font-black text-slate-900 dark:text-white">أسئلة الحصة التفاعلية</h2>
-            <p className="text-xs text-slate-500">يمكنك نشر أي سؤال متتابع، أو بثه فوراً كـ "سؤال تحدي سريع ⚡" في أي لحظة أثناء الشرح</p>
+            <p className="text-xs text-slate-500">يمكنك نشر أي سؤال متتابع، أو بثه كتحدٍ سريع بمؤقت موحد على الخادم.</p>
             {bankError && <p className="mt-2 text-xs font-bold text-rose-600">{bankError}</p>}
             {loadingBank && <p className="mt-2 text-xs font-bold text-indigo-600">جارٍ تحديث بنك الأسئلة المصرح من الخادم…</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => { setSelectedForPush([]); setShowPushModal(true); }}
-              disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)}
-              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-xs transition-all active:scale-95 disabled:opacity-50"
-            >
-              <PlusCircle size={14} /> إرسال أسئلة / حزمة مهارة الآن 🚀
-            </button>
+            <button type="button" onClick={() => { setSelectedForPush([]); setShowPushModal(true); }} disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-xs transition-all active:scale-95 disabled:opacity-50"><PlusCircle size={14} /> إرسال أسئلة / حزمة مهارة الآن 🚀</button>
             {currentQIndex !== undefined && currentQIndex < (data?.questions || []).length - 1 && (
-              <button type="button" onClick={() => onPublish(currentQIndex + 1)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-300 transition-colors">
-                <SkipForward size={14} /> الانتقال للسؤال التالي
-              </button>
+              <button type="button" onClick={() => onPublish(currentQIndex + 1)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-300 transition-colors"><SkipForward size={14} /> الانتقال للسؤال التالي</button>
             )}
           </div>
         </div>
@@ -288,30 +289,19 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         <div className="mt-4 space-y-3">
           {(data?.questions || []).map((question: any) => {
             const isActive = data?.activeQuestionIndex === question.index;
-            const isChallenge = challengeIds.includes(question.questionId);
+            const isChallenge = canonicalChallengeIds.includes(question.questionId) || challengeIds.includes(question.questionId);
             return (
               <div key={question.questionId} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border p-4 transition-all ${isActive ? 'border-indigo-600 bg-indigo-50/70 shadow-xs dark:bg-indigo-950/30 dark:border-indigo-500' : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-850'}`}>
                 <div className="flex items-start sm:items-center gap-3">
                   <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-black ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>{question.index + 1}</span>
                   <div className="min-w-0 flex-1">
-                    <div className="font-bold text-slate-900 dark:text-white text-sm">
-                      <span className="text-indigo-600 dark:text-indigo-400 ml-1 font-black">سؤال {question.index + 1}:</span>
-                      <QuestionContentRenderer content={question.text} className="inline-block align-middle max-h-24 overflow-hidden" />
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-                      <span>{question.options?.length || 4} خيارات</span>
-                      {isChallenge && <span className="inline-flex items-center gap-0.5 rounded-md bg-amber-100 px-1.5 py-0.5 font-black text-amber-800 dark:bg-amber-950/50 dark:text-amber-300">⚡ تحدي سريع</span>}
-                      {isActive && <span className="font-black text-emerald-600 dark:text-emerald-400">● معروض على أجهزة الطلاب</span>}
-                    </div>
+                    <div className="font-bold text-slate-900 dark:text-white text-sm"><span className="text-indigo-600 dark:text-indigo-400 ml-1 font-black">سؤال {question.index + 1}:</span><QuestionContentRenderer content={question.text} className="inline-block align-middle max-h-24 overflow-hidden" /></div>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-slate-500"><span>{question.options?.length || 4} خيارات</span>{isChallenge && <span className="inline-flex items-center gap-0.5 rounded-md bg-amber-100 px-1.5 py-0.5 font-black text-amber-800 dark:bg-amber-950/50 dark:text-amber-300">⚡ تحدي سريع</span>}{isActive && <span className="font-black text-emerald-600 dark:text-emerald-400">● معروض على أجهزة الطلاب</span>}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 self-end sm:self-center">
-                  <button type="button" onClick={() => onPublish(question.index)} disabled={data?.status === 'ended'} className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all disabled:opacity-50 ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200'}`}>
-                    {isActive ? 'منشور حالياً ✓' : 'نشر اعتيادي'}
-                  </button>
-                  <button type="button" onClick={() => handleInstantChallenge(question, 45)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white hover:from-amber-600 hover:to-orange-600 shadow-xs transition-all active:scale-95 disabled:opacity-50">
-                    <Zap size={14} /> بث كتحدٍ سريع ⚡
-                  </button>
+                  <button type="button" onClick={() => onPublish(question.index)} disabled={data?.status === 'ended'} className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all disabled:opacity-50 ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200'}`}>{isActive ? 'منشور حالياً ✓' : 'نشر اعتيادي'}</button>
+                  <button type="button" onClick={() => void handleInstantChallenge(question, 45)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white hover:from-amber-600 hover:to-orange-600 shadow-xs transition-all active:scale-95 disabled:opacity-50"><Zap size={14} /> بث كتحدٍ سريع ⚡</button>
                 </div>
               </div>
             );
@@ -320,9 +310,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       </section>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <button type="button" onClick={onEnd} disabled={data?.status === 'ended'} className="rounded-2xl bg-rose-600 px-6 py-3 font-black text-white hover:bg-rose-700 disabled:opacity-50 shadow-md transition-all active:scale-95 text-sm">
-          {data?.status === 'ended' ? 'الجلسة منتهية ومحفوظة بالأرشيف' : 'إنهاء الجلسة وحفظ التقرير بالأرشيف'}
-        </button>
+        <button type="button" onClick={onEnd} disabled={data?.status === 'ended'} className="rounded-2xl bg-rose-600 px-6 py-3 font-black text-white hover:bg-rose-700 disabled:opacity-50 shadow-md transition-all active:scale-95 text-sm">{data?.status === 'ended' ? 'الجلسة منتهية ومحفوظة بالأرشيف' : 'إنهاء الجلسة وحفظ التقرير بالأرشيف'}</button>
         {isTeacher && <Link to="/school-teacher-dashboard?tab=smart-classroom" className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">العودة للوحة معلم المدرسة →</Link>}
       </div>
       {message && <p className="mt-4 text-sm font-bold text-slate-600">{message}</p>}
