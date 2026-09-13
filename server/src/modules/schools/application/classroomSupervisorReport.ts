@@ -4,6 +4,7 @@ import { ClassroomSessionModel } from "../../../models/ClassroomSession.js";
 import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
 import { Types } from "mongoose";
+import { buildClassroomCompetitionStandings } from "./classroomCompetitionScoring.js";
 import { resolveSchoolContexts } from "./schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "./schoolEntitlementResolver.js";
 
@@ -85,7 +86,7 @@ export const buildClassroomSessionReport = async (session: any) => {
       schoolId: String(session.schoolId),
       groupIds: String(session.classId),
       isActive: { $ne: false },
-    }).select("id _id").lean(),
+    }).select("id _id name displayName").lean(),
   ]);
 
   const expectedStudentIds = new Set<string>([
@@ -93,6 +94,28 @@ export const buildClassroomSessionReport = async (session: any) => {
     ...rosterUsers.map((student: any) => idOf(student.id || student._id)),
   ].filter(Boolean));
   const joinedStudentIds = new Set(participants.map((participant: any) => idOf(participant.studentId)));
+  const studentNameById = new Map<string, string>();
+  rosterUsers.forEach((student: any) => {
+    const name = String(student.displayName || student.name || "طالب");
+    if (student.id) studentNameById.set(String(student.id), name);
+    if (student._id) studentNameById.set(String(student._id), name);
+  });
+
+  const missingStudentIds = Array.from(joinedStudentIds).filter((studentId) => !studentNameById.has(studentId));
+  if (missingStudentIds.length > 0) {
+    const objectIds = missingStudentIds.filter((studentId) => Types.ObjectId.isValid(studentId));
+    const fallbackUsers = await UserModel.find({
+      $or: [
+        { id: { $in: missingStudentIds } },
+        ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+      ],
+    }).select("id _id name displayName").lean();
+    fallbackUsers.forEach((student: any) => {
+      const name = String(student.displayName || student.name || "طالب");
+      if (student.id) studentNameById.set(String(student.id), name);
+      if (student._id) studentNameById.set(String(student._id), name);
+    });
+  }
 
   const questionReports = (session.questionSnapshots || []).map((question: any, index: number) => {
     const questionResponses = responses.filter((response: any) => idOf(response.questionId) === idOf(question.questionId));
@@ -146,6 +169,24 @@ export const buildClassroomSessionReport = async (session: any) => {
       ? Math.max(0, Math.round((batchEndedMs - batchStartedMs) / 1000))
       : null;
     const skillIds = Array.from(new Set(batchQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)));
+    const batchResponseRows = responses
+      .filter((response: any) => questionIds.includes(idOf(response.questionId)))
+      .map((response: any) => ({
+        studentId: idOf(response.studentId),
+        isCorrect: Boolean(response.isCorrect),
+        submittedAt: response.submittedAt || null,
+      }));
+    const podium = buildClassroomCompetitionStandings(batchResponseRows)
+      .slice(0, 3)
+      .map((entry, rank) => ({
+        rank: rank + 1,
+        studentId: entry.studentId,
+        name: studentNameById.get(entry.studentId) || "طالب",
+        answered: entry.answered,
+        correct: entry.correct,
+        accuracy: entry.accuracy,
+        score: entry.score,
+      }));
     return {
       batchId: idOf(batch.batchId),
       number: index + 1,
@@ -160,6 +201,8 @@ export const buildClassroomSessionReport = async (session: any) => {
         challengeDurationSeconds: batch.challengeDurationSeconds ?? null,
         timerStartedAt: batch.timerStartedAt || null,
         timerEndsAt: batch.timerEndsAt || null,
+        scoring: { correctAnswerPoints: 100, speedBonus: false },
+        podium: batch.competitionEnabled ? podium : [],
       },
       totals: {
         questions: batchQuestions.length,
