@@ -6,6 +6,16 @@ import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import { useAuth } from '../contexts/AuthContext';
 import { SmartClassroomExamRunner, type ClassroomExamQuestion } from '../components/classroom/SmartClassroomExamRunner';
 
+type ChallengeState = {
+  activeBatchId?: string;
+  challengeQuestionIds?: string[];
+  competitionEnabled?: boolean;
+  challengeDurationSeconds?: number | null;
+  timerStartedAt?: string | null;
+  timerEndsAt?: string | null;
+  expired?: boolean;
+};
+
 export const ClassroomStudentLive: React.FC = () => {
   const { sessionId = '' } = useParams();
   const { user, loading: authLoading } = useAuth();
@@ -19,6 +29,7 @@ export const ClassroomStudentLive: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [joiningInstant, setJoiningInstant] = useState(false);
   const [sessionEnded, setSessionEnded] = useState(false);
+  const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const publishedSignatureRef = useRef('');
 
   const clearLocalClassroomState = useCallback(() => {
@@ -30,6 +41,7 @@ export const ClassroomStudentLive: React.FC = () => {
     setAnswers({});
     setSubmitted(false);
     setActiveIndex(0);
+    setChallengeState(null);
     publishedSignatureRef.current = '';
   }, []);
 
@@ -42,11 +54,14 @@ export const ClassroomStudentLive: React.FC = () => {
   const loadCurrent = useCallback(async () => {
     if (sessionEnded || !sessionId) return;
     try {
-      const current = await api.getClassroomCurrentQuestion(sessionId);
+      const [current, challenge] = await Promise.all([
+        api.getClassroomCurrentQuestion(sessionId),
+        api.get<ChallengeState>(`/classroom/sessions/${encodeURIComponent(sessionId)}/challenge-state`).catch(() => null),
+      ]);
       const nextQuestions: ClassroomExamQuestion[] = Array.isArray(current?.questions) && current.questions.length > 0
         ? current.questions
         : current?.question ? [current.question] : [];
-      const signature = nextQuestions.map((question) => question.questionId).join('|');
+      const signature = String(current?.submissionKey || nextQuestions.map((question) => question.questionId).join('|'));
       const serverSubmitted = Boolean(current?.submitted);
       if (signature !== publishedSignatureRef.current) {
         publishedSignatureRef.current = signature;
@@ -56,8 +71,10 @@ export const ClassroomStudentLive: React.FC = () => {
       setQuestions(nextQuestions);
       setSubmitted(serverSubmitted);
       setActiveIndex(typeof current?.currentIndex === 'number' ? current.currentIndex : 0);
+      setChallengeState(challenge);
     } catch {
       setQuestions([]);
+      setChallengeState(null);
     }
   }, [sessionId, sessionEnded]);
 
@@ -134,12 +151,12 @@ export const ClassroomStudentLive: React.FC = () => {
   };
 
   const selectAnswer = (questionIndex: number, optionIndex: number) => {
-    if (submitted || submitting) return;
+    if (submitted || submitting || challengeState?.expired) return;
     setAnswers((current) => ({ ...current, [questionIndex]: optionIndex }));
   };
 
   const submitAnswers = async () => {
-    if (submitted || submitting || !sessionId) return;
+    if (submitted || submitting || !sessionId || challengeState?.expired) return;
     const finalAnswers = Object.entries(answers).flatMap(([indexText, selectedOptionIndex]) => {
       const question = questions[Number(indexText)];
       return question ? [{ questionId: question.questionId, selectedOptionIndex }] : [];
@@ -213,20 +230,22 @@ export const ClassroomStudentLive: React.FC = () => {
   }
 
   const activeQuestion = questions[activeIndex] || questions[0];
-  const isChallenge = Boolean(activeQuestion?.type === 'challenge' || activeQuestion?.text?.includes('[تحدي]') || activeQuestion?.text?.includes('تحدي'));
+  const challengeQuestionIds = challengeState?.challengeQuestionIds || [];
+  const isChallenge = Boolean(challengeQuestionIds.includes(activeQuestion?.questionId));
 
   return (
     <SmartClassroomExamRunner
       questions={questions}
       initialIndex={activeIndex}
       durationMinutes={10}
+      deadlineAt={isChallenge && challengeState?.competitionEnabled ? challengeState.timerEndsAt || null : null}
       isChallenge={isChallenge}
       answers={answers}
       onSelectAnswer={selectAnswer}
       onSubmit={() => void submitAnswers()}
       submitted={submitted}
       submitting={submitting}
-      message={message}
+      message={challengeState?.expired && isChallenge ? 'انتهى وقت التحدي على الخادم.' : message}
     />
   );
 };
