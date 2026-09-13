@@ -4,6 +4,7 @@ const classroomParticipantSchema = new Schema({
   sessionId: { type: String, required: true, index: true },
   studentId: { type: String, required: true, index: true },
   joinedAt: { type: Date, default: Date.now },
+  pendingSubmissionKeys: { type: [String], default: [] },
   finalizedSubmissionKeys: { type: [String], default: [] },
 }, { timestamps: true });
 
