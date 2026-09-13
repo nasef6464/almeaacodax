@@ -95,12 +95,13 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
         return;
       }
       const signature = nextQuestions.map((question) => question.questionId).join('|');
+      const serverSubmitted = Boolean(result?.submitted);
       if (signature !== publishedSignatureRef.current) {
         publishedSignatureRef.current = signature;
         setAnswers({});
-        setSubmitted(false);
-        setMessage('');
+        setMessage(serverSubmitted ? 'تم التسليم النهائي لهذه الدفعة.' : '');
       }
+      setSubmitted(serverSubmitted);
       setQuestionsList(nextQuestions);
       const active = typeof result.currentIndex === 'number' ? result.currentIndex : 0;
       setActiveIdx(active);
@@ -167,6 +168,10 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       setJoined(true);
       setShowJoinModal(false);
       setIsOpen(true);
+      setAnswers({});
+      setSubmitted(false);
+      lastQuestionIdRef.current = '';
+      publishedSignatureRef.current = '';
       playChime();
       setMessage('تم الانضمام بنجاح.');
     } catch (error: any) {
@@ -186,19 +191,23 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       setMessage('اختر إجابة واحدة على الأقل قبل التسليم.');
       return;
     }
+    const finalAnswers = entries.flatMap(([indexText, optionIndex]) => {
+      const question = questionsList[Number(indexText)];
+      return question ? [{ questionId: question.questionId, selectedOptionIndex: optionIndex }] : [];
+    });
+    if (finalAnswers.length === 0) {
+      setMessage('تعذر تحديد الأسئلة المطلوب تسليمها.');
+      return;
+    }
     setSubmitting(true);
-    setMessage('جارٍ حفظ إجاباتك…');
+    setMessage('جارٍ تثبيت التسليم النهائي…');
     try {
-      for (const [indexText, optionIndex] of entries) {
-        const question = questionsList[Number(indexText)];
-        if (!question) continue;
-        await api.answerClassroomQuestion(sessionId, question.questionId, optionIndex);
-      }
+      await api.post(`/classroom/sessions/${encodeURIComponent(sessionId)}/submit`, { answers: finalAnswers });
       setSubmitted(true);
-      setMessage('تم تسليم إجاباتك بنجاح للمعلم.');
+      setMessage('تم التسليم النهائي لهذه الدفعة بنجاح.');
     } catch (error: any) {
       setSubmitted(false);
-      setMessage(error?.message || 'تعذر تسليم كل الإجابات. راجع الاتصال وحاول مرة أخرى.');
+      setMessage(error?.message || 'تعذر تثبيت التسليم النهائي. راجع الاتصال وحاول مرة أخرى.');
     } finally {
       setSubmitting(false);
     }
@@ -223,7 +232,7 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       <div className="fixed bottom-6 left-6 z-40 flex flex-col items-start gap-2" dir="rtl">
         {!isOpen && (
           <button type="button" onClick={() => joined ? setIsOpen(true) : setShowJoinModal(true)} className={`group flex items-center gap-2.5 rounded-full px-4 py-3 font-black shadow-xl ${joined && questionsList.length > 0 && !submitted ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-white' : joined ? 'bg-gradient-to-r from-indigo-600 to-slate-900 text-white' : 'border border-indigo-200 bg-white text-indigo-700'}`}>
-            <Presentation size={20} /><span className="text-xs sm:text-sm">{joined ? questionsList.length > 0 && !submitted ? `${questionsList.length > 1 ? `${questionsList.length} أسئلة نشطة` : 'سؤال تفاعلي نشط'} الآن` : 'الحصة الذكية جارية' : 'انضم للفصل الذكي'}</span>
+            <Presentation size={20} /><span className="text-xs sm:text-sm">{joined ? questionsList.length > 0 && !submitted ? `${questionsList.length > 1 ? `${questionsList.length} أسئلة نشطة` : 'سؤال تفاعلي نشط'} الآن` : submitted ? 'تم تسليم الدفعة' : 'الحصة الذكية جارية' : 'انضم للفصل الذكي'}</span>
           </button>
         )}
         {!joined && message.includes('انتهت الحصة') && <div className="max-w-xs rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-xs font-bold text-emerald-700 shadow-lg">{message}</div>}
