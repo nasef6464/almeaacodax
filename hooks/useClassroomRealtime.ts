@@ -35,6 +35,7 @@ export const useClassroomRealtime = (
   socket.io.on('reconnect', joinWorkspace);
   socket.on('question:published', onChange);
   socket.on('response:updated', onChange);
+  socket.on('competition:updated', onChange);
   socket.on('session:ended', () => {
     onSessionEnded?.();
     onChange();
@@ -43,6 +44,9 @@ export const useClassroomRealtime = (
   return () => {
     socket.off('connect', joinWorkspace);
     socket.io.off('reconnect', joinWorkspace);
+    socket.off('question:published', onChange);
+    socket.off('response:updated', onChange);
+    socket.off('competition:updated', onChange);
     socket.disconnect();
   };
 }, [sessionId, onChange, onSessionEnded]);
