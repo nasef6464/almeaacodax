@@ -1,5 +1,6 @@
 import type { Router } from "express";
 import { StatusCodes } from "http-status-codes";
+import { Types } from "mongoose";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../../middleware/auth.js";
 import { ClassroomParticipantModel } from "../../models/ClassroomParticipant.js";
@@ -138,17 +139,26 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
 
     const batch = activeBatch(session);
     if (!batch) return res.status(StatusCodes.CONFLICT).json({ message: "No active question batch to configure" });
-    const batchQuestionIds = new Set((batch.questionIds || []).map(String));
-    const challengeQuestionIds = Array.from(new Set(payload.challengeQuestionIds.map(String)));
-    if (challengeQuestionIds.some((questionId) => !batchQuestionIds.has(questionId))) {
+    const batchQuestionIds = Array.from(new Set((batch.questionIds || []).map(String)));
+    const batchQuestionSet = new Set(batchQuestionIds);
+    const requestedChallengeIds = Array.from(new Set(payload.challengeQuestionIds.map(String)));
+    if (requestedChallengeIds.some((questionId) => !batchQuestionSet.has(questionId))) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Challenge questions must belong to the active batch" });
     }
+    if (payload.competitionEnabled && requestedChallengeIds.length > 0 && requestedChallengeIds.length !== batchQuestionIds.length) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "التحدي المؤقت يجب أن يشمل الدفعة النشطة كاملة. أنشئ دفعة مستقلة للسؤال إذا أردت تحدياً لسؤال واحد فقط.",
+      });
+    }
 
-    const timerStartedAt = new Date();
-    const timerEndsAt = new Date(timerStartedAt.getTime() + payload.durationSeconds * 1000);
+    const challengeQuestionIds = payload.competitionEnabled
+      ? (requestedChallengeIds.length > 0 ? batchQuestionIds : [])
+      : requestedChallengeIds;
+    const timerStartedAt = payload.competitionEnabled ? new Date() : null;
+    const timerEndsAt = timerStartedAt ? new Date(timerStartedAt.getTime() + payload.durationSeconds * 1000) : null;
     batch.challengeQuestionIds = challengeQuestionIds;
     batch.competitionEnabled = payload.competitionEnabled;
-    batch.challengeDurationSeconds = payload.durationSeconds;
+    batch.challengeDurationSeconds = payload.competitionEnabled ? payload.durationSeconds : null;
     batch.timerStartedAt = timerStartedAt;
     batch.timerEndsAt = timerEndsAt;
     await session.save();
@@ -191,10 +201,21 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
     }
 
     const studentIds = Array.from(byStudent.keys());
+    const objectIds = studentIds.filter((id) => Types.ObjectId.isValid(id));
     const users = studentIds.length > 0
-      ? await UserModel.find({ _id: { $in: studentIds } }).select("name displayName").lean() as any[]
+      ? await UserModel.find({
+          $or: [
+            { id: { $in: studentIds } },
+            ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+          ],
+        }).select("id name displayName").lean() as any[]
       : [];
-    const nameById = new Map(users.map((user) => [String(user._id), String(user.displayName || user.name || "طالب")]));
+    const nameById = new Map<string, string>();
+    users.forEach((user) => {
+      const name = String(user.displayName || user.name || "طالب");
+      if (user.id) nameById.set(String(user.id), name);
+      if (user._id) nameById.set(String(user._id), name);
+    });
 
     const leaderboard = Array.from(byStudent.values())
       .map((entry) => ({
