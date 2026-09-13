@@ -34,6 +34,8 @@ check('question batches are persisted on the session', sessionModel.includes('qu
 check('new pushed questions create a numbered batch', teacherRoutes.includes('newBatchId = randomUUID()') && teacherRoutes.includes('label: `الدفعة ${session.questionBatches.length + 1}`'));
 check('switching batches closes the previous active batch', teacherRoutes.includes('closeActiveBatch(session') && teacherRoutes.includes('activateBatchForQuestion'));
 check('ending the session closes the active batch', routeSupport.includes('activeBatch.endedAt = endedAt') && routeSupport.includes('session.activeBatchId = ""'));
+check('canonical report includes per-batch totals', reportBuilder.includes('durationSeconds') && reportBuilder.includes('accuracy: answered > 0 ? Math.round((correct / answered) * 100) : null'));
+check('canonical batch report carries skill ids', reportBuilder.includes('skillIds = Array.from(new Set(batchQuestions.flatMap'));
 check('live push UI previews standalone question images', pushModal.includes('question.imageUrl'));
 check('student current-question read requires explicit participant', studentRoutes.includes('Join the session before viewing questions'));
 check('student answer requires explicit participant', studentRoutes.includes('Join the session before answering'));
