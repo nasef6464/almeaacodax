@@ -57,5 +57,7 @@ check('ending a session persists a canonical report snapshot', routeSupport.incl
 check('ended history reuses immutable report snapshot', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('return session.reportSnapshot'));
 check('teacher active-session lookup is school scoped for teachers', teacherRoutes.includes('schoolId is required for teacher active session lookup') && teacherRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, schoolId)'));
 check('teacher history requires an entitled assigned school', supervisorRoutes.includes('schoolId is required for teacher history') && supervisorRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, requestedSchoolId)') && supervisorRoutes.includes('resolveSchoolEntitlement(requestedSchoolId, "SMART_CLASSROOM")'));
+check('teacher and supervisor history expose finalized sessions only', supervisorRoutes.includes('status: { $in: ["ended", "archived"] }'));
+check('supervisor today uses actual live timing and includes currently live sessions', supervisorRoutes.includes('{ status: "live" }') && supervisorRoutes.includes('{ startedAt: { $gte: start } }'));
 
 console.log(`Smart Classroom live journey contract: PASS (${checks.length}/${checks.length})`);
