@@ -1,5 +1,5 @@
 import type { AccessCode, B2BPackage, Group, User } from '../../../types';
-import type { SchoolReport, SchoolWorkspaceTab } from './contracts';
+import type { CanonicalSchoolWorkspaceTab, SchoolReport, SchoolWorkspaceTab } from './contracts';
 
 export type { SchoolWorkspaceTab } from './contracts';
 
@@ -9,7 +9,7 @@ export interface SchoolWorkspaceReadinessCheck {
     label: string;
     isReady: boolean;
     hint: string;
-    tab: SchoolWorkspaceTab;
+    tab: CanonicalSchoolWorkspaceTab;
 }
 
 export interface SchoolOperatingStep {
@@ -19,7 +19,7 @@ export interface SchoolOperatingStep {
     description: string;
     statusLabel: string;
     isReady: boolean;
-    tab: SchoolWorkspaceTab;
+    tab: CanonicalSchoolWorkspaceTab;
     buttonLabel: string;
 }
 
@@ -29,7 +29,7 @@ export interface SchoolDecisionCard {
     value: string;
     hint: string;
     tone: string;
-    tab?: SchoolWorkspaceTab;
+    tab?: CanonicalSchoolWorkspaceTab;
     target: string;
     actionLabel?: string;
 }
@@ -80,7 +80,7 @@ export const buildSchoolWorkspaceViewModel = ({
             label: 'فصول دراسية',
             isReady: schoolClasses.length > 0,
             hint: schoolClasses.length > 0 ? `${schoolClasses.length} فصل جاهز` : 'أضف فصلًا واحدًا على الأقل',
-            tab: 'overview',
+            tab: 'academic',
         },
         {
             label: 'طلاب مسجلون',
@@ -90,25 +90,27 @@ export const buildSchoolWorkspaceViewModel = ({
                 : studentsWithoutClass.length > 0
                     ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح`
                     : `${schoolStudents.length} طالب داخل فصول واضحة`,
-            tab: schoolStudents.length === 0 ? 'import' : 'overview',
+            tab: 'people',
         },
         {
             label: 'مشرفون',
             isReady: schoolSupervisors.length > 0,
             hint: schoolSupervisors.length > 0 ? `${schoolSupervisors.length} مشرف/معلم` : 'اربط مشرفًا أو معلمًا بالمدرسة',
-            tab: 'relations',
+            tab: 'people',
         },
         {
             label: 'باقة/مسارات',
             isReady: activeSchoolPackages.length > 0,
-            hint: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة مرتبطة بالمسارات` : 'فعّل باقة مدرسية واحدة على الأقل وحدد مساراتها',
-            tab: 'packages',
+            hint: activeSchoolPackages.length > 0
+                ? `${activeSchoolPackages.length} باقة نشطة مرتبطة بالمسارات`
+                : 'فعّل باقة مدرسية واحدة على الأقل وحدد مساراتها',
+            tab: 'contract',
         },
         {
             label: 'أكواد دخول',
             isReady: activeSchoolCodes.length > 0,
             hint: activeSchoolCodes.length > 0 ? `${activeSchoolCodes.length} كود صالح` : 'ولّد كودًا صالحًا للطلاب',
-            tab: 'packages',
+            tab: 'contract',
         },
     ];
 
@@ -122,7 +124,7 @@ export const buildSchoolWorkspaceViewModel = ({
         activeSchoolCodes.length === 0 ? 'ولّد كود دخول صالحًا إذا كانت المدرسة ستسجل الطلاب بالأكواد.' : '',
         totalSeats > 0 && usedSeats >= totalSeats ? 'تم استهلاك كل المقاعد المتاحة، راجع سعة الباقات.' : '',
         studentsWithoutClass.length > 0 ? 'يوجد طلاب بلا فصل، يفضل نقلهم لفصول قبل متابعة التقارير.' : '',
-        studentsWithoutParent.length > 0 ? 'يوجد طلاب بلا ولي أمر مرتبط، راجع تبويب الربط والمتابعة قبل تسليم الحسابات.' : '',
+        studentsWithoutParent.length > 0 ? 'يوجد طلاب بلا ولي أمر مرتبط، راجع المجتمع المدرسي قبل تسليم الحسابات.' : '',
     ].filter(Boolean);
 
     const readinessStatusLabel = readinessScore === readinessChecks.length
@@ -130,7 +132,8 @@ export const buildSchoolWorkspaceViewModel = ({
         : readinessScore >= 2
             ? 'قريبة من التسليم'
             : 'تحتاج تجهيز';
-    const readinessNextStep = operationalWarnings[0] || 'المدرسة جاهزة تشغيليًا. راجع تقرير الأداء أسبوعيًا بعد بدء الطلاب.';
+    const readinessNextStep = operationalWarnings[0]
+        || 'المدرسة جاهزة تشغيليًا. راجع تقرير الأداء أسبوعيًا بعد بدء الطلاب.';
 
     const commercialOperatingSteps: SchoolOperatingStep[] = [
         {
@@ -140,7 +143,7 @@ export const buildSchoolWorkspaceViewModel = ({
             description: schoolClasses.length > 0 ? 'الفصول جاهزة لاستقبال الطلاب.' : 'ابدأ بإنشاء فصول المدرسة.',
             statusLabel: schoolClasses.length > 0 ? 'جاهز' : 'ناقص',
             isReady: schoolClasses.length > 0,
-            tab: 'overview',
+            tab: 'academic',
             buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصول',
         },
         {
@@ -152,30 +155,32 @@ export const buildSchoolWorkspaceViewModel = ({
                 : 'الطلاب مربوطون داخل نطاق المدرسة.',
             statusLabel: schoolStudents.length > 0 && studentsWithoutClass.length === 0 ? 'جاهز' : 'راجع',
             isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
-            tab: 'import',
-            buttonLabel: schoolStudents.length > 0 ? 'استيراد/إضافة طلاب' : 'إضافة الطلاب',
+            tab: 'people',
+            buttonLabel: schoolStudents.length > 0 ? 'إدارة الطلاب' : 'إضافة الطلاب',
         },
         {
             id: 'supervisors',
             title: 'المشرفون',
             metric: `${schoolSupervisors.length} مشرف`,
-            description: schoolSupervisors.length > 0 ? 'يمكن متابعة المدرسة أو الفصول حسب النطاق.' : 'اربط مدير المدرسة أو مشرفي الفصول.',
+            description: schoolSupervisors.length > 0
+                ? 'يمكن متابعة المدرسة أو الفصول حسب النطاق.'
+                : 'اربط مدير المدرسة أو مشرفي الفصول.',
             statusLabel: schoolSupervisors.length > 0 ? 'جاهز' : 'ناقص',
             isReady: schoolSupervisors.length > 0,
-            tab: 'relations',
-            buttonLabel: 'ربط المشرفين',
+            tab: 'people',
+            buttonLabel: 'إدارة المنسوبين',
         },
         {
             id: 'access',
-            title: 'الباقة والمسارات',
+            title: 'العقد والوصول',
             metric: `${activeSchoolPackages.length} باقة`,
             description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
                 ? 'الباقة والمسارات والأكواد جاهزة للتسليم.'
                 : 'فعّل باقة مدرسية مرتبطة بالمسارات وولّد كود دخول.',
             statusLabel: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
             isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
-            tab: 'packages',
-            buttonLabel: 'إدارة الباقات والمسارات',
+            tab: 'contract',
+            buttonLabel: 'إدارة العقد والباقات',
         },
         {
             id: 'reports',
@@ -193,7 +198,10 @@ export const buildSchoolWorkspaceViewModel = ({
 
     const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady)
         || commercialOperatingSteps[commercialOperatingSteps.length - 1];
-    const currentOperatingStepIndex = Math.max(0, commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id));
+    const currentOperatingStepIndex = Math.max(
+        0,
+        commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id),
+    );
     const readinessPercent = Math.round((readinessScore / Math.max(readinessChecks.length, 1)) * 100);
     const handoverDecisionTitle = handoverBlockingGaps.length === 0
         ? 'جاهزة للتسليم التجاري'
@@ -242,8 +250,8 @@ export const buildSchoolWorkspaceViewModel = ({
                 ? `${schoolSupervisors.length} مشرف أو معلم مرتبط بالنطاق.`
                 : 'اربط مدير المدرسة أو مشرفي الفصول قبل التسليم.',
             tone: schoolSupervisors.length > 0 ? 'blue' : 'amber',
-            tab: 'relations',
-            target: 'school-wide-supervisors-panel',
+            tab: 'people',
+            target: 'school-people-hub-tab',
         },
         {
             id: 'access',
@@ -253,7 +261,7 @@ export const buildSchoolWorkspaceViewModel = ({
                 ? `${activeSchoolCodes.length} كود صالح للتوزيع.`
                 : 'أنشئ باقة مرتبطة بالمسارات وكود دخول لتجنب شراء الطلاب بشكل فردي.',
             tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
-            tab: 'packages',
+            tab: 'contract',
             target: 'school-packages-panel',
         },
         {
@@ -263,15 +271,13 @@ export const buildSchoolWorkspaceViewModel = ({
             hint: nextOperatingStep.description,
             tone: nextOperatingStep.isReady ? 'emerald' : 'slate',
             tab: nextOperatingStep.tab,
-            target: nextOperatingStep.id === 'supervisors'
-                ? 'school-wide-supervisors-panel'
+            target: nextOperatingStep.id === 'supervisors' || nextOperatingStep.id === 'students'
+                ? 'school-people-hub-tab'
                 : nextOperatingStep.id === 'access'
                     ? 'school-packages-panel'
                     : nextOperatingStep.id === 'reports'
                         ? 'school-reports-panel'
-                        : nextOperatingStep.id === 'students'
-                            ? 'school-students-panel'
-                            : 'school-classes-panel',
+                        : 'school-classes-panel',
         },
     ];
 
@@ -280,9 +286,12 @@ export const buildSchoolWorkspaceViewModel = ({
             id: 'classes',
             label: 'الفصول',
             value: `${schoolClasses.length} فصل`,
-            hint: schoolClasses.length > 0 ? 'راجع توزيع الطلاب والمشرفين داخل كل فصل.' : 'ابدأ بإنشاء الفصول قبل استيراد الطلاب.',
+            hint: schoolClasses.length > 0
+                ? 'راجع توزيع الطلاب والمشرفين داخل كل فصل.'
+                : 'ابدأ بإنشاء الفصول قبل استيراد الطلاب.',
             actionLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إنشاء الفصول',
-            target: 'school-class-creation-panel',
+            target: 'school-classes-panel',
+            tab: 'academic',
             tone: schoolClasses.length > 0 ? 'emerald' : 'amber',
         },
         {
@@ -293,36 +302,41 @@ export const buildSchoolWorkspaceViewModel = ({
                 ? `${studentsWithoutClass.length} طالب يحتاجون فصل.`
                 : schoolStudents.length > 0
                     ? 'الطلاب مرتبطون ويمكن متابعة توزيعهم.'
-                    : 'أضف طالبًا سريعًا أو استورد ملف المدرسة.',
+                    : 'أضف طالبًا أو استورد ملف المدرسة.',
             actionLabel: schoolStudents.length > 0 ? 'تنظيم الطلاب' : 'إضافة طالب',
-            target: 'school-students-panel',
+            target: 'school-people-hub-tab',
+            tab: 'people',
             tone: studentsWithoutClass.length > 0 ? 'amber' : schoolStudents.length > 0 ? 'emerald' : 'indigo',
         },
         {
             id: 'supervisors',
             label: 'المشرفون',
             value: `${schoolSupervisors.length} مشرف`,
-            hint: schoolSupervisors.length > 0 ? 'الصلاحيات موزعة بين المدرسة والفصول.' : 'اربط مدير المدرسة أو مشرفي الفصول.',
-            actionLabel: 'ربط مشرف',
-            target: 'school-relations-quick-supervisor-card',
-            tab: 'relations',
+            hint: schoolSupervisors.length > 0
+                ? 'الصلاحيات موزعة بين المدرسة والفصول.'
+                : 'اربط مدير المدرسة أو مشرفي الفصول.',
+            actionLabel: 'إدارة المنسوبين',
+            target: 'school-people-hub-tab',
+            tab: 'people',
             tone: schoolSupervisors.length > 0 ? 'emerald' : 'purple',
         },
         {
             id: 'access',
-            label: 'الباقة/المسارات',
+            label: 'العقد/الباقات',
             value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة` : 'بدون باقة',
-            hint: activeSchoolCodes.length > 0 ? `${activeSchoolCodes.length} كود جاهز للتسليم.` : 'فعّل باقة مرتبطة بالمسارات أو أنشئ أكواد المدرسة.',
-            actionLabel: 'الباقة والمسارات',
+            hint: activeSchoolCodes.length > 0
+                ? `${activeSchoolCodes.length} كود جاهز للتسليم.`
+                : 'فعّل باقة مرتبطة بالمسارات أو أنشئ أكواد المدرسة.',
+            actionLabel: 'العقد والباقات',
             target: 'school-packages-panel',
-            tab: 'packages',
+            tab: 'contract',
             tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
         },
     ];
 
     const schoolLaunchPlan = [
         ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقة والمسارات والأكواد', readinessNextStep],
-        ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقة والمسارات'],
+        ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب العقد والباقات'],
         ['أول 3 أيام', 'متابعة الطلاب الذين لم يبدأوا التدريب أو الاختبارات', studentsWithoutClass.length > 0 ? 'ابدأ بالطلاب غير المصنفين في فصول' : 'راجع بوابة المشرف يوميًا'],
         ['نهاية الأسبوع الأول', 'تصدير تقرير الأداء ومشاركته مع الإدارة', schoolReport ? 'تقرير الأداء متاح من تبويب التقارير' : 'سيظهر التقرير بعد بدء الطلاب في القياس'],
     ];

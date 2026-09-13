@@ -53,7 +53,24 @@ export type SingleStudentDraft = {
     password: string;
 };
 
-export type SchoolWorkspaceTab = 'dashboard' | 'overview' | 'packages' | 'relations' | 'import' | 'reports' | 'people' | 'academic' | 'services' | 'contract' | 'settings';
+/** Primary navigation exposed by the unified school workspace. */
+export type CanonicalSchoolWorkspaceTab =
+    | 'overview'
+    | 'people'
+    | 'academic'
+    | 'services'
+    | 'contract'
+    | 'reports'
+    | 'settings';
+
+/**
+ * Transitional aliases retained only so older callbacks/tests can migrate
+ * without breaking runtime behavior. New UI/navigation code must use the
+ * canonical tabs above.
+ */
+export type LegacySchoolWorkspaceTab = 'dashboard' | 'packages' | 'relations' | 'import';
+
+export type SchoolWorkspaceTab = CanonicalSchoolWorkspaceTab | LegacySchoolWorkspaceTab;
 
 export type SchoolListMode = 'active' | 'needs_setup' | 'ready' | 'all';
 
