@@ -161,11 +161,15 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
         publishedMode: sessionMode === 'speed_challenge' ? 'single' : 'batch',
         autoStart: true,
       });
+      if (sessionMode === 'speed_challenge') {
+        await api.post(`/classroom/sessions/${encodeURIComponent(result.sessionId)}/competition/configure`, {
+          challengeQuestionIds: challengeIdsToLaunch,
+          durationSeconds: challengeTimerSeconds,
+          competitionEnabled: true,
+        });
+      }
       sessionStorage.setItem(`classroom_pin_${result.sessionId}`, result.pin);
       sessionStorage.setItem(`classroom_challenges_${result.sessionId}`, JSON.stringify(challengeIdsToLaunch));
-      if (sessionMode === 'speed_challenge') {
-        sessionStorage.setItem(`classroom_challenge_timer_${result.sessionId}`, String(challengeTimerSeconds));
-      }
       onSuccess?.(result.sessionId, result.pin);
       onClose();
       navigate(`/classroom/${result.sessionId}/teacher`);
@@ -279,7 +283,7 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
             </button>
             <button type="button" onClick={() => setSessionMode('speed_challenge')} className={`rounded-2xl border p-3 text-right transition-all ${sessionMode === 'speed_challenge' ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/50 shadow-xs' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'}`}>
               <div className="flex items-center gap-1.5 text-xs font-black text-amber-900 dark:text-amber-300"><Zap size={15} className="text-amber-500" /> سؤال تحدي</div>
-              <p className="mt-1 text-[10px] text-slate-500">سؤال مع مؤقت واجهة</p>
+              <p className="mt-1 text-[10px] text-slate-500">مؤقت خادمي متزامن بين الأجهزة</p>
             </button>
           </div>
 
@@ -324,10 +328,11 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
 
           {sessionMode === 'speed_challenge' && (
             <div className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50/40 p-4 dark:border-amber-900 dark:bg-amber-950/20">
-              <div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-amber-950 dark:text-amber-200">مؤقت الواجهة:</span><div className="flex gap-2">{[30, 45, 60, 90].map((seconds) => <button key={seconds} type="button" onClick={() => setChallengeTimerSeconds(seconds)} className={`rounded-lg px-2.5 py-1 text-xs font-black ${challengeTimerSeconds === seconds ? 'bg-amber-500 text-white' : 'bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>{seconds}ث</button>)}</div></div>
+              <div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-amber-950 dark:text-amber-200">مؤقت التحدي المتزامن:</span><div className="flex gap-2">{[30, 45, 60, 90].map((seconds) => <button key={seconds} type="button" onClick={() => setChallengeTimerSeconds(seconds)} className={`rounded-lg px-2.5 py-1 text-xs font-black ${challengeTimerSeconds === seconds ? 'bg-amber-500 text-white' : 'bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>{seconds}ث</button>)}</div></div>
               <select value={selectedSingleQuestionId} onChange={(event) => setSelectedSingleQuestionId(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                 {availableQuestions.map((question) => <option key={question.questionId} value={question.questionId}>{question.text?.replace(/<[^>]+>/g, '').slice(0, 60)} ({question.subject || 'عام'} - {question.difficulty || 'متوسط'})</option>)}
               </select>
+              <p className="text-[11px] font-bold text-amber-800 dark:text-amber-300">الوقت يُثبت في الخادم ويستمر بشكل صحيح بعد Refresh أو الانتقال بين الأجهزة.</p>
             </div>
           )}
 
