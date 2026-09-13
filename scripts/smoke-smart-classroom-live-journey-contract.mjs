@@ -9,6 +9,7 @@ const teacherRoutes = read('server/src/routes/classroom/registerClassroomTeacher
 const studentRoutes = read('server/src/routes/classroom/registerClassroomStudentRoutes.ts');
 const aggregateRoutes = read('server/src/routes/classroom/registerClassroomAggregateRoutes.ts');
 const supervisorRoutes = read('server/src/routes/classroom/registerClassroomSupervisorRoutes.ts');
+const templateRoutes = read('server/src/routes/classroom/registerClassroomTemplateRoutes.ts');
 const routeSupport = read('server/src/routes/classroom/classroomRouteSupport.ts');
 const reportBuilder = read('server/src/modules/schools/application/classroomSupervisorReport.ts');
 const authContext = read('contexts/AuthContext.tsx');
@@ -44,6 +45,8 @@ check('student school access uses authoritative school contexts', studentRoutes.
 check('student active-session discovery only searches entitled active school contexts', studentRoutes.includes('entitledSchoolIds') && studentRoutes.includes('schoolId: { $in: entitledSchoolIds }'));
 check('student live routes recheck Smart Classroom entitlement', studentRoutes.includes('smartClassroomEnabled') && studentRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);
 check('teacher question/publish/append routes recheck Smart Classroom entitlement', teacherRoutes.includes('smartClassroomEnabled') && teacherRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);
+check('teacher live control requires active school context and exact class assignment', teacherRoutes.includes('canTeacherControlSession') && teacherRoutes.includes('hasClassAssignment') && teacherRoutes.match(/canTeacherControlSession\(req\.authUser!, session\)/g)?.length >= 4);
+check('template routes require active school access and Smart Classroom entitlement', templateRoutes.includes('ensureTeacherSchoolAccess') && templateRoutes.includes('smartClassroomEnabled') && templateRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 3);
 check('aggregate denies non-admin access when entitlement is disabled', aggregateRoutes.includes('req.authUser!.role !== "admin"') && aggregateRoutes.includes('resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")'));
 check('aggregate revalidates teacher class assignment', aggregateRoutes.includes('TeachingAssignmentModel.exists') && aggregateRoutes.includes('hasClassAssignment'));
 check('aggregate revalidates student school membership', aggregateRoutes.includes('resolveSchoolContexts') && aggregateRoutes.includes('hasSchoolContext'));
