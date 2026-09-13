@@ -53,6 +53,9 @@ const activateBatchForQuestion = (session: any, questionId: string, startedAt = 
   session.activeBatchId = targetBatch.batchId;
 };
 
+const smartClassroomEnabled = async (schoolId: string) =>
+  (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed;
+
 export function registerClassroomTeacherRoutes(classroomRouter: Router) {
   classroomRouter.get("/teacher/active-session", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const schoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim() ? req.query.schoolId.trim() : undefined;
@@ -61,8 +64,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       if (!(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
       }
-      const entitlement = await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM");
-      if (!entitlement.allowed) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+      if (!(await smartClassroomEnabled(schoolId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     }
     const query: Record<string, any> = { teacherId: req.authUser!.id, status: "live" };
     if (schoolId) query.schoolId = schoolId;
@@ -89,8 +91,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
 
   classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const payload = createSchema.parse(req.body);
-    const entitlement = await resolveSchoolEntitlement(payload.schoolId, "SMART_CLASSROOM");
-    if (!entitlement.allowed) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    if (!(await smartClassroomEnabled(payload.schoolId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
 
     const classroom = Types.ObjectId.isValid(payload.classId)
       ? await GroupModel.exists({ _id: payload.classId, type: "CLASS", parentId: payload.schoolId })
@@ -167,6 +168,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     if (!(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
     }
+    if (!(await smartClassroomEnabled(schoolId))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const filter: Record<string, any> = { $and: [
       { type: { $in: ["mcq", "true_false"] } },
       { approvalStatus: "approved" },
@@ -198,6 +200,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     }
     if (!canPublishClassroom(session.status as ClassroomSessionStatus)) return res.status(StatusCodes.CONFLICT).json({ message: "Session lifecycle does not allow publishing" });
     if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
 
     const publishAt = new Date();
     const wasNotLive = session.status !== "live";
@@ -242,6 +245,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     const session = await ClassroomSessionModel.findById(req.params.id);
     if (!session || !canMutateClassroomQuestions(session.status as ClassroomSessionStatus)) return res.status(StatusCodes.CONFLICT).json({ message: "الحصة لا تسمح بإضافة أسئلة في حالتها الحالية" });
     if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بتعديل هذه الحصة" });
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
 
     const requestedIds = normalizeQuestionIds(payload.questionIds);
     const snapshots = await loadApprovedVisibleQuestions(requestedIds, session.schoolId, req.authUser!.id);
