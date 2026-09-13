@@ -7,6 +7,7 @@ import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
 import { UserModel } from "../../models/User.js";
 import { projectClassroomQuestionForStudent } from "../../modules/schools/application/classroomQuestionProjection.js";
 import { resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
+import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { classroomSessionId } from "./classroomRouteSupport.js";
@@ -15,6 +16,10 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
   classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
+
+    if (req.authUser!.role !== "admin" && !(await resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")).allowed) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
 
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     const isTeacher = req.authUser!.role === "admin" || String(session.teacherId) === req.authUser!.id;
