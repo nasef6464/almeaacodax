@@ -10,11 +10,11 @@ import { SchoolInterventionModel } from "../../models/SchoolIntervention.js";
 import { StudyPlanModel } from "../../models/StudyPlan.js";
 import { UserModel } from "../../models/User.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
-import { hasActiveSchoolRole } from "../../modules/schools/application/schoolContextResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
 import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomScopeFilter, resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { buildClassroomSchoolIntelligence, buildClassroomSkillEvidence } from "../../modules/schools/application/classroomSchoolIntelligence.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
 
 const interventionSchema = z.object({
   schoolId: z.string().min(1), classId: z.string().optional().default(""), skillId: z.string().min(1),
@@ -32,11 +32,15 @@ export function registerClassroomSupervisorRoutes(classroomRouter: Router) {
     const requestedSchoolId = typeof req.query.schoolId === "string" ? req.query.schoolId.trim() : "";
     const filter: Record<string, any> = {};
     if (req.authUser!.role === "teacher") {
-      filter.teacherId = req.authUser!.id;
-      if (requestedSchoolId) {
-        if (!(await hasActiveSchoolRole(req.authUser!, requestedSchoolId, "teacher"))) return res.status(StatusCodes.FORBIDDEN).json({ message: "School history access denied" });
-        filter.schoolId = requestedSchoolId;
+      if (!requestedSchoolId) return res.status(StatusCodes.BAD_REQUEST).json({ message: "schoolId is required for teacher history" });
+      if (!(await ensureTeacherSchoolAccess(req.authUser!, requestedSchoolId))) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "School history access denied" });
       }
+      if (!(await resolveSchoolEntitlement(requestedSchoolId, "SMART_CLASSROOM")).allowed) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+      }
+      filter.teacherId = req.authUser!.id;
+      filter.schoolId = requestedSchoolId;
     } else if (req.authUser!.role === "school_admin") {
       const schoolId = requestedSchoolId || String(req.authUser!.schoolId || "");
       if (!schoolId) return res.status(StatusCodes.BAD_REQUEST).json({ message: "schoolId is required" });
