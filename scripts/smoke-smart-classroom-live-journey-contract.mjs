@@ -8,6 +8,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const teacherRoutes = read('server/src/routes/classroom/registerClassroomTeacherRoutes.ts');
 const studentRoutes = read('server/src/routes/classroom/registerClassroomStudentRoutes.ts');
 const aggregateRoutes = read('server/src/routes/classroom/registerClassroomAggregateRoutes.ts');
+const supervisorRoutes = read('server/src/routes/classroom/registerClassroomSupervisorRoutes.ts');
 const routeSupport = read('server/src/routes/classroom/classroomRouteSupport.ts');
 const reportBuilder = read('server/src/modules/schools/application/classroomSupervisorReport.ts');
 const authContext = read('contexts/AuthContext.tsx');
@@ -55,5 +56,6 @@ check('realtime reconnect rejoins the room and refreshes canonical state', realt
 check('ending a session persists a canonical report snapshot', routeSupport.includes('session.reportSnapshot = report'));
 check('ended history reuses immutable report snapshot', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('return session.reportSnapshot'));
 check('teacher active-session lookup is school scoped for teachers', teacherRoutes.includes('schoolId is required for teacher active session lookup') && teacherRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, schoolId)'));
+check('teacher history requires an entitled assigned school', supervisorRoutes.includes('schoolId is required for teacher history') && supervisorRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, requestedSchoolId)') && supervisorRoutes.includes('resolveSchoolEntitlement(requestedSchoolId, "SMART_CLASSROOM")'));
 
 console.log(`Smart Classroom live journey contract: PASS (${checks.length}/${checks.length})`);
