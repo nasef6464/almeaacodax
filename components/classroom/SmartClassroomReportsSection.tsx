@@ -12,11 +12,6 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 
-/**
- * Compatibility input type for canonical and legacy server-side report snapshots.
- * The reports screen never reads localStorage; every server payload is normalized
- * into CanonicalClassroomReport before it is displayed or analyzed.
- */
 export interface ClassroomSavedReport {
   sessionId: string;
   schoolId: string;
@@ -30,6 +25,7 @@ export interface ClassroomSavedReport {
   status?: string;
   startedAt?: string;
   endedAt?: string | null;
+  durationMinutes?: number | null;
   participantCount?: number;
   responseCount?: number;
   correctCount?: number;
@@ -42,6 +38,14 @@ export interface ClassroomSavedReport {
     responses: number;
     correct: number;
   };
+  batches?: Array<{
+    batchId: string;
+    number?: number;
+    label?: string;
+    questionIds?: string[];
+    startedAt?: string | null;
+    endedAt?: string | null;
+  }>;
   questions?: Array<{
     index?: number;
     questionId: string;
@@ -77,6 +81,15 @@ type CanonicalQuestionReport = {
   unanswered: number;
 };
 
+type CanonicalBatchReport = {
+  batchId: string;
+  number: number;
+  label: string;
+  questionIds: string[];
+  startedAt: string | null;
+  endedAt: string | null;
+};
+
 type CanonicalClassroomReport = {
   sessionId: string;
   schoolId: string;
@@ -89,8 +102,10 @@ type CanonicalClassroomReport = {
   status: string;
   startedAt?: string;
   endedAt: string | null;
+  durationMinutes: number | null;
   roster: { expected: number; joined: number; absentFromSession: number };
   totals: { responses: number; correct: number };
+  batches: CanonicalBatchReport[];
   questions: CanonicalQuestionReport[];
 };
 
@@ -140,6 +155,14 @@ const normalizeReport = (raw: ClassroomSavedReport): CanonicalClassroomReport =>
       unanswered: question.unanswered ?? Math.max(0, joined - answered),
     };
   });
+  const batches = (raw.batches || []).map((batch, index): CanonicalBatchReport => ({
+    batchId: batch.batchId,
+    number: batch.number ?? index + 1,
+    label: batch.label || `الدفعة ${index + 1}`,
+    questionIds: batch.questionIds || [],
+    startedAt: batch.startedAt || null,
+    endedAt: batch.endedAt || null,
+  }));
   const periodNumber = raw.period === null || raw.period === undefined || raw.period === '' ? null : toNumber(raw.period, 0) || null;
   return {
     sessionId: raw.sessionId,
@@ -153,12 +176,14 @@ const normalizeReport = (raw: ClassroomSavedReport): CanonicalClassroomReport =>
     status: raw.status || 'ended',
     startedAt: raw.startedAt,
     endedAt: raw.endedAt || null,
+    durationMinutes: raw.durationMinutes ?? null,
     roster: {
       expected,
       joined,
       absentFromSession: raw.roster?.absentFromSession ?? Math.max(0, expected - joined),
     },
     totals: { responses, correct },
+    batches,
     questions,
   };
 };
@@ -345,7 +370,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
           const accuracy = report.totals.responses ? Math.round((report.totals.correct / report.totals.responses) * 100) : null;
           return (
             <button key={report.sessionId} type="button" onClick={() => setSelectedReport(report)} className="flex w-full items-center justify-between gap-4 border-b border-slate-100 p-4 text-right last:border-b-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50">
-              <div><div className="text-sm font-black text-slate-900 dark:text-white">{report.className || report.classId}</div><div className="mt-1 text-xs text-slate-500">{report.subjectName || '—'} · {report.day || '—'}{report.period ? ` · الحصة ${report.period}` : ''}</div></div>
+              <div><div className="text-sm font-black text-slate-900 dark:text-white">{report.className || report.classId}</div><div className="mt-1 text-xs text-slate-500">{report.subjectName || '—'} · {report.day || '—'}{report.period ? ` · الحصة ${report.period}` : ''}{report.batches.length ? ` · ${report.batches.length} دفعات` : ''}</div></div>
               <div className="flex items-center gap-4 text-xs font-bold text-slate-600 dark:text-slate-300"><span className="inline-flex items-center gap-1"><Users size={14} /> {report.roster.joined}/{report.roster.expected}</span><span className="inline-flex items-center gap-1"><CheckCircle2 size={14} /> {accuracy === null ? '—' : `${accuracy}%`}</span></div>
             </button>
           );
@@ -359,7 +384,20 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
               <div><h3 className="text-xl font-black text-slate-900 dark:text-white">{selectedReport.className || selectedReport.classId}</h3><p className="mt-1 text-xs text-slate-500">{selectedReport.subjectName || '—'} · {selectedReport.questions.length} سؤال</p></div>
               <div className="flex items-center gap-2"><button type="button" onClick={() => exportExcel(selectedReport)} className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white"><Download size={14} /> Excel</button><button type="button" onClick={() => setSelectedReport(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X size={18} /></button></div>
             </div>
-            <div className="mt-5 grid grid-cols-3 gap-3"><Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} /><Kpi label="الإجابات" value={selectedReport.totals.responses} /><Kpi label="الصحيح" value={selectedReport.totals.correct} /></div>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} /><Kpi label="الإجابات" value={selectedReport.totals.responses} /><Kpi label="الصحيح" value={selectedReport.totals.correct} /><Kpi label="مدة الحصة" value={selectedReport.durationMinutes === null ? '—' : `${selectedReport.durationMinutes} د`} /></div>
+            {selectedReport.batches.length > 0 && (
+              <div className="mt-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4 dark:border-indigo-950/40 dark:bg-indigo-950/20">
+                <h4 className="text-sm font-black text-indigo-950 dark:text-indigo-200">تسلسل دفعات الأسئلة</h4>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {selectedReport.batches.map((batch) => (
+                    <div key={batch.batchId} className="rounded-xl border border-indigo-100 bg-white p-3 dark:border-indigo-900/50 dark:bg-slate-900">
+                      <div className="text-xs font-black text-slate-900 dark:text-white">{batch.label}</div>
+                      <div className="mt-1 text-[11px] text-slate-500">{batch.questionIds.length} سؤال{batch.startedAt ? ` · بدأت ${new Date(batch.startedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}` : ''}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="mt-5 space-y-3">
               {selectedReport.questions.map((question) => <div key={question.questionId} className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800"><p className="text-sm font-black text-slate-900 dark:text-white">{question.index + 1}. {question.text}</p><div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold text-slate-500"><span>{question.answered} إجابة</span><span>{question.correct} صحيحة</span><span>{question.wrong} خاطئة</span>{question.skillIds.length > 0 && <span>المهارات: {question.skillIds.join('، ')}</span>}</div></div>)}
             </div>
