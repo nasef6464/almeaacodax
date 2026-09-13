@@ -30,6 +30,7 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolOverviewOperationsPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolCommandCenterPanel.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolPeopleHubTab.tsx"),
   await read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
   await read("dashboards/admin/SchoolsManager/schoolClassLifecycleActions.ts"),
   await read("dashboards/admin/SchoolsManager/schoolPackageActions.ts"),
@@ -151,8 +152,8 @@ check("selected school has a clear commercial operating flow", () => {
   assertIncludes(files.schools, "school-commercial-step-");
   assertIncludes(files.schools, "إضافة الطلاب");
   assertIncludes(files.schools, "ربط المشرفين");
-  assertIncludes(files.schools, "إدارة الباقات");
-  assertIncludes(files.schools, "فتح التقارير");
+  assertIncludes(files.schools, "العقد والباقات");
+  assertIncludes(files.schools, "التقارير");
 });
 
 check("selected school has a real delete action", () => {

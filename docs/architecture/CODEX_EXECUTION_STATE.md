@@ -2,10 +2,17 @@
 
 ## People Hub quick closure plan
 
-- Status: `PLANNED / NOT STARTED` on 2026-09-13.
-- Baseline: `main @ c4b744d6`.
-- Goals: `PH1–PH3` — unified role entry, server-backed relationship confirmation,
-  and focused regression/closure.
+- Status: `PARTIAL / LOCAL VERIFIED / CI BLOCKED` on 2026-09-13.
+- Baseline: `main @ d9e32522`.
+- Delivered locally:
+  1. `PH1`: one role-action entry inside People Hub routes to the existing,
+     role-appropriate director, supervisor, teacher, student, or parent flow.
+  2. `PH2`: director and supervisor identities are explicit; a saved teacher
+     assignment waits for an authoritative school-workspace refresh.
+  3. `PH3`: focused People Hub, school-management, school-RBAC, and G9
+     contracts passed locally. GitHub Actions did not start on `26a81eb0`
+     because of the repository account Billing/Spending Limit, so exact-commit
+     CI remains externally blocked rather than failed by the project.
 - Execution reference:
   `docs/architecture/PEOPLE_HUB_QUICK_GOALS_AR.md`.
 - Legacy relations/import remain available until their replacements are fully

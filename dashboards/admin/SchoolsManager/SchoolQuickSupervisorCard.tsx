@@ -25,9 +25,9 @@ export const SchoolQuickSupervisorCard: React.FC<SchoolQuickSupervisorCardProps>
                     <UserPlus size={14} />
                     إضافة مشرف من نفس التبويب
                 </div>
-                <h3 className="mt-3 text-lg font-black text-gray-900">مدير مدرسة أو مشرف فصل</h3>
+                <h3 className="mt-3 text-lg font-black text-gray-900">مشرف مدرسة أو مشرف فصل</h3>
                 <p className="mt-1 text-sm font-bold leading-7 text-purple-900">
-                    استخدم هذا النموذج للحساب الواحد: اختر المدرسة كاملة لمدير المدرسة، أو اختر فصلًا لمشرف الفصل.
+                    استخدم هذا النموذج للحساب الواحد: اختر المدرسة كاملة لمشرف المدرسة، أو اختر فصلًا لمشرف الفصل. مدير المدرسة له نموذج وصلاحيات مستقلة في People Hub.
                 </p>
             </div>
             <div className="rounded-2xl border border-white bg-white px-4 py-3 text-xs font-bold leading-6 text-gray-600">

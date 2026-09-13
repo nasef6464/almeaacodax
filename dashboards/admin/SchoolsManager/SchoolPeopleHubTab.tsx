@@ -12,6 +12,7 @@ interface SchoolPeopleHubTabProps {
     parents: User[];
     directorAccounts: User[];
     onOpenSingleStudent: () => void;
+    onOpenPersonAction: (role: SchoolPersonAction) => void;
     onOpenImport: () => void;
     onDownloadRoster: () => void;
     onAssignStudentToClass: (studentId: string, classId: string) => Promise<void>;
@@ -20,6 +21,15 @@ interface SchoolPeopleHubTabProps {
 }
 
 type PeopleFilterRole = 'all' | 'directors' | 'supervisors' | 'teachers' | 'students' | 'parents';
+export type SchoolPersonAction = 'director' | 'supervisor' | 'teacher' | 'student' | 'parent';
+
+const personActionOptions: Array<{ id: SchoolPersonAction; label: string; detail: string }> = [
+    { id: 'director', label: 'مدير مدرسة', detail: 'إنشاء أو ربط المدير وتحديد صلاحياته.' },
+    { id: 'supervisor', label: 'مشرف', detail: 'ربط المشرفين بالمدرسة كاملة أو بفصل محدد.' },
+    { id: 'teacher', label: 'معلم مدرسة', detail: 'ربطه ثم إسناده إلى المادة والفصل.' },
+    { id: 'student', label: 'طالب', detail: 'إضافة طالب للفصل أو استيراد قائمة الطلاب.' },
+    { id: 'parent', label: 'ولي أمر', detail: 'ربطه بالطالب أو بالطلاب عبر العلاقات الحالية.' },
+];
 
 export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
     school,
@@ -30,6 +40,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
     parents,
     directorAccounts,
     onOpenSingleStudent,
+    onOpenPersonAction,
     onOpenImport,
     onDownloadRoster,
     onAssignStudentToClass,
@@ -41,6 +52,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
     const [selectedClassId, setSelectedClassId] = useState<string>('all');
     const [page, setPage] = useState(1);
     const [activeDirectorIds, setActiveDirectorIds] = useState<string[]>([]);
+    const [isPersonActionMenuOpen, setIsPersonActionMenuOpen] = useState(false);
     const pageSize = 15;
 
     // Build unified list of people in this school
@@ -160,6 +172,37 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="relative">
+                        <button
+                            type="button"
+                            data-testid="school-people-add-or-link"
+                            onClick={() => setIsPersonActionMenuOpen((current) => !current)}
+                            aria-expanded={isPersonActionMenuOpen}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs font-black text-white hover:bg-slate-800 shadow-xs transition-colors cursor-pointer"
+                        >
+                            <Plus size={15} /> إضافة أو ربط مستخدم
+                        </button>
+                        {isPersonActionMenuOpen && (
+                            <div data-testid="school-people-role-actions" className="absolute left-0 z-20 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+                                <p className="px-3 py-2 text-[11px] font-black text-slate-500">اختر نوع الحساب ثم أكمل في النموذج المخصص له</p>
+                                {personActionOptions.map((option) => (
+                                    <button
+                                        key={option.id}
+                                        type="button"
+                                        data-testid={`school-people-role-${option.id}`}
+                                        onClick={() => {
+                                            setIsPersonActionMenuOpen(false);
+                                            onOpenPersonAction(option.id);
+                                        }}
+                                        className="block w-full rounded-xl px-3 py-2.5 text-right transition-colors hover:bg-slate-50"
+                                    >
+                                        <span className="block text-xs font-black text-slate-900">{option.label}</span>
+                                        <span className="mt-0.5 block text-[11px] font-medium leading-5 text-slate-500">{option.detail}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     <button
                         type="button"
                         onClick={onOpenSingleStudent}

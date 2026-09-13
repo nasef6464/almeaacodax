@@ -1469,8 +1469,38 @@ export const SchoolsManager: React.FC = () => {
                                 teachers={teachers}
                                 parents={parents}
                                 directorAccounts={directorAccounts}
+                                onOpenPersonAction={(role) => {
+                                    const targetByRole: Record<typeof role, string> = {
+                                        director: 'school-director-delegation-panel',
+                                        supervisor: 'school-relations-quick-supervisor-card',
+                                        teacher: 'school-teaching-assignment-panel',
+                                        student: 'school-students-panel',
+                                        parent: 'school-relations-import-panel',
+                                    };
+
+                                    if (role === 'student') {
+                                        setIsSingleStudentOpen(true);
+                                        setActiveTab('overview');
+                                        setExpandedSchoolStep('overview');
+                                    } else if (role === 'director') {
+                                        setActiveTab('people');
+                                        setExpandedSchoolStep(null);
+                                    } else if (role === 'teacher') {
+                                        setActiveTab('academic');
+                                        setExpandedSchoolStep(null);
+                                    } else {
+                                        setActiveTab('relations');
+                                        setExpandedSchoolStep('relations');
+                                    }
+
+                                    window.setTimeout(() => {
+                                        document.querySelector(`[data-testid="${targetByRole[role]}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 80);
+                                }}
                                 onOpenSingleStudent={() => {
                                     setIsSingleStudentOpen(true);
+                                    setActiveTab('overview');
+                                    setExpandedSchoolStep('overview');
                                     window.setTimeout(() => {
                                         document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                     }, 50);
@@ -1486,7 +1516,14 @@ export const SchoolsManager: React.FC = () => {
                         {/* ── 3. الفصول والإسناد ── */}
                         {activeTab === 'academic' && (
                             <div className="space-y-6">
-                                <TeachingAssignmentPanel schoolId={selectedSchool.id} classes={schoolClasses} teachers={teachers} />
+                                <TeachingAssignmentPanel
+                                    schoolId={selectedSchool.id}
+                                    classes={schoolClasses}
+                                    teachers={teachers}
+                                    onAssignmentSaved={async () => {
+                                        await refreshSchoolWorkspace(selectedSchool.id);
+                                    }}
+                                />
                                 <SchoolClassesPanel
                                     schoolClasses={schoolClasses}
                                     schoolStudents={schoolStudents}
