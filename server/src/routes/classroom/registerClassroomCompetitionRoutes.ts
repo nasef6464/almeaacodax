@@ -102,6 +102,7 @@ const challengeState = (session: any) => {
   const batch = activeBatch(session);
   const now = new Date();
   const timerEndsAt = batch?.timerEndsAt || null;
+  const expired = Boolean(timerEndsAt && new Date(timerEndsAt).getTime() <= now.getTime());
   return {
     sessionId: classroomSessionId(session),
     activeBatchId: session.activeBatchId || "",
@@ -110,7 +111,8 @@ const challengeState = (session: any) => {
     challengeDurationSeconds: batch?.challengeDurationSeconds ?? null,
     timerStartedAt: batch?.timerStartedAt || null,
     timerEndsAt,
-    expired: Boolean(timerEndsAt && new Date(timerEndsAt).getTime() <= now.getTime()),
+    expired,
+    ended: expired,
     serverNow: now,
   };
 };
@@ -169,6 +171,29 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
     res.json(state);
   }));
 
+  classroomRouter.post("/sessions/:id/competition/end", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
+    const session = await ClassroomSessionModel.findById(req.params.id);
+    if (!session || session.status !== "live") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
+    if (!(await resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")).allowed) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
+    if (!(await teacherCanManageCompetition(req.authUser!, session))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Competition control denied" });
+    }
+    const batch = activeBatch(session);
+    if (!batch?.competitionEnabled || !(batch.challengeQuestionIds || []).length) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "لا يوجد تحدٍ نشط لإنهائه" });
+    }
+
+    const now = new Date();
+    if (!batch.timerEndsAt || new Date(batch.timerEndsAt).getTime() > now.getTime()) batch.timerEndsAt = now;
+    await session.save();
+
+    const state = challengeState(session.toObject());
+    emitClassroomEvent(classroomSessionId(session), "competition:updated", state);
+    res.json({ ...state, endedByTeacher: true });
+  }));
+
   classroomRouter.get("/sessions/:id/competition", requireAuth, asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
@@ -219,17 +244,21 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
     }));
 
     const batch = activeBatch(session);
+    const timerEndsAt = batch?.timerEndsAt || null;
+    const ended = Boolean(timerEndsAt && new Date(timerEndsAt).getTime() <= Date.now());
     res.json({
       sessionId: classroomSessionId(session),
       activeBatchId: session.activeBatchId || "",
       questionIds,
       participantCount: leaderboard.length,
       leaderboard,
+      podium: leaderboard.slice(0, 3),
+      ended,
       scoring: { correctAnswerPoints: 100, speedBonus: false },
       challenge: {
         challengeQuestionIds: (batch?.challengeQuestionIds || []).map(String),
         competitionEnabled: Boolean(batch?.competitionEnabled),
-        timerEndsAt: batch?.timerEndsAt || null,
+        timerEndsAt,
       },
     });
   }));
