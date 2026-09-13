@@ -11,6 +11,7 @@ import { GroupModel } from "../../models/Group.js";
 import { UserModel } from "../../models/User.js";
 import { canStudentJoinClassroom, type ClassroomSessionStatus } from "../../modules/schools/application/classroomLifecycle.js";
 import { projectClassroomQuestionForStudent } from "../../modules/schools/application/classroomQuestionProjection.js";
+import { resolveSchoolContexts } from "../../modules/schools/application/schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { emitClassroomEvent } from "../../sockets/classroomEvents.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -19,10 +20,12 @@ import { classroomSessionId, hashClassroomPin } from "./classroomRouteSupport.js
 const joinSchema = z.object({ pin: z.string().regex(/^\d{6}$/) });
 const answerSchema = z.object({ selectedOptionIndex: z.number().int().min(0) });
 
-const studentCanAccessSession = (student: any, session: any) =>
-  !!student && student.role === "student"
-  && String(student.schoolId) === String(session.schoolId)
-  && (student.groupIds || []).map(String).includes(String(session.classId));
+const studentCanAccessSession = async (student: any, studentId: string, session: any) => {
+  if (!student || student.role !== "student") return false;
+  const contexts = await resolveSchoolContexts({ id: studentId, role: "student", schoolId: student.schoolId || null });
+  const hasSchoolContext = contexts.some((context) => context.role === "student" && String(context.schoolId) === String(session.schoolId));
+  return hasSchoolContext && (student.groupIds || []).map(String).includes(String(session.classId));
+};
 
 const smartClassroomEnabled = async (schoolId: string) =>
   (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed;
@@ -30,13 +33,18 @@ const smartClassroomEnabled = async (schoolId: string) =>
 export function registerClassroomStudentRoutes(classroomRouter: Router) {
   classroomRouter.get("/student/active-session", requireAuth, asyncHandler(async (req, res) => {
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role name").lean() as any;
-    if (!student || student.role !== "student" || !student.schoolId) return res.json({ hasActiveSession: false });
-    if (!(await smartClassroomEnabled(String(student.schoolId)))) return res.json({ hasActiveSession: false });
+    if (!student || student.role !== "student") return res.json({ hasActiveSession: false });
+    const contexts = await resolveSchoolContexts({ id: req.authUser!.id, role: "student", schoolId: student.schoolId || null });
+    const studentSchoolIds = Array.from(new Set(contexts.filter((context) => context.role === "student").map((context) => String(context.schoolId)).filter(Boolean)));
+    if (studentSchoolIds.length === 0) return res.json({ hasActiveSession: false });
+    const entitlementChecks = await Promise.all(studentSchoolIds.map(async (schoolId) => ({ schoolId, allowed: await smartClassroomEnabled(schoolId) })));
+    const entitledSchoolIds = entitlementChecks.filter((entry) => entry.allowed).map((entry) => entry.schoolId);
+    if (entitledSchoolIds.length === 0) return res.json({ hasActiveSession: false });
     const studentClassIds = (student.groupIds || []).map(String).filter((id: string) => Types.ObjectId.isValid(id));
     if (studentClassIds.length === 0) return res.json({ hasActiveSession: false });
     const session = await ClassroomSessionModel.findOne({
-      schoolId: String(student.schoolId), classId: { $in: studentClassIds }, status: "live",
-    }).sort({ createdAt: -1 }).lean() as any;
+      schoolId: { $in: entitledSchoolIds }, classId: { $in: studentClassIds }, status: "live",
+    }).sort({ startedAt: -1, createdAt: -1 }).lean() as any;
     if (!session) return res.json({ hasActiveSession: false });
     const [teacher, classroomGroup] = await Promise.all([
       UserModel.findById(session.teacherId).select("name displayName email").lean() as any,
@@ -46,18 +54,18 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
       sessionId: classroomSessionId(session), schoolId: session.schoolId, classId: session.classId,
       className: classroomGroup?.name || "فصلك الدراسي", teacherName: teacher?.displayName || teacher?.name || "معلم المادة",
       status: session.status, activeQuestionIndex: session.activeQuestionIndex,
-      totalQuestions: session.questionSnapshots?.length || 0, createdAt: session.createdAt,
+      totalQuestions: session.questionSnapshots?.length || 0, startedAt: session.startedAt || session.createdAt, createdAt: session.createdAt,
     } });
   }));
 
   classroomRouter.post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter, asyncHandler(async (req, res) => {
     const payload = joinSchema.parse(req.body);
     const session = await ClassroomSessionModel.findOne({ pinHash: hashClassroomPin(payload.pin), status: "live", pinExpiresAt: { $gt: new Date() } })
-      .sort({ createdAt: -1 }).lean() as any;
+      .sort({ startedAt: -1, createdAt: -1 }).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة مباشرة بهذا الرمز أو قد انتهت صلاحيته." });
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الرمز مخصص لحصة فصل دراسي آخر أو مدرسة أخرى." });
+    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الرمز مخصص لحصة فصل دراسي آخر أو مدرسة أخرى." });
     await ClassroomParticipantModel.updateOne(
       { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
       { $setOnInsert: { joinedAt: new Date() } }, { upsert: true },
@@ -72,7 +80,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     }
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بالانضمام لهذه الحصة المخصصة لفصل آخر" });
+    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بالانضمام لهذه الحصة المخصصة لفصل آخر" });
     await ClassroomParticipantModel.updateOne(
       { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
       { $setOnInsert: { joinedAt: new Date() } }, { upsert: true },
@@ -88,7 +96,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     }
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     await ClassroomParticipantModel.updateOne(
       { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
       { $setOnInsert: { joinedAt: new Date() } }, { upsert: true },
@@ -101,7 +109,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active question" });
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     const participant = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
     if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before viewing questions" });
     const publishedSet = new Set(session.publishedQuestionIds?.length
@@ -129,7 +137,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const question = session.questionSnapshots.find((candidate: any) => String(candidate.questionId) === req.params.questionId);
     if (!question) return res.status(StatusCodes.CONFLICT).json({ message: "Question is not active" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     const participant = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
     if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before answering" });
     if (payload.selectedOptionIndex >= question.options.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Selected option is invalid" });
