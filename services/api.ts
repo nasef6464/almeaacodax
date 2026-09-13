@@ -826,6 +826,10 @@ export const api = {
     return request<{ questions: Array<{ questionId: string; text: string; options: string[]; type: string; explanation?: string; skillIds?: string[]; pathId?: string; subject?: string; sectionId?: string; difficulty?: string }> }>(`/classroom/questions?${query.toString()}`, { token });
   },
   getStudentActiveClassroomSession: (token?: string | null) => request<{ hasActiveSession: boolean; session?: { sessionId: string; schoolId: string; classId: string; className: string; teacherName: string; status: string; activeQuestionIndex: number | null; totalQuestions: number; createdAt: string } }>("/classroom/student/active-session", { token, cache: "no-store" }),
+  getTeacherActiveClassroomSession: (schoolId?: string, token?: string | null) => {
+    const query = schoolId ? `?schoolId=${encodeURIComponent(schoolId)}` : "";
+    return request<{ hasActiveSession: boolean; session?: { sessionId: string; schoolId: string; classId: string; className: string; status: string; activeQuestionIndex: number | null; totalQuestions: number; createdAt: string } }>(`/classroom/teacher/active-session${query}`, { token, cache: "no-store" });
+  },
   joinClassroomSessionByPin: (pin: string, token?: string | null) => request<{ joined: boolean; sessionId: string; schoolId: string; classId: string }>("/classroom/sessions/join-by-pin", { method: "POST", body: { pin }, token }),
   instantJoinClassroomSession: (id: string, token?: string | null) => request<{ joined: boolean; sessionId: string; schoolId: string; classId: string }>(`/classroom/sessions/${id}/instant-join`, { method: "POST", token }),
   appendClassroomQuestions: (id: string, questionIds: string[], autoPublishFirst?: boolean, token?: string | null) => request<{ appendedCount: number; totalQuestions: number; activeQuestionIndex: number | null }>(`/classroom/sessions/${id}/append-questions`, { method: "POST", body: { questionIds, autoPublishFirst }, token }),

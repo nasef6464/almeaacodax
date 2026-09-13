@@ -4,6 +4,7 @@ import { SmartClassroomReportsSection } from '../../components/classroom/SmartCl
 import { ClassSkillGapsRadar } from '../../components/classroom/ClassSkillGapsRadar';
 import { ClassroomPreparedTemplatesManager, ClassroomPreparedTemplate } from '../../components/classroom/ClassroomPreparedTemplatesManager';
 import { ClassroomQuestionFilterBar, ClassroomFilterState } from '../../components/classroom/ClassroomQuestionFilterBar';
+import { QuestionContentRenderer } from '../../components/classroom/QuestionContentRenderer';
 
 interface PreparedQuestionsProps {
   selectedSchool: any;
@@ -85,12 +86,12 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
                 <div key={question.questionId} className={`flex items-start justify-between rounded-xl border p-3.5 transition-all ${isChecked ? 'border-indigo-500 bg-indigo-50/40' : 'border-slate-200 bg-white'}`}>
                   <label className="flex flex-1 cursor-pointer items-start gap-3">
                     <input type="checkbox" checked={isChecked} onChange={() => onToggleQuestion(question.questionId)} className="mt-1" />
-                    <span>
-                      <b className="text-slate-900 text-xs sm:text-sm">{question.text}</b>
+                    <div className="flex-1 min-w-0">
+                      <QuestionContentRenderer content={question.text} className="text-slate-900 text-xs sm:text-sm font-bold block max-h-24 overflow-hidden" />
                       <small className="mt-1 block text-slate-500 text-[11px]">
                         {question.subject || question.type} · {question.difficulty || 'متوسط'} · {question.options?.length || 4} خيارات · المهارة: {question.skillIds?.[0] || 'عام'}
                       </small>
-                    </span>
+                    </div>
                   </label>
                   {isChecked && (
                     <button type="button" onClick={() => onToggleChallenge(question.questionId)} className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-black transition-all ${isChallenge ? 'bg-amber-500 text-white' : 'border border-slate-300 bg-white text-slate-600'}`}>

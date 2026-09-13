@@ -40,6 +40,28 @@ const appendQuestionsSchema = z.object({
 });
 
 export function registerClassroomTeacherRoutes(classroomRouter: Router) {
+  classroomRouter.get("/teacher/active-session", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
+    const schoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim() ? req.query.schoolId.trim() : undefined;
+    const query: Record<string, any> = { teacherId: req.authUser!.id, status: "live" };
+    if (schoolId) query.schoolId = schoolId;
+    const session = await ClassroomSessionModel.findOne(query).sort({ createdAt: -1 }).lean() as any;
+    if (!session) return res.json({ hasActiveSession: false });
+    const classroomGroup = await GroupModel.findById(session.classId).select("name").lean() as any;
+    res.json({
+      hasActiveSession: true,
+      session: {
+        sessionId: classroomSessionId(session),
+        schoolId: session.schoolId,
+        classId: session.classId,
+        className: classroomGroup?.name || session.className || "فصل دراسي",
+        status: session.status,
+        activeQuestionIndex: session.activeQuestionIndex,
+        totalQuestions: session.questionSnapshots?.length || 0,
+        createdAt: session.createdAt,
+      },
+    });
+  }));
+
   classroomRouter.post("/sessions", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const payload = createSchema.parse(req.body);
     const entitlement = await resolveSchoolEntitlement(payload.schoolId, "SMART_CLASSROOM");

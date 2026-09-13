@@ -21,9 +21,14 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     const isStudentInClass = student?.role === "student"
       && String(student.schoolId) === String(session.schoolId)
       && (student.groupIds || []).map(String).includes(String(session.classId));
-    const isStudent = isStudentInClass
-      ? Boolean(await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id }))
-      : false;
+    if (isStudentInClass && !(await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id }))) {
+      await ClassroomParticipantModel.updateOne(
+        { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
+        { $setOnInsert: { joinedAt: new Date() } },
+        { upsert: true }
+      );
+    }
+    const isStudent = isStudentInClass;
 
     let isSupervisor = false;
     if (req.authUser!.role === "supervisor") {
@@ -78,11 +83,11 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     const activeCorrectCount = activeResponses.filter((response: any) => response.isCorrect).length;
 
     res.json({
-      sessionId: classroomSessionId(session), status: session.status, activeQuestionIndex: session.activeQuestionIndex,
+      sessionId: classroomSessionId(session), schoolId: session.schoolId, classId: session.classId, status: session.status, activeQuestionIndex: session.activeQuestionIndex,
       activeQuestionId: activeQuestion?.questionId || null, responseCount: activeResponses.length, distribution: activeDistribution,
       correctCount: isStaff || session.status === "ended" ? activeCorrectCount : undefined,
       totalSessionResponses: responses.length, report: session.status === "ended" ? session.reportSnapshot : null, questions,
-      meta: { day: session.day || "", period: session.period || null, subjectName: session.subjectName || "", className: session.className || "", publishedMode: session.publishedMode || "single" },
+      meta: { schoolId: session.schoolId, classId: session.classId, day: session.day || "", period: session.period || null, subjectName: session.subjectName || "", className: session.className || "", publishedMode: session.publishedMode || "single" },
     });
   }));
 }

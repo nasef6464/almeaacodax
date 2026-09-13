@@ -4,6 +4,7 @@ import { CheckCircle2, Loader2, Presentation, Send, Sparkles, Zap } from 'lucide
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import { useAuth } from '../contexts/AuthContext';
+import { QuestionContentRenderer } from '../components/classroom/QuestionContentRenderer';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
@@ -172,8 +173,8 @@ export const ClassroomStudentLive: React.FC = () => {
 
   // Active Question Surface
   return (
-    <main className="mx-auto min-h-screen max-w-lg bg-slate-50 p-4 sm:p-6" dir="rtl">
-      <div className={`overflow-hidden rounded-3xl border bg-white p-5 shadow-sm sm:p-6 ${
+    <main className="mx-auto min-h-screen max-w-2xl bg-slate-50 p-4 sm:p-6" dir="rtl">
+      <div className={`overflow-hidden rounded-3xl border bg-white p-5 shadow-sm sm:p-8 ${
         isChallenge ? 'border-amber-400 shadow-amber-500/10' : 'border-slate-100'
       }`}>
         <div className="flex items-center justify-between">
@@ -187,9 +188,13 @@ export const ClassroomStudentLive: React.FC = () => {
           )}
         </div>
 
-        <h1 className="mt-3 text-lg sm:text-xl font-black leading-relaxed text-slate-900">
-          {question.text}
-        </h1>
+        <div className="mt-4">
+          <QuestionContentRenderer
+            content={question.text}
+            asHeading
+            className="text-lg sm:text-2xl font-black leading-relaxed text-slate-900"
+          />
+        </div>
 
         <div className="mt-6 space-y-3">
           {question.options.map((option: string, index: number) => {

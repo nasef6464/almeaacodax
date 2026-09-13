@@ -4,6 +4,7 @@ import { Clock, Copy, ExternalLink, Flame, PlusCircle, Presentation, SkipForward
 import { ClassroomTeacherLiveRadar } from './ClassroomTeacherLiveRadar';
 import { ClassroomQuestionReviewPanel } from './ClassroomQuestionReviewPanel';
 import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
+import { QuestionContentRenderer } from './QuestionContentRenderer';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
 
@@ -45,12 +46,31 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [pushFilterSkill, setPushFilterSkill] = useState('');
   const [selectedForPush, setSelectedForPush] = useState<string[]>([]);
   const [showInlineExplanation, setShowInlineExplanation] = useState(false);
+  const [bankQuestions, setBankQuestions] = useState<any[]>([]);
+  const [loadingBank, setLoadingBank] = useState(false);
   const [sessionStorageMeta, setSessionStorageMeta] = useState<{
     day?: string;
     period?: string;
     className?: string;
     subject?: string;
   } | null>(null);
+
+  const schoolId = data?.schoolId || data?.meta?.schoolId || '';
+
+  useEffect(() => {
+    if (!schoolId) return;
+    let active = true;
+    setLoadingBank(true);
+    api.getClassroomQuestions(schoolId)
+      .then((res) => {
+        if (active && Array.isArray(res?.questions)) {
+          setBankQuestions(res.questions);
+        }
+      })
+      .catch(() => {})
+      .finally(() => { if (active) setLoadingBank(false); });
+    return () => { active = false; };
+  }, [schoolId]);
 
   useEffect(() => {
     try {
@@ -116,15 +136,18 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   }, [currentQuestion, distribution, totalResponses]);
 
   const availablePushQuestions = useMemo(() => {
-    const existingIds = new Set((data?.questions || []).map((question: any) => question.questionId));
-    return storeQuestions.filter((question: any) => {
-      if (existingIds.has(question.id)) return false;
-      if (pushFilterSubject && question.subjectId !== pushFilterSubject) return false;
+    const existingIds = new Set((data?.questions || []).map((question: any) => String(question.questionId)));
+    const pool = bankQuestions.length > 0 ? bankQuestions : storeQuestions;
+    return pool.filter((question: any) => {
+      const qId = String(question.questionId || question.id);
+      if (existingIds.has(qId)) return false;
+      const qSubject = question.subject || question.subjectId;
+      if (pushFilterSubject && qSubject !== pushFilterSubject) return false;
       if (pushFilterSection && question.sectionId !== pushFilterSection) return false;
       if (pushFilterSkill && !(question.skillIds || []).includes(pushFilterSkill)) return false;
       return true;
     });
-  }, [storeQuestions, data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
+  }, [bankQuestions, storeQuestions, data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
 
   const handlePushQuestionsSubmit = async () => {
     if (selectedForPush.length === 0 || pushingQuestions) return;
@@ -140,7 +163,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   };
 
   const handleQuickSelectBatch = () => {
-    setSelectedForPush(availablePushQuestions.slice(0, 5).map((question) => question.id));
+    setSelectedForPush(availablePushQuestions.slice(0, 5).map((question) => String(question.questionId || question.id)));
   };
 
   useEffect(() => {
@@ -259,8 +282,11 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
               <div key={question.questionId} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border p-4 transition-all ${isActive ? 'border-indigo-600 bg-indigo-50/70 shadow-xs dark:bg-indigo-950/30 dark:border-indigo-500' : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-850'}`}>
                 <div className="flex items-start sm:items-center gap-3">
                   <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-black ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>{question.index + 1}</span>
-                  <div>
-                    <span className="font-bold text-slate-900 dark:text-white text-sm">سؤال {question.index + 1}: {question.text}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-slate-900 dark:text-white text-sm">
+                      <span className="text-indigo-600 dark:text-indigo-400 ml-1 font-black">سؤال {question.index + 1}:</span>
+                      <QuestionContentRenderer content={question.text} className="inline-block align-middle max-h-24 overflow-hidden" />
+                    </div>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
                       <span>{question.options?.length || 4} خيارات</span>
                       {isChallenge && <span className="inline-flex items-center gap-0.5 rounded-md bg-amber-100 px-1.5 py-0.5 font-black text-amber-800 dark:bg-amber-950/50 dark:text-amber-300">⚡ تحدي سريع</span>}

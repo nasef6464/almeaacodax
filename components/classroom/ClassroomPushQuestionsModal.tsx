@@ -1,5 +1,6 @@
 import React from 'react';
 import { BookOpen, PlusCircle, X } from 'lucide-react';
+import { QuestionContentRenderer } from './QuestionContentRenderer';
 
 interface ClassroomPushQuestionsModalProps {
   isOpen: boolean;
@@ -119,20 +120,21 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
             <div className="p-8 text-center text-xs text-slate-400 font-bold">لا توجد أسئلة مطابقة للفلتر أو تم إضافتها جميعاً لهذه الحصة.</div>
           ) : (
             availableQuestions.map((question) => {
-              const isChecked = selectedIds.includes(question.id);
+              const qId = String(question.questionId || question.id);
+              const isChecked = selectedIds.includes(qId);
               return (
                 <label
-                  key={question.id}
+                  key={qId}
                   className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-3 text-xs transition-all ${isChecked ? 'border-emerald-500 bg-emerald-50/50 dark:border-emerald-500 dark:bg-emerald-950/30' : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-850'}`}
                 >
                   <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={() => onToggleQuestion(question.id)}
+                    onChange={() => onToggleQuestion(qId)}
                     className="mt-1 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <div className="flex-1">
-                    <p className="font-bold text-slate-900 dark:text-white leading-relaxed">{question.text}</p>
+                  <div className="flex-1 min-w-0">
+                    <QuestionContentRenderer content={question.text} className="font-bold text-slate-900 dark:text-white leading-relaxed text-xs sm:text-sm block" />
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
                       <span>{question.options?.length || 4} خيارات</span>
                       <span>•</span>

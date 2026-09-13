@@ -73,6 +73,12 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     return next();
   }
 
+  const authUser = resolveAuthUser(req);
+  if (authUser) {
+    req.authUser = authUser;
+    return next();
+  }
+
   if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
       id: "local-dev-admin",
@@ -83,15 +89,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     return next();
   }
 
-  const authUser = resolveAuthUser(req);
-  if (!authUser) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Authentication required",
-    });
-  }
-
-  req.authUser = authUser;
-  return next();
+  return res.status(StatusCodes.UNAUTHORIZED).json({
+    message: "Authentication required",
+  });
 }
 
 /**

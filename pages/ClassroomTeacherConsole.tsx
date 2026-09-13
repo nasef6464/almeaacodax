@@ -9,6 +9,7 @@ import { ClassroomTeacherLiveRadar } from '../components/classroom/ClassroomTeac
 import { ClassroomQuestionFilterBar, ClassroomFilterState } from '../components/classroom/ClassroomQuestionFilterBar';
 import { ClassroomPreparedTemplatesManager, ClassroomPreparedTemplate } from '../components/classroom/ClassroomPreparedTemplatesManager';
 import { ClassroomActiveSessionPanel } from '../components/classroom/ClassroomActiveSessionPanel';
+import { QuestionContentRenderer } from '../components/classroom/QuestionContentRenderer';
 
 type ClassroomQuestion = { questionId: string; text: string; options: string[]; type: string; isChallenge?: boolean; pathId?: string; subject?: string; sectionId?: string; difficulty?: string; examType?: string };
 
@@ -286,12 +287,12 @@ export const ClassroomTeacherConsole: React.FC = () => {
                               }
                               className="mt-1"
                             />
-                            <span>
-                              <b className="text-slate-900 dark:text-white text-sm">{question.text}</b>
+                            <div className="flex-1 min-w-0">
+                              <QuestionContentRenderer content={question.text} className="text-slate-900 dark:text-white text-sm font-bold block max-h-24 overflow-hidden" />
                               <small className="mt-1 block text-slate-500">
                                 {question.subject || question.type} · {question.difficulty || 'متوسط'} · {question.options.length} خيارات
                               </small>
-                            </span>
+                            </div>
                           </label>
                           {isChecked && (
                             <button

@@ -93,8 +93,14 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active question" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
-    const participant = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
-    if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before viewing questions" });
+    const participantExists = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
+    if (!participantExists) {
+      await ClassroomParticipantModel.updateOne(
+        { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
+        { $setOnInsert: { joinedAt: new Date() } },
+        { upsert: true }
+      );
+    }
     const publishedSet = new Set(session.publishedQuestionIds?.length
       ? session.publishedQuestionIds
       : session.questionSnapshots[session.activeQuestionIndex] ? [session.questionSnapshots[session.activeQuestionIndex].questionId] : []);
@@ -120,8 +126,14 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     if (!question) return res.status(StatusCodes.CONFLICT).json({ message: "Question is not active" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
-    const participant = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
-    if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before answering" });
+    const participantExists = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
+    if (!participantExists) {
+      await ClassroomParticipantModel.updateOne(
+        { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
+        { $setOnInsert: { joinedAt: new Date() } },
+        { upsert: true }
+      );
+    }
     if (payload.selectedOptionIndex >= question.options.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Selected option is invalid" });
     const response = await ClassroomResponseModel.findOneAndUpdate(
       { sessionId: classroomSessionId(session), questionId: question.questionId, studentId: req.authUser!.id },

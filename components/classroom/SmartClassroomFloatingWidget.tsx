@@ -48,24 +48,34 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   const publishedSignatureRef = useRef('');
 
   useEffect(() => {
-    if (!user || user.role !== 'student' || joined) return;
+    if (!user || user.role !== 'student') return;
     let mounted = true;
     const checkActive = async () => {
       try {
         const result = await api.getStudentActiveClassroomSession();
         if (!mounted) return;
-        setActiveSessionAlert(result.hasActiveSession && result.session ? result.session : null);
+        if (result.hasActiveSession && result.session) {
+          if (result.session.sessionId !== sessionId) {
+            setActiveSessionAlert(result.session);
+          } else if (!joined) {
+            setActiveSessionAlert(result.session);
+          } else {
+            setActiveSessionAlert(null);
+          }
+        } else {
+          setActiveSessionAlert(null);
+        }
       } catch {
         if (mounted) setActiveSessionAlert(null);
       }
     };
     void checkActive();
-    const interval = setInterval(() => void checkActive(), 6000);
+    const interval = setInterval(() => void checkActive(), 5000);
     return () => {
       mounted = false;
       clearInterval(interval);
     };
-  }, [user, joined]);
+  }, [user, sessionId, joined]);
 
   const loadCurrentQuestion = useCallback(async () => {
     if (!sessionId || !joined) return;
@@ -124,6 +134,11 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       setSessionId(targetSessionId);
       setJoined(true);
       setActiveSessionAlert(null);
+      setQuestionsList([]);
+      setAnswers({});
+      setSubmitted(false);
+      lastQuestionIdRef.current = '';
+      publishedSignatureRef.current = '';
       setIsOpen(true);
       playChime();
     } catch (error: any) {

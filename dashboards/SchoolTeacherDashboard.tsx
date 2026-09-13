@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Award, BarChart3, BookOpenCheck, LayoutDashboard, Presentation, School, Target, Trophy } from 'lucide-react';
 import { DashboardLayout } from '../components/DashboardLayout';
 import { TeacherWorkspaceSwitcher } from '../components/teacher/TeacherWorkspaceSwitcher';
@@ -54,6 +54,7 @@ const mapStoreQuestion = (q: any) => ({
 });
 
 export const SchoolTeacherDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const workspace = useTeacherWorkspaceOptional();
   const { user } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,6 +69,14 @@ export const SchoolTeacherDashboard: React.FC = () => {
   const [questions, setQuestions] = useState<any[]>([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
   const [challengeQuestionIds, setChallengeQuestionIds] = useState<string[]>([]);
+  const [activeTeacherSession, setActiveTeacherSession] = useState<{
+    sessionId: string;
+    schoolId: string;
+    classId: string;
+    className: string;
+    status: string;
+    totalQuestions: number;
+  } | null>(null);
   const [filters, setFilters] = useState<ClassroomFilterState>({
     pathId: '',
     subjectId: '',
@@ -77,6 +86,42 @@ export const SchoolTeacherDashboard: React.FC = () => {
     search: '',
   });
   const [questionsLoading, setQuestionsLoading] = useState(false);
+
+  const selectedSchool = useMemo(
+    () => workspace?.schools.find((school) => school.schoolId === selectedSchoolId) || workspace?.schools[0],
+    [selectedSchoolId, workspace],
+  );
+
+  const refreshActiveSession = useCallback(async () => {
+    if (!selectedSchool?.schoolId) return;
+    try {
+      const res = await api.getTeacherActiveClassroomSession(selectedSchool.schoolId);
+      if (res.hasActiveSession && res.session) {
+        setActiveTeacherSession(res.session);
+      } else {
+        setActiveTeacherSession(null);
+      }
+    } catch {
+      setActiveTeacherSession(null);
+    }
+  }, [selectedSchool?.schoolId]);
+
+  useEffect(() => {
+    void refreshActiveSession();
+    const interval = setInterval(() => void refreshActiveSession(), 7000);
+    return () => clearInterval(interval);
+  }, [refreshActiveSession]);
+
+  const handleEndActiveSession = async () => {
+    if (!activeTeacherSession) return;
+    try {
+      await api.endClassroomSession(activeTeacherSession.sessionId);
+      setActiveTeacherSession(null);
+      await refreshActiveSession();
+    } catch (err: any) {
+      console.error('Failed to end active session:', err);
+    }
+  };
 
   const handleTabChange = useCallback((tab: SchoolTeacherTab) => {
     setActiveTab(tab);
@@ -90,10 +135,6 @@ export const SchoolTeacherDashboard: React.FC = () => {
     }
   }, [searchParams, activeTab]);
 
-  const selectedSchool = useMemo(
-    () => workspace?.schools.find((school) => school.schoolId === selectedSchoolId) || workspace?.schools[0],
-    [selectedSchoolId, workspace],
-  );
   const storeQuestions = useStore((state) => state.questions) || [];
 
   useEffect(() => {
@@ -198,24 +239,77 @@ export const SchoolTeacherDashboard: React.FC = () => {
   );
 
   const renderContent = () => {
+    let tabNode: React.ReactNode = null;
     switch (activeTab) {
       case 'overview':
-        return <SchoolTeacherOverview selectedSchool={selectedSchool} userName={user?.name} onOpenScheduler={() => openScheduler()} onOpenCertificate={() => setShowCertificateModal(true)} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
+        tabNode = <SchoolTeacherOverview selectedSchool={selectedSchool} userName={user?.name} onOpenScheduler={() => openScheduler()} onOpenCertificate={() => setShowCertificateModal(true)} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
+        break;
       case 'smart-classroom':
-        return <SchoolTeacherSmartClassroom selectedSchool={selectedSchool} onOpenScheduler={() => openScheduler()} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
+        tabNode = <SchoolTeacherSmartClassroom selectedSchool={selectedSchool} onOpenScheduler={() => openScheduler()} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
+        break;
       case 'prepared-questions':
-        return <SchoolTeacherPreparedQuestions selectedSchool={selectedSchool} userId={user?.id} selectedQuestionIds={selectedQuestionIds} challengeQuestionIds={challengeQuestionIds} filters={filters} setFilters={setFilters} poolQuestions={poolQuestions} filteredQuestions={filteredQuestions} questionsLoading={questionsLoading} onOpenScheduler={() => openScheduler()} onToggleQuestion={toggleQuestionSelection} onToggleChallenge={toggleChallengeFlag} onApplyTemplate={handleApplyTemplate} />;
+        tabNode = <SchoolTeacherPreparedQuestions selectedSchool={selectedSchool} userId={user?.id} selectedQuestionIds={selectedQuestionIds} challengeQuestionIds={challengeQuestionIds} filters={filters} setFilters={setFilters} poolQuestions={poolQuestions} filteredQuestions={filteredQuestions} questionsLoading={questionsLoading} onOpenScheduler={() => openScheduler()} onToggleQuestion={toggleQuestionSelection} onToggleChallenge={toggleChallengeFlag} onApplyTemplate={handleApplyTemplate} />;
+        break;
       case 'reports':
-        return <SchoolTeacherReports selectedSchool={selectedSchool} onPrepareIntervention={(skillId) => { setFilters((prev) => ({ ...prev, search: skillId })); handleTabChange('prepared-questions'); }} />;
+        tabNode = <SchoolTeacherReports selectedSchool={selectedSchool} onPrepareIntervention={(skillId) => { setFilters((prev) => ({ ...prev, search: skillId })); handleTabChange('prepared-questions'); }} />;
+        break;
       case 'skills-radar':
-        return <SchoolTeacherSkillsRadar selectedSchool={selectedSchool} />;
+        tabNode = <SchoolTeacherSkillsRadar selectedSchool={selectedSchool} />;
+        break;
       case 'assessments':
-        return <SchoolTeacherAssessments selectedSchool={selectedSchool} />;
+        tabNode = <SchoolTeacherAssessments selectedSchool={selectedSchool} />;
+        break;
       case 'certificates':
-        return <SchoolTeacherCertificates onOpenCertificate={() => setShowCertificateModal(true)} />;
+        tabNode = <SchoolTeacherCertificates onOpenCertificate={() => setShowCertificateModal(true)} />;
+        break;
       default:
-        return null;
+        tabNode = null;
     }
+
+    return (
+      <div className="space-y-6">
+        {activeTeacherSession && (
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border-2 border-indigo-500 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 p-5 text-white shadow-xl animate-fade-in" dir="rtl">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-600/30 border border-indigo-400/40 text-indigo-300">
+                <Presentation size={24} className="animate-pulse" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 text-xs font-black text-emerald-300">
+                    ● حصة ذكية جارية الآن
+                  </span>
+                  <span className="text-xs font-bold text-indigo-200">
+                    {activeTeacherSession.className} ({activeTeacherSession.totalQuestions} أسئلة)
+                  </span>
+                </div>
+                <h3 className="mt-1 text-sm sm:text-base font-black text-white">
+                  لديك حصة تفاعلية نشطة تبث للطلاب حالياً
+                </h3>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => navigate(`/classroom/${activeTeacherSession.sessionId}/teacher`)}
+                className="flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-black text-slate-950 shadow-md hover:bg-emerald-400 active:scale-95 transition-all"
+              >
+                العودة لشاشة الحصة 🚀
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleEndActiveSession()}
+                className="flex items-center gap-1.5 rounded-xl border border-rose-400/40 bg-rose-500/20 px-3.5 py-2.5 text-xs font-bold text-rose-200 hover:bg-rose-500/30 transition-all"
+              >
+                إنهاء الحصة 🛑
+              </button>
+            </div>
+          </div>
+        )}
+        {tabNode}
+      </div>
+    );
   };
 
   return (
@@ -227,6 +321,11 @@ export const SchoolTeacherDashboard: React.FC = () => {
         workspace={workspace}
         initialSchoolId={selectedSchool.schoolId}
         initialClassId={targetClassForLaunch}
+        selectedQuestionIds={selectedQuestionIds}
+        challengeQuestionIds={challengeQuestionIds}
+        activeSession={activeTeacherSession}
+        onSessionEnded={() => void refreshActiveSession()}
+        onSuccess={() => void refreshActiveSession()}
       />
       <StudentAppreciationCertificateModal
         isOpen={showCertificateModal}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, ArrowLeft, ArrowRight, Check, CheckCircle2, Clock, Flag, Lock, Send, Sparkles, Zap } from 'lucide-react';
+import { QuestionContentRenderer } from './QuestionContentRenderer';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
@@ -280,9 +281,13 @@ export const SmartClassroomExamRunner: React.FC<SmartClassroomExamRunnerProps> =
                 </div>
 
                 {/* Question Stem */}
-                <h1 className="mt-6 text-xl sm:text-2xl lg:text-3xl font-black leading-relaxed text-slate-900 dark:text-white">
-                  {currentQ.text}
-                </h1>
+                <div className="mt-6">
+                  <QuestionContentRenderer
+                    content={currentQ.text}
+                    asHeading
+                    className="text-xl sm:text-2xl lg:text-3xl font-black leading-relaxed"
+                  />
+                </div>
 
                 {/* Optional Image */}
                 {currentQ.imageUrl && (

@@ -19,6 +19,7 @@ import {
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
+import { QuestionContentRenderer } from '../components/classroom/QuestionContentRenderer';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
@@ -177,7 +178,9 @@ export const ClassroomProjectorView: React.FC = () => {
             </div>
 
             <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 sm:p-12 shadow-2xl backdrop-blur-md">
-              <h2 className="text-2xl sm:text-4xl font-black leading-relaxed sm:leading-loose text-white tracking-wide">{currentQ.text}</h2>
+              <div className="text-2xl sm:text-4xl font-black leading-relaxed sm:leading-loose text-white tracking-wide">
+                <QuestionContentRenderer content={currentQ.text} asHeading className="text-2xl sm:text-4xl font-black leading-relaxed sm:leading-loose text-white tracking-wide" />
+              </div>
               {currentQ.imageUrl && <div className="mt-6 overflow-hidden rounded-2xl border border-slate-800 max-h-80 flex items-center justify-center bg-black/40"><img src={currentQ.imageUrl} alt="توضيح السؤال" className="max-h-80 object-contain" /></div>}
               <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(currentQ.options || []).map((option: string, index: number) => {
