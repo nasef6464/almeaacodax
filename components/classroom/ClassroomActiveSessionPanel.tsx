@@ -224,7 +224,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
             <Flame size={28} className="text-amber-200" />
             <div>
               <p className="text-sm font-black">تحدي السرعة اللحظي جارٍ الآن! ⚡</p>
-              <p className="text-xs text-amber-100">نقاط مضاعفة للطلاب المسرعين في الإجابة الصحيحة.</p>
+              <p className="text-xs text-amber-100">مؤقت سريع لرفع التفاعل؛ لا يتم احتساب نقاط إضافية تلقائيًا.</p>
             </div>
           </div>
           <div className="flex items-center gap-2"><Clock size={18} /><span className="font-mono text-2xl font-black">{timerSeconds}s</span></div>
