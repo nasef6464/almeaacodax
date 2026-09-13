@@ -25,8 +25,6 @@ export const useClassroomRealtime = (
         return;
       }
 
-      // Reconnects may happen after classroom events were missed while offline.
-      // Re-read the canonical server snapshot after the room is rejoined.
       onChange();
     });
   };
@@ -36,6 +34,7 @@ export const useClassroomRealtime = (
   socket.on('question:published', onChange);
   socket.on('response:updated', onChange);
   socket.on('competition:updated', onChange);
+  socket.on('batch:ended', onChange);
   socket.on('session:ended', () => {
     onSessionEnded?.();
     onChange();
@@ -47,6 +46,7 @@ export const useClassroomRealtime = (
     socket.off('question:published', onChange);
     socket.off('response:updated', onChange);
     socket.off('competition:updated', onChange);
+    socket.off('batch:ended', onChange);
     socket.disconnect();
   };
 }, [sessionId, onChange, onSessionEnded]);
