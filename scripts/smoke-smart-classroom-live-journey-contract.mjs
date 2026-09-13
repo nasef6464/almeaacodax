@@ -14,8 +14,10 @@ const routeSupport = read('server/src/routes/classroom/classroomRouteSupport.ts'
 const reportBuilder = read('server/src/modules/schools/application/classroomSupervisorReport.ts');
 const authContext = read('contexts/AuthContext.tsx');
 const requireAuth = read('components/auth/RequireAuth.tsx');
+const teacherConsole = read('pages/ClassroomTeacherConsole.tsx');
 const studentPage = read('pages/ClassroomStudentLive.tsx');
 const floatingWidget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
+const reportsUi = read('components/classroom/SmartClassroomReportsSection.tsx');
 const realtime = read('hooks/useClassroomRealtime.ts');
 const scheduler = read('components/classroom/SmartClassroomSessionSchedulerModal.tsx');
 const pushModal = read('components/classroom/ClassroomPushQuestionsModal.tsx');
@@ -31,6 +33,8 @@ const check = (name, condition) => {
 
 check('teacher can create an empty session', teacherRoutes.includes('optional().default([])') && teacherRoutes.includes('canonicalQuestionIds.length > 0 ? 0 : null'));
 check('scheduler exposes explicit empty-session mode', scheduler.includes("'empty'") && scheduler.includes('ابدأ الحصة فارغة'));
+check('direct teacher console also starts empty sessions live', teacherConsole.includes("autoStart: true") && teacherConsole.includes('ابدأ الحصة فارغة الآن') && !teacherConsole.includes('!selectedIds.length'));
+check('direct teacher bank previews standalone images', teacherConsole.includes('question.imageUrl') && teacherConsole.includes('alt="صورة السؤال"'));
 check('teacher can append and auto-publish a new batch', teacherRoutes.includes('/append-questions') && teacherRoutes.includes('publishedQuestionIds = newQuestionIds'));
 check('question batches are persisted on the session', sessionModel.includes('questionBatches') && sessionModel.includes('activeBatchId'));
 check('new pushed questions create a numbered batch', teacherRoutes.includes('newBatchId = randomUUID()') && teacherRoutes.includes('label: `الدفعة ${session.questionBatches.length + 1}`'));
@@ -38,6 +42,7 @@ check('switching batches closes the previous active batch', teacherRoutes.includ
 check('ending the session closes the active batch', routeSupport.includes('activeBatch.endedAt = endedAt') && routeSupport.includes('session.activeBatchId = ""'));
 check('canonical report includes per-batch totals', reportBuilder.includes('durationSeconds') && reportBuilder.includes('accuracy: answered > 0 ? Math.round((correct / answered) * 100) : null'));
 check('canonical batch report carries skill ids', reportBuilder.includes('skillIds = Array.from(new Set(batchQuestions.flatMap'));
+check('teacher report UI surfaces batch accuracy duration and skills', reportsUi.includes('batch.totals.accuracy') && reportsUi.includes('formatDuration(batch.durationSeconds)') && reportsUi.includes('batch.skillIds.join'));
 check('live push UI previews standalone question images', pushModal.includes('question.imageUrl'));
 check('student current-question read requires explicit participant', studentRoutes.includes('Join the session before viewing questions'));
 check('student answer requires explicit participant', studentRoutes.includes('Join the session before answering'));
