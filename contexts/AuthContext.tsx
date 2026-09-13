@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { api } from '../services/api';
 import { Role } from '../types';
 import { useStore } from '../store/useStore';
-import { DEV_TOKEN_PREFIX } from '../utils/devSession';
 
 type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'school_admin' | 'parent';
 
@@ -66,6 +65,7 @@ const AUTH_BOOTSTRAP_PRIVATE_PREFIXES = [
   '/school-director-dashboard',
   '/supervisor-dashboard',
   '/parent-dashboard',
+  '/classroom',
   '/plan',
   '/profile',
   '/favorites',
@@ -120,14 +120,10 @@ const buildDevBackendUser = (role: BackendRole): BackendAuthUser => ({
 });
 
 const toArray = (value?: string[] | string): string[] => {
-  if (Array.isArray(value)) {
-    return value;
-  }
-
+  if (Array.isArray(value)) return value;
   if (typeof value === 'string' && value.trim().length > 0) {
     return value.split(',').map((item) => item.trim()).filter(Boolean);
   }
-
   return [];
 };
 
@@ -142,12 +138,8 @@ const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
 });
 
 const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAuthUser | null) => {
-  if (!sessionUser) {
-    return;
-  }
-
+  if (!sessionUser) return;
   const existing = useStore.getState().user;
-
   useStore.setState({
     user: {
       ...existing,
@@ -183,7 +175,6 @@ const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAut
 
 const resetStoreUser = () => {
   const existing = useStore.getState().user;
-
   useStore.setState({
     user: {
       ...existing,
@@ -194,12 +185,7 @@ const resetStoreUser = () => {
       role: Role.STUDENT,
       points: 0,
       badges: [],
-      subscription: {
-        plan: 'free',
-        expiresAt: undefined,
-        purchasedCourses: [],
-        purchasedPackages: [],
-      },
+      subscription: { plan: 'free', expiresAt: undefined, purchasedCourses: [], purchasedPackages: [] },
     },
     examResults: [],
     questionAttempts: [],
@@ -221,9 +207,7 @@ const restoreInitialSession = (): SessionUser | null => {
       const params = new URLSearchParams(hash.slice(queryIndex + 1));
       const oauthReturn = decodeURIComponent(params.get('oauth_return') || '/');
       if (params.get('oauth_provider') || params.get('oauth_error')) {
-        if (params.get('oauth_provider')) {
-          sessionStorage.setItem(OAUTH_BOOTSTRAP_FLAG_KEY, '1');
-        }
+        if (params.get('oauth_provider')) sessionStorage.setItem(OAUTH_BOOTSTRAP_FLAG_KEY, '1');
         window.location.hash = oauthReturn.startsWith('/') ? `#${oauthReturn}` : '#/';
       }
     }
@@ -233,21 +217,16 @@ const restoreInitialSession = (): SessionUser | null => {
 
   try {
     const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
-    if (!raw) {
-      return null;
-    }
-
+    if (!raw) return null;
     const parsed = JSON.parse(raw) as SessionUser;
     if (!parsed?.email || !parsed?.role) {
       sessionStorage.removeItem(SESSION_STORAGE_KEY);
       return null;
     }
-
     if ('token' in parsed) {
       delete parsed.token;
       sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(parsed));
     }
-
     syncStoreUser(parsed);
     return parsed;
   } catch (error) {
@@ -260,9 +239,7 @@ const restoreInitialSession = (): SessionUser | null => {
 const getCurrentRoutePath = () => {
   const pathname = window.location.pathname || '/';
   const hashPath = window.location.hash.replace(/^#/, '');
-  if ((pathname === '/' || !pathname) && hashPath.startsWith('/')) {
-    return hashPath.split(/[?#]/)[0];
-  }
+  if ((pathname === '/' || !pathname) && hashPath.startsWith('/')) return hashPath.split(/[?#]/)[0];
   return pathname;
 };
 
@@ -270,46 +247,52 @@ const shouldBootstrapAuthForPath = (path: string) =>
   AUTH_BOOTSTRAP_PRIVATE_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<SessionUser | null>(() => restoreInitialSession());
-  const loading = false;
+  const initialUser = useMemo(() => restoreInitialSession(), []);
+  const initialPath = useMemo(() => getCurrentRoutePath(), []);
+  const shouldBootstrapInitialAuth = !initialUser && shouldBootstrapAuthForPath(initialPath);
+  const [user, setUser] = useState<SessionUser | null>(initialUser);
+  const [loading, setLoading] = useState(shouldBootstrapInitialAuth);
 
   useEffect(() => {
-    try {
-      localStorage.removeItem('the-hundred-auth-session');
-    } catch {
-      // ignore
-    }
+    try { localStorage.removeItem('the-hundred-auth-session'); } catch { /* ignore */ }
   }, []);
 
   useEffect(() => {
     if (user) {
+      setLoading(false);
       return;
     }
 
     const currentPath = getCurrentRoutePath();
     const hasPendingOauthBootstrap = sessionStorage.getItem(OAUTH_BOOTSTRAP_FLAG_KEY) === '1';
     if (!shouldBootstrapAuthForPath(currentPath) && !hasPendingOauthBootstrap) {
+      setLoading(false);
       return;
     }
 
     let cancelled = false;
+    setLoading(true);
     api.getCurrentUser()
       .then((response) => {
         if (cancelled) return;
         const backendUser = (response as { user?: BackendAuthUser })?.user;
-        if (!backendUser?.email || !backendUser?.role) return;
-        const sessionUser = buildSessionUser(backendUser);
-        persistSession(sessionUser, backendUser);
+        if (backendUser?.email && backendUser?.role) {
+          const sessionUser = buildSessionUser(backendUser);
+          sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionUser));
+          setUser(sessionUser);
+          syncStoreUser(sessionUser, backendUser);
+        }
         sessionStorage.removeItem(OAUTH_BOOTSTRAP_FLAG_KEY);
       })
       .catch(() => {
-        // No active cookie session; keep guest state.
+        if (cancelled) return;
         sessionStorage.removeItem(OAUTH_BOOTSTRAP_FLAG_KEY);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [user]);
 
   useEffect(() => {
@@ -330,32 +313,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         api.getQuestionAttempts({ page: 1, limit: 100 }),
       ])
         .then(([resultsPage, questionAttempts]) => {
-          if (cancelled) {
-            return;
-          }
-
+          if (cancelled) return;
           useStore.getState().hydrateExamResults((resultsPage as { data?: unknown[] })?.data as any[] || []);
           useStore.getState().hydrateQuestionAttempts(questionAttempts as any[]);
         })
-        .catch((error) => {
-          console.warn('Failed to hydrate non-critical session data:', error);
-        });
+        .catch((error) => console.warn('Failed to hydrate non-critical session data:', error));
     };
 
     api.getCurrentUser()
       .then((currentUserResponse) => {
-        if (cancelled) {
-          return;
-        }
-
+        if (cancelled) return;
         syncStoreUser(user, (currentUserResponse as { user?: BackendAuthUser })?.user || null);
-
         const requestIdle = window.requestIdleCallback?.bind(window);
-        if (requestIdle) {
-          idleHandle = requestIdle(hydrateNonCriticalSessionData, { timeout: 2500 });
-        } else {
-          timer = window.setTimeout(hydrateNonCriticalSessionData, 900);
-        }
+        if (requestIdle) idleHandle = requestIdle(hydrateNonCriticalSessionData, { timeout: 2500 });
+        else timer = window.setTimeout(hydrateNonCriticalSessionData, 900);
       })
       .catch((error) => {
         console.warn('Failed to hydrate session data:', error);
@@ -368,27 +339,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => {
       cancelled = true;
-      if (idleHandle !== undefined) {
-        window.cancelIdleCallback?.(idleHandle);
-      }
-      if (timer !== undefined) {
-        window.clearTimeout(timer);
-      }
+      if (idleHandle !== undefined) window.cancelIdleCallback?.(idleHandle);
+      if (timer !== undefined) window.clearTimeout(timer);
     };
   }, [user]);
 
   function persistSession(sessionUser: SessionUser, backendUser: BackendAuthUser) {
     sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionUser));
     setUser(sessionUser);
+    setLoading(false);
     syncStoreUser(sessionUser, backendUser);
   }
 
   const signInWithEmail = async (email: string, password: string) => {
-    const response = (await api.login(email, password)) as {
-      token?: string;
-      user: BackendAuthUser;
-    };
-
+    const response = (await api.login(email, password)) as { token?: string; user: BackendAuthUser };
     const sessionUser = buildSessionUser(response.user);
     persistSession(sessionUser, response.user);
     return sessionUser;
@@ -396,11 +360,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUpWithEmail = async (email: string, password: string, name?: string) => {
     const finalName = name?.trim() || email.split('@')[0] || 'Student';
-    const response = (await api.register(finalName, email, password)) as {
-      token?: string;
-      user: BackendAuthUser;
-    };
-
+    const response = (await api.register(finalName, email, password)) as { token?: string; user: BackendAuthUser };
     const sessionUser = buildSessionUser(response.user);
     persistSession(sessionUser, response.user);
     return sessionUser;
@@ -409,26 +369,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     const returnTo = window.location.hash.replace(/^#/, '') || '/';
     const baseUrl = api.baseUrl.endsWith('/api') ? api.baseUrl : `${api.baseUrl.replace(/\/$/, '')}/api`;
-    const startUrl = `${baseUrl}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`;
-    window.location.assign(startUrl);
+    window.location.assign(`${baseUrl}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`);
   };
 
   const logout = async () => {
-    try {
-      await api.logout();
-    } catch (error) {
-      console.warn('Failed to clear server session cookie:', error);
-    }
+    try { await api.logout(); } catch (error) { console.warn('Failed to clear server session cookie:', error); }
     sessionStorage.removeItem(SESSION_STORAGE_KEY);
     setUser(null);
+    setLoading(false);
     resetStoreUser();
   };
 
   const devSwitchRole = (role: BackendRole) => {
-    if (!import.meta.env.DEV) {
-      return;
-    }
-
+    if (!import.meta.env.DEV) return;
     const backendUser = buildDevBackendUser(role);
     const sessionUser = buildSessionUser(backendUser);
     persistSession(sessionUser, backendUser);
@@ -444,8 +397,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (context === undefined) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
