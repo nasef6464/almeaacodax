@@ -53,6 +53,14 @@ const submissionKeyForSession = (session: any) => {
   return `questions:${publishedQuestionIds(session).slice().sort().join("|")}`;
 };
 
+const activeChallengeExpired = (session: any) => {
+  if (!session.activeBatchId || !Array.isArray(session.questionBatches)) return false;
+  const batch = session.questionBatches.find((entry: any) => String(entry.batchId) === String(session.activeBatchId));
+  if (!batch?.competitionEnabled || !batch.timerEndsAt) return false;
+  const endsAt = new Date(batch.timerEndsAt).getTime();
+  return Number.isFinite(endsAt) && endsAt <= Date.now();
+};
+
 export function registerClassroomStudentRoutes(classroomRouter: Router) {
   classroomRouter.get("/student/active-session", requireAuth, asyncHandler(async (req, res) => {
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role name").lean() as any;
@@ -154,6 +162,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    if (activeChallengeExpired(session)) return res.status(StatusCodes.CONFLICT).json({ message: "انتهى وقت التحدي ولا يمكن تعديل الإجابات" });
     const publishedSet = new Set(publishedQuestionIds(session));
     if (!publishedSet.has(req.params.questionId)) return res.status(StatusCodes.FORBIDDEN).json({ message: "السؤال غير متاح للإجابة حالياً" });
     const question = session.questionSnapshots.find((candidate: any) => String(candidate.questionId) === req.params.questionId);
@@ -186,6 +195,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    if (activeChallengeExpired(session)) return res.status(StatusCodes.CONFLICT).json({ message: "انتهى وقت التحدي ولا يمكن قبول تسليم جديد" });
 
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
