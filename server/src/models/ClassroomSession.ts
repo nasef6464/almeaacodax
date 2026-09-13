@@ -39,6 +39,7 @@ const classroomSessionSchema = new Schema(
     activeQuestionIndex: { type: Number, default: null },
     pinHash: { type: String, required: true, index: true },
     pinExpiresAt: { type: Date, required: true, index: true },
+    startedAt: { type: Date, default: null },
     endedAt: { type: Date, default: null },
     reportSnapshot: { type: Schema.Types.Mixed, default: null },
   },
