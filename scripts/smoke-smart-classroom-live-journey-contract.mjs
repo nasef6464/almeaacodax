@@ -8,6 +8,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const teacherRoutes = read('server/src/routes/classroom/registerClassroomTeacherRoutes.ts');
 const studentRoutes = read('server/src/routes/classroom/registerClassroomStudentRoutes.ts');
 const aggregateRoutes = read('server/src/routes/classroom/registerClassroomAggregateRoutes.ts');
+const competitionRoutes = read('server/src/routes/classroom/registerClassroomCompetitionRoutes.ts');
 const supervisorRoutes = read('server/src/routes/classroom/registerClassroomSupervisorRoutes.ts');
 const templateRoutes = read('server/src/routes/classroom/registerClassroomTemplateRoutes.ts');
 const routeSupport = read('server/src/routes/classroom/classroomRouteSupport.ts');
@@ -16,6 +17,7 @@ const authContext = read('contexts/AuthContext.tsx');
 const requireAuth = read('components/auth/RequireAuth.tsx');
 const teacherConsole = read('pages/ClassroomTeacherConsole.tsx');
 const studentPage = read('pages/ClassroomStudentLive.tsx');
+const examRunner = read('components/classroom/SmartClassroomExamRunner.tsx');
 const floatingWidget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
 const reportsUi = read('components/classroom/SmartClassroomReportsSection.tsx');
 const realtime = read('hooks/useClassroomRealtime.ts');
@@ -81,5 +83,11 @@ check('teacher active-session lookup is school scoped for teachers', teacherRout
 check('teacher history requires an entitled assigned school', supervisorRoutes.includes('schoolId is required for teacher history') && supervisorRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, requestedSchoolId)') && supervisorRoutes.includes('resolveSchoolEntitlement(requestedSchoolId, "SMART_CLASSROOM")'));
 check('teacher and supervisor history expose finalized sessions only', supervisorRoutes.includes('status: { $in: ["ended", "archived"] }'));
 check('supervisor today uses actual live timing and includes currently live sessions', supervisorRoutes.includes('{ status: "live" }') && supervisorRoutes.includes('{ startedAt: { $gte: start } }'));
+check('competition leaderboard is staff scoped and server backed', competitionRoutes.includes('/sessions/:id/competition') && competitionRoutes.includes('staffCanViewCompetition') && competitionRoutes.includes('ClassroomResponseModel.find'));
+check('challenge timer is persisted on the active batch', sessionModel.includes('challengeDurationSeconds') && sessionModel.includes('timerStartedAt') && sessionModel.includes('timerEndsAt'));
+check('speed challenge config is written to the server', scheduler.includes('/competition/configure') && scheduler.includes('durationSeconds: challengeTimerSeconds'));
+check('student challenge timer restores from server after refresh', studentPage.includes('/challenge-state') && studentPage.includes('deadlineAt=') && examRunner.includes('secondsUntil(deadlineAt)'));
+check('expired server challenge blocks answer and final submit', studentRoutes.match(/activeChallengeExpired\(session\)/g)?.length >= 2);
+check('competition metadata survives into immutable final report', reportBuilder.includes('competitionEnabled') && reportBuilder.includes('timerEndsAt') && reportBuilder.includes('challengeQuestionIds'));
 
 console.log(`Smart Classroom live journey contract: PASS (${checks.length}/${checks.length})`);
