@@ -42,6 +42,14 @@ const appendQuestionsSchema = z.object({
 export function registerClassroomTeacherRoutes(classroomRouter: Router) {
   classroomRouter.get("/teacher/active-session", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const schoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim() ? req.query.schoolId.trim() : undefined;
+    if (req.authUser!.role === "teacher") {
+      if (!schoolId) return res.status(StatusCodes.BAD_REQUEST).json({ message: "schoolId is required for teacher active session lookup" });
+      if (!(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
+      }
+      const entitlement = await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM");
+      if (!entitlement.allowed) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
     const query: Record<string, any> = { teacherId: req.authUser!.id, status: "live" };
     if (schoolId) query.schoolId = schoolId;
     const session = await ClassroomSessionModel.findOne(query).sort({ createdAt: -1 }).lean() as any;
