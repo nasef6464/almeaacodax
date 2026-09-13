@@ -25,7 +25,7 @@ import {
 const createSchema = z.object({
   schoolId: z.string().min(1),
   classId: z.string().min(1),
-  questionIds: z.array(z.string().min(1)).min(1).max(30).refine((ids) => new Set(ids).size === ids.length, "Question IDs must be unique"),
+  questionIds: z.array(z.string().min(1)).max(30).refine((ids) => new Set(ids).size === ids.length, "Question IDs must be unique").optional().default([]),
   day: z.string().optional().default(""),
   period: z.number().int().min(1).max(12).nullable().optional().default(null),
   subjectName: z.string().optional().default(""),
@@ -80,7 +80,9 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       if (!hasTeacherContext || !assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school and class" });
     }
 
-    const snapshots = await loadApprovedVisibleQuestions(payload.questionIds, payload.schoolId, req.authUser!.id);
+    const snapshots = payload.questionIds.length > 0
+      ? await loadApprovedVisibleQuestions(payload.questionIds, payload.schoolId, req.authUser!.id)
+      : [];
     if (!snapshots || snapshots.length !== payload.questionIds.length) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Questions must be approved, visible to this school, and valid for Smart Classroom" });
     }
@@ -88,7 +90,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     const pin = String(randomInt(100000, 1000000));
     const initialStatus = payload.autoStart ? "live" : "draft";
     const canonicalQuestionIds = snapshots.map((question) => question.questionId);
-    const initialPublished = payload.autoStart
+    const initialPublished = payload.autoStart && canonicalQuestionIds.length > 0
       ? (payload.publishedMode === "batch" ? canonicalQuestionIds : [canonicalQuestionIds[0]])
       : [];
     if (initialStatus === "live") await safelyClosePreviousLiveSessions(payload.schoolId, payload.classId);
@@ -105,7 +107,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         publishedMode: payload.publishedMode || "single",
         publishedQuestionIds: initialPublished,
         status: initialStatus,
-        activeQuestionIndex: payload.autoStart ? 0 : null,
+        activeQuestionIndex: payload.autoStart && canonicalQuestionIds.length > 0 ? 0 : null,
         questionSnapshots: snapshots,
         pinHash: hashClassroomPin(pin),
         pinExpiresAt: new Date(Date.now() + 30 * 60_000),
