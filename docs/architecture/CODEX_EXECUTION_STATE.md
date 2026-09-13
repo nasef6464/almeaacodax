@@ -1,5 +1,23 @@
 # ALMEAA — Codex Execution State
 
+## School roster runtime integrity for supervisor and school teacher
+
+- Status: `VERIFIED / READY FOR REVIEW` on 2026-09-12.
+- Scope:
+  1. `SupervisorDashboard` now reads its student roster from the already RBAC-scoped server response on every workspace load, instead of deriving a zero count from a partially hydrated browser store. The scoped roster remains local to the dashboard and does not overwrite global users.
+  2. `SchoolTeacherWorkspace` now returns an additive, privacy-minimal roster for each active teaching assignment: `studentId`, `name`, `isActive`, and `studentCount`. The query is constrained by both the assigned school and class, including the legacy class roster reference only after the school boundary is confirmed.
+  3. The school teacher overview displays the actual assigned-class student count and a class-by-class student list, including an explicit empty state.
+  4. The backend integration gate asserts the assigned teacher receives exactly the roster for the assigned class and no outside-school student.
+- Verification:
+  - Server TypeScript check: passed.
+  - Frontend TypeScript check: passed.
+  - `smoke:school-roster-runtime`: passed (9 assertions).
+  - Existing `smoke:account-workspaces-g12`: passed.
+  - Existing school RBAC and supervisor dashboard contract smokes: passed.
+- Known baseline notes:
+  - The repository-wide architecture gate currently fails on pre-existing allowlist/baseline drift unrelated to this change; this goal adds no HTTP route, router mount, schema migration, or entitlement.
+  - The isolated frontend build environment has a pre-existing incomplete `lucide-react` package install (`mic-vocal.js` missing); TypeScript validation completed successfully, but final CI should supply the canonical dependency cache and run the production build.
+
 ## Smart Classroom Per-Question Hardening, DB-Backed Teacher Reports, Concurrency Guard & Live Socket E2E
 
 - Status: `VERIFIED / READY FOR COMMIT & MERGE` on 2026-09-12.

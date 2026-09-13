@@ -789,7 +789,14 @@ export const api = {
         schoolName: string;
         source: "membership" | "legacy";
         smartClassroomEnabled: boolean;
-        assignments: Array<{ assignmentId: string; classId: string; className: string; subjectId: string }>;
+        assignments: Array<{
+          assignmentId: string;
+          classId: string;
+          className: string;
+          subjectId: string;
+          studentCount: number;
+          students: Array<{ studentId: string; name: string; isActive: boolean }>;
+        }>;
         assessments: Array<{ assessmentId: string; title: string; subjectId: string; classIds: string[]; dueDate: string | null; quizKind: string }>;
       }>;
     }>("/school-access/teacher-workspace", { token, cache: "no-store" }),
