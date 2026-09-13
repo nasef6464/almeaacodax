@@ -133,7 +133,9 @@ const getRequestedSupervisorTab = (): SupervisorTab | null => {
 };
 
 export const SupervisorDashboard: React.FC = () => {
-  const { user, groups, users, examResults, quizzes, updateQuiz, hydrateUsers, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
+  const { user, groups, users, examResults, quizzes, updateQuiz, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
+  const [scopedStudentUsers, setScopedStudentUsers] = useState<any[]>([]);
+  const [scopedStudentUsersLoaded, setScopedStudentUsersLoaded] = useState(false);
   const [activeTab, setActiveTabState] = useState<SupervisorTab>(() => getRequestedSupervisorTab() || 'overview');
 
   const setActiveTab = React.useCallback((newTab: SupervisorTab) => {
@@ -197,7 +199,8 @@ export const SupervisorDashboard: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    // Ensure we have loaded students for the supervisor to view
+    // The API is already tenant-scoped for a supervisor. Keep this data local so a
+    // partial global client store can never turn a valid school roster into zero.
     const loadStudents = async () => {
       try {
         const { api } = await import('../../services/api');
@@ -221,8 +224,7 @@ export const SupervisorDashboard: React.FC = () => {
           }
         }
 
-        if (allStudents.length > 0) {
-          const storeUsers = allStudents.map(u => ({
+        setScopedStudentUsers(allStudents.map(u => ({
             id: u._id || u.id || '',
             name: u.name,
             email: u.email,
@@ -238,19 +240,17 @@ export const SupervisorDashboard: React.FC = () => {
             schoolId: u.schoolId,
             isActive: u.isActive !== false,
             createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : new Date().toISOString()
-          })) as import('../../types').User[];
-          const existingNonStudents = users.filter(u => u.role !== Role.STUDENT);
-          hydrateUsers([...existingNonStudents, ...storeUsers]);
-        }
+          })));
       } catch (error) {
         console.error('Error fetching students:', error);
+      } finally {
+        setScopedStudentUsersLoaded(true);
       }
     };
 
-    if (users.filter(u => u.role === Role.STUDENT).length === 0) {
-      loadStudents();
-    }
-  }, [hydrateUsers, users]);
+    setScopedStudentUsersLoaded(false);
+    loadStudents();
+  }, [user.id]);
 
   const supervisorScopeSummary = useMemo(() => {
     const directGroupIds = new Set(user.groupIds || []);
@@ -269,7 +269,8 @@ export const SupervisorDashboard: React.FC = () => {
     const primarySchoolName = primarySchool?.name || (scopedSchoolIds.size > 0 ? 'المدرسة المسندة' : 'جميع الفصول المسندة');
     const scopeTypeName = primarySchool ? 'إشراف شامل على المدرسة' : scopedGroupList.length > 0 ? `إشراف مخصص (${scopedGroupList.length} فصل)` : 'إشراف عام';
     const scopedStudentIdSet = new Set(scopedGroupList.flatMap((g) => g.studentIds || []));
-    const scopedStudents = users.filter((u) => {
+    const studentSource = scopedStudentUsersLoaded ? scopedStudentUsers : users;
+    const scopedStudents = studentSource.filter((u) => {
       if (u.role !== Role.STUDENT) return false;
       return (u.groupIds || []).some((gid) => scopedGroupIds.has(gid)) || (u.schoolId && scopedSchoolIds.has(u.schoolId)) || scopedStudentIdSet.has(u.id);
     });
@@ -369,7 +370,7 @@ export const SupervisorDashboard: React.FC = () => {
       groupSnapshots, bestClass, weakestClass, pendingFollowUpCount, scopedStudentIdSet, scopedResults,
       primarySchoolName, scopeTypeName,
     };
-  }, [examResults, groups, quizzes, user.groupIds, user.id, user.schoolId, users]);
+  }, [examResults, groups, quizzes, scopedStudentUsers, scopedStudentUsersLoaded, user.groupIds, user.id, user.schoolId, users]);
 
   const activeStudentDetails = useMemo(() => {
     if (!selectedStudentId) return null;
