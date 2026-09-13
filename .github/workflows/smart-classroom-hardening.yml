@@ -81,6 +81,18 @@ jobs:
       - name: Smart Classroom live journey contract
         run: node scripts/smoke-smart-classroom-live-journey-contract.mjs
 
+      - name: Smart Classroom challenge batch contract
+        run: node scripts/smoke-smart-classroom-challenge-batch-contract.mjs
+
+      - name: Smart Classroom challenge end contract
+        run: node scripts/smoke-smart-classroom-challenge-end-contract.mjs
+
+      - name: Smart Classroom projector privacy contract
+        run: node scripts/smoke-smart-classroom-projector-reveal-contract.mjs
+
+      - name: Smart Classroom report insights contract
+        run: node scripts/smoke-smart-classroom-report-insights-contract.mjs
+
       - name: Smart Classroom hardening contract
         run: node scripts/smoke-smart-classroom-hardening-contract.mjs
 
