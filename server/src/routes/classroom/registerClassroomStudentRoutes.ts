@@ -11,6 +11,7 @@ import { GroupModel } from "../../models/Group.js";
 import { UserModel } from "../../models/User.js";
 import { canStudentJoinClassroom, type ClassroomSessionStatus } from "../../modules/schools/application/classroomLifecycle.js";
 import { projectClassroomQuestionForStudent } from "../../modules/schools/application/classroomQuestionProjection.js";
+import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { emitClassroomEvent } from "../../sockets/classroomEvents.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { classroomSessionId, hashClassroomPin } from "./classroomRouteSupport.js";
@@ -23,10 +24,14 @@ const studentCanAccessSession = (student: any, session: any) =>
   && String(student.schoolId) === String(session.schoolId)
   && (student.groupIds || []).map(String).includes(String(session.classId));
 
+const smartClassroomEnabled = async (schoolId: string) =>
+  (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed;
+
 export function registerClassroomStudentRoutes(classroomRouter: Router) {
   classroomRouter.get("/student/active-session", requireAuth, asyncHandler(async (req, res) => {
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role name").lean() as any;
     if (!student || student.role !== "student" || !student.schoolId) return res.json({ hasActiveSession: false });
+    if (!(await smartClassroomEnabled(String(student.schoolId)))) return res.json({ hasActiveSession: false });
     const studentClassIds = (student.groupIds || []).map(String).filter((id: string) => Types.ObjectId.isValid(id));
     if (studentClassIds.length === 0) return res.json({ hasActiveSession: false });
     const session = await ClassroomSessionModel.findOne({
@@ -50,6 +55,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const session = await ClassroomSessionModel.findOne({ pinHash: hashClassroomPin(payload.pin), status: "live", pinExpiresAt: { $gt: new Date() } })
       .sort({ createdAt: -1 }).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة مباشرة بهذا الرمز أو قد انتهت صلاحيته." });
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الرمز مخصص لحصة فصل دراسي آخر أو مدرسة أخرى." });
     await ClassroomParticipantModel.updateOne(
@@ -64,6 +70,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     if (!session || !canStudentJoinClassroom(session.status as ClassroomSessionStatus)) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "الحصة غير مباشرة أو انتهت" });
     }
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بالانضمام لهذه الحصة المخصصة لفصل آخر" });
     await ClassroomParticipantModel.updateOne(
@@ -79,6 +86,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     if (!session || !canStudentJoinClassroom(session.status as ClassroomSessionStatus) || session.pinExpiresAt < new Date() || hashClassroomPin(payload.pin) !== session.pinHash) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
     }
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     await ClassroomParticipantModel.updateOne(
@@ -91,6 +99,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
   classroomRouter.get("/sessions/:id/current", requireAuth, asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active question" });
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!studentCanAccessSession(student, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     const participant = await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id });
@@ -112,6 +121,7 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const payload = answerSchema.parse(req.body);
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
+    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const publishedSet = new Set(session.publishedQuestionIds?.length
       ? session.publishedQuestionIds
       : session.questionSnapshots[session.activeQuestionIndex] ? [session.questionSnapshots[session.activeQuestionIndex].questionId] : []);
