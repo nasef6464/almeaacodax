@@ -1,15 +1,25 @@
 import type { Router } from "express";
 import { StatusCodes } from "http-status-codes";
-import { requireAuth } from "../../middleware/auth.js";
+import { z } from "zod";
+import { requireAuth, requireRole } from "../../middleware/auth.js";
+import { ClassroomParticipantModel } from "../../models/ClassroomParticipant.js";
 import { ClassroomResponseModel } from "../../models/ClassroomResponse.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { UserModel } from "../../models/User.js";
 import { resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
+import { resolveSchoolContexts } from "../../modules/schools/application/schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
+import { emitClassroomEvent } from "../../sockets/classroomEvents.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { classroomSessionId, ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
+
+const competitionConfigSchema = z.object({
+  challengeQuestionIds: z.array(z.string().min(1)).max(30).optional().default([]),
+  durationSeconds: z.number().int().min(10).max(600),
+  competitionEnabled: z.boolean().optional().default(true),
+});
 
 const staffCanViewCompetition = async (actor: any, session: any) => {
   if (actor.role === "admin") return true;
@@ -44,11 +54,29 @@ const staffCanViewCompetition = async (actor: any, session: any) => {
   return false;
 };
 
+const teacherCanManageCompetition = async (actor: any, session: any) => {
+  if (actor.role === "admin") return true;
+  if (actor.role !== "teacher" || String(session.teacherId) !== String(actor.id)) return false;
+  const [hasSchoolAccess, assignment] = await Promise.all([
+    ensureTeacherSchoolAccess(actor, String(session.schoolId)),
+    TeachingAssignmentModel.exists({
+      schoolId: String(session.schoolId),
+      classId: String(session.classId),
+      teacherId: String(actor.id),
+      status: "active",
+    }),
+  ]);
+  return Boolean(hasSchoolAccess && assignment);
+};
+
+const activeBatch = (session: any) => {
+  if (!session.activeBatchId || !Array.isArray(session.questionBatches)) return null;
+  return session.questionBatches.find((entry: any) => String(entry.batchId) === String(session.activeBatchId)) || null;
+};
+
 const activeCompetitionQuestionIds = (session: any) => {
-  if (session.activeBatchId && Array.isArray(session.questionBatches)) {
-    const batch = session.questionBatches.find((entry: any) => String(entry.batchId) === String(session.activeBatchId));
-    if (batch?.questionIds?.length) return batch.questionIds.map(String);
-  }
+  const batch = activeBatch(session);
+  if (batch?.questionIds?.length) return batch.questionIds.map(String);
   if (Array.isArray(session.publishedQuestionIds) && session.publishedQuestionIds.length > 0) {
     return session.publishedQuestionIds.map(String);
   }
@@ -58,7 +86,78 @@ const activeCompetitionQuestionIds = (session: any) => {
   return [];
 };
 
+const studentCanReadChallengeState = async (actor: any, session: any) => {
+  if (actor.role !== "student") return false;
+  const student = await UserModel.findById(actor.id).select("schoolId groupIds role").lean() as any;
+  if (!student || student.role !== "student") return false;
+  const contexts = await resolveSchoolContexts({ id: actor.id, role: "student", schoolId: student.schoolId || null });
+  const hasSchoolContext = contexts.some((context) => context.role === "student" && String(context.schoolId) === String(session.schoolId));
+  if (!hasSchoolContext || !(student.groupIds || []).map(String).includes(String(session.classId))) return false;
+  return Boolean(await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: actor.id }));
+};
+
+const challengeState = (session: any) => {
+  const batch = activeBatch(session);
+  const now = new Date();
+  const timerEndsAt = batch?.timerEndsAt || null;
+  return {
+    sessionId: classroomSessionId(session),
+    activeBatchId: session.activeBatchId || "",
+    challengeQuestionIds: (batch?.challengeQuestionIds || []).map(String),
+    competitionEnabled: Boolean(batch?.competitionEnabled),
+    challengeDurationSeconds: batch?.challengeDurationSeconds ?? null,
+    timerStartedAt: batch?.timerStartedAt || null,
+    timerEndsAt,
+    expired: Boolean(timerEndsAt && new Date(timerEndsAt).getTime() <= now.getTime()),
+    serverNow: now,
+  };
+};
+
 export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
+  classroomRouter.get("/sessions/:id/challenge-state", requireAuth, asyncHandler(async (req, res) => {
+    const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
+    if (!session || session.status !== "live") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
+    if (!(await resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")).allowed) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
+    const canView = await staffCanViewCompetition(req.authUser!, session) || await studentCanReadChallengeState(req.authUser!, session);
+    if (!canView) return res.status(StatusCodes.FORBIDDEN).json({ message: "Challenge state access denied" });
+    res.json(challengeState(session));
+  }));
+
+  classroomRouter.post("/sessions/:id/competition/configure", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
+    const payload = competitionConfigSchema.parse(req.body);
+    const session = await ClassroomSessionModel.findById(req.params.id);
+    if (!session || session.status !== "live") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
+    if (!(await resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")).allowed) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
+    if (!(await teacherCanManageCompetition(req.authUser!, session))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Competition control denied" });
+    }
+
+    const batch = activeBatch(session);
+    if (!batch) return res.status(StatusCodes.CONFLICT).json({ message: "No active question batch to configure" });
+    const batchQuestionIds = new Set((batch.questionIds || []).map(String));
+    const challengeQuestionIds = Array.from(new Set(payload.challengeQuestionIds.map(String)));
+    if (challengeQuestionIds.some((questionId) => !batchQuestionIds.has(questionId))) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Challenge questions must belong to the active batch" });
+    }
+
+    const timerStartedAt = new Date();
+    const timerEndsAt = new Date(timerStartedAt.getTime() + payload.durationSeconds * 1000);
+    batch.challengeQuestionIds = challengeQuestionIds;
+    batch.competitionEnabled = payload.competitionEnabled;
+    batch.challengeDurationSeconds = payload.durationSeconds;
+    batch.timerStartedAt = timerStartedAt;
+    batch.timerEndsAt = timerEndsAt;
+    await session.save();
+
+    const state = challengeState(session.toObject());
+    emitClassroomEvent(classroomSessionId(session), "competition:updated", state);
+    res.json(state);
+  }));
+
   classroomRouter.get("/sessions/:id/competition", requireAuth, asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
@@ -110,6 +209,7 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
       .sort((a, b) => b.correct - a.correct || b.answered - a.answered || new Date(a.lastSubmittedAt || 0).getTime() - new Date(b.lastSubmittedAt || 0).getTime())
       .map((entry, index) => ({ rank: index + 1, ...entry }));
 
+    const batch = activeBatch(session);
     res.json({
       sessionId: classroomSessionId(session),
       activeBatchId: session.activeBatchId || "",
@@ -117,6 +217,11 @@ export function registerClassroomCompetitionRoutes(classroomRouter: Router) {
       participantCount: leaderboard.length,
       leaderboard,
       scoring: { correctAnswerPoints: 100, speedBonus: false },
+      challenge: {
+        challengeQuestionIds: (batch?.challengeQuestionIds || []).map(String),
+        competitionEnabled: Boolean(batch?.competitionEnabled),
+        timerEndsAt: batch?.timerEndsAt || null,
+      },
     });
   }));
 }
