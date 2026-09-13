@@ -104,20 +104,39 @@ export const buildClassroomSessionReport = async (session: any) => {
   const questionReports = (session.questionSnapshots || []).map((question: any, index: number) => {
     const questionResponses = responses.filter((response: any) => idOf(response.questionId) === idOf(question.questionId));
     const correct = questionResponses.filter((response: any) => response.isCorrect).length;
+    const distribution = questionResponses.reduce((summary: Record<string, number>, response: any) => {
+      const key = String(response.selectedOptionIndex);
+      summary[key] = (summary[key] || 0) + 1;
+      return summary;
+    }, {});
     return {
       index,
       questionId: question.questionId,
       text: question.text,
+      imageUrl: question.imageUrl || "",
+      options: question.options || [],
+      correctOptionIndex: question.correctOptionIndex,
+      explanation: question.explanation || "",
       skillIds: question.skillIds || [],
       pathId: question.pathId || "",
       sectionId: question.sectionId || "",
       subject: question.subject || "",
+      difficulty: question.difficulty || "Medium",
       answered: questionResponses.length,
       correct,
       wrong: questionResponses.length - correct,
       unanswered: Math.max(0, joinedStudentIds.size - questionResponses.length),
+      distribution,
     };
   });
+
+  const startedAt = session.startedAt || session.createdAt || null;
+  const endedAt = session.endedAt || null;
+  const startedMs = startedAt ? new Date(startedAt).getTime() : Number.NaN;
+  const endedMs = endedAt ? new Date(endedAt).getTime() : Number.NaN;
+  const durationMinutes = Number.isFinite(startedMs) && Number.isFinite(endedMs)
+    ? Math.max(0, Math.round((endedMs - startedMs) / 60_000))
+    : null;
 
   return {
     sessionId: reportSessionId,
@@ -129,8 +148,9 @@ export const buildClassroomSessionReport = async (session: any) => {
     period: session.period ?? null,
     teacherId: session.teacherId,
     status: session.status,
-    startedAt: session.createdAt,
-    endedAt: session.endedAt,
+    startedAt,
+    endedAt,
+    durationMinutes,
     roster: {
       expected: expectedStudentIds.size,
       joined: joinedStudentIds.size,
