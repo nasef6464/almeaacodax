@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'server/src/routes/classroom.routes.ts'
+      - 'server/src/routes/classroom/**'
       - 'server/src/routes/schoolAdminIntegrity.routes.ts'
       - 'server/src/routes/index.ts'
       - 'server/src/middleware/auth.ts'
@@ -13,11 +14,14 @@ on:
       - 'server/src/modules/schools/**'
       - 'server/src/sockets/**'
       - 'server/src/scripts/*SmartClassroom*'
+      - 'contexts/AuthContext.tsx'
+      - 'components/auth/RequireAuth.tsx'
       - 'components/classroom/**'
       - 'pages/Classroom**'
       - 'hooks/useClassroomRealtime.ts'
       - 'services/api.ts'
       - 'scripts/smoke-smart-classroom**'
+      - 'scripts/smoke-auth-frontend-contract.mjs'
       - 'server/package.json'
       - '.github/workflows/smart-classroom-hardening.yml'
   workflow_dispatch:
@@ -70,6 +74,12 @@ jobs:
 
       - name: Server typecheck
         run: npm --prefix server run check
+
+      - name: Auth refresh contract
+        run: node scripts/smoke-auth-frontend-contract.mjs
+
+      - name: Smart Classroom live journey contract
+        run: node scripts/smoke-smart-classroom-live-journey-contract.mjs
 
       - name: Smart Classroom hardening contract
         run: node scripts/smoke-smart-classroom-hardening-contract.mjs
