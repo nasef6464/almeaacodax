@@ -56,6 +56,21 @@ const activateBatchForQuestion = (session: any, questionId: string, startedAt = 
 const smartClassroomEnabled = async (schoolId: string) =>
   (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed;
 
+const canTeacherControlSession = async (actor: any, session: any) => {
+  if (actor.role === "admin") return true;
+  if (String(session.teacherId) !== String(actor.id)) return false;
+  const [hasSchoolAccess, hasClassAssignment] = await Promise.all([
+    ensureTeacherSchoolAccess(actor, String(session.schoolId)),
+    TeachingAssignmentModel.exists({
+      schoolId: String(session.schoolId),
+      classId: String(session.classId),
+      teacherId: String(actor.id),
+      status: "active",
+    }),
+  ]);
+  return Boolean(hasSchoolAccess && hasClassAssignment);
+};
+
 export function registerClassroomTeacherRoutes(classroomRouter: Router) {
   classroomRouter.get("/teacher/active-session", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const schoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim() ? req.query.schoolId.trim() : undefined;
@@ -70,6 +85,9 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     if (schoolId) query.schoolId = schoolId;
     const session = await ClassroomSessionModel.findOne(query).sort({ createdAt: -1 }).lean() as any;
     if (!session) return res.json({ hasActiveSession: false });
+    if (req.authUser!.role !== "admin" && !(await canTeacherControlSession(req.authUser!, session))) {
+      return res.json({ hasActiveSession: false });
+    }
     const classroomGroup = await GroupModel.findById(session.classId).select("name").lean() as any;
     res.json({
       hasActiveSession: true,
@@ -199,8 +217,8 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Session or question not found" });
     }
     if (!canPublishClassroom(session.status as ClassroomSessionStatus)) return res.status(StatusCodes.CONFLICT).json({ message: "Session lifecycle does not allow publishing" });
-    if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
-    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    if (!(await canTeacherControlSession(req.authUser!, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
 
     const publishAt = new Date();
     const wasNotLive = session.status !== "live";
@@ -234,7 +252,8 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
   classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id);
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
-    if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (!(await canTeacherControlSession(req.authUser!, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
+    if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     if (session.status === "ended" && session.reportSnapshot) return res.json({ report: session.reportSnapshot, alreadyEnded: true });
     if (session.status === "archived") return res.status(StatusCodes.CONFLICT).json({ message: "Archived sessions cannot be ended again" });
     res.json({ report: await finalizeClassroomSession(session) });
@@ -244,8 +263,8 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     const payload = appendQuestionsSchema.parse(req.body);
     const session = await ClassroomSessionModel.findById(req.params.id);
     if (!session || !canMutateClassroomQuestions(session.status as ClassroomSessionStatus)) return res.status(StatusCodes.CONFLICT).json({ message: "الحصة لا تسمح بإضافة أسئلة في حالتها الحالية" });
-    if (req.authUser!.role !== "admin" && String(session.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بتعديل هذه الحصة" });
-    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    if (!(await canTeacherControlSession(req.authUser!, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مصرح لك بتعديل هذه الحصة" });
+    if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
 
     const requestedIds = normalizeQuestionIds(payload.questionIds);
     const snapshots = await loadApprovedVisibleQuestions(requestedIds, session.schoolId, req.authUser!.id);
