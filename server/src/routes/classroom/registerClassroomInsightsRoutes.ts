@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../../middleware/auth.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
+import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { buildClassroomReportInsights, type ClassroomInsightsPeriod } from "../../modules/schools/application/classroomReportInsights.js";
 import { buildClassroomSessionReport } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
@@ -26,9 +27,20 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
         if (!entitlement.allowed) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
       }
 
+      const classId = typeof req.query.classId === "string" && req.query.classId.trim() ? req.query.classId.trim() : undefined;
+
       if (req.authUser!.role === "teacher") {
         if (!(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
           return res.status(StatusCodes.FORBIDDEN).json({ message: "School insights access denied" });
+        }
+        if (classId) {
+          const assigned = await TeachingAssignmentModel.exists({
+            schoolId,
+            classId,
+            teacherId: req.authUser!.id,
+            status: "active",
+          });
+          if (!assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Class insights access denied" });
         }
       } else if (req.authUser!.role === "school_admin") {
         const capability = await requireSchoolDirectorCapability(
@@ -41,7 +53,6 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
       }
 
       const period = periodSchema.catch("week").parse(req.query.period) as ClassroomInsightsPeriod;
-      const classId = typeof req.query.classId === "string" && req.query.classId.trim() ? req.query.classId.trim() : undefined;
       const weakThreshold = z.coerce.number().min(1).max(99).catch(65).parse(req.query.weakThreshold);
       const limit = z.coerce.number().int().min(1).max(100).catch(100).parse(req.query.limit);
 
