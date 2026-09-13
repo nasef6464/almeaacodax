@@ -3,7 +3,7 @@
 ## People Hub quick closure plan
 
 - Status: `PLANNED / NOT STARTED` on 2026-09-13.
-- Baseline: `main @ 471bfd08`.
+- Baseline: `main @ c4b744d6`.
 - Goals: `PH1–PH3` — unified role entry, server-backed relationship confirmation,
   and focused regression/closure.
 - Execution reference:
