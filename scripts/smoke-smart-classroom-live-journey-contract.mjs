@@ -40,6 +40,9 @@ check('canonical batch report carries skill ids', reportBuilder.includes('skillI
 check('live push UI previews standalone question images', pushModal.includes('question.imageUrl'));
 check('student current-question read requires explicit participant', studentRoutes.includes('Join the session before viewing questions'));
 check('student answer requires explicit participant', studentRoutes.includes('Join the session before answering'));
+check('student live routes recheck Smart Classroom entitlement', studentRoutes.includes('smartClassroomEnabled') && studentRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);
+check('teacher question/publish/append routes recheck Smart Classroom entitlement', teacherRoutes.includes('smartClassroomEnabled') && teacherRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);
+check('aggregate denies non-admin access when entitlement is disabled', aggregateRoutes.includes('req.authUser!.role !== "admin"') && aggregateRoutes.includes('resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")'));
 check('aggregate does not auto-create student participation', !aggregateRoutes.includes('ClassroomParticipantModel.updateOne'));
 check('participant uniqueness is protected in Mongo', participantModel.includes('{ sessionId: 1, studentId: 1 }, { unique: true }'));
 check('response uniqueness is protected in Mongo', responseModel.includes('{ sessionId: 1, questionId: 1, studentId: 1 }, { unique: true }'));
