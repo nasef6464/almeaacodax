@@ -17,6 +17,7 @@ const authContext = read('contexts/AuthContext.tsx');
 const requireAuth = read('components/auth/RequireAuth.tsx');
 const teacherConsole = read('pages/ClassroomTeacherConsole.tsx');
 const studentPage = read('pages/ClassroomStudentLive.tsx');
+const projector = read('pages/ClassroomProjectorView.tsx');
 const examRunner = read('components/classroom/SmartClassroomExamRunner.tsx');
 const floatingWidget = read('components/classroom/SmartClassroomFloatingWidget.tsx');
 const reportsUi = read('components/classroom/SmartClassroomReportsSection.tsx');
@@ -77,6 +78,7 @@ check('student receives an explicit ended-session state', studentPage.includes('
 check('floating widget clears stale joined session state', floatingWidget.includes('clearJoinedSession') && floatingWidget.includes('انتهت الحصة الذكية'));
 check('realtime exposes session-ended callback', realtime.includes('onSessionEnded') && realtime.includes("socket.on('session:ended'"));
 check('realtime reconnect rejoins the room and refreshes canonical state', realtime.includes("socket.io.on('reconnect', joinWorkspace)") && realtime.includes('onChange();'));
+check('competition updates trigger realtime canonical resync', realtime.includes("socket.on('competition:updated', onChange)"));
 check('ending a session persists a canonical report snapshot', routeSupport.includes('session.reportSnapshot = report'));
 check('ended history reuses immutable report snapshot', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('return session.reportSnapshot'));
 check('teacher active-session lookup is school scoped for teachers', teacherRoutes.includes('schoolId is required for teacher active session lookup') && teacherRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, schoolId)'));
@@ -88,6 +90,10 @@ check('challenge timer is persisted on the active batch', sessionModel.includes(
 check('speed challenge config is written to the server', scheduler.includes('/competition/configure') && scheduler.includes('durationSeconds: challengeTimerSeconds'));
 check('student challenge timer restores from server after refresh', studentPage.includes('/challenge-state') && studentPage.includes('deadlineAt=') && examRunner.includes('secondsUntil(deadlineAt)'));
 check('expired server challenge blocks answer and final submit', studentRoutes.match(/activeChallengeExpired\(session\)/g)?.length >= 2);
+check('timed challenge cannot silently cover only part of an active batch', competitionRoutes.includes('requestedChallengeIds.length !== batchQuestionIds.length') && competitionRoutes.includes('التحدي المؤقت يجب أن يشمل الدفعة النشطة كاملة'));
+check('competition user lookup supports canonical and mongo ids', competitionRoutes.includes('{ id: { $in: studentIds } }') && competitionRoutes.includes('Types.ObjectId.isValid'));
+check('projector can show a server-backed top-three podium', projector.includes('منصة التحدي') && projector.includes('/competition') && projector.includes('podium.map'));
+check('projector challenge countdown is restored from server deadline', projector.includes('/challenge-state') && projector.includes('secondsUntil(challengeState?.timerEndsAt)'));
 check('competition metadata survives into immutable final report', reportBuilder.includes('competitionEnabled') && reportBuilder.includes('timerEndsAt') && reportBuilder.includes('challengeQuestionIds'));
 
 console.log(`Smart Classroom live journey contract: PASS (${checks.length}/${checks.length})`);
