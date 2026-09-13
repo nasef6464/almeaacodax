@@ -30,6 +30,10 @@ const check = (name, condition) => {
 check('teacher can create an empty session', teacherRoutes.includes('optional().default([])') && teacherRoutes.includes('canonicalQuestionIds.length > 0 ? 0 : null'));
 check('scheduler exposes explicit empty-session mode', scheduler.includes("'empty'") && scheduler.includes('ابدأ الحصة فارغة'));
 check('teacher can append and auto-publish a new batch', teacherRoutes.includes('/append-questions') && teacherRoutes.includes('publishedQuestionIds = newQuestionIds'));
+check('question batches are persisted on the session', sessionModel.includes('questionBatches') && sessionModel.includes('activeBatchId'));
+check('new pushed questions create a numbered batch', teacherRoutes.includes('newBatchId = randomUUID()') && teacherRoutes.includes('label: `الدفعة ${session.questionBatches.length + 1}`'));
+check('switching batches closes the previous active batch', teacherRoutes.includes('closeActiveBatch(session') && teacherRoutes.includes('activateBatchForQuestion'));
+check('ending the session closes the active batch', routeSupport.includes('activeBatch.endedAt = endedAt') && routeSupport.includes('session.activeBatchId = ""'));
 check('live push UI previews standalone question images', pushModal.includes('question.imageUrl'));
 check('student current-question read requires explicit participant', studentRoutes.includes('Join the session before viewing questions'));
 check('student answer requires explicit participant', studentRoutes.includes('Join the session before answering'));
@@ -37,7 +41,7 @@ check('aggregate does not auto-create student participation', !aggregateRoutes.i
 check('participant uniqueness is protected in Mongo', participantModel.includes('{ sessionId: 1, studentId: 1 }, { unique: true }'));
 check('response uniqueness is protected in Mongo', responseModel.includes('{ sessionId: 1, questionId: 1, studentId: 1 }, { unique: true }'));
 check('one live session per class has a partial unique index', sessionModel.includes('partialFilterExpression: { status: "live" }'));
-check('actual live start time is persisted', sessionModel.includes('startedAt: { type: Date') && teacherRoutes.includes('startedAt: payload.autoStart ? new Date() : null') && teacherRoutes.includes('if (!session.startedAt) session.startedAt = new Date()'));
+check('actual live start time is persisted', sessionModel.includes('startedAt: { type: Date') && teacherRoutes.includes('const liveStartedAt = payload.autoStart ? new Date() : null') && teacherRoutes.includes('if (!session.startedAt) session.startedAt = publishAt'));
 check('canonical report derives duration from actual live start', reportBuilder.includes('session.startedAt || session.createdAt') && reportBuilder.includes('durationMinutes'));
 check('classroom routes participate in cookie-backed auth bootstrap', authContext.includes("'/classroom'") && authContext.includes('shouldBootstrapInitialAuth'));
 check('auth redirect waits while bootstrap is running', requireAuth.indexOf('if (loading)') >= 0 && requireAuth.indexOf('if (loading)') < requireAuth.indexOf('if (!user)'));
