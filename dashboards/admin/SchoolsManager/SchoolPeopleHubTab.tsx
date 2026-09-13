@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Download, Filter, Plus, Search, Upload, Users } from 'lucide-react';
-import type { Group, Role, User } from '../../../types';
+import { Download, Plus, Search, Upload, Users } from 'lucide-react';
+import type { Group, User } from '../../../types';
 import { SchoolDirectorDelegationPanel } from './SchoolDirectorDelegationPanel';
 
 interface SchoolPeopleHubTabProps {
@@ -121,8 +121,9 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
             if (selectedRole === 'students' && item.schoolRole !== 'student') return false;
             if (selectedRole === 'parents' && item.schoolRole !== 'parent') return false;
 
-            // Class filter (applies to students primarily)
-            if (selectedClassId !== 'all') {
+            // A class is a student relationship. Do not hide staff, directors, or
+            // parents just because they have no class assignment.
+            if (selectedClassId !== 'all' && item.schoolRole === 'student') {
                 if (selectedClassId === 'unassigned' && item.classId) return false;
                 if (selectedClassId !== 'unassigned' && item.classId !== selectedClassId) return false;
             }
@@ -164,7 +165,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
                         onClick={onOpenSingleStudent}
                         className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700 shadow-xs transition-colors cursor-pointer"
                     >
-                        <Plus size={15} /> إضافة مستخدم فردي
+                        <Plus size={15} /> إضافة طالب فردي
                     </button>
                     <button
                         type="button"
