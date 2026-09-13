@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import {
-    ChevronLeft,
-    ChevronRight,
-    Sparkles,
-    X,
-} from 'lucide-react';
-import { api } from '../../../services/api';
+import { ChevronLeft, ChevronRight, Sparkles, X } from 'lucide-react';
 import type { Group } from '../../../types';
 import {
     WIZARD_PLANS,
     WizardStepBasicInfo,
     WizardStepPlanAndModules,
-    WizardStepLeadership,
     WizardStepQuickClasses,
 } from './NewSchoolWizardSteps';
+import { NewSchoolWizardLeadershipStep } from './NewSchoolWizardLeadershipStep';
+import { useSchoolWizardProvisioning } from './useSchoolWizardProvisioning';
 
 interface NewSchoolWizardModalProps {
     isOpen: boolean;
@@ -23,6 +18,11 @@ interface NewSchoolWizardModalProps {
     userId: string;
 }
 
+type WizardStep = 1 | 2 | 3 | 4;
+
+const hasStrongTemporaryPassword = (value: string) => value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
 export const NewSchoolWizardModal: React.FC<NewSchoolWizardModalProps> = ({
     isOpen,
     onClose,
@@ -30,346 +30,192 @@ export const NewSchoolWizardModal: React.FC<NewSchoolWizardModalProps> = ({
     createGroupAsync,
     userId,
 }) => {
-    const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    // Step 1: Basic Info
+    const [step, setStep] = useState<WizardStep>(1);
     const [name, setName] = useState('');
     const [stage, setStage] = useState('ثانوي');
     const [city, setCity] = useState('الرياض');
     const [description, setDescription] = useState('');
-
-    // Step 2: Contract & Plan
     const [selectedPlanId, setSelectedPlanId] = useState('smart_school');
     const [modules, setModules] = useState<string[]>([
-        'SCHOOL_CORE',
-        'QUESTION_BANK',
-        'SCHOOL_ASSESSMENTS',
-        'SMART_CLASSROOM',
-        'SCHOOL_INTELLIGENCE',
-        'INTERVENTION_CENTER',
-        'PATHS_AND_COURSES',
+        'SCHOOL_CORE', 'QUESTION_BANK', 'SCHOOL_ASSESSMENTS', 'SMART_CLASSROOM',
+        'SCHOOL_INTELLIGENCE', 'INTERVENTION_CENTER', 'PATHS_AND_COURSES',
     ]);
-    const [targetStudents, setTargetStudents] = useState<number>(250);
-
-    // Step 3: School Leadership (Optional)
+    const [targetStudents, setTargetStudents] = useState(250);
     const [directorName, setDirectorName] = useState('');
     const [directorEmail, setDirectorEmail] = useState('');
-
-    // Step 4: Quick Classes
+    const [directorPassword, setDirectorPassword] = useState('');
     const [classesList, setClassesList] = useState<string[]>([
-        'أول ثانوي - أ',
-        'أول ثانوي - ب',
-        'ثاني ثانوي - علمي أ',
-        'ثاني ثانوي - علمي ب',
-        'ثالث ثانوي - عام أ',
+        'أول ثانوي - أ', 'أول ثانوي - ب', 'ثاني ثانوي - علمي أ',
+        'ثاني ثانوي - علمي ب', 'ثالث ثانوي - عام أ',
     ]);
     const [newClassNameInput, setNewClassNameInput] = useState('');
 
+    const provisioning = useSchoolWizardProvisioning({
+        name, stage, city, description, targetStudents, modules, classesList,
+        directorName, directorEmail, directorPassword, userId,
+        createGroupAsync, onSchoolCreated, onClose,
+    });
+
     if (!isOpen) return null;
 
-    const handleSelectPlan = (planId: string) => {
-        setSelectedPlanId(planId);
-        const plan = WIZARD_PLANS.find((p) => p.id === planId);
-        if (plan) {
-            setModules(plan.defaultModules);
+    const directorRequested = Boolean(directorName.trim() || directorEmail.trim() || directorPassword);
+    const validateDirector = () => {
+        if (!directorRequested) return null;
+        if (directorName.trim().length < 2) return 'أدخل اسم مدير المدرسة كاملًا أو اترك بيانات المدير كلها فارغة.';
+        if (!isEmail(directorEmail)) return 'أدخل بريدًا إلكترونيًا صحيحًا لمدير المدرسة.';
+        if (!hasStrongTemporaryPassword(directorPassword)) {
+            return 'كلمة المرور المؤقتة للمدير يجب أن تكون 8 أحرف على الأقل وتحتوي حرفًا ورقمًا.';
         }
+        return null;
     };
 
-    const toggleModule = (modId: string) => {
-        if (modId === 'SCHOOL_CORE') return;
-        setModules((current) =>
-            current.includes(modId)
-                ? current.filter((m) => m !== modId)
-                : [...current, modId]
-        );
+    const selectPlan = (planId: string) => {
+        setSelectedPlanId(planId);
+        const plan = WIZARD_PLANS.find((item) => item.id === planId);
+        if (plan) setModules(plan.defaultModules);
     };
 
-    const handleAddCustomClass = () => {
-        const trimmed = newClassNameInput.trim();
-        if (trimmed && !classesList.includes(trimmed)) {
-            setClassesList([...classesList, trimmed]);
+    const toggleModule = (moduleId: string) => {
+        if (moduleId === 'SCHOOL_CORE') return;
+        setModules((current) => current.includes(moduleId)
+            ? current.filter((item) => item !== moduleId)
+            : [...current, moduleId]);
+    };
+
+    const addClass = () => {
+        const className = newClassNameInput.trim();
+        if (className && !classesList.includes(className)) {
+            setClassesList((current) => [...current, className]);
             setNewClassNameInput('');
         }
     };
 
-    const handleRemoveClass = (indexToRemove: number) => {
-        setClassesList(classesList.filter((_, idx) => idx !== indexToRemove));
-    };
-
-    const handleGeneratePresetClasses = (presetStage: string) => {
-        if (presetStage === 'ثانوي') {
-            setClassesList([
-                'أول ثانوي - 1',
-                'أول ثانوي - 2',
-                'ثاني ثانوي - 1',
-                'ثاني ثانوي - 2',
-                'ثالث ثانوي - 1',
-                'ثالث ثانوي - 2',
-            ]);
-        } else if (presetStage === 'متوسط') {
-            setClassesList([
-                'أول متوسط - 1',
-                'أول متوسط - 2',
-                'ثاني متوسط - 1',
-                'ثاني متوسط - 2',
-                'ثالث متوسط - 1',
-                'ثالث متوسط - 2',
-            ]);
-        } else {
-            setClassesList(['فصل 1', 'فصل 2', 'فصل 3', 'فصل 4']);
+    const removeClass = (index: number) => {
+        const className = classesList[index];
+        if (provisioning.createdClassNames.includes(className)) {
+            provisioning.setError('هذا الفصل تم إنشاؤه بالفعل على الخادم. أكمل التأسيس ثم عدّله من مساحة المدرسة.');
+            return;
         }
+        setClassesList((current) => current.filter((_, currentIndex) => currentIndex !== index));
     };
 
-    const handleFinishWizard = async () => {
+    const generatePresetClasses = (presetStage: string) => {
+        if (provisioning.createdClassNames.length > 0) {
+            provisioning.setError('تم إنشاء بعض الفصول بالفعل. أكمل التأسيس الحالي قبل إعادة توليد قائمة الفصول.');
+            return;
+        }
+        setClassesList(presetStage === 'ثانوي'
+            ? ['أول ثانوي - 1', 'أول ثانوي - 2', 'ثاني ثانوي - 1', 'ثاني ثانوي - 2', 'ثالث ثانوي - 1', 'ثالث ثانوي - 2']
+            : presetStage === 'متوسط'
+                ? ['أول متوسط - 1', 'أول متوسط - 2', 'ثاني متوسط - 1', 'ثاني متوسط - 2', 'ثالث متوسط - 1', 'ثالث متوسط - 2']
+                : ['فصل 1', 'فصل 2', 'فصل 3', 'فصل 4']);
+        provisioning.setError(null);
+    };
+
+    const next = () => {
+        if (step === 1 && !name.trim()) {
+            provisioning.setError('يرجى إدخال اسم المدرسة');
+            return;
+        }
+        if (step === 3) {
+            const directorError = validateDirector();
+            if (directorError) {
+                provisioning.setError(directorError);
+                return;
+            }
+        }
+        provisioning.setError(null);
+        setStep((current) => (current + 1) as WizardStep);
+    };
+
+    const finish = async () => {
         if (!name.trim()) {
-            setError('اسم المدرسة مطلوب للمتابعة');
+            provisioning.setError('اسم المدرسة مطلوب للمتابعة');
             setStep(1);
             return;
         }
-
-        setIsSubmitting(true);
-        setError(null);
-
-        try {
-            // 1. Create the School Group
-            const newSchool = await createGroupAsync({
-                name: name.trim(),
-                type: 'SCHOOL',
-                ownerId: userId || 'admin',
-                supervisorIds: [],
-                studentIds: [],
-                courseIds: [],
-                metadata: {
-                    description: description.trim(),
-                    location: city.trim(),
-                    settings: {
-                        stage,
-                        targetStudents,
-                        directorName: directorName.trim(),
-                        directorEmail: directorEmail.trim(),
-                        status: 'active',
-                    },
-                },
-            });
-
-            const schoolId = newSchool.id || (newSchool as any)._id;
-
-            // 2. Setup the Server Contract with the chosen modules
-            try {
-                await api.updateSchoolContract(schoolId, {
-                    status: 'active',
-                    modules: Array.from(new Set(['SCHOOL_CORE', ...modules])),
-                    validFrom: new Date().toISOString(),
-                    validUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-                });
-            } catch (contractErr) {
-                console.warn('Contract setup non-critical error:', contractErr);
-            }
-
-            // 3. Create the initial classes
-            if (classesList.length > 0) {
-                for (const className of classesList) {
-                    try {
-                        await createGroupAsync({
-                            name: className.trim(),
-                            type: 'CLASS',
-                            parentId: schoolId,
-                            ownerId: userId || 'admin',
-                            supervisorIds: [],
-                            studentIds: [],
-                            courseIds: [],
-                            metadata: {
-                                description: `فصل في ${name}`,
-                            },
-                        });
-                    } catch (classErr) {
-                        console.warn('Class creation error:', classErr);
-                    }
-                }
-            }
-
-            // Success: notify parent
-            onSchoolCreated(newSchool);
-            onClose();
-        } catch (err: any) {
-            setError(err.message || 'حدث خطأ أثناء إنشاء المدرسة، يرجى المحاولة مرة أخرى.');
-        } finally {
-            setIsSubmitting(false);
+        const directorError = validateDirector();
+        if (directorError) {
+            provisioning.setError(directorError);
+            setStep(3);
+            return;
         }
+        await provisioning.finish();
     };
+
+    const steps = [
+        { num: 1, label: 'البيانات الأساسية' },
+        { num: 2, label: 'الباقة والخدمات' },
+        { num: 3, label: 'القيادة والإشراف' },
+        { num: 4, label: 'الفصول المبدئية' },
+    ] as const;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
             <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
-                {/* Top Header */}
                 <div className="p-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white relative">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="absolute top-5 left-5 p-2 text-slate-400 hover:text-white rounded-full hover:bg-white/10 transition-colors"
-                    >
+                    <button type="button" onClick={provisioning.close} disabled={provisioning.isSubmitting}
+                        className="absolute top-5 left-5 p-2 text-slate-400 hover:text-white rounded-full hover:bg-white/10 transition-colors disabled:opacity-40">
                         <X size={20} />
                     </button>
-
                     <div className="flex items-center gap-3">
-                        <div className="p-3 bg-indigo-500/20 border border-indigo-400/30 rounded-2xl text-amber-300">
-                            <Sparkles size={24} />
-                        </div>
+                        <div className="p-3 bg-indigo-500/20 border border-indigo-400/30 rounded-2xl text-amber-300"><Sparkles size={24} /></div>
                         <div>
                             <div className="flex items-center gap-1.5 text-xs text-indigo-200 font-bold mb-1">
-                                <span>تشغيل المدارس والتعاقدات</span>
-                                <span>/</span>
-                                <span className="text-white font-bold">معالج التأسيس المتكامل</span>
+                                <span>تشغيل المدارس والتعاقدات</span><span>/</span><span className="text-white">معالج التأسيس المتكامل</span>
                             </div>
-                            <h3 className="text-lg font-black text-white">معالج تأسيس جهة تعليمية جديدة وتجهيز التعاقد ✨</h3>
-                            <p className="text-xs text-indigo-200 mt-0.5">
-                                رحلة مبسطة من 4 خطوات لتسجيل وتفعيل المدرسة والفصول والخدمات فورياً
-                            </p>
+                            <h3 className="text-lg font-black">تأسيس جهة تعليمية جديدة وتجهيز التعاقد</h3>
+                            <p className="text-xs text-indigo-200 mt-0.5">حفظ خادمي حقيقي وقابل للاستكمال عند فشل أي مرحلة.</p>
                         </div>
                     </div>
-
-                    {/* Step Indicator */}
                     <div className="grid grid-cols-4 gap-2 mt-6 pt-4 border-t border-white/10">
-                        {[
-                            { num: 1, label: 'البيانات الأساسية' },
-                            { num: 2, label: 'الباقة والخدمات' },
-                            { num: 3, label: 'القيادة والإشراف' },
-                            { num: 4, label: 'الفصول المبدئية' },
-                        ].map((s) => (
-                            <div
-                                key={s.num}
-                                className={`text-center transition-all ${
-                                    step === s.num
-                                        ? 'opacity-100 font-black'
-                                        : step > s.num
-                                        ? 'opacity-80 text-emerald-300'
-                                        : 'opacity-40'
-                                }`}
-                            >
+                        {steps.map((item) => (
+                            <div key={item.num} className={`text-center ${step === item.num ? 'opacity-100 font-black' : step > item.num ? 'opacity-80 text-emerald-300' : 'opacity-40'}`}>
                                 <div className="text-[11px] flex items-center justify-center gap-1">
-                                    <span className={`w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] ${
-                                        step === s.num
-                                            ? 'bg-amber-400 text-slate-950 font-black'
-                                            : step > s.num
-                                            ? 'bg-emerald-500 text-white'
-                                            : 'bg-white/20 text-white'
-                                    }`}>
-                                        {step > s.num ? '✓' : s.num}
+                                    <span className={`w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] ${step === item.num ? 'bg-amber-400 text-slate-950 font-black' : step > item.num ? 'bg-emerald-500 text-white' : 'bg-white/20 text-white'}`}>
+                                        {step > item.num ? '✓' : item.num}
                                     </span>
-                                    <span className="hidden sm:inline">{s.label}</span>
+                                    <span className="hidden sm:inline">{item.label}</span>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Body Content */}
                 <div className="p-6 max-h-[68vh] overflow-y-auto space-y-6">
-                    {error && (
-                        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold">
-                            {error}
+                    {provisioning.provisionedSchool && (
+                        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-3 text-xs font-bold leading-5 text-blue-900">
+                            تم إنشاء سجل المدرسة على الخادم. إعادة المحاولة ستكمل نفس السجل ولن تنشئ مدرسة مكررة.
                         </div>
                     )}
+                    {provisioning.progressMessage && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-xs font-bold text-emerald-800">{provisioning.progressMessage}</div>}
+                    {provisioning.error && <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold leading-6">{provisioning.error}</div>}
 
-                    {step === 1 && (
-                        <WizardStepBasicInfo
-                            name={name}
-                            setName={setName}
-                            stage={stage}
-                            setStage={setStage}
-                            city={city}
-                            setCity={setCity}
-                            description={description}
-                            setDescription={setDescription}
-                        />
-                    )}
-
-                    {step === 2 && (
-                        <WizardStepPlanAndModules
-                            selectedPlanId={selectedPlanId}
-                            onSelectPlan={handleSelectPlan}
-                            modules={modules}
-                            toggleModule={toggleModule}
-                            targetStudents={targetStudents}
-                            setTargetStudents={setTargetStudents}
-                        />
-                    )}
-
-                    {step === 3 && (
-                        <WizardStepLeadership
-                            directorName={directorName}
-                            setDirectorName={setDirectorName}
-                            directorEmail={directorEmail}
-                            setDirectorEmail={setDirectorEmail}
-                        />
-                    )}
-
-                    {step === 4 && (
-                        <WizardStepQuickClasses
-                            stage={stage}
-                            classesList={classesList}
-                            newClassNameInput={newClassNameInput}
-                            setNewClassNameInput={setNewClassNameInput}
-                            onAddCustomClass={handleAddCustomClass}
-                            onRemoveClass={handleRemoveClass}
-                            onGeneratePresetClasses={handleGeneratePresetClasses}
-                        />
-                    )}
+                    {step === 1 && <WizardStepBasicInfo name={name} setName={setName} stage={stage} setStage={setStage} city={city} setCity={setCity} description={description} setDescription={setDescription} />}
+                    {step === 2 && <WizardStepPlanAndModules selectedPlanId={selectedPlanId} onSelectPlan={selectPlan} modules={modules} toggleModule={toggleModule} targetStudents={targetStudents} setTargetStudents={setTargetStudents} />}
+                    {step === 3 && <NewSchoolWizardLeadershipStep directorName={directorName} setDirectorName={setDirectorName} directorEmail={directorEmail} setDirectorEmail={setDirectorEmail} directorPassword={directorPassword} setDirectorPassword={setDirectorPassword} />}
+                    {step === 4 && <WizardStepQuickClasses stage={stage} classesList={classesList} newClassNameInput={newClassNameInput} setNewClassNameInput={setNewClassNameInput} onAddCustomClass={addClass} onRemoveClass={removeClass} onGeneratePresetClasses={generatePresetClasses} />}
                 </div>
 
-                {/* Footer Controls */}
                 <div className="p-4 px-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
                     {step > 1 ? (
-                        <button
-                            type="button"
-                            onClick={() => setStep((s) => (s - 1) as any)}
-                            disabled={isSubmitting}
-                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-black text-gray-700 hover:bg-slate-100 transition-colors"
-                        >
+                        <button type="button" onClick={() => setStep((current) => (current - 1) as WizardStep)} disabled={provisioning.isSubmitting}
+                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-black text-gray-700 hover:bg-slate-100 disabled:opacity-50">
                             <ChevronRight size={16} /> السابق
                         </button>
+                    ) : <div />}
+                    {step < 4 ? (
+                        <button type="button" onClick={next} disabled={provisioning.isSubmitting}
+                            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-md shadow-indigo-600/20 disabled:opacity-50">
+                            التالي <ChevronLeft size={16} />
+                        </button>
                     ) : (
-                        <div></div>
+                        <button type="button" onClick={() => void finish()} disabled={provisioning.isSubmitting}
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black shadow-lg shadow-emerald-600/25 disabled:opacity-60">
+                            {provisioning.isSubmitting ? 'جارٍ تنفيذ التأسيس والتحقق...' : <><Sparkles size={16} /> إتمام التأسيس والتحقق</>}
+                        </button>
                     )}
-
-                    <div className="flex items-center gap-2">
-                        {step < 4 ? (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    if (step === 1 && !name.trim()) {
-                                        setError('يرجى إدخال اسم المدرسة');
-                                        return;
-                                    }
-                                    setError(null);
-                                    setStep((s) => (s + 1) as any);
-                                }}
-                                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-md shadow-indigo-600/20 transition-all"
-                            >
-                                التالي <ChevronLeft size={16} />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={handleFinishWizard}
-                                disabled={isSubmitting}
-                                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-black shadow-lg shadow-emerald-600/25 transition-all"
-                            >
-                                {isSubmitting ? (
-                                    <>جارٍ التجهيز والتفعيل...</>
-                                ) : (
-                                    <>
-                                        <Sparkles size={16} />
-                                        إتمام التجهيز وتفعيل المدرسة 🟢
-                                    </>
-                                )}
-                            </button>
-                        )}
-                    </div>
                 </div>
-
             </div>
         </div>
     );
