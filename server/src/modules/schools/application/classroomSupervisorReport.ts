@@ -154,6 +154,13 @@ export const buildClassroomSessionReport = async (session: any) => {
       startedAt: batchStartedAt,
       endedAt: batchEndedAt,
       durationSeconds,
+      challenge: {
+        challengeQuestionIds: (batch.challengeQuestionIds || []).map(idOf),
+        competitionEnabled: Boolean(batch.competitionEnabled),
+        challengeDurationSeconds: batch.challengeDurationSeconds ?? null,
+        timerStartedAt: batch.timerStartedAt || null,
+        timerEndsAt: batch.timerEndsAt || null,
+      },
       totals: {
         questions: batchQuestions.length,
         answered,
