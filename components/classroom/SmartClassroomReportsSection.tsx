@@ -45,6 +45,16 @@ export interface ClassroomSavedReport {
     questionIds?: string[];
     startedAt?: string | null;
     endedAt?: string | null;
+    durationSeconds?: number | null;
+    totals?: {
+      questions?: number;
+      answered?: number;
+      correct?: number;
+      wrong?: number;
+      unanswered?: number;
+      accuracy?: number | null;
+    };
+    skillIds?: string[];
   }>;
   questions?: Array<{
     index?: number;
@@ -88,6 +98,16 @@ type CanonicalBatchReport = {
   questionIds: string[];
   startedAt: string | null;
   endedAt: string | null;
+  durationSeconds: number | null;
+  totals: {
+    questions: number;
+    answered: number;
+    correct: number;
+    wrong: number;
+    unanswered: number;
+    accuracy: number | null;
+  };
+  skillIds: string[];
 };
 
 type CanonicalClassroomReport = {
@@ -132,6 +152,22 @@ const toNumber = (value: unknown, fallback = 0) => {
   return Number.isFinite(number) ? number : fallback;
 };
 
+const elapsedSeconds = (startedAt?: string | null, endedAt?: string | null) => {
+  if (!startedAt || !endedAt) return null;
+  const start = new Date(startedAt).getTime();
+  const end = new Date(endedAt).getTime();
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null;
+  return Math.max(0, Math.round((end - start) / 1000));
+};
+
+const formatDuration = (seconds: number | null) => {
+  if (seconds === null) return '—';
+  if (seconds < 60) return `${seconds} ث`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return remainingSeconds > 0 ? `${minutes} د ${remainingSeconds} ث` : `${minutes} د`;
+};
+
 const normalizeReport = (raw: ClassroomSavedReport): CanonicalClassroomReport => {
   const joined = raw.roster?.joined ?? raw.participantCount ?? 0;
   const expected = raw.roster?.expected ?? joined;
@@ -155,14 +191,33 @@ const normalizeReport = (raw: ClassroomSavedReport): CanonicalClassroomReport =>
       unanswered: question.unanswered ?? Math.max(0, joined - answered),
     };
   });
-  const batches = (raw.batches || []).map((batch, index): CanonicalBatchReport => ({
-    batchId: batch.batchId,
-    number: batch.number ?? index + 1,
-    label: batch.label || `الدفعة ${index + 1}`,
-    questionIds: batch.questionIds || [],
-    startedAt: batch.startedAt || null,
-    endedAt: batch.endedAt || null,
-  }));
+  const questionById = new Map(questions.map((question) => [question.questionId, question]));
+  const batches = (raw.batches || []).map((batch, index): CanonicalBatchReport => {
+    const questionIds = batch.questionIds || [];
+    const batchQuestions = questionIds.map((questionId) => questionById.get(questionId)).filter(Boolean) as CanonicalQuestionReport[];
+    const answered = batch.totals?.answered ?? batchQuestions.reduce((sum, question) => sum + question.answered, 0);
+    const batchCorrect = batch.totals?.correct ?? batchQuestions.reduce((sum, question) => sum + question.correct, 0);
+    const wrong = batch.totals?.wrong ?? batchQuestions.reduce((sum, question) => sum + question.wrong, 0);
+    const unanswered = batch.totals?.unanswered ?? batchQuestions.reduce((sum, question) => sum + question.unanswered, 0);
+    return {
+      batchId: batch.batchId,
+      number: batch.number ?? index + 1,
+      label: batch.label || `الدفعة ${index + 1}`,
+      questionIds,
+      startedAt: batch.startedAt || null,
+      endedAt: batch.endedAt || null,
+      durationSeconds: batch.durationSeconds ?? elapsedSeconds(batch.startedAt, batch.endedAt),
+      totals: {
+        questions: batch.totals?.questions ?? questionIds.length,
+        answered,
+        correct: batchCorrect,
+        wrong,
+        unanswered,
+        accuracy: batch.totals?.accuracy ?? (answered > 0 ? Math.round((batchCorrect / answered) * 100) : null),
+      },
+      skillIds: (batch.skillIds || Array.from(new Set(batchQuestions.flatMap((question) => question.skillIds)))).filter(Boolean),
+    };
+  });
   const periodNumber = raw.period === null || raw.period === undefined || raw.period === '' ? null : toNumber(raw.period, 0) || null;
   return {
     sessionId: raw.sessionId,
@@ -283,6 +338,16 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const weakSkills = skillDiagnostics.filter((skill) => skill.isWeak);
 
   const exportExcel = (report: CanonicalClassroomReport) => {
+    const batchRows = report.batches.map((batch) => `
+      <tr>
+        <td>${batch.label}</td>
+        <td>${batch.totals.questions}</td>
+        <td>${batch.totals.answered}</td>
+        <td>${batch.totals.correct}</td>
+        <td>${batch.totals.wrong}</td>
+        <td>${batch.totals.accuracy === null ? '—' : `${batch.totals.accuracy}%`}</td>
+      </tr>
+    `).join('');
     const rows = report.questions.map((question, index) => `
       <tr>
         <td>${index + 1}</td>
@@ -297,8 +362,13 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
       <table border="1">
         <thead>
           <tr><th colspan="6">تقرير الحصة الذكية - ${report.className || report.classId}</th></tr>
-          <tr><th>#</th><th>السؤال</th><th>المهارات</th><th>الإجابات</th><th>الصحيح</th><th>الخطأ</th></tr>
+          <tr><th>الدفعة</th><th>الأسئلة</th><th>الإجابات</th><th>الصحيح</th><th>الخطأ</th><th>الدقة</th></tr>
         </thead>
+        <tbody>${batchRows}</tbody>
+      </table>
+      <br />
+      <table border="1">
+        <thead><tr><th>#</th><th>السؤال</th><th>المهارات</th><th>الإجابات</th><th>الصحيح</th><th>الخطأ</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;
@@ -387,12 +457,17 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} /><Kpi label="الإجابات" value={selectedReport.totals.responses} /><Kpi label="الصحيح" value={selectedReport.totals.correct} /><Kpi label="مدة الحصة" value={selectedReport.durationMinutes === null ? '—' : `${selectedReport.durationMinutes} د`} /></div>
             {selectedReport.batches.length > 0 && (
               <div className="mt-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4 dark:border-indigo-950/40 dark:bg-indigo-950/20">
-                <h4 className="text-sm font-black text-indigo-950 dark:text-indigo-200">تسلسل دفعات الأسئلة</h4>
+                <h4 className="text-sm font-black text-indigo-950 dark:text-indigo-200">تسلسل ونتائج دفعات الأسئلة</h4>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {selectedReport.batches.map((batch) => (
                     <div key={batch.batchId} className="rounded-xl border border-indigo-100 bg-white p-3 dark:border-indigo-900/50 dark:bg-slate-900">
-                      <div className="text-xs font-black text-slate-900 dark:text-white">{batch.label}</div>
-                      <div className="mt-1 text-[11px] text-slate-500">{batch.questionIds.length} سؤال{batch.startedAt ? ` · بدأت ${new Date(batch.startedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}` : ''}</div>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="text-xs font-black text-slate-900 dark:text-white">{batch.label}</div>
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${batch.totals.accuracy !== null && batch.totals.accuracy < 65 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>{batch.totals.accuracy === null ? '—' : `${batch.totals.accuracy}%`}</span>
+                      </div>
+                      <div className="mt-2 text-[11px] text-slate-500">{batch.totals.questions} سؤال · {batch.totals.answered} إجابة · {batch.totals.correct} صحيحة</div>
+                      <div className="mt-1 text-[11px] text-slate-500">المدة: {formatDuration(batch.durationSeconds)}{batch.startedAt ? ` · بدأت ${new Date(batch.startedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}` : ''}</div>
+                      {batch.skillIds.length > 0 && <div className="mt-2 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">المهارات: {batch.skillIds.join('، ')}</div>}
                     </div>
                   ))}
                 </div>
