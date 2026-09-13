@@ -65,6 +65,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         status: session.status,
         activeQuestionIndex: session.activeQuestionIndex,
         totalQuestions: session.questionSnapshots?.length || 0,
+        startedAt: session.startedAt || session.createdAt,
         createdAt: session.createdAt,
       },
     });
@@ -119,6 +120,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         questionSnapshots: snapshots,
         pinHash: hashClassroomPin(pin),
         pinExpiresAt: new Date(Date.now() + 30 * 60_000),
+        startedAt: payload.autoStart ? new Date() : null,
       });
       if (session.status === "live") {
         emitClassroomEventToClass(payload.classId, "classroom:started", {
@@ -174,6 +176,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     if (wasNotLive) {
       await safelyClosePreviousLiveSessions(session.schoolId, session.classId, String(session._id));
       session.pinExpiresAt = new Date(Date.now() + 30 * 60_000);
+      if (!session.startedAt) session.startedAt = new Date();
     }
     const targetQuestion = session.questionSnapshots[index];
     session.status = "live";
@@ -225,6 +228,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       if (wasNotLive) {
         await safelyClosePreviousLiveSessions(session.schoolId, session.classId, String(session._id));
         session.pinExpiresAt = new Date(Date.now() + 30 * 60_000);
+        if (!session.startedAt) session.startedAt = new Date();
       }
       session.status = "live";
       session.activeQuestionIndex = session.questionSnapshots.findIndex((question: any) => String(question.questionId) === newQuestionIds[0]);
