@@ -49,6 +49,10 @@ check('teacher report UI surfaces batch accuracy duration and skills', reportsUi
 check('live push UI previews standalone question images', pushModal.includes('question.imageUrl'));
 check('student current-question read requires explicit participant', studentRoutes.includes('Join the session before viewing questions'));
 check('student answer requires explicit participant', studentRoutes.includes('Join the session before answering'));
+check('student final submission is persisted server-side', participantModel.includes('finalizedSubmissionKeys') && studentRoutes.includes('/sessions/:id/submit') && studentRoutes.includes('$addToSet: { finalizedSubmissionKeys: submissionKey }'));
+check('finalized submission blocks later answer mutation', studentRoutes.includes('تم التسليم النهائي لهذه الدفعة ولا يمكن تعديل الإجابات'));
+check('current question read restores submitted state after refresh', studentRoutes.includes('submissionKey, submitted') && floatingWidget.includes('const serverSubmitted = Boolean(result?.submitted)'));
+check('floating widget submits the published set atomically through the final endpoint', floatingWidget.includes('/submit') && floatingWidget.includes('finalAnswers'));
 check('student school access uses authoritative school contexts', studentRoutes.includes('resolveSchoolContexts') && studentRoutes.includes('hasSchoolContext'));
 check('student active-session discovery only searches entitled active school contexts', studentRoutes.includes('entitledSchoolIds') && studentRoutes.includes('schoolId: { $in: entitledSchoolIds }'));
 check('student live routes recheck Smart Classroom entitlement', studentRoutes.includes('smartClassroomEnabled') && studentRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);
