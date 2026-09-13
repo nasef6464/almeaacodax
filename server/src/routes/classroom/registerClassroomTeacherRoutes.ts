@@ -45,12 +45,18 @@ const closeActiveBatch = (session: any, endedAt = new Date()) => {
   if (activeBatch && !activeBatch.endedAt) activeBatch.endedAt = endedAt;
 };
 
+const batchForQuestion = (session: any, questionId: string) =>
+  session.questionBatches?.find((batch: any) => (batch.questionIds || []).map(String).includes(String(questionId))) || null;
+
 const activateBatchForQuestion = (session: any, questionId: string, startedAt = new Date()) => {
-  const targetBatch = session.questionBatches?.find((batch: any) => (batch.questionIds || []).map(String).includes(String(questionId)));
-  if (!targetBatch) return;
+  const targetBatch = batchForQuestion(session, questionId);
+  if (!targetBatch) return null;
+  if (targetBatch.endedAt && String(session.activeBatchId || "") !== String(targetBatch.batchId)) return null;
   if (session.activeBatchId && String(session.activeBatchId) !== String(targetBatch.batchId)) closeActiveBatch(session, startedAt);
   if (!targetBatch.startedAt) targetBatch.startedAt = startedAt;
+  targetBatch.endedAt = null;
   session.activeBatchId = targetBatch.batchId;
+  return targetBatch;
 };
 
 const smartClassroomEnabled = async (schoolId: string) =>
@@ -70,6 +76,9 @@ const canTeacherControlSession = async (actor: any, session: any) => {
   ]);
   return Boolean(hasSchoolAccess && hasClassAssignment);
 };
+
+const canTeacherEndOwnSession = (actor: any, session: any) =>
+  actor.role === "admin" || String(session.teacherId) === String(actor.id);
 
 export function registerClassroomTeacherRoutes(classroomRouter: Router) {
   classroomRouter.get("/teacher/active-session", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
@@ -228,11 +237,15 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       if (!session.startedAt) session.startedAt = publishAt;
     }
     const targetQuestion = session.questionSnapshots[index];
-    activateBatchForQuestion(session, targetQuestion.questionId, publishAt);
+    const targetBatch = batchForQuestion(session, targetQuestion.questionId);
+    if (targetBatch?.endedAt && String(session.activeBatchId || "") !== String(targetBatch.batchId)) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "هذه الدفعة أُغلقت بالفعل. أعد إرسال الأسئلة كدفعة جديدة بدلاً من إعادة فتح سجل زمني منتهٍ." });
+    }
+    const activeBatch = activateBatchForQuestion(session, targetQuestion.questionId, publishAt);
     session.status = "live";
     session.activeQuestionIndex = index;
     if (session.publishedMode === "batch") {
-      if (!session.publishedQuestionIds.includes(targetQuestion.questionId)) session.publishedQuestionIds.push(targetQuestion.questionId);
+      session.publishedQuestionIds = activeBatch?.questionIds?.map(String) || [String(targetQuestion.questionId)];
     } else {
       session.publishedMode = "single";
       session.publishedQuestionIds = [targetQuestion.questionId];
@@ -241,19 +254,29 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       if (isDuplicateLiveSessionError(error)) return res.status(StatusCodes.CONFLICT).json({ message: "يوجد بالفعل فصل ذكي مباشر لهذا الفصل الدراسي" });
       throw error;
     }
-    emitClassroomEvent(classroomSessionId(session), "question:published", { activeQuestionIndex: index, questionId: targetQuestion.questionId, activeBatchId: session.activeBatchId || "" });
+    emitClassroomEvent(classroomSessionId(session), "question:published", {
+      activeQuestionIndex: index,
+      questionId: targetQuestion.questionId,
+      publishedMode: session.publishedMode,
+      publishedQuestionIds: session.publishedQuestionIds,
+      activeBatchId: session.activeBatchId || "",
+    });
     if (wasNotLive) emitClassroomEventToClass(session.classId, "classroom:started", {
       sessionId: classroomSessionId(session), schoolId: session.schoolId, classId: session.classId,
       className: session.className, teacherName: req.authUser!.name || "معلم المادة",
     });
-    res.json({ status: session.status, activeQuestionIndex: index, activeBatchId: session.activeBatchId || "" });
+    res.json({
+      status: session.status,
+      activeQuestionIndex: index,
+      activeBatchId: session.activeBatchId || "",
+      publishedQuestionIds: session.publishedQuestionIds,
+    });
   }));
 
   classroomRouter.post("/sessions/:id/end", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id);
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
-    if (!(await canTeacherControlSession(req.authUser!, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
-    if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    if (!canTeacherEndOwnSession(req.authUser!, session)) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     if (session.status === "ended" && session.reportSnapshot) return res.json({ report: session.reportSnapshot, alreadyEnded: true });
     if (session.status === "archived") return res.status(StatusCodes.CONFLICT).json({ message: "Archived sessions cannot be ended again" });
     res.json({ report: await finalizeClassroomSession(session) });
