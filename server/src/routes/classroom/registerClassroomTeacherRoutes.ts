@@ -37,6 +37,10 @@ const createSchema = z.object({
 const appendQuestionsSchema = z.object({
   questionIds: z.array(z.string().min(1)).min(1).max(20),
   autoPublishFirst: z.boolean().optional().default(false),
+  challengeDurationSeconds: z.number().int().min(10).max(600).optional(),
+}).refine((payload) => payload.challengeDurationSeconds === undefined || payload.autoPublishFirst, {
+  message: "Timed challenge batches must be published immediately",
+  path: ["autoPublishFirst"],
 });
 
 const closeActiveBatch = (session: any, endedAt = new Date()) => {
@@ -299,14 +303,24 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     session.questionSnapshots.push(...(trulyNewSnapshots as any));
     const newQuestionIds = trulyNewSnapshots.map((question: any) => String(question.questionId));
     const batchStartedAt = payload.autoPublishFirst ? new Date() : null;
+    const challengeDurationSeconds = payload.challengeDurationSeconds ?? null;
+    const challengeTimerStartedAt = challengeDurationSeconds !== null ? (batchStartedAt || new Date()) : null;
+    const challengeTimerEndsAt = challengeTimerStartedAt && challengeDurationSeconds !== null
+      ? new Date(challengeTimerStartedAt.getTime() + challengeDurationSeconds * 1000)
+      : null;
     const newBatchId = randomUUID();
     if (payload.autoPublishFirst) closeActiveBatch(session, batchStartedAt || new Date());
     session.questionBatches.push({
       batchId: newBatchId,
-      label: `الدفعة ${session.questionBatches.length + 1}`,
+      label: challengeDurationSeconds !== null ? `تحدي ${session.questionBatches.length + 1}` : `الدفعة ${session.questionBatches.length + 1}`,
       questionIds: newQuestionIds,
       startedAt: batchStartedAt,
       endedAt: null,
+      challengeQuestionIds: challengeDurationSeconds !== null ? newQuestionIds : [],
+      competitionEnabled: challengeDurationSeconds !== null,
+      challengeDurationSeconds,
+      timerStartedAt: challengeTimerStartedAt,
+      timerEndsAt: challengeTimerEndsAt,
     } as any);
     if (payload.autoPublishFirst) session.activeBatchId = newBatchId;
 
@@ -334,6 +348,19 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         publishedQuestionIds: newQuestionIds,
         activeBatchId: newBatchId,
       });
+      if (challengeDurationSeconds !== null) {
+        emitClassroomEvent(classroomSessionId(session), "competition:updated", {
+          sessionId: classroomSessionId(session),
+          activeBatchId: newBatchId,
+          challengeQuestionIds: newQuestionIds,
+          competitionEnabled: true,
+          challengeDurationSeconds,
+          timerStartedAt: challengeTimerStartedAt,
+          timerEndsAt: challengeTimerEndsAt,
+          expired: false,
+          serverNow: new Date(),
+        });
+      }
       if (wasNotLive) emitClassroomEventToClass(session.classId, "classroom:started", {
         sessionId: classroomSessionId(session), schoolId: session.schoolId, classId: session.classId,
         className: session.className, teacherName: req.authUser!.name || "معلم المادة",
@@ -347,6 +374,12 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       totalQuestions: session.questionSnapshots.length,
       activeQuestionIndex: session.activeQuestionIndex,
       activeBatchId: session.activeBatchId || "",
+      challenge: challengeDurationSeconds !== null ? {
+        competitionEnabled: true,
+        challengeDurationSeconds,
+        timerStartedAt: challengeTimerStartedAt,
+        timerEndsAt: challengeTimerEndsAt,
+      } : null,
     });
   }));
 }
