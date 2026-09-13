@@ -135,7 +135,12 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
                   />
                   <div className="flex-1 min-w-0">
                     <QuestionContentRenderer content={question.text} className="font-bold text-slate-900 dark:text-white leading-relaxed text-xs sm:text-sm block" />
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
+                    {question.imageUrl && (
+                      <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-950">
+                        <img src={question.imageUrl} alt="صورة السؤال" className="mx-auto max-h-44 w-auto max-w-full object-contain" loading="lazy" />
+                      </div>
+                    )}
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
                       <span>{question.options?.length || 4} خيارات</span>
                       <span>•</span>
                       <span>مستوى: {question.difficulty || 'متوسط'}</span>
