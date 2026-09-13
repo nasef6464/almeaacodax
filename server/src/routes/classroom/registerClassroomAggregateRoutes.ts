@@ -21,14 +21,9 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     const isStudentInClass = student?.role === "student"
       && String(student.schoolId) === String(session.schoolId)
       && (student.groupIds || []).map(String).includes(String(session.classId));
-    if (isStudentInClass && !(await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id }))) {
-      await ClassroomParticipantModel.updateOne(
-        { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
-        { $setOnInsert: { joinedAt: new Date() } },
-        { upsert: true }
-      );
-    }
-    const isStudent = isStudentInClass;
+    const isStudent = isStudentInClass
+      ? Boolean(await ClassroomParticipantModel.exists({ sessionId: classroomSessionId(session), studentId: req.authUser!.id }))
+      : false;
 
     let isSupervisor = false;
     if (req.authUser!.role === "supervisor") {
