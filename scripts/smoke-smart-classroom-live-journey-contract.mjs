@@ -37,6 +37,8 @@ check('aggregate does not auto-create student participation', !aggregateRoutes.i
 check('participant uniqueness is protected in Mongo', participantModel.includes('{ sessionId: 1, studentId: 1 }, { unique: true }'));
 check('response uniqueness is protected in Mongo', responseModel.includes('{ sessionId: 1, questionId: 1, studentId: 1 }, { unique: true }'));
 check('one live session per class has a partial unique index', sessionModel.includes('partialFilterExpression: { status: "live" }'));
+check('actual live start time is persisted', sessionModel.includes('startedAt: { type: Date') && teacherRoutes.includes('startedAt: payload.autoStart ? new Date() : null') && teacherRoutes.includes('if (!session.startedAt) session.startedAt = new Date()'));
+check('canonical report derives duration from actual live start', reportBuilder.includes('session.startedAt || session.createdAt') && reportBuilder.includes('durationMinutes'));
 check('classroom routes participate in cookie-backed auth bootstrap', authContext.includes("'/classroom'") && authContext.includes('shouldBootstrapInitialAuth'));
 check('auth redirect waits while bootstrap is running', requireAuth.indexOf('if (loading)') >= 0 && requireAuth.indexOf('if (loading)') < requireAuth.indexOf('if (!user)'));
 check('student refresh can recover through idempotent instant join', studentPage.includes('instantJoinClassroomSession(sessionId)'));
