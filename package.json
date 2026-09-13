@@ -12,6 +12,7 @@
         "smoke:account-workspaces-g11": "node scripts/smoke-account-workspaces-g11-contract.mjs",
     "smoke:account-workspaces-g12": "node scripts/smoke-account-workspaces-g12-contract.mjs",
     "smoke:school-roster-runtime": "node scripts/smoke-school-roster-contract.mjs",
+    "smoke:school-people-hub-scope": "node scripts/smoke-school-people-hub-scope.mjs",
     "audit:smart-classroom-surfaces": "node scripts/live-smart-classroom-surfaces-audit.mjs",
         "dev": "vite",
         "build": "vite build",
