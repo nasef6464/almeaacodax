@@ -1,14 +1,23 @@
 import type { Router } from "express";
 import { StatusCodes } from "http-status-codes";
+import { Types } from "mongoose";
 import { requireAuth } from "../../middleware/auth.js";
+import { ClassroomParticipantModel } from "../../models/ClassroomParticipant.js";
 import { ClassroomResponseModel } from "../../models/ClassroomResponse.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
+import { UserModel } from "../../models/User.js";
 import { resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { classroomSessionId, ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
+
+const submissionKeyForSession = (session: any) => {
+  if (session.publishedMode === "batch" && session.activeBatchId) return `batch:${String(session.activeBatchId)}`;
+  const ids = Array.isArray(session.publishedQuestionIds) ? session.publishedQuestionIds.map(String).sort() : [];
+  return `questions:${ids.join("|")}`;
+};
 
 export function registerClassroomAggregateRoutes(classroomRouter: Router) {
   classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
@@ -52,7 +61,12 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     const isStaff = isTeacher || isSupervisor || isDirector;
     if (!isStaff) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only" });
 
-    const responses = await ClassroomResponseModel.find({ sessionId: classroomSessionId(session) }).lean();
+    const sessionId = classroomSessionId(session);
+    const [responses, participants] = await Promise.all([
+      ClassroomResponseModel.find({ sessionId }).lean(),
+      ClassroomParticipantModel.find({ sessionId }).select("studentId joinedAt finalizedSubmissionKeys").lean() as any,
+    ]);
+
     const responsesByQuestion = new Map<string, any[]>();
     for (const response of responses) {
       const questionId = String(response.questionId);
@@ -113,8 +127,49 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       active: Boolean(session.activeBatchId) && String(session.activeBatchId) === String(batch.batchId),
     }));
 
+    const submissionKey = submissionKeyForSession(session);
+    const submittedParticipants = participants.filter((participant: any) =>
+      (participant.finalizedSubmissionKeys || []).map(String).includes(submissionKey),
+    );
+    const submittedStudentIds = submittedParticipants.map((participant: any) => String(participant.studentId));
+    const objectIds = submittedStudentIds.filter((studentId: string) => Types.ObjectId.isValid(studentId));
+    const submittedUsers = submittedStudentIds.length > 0
+      ? await UserModel.find({
+          $or: [
+            { id: { $in: submittedStudentIds } },
+            ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+          ],
+        }).select("id _id name displayName").lean() as any[]
+      : [];
+    const nameByStudentId = new Map<string, string>();
+    submittedUsers.forEach((student: any) => {
+      const name = String(student.displayName || student.name || "طالب");
+      if (student.id) nameByStudentId.set(String(student.id), name);
+      if (student._id) nameByStudentId.set(String(student._id), name);
+    });
+
+    const activeBatch = (session.questionBatches || []).find((batch: any) => String(batch.batchId) === String(session.activeBatchId || ""));
+    const activeBatchQuestionIds = new Set((activeBatch?.questionIds || session.publishedQuestionIds || []).map(String));
+    const timerEndsAt = activeBatch?.timerEndsAt ? new Date(activeBatch.timerEndsAt) : null;
+    const submitted = submittedParticipants.map((participant: any) => {
+      const studentId = String(participant.studentId);
+      const studentResponses = responses.filter((response: any) =>
+        String(response.studentId) === studentId && activeBatchQuestionIds.has(String(response.questionId)),
+      );
+      const latestResponseAt = studentResponses
+        .map((response: any) => response.submittedAt ? new Date(response.submittedAt) : null)
+        .filter(Boolean)
+        .sort((a: any, b: any) => b.getTime() - a.getTime())[0] || null;
+      return {
+        studentId,
+        name: nameByStudentId.get(studentId) || "طالب",
+        submittedAt: latestResponseAt,
+        onTime: timerEndsAt && latestResponseAt ? latestResponseAt.getTime() <= timerEndsAt.getTime() : null,
+      };
+    });
+
     res.json({
-      sessionId: classroomSessionId(session),
+      sessionId,
       schoolId: session.schoolId,
       classId: session.classId,
       status: session.status,
@@ -128,6 +183,12 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       report: session.status === "ended" ? session.reportSnapshot : null,
       questions,
       batches,
+      submissionSummary: {
+        submissionKey,
+        joinedCount: participants.length,
+        submittedCount: submitted.length,
+        submitted,
+      },
       meta: {
         schoolId: session.schoolId,
         classId: session.classId,
