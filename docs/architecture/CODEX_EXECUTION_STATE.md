@@ -1,5 +1,16 @@
 # ALMEAA — Codex Execution State
 
+## People Hub quick closure plan
+
+- Status: `PLANNED / NOT STARTED` on 2026-09-13.
+- Baseline: `main @ 471bfd08`.
+- Goals: `PH1–PH3` — unified role entry, server-backed relationship confirmation,
+  and focused regression/closure.
+- Execution reference:
+  `docs/architecture/PEOPLE_HUB_QUICK_GOALS_AR.md`.
+- Legacy relations/import remain available until their replacements are fully
+  proven; package/access-code and global archive work are outside this quick goal.
+
 ## School roster runtime integrity for supervisor and school teacher
 
 - Status: `VERIFIED / READY FOR REVIEW` on 2026-09-12.
