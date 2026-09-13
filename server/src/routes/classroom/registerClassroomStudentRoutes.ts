@@ -161,11 +161,14 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     const participant = await ClassroomParticipantModel.findOne({ sessionId: classroomSessionId(session), studentId: req.authUser!.id })
-      .select("finalizedSubmissionKeys").lean() as any;
+      .select("pendingSubmissionKeys finalizedSubmissionKeys").lean() as any;
     if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before answering" });
     const submissionKey = submissionKeyForSession(session);
     if ((participant.finalizedSubmissionKeys || []).map(String).includes(submissionKey)) {
       return res.status(StatusCodes.CONFLICT).json({ message: "تم التسليم النهائي لهذه الدفعة ولا يمكن تعديل الإجابات" });
+    }
+    if ((participant.pendingSubmissionKeys || []).map(String).includes(submissionKey)) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "التسليم النهائي لهذه الدفعة قيد التثبيت الآن" });
     }
     if (payload.selectedOptionIndex >= question.options.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Selected option is invalid" });
     const response = await ClassroomResponseModel.findOneAndUpdate(
@@ -203,21 +206,50 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
       if (answer.selectedOptionIndex >= question.options.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Selected option is invalid" });
     }
 
-    const submittedAt = new Date();
-    await ClassroomResponseModel.bulkWrite(payload.answers.map((answer) => {
-      const question: any = questionsById.get(answer.questionId);
-      return {
-        updateOne: {
-          filter: { sessionId: classroomSessionId(session), questionId: answer.questionId, studentId: req.authUser!.id },
-          update: { $set: { selectedOptionIndex: answer.selectedOptionIndex, isCorrect: answer.selectedOptionIndex === question.correctOptionIndex, submittedAt } },
-          upsert: true,
-        },
-      };
-    }));
-    await ClassroomParticipantModel.updateOne(
-      { _id: participant._id },
-      { $addToSet: { finalizedSubmissionKeys: submissionKey } },
+    const lockedParticipant = await ClassroomParticipantModel.findOneAndUpdate(
+      {
+        _id: participant._id,
+        finalizedSubmissionKeys: { $ne: submissionKey },
+        pendingSubmissionKeys: { $ne: submissionKey },
+      },
+      { $addToSet: { pendingSubmissionKeys: submissionKey } },
+      { new: true },
     );
+    if (!lockedParticipant) {
+      const latestParticipant = await ClassroomParticipantModel.findById(participant._id)
+        .select("pendingSubmissionKeys finalizedSubmissionKeys").lean() as any;
+      if ((latestParticipant?.finalizedSubmissionKeys || []).map(String).includes(submissionKey)) {
+        return res.json({ submitted: true, alreadySubmitted: true, submissionKey, acceptedCount: 0 });
+      }
+      return res.status(StatusCodes.CONFLICT).json({ message: "التسليم النهائي قيد التثبيت. انتظر لحظة ثم حدّث حالة الحصة." });
+    }
+
+    const submittedAt = new Date();
+    try {
+      await ClassroomResponseModel.bulkWrite(payload.answers.map((answer) => {
+        const question: any = questionsById.get(answer.questionId);
+        return {
+          updateOne: {
+            filter: { sessionId: classroomSessionId(session), questionId: answer.questionId, studentId: req.authUser!.id },
+            update: { $set: { selectedOptionIndex: answer.selectedOptionIndex, isCorrect: answer.selectedOptionIndex === question.correctOptionIndex, submittedAt } },
+            upsert: true,
+          },
+        };
+      }));
+      await ClassroomParticipantModel.updateOne(
+        { _id: participant._id, pendingSubmissionKeys: submissionKey },
+        {
+          $pull: { pendingSubmissionKeys: submissionKey },
+          $addToSet: { finalizedSubmissionKeys: submissionKey },
+        },
+      );
+    } catch (error) {
+      await ClassroomParticipantModel.updateOne(
+        { _id: participant._id },
+        { $pull: { pendingSubmissionKeys: submissionKey } },
+      ).catch(() => undefined);
+      throw error;
+    }
 
     emitClassroomEvent(classroomSessionId(session), "response:updated", {
       questionIds: payload.answers.map((answer) => answer.questionId),
