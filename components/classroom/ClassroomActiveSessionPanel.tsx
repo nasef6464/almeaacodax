@@ -17,6 +17,8 @@ type ChallengeState = {
   expired?: boolean;
 };
 
+type PushMode = 'normal' | 'challenge';
+
 interface ClassroomActiveSessionPanelProps {
   sessionId: string;
   data: any;
@@ -47,6 +49,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
   const [showPushModal, setShowPushModal] = useState(false);
+  const [pushMode, setPushMode] = useState<PushMode>('normal');
+  const [pushChallengeSeconds, setPushChallengeSeconds] = useState(45);
   const [pushingQuestions, setPushingQuestions] = useState(false);
   const [pushFilterSubject, setPushFilterSubject] = useState('');
   const [pushFilterSection, setPushFilterSection] = useState('');
@@ -197,11 +201,29 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     });
   }, [bankQuestions, data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
 
+  const openPushModal = (mode: PushMode) => {
+    setPushMode(mode);
+    setSelectedForPush([]);
+    setShowPushModal(true);
+  };
+
   const handlePushQuestionsSubmit = async () => {
     if (selectedForPush.length === 0 || pushingQuestions) return;
     setPushingQuestions(true);
     try {
-      await api.appendClassroomQuestions(sessionId, selectedForPush, true);
+      const result = await api.post<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/append-questions`, {
+        questionIds: selectedForPush,
+        autoPublishFirst: true,
+        ...(pushMode === 'challenge' ? { challengeDurationSeconds: pushChallengeSeconds } : {}),
+      });
+      if (pushMode === 'challenge' && result?.challenge) {
+        setChallengeState({
+          challengeQuestionIds: selectedForPush,
+          competitionEnabled: true,
+          timerEndsAt: result.challenge.timerEndsAt || null,
+          expired: false,
+        });
+      }
       setShowPushModal(false);
       setSelectedForPush([]);
       onReload?.();
@@ -211,19 +233,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   };
 
   const handleQuickSelectBatch = () => {
-    setSelectedForPush(availablePushQuestions.slice(0, 5).map((question) => String(question.questionId || question.id)));
-  };
-
-  const handleInstantChallenge = async (question: any, durationSec = 45) => {
-    if (!challengeIds.includes(question.questionId)) onToggleChallenge(question.questionId);
-    await api.publishClassroomQuestion(sessionId, question.index);
-    const state = await api.post<ChallengeState>(`/classroom/sessions/${encodeURIComponent(sessionId)}/competition/configure`, {
-      challengeQuestionIds: [question.questionId],
-      durationSeconds: durationSec,
-      competitionEnabled: true,
-    });
-    setChallengeState(state);
-    onReload?.();
+    const count = pushMode === 'challenge' ? 3 : 5;
+    setSelectedForPush(availablePushQuestions.slice(0, count).map((question) => String(question.questionId || question.id)));
   };
 
   return (
@@ -274,17 +285,27 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 className="text-xl font-black text-slate-900 dark:text-white">أسئلة الحصة التفاعلية</h2>
-            <p className="text-xs text-slate-500">يمكنك نشر أي سؤال متتابع، أو بثه كتحدٍ سريع بمؤقت موحد على الخادم.</p>
+            <p className="text-xs text-slate-500">أرسل تدريبًا عاديًا أو أنشئ دفعة تحدي مستقلة بمؤقت موحد وترتيب حي.</p>
             {bankError && <p className="mt-2 text-xs font-bold text-rose-600">{bankError}</p>}
             {loadingBank && <p className="mt-2 text-xs font-bold text-indigo-600">جارٍ تحديث بنك الأسئلة المصرح من الخادم…</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={() => { setSelectedForPush([]); setShowPushModal(true); }} disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-xs transition-all active:scale-95 disabled:opacity-50"><PlusCircle size={14} /> إرسال أسئلة / حزمة مهارة الآن 🚀</button>
+            <button type="button" onClick={() => openPushModal('normal')} disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-xs transition-all active:scale-95 disabled:opacity-50"><PlusCircle size={14} /> إرسال تدريب / حزمة مهارة</button>
+            <select value={pushChallengeSeconds} onChange={(event) => setPushChallengeSeconds(Number(event.target.value))} disabled={data?.status === 'ended'} className="rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-2 text-xs font-black text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-300">
+              <option value={30}>30 ث</option><option value={45}>45 ث</option><option value={60}>60 ث</option><option value={90}>90 ث</option>
+            </select>
+            <button type="button" onClick={() => openPushModal('challenge')} disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white hover:from-amber-600 hover:to-orange-600 shadow-xs transition-all active:scale-95 disabled:opacity-50"><Zap size={14} /> إنشاء دفعة تحدي مستقلة</button>
             {currentQIndex !== undefined && currentQIndex < (data?.questions || []).length - 1 && (
               <button type="button" onClick={() => onPublish(currentQIndex + 1)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-300 transition-colors"><SkipForward size={14} /> الانتقال للسؤال التالي</button>
             )}
           </div>
         </div>
+
+        {showPushModal && pushMode === 'challenge' && (
+          <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-200">
+            وضع التحدي مفعل: الأسئلة التي ستحددها ستصبح دفعة جديدة مستقلة لمدة {pushChallengeSeconds} ثانية، ويبدأ المؤقت والترتيب فور الإرسال.
+          </div>
+        )}
 
         <div className="mt-4 space-y-3">
           {(data?.questions || []).map((question: any) => {
@@ -301,7 +322,6 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
                 </div>
                 <div className="flex items-center gap-2 self-end sm:self-center">
                   <button type="button" onClick={() => onPublish(question.index)} disabled={data?.status === 'ended'} className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all disabled:opacity-50 ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200'}`}>{isActive ? 'منشور حالياً ✓' : 'نشر اعتيادي'}</button>
-                  <button type="button" onClick={() => void handleInstantChallenge(question, 45)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white hover:from-amber-600 hover:to-orange-600 shadow-xs transition-all active:scale-95 disabled:opacity-50"><Zap size={14} /> بث كتحدٍ سريع ⚡</button>
                 </div>
               </div>
             );
