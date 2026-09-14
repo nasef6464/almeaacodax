@@ -35,6 +35,9 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [schoolId, setSchoolId] = useState(searchParams.get('schoolId') || '');
   const [classId, setClassId] = useState(searchParams.get('classId') || '');
   const [questions, setQuestions] = useState<ClassroomQuestion[]>([]);
+  const [questionPage, setQuestionPage] = useState(0);
+  const [hasMoreQuestions, setHasMoreQuestions] = useState(false);
+  const [loadingMoreQuestions, setLoadingMoreQuestions] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [challengeIds, setChallengeIds] = useState<string[]>([]);
   const [creationTab, setCreationTab] = useState<'templates' | 'bank'>('templates');
@@ -113,18 +116,26 @@ export const ClassroomTeacherConsole: React.FC = () => {
     const school = workspace?.schools.find((entry) => entry.schoolId === nextSchoolId);
     setClassId(school?.assignments[0]?.classId || '');
     setQuestions([]);
+    setQuestionPage(0);
+    setHasMoreQuestions(false);
     setSelectedIds([]);
     setChallengeIds([]);
     setActiveTemplateId('');
   };
 
-  const loadQuestions = async () => {
+  const loadQuestions = async (page = 1) => {
+    if (loadingMoreQuestions) return;
+    setLoadingMoreQuestions(true);
     try {
-      const result = await api.getClassroomQuestions(schoolId);
-      setQuestions(result.questions);
-      setMessage('تم استعراض بنك الأسئلة المعتمد. يمكنك الفلترة والاختيار أو بدء الحصة فارغة.');
+      const result = await api.getClassroomQuestions(schoolId, { page, limit: 50 });
+      setQuestions((current) => page === 1 ? result.questions : [...current, ...result.questions]);
+      setQuestionPage(result.page);
+      setHasMoreQuestions(result.hasMore);
+      if (page === 1) setMessage('تم استعراض بنك الأسئلة المعتمد. يمكنك الفلترة والاختيار أو بدء الحصة فارغة.');
     } catch {
       setMessage('تعذر تحميل بنك الأسئلة. تحقق من المدرسة وصلاحية الإسناد.');
+    } finally {
+      setLoadingMoreQuestions(false);
     }
   };
 
@@ -248,6 +259,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
                         </div>
                       );
                     })}
+                    {hasMoreQuestions && <button type="button" onClick={() => void loadQuestions(questionPage + 1)} disabled={loadingMoreQuestions} className="w-full rounded-xl border border-indigo-200 bg-indigo-50 py-3 text-xs font-black text-indigo-700 hover:bg-indigo-100 disabled:opacity-50">{loadingMoreQuestions ? 'جارٍ تحميل المزيد…' : 'تحميل أسئلة إضافية'}</button>}
                   </div>
                 )}
               </div>

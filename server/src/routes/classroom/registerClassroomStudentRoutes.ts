@@ -185,8 +185,10 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
       { $set: { selectedOptionIndex: payload.selectedOptionIndex, isCorrect: payload.selectedOptionIndex === question.correctOptionIndex, submittedAt: new Date() } },
       { upsert: true, new: true, runValidators: true },
     );
-    const responseCount = await ClassroomResponseModel.countDocuments({ sessionId: classroomSessionId(session), questionId: question.questionId });
-    emitClassroomEvent(classroomSessionId(session), "response:updated", { responseCount, questionId: question.questionId });
+    // The teacher's live state is coalesced separately. Counting the whole
+    // question after every answer turns a 100-student burst into 100 extra
+    // database reads and does not improve the student's response.
+    emitClassroomEvent(classroomSessionId(session), "response:updated", { questionId: question.questionId });
     res.json({ accepted: true, responseId: String(response._id), finalized: false });
   }));
 
