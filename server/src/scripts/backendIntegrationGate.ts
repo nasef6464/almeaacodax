@@ -299,6 +299,64 @@ async function loginRole(role: Role, csrf: CsrfContext) {
   tokens.set(role, result.body.token);
 }
 
+async function runAdminUserManagementJourney(csrf: CsrfContext) {
+  const teacherId = userIds.get("teacher");
+  const adminId = userIds.get("admin");
+  assert.ok(teacherId && adminId, "admin user-management fixture ids missing");
+
+  const summary = await jsonRequest("/auth/admin/users/summary", { token: tokens.get("admin") });
+  expectStatus("admin reads authoritative user summary", summary, 200);
+  assert.ok(Number(summary.body?.total) >= 8, "user summary omitted isolated users");
+  assert.ok(Number(summary.body?.byRole?.admin) >= 1, "user summary omitted active administrator role");
+
+  const teacherSummary = await jsonRequest("/auth/admin/users/summary", { token: tokens.get("teacher") });
+  expectStatus("teacher cannot read administrator user summary", teacherSummary, 403);
+
+  const teacherBulk = await jsonRequest("/auth/admin/users/bulk-status", {
+    method: "PATCH",
+    token: tokens.get("teacher"),
+    csrf,
+    body: { userIds: [teacherId], isActive: false },
+  });
+  expectStatus("teacher cannot perform administrator bulk status command", teacherBulk, 403);
+
+  const deactivateTeacher = await jsonRequest("/auth/admin/users/bulk-status", {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { userIds: [teacherId, `missing-user-${RUN_MARKER}`], isActive: false },
+  });
+  expectStatus("admin bulk command deactivates only matching requested users", deactivateTeacher, 200);
+  assert.deepEqual(
+    deactivateTeacher.body?.results?.map((item: any) => item.status),
+    ["updated", "not_found"],
+    "bulk command did not return per-user outcomes",
+  );
+
+  const reactivateTeacher = await jsonRequest("/auth/admin/users/bulk-status", {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { userIds: [teacherId], isActive: true },
+  });
+  expectStatus("admin bulk command reactivates isolated teacher", reactivateTeacher, 200);
+  assert.equal(reactivateTeacher.body?.results?.[0]?.status, "updated", "bulk reactivation did not persist");
+
+  const selfDeactivate = await jsonRequest("/auth/admin/users/bulk-status", {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { userIds: [adminId], isActive: false },
+  });
+  expectStatus("admin bulk command preserves current administrator", selfDeactivate, 200);
+  assert.deepEqual(
+    selfDeactivate.body?.results?.[0], { userId: adminId, status: "skipped", reason: "cannot_deactivate_current_admin" }, "bulk command did not protect current administrator");
+
+  const auditCount = await AdminAuditLogModel.countDocuments({ action: "auth.admin_user.bulk_status", actorId: adminId });
+  assert.ok(auditCount >= 3, "admin bulk status operations were not audit logged");
+  pass("admin user summary and safe bulk status command are RBAC-protected and audit logged");
+}
+
 async function runSchoolDirectorIdentityJourney(csrf: CsrfContext) {
   const schoolId = groupIds.get("school");
   const outsideSchoolId = groupIds.get("outsideSchool");
@@ -2164,6 +2222,8 @@ async function main() {
 
     const certificateCount = await CertificateModel.countDocuments({ courseId: COURSE_ID });
     assert.equal(certificateCount, 1, "isolated certificate idempotency failed at database level");
+
+    await runAdminUserManagementJourney(csrf);
 
     console.log("Backend integration gate PASS");
   } finally {
