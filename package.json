@@ -54,6 +54,7 @@
         "smoke:trainer-management-g14": "node scripts/smoke-trainer-management-g14-contract.mjs",
         "smoke:trainer-courses-g15": "node scripts/smoke-trainer-courses-g15-contract.mjs",
         "smoke:content-review-g16": "node scripts/smoke-content-review-g16-contract.mjs",
+        "smoke:users-manager-g17": "node scripts/smoke-users-manager-g17-contract.mjs",
         "smoke:course-visibility": "node scripts/smoke-course-visibility-contract.mjs",
         "smoke:course-quiz-context": "node scripts/smoke-course-quiz-context-contract.mjs",
         "smoke:certificate-integrity": "node scripts/smoke-certificate-integrity-contract.mjs",
