@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Loader2, Search, SendBack, ShieldCheck, XCircle } from 'lucide-react';
+import { CheckCircle2, Loader2, RotateCcw as SendBack, Search, ShieldCheck, XCircle } from 'lucide-react';
 import { api } from '../../services/api';
 
 type ReviewItem = { id: string; type: 'course' | 'lesson' | 'question' | 'quiz' | 'library'; title: string; ownerId: string; pathId: string; subjectId: string };
