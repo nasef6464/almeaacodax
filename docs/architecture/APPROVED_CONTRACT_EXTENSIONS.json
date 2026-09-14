@@ -15,6 +15,8 @@
     "questionAnalyticsRouter|GET|/",
     "authRouter|GET|/admin/trainers",
     "authRouter|GET|/admin/trainers/:id",
+    "contentRouter|GET|/review-queue",
+    "contentRouter|PATCH|/review-queue/:type/:id",
     "classroomRouter|GET|/questions",
     "classroomRouter|POST|/sessions",
     "classroomRouter|POST|/sessions/:id/append-questions",

@@ -335,6 +335,8 @@ export const api = {
   baseUrl: API_BASE_URL,
   get: <T = unknown>(path: string, token?: string | null) => request<T>(path, { token }),
   post: <T = unknown>(path: string, body: unknown, token?: string | null) => request<T>(path, { method: 'POST', body, token }),
+  decideContentReview: (type: string, id: string, body: { decision: "approved" | "rejected"; reviewerNotes: string; publish: boolean }, token?: string | null) =>
+    request<unknown>(`/content/review-queue/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, { method: "PATCH", body, token }),
   clearContentBootstrapCache: () => {
     clearPublicCache("content-bootstrap:full");
     clearPublicCache("content-bootstrap:full:full");
