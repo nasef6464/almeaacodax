@@ -2,8 +2,8 @@
 
 ## Smart Classroom pre-merge hardening — batch lifecycle and privacy
 
-- Status: `LOCAL VERIFIED / PR REVIEW PENDING / CI EXTERNALLY BLOCKED` on 2026-09-14.
-- Working branch: `chatgpt/smart-classroom-premerge-hardening` (PR #146; do not merge automatically).
+- Status: `MERGED / LOCAL + GITHUB + VERCEL SYNCHRONIZED / RENDER BILLING BLOCKED` on 2026-09-14.
+- Runtime merge: PR #146 merged as `main @ db9295db0334bb13dd99bd1941876b46fbdf05df`.
 - Delivered in the current pre-merge pass:
   1. A live session may start empty; batches are now explicit: the teacher ends
      the active batch, receives a server-built mini result, then sends the next
@@ -27,13 +27,22 @@
     idempotency, and immutable report verification.
   - Frontend production build generated successfully; module-boundary gate
     passed.
+- Release evidence:
+  - Local `main` fast-forwarded to the exact merge commit with a clean working tree.
+  - GitHub `main` is at the exact merge commit.
+  - Vercel reported a successful production deployment for that exact commit.
 - Known external/non-scope blockers:
   - Repository-wide architecture gate is at 84 hotspots against a budget of
     83 because of the pre-existing `SchoolPeopleHubTab.tsx` hotspot. Smart
     Classroom work added no hotspot; that People Hub file is intentionally
     outside this Smart Classroom-only pass.
-  - GitHub Actions checks on PR #146 are blocked by the repository
-    Billing/Spending Limit; CI must be rerun on the final exact commit.
+  - Render service `srv-d7qtcr9o3t8c73cs32sg` is suspended by `billing`, so
+    its public API returns HTTP 503. Render's API refuses a resume because it
+    was not a user-initiated suspension. Resolve the Render billing state in
+    the Render account, then verify an automatic deployment from `main` and
+    rerun the production smoke.
+  - GitHub Actions checks remain unreliable/failed without useful logs on the
+    merged commit; rerun them after the account-level CI issue is resolved.
 
 ## People Hub quick closure plan
 
