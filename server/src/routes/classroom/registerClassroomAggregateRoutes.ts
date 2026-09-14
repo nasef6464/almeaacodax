@@ -62,6 +62,38 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     if (!isStaff) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only" });
 
     const sessionId = classroomSessionId(session);
+    if (req.query.view === "live") {
+      const activeQuestion = typeof session.activeQuestionIndex === "number"
+        ? session.questionSnapshots?.[session.activeQuestionIndex]
+        : null;
+      const questionId = activeQuestion ? String(activeQuestion.questionId) : "";
+      const [distributionRows, joinedCount] = await Promise.all([
+        questionId
+          ? ClassroomResponseModel.aggregate([
+              { $match: { sessionId, questionId } },
+              { $group: { _id: "$selectedOptionIndex", count: { $sum: 1 }, correct: { $sum: { $cond: ["$isCorrect", 1, 0] } } } },
+            ])
+          : Promise.resolve([]),
+        ClassroomParticipantModel.countDocuments({ sessionId }),
+      ]);
+      const distribution = (distributionRows as Array<{ _id: number; count: number }>).reduce((summary, row) => {
+        summary[String(row._id)] = row.count;
+        return summary;
+      }, {} as Record<string, number>);
+      const responseCount = (distributionRows as Array<{ count: number }>).reduce((total, row) => total + row.count, 0);
+      const correctCount = (distributionRows as Array<{ correct: number }>).reduce((total, row) => total + row.correct, 0);
+      return res.json({
+        sessionId,
+        status: session.status,
+        activeQuestionIndex: session.activeQuestionIndex,
+        activeBatchId: session.activeBatchId || "",
+        questionId,
+        responseCount,
+        correctCount,
+        distribution,
+        joinedCount,
+      });
+    }
     const [responses, participants] = await Promise.all([
       ClassroomResponseModel.find({ sessionId }).lean(),
       ClassroomParticipantModel.find({ sessionId }).select("studentId joinedAt finalizedSubmissionKeys").lean() as any,

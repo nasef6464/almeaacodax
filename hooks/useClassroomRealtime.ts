@@ -5,9 +5,11 @@ import { API_BASE_URL } from '../services/api';
 type ClassroomSubscriber = {
   onChange: () => void;
   onSessionEnded?: () => void;
+  onEvent?: (event: ClassroomRealtimeEvent, payload: ClassroomEventPayload) => boolean | void;
 };
 
 type ClassroomEventPayload = { sessionId?: string };
+export type ClassroomRealtimeEvent = 'question:published' | 'response:updated' | 'competition:updated' | 'batch:ended' | 'session:ended';
 
 const sessionSubscribers = new Map<string, Set<ClassroomSubscriber>>();
 const classSubscribers = new Map<string, Set<() => void>>();
@@ -15,10 +17,11 @@ let socket: Socket | null = null;
 
 const socketUrl = () => API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
 
-const notifySession = (sessionId: string, event: 'change' | 'ended') => {
+const notifySession = (sessionId: string, event: ClassroomRealtimeEvent | 'connected', payload: ClassroomEventPayload = {}) => {
   sessionSubscribers.get(sessionId)?.forEach((subscriber) => {
-    if (event === 'ended') subscriber.onSessionEnded?.();
-    subscriber.onChange();
+    if (event === 'session:ended') subscriber.onSessionEnded?.();
+    const handled = event !== 'connected' && subscriber.onEvent?.(event, payload) === true;
+    if (!handled) subscriber.onChange();
   });
 };
 
@@ -29,7 +32,7 @@ const notifyClass = (classId: string) => {
 const joinSession = (id: string) => {
   if (!socket?.connected || !sessionSubscribers.has(id)) return;
   socket.emit('workspace:join', `classroom:${id}`, (result: { ok?: boolean }) => {
-    if (result?.ok) notifySession(id, 'change');
+    if (result?.ok) notifySession(id, 'connected');
   });
 };
 
@@ -57,15 +60,15 @@ const ensureSocket = () => {
     sessionSubscribers.forEach((_, id) => joinSession(id));
     classSubscribers.forEach((_, id) => joinClass(id));
   });
-  const onSessionChange = (payload: ClassroomEventPayload = {}) => {
-    if (payload.sessionId) notifySession(String(payload.sessionId), 'change');
+  const onSessionChange = (event: ClassroomRealtimeEvent) => (payload: ClassroomEventPayload = {}) => {
+    if (payload.sessionId) notifySession(String(payload.sessionId), event, payload);
   };
-  socket.on('question:published', onSessionChange);
-  socket.on('response:updated', onSessionChange);
-  socket.on('competition:updated', onSessionChange);
-  socket.on('batch:ended', onSessionChange);
+  socket.on('question:published', onSessionChange('question:published'));
+  socket.on('response:updated', onSessionChange('response:updated'));
+  socket.on('competition:updated', onSessionChange('competition:updated'));
+  socket.on('batch:ended', onSessionChange('batch:ended'));
   socket.on('session:ended', (payload: ClassroomEventPayload = {}) => {
-    if (payload.sessionId) notifySession(String(payload.sessionId), 'ended');
+    if (payload.sessionId) notifySession(String(payload.sessionId), 'session:ended', payload);
   });
   socket.on('classroom:started', (payload: { classId?: string } = {}) => {
     if (payload.classId) notifyClass(String(payload.classId));
@@ -115,15 +118,17 @@ export const useClassroomRealtime = (
   sessionId: string,
   onChange: () => void,
   onSessionEnded?: () => void,
+  onEvent?: (event: ClassroomRealtimeEvent, payload: ClassroomEventPayload) => boolean | void,
 ) => {
-  const latest = useRef({ onChange, onSessionEnded });
-  latest.current = { onChange, onSessionEnded };
+  const latest = useRef({ onChange, onSessionEnded, onEvent });
+  latest.current = { onChange, onSessionEnded, onEvent };
 
   useEffect(() => {
     if (!sessionId) return;
     return subscribeSession(sessionId, {
       onChange: () => latest.current.onChange(),
       onSessionEnded: () => latest.current.onSessionEnded?.(),
+      onEvent: (event, payload) => latest.current.onEvent?.(event, payload),
     });
   }, [sessionId]);
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Bookmark, Filter, Presentation, Zap } from 'lucide-react';
 import { api } from '../services/api';
@@ -40,6 +40,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [creationTab, setCreationTab] = useState<'templates' | 'bank'>('templates');
   const [activeTemplateId, setActiveTemplateId] = useState<string>('');
   const [filters, setFilters] = useState<ClassroomFilterState>({ track: '', subject: '', difficulty: '', search: '' });
+  const liveRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectedSchool = useMemo(() => workspace?.schools.find((school) => school.schoolId === schoolId), [schoolId, workspace]);
 
   const load = useCallback(async () => {
@@ -49,7 +50,34 @@ export const ClassroomTeacherConsole: React.FC = () => {
   }, [sessionId]);
 
   useEffect(() => { void load(); }, [load]);
-  useClassroomRealtime(sessionId, load);
+  useEffect(() => () => {
+    if (liveRefreshTimerRef.current) clearTimeout(liveRefreshTimerRef.current);
+  }, []);
+
+  const applyRealtimeEvent = useCallback((event: string) => {
+    if (event !== 'response:updated' || !sessionId) return false;
+    if (liveRefreshTimerRef.current) return true;
+    // Coalesce answer storms into one small, active-question-only read. The
+    // full aggregate remains for initial load and teacher actions, not answers.
+    liveRefreshTimerRef.current = setTimeout(() => {
+      liveRefreshTimerRef.current = null;
+      api.get<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/aggregate?view=live`)
+        .then((live) => setData((current: any) => current ? {
+          ...current,
+          status: live.status,
+          activeQuestionIndex: live.activeQuestionIndex,
+          activeBatchId: live.activeBatchId,
+          responseCount: live.responseCount,
+          correctCount: live.correctCount,
+          distribution: live.distribution,
+          joinedCount: live.joinedCount,
+        } : current))
+        .catch(() => setMessage('تعذر تحديث الحالة الحية للحصة.'));
+    }, 250);
+    return true;
+  }, [sessionId]);
+
+  useClassroomRealtime(sessionId, load, undefined, applyRealtimeEvent);
 
   useEffect(() => {
     if (sessionId) return;

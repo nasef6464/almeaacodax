@@ -28,7 +28,7 @@ check('all classroom surfaces share one module-level Socket.IO transport', () =>
 check('reconnect joins each active session and requests a server-authoritative resync', () => {
   assert.ok(hook.includes("socket.on('connect'"));
   assert.ok(hook.includes('sessionSubscribers.forEach((_, id) => joinSession(id))'));
-  assert.ok(hook.includes("if (result?.ok) notifySession(id, 'change')"));
+  assert.ok(hook.includes("if (result?.ok) notifySession(id, 'connected')"));
 });
 check('student live screen has no sustained polling timer', () => {
   assert.equal(student.includes('setInterval('), false);
@@ -49,7 +49,7 @@ check('classroom socket rooms split student and staff audiences', () => {
 });
 check('response updates carry session scope, so one session cannot refresh another', () => {
   assert.ok(events.includes('const scopedPayload = { ...payload, sessionId: normalizedSessionId }'));
-  assert.ok(hook.includes('if (payload.sessionId) notifySession(String(payload.sessionId), \'change\')'));
+  assert.ok(hook.includes('if (payload.sessionId) notifySession(String(payload.sessionId), event, payload)'));
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
