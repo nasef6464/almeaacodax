@@ -1,5 +1,27 @@
 # ALMEAA — Codex Execution State
 
+## Trainer management G14 — exact portfolio aggregates
+
+- Status: `PARTIAL / LOCAL VERIFIED / CI BLOCKED` on 2026-09-14.
+- Runtime commit: `011557ca2cde70d1572cb5d3ea974dcc2f639a67` on
+  `codex/trainer-management-g14-g18`; PR [#147](https://github.com/nasef6464/almeaacodax/pull/147).
+- Delivered: the existing admin Trainer Center now returns exact portfolio
+  totals and status counts independently from its 100-item per-type preview;
+  video totals are exact too. A focused G14 contract smoke and isolated HTTP
+  assertions cover the paginated directory, profile, Admin-only denial,
+  persisted scope update, and audit log.
+- Local verification: `npm --prefix server run check`, `npm run typecheck`,
+  `npm run smoke:course-builder`, and `npm run smoke:trainer-management-g14`
+  passed. `git diff --check` passed before commit.
+- CI blocker: PR jobs failed within seconds with no readable job log, matching
+  the existing account-level CI instability; the isolated Backend Integration
+  workflow was skipped by its branch policy. Vercel preview succeeded, but is
+  not a replacement for exact-runtime CI or isolated HTTP evidence.
+- Next exact action: restore the CI account/workflow condition, run the
+  isolated Backend Integration Gate on `011557ca` (or an unchanged runtime
+  descendant), then close or correct G14 based on that evidence. Do not begin
+  G15 while this gate remains open.
+
 ## Smart Classroom pre-merge hardening — batch lifecycle and privacy
 
 - Status: `MERGED / LOCAL + GITHUB + VERCEL SYNCHRONIZED / RENDER BILLING BLOCKED` on 2026-09-14.

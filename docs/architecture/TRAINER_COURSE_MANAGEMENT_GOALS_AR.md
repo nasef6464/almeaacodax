@@ -1,6 +1,6 @@
 # ALMEAA — أهداف إدارة المدربين والدورات والمستخدمين G13–G18
 
-> الحالة: `G13 CLOSED / VERIFIED` — `G14–G18 PLANNED / NOT STARTED`
+> الحالة: `G13 CLOSED / VERIFIED` — `G14 PARTIAL / CI BLOCKED` — `G15–G18 PLANNED / NOT STARTED`
 >
 > تاريخ اعتماد الخطة: 2026-09-10
 >
@@ -125,6 +125,22 @@
   `smoke:course-builder` و`smoke:account-workspaces-g7` PASS.
 
 ## G14 — مركز إدارة المدربين
+
+> الحالة الحالية: `PARTIAL / LOCAL VERIFIED / CI BLOCKED` في
+> `011557ca2cde70d1572cb5d3ea974dcc2f639a67`.
+>
+> الموجود والمثبت محليًا: مركز رئيسي للمدير بقائمة خادمية قابلة للبحث والترقيم
+> والتصفية، ملف مدرب خادمي، تعديل نطاقه وإيقافه/تفعيله عبر أمر awaited مع
+> Audit Log، وإجماليات portfolio دقيقة حتى عندما تعرض الواجهة معاينة محدودة
+> للعناصر. العقد المركز `smoke:trainer-management-g14` و`smoke:course-builder`
+> وفحص TypeScript للخادم والواجهة نجحت. أضيفت تغطية HTTP المعزولة لمسارات
+> القائمة والملف ورفض non-Admin وحفظ النطاق وسجل التدقيق.
+>
+> مانع الإغلاق: PR [#147](https://github.com/nasef6464/almeaacodax/pull/147)
+> شغّل بوابات GitHub لكن جميع jobs الأساسية فشلت خلال ثوانٍ بلا logs قابلة
+> للقراءة، وBackend Integration Gate تم تخطيه بسبب سياسة workflow الحالية؛
+> لا يوجد exact-runtime CI أو HTTP E2E محلي مكتمل. Vercel preview نجح. لا تبدأ
+> G15 قبل إصلاح CI وتشغيل HTTP gate على `011557ca` أو commit مطابق له.
 
 ### الهدف
 
