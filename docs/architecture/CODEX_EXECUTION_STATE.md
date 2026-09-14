@@ -1,5 +1,28 @@
 # ALMEAA — Codex Execution State
 
+## User management G17 — authoritative summary and safe bulk operations
+
+- Status: `CLOSED / VERIFIED` on 2026-09-14.
+- Runtime commit: `1c2a595e51a5f5f5ac3b84f206c50898337a01f2` on
+  `codex/users-management-g17`.
+- Delivered: the Users Manager keeps the current paged result set local instead
+  of replacing the shared user store; persistence actions await their server
+  result; an Admin-only summary returns database-wide role, inactive and
+  platform-trainer totals; and bulk activation/deactivation returns an explicit
+  per-user report.
+- Safety/RBAC: bulk status is Admin-only, capped at 100 selected users, protects
+  the acting admin and the last active admin, and records every command in the
+  Admin audit log. The UI no longer treats bulk operations as fire-and-forget.
+- Local verification: server/frontend TypeScript checks,
+  `smoke:users-manager-g17`, and `git diff --check` passed.
+- Exact-runtime CI: [Platform V3 Backend Integration Gate #34831763121](https://github.com/nasef6464/almeaacodax/actions/runs/34831763121)
+  passed on isolated Mongo and live HTTP. It verifies the admin summary, denied
+  non-admin access, per-user bulk outcomes, current-admin protection,
+  reactivation, and audit logging.
+- Repository visibility: remains Public by explicit project-owner request.
+- Next exact action: begin the bounded G18 analytics and isolated-journey
+  assessment; do not claim a production pilot without production evidence.
+
 ## Trainer content approval G16 — unified review queue and RBAC closure
 
 - Status: `CLOSED / VERIFIED` on 2026-09-14.
