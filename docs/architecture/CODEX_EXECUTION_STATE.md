@@ -1,5 +1,27 @@
 # ALMEAA — Codex Execution State
 
+## Trainer course management G15 — course center and My Courses
+
+- Status: `CLOSED / VERIFIED` on 2026-09-14.
+- Runtime commit: `25d22600da97fe2a1d6a94422d19bab662d1e9ee` on
+  `codex/trainer-course-management-g15`.
+- Delivered: a dedicated Admin Course Center with search/filter/paging and
+  contextual subject entry retained; a platform-trainer "My Courses" workspace
+  for draft, submission/resubmission, reviewer notes, and learner preview; no
+  trainer-side publication, approval, reassignment, or revenue-share control.
+  The course collection now applies the same server ownership boundary for a
+  trainer as the mutation endpoints, and trainer content edits return an
+  approved course to review before it can remain learner-visible.
+- Local verification: server and frontend TypeScript checks plus
+  `smoke:trainer-courses-g15` passed; diff check was clean.
+- Exact-runtime CI: [Platform V3 Backend Integration Gate #34828396244](https://github.com/nasef6464/almeaacodax/actions/runs/34828396244)
+  passed on isolated Mongo and live HTTP, including the draft → review →
+  Admin approval/publication lifecycle and direct-request negative checks.
+- Release note: the repository was returned to Private immediately after the
+  temporary public-runner verification.
+- Next exact action: begin the bounded G16 assessment only; do not combine it
+  with G17 or G18.
+
 ## Trainer management G14 — exact portfolio aggregates
 
 - Status: `CLOSED / VERIFIED` on 2026-09-14.
