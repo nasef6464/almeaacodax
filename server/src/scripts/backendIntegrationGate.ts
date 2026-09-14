@@ -617,7 +617,7 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   assert.equal(repeated.body?.responseId, answer.body?.responseId, "repeated smart classroom answer created a second response");
   const ended = await jsonRequest(`/classroom/sessions/${sessionId}/end`, { method: "POST", token: tokens.get("teacher"), csrf });
   expectStatus("teacher ends smart classroom session", ended, 200);
-  assert.equal(ended.body?.report?.responseCount, 1, "smart classroom immutable report has wrong response count");
+  assert.equal(ended.body?.report?.totals?.responses, 1, "smart classroom immutable report has wrong response count");
   const schoolSupervisorHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("supervisor") });
   expectStatus("school supervisor reads in-scope classroom history", schoolSupervisorHistory, 200);
   assert.equal(schoolSupervisorHistory.body?.sessions?.some((report: any) => report.sessionId === sessionId), true, "school supervisor history omitted in-scope session");
