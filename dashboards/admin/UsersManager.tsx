@@ -150,6 +150,8 @@ export const UsersManager: React.FC = () => {
     const [createError, setCreateError] = useState('');
     const [relationshipActionUserId, setRelationshipActionUserId] = useState<string | null>(null);
     const [relationshipActionError, setRelationshipActionError] = useState('');
+    const [bulkStatusMessage, setBulkStatusMessage] = useState('');
+    const [usersSummary, setUsersSummary] = useState<{ byRole: Record<string, number>; inactive: number; platformTrainers: number } | null>(null);
     const [newUserType, setNewUserType] = useState<'student' | 'school_teacher' | 'platform_trainer' | 'supervisor' | 'school_admin' | 'parent' | 'admin'>('student');
     const [newUserSchoolId, setNewUserSchoolId] = useState('');
     const [newUserClassId, setNewUserClassId] = useState('');
@@ -282,6 +284,10 @@ export const UsersManager: React.FC = () => {
             window.clearTimeout(timer);
         };
     }, [searchTerm, roleFilter, usersPage, usersLimit]);
+
+    useEffect(() => {
+        void api.getAdminUsersSummary().then(setUsersSummary).catch(() => setUsersSummary(null));
+    }, []);
 
     useEffect(() => {
         let isMounted = true;
@@ -573,8 +579,20 @@ export const UsersManager: React.FC = () => {
     };
 
     const handleUserStatusToggle = (currentUser: User) => void persistPageUserPatch(currentUser, { isActive: !(currentUser.isActive ?? true) });
-    const setFilteredUsersStatus = (active: boolean) => {
-        manageableFilteredUsers.filter((currentUser) => (currentUser.isActive ?? true) !== active).forEach((currentUser) => void persistPageUserPatch(currentUser, { isActive: active }));
+    const setFilteredUsersStatus = async (active: boolean) => {
+        const targets = manageableFilteredUsers.filter((currentUser) => (currentUser.isActive ?? true) !== active);
+        if (!targets.length) return;
+        setBulkStatusMessage('جارٍ تنفيذ العملية الجماعية…');
+        try {
+            const response = await api.bulkSetAdminUsersStatus(targets.map((user) => user.id), active);
+            const updatedIds = new Set(response.results.filter((result) => result.status === 'updated').map((result) => result.userId));
+            const skipped = response.results.filter((result) => result.status !== 'updated');
+            setPageUsers((current) => current.map((user) => updatedIds.has(user.id) ? { ...user, isActive: active } : user));
+            setBulkStatusMessage(`تم تحديث ${updatedIds.size} مستخدم${skipped.length ? `، وتعذر/تُخطي ${skipped.length}` : ''}.`);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'تعذر تنفيذ العملية الجماعية.';
+            setBulkStatusMessage(message);
+        }
     };
 
     const handleTeacherSchoolChange = (currentUser: User, nextSchoolId: string) => {
@@ -733,11 +751,11 @@ export const UsersManager: React.FC = () => {
 
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
-                    ['الطلاب', usersByRole[Role.STUDENT] || 0],
-                    ['المدربون والمعلمون', usersByRole[Role.TEACHER] || 0],
-                    ['المشرفون', usersByRole[Role.SUPERVISOR] || 0],
-                    ['أولياء الأمور', usersByRole[Role.PARENT] || 0],
-                    ['حسابات متوقفة', inactiveUsersCount],
+                    ['الطلاب', usersSummary?.byRole[Role.STUDENT] ?? usersByRole[Role.STUDENT] ?? 0],
+                    ['المدربون والمعلمون', usersSummary?.byRole[Role.TEACHER] ?? usersByRole[Role.TEACHER] ?? 0],
+                    ['المشرفون', usersSummary?.byRole[Role.SUPERVISOR] ?? usersByRole[Role.SUPERVISOR] ?? 0],
+                    ['أولياء الأمور', usersSummary?.byRole[Role.PARENT] ?? usersByRole[Role.PARENT] ?? 0],
+                    ['حسابات متوقفة', usersSummary?.inactive ?? inactiveUsersCount],
                 ].map(([label, value]) => <div key={String(label)} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm"><p className="text-xs text-gray-500 mb-2">{label}</p><p className="text-2xl font-black text-gray-900">{value}</p></div>)}
             </div>
 
