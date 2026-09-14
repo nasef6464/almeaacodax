@@ -83,8 +83,6 @@ export const ClassroomStudentLive: React.FC = () => {
   useEffect(() => {
     if (!joined || sessionEnded || !sessionId) return;
     void loadCurrent();
-    const interval = setInterval(() => void loadCurrent(), 5000);
-    return () => clearInterval(interval);
   }, [joined, sessionEnded, sessionId, loadCurrent]);
 
   useEffect(() => {
