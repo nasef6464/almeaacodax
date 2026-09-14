@@ -612,7 +612,7 @@ contentRouter.get(
     const query = reviewQueueQuerySchema.parse(req.query);
     const search = query.search ? new RegExp(escapeRegExp(query.search), "i") : null;
     const types = query.type ? [query.type] : ["course", "lesson", "question", "quiz", "library"] as const;
-    const definitions = {
+    const definitions: Record<string, { model: any; title: string }> = {
       course: { model: CourseModel, title: "$title" },
       lesson: { model: LessonModel, title: "$title" },
       question: { model: QuestionModel, title: "$text" },
@@ -633,7 +633,7 @@ contentRouter.get(
         approvalStatus: "pending_review", updatedAt: item.updatedAt || null,
       }));
     }));
-    const allItems = pending.flat().sort((left, right) => String(right.updatedAt || "").localeCompare(String(left.updatedAt || "")));
+    const allItems = pending.flat().sort((left: any, right: any) => String(right.updatedAt || "").localeCompare(String(left.updatedAt || "")));
     const skip = (query.page - 1) * query.limit;
     return res.json({ items: allItems.slice(skip, skip + query.limit), pagination: buildPaginationMeta(allItems.length, query.page, query.limit) });
   }),
@@ -646,7 +646,7 @@ contentRouter.patch(
   asyncHandler(async (req, res) => {
     const type = z.enum(["course", "lesson", "question", "quiz", "library"]).parse(req.params.type);
     const payload = reviewDecisionSchema.parse(req.body);
-    const models = { course: CourseModel, lesson: LessonModel, question: QuestionModel, quiz: QuizModel, library: LibraryItemModel } as const;
+    const models: Record<string, any> = { course: CourseModel, lesson: LessonModel, question: QuestionModel, quiz: QuizModel, library: LibraryItemModel };
     const model = models[type];
     const item = await model.findOne(buildDocumentQuery(req.params.id));
     if (!item) return res.status(StatusCodes.NOT_FOUND).json({ message: "Review item not found" });
