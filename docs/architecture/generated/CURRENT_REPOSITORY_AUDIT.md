@@ -1,26 +1,26 @@
 # Current Repository Architecture Audit
 
-Generated from commit `4dc1f4f9125dd5e7e10897ed98f83b0cd8a516c7` using the TypeScript AST for imports and route extraction.
+Generated from commit `84fe836539df60c7b91989bcf3dc1be4a239b85d` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1374 |
-| Source files (including scripts/tooling) | 937 |
-| Runtime source files | 566 |
-| Source lines | 186,811 |
-| Runtime source lines | 147,868 |
+| Tracked files | 1440 |
+| Source files (including scripts/tooling) | 1001 |
+| Runtime source files | 617 |
+| Source lines | 200,261 |
+| Runtime source lines | 160,788 |
 | Frontend route literals | 55 |
-| Backend HTTP route entries | 287 |
-| Router mount points | 30 |
-| Runtime relative import edges | 1684 |
-| Unresolved runtime relative imports | 1 |
+| Backend HTTP route entries | 306 |
+| Router mount points | 31 |
+| Runtime relative import edges | 1897 |
+| Unresolved runtime relative imports | 0 |
 | Unresolved non-runtime relative imports | 5 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 1058 |
-| Runtime hotspots >= 400 lines | 83 |
-| Candidate migration-map entries | 555 |
+| Cross-domain runtime import edges | 1180 |
+| Runtime hotspots >= 400 lines | 84 |
+| Candidate migration-map entries | 606 |
 
 ## Largest runtime source hotspots
 
@@ -28,39 +28,39 @@ Generated from commit `4dc1f4f9125dd5e7e10897ed98f83b0cd8a516c7` using the TypeS
 |---|---:|---:|---|
 | `pages/Reports.tsx` | 2587 | 186155 | reports |
 | `server/src/routes/content.routes.ts` | 2560 | 97959 | content |
+| `pages/QuizPage.tsx` | 2413 | 132726 | quizzes |
 | `dashboards/admin/PathsManager.tsx` | 2366 | 133357 | paths |
 | `server/src/routes/quiz.routes.ts` | 2350 | 95287 | quizzes |
+| `pages/Dashboard.tsx` | 2323 | 142077 | shared |
 | `dashboards/admin/PlatformIntegrationsManagerLegacy.tsx` | 2317 | 130369 | operations |
-| `pages/Dashboard.tsx` | 2301 | 141211 | shared |
+| `dashboards/admin/SchoolsManager.tsx` | 2197 | 112700 | schools |
 | `pages/Results.tsx` | 2185 | 108197 | reports |
-| `dashboards/admin/SchoolsManager.tsx` | 2160 | 110364 | schools |
-| `pages/QuizPage.tsx` | 2152 | 117168 | quizzes |
 | `dashboards/admin/FinancialManager.tsx` | 2135 | 144154 | payments |
-| `dashboards/admin/AdminDashboard.tsx` | 2084 | 126086 | shared |
-| `server/src/scripts/backendIntegrationGate.ts` | 2046 | 118322 | operations |
+| `dashboards/admin/AdminDashboard.tsx` | 2084 | 126101 | shared |
+| `server/src/scripts/backendIntegrationGate.ts` | 2049 | 118872 | operations |
+| `dashboards/admin/QuestionBankManager.tsx` | 1943 | 93968 | questions |
 | `dashboards/admin/QuizzesManager.tsx` | 1911 | 106763 | quizzes |
 | `server/src/routes/payment.routes.ts` | 1886 | 71269 | payments |
-| `dashboards/admin/SupervisorDashboard.tsx` | 1781 | 114547 | schools |
-| `dashboards/admin/QuestionBankManager.tsx` | 1780 | 87160 | questions |
+| `dashboards/admin/SupervisorDashboard.tsx` | 1782 | 114730 | schools |
 | `store/useStore.ts` | 1772 | 88949 | shared |
-| `server/src/routes/auth.routes.ts` | 1768 | 65773 | auth |
+| `server/src/routes/auth.routes.ts` | 1768 | 66018 | auth |
 | `pages/Plan.tsx` | 1732 | 79122 | shared |
 | `server/src/scripts/seedOperationalScenario.ts` | 1725 | 60632 | operations |
 | `App.tsx` | 1679 | 75998 | shared |
-| `dashboards/admin/AdvancedCourseBuilder.tsx` | 1654 | 99562 | courses |
+| `dashboards/admin/AdvancedCourseBuilder.tsx` | 1654 | 99692 | courses |
 | `server/src/routes/ai.routes.ts` | 1648 | 65293 | ai |
 | `server/src/scripts/seedOperationalScenarioApi.ts` | 1609 | 57436 | operations |
 | `dashboards/admin/MockExamManager.tsx` | 1550 | 82630 | exams |
 | `dashboards/admin/HomepageManager.tsx` | 1541 | 98147 | content |
 | `pages/Landing.tsx` | 1497 | 101672 | shared |
 | `dashboards/admin/QuizBuilder.tsx` | 1494 | 82025 | quizzes |
-| `pages/GenericPathPage.tsx` | 1451 | 87864 | paths |
+| `pages/GenericPathPage.tsx` | 1473 | 90688 | paths |
+| `components/Header.tsx` | 1437 | 76070 | shared |
 | `pages/Quiz.tsx` | 1428 | 65611 | quizzes |
-| `components/LearningSection.tsx` | 1368 | 87623 | learning |
-| `dashboards/admin/LessonsManager.tsx` | 1316 | 64028 | learning |
+| `components/LearningSection.tsx` | 1372 | 88061 | learning |
+| `dashboards/admin/LessonsManager.tsx` | 1316 | 65343 | learning |
 | `server/src/scripts/smokeOperationalJourneysApi.ts` | 1293 | 51179 | operations |
 | `dashboards/admin/PublicBarcodeTestsManager.tsx` | 1250 | 66200 | exams |
-| `components/Header.tsx` | 1219 | 63642 | shared |
 
 ## Baseline safety evidence
 

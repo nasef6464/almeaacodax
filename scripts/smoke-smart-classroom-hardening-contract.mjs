@@ -75,9 +75,9 @@ check('prepared templates are server-backed', templates.includes('/classroom/tem
 check('prepared templates do not contain fake hardcoded question ids', !templates.includes('q-math-1') && !scheduler.includes('q-math-1'));
 check('launch modal tells truth: launch now, not future scheduler', scheduler.includes('autoStart: true') && scheduler.includes('ليست جدولة مستقبلية'));
 check('student option selection is local until submit', selectBody.length > 0 && !selectBody.includes('answerClassroomQuestion'));
-check('student submit sends answers through one explicit path', submitBody.includes('answerClassroomQuestion'));
+check('student submit sends answers through one explicit finalization path', submitBody.includes('/submit') && submitBody.includes('finalAnswers') && !submitBody.includes('answerClassroomQuestion'));
 check('projector back link targets teacher console', projector.includes('to={`/classroom/${sessionId}/teacher`}'));
-check('projector follows global active question by snapshot index', projector.includes('findIndex((question: any) => question.index === result.activeQuestionIndex)'));
+check('projector follows global active question by snapshot index', /findIndex\(\(question: any\) => question\.index === (?:result|aggregate)\.activeQuestionIndex\)/.test(projector));
 check('socket classroom policy is role-aware', socketPolicy.includes('role === "student"') && socketPolicy.includes('role === "school_admin"') && socketPolicy.includes('role === "supervisor"'));
 check('admin relationship mutations validate school/class/teacher integrity', schoolIntegrity.includes('Class does not belong to this school') && schoolIntegrity.includes('Teacher must have an active membership in this school'));
 check('integrity router is mounted before legacy school router', routeIndex.indexOf('apiRouter.use("/school-access", schoolAdminIntegrityRouter)') < routeIndex.indexOf('apiRouter.use("/school-access", schoolAccessRouter)'));

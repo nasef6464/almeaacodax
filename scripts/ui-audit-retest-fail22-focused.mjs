@@ -8,14 +8,13 @@ const SOURCE = path.join(RUN_DIR, 'ui-audit-retest.ndjson');
 const OUT = path.join(RUN_DIR, 'ui-audit-retest-fail22-focused.ndjson');
 const OUT_SUMMARY = path.join(RUN_DIR, 'RETEST_FAIL22_FOCUSED_SUMMARY.md');
 
-const roleCreds = {
-  student: [{ email: 'student.a@almeaa.local', password: 'Student@123' }, { email: 'student@example.com', password: 'Student@123' }],
-  teacher: [{ email: 'teacher.quant@almeaa.local', password: 'Teacher@123' }, { email: 'teacher@example.com', password: 'Teacher@123' }],
-  supervisor: [{ email: 'supervisor.group@almeaa.local', password: 'Supervisor@123' }, { email: 'supervisor@example.com', password: 'Supervisor@123' }],
-  parent: [{ email: 'parent.a@almeaa.local', password: 'Parent@123' }, { email: 'parent@example.com', password: 'Parent@123' }],
-  admin: [{ email: 'nasef64@gmail.com', password: 'Nn@0120110367' }],
-  guest: [],
-};
+const roleCreds = (() => {
+  try {
+    return { guest: [], ...JSON.parse(process.env.UI_AUDIT_ROLE_CREDENTIALS_JSON || '{}') };
+  } catch {
+    throw new Error('UI_AUDIT_ROLE_CREDENTIALS_JSON must contain valid role credential arrays');
+  }
+})();
 
 const normalize = (s) => String(s || '').replace(/\s+/g, '').replace(/[^\p{L}\p{N}]/gu, '').toLowerCase();
 const parseLabel = (element) => {
@@ -147,4 +146,3 @@ main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
-

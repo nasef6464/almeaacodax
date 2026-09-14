@@ -4,6 +4,7 @@ import { ClassroomSessionModel } from "../../../models/ClassroomSession.js";
 import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
 import { Types } from "mongoose";
+import { buildClassroomCompetitionStandings } from "./classroomCompetitionScoring.js";
 import { resolveSchoolContexts } from "./schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "./schoolEntitlementResolver.js";
 
@@ -66,10 +67,6 @@ export const classroomScopeFilter = (scope: Awaited<ReturnType<typeof resolveCla
   scope.all ? {} : { $or: [{ schoolId: { $in: scope.schoolIds } }, { classId: { $in: scope.classIds } }] };
 
 export const buildClassroomSessionReport = async (session: any) => {
-  // A finalized report is evidence, not a live projection. Once a session has
-  // ended, use the persisted snapshot so later roster/class changes cannot
-  // rewrite historical attendance or skill evidence. Legacy ended sessions
-  // without a snapshot fall through to the DB-backed reconstruction below.
   if ((session.status === "ended" || session.status === "archived") && session.reportSnapshot) {
     return session.reportSnapshot;
   }
@@ -89,33 +86,133 @@ export const buildClassroomSessionReport = async (session: any) => {
       schoolId: String(session.schoolId),
       groupIds: String(session.classId),
       isActive: { $ne: false },
-    }).select("id _id").lean(),
+    }).select("id _id name displayName").lean(),
   ]);
 
-  // group.studentIds is retained for legacy compatibility, while User.groupIds is
-  // the runtime authorization source. Union them so reports remain correct during
-  // migration and never under-count a legitimate class roster because one side drifted.
   const expectedStudentIds = new Set<string>([
     ...(((classroom as any)?.studentIds || []).map(idOf)),
     ...rosterUsers.map((student: any) => idOf(student.id || student._id)),
   ].filter(Boolean));
   const joinedStudentIds = new Set(participants.map((participant: any) => idOf(participant.studentId)));
+  const studentNameById = new Map<string, string>();
+  rosterUsers.forEach((student: any) => {
+    const name = String(student.displayName || student.name || "طالب");
+    if (student.id) studentNameById.set(String(student.id), name);
+    if (student._id) studentNameById.set(String(student._id), name);
+  });
+
+  const missingStudentIds = Array.from(joinedStudentIds).filter((studentId) => !studentNameById.has(studentId));
+  if (missingStudentIds.length > 0) {
+    const objectIds = missingStudentIds.filter((studentId) => Types.ObjectId.isValid(studentId));
+    const fallbackUsers = await UserModel.find({
+      $or: [
+        { id: { $in: missingStudentIds } },
+        ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+      ],
+    }).select("id _id name displayName").lean();
+    fallbackUsers.forEach((student: any) => {
+      const name = String(student.displayName || student.name || "طالب");
+      if (student.id) studentNameById.set(String(student.id), name);
+      if (student._id) studentNameById.set(String(student._id), name);
+    });
+  }
 
   const questionReports = (session.questionSnapshots || []).map((question: any, index: number) => {
     const questionResponses = responses.filter((response: any) => idOf(response.questionId) === idOf(question.questionId));
     const correct = questionResponses.filter((response: any) => response.isCorrect).length;
+    const distribution = questionResponses.reduce((summary: Record<string, number>, response: any) => {
+      const key = String(response.selectedOptionIndex);
+      summary[key] = (summary[key] || 0) + 1;
+      return summary;
+    }, {});
     return {
       index,
       questionId: question.questionId,
       text: question.text,
+      imageUrl: question.imageUrl || "",
+      options: question.options || [],
+      correctOptionIndex: question.correctOptionIndex,
+      explanation: question.explanation || "",
       skillIds: question.skillIds || [],
       pathId: question.pathId || "",
       sectionId: question.sectionId || "",
       subject: question.subject || "",
+      difficulty: question.difficulty || "Medium",
       answered: questionResponses.length,
       correct,
       wrong: questionResponses.length - correct,
       unanswered: Math.max(0, joinedStudentIds.size - questionResponses.length),
+      distribution,
+    };
+  });
+
+  const startedAt = session.startedAt || session.createdAt || null;
+  const endedAt = session.endedAt || null;
+  const startedMs = startedAt ? new Date(startedAt).getTime() : Number.NaN;
+  const endedMs = endedAt ? new Date(endedAt).getTime() : Number.NaN;
+  const durationMinutes = Number.isFinite(startedMs) && Number.isFinite(endedMs)
+    ? Math.max(0, Math.round((endedMs - startedMs) / 60_000))
+    : null;
+  const questionReportById = new Map(questionReports.map((question: any) => [idOf(question.questionId), question]));
+  const batches = (session.questionBatches || []).map((batch: any, index: number) => {
+    const questionIds = (batch.questionIds || []).map(idOf);
+    const batchQuestions = questionIds.map((questionId: string) => questionReportById.get(questionId)).filter(Boolean) as any[];
+    const answered = batchQuestions.reduce((sum, question) => sum + Number(question.answered || 0), 0);
+    const correct = batchQuestions.reduce((sum, question) => sum + Number(question.correct || 0), 0);
+    const wrong = batchQuestions.reduce((sum, question) => sum + Number(question.wrong || 0), 0);
+    const unanswered = batchQuestions.reduce((sum, question) => sum + Number(question.unanswered || 0), 0);
+    const batchStartedAt = batch.startedAt || null;
+    const batchEndedAt = batch.endedAt || null;
+    const batchStartedMs = batchStartedAt ? new Date(batchStartedAt).getTime() : Number.NaN;
+    const batchEndedMs = batchEndedAt ? new Date(batchEndedAt).getTime() : Number.NaN;
+    const durationSeconds = Number.isFinite(batchStartedMs) && Number.isFinite(batchEndedMs)
+      ? Math.max(0, Math.round((batchEndedMs - batchStartedMs) / 1000))
+      : null;
+    const skillIds = Array.from(new Set(batchQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)));
+    const batchResponseRows = responses
+      .filter((response: any) => questionIds.includes(idOf(response.questionId)))
+      .map((response: any) => ({
+        studentId: idOf(response.studentId),
+        isCorrect: Boolean(response.isCorrect),
+        submittedAt: response.submittedAt || null,
+      }));
+    const podium = buildClassroomCompetitionStandings(batchResponseRows)
+      .slice(0, 3)
+      .map((entry, rank) => ({
+        rank: rank + 1,
+        studentId: entry.studentId,
+        name: studentNameById.get(entry.studentId) || "طالب",
+        answered: entry.answered,
+        correct: entry.correct,
+        accuracy: entry.accuracy,
+        score: entry.score,
+      }));
+    return {
+      batchId: idOf(batch.batchId),
+      number: index + 1,
+      label: batch.label || `الدفعة ${index + 1}`,
+      questionIds,
+      startedAt: batchStartedAt,
+      endedAt: batchEndedAt,
+      durationSeconds,
+      challenge: {
+        challengeQuestionIds: (batch.challengeQuestionIds || []).map(idOf),
+        competitionEnabled: Boolean(batch.competitionEnabled),
+        challengeDurationSeconds: batch.challengeDurationSeconds ?? null,
+        timerStartedAt: batch.timerStartedAt || null,
+        timerEndsAt: batch.timerEndsAt || null,
+        scoring: { correctAnswerPoints: 100, speedBonus: false },
+        podium: batch.competitionEnabled ? podium : [],
+      },
+      totals: {
+        questions: batchQuestions.length,
+        answered,
+        correct,
+        wrong,
+        unanswered,
+        accuracy: answered > 0 ? Math.round((correct / answered) * 100) : null,
+      },
+      skillIds,
     };
   });
 
@@ -129,13 +226,15 @@ export const buildClassroomSessionReport = async (session: any) => {
     period: session.period ?? null,
     teacherId: session.teacherId,
     status: session.status,
-    startedAt: session.createdAt,
-    endedAt: session.endedAt,
+    startedAt,
+    endedAt,
+    durationMinutes,
     roster: {
       expected: expectedStudentIds.size,
       joined: joinedStudentIds.size,
       absentFromSession: Math.max(0, expectedStudentIds.size - joinedStudentIds.size),
     },
+    batches,
     questions: questionReports,
     totals: {
       responses: responses.length,

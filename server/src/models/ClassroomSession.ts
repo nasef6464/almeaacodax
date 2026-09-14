@@ -18,6 +18,22 @@ const questionSnapshotSchema = new Schema(
   { _id: false },
 );
 
+const questionBatchSchema = new Schema(
+  {
+    batchId: { type: String, required: true },
+    label: { type: String, default: "" },
+    questionIds: { type: [String], default: [] },
+    challengeQuestionIds: { type: [String], default: [] },
+    competitionEnabled: { type: Boolean, default: false },
+    challengeDurationSeconds: { type: Number, default: null, min: 10, max: 600 },
+    timerStartedAt: { type: Date, default: null },
+    timerEndsAt: { type: Date, default: null },
+    startedAt: { type: Date, default: null },
+    endedAt: { type: Date, default: null },
+  },
+  { _id: false },
+);
+
 const classroomSessionSchema = new Schema(
   {
     schoolId: { type: String, required: true, index: true },
@@ -36,18 +52,17 @@ const classroomSessionSchema = new Schema(
     publishedMode: { type: String, enum: ["single", "batch"], default: "single" },
     publishedQuestionIds: { type: [String], default: [] },
     questionSnapshots: { type: [questionSnapshotSchema], default: [] },
+    questionBatches: { type: [questionBatchSchema], default: [] },
+    activeBatchId: { type: String, default: "" },
     activeQuestionIndex: { type: Number, default: null },
     pinHash: { type: String, required: true, index: true },
     pinExpiresAt: { type: Date, required: true, index: true },
+    startedAt: { type: Date, default: null },
     endedAt: { type: Date, default: null },
     reportSnapshot: { type: Schema.Types.Mixed, default: null },
   },
   {
     timestamps: true,
-    // Production index changes are intentionally migration-controlled. In
-    // non-production environments Mongoose can still build indexes normally so
-    // CI/dev catch invariant regressions. Production uses the guarded
-    // ensureSmartClassroomIndexes migration after duplicate-live preflight.
     autoIndex: process.env.NODE_ENV !== "production",
   },
 );

@@ -3,7 +3,13 @@ let io: Server | null = null;
 export const setClassroomSocketServer = (server: Server) => { io = server; };
 export const emitClassroomEvent = (
   sessionId: string,
-  event: "question:published" | "response:updated" | "session:ended" | "classroom:started",
+  event:
+    | "question:published"
+    | "response:updated"
+    | "competition:updated"
+    | "batch:ended"
+    | "session:ended"
+    | "classroom:started",
   payload: Record<string, unknown>,
 ) => {
   const normalizedSessionId = String(sessionId || "").trim();

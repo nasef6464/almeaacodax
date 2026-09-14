@@ -3,8 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../../middleware/auth.js";
 import { ClassroomTemplateModel } from "../../models/ClassroomTemplate.js";
-import { hasActiveSchoolRole } from "../../modules/schools/application/schoolContextResolver.js";
 import { normalizeQuestionIds } from "../../modules/schools/application/classroomQuestionAccess.js";
+import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ensureTeacherSchoolAccess, loadApprovedVisibleQuestions } from "./classroomRouteSupport.js";
 
@@ -15,11 +15,17 @@ const templateSchema = z.object({
   challengeIds: z.array(z.string().min(1)).max(30).optional().default([]),
 });
 
+const smartClassroomEnabled = async (schoolId: string) =>
+  (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed;
+
 export function registerClassroomTemplateRoutes(classroomRouter: Router) {
   classroomRouter.get("/templates", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const schoolId = z.string().min(1).parse(req.query.schoolId);
     if (!(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
+    }
+    if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(schoolId))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     }
     const templates = await ClassroomTemplateModel.find({ schoolId, teacherId: req.authUser!.id }).sort({ updatedAt: -1 }).limit(50).lean();
     res.json({ templates: templates.map((template: any) => ({
@@ -33,6 +39,9 @@ export function registerClassroomTemplateRoutes(classroomRouter: Router) {
     const payload = templateSchema.parse(req.body);
     if (!(await ensureTeacherSchoolAccess(req.authUser!, payload.schoolId))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
+    }
+    if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(payload.schoolId))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     }
     const questionIds = normalizeQuestionIds(payload.questionIds);
     const challengeIds = normalizeQuestionIds(payload.challengeIds).filter((id) => questionIds.includes(id));
@@ -61,8 +70,11 @@ export function registerClassroomTemplateRoutes(classroomRouter: Router) {
     if (!template) return res.status(StatusCodes.NOT_FOUND).json({ message: "Template not found" });
     if (req.authUser!.role !== "admin") {
       if (String(template.teacherId) !== req.authUser!.id) return res.status(StatusCodes.FORBIDDEN).json({ message: "Template access denied" });
-      if (!(await hasActiveSchoolRole(req.authUser!, String(template.schoolId), "teacher"))) {
+      if (!(await ensureTeacherSchoolAccess(req.authUser!, String(template.schoolId)))) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "Template school access denied" });
+      }
+      if (!(await smartClassroomEnabled(String(template.schoolId)))) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
       }
     }
     await ClassroomTemplateModel.deleteOne({ _id: template._id });

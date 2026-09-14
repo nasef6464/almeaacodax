@@ -69,16 +69,24 @@ export async function ensureTeacherSchoolAccess(actor: any, schoolId: string) {
 export async function finalizeClassroomSession(session: any) {
   const sessionId = classroomSessionId(session);
   if (session.status !== "ended") {
+    const endedAt = new Date();
     session.status = "ended";
-    session.endedAt = new Date();
+    session.endedAt = endedAt;
     session.activeQuestionIndex = null;
+    if (session.activeBatchId && Array.isArray(session.questionBatches)) {
+      const activeBatch = session.questionBatches.find((batch: any) => String(batch.batchId) === String(session.activeBatchId));
+      if (activeBatch && !activeBatch.endedAt) activeBatch.endedAt = endedAt;
+    }
+    session.activeBatchId = "";
     await session.save();
   }
   const report = await buildClassroomSessionReport(session.toObject ? session.toObject() : session);
   session.reportSnapshot = report;
   await session.save();
-  emitClassroomEvent(sessionId, "session:ended", { report });
-  emitClassroomEventToClass(String(session.classId), "session:ended", { sessionId });
+  // Classroom rooms contain students. Broadcast only lifecycle metadata here;
+  // the canonical report remains available through staff-authorized HTTP routes.
+  emitClassroomEvent(sessionId, "session:ended", { sessionId, status: "ended" });
+  emitClassroomEventToClass(String(session.classId), "session:ended", { sessionId, status: "ended" });
   return report;
 }
 

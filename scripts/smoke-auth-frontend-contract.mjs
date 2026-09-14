@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 const files = {
   app: await readFile(new URL("../App.tsx", import.meta.url), "utf8"),
   header: await readFile(new URL("../components/Header.tsx", import.meta.url), "utf8"),
+  authContext: await readFile(new URL("../contexts/AuthContext.tsx", import.meta.url), "utf8"),
+  requireAuth: await readFile(new URL("../components/auth/RequireAuth.tsx", import.meta.url), "utf8"),
   forgot: await readFile(new URL("../pages/ForgotPassword.tsx", import.meta.url), "utf8"),
   reset: await readFile(new URL("../pages/ResetPassword.tsx", import.meta.url), "utf8"),
   verify: await readFile(new URL("../pages/VerifyEmail.tsx", import.meta.url), "utf8"),
@@ -63,6 +65,22 @@ check("frontend API helpers and readiness docs are aligned", () => {
   assertIncludes(files.api, "resetPassword:");
   assertIncludes(files.api, "verifyEmail:");
   assertIncludes(files.readiness, "Auth Frontend Recovery Sprint - 2026-05-12");
+});
+
+check("private classroom routes bootstrap auth from the server after refresh", () => {
+  assertIncludes(files.authContext, "'/classroom'");
+  assertIncludes(files.authContext, "shouldBootstrapInitialAuth");
+  assertIncludes(files.authContext, "setLoading(true)");
+  assertIncludes(files.authContext, "api.getCurrentUser()");
+  assertIncludes(files.authContext, "setLoading(false)");
+});
+
+check("RequireAuth waits for auth bootstrap before redirecting", () => {
+  assertIncludes(files.requireAuth, "if (loading)");
+  assertIncludes(files.requireAuth, "if (!user)");
+  if (files.requireAuth.indexOf("if (loading)") > files.requireAuth.indexOf("if (!user)")) {
+    throw new Error("RequireAuth redirects before auth bootstrap finishes");
+  }
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

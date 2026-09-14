@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T18:24:37.605Z",
-  "gitHead": "4dc1f4f9125dd5e7e10897ed98f83b0cd8a516c7",
+  "generatedAt": "2026-09-14T03:20:46.635Z",
+  "gitHead": "84fe836539df60c7b91989bcf3dc1be4a239b85d",
   "frontendRoutes": [
     "*",
     "/",
@@ -415,99 +415,195 @@
       "receiver": "certificateRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
-      "method": "GET",
-      "path": "/questions",
-      "receiver": "classroomRouter"
-    },
-    {
-      "file": "server/src/routes/classroom.routes.ts",
-      "method": "POST",
-      "path": "/sessions",
-      "receiver": "classroomRouter"
-    },
-    {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomAggregateRoutes.ts",
       "method": "GET",
       "path": "/sessions/:id/aggregate",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomBatchRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/:id/batches/:batchId/end",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
+      "method": "GET",
+      "path": "/sessions/:id/challenge-state",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
+      "method": "GET",
+      "path": "/sessions/:id/competition",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/:id/competition/configure",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/:id/competition/end",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
+      "method": "GET",
+      "path": "/teacher/insights",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
       "method": "PUT",
       "path": "/sessions/:id/answers/:questionId",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
       "method": "GET",
       "path": "/sessions/:id/current",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
       "method": "POST",
-      "path": "/sessions/:id/end",
+      "path": "/sessions/:id/instant-join",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
       "method": "POST",
       "path": "/sessions/:id/join",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
       "method": "POST",
-      "path": "/sessions/:id/publish/:index",
+      "path": "/sessions/:id/submit",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/join-by-pin",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
+      "method": "GET",
+      "path": "/student/active-session",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/history",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/intelligence",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/interventions",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "POST",
       "path": "/supervisor/interventions",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/interventions/:id/outcome",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/sessions/:id/report",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/teachers",
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/classroom.routes.ts",
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "method": "GET",
       "path": "/supervisor/today",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
+      "method": "GET",
+      "path": "/teacher/history",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "method": "GET",
+      "path": "/questions",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "method": "POST",
+      "path": "/sessions",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/:id/append-questions",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/:id/end",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "method": "POST",
+      "path": "/sessions/:id/publish/:index",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "method": "GET",
+      "path": "/teacher/active-session",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTemplateRoutes.ts",
+      "method": "GET",
+      "path": "/templates",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTemplateRoutes.ts",
+      "method": "POST",
+      "path": "/templates",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomTemplateRoutes.ts",
+      "method": "POST",
+      "path": "/templates/:id/delete",
       "receiver": "classroomRouter"
     },
     {
@@ -1657,6 +1753,24 @@
       "receiver": "schoolAccessRouter"
     },
     {
+      "file": "server/src/routes/schoolAdminIntegrity.routes.ts",
+      "method": "PUT",
+      "path": "/assignments",
+      "receiver": "schoolAdminIntegrityRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAdminIntegrity.routes.ts",
+      "method": "PUT",
+      "path": "/contracts/:schoolId",
+      "receiver": "schoolAdminIntegrityRouter"
+    },
+    {
+      "file": "server/src/routes/schoolAdminIntegrity.routes.ts",
+      "method": "PUT",
+      "path": "/memberships",
+      "receiver": "schoolAdminIntegrityRouter"
+    },
+    {
       "file": "server/src/routes/search.routes.ts",
       "method": "GET",
       "path": "/",
@@ -1944,6 +2058,12 @@
       "file": "server/src/routes/index.ts",
       "receiver": "apiRouter",
       "prefix": "/school-access",
+      "mounted": "schoolAdminIntegrityRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/school-access",
       "mounted": "schoolAccessRouter"
     },
     {
@@ -1985,6 +2105,8 @@
     "AI_PROVIDER_ORDER",
     "AI_REQUEST_TIMEOUT_MS",
     "AI_RUNTIME_AUDIT_RUN_ID",
+    "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
+    "ALLOW_SMART_CLASSROOM_INDEX_MIGRATION",
     "API_BASE_URL",
     "APP_BASE_URL",
     "APP_VERSION",
@@ -2152,6 +2274,7 @@
     "UI_AUDIT_MAX_ELEMENTS",
     "UI_AUDIT_PAGE_TIMEOUT_MS",
     "UI_AUDIT_ROLES",
+    "UI_AUDIT_ROLE_CREDENTIALS_JSON",
     "UI_AUDIT_RUN_ID",
     "VERCEL_GIT_COMMIT_SHA",
     "VERCEL_PROJECT_ID",
@@ -2175,15 +2298,25 @@
     "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
     "server/src/routes/activity.routes.ts": "0064ba5bfa47873cd04cd56171ada0f3d8097f3d7424e08c68bbf3ee4e05080a",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
-    "server/src/routes/auth.routes.ts": "da089e817ec360b990b45294e010b2f2bcf06e5637f7a639986d22013edbb6c0",
+    "server/src/routes/auth.routes.ts": "374755087cbe0a8212f558c6f7f8c87a546386bf5e9f7cebf95a3655fb6eed4f",
     "server/src/routes/backup.routes.ts": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd",
     "server/src/routes/certificates.routes.ts": "a27e7f499c927ecbb9cb10ae16bfb45dc6eaf03a7ebc851ad1785491563b43f3",
-    "server/src/routes/classroom.routes.ts": "20ceec97a14a5a5d648e0c604073b23515a7c830331171d6dd71cff47c9ecfc9",
+    "server/src/routes/classroom.routes.ts": "6d7ba99f3e3812d55c921b5a3b5a73cf16199cf1613e1e0afeb887cd8139ccbd",
+    "server/src/routes/classroom/classroomRouteSupport.ts": "7ef67ec7b8334166664241cb617443c1a11d4a648ddc3195fc24eadc42fc01e0",
+    "server/src/routes/classroom/registerClassroomAggregateRoutes.ts": "1442c744e4f6328b33e16c84748971240a2e12bb22e784753509c504bf32f9eb",
+    "server/src/routes/classroom/registerClassroomBatchRoutes.ts": "67072568cf359cc011c33d7e3aa9da14e9cf23d39146b4fbe4da62c899f99488",
+    "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts": "20c36379e958be71349e497dbbd10bb64ee06d0998d71925b1ccc6548200c636",
+    "server/src/routes/classroom/registerClassroomInsightsRoutes.ts": "1264c63e2ab35925ceffac2f2236e9b4050cb44886cf9ad1f1f72d860b7320bb",
+    "server/src/routes/classroom/registerClassroomStudentRoutes.ts": "a91705c3508d34ec6a5bb3efa2f22d638e8d110c4934462356c4922b8558bca7",
+    "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts": "baec431f3f8dcc79d3c0760ee489b21f0635ecb9ba2ccf483318d5c8ff87ca62",
+    "server/src/routes/classroom/registerClassroomTeacherRoutes.ts": "539cb4530d7ca1f7b6052471256c003e0f23b66faf3a70246e9f9b2bb4c0393a",
+    "server/src/routes/classroom/registerClassroomTemplateRoutes.ts": "5d22162bb830e3a22d99b9f6bd989ce79eb9e75d19de3785095937b8e064680e",
+    "server/src/routes/classroomRoot.routes.ts": "f76ba8de6fa50f0c3e6ffd9a8ab98f396e888d45276b78e076c3ee5b947017c2",
     "server/src/routes/content.routes.ts": "c4237fa8f46b1a1dd62c3ad22a508a977a5d17aed94bd2b10ae32150ef6e7e81",
-    "server/src/routes/course.routes.ts": "3f4f2a72326a8bf4cf8d4f3479d920f3a19571bd5dbefe7febf5268a7c92caa9",
+    "server/src/routes/course.routes.ts": "8e15ce798fe451069163bfb18f14f60adeb5db44b63c813dadc9ce209d4c7d7c",
     "server/src/routes/discussions.routes.ts": "73aa2402cc15ffc059fbd71c747999c22dd2443b2e832794c5cdbfe61d3a4bd7",
     "server/src/routes/health.routes.ts": "dacc99ddbacd3638820daaeba9623f1d1e196b300c2081d9b69975ac0f1df1cf",
-    "server/src/routes/index.ts": "ad9cc9d07f0c575a8887e760942815fcd17e4c5ec729ca8446a50749a7911e63",
+    "server/src/routes/index.ts": "1723bf43c20bb303306204e49993a8f7172721cae47b1be482134479a1312465",
     "server/src/routes/leaderboard.routes.ts": "18f8b08b3c73d74c929aaefea226b99fb7085a1ccd23779a70139f82346fab30",
     "server/src/routes/live-exams.routes.ts": "012964a2474fde5a5c28532bbedca62e8b164dcaacb950db233aea5f63490d64",
     "server/src/routes/notification.routes.ts": "9a4d2dbf2bb0ae6551db7dd5f365b4f401927c186fc5cf7121a9f87dccf5be21",
@@ -2197,6 +2330,7 @@
     "server/src/routes/quizResults.routes.ts": "759f2fc513eb2ed8055a04c406a17947f91d4867cfd1f4e01aba458c73d3c6fe",
     "server/src/routes/review.routes.ts": "6dd3f20eb8beb4f864fb81e7efd7b5c53260402f4faec87ae1b5f6d4c8af56ff",
     "server/src/routes/schoolAccess.routes.ts": "a78a4fe0717bc391880c68bfcff9b6fa44a3e4b7c6174c0c0852e3ee215d1300",
+    "server/src/routes/schoolAdminIntegrity.routes.ts": "82107ad6c521dfb9f429bd34be8356cdab5f84767c8fc3f20f9d622d5e73f5fe",
     "server/src/routes/search.routes.ts": "ffc0bec0a0985c5646c48f96574ff0b8790d12f16b930e173560807d4b47580b",
     "server/src/routes/seo.routes.ts": "5040a1d8a8f69879b9e978b57663b62e478559dc80ad73db1ac830752e604554",
     "server/src/routes/taxonomy.routes.ts": "ebaa9cf5bcaa80418e593d24c2a73038952fef0560371cbd6a871e6c1bfa7818"

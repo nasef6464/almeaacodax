@@ -31,12 +31,7 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   const [joined, setJoined] = useState(() => Boolean(sessionStorage.getItem('classroom_joined') === 'true' && sessionStorage.getItem('classroom_session_id')));
   const [isOpen, setIsOpen] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
-  const [activeSessionAlert, setActiveSessionAlert] = useState<{
-    sessionId: string;
-    className: string;
-    teacherName: string;
-    status: string;
-  } | null>(null);
+  const [activeSessionAlert, setActiveSessionAlert] = useState<{ sessionId: string; className: string; teacherName: string; status: string } | null>(null);
   const [questionsList, setQuestionsList] = useState<ClassroomExamQuestion[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -47,25 +42,46 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   const lastQuestionIdRef = useRef('');
   const publishedSignatureRef = useRef('');
 
+  const clearJoinedSession = useCallback((endedMessage?: string) => {
+    sessionStorage.removeItem('classroom_session_id');
+    sessionStorage.removeItem('classroom_joined');
+    sessionStorage.removeItem('classroom_pin');
+    setSessionId('');
+    setPin('');
+    setJoined(false);
+    setIsOpen(false);
+    setQuestionsList([]);
+    setAnswers({});
+    setSubmitted(false);
+    setSubmitting(false);
+    setActiveIdx(0);
+    lastQuestionIdRef.current = '';
+    publishedSignatureRef.current = '';
+    if (endedMessage) setMessage(endedMessage);
+  }, []);
+
   useEffect(() => {
-    if (!user || user.role !== 'student' || joined) return;
+    if (!user || user.role !== 'student') return;
     let mounted = true;
     const checkActive = async () => {
       try {
         const result = await api.getStudentActiveClassroomSession();
         if (!mounted) return;
-        setActiveSessionAlert(result.hasActiveSession && result.session ? result.session : null);
+        if (result.hasActiveSession && result.session) {
+          if (result.session.sessionId !== sessionId || !joined) setActiveSessionAlert(result.session);
+          else setActiveSessionAlert(null);
+        } else {
+          setActiveSessionAlert(null);
+          if (joined && sessionId) clearJoinedSession('انتهت الحصة الذكية وتم حفظ مشاركتك.');
+        }
       } catch {
         if (mounted) setActiveSessionAlert(null);
       }
     };
     void checkActive();
-    const interval = setInterval(() => void checkActive(), 6000);
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
-  }, [user, joined]);
+    const interval = setInterval(() => void checkActive(), 5000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, [user, sessionId, joined, clearJoinedSession]);
 
   const loadCurrentQuestion = useCallback(async () => {
     if (!sessionId || !joined) return;
@@ -73,23 +89,19 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       const result = await api.getClassroomCurrentQuestion(sessionId);
       const nextQuestions: ClassroomExamQuestion[] = Array.isArray(result?.questions) && result.questions.length > 0
         ? result.questions
-        : result?.question
-          ? [result.question]
-          : [];
-
+        : result?.question ? [result.question] : [];
       if (nextQuestions.length === 0) {
         setQuestionsList([]);
         return;
       }
-
       const signature = nextQuestions.map((question) => question.questionId).join('|');
+      const serverSubmitted = Boolean(result?.submitted);
       if (signature !== publishedSignatureRef.current) {
         publishedSignatureRef.current = signature;
         setAnswers({});
-        setSubmitted(false);
-        setMessage('');
+        setMessage(serverSubmitted ? 'تم التسليم النهائي لهذه الدفعة.' : '');
       }
-
+      setSubmitted(serverSubmitted);
       setQuestionsList(nextQuestions);
       const active = typeof result.currentIndex === 'number' ? result.currentIndex : 0;
       setActiveIdx(active);
@@ -104,7 +116,11 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
     }
   }, [sessionId, joined]);
 
-  useClassroomRealtime(joined ? sessionId : '', loadCurrentQuestion);
+  const handleRealtimeSessionEnd = useCallback(() => {
+    clearJoinedSession('انتهت الحصة الذكية وتم حفظ مشاركتك.');
+  }, [clearJoinedSession]);
+
+  useClassroomRealtime(joined ? sessionId : '', loadCurrentQuestion, handleRealtimeSessionEnd);
 
   useEffect(() => {
     if (!joined || !sessionId) return;
@@ -124,7 +140,13 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       setSessionId(targetSessionId);
       setJoined(true);
       setActiveSessionAlert(null);
+      setQuestionsList([]);
+      setAnswers({});
+      setSubmitted(false);
+      lastQuestionIdRef.current = '';
+      publishedSignatureRef.current = '';
       setIsOpen(true);
+      setMessage('');
       playChime();
     } catch (error: any) {
       sessionStorage.removeItem('classroom_joined');
@@ -146,6 +168,10 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       setJoined(true);
       setShowJoinModal(false);
       setIsOpen(true);
+      setAnswers({});
+      setSubmitted(false);
+      lastQuestionIdRef.current = '';
+      publishedSignatureRef.current = '';
       playChime();
       setMessage('تم الانضمام بنجاح.');
     } catch (error: any) {
@@ -153,8 +179,6 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
     }
   };
 
-  // Selection is local draft state. Nothing is persisted until the student
-  // explicitly submits, so changing an option does not create a hidden final answer.
   const handleSelectAnswer = (questionIndex: number, optionIndex: number) => {
     if (submitted || submitting) return;
     setAnswers((current) => ({ ...current, [questionIndex]: optionIndex }));
@@ -167,119 +191,65 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
       setMessage('اختر إجابة واحدة على الأقل قبل التسليم.');
       return;
     }
-
+    const finalAnswers = entries.flatMap(([indexText, optionIndex]) => {
+      const question = questionsList[Number(indexText)];
+      return question ? [{ questionId: question.questionId, selectedOptionIndex: optionIndex }] : [];
+    });
+    if (finalAnswers.length === 0) {
+      setMessage('تعذر تحديد الأسئلة المطلوب تسليمها.');
+      return;
+    }
     setSubmitting(true);
-    setMessage('جارٍ حفظ إجاباتك…');
+    setMessage('جارٍ تثبيت التسليم النهائي…');
     try {
-      for (const [indexText, optionIndex] of entries) {
-        const question = questionsList[Number(indexText)];
-        if (!question) continue;
-        await api.answerClassroomQuestion(sessionId, question.questionId, optionIndex);
-      }
+      await api.post(`/classroom/sessions/${encodeURIComponent(sessionId)}/submit`, { answers: finalAnswers });
       setSubmitted(true);
-      setMessage('تم تسليم إجاباتك بنجاح للمعلم.');
+      setMessage('تم التسليم النهائي لهذه الدفعة بنجاح.');
     } catch (error: any) {
       setSubmitted(false);
-      setMessage(error?.message || 'تعذر تسليم كل الإجابات. راجع الاتصال وحاول مرة أخرى.');
+      setMessage(error?.message || 'تعذر تثبيت التسليم النهائي. راجع الاتصال وحاول مرة أخرى.');
     } finally {
       setSubmitting(false);
     }
   };
 
   const currentActiveQ = questionsList[activeIdx] || questionsList[0];
-  const isChallenge = Boolean(
-    currentActiveQ?.type === 'challenge'
-    || currentActiveQ?.text?.includes('[تحدي]')
-    || currentActiveQ?.text?.includes('تحدي'),
-  );
-
-  if (!user) return null;
+  const isChallenge = Boolean(currentActiveQ?.type === 'challenge' || currentActiveQ?.text?.includes('[تحدي]') || currentActiveQ?.text?.includes('تحدي'));
+  if (!user || user.role !== 'student') return null;
 
   return (
     <>
       {activeSessionAlert && !isOpen && !joined && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-3xl border-2 border-indigo-500 bg-slate-900 p-4 text-white shadow-2xl transition-all" dir="rtl">
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-3xl border-2 border-indigo-500 bg-slate-900 p-4 text-white shadow-2xl" dir="rtl">
           <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 shrink-0 animate-pulse items-center justify-center rounded-2xl bg-indigo-600 text-white">
-                <Presentation size={20} />
-              </span>
-              <div>
-                <span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300">حصة ذكية نشطة الآن</span>
-                <h4 className="mt-0.5 text-xs font-black text-white">أ. {activeSessionAlert.teacherName} ({activeSessionAlert.className})</h4>
-              </div>
-            </div>
+            <div className="flex items-center gap-2.5"><span className="flex h-10 w-10 shrink-0 animate-pulse items-center justify-center rounded-2xl bg-indigo-600 text-white"><Presentation size={20} /></span><div><span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300">حصة ذكية نشطة الآن</span><h4 className="mt-0.5 text-xs font-black text-white">أ. {activeSessionAlert.teacherName} ({activeSessionAlert.className})</h4></div></div>
             <button type="button" onClick={() => setActiveSessionAlert(null)} className="rounded-lg p-1 text-slate-400 hover:text-white"><X size={15} /></button>
           </div>
-          <div className="mt-3 flex items-center gap-2">
-            <button type="button" onClick={() => void handleInstantJoin()} className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-black text-white shadow-md hover:bg-indigo-500">انضمام فوري للحصة</button>
-            <button type="button" onClick={() => { setActiveSessionAlert(null); setShowJoinModal(true); }} className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700">بالرمز</button>
-          </div>
+          <div className="mt-3 flex items-center gap-2"><button type="button" onClick={() => void handleInstantJoin()} className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-black text-white">انضمام فوري للحصة</button><button type="button" onClick={() => { setActiveSessionAlert(null); setShowJoinModal(true); }} className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-xs font-bold text-slate-300">بالرمز</button></div>
         </div>
       )}
 
       <div className="fixed bottom-6 left-6 z-40 flex flex-col items-start gap-2" dir="rtl">
         {!isOpen && (
-          <button
-            type="button"
-            onClick={() => joined ? setIsOpen(true) : setShowJoinModal(true)}
-            className={`group flex items-center gap-2.5 rounded-full px-4 py-3 font-black shadow-xl transition-all duration-300 hover:scale-105 ${
-              joined && questionsList.length > 0 && !submitted
-                ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-white shadow-amber-500/40'
-                : joined
-                  ? 'bg-gradient-to-r from-indigo-600 to-slate-900 text-white shadow-indigo-600/30'
-                  : 'border border-indigo-200 bg-white text-indigo-700 shadow-lg dark:border-slate-700 dark:bg-slate-900 dark:text-indigo-400'
-            }`}
-          >
-            <Presentation size={20} />
-            <span className="text-xs sm:text-sm">
-              {joined
-                ? questionsList.length > 0 && !submitted
-                  ? `${questionsList.length > 1 ? `${questionsList.length} أسئلة نشطة` : 'سؤال تفاعلي نشط'} الآن`
-                  : 'الحصة الذكية جارية'
-                : 'انضم للفصل الذكي'}
-            </span>
+          <button type="button" onClick={() => joined ? setIsOpen(true) : setShowJoinModal(true)} className={`group flex items-center gap-2.5 rounded-full px-4 py-3 font-black shadow-xl ${joined && questionsList.length > 0 && !submitted ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-white' : joined ? 'bg-gradient-to-r from-indigo-600 to-slate-900 text-white' : 'border border-indigo-200 bg-white text-indigo-700'}`}>
+            <Presentation size={20} /><span className="text-xs sm:text-sm">{joined ? questionsList.length > 0 && !submitted ? `${questionsList.length > 1 ? `${questionsList.length} أسئلة نشطة` : 'سؤال تفاعلي نشط'} الآن` : submitted ? 'تم تسليم الدفعة' : 'الحصة الذكية جارية' : 'انضم للفصل الذكي'}</span>
           </button>
         )}
+        {!joined && message.includes('انتهت الحصة') && <div className="max-w-xs rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-xs font-bold text-emerald-700 shadow-lg">{message}</div>}
       </div>
 
       {showJoinModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs" dir="rtl">
-          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
-              <h3 className="flex items-center gap-2 font-black text-slate-900 dark:text-white"><Presentation className="text-indigo-600" size={20} /> انضمام لحصة الفصل</h3>
-              <button type="button" onClick={() => setShowJoinModal(false)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100"><X size={18} /></button>
-            </div>
+          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3"><h3 className="flex items-center gap-2 font-black text-slate-900"><Presentation className="text-indigo-600" size={20} /> انضمام لحصة الفصل</h3><button type="button" onClick={() => setShowJoinModal(false)} className="rounded-lg p-1 text-slate-400"><X size={18} /></button></div>
             <p className="mt-3 text-xs leading-relaxed text-slate-500">أدخل رمز الحصة الرقمي (6 أرقام) الظاهر على سبورة الفصل:</p>
-            <div className="mt-4 space-y-4">
-              <input
-                inputMode="numeric"
-                value={pin}
-                onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 6))}
-                placeholder="000000"
-                className="w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-widest text-indigo-700 dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400"
-              />
-              <button type="button" onClick={() => void handleJoinByPin(pin)} disabled={pin.length !== 6} className="w-full rounded-xl bg-indigo-600 p-3.5 text-sm font-black text-white hover:bg-indigo-700 disabled:opacity-50">انضم الآن للحصة</button>
-              {message && <p className="text-center text-xs font-bold text-rose-600 dark:text-rose-400">{message}</p>}
-            </div>
+            <div className="mt-4 space-y-4"><input inputMode="numeric" value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="000000" className="w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-widest text-indigo-700" /><button type="button" onClick={() => void handleJoinByPin(pin)} disabled={pin.length !== 6} className="w-full rounded-xl bg-indigo-600 p-3.5 text-sm font-black text-white disabled:opacity-50">انضم الآن للحصة</button>{message && <p className="text-center text-xs font-bold text-rose-600">{message}</p>}</div>
           </div>
         </div>
       )}
 
       {isOpen && joined && (
-        <SmartClassroomExamRunner
-          questions={questionsList}
-          initialIndex={activeIdx}
-          durationMinutes={10}
-          isChallenge={isChallenge}
-          answers={answers}
-          onSelectAnswer={handleSelectAnswer}
-          onSubmit={() => void handleSubmitAll()}
-          submitted={submitted}
-          submitting={submitting}
-          message={message}
-          onClose={() => setIsOpen(false)}
-        />
+        <SmartClassroomExamRunner questions={questionsList} initialIndex={activeIdx} durationMinutes={10} isChallenge={isChallenge} answers={answers} onSelectAnswer={handleSelectAnswer} onSubmit={() => void handleSubmitAll()} submitted={submitted} submitting={submitting} message={message} onClose={() => setIsOpen(false)} />
       )}
     </>
   );

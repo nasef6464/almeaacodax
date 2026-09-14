@@ -154,12 +154,23 @@ async function run() {
     UserModel.create({ name: "Student B", email: `student_b_${RUN_ID}@example.com`, passwordHash: "x", role: "student", schoolId: schoolBId, groupIds: [], isActive: true }),
   ]);
 
-  const classA = await GroupModel.create({ name: `Class A ${RUN_ID}`, type: "CLASS", parentId: schoolAId, ownerId: String(managerA._id), studentIds: [String(studentA._id), String(studentA2._id)] });
+  const loadStudents = await UserModel.insertMany(Array.from({ length: 23 }, (_, index) => ({
+    name: `Load Student ${index + 1}`,
+    email: `load_student_${index + 1}_${RUN_ID}@example.com`,
+    passwordHash: "x",
+    role: "student",
+    schoolId: schoolAId,
+    groupIds: [],
+    isActive: true,
+  })));
+  const classAStudentIds = [studentA, studentA2, ...loadStudents].map((student) => String(student._id));
+
+  const classA = await GroupModel.create({ name: `Class A ${RUN_ID}`, type: "CLASS", parentId: schoolAId, ownerId: String(managerA._id), studentIds: classAStudentIds });
   const classB = await GroupModel.create({ name: `Class B ${RUN_ID}`, type: "CLASS", parentId: schoolBId, ownerId: String(managerB._id), studentIds: [String(studentB._id)] });
   const classAId = String(classA._id);
   const classBId = String(classB._id);
   await Promise.all([
-    UserModel.updateMany({ _id: { $in: [studentA._id, studentA2._id] } }, { $set: { groupIds: [classAId] } }),
+    UserModel.updateMany({ _id: { $in: classAStudentIds } }, { $set: { groupIds: [classAId] } }),
     UserModel.updateOne({ _id: studentB._id }, { $set: { groupIds: [classBId] } }),
   ]);
 
@@ -174,6 +185,9 @@ async function run() {
     TeachingAssignmentModel.create({ schoolId: schoolAId, teacherId: String(teacherA._id), classId: classAId, subjectId: `subject_${RUN_ID}`, status: "active" }),
     TeachingAssignmentModel.create({ schoolId: schoolAId, teacherId: String(teacherA2._id), classId: classAId, subjectId: `subject2_${RUN_ID}`, status: "active" }),
   ]);
+  await SchoolMembershipModel.insertMany(loadStudents.map((student) => ({
+    userId: String(student._id), schoolId: schoolAId, role: "student", status: "active",
+  })));
 
   const [platformQ1, platformQ2, platformQ3, schoolAQ, schoolBQ] = await Promise.all([
     QuestionModel.create({ id: `platform_q1_${RUN_ID}`, text: "Platform Q1", options: ["A", "B", "C", "D"], correctOptionIndex: 1, subject: "general", type: "mcq", approvalStatus: "approved", ownerType: "platform", skillIds: ["skill-one"], pathId: "path-one" }),
@@ -191,6 +205,7 @@ async function run() {
   const studentAToken = tokenFor(studentA);
   const studentA2Token = tokenFor(studentA2);
   const studentBToken = tokenFor(studentB);
+  const loadStudentTokens = loadStudents.map(tokenFor);
 
   const bank = await request(`/classroom/questions?schoolId=${schoolAId}`, { token: teacherToken });
   assert.equal(bank.status, 200);
@@ -213,14 +228,26 @@ async function run() {
   assert.equal((await request(`/classroom/teacher/history?schoolId=${schoolAId}`, { token: managerBToken })).status, 403, "Manager B read School A history");
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: managerAToken })).status, 200);
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: managerBToken })).status, 403);
+  assert.equal((await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: studentAToken })).status, 403, "Student read staff aggregate");
+  assert.equal((await request(`/classroom/supervisor/sessions/${liveSessionId}/report`, { token: studentAToken })).status, 403, "Student read staff report");
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/instant-join`, { method: "POST", token: studentBToken })).status, 403);
   assert.equal((await request("/classroom/sessions/join-by-pin", { method: "POST", token: studentAToken, body: { pin } })).status, 200);
   assert.equal((await request("/classroom/sessions/join-by-pin", { method: "POST", token: studentA2Token, body: { pin } })).status, 200);
+  const concurrentJoins = await Promise.all(loadStudentTokens.map((token) => request("/classroom/sessions/join-by-pin", {
+    method: "POST", token, body: { pin },
+  })));
+  assert.ok(concurrentJoins.every((result) => result.status === 200), "All 25 class students should join concurrently");
 
   assert.equal((await joinSocket(studentAToken, `classroom:${liveSessionId}`)).ok, true);
   assert.equal((await joinSocket(studentBToken, `classroom:${liveSessionId}`)).ok, false);
   assert.equal((await joinSocket(managerAToken, `classroom:${liveSessionId}`)).ok, true);
   assert.equal((await joinSocket(teacher2Token, `classroom:${liveSessionId}`)).ok, false);
+
+  assert.equal((await request(`/classroom/sessions/${liveSessionId}/append-questions`, { method: "POST", token: teacherToken, body: { questionIds: [q2, q3], autoPublishFirst: true } })).status, 409, "A new batch cannot silently close the active batch");
+  const initialBatchId = (await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: teacherToken })).body.activeBatchId;
+  const initialBatchEnd = await request(`/classroom/sessions/${liveSessionId}/batches/${initialBatchId}/end`, { method: "POST", token: teacherToken });
+  assert.equal(initialBatchEnd.status, 200);
+  assert.equal(initialBatchEnd.body.miniReport.questionCount, 1);
 
   const append = await request(`/classroom/sessions/${liveSessionId}/append-questions`, { method: "POST", token: teacherToken, body: { questionIds: [q2, q3], autoPublishFirst: true } });
   assert.equal(append.status, 200, JSON.stringify(append.body));
@@ -237,14 +264,17 @@ async function run() {
   await request(`/classroom/sessions/${liveSessionId}/answers/${q2}`, { method: "PUT", token: studentAToken, body: { selectedOptionIndex: 2 } });
   await request(`/classroom/sessions/${liveSessionId}/answers/${q2}`, { method: "PUT", token: studentA2Token, body: { selectedOptionIndex: 0 } });
   await request(`/classroom/sessions/${liveSessionId}/answers/${q3}`, { method: "PUT", token: studentAToken, body: { selectedOptionIndex: 0 } });
+  const concurrentAnswers = await Promise.all(loadStudentTokens.map((token, index) => request(`/classroom/sessions/${liveSessionId}/answers/${q2}`, {
+    method: "PUT", token, body: { selectedOptionIndex: index % 4 },
+  })));
+  assert.ok(concurrentAnswers.every((result) => result.status === 200), "Concurrent answers from a 25-student class should all be accepted");
 
   const aggregate = await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: teacherToken });
   assert.equal(aggregate.status, 200);
   const q2Stats = aggregate.body.questions.find((question: any) => question.questionId === q2);
   const q3Stats = aggregate.body.questions.find((question: any) => question.questionId === q3);
-  assert.equal(q2Stats.responseCount, 2);
-  assert.equal(q2Stats.distribution["2"], 1);
-  assert.equal(q2Stats.distribution["0"], 1);
+  assert.equal(q2Stats.responseCount, 25);
+  assert.equal(Object.values(q2Stats.distribution).reduce((sum: number, count: any) => sum + Number(count), 0), 25);
   assert.equal(q3Stats.responseCount, 1);
   assert.equal(q3Stats.distribution["0"], 1);
   assert.equal(q2Stats.pathId, "path-two");
@@ -255,12 +285,23 @@ async function run() {
   assert.equal(templates.status, 200);
   assert.ok(templates.body.templates.some((entry: any) => entry.title === `Template ${RUN_ID}`));
 
+  const secondBatchEnd = await request(`/classroom/sessions/${liveSessionId}/batches/${append.body.batchId}/end`, { method: "POST", token: teacherToken });
+  assert.equal(secondBatchEnd.status, 200);
+  assert.equal(secondBatchEnd.body.miniReport.answered, 26);
+  assert.equal(secondBatchEnd.body.miniReport.correct + secondBatchEnd.body.miniReport.wrong, 26);
+  const secondBatchEndAgain = await request(`/classroom/sessions/${liveSessionId}/batches/${append.body.batchId}/end`, { method: "POST", token: teacherToken });
+  assert.equal(secondBatchEndAgain.status, 200, "Repeated end-batch should be idempotent");
+  assert.deepEqual(secondBatchEndAgain.body.miniReport, secondBatchEnd.body.miniReport);
+
   const ended = await request(`/classroom/sessions/${liveSessionId}/end`, { method: "POST", token: teacherToken });
   assert.equal(ended.status, 200);
-  assert.equal(ended.body.report.roster.expected, 2);
-  assert.equal(ended.body.report.roster.joined, 2);
-  assert.equal(ended.body.report.totals.responses, 3);
-  assert.ok(ended.body.report.questions.some((question: any) => question.questionId === q2 && question.answered === 2));
+  assert.equal(ended.body.report.roster.expected, 25);
+  assert.equal(ended.body.report.roster.joined, 25);
+  assert.equal(ended.body.report.totals.responses, 26);
+  assert.ok(ended.body.report.questions.some((question: any) => question.questionId === q2 && question.answered === 25));
+  const endedAgain = await request(`/classroom/sessions/${liveSessionId}/end`, { method: "POST", token: teacherToken });
+  assert.equal(endedAgain.status, 200, "Repeated end-session should be idempotent");
+  assert.deepEqual(endedAgain.body.report, ended.body.report, "Repeated end-session must return the immutable stored snapshot");
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/instant-join`, { method: "POST", token: studentAToken })).status, 404);
 
   console.log("Smart Classroom hardening E2E: PASS");
@@ -273,6 +314,9 @@ run()
   })
   .finally(async () => {
     try { await cleanup(); } catch (error) { console.error("Smart Classroom E2E cleanup failed", error); }
-    if (server) await new Promise<void>((resolve) => server!.close(() => resolve()));
+    if (server) {
+      server.closeAllConnections?.();
+      await new Promise<void>((resolve) => server!.close(() => resolve()));
+    }
     await mongoose.disconnect();
   });

@@ -10,8 +10,8 @@ import { SchoolInterventionModel } from "../../models/SchoolIntervention.js";
 import { StudyPlanModel } from "../../models/StudyPlan.js";
 import { UserModel } from "../../models/User.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
-import { hasActiveSchoolRole } from "../../modules/schools/application/schoolContextResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
+import { hasActiveSchoolRole } from "../../modules/schools/application/schoolContextResolver.js";
 import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomScopeFilter, resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { buildClassroomSchoolIntelligence, buildClassroomSkillEvidence } from "../../modules/schools/application/classroomSchoolIntelligence.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -30,13 +30,17 @@ const idQuery = (ids: string[]) => ({ $or: [
 export function registerClassroomSupervisorRoutes(classroomRouter: Router) {
   classroomRouter.get("/teacher/history", requireAuth, requireRole(["teacher", "school_admin", "admin"]), asyncHandler(async (req, res) => {
     const requestedSchoolId = typeof req.query.schoolId === "string" ? req.query.schoolId.trim() : "";
-    const filter: Record<string, any> = {};
+    const filter: Record<string, any> = { status: { $in: ["ended", "archived"] } };
     if (req.authUser!.role === "teacher") {
-      filter.teacherId = req.authUser!.id;
-      if (requestedSchoolId) {
-        if (!(await hasActiveSchoolRole(req.authUser!, requestedSchoolId, "teacher"))) return res.status(StatusCodes.FORBIDDEN).json({ message: "School history access denied" });
-        filter.schoolId = requestedSchoolId;
+      if (!requestedSchoolId) return res.status(StatusCodes.BAD_REQUEST).json({ message: "schoolId is required for teacher history" });
+      if (!(await hasActiveSchoolRole(req.authUser!, requestedSchoolId, "teacher"))) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "School history access denied" });
       }
+      if (!(await resolveSchoolEntitlement(requestedSchoolId, "SMART_CLASSROOM")).allowed) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+      }
+      filter.teacherId = req.authUser!.id;
+      filter.schoolId = requestedSchoolId;
     } else if (req.authUser!.role === "school_admin") {
       const schoolId = requestedSchoolId || String(req.authUser!.schoolId || "");
       if (!schoolId) return res.status(StatusCodes.BAD_REQUEST).json({ message: "schoolId is required" });
@@ -45,18 +49,28 @@ export function registerClassroomSupervisorRoutes(classroomRouter: Router) {
       filter.schoolId = schoolId;
     } else if (requestedSchoolId) filter.schoolId = requestedSchoolId;
     const limit = z.coerce.number().int().min(1).max(100).catch(50).parse(req.query.limit);
-    const sessions = await ClassroomSessionModel.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
+    const sessions = await ClassroomSessionModel.find(filter).sort({ endedAt: -1, createdAt: -1 }).limit(limit).lean();
     res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
   }));
 
   classroomRouter.get("/supervisor/today", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
-    const scope = await resolveClassroomSupervisorScope(req.authUser!); const start = new Date(); start.setHours(0, 0, 0, 0);
-    const sessions = await ClassroomSessionModel.find({ $and: [classroomScopeFilter(scope), { createdAt: { $gte: start } }] }).sort({ createdAt: -1 }).lean();
+    const scope = await resolveClassroomSupervisorScope(req.authUser!);
+    const start = new Date(); start.setHours(0, 0, 0, 0);
+    const sessions = await ClassroomSessionModel.find({
+      $and: [
+        classroomScopeFilter(scope),
+        { $or: [
+          { status: "live" },
+          { startedAt: { $gte: start } },
+          { startedAt: null, createdAt: { $gte: start } },
+        ] },
+      ],
+    }).sort({ startedAt: -1, createdAt: -1 }).lean();
     res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
   }));
   classroomRouter.get("/supervisor/history", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
     const scope = await resolveClassroomSupervisorScope(req.authUser!); const limit = z.coerce.number().int().min(1).max(100).catch(30).parse(req.query.limit);
-    const sessions = await ClassroomSessionModel.find(classroomScopeFilter(scope)).sort({ createdAt: -1 }).limit(limit).lean();
+    const sessions = await ClassroomSessionModel.find({ $and: [classroomScopeFilter(scope), { status: { $in: ["ended", "archived"] } }] }).sort({ endedAt: -1, createdAt: -1 }).limit(limit).lean();
     res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
   }));
   classroomRouter.get("/supervisor/teachers", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {
