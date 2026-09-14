@@ -752,6 +752,9 @@ export const Landing: React.FC = () => {
                                                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${
                                                     isActive ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-105 pointer-events-none z-0'
                                                 }`}
+                                                loading={isActive ? 'eager' : 'lazy'}
+                                                fetchPriority={isActive ? 'high' : 'low'}
+                                                decoding="async"
                                             />
                                         );
                                     })}
@@ -813,6 +816,8 @@ export const Landing: React.FC = () => {
                                                         src={resolveHomepageHeroImage(thumb.url)}
                                                         alt={thumb.alt}
                                                         className="w-full h-full object-cover"
+                                                        loading="lazy"
+                                                        decoding="async"
                                                     />
                                                 </button>
                                             );
@@ -1003,7 +1008,7 @@ export const Landing: React.FC = () => {
                             <div key={`fcourse-${course.id}-${idx}`} className="group">
                                 <Card className="overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 rounded-3xl group-hover:-translate-y-2">
                                     <div className="relative aspect-video overflow-hidden">
-                                        <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-indigo-600 font-black text-sm shadow-sm">
                                             {hasDiscount ? <span className="ml-2 text-xs text-gray-400 line-through">{originalPrice}</span> : null}
                                             {coursePrice} ر.س

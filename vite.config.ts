@@ -54,7 +54,11 @@ export default defineConfig(() => {
             skipWaiting: true,
             clientsClaim: true,
             navigateFallback: '/index.html',
-            globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}'],
+            // Large marketing images are cacheable by Vercel, but must not be
+            // part of the first offline-install download. The app shell and
+            // fonts remain available offline; images load on demand and use
+            // the normal immutable HTTP cache after their first display.
+            globPatterns: ['**/*.{js,css,html,svg,woff2}'],
             runtimeCaching: [
               {
                 urlPattern: ({ request }) => request.mode === 'navigate',

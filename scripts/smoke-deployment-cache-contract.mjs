@@ -32,5 +32,6 @@ assert(!shellCache.includes('no-store'), 'SPA shell must not force no-store for 
 assert(!findHeader('/(.*)', 'Cache-Control'), 'Do not add a catch-all Cache-Control header that overrides immutable assets');
 assert(!viteConfig.includes("url.pathname.startsWith('/api/')"), 'Service worker must not broadly cache authenticated /api/* responses');
 assert(!viteConfig.includes("cacheName: 'api-cache'"), 'Service worker API cache must remain disabled until an explicit safe allowlist exists');
+assert(viteConfig.includes("globPatterns: ['**/*.{js,css,html,svg,woff2}']"), 'large public images must remain out of the PWA install precache');
 
 console.log('Deployment cache contract passed: hashed assets are immutable and HTML shell revalidates.');
