@@ -123,14 +123,9 @@ const resolveTeacherSubjects = (
 
 export const UsersManager: React.FC = () => {
     const {
-        users,
         groups,
         paths,
         subjects,
-        hydrateUsers,
-        addUser,
-        updateUser,
-        toggleUserStatus,
         assignStudentToGroupAsync,
         removeStudentFromGroupAsync,
         assignSupervisorToGroupAsync,
@@ -144,6 +139,7 @@ export const UsersManager: React.FC = () => {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [usersPage, setUsersPage] = useState(1);
+    const [pageUsers, setPageUsers] = useState<User[]>([]);
     const [usersLimit] = useState(50);
     const [usersTotalPages, setUsersTotalPages] = useState(1);
     const [usersTotal, setUsersTotal] = useState(0);
@@ -154,6 +150,8 @@ export const UsersManager: React.FC = () => {
     const [createError, setCreateError] = useState('');
     const [relationshipActionUserId, setRelationshipActionUserId] = useState<string | null>(null);
     const [relationshipActionError, setRelationshipActionError] = useState('');
+    const [bulkStatusMessage, setBulkStatusMessage] = useState('');
+    const [usersSummary, setUsersSummary] = useState<{ byRole: Record<string, number>; inactive: number; platformTrainers: number } | null>(null);
     const [newUserType, setNewUserType] = useState<'student' | 'school_teacher' | 'platform_trainer' | 'supervisor' | 'school_admin' | 'parent' | 'admin'>('student');
     const [newUserSchoolId, setNewUserSchoolId] = useState('');
     const [newUserClassId, setNewUserClassId] = useState('');
@@ -167,9 +165,29 @@ export const UsersManager: React.FC = () => {
         managedSubjectIds: [] as string[],
     });
 
+    const replacePageUser = (nextUser: User) => {
+        setPageUsers((current) => current.map((item) => item.id === nextUser.id ? nextUser : item));
+    };
+    const persistPageUserPatch = async (currentUser: User, patch: Partial<User>) => {
+        setRelationshipActionUserId(currentUser.id);
+        setRelationshipActionError('');
+        try {
+            const response = await api.updateAdminUser(currentUser.id, patch);
+            const payload = (response as { user?: AdminUserPayload }).user;
+            if (!payload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد الحفظ.');
+            replacePageUser(buildStoreUser(payload));
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'تعذر حفظ المستخدم الآن.';
+            setRelationshipActionError(message);
+            window.alert(message);
+        } finally {
+            setRelationshipActionUserId((value) => value === currentUser.id ? null : value);
+        }
+    };
+
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
-    const students = useMemo(() => users.filter((user) => user.role === Role.STUDENT), [users]);
+    const students = useMemo(() => pageUsers.filter((user) => user.role === Role.STUDENT), [pageUsers]);
     const linkableStudents = useMemo(() => {
         const byId = new Map<string, User>();
         [...allStudentsForLinking, ...students].forEach((student) => {
@@ -187,25 +205,25 @@ export const UsersManager: React.FC = () => {
 
     const filteredUsers = useMemo(() => {
         if (roleFilter === 'school_teacher') {
-            return users.filter((u) => u.role === Role.TEACHER && (Boolean(u.schoolId) || Boolean(u.groupIds?.length)));
+            return pageUsers.filter((u) => u.role === Role.TEACHER && (Boolean(u.schoolId) || Boolean(u.groupIds?.length)));
         }
         if (roleFilter === 'platform_trainer') {
-            return users.filter((u) => u.role === Role.TEACHER && ((u.managedPathIds?.length || 0) > 0 || (u.managedSubjectIds?.length || 0) > 0) && !u.schoolId && !u.groupIds?.length);
+            return pageUsers.filter((u) => u.role === Role.TEACHER && ((u.managedPathIds?.length || 0) > 0 || (u.managedSubjectIds?.length || 0) > 0) && !u.schoolId && !u.groupIds?.length);
         }
-        return users;
-    }, [users, roleFilter]);
+        return pageUsers;
+    }, [pageUsers, roleFilter]);
     const usersByRole = useMemo(() => {
         return Object.values(Role).reduce((acc, role) => {
-            acc[role] = users.filter((user) => user.role === role).length;
+            acc[role] = pageUsers.filter((user) => user.role === role).length;
             return acc;
         }, {} as Record<Role, number>);
-    }, [users]);
-    const inactiveUsersCount = useMemo(() => users.filter((user) => user.isActive === false).length, [users]);
+    }, [pageUsers]);
+    const inactiveUsersCount = useMemo(() => pageUsers.filter((user) => user.isActive === false).length, [pageUsers]);
     const scopedTeachersCount = useMemo(
-        () => users.filter((user) => user.role === Role.TEACHER && ((user.managedPathIds?.length || 0) > 0 || (user.managedSubjectIds?.length || 0) > 0)).length,
-        [users],
+        () => pageUsers.filter((user) => user.role === Role.TEACHER && ((user.managedPathIds?.length || 0) > 0 || (user.managedSubjectIds?.length || 0) > 0)).length,
+        [pageUsers],
     );
-    const manageableFilteredUsers = useMemo(() => users.filter((user) => user.role !== Role.ADMIN), [users]);
+    const manageableFilteredUsers = useMemo(() => filteredUsers.filter((user) => user.role !== Role.ADMIN), [filteredUsers]);
     const visibleActiveCount = useMemo(
         () => manageableFilteredUsers.filter((user) => user.isActive !== false).length,
         [manageableFilteredUsers],
@@ -238,7 +256,7 @@ export const UsersManager: React.FC = () => {
             } as any)
                 .then((response) => {
                     if (!isMounted) return;
-                    hydrateUsers((response.users || []).map(buildStoreUser));
+                    setPageUsers((response.users || []).map(buildStoreUser));
                     const pagination = response.pagination || {
                         page: usersPage,
                         limit: usersLimit,
@@ -265,7 +283,11 @@ export const UsersManager: React.FC = () => {
             isMounted = false;
             window.clearTimeout(timer);
         };
-    }, [hydrateUsers, searchTerm, roleFilter, usersPage, usersLimit]);
+    }, [searchTerm, roleFilter, usersPage, usersLimit]);
+
+    useEffect(() => {
+        void api.getAdminUsersSummary().then(setUsersSummary).catch(() => setUsersSummary(null));
+    }, []);
 
     useEffect(() => {
         let isMounted = true;
@@ -309,7 +331,7 @@ export const UsersManager: React.FC = () => {
                 const persistedPayload = (response as { user?: AdminUserPayload })?.user;
                 if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
                 const persistedUser = buildStoreUser(persistedPayload);
-                hydrateUsers(users.map((item) => item.id === currentUser.id ? persistedUser : item));
+                replacePageUser(persistedUser);
             })
             .catch((error) => {
                 const message = error instanceof Error ? error.message : 'تعذر تغيير دور المستخدم الآن.';
@@ -344,12 +366,7 @@ export const UsersManager: React.FC = () => {
                 const persistedPayload = (response as { user?: AdminUserPayload })?.user;
                 if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
                 const persistedUser = buildStoreUser(persistedPayload);
-                hydrateUsers(users.map((item) => item.id === currentUser.id ? persistedUser : item));
-                updateUser(currentUser.id, {
-                    role: targetRole,
-                    ...(isSchoolTeacher ? { managedPathIds: [], managedSubjectIds: [] } : {}),
-                    ...(isPlatformTrainer ? { schoolId: undefined, groupIds: [] } : {}),
-                });
+                replacePageUser(persistedUser);
             })
             .catch((error) => {
                 const message = error instanceof Error ? error.message : 'تعذر تغيير دور المستخدم الآن.';
@@ -369,7 +386,7 @@ export const UsersManager: React.FC = () => {
     const saveUserName = (user: User) => {
         const nextName = (nameDrafts[user.id] ?? user.name).trim();
         if (nextName.length < 2 || nextName === user.name) return;
-        updateUser(user.id, { name: nextName });
+        void persistPageUserPatch(user, { name: nextName });
     };
     const stopEditingUser = (user: User) => {
         saveUserName(user);
@@ -406,7 +423,7 @@ export const UsersManager: React.FC = () => {
             }) as { user?: AdminUserPayload };
             if (response.user) {
                 const createdUser = buildStoreUser(response.user);
-                addUser(createdUser);
+                setPageUsers((current) => [createdUser, ...current]);
                 if (isSchoolTeacher && newUserSchoolId && newUserClassId) {
                     await api.updateTeachingAssignment({
                         schoolId: newUserSchoolId,
@@ -532,23 +549,23 @@ export const UsersManager: React.FC = () => {
             const linkedStudent = linkableStudents.find((student) => student.id === studentId);
             return !nextSchoolId || linkedStudent?.schoolId === nextSchoolId;
         });
-        updateUser(currentUser.id, { schoolId: nextSchoolId || undefined, linkedStudentIds: nextLinkedStudents });
+        void persistPageUserPatch(currentUser, { schoolId: nextSchoolId || undefined, linkedStudentIds: nextLinkedStudents });
     };
-    const handleParentLinkedStudentsChange = (userId: string, linkedStudentIds: string[]) => updateUser(userId, { linkedStudentIds });
+    const handleParentLinkedStudentsChange = (userId: string, linkedStudentIds: string[]) => { const currentUser = pageUsers.find((item) => item.id === userId); if (currentUser) void persistPageUserPatch(currentUser, { linkedStudentIds }); };
     const handleTeacherPathsChange = (currentUser: User, nextPathIds: string[]) => {
         const nextSubjects = (currentUser.managedSubjectIds || []).filter((subjectId) => {
             const subject = subjects.find((item) => item.id === subjectId);
             return subject && nextPathIds.includes(subject.pathId);
         });
-        updateUser(currentUser.id, { managedPathIds: nextPathIds, managedSubjectIds: nextSubjects });
+        void persistPageUserPatch(currentUser, { managedPathIds: nextPathIds, managedSubjectIds: nextSubjects });
     };
-    const handleTeacherSubjectsChange = (userId: string, managedSubjectIds: string[]) => updateUser(userId, { managedSubjectIds });
+    const handleTeacherSubjectsChange = (userId: string, managedSubjectIds: string[]) => { const currentUser = pageUsers.find((item) => item.id === userId); if (currentUser) void persistPageUserPatch(currentUser, { managedSubjectIds }); };
 
     const handleDeleteUser = async (currentUser: User) => {
         if (!window.confirm(`حذف المستخدم "${currentUser.name}"؟ لا يمكن التراجع عن هذه العملية.`)) return;
         try {
             await api.deleteAdminUser(currentUser.id);
-            hydrateUsers(users.filter((item) => item.id !== currentUser.id));
+            setPageUsers((current) => current.filter((item) => item.id !== currentUser.id));
             if (editingUserId === currentUser.id) setEditingUserId(null);
             setNameDrafts((current) => {
                 const next = { ...current };
@@ -561,10 +578,21 @@ export const UsersManager: React.FC = () => {
         }
     };
 
-    const setFilteredUsersStatus = (active: boolean) => {
-        manageableFilteredUsers.forEach((currentUser) => {
-            if ((currentUser.isActive ?? true) !== active) toggleUserStatus(currentUser.id);
-        });
+    const handleUserStatusToggle = (currentUser: User) => void persistPageUserPatch(currentUser, { isActive: !(currentUser.isActive ?? true) });
+    const setFilteredUsersStatus = async (active: boolean) => {
+        const targets = manageableFilteredUsers.filter((currentUser) => (currentUser.isActive ?? true) !== active);
+        if (!targets.length) return;
+        setBulkStatusMessage('جارٍ تنفيذ العملية الجماعية…');
+        try {
+            const response = await api.bulkSetAdminUsersStatus(targets.map((user) => user.id), active);
+            const updatedIds = new Set(response.results.filter((result) => result.status === 'updated').map((result) => result.userId));
+            const skipped = response.results.filter((result) => result.status !== 'updated');
+            setPageUsers((current) => current.map((user) => updatedIds.has(user.id) ? { ...user, isActive: active } : user));
+            setBulkStatusMessage(`تم تحديث ${updatedIds.size} مستخدم${skipped.length ? `، وتعذر/تُخطي ${skipped.length}` : ''}.`);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'تعذر تنفيذ العملية الجماعية.';
+            setBulkStatusMessage(message);
+        }
     };
 
     const handleTeacherSchoolChange = (currentUser: User, nextSchoolId: string) => {
@@ -576,10 +604,7 @@ export const UsersManager: React.FC = () => {
                 schoolId: nextSchoolId || null,
                 groupIds: nextClassIds,
             });
-            updateUser(currentUser.id, {
-                schoolId: nextSchoolId || undefined,
-                groupIds: nextClassIds,
-            });
+            replacePageUser({ ...currentUser, schoolId: nextSchoolId || undefined, groupIds: nextClassIds });
         });
     };
 
@@ -599,10 +624,7 @@ export const UsersManager: React.FC = () => {
                     classId: nextClassId,
                 }).catch(() => {});
             }
-            updateUser(currentUser.id, {
-                schoolId: targetSchoolId || undefined,
-                groupIds: nextGroupIds,
-            });
+            replacePageUser({ ...currentUser, schoolId: targetSchoolId || undefined, groupIds: nextGroupIds });
         });
     };
 
@@ -729,11 +751,11 @@ export const UsersManager: React.FC = () => {
 
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
-                    ['الطلاب', usersByRole[Role.STUDENT] || 0],
-                    ['المدربون والمعلمون', usersByRole[Role.TEACHER] || 0],
-                    ['المشرفون', usersByRole[Role.SUPERVISOR] || 0],
-                    ['أولياء الأمور', usersByRole[Role.PARENT] || 0],
-                    ['حسابات متوقفة', inactiveUsersCount],
+                    ['الطلاب', usersSummary?.byRole[Role.STUDENT] ?? usersByRole[Role.STUDENT] ?? 0],
+                    ['المدربون والمعلمون', usersSummary?.byRole[Role.TEACHER] ?? usersByRole[Role.TEACHER] ?? 0],
+                    ['المشرفون', usersSummary?.byRole[Role.SUPERVISOR] ?? usersByRole[Role.SUPERVISOR] ?? 0],
+                    ['أولياء الأمور', usersSummary?.byRole[Role.PARENT] ?? usersByRole[Role.PARENT] ?? 0],
+                    ['حسابات متوقفة', usersSummary?.inactive ?? inactiveUsersCount],
                 ].map(([label, value]) => <div key={String(label)} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm"><p className="text-xs text-gray-500 mb-2">{label}</p><p className="text-2xl font-black text-gray-900">{value}</p></div>)}
             </div>
 
@@ -922,8 +944,8 @@ export const UsersManager: React.FC = () => {
                             : isEditing && currentUser.role === Role.PARENT ? <div className="space-y-2 min-w-[240px]"><select className="w-full border border-gray-300 rounded px-2 py-1 text-sm" value={currentSchoolId} onChange={(event) => handleParentSchoolChange(currentUser, event.target.value)}><option value="">بدون مدرسة</option>{schools.map((school) => <option key={school.id} value={school.id}>{school.name}</option>)}</select><MultiSelectField value={currentUser.linkedStudentIds || []} options={parentCandidates.map((student) => ({ value: student.id, label: student.name }))} placeholder="اختر الأبناء المرتبطين" onChange={(linkedStudentIds) => handleParentLinkedStudentsChange(currentUser.id, linkedStudentIds)} size="sm" /></div>
                             : isEditing && currentUser.role === Role.TEACHER ? renderTeacherScopeEditor(currentUser) : renderAssignmentSummary(currentUser)}
                         </td>
-                        <td className="px-6 py-4"><button onClick={() => toggleUserStatus(currentUser.id)} className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${currentUser.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>{currentUser.isActive ? <UserCheck size={14} /> : <UserX size={14} />}{currentUser.isActive ? 'نشط' : 'موقوف'}</button></td>
-                        <td className="px-6 py-4"><div className="relative flex items-center gap-2"><button onClick={() => (isEditing ? stopEditingUser(currentUser) : startEditingUser(currentUser))} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg"><Edit2 size={18} /></button><button type="button" onClick={() => toggleActionsMenu(currentUser.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"><MoreVertical size={18} /></button>{activeActionsUserId === currentUser.id && <div className="absolute right-0 top-10 z-20 min-w-[170px] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"><button type="button" onClick={() => { closeActionsMenu(); if (!isEditing) startEditingUser(currentUser); }} className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50">Edit user</button><button type="button" onClick={() => { closeActionsMenu(); toggleUserStatus(currentUser.id); }} className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50">{currentUser.isActive ? 'Deactivate user' : 'Activate user'}</button><button type="button" onClick={() => void handleDeleteUser(currentUser)} className="w-full rounded-lg px-3 py-2 text-right text-sm text-red-600 hover:bg-red-50">Delete user</button></div>}</div></td>
+                        <td className="px-6 py-4"><button disabled={relationshipActionUserId === currentUser.id} onClick={() => handleUserStatusToggle(currentUser)} className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold disabled:opacity-50 ${currentUser.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>{currentUser.isActive ? <UserCheck size={14} /> : <UserX size={14} />}{currentUser.isActive ? 'نشط' : 'موقوف'}</button></td>
+                        <td className="px-6 py-4"><div className="relative flex items-center gap-2"><button onClick={() => (isEditing ? stopEditingUser(currentUser) : startEditingUser(currentUser))} className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg"><Edit2 size={18} /></button><button type="button" onClick={() => toggleActionsMenu(currentUser.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"><MoreVertical size={18} /></button>{activeActionsUserId === currentUser.id && <div className="absolute right-0 top-10 z-20 min-w-[170px] rounded-xl border border-gray-200 bg-white p-1 shadow-lg"><button type="button" onClick={() => { closeActionsMenu(); if (!isEditing) startEditingUser(currentUser); }} className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50">تعديل المستخدم</button><button type="button" onClick={() => { closeActionsMenu(); handleUserStatusToggle(currentUser); }} className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50">{currentUser.isActive ? 'إيقاف المستخدم' : 'تفعيل المستخدم'}</button><button type="button" onClick={() => void handleDeleteUser(currentUser)} className="w-full rounded-lg px-3 py-2 text-right text-sm text-red-600 hover:bg-red-50">حذف المستخدم</button></div>}</div></td>
                     </tr>;
                 })}</tbody></table>{filteredUsers.length === 0 && <div className="text-center py-12 text-gray-500">لا يوجد مستخدمون يطابقون بحثك.</div>}</div></div>
         </div>

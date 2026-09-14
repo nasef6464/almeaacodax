@@ -151,6 +151,16 @@ export const createAuthApi = (request: ApiRequest) => {
       };
     },
 
+    getAdminUsersSummary: () =>
+      request<{ total: number; byRole: Record<string, number>; inactive: number; platformTrainers: number }>("/auth/admin/users/summary"),
+
+    bulkSetAdminUsersStatus: (userIds: string[], isActive: boolean, token?: string | null) =>
+      request<{ results: Array<{ userId: string; status: "updated" | "skipped" | "not_found"; reason?: string }> }>("/auth/admin/users/bulk-status", {
+        method: "PATCH",
+        body: { userIds, isActive },
+        token,
+      }),
+
     getPlatformTrainers: (pagination: PaginationOptions = {}) =>
       request<{ users: unknown[]; pagination?: PaginatedResponseShape }>(
         withQuery("/auth/admin/users", {

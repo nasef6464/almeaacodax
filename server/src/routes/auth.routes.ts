@@ -119,6 +119,10 @@ const adminUsersQuerySchema = z.object({
     return value;
   }, z.boolean().optional()),
 });
+const adminBulkUserStatusSchema = z.object({
+  userIds: z.array(z.string().trim().min(1)).min(1).max(100),
+  isActive: z.boolean(),
+});
 
 const adminTrainersQuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional(),
@@ -801,6 +805,50 @@ authRouter.post(
     return res.status(StatusCodes.CREATED).json({
       user: serializeUser(user),
     });
+  }),
+);
+
+authRouter.get(
+  "/admin/users/summary",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const [roles, inactive, platformTrainers] = await Promise.all([
+      UserModel.aggregate([{ $group: { _id: "$role", total: { $sum: 1 } } }]),
+      UserModel.countDocuments({ isActive: false }),
+      UserModel.countDocuments({ role: "teacher", $or: [{ "managedPathIds.0": { $exists: true } }, { "managedSubjectIds.0": { $exists: true } }] }),
+    ]);
+    const byRole = Object.fromEntries(roles.map((row: any) => [String(row._id), Number(row.total || 0)]));
+    return res.json({ total: Object.values(byRole).reduce((sum: number, value: any) => sum + Number(value || 0), 0), byRole, inactive, platformTrainers });
+  }),
+);
+
+authRouter.patch(
+  "/admin/users/bulk-status",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = adminBulkUserStatusSchema.parse(req.body);
+    const ids = Array.from(new Set(payload.userIds.map(String)));
+    const targets = await UserModel.find(buildDocumentsQuery(ids)).select("id _id role isActive").lean();
+    const byId = new Map(targets.map((item: any) => [String(item.id || item._id), item]));
+    const results: Array<{ userId: string; status: "updated" | "skipped" | "not_found"; reason?: string }> = [];
+    const activeAdminCount = payload.isActive === false ? await UserModel.countDocuments({ role: "admin", isActive: { $ne: false } }) : 0;
+    let remainingActiveAdmins = activeAdminCount;
+    for (const id of ids) {
+      const target = byId.get(id);
+      if (!target) { results.push({ userId: id, status: "not_found" }); continue; }
+      if (String(req.authUser!.id) === id && payload.isActive === false) { results.push({ userId: id, status: "skipped", reason: "cannot_deactivate_current_admin" }); continue; }
+      if (payload.isActive === false && target.role === "admin") {
+        if (remainingActiveAdmins <= 1) { results.push({ userId: id, status: "skipped", reason: "cannot_deactivate_last_admin" }); continue; }
+        if (target.isActive !== false) remainingActiveAdmins -= 1;
+      }
+      if (Boolean(target.isActive !== false) === payload.isActive) { results.push({ userId: id, status: "skipped", reason: "already_in_requested_state" }); continue; }
+      await UserModel.updateOne({ _id: (target as any)._id }, { $set: { isActive: payload.isActive } });
+      results.push({ userId: id, status: "updated" });
+    }
+    await recordAdminAuditLog(req, { action: "auth.admin_user.bulk_status", resourceType: "user", resourceId: "bulk", metadata: { isActive: payload.isActive, results } });
+    return res.json({ results });
   }),
 );
 
