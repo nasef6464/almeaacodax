@@ -1,5 +1,28 @@
 # ALMEAA — Codex Execution State
 
+## Trainer management G14 — exact portfolio aggregates
+
+- Status: `CLOSED / VERIFIED` on 2026-09-14.
+- Runtime commit: `6356e4a14c0bf40d9553044f996717adcdad8b37` on
+  `codex/trainer-management-g14-g18`; PR [#147](https://github.com/nasef6464/almeaacodax/pull/147).
+- Delivered: the existing admin Trainer Center now returns exact portfolio
+  totals and status counts independently from its 100-item per-type preview;
+  video totals are exact too. A focused G14 contract smoke and isolated HTTP
+  assertions cover the paginated directory, profile, Admin-only denial,
+  persisted scope update, and audit log.
+- Local verification: `npm --prefix server run check`, `npm run typecheck`,
+  `npm run smoke:course-builder`, and `npm run smoke:trainer-management-g14`
+  passed. `git diff --check` passed before commit.
+- Exact-runtime CI: [Backend Integration Gate #34825287234](https://github.com/nasef6464/almeaacodax/actions/runs/34825287234)
+  passed on isolated Mongo and live HTTP, including the G14 trainer-center
+  assertions. The run also exposed and the branch corrected two stale
+  Smart Classroom test assumptions: joins now explicitly start the session,
+  and immutable report response totals live at `report.totals.responses`.
+- Release note: the repository was returned to Private immediately after the
+  temporary public-runner verification.
+- Next exact action: begin the bounded G15 assessment only; do not combine it
+  with G16–G18.
+
 ## Smart Classroom pre-merge hardening — batch lifecycle and privacy
 
 - Status: `MERGED / LOCAL + GITHUB + VERCEL SYNCHRONIZED / RENDER BILLING BLOCKED` on 2026-09-14.

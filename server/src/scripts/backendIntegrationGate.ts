@@ -583,7 +583,7 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   const crossSchoolClass = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId: outsideSchoolId, classId, questionIds: [questionId] } });
   expectStatus("school teacher cannot pair another school with assigned class", crossSchoolClass, 400);
 
-  const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId] } });
+  const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId], autoStart: true } });
   expectStatus("assigned teacher creates smart classroom session", created, 201);
   const sessionId = String(created.body?.sessionId || ""); const pin = String(created.body?.pin || "");
   assert.ok(sessionId && /^\d{6}$/.test(pin), "smart classroom session did not issue ephemeral PIN");
@@ -617,7 +617,7 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   assert.equal(repeated.body?.responseId, answer.body?.responseId, "repeated smart classroom answer created a second response");
   const ended = await jsonRequest(`/classroom/sessions/${sessionId}/end`, { method: "POST", token: tokens.get("teacher"), csrf });
   expectStatus("teacher ends smart classroom session", ended, 200);
-  assert.equal(ended.body?.report?.responseCount, 1, "smart classroom immutable report has wrong response count");
+  assert.equal(ended.body?.report?.totals?.responses, 1, "smart classroom immutable report has wrong response count");
   const schoolSupervisorHistory = await jsonRequest("/classroom/supervisor/history", { token: tokens.get("supervisor") });
   expectStatus("school supervisor reads in-scope classroom history", schoolSupervisorHistory, 200);
   assert.equal(schoolSupervisorHistory.body?.sessions?.some((report: any) => report.sessionId === sessionId), true, "school supervisor history omitted in-scope session");
@@ -1389,6 +1389,47 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
     token: tokens.get("teacher"),
   });
   expectStatus("platform trainer directory is admin-only", trainerDirectoryDenied, 403);
+
+  const trainerCenter = await jsonRequest(
+    `/auth/admin/trainers?status=active&persona=platform&pathId=${encodeURIComponent(ASSESSMENT_PATH_ID)}&search=${encodeURIComponent(credentials.get("teacher")!.email)}`,
+    { token: tokens.get("admin") },
+  );
+  expectStatus("admin reads the paginated trainer management center", trainerCenter, 200);
+  const managedTrainer = trainerCenter.body?.trainers?.find(
+    (candidate: any) => String(candidate.id || candidate._id || "") === teacherId,
+  );
+  assert.ok(managedTrainer, "trainer management center omitted the scoped trainer");
+  assert.ok(Number(managedTrainer.portfolio?.total || 0) >= 1, "trainer management center omitted aggregate portfolio totals");
+
+  const trainerProfile = await jsonRequest(`/auth/admin/trainers/${encodeURIComponent(teacherId)}`, {
+    token: tokens.get("admin"),
+  });
+  expectStatus("admin reads a trainer management profile", trainerProfile, 200);
+  assert.equal(String(trainerProfile.body?.trainer?.id || trainerProfile.body?.trainer?._id || ""), teacherId, "trainer profile returned the wrong user");
+  assert.ok(
+    Number(trainerProfile.body?.trainer?.portfolio?.stats?.total || 0) >= Number(managedTrainer.portfolio?.total || 0),
+    "trainer profile aggregate is less complete than the directory read model",
+  );
+
+  const trainerCenterDenied = await jsonRequest("/auth/admin/trainers", { token: tokens.get("teacher") });
+  expectStatus("trainer management center is admin-only", trainerCenterDenied, 403);
+
+  const configuredTrainer = await jsonRequest(`/auth/admin/users/${encodeURIComponent(String(unscopedTrainer._id))}`, {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { managedPathIds: [ASSESSMENT_PATH_ID], managedSubjectIds: [ASSESSMENT_SUBJECT_ID] },
+  });
+  expectStatus("admin saves trainer scope through the trainer center command", configuredTrainer, 200);
+  assert.deepEqual(configuredTrainer.body?.user?.managedSubjectIds, [ASSESSMENT_SUBJECT_ID], "trainer scope did not persist");
+  assert.ok(
+    await AdminAuditLogModel.exists({
+      actorId: adminId,
+      action: "auth.admin_user.update",
+      resourceId: String(unscopedTrainer._id),
+    }),
+    "trainer scope change was not audit logged",
+  );
 
   const adminAssignedCourse = await jsonRequest("/courses", {
     method: "POST",

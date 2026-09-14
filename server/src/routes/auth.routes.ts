@@ -201,73 +201,69 @@ const trainerOwnershipQuery = (trainerId: string) => ({
   ],
 });
 
-const summarizeTrainerContent = (items: Array<{ approvalStatus?: string; showOnPlatform?: boolean }>) => {
+const getTrainerPortfolioStats = async (ownership: ReturnType<typeof trainerOwnershipQuery>) => {
+  const statusSummary = (model: any) => model.aggregate([
+    { $match: ownership },
+    { $group: { _id: { $ifNull: ["$approvalStatus", "draft"] }, count: { $sum: 1 } } },
+  ]);
+  const [courseCount, lessonCount, questionCount, quizCount, libraryCount, ...statusGroups] = await Promise.all([
+    CourseModel.countDocuments(ownership),
+    LessonModel.countDocuments(ownership),
+    QuestionModel.countDocuments(ownership),
+    QuizModel.countDocuments(ownership),
+    LibraryItemModel.countDocuments(ownership),
+    statusSummary(CourseModel),
+    statusSummary(LessonModel),
+    statusSummary(QuestionModel),
+    statusSummary(QuizModel),
+    statusSummary(LibraryItemModel),
+    CourseModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+    LessonModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+    QuestionModel.countDocuments({ ...ownership, approvalStatus: "approved" }),
+    QuizModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+    LibraryItemModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
+    LessonModel.countDocuments({ ...ownership, type: "video" }),
+  ]);
+  const videos = Number(statusGroups.pop() || 0);
+  const publishedCounts = statusGroups.splice(-5) as number[];
   const statuses = { draft: 0, pending_review: 0, approved: 0, rejected: 0, published: 0 };
-  items.forEach((item) => {
-    const status = String(item.approvalStatus || "draft") as keyof typeof statuses;
-    if (status in statuses) statuses[status] += 1;
-    if (item.showOnPlatform !== false && status === "approved") statuses.published += 1;
+  statusGroups.flat().forEach((group: any) => {
+    const status = String(group._id || "draft") as keyof typeof statuses;
+    if (status in statuses) statuses[status] += Number(group.count || 0);
   });
-  return { total: items.length, ...statuses };
+  statuses.published = publishedCounts.reduce((total, count) => total + Number(count || 0), 0);
+  return {
+    total: courseCount + lessonCount + questionCount + quizCount + libraryCount,
+    courses: courseCount,
+    lessons: lessonCount,
+    videos,
+    questions: questionCount,
+    quizzes: quizCount,
+    libraryItems: libraryCount,
+    ...statuses,
+  };
 };
 
 const getTrainerPortfolio = async (trainerId: string, includeItems = false) => {
   const ownership = trainerOwnershipQuery(trainerId);
-  const limit = includeItems ? 100 : 1;
-  const [courses, lessons, questions, quizzes, libraryItems] = await Promise.all([
+  const statsPromise = getTrainerPortfolioStats(ownership);
+  if (!includeItems) {
+    return { stats: await statsPromise, items: undefined };
+  }
+
+  // The profile previews recent items only. Its summary must nevertheless stay
+  // exact when a trainer owns more items than the preview limit.
+  const limit = 100;
+  const [courses, lessons, questions, quizzes, libraryItems, stats] = await Promise.all([
     CourseModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
     LessonModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
     QuestionModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id text approvalStatus pathId subject updatedAt").lean(),
     QuizModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
     LibraryItemModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
+    statsPromise,
   ]);
-
-  if (!includeItems) {
-    const statusSummary = (model: any) => model.aggregate([
-      { $match: ownership },
-      { $group: { _id: { $ifNull: ["$approvalStatus", "draft"] }, count: { $sum: 1 } } },
-    ]);
-    const [courseCount, lessonCount, questionCount, quizCount, libraryCount, ...statusGroups] = await Promise.all([
-      CourseModel.countDocuments(ownership),
-      LessonModel.countDocuments(ownership),
-      QuestionModel.countDocuments(ownership),
-      QuizModel.countDocuments(ownership),
-      LibraryItemModel.countDocuments(ownership),
-      statusSummary(CourseModel),
-      statusSummary(LessonModel),
-      statusSummary(QuestionModel),
-      statusSummary(QuizModel),
-      statusSummary(LibraryItemModel),
-      CourseModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-      LessonModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-      QuestionModel.countDocuments({ ...ownership, approvalStatus: "approved" }),
-      QuizModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-      LibraryItemModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-    ]);
-    const publishedCounts = statusGroups.splice(-5) as number[];
-    const statuses = { draft: 0, pending_review: 0, approved: 0, rejected: 0, published: 0 };
-    statusGroups.flat().forEach((group: any) => {
-      const status = String(group._id || "draft") as keyof typeof statuses;
-      if (status in statuses) statuses[status] += Number(group.count || 0);
-    });
-    statuses.published = publishedCounts.reduce((total, count) => total + Number(count || 0), 0);
-    return {
-      stats: { total: courseCount + lessonCount + questionCount + quizCount + libraryCount, courses: courseCount, lessons: lessonCount, questions: questionCount, quizzes: quizCount, libraryItems: libraryCount, ...statuses },
-      items: undefined,
-    };
-  }
-
-  const allItems = [...courses, ...lessons, ...questions, ...quizzes, ...libraryItems] as Array<{ approvalStatus?: string; showOnPlatform?: boolean }>;
   return {
-    stats: {
-      ...summarizeTrainerContent(allItems),
-      courses: courses.length,
-      lessons: lessons.length,
-      videos: lessons.filter((item: any) => item.type === "video").length,
-      questions: questions.length,
-      quizzes: quizzes.length,
-      libraryItems: libraryItems.length,
-    },
+    stats,
     items: { courses, lessons, questions, quizzes, libraryItems },
   };
 };

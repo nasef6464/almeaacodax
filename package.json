@@ -51,6 +51,7 @@
         "smoke:results": "node scripts/smoke-results-contract.mjs",
         "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
         "smoke:course-builder": "node scripts/smoke-course-builder-contract.mjs",
+        "smoke:trainer-management-g14": "node scripts/smoke-trainer-management-g14-contract.mjs",
         "smoke:course-visibility": "node scripts/smoke-course-visibility-contract.mjs",
         "smoke:course-quiz-context": "node scripts/smoke-course-quiz-context-contract.mjs",
         "smoke:certificate-integrity": "node scripts/smoke-certificate-integrity-contract.mjs",

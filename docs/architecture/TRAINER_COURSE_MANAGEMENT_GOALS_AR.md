@@ -1,6 +1,6 @@
 # ALMEAA — أهداف إدارة المدربين والدورات والمستخدمين G13–G18
 
-> الحالة: `G13 CLOSED / VERIFIED` — `G14–G18 PLANNED / NOT STARTED`
+> الحالة: `G13–G14 CLOSED / VERIFIED` — `G15–G18 PLANNED / NOT STARTED`
 >
 > تاريخ اعتماد الخطة: 2026-09-10
 >
@@ -125,6 +125,23 @@
   `smoke:course-builder` و`smoke:account-workspaces-g7` PASS.
 
 ## G14 — مركز إدارة المدربين
+
+> الحالة الحالية: `CLOSED / VERIFIED` في runtime
+> `6356e4a14c0bf40d9553044f996717adcdad8b37`.
+>
+> الموجود والمثبت محليًا: مركز رئيسي للمدير بقائمة خادمية قابلة للبحث والترقيم
+> والتصفية، ملف مدرب خادمي، تعديل نطاقه وإيقافه/تفعيله عبر أمر awaited مع
+> Audit Log، وإجماليات portfolio دقيقة حتى عندما تعرض الواجهة معاينة محدودة
+> للعناصر. العقد المركز `smoke:trainer-management-g14` و`smoke:course-builder`
+> وفحص TypeScript للخادم والواجهة نجحت. أضيفت تغطية HTTP المعزولة لمسارات
+> القائمة والملف ورفض non-Admin وحفظ النطاق وسجل التدقيق.
+>
+> دليل الإغلاق: [Backend Integration Gate #34825287234](https://github.com/nasef6464/almeaacodax/actions/runs/34825287234)
+> PASS على runtime الدقيق، شاملاً API typecheck/build وMongo معزول وHTTP
+> فعلي: قائمة المركز، ملف المدرب، منع non-Admin، حفظ نطاق المدرب وسجل التدقيق.
+> أصلح التشغيل أيضًا عقدي Smart Classroom قديمين كي يثبتان lifecycle الحالي
+> وread model للتقرير. المستودع عاد Private بعد التحقق. الهدف التالي المصرح:
+> `G15` فقط.
 
 ### الهدف
 
