@@ -18,6 +18,11 @@
     "classroomRouter|GET|/questions",
     "classroomRouter|POST|/sessions",
     "classroomRouter|POST|/sessions/:id/append-questions",
+    "classroomRouter|POST|/sessions/:id/batches/:batchId/end",
+    "classroomRouter|GET|/sessions/:id/challenge-state",
+    "classroomRouter|GET|/sessions/:id/competition",
+    "classroomRouter|POST|/sessions/:id/competition/configure",
+    "classroomRouter|POST|/sessions/:id/competition/end",
     "classroomRouter|GET|/sessions/:id/aggregate",
     "classroomRouter|PUT|/sessions/:id/answers/:questionId",
     "classroomRouter|GET|/sessions/:id/current",
@@ -25,9 +30,12 @@
     "classroomRouter|POST|/sessions/:id/instant-join",
     "classroomRouter|POST|/sessions/:id/join",
     "classroomRouter|POST|/sessions/:id/publish/:index",
+    "classroomRouter|POST|/sessions/:id/submit",
     "classroomRouter|POST|/sessions/join-by-pin",
     "classroomRouter|GET|/student/active-session",
+    "classroomRouter|GET|/teacher/active-session",
     "classroomRouter|GET|/teacher/history",
+    "classroomRouter|GET|/teacher/insights",
     "classroomRouter|GET|/templates",
     "classroomRouter|POST|/templates",
     "classroomRouter|POST|/templates/:id/delete",
@@ -90,6 +98,7 @@
     "CUSTOMER_INSTANCE_WRITE_ACK",
     "LEARNING_MANAGER_AUDIT_RUN_ID",
     "PILOT_ALLOW_EXTERNAL_RUN",
-    "PILOT_WRITE_AUTHORIZATION"
+    "PILOT_WRITE_AUTHORIZATION",
+    "UI_AUDIT_ROLE_CREDENTIALS_JSON"
   ]
 }

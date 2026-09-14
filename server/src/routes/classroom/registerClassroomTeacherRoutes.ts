@@ -309,7 +309,9 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       ? new Date(challengeTimerStartedAt.getTime() + challengeDurationSeconds * 1000)
       : null;
     const newBatchId = randomUUID();
-    if (payload.autoPublishFirst) closeActiveBatch(session, batchStartedAt || new Date());
+    if (payload.autoPublishFirst && session.activeBatchId) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "أنه الدفعة النشطة أولاً ثم أرسل دفعة جديدة" });
+    }
     session.questionBatches.push({
       batchId: newBatchId,
       label: challengeDurationSeconds !== null ? `تحدي ${session.questionBatches.length + 1}` : `الدفعة ${session.questionBatches.length + 1}`,

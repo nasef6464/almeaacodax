@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-10T18:24:37.605Z",
-  "sourceGitHead": "4dc1f4f9125dd5e7e10897ed98f83b0cd8a516c7",
+  "generatedAt": "2026-09-14T03:20:46.635Z",
+  "sourceGitHead": "84fe836539df60c7b91989bcf3dc1be4a239b85d",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -47,6 +47,102 @@
       "confidence": "review-required"
     },
     {
+      "source": "components/classroom/ClassroomActiveSessionPanel.tsx",
+      "target": "apps/web/src/features/auth/classroom/ClassroomActiveSessionPanel.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomPreparedTemplatesManager.tsx",
+      "target": "apps/web/src/features/schools/classroom/ClassroomPreparedTemplatesManager.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomPushQuestionsModal.tsx",
+      "target": "apps/web/src/features/questions/classroom/ClassroomPushQuestionsModal.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomQuestionFilterBar.tsx",
+      "target": "apps/web/src/features/questions/classroom/ClassroomQuestionFilterBar.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomQuestionReviewPanel.tsx",
+      "target": "apps/web/src/features/questions/classroom/ClassroomQuestionReviewPanel.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomReportInsightsPanel.tsx",
+      "target": "apps/web/src/features/schools/classroom/ClassroomReportInsightsPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/classroomReportViewModel.ts",
+      "target": "apps/web/src/features/schools/classroom/classroomReportViewModel.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomSkillRadar.tsx",
+      "target": "apps/web/src/features/questions/classroom/ClassroomSkillRadar.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassroomTeacherLiveRadar.tsx",
+      "target": "apps/web/src/features/schools/classroom/ClassroomTeacherLiveRadar.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/ClassSkillGapsRadar.tsx",
+      "target": "apps/web/src/features/questions/classroom/ClassSkillGapsRadar.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/QuestionContentRenderer.tsx",
+      "target": "apps/web/src/features/questions/classroom/QuestionContentRenderer.tsx",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/SmartClassroomExamRunner.tsx",
+      "target": "apps/web/src/features/exams/classroom/SmartClassroomExamRunner.tsx",
+      "domain": "exams",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/SmartClassroomFloatingWidget.tsx",
+      "target": "apps/web/src/features/schools/classroom/SmartClassroomFloatingWidget.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/SmartClassroomReportsSection.tsx",
+      "target": "apps/web/src/features/schools/classroom/SmartClassroomReportsSection.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/SmartClassroomSessionSchedulerModal.tsx",
+      "target": "apps/web/src/features/auth/classroom/SmartClassroomSessionSchedulerModal.tsx",
+      "domain": "auth",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/classroom/StudentAppreciationCertificateModal.tsx",
+      "target": "apps/web/src/features/schools/classroom/StudentAppreciationCertificateModal.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "components/CourseLanding.tsx",
       "target": "apps/web/src/features/courses/CourseLanding.tsx",
       "domain": "courses",
@@ -67,6 +163,24 @@
     {
       "source": "components/CustomVideoPlayer.tsx",
       "target": "apps/web/src/features/shared/CustomVideoPlayer.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/DailySpeedDrillCard.tsx",
+      "target": "apps/web/src/features/shared/DailySpeedDrillCard.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/dailySpeedDrillData.ts",
+      "target": "apps/web/src/features/shared/dailySpeedDrillData.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/DailySpeedDrillModal.tsx",
+      "target": "apps/web/src/features/shared/DailySpeedDrillModal.tsx",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -143,6 +257,18 @@
       "confidence": "review-required"
     },
     {
+      "source": "components/pricingComparisonData.ts",
+      "target": "apps/web/src/features/payments/pricingComparisonData.ts",
+      "domain": "payments",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/PricingComparisonMatrix.tsx",
+      "target": "apps/web/src/features/payments/PricingComparisonMatrix.tsx",
+      "domain": "payments",
+      "confidence": "candidate"
+    },
+    {
       "source": "components/PwaInstallBanner.tsx",
       "target": "apps/web/src/features/shared/PwaInstallBanner.tsx",
       "domain": "shared",
@@ -177,6 +303,18 @@
       "target": "apps/web/src/features/quizzes/QuizGenerator.tsx",
       "domain": "quizzes",
       "confidence": "candidate"
+    },
+    {
+      "source": "components/ReferralAmbassadorCard.tsx",
+      "target": "apps/web/src/features/shared/ReferralAmbassadorCard.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "components/ReferralAmbassadorModal.tsx",
+      "target": "apps/web/src/features/shared/ReferralAmbassadorModal.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
     },
     {
       "source": "components/results/ResultDonutChart.tsx",
@@ -635,6 +773,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/NewSchoolWizardLeadershipStep.tsx",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/NewSchoolWizardLeadershipStep.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/NewSchoolWizardModal.tsx",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/NewSchoolWizardModal.tsx",
       "domain": "schools",
@@ -959,6 +1103,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SchoolsManager/useSchoolWizardProvisioning.ts",
+      "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolWizardProvisioning.ts",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SchoolsManager/useSchoolWorkspaceDrafts.ts",
       "target": "apps/web/src/features/schools/admin/SchoolsManager/useSchoolWorkspaceDrafts.ts",
       "domain": "schools",
@@ -1061,6 +1211,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/TrainersManager.tsx",
+      "target": "apps/web/src/features/shared/admin/TrainersManager.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "dashboards/admin/UnifiedQuizBuilder.tsx",
       "target": "apps/web/src/features/quizzes/admin/UnifiedQuizBuilder.tsx",
       "domain": "quizzes",
@@ -1070,6 +1226,18 @@
       "source": "dashboards/admin/UsersManager.tsx",
       "target": "apps/web/src/features/users/admin/UsersManager.tsx",
       "domain": "users",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/school-teacher/SchoolTeacherPrimaryTabs.tsx",
+      "target": "apps/web/src/features/schools/school-teacher/SchoolTeacherPrimaryTabs.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/school-teacher/SchoolTeacherSecondaryTabs.tsx",
+      "target": "apps/web/src/features/schools/school-teacher/SchoolTeacherSecondaryTabs.tsx",
+      "domain": "schools",
       "confidence": "candidate"
     },
     {
@@ -1583,6 +1751,12 @@
       "confidence": "high"
     },
     {
+      "source": "server/src/middleware/classroomAuth.ts",
+      "target": "apps/api/src/shared/http/middleware/classroomAuth.ts",
+      "domain": "shared",
+      "confidence": "high"
+    },
+    {
       "source": "server/src/middleware/csrf.ts",
       "target": "apps/api/src/shared/http/middleware/csrf.ts",
       "domain": "shared",
@@ -1688,6 +1862,12 @@
       "source": "server/src/models/ClassroomSession.ts",
       "target": "apps/api/src/modules/auth/infrastructure/persistence/ClassroomSession.ts",
       "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/ClassroomTemplate.ts",
+      "target": "apps/api/src/modules/schools/infrastructure/persistence/ClassroomTemplate.ts",
+      "domain": "schools",
       "confidence": "review-required"
     },
     {
@@ -2387,9 +2567,33 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/schools/application/classroomCompetitionScoring.ts",
+      "target": "apps/api/src/modules/schools/application/classroomCompetitionScoring.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/schools/application/classroomLifecycle.ts",
+      "target": "apps/api/src/modules/schools/application/classroomLifecycle.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/schools/application/classroomQuestionAccess.ts",
+      "target": "apps/api/src/modules/schools/application/classroomQuestionAccess.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/schools/application/classroomQuestionProjection.ts",
       "target": "apps/api/src/modules/schools/application/classroomQuestionProjection.ts",
       "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/schools/application/classroomReportInsights.ts",
+      "target": "apps/api/src/modules/schools/application/classroomReportInsights.ts",
+      "domain": "schools",
       "confidence": "review-required"
     },
     {
@@ -2491,6 +2695,66 @@
     {
       "source": "server/src/routes/classroom.routes.ts",
       "target": "apps/api/src/modules/schools/http/classroom.routes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/classroomRouteSupport.ts",
+      "target": "apps/api/src/modules/schools/http/classroomRouteSupport.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomAggregateRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomAggregateRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomBatchRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomBatchRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomCompetitionRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomInsightsRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomStudentRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomSupervisorRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomTeacherRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomTemplateRoutes.ts",
+      "target": "apps/api/src/modules/schools/http/registerClassroomTemplateRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/classroomRoot.routes.ts",
+      "target": "apps/api/src/modules/schools/http/classroomRoot.routes.ts",
       "domain": "schools",
       "confidence": "review-required"
     },
@@ -2603,6 +2867,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/routes/schoolAdminIntegrity.routes.ts",
+      "target": "apps/api/src/modules/schools/http/schoolAdminIntegrity.routes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/routes/search.routes.ts",
       "target": "apps/api/src/modules/shared/http/search.routes.ts",
       "domain": "shared",
@@ -2677,6 +2947,12 @@
     {
       "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
       "target": "apps/api/src/scripts/e2e_supervisor_directed_test.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/ensureSmartClassroomIndexes.ts",
+      "target": "apps/api/src/scripts/ensureSmartClassroomIndexes.ts",
       "domain": "schools",
       "confidence": "review-required"
     },
@@ -2771,6 +3047,18 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/simulateMultiSchoolSmartClassroomE2E.ts",
+      "target": "apps/api/src/scripts/simulateMultiSchoolSmartClassroomE2E.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/simulateSmartClassroomHardeningE2E.ts",
+      "target": "apps/api/src/scripts/simulateSmartClassroomHardeningE2E.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/smokeOperationalJourneysApi.ts",
       "target": "apps/api/src/scripts/smokeOperationalJourneysApi.ts",
       "domain": "operations",
@@ -2801,6 +3089,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/verifySmartClassroomActiveAuthE2E.ts",
+      "target": "apps/api/src/scripts/verifySmartClassroomActiveAuthE2E.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/verifySmartClassroomG0.ts",
       "target": "apps/api/src/scripts/verifySmartClassroomG0.ts",
       "domain": "auth",
@@ -2809,6 +3103,18 @@
     {
       "source": "server/src/scripts/verifySmartClassroomG2.ts",
       "target": "apps/api/src/scripts/verifySmartClassroomG2.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifySmartClassroomRealtimeE2E.ts",
+      "target": "apps/api/src/scripts/verifySmartClassroomRealtimeE2E.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifySmartClassroomReportImmutability.ts",
+      "target": "apps/api/src/scripts/verifySmartClassroomReportImmutability.ts",
       "domain": "auth",
       "confidence": "review-required"
     },

@@ -11,10 +11,10 @@ import { StudyPlanModel } from "../../models/StudyPlan.js";
 import { UserModel } from "../../models/User.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
+import { hasActiveSchoolRole } from "../../modules/schools/application/schoolContextResolver.js";
 import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomScopeFilter, resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { buildClassroomSchoolIntelligence, buildClassroomSkillEvidence } from "../../modules/schools/application/classroomSchoolIntelligence.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
 
 const interventionSchema = z.object({
   schoolId: z.string().min(1), classId: z.string().optional().default(""), skillId: z.string().min(1),
@@ -33,7 +33,7 @@ export function registerClassroomSupervisorRoutes(classroomRouter: Router) {
     const filter: Record<string, any> = { status: { $in: ["ended", "archived"] } };
     if (req.authUser!.role === "teacher") {
       if (!requestedSchoolId) return res.status(StatusCodes.BAD_REQUEST).json({ message: "schoolId is required for teacher history" });
-      if (!(await ensureTeacherSchoolAccess(req.authUser!, requestedSchoolId))) {
+      if (!(await hasActiveSchoolRole(req.authUser!, requestedSchoolId, "teacher"))) {
         return res.status(StatusCodes.FORBIDDEN).json({ message: "School history access denied" });
       }
       if (!(await resolveSchoolEntitlement(requestedSchoolId, "SMART_CLASSROOM")).allowed) {

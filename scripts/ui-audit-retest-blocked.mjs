@@ -8,14 +8,13 @@ const CHECKLIST_FINAL = path.join(RUN_DIR, 'ui-audit-checklist-final.json');
 const OUT_NDJSON = path.join(RUN_DIR, 'ui-audit-retest-blocked.ndjson');
 const OUT_MD = path.join(RUN_DIR, 'RETEST_BLOCKED_SUMMARY.md');
 
-const roleCreds = {
-  guest: [],
-  student: [{ email: 'student.a@almeaa.local', password: 'Student@123' }, { email: 'student@example.com', password: 'Student@123' }],
-  admin: [{ email: 'nasef64@gmail.com', password: 'Nn@0120110367' }],
-  supervisor: [{ email: 'supervisor.group@almeaa.local', password: 'Supervisor@123' }, { email: 'supervisor@example.com', password: 'Supervisor@123' }],
-  teacher: [{ email: 'teacher.quant@almeaa.local', password: 'Teacher@123' }, { email: 'teacher@example.com', password: 'Teacher@123' }],
-  parent: [{ email: 'parent.a@almeaa.local', password: 'Parent@123' }, { email: 'parent@example.com', password: 'Parent@123' }],
-};
+const roleCreds = (() => {
+  try {
+    return { guest: [], ...JSON.parse(process.env.UI_AUDIT_ROLE_CREDENTIALS_JSON || '{}') };
+  } catch {
+    throw new Error('UI_AUDIT_ROLE_CREDENTIALS_JSON must contain valid role credential arrays');
+  }
+})();
 
 function normalize(s) {
   return String(s || '')

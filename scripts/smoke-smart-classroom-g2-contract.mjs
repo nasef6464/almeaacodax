@@ -7,7 +7,12 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const checks = [];
 const check = (name, condition) => { checks.push({ name, pass: Boolean(condition) }); assert.ok(condition, name); };
 
-const routes = read("server/src/routes/classroom.routes.ts");
+const routes = [
+  "server/src/routes/classroom.routes.ts",
+  "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
+  "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
+  "server/src/routes/classroom/registerClassroomAggregateRoutes.ts",
+].map(read).join("\n");
 const projection = read("server/src/modules/schools/application/classroomQuestionProjection.ts");
 const teacher = read("pages/ClassroomTeacherConsole.tsx");
 const student = read("pages/ClassroomStudentLive.tsx");
@@ -15,16 +20,16 @@ const projector = read("pages/ClassroomProjectorView.tsx");
 const realtime = read("hooks/useClassroomRealtime.ts");
 const app = read("App.tsx");
 
-check("session creation requires SMART_CLASSROOM entitlement", routes.includes('resolveSchoolEntitlement(payload.schoolId, "SMART_CLASSROOM")'));
+check("session creation requires SMART_CLASSROOM entitlement", routes.includes('smartClassroomEnabled(payload.schoolId)') && routes.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")'));
 check("session creation requires an active teaching assignment", routes.includes('TeachingAssignmentModel.exists'));
 check("student must join before reading a question", routes.includes('Join the session before viewing questions'));
 check("student answer validates option range", routes.includes('payload.selectedOptionIndex >= question.options.length'));
-check("responses use a single upsert identity", routes.includes('findOneAndUpdate') && routes.includes('sessionId: sessionId(session), questionId: question.questionId, studentId: req.authUser!.id'));
+check("responses use a single upsert identity", routes.includes('findOneAndUpdate') && routes.includes('sessionId: classroomSessionId(session), questionId: question.questionId, studentId: req.authUser!.id'));
 check("student projection excludes correctOptionIndex", !projection.includes("correctOptionIndex"));
 check("teacher console creates a session from existing question bank", teacher.includes("createClassroomSession") && teacher.includes("getClassroomQuestions"));
-check("teacher console publishes a selected session question", teacher.includes("publish(question.index)"));
-check("student surface waits after joining until a question is published", student.includes("بانتظار المعلم لنشر السؤال التالي"));
-check("projector displays aggregate responses only", projector.includes("responseCount") && projector.includes("distribution") && !projector.includes("student"));
+check("teacher console publishes a selected session question", teacher.includes("publishClassroomQuestion(sessionId, index)") && teacher.includes("onPublish={(index)"));
+check("student surface waits after joining until a question batch is published", student.includes("بانتظار المعلم لنشر الدفعة التالية"));
+check("projector defaults to submission status and requires an explicit reveal", projector.includes("useState<RevealMode>('submissions')") && projector.includes("revealMode === 'responses'") && projector.includes("revealMode === 'solution'"));
 check("realtime joins only the current classroom workspace", realtime.includes('workspace:join') && realtime.includes('classroom:${sessionId}'));
 check("all three product surfaces have stable routes", app.includes('path="/classroom/teacher"') && app.includes('path="/classroom/:sessionId"') && app.includes('path="/classroom/:sessionId/projector"'));
 

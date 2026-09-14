@@ -11,123 +11,15 @@ import {
   Zap,
 } from 'lucide-react';
 import { api } from '../../services/api';
-
-export interface ClassroomSavedReport {
-  sessionId: string;
-  schoolId: string;
-  classId: string;
-  className?: string;
-  subjectName?: string;
-  subject?: string;
-  day?: string;
-  period?: number | string | null;
-  teacherId?: string;
-  status?: string;
-  startedAt?: string;
-  endedAt?: string | null;
-  durationMinutes?: number | null;
-  participantCount?: number;
-  responseCount?: number;
-  correctCount?: number;
-  roster?: {
-    expected: number;
-    joined: number;
-    absentFromSession: number;
-  };
-  totals?: {
-    responses: number;
-    correct: number;
-  };
-  batches?: Array<{
-    batchId: string;
-    number?: number;
-    label?: string;
-    questionIds?: string[];
-    startedAt?: string | null;
-    endedAt?: string | null;
-    durationSeconds?: number | null;
-    totals?: {
-      questions?: number;
-      answered?: number;
-      correct?: number;
-      wrong?: number;
-      unanswered?: number;
-      accuracy?: number | null;
-    };
-    skillIds?: string[];
-  }>;
-  questions?: Array<{
-    index?: number;
-    questionId: string;
-    text: string;
-    options?: string[];
-    skillIds?: string[];
-    skillId?: string;
-    skillName?: string;
-    pathId?: string;
-    sectionId?: string;
-    subject?: string;
-    answered?: number;
-    answeredCount?: number;
-    correct?: number;
-    correctCount?: number;
-    wrong?: number;
-    unanswered?: number;
-    isChallenge?: boolean;
-  }>;
-}
-
-type CanonicalQuestionReport = {
-  index: number;
-  questionId: string;
-  text: string;
-  skillIds: string[];
-  pathId?: string;
-  sectionId?: string;
-  subject?: string;
-  answered: number;
-  correct: number;
-  wrong: number;
-  unanswered: number;
-};
-
-type CanonicalBatchReport = {
-  batchId: string;
-  number: number;
-  label: string;
-  questionIds: string[];
-  startedAt: string | null;
-  endedAt: string | null;
-  durationSeconds: number | null;
-  totals: {
-    questions: number;
-    answered: number;
-    correct: number;
-    wrong: number;
-    unanswered: number;
-    accuracy: number | null;
-  };
-  skillIds: string[];
-};
-
-type CanonicalClassroomReport = {
-  sessionId: string;
-  schoolId: string;
-  classId: string;
-  className: string;
-  subjectName: string;
-  day: string;
-  period: number | null;
-  teacherId?: string;
-  status: string;
-  startedAt?: string;
-  endedAt: string | null;
-  durationMinutes: number | null;
-  roster: { expected: number; joined: number; absentFromSession: number };
-  totals: { responses: number; correct: number };
-  batches: CanonicalBatchReport[];
-  questions: CanonicalQuestionReport[];
-};
+import {
+  buildClassroomSkillDiagnostics,
+  formatClassroomDuration,
+  isClassroomReportWithinPeriod,
+  normalizeClassroomReport,
+  type CanonicalClassroomReport,
+  type ClassroomReportTimeFilter,
+  type ClassroomSavedReport,
+} from './classroomReportViewModel';
 
 interface SmartClassroomReportsSectionProps {
   schoolId: string;
@@ -136,123 +28,6 @@ interface SmartClassroomReportsSectionProps {
   onPrepareIntervention?: (skillId: string) => void;
 }
 
-type TimeFilter = 'all' | 'today' | 'week' | 'month';
-type SkillDiagnostic = {
-  skillId: string;
-  skillName: string;
-  totalAnswered: number;
-  correct: number;
-  sessions: Set<string>;
-  accuracy: number | null;
-  isWeak: boolean;
-};
-
-const toNumber = (value: unknown, fallback = 0) => {
-  const number = Number(value);
-  return Number.isFinite(number) ? number : fallback;
-};
-
-const elapsedSeconds = (startedAt?: string | null, endedAt?: string | null) => {
-  if (!startedAt || !endedAt) return null;
-  const start = new Date(startedAt).getTime();
-  const end = new Date(endedAt).getTime();
-  if (!Number.isFinite(start) || !Number.isFinite(end)) return null;
-  return Math.max(0, Math.round((end - start) / 1000));
-};
-
-const formatDuration = (seconds: number | null) => {
-  if (seconds === null) return '—';
-  if (seconds < 60) return `${seconds} ث`;
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return remainingSeconds > 0 ? `${minutes} د ${remainingSeconds} ث` : `${minutes} د`;
-};
-
-const normalizeReport = (raw: ClassroomSavedReport): CanonicalClassroomReport => {
-  const joined = raw.roster?.joined ?? raw.participantCount ?? 0;
-  const expected = raw.roster?.expected ?? joined;
-  const responses = raw.totals?.responses ?? raw.responseCount ?? 0;
-  const correct = raw.totals?.correct ?? raw.correctCount ?? 0;
-  const questions = (raw.questions || []).map((question, index): CanonicalQuestionReport => {
-    const answered = question.answered ?? question.answeredCount ?? 0;
-    const questionCorrect = question.correct ?? question.correctCount ?? 0;
-    const skillIds = question.skillIds?.filter(Boolean) || (question.skillId ? [question.skillId] : []);
-    return {
-      index: question.index ?? index,
-      questionId: question.questionId,
-      text: question.text,
-      skillIds,
-      pathId: question.pathId,
-      sectionId: question.sectionId,
-      subject: question.subject,
-      answered,
-      correct: questionCorrect,
-      wrong: question.wrong ?? Math.max(0, answered - questionCorrect),
-      unanswered: question.unanswered ?? Math.max(0, joined - answered),
-    };
-  });
-  const questionById = new Map(questions.map((question) => [question.questionId, question]));
-  const batches = (raw.batches || []).map((batch, index): CanonicalBatchReport => {
-    const questionIds = batch.questionIds || [];
-    const batchQuestions = questionIds.map((questionId) => questionById.get(questionId)).filter(Boolean) as CanonicalQuestionReport[];
-    const answered = batch.totals?.answered ?? batchQuestions.reduce((sum, question) => sum + question.answered, 0);
-    const batchCorrect = batch.totals?.correct ?? batchQuestions.reduce((sum, question) => sum + question.correct, 0);
-    const wrong = batch.totals?.wrong ?? batchQuestions.reduce((sum, question) => sum + question.wrong, 0);
-    const unanswered = batch.totals?.unanswered ?? batchQuestions.reduce((sum, question) => sum + question.unanswered, 0);
-    return {
-      batchId: batch.batchId,
-      number: batch.number ?? index + 1,
-      label: batch.label || `الدفعة ${index + 1}`,
-      questionIds,
-      startedAt: batch.startedAt || null,
-      endedAt: batch.endedAt || null,
-      durationSeconds: batch.durationSeconds ?? elapsedSeconds(batch.startedAt, batch.endedAt),
-      totals: {
-        questions: batch.totals?.questions ?? questionIds.length,
-        answered,
-        correct: batchCorrect,
-        wrong,
-        unanswered,
-        accuracy: batch.totals?.accuracy ?? (answered > 0 ? Math.round((batchCorrect / answered) * 100) : null),
-      },
-      skillIds: (batch.skillIds || Array.from(new Set(batchQuestions.flatMap((question) => question.skillIds)))).filter(Boolean),
-    };
-  });
-  const periodNumber = raw.period === null || raw.period === undefined || raw.period === '' ? null : toNumber(raw.period, 0) || null;
-  return {
-    sessionId: raw.sessionId,
-    schoolId: raw.schoolId,
-    classId: raw.classId,
-    className: raw.className || '',
-    subjectName: raw.subjectName || raw.subject || '',
-    day: raw.day || '',
-    period: periodNumber,
-    teacherId: raw.teacherId,
-    status: raw.status || 'ended',
-    startedAt: raw.startedAt,
-    endedAt: raw.endedAt || null,
-    durationMinutes: raw.durationMinutes ?? null,
-    roster: {
-      expected,
-      joined,
-      absentFromSession: raw.roster?.absentFromSession ?? Math.max(0, expected - joined),
-    },
-    totals: { responses, correct },
-    batches,
-    questions,
-  };
-};
-
-const isWithinPeriod = (endedAt: string | null | undefined, filter: TimeFilter) => {
-  if (filter === 'all') return true;
-  if (!endedAt) return false;
-  const ended = new Date(endedAt);
-  if (Number.isNaN(ended.getTime())) return false;
-  if (filter === 'today') return ended.toDateString() === new Date().toDateString();
-  const age = Date.now() - ended.getTime();
-  if (filter === 'week') return age <= 7 * 24 * 60 * 60 * 1000;
-  return age <= 30 * 24 * 60 * 60 * 1000;
-};
 
 export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSectionProps> = ({
   schoolId,
@@ -262,7 +37,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
 }) => {
   const [reports, setReports] = useState<CanonicalClassroomReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<CanonicalClassroomReport | null>(null);
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
+  const [timeFilter, setTimeFilter] = useState<ClassroomReportTimeFilter>('all');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -275,7 +50,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
       const result = await api.getClassroomTeacherHistory(schoolId);
       const sessions = Array.isArray(result?.sessions) ? result.sessions : [];
       const finalizedReports = sessions
-        .map((session) => normalizeReport(session as ClassroomSavedReport))
+        .map((session) => normalizeClassroomReport(session as ClassroomSavedReport))
         .filter((report) => report.status === 'ended' || report.status === 'archived' || Boolean(report.endedAt));
       setReports(finalizedReports);
     } catch (err: any) {
@@ -294,7 +69,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const filteredReports = useMemo(
     () => reports.filter((report) => {
       if (selectedClassFilter !== 'all' && report.classId !== selectedClassFilter) return false;
-      return isWithinPeriod(report.endedAt, timeFilter);
+      return isClassroomReportWithinPeriod(report.endedAt, timeFilter);
     }),
     [reports, selectedClassFilter, timeFilter],
   );
@@ -305,35 +80,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const totalCorrect = filteredReports.reduce((sum, report) => sum + report.totals.correct, 0);
   const overallAccuracy = totalResponses > 0 ? Math.round((totalCorrect / totalResponses) * 100) : null;
 
-  const skillDiagnostics = useMemo(() => {
-    const map = new Map<string, Omit<SkillDiagnostic, 'accuracy' | 'isWeak'>>();
-    for (const report of filteredReports) {
-      for (const question of report.questions) {
-        const skillIds = Array.from(new Set(question.skillIds.filter(Boolean)));
-        const keys = skillIds.length > 0 ? skillIds : (question.subject ? [`subject:${question.subject}`] : []);
-        for (const key of keys) {
-          const current = map.get(key) || {
-            skillId: key,
-            skillName: key.startsWith('subject:') ? key.slice('subject:'.length) : key,
-            totalAnswered: 0,
-            correct: 0,
-            sessions: new Set<string>(),
-          };
-          current.totalAnswered += question.answered;
-          current.correct += question.correct;
-          current.sessions.add(report.sessionId);
-          map.set(key, current);
-        }
-      }
-    }
-    return Array.from(map.values())
-      .map((entry): SkillDiagnostic => {
-        const accuracy = entry.totalAnswered > 0 ? Math.round((entry.correct / entry.totalAnswered) * 100) : null;
-        return { ...entry, accuracy, isWeak: accuracy !== null && accuracy < 65 };
-      })
-      .filter((entry) => entry.accuracy !== null)
-      .sort((a, b) => (a.accuracy ?? 101) - (b.accuracy ?? 101));
-  }, [filteredReports]);
+  const skillDiagnostics = useMemo(() => buildClassroomSkillDiagnostics(filteredReports), [filteredReports]);
 
   const weakSkills = skillDiagnostics.filter((skill) => skill.isWeak);
 
@@ -397,7 +144,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
               {assignments.map((assignment) => <option key={assignment.classId} value={assignment.classId}>{assignment.className}</option>)}
             </select>
           )}
-          <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value as TimeFilter)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+          <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value as ClassroomReportTimeFilter)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
             <option value="all">كامل الفترة</option><option value="month">آخر شهر</option><option value="week">آخر أسبوع</option><option value="today">اليوم</option>
           </select>
           <button type="button" onClick={() => void loadReports()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50 dark:bg-slate-700"><RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> تحديث</button>
@@ -466,7 +213,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
                         <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${batch.totals.accuracy !== null && batch.totals.accuracy < 65 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>{batch.totals.accuracy === null ? '—' : `${batch.totals.accuracy}%`}</span>
                       </div>
                       <div className="mt-2 text-[11px] text-slate-500">{batch.totals.questions} سؤال · {batch.totals.answered} إجابة · {batch.totals.correct} صحيحة</div>
-                      <div className="mt-1 text-[11px] text-slate-500">المدة: {formatDuration(batch.durationSeconds)}{batch.startedAt ? ` · بدأت ${new Date(batch.startedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}` : ''}</div>
+                      <div className="mt-1 text-[11px] text-slate-500">المدة: {formatClassroomDuration(batch.durationSeconds)}{batch.startedAt ? ` · بدأت ${new Date(batch.startedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}` : ''}</div>
                       {batch.skillIds.length > 0 && <div className="mt-2 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">المهارات: {batch.skillIds.join('، ')}</div>}
                     </div>
                   ))}

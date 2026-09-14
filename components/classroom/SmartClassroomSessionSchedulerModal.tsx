@@ -188,7 +188,7 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/20 text-indigo-300"><Presentation size={24} /></div>
             <div>
               <h2 className="text-xl font-black text-white">إعداد وإطلاق الحصة الذكية</h2>
-              <p className="mt-0.5 text-xs text-indigo-200">ابدأ الحصة أولاً ثم أرسل أي عدد من دفعات الأسئلة أثناء الشرح، أو ابدأ مباشرة بحزمة جاهزة.</p>
+              <p className="mt-0.5 text-xs text-indigo-200">ابدأ الحصة أولاً ثم أرسل أي عدد من دفعات الأسئلة أثناء الشرح، أو ابدأ مباشرة بحزمة جاهزة. هذه ليست جدولة مستقبلية؛ الحصة تبدأ الآن.</p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="rounded-xl p-2 text-indigo-200 hover:bg-white/10 hover:text-white"><X size={20} /></button>
@@ -266,7 +266,7 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-5">
             <button type="button" onClick={() => setSessionMode('empty')} className={`rounded-2xl border p-3 text-right transition-all ${sessionMode === 'empty' ? 'border-violet-600 bg-violet-50/70 dark:bg-violet-950/50 shadow-xs' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'}`}>
-              <div className="flex items-center gap-1.5 text-xs font-black text-slate-900 dark:text-white"><Presentation size={15} className="text-violet-600" /> ابدأ فارغة</div>
+              <div className="flex items-center gap-1.5 text-xs font-black text-slate-900 dark:text-white"><Presentation size={15} className="text-violet-600" /> ابدأ الحصة فارغة</div>
               <p className="mt-1 text-[10px] text-slate-500">اختر الأسئلة لاحقاً أثناء الحصة</p>
             </button>
             <button type="button" onClick={() => setSessionMode('template')} className={`rounded-2xl border p-3 text-right transition-all ${sessionMode === 'template' ? 'border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/50 shadow-xs' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'}`}>

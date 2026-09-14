@@ -5,7 +5,7 @@ import { ClassroomResponseModel } from "../../models/ClassroomResponse.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
-import { emitClassroomEvent } from "../../realtime/classroomRealtime.js";
+import { emitClassroomEvent } from "../../sockets/classroomEvents.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { classroomSessionId, ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
 

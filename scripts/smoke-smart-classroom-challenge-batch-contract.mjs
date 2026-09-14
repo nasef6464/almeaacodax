@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const teacherRoutes = fs.readFileSync(path.join(root, 'server/src/routes/classroom/registerClassroomTeacherRoutes.ts'), 'utf8');
 const teacherPanel = fs.readFileSync(path.join(root, 'components/classroom/ClassroomActiveSessionPanel.tsx'), 'utf8');
+const batchRoutes = fs.readFileSync(path.join(root, 'server/src/routes/classroom/registerClassroomBatchRoutes.ts'), 'utf8');
 
 assert.ok(teacherRoutes.includes('challengeDurationSeconds: z.number().int().min(10).max(600).optional()'));
 assert.ok(teacherRoutes.includes('Timed challenge batches must be published immediately'));
@@ -22,5 +23,11 @@ assert.ok(teacherPanel.includes('إنشاء دفعة تحدي مستقلة'));
 assert.ok(teacherPanel.includes('<option value={30}>30 ث</option>'));
 assert.ok(teacherPanel.includes('<option value={90}>90 ث</option>'));
 assert.ok(!teacherPanel.includes('handleInstantChallenge'));
+assert.ok(teacherRoutes.includes('أنه الدفعة النشطة أولاً ثم أرسل دفعة جديدة'));
+assert.ok(batchRoutes.includes('"/sessions/:id/batches/:batchId/end"'));
+assert.ok(batchRoutes.includes('miniReport: await buildBatchMiniReport(session, batch)'));
+assert.ok(teacherPanel.includes('handleEndBatch'));
+assert.ok(teacherPanel.includes('إنهاء الدفعة وعرض ملخصها'));
+assert.ok(teacherPanel.includes('ملخص {batchMiniReport.label}'));
 
 console.log('Smart Classroom challenge-batch contract: PASS');

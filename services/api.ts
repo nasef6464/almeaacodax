@@ -838,6 +838,7 @@ export const api = {
   answerClassroomQuestion: (id: string, questionId: string, selectedOptionIndex: number, token?: string | null) => request<any>(`/classroom/sessions/${id}/answers/${questionId}`, { method: "PUT", body: { selectedOptionIndex }, token }),
   publishClassroomQuestion: (id: string, index: number, token?: string | null) => request<any>(`/classroom/sessions/${id}/publish/${index}`, { method: "POST", token }),
   endClassroomSession: (id: string, token?: string | null) => request<any>(`/classroom/sessions/${id}/end`, { method: "POST", token }),
+  endClassroomBatch: (sessionId: string, batchId: string, token?: string | null) => request<{ ended: boolean; alreadyEnded?: boolean; endedAt?: string; miniReport: { batchId: string; label: string; questionCount: number; answered: number; correct: number; wrong: number; accuracy: number | null; skills: Array<{ skillId: string; answered: number; correct: number; accuracy: number | null }> } }>(`/classroom/sessions/${encodeURIComponent(sessionId)}/batches/${encodeURIComponent(batchId)}/end`, { method: "POST", token }),
   getClassroomAggregate: (id: string, token?: string | null) => request<any>(`/classroom/sessions/${id}/aggregate`, { token }),
   getSupervisorClassroomToday: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/today", { token, cache: "no-store" }),
   getSupervisorClassroomHistory: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/history", { token, cache: "no-store" }),

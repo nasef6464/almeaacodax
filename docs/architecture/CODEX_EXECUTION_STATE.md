@@ -1,5 +1,40 @@
 # ALMEAA — Codex Execution State
 
+## Smart Classroom pre-merge hardening — batch lifecycle and privacy
+
+- Status: `LOCAL VERIFIED / PR REVIEW PENDING / CI EXTERNALLY BLOCKED` on 2026-09-14.
+- Working branch: `chatgpt/smart-classroom-premerge-hardening` (PR #146; do not merge automatically).
+- Delivered in the current pre-merge pass:
+  1. A live session may start empty; batches are now explicit: the teacher ends
+     the active batch, receives a server-built mini result, then sends the next
+     batch. The server rejects silent replacement of an active batch.
+  2. Student access is explicitly denied for staff aggregates and supervisor
+     reports. Projector remains submission-only by default, with response and
+     solution reveals requiring a teacher action.
+  3. End-batch and end-session calls are idempotent; an ended session returns
+     its stored immutable report snapshot instead of recalculating it.
+  4. Teacher historical reports remain readable with an active school teacher
+     membership after a specific class assignment ends; active classroom
+     control still requires the active assignment and entitlement.
+  5. The report view-model was extracted from the report UI, and UI-audit
+     scripts no longer embed role credentials.
+- Local evidence on the current worktree:
+  - Server TypeScript check passed.
+  - Smart Classroom contracts passed: challenge batch, hardening (35/35), and
+    live journey (58/58).
+  - Isolated Mongo + HTTP + Socket E2E passed with 25 class students joining
+    and answering concurrently, cross-school denials, batch and session
+    idempotency, and immutable report verification.
+  - Frontend production build generated successfully; module-boundary gate
+    passed.
+- Known external/non-scope blockers:
+  - Repository-wide architecture gate is at 84 hotspots against a budget of
+    83 because of the pre-existing `SchoolPeopleHubTab.tsx` hotspot. Smart
+    Classroom work added no hotspot; that People Hub file is intentionally
+    outside this Smart Classroom-only pass.
+  - GitHub Actions checks on PR #146 are blocked by the repository
+    Billing/Spending Limit; CI must be rerun on the final exact commit.
+
 ## People Hub quick closure plan
 
 - Status: `PARTIAL / LOCAL VERIFIED / CI BLOCKED` on 2026-09-13.

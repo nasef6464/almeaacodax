@@ -26,6 +26,17 @@ type CompetitionResult = {
 
 type PushMode = 'normal' | 'challenge';
 
+type BatchMiniReport = {
+  batchId: string;
+  label: string;
+  questionCount: number;
+  answered: number;
+  correct: number;
+  wrong: number;
+  accuracy: number | null;
+  skills: Array<{ skillId: string; answered: number; correct: number; accuracy: number | null }>;
+};
+
 interface ClassroomActiveSessionPanelProps {
   sessionId: string;
   data: any;
@@ -46,6 +57,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
   const [competitionResult, setCompetitionResult] = useState<CompetitionResult | null>(null);
   const [endingChallenge, setEndingChallenge] = useState(false);
+  const [endingBatch, setEndingBatch] = useState(false);
+  const [batchMiniReport, setBatchMiniReport] = useState<BatchMiniReport | null>(null);
   const [showPushModal, setShowPushModal] = useState(false);
   const [pushMode, setPushMode] = useState<PushMode>('normal');
   const [pushChallengeSeconds, setPushChallengeSeconds] = useState(45);
@@ -175,6 +188,18 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     } finally { setPushingQuestions(false); }
   };
 
+  const handleEndBatch = async () => {
+    const batchId = String(data?.activeBatchId || '');
+    if (!batchId || endingBatch) return;
+    setEndingBatch(true);
+    try {
+      const result = await api.endClassroomBatch(sessionId, batchId);
+      setBatchMiniReport(result.miniReport);
+      setShowPushModal(false);
+      onReload?.();
+    } finally { setEndingBatch(false); }
+  };
+
   const handleEndChallenge = async () => {
     if (endingChallenge) return;
     setEndingChallenge(true);
@@ -194,6 +219,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
   const podium = competitionResult?.podium || competitionResult?.leaderboard?.slice(0, 3) || [];
   const challengeEnded = Boolean(challengeState?.expired || challengeState?.ended || timerSeconds === 0);
+  const hasActiveBatch = Boolean(data?.activeBatchId);
 
   return (
     <main className="mx-auto max-w-5xl p-4 sm:p-6" dir="rtl">
@@ -223,11 +249,13 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
       {podium.length > 0 && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20"><div className="flex items-center gap-2"><Trophy size={20} className="text-amber-600" /><h3 className="text-sm font-black text-amber-950 dark:text-amber-200">نتيجة التحدي — أفضل 3</h3></div><div className="mt-3 grid gap-2 sm:grid-cols-3">{podium.map((entry) => <div key={entry.studentId} className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-900/50 dark:bg-slate-900"><div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{entry.name}</span><span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800"><Crown size={11} /> #{entry.rank}</span></div><div className="mt-2 text-[11px] text-slate-500">{entry.score} نقطة · {entry.correct} صحيحة · دقة {entry.accuracy}%</div></div>)}</div></div>}
 
+      {batchMiniReport && <section className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-sm font-black text-emerald-950 dark:text-emerald-200">ملخص {batchMiniReport.label}</h2><p className="mt-1 text-xs text-emerald-800 dark:text-emerald-300">تم إغلاق الدفعة. يمكنك الآن إرسال دفعة جديدة دون فقد سجل هذه الدفعة.</p></div><button type="button" onClick={() => setBatchMiniReport(null)} className="rounded-lg border border-emerald-300 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:text-emerald-200">إخفاء</button></div><div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4"><div className="rounded-xl bg-white p-3 text-center dark:bg-slate-900"><div className="text-lg font-black">{batchMiniReport.answered}</div><div className="text-[11px] text-slate-500">إجابات</div></div><div className="rounded-xl bg-white p-3 text-center dark:bg-slate-900"><div className="text-lg font-black text-emerald-600">{batchMiniReport.correct}</div><div className="text-[11px] text-slate-500">صحيحة</div></div><div className="rounded-xl bg-white p-3 text-center dark:bg-slate-900"><div className="text-lg font-black text-rose-600">{batchMiniReport.wrong}</div><div className="text-[11px] text-slate-500">خاطئة</div></div><div className="rounded-xl bg-white p-3 text-center dark:bg-slate-900"><div className="text-lg font-black text-indigo-600">{batchMiniReport.accuracy ?? '—'}{batchMiniReport.accuracy !== null ? '%' : ''}</div><div className="text-[11px] text-slate-500">الدقة</div></div></div></section>}
+
       <div className="mt-6"><ClassroomTeacherLiveRadar responseCount={data?.responseCount ?? 0} distribution={distribution} activeQuestion={currentQuestion ? { ...currentQuestion, isChallenge: isCurrentChallenge } : null} onToggleChallenge={currentQuestion ? () => onToggleChallenge(currentQuestion.questionId) : undefined} /></div>
       {currentQuestion && <ClassroomQuestionReviewPanel sessionId={sessionId} currentQuestion={currentQuestion} currentQAnalytics={currentQAnalytics} distribution={distribution} showInlineExplanation={showInlineExplanation} onToggleExplanation={() => setShowInlineExplanation((value) => !value)} />}
 
       <section className="mt-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-black text-slate-900 dark:text-white">أسئلة الحصة التفاعلية</h2><p className="text-xs text-slate-500">أرسل تدريبًا عاديًا أو أنشئ دفعة تحدي مستقلة بمؤقت موحد وترتيب حي.</p>{bankError && <p className="mt-2 text-xs font-bold text-rose-600">{bankError}</p>}{loadingBank && <p className="mt-2 text-xs font-bold text-indigo-600">جارٍ تحديث بنك الأسئلة المصرح من الخادم…</p>}</div><div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => openPushModal('normal')} disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"><PlusCircle size={14} /> إرسال تدريب / حزمة مهارة</button><select value={pushChallengeSeconds} onChange={(event) => setPushChallengeSeconds(Number(event.target.value))} disabled={data?.status === 'ended'} className="rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-2 text-xs font-black text-amber-800"><option value={30}>30 ث</option><option value={45}>45 ث</option><option value={60}>60 ث</option><option value={90}>90 ث</option></select><button type="button" onClick={() => openPushModal('challenge')} disabled={data?.status === 'ended' || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"><Zap size={14} /> إنشاء دفعة تحدي مستقلة</button>{currentQIndex !== undefined && currentQIndex < (data?.questions || []).length - 1 && <button type="button" onClick={() => onPublish(currentQIndex + 1)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-2 text-xs font-black text-indigo-700"><SkipForward size={14} /> الانتقال للسؤال التالي</button>}</div></div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-black text-slate-900 dark:text-white">أسئلة الحصة التفاعلية</h2><p className="text-xs text-slate-500">الترتيب: أرسل دفعة، تابع التسليم، أنهِ الدفعة واعرض ملخصها، ثم ابدأ التالية.</p>{bankError && <p className="mt-2 text-xs font-bold text-rose-600">{bankError}</p>}{loadingBank && <p className="mt-2 text-xs font-bold text-indigo-600">جارٍ تحديث بنك الأسئلة المصرح من الخادم…</p>}</div><div className="flex flex-wrap items-center gap-2">{hasActiveBatch && <button type="button" onClick={() => void handleEndBatch()} disabled={data?.status === 'ended' || endingBatch} className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50">{endingBatch ? 'جارٍ إنهاء الدفعة…' : 'إنهاء الدفعة وعرض ملخصها'}</button>}<button type="button" onClick={() => openPushModal('normal')} disabled={data?.status === 'ended' || hasActiveBatch || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"><PlusCircle size={14} /> إرسال تدريب / حزمة مهارة</button><select value={pushChallengeSeconds} onChange={(event) => setPushChallengeSeconds(Number(event.target.value))} disabled={data?.status === 'ended' || hasActiveBatch} className="rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-2 text-xs font-black text-amber-800"><option value={30}>30 ث</option><option value={45}>45 ث</option><option value={60}>60 ث</option><option value={90}>90 ث</option></select><button type="button" onClick={() => openPushModal('challenge')} disabled={data?.status === 'ended' || hasActiveBatch || loadingBank || Boolean(bankError)} className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"><Zap size={14} /> إنشاء دفعة تحدي مستقلة</button>{currentQIndex !== undefined && currentQIndex < (data?.questions || []).length - 1 && <button type="button" onClick={() => onPublish(currentQIndex + 1)} disabled={data?.status === 'ended'} className="flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-2 text-xs font-black text-indigo-700"><SkipForward size={14} /> الانتقال للسؤال التالي</button>}</div></div>
         {showPushModal && pushMode === 'challenge' && <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-900">وضع التحدي مفعل: الأسئلة التي ستحددها ستصبح دفعة جديدة مستقلة لمدة {pushChallengeSeconds} ثانية، ويبدأ المؤقت والترتيب فور الإرسال.</div>}
         <div className="mt-4 space-y-3">{(data?.questions || []).map((question: any) => { const isActive = data?.activeQuestionIndex === question.index; const isChallenge = canonicalChallengeIds.includes(question.questionId) || challengeIds.includes(question.questionId); return <div key={question.questionId} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border p-4 ${isActive ? 'border-indigo-600 bg-indigo-50/70' : 'border-slate-200 bg-white'}`}><div className="flex items-start sm:items-center gap-3"><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-black ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}`}>{question.index + 1}</span><div className="min-w-0 flex-1"><div className="font-bold text-slate-900 text-sm"><span className="text-indigo-600 ml-1 font-black">سؤال {question.index + 1}:</span><QuestionContentRenderer content={question.text} className="inline-block align-middle max-h-24 overflow-hidden" /></div><div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-slate-500"><span>{question.options?.length || 4} خيارات</span>{isChallenge && <span className="inline-flex items-center gap-0.5 rounded-md bg-amber-100 px-1.5 py-0.5 font-black text-amber-800">⚡ تحدي سريع</span>}{isActive && <span className="font-black text-emerald-600">● معروض على أجهزة الطلاب</span>}</div></div></div><div className="flex items-center gap-2 self-end sm:self-center"><button type="button" onClick={() => onPublish(question.index)} disabled={data?.status === 'ended'} className={`rounded-xl px-3.5 py-2 text-xs font-bold disabled:opacity-50 ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}`}>{isActive ? 'منشور حالياً ✓' : 'نشر اعتيادي'}</button></div></div>; })}</div>
       </section>
