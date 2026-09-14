@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { AdvancedCourseBuilder } from './AdvancedCourseBuilder';
@@ -56,10 +56,15 @@ const getCourseReadinessMeta = (course: Course) => {
 };
 
 export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => {
-  const { courses, addCourse, updateCourse, deleteCourse, subjects } = useStore();
+  const { courses, addCourse, updateCourse, deleteCourse, subjects, paths } = useStore();
   const [isBuilding, setIsBuilding] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
+  const [pathFilter, setPathFilter] = useState('');
+  const [subjectFilter, setSubjectFilter] = useState(subjectId || '');
+  const [trainerFilter, setTrainerFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [page, setPage] = useState(1);
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
   const [saveError, setSaveError] = useState('');
   const [isSavingCourse, setIsSavingCourse] = useState(false);
@@ -149,17 +154,23 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   };
 
   const handleApprove = async (course: Course) => {
+    const reviewerNotes = window.prompt('ملاحظة للمدرب (اختيارية):', course.reviewerNotes || '');
+    if (reviewerNotes === null) return;
     await applyCourseMutation(course.id, {
       approvalStatus: 'approved',
       isPublished: true,
       approvedAt: Date.now(),
+      reviewerNotes: reviewerNotes.trim(),
     });
   };
 
   const handleReject = async (course: Course) => {
+    const reviewerNotes = window.prompt('اشرح المطلوب تعديله للمدرب:', course.reviewerNotes || '');
+    if (reviewerNotes === null) return;
     await applyCourseMutation(course.id, {
       approvalStatus: 'rejected',
       isPublished: false,
+      reviewerNotes: reviewerNotes.trim(),
     });
   };
 
@@ -193,9 +204,18 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     const matchesSearch =
       (course.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (course.category || course.pathId || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSubject = subjectId ? (course.subjectId || course.subject) === subjectId : true;
-    return matchesSearch && matchesSubject;
+    const courseSubjectId = course.subjectId || course.subject || '';
+    const matchesSubject = (subjectId || subjectFilter) ? courseSubjectId === (subjectId || subjectFilter) : true;
+    const matchesPath = pathFilter ? course.pathId === pathFilter : true;
+    const matchesTrainer = trainerFilter ? course.assignedTeacherId === trainerFilter : true;
+    const matchesStatus = statusFilter ? (course.approvalStatus || 'draft') === statusFilter : true;
+    return matchesSearch && matchesSubject && matchesPath && matchesTrainer && matchesStatus;
   });
+  const trainerOptions = useMemo(() => Array.from(new Map(courses.filter((course) => course.assignedTeacherId).map((course) => [course.assignedTeacherId!, course.instructor || course.assignedTeacherId!])).entries()), [courses]);
+  const availableSubjects = subjects.filter((item) => !pathFilter || item.pathId === pathFilter);
+  const pageSize = 20;
+  const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize));
+  const visibleCourses = filteredCourses.slice((Math.min(page, totalPages) - 1) * pageSize, Math.min(page, totalPages) * pageSize);
   const courseOverview = {
     total: filteredCourses.length,
     visible: filteredCourses.filter((course) => course.showOnPlatform !== false).length,
@@ -244,17 +264,21 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
             placeholder="ابحث عن دورة..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setPage(1); setSearchTerm(e.target.value); }}
             className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
+        <select value={pathFilter} onChange={(event) => { setPage(1); setPathFilter(event.target.value); setSubjectFilter(''); }} className="rounded-lg border border-gray-200 px-3 py-2 text-sm"><option value="">كل المسارات</option>{paths.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
+        <select value={subjectId || subjectFilter} disabled={Boolean(subjectId)} onChange={(event) => { setPage(1); setSubjectFilter(event.target.value); }} className="rounded-lg border border-gray-200 px-3 py-2 text-sm"><option value="">كل المواد</option>{availableSubjects.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
+        <select value={trainerFilter} onChange={(event) => { setPage(1); setTrainerFilter(event.target.value); }} className="rounded-lg border border-gray-200 px-3 py-2 text-sm"><option value="">كل المدربين</option>{trainerOptions.map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select>
+        <select value={statusFilter} onChange={(event) => { setPage(1); setStatusFilter(event.target.value); }} className="rounded-lg border border-gray-200 px-3 py-2 text-sm"><option value="">كل حالات الاعتماد</option><option value="draft">مسودة</option><option value="pending_review">بانتظار المراجعة</option><option value="approved">معتمد</option><option value="rejected">مرفوض</option></select>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -285,7 +309,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredCourses.map((course) => {
+              {visibleCourses.map((course) => {
                 const statusMeta = getCourseStatusMeta(course);
                 const visibilityMeta = getCourseVisibilityMeta(course);
                 const readinessMeta = getCourseReadinessMeta(course);
@@ -427,6 +451,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
           </table>
         </div>
       </div>
+      <div className="flex items-center justify-center gap-3 text-sm font-bold text-gray-600"><button disabled={page <= 1} onClick={() => setPage((value) => value - 1)} className="rounded-lg border px-3 py-2 disabled:opacity-40">السابق</button><span>{Math.min(page, totalPages)} / {totalPages}</span><button disabled={page >= totalPages} onClick={() => setPage((value) => value + 1)} className="rounded-lg border px-3 py-2 disabled:opacity-40">التالي</button></div>
 
       {previewCourse ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-6" onClick={() => setPreviewCourse(null)}>

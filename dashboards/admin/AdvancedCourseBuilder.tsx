@@ -20,6 +20,7 @@ interface AdvancedCourseBuilderProps {
   initialCourse?: Course;
   onSave: (course: Partial<Course>) => void;
   onCancel: () => void;
+  canControlPublication?: boolean;
 }
 
 const toFiniteNumber = (value: unknown, fallback = 0) => {
@@ -48,7 +49,7 @@ type PlatformTrainerDirectoryItem = {
 
 const getTrainerId = (trainer: PlatformTrainerDirectoryItem) => String(trainer.id || trainer._id || '');
 
-export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
+export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel, canControlPublication }) => {
   const { user, paths, subjects, sections, skills, lessons, quizzes } = useStore();
   const categoryOptions = ['دورة تعليمية', 'برنامج تدريبي', 'مسار تطوير مهارات'] as const;
   const levelOptions: Array<'Beginner' | 'Intermediate' | 'Advanced'> = ['Beginner', 'Intermediate', 'Advanced'];
@@ -79,6 +80,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     files: []
   });
   const canAssignPlatformTrainer = user.role === Role.ADMIN;
+  const canPublishCourse = canControlPublication ?? user.role === Role.ADMIN;
   const [trainerSearch, setTrainerSearch] = useState('');
   const [trainerPage, setTrainerPage] = useState(1);
   const [trainerDirectory, setTrainerDirectory] = useState<PlatformTrainerDirectoryItem[]>([]);
@@ -1393,7 +1395,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       <div className="space-y-4">
                         <h4 className="font-bold text-gray-700">خيارات الدورة</h4>
                         
-                        <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                        {canPublishCourse ? <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
                           <input 
                             type="checkbox" 
                             checked={courseData.isPublished}
@@ -1404,9 +1406,9 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                             <span className="block font-bold text-gray-800">نشر الدورة</span>
                             <span className="text-xs text-gray-500">جعل الدورة مرئية للطلاب.</span>
                           </div>
-                        </label>
+                        </label> : null}
 
-                        <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                        {canPublishCourse ? <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
                           <input 
                             type="checkbox" 
                             checked={courseData.showOnPlatform !== false}
@@ -1417,7 +1419,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                             <span className="block font-bold text-gray-800">إظهار الدورة على المنصة</span>
                             <span className="text-xs text-gray-500">إيقافها يبقي الدورة في المستودع للإعداد دون ظهورها للطلاب.</span>
                           </div>
-                        </label>
+                        </label> : null}
 
                         <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
                           <input 
