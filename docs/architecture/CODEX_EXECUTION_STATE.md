@@ -1,5 +1,26 @@
 # ALMEAA — Codex Execution State
 
+## Trainer content approval G16 — unified review queue and RBAC closure
+
+- Status: `CLOSED / VERIFIED` on 2026-09-14.
+- Runtime commit: `27e35c50914244f604ed8b9b43f38962369b3076` on
+  `codex/trainer-content-approval-g16`.
+- Delivered: a paginated, searchable Admin-only review queue across pending
+  courses, lessons, questions, quizzes and library items, with persisted
+  decision/note/reviewer metadata and explicit publication only on an Admin
+  approval decision. Admin Dashboard now exposes the review center.
+- RBAC: generic Course/Lesson/Library CRUD is Admin/Teacher only. Supervisor
+  retains the separately scoped school-directed quiz flow but cannot author
+  general platform courses or lessons through direct API calls.
+- Local verification: server/frontend TypeScript checks and
+  `smoke:content-review-g16` passed.
+- Exact-runtime CI: [Platform V3 Backend Integration Gate #34829697191](https://github.com/nasef6464/almeaacodax/actions/runs/34829697191)
+  passed on isolated Mongo and live HTTP; its negative checks cover the
+  unified queue decision and Supervisor course/lesson denial.
+- Repository visibility: remains Public by explicit project-owner request.
+- Next exact action: begin the bounded G17 assessment only; do not combine it
+  with G18.
+
 ## Trainer course management G15 — course center and My Courses
 
 - Status: `CLOSED / VERIFIED` on 2026-09-14.

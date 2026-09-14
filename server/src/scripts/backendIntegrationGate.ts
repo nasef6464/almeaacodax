@@ -1597,6 +1597,22 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   const studentCannotSeePendingTrainerCourse = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, { token: tokens.get("student") });
   expectStatus("student cannot see a pending trainer course", studentCannotSeePendingTrainerCourse, 404);
 
+  const adminReviewQueue = await jsonRequest("/content/review-queue?limit=100", { token: tokens.get("admin") });
+  expectStatus("admin reads the unified pending-content queue", adminReviewQueue, 200);
+  assert.equal(
+    adminReviewQueue.body?.items?.filter((item: any) => item.type === "course" && String(item.id) === TEACHER_COURSE_ID).length,
+    1,
+    "pending trainer course was not represented exactly once in the review queue",
+  );
+  const adminReviewDecision = await jsonRequest(`/content/review-queue/course/${TEACHER_COURSE_ID}`, {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { decision: "rejected", reviewerNotes: "أضف أهداف التعلم قبل إعادة الإرسال" },
+  });
+  expectStatus("admin records a review decision in the unified queue", adminReviewDecision, 200);
+  assert.equal(adminReviewDecision.body?.item?.reviewerNotes, "أضف أهداف التعلم قبل إعادة الإرسال", "review decision note did not persist");
+
   const adminApprovesTrainerCourse = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, {
     method: "PATCH",
     token: tokens.get("admin"),
@@ -1674,6 +1690,22 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   expectStatus("supervisor creates an assessment for an in-scope student", supervisorQuiz, 201);
   assert.equal(supervisorQuiz.body?.mode, "central", "supervisor assessment lost central mode");
   assert.equal(supervisorQuiz.body?.approvalStatus, "approved", "supervisor assessment was not approved by workflow");
+
+  const supervisorGeneralCourse = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: { id: `supervisor-general-course-${RUN_MARKER}`, title: "Supervisor general course", pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID },
+  });
+  expectStatus("supervisor cannot author a general platform course", supervisorGeneralCourse, 403);
+
+  const supervisorGeneralLesson = await jsonRequest("/content/lessons", {
+    method: "POST",
+    token: tokens.get("supervisor"),
+    csrf,
+    body: { id: `supervisor-general-lesson-${RUN_MARKER}`, title: "Supervisor general lesson", pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, type: "text" },
+  });
+  expectStatus("supervisor cannot author a general platform lesson", supervisorGeneralLesson, 403);
 
   const supervisorAssignmentUpdate = await jsonRequest(`/quizzes/${SUPERVISOR_QUIZ_ID}`, {
     method: "PATCH",

@@ -42,6 +42,7 @@ const UsersManager = lazyNamed(() => import('./UsersManager'), 'UsersManager');
 const TrainersManager = lazyNamed(() => import('./TrainersManager'), 'TrainersManager');
 const CoursesManager = lazyNamed(() => import('./CoursesManager'), 'CoursesManager');
 const TrainerCoursesManager = lazyNamed(() => import('./TrainerCoursesManager'), 'TrainerCoursesManager');
+const ContentReviewQueueManager = lazyNamed(() => import('./ContentReviewQueueManager'), 'ContentReviewQueueManager');
 const SchoolsManager = lazyNamed(() => import('./SchoolsManager'), 'SchoolsManager');
 const PathsManager = lazyNamed(() => import('./PathsManager'), 'PathsManager');
 const QuestionBankManager = lazyNamed(() => import('./QuestionBankManager'), 'QuestionBankManager');
@@ -859,6 +860,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
             { id: 'paths', label: 'إدارة المسارات (مساحات العمل)', icon: <FolderOpen size={20} /> },
             { id: 'courses', label: 'إدارة الدورات', icon: <BookOpen size={20} /> },
+            { id: 'content-review', label: 'اعتماد المحتوى', icon: <CheckCircle2 size={20} /> },
             { id: 'lessons', label: 'مركز الدروس', icon: <BookOpen size={20} /> },
             { id: 'library', label: 'مركز المكتبة وملفات الدعم', icon: <BookOpen size={20} /> },
             { id: 'quizzes', label: 'مركز الاختبارات', icon: <FileQuestion size={20} /> },
@@ -2028,6 +2030,8 @@ export const AdminDashboard: React.FC = () => {
                 return <PathsManager />;
             case 'courses':
                 return user.role === Role.TEACHER ? <TrainerCoursesManager /> : <CoursesManager />;
+            case 'content-review':
+                return <ContentReviewQueueManager />;
             case 'lessons':
                 return <LessonsManager />;
             case 'library':

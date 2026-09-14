@@ -678,7 +678,7 @@ courseRouter.get(
 courseRouter.post(
   "/",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const payload = courseSchema.parse(req.body);
     const normalizedPayload = {
@@ -800,13 +800,13 @@ const handleCourseUpdate = asyncHandler(async (req, res) => {
   return res.json(updated);
 });
 
-courseRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleCourseUpdate);
-courseRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleCourseUpdate);
+courseRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher"]), handleCourseUpdate);
+courseRouter.put("/:id", requireAuth, requireRole(["admin", "teacher"]), handleCourseUpdate);
 
 courseRouter.delete(
   "/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const existing = await CourseModel.findOne(buildOwnedCourseQuery(req.params.id, req.authUser!));
     if (!existing) {
