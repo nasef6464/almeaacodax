@@ -38,7 +38,7 @@
       ]
     },
     {
-      "source": "/(dashboard|admin-dashboard|instructor-dashboard|supervisor-dashboard|parent-dashboard|quiz|results|reports|profile|favorites|my-quizzes|reset-password|verify-email)(.*)",
+      "source": "/(dashboard|admin-dashboard|instructor-dashboard|school-teacher-dashboard|school-director-dashboard|supervisor-dashboard|parent-dashboard|classroom|quiz|results|reports|profile|favorites|my-quizzes|reset-password|verify-email)(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",
