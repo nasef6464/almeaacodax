@@ -583,7 +583,7 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   const crossSchoolClass = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId: outsideSchoolId, classId, questionIds: [questionId] } });
   expectStatus("school teacher cannot pair another school with assigned class", crossSchoolClass, 400);
 
-  const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId] } });
+  const created = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId, classId, questionIds: [questionId], autoStart: true } });
   expectStatus("assigned teacher creates smart classroom session", created, 201);
   const sessionId = String(created.body?.sessionId || ""); const pin = String(created.body?.pin || "");
   assert.ok(sessionId && /^\d{6}$/.test(pin), "smart classroom session did not issue ephemeral PIN");
