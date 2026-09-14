@@ -40,6 +40,8 @@ const lazyNamed = <TProps extends object>(
 
 const UsersManager = lazyNamed(() => import('./UsersManager'), 'UsersManager');
 const TrainersManager = lazyNamed(() => import('./TrainersManager'), 'TrainersManager');
+const CoursesManager = lazyNamed(() => import('./CoursesManager'), 'CoursesManager');
+const TrainerCoursesManager = lazyNamed(() => import('./TrainerCoursesManager'), 'TrainerCoursesManager');
 const SchoolsManager = lazyNamed(() => import('./SchoolsManager'), 'SchoolsManager');
 const PathsManager = lazyNamed(() => import('./PathsManager'), 'PathsManager');
 const QuestionBankManager = lazyNamed(() => import('./QuestionBankManager'), 'QuestionBankManager');
@@ -856,6 +858,7 @@ export const AdminDashboard: React.FC = () => {
         const adminItems = [
             { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
             { id: 'paths', label: 'إدارة المسارات (مساحات العمل)', icon: <FolderOpen size={20} /> },
+            { id: 'courses', label: 'إدارة الدورات', icon: <BookOpen size={20} /> },
             { id: 'lessons', label: 'مركز الدروس', icon: <BookOpen size={20} /> },
             { id: 'library', label: 'مركز المكتبة وملفات الدعم', icon: <BookOpen size={20} /> },
             { id: 'quizzes', label: 'مركز الاختبارات', icon: <FileQuestion size={20} /> },
@@ -872,7 +875,7 @@ export const AdminDashboard: React.FC = () => {
         ];
 
         if (user.role === Role.TEACHER) {
-            return adminItems.filter((item) => ['overview', 'lessons', 'library', 'quizzes', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'courses', 'lessons', 'library', 'quizzes', 'questions', 'skills'].includes(item.id)).map((item) => item.id === 'courses' ? { ...item, label: 'دوراتي' } : item);
         }
 
         if (user.role === Role.SUPERVISOR) {
@@ -2023,6 +2026,8 @@ export const AdminDashboard: React.FC = () => {
                 return renderOverview();
             case 'paths':
                 return <PathsManager />;
+            case 'courses':
+                return user.role === Role.TEACHER ? <TrainerCoursesManager /> : <CoursesManager />;
             case 'lessons':
                 return <LessonsManager />;
             case 'library':

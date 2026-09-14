@@ -62,6 +62,7 @@ const MOCK_ASSESSMENT_QUIZ_ID = `platform-v3-integration-mock-quiz-${RUN_MARKER}
 const TEACHER_QUIZ_ID = `platform-v3-integration-teacher-quiz-${RUN_MARKER}`;
 const TEACHER_QUESTION_ID = `platform-v3-integration-teacher-question-${RUN_MARKER}`;
 const TEACHER_COURSE_ID = `platform-v3-integration-teacher-course-${RUN_MARKER}`;
+const TEACHER_DRAFT_COURSE_ID = `platform-v3-integration-teacher-draft-${RUN_MARKER}`;
 const TEACHER_LESSON_ID = `platform-v3-integration-teacher-lesson-${RUN_MARKER}`;
 const TEACHER_LIBRARY_ID = `platform-v3-integration-teacher-library-${RUN_MARKER}`;
 const SUPERVISOR_QUIZ_ID = `platform-v3-integration-supervisor-quiz-${RUN_MARKER}`;
@@ -1324,6 +1325,40 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
   expectStatus("platform trainer creates a course inside managed scope", trainerCourse, 201);
   assert.equal(trainerCourse.body?.approvalStatus, "pending_review", "trainer course bypassed review");
 
+  const trainerDraftCourse = await jsonRequest("/courses", {
+    method: "POST",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      id: TEACHER_DRAFT_COURSE_ID,
+      title: "Platform trainer saved draft",
+      pathId: ASSESSMENT_PATH_ID,
+      subjectId: ASSESSMENT_SUBJECT_ID,
+      approvalStatus: "draft",
+      isPublished: true,
+    },
+  });
+  expectStatus("platform trainer saves a course draft", trainerDraftCourse, 201);
+  assert.equal(trainerDraftCourse.body?.approvalStatus, "draft", "trainer draft was not persisted");
+  assert.equal(trainerDraftCourse.body?.isPublished, false, "trainer draft was published directly");
+
+  const trainerSubmitsDraft = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, {
+    method: "PATCH",
+    token: tokens.get("teacher"),
+    csrf,
+    body: {
+      approvalStatus: "pending_review",
+      isPublished: true,
+      reviewerNotes: "forged reviewer note",
+      revenueSharePercentage: 99,
+    },
+  });
+  expectStatus("platform trainer submits a draft for review", trainerSubmitsDraft, 200);
+  assert.equal(trainerSubmitsDraft.body?.approvalStatus, "pending_review", "trainer submission did not enter review");
+  assert.equal(trainerSubmitsDraft.body?.isPublished, false, "trainer submitted course was published directly");
+  assert.notEqual(trainerSubmitsDraft.body?.reviewerNotes, "forged reviewer note", "trainer forged reviewer notes");
+  assert.notEqual(trainerSubmitsDraft.body?.revenueSharePercentage, 99, "trainer set an admin revenue share");
+
   const trainerOutsideCourse = await jsonRequest("/courses", {
     method: "POST",
     token: tokens.get("teacher"),
@@ -1558,6 +1593,32 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
     false,
     "trainer course list leaked a course without managed scope",
   );
+
+  const studentCannotSeePendingTrainerCourse = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, { token: tokens.get("student") });
+  expectStatus("student cannot see a pending trainer course", studentCannotSeePendingTrainerCourse, 404);
+
+  const adminApprovesTrainerCourse = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, {
+    method: "PATCH",
+    token: tokens.get("admin"),
+    csrf,
+    body: { approvalStatus: "approved", isPublished: true, showOnPlatform: true, reviewerNotes: "جاهزة للنشر" },
+  });
+  expectStatus("admin approves and publishes trainer course", adminApprovesTrainerCourse, 200);
+  assert.equal(adminApprovesTrainerCourse.body?.approvalStatus, "approved", "admin approval did not persist");
+  assert.equal(adminApprovesTrainerCourse.body?.reviewerNotes, "جاهزة للنشر", "admin review note did not persist");
+
+  const studentSeesApprovedTrainerCourse = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, { token: tokens.get("student") });
+  expectStatus("student sees an approved published trainer course", studentSeesApprovedTrainerCourse, 200);
+
+  const trainerEditsApprovedCourse = await jsonRequest(`/courses/${TEACHER_DRAFT_COURSE_ID}`, {
+    method: "PATCH",
+    token: tokens.get("teacher"),
+    csrf,
+    body: { title: "Platform trainer revised approved course" },
+  });
+  expectStatus("trainer revision returns an approved course to review", trainerEditsApprovedCourse, 200);
+  assert.equal(trainerEditsApprovedCourse.body?.approvalStatus, "pending_review", "trainer revision stayed approved");
+  assert.equal(trainerEditsApprovedCourse.body?.isPublished, false, "trainer revision stayed published");
 
   const trainerContent = await jsonRequest("/content/bootstrap?scope=full", { token: tokens.get("teacher") });
   expectStatus("platform trainer reads scoped learning content", trainerContent, 200);

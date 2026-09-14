@@ -223,6 +223,18 @@ const buildCourseIdentityQuery = (id: string) => {
   return { $or: [{ _id: normalizedId }, { id: normalizedId }] };
 };
 
+/** The collection view must follow the same ownership boundary as updates. */
+const buildTrainerCourseListFilter = (authUser?: { id?: string; role?: string }) => {
+  if (authUser?.role !== "teacher" || !authUser.id) return {};
+  return {
+    $or: [
+      { ownerId: authUser.id },
+      { createdBy: authUser.id },
+      { assignedTeacherId: authUser.id },
+    ],
+  };
+};
+
 const buildUserIdentityQuery = (id: string) => {
   const normalizedId = String(id || "").trim();
   if (!normalizedId) return { id: "__missing__" };
@@ -609,6 +621,7 @@ courseRouter.get(
     const filter = combineMongoFilters(
       visibilityFilter,
       scopedFilter,
+      buildTrainerCourseListFilter(req.authUser),
       buildManagedContentScopeFilter(managedScope),
     );
     const [items, total] = await Promise.all([
@@ -694,6 +707,8 @@ courseRouter.post(
       approvalStatus:
         req.authUser?.role === "admin"
           ? normalizedPayload.approvalStatus || workflowDefaults.approvalStatus
+          : req.authUser?.role === "teacher" && normalizedPayload.approvalStatus === "draft"
+            ? "draft"
           : workflowDefaults.approvalStatus,
       isPublished: req.authUser?.role === "admin" ? normalizedPayload.isPublished : false,
     });
@@ -744,6 +759,20 @@ const handleCourseUpdate = asyncHandler(async (req, res) => {
   });
 
   const sanitizedPayload = sanitizeWorkflowUpdate(normalizedPayload, req.authUser!);
+  const changesCourseContent = Object.keys(sanitizedPayload).some(
+    (field) => !["approvalStatus", "isPublished", "showOnPlatform"].includes(field),
+  );
+  if (
+    req.authUser?.role === "teacher" &&
+    (existing as { approvalStatus?: string }).approvalStatus === "approved" &&
+    changesCourseContent
+  ) {
+    sanitizedPayload.approvalStatus = "pending_review";
+    sanitizedPayload.isPublished = false;
+    sanitizedPayload.showOnPlatform = false;
+    sanitizedPayload.approvedBy = "";
+    sanitizedPayload.approvedAt = null;
+  }
   if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "title")) {
     const value = typeof sanitizedPayload.title === "string" ? sanitizedPayload.title.trim() : "";
     if (value) {
