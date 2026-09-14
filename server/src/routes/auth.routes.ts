@@ -27,6 +27,7 @@ import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { QuestionModel } from "../models/Question.js";
 import { QuizModel } from "../models/Quiz.js";
+import { QuizResultModel } from "../models/QuizResult.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
 
 const passwordStrengthSchema = z
@@ -269,6 +270,50 @@ const getTrainerPortfolio = async (trainerId: string, includeItems = false) => {
   return {
     stats,
     items: { courses, lessons, questions, quizzes, libraryItems },
+  };
+};
+
+const getTrainerPerformance = async (trainerId: string) => {
+  const courses = await CourseModel.find(trainerOwnershipQuery(trainerId)).select("_id modules").lean();
+  const courseIds = courses.map((course: any) => String(course._id));
+  const quizIds = (await QuizModel.find(trainerOwnershipQuery(trainerId)).select("id _id").lean())
+    .map((quiz: any) => String(quiz.id || quiz._id));
+  const [enrolledStudents, quizSummary] = await Promise.all([
+    courseIds.length
+      ? UserModel.find({ role: "student", enrolledCourses: { $in: courseIds } }).select("enrolledCourses completedLessons").lean()
+      : [],
+    quizIds.length
+      ? QuizResultModel.aggregate([
+          { $match: { quizId: { $in: quizIds } } },
+          { $group: { _id: null, attempts: { $sum: 1 }, passed: { $sum: { $cond: ["$passed", 1, 0] } }, averageScore: { $avg: "$score" } } },
+        ])
+      : [],
+  ]);
+  const lessonIdsByCourse = new Map(courses.map((course: any) => [
+    String(course._id),
+    (course.modules || []).flatMap((module: any) => (module.lessons || []).map((lesson: any) => String(lesson.id))).filter(Boolean),
+  ]));
+  let measurableEnrollments = 0;
+  let completedEnrollments = 0;
+  for (const student of enrolledStudents as any[]) {
+    const completedLessons = new Set((student.completedLessons || []).map(String));
+    for (const courseId of (student.enrolledCourses || []).map(String).filter((id: string) => courseIds.includes(id))) {
+      const lessonIds = lessonIdsByCourse.get(courseId) || [];
+      if (!lessonIds.length) continue;
+      measurableEnrollments += 1;
+      if (lessonIds.every((lessonId: string) => completedLessons.has(lessonId))) completedEnrollments += 1;
+    }
+  }
+  const results = quizSummary[0] || { attempts: 0, passed: 0, averageScore: null };
+  return {
+    enrolledStudents: enrolledStudents.length,
+    measurableEnrollments,
+    completedEnrollments,
+    completionRate: measurableEnrollments ? Math.round((completedEnrollments / measurableEnrollments) * 100) : null,
+    quizAttempts: Number(results.attempts || 0),
+    passedQuizAttempts: Number(results.passed || 0),
+    averageQuizScore: results.averageScore == null ? null : Math.round(Number(results.averageScore)),
+    revenue: { available: false, reason: "لا يوجد مصدر إيراد أو دفع موثوق لحساب مستحقات المدرب." },
   };
 };
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
@@ -1052,9 +1097,10 @@ authRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Trainer not found" });
     }
     const trainerId = String((trainer as any).id || (trainer as any)._id);
-    const [portfolio, schoolContexts] = await Promise.all([
+    const [portfolio, schoolContexts, performance] = await Promise.all([
       getTrainerPortfolio(trainerId, true),
       SchoolMembershipModel.find({ userId: trainerId, status: "active" }).select("schoolId role permissions").lean(),
+      getTrainerPerformance(trainerId),
     ]);
     const hasPlatformScope = Boolean((trainer as any).managedPathIds?.length || (trainer as any).managedSubjectIds?.length);
     const hasSchoolContext = Boolean((trainer as any).schoolId || (trainer as any).groupIds?.length || schoolContexts.length);
@@ -1064,8 +1110,18 @@ authRouter.get(
         persona: hasPlatformScope && hasSchoolContext ? "hybrid" : hasPlatformScope ? "platform" : "unconfigured",
         schoolContexts,
         portfolio,
+        performance,
       },
     });
+  }),
+);
+
+authRouter.get(
+  "/trainer/performance",
+  requireAuth,
+  requireRole(["teacher"]),
+  asyncHandler(async (req, res) => {
+    return res.json({ performance: await getTrainerPerformance(String(req.authUser!.id)) });
   }),
 );
 

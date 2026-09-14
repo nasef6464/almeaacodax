@@ -194,6 +194,9 @@ export const createAuthApi = (request: ApiRequest) => {
     getAdminTrainer: (id: string) =>
       request<{ trainer: unknown }>(`/auth/admin/trainers/${encodeURIComponent(id)}`),
 
+    getTrainerPerformance: () =>
+      request<{ performance: unknown }>("/auth/trainer/performance"),
+
     updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
       request<{ user: unknown }>(`/auth/admin/users/${id}`, {
         method: "PATCH",

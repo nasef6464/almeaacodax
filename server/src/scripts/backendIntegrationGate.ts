@@ -357,6 +357,25 @@ async function runAdminUserManagementJourney(csrf: CsrfContext) {
   pass("admin user summary and safe bulk status command are RBAC-protected and audit logged");
 }
 
+async function runTrainerPerformanceJourney() {
+  const teacherId = userIds.get("teacher");
+  assert.ok(teacherId, "trainer performance fixture id missing");
+
+  const ownPerformance = await jsonRequest("/auth/trainer/performance", { token: tokens.get("teacher") });
+  expectStatus("trainer reads only their own performance", ownPerformance, 200);
+  assert.equal(typeof ownPerformance.body?.performance?.enrolledStudents, "number", "trainer performance omitted enrollment count");
+  assert.equal(typeof ownPerformance.body?.performance?.quizAttempts, "number", "trainer performance omitted quiz attempts");
+  assert.equal(ownPerformance.body?.performance?.revenue?.available, false, "trainer performance invented revenue availability");
+
+  const adminPerformance = await jsonRequest("/auth/trainer/performance", { token: tokens.get("admin") });
+  expectStatus("administrator cannot impersonate trainer self-performance route", adminPerformance, 403);
+
+  const adminProfile = await jsonRequest(`/auth/admin/trainers/${encodeURIComponent(teacherId)}`, { token: tokens.get("admin") });
+  expectStatus("administrator reads trainer performance through trainer profile", adminProfile, 200);
+  assert.equal(typeof adminProfile.body?.trainer?.performance?.completionRate, "object", "trainer profile omitted nullable completion metric");
+  pass("trainer and administrator performance reads preserve role boundaries and financial truthfulness");
+}
+
 async function runSchoolDirectorIdentityJourney(csrf: CsrfContext) {
   const schoolId = groupIds.get("school");
   const outsideSchoolId = groupIds.get("outsideSchool");
@@ -2087,6 +2106,7 @@ async function main() {
     await runScopedCreatorJourney(csrf);
     await runSchoolScopeJourney(csrf);
     await runSchoolIntelligenceJourney(csrf);
+    await runTrainerPerformanceJourney();
 
     const anonymousMine = await jsonRequest("/certificates/mine");
     expectStatus("anonymous certificate list is rejected", anonymousMine, 401);

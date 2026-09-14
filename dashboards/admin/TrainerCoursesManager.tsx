@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { BookOpen, Edit2, Eye, FilePlus2, Send, StickyNote, Trash2 } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BarChart3, BookOpen, Edit2, Eye, FilePlus2, Send, StickyNote, Trash2 } from 'lucide-react';
 import { Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { AdvancedCourseBuilder } from './AdvancedCourseBuilder';
+import { api } from '../../services/api';
 
 const status = (value?: Course['approvalStatus']) => {
   const labels = {
@@ -21,6 +22,15 @@ export const TrainerCoursesManager: React.FC = () => {
   const [editing, setEditing] = useState<Course | undefined>();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [performance, setPerformance] = useState<any>(null);
+
+  useEffect(() => {
+    let active = true;
+    api.getTrainerPerformance()
+      .then((response: any) => { if (active) setPerformance(response.performance); })
+      .catch(() => { if (active) setPerformance(null); });
+    return () => { active = false; };
+  }, []);
 
   const myCourses = useMemo(() => courses
     .filter((course) => [course.ownerId, course.createdBy, course.assignedTeacherId].includes(user.id))
@@ -48,6 +58,18 @@ export const TrainerCoursesManager: React.FC = () => {
       <div><h2 className="text-2xl font-black text-gray-900">دوراتي</h2><p className="mt-1 text-sm text-gray-500">أنشئ مسودة داخل نطاقك، أرسلها للمراجعة، ثم راجع ملاحظات المدير. النشر والاعتماد بيد الإدارة فقط.</p></div>
       <button onClick={() => setEditing({ id: '', title: '', instructor: user.name || 'مدرب المنصة', thumbnail: '', price: 0, currency: 'SAR', duration: 0, level: 'Beginner', rating: 0, progress: 0, category: 'دورة تعليمية', features: [], approvalStatus: 'draft', isPublished: false, showOnPlatform: false })} className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white"><FilePlus2 size={17}/>إنشاء مسودة</button>
     </div>
+    {performance ? <section className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+      <div className="mb-3 flex items-center gap-2 font-black text-indigo-950"><BarChart3 size={18}/>أداء موثّق من بيانات التعلّم</div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          ['طلاب مسجلون', performance.enrolledStudents],
+          ['إكمال قابل للقياس', performance.completionRate == null ? 'لا توجد دروس مكتملة القياس بعد' : `${performance.completionRate}%`],
+          ['محاولات الاختبارات', performance.quizAttempts],
+          ['متوسط نتيجة الاختبارات', performance.averageQuizScore == null ? 'لا توجد نتائج بعد' : `${performance.averageQuizScore}%`],
+        ].map(([label, value]) => <div key={String(label)} className="rounded-xl bg-white p-3 text-sm"><div className="text-xs text-gray-500">{label}</div><div className="mt-1 font-black text-gray-900">{value}</div></div>)}
+      </div>
+      <p className="mt-3 text-xs text-gray-600">{performance.revenue?.reason || 'لا تتوفر بيانات مستحقات.'}</p>
+    </section> : null}
     <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ابحث في دوراتك" className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
     {error ? <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-bold text-red-700">{error}</div> : null}
     <div className="grid gap-4 lg:grid-cols-2">
