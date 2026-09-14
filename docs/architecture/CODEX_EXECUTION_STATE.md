@@ -4,11 +4,14 @@
 
 - Status: `PARTIAL / LOCAL VERIFIED / NOT PRODUCTION-CERTIFIED` on 2026-09-14.
 - Runtime commits on `codex/performance-hardening-p1`: `27406277`, `f25802ad`,
-  `89bd83ea`, `272f4562`, and `7487a98d`.
+  `89bd83ea`, `272f4562`, `7487a98d`, `ec58b48f`, and `5fdd22b0`.
 - Delivered: route-backed quiz-builder recovery; scoped Smart Classroom Socket
   audiences; coalesced staff aggregate refreshes; bounded teacher question reads;
   and a test-only load harness that records HTTP percentiles, response bytes,
-  process RSS/heap, and opened Socket count.
+  process RSS/heap, and opened Socket count. Large public images are excluded
+  from PWA install precache and load/decode lazily; the active hero remains
+  eager. The classroom join and answer paths now overlap independent reads
+  while preserving authorization before writes.
 - Isolated local MongoDB evidence: 30-student and 100-student single-class
   journeys passed, as did four concurrent isolated 30-student classes (120
   students total). School-scope denials, session lifecycle, and answer writes
@@ -21,6 +24,10 @@
   local MongoDB only; they do not certify Render/Atlas CPU, memory, network,
   Redis fan-out, cold starts, or production capacity. Render remains suspended
   by account billing, so no production deployment or live load test was run.
+- Verification boundary: P4 contracts, deployment-cache contract, root
+  TypeScript check, and server TypeScript check passed locally. GitHub Actions
+  did not create a run for the current branch commits, so exact-runtime CI is
+  still unavailable.
 - Next exact action: provision an explicitly authorized staging target with
   host and MongoDB telemetry, set a latency/error budget, rerun the same
   30/100/four-class matrix, and optimize only the measured bottleneck.
