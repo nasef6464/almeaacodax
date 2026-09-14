@@ -1,5 +1,22 @@
 # ALMEAA — Codex Execution State
 
+## Trainer analytics and isolated journey G18
+
+- Status: `CLOSED / VERIFIED` on 2026-09-14.
+- Runtime commit: `de37885ad90bac9b2b28b9facd5922ad4fe63230` on
+  `codex/trainer-analytics-pilot-g18`.
+- Delivered: trainer self-performance and the Admin trainer profile now report
+  real enrollment, measurable completion, quiz-attempt, pass and average-score
+  metrics. Revenue is explicitly unavailable until a reliable revenue/payout
+  source exists; no estimate is presented as a financial fact.
+- RBAC: only a teacher can read the self-performance endpoint; an Admin reads
+  performance through the targeted Admin trainer profile.
+- Exact-runtime CI: [Platform V3 Backend Integration Gate #34832706702](https://github.com/nasef6464/almeaacodax/actions/runs/34832706702)
+  passed on isolated Mongo and live HTTP, including performance RBAC and the
+  existing author → review → publication, student and cross-scope negative journeys.
+- Evidence boundary: this is an isolated CI journey, not a production Pilot or
+  production-scale claim. Repository remains Public by owner request.
+
 ## User management G17 — authoritative summary and safe bulk operations
 
 - Status: `CLOSED / VERIFIED` on 2026-09-14.

@@ -1,6 +1,6 @@
 # ALMEAA — أهداف إدارة المدربين والدورات والمستخدمين G13–G18
 
-> الحالة: `G13–G17 CLOSED / VERIFIED` — `G18 PLANNED / NOT STARTED`
+> الحالة: `G13–G18 CLOSED / VERIFIED`
 >
 > تاريخ اعتماد الخطة: 2026-09-10
 >
@@ -333,6 +333,10 @@
 
 ## G18 — تحليلات المدرب والـPilot والإغلاق
 
+> الحالة: `CLOSED / VERIFIED` في runtime `de37885ad90bac9b2b28b9facd5922ad4fe63230`.
+>
+> دليل الإغلاق: [Platform V3 Backend Integration Gate #34832706702](https://github.com/nasef6464/almeaacodax/actions/runs/34832706702) PASS على Mongo معزول وAPI حي؛ لا يمثل Pilot إنتاجيًا.
+
 ### الهدف
 
 إثبات رحلة تجارية كاملة وقابلة للاستخدام وقياس عمل المدرب بعد النشر.
@@ -356,6 +360,19 @@
 - رحلة usable كاملة ناجحة بحسابات معزولة.
 - محاولات cross-trainer وcross-scope وunapproved publication تفشل.
 - الدليل يميز بين contract/CI/runtime ولا يدعي production scale دون Pilot فعلي.
+
+### دليل الإغلاق
+
+- أضيفت قراءة أداء للمدرب من التسجيلات الحقيقية و`completedLessons` ونتائج
+  اختباراته: طلاب مسجلون، إكمال قابل للقياس، محاولات ومتوسط نتائج. يعرض المدير
+  نفس القراءة من ملف المدرب فقط، بينما المدرب يقرأ أداءه الذاتي فقط.
+- لوحة «دوراتي» وملف المدرب الإداري يعرضان هذه المؤشرات، ويصرحان بعدم توافر
+  مستحقات لأن مصدر الإيراد/الدفع غير موثوق؛ لا توجد أرقام مالية تقديرية.
+- رحلة CI المعزولة تغطي Admin وTrainer وStudent، إنشاء المحتوى داخل النطاق،
+  منع النطاق الخارجي والنشر غير المعتمد، مراجعة الإدارة، وقراءات الأداء ذات
+  الحدود الدورّية. لا تدعي هذه الرحلة Pilot إنتاجيًا أو دليل حجم إنتاج.
+- local PASS: server/frontend TypeScript وفحص diff. CI PASS: API typecheck/build
+  وintegration harness وHTTP backend integration على runtime الدقيق.
 
 ## إضافات مؤجلة بعد إغلاق G18
 

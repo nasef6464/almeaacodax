@@ -120,6 +120,18 @@ export const TrainersManager: React.FC = () => {
                   </div>
                 ))}
               </div>
+              {selected.performance ? <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+                <h4 className="mb-3 font-black text-indigo-950">أداء التعلّم الموثّق</h4>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+                  {[
+                    ['طلاب مسجلون', selected.performance.enrolledStudents],
+                    ['نسبة الإكمال', selected.performance.completionRate == null ? 'لا توجد بيانات قابلة للقياس' : `${selected.performance.completionRate}%`],
+                    ['محاولات الاختبارات', selected.performance.quizAttempts],
+                    ['متوسط النتائج', selected.performance.averageQuizScore == null ? 'لا توجد نتائج' : `${selected.performance.averageQuizScore}%`],
+                  ].map(([label, value]) => <div key={String(label)} className="rounded-xl bg-white p-3"><div className="text-xs text-gray-500">{label}</div><div className="mt-1 font-black">{value}</div></div>)}
+                </div>
+                <p className="mt-3 text-xs text-gray-600">{selected.performance.revenue?.reason || 'لا تتوفر مستحقات دون مصدر مالي موثوق.'}</p>
+              </div> : null}
               <div className="mt-6 grid gap-5 lg:grid-cols-2">
                 <div className="rounded-2xl border p-4">
                   <h4 className="mb-3 font-black">نطاق إنتاج المدرب</h4>
