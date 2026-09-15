@@ -37,5 +37,6 @@ questionSchema.index({ pathId: 1, subject: 1, sectionId: 1, approvalStatus: 1 })
 questionSchema.index({ skillIds: 1, difficulty: 1 });
 questionSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
 questionSchema.index({ examType: 1, source: 1, year: -1, approvalStatus: 1 });
+questionSchema.index({ subject: 1, approvalStatus: 1, updatedAt: -1 });
 
 export const QuestionModel = mongoose.model("Question", questionSchema);

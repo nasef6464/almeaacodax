@@ -11,6 +11,7 @@ import { SmartQuestionSelector } from "./SmartQuestionSelector";
 import { getDefaultQuizSettings } from "../../utils/quizSettings";
 import { resolveAssessmentSettings, toCanonicalAssessmentSettingsPayload } from "../../utils/assessmentSettings";
 import { api } from "../../services/api";
+import { readQuizBuilderDraft, removeQuizBuilderDraft, writeQuizBuilderDraft } from "../../utils/quizBuilderDraft";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type QuizKind = "drill" | "test" | "mock";
@@ -40,6 +41,9 @@ export interface UnifiedQuizBuilderProps {
   initialTargetGroupIds?: string[];
   initialTargetUserIds?: string[];
   initialMode?: NonNullable<Quiz['mode']>;
+  draftScope?: string;
+  initialStep?: WizardStep;
+  onStepChange?: (step: WizardStep) => void;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -92,6 +96,9 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   initialTargetGroupIds,
   initialTargetUserIds,
   initialMode = "regular",
+  draftScope,
+  initialStep = 1,
+  onStepChange,
 }) => {
   const { subjects, paths, groups, addQuiz, updateQuiz } = useStore();
 
@@ -100,19 +107,28 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const isTeacher = role === "teacher";
 
   // ── Wizard state ──────────────────────────────────────────────────────────
-  const [step, setStep] = useState<WizardStep>(1);
-  const [kind, setKind] = useState<QuizKind>(editingQuiz?.quizKind ?? defaultKind);
+  const restoredDraftRef = useRef(!editingQuiz ? readQuizBuilderDraft(draftScope) : null);
+  const restoredDraft = restoredDraftRef.current;
+  const setWizardStep = (next: WizardStep | ((current: WizardStep) => WizardStep)) => {
+    setStep((current) => {
+      const resolved = typeof next === "function" ? next(current) : next;
+      onStepChange?.(resolved);
+      return resolved;
+    });
+  };
+  const [step, setStep] = useState<WizardStep>(restoredDraft?.step ?? initialStep);
+  const [kind, setKind] = useState<QuizKind>(editingQuiz?.quizKind ?? restoredDraft?.kind ?? defaultKind);
 
   // Step 1
-  const [title, setTitle] = useState(editingQuiz?.title ?? "");
-  const [description, setDescription] = useState(editingQuiz?.description ?? "");
-  const [pathId, setPathId] = useState(editingQuiz?.pathId ?? initialPathId);
-  const [subjectId, setSubjectId] = useState(editingQuiz?.subjectId ?? initialSubjectId);
+  const [title, setTitle] = useState(editingQuiz?.title ?? restoredDraft?.title ?? "");
+  const [description, setDescription] = useState(editingQuiz?.description ?? restoredDraft?.description ?? "");
+  const [pathId, setPathId] = useState(editingQuiz?.pathId ?? restoredDraft?.pathId ?? initialPathId);
+  const [subjectId, setSubjectId] = useState(editingQuiz?.subjectId ?? restoredDraft?.subjectId ?? initialSubjectId);
   const [qiyasCategory, setQiyasCategory] = useState<"qudrat" | "tahsili">(
-    editingQuiz?.mockExam?.qiyasCategory === "tahsili" ? "tahsili" : "qudrat",
+    editingQuiz?.mockExam?.qiyasCategory === "tahsili" ? "tahsili" : restoredDraft?.qiyasCategory ?? "qudrat",
   );
   const [presentationMode, setPresentationMode] = useState<"qiyas_strict" | "flexible">(
-    editingQuiz?.mockExam?.presentationMode ?? "qiyas_strict",
+    editingQuiz?.mockExam?.presentationMode ?? restoredDraft?.presentationMode ?? "qiyas_strict",
   );
   const [mockSections, setMockSections] = useState<MockSection[]>(
     editingQuiz?.mockExam?.sections?.map((s) => ({
@@ -123,50 +139,55 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
       timeLimit: s.timeLimit,
       order: s.order ?? 0,
       domain: s.domain as MockSection["domain"] ?? "general",
-    })) ?? [],
+    })) ?? restoredDraft?.mockSections ?? [],
   );
 
   // Step 2
-  const [questionIds, setQuestionIds] = useState<string[]>(editingQuiz?.questionIds ?? []);
-  const [activeSectionIdx, setActiveSectionIdx] = useState(0);
+  const [questionIds, setQuestionIds] = useState<string[]>(editingQuiz?.questionIds ?? restoredDraft?.questionIds ?? []);
+  const [activeSectionIdx, setActiveSectionIdx] = useState(restoredDraft?.activeSectionIdx ?? 0);
 
   // Step 3
   const defaults = getDefaultQuizSettings({ type: "quiz" });
   const initialSettings = resolveAssessmentSettings(editingQuiz?.settings, defaults);
-  const [timeLimit, setTimeLimit] = useState<number>(initialSettings.timeLimit ?? 0);
-  const [maxAttempts, setMaxAttempts] = useState<number>(initialSettings.maxAttempts);
-  const [passingScore, setPassingScore] = useState<number>(initialSettings.passingScore);
-  const [showAnswers, setShowAnswers] = useState<boolean>(initialSettings.showAnswers);
-  const [showExplanations, setShowExplanations] = useState<boolean>(initialSettings.showExplanations);
-  const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(initialSettings.randomizeQuestions ?? false);
-  const [shuffleOptions, setShuffleOptions] = useState<boolean>(initialSettings.randomizeOptions ?? false);
+  const [timeLimit, setTimeLimit] = useState<number>(restoredDraft?.timeLimit ?? initialSettings.timeLimit ?? 0);
+  const [maxAttempts, setMaxAttempts] = useState<number>(restoredDraft?.maxAttempts ?? initialSettings.maxAttempts);
+  const [passingScore, setPassingScore] = useState<number>(restoredDraft?.passingScore ?? initialSettings.passingScore);
+  const [showAnswers, setShowAnswers] = useState<boolean>(restoredDraft?.showAnswers ?? initialSettings.showAnswers);
+  const [showExplanations, setShowExplanations] = useState<boolean>(restoredDraft?.showExplanations ?? initialSettings.showExplanations);
+  const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(restoredDraft?.shuffleQuestions ?? initialSettings.randomizeQuestions ?? false);
+  const [shuffleOptions, setShuffleOptions] = useState<boolean>(restoredDraft?.shuffleOptions ?? initialSettings.randomizeOptions ?? false);
 
   // Step 4
-  const initialTargetGroups = editingQuiz?.targetGroupIds ?? initialTargetGroupIds ?? [];
+  const initialTargetGroups = editingQuiz?.targetGroupIds ?? restoredDraft?.targetGroupIds ?? initialTargetGroupIds ?? [];
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(initialTargetGroups);
   const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);
   const [targetUserIds] = useState<string[]>(editingQuiz?.targetUserIds ?? initialTargetUserIds ?? []);
-  const [dueDate, setDueDate] = useState(editingQuiz?.dueDate ?? "");
+  const [dueDate, setDueDate] = useState(editingQuiz?.dueDate ?? restoredDraft?.dueDate ?? "");
   // Supervisors create school-directed assessments that are immediately usable by
   // their in-scope students. Teachers retain the approval workflow.
-  const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? (isAdmin || isSupervisor));
-  const [showOnPlatform, setShowOnPlatform] = useState(editingQuiz?.showOnPlatform ?? isAdmin);
+  const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? restoredDraft?.isPublished ?? (isAdmin || isSupervisor));
+  const [showOnPlatform, setShowOnPlatform] = useState(editingQuiz?.showOnPlatform ?? restoredDraft?.showOnPlatform ?? isAdmin);
   const [accessType, setAccessType] = useState<"free" | "paid" | "package">(
-    (editingQuiz?.access?.type as "free" | "paid" | "package") ?? "free",
+    (editingQuiz?.access?.type as "free" | "paid" | "package") ?? restoredDraft?.accessType ?? "free",
   );
-  const [price, setPrice] = useState<number>(editingQuiz?.access?.price ?? 0);
+  const [price, setPrice] = useState<number>(editingQuiz?.access?.price ?? restoredDraft?.price ?? 0);
   const [slots, setSlots] = useState<Array<"tests" | "training" | "course">>(() => {
     if (editingQuiz?.learningPlacements?.length) {
       return editingQuiz.learningPlacements.map((p) => p.slot as "tests" | "training" | "course");
     }
+    if (restoredDraft?.slots) return restoredDraft.slots;
     if (kind === "drill") return ["training"];
     if (kind === "test") return ["tests"];
     return [];
   });
 
-  // Sync default slots when switching kind during creation
+  const priorKindRef = useRef(kind);
+  // Sync defaults only when the creator deliberately changes kind. This keeps
+  // custom slot choices when a draft is restored after a refresh.
   useEffect(() => {
     if (editingQuiz) return;
+    if (priorKindRef.current === kind) return;
+    priorKindRef.current = kind;
     if (kind === "drill") {
       setSlots(["training"]);
     } else if (kind === "test") {
@@ -178,6 +199,39 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+
+  useEffect(() => {
+    if (editingQuiz || !draftScope) return;
+    writeQuizBuilderDraft(draftScope, {
+      version: 1,
+      step,
+      kind,
+      title,
+      description,
+      pathId,
+      subjectId,
+      questionIds,
+      qiyasCategory,
+      presentationMode,
+      mockSections,
+      activeSectionIdx,
+      timeLimit,
+      maxAttempts,
+      passingScore,
+      showAnswers,
+      showExplanations,
+      shuffleQuestions,
+      shuffleOptions,
+      targetGroupIds,
+      dueDate,
+      isPublished,
+      showOnPlatform,
+      accessType,
+      price,
+      slots,
+      savedAt: new Date().toISOString(),
+    });
+  }, [accessType, activeSectionIdx, description, draftScope, dueDate, editingQuiz, isPublished, kind, maxAttempts, mockSections, passingScore, pathId, presentationMode, price, qiyasCategory, questionIds, showAnswers, showExplanations, showOnPlatform, shuffleOptions, shuffleQuestions, slots, step, subjectId, targetGroupIds, timeLimit, title]);
 
   // ── Derived ───────────────────────────────────────────────────────────────
   const availablePaths = useMemo(
@@ -402,6 +456,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         saved = await addQuiz(payload as Quiz);
       }
       onSave?.(saved);
+      removeQuizBuilderDraft(draftScope);
       onClose?.();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "حدث خطأ أثناء الحفظ");
@@ -447,7 +502,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
             const isDone = step > s.num;
             return (
               <button key={s.num} type="button"
-                onClick={() => isDone && setStep(s.num)}
+                onClick={() => isDone && setWizardStep(s.num)}
                 disabled={!isDone}
                 className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 shrink-0 transition-all ${
                   isActive ? "border-indigo-600 text-indigo-700"
@@ -1134,13 +1189,13 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           </button>
           <div className="flex items-center gap-2">
             {step > 1 && (
-              <button type="button" onClick={() => setStep((s) => (s - 1) as WizardStep)}
+              <button type="button" onClick={() => setWizardStep((s) => (s - 1) as WizardStep)}
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-100 transition-all">
                 <ChevronRight size={16} />السابق
               </button>
             )}
             {step < 4 ? (
-              <button type="button" data-testid="assessment-builder-next" onClick={() => setStep((s) => (s + 1) as WizardStep)}
+              <button type="button" data-testid="assessment-builder-next" onClick={() => setWizardStep((s) => (s + 1) as WizardStep)}
                 disabled={!stepValid[step - 1]}
                 className={`flex items-center gap-1.5 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   stepValid[step - 1] ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" : "bg-gray-100 text-gray-400 cursor-not-allowed"

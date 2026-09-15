@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Copy, Crown, ExternalLink, Flame, PlusCircle, Presentation, SkipForward, Trophy, Zap } from 'lucide-react';
 import { ClassroomTeacherLiveRadar } from './ClassroomTeacherLiveRadar';
@@ -7,6 +7,7 @@ import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
 import { QuestionContentRenderer } from './QuestionContentRenderer';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
+import { useClassroomRealtime } from '../../hooks/useClassroomRealtime';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
@@ -88,19 +89,26 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     return () => { active = false; };
   }, [schoolId]);
 
-  useEffect(() => {
+  const loadChallengeState = useCallback(async () => {
     if (!sessionId || data?.status === 'ended') { setChallengeState(null); return; }
-    let active = true;
-    const loadChallengeState = async () => {
-      try {
-        const state = await api.get<ChallengeState>(`/classroom/sessions/${encodeURIComponent(sessionId)}/challenge-state`);
-        if (active) setChallengeState(state);
-      } catch { if (active) setChallengeState(null); }
-    };
-    void loadChallengeState();
-    const interval = setInterval(() => void loadChallengeState(), 4000);
-    return () => { active = false; clearInterval(interval); };
-  }, [sessionId, data?.status, data?.activeBatchId]);
+    try {
+      setChallengeState(await api.get<ChallengeState>(`/classroom/sessions/${encodeURIComponent(sessionId)}/challenge-state`));
+    } catch { setChallengeState(null); }
+  }, [data?.status, sessionId]);
+
+  useEffect(() => { void loadChallengeState(); }, [loadChallengeState, data?.activeBatchId]);
+  useClassroomRealtime(sessionId, loadChallengeState, undefined, (event, payload: any) => {
+    if (event === 'response:updated') return true;
+    if (event === 'competition:updated') {
+      setChallengeState(payload as ChallengeState);
+      return true;
+    }
+    if (event === 'question:published' || event === 'batch:ended') {
+      void loadChallengeState();
+      return true;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const syncTimer = () => {

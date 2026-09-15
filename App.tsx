@@ -277,6 +277,7 @@ const SEO_PRIVATE_PREFIXES = [
   '/qa',
   '/book-session',
   '/live-sessions',
+  '/classroom',
   '/profile',
   '/admin',
   '/forgot-password',
@@ -585,6 +586,23 @@ const resolvePageMeta = (
 
   // 1. Admin Dashboard
   if (effectivePath === '/admin-dashboard' || effectivePath.startsWith('/admin-dashboard/')) {
+    const builder = searchParams.get('builder');
+    if (builder === 'create') {
+      return {
+        title: 'إنشاء اختبار جديد | لوحة الإدارة - منصة المئة',
+        description: 'إنشاء اختبار جديد داخل مساحة إدارية خاصة في منصة المئة.',
+        isPrivate: true,
+        canonicalPath: '/admin-dashboard',
+      };
+    }
+    if (builder === 'edit') {
+      return {
+        title: 'تعديل اختبار | لوحة الإدارة - منصة المئة',
+        description: 'تعديل اختبار موجود داخل مساحة إدارية خاصة في منصة المئة.',
+        isPrivate: true,
+        canonicalPath: '/admin-dashboard',
+      };
+    }
     const tabMeta = ADMIN_TAB_METAS[tab] || (tab ? null : ADMIN_TAB_METAS.overview);
     return {
       title: tabMeta ? tabMeta.title : (tab ? `${tab} | لوحة الإدارة - منصة المئة` : 'لوحة الإدارة | منصة المئة'),
@@ -657,6 +675,15 @@ const resolvePageMeta = (
   }
 
   // 6. Independent & Static Routes
+  if (effectivePath === '/classroom' || effectivePath.startsWith('/classroom/')) {
+    return {
+      title: 'الحصة الذكية المباشرة | منصة المئة',
+      description: 'حصة تفاعلية مباشرة خاصة بالمستخدم المسجل داخل منصة المئة.',
+      isPrivate: true,
+      canonicalPath: '/classroom',
+    };
+  }
+
   if (effectivePath === '/quiz' || effectivePath.startsWith('/quiz/')) {
     return {
       title: 'جلسة الاختبار | منصة المئة',

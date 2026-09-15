@@ -196,6 +196,10 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
 
   classroomRouter.get("/questions", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
     const schoolId = z.string().min(1).parse(req.query.schoolId);
+    const page = Math.max(1, Number(req.query.page) || 1);
+    // Legacy callers retain their 100-item ceiling; new paged callers opt in
+    // with a smaller limit to keep the interactive bank lightweight.
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 100));
     if (!(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
     }
@@ -213,13 +217,14 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     if (typeof req.query.search === "string" && req.query.search.trim()) filter.$and.push({ text: { $regex: req.query.search.trim(), $options: "i" } });
 
     const questions = await QuestionModel.find(filter)
-      .select("id text imageUrl options type skillIds pathId subject sectionId difficulty examType explanation ownerType ownerId")
-      .sort({ updatedAt: -1 }).limit(100).lean();
-    res.json({ questions: questions.map((question: any) => ({
+      .select("id text imageUrl options type skillIds pathId subject sectionId difficulty examType")
+      .sort({ updatedAt: -1, _id: -1 }).skip((page - 1) * limit).limit(limit + 1).lean();
+    const hasMore = questions.length > limit;
+    res.json({ page, limit, hasMore, questions: questions.slice(0, limit).map((question: any) => ({
       questionId: String(question.id || question._id), text: question.text, imageUrl: question.imageUrl || "",
       options: question.options, type: question.type, skillIds: question.skillIds || [], pathId: question.pathId || "",
       subject: question.subject || "", sectionId: question.sectionId || "", difficulty: question.difficulty || "Medium",
-      examType: question.examType || "general", explanation: question.explanation || "",
+      examType: question.examType || "general",
     })) });
   }));
 

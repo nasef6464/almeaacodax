@@ -14,7 +14,7 @@ import { resolveSchoolContexts } from "../modules/schools/application/schoolCont
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import { canJoinAuthorizedWorkspace } from "./workspaceAuthorization.js";
-import { setClassroomSocketServer } from "./classroomEvents.js";
+import { classroomStaffRoom, classroomStudentsRoom, setClassroomSocketServer } from "./classroomEvents.js";
 
 const configuredSocketOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
   .map((origin) => origin.trim())
@@ -159,7 +159,29 @@ export function createSocketServer(server: HttpServer) {
       }
 
       socket.join(String(workspaceId).trim());
+      const normalizedWorkspaceId = String(workspaceId).trim();
+      const classroomMatch = normalizedWorkspaceId.match(/^classroom:([a-zA-Z0-9_-]{1,128})$/);
+      if (classroomMatch) {
+        // The generic room remains the authorization handshake only. Events
+        // are delivered through role-separated audiences so a student's answer
+        // cannot produce a device-wide student fan-out.
+        const audienceRoom = socket.data.authUser?.role === "student"
+          ? classroomStudentsRoom(classroomMatch[1])
+          : classroomStaffRoom(classroomMatch[1]);
+        socket.join(audienceRoom);
+      }
       if (typeof acknowledge === "function") acknowledge({ ok: true });
+    });
+
+    socket.on("workspace:leave", (workspaceId: unknown) => {
+      const normalizedWorkspaceId = typeof workspaceId === "string" ? workspaceId.trim() : "";
+      const classroomMatch = normalizedWorkspaceId.match(/^classroom:([a-zA-Z0-9_-]{1,128})$/);
+      socket.leave(normalizedWorkspaceId);
+      if (classroomMatch) {
+        socket.leave(socket.data.authUser?.role === "student"
+          ? classroomStudentsRoom(classroomMatch[1])
+          : classroomStaffRoom(classroomMatch[1]));
+      }
     });
 
     socket.on("disconnect", () => {

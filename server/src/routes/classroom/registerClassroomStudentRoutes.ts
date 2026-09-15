@@ -94,8 +94,11 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const session = await ClassroomSessionModel.findOne({ pinHash: hashClassroomPin(payload.pin), status: "live", pinExpiresAt: { $gt: new Date() } })
       .sort({ startedAt: -1, createdAt: -1 }).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة مباشرة بهذا الرمز أو قد انتهت صلاحيته." });
-    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
-    const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
+    const [classroomEnabled, student] = await Promise.all([
+      smartClassroomEnabled(String(session.schoolId)),
+      UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean(),
+    ]) as [boolean, any];
+    if (!classroomEnabled) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الرمز مخصص لحصة فصل دراسي آخر أو مدرسة أخرى." });
     await ClassroomParticipantModel.updateOne(
       { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
@@ -161,16 +164,23 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
     const payload = answerSchema.parse(req.body);
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
-    if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    const participantRead = ClassroomParticipantModel.findOne({ sessionId: classroomSessionId(session), studentId: req.authUser!.id })
+      .select("pendingSubmissionKeys finalizedSubmissionKeys").lean();
+    const [classroomEnabled, student] = await Promise.all([
+      smartClassroomEnabled(String(session.schoolId)),
+      UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean(),
+    ]) as [boolean, any];
+    if (!classroomEnabled) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     if (activeChallengeExpired(session)) return res.status(StatusCodes.CONFLICT).json({ message: "انتهى وقت التحدي ولا يمكن تعديل الإجابات" });
     const publishedSet = new Set(publishedQuestionIds(session));
     if (!publishedSet.has(req.params.questionId)) return res.status(StatusCodes.FORBIDDEN).json({ message: "السؤال غير متاح للإجابة حالياً" });
     const question = session.questionSnapshots.find((candidate: any) => String(candidate.questionId) === req.params.questionId);
     if (!question) return res.status(StatusCodes.CONFLICT).json({ message: "Question is not active" });
-    const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
-    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
-    const participant = await ClassroomParticipantModel.findOne({ sessionId: classroomSessionId(session), studentId: req.authUser!.id })
-      .select("pendingSubmissionKeys finalizedSubmissionKeys").lean() as any;
+    const [canAccessSession, participant] = await Promise.all([
+      studentCanAccessSession(student, req.authUser!.id, session),
+      participantRead,
+    ]) as [boolean, any];
+    if (!canAccessSession) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before answering" });
     const submissionKey = submissionKeyForSession(session);
     if ((participant.finalizedSubmissionKeys || []).map(String).includes(submissionKey)) {
@@ -185,8 +195,10 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
       { $set: { selectedOptionIndex: payload.selectedOptionIndex, isCorrect: payload.selectedOptionIndex === question.correctOptionIndex, submittedAt: new Date() } },
       { upsert: true, new: true, runValidators: true },
     );
-    const responseCount = await ClassroomResponseModel.countDocuments({ sessionId: classroomSessionId(session), questionId: question.questionId });
-    emitClassroomEvent(classroomSessionId(session), "response:updated", { responseCount, questionId: question.questionId });
+    // The teacher's live state is coalesced separately. Counting the whole
+    // question after every answer turns a 100-student burst into 100 extra
+    // database reads and does not improve the student's response.
+    emitClassroomEvent(classroomSessionId(session), "response:updated", { questionId: question.questionId });
     res.json({ accepted: true, responseId: String(response._id), finalized: false });
   }));
 

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Award, CheckCircle2, Crown, TrendingUp, Users, Zap } from 'lucide-react';
 import { api } from '../../services/api';
+import { useClassroomRealtime } from '../../hooks/useClassroomRealtime';
 
 interface ClassroomTeacherLiveRadarProps {
   responseCount: number;
@@ -47,34 +48,33 @@ export const ClassroomTeacherLiveRadar: React.FC<ClassroomTeacherLiveRadarProps>
   const isChallenge = Boolean(activeQuestion?.isChallenge);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [competitionEnabled, setCompetitionEnabled] = useState(false);
+  const sessionId = currentClassroomSessionId();
 
-  useEffect(() => {
-    const sessionId = currentClassroomSessionId();
+  const loadCompetition = useCallback(async () => {
     if (!sessionId || !isChallenge) {
       setLeaderboard([]);
       setCompetitionEnabled(false);
       return;
     }
-    let active = true;
-    const load = async () => {
-      try {
-        const result = await api.get<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/competition`);
-        if (!active) return;
-        setLeaderboard(Array.isArray(result?.leaderboard) ? result.leaderboard : []);
-        setCompetitionEnabled(Boolean(result?.challenge?.competitionEnabled));
-      } catch {
-        if (!active) return;
-        setLeaderboard([]);
-        setCompetitionEnabled(false);
-      }
-    };
-    void load();
-    const interval = setInterval(() => void load(), 3000);
-    return () => {
-      active = false;
-      clearInterval(interval);
-    };
-  }, [isChallenge, activeQuestion?.questionId, totalResponses]);
+    try {
+      const result = await api.get<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/competition`);
+      setLeaderboard(Array.isArray(result?.leaderboard) ? result.leaderboard : []);
+      setCompetitionEnabled(Boolean(result?.challenge?.competitionEnabled));
+    } catch {
+      setLeaderboard([]);
+      setCompetitionEnabled(false);
+    }
+  }, [isChallenge, sessionId]);
+
+  useEffect(() => { void loadCompetition(); }, [loadCompetition, activeQuestion?.questionId]);
+  useClassroomRealtime(sessionId, loadCompetition, undefined, (event) => {
+    if (event === 'response:updated') return true;
+    if (event === 'competition:updated' || event === 'batch:ended' || event === 'question:published') {
+      void loadCompetition();
+      return true;
+    }
+    return false;
+  });
 
   let distractorIdx: number | null = null;
   let maxWrongCount = 0;

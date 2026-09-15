@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Presentation, X } from 'lucide-react';
 import { api } from '../../services/api';
-import { useClassroomRealtime } from '../../hooks/useClassroomRealtime';
+import { useClassroomDiscoveryRealtime, useClassroomRealtime } from '../../hooks/useClassroomRealtime';
 import { useAuth } from '../../contexts/AuthContext';
 import { SmartClassroomExamRunner, ClassroomExamQuestion } from './SmartClassroomExamRunner';
 
@@ -60,28 +60,31 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
     if (endedMessage) setMessage(endedMessage);
   }, []);
 
+  const checkActiveSession = useCallback(async () => {
+    if (!user || user.role !== 'student') return;
+    try {
+      const result = await api.getStudentActiveClassroomSession();
+      if (result.hasActiveSession && result.session) {
+        if (result.session.sessionId !== sessionId || !joined) setActiveSessionAlert(result.session);
+        else setActiveSessionAlert(null);
+      } else {
+        setActiveSessionAlert(null);
+        if (joined && sessionId) clearJoinedSession('انتهت الحصة الذكية وتم حفظ مشاركتك.');
+      }
+    } catch {
+      setActiveSessionAlert(null);
+    }
+  }, [clearJoinedSession, joined, sessionId, user]);
+
   useEffect(() => {
     if (!user || user.role !== 'student') return;
-    let mounted = true;
-    const checkActive = async () => {
-      try {
-        const result = await api.getStudentActiveClassroomSession();
-        if (!mounted) return;
-        if (result.hasActiveSession && result.session) {
-          if (result.session.sessionId !== sessionId || !joined) setActiveSessionAlert(result.session);
-          else setActiveSessionAlert(null);
-        } else {
-          setActiveSessionAlert(null);
-          if (joined && sessionId) clearJoinedSession('انتهت الحصة الذكية وتم حفظ مشاركتك.');
-        }
-      } catch {
-        if (mounted) setActiveSessionAlert(null);
-      }
-    };
-    void checkActive();
-    const interval = setInterval(() => void checkActive(), 5000);
-    return () => { mounted = false; clearInterval(interval); };
-  }, [user, sessionId, joined, clearJoinedSession]);
+    void checkActiveSession();
+  }, [checkActiveSession, user]);
+
+  useClassroomDiscoveryRealtime(
+    user?.role === 'student' && Array.isArray(user.groupIds) ? user.groupIds : [],
+    () => { void checkActiveSession(); },
+  );
 
   const loadCurrentQuestion = useCallback(async () => {
     if (!sessionId || !joined) return;
@@ -125,8 +128,6 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   useEffect(() => {
     if (!joined || !sessionId) return;
     void loadCurrentQuestion();
-    const interval = setInterval(() => void loadCurrentQuestion(), 4000);
-    return () => clearInterval(interval);
   }, [joined, sessionId, loadCurrentQuestion]);
 
   const handleInstantJoin = async () => {

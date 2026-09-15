@@ -817,7 +817,7 @@ export const api = {
     token?: string | null,
   ) => request<{ sessionId: string; pin: string; status: string }>("/classroom/sessions", { method: "POST", body: payload, token }),
 
-  getClassroomQuestions: (schoolId: string, params?: { pathId?: string; subject?: string; sectionId?: string; skillId?: string; difficulty?: string; search?: string }, token?: string | null) => {
+  getClassroomQuestions: (schoolId: string, params?: { pathId?: string; subject?: string; sectionId?: string; skillId?: string; difficulty?: string; search?: string; page?: number; limit?: number }, token?: string | null) => {
     const query = new URLSearchParams({ schoolId });
     if (params?.pathId) query.set("pathId", params.pathId);
     if (params?.subject) query.set("subject", params.subject);
@@ -825,7 +825,9 @@ export const api = {
     if (params?.skillId) query.set("skillId", params.skillId);
     if (params?.difficulty) query.set("difficulty", params.difficulty);
     if (params?.search) query.set("search", params.search);
-    return request<{ questions: Array<{ questionId: string; text: string; options: string[]; type: string; explanation?: string; skillIds?: string[]; pathId?: string; subject?: string; sectionId?: string; difficulty?: string }> }>(`/classroom/questions?${query.toString()}`, { token });
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.limit) query.set("limit", String(params.limit));
+    return request<{ page: number; limit: number; hasMore: boolean; questions: Array<{ questionId: string; text: string; options: string[]; type: string; skillIds?: string[]; pathId?: string; subject?: string; sectionId?: string; difficulty?: string }> }>(`/classroom/questions?${query.toString()}`, { token });
   },
   getStudentActiveClassroomSession: (token?: string | null) => request<{ hasActiveSession: boolean; session?: { sessionId: string; schoolId: string; classId: string; className: string; teacherName: string; status: string; activeQuestionIndex: number | null; totalQuestions: number; createdAt: string } }>("/classroom/student/active-session", { token, cache: "no-store" }),
   getTeacherActiveClassroomSession: (schoolId?: string, token?: string | null) => {

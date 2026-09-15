@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Bookmark, Filter, Presentation, Zap } from 'lucide-react';
 import { api } from '../services/api';
@@ -35,11 +35,15 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [schoolId, setSchoolId] = useState(searchParams.get('schoolId') || '');
   const [classId, setClassId] = useState(searchParams.get('classId') || '');
   const [questions, setQuestions] = useState<ClassroomQuestion[]>([]);
+  const [questionPage, setQuestionPage] = useState(0);
+  const [hasMoreQuestions, setHasMoreQuestions] = useState(false);
+  const [loadingMoreQuestions, setLoadingMoreQuestions] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [challengeIds, setChallengeIds] = useState<string[]>([]);
   const [creationTab, setCreationTab] = useState<'templates' | 'bank'>('templates');
   const [activeTemplateId, setActiveTemplateId] = useState<string>('');
   const [filters, setFilters] = useState<ClassroomFilterState>({ track: '', subject: '', difficulty: '', search: '' });
+  const liveRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectedSchool = useMemo(() => workspace?.schools.find((school) => school.schoolId === schoolId), [schoolId, workspace]);
 
   const load = useCallback(async () => {
@@ -49,7 +53,34 @@ export const ClassroomTeacherConsole: React.FC = () => {
   }, [sessionId]);
 
   useEffect(() => { void load(); }, [load]);
-  useClassroomRealtime(sessionId, load);
+  useEffect(() => () => {
+    if (liveRefreshTimerRef.current) clearTimeout(liveRefreshTimerRef.current);
+  }, []);
+
+  const applyRealtimeEvent = useCallback((event: string) => {
+    if (event !== 'response:updated' || !sessionId) return false;
+    if (liveRefreshTimerRef.current) return true;
+    // Coalesce answer storms into one small, active-question-only read. The
+    // full aggregate remains for initial load and teacher actions, not answers.
+    liveRefreshTimerRef.current = setTimeout(() => {
+      liveRefreshTimerRef.current = null;
+      api.get<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/aggregate?view=live`)
+        .then((live) => setData((current: any) => current ? {
+          ...current,
+          status: live.status,
+          activeQuestionIndex: live.activeQuestionIndex,
+          activeBatchId: live.activeBatchId,
+          responseCount: live.responseCount,
+          correctCount: live.correctCount,
+          distribution: live.distribution,
+          joinedCount: live.joinedCount,
+        } : current))
+        .catch(() => setMessage('تعذر تحديث الحالة الحية للحصة.'));
+    }, 250);
+    return true;
+  }, [sessionId]);
+
+  useClassroomRealtime(sessionId, load, undefined, applyRealtimeEvent);
 
   useEffect(() => {
     if (sessionId) return;
@@ -85,18 +116,26 @@ export const ClassroomTeacherConsole: React.FC = () => {
     const school = workspace?.schools.find((entry) => entry.schoolId === nextSchoolId);
     setClassId(school?.assignments[0]?.classId || '');
     setQuestions([]);
+    setQuestionPage(0);
+    setHasMoreQuestions(false);
     setSelectedIds([]);
     setChallengeIds([]);
     setActiveTemplateId('');
   };
 
-  const loadQuestions = async () => {
+  const loadQuestions = async (page = 1) => {
+    if (loadingMoreQuestions) return;
+    setLoadingMoreQuestions(true);
     try {
-      const result = await api.getClassroomQuestions(schoolId);
-      setQuestions(result.questions);
-      setMessage('تم استعراض بنك الأسئلة المعتمد. يمكنك الفلترة والاختيار أو بدء الحصة فارغة.');
+      const result = await api.getClassroomQuestions(schoolId, { page, limit: 50 });
+      setQuestions((current) => page === 1 ? result.questions : [...current, ...result.questions]);
+      setQuestionPage(result.page);
+      setHasMoreQuestions(result.hasMore);
+      if (page === 1) setMessage('تم استعراض بنك الأسئلة المعتمد. يمكنك الفلترة والاختيار أو بدء الحصة فارغة.');
     } catch {
       setMessage('تعذر تحميل بنك الأسئلة. تحقق من المدرسة وصلاحية الإسناد.');
+    } finally {
+      setLoadingMoreQuestions(false);
     }
   };
 
@@ -220,6 +259,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
                         </div>
                       );
                     })}
+                    {hasMoreQuestions && <button type="button" onClick={() => void loadQuestions(questionPage + 1)} disabled={loadingMoreQuestions} className="w-full rounded-xl border border-indigo-200 bg-indigo-50 py-3 text-xs font-black text-indigo-700 hover:bg-indigo-100 disabled:opacity-50">{loadingMoreQuestions ? 'جارٍ تحميل المزيد…' : 'تحميل أسئلة إضافية'}</button>}
                   </div>
                 )}
               </div>

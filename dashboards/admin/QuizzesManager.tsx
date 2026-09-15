@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Question, Quiz } from '../../types';
 import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink, Dumbbell, Award, FileText, SendHorizontal, Users, Calendar, Clock, ChevronLeft } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -25,11 +26,6 @@ interface QuizzesManagerProps {
   subjectId?: string;
   filterType?: 'quiz' | 'bank';
 }
-
-const getQuizManagerParams = () => {
-  const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
-  return new URLSearchParams(hashQuery || window.location.search);
-};
 
 const getStatusMeta = (quiz: Quiz) => {
   if (quiz.approvalStatus === 'rejected') {
@@ -162,6 +158,8 @@ const getQuizReadinessMeta = (quiz: Quiz, questions: Question[]) => {
 
 
 export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filterType }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const {
     user,
     quizzes: globalQuizzes,
@@ -194,7 +192,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         })
       : subjects;
 
-  const initialManagerParams = useMemo(() => getQuizManagerParams(), []);
+  const initialManagerParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const openedFromReports = initialManagerParams.get('source') === 'reports';
   const openedFromSupervisorDashboard = initialManagerParams.get('source') === 'supervisor-dashboard';
   const [selectedPathId, setSelectedPathId] = useState(initialManagerParams.get('pathId') || '');
@@ -208,16 +206,16 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   );
   const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'shown' | 'hidden'>('all');
   const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>(filterType ? 'visible' : 'all');
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(() => initialManagerParams.get('builder') === 'edit');
   const [searchTerm, setSearchTerm] = useState('');
-  const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
+  const [editingQuizId, setEditingQuizId] = useState<string | null>(() => initialManagerParams.get('builder') === 'edit' ? initialManagerParams.get('quizId') : null);
   const [draftMode, setDraftMode] = useState<'regular' | 'saher' | 'central' | null>(null);
   // فلتر quizKind (drill | test | mock | all)
   const [quizKindFilter, setQuizKindFilter] = useState<'all' | 'drill' | 'test' | 'mock'>(() =>
     initialManagerParams.get('tab') === 'mock-exams' ? 'mock' : 'all',
   );
   // فتح UnifiedQuizBuilder كـ overlay لإنشاء جديد
-  const [isUnifiedBuilderOpen, setIsUnifiedBuilderOpen] = useState(false);
+  const [isUnifiedBuilderOpen, setIsUnifiedBuilderOpen] = useState(() => initialManagerParams.get('builder') === 'create');
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const [mockSectionAnalytics, setMockSectionAnalytics] = useState<MockSectionAnalytics | null>(null);
   const [mockSectionAnalyticsLoading, setMockSectionAnalyticsLoading] = useState(false);
@@ -225,8 +223,71 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   // مساحة عمل موحدة للاختبارات العادية والموجهة والمحاكية.
   // الرابط الإداري القديم ?tab=mock-exams يظل صالحًا لكنه يفتح المحاكيات داخل المركز الموحد.
   const [mainView, setMainView] = useState<'quizzes' | 'assignments' | 'mock-exams'>(() =>
-    initialManagerParams.get('tab') === 'mock-exams' ? 'mock-exams' : 'quizzes',
+    initialManagerParams.get('quizView') === 'assignments' || initialManagerParams.get('quizView') === 'mock-exams'
+      ? initialManagerParams.get('quizView')
+      : initialManagerParams.get('tab') === 'mock-exams' ? 'mock-exams' : 'quizzes',
   );
+
+  const setBuilderRoute = React.useCallback((builder?: 'create' | 'edit', options?: { quizId?: string; step?: number; mode?: 'regular' | 'saher' | 'central' }) => {
+    const params = new URLSearchParams(location.search);
+    if (!builder) {
+      params.delete('builder');
+      params.delete('quizId');
+      params.delete('builderStep');
+      params.delete('builderMode');
+    } else {
+      params.set('builder', builder);
+      if (options?.quizId) params.set('quizId', options.quizId);
+      else params.delete('quizId');
+      if (options?.step) params.set('builderStep', String(options.step));
+      else params.delete('builderStep');
+      if (options?.mode) params.set('builderMode', options.mode);
+      else params.delete('builderMode');
+    }
+    navigate({ pathname: location.pathname, search: params.toString() ? `?${params.toString()}` : '' });
+  }, [location.pathname, location.search, navigate]);
+
+  const setQuizView = React.useCallback((view: 'quizzes' | 'assignments' | 'mock-exams') => {
+    setMainView(view);
+    const params = new URLSearchParams(location.search);
+    if (view === 'quizzes') params.delete('quizView');
+    else params.set('quizView', view);
+    navigate({ pathname: location.pathname, search: params.toString() ? `?${params.toString()}` : '' });
+  }, [location.pathname, location.search, navigate]);
+
+  const closeBuilder = React.useCallback(() => {
+    setIsEditing(false);
+    setEditingQuizId(null);
+    setDraftMode(null);
+    setIsUnifiedBuilderOpen(false);
+    setBuilderRoute();
+  }, [setBuilderRoute]);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const routeView = params.get('quizView');
+    setMainView(routeView === 'assignments' || routeView === 'mock-exams' ? routeView : params.get('tab') === 'mock-exams' ? 'mock-exams' : 'quizzes');
+    const builder = params.get('builder');
+    if (builder === 'edit' && params.get('quizId')) {
+      setIsUnifiedBuilderOpen(false);
+      setDraftMode(null);
+      setEditingQuizId(params.get('quizId'));
+      setIsEditing(true);
+      return;
+    }
+    if (builder === 'create') {
+      setIsEditing(false);
+      setEditingQuizId(null);
+      const routeMode = params.get('builderMode');
+      setDraftMode(routeMode === 'saher' || routeMode === 'central' || routeMode === 'regular' ? routeMode : null);
+      setIsUnifiedBuilderOpen(true);
+      return;
+    }
+    setIsEditing(false);
+    setEditingQuizId(null);
+    setIsUnifiedBuilderOpen(false);
+    setDraftMode(null);
+  }, [location.search]);
   // توجيه: الاختبار المحدد للتوجيه
   const [assigningQuiz, setAssigningQuiz] = useState<Quiz | null>(null);
   const [assignTargetGroupIds, setAssignTargetGroupIds] = useState<string[]>([]);
@@ -497,6 +558,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     if (isSupervisor) {
       // المشرف يستخدم UnifiedQuizBuilder مباشرة
       setIsUnifiedBuilderOpen(true);
+      setBuilderRoute('create', { step: 1 });
       return;
     }
     if (isLearningSpaceManager) {
@@ -505,17 +567,20 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     }
     // المدير والمعلم يفتحون UnifiedQuizBuilder
     setIsUnifiedBuilderOpen(true);
+    setBuilderRoute('create', { step: 1 });
   };
 
   const handleCreateByMode = (mode: 'regular' | 'saher' | 'central') => {
     setDraftMode(mode);
     setEditingQuizId(null);
     setIsEditing(true);
+    setBuilderRoute('create', { step: 1, mode });
   };
   const handleEdit = (id: string) => {
     setDraftMode(null);
     setEditingQuizId(id);
     setIsEditing(true);
+    setBuilderRoute('edit', { quizId: id, step: 1 });
   };
 
   const handleDelete = (id: string) => {
@@ -728,8 +793,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
         initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
         initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSupervisorDashboard || isSupervisor ? 'central' : 'regular'}
-        onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
-        onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
+        initialStep={Number(initialManagerParams.get('builderStep') || '1') as 1 | 2 | 3 | 4}
+        onStepChange={(step) => setBuilderRoute(editingQuizId ? 'edit' : 'create', { quizId: editingQuizId || undefined, step, mode: draftMode || undefined })}
+        onSave={closeBuilder}
+        onClose={closeBuilder}
       />
     );
   }
@@ -748,8 +815,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           initialSkillIds={selectedSkillId ? [selectedSkillId] : []}
           initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
           initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
-          initialMode={openedFromReports || openedFromSupervisorDashboard || isSupervisor ? 'central' : 'regular'}
-          onClose={() => setIsUnifiedBuilderOpen(false)}
+          initialMode={draftMode === 'saher' ? 'saher' : draftMode === 'central' || openedFromReports || openedFromSupervisorDashboard || isSupervisor ? 'central' : 'regular'}
+          draftScope={`create:${user.role}:${mainView}:${draftMode || 'regular'}`}
+          initialStep={Number(initialManagerParams.get('builderStep') || '1') as 1 | 2 | 3 | 4}
+          onStepChange={(step) => setBuilderRoute('create', { step, mode: draftMode || undefined })}
+          onClose={closeBuilder}
         />
       )}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -791,7 +861,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             { key: 'assignments' as const, label: 'توجيه الاختبارات', icon: <SendHorizontal size={14}/>, badge: globalQuizzes.filter(q => (q.targetGroupIds?.length || 0) + (q.targetUserIds?.length || 0) > 0).length },
           ]).map(tab => (
             <button key={tab.key} type="button" onClick={() => {
-              setMainView(tab.key);
+              setQuizView(tab.key);
               setQuizKindFilter(tab.key === 'mock-exams' ? 'mock' : 'all');
               setAssigningQuiz(null);
             }}

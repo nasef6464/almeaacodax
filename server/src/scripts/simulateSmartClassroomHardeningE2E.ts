@@ -18,8 +18,11 @@ import { ClassroomResponseModel } from "../models/ClassroomResponse.js";
 import { ClassroomTemplateModel } from "../models/ClassroomTemplate.js";
 
 const RUN_ID = `hardening_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+const LOAD_STUDENT_COUNT = Math.max(0, Math.min(118, Number.parseInt(process.env.SMART_CLASSROOM_LOAD_STUDENTS || "23", 10) || 23));
+const SCENARIO_NAME = process.env.SMART_CLASSROOM_SCENARIO || `single-class-${LOAD_STUDENT_COUNT + 2}`;
 const createdSchoolIds: string[] = [];
 const sockets: Socket[] = [];
+const requestMetrics: Array<{ durationMs: number; responseBytes: number }> = [];
 let server: http.Server | null = null;
 let apiBaseUrl = "";
 let socketBaseUrl = "";
@@ -43,6 +46,7 @@ function assertSafeDatabase() {
 }
 
 async function request(endpoint: string, options: { method?: string; token?: string; body?: unknown } = {}) {
+  const startedAt = performance.now();
   const method = (options.method || "GET").toUpperCase();
   const headers: Record<string, string> = { accept: "application/json" };
   if (options.token) headers.authorization = `Bearer ${options.token}`;
@@ -59,8 +63,30 @@ async function request(endpoint: string, options: { method?: string; token?: str
   const text = await response.text();
   let body: any = null;
   try { body = text ? JSON.parse(text) : null; } catch { body = { raw: text }; }
-  return { status: response.status, body };
+  const metric = { durationMs: performance.now() - startedAt, responseBytes: Buffer.byteLength(text, "utf8") };
+  requestMetrics.push(metric);
+  return { status: response.status, body, ...metric };
 }
+
+const percentile = (values: number[], ratio: number) => {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.min(sorted.length - 1, Math.max(0, Math.ceil(sorted.length * ratio) - 1))];
+};
+
+const emitMetrics = () => {
+  const durations = requestMetrics.map((metric) => metric.durationMs);
+  const bytes = requestMetrics.reduce((total, metric) => total + metric.responseBytes, 0);
+  const memory = process.memoryUsage();
+  console.log(JSON.stringify({
+    kind: "smart-classroom-load-metrics",
+    scenario: SCENARIO_NAME,
+    students: LOAD_STUDENT_COUNT + 2,
+    http: { requests: durations.length, p50Ms: percentile(durations, 0.5), p95Ms: percentile(durations, 0.95), p99Ms: percentile(durations, 0.99), responseBytes: bytes },
+    process: { rssBytes: memory.rss, heapUsedBytes: memory.heapUsed },
+    socketsOpened: sockets.length,
+  }));
+};
 
 function tokenFor(user: any) {
   return signAccessToken({
@@ -154,7 +180,7 @@ async function run() {
     UserModel.create({ name: "Student B", email: `student_b_${RUN_ID}@example.com`, passwordHash: "x", role: "student", schoolId: schoolBId, groupIds: [], isActive: true }),
   ]);
 
-  const loadStudents = await UserModel.insertMany(Array.from({ length: 23 }, (_, index) => ({
+  const loadStudents = await UserModel.insertMany(Array.from({ length: LOAD_STUDENT_COUNT }, (_, index) => ({
     name: `Load Student ${index + 1}`,
     email: `load_student_${index + 1}_${RUN_ID}@example.com`,
     passwordHash: "x",
@@ -236,7 +262,7 @@ async function run() {
   const concurrentJoins = await Promise.all(loadStudentTokens.map((token) => request("/classroom/sessions/join-by-pin", {
     method: "POST", token, body: { pin },
   })));
-  assert.ok(concurrentJoins.every((result) => result.status === 200), "All 25 class students should join concurrently");
+  assert.ok(concurrentJoins.every((result) => result.status === 200), `All ${LOAD_STUDENT_COUNT + 2} class students should join concurrently`);
 
   assert.equal((await joinSocket(studentAToken, `classroom:${liveSessionId}`)).ok, true);
   assert.equal((await joinSocket(studentBToken, `classroom:${liveSessionId}`)).ok, false);
@@ -267,14 +293,14 @@ async function run() {
   const concurrentAnswers = await Promise.all(loadStudentTokens.map((token, index) => request(`/classroom/sessions/${liveSessionId}/answers/${q2}`, {
     method: "PUT", token, body: { selectedOptionIndex: index % 4 },
   })));
-  assert.ok(concurrentAnswers.every((result) => result.status === 200), "Concurrent answers from a 25-student class should all be accepted");
+  assert.ok(concurrentAnswers.every((result) => result.status === 200), `Concurrent answers from a ${LOAD_STUDENT_COUNT + 2}-student class should all be accepted`);
 
   const aggregate = await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: teacherToken });
   assert.equal(aggregate.status, 200);
   const q2Stats = aggregate.body.questions.find((question: any) => question.questionId === q2);
   const q3Stats = aggregate.body.questions.find((question: any) => question.questionId === q3);
-  assert.equal(q2Stats.responseCount, 25);
-  assert.equal(Object.values(q2Stats.distribution).reduce((sum: number, count: any) => sum + Number(count), 0), 25);
+  assert.equal(q2Stats.responseCount, LOAD_STUDENT_COUNT + 2);
+  assert.equal(Object.values(q2Stats.distribution).reduce((sum: number, count: any) => sum + Number(count), 0), LOAD_STUDENT_COUNT + 2);
   assert.equal(q3Stats.responseCount, 1);
   assert.equal(q3Stats.distribution["0"], 1);
   assert.equal(q2Stats.pathId, "path-two");
@@ -287,23 +313,24 @@ async function run() {
 
   const secondBatchEnd = await request(`/classroom/sessions/${liveSessionId}/batches/${append.body.batchId}/end`, { method: "POST", token: teacherToken });
   assert.equal(secondBatchEnd.status, 200);
-  assert.equal(secondBatchEnd.body.miniReport.answered, 26);
-  assert.equal(secondBatchEnd.body.miniReport.correct + secondBatchEnd.body.miniReport.wrong, 26);
+  assert.equal(secondBatchEnd.body.miniReport.answered, LOAD_STUDENT_COUNT + 3);
+  assert.equal(secondBatchEnd.body.miniReport.correct + secondBatchEnd.body.miniReport.wrong, LOAD_STUDENT_COUNT + 3);
   const secondBatchEndAgain = await request(`/classroom/sessions/${liveSessionId}/batches/${append.body.batchId}/end`, { method: "POST", token: teacherToken });
   assert.equal(secondBatchEndAgain.status, 200, "Repeated end-batch should be idempotent");
   assert.deepEqual(secondBatchEndAgain.body.miniReport, secondBatchEnd.body.miniReport);
 
   const ended = await request(`/classroom/sessions/${liveSessionId}/end`, { method: "POST", token: teacherToken });
   assert.equal(ended.status, 200);
-  assert.equal(ended.body.report.roster.expected, 25);
-  assert.equal(ended.body.report.roster.joined, 25);
-  assert.equal(ended.body.report.totals.responses, 26);
-  assert.ok(ended.body.report.questions.some((question: any) => question.questionId === q2 && question.answered === 25));
+  assert.equal(ended.body.report.roster.expected, LOAD_STUDENT_COUNT + 2);
+  assert.equal(ended.body.report.roster.joined, LOAD_STUDENT_COUNT + 2);
+  assert.equal(ended.body.report.totals.responses, LOAD_STUDENT_COUNT + 3);
+  assert.ok(ended.body.report.questions.some((question: any) => question.questionId === q2 && question.answered === LOAD_STUDENT_COUNT + 2));
   const endedAgain = await request(`/classroom/sessions/${liveSessionId}/end`, { method: "POST", token: teacherToken });
   assert.equal(endedAgain.status, 200, "Repeated end-session should be idempotent");
   assert.deepEqual(endedAgain.body.report, ended.body.report, "Repeated end-session must return the immutable stored snapshot");
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/instant-join`, { method: "POST", token: studentAToken })).status, 404);
 
+  emitMetrics();
   console.log("Smart Classroom hardening E2E: PASS");
 }
 

@@ -1,5 +1,37 @@
 # ALMEAA — Codex Execution State
 
+## Performance hardening P1–P5 — local scale evidence, production certification blocked
+
+- Status: `PARTIAL / LOCAL VERIFIED / NOT PRODUCTION-CERTIFIED` on 2026-09-14.
+- Runtime commits on `codex/performance-hardening-p1`: `27406277`, `f25802ad`,
+  `89bd83ea`, `272f4562`, `7487a98d`, `ec58b48f`, and `5fdd22b0`.
+- Delivered: route-backed quiz-builder recovery; scoped Smart Classroom Socket
+  audiences; coalesced staff aggregate refreshes; bounded teacher question reads;
+  and a test-only load harness that records HTTP percentiles, response bytes,
+  process RSS/heap, and opened Socket count. Large public images are excluded
+  from PWA install precache and load/decode lazily; the active hero remains
+  eager. The classroom join and answer paths now overlap independent reads
+  while preserving authorization before writes.
+- Isolated local MongoDB evidence: 30-student and 100-student single-class
+  journeys passed, as did four concurrent isolated 30-student classes (120
+  students total). School-scope denials, session lifecycle, and answer writes
+  passed in every scenario. The four-class runs recorded P95 HTTP values of
+  1.79s, 1.87s, 1.90s, and 1.91s per worker; the single 100-student run was
+  2.19s P95. Increasing only the local Mongo client pool from 30 to 100 did
+  not improve that 100-student result (2.20s P95), so connection-pool size is
+  not accepted as a demonstrated fix.
+- Evidence boundary: the numbers are from one local machine and temporary
+  local MongoDB only; they do not certify Render/Atlas CPU, memory, network,
+  Redis fan-out, cold starts, or production capacity. Render remains suspended
+  by account billing, so no production deployment or live load test was run.
+- Verification boundary: P4 contracts, deployment-cache contract, root
+  TypeScript check, and server TypeScript check passed locally. GitHub Actions
+  did not create a run for the current branch commits, so exact-runtime CI is
+  still unavailable.
+- Next exact action: provision an explicitly authorized staging target with
+  host and MongoDB telemetry, set a latency/error budget, rerun the same
+  30/100/four-class matrix, and optimize only the measured bottleneck.
+
 ## Trainer analytics and isolated journey G18
 
 - Status: `CLOSED / VERIFIED` on 2026-09-14.
