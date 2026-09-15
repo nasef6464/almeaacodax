@@ -82,7 +82,8 @@ assertAllIncludes("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx", [
   "فتح تشغيل المدرسة",
 ]);
 assertAllIncludes("dashboards/admin/SchoolsManager/workspaceViewModel.ts", [
-  "ربط المشرفين",
+  { needle: "مشرفون", label: "supervisor readiness step" },
+  { needle: "إدارة المنسوبين", label: "supervisor management action" },
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
