@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authRouter } from "./auth.routes.js";
+import { authSessionRouter } from "./authSession.routes.js";
 import { healthRouter } from "./health.routes.js";
 import { taxonomyRouter } from "./taxonomy.routes.js";
 import { courseRouter } from "./course.routes.js";
@@ -30,6 +31,7 @@ import liveExamsRouter from "./live-exams.routes.js";
 export const apiRouter = Router();
 
 apiRouter.use("/health", healthRouter);
+apiRouter.use("/auth", authSessionRouter);
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/taxonomy", taxonomyRouter);
 apiRouter.use("/content", contentRouter);

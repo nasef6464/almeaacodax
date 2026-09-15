@@ -3,9 +3,17 @@ import { env } from "../config/env.js";
 import type { AuthUser } from "../modules/auth/domain/auth-user.js";
 
 export function signAccessToken(payload: AuthUser) {
-  return jwt.sign(payload, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"],
-  });
+  const { iat: _previousIat, ...claims } = payload;
+  return jwt.sign(
+    {
+      ...claims,
+      sessionIssuedAt: Date.now(),
+    },
+    env.JWT_SECRET,
+    {
+      expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"],
+    },
+  );
 }
 
 export function verifyAccessToken(token: string) {

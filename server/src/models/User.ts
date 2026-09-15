@@ -20,6 +20,7 @@ const userSchema = new Schema(
       purchasedPackages: { type: [String], default: [] },
     },
     isActive: { type: Boolean, default: true },
+    sessionInvalidBefore: { type: Number, default: 0, select: false },
     emailVerified: { type: Boolean, default: false, index: true },
     emailVerifiedAt: { type: Number, default: null },
     emailVerificationTokenHash: { type: String, default: "", index: true },
@@ -56,6 +57,46 @@ const userSchema = new Schema(
   },
 );
 
+const sessionSensitiveFields = ["passwordHash", "isActive", "role", "email"] as const;
+const hasOwn = (value: Record<string, unknown>, key: string) => Object.prototype.hasOwnProperty.call(value, key);
+
+userSchema.pre("save", function () {
+  if (this.isNew) return;
+  if (sessionSensitiveFields.some((field) => this.isModified(field))) {
+    this.set("sessionInvalidBefore", Date.now());
+  }
+});
+
+function invalidateSessionsForSensitiveUpdate(this: any) {
+  const update = this.getUpdate?.();
+  if (!update || Array.isArray(update) || typeof update !== "object") return;
+
+  const updateRecord = update as Record<string, any>;
+  const operatorRecords = ["$set", "$unset", "$setOnInsert"]
+    .map((key) => updateRecord[key])
+    .filter((value) => value && typeof value === "object") as Record<string, unknown>[];
+  const touchesSensitiveField = sessionSensitiveFields.some(
+    (field) => hasOwn(updateRecord, field) || operatorRecords.some((record) => hasOwn(record, field)),
+  );
+  if (!touchesSensitiveField) return;
+
+  const invalidBefore = Date.now();
+  const usesUpdateOperators = Object.keys(updateRecord).some((key) => key.startsWith("$"));
+  if (usesUpdateOperators) {
+    updateRecord.$set = {
+      ...(updateRecord.$set && typeof updateRecord.$set === "object" ? updateRecord.$set : {}),
+      sessionInvalidBefore: invalidBefore,
+    };
+  } else {
+    updateRecord.sessionInvalidBefore = invalidBefore;
+  }
+  this.setUpdate(updateRecord);
+}
+
+userSchema.pre("findOneAndUpdate", invalidateSessionsForSensitiveUpdate);
+userSchema.pre("updateOne", invalidateSessionsForSensitiveUpdate);
+userSchema.pre("updateMany", invalidateSessionsForSensitiveUpdate);
+
 userSchema.set("toJSON", {
   transform: (_doc, ret) => {
     const safeRet = ret as Record<string, unknown>;
@@ -63,6 +104,7 @@ userSchema.set("toJSON", {
     delete safeRet.failedLoginAttempts;
     delete safeRet.lastFailedLoginAt;
     delete safeRet.loginLockedUntil;
+    delete safeRet.sessionInvalidBefore;
     delete safeRet.emailVerificationTokenHash;
     delete safeRet.passwordResetTokenHash;
     delete safeRet.__v;

@@ -4,6 +4,7 @@ import { env } from "../config/env.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import type { AppRole } from "../constants/roles.js";
+import type { AuthUser } from "../modules/auth/domain/auth-user.js";
 import { UserModel } from "../models/User.js";
 
 function resolveAuthUser(req: Request) {
@@ -19,6 +20,15 @@ function resolveAuthUser(req: Request) {
   } catch {
     return null;
   }
+}
+
+function resolveSessionIssuedAt(authUser: AuthUser) {
+  const preciseIssuedAt = Number(authUser.sessionIssuedAt || 0);
+  if (Number.isFinite(preciseIssuedAt) && preciseIssuedAt > 0) return preciseIssuedAt;
+
+  const jwtIssuedAtSeconds = Number(authUser.iat || 0);
+  if (Number.isFinite(jwtIssuedAtSeconds) && jwtIssuedAtSeconds > 0) return jwtIssuedAtSeconds * 1000;
+  return 0;
 }
 
 function isStrictLocalRequest(req: Request) {
@@ -48,8 +58,14 @@ function isStrictLocalRequest(req: Request) {
 }
 
 const refreshActiveAuthUser = async (req: Request) => {
-  const currentUser = await UserModel.findById(req.authUser!.id).select("email name role isActive schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds");
+  const currentUser = await UserModel.findById(req.authUser!.id).select(
+    "email name role isActive schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds +sessionInvalidBefore",
+  );
   if (!currentUser || currentUser.isActive === false) return false;
+
+  const invalidBefore = Number((currentUser as any).sessionInvalidBefore || 0);
+  const sessionIssuedAt = resolveSessionIssuedAt(req.authUser!);
+  if (invalidBefore > 0 && sessionIssuedAt < invalidBefore) return false;
 
   req.authUser = {
     ...req.authUser!,
@@ -65,7 +81,7 @@ const refreshActiveAuthUser = async (req: Request) => {
   return true;
 };
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
+export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   // A route group may already have refreshed the principal from Mongo through
   // requireActiveAuth. Nested route middleware must never downgrade that
   // current identity back to stale role/school claims from the original JWT.
@@ -80,6 +96,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
       role: "admin",
       name: env.ADMIN_NAME,
     };
+    res.locals.activeAuthRefreshed = true;
     return next();
   }
 
@@ -91,7 +108,18 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   }
 
   req.authUser = authUser;
-  return next();
+  try {
+    const active = await refreshActiveAuthUser(req);
+    if (!active) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Authentication required",
+      });
+    }
+    res.locals.activeAuthRefreshed = true;
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 }
 
 /**
@@ -107,6 +135,10 @@ export async function requireActiveAuth(req: Request, res: Response, next: NextF
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: "Authentication required",
     });
+  }
+
+  if (res.locals.activeAuthRefreshed === true) {
+    return next();
   }
 
   if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && req.authUser.id === "local-dev-admin") {
@@ -128,7 +160,7 @@ export async function requireActiveAuth(req: Request, res: Response, next: NextF
   }
 }
 
-export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
+export async function optionalAuth(req: Request, res: Response, next: NextFunction) {
   if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
       id: "local-dev-admin",
@@ -136,15 +168,25 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
       role: "admin",
       name: env.ADMIN_NAME,
     };
+    res.locals.activeAuthRefreshed = true;
     return next();
   }
 
   const authUser = resolveAuthUser(req);
-  if (authUser) {
-    req.authUser = authUser;
-  }
+  if (!authUser) return next();
 
-  return next();
+  req.authUser = authUser;
+  try {
+    const active = await refreshActiveAuthUser(req);
+    if (!active) {
+      delete req.authUser;
+      return next();
+    }
+    res.locals.activeAuthRefreshed = true;
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export function requireRole(allowedRoles: AppRole[]) {

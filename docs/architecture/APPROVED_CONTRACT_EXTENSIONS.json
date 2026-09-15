@@ -18,6 +18,8 @@
     "authRouter|PATCH|/admin/users/bulk-status",
     "authRouter|GET|/admin/users/summary",
     "authRouter|GET|/trainer/performance",
+    "authSessionRouter|POST|/logout-all",
+    "authSessionRouter|POST|/me/password",
     "contentRouter|GET|/review-queue",
     "contentRouter|PATCH|/review-queue/:type/:id",
     "classroomRouter|GET|/questions",
@@ -92,7 +94,8 @@
     "apiRouter|/question-analytics|questionAnalyticsRouter",
     "apiRouter|/classroom|classroomRouter",
     "apiRouter|/school-access|schoolAdminIntegrityRouter",
-    "apiRouter|/school-access|schoolAccessRouter"
+    "apiRouter|/school-access|schoolAccessRouter",
+    "apiRouter|/auth|authSessionRouter"
   ],
   "envKeys": [
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
