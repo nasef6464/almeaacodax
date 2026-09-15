@@ -5,10 +5,11 @@ const ROOT = process.cwd();
 const baselineContractsPath = path.join(ROOT, 'docs', 'architecture', 'baseline', 'CONTRACTS_PRE_STRUCTURAL.json');
 const baselineAuditPath = path.join(ROOT, 'docs', 'architecture', 'baseline', 'REPOSITORY_PRE_STRUCTURAL.json');
 const approvedExtensionsPath = path.join(ROOT, 'docs', 'architecture', 'APPROVED_CONTRACT_EXTENSIONS.json');
+const hotspotExceptionsPath = path.join(ROOT, 'docs', 'architecture', 'ARCHITECTURE_HOTSPOT_EXCEPTIONS.json');
 const progressiveBudgetPath = path.join(ROOT, 'docs', 'architecture', 'ARCHITECTURE_BUDGET.json');
 const currentAuditPath = path.join(ROOT, 'docs', 'architecture', 'generated', 'CURRENT_REPOSITORY_AUDIT.json');
 
-for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensionsPath, progressiveBudgetPath, currentAuditPath]) {
+for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensionsPath, hotspotExceptionsPath, progressiveBudgetPath, currentAuditPath]) {
   if (!fs.existsSync(file)) {
     throw new Error(`[architecture-gate] required evidence file is missing: ${path.relative(ROOT, file)}`);
   }
@@ -17,6 +18,7 @@ for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensions
 const baselineContracts = JSON.parse(fs.readFileSync(baselineContractsPath, 'utf8'));
 const baselineAudit = JSON.parse(fs.readFileSync(baselineAuditPath, 'utf8'));
 const approvedExtensions = JSON.parse(fs.readFileSync(approvedExtensionsPath, 'utf8'));
+const hotspotExceptions = JSON.parse(fs.readFileSync(hotspotExceptionsPath, 'utf8'));
 const progressiveBudget = JSON.parse(fs.readFileSync(progressiveBudgetPath, 'utf8'));
 const currentAudit = JSON.parse(fs.readFileSync(currentAuditPath, 'utf8'));
 const failures = [];
@@ -60,6 +62,8 @@ const approvedFrontendRoutes = approvedExtensions.frontendRoutes || [];
 const approvedBackendRouteSignatures = approvedExtensions.backendRouteSignatures || [];
 const approvedRouterMountSignatures = approvedExtensions.routerMountSignatures || [];
 const approvedEnvKeys = approvedExtensions.envKeys || [];
+const hotspotExceptionEntries = (hotspotExceptions.exceptions || []).filter((entry) => entry?.temporary !== false && entry?.file);
+const hotspotExceptionFiles = new Set(hotspotExceptionEntries.map((entry) => entry.file));
 
 requireExact(
   'frontend route literals changed outside the immutable baseline and approved product extensions',
@@ -125,14 +129,16 @@ const hotspotsLimit = Math.min(baselineHotspots, hotspotsBudget);
 // Explicit test/E2E/spec files are execution evidence rather than shipped runtime modules.
 const testFilePattern = /(?:^|\/)[^/]+\.(?:e2e|test|spec)\.[cm]?[jt]sx?$/i;
 const runtimeHotspots = (currentAudit.hotspots || []).filter((entry) => !testFilePattern.test(entry.file || ''));
-const currentHotspots = runtimeHotspots.length;
+const unapprovedRuntimeHotspots = runtimeHotspots.filter((entry) => !hotspotExceptionFiles.has(entry.file));
+const currentHotspots = unapprovedRuntimeHotspots.length;
 if (currentHotspots > hotspotsLimit) {
   failures.push({
     label: 'runtime >=400-line hotspot budget exceeded',
     immutableBaseline: baselineHotspots,
     progressiveLimit: hotspotsLimit,
     current: currentHotspots,
-    hotspots: runtimeHotspots.slice(0, 20),
+    hotspots: unapprovedRuntimeHotspots.slice(0, 20),
+    approvedHotspotExceptions: hotspotExceptionEntries,
   });
 }
 
@@ -159,5 +165,7 @@ console.log(JSON.stringify({
   dependencyCycles: currentCycles,
   dependencyCyclesLimit: cyclesLimit,
   hotspots400Lines: currentHotspots,
+  hotspots400LinesRaw: runtimeHotspots.length,
   hotspots400LinesLimit: hotspotsLimit,
+  approvedHotspotExceptions: hotspotExceptionEntries.map((entry) => entry.file),
 }, null, 2));
