@@ -15,6 +15,9 @@
     "questionAnalyticsRouter|GET|/",
     "authRouter|GET|/admin/trainers",
     "authRouter|GET|/admin/trainers/:id",
+    "authRouter|PATCH|/admin/users/bulk-status",
+    "authRouter|GET|/admin/users/summary",
+    "authRouter|GET|/trainer/performance",
     "contentRouter|GET|/review-queue",
     "contentRouter|PATCH|/review-queue/:type/:id",
     "classroomRouter|GET|/questions",
@@ -101,6 +104,8 @@
     "LEARNING_MANAGER_AUDIT_RUN_ID",
     "PILOT_ALLOW_EXTERNAL_RUN",
     "PILOT_WRITE_AUTHORIZATION",
+    "SMART_CLASSROOM_LOAD_STUDENTS",
+    "SMART_CLASSROOM_SCENARIO",
     "UI_AUDIT_ROLE_CREDENTIALS_JSON"
   ]
 }
