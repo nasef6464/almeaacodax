@@ -20,4 +20,6 @@ assert.ok(teacher.includes('loadQuestions(questionPage + 1)'), 'teacher UI must 
 assert.ok(viteConfig.includes("globPatterns: ['**/*.{js,css,html,svg,woff2}']"), 'PWA precache must exclude large marketing images');
 assert.ok(landing.includes("loading={isActive ? 'eager' : 'lazy'}"), 'only the active hero image should be eager');
 assert.ok(landing.includes('loading="lazy" decoding="async"'), 'below-the-fold landing images should decode lazily');
+const questionModel = read('server/src/models/Question.ts');
+assert.ok(questionModel.includes('questionSchema.index({ subject: 1, approvalStatus: 1, updatedAt: -1 })'), 'question bank needs compound index for sorted retrieval');
 console.log('Performance P4 contract: PASS');

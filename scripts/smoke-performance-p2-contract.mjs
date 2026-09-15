@@ -29,6 +29,7 @@ check('reconnect joins each active session and requests a server-authoritative r
   assert.ok(hook.includes("socket.on('connect'"));
   assert.ok(hook.includes('sessionSubscribers.forEach((_, id) => joinSession(id))'));
   assert.ok(hook.includes("if (result?.ok) notifySession(id, 'connected')"));
+  assert.ok(hook.includes('randomizationFactor: 0.5'));
 });
 check('student live screen has no sustained polling timer', () => {
   assert.equal(student.includes('setInterval('), false);
