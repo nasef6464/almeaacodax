@@ -21,7 +21,6 @@ concurrency:
 
 jobs:
   isolated-full-stack-e2e:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe'
     name: Full-stack roles + CRUD + school + quiz flows on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 55
@@ -44,17 +43,8 @@ jobs:
       MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_platform_v3_deep_${{ github.run_id }}
       REDIS_URL: ""
       RATE_LIMIT_REDIS_ENABLED: "false"
-      # The isolated full-stack suite makes more than the production global
-      # per-IP budget from one loopback address. Keep production defaults
-      # intact; this only prevents one audit from rate-limiting the next.
       RATE_LIMIT_GLOBAL_LIMIT: "5000"
-      # The isolated suite intentionally logs in several independent roles and
-      # audits in a short window. Keep production's default throttling intact
-      # while preventing fixture authentication from masking product evidence.
       RATE_LIMIT_AUTH_LIMIT: "500"
-      # The sequential isolated browser suites also exercise sensitive public
-      # actions from one loopback address. This is CI-only and keeps the
-      # production-sensitive limit unchanged.
       RATE_LIMIT_SENSITIVE_LIMIT: "2000"
       NOTIFICATION_QUEUE_ENABLED: "false"
       GOOGLE_OAUTH_ENABLED: "false"
@@ -122,8 +112,8 @@ jobs:
           const supervisorPassword = random();
           const schoolSupervisorPassword = random();
           const parentPassword = random();
+          const jwtSecret = random(48);
           const values = {
-            JWT_SECRET: random(48),
             ADMIN_PASSWORD: adminPassword,
             ROLE_ADMIN_PASSWORD: adminPassword,
             SMOKE_ADMIN_PASSWORD: adminPassword,
@@ -137,247 +127,212 @@ jobs:
             ROLE_SCHOOL_SUPERVISOR_PASSWORD: schoolSupervisorPassword,
             ROLE_PARENT_PASSWORD: parentPassword,
             SMOKE_PARENT_PASSWORD: parentPassword,
+            JWT_SECRET: jwtSecret,
           };
           for (const value of Object.values(values)) console.log(`::add-mask::${value}`);
-          fs.appendFileSync(process.env.GITHUB_ENV, Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n');
+          fs.appendFileSync(process.env.GITHUB_ENV, Object.entries(values).map(([key, value]) => `${key}=${value}\n`).join(''));
           NODE
 
       - name: Frontend typecheck
+        timeout-minutes: 10
         run: npm run typecheck
 
       - name: API typecheck
+        timeout-minutes: 10
         run: npm run server:check
 
-      - name: Frontend production build against isolated API
+      - name: Frontend production build
+        timeout-minutes: 15
         run: npm run build
 
       - name: API production build
+        timeout-minutes: 10
         run: npm run server:build
 
-      - name: Deep-user preparation script typecheck
-        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/prepareDeepPreMergeUsers.ts
-
-      - name: Seed isolated admin
-        run: npm --prefix server run seed:admin
-
-      - name: Seed full operational fixture into isolated Mongo
-        run: npm --prefix server run seed:operational
-
-      - name: Rotate fixture accounts to masked ephemeral credentials
-        run: cd server && npx tsx src/scripts/prepareDeepPreMergeUsers.ts
-
-      - name: Start exact branch API
-        id: start_api
+      - name: Start isolated API
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p audit-artifacts/deep-premerge
-          npm --prefix server run start > audit-artifacts/deep-premerge/api.log 2>&1 &
-          echo $! > /tmp/platform-v3-deep-api.pid
-          for attempt in $(seq 1 45); do
-            if curl --fail --silent http://127.0.0.1:4010/api/health/ready > audit-artifacts/deep-premerge/api-ready.json; then
+          nohup npm --prefix server run start > /tmp/almeaa-deep-e2e-api.log 2>&1 &
+          echo $! > /tmp/almeaa-deep-e2e-api.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:4010/api/health >/dev/null; then
               exit 0
             fi
-            sleep 1
+            if ! kill -0 "$(cat /tmp/almeaa-deep-e2e-api.pid)" 2>/dev/null; then
+              cat /tmp/almeaa-deep-e2e-api.log || true
+              exit 1
+            fi
+            sleep 2
           done
-          tail -n 200 audit-artifacts/deep-premerge/api.log || true
+          cat /tmp/almeaa-deep-e2e-api.log || true
           exit 1
 
-      - name: Operational multi-role API journeys
-        id: operational
-        continue-on-error: true
-        run: npm --prefix server run smoke:operational:api
+      - name: Seed isolated recovery baseline
+        timeout-minutes: 5
+        run: npm run seed:recovery
 
-      - name: Install Chromium
+      - name: Install Playwright browser
         timeout-minutes: 10
         run: npx playwright install --with-deps chromium
 
-      - name: Start exact branch frontend
-        id: start_frontend
+      - name: Start isolated frontend preview
         shell: bash
         run: |
           set -euo pipefail
-          npm run preview -- --host 127.0.0.1 --port 4173 > audit-artifacts/deep-premerge/frontend.log 2>&1 &
-          echo $! > /tmp/platform-v3-deep-frontend.pid
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/almeaa-deep-e2e-ui.log 2>&1 &
+          echo $! > /tmp/almeaa-deep-e2e-ui.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:4173 >/dev/null; then
               exit 0
             fi
-            sleep 1
+            if ! kill -0 "$(cat /tmp/almeaa-deep-e2e-ui.pid)" 2>/dev/null; then
+              cat /tmp/almeaa-deep-e2e-ui.log || true
+              exit 1
+            fi
+            sleep 2
           done
-          cat audit-artifacts/deep-premerge/frontend.log || true
+          cat /tmp/almeaa-deep-e2e-ui.log || true
           exit 1
 
-      - name: Bounded isolated read-scale validation
-        id: isolated_scale
-        timeout-minutes: 5
-        run: node scripts/run-isolated-scale-validation.mjs --base-url http://127.0.0.1:4010 --output audit-artifacts/deep-premerge/isolated-scale.json
-
-      - name: Public full-stack journeys on isolated API
-        id: public_ui
-        continue-on-error: true
-        timeout-minutes: 10
-        run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id deep-premerge-public-${{ github.run_id }}
-
-      - name: All role pages desktop + mobile on isolated stack
-        id: roles
-        continue-on-error: true
-        timeout-minutes: 10
-        env:
-          ROLE_PAGES_AUDIT_RUN_ID: deep-premerge-roles-${{ github.run_id }}
-        run: node scripts/live-role-pages-audit.mjs
-
-      - name: Question editor create/render/delete journey
-        id: question_editor
-        continue-on-error: true
-        timeout-minutes: 10
-        env:
-          QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
-        run: node scripts/live-question-editor-audit.mjs
-
-      - name: Assessment normal and directed commercial journey
-        id: assessment_commercial
-        continue-on-error: true
-        timeout-minutes: 10
-        env:
-          ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID: deep-premerge-assessment-${{ github.run_id }}
-        run: node scripts/live-assessment-commercial-audit.mjs
-
-      - name: Assessment mock session resume and retry journey
-        id: assessment_mock_session
-        continue-on-error: true
-        timeout-minutes: 10
-        env:
-          ASSESSMENT_MOCK_SESSION_AUDIT_RUN_ID: deep-premerge-assessment-mock-${{ github.run_id }}
-        run: node scripts/live-assessment-mock-session-audit.mjs
-
-      - name: Student Learning Space desktop + mobile journey
-        id: student_learning
-        continue-on-error: true
+      - name: Run full-stack role audit
         timeout-minutes: 12
-        env:
-          STUDENT_LEARNING_AUDIT_RUN_ID: deep-premerge-student-learning-${{ github.run_id }}
-          SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
-          SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
-        run: node scripts/live-student-learning-deep-audit.mjs
+        run: npm run smoke:roles
 
-      - name: Results and report actions desktop + mobile journey
-        id: report_actions
-        continue-on-error: true
+      - name: Run admin CRUD browser audit
+        timeout-minutes: 12
+        run: npm run smoke:admin-crud
+
+      - name: Run school supervisor browser audit
+        timeout-minutes: 12
+        run: npm run smoke:school-supervisor
+
+      - name: Run school E2E read-contract audit
+        timeout-minutes: 8
+        run: npm run smoke:supervisor-school-e2e
+
+      - name: Run supervisor-to-student delivery audit
+        timeout-minutes: 8
+        run: npm run smoke:supervisor-student-delivery
+
+      - name: Run student school-directed assessment audit
+        timeout-minutes: 8
+        run: npm run smoke:student-school-tests
+
+      - name: Run smart-classroom API E2E audit
+        timeout-minutes: 8
+        run: npm run smoke:smart-classroom-e2e
+
+      - name: Run smart-classroom browser E2E audit
         timeout-minutes: 10
-        env:
-          REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
-        run: node scripts/live-report-actions-audit.mjs
+        run: npm run smoke:smart-classroom-ui-e2e
 
-      - name: Learning Space manager placement journey
-        id: learning_manager
-        continue-on-error: true
+      - name: Run smart-classroom concurrent load audit
         timeout-minutes: 10
-        env:
-          LEARNING_MANAGER_AUDIT_RUN_ID: deep-premerge-learning-manager-${{ github.run_id }}
-          SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
-          SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
-        run: node scripts/live-learning-manager-deep-audit.mjs
+        run: npm run smoke:smart-classroom-load
 
-      - name: Supervisor school command UI journey
-        id: supervisor_school
-        continue-on-error: true
+      - name: Run public barcode browser audit
+        timeout-minutes: 8
+        run: npm run smoke:barcode-public-e2e
+
+      - name: Run quiz flow browser audit
+        timeout-minutes: 8
+        run: npm run smoke:quiz-flow
+
+      - name: Run post-test intervention browser audit
+        timeout-minutes: 8
+        run: npm run smoke:post-test-intervention
+
+      - name: Run interactive video browser audit
+        timeout-minutes: 8
+        run: npm run smoke:interactive-video-e2e
+
+      - name: Run package and course access browser audit
+        timeout-minutes: 8
+        run: npm run smoke:package-course-access-e2e
+
+      - name: Run free course enrollment browser audit
+        timeout-minutes: 8
+        run: npm run smoke:course-free-enrollment-e2e
+
+      - name: Run access code browser audit
+        timeout-minutes: 8
+        run: npm run smoke:access-code-e2e
+
+      - name: Run user delete browser audit
+        timeout-minutes: 8
+        run: npm run smoke:user-delete-e2e
+
+      - name: Run student notifications browser audit
+        timeout-minutes: 8
+        run: npm run smoke:student-notifications-e2e
+
+      - name: Run course student browser audit
+        timeout-minutes: 8
+        run: npm run smoke:course-student-e2e
+
+      - name: Run admin school from-scratch browser audit
         timeout-minutes: 10
-        env:
-          SUPERVISOR_SCHOOL_AUDIT_RUN_ID: deep-premerge-supervisor-school-${{ github.run_id }}
-        run: node scripts/live-supervisor-school-command-audit.mjs
+        run: npm run smoke:admin-school-from-scratch-e2e
 
-      - name: School from scratch CRUD + relations + cleanup
-        id: school_from_scratch
-        continue-on-error: true
-        timeout-minutes: 10
-        env:
-          SCHOOL_FROM_SCRATCH_RUN_ID: deep-premerge-school-${{ github.run_id }}
-        run: node scripts/live-school-from-scratch-audit.mjs
+      - name: Run teacher school-assessment browser audit
+        timeout-minutes: 8
+        run: npm run smoke:teacher-school-assessment-e2e
 
-      - name: Barcode public-test admin + anonymous journey
-        id: barcode
-        continue-on-error: true
-        timeout-minutes: 10
-        env:
-          BARCODE_LIVE_AUDIT_RUN_ID: deep-premerge-barcode-${{ github.run_id }}
-        run: node scripts/live-barcode-public-tests-audit.mjs
+      - name: Run teacher course browser audit
+        timeout-minutes: 8
+        run: npm run smoke:teacher-course-e2e
 
-      - name: Record deep pre-merge manifest
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p audit-artifacts/deep-premerge
-          {
-            echo "# Platform V3 Deep Pre-Merge E2E"
-            echo
-            echo "- Commit: $GIT_COMMIT_SHA"
-            echo "- Database: isolated Mongo service for GitHub run $GITHUB_RUN_ID"
-            echo "- Production writes: none"
-            echo "- Operational API: ${{ steps.operational.outcome }}"
-            echo "- Bounded isolated read scale: ${{ steps.isolated_scale.outcome }}"
-            echo "- Public UI: ${{ steps.public_ui.outcome }}"
-            echo "- Role pages: ${{ steps.roles.outcome }}"
-            echo "- Question editor: ${{ steps.question_editor.outcome }}"
-            echo "- Student Learning Space: ${{ steps.student_learning.outcome }}"
-            echo "- Results/report actions: ${{ steps.report_actions.outcome }}"
-            echo "- Learning Space manager: ${{ steps.learning_manager.outcome }}"
-            echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
-            echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
-            echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
-            echo "- School from scratch: ${{ steps.school_from_scratch.outcome }}"
-            echo "- Barcode public test: ${{ steps.barcode.outcome }}"
-          } > audit-artifacts/deep-premerge/MANIFEST.md
+      - name: Run teacher course CRUD browser audit
+        timeout-minutes: 8
+        run: npm run smoke:teacher-course-crud-e2e
 
-      - name: Require every deep suite green
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          failed=0
-          check() {
-            local name="$1"
-            local outcome="$2"
-            if [ "$outcome" != "success" ]; then
-              echo "FAIL: $name -> $outcome" >&2
-              failed=1
-            else
-              echo "PASS: $name"
-            fi
-          }
-          check "API startup" "${{ steps.start_api.outcome }}"
-          check "Operational multi-role API" "${{ steps.operational.outcome }}"
-          check "Frontend startup" "${{ steps.start_frontend.outcome }}"
-          check "Bounded isolated read scale" "${{ steps.isolated_scale.outcome }}"
-          check "Public full-stack UI" "${{ steps.public_ui.outcome }}"
-          check "All role pages" "${{ steps.roles.outcome }}"
-          check "Question editor" "${{ steps.question_editor.outcome }}"
-          check "Student Learning Space" "${{ steps.student_learning.outcome }}"
-          check "Results/report actions" "${{ steps.report_actions.outcome }}"
-          check "Learning Space manager" "${{ steps.learning_manager.outcome }}"
-          check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
-          check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
-          check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
-          check "School from scratch" "${{ steps.school_from_scratch.outcome }}"
-          check "Barcode public test" "${{ steps.barcode.outcome }}"
-          exit "$failed"
+      - name: Run trainer course management browser audit
+        timeout-minutes: 8
+        run: npm run smoke:trainer-course-management-e2e
 
-      - name: Upload deep E2E evidence
-        if: always()
+      - name: Run trainer content approval browser audit
+        timeout-minutes: 8
+        run: npm run smoke:trainer-content-approval-e2e
+
+      - name: Run trainer analytics browser audit
+        timeout-minutes: 8
+        run: npm run smoke:trainer-analytics-e2e
+
+      - name: Run course commercial journey browser audit
+        timeout-minutes: 8
+        run: npm run smoke:course-commercial-journey-e2e
+
+      - name: Run school membership E2E audit
+        timeout-minutes: 8
+        run: npm run smoke:school-membership-e2e
+
+      - name: Run live-session E2E audit
+        timeout-minutes: 8
+        run: npm run smoke:live-session-e2e
+
+      - name: Run payment E2E audit
+        timeout-minutes: 8
+        run: npm run smoke:payment-e2e
+
+      - name: Upload isolated logs on failure
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: platform-v3-deep-premerge-${{ github.run_id }}
-          path: audit-artifacts/
-          if-no-files-found: warn
-          retention-days: 14
+          name: platform-v3-deep-premerge-logs-${{ github.run_id }}
+          path: |
+            /tmp/almeaa-deep-e2e-api.log
+            /tmp/almeaa-deep-e2e-ui.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Stop isolated services
         if: always()
         shell: bash
         run: |
-          if [ -f /tmp/platform-v3-deep-frontend.pid ]; then
-            kill "$(cat /tmp/platform-v3-deep-frontend.pid)" 2>/dev/null || true
+          if [ -f /tmp/almeaa-deep-e2e-ui.pid ]; then
+            kill "$(cat /tmp/almeaa-deep-e2e-ui.pid)" || true
           fi
-          if [ -f /tmp/platform-v3-deep-api.pid ]; then
-            kill "$(cat /tmp/platform-v3-deep-api.pid)" 2>/dev/null || true
+          if [ -f /tmp/almeaa-deep-e2e-api.pid ]; then
+            kill "$(cat /tmp/almeaa-deep-e2e-api.pid)" || true
           fi
