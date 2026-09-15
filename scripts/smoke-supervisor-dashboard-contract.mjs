@@ -102,7 +102,7 @@ check("directed assessment builder preserves an immediately selected audience on
   assertIncludes(quizBuilder, "const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);");
   assertIncludes(quizBuilder, "targetGroupIdsRef.current = next;");
   assertIncludes(quizBuilder, "targetGroupIds: targetGroupIdsRef.current");
-  assertIncludes(quizBuilder, "editingQuiz?.isPublished ?? (isAdmin || isSupervisor)");
+  assertIncludes(quizBuilder, "editingQuiz?.isPublished ?? restoredDraft?.isPublished ?? (isAdmin || isSupervisor)");
 });
 
 check("post-test workflow supports weak and absent student follow-up", () => {
