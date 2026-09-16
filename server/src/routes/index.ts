@@ -11,8 +11,7 @@ import { aiRouter } from "./ai.routes.js";
 import { operationsRouter } from "./operations.routes.js";
 import { backupRouter } from "./backup.routes.js";
 import { seoRouter } from "./seo.routes.js";
-import { notificationRouter } from "./notification.routes.js";
-import { notificationAudienceAuthorityRouter } from "../modules/notifications/http/notificationAudienceAuthority.js";
+import { notificationRouter } from "./notificationRoot.routes.js";
 import { quizResultsRouter } from "./quizResults.routes.js";
 import { certificateRouter } from "./certificates.routes.js";
 import { discussionRouter } from "./discussions.routes.js";
@@ -45,9 +44,6 @@ apiRouter.use("/ai", aiRouter);
 apiRouter.use("/operations", operationsRouter);
 apiRouter.use("/backups", backupRouter);
 apiRouter.use("/seo", seoRouter);
-// Canonical school membership/assignment authority runs before compatibility
-// checks in the legacy notification handlers. It never writes legacy mirrors.
-apiRouter.use("/notifications", notificationAudienceAuthorityRouter);
 apiRouter.use("/notifications", notificationRouter);
 apiRouter.use("/product-config", productConfigRouter);
 // Integrity-enforced admin mutations are mounted first so legacy generic

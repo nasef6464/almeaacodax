@@ -1,7 +1,6 @@
-import { Router, type NextFunction, type Request, type Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
-import { requireAuth } from "../../../middleware/auth.js";
 import { GroupModel } from "../../../models/Group.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
@@ -194,7 +193,7 @@ async function enforceSupervisorAuthority(req: Request, res: Response, next: Nex
   return next();
 }
 
-async function requireCanonicalNotificationAudience(
+export async function requireCanonicalNotificationAudience(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -213,15 +212,3 @@ async function requireCanonicalNotificationAudience(
     return next(error);
   }
 }
-
-export const notificationAudienceAuthorityRouter = Router();
-notificationAudienceAuthorityRouter.post(
-  "/intervention-alert",
-  requireAuth,
-  requireCanonicalNotificationAudience,
-);
-notificationAudienceAuthorityRouter.post(
-  "/student-alert",
-  requireAuth,
-  requireCanonicalNotificationAudience,
-);
