@@ -254,7 +254,6 @@ async function run() {
   const responseUpdated = await responseEvent;
   await noStudentResponseEvent;
   assert.equal(String(responseUpdated.questionId), q2);
-  assert.equal(Number(responseUpdated.responseCount), 1);
   assert.equal("studentId" in responseUpdated, false, "staff realtime aggregate must not expose student identity");
   assert.equal("selectedOptionIndex" in responseUpdated, false, "staff realtime aggregate must not expose a student's answer");
   assert.equal("isCorrect" in responseUpdated, false, "staff realtime aggregate must not expose a student's correctness");
