@@ -118,6 +118,20 @@ function waitForEvent<T = any>(socket: Socket, event: string, timeoutMs = 5000) 
   });
 }
 
+function assertNoEvent(socket: Socket, event: string, timeoutMs = 350) {
+  return new Promise<void>((resolve, reject) => {
+    const handler = () => {
+      clearTimeout(timeout);
+      reject(new Error(`Unexpected ${event} event`));
+    };
+    const timeout = setTimeout(() => {
+      socket.off(event, handler);
+      resolve();
+    }, timeoutMs);
+    socket.once(event, handler);
+  });
+}
+
 async function cleanup() {
   sockets.splice(0).forEach((socket) => socket.disconnect());
   if (sessionIds.length) {
@@ -230,23 +244,20 @@ async function run() {
   assert.equal(String(published.questionId), q2);
 
   const responseEvent = waitForEvent<any>(teacherASocket, "response:updated");
-  const studentResponseEvent = waitForEvent<any>(studentSocket, "response:updated");
+  const noStudentResponseEvent = assertNoEvent(studentSocket, "response:updated");
   const answer = await request(`/classroom/sessions/${sessionAId}/answers/${q2}`, {
     method: "PUT",
     token: studentToken,
     body: { selectedOptionIndex: 0 },
   });
   assert.equal(answer.status, 200, JSON.stringify(answer.body));
-  const [responseUpdated, studentVisibleUpdate] = await Promise.all([responseEvent, studentResponseEvent]);
+  const responseUpdated = await responseEvent;
+  await noStudentResponseEvent;
   assert.equal(String(responseUpdated.questionId), q2);
   assert.equal(Number(responseUpdated.responseCount), 1);
-  assert.equal(String(studentVisibleUpdate.questionId), q2);
-  assert.equal(Number(studentVisibleUpdate.responseCount), 1);
-  for (const payload of [responseUpdated, studentVisibleUpdate]) {
-    assert.equal("studentId" in payload, false, "shared classroom realtime payload must not expose student identity");
-    assert.equal("selectedOptionIndex" in payload, false, "shared classroom realtime payload must not expose a student's answer");
-    assert.equal("isCorrect" in payload, false, "shared classroom realtime payload must not expose a student's correctness");
-  }
+  assert.equal("studentId" in responseUpdated, false, "staff realtime aggregate must not expose student identity");
+  assert.equal("selectedOptionIndex" in responseUpdated, false, "staff realtime aggregate must not expose a student's answer");
+  assert.equal("isCorrect" in responseUpdated, false, "staff realtime aggregate must not expose a student's correctness");
 
   const teacherEndedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
   const studentEndedOnSession = waitForEvent<any>(studentSocket, "session:ended");
