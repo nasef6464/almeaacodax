@@ -7,6 +7,7 @@ import { createRedisClient, isRedisConfigured } from "../config/redis.js";
 type RateLimitOptions = Pick<Options, "windowMs" | "limit" | "message"> & {
   keyPrefix: string;
   skip?: NonNullable<Options["skip"]>;
+  passOnStoreError?: boolean;
 };
 
 const resolveRequestKey = (req: Request) => {
@@ -66,7 +67,10 @@ export function createRateLimiter(options: RateLimitOptions) {
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: resolveRequestKey,
-    passOnStoreError: true,
+    // Public/global traffic may favor availability, while authentication and
+    // other sensitive actions deliberately fail closed when Redis is configured
+    // but unavailable. Each limiter must choose this behavior explicitly.
+    passOnStoreError: options.passOnStoreError ?? true,
     ...(options.skip ? { skip: options.skip } : {}),
     ...(useRedis && redis
       ? {
@@ -84,6 +88,7 @@ export const globalRateLimiter = createRateLimiter({
   keyPrefix: "global",
   windowMs: env.RATE_LIMIT_GLOBAL_WINDOW_MS,
   limit: env.RATE_LIMIT_GLOBAL_LIMIT,
+  passOnStoreError: true,
   message: { message: "Too many requests, please try again shortly" },
   skip: (req) => {
     const path = req.path || "";
@@ -104,6 +109,7 @@ export const authRateLimiter = createRateLimiter({
   keyPrefix: "auth",
   windowMs: env.RATE_LIMIT_AUTH_WINDOW_MS,
   limit: env.RATE_LIMIT_AUTH_LIMIT,
+  passOnStoreError: false,
   message: { message: "Too many authentication attempts, please try again later" },
   skip: isAdminLoginBypassRequest,
 });
@@ -112,5 +118,6 @@ export const sensitiveActionRateLimiter = createRateLimiter({
   keyPrefix: "sensitive",
   windowMs: env.RATE_LIMIT_SENSITIVE_WINDOW_MS,
   limit: env.RATE_LIMIT_SENSITIVE_LIMIT,
+  passOnStoreError: false,
   message: { message: "Too many requests, please slow down" },
 });
