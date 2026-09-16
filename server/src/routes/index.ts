@@ -26,7 +26,7 @@ import { schoolAdminIntegrityRouter } from "./schoolAdminIntegrity.routes.js";
 import { schoolAccessRouter } from "./schoolAccess.routes.js";
 import { classroomRouter } from "./classroomRoot.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
-import liveExamsRouter from "./live-exams.routes.js";
+import liveExamsRouter from "./liveExamsRoot.routes.js";
 
 export const apiRouter = Router();
 

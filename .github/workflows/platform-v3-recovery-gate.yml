@@ -89,6 +89,8 @@ jobs:
         run: npm run smoke:quiz-integrity-guard
       - name: Quiz answer exposure
         run: npm run smoke:quiz-answer-exposure
+      - name: Assessment attempt concurrency
+        run: node scripts/smoke-assessment-attempt-concurrency-contract.mjs
       - name: Results
         run: npm run smoke:results
       - name: Certificate integrity
