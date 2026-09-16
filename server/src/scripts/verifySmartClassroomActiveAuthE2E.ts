@@ -162,7 +162,7 @@ async function run() {
   sessionId = String(session._id);
 
   const studentToken = tokenFor(student);
-  const teacherToken = tokenFor(teacher);
+  let teacherToken = tokenFor(teacher);
   const supervisorToken = tokenFor(supervisor);
 
   const app = createApp();
@@ -310,6 +310,33 @@ async function run() {
   assert.equal((await joinWorkspace(restoredTeacherSocket, `classroom:${sessionId}`)).ok, true, "restoring the teaching assignment should restore realtime ownership access");
   restoredTeacherSocket.disconnect();
 
+  await UserModel.updateOne(
+    { _id: teacher._id },
+    { $set: { sessionInvalidBefore: Date.now() } },
+  );
+  assert.equal(
+    (await get(teacherEndpoint, teacherToken)).status,
+    401,
+    "session revocation cutoff must invalidate an already-issued teacher JWT over HTTP",
+  );
+  await expectConnectionRejected(baseUrl, teacherToken);
+
+  const refreshedTeacher = await UserModel.findById(teacher._id).lean();
+  assert.ok(refreshedTeacher, "teacher should still exist after session revocation");
+  teacherToken = tokenFor(refreshedTeacher);
+  assert.equal(
+    (await get(teacherEndpoint, teacherToken)).status,
+    200,
+    "a freshly issued JWT at or after the revocation cutoff should restore eligible HTTP access",
+  );
+  const refreshedTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
+  assert.equal(
+    (await joinWorkspace(refreshedTeacherSocket, `classroom:${sessionId}`)).ok,
+    true,
+    "a freshly issued JWT at or after the revocation cutoff should restore realtime access",
+  );
+  refreshedTeacherSocket.disconnect();
+
   await UserModel.updateMany(
     { _id: { $in: [student._id, teacher._id, supervisor._id] } },
     { $set: { isActive: false } },
@@ -323,7 +350,7 @@ async function run() {
   await expectConnectionRejected(baseUrl, teacherToken);
   await expectConnectionRejected(baseUrl, supervisorToken);
 
-  console.log("Smart Classroom account, membership, assignment and module-entitlement revocation E2E: PASS");
+  console.log("Smart Classroom account, membership, assignment, session and module-entitlement revocation E2E: PASS");
 }
 
 run()
