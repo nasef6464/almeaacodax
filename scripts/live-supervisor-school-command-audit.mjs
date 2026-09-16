@@ -313,7 +313,12 @@ async function verifyAdminUserRoleRelationshipJourney(page) {
       fetch(`${apiBaseUrl}/content/groups`, { credentials: "include", cache: "no-store" }),
     ]);
     const usersPayload = await usersResponse.json().catch(() => ({}));
-    const groupsPayload = await groupsResponse.json().catch(() => ([]));
+    let groupsPayload = await groupsResponse.json().catch(() => ([]));
+    if (!groupsResponse.ok) {
+      const bootstrapResponse = await fetch(`${apiBaseUrl}/content/bootstrap?scope=operations&phase=all`, { credentials: "include", cache: "no-store" });
+      const bootstrapPayload = await bootstrapResponse.json().catch(() => ({}));
+      groupsPayload = bootstrapPayload?.groups || [];
+    }
     const user = (usersPayload?.users || []).find((item) => String(item.email || "").toLowerCase() === targetEmail.toLowerCase());
     const groups = Array.isArray(groupsPayload) ? groupsPayload : (groupsPayload?.groups || []);
     return { user, groups, usersStatus: usersResponse.status, groupsStatus: groupsResponse.status };
