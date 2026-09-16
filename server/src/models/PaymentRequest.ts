@@ -56,7 +56,27 @@ paymentRequestSchema.index({ userId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ packageId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ discountCodeId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ paymentProviderCode: 1, status: 1, createdAt: -1 });
-paymentRequestSchema.index({ gatewayEventId: 1 });
-paymentRequestSchema.index({ gatewayTransactionId: 1 });
+paymentRequestSchema.index(
+  { gatewayProvider: 1, gatewayEventId: 1 },
+  {
+    unique: true,
+    name: "payment_gateway_event_unique",
+    partialFilterExpression: {
+      gatewayProvider: { $type: "string", $gt: "" },
+      gatewayEventId: { $type: "string", $gt: "" },
+    },
+  },
+);
+paymentRequestSchema.index(
+  { gatewayProvider: 1, gatewayTransactionId: 1 },
+  {
+    unique: true,
+    name: "payment_gateway_transaction_unique",
+    partialFilterExpression: {
+      gatewayProvider: { $type: "string", $gt: "" },
+      gatewayTransactionId: { $type: "string", $gt: "" },
+    },
+  },
+);
 
 export const PaymentRequestModel = mongoose.model("PaymentRequest", paymentRequestSchema);
