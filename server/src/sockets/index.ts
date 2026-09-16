@@ -39,6 +39,15 @@ const readSocketToken = (socket: { handshake: { auth?: Record<string, unknown>; 
   return cookieToken ? decodeURIComponent(cookieToken) : "";
 };
 
+const resolveSessionIssuedAt = (tokenUser: { sessionIssuedAt?: number; iat?: number }) => {
+  const preciseIssuedAt = Number(tokenUser.sessionIssuedAt || 0);
+  if (Number.isFinite(preciseIssuedAt) && preciseIssuedAt > 0) return preciseIssuedAt;
+
+  const jwtIssuedAtSeconds = Number(tokenUser.iat || 0);
+  if (Number.isFinite(jwtIssuedAtSeconds) && jwtIssuedAtSeconds > 0) return jwtIssuedAtSeconds * 1000;
+  return 0;
+};
+
 export function createSocketServer(server: HttpServer) {
   const io = new Server(server, {
     cors: {
@@ -53,8 +62,13 @@ export function createSocketServer(server: HttpServer) {
       const token = readSocketToken(socket);
       if (!token) return next(new Error("Authentication required"));
       const tokenUser = verifyAccessToken(token);
-      const currentUser = await UserModel.findById(tokenUser.id).select("id _id role isActive schoolId groupIds").lean();
+      const currentUser = await UserModel.findById(tokenUser.id).select("id _id role isActive schoolId groupIds +sessionInvalidBefore").lean();
       if (!currentUser || currentUser.isActive === false) return next(new Error("Authentication required"));
+
+      const invalidBefore = Number((currentUser as any).sessionInvalidBefore || 0);
+      if (invalidBefore > 0 && resolveSessionIssuedAt(tokenUser) < invalidBefore) {
+        return next(new Error("Authentication required"));
+      }
 
       const currentUserId = String((currentUser as any).id || currentUser._id);
       const currentRole = String(currentUser.role);
