@@ -10,7 +10,7 @@ export function notFoundHandler(req: Request, res: Response) {
 }
 
 export function errorHandler(
-  error: Error & { statusCode?: number; status?: number },
+  error: Error & { statusCode?: number; status?: number; code?: number },
   _req: Request,
   res: Response,
   _next: NextFunction,
@@ -23,6 +23,16 @@ export function errorHandler(
         path: issue.path.join("."),
         message: issue.message,
       })),
+      requestId: _req.requestId,
+    });
+  }
+
+  // MongoDB unique indexes are a final concurrency boundary for idempotent
+  // writes such as payment gateway events. Treat a duplicate-key race as a
+  // client-visible conflict without exposing index names or stored key values.
+  if (error.code === 11000) {
+    return res.status(409).json({
+      message: "Resource already exists or was processed concurrently",
       requestId: _req.requestId,
     });
   }
