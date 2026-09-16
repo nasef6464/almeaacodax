@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   assessment-contracts:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/assessment-platform-v1'
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/assessment-platform-v1' || github.event.pull_request.head.ref == 'chatgpt/batch-01-build-baseline'
     name: Classification + quiz regression contracts
     runs-on: ubuntu-latest
     timeout-minutes: 25
