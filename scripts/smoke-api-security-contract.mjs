@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 const appSource = await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8");
 const envSource = await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8");
 const errorHandlerSource = await readFile(new URL("../server/src/middleware/errorHandler.ts", import.meta.url), "utf8");
+const rateLimitersSource = await readFile(new URL("../server/src/middleware/rateLimiters.ts", import.meta.url), "utf8");
 const loggerSource = await readFile(new URL("../server/src/middleware/requestLogger.ts", import.meta.url), "utf8");
 const typesSource = await readFile(new URL("../server/src/types/express.d.ts", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
@@ -61,6 +62,26 @@ check("email verification resend is protected from notification flooding", () =>
   if (limiterIndex < 0 || canonicalIndex < 0 || aliasIndex < 0) {
     throw new Error("Verification resend limiter coverage is incomplete");
   }
+});
+
+check("redis rate-limit failure behavior is explicit by security sensitivity", () => {
+  assertIncludes(rateLimitersSource, "passOnStoreError?: boolean");
+  assertIncludes(rateLimitersSource, "passOnStoreError: options.passOnStoreError ?? true");
+
+  const globalStart = rateLimitersSource.indexOf("export const globalRateLimiter");
+  const authStart = rateLimitersSource.indexOf("export const authRateLimiter");
+  const sensitiveStart = rateLimitersSource.indexOf("export const sensitiveActionRateLimiter");
+  if (globalStart < 0 || authStart < 0 || sensitiveStart < 0) {
+    throw new Error("Unable to locate all rate limiter definitions");
+  }
+
+  const globalBlock = rateLimitersSource.slice(globalStart, authStart);
+  const authBlock = rateLimitersSource.slice(authStart, sensitiveStart);
+  const sensitiveBlock = rateLimitersSource.slice(sensitiveStart);
+
+  assertIncludes(globalBlock, "passOnStoreError: true");
+  assertIncludes(authBlock, "passOnStoreError: false");
+  assertIncludes(sensitiveBlock, "passOnStoreError: false");
 });
 
 check("production errors do not leak server details", () => {
