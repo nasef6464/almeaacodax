@@ -28,42 +28,85 @@ export function weeklyParentReportExecutionKey(date = new Date()) {
   return `weekly-parent-report:${previousSundayKey(date)}`;
 }
 
+const uniqueStrings = (values: unknown[]) =>
+  Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
+
 export async function runWeeklyParentReportBatch(executionKey = weeklyParentReportExecutionKey()) {
   const since = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const parents = await UserModel.find({ role: "parent" })
     .select("_id id name linkedStudentIds childrenIds")
     .lean() as any[];
 
+  const parentRows = parents
+    .map((parent) => {
+      const linkedIds = uniqueStrings([
+        ...(parent.linkedStudentIds || []),
+        ...(parent.childrenIds || []),
+      ]);
+      const parentId = String(parent.id || parent._id);
+      return {
+        parent,
+        parentId,
+        linkedIds,
+        campaignId: `${executionKey}:${parentId}`,
+      };
+    })
+    .filter((row) => row.linkedIds.length > 0);
+
+  const campaignIds = parentRows.map((row) => row.campaignId);
+  const allLinkedIds = uniqueStrings(parentRows.flatMap((row) => row.linkedIds));
+  const dateFilter = { $or: [{ createdAt: { $gte: new Date(since) } }, { date: { $gte: new Date(since) } }] };
+
+  const [existingDeliveries, weeklyResults] = await Promise.all([
+    campaignIds.length
+      ? NotificationDeliveryModel.find({ campaignId: { $in: campaignIds }, channel: "in_app" })
+          .select("campaignId recipientUserId")
+          .lean()
+      : Promise.resolve([]),
+    allLinkedIds.length
+      ? QuizResultModel.find({
+          $and: [
+            { $or: [{ userId: { $in: allLinkedIds } }, { studentId: { $in: allLinkedIds } }] },
+            dateFilter,
+          ],
+        })
+          .select("userId studentId score skillsAnalysis")
+          .lean()
+      : Promise.resolve([]),
+  ]) as [any[], any[]];
+
+  const deliveredKeys = new Set(
+    existingDeliveries.map((delivery: any) => `${String(delivery.campaignId || "")}:${String(delivery.recipientUserId || "")}`),
+  );
+  const resultsByStudent = new Map<string, any[]>();
+  for (const result of weeklyResults) {
+    const resultStudentIds = uniqueStrings([result.userId, result.studentId]);
+    for (const studentId of resultStudentIds) {
+      const rows = resultsByStudent.get(studentId) || [];
+      rows.push(result);
+      resultsByStudent.set(studentId, rows);
+    }
+  }
+
   let sent = 0;
   let skipped = 0;
   let failed = 0;
 
-  for (const parent of parents) {
-    const linkedIds: string[] = [
-      ...(parent.linkedStudentIds || []),
-      ...(parent.childrenIds || []),
-    ];
-    if (!linkedIds.length) continue;
-
-    const pId = String(parent.id || parent._id);
-    const campaignId = `${executionKey}:${pId}`;
-    const alreadyDelivered = await NotificationDeliveryModel.exists({
-      campaignId,
-      recipientUserId: pId,
-      channel: "in_app",
-    });
-    if (alreadyDelivered) {
+  for (const row of parentRows) {
+    const { parentId: pId, linkedIds, campaignId } = row;
+    if (deliveredKeys.has(`${campaignId}:${pId}`)) {
       skipped += 1;
       continue;
     }
 
     try {
-      const userFilter = { $or: linkedIds.flatMap((id: string) => [{ userId: id }, { studentId: id }]) };
-      const dateFilter = { $or: [{ createdAt: { $gte: new Date(since) } }, { date: { $gte: new Date(since) } }] };
-      const results = await QuizResultModel.find({ $and: [userFilter, dateFilter] })
-        .select("userId studentId score skillsAnalysis")
-        .lean() as any[];
-
+      const parentResults = new Map<string, any>();
+      for (const linkedId of linkedIds) {
+        for (const result of resultsByStudent.get(linkedId) || []) {
+          parentResults.set(String(result._id), result);
+        }
+      }
+      const results = Array.from(parentResults.values());
       if (!results.length) continue;
 
       const scores = results.map((result) => Number(result.score || 0));
