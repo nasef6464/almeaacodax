@@ -3,6 +3,8 @@
 const root = process.cwd();
 const routeFile = "server/src/routes/payment.routes.ts";
 const source = fs.readFileSync(`${root}/${routeFile}`, "utf8");
+const paymentRequestModelSource = fs.readFileSync(`${root}/server/src/models/PaymentRequest.ts`, "utf8");
+const errorHandlerSource = fs.readFileSync(`${root}/server/src/middleware/errorHandler.ts`, "utf8");
 
 const findPostRouteBlocks = () => {
   const postRoutes = [];
@@ -149,6 +151,48 @@ add("approval flow grants access from stored server-verified request only", () =
   }
   if (!source.includes("...(Array.isArray(updatedRequest.includedCourseIds) ? updatedRequest.includedCourseIds.map(String) : [])")) {
     throw new Error("Access grant should derive includedCourseIds from stored approved request");
+  }
+});
+
+add("approval transition is atomic on pending status", () => {
+  if (!source.includes('{ _id: requestDoc._id, status: "pending" }')) {
+    throw new Error("Payment approval must atomically transition only a pending request");
+  }
+});
+
+add("gateway event identity is provider-scoped and database-unique", () => {
+  if (!paymentRequestModelSource.includes('{ gatewayProvider: 1, gatewayEventId: 1 }')) {
+    throw new Error("Missing provider-scoped gateway event index");
+  }
+  if (!paymentRequestModelSource.includes('name: "payment_gateway_event_unique"')) {
+    throw new Error("Missing named unique gateway event index");
+  }
+  if (!paymentRequestModelSource.includes('gatewayEventId: { $type: "string", $gt: "" }')) {
+    throw new Error("Gateway event unique index must exclude empty compatibility values");
+  }
+});
+
+add("gateway transaction identity is provider-scoped and database-unique", () => {
+  if (!paymentRequestModelSource.includes('{ gatewayProvider: 1, gatewayTransactionId: 1 }')) {
+    throw new Error("Missing provider-scoped gateway transaction index");
+  }
+  if (!paymentRequestModelSource.includes('name: "payment_gateway_transaction_unique"')) {
+    throw new Error("Missing named unique gateway transaction index");
+  }
+  if (!paymentRequestModelSource.includes('gatewayTransactionId: { $type: "string", $gt: "" }')) {
+    throw new Error("Gateway transaction unique index must exclude empty compatibility values");
+  }
+});
+
+add("duplicate-key races fail as conflict without leaking database key values", () => {
+  if (!errorHandlerSource.includes("error.code === 11000")) {
+    throw new Error("Global error handler must recognize Mongo duplicate-key races");
+  }
+  if (!errorHandlerSource.includes("res.status(409)")) {
+    throw new Error("Mongo duplicate-key races must return HTTP 409");
+  }
+  if (errorHandlerSource.includes("error.keyValue") || errorHandlerSource.includes("error.keyPattern")) {
+    throw new Error("Duplicate-key response must not expose stored key values or index shape");
   }
 });
 
