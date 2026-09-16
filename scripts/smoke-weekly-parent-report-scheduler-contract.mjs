@@ -26,9 +26,18 @@ check("scheduler is distributed and Riyadh-time based", () => {
 });
 check("batch has deterministic idempotency and retry visibility", () => {
   includes(files.batch, "weeklyParentReportExecutionKey");
-  includes(files.batch, "NotificationDeliveryModel.exists");
   includes(files.batch, "campaignId");
+  includes(files.batch, "deliveredKeys");
   includes(files.batch, "partial_failure");
+});
+check("weekly parent reads are batched before per-parent delivery", () => {
+  includes(files.batch, "allLinkedIds");
+  includes(files.batch, "weeklyResults");
+  includes(files.batch, "resultsByStudent");
+  includes(files.batch, "existingDeliveries");
+  excludes(files.batch, "NotificationDeliveryModel.exists");
+  const quizFindCount = (files.batch.match(/QuizResultModel\.find\(/g) || []).length;
+  if (quizFindCount !== 1) throw new Error(`expected exactly one weekly QuizResult query, found ${quizFindCount}`);
 });
 check("existing bootstrap facade and shutdown are preserved", () => {
   includes(files.facade, "startWeeklyParentReportQueue");
