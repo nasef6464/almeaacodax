@@ -233,6 +233,15 @@ async function run() {
   assert.equal((await request(`/classroom/sessions/${sessionAId}/aggregate`, { token: teacherA2Token })).status, 403, "second teacher must not read another teacher's live aggregate");
   assert.equal((await request(`/classroom/sessions/${sessionAId}/append-questions`, { method: "POST", token: teacherA2Token, body: { questionIds: [q2], autoPublishFirst: true } })).status, 403, "second teacher must not mutate another teacher's session");
 
+  const activeSessionBeforeAppend = await ClassroomSessionModel.findById(sessionAId).select("activeBatchId").lean() as any;
+  const firstBatchId = String(activeSessionBeforeAppend?.activeBatchId || "");
+  assert.ok(firstBatchId, "auto-started session should have an active initial batch");
+  const firstBatchEnd = await request(`/classroom/sessions/${sessionAId}/batches/${firstBatchId}/end`, {
+    method: "POST",
+    token: teacherAToken,
+  });
+  assert.equal(firstBatchEnd.status, 200, JSON.stringify(firstBatchEnd.body));
+
   const publishedEvent = waitForEvent<any>(studentSocket, "question:published");
   const append = await request(`/classroom/sessions/${sessionAId}/append-questions`, {
     method: "POST",
