@@ -289,6 +289,8 @@ jobs:
         run: npm run smoke:database
       - name: Notifications contract
         run: npm run smoke:notifications
+      - name: Weekly parent report batching
+        run: npm run smoke:weekly-parent-report
       - name: Notification phase 10 contract
         run: npm run smoke:notification-phase10
       - name: Sentry runtime contract
