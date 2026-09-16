@@ -12,6 +12,7 @@ jobs:
     timeout-minutes: 25
     env:
       SMOKE_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
+      SMOKE_API_URL: https://almeaacodax-k2ux.onrender.com/api
       SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
       SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
       SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
@@ -37,6 +38,9 @@ jobs:
 
       - name: Production hardening smoke
         run: npm run smoke:production-hardening
+
+      - name: Student learning journey live smoke
+        run: npm run smoke:student-learning-journey
 
       - name: Ensure operational auth material exists
         run: |

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Reviewed, explicit exceptions for newly introduced runtime files that temporarily exceed the 400-line structural hotspot threshold. These do not raise the global hotspot budget; each exception is individually tracked for later decomposition.",
+  "exceptions": [
+    {
+      "file": "dashboards/admin/SchoolsManager/SchoolPeopleHubTab.tsx",
+      "reason": "The unified school people workspace was expanded to cover director delegation and add/link workflows while preserving the existing roster, class assignment, import, search, pagination, and removal flows.",
+      "followUp": "Decompose the people action menu/table into focused presentation components without changing the school-management API or authority model.",
+      "owner": "architecture-hardening",
+      "temporary": true
+    }
+  ]
+}

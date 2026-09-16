@@ -78,7 +78,13 @@ check('student refresh can recover through idempotent instant join', studentPage
 check('student receives an explicit ended-session state', studentPage.includes('انتهت الحصة الذكية') && studentPage.includes('handleSessionEnded'));
 check('floating widget clears stale joined session state', floatingWidget.includes('clearJoinedSession') && floatingWidget.includes('انتهت الحصة الذكية'));
 check('realtime exposes session-ended callback', realtime.includes('onSessionEnded') && realtime.includes("socket.on('session:ended'"));
-check('realtime reconnect rejoins the room and refreshes canonical state', realtime.includes("socket.io.on('reconnect', joinWorkspace)") && realtime.includes('onChange();'));
+check(
+  'realtime connect/reconnect rejoins rooms and refreshes canonical state',
+  realtime.includes("socket.on('connect', () => {") &&
+    realtime.includes('sessionSubscribers.forEach((_, id) => joinSession(id));') &&
+    realtime.includes("if (result?.ok) notifySession(id, 'connected');") &&
+    realtime.includes('if (!handled) subscriber.onChange();'),
+);
 check('ending a session persists a canonical report snapshot', routeSupport.includes('session.reportSnapshot = report'));
 check('ended history reuses immutable report snapshot', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('return session.reportSnapshot'));
 check('teacher active-session lookup is school scoped for teachers', teacherRoutes.includes('schoolId is required for teacher active session lookup') && teacherRoutes.includes('ensureTeacherSchoolAccess(req.authUser!, schoolId)'));

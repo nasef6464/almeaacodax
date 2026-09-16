@@ -99,6 +99,8 @@ export function createApp() {
       "/api/ai/*",
       "/api/payments/*",
       "/api/auth/me/redeem-access-code",
+      "/api/auth/me/password",
+      "/api/auth/logout-all",
       "/auth/me/redeem-access-code",
       "/api/auth/email/resend-verification",
       "/auth/email/resend-verification",

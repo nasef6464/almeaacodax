@@ -46,7 +46,8 @@ const schoolsRuntimeSource = [
 
 assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "toggleActionsMenu",
-  "Delete user",
+  { needle: "handleDeleteUser(currentUser)", label: "wired delete-user action" },
+  { needle: "حذف المستخدم", label: "localized delete-user control" },
   "handleDeleteUser",
   "allStudentsForLinking",
   "linkableStudents",
@@ -81,7 +82,8 @@ assertAllIncludes("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx", [
   "فتح تشغيل المدرسة",
 ]);
 assertAllIncludes("dashboards/admin/SchoolsManager/workspaceViewModel.ts", [
-  "ربط المشرفين",
+  { needle: "مشرفون", label: "supervisor readiness step" },
+  { needle: "إدارة المنسوبين", label: "supervisor management action" },
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [

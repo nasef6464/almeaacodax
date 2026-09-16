@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authRouter } from "./auth.routes.js";
+import { authSessionRouter } from "./authSession.routes.js";
 import { healthRouter } from "./health.routes.js";
 import { taxonomyRouter } from "./taxonomy.routes.js";
 import { courseRouter } from "./course.routes.js";
@@ -10,7 +11,7 @@ import { aiRouter } from "./ai.routes.js";
 import { operationsRouter } from "./operations.routes.js";
 import { backupRouter } from "./backup.routes.js";
 import { seoRouter } from "./seo.routes.js";
-import { notificationRouter } from "./notification.routes.js";
+import { notificationRouter } from "./notificationRoot.routes.js";
 import { quizResultsRouter } from "./quizResults.routes.js";
 import { certificateRouter } from "./certificates.routes.js";
 import { discussionRouter } from "./discussions.routes.js";
@@ -25,11 +26,12 @@ import { schoolAdminIntegrityRouter } from "./schoolAdminIntegrity.routes.js";
 import { schoolAccessRouter } from "./schoolAccess.routes.js";
 import { classroomRouter } from "./classroomRoot.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
-import liveExamsRouter from "./live-exams.routes.js";
+import liveExamsRouter from "./liveExamsRoot.routes.js";
 
 export const apiRouter = Router();
 
 apiRouter.use("/health", healthRouter);
+apiRouter.use("/auth", authSessionRouter);
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/taxonomy", taxonomyRouter);
 apiRouter.use("/content", contentRouter);

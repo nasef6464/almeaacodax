@@ -224,8 +224,12 @@ assertNotIncludes('pages/GenericPathPage.tsx', "import { PaymentModal } from '..
 assertIncludes('components/MainLayout.tsx', "React.lazy(() => import('./ChatWidget')");
 assertNotIncludes('components/MainLayout.tsx', "import { ChatWidget } from './ChatWidget';");
 assertIncludes('contexts/AuthContext.tsx', 'const restoreInitialSession = (): SessionUser | null => {');
-assertIncludes('contexts/AuthContext.tsx', 'const [user, setUser] = useState<SessionUser | null>(() => restoreInitialSession());');
-assertIncludes('contexts/AuthContext.tsx', 'const loading = false;');
+assertIncludes('contexts/AuthContext.tsx', 'const initialUser = useMemo(() => restoreInitialSession(), []);');
+assertIncludes('contexts/AuthContext.tsx', 'const initialPath = useMemo(() => getCurrentRoutePath(), []);');
+assertIncludes('contexts/AuthContext.tsx', 'const shouldBootstrapInitialAuth = !initialUser && shouldBootstrapAuthForPath(initialPath);');
+assertIncludes('contexts/AuthContext.tsx', 'const [user, setUser] = useState<SessionUser | null>(initialUser);');
+assertIncludes('contexts/AuthContext.tsx', 'const [loading, setLoading] = useState(shouldBootstrapInitialAuth);');
+assertIncludes('contexts/AuthContext.tsx', 'if (!shouldBootstrapAuthForPath(currentPath) && !hasPendingOauthBootstrap) {');
 assertNotIncludes('contexts/AuthContext.tsx', 'const [loading, setLoading] = useState(true);');
 assertNotIncludes('contexts/AuthContext.tsx', '<Loader2 className="w-10 h-10 animate-spin" />');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");

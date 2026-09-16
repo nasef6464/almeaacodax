@@ -15,4 +15,8 @@ export interface AuthUser {
   linkedStudentIds?: string[];
   managedPathIds?: string[];
   managedSubjectIds?: string[];
+  /** Millisecond precision issuance marker stamped by signAccessToken. */
+  sessionIssuedAt?: number;
+  /** Standard JWT issued-at claim, used as a compatibility fallback for older tokens. */
+  iat?: number;
 }

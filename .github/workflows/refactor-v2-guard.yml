@@ -210,9 +210,8 @@ jobs:
       - name: Global student journey contract
         run: npm run smoke:global-student-journey
 
-      - name: Student learning journey contract
-        run: npm run smoke:student-learning-journey
-
+      # The deep student-learning journey reads the deployed API/catalog and is
+      # intentionally owned by post-deploy/live verification, not deterministic PR CI.
       - name: Results contract
         run: npm run smoke:results
 
