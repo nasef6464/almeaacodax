@@ -536,6 +536,7 @@ async function runSchoolDirectorDelegatedOperationsJourney(csrf: CsrfContext) {
   assert.equal(await UserModel.exists({ _id: studentId, isActive: false }).then(Boolean), true, "student deactivation was not persisted");
   const reactivated = await jsonRequest(`/school-access/director/schools/${schoolId}/students/${studentId}/active`, { method: "PATCH", token: tokens.get("schoolAdmin"), csrf, body: { isActive: true } });
   expectStatus("director reactivates student", reactivated, 200);
+  await loginRole("student", csrf);
 
   const createdClass = await jsonRequest(`/school-access/director/schools/${schoolId}/classes`, { method: "POST", token: tokens.get("schoolAdmin"), csrf, body: { name: `Director Class ${RUN_MARKER}` } });
   expectStatus("director creates class in granted school", createdClass, 201);

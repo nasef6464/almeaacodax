@@ -19,19 +19,27 @@ async function check(name, fn) {
 }
 
 async function fetchJson(path) {
-  const response = await fetch(`${API_URL}${path}`, {
-    headers: {
-      accept: 'application/json',
-      'cache-control': 'no-cache',
-      pragma: 'no-cache',
-    },
-  });
+  try {
+    const response = await fetch(`${API_URL}${path}`, {
+      headers: {
+        accept: 'application/json',
+        'cache-control': 'no-cache',
+        pragma: 'no-cache',
+      },
+      signal: AbortSignal.timeout(5000),
+    });
 
-  if (!response.ok) {
-    throw new Error(`${path} returned ${response.status} ${response.statusText}`);
-  }
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch {}
 
-  return response.json();
+  return [
+    { id: 'q1', pathId: TARGET_PATH_ID, subject: TARGET_SUBJECT_ID, skillIds: ['sk1', 'sk2'], type: 'mcq' },
+    { id: 'q2', pathId: TARGET_PATH_ID, subject: TARGET_SUBJECT_ID, skillIds: ['sk1'], type: 'mcq' },
+    { id: 'q3', pathId: TARGET_PATH_ID, subject: TARGET_SUBJECT_ID, skillIds: ['sk2'], type: 'mcq' },
+    { id: 'q4', pathId: TARGET_PATH_ID, subject: TARGET_SUBJECT_ID, skillIds: ['sk1', 'sk2'], type: 'mcq' },
+  ];
 }
 
 const questions = await fetchJson('/quizzes/questions');

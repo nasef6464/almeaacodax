@@ -199,13 +199,13 @@ async function main() {
     await admin.page.getByTestId("assessment-question-search").fill(marker);
     const selectedQuestion = admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`);
     await selectedQuestion.waitFor({ timeout: 30000 });
-    if (!await selectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await selectedQuestion.evaluate((element) => element.getAttribute("data-selected") === "true" || element.className.includes("bg-indigo-600") || element.className.includes("bg-indigo-50"))) {
       throw new Error("Published edit did not restore the selected question in the Builder.");
     }
     await admin.page.getByTestId("assessment-question-page-next").click();
     const secondSelectedQuestion = admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`);
     await secondSelectedQuestion.waitFor({ timeout: 30000 });
-    if (!await secondSelectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await secondSelectedQuestion.evaluate((element) => element.getAttribute("data-selected") === "true" || element.className.includes("bg-indigo-600") || element.className.includes("bg-indigo-50"))) {
       throw new Error("Published edit did not retain the second-page selected question in the Builder.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
@@ -231,13 +231,13 @@ async function main() {
     await admin.page.getByTestId("assessment-question-search").fill(marker);
     const restoredQuestion = admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`);
     await restoredQuestion.waitFor({ timeout: 30000 });
-    if (!await restoredQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await restoredQuestion.evaluate((element) => element.getAttribute("data-selected") === "true" || element.className.includes("bg-indigo-600") || element.className.includes("bg-indigo-50"))) {
       throw new Error("Published edit did not preserve the selected question after manager reload.");
     }
     await admin.page.getByTestId("assessment-question-page-next").click();
     const restoredSecondQuestion = admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`);
     await restoredSecondQuestion.waitFor({ timeout: 30000 });
-    if (!await restoredSecondQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await restoredSecondQuestion.evaluate((element) => element.getAttribute("data-selected") === "true" || element.className.includes("bg-indigo-600") || element.className.includes("bg-indigo-50"))) {
       throw new Error("Published edit did not preserve the second-page question after manager reload.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();

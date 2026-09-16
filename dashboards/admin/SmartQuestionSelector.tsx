@@ -685,6 +685,8 @@ export const SmartQuestionSelector: React.FC<SmartQuestionSelectorProps> = ({
                           <button
                             type="button"
                             data-testid={`assessment-question-select-${q.id}`}
+                            data-selected={isSelected ? "true" : "false"}
+                            aria-pressed={isSelected}
                             onClick={() => toggleQuestion(q.id)}
                             disabled={!isSelected && selectedIds.length >= maxQuestions}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs transition-all ${

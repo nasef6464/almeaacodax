@@ -13,7 +13,7 @@ assert.ok(builder.includes('المادة *'), 'subject field must be visibly req
 assert.ok(builder.includes('<option value="">اختر المادة</option>'), 'subject picker must not advertise an all-subject assessment');
 
 assert.ok(selector.includes('assessmentQuestionSource'), 'selector must use the canonical assessment question source');
-assert.ok(selector.includes('.loadAll({'), 'selector must load through the canonical compatibility paginator');
+assert.ok(selector.includes('.searchPage({'), 'selector must use the canonical paginated source');
 assert.ok(selector.includes('subjectId,'), 'selector must send the selected subject to the canonical source');
 assert.ok(selector.includes('if (subjectId) return new Set([subjectId]);'), 'selector metadata must scope sections/skills to the selected subject');
 assert.ok(selector.includes('scopedSubjectIds.has(section.subjectId)'), 'section options must stay inside the selected subject');
