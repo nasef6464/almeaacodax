@@ -117,6 +117,8 @@ jobs:
         run: npm run smoke:auth-token-response
       - name: School RBAC scope
         run: npm run smoke:rbac-school-scope
+      - name: Notification audience RBAC source
+        run: node scripts/smoke-notification-audience-rbac-contract.mjs
       - name: CSRF contract
         run: npm run smoke:csrf
       - name: API security contract
