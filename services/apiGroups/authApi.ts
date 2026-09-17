@@ -103,6 +103,7 @@ export const createAuthApi = (request: ApiRequest) => {
 
     logoutAll: () =>
       waitForPreferenceUpdates(() => request<void>("/auth/logout-all", {
+        method: "POST",
       })),
 
     changePassword: (currentPassword: string, newPassword: string) =>
