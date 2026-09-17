@@ -35,6 +35,35 @@ export const createAuthApi = (request: ApiRequest) => {
   const waitForPreferenceUpdates = <T>(operation: () => Promise<T>) =>
     preferenceUpdateQueue.catch(() => undefined).then(operation);
 
+  const sleep = (delayMs: number) => new Promise<void>((resolve) => {
+    setTimeout(resolve, delayMs);
+  });
+
+  const waitForAuthBackend = async () => {
+    const retryDelaysMs = [0, 2500, 5000, 8000];
+    let lastError: unknown;
+
+    for (const delayMs of retryDelaysMs) {
+      if (delayMs > 0) {
+        await sleep(delayMs);
+      }
+
+      try {
+        await request<{ status: string }>("/health/live", {
+          cache: "no-store",
+          skipCsrf: true,
+        });
+        return;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError instanceof Error
+      ? lastError
+      : new Error("تعذر الاتصال بالخادم الآن. تحقق من الإنترنت أو جرّب مرة أخرى.");
+  };
+
   const updateMyPreferences = (payload: PreferencePayload, token?: string | null) => {
     const operation = preferenceUpdateQueue
       .catch(() => undefined)
@@ -50,10 +79,13 @@ export const createAuthApi = (request: ApiRequest) => {
 
   return {
     login: (email: string, password: string) =>
-      waitForPreferenceUpdates(() => request<{ token?: string; user: unknown }>("/auth/login", {
-        method: "POST",
-        body: { email, password },
-      })),
+      waitForPreferenceUpdates(async () => {
+        await waitForAuthBackend();
+        return request<{ token?: string; user: unknown }>("/auth/login", {
+          method: "POST",
+          body: { email, password },
+        });
+      }),
 
     whatsappStartLogin: (phone: string) =>
       request<{ message: string; expiresInSeconds: number }>("/auth/whatsapp/start", {
