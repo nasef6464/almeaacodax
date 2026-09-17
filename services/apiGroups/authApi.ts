@@ -103,7 +103,6 @@ export const createAuthApi = (request: ApiRequest) => {
 
     logoutAll: () =>
       waitForPreferenceUpdates(() => request<void>("/auth/logout-all", {
-        method: "POST",
       })),
 
     changePassword: (currentPassword: string, newPassword: string) =>
@@ -145,8 +144,12 @@ export const createAuthApi = (request: ApiRequest) => {
       }),
 
     getAdminUsers: async (pagination: PaginationOptions = {}) => {
+      const requestedLimit = Number(pagination.limit ?? 100);
+      const safeLimit = Number.isFinite(requestedLimit)
+        ? Math.min(Math.max(Math.trunc(requestedLimit), 1), 100)
+        : 100;
       const payload = await request<{ users: unknown[]; pagination?: PaginatedResponseShape }>(
-        withQuery("/auth/admin/users", { limit: 100, ...pagination }),
+        withQuery("/auth/admin/users", { ...pagination, limit: safeLimit }),
       );
 
       return {
@@ -154,7 +157,7 @@ export const createAuthApi = (request: ApiRequest) => {
         users: extractList(payload, "users"),
         pagination: payload.pagination || {
           page: 1,
-          limit: 100,
+          limit: safeLimit,
           total: 0,
           totalPages: 0,
           items: 0,
