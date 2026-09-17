@@ -26,7 +26,9 @@
 
 - Baseline: `main @ 9bd891da215e87ce8474bfa7909c2ede6c4ca2af`.
 - Branch: `chatgpt/batch02-ci-governance-current`.
-- Status: **IN PROGRESS**.
+- PR: `#162`.
+- Gate-enablement commit tested: `21987a5b5ac4a19826c77c83189d385e021265d5`.
+- Status: **IN PROGRESS — gate enablement proven; exposed regressions must be repaired before merge**.
 - Confirmed governance gaps on current main:
   - the backend integration workflow is triggered for PRs to `main` but its job is skipped unless the PR head matches a hard-coded branch allowlist;
   - the deep pre-merge E2E workflow is triggered for PRs to `main` but its job is skipped unless the PR head matches a small hard-coded branch allowlist;
@@ -35,5 +37,33 @@
   - remove only the job-level branch-name allowlist from Backend Integration;
   - remove only the job-level branch-name allowlist from Deep Pre-Merge E2E;
   - retain the existing isolated Mongo, ephemeral-secret and no-production-write behavior of both workflows.
+- CI evidence on ordinary PR #162:
+  - Backend Integration: PASS (run `35257525809`).
+  - Deep Pre-Merge E2E executed instead of skipping (run `35257525764`).
+  - frontend typecheck: PASS.
+  - API typecheck: PASS.
+  - frontend production build: PASS.
+  - API production build: PASS.
+  - operational multi-role API: PASS.
+  - bounded isolated read-scale validation: PASS.
+  - public full-stack journeys: PASS.
+  - school-from-scratch CRUD/relations/cleanup: PASS.
+  - final deep-suite aggregate: FAIL because several `continue-on-error` audits returned failure outcomes even though their individual Actions step conclusions display success.
+- Downloaded deep-E2E evidence identifies real product/audit failures rather than a false aggregate failure:
+  - role pages: FAIL outcome;
+  - question editor: FAIL outcome;
+  - Student Learning Space: FAIL (18 route checks failed; missing next-action/report selectors plus client/network errors);
+  - results/report actions: FAIL (student report actions missing; staff intervention/export controls missing);
+  - Learning Space manager: FAIL outcome;
+  - assessment commercial: FAIL because `assessment-builder-path` never contained the requested path option within 30s;
+  - assessment mock session: FAIL outcome;
+  - supervisor school: FAIL outcome;
+  - barcode public test: FAIL on anonymous desktop/mobile pages with five required selectors missing;
+  - school-from-scratch: PASS (12/12 plus cleanup).
+- Recovery Gate on the same head also exposed two earlier contract failures:
+  - `smoke:supervisor-dashboard` FAIL;
+  - `smoke:student-learning-journey` FAIL.
+- Important test-design finding: `scripts/smoke-student-learning-journey.mjs` defaults to the deployed Render API and hard-coded legacy path/subject IDs when no smoke environment is supplied. Recovery Gate invokes it without an isolated API fixture, so this PR check is production-data-dependent and is not a deterministic repository contract. Do not silence it; move/parameterize it as part of the next bounded repair.
 - Repository-admin limitation: the connected GitHub integration does not expose a branch-protection mutation action. Required-check enforcement on `main` therefore still needs repository-owner/admin configuration after the workflow evidence is green.
-- Next exact action: open the Batch 2 PR, prove Backend Integration and Deep Pre-Merge E2E actually execute on that ordinary PR, then record the exact passing/failing evidence before merge. Do not hide product failures exposed by the newly-unskipped gates.
+- Checkpoint commit: this document update follows the tested head above; use the commit containing this checkpoint as the next branch head.
+- Next exact action: repair deterministic CI first (supervisor dashboard contract drift and production-dependent student-learning contract), then rerun PR #162. After those contract gates are green, repair the isolated deep-E2E failures in small product-focused batches, beginning with assessment path loading and the shared missing learner/staff action surfaces. Do not merge #162 while release-critical gates remain red.
