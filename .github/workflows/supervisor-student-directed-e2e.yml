@@ -92,8 +92,7 @@ jobs:
           git push origin HEAD:codex/supervisor-student-journey-hardening
 
   directed-assessment-journey:
-    needs: apply-focused-fixes
-    if: ${{ always() && (needs.apply-focused-fixes.result == 'success' || needs.apply-focused-fixes.result == 'skipped') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
     name: Isolated supervisor → student school assessment journey
     runs-on: ubuntu-latest
     timeout-minutes: 35
