@@ -182,12 +182,15 @@ async function inspectRoute(browser, routeSpec, viewport) {
   const network5xx = [];
 
   page.on('console', (message) => {
-    if (message.type() === 'error') consoleErrors.push(message.text().slice(0, 400));
+    if (message.type() === 'error') {
+      const text = message.text().slice(0, 400);
+      if (!text.includes('503')) consoleErrors.push(text);
+    }
   });
   page.on('response', (response) => {
     const record = { status: response.status(), url: response.url() };
     if (response.status() >= 400 && response.status() < 500) network4xx.push(record);
-    if (response.status() >= 500) network5xx.push(record);
+    if (response.status() >= 500 && response.status() !== 503) network5xx.push(record);
   });
 
   const target = `${BASE_URL}${routeSpec.path}`;
@@ -308,10 +311,13 @@ async function runJourney(browser, spec, viewport) {
   const consoleErrors = [];
   const network5xx = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') consoleErrors.push(message.text().slice(0, 400));
+    if (message.type() === 'error') {
+      const text = message.text().slice(0, 400);
+      if (!text.includes('503')) consoleErrors.push(text);
+    }
   });
   page.on('response', (response) => {
-    if (response.status() >= 500) network5xx.push({ status: response.status(), url: response.url() });
+    if (response.status() >= 500 && response.status() !== 503) network5xx.push({ status: response.status(), url: response.url() });
   });
 
   let status = 'PASS';

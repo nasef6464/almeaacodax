@@ -315,7 +315,7 @@ async function verifyAdminUserRoleRelationshipJourney(page) {
     const usersPayload = await usersResponse.json().catch(() => ({}));
     let groupsPayload = await groupsResponse.json().catch(() => ([]));
     if (!groupsResponse.ok) {
-      const bootstrapResponse = await fetch(`${apiBaseUrl}/content/bootstrap?scope=operations&phase=all`, { credentials: "include", cache: "no-store" });
+      const bootstrapResponse = await fetch(`${apiBaseUrl}/content/bootstrap?scope=operations`, { credentials: "include", cache: "no-store" });
       const bootstrapPayload = await bootstrapResponse.json().catch(() => ({}));
       groupsPayload = bootstrapPayload?.groups || [];
     }
