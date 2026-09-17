@@ -29,6 +29,10 @@
         font-family: var(--platform-font-body), 'Tajawal', sans-serif;
       }
     </style>
+    <!-- Production API transport is intentionally same-origin. This runtime override
+         takes precedence over stale build-time VITE_API_URL values and routes all
+         browser API calls through the verified Vercel /api proxy. -->
+    <script>window.__API_BASE_URL__ = "/api";</script>
     <!-- Typography contract markers:
     sans: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui']
     tajawal: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui']
