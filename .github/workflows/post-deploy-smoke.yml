@@ -55,6 +55,12 @@ jobs:
           fi
 
       - name: Operational smoke
+        # The operational script distinguishes deterministic CI fixtures from
+        # production by recognizing the Render host. Run this step directly
+        # against the active production API so it validates live contracts
+        # without requiring demo seed records to exist in the production DB.
+        env:
+          SMOKE_API_BASE_URL: https://almeaacodax-codex.onrender.com/api
         run: npm run smoke:operational
 
       - name: Sentry live proof smoke
