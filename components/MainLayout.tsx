@@ -3,6 +3,8 @@ import { Header } from './Header';
 import { Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
+import { adapter } from '../services/adapter';
+import { useStore } from '../store/useStore';
 
 const ChatWidget = React.lazy(() => import('./ChatWidget').then((module) => ({ default: module.ChatWidget })));
 const SmartClassroomFloatingWidget = React.lazy(() => import('./classroom/SmartClassroomFloatingWidget').then((m) => ({ default: m.SmartClassroomFloatingWidget })));
@@ -13,6 +15,10 @@ interface MainLayoutProps {
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const location = useLocation();
+    const courses = useStore((state) => state.courses);
+    const paths = useStore((state) => state.paths);
+    const hydrateCourses = useStore((state) => state.hydrateCourses);
+    const hydrateTaxonomy = useStore((state) => state.hydrateTaxonomy);
     const [contactWidget, setContactWidget] = useState<{
         enabled: boolean;
         channel: 'whatsapp' | 'telegram' | 'phone';
@@ -34,6 +40,52 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             cancelled = true;
         };
     }, []);
+
+    // The public landing page consumes both taxonomy and course data from the
+    // Zustand store. The heavy application bootstrap is intentionally skipped
+    // on `/`, so hydrate just the lightweight public data it actually needs.
+    // This keeps the home page fast while preventing an empty navigation/course
+    // shell after a fresh visit or an expired persisted store.
+    useEffect(() => {
+        if ((location.pathname || '/') !== '/') return;
+        if (courses.length > 0 && paths.length > 0) return;
+
+        let cancelled = false;
+        const loadPublicHomeData = async () => {
+            const [taxonomyResult, courseResult] = await Promise.allSettled([
+                paths.length > 0 ? Promise.resolve(null) : adapter.getTaxonomyBootstrap('core'),
+                courses.length > 0 ? Promise.resolve(null) : adapter.getCourses({ limit: 60, kind: 'learning' }),
+            ]);
+
+            if (cancelled) return;
+
+            if (taxonomyResult.status === 'fulfilled' && taxonomyResult.value) {
+                hydrateTaxonomy({
+                    paths: taxonomyResult.value.paths,
+                    levels: taxonomyResult.value.levels,
+                    subjects: taxonomyResult.value.subjects,
+                    sections: taxonomyResult.value.sections,
+                    skills: taxonomyResult.value.skills,
+                });
+            }
+
+            if (courseResult.status === 'fulfilled' && courseResult.value) {
+                hydrateCourses(courseResult.value);
+            }
+
+            if (taxonomyResult.status === 'rejected') {
+                console.warn('Public navigation bootstrap unavailable:', taxonomyResult.reason);
+            }
+            if (courseResult.status === 'rejected') {
+                console.warn('Public course bootstrap unavailable:', courseResult.reason);
+            }
+        };
+
+        void loadPublicHomeData();
+        return () => {
+            cancelled = true;
+        };
+    }, [courses.length, hydrateCourses, hydrateTaxonomy, location.pathname, paths.length]);
 
     const showFloatingContact = useMemo(() => {
         if (!contactWidget?.enabled) return false;
