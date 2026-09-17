@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 
 const FRONTEND_URL = (process.env.SMOKE_FRONTEND_URL || 'https://almeaacodax.vercel.app').replace(/\/$/, '');
-const API_URL = (process.env.SMOKE_API_URL || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
+const API_URL = (process.env.SMOKE_API_URL || process.env.SMOKE_API_BASE_URL || `${FRONTEND_URL}/api`).replace(/\/$/, '');
 const EXPECTED_VERSION = process.env.SMOKE_EXPECT_VERSION || (() => {
   try {
     return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
@@ -50,7 +50,7 @@ async function check(name, fn) {
   }
 }
 
-async function fetchWithRetry(url, options = {}, attempts = 3) {
+async function fetchWithRetry(url, options = {}, attempts = 8) {
   let lastError;
   for (let index = 0; index < attempts; index += 1) {
     try {
@@ -62,7 +62,9 @@ async function fetchWithRetry(url, options = {}, attempts = 3) {
     } catch (error) {
       lastError = error;
     }
-    await sleep(750 * (index + 1));
+    if (index < attempts - 1) {
+      await sleep(Math.min(1500 * (index + 1), 6000));
+    }
   }
   throw lastError instanceof Error ? lastError : new Error(String(lastError || 'fetch failed'));
 }
