@@ -21,7 +21,6 @@ concurrency:
 
 jobs:
   isolated-full-stack-e2e:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe'
     name: Full-stack roles + CRUD + school + quiz flows on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 55
