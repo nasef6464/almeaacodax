@@ -1,49 +1,49 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-14T03:20:46.635Z",
-  "gitHead": "84fe836539df60c7b91989bcf3dc1be4a239b85d",
+  "generatedAt": "2026-09-17T01:04:34.931Z",
+  "gitHead": "8dca10591fe21f6ed208762d0127194b6ea18c88",
   "summary": {
-    "trackedFiles": 1440,
-    "sourceFiles": 1001,
-    "runtimeSourceFiles": 617,
-    "sourceLines": 200261,
-    "runtimeSourceLines": 160788,
+    "trackedFiles": 1468,
+    "sourceFiles": 1024,
+    "runtimeSourceFiles": 629,
+    "sourceLines": 203087,
+    "runtimeSourceLines": 163020,
     "frontendRoutes": 55,
-    "backendRouteEntries": 306,
-    "routerMounts": 31,
-    "runtimeRelativeImportEdges": 1897,
+    "backendRouteEntries": 313,
+    "routerMounts": 32,
+    "runtimeRelativeImportEdges": 1942,
     "unresolvedRuntimeRelativeImports": 0,
-    "unresolvedNonRuntimeRelativeImports": 5,
+    "unresolvedNonRuntimeRelativeImports": 6,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 1180,
+    "crossDomainImportEdges": 1209,
     "hotspots400Lines": 84,
-    "migrationCandidates": 606
+    "migrationCandidates": 617
   },
   "categoryStats": {
     "support": {
       "files": 76,
-      "bytes": 525885,
-      "lines": 10629
+      "bytes": 526726,
+      "lines": 10638
     },
     "ci": {
       "files": 49,
-      "bytes": 252994,
-      "lines": 6785
+      "bytes": 253552,
+      "lines": 6790
     },
     "web-source": {
-      "files": 342,
-      "bytes": 6257671,
-      "lines": 117161
+      "files": 345,
+      "bytes": 6296920,
+      "lines": 117735
     },
     "source-other": {
-      "files": 11,
-      "bytes": 54845,
-      "lines": 949
+      "files": 12,
+      "bytes": 55286,
+      "lines": 961
     },
     "documentation": {
-      "files": 284,
-      "bytes": 4541855,
-      "lines": 105212
+      "files": 289,
+      "bytes": 4643639,
+      "lines": 106611
     },
     "public-asset": {
       "files": 17,
@@ -51,51 +51,51 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 308,
-      "bytes": 1607057,
-      "lines": 32680
+      "files": 319,
+      "bytes": 1642070,
+      "lines": 33266
     },
     "api-support": {
       "files": 5,
-      "bytes": 145990,
-      "lines": 3901
+      "bytes": 146135,
+      "lines": 3902
     },
     "api-source": {
-      "files": 264,
-      "bytes": 1778236,
-      "lines": 42678
+      "files": 272,
+      "bytes": 1846387,
+      "lines": 44324
     },
     "tooling": {
       "files": 84,
-      "bytes": 341723,
-      "lines": 6633
+      "bytes": 342486,
+      "lines": 6641
     }
   },
   "domainStats": {
     "shared": {
-      "files": 136,
-      "lines": 30420,
-      "bytes": 1440194
+      "files": 138,
+      "lines": 30669,
+      "bytes": 1451376
     },
     "notifications": {
-      "files": 18,
-      "lines": 3038,
-      "bytes": 138939
+      "files": 20,
+      "lines": 3284,
+      "bytes": 148623
     },
     "courses": {
-      "files": 21,
-      "lines": 8238,
-      "bytes": 444869
+      "files": 22,
+      "lines": 8384,
+      "bytes": 457216
     },
     "learning": {
-      "files": 24,
-      "lines": 8219,
-      "bytes": 409478
+      "files": 25,
+      "lines": 8234,
+      "bytes": 414097
     },
     "schools": {
       "files": 157,
-      "lines": 26166,
-      "bytes": 1411325
+      "lines": 26430,
+      "bytes": 1424129
     },
     "paths": {
       "files": 13,
@@ -103,29 +103,29 @@
       "bytes": 321514
     },
     "payments": {
-      "files": 17,
-      "lines": 6913,
-      "bytes": 349608
+      "files": 18,
+      "lines": 7007,
+      "bytes": 352639
     },
     "questions": {
       "files": 42,
-      "lines": 9717,
-      "bytes": 480557
+      "lines": 9720,
+      "bytes": 480759
     },
     "quizzes": {
-      "files": 68,
-      "lines": 16468,
-      "bytes": 813958
+      "files": 71,
+      "lines": 16959,
+      "bytes": 833095
     },
     "exams": {
-      "files": 13,
-      "lines": 6047,
-      "bytes": 315223
+      "files": 14,
+      "lines": 6075,
+      "bytes": 316292
     },
     "auth": {
-      "files": 32,
-      "lines": 6953,
-      "bytes": 332708
+      "files": 33,
+      "lines": 7290,
+      "bytes": 346317
     },
     "reports": {
       "files": 31,
@@ -139,21 +139,29 @@
     },
     "operations": {
       "files": 18,
-      "lines": 13505,
-      "bytes": 634524
+      "lines": 13720,
+      "bytes": 646458
     },
     "content": {
       "files": 16,
-      "lines": 5606,
-      "bytes": 258996
+      "lines": 5686,
+      "bytes": 262778
     },
     "users": {
       "files": 8,
-      "lines": 2345,
-      "bytes": 130629
+      "lines": 2409,
+      "bytes": 135070
     }
   },
   "hotspots": [
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "category": "api-source",
+      "domain": "content",
+      "bytes": 101741,
+      "lines": 2640,
+      "sha256": "ca045f9d4587d56e110f99d6b16334ffc3eea6669302314650da2d792d28df63"
+    },
     {
       "file": "pages/Reports.tsx",
       "category": "web-source",
@@ -161,14 +169,6 @@
       "bytes": 186155,
       "lines": 2587,
       "sha256": "49e04921b6c8f9d95017ad60f869a66aa393beaa83b68c16a9fbdf44928af095"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "category": "api-source",
-      "domain": "content",
-      "bytes": 97959,
-      "lines": 2560,
-      "sha256": "c4237fa8f46b1a1dd62c3ad22a508a977a5d17aed94bd2b10ae32150ef6e7e81"
     },
     {
       "file": "pages/QuizPage.tsx",
@@ -211,6 +211,14 @@
       "sha256": "a63effe27f6ac57fa67f29b0653a24304147e8f2da2d8e32681e49ca040c53d7"
     },
     {
+      "file": "server/src/scripts/backendIntegrationGate.ts",
+      "category": "api-source",
+      "domain": "operations",
+      "bytes": 130806,
+      "lines": 2264,
+      "sha256": "bdf30a881de3af34544e58023fa04f237cb5a9e548fc9f5f0746d73319e08a6f"
+    },
+    {
       "file": "dashboards/admin/SchoolsManager.tsx",
       "category": "web-source",
       "domain": "schools",
@@ -238,17 +246,17 @@
       "file": "dashboards/admin/AdminDashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 126101,
-      "lines": 2084,
-      "sha256": "dc4a57874f178f1fb3f52e7014895703597c5f0e042e04139a36886525b03991"
+      "bytes": 126923,
+      "lines": 2093,
+      "sha256": "7b57870d8c7822972b712183fc985bc33dd59aadf7b1afba39a32ee60880bf68"
     },
     {
-      "file": "server/src/scripts/backendIntegrationGate.ts",
-      "category": "api-source",
-      "domain": "operations",
-      "bytes": 118872,
-      "lines": 2049,
-      "sha256": "c0642f3cb585a344d7b36b51bb5cbe139f350e88c4caf85a767663179ca6f01b"
+      "file": "dashboards/admin/QuizzesManager.tsx",
+      "category": "web-source",
+      "domain": "quizzes",
+      "bytes": 110236,
+      "lines": 1981,
+      "sha256": "32f77bb8ebe643faf66e225e990082465c791b94cdde12046d8a53b7c338fbb1"
     },
     {
       "file": "dashboards/admin/QuestionBankManager.tsx",
@@ -259,20 +267,20 @@
       "sha256": "9cef0097f7cb10de43aee06547ae3e403b6c2a94009c72ad99a164538b14a6ae"
     },
     {
-      "file": "dashboards/admin/QuizzesManager.tsx",
-      "category": "web-source",
-      "domain": "quizzes",
-      "bytes": 106763,
-      "lines": 1911,
-      "sha256": "741341aec73f03207c8cea4a5698f958cd5f8e97693678b473025aec9d9c9ea8"
-    },
-    {
       "file": "server/src/routes/payment.routes.ts",
       "category": "api-source",
       "domain": "payments",
       "bytes": 71269,
       "lines": 1886,
       "sha256": "278f9263a5be8796a8611cad3e2a546999a123b1d26b6c9b954b81b1d520ab17"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 71117,
+      "lines": 1868,
+      "sha256": "9c1f06d689cd07194d9d29a81218e325e35d9f17a44f6f8fad9e9a41b3b55846"
     },
     {
       "file": "dashboards/admin/SupervisorDashboard.tsx",
@@ -289,14 +297,6 @@
       "bytes": 88949,
       "lines": 1772,
       "sha256": "ee1dda32b61891d1fbf4d6e442d8c2ef21d35d0f8a5091f32866227cb1fbf1ab"
-    },
-    {
-      "file": "server/src/routes/auth.routes.ts",
-      "category": "api-source",
-      "domain": "auth",
-      "bytes": 66018,
-      "lines": 1768,
-      "sha256": "374755087cbe0a8212f558c6f7f8c87a546386bf5e9f7cebf95a3655fb6eed4f"
     },
     {
       "file": "pages/Plan.tsx",
@@ -318,17 +318,17 @@
       "file": "App.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 75998,
-      "lines": 1679,
-      "sha256": "a69c45223213f7397ccba951ec597c5ee6506db6d4bfab30bfefab4d9e8cea94"
+      "bytes": 77124,
+      "lines": 1706,
+      "sha256": "25c3423df024652a903f4a37c7087972706ed00e450a7ad2c2ef8910b8690722"
     },
     {
       "file": "dashboards/admin/AdvancedCourseBuilder.tsx",
       "category": "web-source",
       "domain": "courses",
-      "bytes": 99692,
-      "lines": 1654,
-      "sha256": "eb7b39812c0f094ede5847af5dda953b97c8013516d6f3b45a0c6cbd1b10010e"
+      "bytes": 99872,
+      "lines": 1656,
+      "sha256": "0a28b3b22faf8739898abfd1a64d67f717f5ac66f9d38f35de5c6cde1eee4b5f"
     },
     {
       "file": "server/src/routes/ai.routes.ts",
@@ -366,9 +366,9 @@
       "file": "pages/Landing.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 101672,
-      "lines": 1497,
-      "sha256": "83d329e75881eb9f9c9cb2b698b5c096ece4d036eba24cb7306a03bcffd16d99"
+      "bytes": 102082,
+      "lines": 1502,
+      "sha256": "991ad567fbdd88199f7ad636775a1f9c2e691665843917c1b45e4a52d02d5d35"
     },
     {
       "file": "dashboards/admin/QuizBuilder.tsx",
@@ -443,6 +443,14 @@
       "sha256": "8e09b2005a7bfd82401fc85a46f1770496674eaceb09350c5fb869e1ebcf5b24"
     },
     {
+      "file": "dashboards/admin/UnifiedQuizBuilder.tsx",
+      "category": "web-source",
+      "domain": "quizzes",
+      "bytes": 70601,
+      "lines": 1223,
+      "sha256": "348a305970e3375736dce6497211bffa59f291bf135efa5883a705f087249f78"
+    },
+    {
       "file": "components/CourseOverview.tsx",
       "category": "web-source",
       "domain": "courses",
@@ -457,14 +465,6 @@
       "bytes": 65541,
       "lines": 1192,
       "sha256": "db0f97a4b447ce8b5c4244cdd13b71dc701770339fc37731c4adc83b1b8ea2f6"
-    },
-    {
-      "file": "dashboards/admin/UnifiedQuizBuilder.tsx",
-      "category": "web-source",
-      "domain": "quizzes",
-      "bytes": 67964,
-      "lines": 1168,
-      "sha256": "92f476a05936456665cd3b424ccd7bcf5d563d54df60c3326aafb86d7d637d55"
     },
     {
       "file": "pages/Quizzes.tsx",
@@ -491,6 +491,14 @@
       "sha256": "4b20e9ad9d27f24f97fb692b887db803960c07e17bb3698226e149feaf678609"
     },
     {
+      "file": "dashboards/admin/SmartQuestionSelector.tsx",
+      "category": "web-source",
+      "domain": "questions",
+      "bytes": 54667,
+      "lines": 1034,
+      "sha256": "156d03d3f1b545f31830d5c89e4f13e9712eb9b4f371d8bdf1dbd11a1134c10f"
+    },
+    {
       "file": "types.ts",
       "category": "web-source",
       "domain": "shared",
@@ -499,20 +507,12 @@
       "sha256": "178134df02b33b2b632bd56d515b7159fe2d2af2e3ecbb041b61d31318a64ced"
     },
     {
-      "file": "dashboards/admin/SmartQuestionSelector.tsx",
-      "category": "web-source",
-      "domain": "questions",
-      "bytes": 54537,
-      "lines": 1032,
-      "sha256": "89d455bf4156e601839e8a5c02b23b1bd3609a2d509ea22ec55475c9759ac641"
-    },
-    {
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 46262,
-      "lines": 1000,
-      "sha256": "d9857974267d39a78f6ae3750897a3b29b0ee8fc72c8486721827beacd4d72e7"
+      "bytes": 46743,
+      "lines": 1004,
+      "sha256": "87481b353359234d7f7e8a218c89b9a1bb83f8a7475d863b0f190d2c7e899a86"
     },
     {
       "file": "dashboards/admin/BackupManager.tsx",
@@ -531,6 +531,14 @@
       "sha256": "a55d601be5f35c5eb41d9e6c64ffa7fa05fc27990bac2d723b21b585006a6bfd"
     },
     {
+      "file": "dashboards/admin/UsersManager.tsx",
+      "category": "web-source",
+      "domain": "users",
+      "bytes": 65834,
+      "lines": 956,
+      "sha256": "dff22e11f6a1e7ddfca5dc9f696ab6dea02b17ec24974392505aa668c8e36011"
+    },
+    {
       "file": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
       "category": "web-source",
       "domain": "learning",
@@ -539,20 +547,12 @@
       "sha256": "8549167719a26eb9b99fbdc08c868fee8aa015a0a81a18fbabecd10da8eefe7a"
     },
     {
-      "file": "dashboards/admin/UsersManager.tsx",
-      "category": "web-source",
-      "domain": "users",
-      "bytes": 63211,
-      "lines": 934,
-      "sha256": "8937e5bdeb94778a6ae13cba121fd9df3720c79fcc49947332167dce99db821a"
-    },
-    {
       "file": "server/src/routes/course.routes.ts",
       "category": "api-source",
       "domain": "courses",
-      "bytes": 30729,
-      "lines": 857,
-      "sha256": "8e15ce798fe451069163bfb18f14f60adeb5db44b63c813dadc9ce209d4c7d7c"
+      "bytes": 31734,
+      "lines": 886,
+      "sha256": "ef48321d72e539124f231f7fcd261fd2ca1e7496687299025d6d7bc8b9b31d99"
     },
     {
       "file": "dashboards/admin/SkillsTreeManager.tsx",
@@ -707,6 +707,14 @@
       "sha256": "f5951e50ca081d2b7a4b27dd3eca7f191a96d1ca17eb84501d42683b9fdf3312"
     },
     {
+      "file": "dashboards/admin/CoursesManager.tsx",
+      "category": "web-source",
+      "domain": "courses",
+      "bytes": 30845,
+      "lines": 558,
+      "sha256": "509c006b71cfdc00d21d11a8636c471e9762aa57498f06490f95ba157444df47"
+    },
+    {
       "file": "server/src/routes/notification.routes.ts",
       "category": "api-source",
       "domain": "notifications",
@@ -721,14 +729,6 @@
       "bytes": 32321,
       "lines": 540,
       "sha256": "597d6dbd0717de51cc24840c2da9d0509c2e0f61355f8add04a488a447b4fccd"
-    },
-    {
-      "file": "dashboards/admin/CoursesManager.tsx",
-      "category": "web-source",
-      "domain": "courses",
-      "bytes": 27242,
-      "lines": 533,
-      "sha256": "eea84fd5db8a53c595471bd30183f85de3d82655a33726e23405c619a044fdd5"
     },
     {
       "file": "dashboards/admin/builders/UnifiedQuestionBuilder.tsx",
@@ -1025,6 +1025,18 @@
     },
     {
       "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/users/bulk-status",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/users/summary",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
       "method": "GET",
       "path": "/csrf-token",
       "receiver": "authRouter"
@@ -1157,6 +1169,12 @@
     },
     {
       "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/trainer/performance",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
       "method": "POST",
       "path": "/whatsapp/start",
       "receiver": "authRouter"
@@ -1166,6 +1184,18 @@
       "method": "POST",
       "path": "/whatsapp/verify",
       "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/authSession.routes.ts",
+      "method": "POST",
+      "path": "/logout-all",
+      "receiver": "authSessionRouter"
+    },
+    {
+      "file": "server/src/routes/authSession.routes.ts",
+      "method": "POST",
+      "path": "/me/password",
+      "receiver": "authSessionRouter"
     },
     {
       "file": "server/src/routes/backup.routes.ts",
@@ -1633,6 +1663,18 @@
       "file": "server/src/routes/content.routes.ts",
       "method": "GET",
       "path": "/public-contact-widget",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/review-queue",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/review-queue/:type/:id",
       "receiver": "contentRouter"
     },
     {
@@ -2769,6 +2811,12 @@
       "file": "server/src/routes/index.ts",
       "receiver": "apiRouter",
       "prefix": "/auth",
+      "mounted": "authSessionRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/auth",
       "mounted": "authRouter"
     },
     {
@@ -2930,6 +2978,8 @@
     "AI_PROVIDER_ORDER",
     "AI_REQUEST_TIMEOUT_MS",
     "AI_RUNTIME_AUDIT_RUN_ID",
+    "ALLOW_LIVE_ASSESSMENT_INDEX_MIGRATION",
+    "ALLOW_PAYMENT_GATEWAY_INDEX_MIGRATION",
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
     "ALLOW_SMART_CLASSROOM_INDEX_MIGRATION",
     "API_BASE_URL",
@@ -3041,6 +3091,8 @@
     "SENTRY_ENVIRONMENT",
     "SENTRY_TRACES_SAMPLE_RATE",
     "SLOW_REQUEST_LOG_MS",
+    "SMART_CLASSROOM_LOAD_STUDENTS",
+    "SMART_CLASSROOM_SCENARIO",
     "SMOKE_ADMIN_EMAIL",
     "SMOKE_ADMIN_PASSWORD",
     "SMOKE_ADMIN_TOKEN",
@@ -3134,6 +3186,10 @@
     },
     {
       "file": "scripts/smoke-assessment-settings-consumption-contract.mjs",
+      "specifier": "../node_modules/typescript/lib/typescript.js"
+    },
+    {
+      "file": "scripts/smoke-performance-p1-contract.mjs",
       "specifier": "../node_modules/typescript/lib/typescript.js"
     },
     {
@@ -3896,6 +3952,12 @@
     {
       "source": "components/classroom/ClassroomActiveSessionPanel.tsx",
       "sourceDomain": "auth",
+      "target": "hooks/useClassroomRealtime.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "components/classroom/ClassroomActiveSessionPanel.tsx",
+      "sourceDomain": "auth",
       "target": "services/api.ts",
       "targetDomain": "shared"
     },
@@ -4088,6 +4150,18 @@
     {
       "source": "dashboards/admin/AdminDashboard.tsx",
       "sourceDomain": "shared",
+      "target": "dashboards/admin/ContentReviewQueueManager.tsx",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "dashboards/admin/AdminDashboard.tsx",
+      "sourceDomain": "shared",
+      "target": "dashboards/admin/CoursesManager.tsx",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "dashboards/admin/AdminDashboard.tsx",
+      "sourceDomain": "shared",
       "target": "dashboards/admin/FinancialManager.tsx",
       "targetDomain": "payments"
     },
@@ -4178,6 +4252,12 @@
     {
       "source": "dashboards/admin/AdminDashboard.tsx",
       "sourceDomain": "shared",
+      "target": "dashboards/admin/TrainerCoursesManager.tsx",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "dashboards/admin/AdminDashboard.tsx",
+      "sourceDomain": "shared",
       "target": "dashboards/admin/UsersManager.tsx",
       "targetDomain": "users"
     },
@@ -4257,6 +4337,12 @@
       "source": "dashboards/admin/BackupManager.tsx",
       "sourceDomain": "operations",
       "target": "store/useStore.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/ContentReviewQueueManager.tsx",
+      "sourceDomain": "learning",
+      "target": "services/api.ts",
       "targetDomain": "shared"
     },
     {
@@ -5336,6 +5422,24 @@
     {
       "source": "dashboards/admin/TestAnalyticsReport.tsx",
       "sourceDomain": "reports",
+      "target": "types.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/TrainerCoursesManager.tsx",
+      "sourceDomain": "courses",
+      "target": "services/api.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/TrainerCoursesManager.tsx",
+      "sourceDomain": "courses",
+      "target": "store/useStore.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/TrainerCoursesManager.tsx",
+      "sourceDomain": "courses",
       "target": "types.ts",
       "targetDomain": "shared"
     },
@@ -6798,6 +6902,30 @@
       "targetDomain": "users"
     },
     {
+      "source": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/SchoolMembership.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/TeachingAssignment.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
       "source": "server/src/modules/notifications/infrastructure/notificationRealtime.ts",
       "sourceDomain": "notifications",
       "target": "server/src/config/redis.ts",
@@ -6873,6 +7001,30 @@
       "source": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
       "sourceDomain": "quizzes",
       "target": "server/src/services/spacedRepetition.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Group.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/LiveExamSession.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/services/visibility.ts",
       "targetDomain": "shared"
     },
     {
@@ -7184,6 +7336,12 @@
     {
       "source": "server/src/routes/auth.routes.ts",
       "sourceDomain": "auth",
+      "target": "server/src/models/QuizResult.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/routes/auth.routes.ts",
+      "sourceDomain": "auth",
       "target": "server/src/models/SchoolMembership.ts",
       "targetDomain": "schools"
     },
@@ -7239,6 +7397,30 @@
       "source": "server/src/routes/auth.routes.ts",
       "sourceDomain": "auth",
       "target": "server/src/utils/pagination.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/authSession.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/authSession.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/services/adminAuditLog.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/authSession.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/authSession.routes.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/utils/jwt.ts",
       "targetDomain": "shared"
     },
     {
@@ -7610,6 +7792,12 @@
     {
       "source": "server/src/routes/content.routes.ts",
       "sourceDomain": "content",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
       "target": "server/src/models/Group.ts",
       "targetDomain": "schools"
     },
@@ -7642,6 +7830,18 @@
       "sourceDomain": "content",
       "target": "server/src/models/PlatformIntegrationSettings.ts",
       "targetDomain": "operations"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/routes/content.routes.ts",
+      "sourceDomain": "content",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
     },
     {
       "source": "server/src/routes/content.routes.ts",
@@ -7814,6 +8014,12 @@
     {
       "source": "server/src/routes/index.ts",
       "sourceDomain": "shared",
+      "target": "server/src/routes/authSession.routes.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/index.ts",
+      "sourceDomain": "shared",
       "target": "server/src/routes/backup.routes.ts",
       "targetDomain": "operations"
     },
@@ -7844,13 +8050,13 @@
     {
       "source": "server/src/routes/index.ts",
       "sourceDomain": "shared",
-      "target": "server/src/routes/live-exams.routes.ts",
+      "target": "server/src/routes/liveExamsRoot.routes.ts",
       "targetDomain": "exams"
     },
     {
       "source": "server/src/routes/index.ts",
       "sourceDomain": "shared",
-      "target": "server/src/routes/notification.routes.ts",
+      "target": "server/src/routes/notificationRoot.routes.ts",
       "targetDomain": "notifications"
     },
     {
@@ -7986,6 +8192,18 @@
       "targetDomain": "shared"
     },
     {
+      "source": "server/src/routes/liveExamsRoot.routes.ts",
+      "sourceDomain": "exams",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/routes/liveExamsRoot.routes.ts",
+      "sourceDomain": "exams",
+      "target": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "targetDomain": "quizzes"
+    },
+    {
       "source": "server/src/routes/notification.routes.ts",
       "sourceDomain": "notifications",
       "target": "server/src/constants/roles.ts",
@@ -8020,6 +8238,12 @@
       "sourceDomain": "notifications",
       "target": "server/src/utils/pagination.ts",
       "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/notificationRoot.routes.ts",
+      "sourceDomain": "notifications",
+      "target": "server/src/middleware/auth.ts",
+      "targetDomain": "auth"
     },
     {
       "source": "server/src/routes/operations.routes.ts",
@@ -8980,6 +9204,12 @@
       "sourceDomain": "schools",
       "target": "server/src/models/User.ts",
       "targetDomain": "users"
+    },
+    {
+      "source": "server/src/scripts/ensurePaymentGatewayIndexes.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
     },
     {
       "source": "server/src/scripts/ensureSmartClassroomIndexes.ts",
@@ -10724,6 +10954,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "dashboards/admin/ContentReviewQueueManager.tsx",
+      "target": "apps/web/src/features/learning/admin/ContentReviewQueueManager.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/CourseBuilder.tsx",
       "target": "apps/web/src/features/courses/admin/CourseBuilder.tsx",
       "domain": "courses",
@@ -11429,6 +11665,12 @@
       "source": "dashboards/admin/TestAnalyticsReport.tsx",
       "target": "apps/web/src/features/reports/admin/TestAnalyticsReport.tsx",
       "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/TrainerCoursesManager.tsx",
+      "target": "apps/web/src/features/courses/admin/TrainerCoursesManager.tsx",
+      "domain": "courses",
       "confidence": "candidate"
     },
     {
@@ -12410,6 +12652,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "target": "apps/api/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/notifications/http/openNotificationSseStream.ts",
       "target": "apps/api/src/modules/notifications/http/openNotificationSseStream.ts",
       "domain": "notifications",
@@ -12508,6 +12756,12 @@
     {
       "source": "server/src/modules/quizzes/application/dualWriteAssessmentSubmission.ts",
       "target": "apps/api/src/modules/quizzes/application/dualWriteAssessmentSubmission.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/getOrCreateAssessmentAttempt.ts",
+      "target": "apps/api/src/modules/quizzes/application/getOrCreateAssessmentAttempt.ts",
       "domain": "quizzes",
       "confidence": "review-required"
     },
@@ -12676,6 +12930,12 @@
     {
       "source": "server/src/modules/quizzes/application/quizWorkflow.ts",
       "target": "apps/api/src/modules/quizzes/application/quizWorkflow.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "target": "apps/api/src/modules/quizzes/http/liveExamStartHandler.ts",
       "domain": "quizzes",
       "confidence": "review-required"
     },
@@ -12902,6 +13162,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/routes/authSession.routes.ts",
+      "target": "apps/api/src/modules/auth/http/authSession.routes.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/routes/backup.routes.ts",
       "target": "apps/api/src/modules/operations/http/backup.routes.ts",
       "domain": "operations",
@@ -13022,8 +13288,20 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/routes/liveExamsRoot.routes.ts",
+      "target": "apps/api/src/modules/exams/http/liveExamsRoot.routes.ts",
+      "domain": "exams",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/routes/notification.routes.ts",
       "target": "apps/api/src/modules/notifications/http/notification.routes.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/notificationRoot.routes.ts",
+      "target": "apps/api/src/modules/notifications/http/notificationRoot.routes.ts",
       "domain": "notifications",
       "confidence": "review-required"
     },
@@ -13169,6 +13447,18 @@
       "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
       "target": "apps/api/src/scripts/e2e_supervisor_directed_test.ts",
       "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/ensureLiveAssessmentIndexes.ts",
+      "target": "apps/api/src/scripts/ensureLiveAssessmentIndexes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/ensurePaymentGatewayIndexes.ts",
+      "target": "apps/api/src/scripts/ensurePaymentGatewayIndexes.ts",
+      "domain": "payments",
       "confidence": "review-required"
     },
     {
@@ -13784,6 +14074,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "utils/quizBuilderDraft.ts",
+      "target": "apps/web/src/shared/lib/quizBuilderDraft.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "utils/quizLearningPlacement.ts",
       "target": "apps/web/src/shared/lib/quizLearningPlacement.ts",
       "domain": "shared",
@@ -13923,9 +14219,9 @@
       "file": ".github/workflows/assessment-platform-v1-gate.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 2786,
+      "bytes": 2861,
       "lines": 96,
-      "sha256": "fa9c75acf7e04987af349038b3859d402ee32f7aeaa532bc488084db60554f08"
+      "sha256": "a6dec2414d3fa8a802a8f59dddc7d9ff37aafd523365759c9f7871591d3eefa2"
     },
     {
       "file": ".github/workflows/course-free-enrollment-ui-gate.yml",
@@ -13947,9 +14243,9 @@
       "file": ".github/workflows/platform-v3-backend-integration-gate.yml",
       "category": "ci",
       "domain": "operations",
-      "bytes": 5482,
+      "bytes": 5557,
       "lines": 134,
-      "sha256": "9de2057a8c3e845ce39aa3eeec68ef0de95951fc4be8041acd1bc48b6167217e"
+      "sha256": "aa361fd8f309b1ecd36fc765fb268715b1c224b8bd9fb344ea4d2fd8564683c9"
     },
     {
       "file": ".github/workflows/platform-v3-deep-premerge-e2e-gate.yml",
@@ -13995,17 +14291,17 @@
       "file": ".github/workflows/platform-v3-recovery-gate.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 10822,
-      "lines": 309,
-      "sha256": "4fb169c09880c9095478cc5ae7f8ab631b52a37469c1415bd510b9c597e67ac0"
+      "bytes": 10870,
+      "lines": 310,
+      "sha256": "2c7cb9718d94b26bce7d62ac3af3ea0f5bfee995a95dfb543d2fbdf3a034c644"
     },
     {
       "file": ".github/workflows/post-deploy-smoke.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 1862,
-      "lines": 60,
-      "sha256": "183c7c655f1ff8121aa8730c8ff75867f7d31963e179fb62b6268cd0878849ba"
+      "bytes": 2032,
+      "lines": 64,
+      "sha256": "9f59f4fef89742e3ed4579e6c38c24b17017053bece2f57219a1732bdeaa7071"
     },
     {
       "file": ".github/workflows/refactor-v2-api-query-utilities.yml",
@@ -14083,9 +14379,9 @@
       "file": ".github/workflows/refactor-v2-guard.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 14634,
-      "lines": 372,
-      "sha256": "8a9227bc216d56cf811ff85794c211294fc9a05f0d7872b9357a821295efd854"
+      "bytes": 14699,
+      "lines": 371,
+      "sha256": "4bcf00e3f3c856152a9d3ba3f2441ba9873762ea7ea6631d64fd84a15a9e5e20"
     },
     {
       "file": ".github/workflows/refactor-v2-paths-display-presentation.yml",
@@ -14299,9 +14595,9 @@
       "file": ".github/workflows/supervisor-student-directed-e2e.yml",
       "category": "ci",
       "domain": "schools",
-      "bytes": 11442,
-      "lines": 291,
-      "sha256": "fe9b3a722b45536302d5ddce7fc13c1224c30b4f4b669c0bd059258d6b43935e"
+      "bytes": 11567,
+      "lines": 292,
+      "sha256": "36e239e965df566e8cde24307a4b2c64a66379425eae563c3fa361d39315766a"
     },
     {
       "file": ".gitignore",
@@ -14331,9 +14627,9 @@
       "file": "App.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 75998,
-      "lines": 1679,
-      "sha256": "a69c45223213f7397ccba951ec597c5ee6506db6d4bfab30bfefab4d9e8cea94"
+      "bytes": 77124,
+      "lines": 1706,
+      "sha256": "25c3423df024652a903f4a37c7087972706ed00e450a7ad2c2ef8910b8690722"
     },
     {
       "file": "Dockerfile.backend",
@@ -14715,9 +15011,9 @@
       "file": "components/classroom/ClassroomActiveSessionPanel.tsx",
       "category": "web-source",
       "domain": "auth",
-      "bytes": 25566,
-      "lines": 270,
-      "sha256": "b48f5b825a7351b8f37f614a6d6a33dd5a25bf99e1044bfd09aa5818e70f4d68"
+      "bytes": 25894,
+      "lines": 278,
+      "sha256": "720be0cd256df6ba58fe657fd1f9d6eaf765893f4f1f5fac5879102d419849df"
     },
     {
       "file": "components/classroom/ClassroomPreparedTemplatesManager.tsx",
@@ -14771,9 +15067,9 @@
       "file": "components/classroom/ClassroomTeacherLiveRadar.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 11742,
+      "bytes": 11908,
       "lines": 190,
-      "sha256": "00b80af54e47103be12af72d9bb8b7aff9843980eec932f87979c5b3f8e116f9"
+      "sha256": "3c584240ee44c5feef95a262f25b552e50019b42722ee98aba177917b28ac200"
     },
     {
       "file": "components/classroom/QuestionContentRenderer.tsx",
@@ -14795,25 +15091,25 @@
       "file": "components/classroom/SmartClassroomFloatingWidget.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 14117,
-      "lines": 257,
-      "sha256": "2c7a25dff90bed68a59bbee13b2ed121f1be0ec65e2a8140904afd6003a8b4a4"
+      "bytes": 14047,
+      "lines": 258,
+      "sha256": "0c2ed3ca487c9754fc87f4232f2ffa63e33ebea8752490b1e2ee3ab9a392b38e"
     },
     {
       "file": "components/classroom/SmartClassroomReportsSection.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 15925,
+      "bytes": 15942,
       "lines": 236,
-      "sha256": "f8fca6e9c287a505137da80f051e2c2442039d47684bd6b8363cf3c4d12c007c"
+      "sha256": "d9ed8661352902c5ee6cde201460bc65a9f59bc1f718c73c0e356f7532534b88"
     },
     {
       "file": "components/classroom/SmartClassroomSessionSchedulerModal.tsx",
       "category": "web-source",
       "domain": "auth",
-      "bytes": 24977,
+      "bytes": 24979,
       "lines": 357,
-      "sha256": "cbd10141686008abb7b4050756e6474d323e4062380d1005849b9e1a79c51f9f"
+      "sha256": "af53400868f920b70fb6b9158580ee3cf02d43fbf6f129ce04cb6d8c35a725e1"
     },
     {
       "file": "components/classroom/StudentAppreciationCertificateModal.tsx",
@@ -14827,9 +15123,9 @@
       "file": "components/classroom/classroomReportViewModel.ts",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 8753,
+      "bytes": 8984,
       "lines": 232,
-      "sha256": "a8112f502dcd38e41c76de5c1beb9074ffefdfc6491c7f490e885ed0988192d2"
+      "sha256": "9f564548cc551759f2a46ad52c96d48cdd691b9244fb39ad6d1e658a6afadecf"
     },
     {
       "file": "components/dailySpeedDrillData.ts",
@@ -14979,17 +15275,17 @@
       "file": "dashboards/admin/AdminDashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 126101,
-      "lines": 2084,
-      "sha256": "dc4a57874f178f1fb3f52e7014895703597c5f0e042e04139a36886525b03991"
+      "bytes": 126923,
+      "lines": 2093,
+      "sha256": "7b57870d8c7822972b712183fc985bc33dd59aadf7b1afba39a32ee60880bf68"
     },
     {
       "file": "dashboards/admin/AdvancedCourseBuilder.tsx",
       "category": "web-source",
       "domain": "courses",
-      "bytes": 99692,
-      "lines": 1654,
-      "sha256": "eb7b39812c0f094ede5847af5dda953b97c8013516d6f3b45a0c6cbd1b10010e"
+      "bytes": 99872,
+      "lines": 1656,
+      "sha256": "0a28b3b22faf8739898abfd1a64d67f717f5ac66f9d38f35de5c6cde1eee4b5f"
     },
     {
       "file": "dashboards/admin/AiAssistantManager.tsx",
@@ -15040,6 +15336,14 @@
       "sha256": "606d020d8eabf2d0de36f26cebae3a10db7cbec3fd47aad08f0706da4446571f"
     },
     {
+      "file": "dashboards/admin/ContentReviewQueueManager.tsx",
+      "category": "web-source",
+      "domain": "learning",
+      "bytes": 4619,
+      "lines": 15,
+      "sha256": "90e2b783bde146c5056e9529323ae47deee31fdec329cd626ade3b7739d81890"
+    },
+    {
       "file": "dashboards/admin/CourseBuilder.tsx",
       "category": "web-source",
       "domain": "courses",
@@ -15051,9 +15355,9 @@
       "file": "dashboards/admin/CoursesManager.tsx",
       "category": "web-source",
       "domain": "courses",
-      "bytes": 27242,
-      "lines": 533,
-      "sha256": "eea84fd5db8a53c595471bd30183f85de3d82655a33726e23405c619a044fdd5"
+      "bytes": 30845,
+      "lines": 558,
+      "sha256": "509c006b71cfdc00d21d11a8636c471e9762aa57498f06490f95ba157444df47"
     },
     {
       "file": "dashboards/admin/FinancialManager.tsx",
@@ -15259,9 +15563,9 @@
       "file": "dashboards/admin/QuizzesManager.tsx",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 106763,
-      "lines": 1911,
-      "sha256": "741341aec73f03207c8cea4a5698f958cd5f8e97693678b473025aec9d9c9ea8"
+      "bytes": 110236,
+      "lines": 1981,
+      "sha256": "32f77bb8ebe643faf66e225e990082465c791b94cdde12046d8a53b7c338fbb1"
     },
     {
       "file": "dashboards/admin/SchoolsManager.tsx",
@@ -15907,9 +16211,9 @@
       "file": "dashboards/admin/SmartQuestionSelector.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 54537,
-      "lines": 1032,
-      "sha256": "89d455bf4156e601839e8a5c02b23b1bd3609a2d509ea22ec55475c9759ac641"
+      "bytes": 54667,
+      "lines": 1034,
+      "sha256": "156d03d3f1b545f31830d5c89e4f13e9712eb9b4f371d8bdf1dbd11a1134c10f"
     },
     {
       "file": "dashboards/admin/StudentIntelligenceProfile.tsx",
@@ -15960,28 +16264,36 @@
       "sha256": "138375b3c3e840708d8ae453d93f92229cdedf93abe18657ba851817619887db"
     },
     {
+      "file": "dashboards/admin/TrainerCoursesManager.tsx",
+      "category": "web-source",
+      "domain": "courses",
+      "bytes": 7559,
+      "lines": 90,
+      "sha256": "9b3405f7de8b7329286d249fc14761161074134673297f338442e6e27554e265"
+    },
+    {
       "file": "dashboards/admin/TrainersManager.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 15844,
-      "lines": 236,
-      "sha256": "7057e3b3d9866847633ec43e90a667990352ee7db42e48d0b3458b4828cef2d8"
+      "bytes": 17172,
+      "lines": 248,
+      "sha256": "6c54aeb85db209bf3da3fd662652fd022a404bd2cabde0434b087f18c92cf54a"
     },
     {
       "file": "dashboards/admin/UnifiedQuizBuilder.tsx",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 67964,
-      "lines": 1168,
-      "sha256": "92f476a05936456665cd3b424ccd7bcf5d563d54df60c3326aafb86d7d637d55"
+      "bytes": 70601,
+      "lines": 1223,
+      "sha256": "348a305970e3375736dce6497211bffa59f291bf135efa5883a705f087249f78"
     },
     {
       "file": "dashboards/admin/UsersManager.tsx",
       "category": "web-source",
       "domain": "users",
-      "bytes": 63211,
-      "lines": 934,
-      "sha256": "8937e5bdeb94778a6ae13cba121fd9df3720c79fcc49947332167dce99db821a"
+      "bytes": 65834,
+      "lines": 956,
+      "sha256": "dff22e11f6a1e7ddfca5dc9f696ab6dea02b17ec24974392505aa668c8e36011"
     },
     {
       "file": "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
@@ -16744,12 +17056,20 @@
       "sha256": "8eb9fc7b7b3b49899d109f1d784ea3a8a1bfa92e0069edc3179b1851676ccd2c"
     },
     {
+      "file": "docs/architecture/ALMEAA_SYSTEM_MAP.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 37281,
+      "lines": 916,
+      "sha256": "75f089d711fc68a0937f9872d49ba62bac500378e1cc9ccff311e20b9d50eb09"
+    },
+    {
       "file": "docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 5390,
-      "lines": 105,
-      "sha256": "1bb9ecf7976f8a77bebe79e7193c8b0a0c17cef27821b480c8e8e9fb4c793332"
+      "bytes": 5933,
+      "lines": 117,
+      "sha256": "cee999204327ad1b7576d1be81370e95dae71f138232c1cac8aac4660fb5b863"
     },
     {
       "file": "docs/architecture/ARCHITECTURE_BUDGET.json",
@@ -16758,6 +17078,14 @@
       "bytes": 281,
       "lines": 8,
       "sha256": "b61b664136e5fe56df3e4e2d0e34e1ab5dca28fb5367937256379842be32eee4"
+    },
+    {
+      "file": "docs/architecture/ARCHITECTURE_HOTSPOT_EXCEPTIONS.json",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 851,
+      "lines": 14,
+      "sha256": "4d816f6dcc84ad1baea4f3d5eaf34ed6103d6951a405477919e1e3ea6d842e19"
     },
     {
       "file": "docs/architecture/ASSESSMENT_BOUNDED_SCALE_VALIDATION_AR.md",
@@ -16800,6 +17128,14 @@
       "sha256": "b91d40a29466b25ceac8bd235a60d95c98ca97e710ff2575e95c048ef48e565e"
     },
     {
+      "file": "docs/architecture/AUTH_SESSION_LIFECYCLE.md",
+      "category": "documentation",
+      "domain": "auth",
+      "bytes": 2951,
+      "lines": 44,
+      "sha256": "5744fd59ad022f2f5c198381fc37c1c177f6a1de4ae7d744b77996bf0be40e0d"
+    },
+    {
       "file": "docs/architecture/BASELINE_REPAIR_STATUS.md",
       "category": "documentation",
       "domain": "shared",
@@ -16827,9 +17163,9 @@
       "file": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 169034,
-      "lines": 1047,
-      "sha256": "28216e9c899d68632eb8b4ed300679b8226e71d3d7468893c591cc09a5dc5d9e"
+      "bytes": 180714,
+      "lines": 1229,
+      "sha256": "477a70c8da05b078bdae652df80f48da008944da7a018106efdd5e6e580d3b38"
     },
     {
       "file": "docs/architecture/COURSE_CERTIFICATE_PROGRESS_SOURCE_HANDOFF_AR.md",
@@ -17304,6 +17640,14 @@
       "sha256": "f532ff6965bc8f82f524d2bce044eb97c50a7ebaabccf0e04f6daf457e9289cd"
     },
     {
+      "file": "docs/architecture/RELEASE_HARDENING_CURRENT_STATE.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 6449,
+      "lines": 90,
+      "sha256": "55dfb89b172f76c33251a670b47b28bff692d4ff6b6ba40e7de18658ff02dad4"
+    },
+    {
       "file": "docs/architecture/RESULTS_REPORTS_COMPLETION_REPORT_AR.md",
       "category": "documentation",
       "domain": "reports",
@@ -17408,6 +17752,14 @@
       "sha256": "916207477b628504b381a7ca81a579283d784b1656d428a6e5fb1136c0ab2537"
     },
     {
+      "file": "docs/architecture/SMART_CLASSROOM_LOAD_RUNBOOK_AR.md",
+      "category": "documentation",
+      "domain": "schools",
+      "bytes": 1698,
+      "lines": 35,
+      "sha256": "188fc11c62082dfd8fd7d70f89a6b8ba877ad0cc9be78ff6aa14d12a29ce9853"
+    },
+    {
       "file": "docs/architecture/SMART_CLASSROOM_MASTER_SPEC_AR.md",
       "category": "documentation",
       "domain": "schools",
@@ -17459,9 +17811,9 @@
       "file": "docs/architecture/TRAINER_COURSE_MANAGEMENT_GOALS_AR.md",
       "category": "documentation",
       "domain": "courses",
-      "bytes": 20720,
-      "lines": 329,
-      "sha256": "1b60f7f434e9a6c3aed12de6b1924fb179533c4098c8c13fcc696a89f3fa3489"
+      "bytes": 29530,
+      "lines": 433,
+      "sha256": "7ab6983744f9bcd97fbc1b711f8e59509c0cbee9eb5d929ad151ef038fb3d4df"
     },
     {
       "file": "docs/architecture/USESTORE_SLICE_CANDIDATES.md",
@@ -17499,33 +17851,33 @@
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 66349,
-      "lines": 2338,
-      "sha256": "14d6a9b439c8b1312a488712bdfb867df473ada6c9790d1502cdf270e90b61c1"
+      "bytes": 68725,
+      "lines": 2339,
+      "sha256": "435d8eb1f0ebcd7a58d2f45cc08a1d114cf49941719c0fce8857ad7e800110d4"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 806262,
-      "lines": 25387,
-      "sha256": "85efba7f279473feaf94017ab4f63c36fbded3ad4bf89fa45f39db3ccf222a36"
+      "bytes": 831689,
+      "lines": 25388,
+      "sha256": "840810e79010b25cb46415fff8084543b2ffae415250d3e85f7a84ff9f77f4fe"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4054,
+      "bytes": 4128,
       "lines": 75,
-      "sha256": "9b026101a0b961b23c9993e465dc2c1eb8cbd64f34dc20db47c3e671b8a0b12b"
+      "sha256": "addd34651813eb46febe2f9cf10ed4d4543e5e4bc1a9b58b8bb5872c411fcd90"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 132064,
+      "bytes": 135708,
       "lines": 3645,
-      "sha256": "efd296f28108664eedd0ef43847e221a8150fe1996d7d3aecca3b1be6ba04a65"
+      "sha256": "4c0cc8126992dfe13a6793090a99f870970434497564ab18e25300772ad13ee8"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -18427,9 +18779,9 @@
       "file": "hooks/useClassroomRealtime.ts",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 1568,
-      "lines": 53,
-      "sha256": "dd52dd6107bb168194ae69cf2c0681bab46ad5410c0bd3574d803c2467f8ac45"
+      "bytes": 5900,
+      "lines": 151,
+      "sha256": "383ea2dd4a2ab9e2005f9c6f265f730fdb363d2176beaad23f3c64f361b3a159"
     },
     {
       "file": "index.html",
@@ -18819,9 +19171,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 19795,
-      "lines": 238,
-      "sha256": "36d446766b5f381456562198f1195904583e51626947d0964cbfdebf63300aa3"
+      "bytes": 20576,
+      "lines": 247,
+      "sha256": "11b550e794a0d7f961d221d647163fdb001111ff7c7dff1fb2befde7c65d7722"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -18883,17 +19235,17 @@
       "file": "pages/ClassroomStudentLive.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 12752,
-      "lines": 252,
-      "sha256": "d956dc813aa277ee328217bcdbc8677209b2b3dc9e83c21a247acea5c2fa095a"
+      "bytes": 12638,
+      "lines": 250,
+      "sha256": "e686f2eb66b37245e41eb821fe5fa7dfc54219bfdc605066e1d3f70218e1e1ae"
     },
     {
       "file": "pages/ClassroomTeacherConsole.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 15617,
-      "lines": 254,
-      "sha256": "ba572cbc029a8eacf43c97f24d7d1d1404a97793acc9cad4f5fd314ae203e86d"
+      "bytes": 17891,
+      "lines": 294,
+      "sha256": "c92daec40dea52aec51fb60517535eeabc7a3ffe6b2a75bf408e375ad0adddcd"
     },
     {
       "file": "pages/CourseView.tsx",
@@ -18979,9 +19331,9 @@
       "file": "pages/Landing.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 101672,
-      "lines": 1497,
-      "sha256": "83d329e75881eb9f9c9cb2b698b5c096ece4d036eba24cb7306a03bcffd16d99"
+      "bytes": 102082,
+      "lines": 1502,
+      "sha256": "991ad567fbdd88199f7ad636775a1f9c2e691665843917c1b45e4a52d02d5d35"
     },
     {
       "file": "pages/LiveSessionLobby.tsx",
@@ -19651,9 +20003,9 @@
       "file": "scripts/live-assessment-commercial-audit.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 26462,
+      "bytes": 26845,
       "lines": 378,
-      "sha256": "df1e780433ee2b28ea824d6942ec4874c1c5b233bd419c98ea8ae53ee1a7689e"
+      "sha256": "1e8e9336e97c0d0af64a41b41fb7d8f0a944d14741ce4b0c46bf2ef5f7c9205a"
     },
     {
       "file": "scripts/live-assessment-mock-session-audit.mjs",
@@ -19755,9 +20107,9 @@
       "file": "scripts/live-supervisor-school-command-audit.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 22429,
-      "lines": 455,
-      "sha256": "7f4108385fb5c711c1b4e0458df4247f6f925894156dd02b874448a62ffeebac"
+      "bytes": 22757,
+      "lines": 460,
+      "sha256": "9a55e25e6c7fdb028da0c63951de6f04974e5b74189c0a9e8076b6a0ea473ec7"
     },
     {
       "file": "scripts/measure-read-baseline.mjs",
@@ -19971,9 +20323,9 @@
       "file": "scripts/smoke-api-security-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 3970,
-      "lines": 85,
-      "sha256": "6b81153dc022fbba0d28ae4bac5e011656f7d95d3fa0280e1dc165526e0789af"
+      "bytes": 5151,
+      "lines": 106,
+      "sha256": "7658065d164199150030c43ab58b50655e3fec7bd63c5c48537f7d1f547ad371"
     },
     {
       "file": "scripts/smoke-arabic-mojibake-guard.mjs",
@@ -20000,6 +20352,14 @@
       "sha256": "a65dfcf7537f4179836b707804b8f26d448e21156c3530a8e818e24737361806"
     },
     {
+      "file": "scripts/smoke-assessment-attempt-concurrency-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 3684,
+      "lines": 46,
+      "sha256": "27004330ef283947198baee005283d878ef2d109631830c93505fd1ac1cfc2c2"
+    },
+    {
       "file": "scripts/smoke-assessment-attempt-context-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
@@ -20011,9 +20371,9 @@
       "file": "scripts/smoke-assessment-builder-subject-scope-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "courses",
-      "bytes": 2352,
+      "bytes": 2339,
       "lines": 32,
-      "sha256": "ed1ea8fde83cb29db43b2b88d61716f847e00cf4dade6cffbd28086d16c1d2b4"
+      "sha256": "66d493dfd5cb11ad01beef61c6f4d20ea6836caf244eaaac62389cce25307379"
     },
     {
       "file": "scripts/smoke-assessment-classification-contract.mjs",
@@ -20211,9 +20571,9 @@
       "file": "scripts/smoke-auth-account-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "auth",
-      "bytes": 3089,
-      "lines": 76,
-      "sha256": "9b090c990c726bb10c13299641c08e00b0b73363a25beeaab6e158a8c0aa1eae"
+      "bytes": 5034,
+      "lines": 108,
+      "sha256": "576325bad087e3b8381c75bc421998a00e63f6138f6aca46902e85fc9e33432e"
     },
     {
       "file": "scripts/smoke-auth-cookie-contract.mjs",
@@ -20379,9 +20739,9 @@
       "file": "scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 4691,
-      "lines": 137,
-      "sha256": "014bff828e81187576ca1d225b4aeba93815ee00b27ab00b0752f51a776eab7d"
+      "bytes": 4962,
+      "lines": 139,
+      "sha256": "2341d9f5cd9651fd7c6967ee8baeca900f20a611a319b39bd1eb76b4783b1ca2"
     },
     {
       "file": "scripts/smoke-certificate-integrity-contract.mjs",
@@ -20478,6 +20838,14 @@
       "bytes": 4962,
       "lines": 89,
       "sha256": "28c40c1172b51b1dd5a6d48707c20e07090893d84e748eb20c2d977923e19a5c"
+    },
+    {
+      "file": "scripts/smoke-content-review-g16-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "learning",
+      "bytes": 1088,
+      "lines": 16,
+      "sha256": "3c443f624dad89c5b5e650d4fd5dd99416543b14ee820d0a64c134a175daeea0"
     },
     {
       "file": "scripts/smoke-content-school-operations-schema-boundary-contract.mjs",
@@ -20587,9 +20955,9 @@
       "file": "scripts/smoke-deployment-cache-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 1968,
-      "lines": 37,
-      "sha256": "36338cbd25dc376980992a7f6e8ff3fcd517a2ce0e393ff97db94f1990b8494a"
+      "bytes": 2113,
+      "lines": 38,
+      "sha256": "350d4cc54c6cb9081134a3dbc5ce083470180b16aaf6b4c3affaeaaa7f23fb68"
     },
     {
       "file": "scripts/smoke-deployment-handover-phase19-contract.mjs",
@@ -20920,6 +21288,14 @@
       "sha256": "9ecc0f2178c2f3dfcdabec41f23cbcf70a3951b872d3369f32fc3cd65079e4a8"
     },
     {
+      "file": "scripts/smoke-notification-audience-rbac-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "notifications",
+      "bytes": 2556,
+      "lines": 31,
+      "sha256": "88b44ab423b676afefd57c7e5669761bf6b276c327a2a0a33ecb2c14eef16b62"
+    },
+    {
       "file": "scripts/smoke-notification-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "notifications",
@@ -21027,17 +21403,57 @@
       "file": "scripts/smoke-payment-tampering-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "payments",
-      "bytes": 6967,
-      "lines": 179,
-      "sha256": "4faf15a6d39417ed713acaf64fb23ca469b5230e05a0008f753d6175ae673a33"
+      "bytes": 9250,
+      "lines": 223,
+      "sha256": "e39ae0e6fc249c1dcba961d7e679c61c72ad4fdcf98e491a8079e1c0c9ebdeff"
     },
     {
       "file": "scripts/smoke-performance-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 21348,
-      "lines": 293,
-      "sha256": "5cb6e80049401deab037020513911fca1ea5c1f7aa31417c9e3f47af90265bcc"
+      "bytes": 21860,
+      "lines": 296,
+      "sha256": "06cdcaf1230498c1b1d1960ed0b194007de93613f6211c149a40004d75822a52"
+    },
+    {
+      "file": "scripts/smoke-performance-p1-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 5067,
+      "lines": 111,
+      "sha256": "a8d6f36ea88f8d604927e92023ea9551bec736e6854e4072001ced405b67d8b2"
+    },
+    {
+      "file": "scripts/smoke-performance-p2-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2994,
+      "lines": 59,
+      "sha256": "e21532677e93d292f942604a1a24dd80aa53208a7b931e795e6498f948d8f73f"
+    },
+    {
+      "file": "scripts/smoke-performance-p3-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2332,
+      "lines": 44,
+      "sha256": "02e0041d2aa61c701d00915da73e1d5de204c5876351c1b59931683dd0fdf4db"
+    },
+    {
+      "file": "scripts/smoke-performance-p4-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2375,
+      "lines": 26,
+      "sha256": "6b00cb05356ff08a9be3dd0cc3dd861fc639924425db803a1cd32958bf0a474b"
+    },
+    {
+      "file": "scripts/smoke-performance-p5-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 756,
+      "lines": 16,
+      "sha256": "f56908a43813c66c2a3f290ae9caa6c2b53976409e9349e34eb61e4de3155c1f"
     },
     {
       "file": "scripts/smoke-platform-fonts-contract.mjs",
@@ -21483,9 +21899,9 @@
       "file": "scripts/smoke-saher-skill-scope.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 7438,
-      "lines": 193,
-      "sha256": "69e438f0e870a0ff991fa3ca4d418a9bea7d925c67d8c6196d6de646fc7e94f6"
+      "bytes": 7882,
+      "lines": 201,
+      "sha256": "f8746cee8f271b7f73d981733774cf5e75c8ec165b2a6bdaf9f936282c3c09a1"
     },
     {
       "file": "scripts/smoke-school-grant-expiry-contract.mjs",
@@ -21803,9 +22219,9 @@
       "file": "scripts/smoke-smart-classroom-challenge-batch-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 2377,
+      "bytes": 2386,
       "lines": 34,
-      "sha256": "b01baddae830334e34706682f1954cc8f17a08e654332f131ceeba78921e9d83"
+      "sha256": "c1b6c797b955d0a364be7bb97e7dba925049432311073eed9320ead192be0533"
     },
     {
       "file": "scripts/smoke-smart-classroom-challenge-end-contract.mjs",
@@ -21827,25 +22243,25 @@
       "file": "scripts/smoke-smart-classroom-g2-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 3034,
+      "bytes": 3070,
       "lines": 37,
-      "sha256": "7ef35a846ff20e71ff9b9478e0781a664cdb27ae42c6fc7b9bed0d6fd20b4a06"
+      "sha256": "a6c68310536b05acc22f90d78cf1ea7c5be781bbefcbd9735e8d70d288fa1880"
     },
     {
       "file": "scripts/smoke-smart-classroom-hardening-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 9525,
+      "bytes": 9527,
       "lines": 86,
-      "sha256": "27bf818bde0cbc8410ed142944bde318498667948947d455ef29f95daa99af3f"
+      "sha256": "f9914057ffae3e0f18675d8c86139e5f488b7a4069d548d502268c9b1df5cdc6"
     },
     {
       "file": "scripts/smoke-smart-classroom-live-journey-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 13429,
-      "lines": 99,
-      "sha256": "c3e20998cf4ffe66eed4ddc3fb3cfc3747afaf7d9f5d3dcfbfafa8fc2d1ced8f"
+      "bytes": 13631,
+      "lines": 105,
+      "sha256": "4203832dd0319215f944615e2fe7afb13d112d76478b53a648aa01cc893a0fdc"
     },
     {
       "file": "scripts/smoke-smart-classroom-projector-reveal-contract.mjs",
@@ -21907,9 +22323,9 @@
       "file": "scripts/smoke-supervisor-dashboard-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 8908,
+      "bytes": 8967,
       "lines": 165,
-      "sha256": "3592bbd40f708a7574329a6247dbc7f6188dc792d710fb0de48d3d57f2593735"
+      "sha256": "a12f8c4abf8dc5a15f0554b37240ef1704d9a447f53e51c1320a2df2d9eefbd9"
     },
     {
       "file": "scripts/smoke-taxonomy-compact-contract.mjs",
@@ -21920,12 +22336,36 @@
       "sha256": "bd8c05d458f7483a27b102f0c6271927e40f26f54ce1b6824a59f9d91682bd9f"
     },
     {
+      "file": "scripts/smoke-trainer-courses-g15-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "courses",
+      "bytes": 1825,
+      "lines": 25,
+      "sha256": "ea4c40bdd43dc2d1e78c9c7b5dc4dfef352f16f76f06cf64f4debb07e0b8776b"
+    },
+    {
+      "file": "scripts/smoke-trainer-management-g14-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2204,
+      "lines": 61,
+      "sha256": "0a940210bb265451ff1b1375cea64dd7287e33b25584ee240196f0fa6c74f14d"
+    },
+    {
       "file": "scripts/smoke-typography-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
       "bytes": 857,
       "lines": 21,
       "sha256": "fd18c04fc50c165e588b8cf81b9696ffa25f05ceeac81acaef560c46e3aa61cb"
+    },
+    {
+      "file": "scripts/smoke-users-manager-g17-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "users",
+      "bytes": 1519,
+      "lines": 20,
+      "sha256": "d545ea2fa5bbe8644981f48ae0658934b77b20eee6c3bf397833c0e379be8d86"
     },
     {
       "file": "scripts/smoke-video-questions-contract.mjs",
@@ -21939,9 +22379,9 @@
       "file": "scripts/smoke-weekly-parent-report-scheduler-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 2231,
-      "lines": 45,
-      "sha256": "a48794e9ea05c4f58fb319732b28394a847cacd41f4f4700787ec31544664c37"
+      "bytes": 2739,
+      "lines": 54,
+      "sha256": "d1565f20e41e70ea9c9eacad3cb245562912122ee6c5b84dd730faad6adb5848"
     },
     {
       "file": "scripts/smoke-xlsx-safety-contract.mjs",
@@ -21987,17 +22427,17 @@
       "file": "scripts/ui-audit-retest-blocked.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 6501,
+      "bytes": 6671,
       "lines": 171,
-      "sha256": "8fbd3bf2b0d4d49acc603b4510c12a05c10a37436490b2295e3a50811dc204e0"
+      "sha256": "ace2e5589baa508a4f340cc6e5fe9472be144c1b0d5396b9202332e5c6394f01"
     },
     {
       "file": "scripts/ui-audit-retest-fail22-focused.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 5964,
+      "bytes": 6112,
       "lines": 149,
-      "sha256": "c98232f0b732e66e685ca3568ca7ed6cbc550a0b7554c028106a16d274b9aec3"
+      "sha256": "3df0ea91942fbc505facb1ced1db1a6c3b4679333512a6a8ea75273a8a05d8bb"
     },
     {
       "file": "scripts/video-question-picker-runtime.ts",
@@ -22035,17 +22475,17 @@
       "file": "server/package.json",
       "category": "api-support",
       "domain": "payments",
-      "bytes": 3864,
-      "lines": 78,
-      "sha256": "0c6b17f2a844879aa9c8053e34a494ad88041d3d7ec23b7aa17f64aca471c7ef"
+      "bytes": 4009,
+      "lines": 79,
+      "sha256": "c2a7760ff5ca5fc0edd4f4232629ed3c3c85a732371fb27335bbaba13b7d6fe7"
     },
     {
       "file": "server/src/app.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 3824,
-      "lines": 128,
-      "sha256": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7"
+      "bytes": 3887,
+      "lines": 130,
+      "sha256": "0d6ea8217502285c6cf385ec9465ebb6cfeb61ec03a22be348f59a99224ebe59"
     },
     {
       "file": "server/src/app/bootstrap/bootstrapServer.ts",
@@ -22115,9 +22555,9 @@
       "file": "server/src/middleware/auth.ts",
       "category": "api-source",
       "domain": "auth",
-      "bytes": 6958,
-      "lines": 191,
-      "sha256": "4f6d5f92e0cfec878e462ac2ffec2af0705cad13b4b06de7ae0012511e94cce2"
+      "bytes": 8396,
+      "lines": 233,
+      "sha256": "0f04faf0253f7e601013a6e02b9a8dd0be26cc3c7479a01f0886f10df0312621"
     },
     {
       "file": "server/src/middleware/classroomAuth.ts",
@@ -22139,9 +22579,9 @@
       "file": "server/src/middleware/errorHandler.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 1399,
-      "lines": 49,
-      "sha256": "58ece7bdb5fc3bbefc4b9422901e29f8128fa513941fee05ccede894e4814e96"
+      "bytes": 1886,
+      "lines": 59,
+      "sha256": "e1576018aa409c115d6b8c094180c3da4a3a8ae782280270a465c69af9a8bce7"
     },
     {
       "file": "server/src/middleware/mongoSanitize.ts",
@@ -22155,9 +22595,9 @@
       "file": "server/src/middleware/rateLimiters.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 3993,
-      "lines": 117,
-      "sha256": "84803215fbe12c6fd4e8114c4a2aacac18e87f23dbc57e1afc0eb94cce98d40f"
+      "bytes": 4391,
+      "lines": 124,
+      "sha256": "c87a151dde01ec3fb9638c9845f8c89abd442b0703f61c0b10057a707b85f8cf"
     },
     {
       "file": "server/src/middleware/requestLogger.ts",
@@ -22395,9 +22835,9 @@
       "file": "server/src/models/PaymentRequest.ts",
       "category": "api-source",
       "domain": "payments",
-      "bytes": 2842,
-      "lines": 63,
-      "sha256": "97b50c2f2a04dac087e1bf3537c657cd4c771b8cfe3ad234d5e1ffa23448dccf"
+      "bytes": 3356,
+      "lines": 83,
+      "sha256": "cfc0dca6a970e6d8c39f57ad1c735a18cc7171d6414d66696fae69422af2ef94"
     },
     {
       "file": "server/src/models/PaymentSettings.ts",
@@ -22459,9 +22899,9 @@
       "file": "server/src/models/Question.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 2055,
-      "lines": 42,
-      "sha256": "4d6a2ff0e2da5e370e1ba7fbd493afab0700a569a4ae940b9cdf038afd298f97"
+      "bytes": 2127,
+      "lines": 43,
+      "sha256": "3ea49b209258af81b2b03328c1563b94fc2943372f382ea4c7792e442cccb9eb"
     },
     {
       "file": "server/src/models/QuestionAttempt.ts",
@@ -22579,17 +23019,17 @@
       "file": "server/src/models/User.ts",
       "category": "api-source",
       "domain": "users",
-      "bytes": 3704,
-      "lines": 86,
-      "sha256": "c7169d19ed2af0477b1f95c409428004caf49dd5a2e3323a9291a71c87d52c62"
+      "bytes": 5522,
+      "lines": 128,
+      "sha256": "3c9ba48668128a20b53c3c19716ed1c89cee1fe701c275add961b77f60e4eaa1"
     },
     {
       "file": "server/src/modules/auth/domain/auth-user.ts",
       "category": "api-source",
       "domain": "auth",
-      "bytes": 553,
-      "lines": 19,
-      "sha256": "1fa6f61ab9287bf2e2ee184ee7efbb4aed5595be088b1827e1f6317cd310c3dd"
+      "bytes": 766,
+      "lines": 23,
+      "sha256": "f113722f6354af14cf6012e009935d51d56e2b017cacb4d37dbb90b946cab559"
     },
     {
       "file": "server/src/modules/content/application/contentBootstrapCache.ts",
@@ -22702,6 +23142,14 @@
       "bytes": 423,
       "lines": 19,
       "sha256": "f37d7c32be95fa86f615bdbc099c82d6aa5d81b0e9ab8fabbd8df88558cb5843"
+    },
+    {
+      "file": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "category": "api-source",
+      "domain": "notifications",
+      "bytes": 8276,
+      "lines": 215,
+      "sha256": "29d32be02db83d4c987d79a4bc3ef5696aac8f17adc5afb0ad8dd13eb82c0034"
     },
     {
       "file": "server/src/modules/notifications/http/openNotificationSseStream.ts",
@@ -22838,6 +23286,14 @@
       "bytes": 4301,
       "lines": 90,
       "sha256": "bdb84951da2e46269be9347b36d15f6c1b4738b48d4b456ff5deb2c276c97432"
+    },
+    {
+      "file": "server/src/modules/quizzes/application/getOrCreateAssessmentAttempt.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 3513,
+      "lines": 90,
+      "sha256": "edfb951c6fd56646b05460e8116744b318b9b642a81aae6fc9223acbd24f7845"
     },
     {
       "file": "server/src/modules/quizzes/application/questionAttemptDocument.ts",
@@ -23064,6 +23520,14 @@
       "sha256": "cee6f9dc23312e1852673447155991f9351083a629bb1d41a685dae6cf384a4e"
     },
     {
+      "file": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 7396,
+      "lines": 209,
+      "sha256": "ad66c0d2cde1bc3ebc78c0226e36e8d65618b51d0a0d326ccf70cb831a86bd2a"
+    },
+    {
       "file": "server/src/modules/quizzes/http/queryUtilities.ts",
       "category": "api-source",
       "domain": "quizzes",
@@ -23187,9 +23651,9 @@
       "file": "server/src/modules/reports/application/runWeeklyParentReportBatch.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 3891,
-      "lines": 99,
-      "sha256": "8490797bda630979ed1eaf18503eb65bbb12f9508698bcf2bdfa6613459dca9f"
+      "bytes": 5490,
+      "lines": 142,
+      "sha256": "759046422da86ed3629c7843b365b31c5e08599246d6a7fd84ca52125b11302b"
     },
     {
       "file": "server/src/modules/reports/application/startWeeklyParentReportSchedule.ts",
@@ -23355,9 +23819,17 @@
       "file": "server/src/routes/auth.routes.ts",
       "category": "api-source",
       "domain": "auth",
-      "bytes": 66018,
-      "lines": 1768,
-      "sha256": "374755087cbe0a8212f558c6f7f8c87a546386bf5e9f7cebf95a3655fb6eed4f"
+      "bytes": 71117,
+      "lines": 1868,
+      "sha256": "9c1f06d689cd07194d9d29a81218e325e35d9f17a44f6f8fad9e9a41b3b55846"
+    },
+    {
+      "file": "server/src/routes/authSession.routes.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 3820,
+      "lines": 113,
+      "sha256": "8f70ee9b26755f001cc38e16add64e4dcb22361acebecdf7bfbabed909080a09"
     },
     {
       "file": "server/src/routes/backup.routes.ts",
@@ -23395,17 +23867,17 @@
       "file": "server/src/routes/classroom/registerClassroomAggregateRoutes.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 10016,
-      "lines": 204,
-      "sha256": "1442c744e4f6328b33e16c84748971240a2e12bb22e784753509c504bf32f9eb"
+      "bytes": 11507,
+      "lines": 236,
+      "sha256": "a769c41261715d46ee5ef90814b92e86772dee03daa6ee75ff3577bf88525c9e"
     },
     {
       "file": "server/src/routes/classroom/registerClassroomBatchRoutes.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 5230,
+      "bytes": 5231,
       "lines": 112,
-      "sha256": "67072568cf359cc011c33d7e3aa9da14e9cf23d39146b4fbe4da62c899f99488"
+      "sha256": "ae2b84e7b52fe53d0608d0508651f9dd48d02b3833d267cf9d6bb73e8ac8fede"
     },
     {
       "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
@@ -23427,25 +23899,25 @@
       "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 20375,
-      "lines": 272,
-      "sha256": "a91705c3508d34ec6a5bb3efa2f22d638e8d110c4934462356c4922b8558bca7"
+      "bytes": 20691,
+      "lines": 284,
+      "sha256": "b69e832f60a63ad7fe3a5e08183c9b34b561f199f3922ce56c10130a2f5be89a"
     },
     {
       "file": "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 11645,
+      "bytes": 11650,
       "lines": 136,
-      "sha256": "baec431f3f8dcc79d3c0760ee489b21f0635ecb9ba2ccf483318d5c8ff87ca62"
+      "sha256": "7f6c7fc06e26ee1e1c4f8dc90ecacd1cf247004ac90a649c70162a5ef3a30ac4"
     },
     {
       "file": "server/src/routes/classroom/registerClassroomTeacherRoutes.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 23168,
-      "lines": 388,
-      "sha256": "539cb4530d7ca1f7b6052471256c003e0f23b66faf3a70246e9f9b2bb4c0393a"
+      "bytes": 23507,
+      "lines": 393,
+      "sha256": "8ae69f7130d5f26c00e0a6c35b3fb6b35fd850c8eefe45b7f71efbd77858ac89"
     },
     {
       "file": "server/src/routes/classroom/registerClassroomTemplateRoutes.ts",
@@ -23467,17 +23939,17 @@
       "file": "server/src/routes/content.routes.ts",
       "category": "api-source",
       "domain": "content",
-      "bytes": 97959,
-      "lines": 2560,
-      "sha256": "c4237fa8f46b1a1dd62c3ad22a508a977a5d17aed94bd2b10ae32150ef6e7e81"
+      "bytes": 101741,
+      "lines": 2640,
+      "sha256": "ca045f9d4587d56e110f99d6b16334ffc3eea6669302314650da2d792d28df63"
     },
     {
       "file": "server/src/routes/course.routes.ts",
       "category": "api-source",
       "domain": "courses",
-      "bytes": 30729,
-      "lines": 857,
-      "sha256": "8e15ce798fe451069163bfb18f14f60adeb5db44b63c813dadc9ce209d4c7d7c"
+      "bytes": 31734,
+      "lines": 886,
+      "sha256": "ef48321d72e539124f231f7fcd261fd2ca1e7496687299025d6d7bc8b9b31d99"
     },
     {
       "file": "server/src/routes/discussions.routes.ts",
@@ -23499,9 +23971,9 @@
       "file": "server/src/routes/index.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 3017,
-      "lines": 61,
-      "sha256": "1723bf43c20bb303306204e49993a8f7172721cae47b1be482134479a1312465"
+      "bytes": 3130,
+      "lines": 63,
+      "sha256": "5f48548f40cfa7374a340b4329482d5f2c7c8deaf8c176aa7045dcd98ce3b489"
     },
     {
       "file": "server/src/routes/leaderboard.routes.ts",
@@ -23520,12 +23992,28 @@
       "sha256": "012964a2474fde5a5c28532bbedca62e8b164dcaacb950db233aea5f63490d64"
     },
     {
+      "file": "server/src/routes/liveExamsRoot.routes.ts",
+      "category": "api-source",
+      "domain": "exams",
+      "bytes": 1069,
+      "lines": 28,
+      "sha256": "97523041c25bc38375373b10fb6db8f3b815aab32b51b1e0917cae44a0ed7033"
+    },
+    {
       "file": "server/src/routes/notification.routes.ts",
       "category": "api-source",
       "domain": "notifications",
       "bytes": 23257,
       "lines": 557,
       "sha256": "9a4d2dbf2bb0ae6551db7dd5f365b4f401927c186fc5cf7121a9f87dccf5be21"
+    },
+    {
+      "file": "server/src/routes/notificationRoot.routes.ts",
+      "category": "api-source",
+      "domain": "notifications",
+      "bytes": 1408,
+      "lines": 31,
+      "sha256": "0b9680bb3619f41a712231635fe110673dda8cf385068ba8b5b45f30305c4150"
     },
     {
       "file": "server/src/routes/operations.routes.ts",
@@ -23651,9 +24139,9 @@
       "file": "server/src/scripts/backendIntegrationGate.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 118872,
-      "lines": 2049,
-      "sha256": "c0642f3cb585a344d7b36b51bb5cbe139f350e88c4caf85a767663179ca6f01b"
+      "bytes": 130806,
+      "lines": 2264,
+      "sha256": "bdf30a881de3af34544e58023fa04f237cb5a9e548fc9f5f0746d73319e08a6f"
     },
     {
       "file": "server/src/scripts/backfillLearningPlacementsApi.ts",
@@ -23718,6 +24206,22 @@
       "bytes": 7421,
       "lines": 133,
       "sha256": "c9df8bbc15ed658487f58b26d59230d908d2cf42039c4ca65e51699ea4e1fc9c"
+    },
+    {
+      "file": "server/src/scripts/ensureLiveAssessmentIndexes.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 3495,
+      "lines": 115,
+      "sha256": "2adeda13aec84bdb4507cea1379c8131d76477a4ab87bab1c03742ad1f1f6cbf"
+    },
+    {
+      "file": "server/src/scripts/ensurePaymentGatewayIndexes.ts",
+      "category": "api-source",
+      "domain": "payments",
+      "bytes": 2517,
+      "lines": 74,
+      "sha256": "7e505c0f79003ef8bfad23ae1b304b0ee53bdce3d7f36606f66e14b6da576dfd"
     },
     {
       "file": "server/src/scripts/ensureSmartClassroomIndexes.ts",
@@ -23859,9 +24363,9 @@
       "file": "server/src/scripts/simulateSmartClassroomHardeningE2E.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 21301,
-      "lines": 323,
-      "sha256": "895e6a48baba298fb3b8bb8727dd3f39a68f499ac915d2b45ca97cafc231357e"
+      "bytes": 23010,
+      "lines": 350,
+      "sha256": "c3031eed6eff82e5935103c2cbaa143a2855ddc65f9b2008793f4abbec11aea6"
     },
     {
       "file": "server/src/scripts/smokeOperationalJourneysApi.ts",
@@ -23907,9 +24411,9 @@
       "file": "server/src/scripts/verifySmartClassroomActiveAuthE2E.ts",
       "category": "api-source",
       "domain": "auth",
-      "bytes": 16150,
-      "lines": 350,
-      "sha256": "a52c6c0e4df7afd75f1b9faefb7f075bab39614adf2acd4fb99e44ce98872daa"
+      "bytes": 17240,
+      "lines": 377,
+      "sha256": "d022b02de4d2d6a8ece9cc8e440962d0f068de7b8b321744d423d881b653be3d"
     },
     {
       "file": "server/src/scripts/verifySmartClassroomG0.ts",
@@ -23931,9 +24435,9 @@
       "file": "server/src/scripts/verifySmartClassroomRealtimeE2E.ts",
       "category": "api-source",
       "domain": "auth",
-      "bytes": 15233,
-      "lines": 296,
-      "sha256": "ab77e02482d280917cc80b576603141decd086492baeb7ed62bf106c50172a61"
+      "bytes": 15878,
+      "lines": 315,
+      "sha256": "3736e75c72ff32d4315787e8287c9133673008733e36ace6086c9a2e46fcfced"
     },
     {
       "file": "server/src/scripts/verifySmartClassroomReportImmutability.ts",
@@ -24075,17 +24579,17 @@
       "file": "server/src/sockets/classroomEvents.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 1687,
-      "lines": 44,
-      "sha256": "62b2203d9c3afe470cba8167edf8d1948c83a7ddd789ee1f53bfeab3285b0039"
+      "bytes": 2195,
+      "lines": 52,
+      "sha256": "9f7da9f159346c333d404fd913b41642f9901d7bff52adb91d6beba55853d007"
     },
     {
       "file": "server/src/sockets/index.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 7975,
-      "lines": 172,
-      "sha256": "133238c11a598f9b0e27596c76970c96c446a0a40c578b66cbb0b3c91450f8c3"
+      "bytes": 9860,
+      "lines": 208,
+      "sha256": "f8e69efcdd319063da251a03c8e0aadac407f2d15df20d83154534dbda0936e2"
     },
     {
       "file": "server/src/sockets/workspaceAuthorization.ts",
@@ -24131,9 +24635,9 @@
       "file": "server/src/utils/jwt.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 438,
-      "lines": 14,
-      "sha256": "e447fc0d98dcaf9e9601caf4835883a0791c18e8f97fbe1dfb131e7002b3dc69"
+      "bytes": 571,
+      "lines": 22,
+      "sha256": "1a82c833383417443d5ef9b113d735e0ba0f893b604719d3aa85b007c6bdbee1"
     },
     {
       "file": "server/src/utils/pagination.ts",
@@ -24171,9 +24675,9 @@
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 46262,
-      "lines": 1000,
-      "sha256": "d9857974267d39a78f6ae3750897a3b29b0ee8fc72c8486721827beacd4d72e7"
+      "bytes": 46743,
+      "lines": 1004,
+      "sha256": "87481b353359234d7f7e8a218c89b9a1bb83f8a7475d863b0f190d2c7e899a86"
     },
     {
       "file": "services/apiGroups/accessCodesApi.ts",
@@ -24203,9 +24707,9 @@
       "file": "services/apiGroups/authApi.ts",
       "category": "web-source",
       "domain": "auth",
-      "bytes": 6896,
-      "lines": 213,
-      "sha256": "319b84fa4b9e457b3f69c078afa5d7089f0f69008029e6a448ef2e5122b8ee6a"
+      "bytes": 7870,
+      "lines": 237,
+      "sha256": "005a817d611095117797d7a1611fbba34750c74965c7b8812ca363158118f030"
     },
     {
       "file": "services/apiGroups/coursesApi.ts",
@@ -24691,9 +25195,9 @@
       "file": "tools/refactor/architecture-gate.mjs",
       "category": "tooling",
       "domain": "shared",
-      "bytes": 7304,
-      "lines": 164,
-      "sha256": "b66a3acd15589a381ddfd278bbbffa24a5da37382302b75d937cf432f5b3acd1"
+      "bytes": 8067,
+      "lines": 172,
+      "sha256": "ed1f3db6c38402facfdc3660b9ea48431d6218c33e7dd8c75e663710d4ac66c0"
     },
     {
       "file": "tools/refactor/assert-audit-packages-clean.mjs",
@@ -25096,6 +25600,14 @@
       "sha256": "178134df02b33b2b632bd56d515b7159fe2d2af2e3ecbb041b61d31318a64ced"
     },
     {
+      "file": "types/url-search-params.d.ts",
+      "category": "source-other",
+      "domain": "shared",
+      "bytes": 148,
+      "lines": 8,
+      "sha256": "cc3d8a04ef670d914fd529410ab94b72ec290761b4e91e45efa6222f4c9b0f24"
+    },
+    {
       "file": "utils/appVersion.ts",
       "category": "web-source",
       "domain": "shared",
@@ -25248,6 +25760,14 @@
       "sha256": "169b02cd7e7f5f85762044fe18b0fac74761235e1c8c82ed072e19bed12c1aee"
     },
     {
+      "file": "utils/quizBuilderDraft.ts",
+      "category": "web-source",
+      "domain": "quizzes",
+      "bytes": 2118,
+      "lines": 67,
+      "sha256": "cd951a53ddfa39dd72df267c229228819ab24ed59be779a88fc175769e526d20"
+    },
+    {
       "file": "utils/quizLearningPlacement.ts",
       "category": "web-source",
       "domain": "quizzes",
@@ -25355,9 +25875,9 @@
       "file": "vercel.json",
       "category": "support",
       "domain": "shared",
-      "bytes": 1485,
+      "bytes": 1545,
       "lines": 64,
-      "sha256": "48e3141e720a1ed9de9ea5bdd4943f4e8344faee51d4add531714ae1c6077e5e"
+      "sha256": "0f442bf02634cf3ef52089cb09ccf83c6c4acce46c4a79eb9901c067acc8bce0"
     },
     {
       "file": "vite-env.d.ts",
@@ -25379,9 +25899,9 @@
       "file": "vite.config.ts",
       "category": "source-other",
       "domain": "shared",
-      "bytes": 3716,
-      "lines": 127,
-      "sha256": "7d34edbe921a67d0a02a9991f5e9a4828a01853fd572fa8386ed58913c63727a"
+      "bytes": 4009,
+      "lines": 131,
+      "sha256": "abed2056304b5802b10243b2ad299b0663d88d2618010c6ccfd18fb3c2b5f323"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-14T03:20:46.635Z",
-  "sourceGitHead": "84fe836539df60c7b91989bcf3dc1be4a239b85d",
+  "generatedAt": "2026-09-17T01:04:34.931Z",
+  "sourceGitHead": "8dca10591fe21f6ed208762d0127194b6ea18c88",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -501,6 +501,12 @@
       "target": "apps/web/src/features/shared/admin/components/AdminBreadcrumbHeader.tsx",
       "domain": "shared",
       "confidence": "review-required"
+    },
+    {
+      "source": "dashboards/admin/ContentReviewQueueManager.tsx",
+      "target": "apps/web/src/features/learning/admin/ContentReviewQueueManager.tsx",
+      "domain": "learning",
+      "confidence": "candidate"
     },
     {
       "source": "dashboards/admin/CourseBuilder.tsx",
@@ -1208,6 +1214,12 @@
       "source": "dashboards/admin/TestAnalyticsReport.tsx",
       "target": "apps/web/src/features/reports/admin/TestAnalyticsReport.tsx",
       "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/TrainerCoursesManager.tsx",
+      "target": "apps/web/src/features/courses/admin/TrainerCoursesManager.tsx",
+      "domain": "courses",
       "confidence": "candidate"
     },
     {
@@ -2189,6 +2201,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "target": "apps/api/src/modules/notifications/http/notificationAudienceAuthority.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/modules/notifications/http/openNotificationSseStream.ts",
       "target": "apps/api/src/modules/notifications/http/openNotificationSseStream.ts",
       "domain": "notifications",
@@ -2287,6 +2305,12 @@
     {
       "source": "server/src/modules/quizzes/application/dualWriteAssessmentSubmission.ts",
       "target": "apps/api/src/modules/quizzes/application/dualWriteAssessmentSubmission.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/application/getOrCreateAssessmentAttempt.ts",
+      "target": "apps/api/src/modules/quizzes/application/getOrCreateAssessmentAttempt.ts",
       "domain": "quizzes",
       "confidence": "review-required"
     },
@@ -2455,6 +2479,12 @@
     {
       "source": "server/src/modules/quizzes/application/quizWorkflow.ts",
       "target": "apps/api/src/modules/quizzes/application/quizWorkflow.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/quizzes/http/liveExamStartHandler.ts",
+      "target": "apps/api/src/modules/quizzes/http/liveExamStartHandler.ts",
       "domain": "quizzes",
       "confidence": "review-required"
     },
@@ -2681,6 +2711,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/routes/authSession.routes.ts",
+      "target": "apps/api/src/modules/auth/http/authSession.routes.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/routes/backup.routes.ts",
       "target": "apps/api/src/modules/operations/http/backup.routes.ts",
       "domain": "operations",
@@ -2801,8 +2837,20 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/routes/liveExamsRoot.routes.ts",
+      "target": "apps/api/src/modules/exams/http/liveExamsRoot.routes.ts",
+      "domain": "exams",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/routes/notification.routes.ts",
       "target": "apps/api/src/modules/notifications/http/notification.routes.ts",
+      "domain": "notifications",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/routes/notificationRoot.routes.ts",
+      "target": "apps/api/src/modules/notifications/http/notificationRoot.routes.ts",
       "domain": "notifications",
       "confidence": "review-required"
     },
@@ -2948,6 +2996,18 @@
       "source": "server/src/scripts/e2e_supervisor_directed_test.ts",
       "target": "apps/api/src/scripts/e2e_supervisor_directed_test.ts",
       "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/ensureLiveAssessmentIndexes.ts",
+      "target": "apps/api/src/scripts/ensureLiveAssessmentIndexes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/ensurePaymentGatewayIndexes.ts",
+      "target": "apps/api/src/scripts/ensurePaymentGatewayIndexes.ts",
+      "domain": "payments",
       "confidence": "review-required"
     },
     {
@@ -3559,6 +3619,12 @@
     {
       "source": "utils/questionHtml.ts",
       "target": "apps/web/src/shared/lib/questionHtml.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/quizBuilderDraft.ts",
+      "target": "apps/web/src/shared/lib/quizBuilderDraft.ts",
       "domain": "shared",
       "confidence": "review-required"
     },

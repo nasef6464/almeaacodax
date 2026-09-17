@@ -541,6 +541,10 @@ export const UsersManager: React.FC = () => {
             const currentGroupIds = (currentUser.groupIds || []).filter((groupId) => groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')));
             for (const groupId of currentGroupIds.filter((groupId) => !validGroupIds.includes(groupId))) await removeSupervisorFromGroupAsync(currentUser.id, groupId);
             for (const groupId of validGroupIds.filter((groupId) => !currentGroupIds.includes(groupId))) await assignSupervisorToGroupAsync(currentUser.id, groupId);
+            await api.updateAdminUser(currentUser.id, {
+                groupIds: validGroupIds,
+            });
+            replacePageUser({ ...currentUser, groupIds: validGroupIds });
         });
     };
 

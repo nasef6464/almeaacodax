@@ -1,58 +1,58 @@
 # Current Repository Architecture Audit
 
-Generated from commit `84fe836539df60c7b91989bcf3dc1be4a239b85d` using the TypeScript AST for imports and route extraction.
+Generated from commit `8dca10591fe21f6ed208762d0127194b6ea18c88` using the TypeScript AST for imports and route extraction.
 
 ## Executive snapshot
 
 | Metric | Value |
 |---|---:|
-| Tracked files | 1440 |
-| Source files (including scripts/tooling) | 1001 |
-| Runtime source files | 617 |
-| Source lines | 200,261 |
-| Runtime source lines | 160,788 |
+| Tracked files | 1468 |
+| Source files (including scripts/tooling) | 1024 |
+| Runtime source files | 629 |
+| Source lines | 203,087 |
+| Runtime source lines | 163,020 |
 | Frontend route literals | 55 |
-| Backend HTTP route entries | 306 |
-| Router mount points | 31 |
-| Runtime relative import edges | 1897 |
+| Backend HTTP route entries | 313 |
+| Router mount points | 32 |
+| Runtime relative import edges | 1942 |
 | Unresolved runtime relative imports | 0 |
-| Unresolved non-runtime relative imports | 5 |
+| Unresolved non-runtime relative imports | 6 |
 | Runtime dependency cycles | 0 |
-| Cross-domain runtime import edges | 1180 |
+| Cross-domain runtime import edges | 1209 |
 | Runtime hotspots >= 400 lines | 84 |
-| Candidate migration-map entries | 606 |
+| Candidate migration-map entries | 617 |
 
 ## Largest runtime source hotspots
 
 | File | Lines | Bytes | Domain candidate |
 |---|---:|---:|---|
+| `server/src/routes/content.routes.ts` | 2640 | 101741 | content |
 | `pages/Reports.tsx` | 2587 | 186155 | reports |
-| `server/src/routes/content.routes.ts` | 2560 | 97959 | content |
 | `pages/QuizPage.tsx` | 2413 | 132726 | quizzes |
 | `dashboards/admin/PathsManager.tsx` | 2366 | 133357 | paths |
 | `server/src/routes/quiz.routes.ts` | 2350 | 95287 | quizzes |
 | `pages/Dashboard.tsx` | 2323 | 142077 | shared |
 | `dashboards/admin/PlatformIntegrationsManagerLegacy.tsx` | 2317 | 130369 | operations |
+| `server/src/scripts/backendIntegrationGate.ts` | 2264 | 130806 | operations |
 | `dashboards/admin/SchoolsManager.tsx` | 2197 | 112700 | schools |
 | `pages/Results.tsx` | 2185 | 108197 | reports |
 | `dashboards/admin/FinancialManager.tsx` | 2135 | 144154 | payments |
-| `dashboards/admin/AdminDashboard.tsx` | 2084 | 126101 | shared |
-| `server/src/scripts/backendIntegrationGate.ts` | 2049 | 118872 | operations |
+| `dashboards/admin/AdminDashboard.tsx` | 2093 | 126923 | shared |
+| `dashboards/admin/QuizzesManager.tsx` | 1981 | 110236 | quizzes |
 | `dashboards/admin/QuestionBankManager.tsx` | 1943 | 93968 | questions |
-| `dashboards/admin/QuizzesManager.tsx` | 1911 | 106763 | quizzes |
 | `server/src/routes/payment.routes.ts` | 1886 | 71269 | payments |
+| `server/src/routes/auth.routes.ts` | 1868 | 71117 | auth |
 | `dashboards/admin/SupervisorDashboard.tsx` | 1782 | 114730 | schools |
 | `store/useStore.ts` | 1772 | 88949 | shared |
-| `server/src/routes/auth.routes.ts` | 1768 | 66018 | auth |
 | `pages/Plan.tsx` | 1732 | 79122 | shared |
 | `server/src/scripts/seedOperationalScenario.ts` | 1725 | 60632 | operations |
-| `App.tsx` | 1679 | 75998 | shared |
-| `dashboards/admin/AdvancedCourseBuilder.tsx` | 1654 | 99692 | courses |
+| `App.tsx` | 1706 | 77124 | shared |
+| `dashboards/admin/AdvancedCourseBuilder.tsx` | 1656 | 99872 | courses |
 | `server/src/routes/ai.routes.ts` | 1648 | 65293 | ai |
 | `server/src/scripts/seedOperationalScenarioApi.ts` | 1609 | 57436 | operations |
 | `dashboards/admin/MockExamManager.tsx` | 1550 | 82630 | exams |
 | `dashboards/admin/HomepageManager.tsx` | 1541 | 98147 | content |
-| `pages/Landing.tsx` | 1497 | 101672 | shared |
+| `pages/Landing.tsx` | 1502 | 102082 | shared |
 | `dashboards/admin/QuizBuilder.tsx` | 1494 | 82025 | quizzes |
 | `pages/GenericPathPage.tsx` | 1473 | 90688 | paths |
 | `components/Header.tsx` | 1437 | 76070 | shared |

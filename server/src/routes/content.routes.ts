@@ -1182,16 +1182,6 @@ contentRouter.delete(
   }),
 );
 
-contentRouter.get(
-  "/groups",
-  requireAuth,
-  requireRole(["admin", "supervisor"]),
-  asyncHandler(async (req, res) => {
-    const operationalData = await getScopedContentBootstrapOperationalData(req.authUser);
-    return res.json(operationalData.groups);
-  }),
-);
-
 contentRouter.post(
   "/groups",
   requireAuth,

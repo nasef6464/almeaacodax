@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-14T03:20:46.635Z",
-  "gitHead": "84fe836539df60c7b91989bcf3dc1be4a239b85d",
+  "generatedAt": "2026-09-17T01:04:34.931Z",
+  "gitHead": "8dca10591fe21f6ed208762d0127194b6ea18c88",
   "frontendRoutes": [
     "*",
     "/",
@@ -200,6 +200,18 @@
     },
     {
       "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/users/bulk-status",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/users/summary",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
       "method": "GET",
       "path": "/csrf-token",
       "receiver": "authRouter"
@@ -332,6 +344,12 @@
     },
     {
       "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/trainer/performance",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
       "method": "POST",
       "path": "/whatsapp/start",
       "receiver": "authRouter"
@@ -341,6 +359,18 @@
       "method": "POST",
       "path": "/whatsapp/verify",
       "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/authSession.routes.ts",
+      "method": "POST",
+      "path": "/logout-all",
+      "receiver": "authSessionRouter"
+    },
+    {
+      "file": "server/src/routes/authSession.routes.ts",
+      "method": "POST",
+      "path": "/me/password",
+      "receiver": "authSessionRouter"
     },
     {
       "file": "server/src/routes/backup.routes.ts",
@@ -808,6 +838,18 @@
       "file": "server/src/routes/content.routes.ts",
       "method": "GET",
       "path": "/public-contact-widget",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "GET",
+      "path": "/review-queue",
+      "receiver": "contentRouter"
+    },
+    {
+      "file": "server/src/routes/content.routes.ts",
+      "method": "PATCH",
+      "path": "/review-queue/:type/:id",
       "receiver": "contentRouter"
     },
     {
@@ -1944,6 +1986,12 @@
       "file": "server/src/routes/index.ts",
       "receiver": "apiRouter",
       "prefix": "/auth",
+      "mounted": "authSessionRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/auth",
       "mounted": "authRouter"
     },
     {
@@ -2105,6 +2153,8 @@
     "AI_PROVIDER_ORDER",
     "AI_REQUEST_TIMEOUT_MS",
     "AI_RUNTIME_AUDIT_RUN_ID",
+    "ALLOW_LIVE_ASSESSMENT_INDEX_MIGRATION",
+    "ALLOW_PAYMENT_GATEWAY_INDEX_MIGRATION",
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
     "ALLOW_SMART_CLASSROOM_INDEX_MIGRATION",
     "API_BASE_URL",
@@ -2216,6 +2266,8 @@
     "SENTRY_ENVIRONMENT",
     "SENTRY_TRACES_SAMPLE_RATE",
     "SLOW_REQUEST_LOG_MS",
+    "SMART_CLASSROOM_LOAD_STUDENTS",
+    "SMART_CLASSROOM_SCENARIO",
     "SMOKE_ADMIN_EMAIL",
     "SMOKE_ADMIN_PASSWORD",
     "SMOKE_ADMIN_TOKEN",
@@ -2294,32 +2346,35 @@
     "WHATSAPP_WEBHOOK_URL"
   ],
   "routeSourceHashes": {
-    "App.tsx": "a69c45223213f7397ccba951ec597c5ee6506db6d4bfab30bfefab4d9e8cea94",
-    "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
+    "App.tsx": "25c3423df024652a903f4a37c7087972706ed00e450a7ad2c2ef8910b8690722",
+    "server/src/app.ts": "0d6ea8217502285c6cf385ec9465ebb6cfeb61ec03a22be348f59a99224ebe59",
     "server/src/routes/activity.routes.ts": "0064ba5bfa47873cd04cd56171ada0f3d8097f3d7424e08c68bbf3ee4e05080a",
     "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
-    "server/src/routes/auth.routes.ts": "374755087cbe0a8212f558c6f7f8c87a546386bf5e9f7cebf95a3655fb6eed4f",
+    "server/src/routes/auth.routes.ts": "9c1f06d689cd07194d9d29a81218e325e35d9f17a44f6f8fad9e9a41b3b55846",
+    "server/src/routes/authSession.routes.ts": "8f70ee9b26755f001cc38e16add64e4dcb22361acebecdf7bfbabed909080a09",
     "server/src/routes/backup.routes.ts": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd",
     "server/src/routes/certificates.routes.ts": "a27e7f499c927ecbb9cb10ae16bfb45dc6eaf03a7ebc851ad1785491563b43f3",
     "server/src/routes/classroom.routes.ts": "6d7ba99f3e3812d55c921b5a3b5a73cf16199cf1613e1e0afeb887cd8139ccbd",
     "server/src/routes/classroom/classroomRouteSupport.ts": "7ef67ec7b8334166664241cb617443c1a11d4a648ddc3195fc24eadc42fc01e0",
-    "server/src/routes/classroom/registerClassroomAggregateRoutes.ts": "1442c744e4f6328b33e16c84748971240a2e12bb22e784753509c504bf32f9eb",
-    "server/src/routes/classroom/registerClassroomBatchRoutes.ts": "67072568cf359cc011c33d7e3aa9da14e9cf23d39146b4fbe4da62c899f99488",
+    "server/src/routes/classroom/registerClassroomAggregateRoutes.ts": "a769c41261715d46ee5ef90814b92e86772dee03daa6ee75ff3577bf88525c9e",
+    "server/src/routes/classroom/registerClassroomBatchRoutes.ts": "ae2b84e7b52fe53d0608d0508651f9dd48d02b3833d267cf9d6bb73e8ac8fede",
     "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts": "20c36379e958be71349e497dbbd10bb64ee06d0998d71925b1ccc6548200c636",
     "server/src/routes/classroom/registerClassroomInsightsRoutes.ts": "1264c63e2ab35925ceffac2f2236e9b4050cb44886cf9ad1f1f72d860b7320bb",
-    "server/src/routes/classroom/registerClassroomStudentRoutes.ts": "a91705c3508d34ec6a5bb3efa2f22d638e8d110c4934462356c4922b8558bca7",
-    "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts": "baec431f3f8dcc79d3c0760ee489b21f0635ecb9ba2ccf483318d5c8ff87ca62",
-    "server/src/routes/classroom/registerClassroomTeacherRoutes.ts": "539cb4530d7ca1f7b6052471256c003e0f23b66faf3a70246e9f9b2bb4c0393a",
+    "server/src/routes/classroom/registerClassroomStudentRoutes.ts": "b69e832f60a63ad7fe3a5e08183c9b34b561f199f3922ce56c10130a2f5be89a",
+    "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts": "7f6c7fc06e26ee1e1c4f8dc90ecacd1cf247004ac90a649c70162a5ef3a30ac4",
+    "server/src/routes/classroom/registerClassroomTeacherRoutes.ts": "8ae69f7130d5f26c00e0a6c35b3fb6b35fd850c8eefe45b7f71efbd77858ac89",
     "server/src/routes/classroom/registerClassroomTemplateRoutes.ts": "5d22162bb830e3a22d99b9f6bd989ce79eb9e75d19de3785095937b8e064680e",
     "server/src/routes/classroomRoot.routes.ts": "f76ba8de6fa50f0c3e6ffd9a8ab98f396e888d45276b78e076c3ee5b947017c2",
-    "server/src/routes/content.routes.ts": "c4237fa8f46b1a1dd62c3ad22a508a977a5d17aed94bd2b10ae32150ef6e7e81",
-    "server/src/routes/course.routes.ts": "8e15ce798fe451069163bfb18f14f60adeb5db44b63c813dadc9ce209d4c7d7c",
+    "server/src/routes/content.routes.ts": "ca045f9d4587d56e110f99d6b16334ffc3eea6669302314650da2d792d28df63",
+    "server/src/routes/course.routes.ts": "ef48321d72e539124f231f7fcd261fd2ca1e7496687299025d6d7bc8b9b31d99",
     "server/src/routes/discussions.routes.ts": "73aa2402cc15ffc059fbd71c747999c22dd2443b2e832794c5cdbfe61d3a4bd7",
     "server/src/routes/health.routes.ts": "dacc99ddbacd3638820daaeba9623f1d1e196b300c2081d9b69975ac0f1df1cf",
-    "server/src/routes/index.ts": "1723bf43c20bb303306204e49993a8f7172721cae47b1be482134479a1312465",
+    "server/src/routes/index.ts": "5f48548f40cfa7374a340b4329482d5f2c7c8deaf8c176aa7045dcd98ce3b489",
     "server/src/routes/leaderboard.routes.ts": "18f8b08b3c73d74c929aaefea226b99fb7085a1ccd23779a70139f82346fab30",
     "server/src/routes/live-exams.routes.ts": "012964a2474fde5a5c28532bbedca62e8b164dcaacb950db233aea5f63490d64",
+    "server/src/routes/liveExamsRoot.routes.ts": "97523041c25bc38375373b10fb6db8f3b815aab32b51b1e0917cae44a0ed7033",
     "server/src/routes/notification.routes.ts": "9a4d2dbf2bb0ae6551db7dd5f365b4f401927c186fc5cf7121a9f87dccf5be21",
+    "server/src/routes/notificationRoot.routes.ts": "0b9680bb3619f41a712231635fe110673dda8cf385068ba8b5b45f30305c4150",
     "server/src/routes/operations.routes.ts": "1ab34db92d48055705f3af88324b4e763b9082504f3b1049196d9149bb75364b",
     "server/src/routes/parent.routes.ts": "8911fb79c9aee82c70710e841e590242d84bf72d8c9b2f015810bb25bd1bcde3",
     "server/src/routes/payment.routes.ts": "278f9263a5be8796a8611cad3e2a546999a123b1d26b6c9b954b81b1d520ab17",

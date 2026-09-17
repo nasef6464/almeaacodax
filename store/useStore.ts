@@ -1192,8 +1192,8 @@ export const useStore = create<AppState>()(
             assignSupervisorToGroupAsync: async (userId, groupId) => {
                 const state = get();
                 const targetGroup = state.groups.find(group => group.id === groupId);
-                const currentUser = state.users.find(user => user.id === userId);
-                if (!targetGroup || !currentUser) return;
+                const currentUser = state.users.find(user => user.id === userId) || { id: userId, groupIds: [] as string[], schoolId: undefined };
+                if (!targetGroup) return;
 
                 const nextGroupIds = currentUser.groupIds?.includes(groupId)
                     ? (currentUser.groupIds || [])
@@ -1267,8 +1267,7 @@ export const useStore = create<AppState>()(
 
             removeSupervisorFromGroupAsync: async (userId, groupId) => {
                 const state = get();
-                const currentUser = state.users.find(user => user.id === userId);
-                if (!currentUser) return;
+                const currentUser = state.users.find(user => user.id === userId) || { id: userId, groupIds: [] as string[], schoolId: undefined };
 
                 const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
                 const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
