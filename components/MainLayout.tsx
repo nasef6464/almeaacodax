@@ -54,7 +54,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         const loadPublicHomeData = async () => {
             const [taxonomyResult, courseResult] = await Promise.allSettled([
                 paths.length > 0 ? Promise.resolve(null) : adapter.getTaxonomyBootstrap('core'),
-                courses.length > 0 ? Promise.resolve(null) : adapter.getCourses({ limit: 60, kind: 'learning' }),
+                courses.length > 0 ? Promise.resolve(null) : adapter.getCourses({ limit: 60 }),
             ]);
 
             if (cancelled) return;
@@ -70,7 +70,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             }
 
             if (courseResult.status === 'fulfilled' && courseResult.value) {
-                hydrateCourses(courseResult.value);
+                hydrateCourses(courseResult.value.filter((course) => !course.isPackage));
             }
 
             if (taxonomyResult.status === 'rejected') {
