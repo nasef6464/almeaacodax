@@ -1,4 +1,9 @@
-const API_BASE_URL = String(process.env.API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").trim();
+const API_BASE_URL = String(
+  process.env.API_BASE_URL ||
+    process.env.SMOKE_API_BASE_URL ||
+    process.env.SMOKE_API_URL ||
+    "https://almeaacodax.vercel.app/api",
+).trim();
 const SMOKE_ADMIN_TOKEN = String(process.env.SMOKE_ADMIN_TOKEN || "").trim();
 const CSRF_COOKIE_NAME = "almeaa_csrf_token";
 const CSRF_HEADER_NAME = "x-csrf-token";
