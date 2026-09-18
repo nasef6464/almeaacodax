@@ -57,15 +57,14 @@ const ROLE_CANDIDATES = [
 const ROUTES = [
   {
     name: "supervisor-overview",
-    path: "/admin-dashboard",
-    minBodyLength: 300,
-    minControlCount: 8,
+    path: "/supervisor-dashboard",
+    minBodyLength: 1200,
+    minControlCount: 12,
     expectedTextGroups: [
-      ["نظرة عامة", "إجمالي الطلاب", "بانتظار الاعتماد"],
-      ["مركز التشغيل اليومي", "مراجعة واعتماد المحتوى", "محتوى مخفي عن الطلاب"],
-      ["مؤشر جاهزية المنصة قبل النشر", "بانتظار الاعتماد", "مخفي عن الطلاب"],
-      ["نطاق الإشراف الحالي", "الطلاب داخل النطاق", "متوسط الأداء"],
-      ["أفضل فصل", "أضعف فصل", "الطلاب الذين يحتاجون متابعة"],
+      ["لوحة الإشراف", "متابعة الطلاب", "تقارير الأداء"],
+      ["المدرسة:", "نطاق الصلاحية:"],
+      ["مجموع الطلاب", "بحاجة لمتابعة", "متوسط الدرجات"],
+      ["لوحة اتخاذ القرار", "أعلى فصل", "الفصل الأكثر احتياجاً"],
     ],
   },
   {
@@ -78,7 +77,7 @@ const ROUTES = [
     minControlCount: 12,
     expectedTextGroups: [
       ["لوحة الإشراف", "متابعة الطلاب", "أضعف المهارات"],
-      ["إرسال تنبيه أسبوعي", "التقارير", "الفصول"],
+      ["إرسال تنبيه أسبوعي", "تقارير الإشراف", "الفصول الدراسية"],
     ],
   },
   {
@@ -94,15 +93,15 @@ const ROUTES = [
   },
   {
     name: "directed-quiz-entry",
-    path: "/admin-dashboard?tab=quizzes&source=supervisor-dashboard&mode=central",
-    minBodyLength: 400,
+    path: "/supervisor-dashboard?tab=tests",
+    minBodyLength: 500,
     minControlCount: 8,
     expectedTextGroups: [
-      ["اختبار", "اختبارات", "الأسئلة"],
-      ["موجه", "مركزي"],
+      ["الاختبارات والتدخلات", "تدخل جديد"],
+      ["توجيه/إعادة توجيه", "متابعة الطلاب"],
     ],
   },
-];
+]
 
 function safeName(input) {
   return String(input || "").replace(/[^a-zA-Z0-9_-]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 100) || "page";
