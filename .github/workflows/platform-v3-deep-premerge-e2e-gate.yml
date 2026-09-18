@@ -347,18 +347,18 @@ jobs:
           # This is a fresh workflow run for the current commit, so the step
           # outcomes below are authoritative. Marker files are intentionally
           # avoided because continue-on-error steps execute in isolated shells.
-          check_outcome "Operational multi-role API" "${{ steps.operational.conclusion }}"
-          check_outcome "Public full-stack UI" "${{ steps.public_ui.conclusion }}"
-          check_outcome "All role pages" "${{ steps.roles.conclusion }}"
-          check_outcome "Question editor" "${{ steps.question_editor.conclusion }}"
-          check_outcome "Student Learning Space" "${{ steps.student_learning.conclusion }}"
-          check_outcome "Results/report actions" "${{ steps.report_actions.conclusion }}"
-          check_outcome "Learning Space manager" "${{ steps.learning_manager.conclusion }}"
-          check_outcome "Assessment commercial" "${{ steps.assessment_commercial.conclusion }}"
-          check_outcome "Assessment mock session" "${{ steps.assessment_mock_session.conclusion }}"
-          check_outcome "Supervisor school" "${{ steps.supervisor_school.conclusion }}"
-          check_outcome "School from scratch" "${{ steps.school_from_scratch.conclusion }}"
-          check_outcome "Barcode public test" "${{ steps.barcode.conclusion }}"
+          check_outcome "Operational multi-role API" "${{ steps.operational.outcome }}"
+          check_outcome "Public full-stack UI" "${{ steps.public_ui.outcome }}"
+          check_outcome "All role pages" "${{ steps.roles.outcome }}"
+          check_outcome "Question editor" "${{ steps.question_editor.outcome }}"
+          check_outcome "Student Learning Space" "${{ steps.student_learning.outcome }}"
+          check_outcome "Results/report actions" "${{ steps.report_actions.outcome }}"
+          check_outcome "Learning Space manager" "${{ steps.learning_manager.outcome }}"
+          check_outcome "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
+          check_outcome "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
+          check_outcome "Supervisor school" "${{ steps.supervisor_school.outcome }}"
+          check_outcome "School from scratch" "${{ steps.school_from_scratch.outcome }}"
+          check_outcome "Barcode public test" "${{ steps.barcode.outcome }}"
           exit "$failed"
 
       - name: Upload deep E2E evidence
