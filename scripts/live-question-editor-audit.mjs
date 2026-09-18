@@ -172,7 +172,7 @@ async function main() {
     const loginResult = await login(page);
     createdQuestion = await createInlineMediaQuestion(page, marker);
 
-    await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "networkidle", timeout: 60000 });
+    await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.getByTestId("question-bank-add-question").click();
     await page.waitForSelector('[data-testid="question-editor-math-toolbar"]', { timeout: 30000 });
     const editorState = await page.evaluate(() => ({
@@ -190,7 +190,7 @@ async function main() {
     const insertedFormulaCount = await page.locator(".ql-formula").count();
     await page.screenshot({ path: path.join(OUT_DIR, "editor-toolbar.png"), fullPage: false });
 
-    await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "networkidle", timeout: 60000 });
+    await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "domcontentloaded", timeout: 60000 });
     const searchInput = page.getByTestId("question-bank-search-input");
     await searchInput.fill(marker);
     const markerRow = page.locator("tbody tr").filter({ hasText: marker }).first();
