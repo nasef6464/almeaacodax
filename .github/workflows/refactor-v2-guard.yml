@@ -210,7 +210,10 @@ jobs:
       - name: Global student journey contract
         run: npm run smoke:global-student-journey
 
-      - name: Student learning journey contract
+      # This journey reads the deployed Render catalog by default. Keep source PR
+      # safety deterministic; deployed-data coverage remains available outside PRs.
+      - name: Student learning journey contract (deployed-data smoke)
+        if: github.event_name != 'pull_request'
         run: npm run smoke:student-learning-journey
 
       - name: Results contract
