@@ -55,14 +55,11 @@ jobs:
           fi
 
       - name: Operational smoke
-        # Run directly against the active production API so this validates the
-        # same backend that the Vercel /api proxy targets.
-        env:
-          SMOKE_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
+        # Use the same production transport as real browsers. Vercel owns the
+        # current /api rewrite target, so the smoke cannot drift to a retired
+        # Render service when the backend is migrated.
         run: npm run smoke:operational
 
       - name: Sentry live proof smoke
-        # Resolve fresh admin auth against the same active backend.
-        env:
-          SMOKE_API_BASE_URL: https://almeaacodax-k2ux.onrender.com/api
+        # Resolve fresh admin auth through the same production /api transport.
         run: npm run smoke:sentry-live-proof
