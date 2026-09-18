@@ -1202,6 +1202,15 @@ authRouter.patch(
       });
     }
 
+    if (Array.isArray(payload.groupIds) && effectiveRole === "supervisor") {
+      const membershipUserId = String(updated.id || updated._id || targetId);
+      const desiredGroupIds = Array.from(new Set(payload.groupIds.map(String).filter(Boolean)));
+      await GroupModel.updateMany({ supervisorIds: membershipUserId }, { $pull: { supervisorIds: membershipUserId } });
+      if (desiredGroupIds.length > 0) {
+        await GroupModel.updateMany(buildDocumentsQuery(desiredGroupIds), { $addToSet: { supervisorIds: membershipUserId } });
+      }
+    }
+
     await recordAdminAuditLog(req, {
       action: "auth.admin_user.update",
       resourceType: "user",
