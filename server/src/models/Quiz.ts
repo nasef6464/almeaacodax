@@ -83,6 +83,7 @@ const quizSchema = new Schema(
       qiyasCategory: { type: String, default: "qudrat" },
       targetScore: { type: Number, default: 90 },
       isStrictSectionLock: { type: Boolean, default: true },
+      presentationMode: { type: String, enum: ["qiyas_strict", "flexible"], default: "qiyas_strict" },
       sections: {
         type: [
           {

@@ -44,6 +44,7 @@ export const quizSchema = z.object({
     qiyasCategory: z.enum(["qudrat", "tahsili", "specialized"]).optional(),
     targetScore: z.number().min(0).max(100).optional(),
     isStrictSectionLock: z.boolean().optional(),
+    presentationMode: z.enum(["qiyas_strict", "flexible"]).optional(),
     sections: z.array(z.object({
       id: z.string().min(1),
       title: z.string().min(1),

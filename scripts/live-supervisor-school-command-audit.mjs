@@ -310,10 +310,10 @@ async function verifyAdminUserRoleRelationshipJourney(page) {
     if (csrfToken) sessionStorage.setItem("almeaa:csrf-token", csrfToken);
     const [usersResponse, groupsResponse] = await Promise.all([
       fetch(`${apiBaseUrl}/auth/admin/users?search=${encodeURIComponent(targetEmail)}&page=1&limit=20`, { credentials: "include", cache: "no-store" }),
-      fetch(`${apiBaseUrl}/content/groups`, { credentials: "include", cache: "no-store" }),
+      fetch(`${apiBaseUrl}/content/bootstrap?scope=operations`, { credentials: "include", cache: "no-store" }),
     ]);
     const usersPayload = await usersResponse.json().catch(() => ({}));
-    const groupsPayload = await groupsResponse.json().catch(() => ([]));
+    const groupsPayload = await groupsResponse.json().catch(() => ({}));
     const user = (usersPayload?.users || []).find((item) => String(item.email || "").toLowerCase() === targetEmail.toLowerCase());
     const groups = Array.isArray(groupsPayload) ? groupsPayload : (groupsPayload?.groups || []);
     return { user, groups, usersStatus: usersResponse.status, groupsStatus: groupsResponse.status };
