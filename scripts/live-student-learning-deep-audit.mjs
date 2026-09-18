@@ -194,9 +194,9 @@ async function inspectRoute(page, name, route, expectations = {}) {
   page.on("console", onConsole);
   page.on("response", onResponse);
 
-  await page.goto(`${BASE_URL}${route}`, { waitUntil: "networkidle", timeout: 60000 }).catch(async () => {
-    await page.goto(`${BASE_URL}${route}`, { waitUntil: "domcontentloaded", timeout: 60000 });
-  });
+  // Realtime/SSE connections can keep networkidle open long after the learning UI is ready.
+  // Load the document deterministically, then let the explicit UI probes below decide readiness.
+  await page.goto(`${BASE_URL}${route}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForTimeout(1000);
 
   let paymentProbe = null;
