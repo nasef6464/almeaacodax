@@ -18,10 +18,19 @@ const PARENT_EMAIL = process.env.SMOKE_PARENT_EMAIL || "parent.a@almeaa.local";
 const PARENT_PASSWORD = process.env.SMOKE_PARENT_PASSWORD || "Parent@123";
 const PARENT_TOKEN = process.env.SMOKE_PARENT_TOKEN || "";
 const SMOKE_ALLOW_PASSWORD_LOGIN = String(process.env.SMOKE_ALLOW_PASSWORD_LOGIN || "").toLowerCase() === "true";
-const IS_PRODUCTION_REMOTE_SMOKE = /onrender\.com\/api/i.test(API_BASE);
-// The isolated CI workflow seeds a deterministic multi-role scenario. Production
-// smoke must prove live contracts without requiring demo records to remain in a
-// customer-facing database.
+const API_HOSTNAME = (() => {
+  try {
+    return new URL(API_BASE).hostname.toLowerCase();
+  } catch {
+    return "";
+  }
+})();
+const IS_PRODUCTION_REMOTE_SMOKE =
+  Boolean(API_HOSTNAME) && !["localhost", "127.0.0.1", "::1"].includes(API_HOSTNAME);
+// The isolated CI workflow seeds a deterministic multi-role scenario. Remote
+// production smoke must prove live contracts without requiring demo records to
+// remain in a customer-facing database, regardless of whether traffic reaches
+// the API through Vercel, Render, or another production proxy.
 const EXPECT_OPERATIONAL_FIXTURE = !IS_PRODUCTION_REMOTE_SMOKE;
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
@@ -732,6 +741,21 @@ async function run() {
     `requests=${studentPaymentRequests?.requests?.length || 0}`,
   );
 
+  const referencedStudentQuestionIds = uniqueStrings(
+    asArray(studentQuizzes).flatMap((quiz: any) => quizQuestionIds(quiz)),
+  );
+  const linkedStudentQuestions: any[] = [];
+  for (let offset = 0; offset < referencedStudentQuestionIds.length; offset += 100) {
+    const batch = referencedStudentQuestionIds.slice(offset, offset + 100);
+    const batchQuestions = await request<any[]>(
+      `/quizzes/questions?ids=${encodeURIComponent(batch.join(","))}&limit=100`,
+      "GET",
+      undefined,
+      student.token,
+    );
+    linkedStudentQuestions.push(...asArray(batchQuestions));
+  }
+
   const hiddenPathIds = (adminTaxonomy.paths || [])
     .filter((path: any) => path.isActive === false)
     .map((path: any) => documentId(path))
@@ -798,7 +822,9 @@ async function run() {
 
   const learnerLessonIds = new Set<string>((studentContent.lessons || []).map((lesson: any) => documentId(lesson)));
   const learnerQuizIds = new Set<string>(asArray(studentQuizzes).map((quiz: any) => documentId(quiz)));
-  const learnerQuestionIds = new Set<string>(asArray(studentQuestions).map((question: any) => documentId(question)));
+  const learnerQuestionIds = new Set<string>(
+    [...asArray(studentQuestions), ...linkedStudentQuestions].map((question: any) => documentId(question)),
+  );
   const learnerLessonsById = new Map<string, any>((studentContent.lessons || []).map((lesson: any) => [documentId(lesson), lesson]));
   const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
     normalizeLinkedIds(topic.lessonIds)
