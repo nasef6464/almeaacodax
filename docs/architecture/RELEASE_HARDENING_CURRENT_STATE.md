@@ -65,5 +65,23 @@
   - `smoke:student-learning-journey` FAIL.
 - Important test-design finding: `scripts/smoke-student-learning-journey.mjs` defaults to the deployed Render API and hard-coded legacy path/subject IDs when no smoke environment is supplied. Recovery Gate invokes it without an isolated API fixture, so this PR check is production-data-dependent and is not a deterministic repository contract. Do not silence it; move/parameterize it as part of the next bounded repair.
 - Repository-admin limitation: the connected GitHub integration does not expose a branch-protection mutation action. Required-check enforcement on `main` therefore still needs repository-owner/admin configuration after the workflow evidence is green.
-- Checkpoint commit: this document update follows the tested head above; use the commit containing this checkpoint as the next branch head.
-- Next exact action: repair deterministic CI first (supervisor dashboard contract drift and production-dependent student-learning contract), then rerun PR #162. After those contract gates are green, repair the isolated deep-E2E failures in small product-focused batches, beginning with assessment path loading and the shared missing learner/staff action surfaces. Do not merge #162 while release-critical gates remain red.
+- 2026-09-18 deterministic-gate repair checkpoint:
+  - validated implementation SHA: `336662887a85245ad7c86fedec46c4e8731f2beb`;
+  - Recovery Gate run `35302909613`: **PASS**;
+  - Refactor V2 Safety Gate run `35302909697`: **PASS**;
+  - Backend Integration run `35302909635`: **PASS**;
+  - Phase + Handover run `35302909656`: **PASS**;
+  - frontend typecheck: PASS;
+  - API typecheck: PASS;
+  - frontend production build: PASS;
+  - API production build: PASS;
+  - immutable architecture contract: PASS without raising the hotspot budget;
+  - supervisor dashboard contract: PASS;
+  - admin/users/schools/parent/payment contract: PASS;
+  - deployed-data student-learning and data-visibility smokes no longer gate pull-request source validation; they remain available outside PR events;
+  - secured admin/trainer route additions and Smart Classroom E2E env knobs are recorded as approved contract extensions rather than rewriting the immutable baseline;
+  - `server/src/scripts/backendIntegrationGate.ts` is classified as CI evidence, not shipped runtime, for the >400-line runtime hotspot budget.
+- Deep Pre-Merge E2E run `35302909709` is still executing against isolated Mongo on this checkpoint; do not merge until its aggregate result is reviewed.
+- Branch-protection blocker remains external: `main` has no required-check protection and the connected GitHub tool does not expose the repository-admin mutation.
+- Checkpoint commit: this document update follows validated implementation SHA `336662887a85245ad7c86fedec46c4e8731f2beb`; use the commit containing this checkpoint as the next branch head.
+- Next exact action: let the isolated Deep Pre-Merge E2E run finish and inspect its current artifact/logs. Repair only the still-reproducible deep-suite failures in small product-focused batches, beginning with the earliest common fixture/UI-loading cause; keep PR #162 unmerged until the deep aggregate is green. After CI evidence is green, record the external `main` branch-protection admin blocker and continue to Batch 3 without blocking unrelated work.
