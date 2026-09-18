@@ -637,11 +637,10 @@ export const QuizPage: React.FC = () => {
     [currentQuestionIndex, mockExamSectionSummaries],
   );
   const isStrictQiyasMode = useMemo(() => {
-    return Boolean(
-      quiz?.mockExam?.enabled &&
-      quiz.mockExam.presentationMode !== 'flexible' &&
-      quiz.mockExam.isStrictSectionLock !== false
-    );
+    if (!quiz?.mockExam?.enabled) return false;
+    if (quiz.mockExam.presentationMode === 'flexible') return false;
+    if (quiz.mockExam.isStrictSectionLock === false) return false;
+    return quiz.mockExam.presentationMode === 'qiyas_strict' || quiz.mockExam.isStrictSectionLock === true;
   }, [quiz]);
 
   // \u2500\u2500 Global exam timer \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500

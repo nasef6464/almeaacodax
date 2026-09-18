@@ -158,11 +158,12 @@ async function main() {
     if (
       !mockQuizId ||
       created.quizKind !== "mock" ||
+      created.mockExam?.presentationMode !== "flexible" ||
       persistedSections.length < 2 ||
       persistedQuestionIds.length < 2 ||
       new Set(persistedQuestionIds).size < 2
     ) {
-      throw new Error(`Mock definition was not persisted with distinct questions in two sections: ${JSON.stringify({ id: mockQuizId, sections: persistedSections })}`);
+      throw new Error(`Mock definition was not persisted with distinct questions in two sections: ${JSON.stringify({ id: mockQuizId, sections: persistedSections, presentationMode: created.mockExam?.presentationMode })}`);
     }
 
     // A manager's assessment catalog is intentionally a loaded read model.

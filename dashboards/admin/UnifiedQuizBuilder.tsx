@@ -421,7 +421,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               mockExam: {
                 enabled: true,
                 pathId,
-                sections: mockSections,
+                sections: mockSections.map((s) => ({ ...s, isStrictSectionLock: presentationMode === "qiyas_strict" })),
                 qiyasCategory,
                 isStrictSectionLock: presentationMode === "qiyas_strict",
                 presentationMode,

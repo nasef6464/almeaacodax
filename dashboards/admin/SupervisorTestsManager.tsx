@@ -108,6 +108,10 @@ export const SupervisorTestsManager: React.FC = () => {
         </div>
       </div>
 
+      <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs font-medium text-indigo-950 leading-relaxed">
+        نظام توجيه الاختبارات والتدخلات التشخيصية والعلاجية: إسناد التدريبات المركزية ومتابعة نسب المشاركة والنتائج لرفع الجاهزية القياسية لجميع طلاب المدرسة.
+      </div>
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {[
           [<ClipboardList size={20}/>, 'الاختبارات', summaryStats.totalTests, 'text-indigo-600'],

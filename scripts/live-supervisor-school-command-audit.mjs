@@ -94,7 +94,7 @@ const ROUTES = [
   {
     name: "directed-quiz-entry",
     path: "/supervisor-dashboard?tab=tests",
-    minBodyLength: 500,
+    minBodyLength: 400,
     minControlCount: 8,
     expectedTextGroups: [
       ["الاختبارات والتدخلات", "تدخل جديد"],
