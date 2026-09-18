@@ -81,7 +81,7 @@ assertAllIncludes("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx", [
   "فتح تشغيل المدرسة",
 ]);
 assertAllIncludes("dashboards/admin/SchoolsManager/workspaceViewModel.ts", [
-  "ربط المشرفين",
+  "اربط مشرفًا أو معلمًا بالمدرسة",
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
