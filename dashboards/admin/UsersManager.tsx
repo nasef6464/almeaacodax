@@ -555,10 +555,29 @@ export const UsersManager: React.FC = () => {
             const persistedPayload = (response as { user?: AdminUserPayload }).user;
             if (!persistedPayload) throw new Error('لم يُرجع الخادم نطاق المشرف بعد الحفظ.');
 
+            // Keep the inverse Group.supervisorIds relationship in sync as well.
+            // The paginated admin row is not guaranteed to exist in store.users,
+            // so calling the store helpers alone can no-op before reaching the API.
             for (const groupId of currentGroupIds.filter((groupId) => !validGroupIds.includes(groupId))) {
+                const group = groups.find((item) => item.id === groupId);
+                if (group) {
+                    const supervisorIds = (group.supervisorIds || []).filter((id) => id !== currentUser.id);
+                    await api.updateGroup(groupId, {
+                        supervisorIds,
+                        totalSupervisors: supervisorIds.length,
+                    });
+                }
                 await removeSupervisorFromGroupAsync(currentUser.id, groupId);
             }
             for (const groupId of validGroupIds.filter((groupId) => !currentGroupIds.includes(groupId))) {
+                const group = groups.find((item) => item.id === groupId);
+                if (group) {
+                    const supervisorIds = Array.from(new Set([...(group.supervisorIds || []), currentUser.id]));
+                    await api.updateGroup(groupId, {
+                        supervisorIds,
+                        totalSupervisors: supervisorIds.length,
+                    });
+                }
                 await assignSupervisorToGroupAsync(currentUser.id, groupId);
             }
 
