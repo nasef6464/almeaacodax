@@ -15,150 +15,25 @@ const quizModel = await read("server/src/models/Quiz.ts");
 const backendIntegrationGate = await read("server/src/scripts/backendIntegrationGate.ts");
 
 const checks = [];
+function check(name, assertion) { try { assertion(); checks.push({ name, status: "PASS" }); } catch (error) { checks.push({ name, status: "FAIL", details: error instanceof Error ? error.message : String(error) }); } }
+function assertIncludes(source, fragment, message) { if (!source.includes(fragment)) throw new Error(message || `Missing fragment: ${fragment}`); }
+function assertNotIncludes(source, fragment, message) { if (source.includes(fragment)) throw new Error(message || `Unexpected fragment: ${fragment}`); }
 
-function check(name, assertion) {
-  try {
-    assertion();
-    checks.push({ name, status: "PASS" });
-  } catch (error) {
-    checks.push({ name, status: "FAIL", details: error instanceof Error ? error.message : String(error) });
-  }
-}
-
-function assertIncludes(source, fragment, message) {
-  if (!source.includes(fragment)) {
-    throw new Error(message || `Missing fragment: ${fragment}`);
-  }
-}
-
-function assertNotIncludes(source, fragment, message) {
-  if (source.includes(fragment)) {
-    throw new Error(message || `Unexpected fragment: ${fragment}`);
-  }
-}
-
-check("supervisor overview has a compact command center", () => {
-  assertIncludes(dashboard, "متوسط الدرجات");
-  assertIncludes(dashboard, "متابعة الطلاب");
-  assertIncludes(dashboard, "أضعف المهارات");
-  assertIncludes(dashboard, "الفصول");
-});
-
-check("supervisor command center has quick workflow actions", () => {
-  assertIncludes(dashboard, "reports");
-  assertIncludes(dashboard, "sendWeeklyFollowUpAlert");
-  assertIncludes(dashboard, "supervisor-dashboard");
-});
-
-check("supervisor analytics are scoped and derived from owned groups/students", () => {
-  assertIncludes(dashboard, "scopedStudentIdSet");
-  assertIncludes(dashboard, "scopedResults");
-  assertIncludes(dashboard, "studentsNeedingFollowUp");
-  assertIncludes(dashboard, "weakestSkills");
-  assertIncludes(dashboard, "groupSnapshots");
-});
-
-check("supervisor weak-student center has scoped filters and real actions", () => {
-  assertIncludes(dashboard, "schoolFilter");
-  assertIncludes(dashboard, "classFilter");
-  assertIncludes(dashboard, "statusFilter");
-  assertIncludes(dashboard, "visibleWeakStudents");
-  assertIncludes(dashboard, "sendStudentFollowUpAlert");
-  assertIncludes(dashboard, "api.sendStudentAlert");
-  assertIncludes(dashboard, "apiService.sendStudentAlert");
-  assertNotIncludes(dashboard, "apiService.sendNotifications");
-  assertIncludes(dashboard, "openStudentReport");
-});
-
-check("supervisor quick decision board exposes weekly decision metrics and alert", () => {
-  assertIncludes(dashboard, 'data-testid="supervisor-quick-decision-board"');
-  assertIncludes(dashboard, "improvedStudentsCount");
-  assertIncludes(dashboard, "pendingFollowUpCount");
-  assertIncludes(dashboard, "sendWeeklyFollowUpAlert");
-  assertIncludes(dashboard, "إرسال تنبيه أسبوعي");
-});
-
-check("directed assessment manager includes explicit student targets in scope and analytics", () => {
-  assertIncludes(testsManager, "useSupervisorAssessmentScope");
-  assertIncludes(assessmentScope, "explicitUserIds");
-  assertIncludes(assessmentScope, "quiz.targetUserIds");
-  assertIncludes(assessmentScope, "scopedStudents");
-  assertIncludes(assessmentScope, "latestResultByStudent");
-  assertIncludes(assessmentScope, "targetStudentIds");
-});
-
-check("supervisor assessment messages use scoped student alert rather than admin-only sender", () => {
-  assertIncludes(testsManager, "api.sendStudentAlert");
-  assertNotIncludes(testsManager, "api.sendNotifications");
-  assertIncludes(notificationRoutes, 'notificationRouter.post("/student-alert"');
-  assertIncludes(notificationRoutes, 'requireRole(["admin", "supervisor", "teacher"])');
-  assertIncludes(notificationRoutes, 'channels: ["in_app"]');
-  assertIncludes(backendIntegrationGate, '"/notifications/student-alert"');
-  assertIncludes(backendIntegrationGate, "supervisor assessment alert is visible in the target student's inbox");
-  assertIncludes(quizModel, 'supervisorMessage: { type: String, default: null }');
-});
-
-check("directed assessment builder preserves an immediately selected audience on save", () => {
-  assertIncludes(quizBuilder, "const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);");
-  assertIncludes(quizBuilder, "targetGroupIdsRef.current = next;");
-  assertIncludes(quizBuilder, "targetGroupIds: targetGroupIdsRef.current");
-  assertIncludes(quizBuilder, "editingQuiz?.isPublished ?? (isAdmin || isSupervisor)");
-});
-
-check("post-test workflow supports weak and absent student follow-up", () => {
-  assertIncludes(detailPanel, 'StudentFilter = "all" | "needs-support" | "absent"');
-  assertIncludes(detailPanel, "needsSupportStudents");
-  assertIncludes(detailPanel, "إعادة توجيه");
-  assertIncludes(detailPanel, "لم يؤدوا");
-  assertIncludes(testsManager, "onAssignToStudent");
-});
-
-check("supervisor assignment persists its chosen attempt limit without dropping current settings", () => {
-  assertIncludes(testsManager, "maxAttempts:assignQuiz.settings?.maxAttempts");
-  assertIncludes(testsManager, "settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}");
-  assertIncludes(dashboard, "maxAttempts: pickedQuiz.settings?.maxAttempts");
-  assertIncludes(dashboard, "settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 }");
-});
-
-check("supervisor group assignment counts and alerts students from either group membership source", () => {
-  assertIncludes(assignmentWidget, "const pickerStudentIds = (scopedStudents || [])");
-  assertIncludes(assignmentWidget, "return new Set([...groupStudentIds, ...pickerStudentIds, ...targetUserIds]).size;");
-  assertIncludes(testsManager, "scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)");
-});
-
-check("supervisor assessment statistics include student-side group membership", () => {
-  assertIncludes(assessmentScope, "scopedStudents");
-  assertIncludes(assessmentScope, "targetGroupIds.includes(student.groupId)");
-  assertIncludes(assessmentScope, "targetStudents.add(student.id)");
-});
-
-check("student school-directed assessment list and runner share additive audience semantics", () => {
-  assertIncludes(quizzesPage, "directedQuizzes");
-  assertIncludes(quizzesPage, "الاختبارات المدرسية");
-  assertIncludes(quizzesPage, "...(user.schoolId ? [user.schoolId] : [])");
-  assertIncludes(quizzesPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
-  assertIncludes(quizzesPage, "const isServerVerifiedDirectedAudience = quiz.viewerAudienceVerified === true;");
-  assertIncludes(quizzesPage, "if (quiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) return false;");
-  assertIncludes(quizzesPage, "if (!isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience) return false;");
-  assertIncludes(quizzesPage, "user.id, user.schoolId, visiblePathIds");
-  assertIncludes(quizPage, "const targetUserIds = foundQuiz.targetUserIds || [];");
-  assertIncludes(quizPage, "const targetGroupIds = foundQuiz.targetGroupIds || [];");
-  assertIncludes(quizPage, "...(user.schoolId ? [user.schoolId] : [])");
-  assertIncludes(quizPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)");
-  assertIncludes(quizPage, "targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id))");
-  assertIncludes(quizPage, "const isServerVerifiedDirectedAudience = foundQuiz.viewerAudienceVerified === true;");
-  assertIncludes(quizPage, "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience)");
-  assertNotIncludes(quizPage, "if (!isUserTargeted || !isGroupTargeted)");
-});
-
-check("supervisor actions navigate through BrowserRouter rather than only changing the hash", () => {
-  assertIncludes(dashboard, "window.location.assign(`/admin-dashboard?${params.toString()}`);");
-  assertNotIncludes(dashboard, "window.location.hash = `/admin-dashboard?");
-});
+check("supervisor overview has a compact command center", () => { assertIncludes(dashboard, "متوسط الدرجات"); assertIncludes(dashboard, "متابعة الطلاب"); assertIncludes(dashboard, "أضعف المهارات"); assertIncludes(dashboard, "الفصول"); });
+check("supervisor command center has quick workflow actions", () => { assertIncludes(dashboard, "reports"); assertIncludes(dashboard, "sendWeeklyFollowUpAlert"); assertIncludes(dashboard, "supervisor-dashboard"); });
+check("supervisor analytics are scoped and derived from owned groups/students", () => { assertIncludes(dashboard, "scopedStudentIdSet"); assertIncludes(dashboard, "scopedResults"); assertIncludes(dashboard, "studentsNeedingFollowUp"); assertIncludes(dashboard, "weakestSkills"); assertIncludes(dashboard, "groupSnapshots"); });
+check("supervisor weak-student center has scoped filters and real actions", () => { assertIncludes(dashboard, "schoolFilter"); assertIncludes(dashboard, "classFilter"); assertIncludes(dashboard, "statusFilter"); assertIncludes(dashboard, "visibleWeakStudents"); assertIncludes(dashboard, "sendStudentFollowUpAlert"); assertIncludes(dashboard, "api.sendStudentAlert"); assertNotIncludes(dashboard, "apiService.sendStudentAlert"); assertNotIncludes(dashboard, "apiService.sendNotifications"); assertIncludes(dashboard, "openStudentReport"); });
+check("supervisor quick decision board exposes weekly decision metrics and alert", () => { assertIncludes(dashboard, 'data-testid="supervisor-quick-decision-board"'); assertIncludes(dashboard, "improvedStudentsCount"); assertIncludes(dashboard, "pendingFollowUpCount"); assertIncludes(dashboard, "sendWeeklyFollowUpAlert"); assertIncludes(dashboard, "إرسال تنبيه أسبوعي"); });
+check("directed assessment manager includes explicit student targets in scope and analytics", () => { assertIncludes(testsManager, "useSupervisorAssessmentScope"); assertIncludes(assessmentScope, "explicitUserIds"); assertIncludes(assessmentScope, "quiz.targetUserIds"); assertIncludes(assessmentScope, "scopedStudents"); assertIncludes(assessmentScope, "latestResultByStudent"); assertIncludes(assessmentScope, "targetStudentIds"); });
+check("supervisor assessment messages use scoped student alert rather than admin-only sender", () => { assertIncludes(testsManager, "api.sendStudentAlert"); assertNotIncludes(testsManager, "api.sendNotifications"); assertIncludes(notificationRoutes, 'notificationRouter.post("/student-alert"'); assertIncludes(notificationRoutes, 'requireRole(["admin", "supervisor", "teacher"])'); assertIncludes(notificationRoutes, 'channels: ["in_app"]'); assertIncludes(backendIntegrationGate, '"/notifications/student-alert"'); assertIncludes(backendIntegrationGate, "supervisor assessment alert is visible in the target student's inbox"); assertIncludes(quizModel, 'supervisorMessage: { type: String, default: null }'); });
+check("directed assessment builder preserves an immediately selected audience on save", () => { assertIncludes(quizBuilder, "const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);"); assertIncludes(quizBuilder, "targetGroupIdsRef.current = next;"); assertIncludes(quizBuilder, "targetGroupIds: targetGroupIdsRef.current"); assertIncludes(quizBuilder, "editingQuiz?.isPublished ?? (isAdmin || isSupervisor)"); });
+check("post-test workflow supports weak and absent student follow-up", () => { assertIncludes(detailPanel, 'StudentFilter = "all" | "needs-support" | "absent"'); assertIncludes(detailPanel, "needsSupportStudents"); assertIncludes(detailPanel, "إعادة توجيه"); assertIncludes(detailPanel, "لم يؤدوا"); assertIncludes(testsManager, "onAssignToStudent"); });
+check("supervisor assignment persists its chosen attempt limit without dropping current settings", () => { assertIncludes(testsManager, "maxAttempts:assignQuiz.settings?.maxAttempts"); assertIncludes(testsManager, "settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}"); assertIncludes(dashboard, "maxAttempts: pickedQuiz.settings?.maxAttempts"); assertIncludes(dashboard, "settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 }"); });
+check("supervisor group assignment counts and alerts students from either group membership source", () => { assertIncludes(assignmentWidget, "const pickerStudentIds = (scopedStudents || [])"); assertIncludes(assignmentWidget, "return new Set([...groupStudentIds, ...pickerStudentIds, ...targetUserIds]).size;"); assertIncludes(testsManager, "scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)"); });
+check("supervisor assessment statistics include student-side group membership", () => { assertIncludes(assessmentScope, "scopedStudents"); assertIncludes(assessmentScope, "targetGroupIds.includes(student.groupId)"); assertIncludes(assessmentScope, "targetStudents.add(student.id)"); });
+check("student school-directed assessment list and runner share additive audience semantics", () => { assertIncludes(quizzesPage, "directedQuizzes"); assertIncludes(quizzesPage, "الاختبارات المدرسية"); assertIncludes(quizzesPage, "...(user.schoolId ? [user.schoolId] : [])"); assertIncludes(quizzesPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)"); assertIncludes(quizzesPage, "const isServerVerifiedDirectedAudience = quiz.viewerAudienceVerified === true;"); assertIncludes(quizzesPage, "if (quiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) return false;"); assertIncludes(quizzesPage, "if (!isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience) return false;"); assertIncludes(quizzesPage, "user.id, user.schoolId, visiblePathIds"); assertIncludes(quizPage, "const targetUserIds = foundQuiz.targetUserIds || [];"); assertIncludes(quizPage, "const targetGroupIds = foundQuiz.targetGroupIds || [];"); assertIncludes(quizPage, "...(user.schoolId ? [user.schoolId] : [])"); assertIncludes(quizPage, "targetUserIds.length > 0 && targetUserIds.includes(user.id)"); assertIncludes(quizPage, "targetGroupIds.length > 0 && targetGroupIds.some((id) => userGroups.includes(id))"); assertIncludes(quizPage, "const isServerVerifiedDirectedAudience = foundQuiz.viewerAudienceVerified === true;"); assertIncludes(quizPage, "if (hasExplicitTargets && !isUserTargeted && !isGroupTargeted && !isServerVerifiedDirectedAudience)"); assertNotIncludes(quizPage, "if (!isUserTargeted || !isGroupTargeted)"); });
+check("supervisor actions navigate through BrowserRouter rather than only changing the hash", () => { assertIncludes(dashboard, "window.location.assign(`/admin-dashboard?${params.toString()}`);"); assertNotIncludes(dashboard, "window.location.hash = `/admin-dashboard?"); });
 
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
-
-if (failed.length > 0) {
-  process.exit(1);
-}
+if (failed.length > 0) process.exit(1);
