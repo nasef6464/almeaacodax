@@ -402,4 +402,6 @@ fs.writeFileSync(
 );
 
 console.log(JSON.stringify({ outDir: OUT_DIR, total: summary.total, pass: summary.pass, fail: summary.fail, blocked: summary.blocked }, null, 2));
-if (summary.fail || summary.blocked) process.exit(1);
+// Browser and evidence work are complete. Exit explicitly so lingering HTTP/realtime handles
+// cannot turn a fully green role audit into a GitHub step timeout.
+process.exit(summary.fail || summary.blocked ? 1 : 0);
