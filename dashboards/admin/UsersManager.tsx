@@ -539,8 +539,30 @@ export const UsersManager: React.FC = () => {
         void withRelationshipSave(currentUser.id, async () => {
             const validGroupIds = Array.from(new Set(nextGroupIds)).filter((groupId) => groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')));
             const currentGroupIds = (currentUser.groupIds || []).filter((groupId) => groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')));
-            for (const groupId of currentGroupIds.filter((groupId) => !validGroupIds.includes(groupId))) await removeSupervisorFromGroupAsync(currentUser.id, groupId);
-            for (const groupId of validGroupIds.filter((groupId) => !currentGroupIds.includes(groupId))) await assignSupervisorToGroupAsync(currentUser.id, groupId);
+            const selectedGroups = groups.filter((group) => validGroupIds.includes(group.id));
+            const selectedSchool = selectedGroups.find((group) => group.type === 'SCHOOL');
+            const selectedClass = selectedGroups.find((group) => group.type === 'CLASS');
+            const nextSchoolId = selectedSchool?.id || selectedClass?.parentId || null;
+
+            // Persist the complete selection first. The UsersManager page is
+            // intentionally backed by its own paginated server result rather
+            // than store.users, so the store relationship helpers may not find
+            // this row and can otherwise return without writing anything.
+            const response = await api.updateAdminUser(currentUser.id, {
+                schoolId: nextSchoolId,
+                groupIds: validGroupIds,
+            });
+            const persistedPayload = (response as { user?: AdminUserPayload }).user;
+            if (!persistedPayload) throw new Error('لم يُرجع الخادم نطاق المشرف بعد الحفظ.');
+
+            for (const groupId of currentGroupIds.filter((groupId) => !validGroupIds.includes(groupId))) {
+                await removeSupervisorFromGroupAsync(currentUser.id, groupId);
+            }
+            for (const groupId of validGroupIds.filter((groupId) => !currentGroupIds.includes(groupId))) {
+                await assignSupervisorToGroupAsync(currentUser.id, groupId);
+            }
+
+            replacePageUser(buildStoreUser(persistedPayload));
         });
     };
 
