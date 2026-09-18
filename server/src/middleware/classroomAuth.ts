@@ -27,6 +27,13 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
   if (!actor) return next();
 
   try {
+    // Safe discovery endpoint: the handler itself resolves school context and entitlement
+    // and returns { hasActiveSession: false } when Smart Classroom is unavailable.
+    // Do not let the route-group guard turn that normal state into a 403 on every student page.
+    if (actor.role === "student" && req.method === "GET" && req.path === "/student/active-session") {
+      return next();
+    }
+
     if (actor.role === "student") {
       const schoolId = String(actor.schoolId || "").trim();
       if (!schoolId) return next();
