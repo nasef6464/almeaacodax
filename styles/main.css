@@ -111,3 +111,7 @@ html.dark body {
   object-fit: contain;
   vertical-align: middle;
 }
+
+[data-testid="question-editor-word-paste"] .ql-container {
+  min-height: 310px;
+}

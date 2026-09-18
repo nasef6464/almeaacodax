@@ -80,8 +80,8 @@ async function main() {
       api(student.page, "/auth/me"),
     ]);
     const questions = listOf(questionsResponse.payload, "questions");
-    const firstQuestion = questions.find((question) => question.pathId && (question.subject || question.subjectId));
-    let secondQuestion = questions.find((question) => String(question.id || question._id) !== String(firstQuestion?.id || firstQuestion?._id) && String(question.pathId) === String(firstQuestion?.pathId) && String(question.subject || question.subjectId) === String(firstQuestion?.subject || firstQuestion?.subjectId));
+    const firstQuestion = questions.find((question) => String(question.pathId) === "p_qudrat" && String(question.subject || question.subjectId).includes("quant")) || questions.find((question) => question.pathId && (question.subject || question.subjectId));
+    let secondQuestion = questions.find((question) => String(question.pathId) === "p_qudrat" && String(question.subject || question.subjectId).includes("verbal")) || questions.find((question) => String(question.id || question._id) !== String(firstQuestion?.id || firstQuestion?._id) && String(question.pathId) === String(firstQuestion?.pathId));
     const groupIds = new Set([...(student.user.groupIds || []), ...(studentMe.payload?.groupIds || []), ...(studentMe.payload?.user?.groupIds || [])].map(String));
     const targetGroup = listOf(bootstrapResponse.payload, "groups").find((group) => groupIds.has(String(group.id || group._id)));
     if (!questionsResponse.ok || !firstQuestion || !targetGroup) throw new Error("Fixture lacks an approved scoped question or a target student group.");
@@ -92,6 +92,7 @@ async function main() {
     // genuinely distinct.
     if (!secondQuestion) {
       temporaryQuestionId = `assessment-mock-question-${Date.now()}`;
+      const targetSubject = String(firstQuestion.subject || firstQuestion.subjectId).includes("quant") ? "sub_verbal" : String(firstQuestion.subject || firstQuestion.subjectId);
       const createdQuestion = await api(admin.page, "/quizzes/questions", {
         method: "POST",
         body: JSON.stringify({
@@ -102,7 +103,7 @@ async function main() {
           explanation: "سؤال مؤقت لدليل الجلسة المعزولة.",
           skillIds: [String(firstQuestion.skillIds?.[0] || `assessment-mock-skill-${Date.now()}`)],
           pathId: firstQuestion.pathId,
-          subject: firstQuestion.subject || firstQuestion.subjectId,
+          subject: targetSubject,
           approvalStatus: "approved",
         }),
       });
@@ -111,11 +112,18 @@ async function main() {
     }
 
     const marker = `assessment-mock-session-${Date.now()}`;
-    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await admin.page.getByTestId("assessment-manager-create").click();
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-kind-mock").click();
+    await admin.page.getByTestId("presentation-mode-flexible").click();
+    await admin.page.waitForFunction(
+      () => document.querySelector('[data-testid="presentation-mode-flexible"]')?.className.includes("border-indigo-600"),
+      { timeout: 10000 },
+    );
     await admin.page.getByTestId("assessment-builder-title").fill(marker);
+    const pathSelect = admin.page.getByTestId("assessment-builder-path");
+    await pathSelect.locator(`option[value="${String(firstQuestion.pathId)}"]`).waitFor({ state: "attached", timeout: 60000 });
     await admin.page.getByTestId("assessment-builder-path").selectOption(String(firstQuestion.pathId));
     await admin.page.getByTestId("assessment-builder-subject").selectOption(String(firstQuestion.subject || firstQuestion.subjectId));
     await admin.page.getByTestId("assessment-builder-next").click();
@@ -150,11 +158,12 @@ async function main() {
     if (
       !mockQuizId ||
       created.quizKind !== "mock" ||
+      created.mockExam?.presentationMode !== "flexible" ||
       persistedSections.length < 2 ||
       persistedQuestionIds.length < 2 ||
       new Set(persistedQuestionIds).size < 2
     ) {
-      throw new Error(`Mock definition was not persisted with distinct questions in two sections: ${JSON.stringify({ id: mockQuizId, sections: persistedSections })}`);
+      throw new Error(`Mock definition was not persisted with distinct questions in two sections: ${JSON.stringify({ id: mockQuizId, sections: persistedSections, presentationMode: created.mockExam?.presentationMode })}`);
     }
 
     // A manager's assessment catalog is intentionally a loaded read model.
@@ -162,10 +171,10 @@ async function main() {
     // starts, then prove its analytics refresh after the persisted submission.
     managerContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
     const manager = await login(managerContext, credentials.admin);
-    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await manager.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).waitFor({ timeout: 30000 });
 
-    await student.page.goto(`${BASE_URL}/quiz/${encodeURIComponent(mockQuizId)}?source=mock-exam`, { waitUntil: "networkidle", timeout: 60000 });
+    await student.page.goto(`${BASE_URL}/quiz/${encodeURIComponent(mockQuizId)}?source=mock-exam`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await student.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await student.page.getByTestId("quiz-mock-section-0").waitFor();
     await student.page.getByTestId("quiz-mock-section-1").waitFor();

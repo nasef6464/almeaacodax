@@ -100,12 +100,16 @@ export const SupervisorTestsManager: React.FC = () => {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-black text-gray-900"><ClipboardList className="text-indigo-600"/> الاختبارات والتدخلات</h2>
-          <p className="mt-1 text-sm text-gray-500">ذراع التنفيذ: وجّه، تابع، ذكّر، أعد الاستهداف، ثم افتح التحليل.</p>
+          <p className="mt-1 text-sm text-gray-500">توجيه/إعادة توجيه الاختبارات · متابعة الطلاب · التدخل العلاجي المباشر.</p>
         </div>
         <div className="flex gap-2">
           {selectedQuizzes.length > 1 && <button onClick={() => setViewMode('compare')} className="flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-bold text-white"><Activity size={17}/> مقارنة ({selectedQuizzes.length})</button>}
           <button onClick={() => setViewMode('create')} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white"><Plus size={17}/> تدخل جديد</button>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs font-medium text-indigo-950 leading-relaxed">
+        نظام توجيه الاختبارات والتدخلات التشخيصية والعلاجية: إسناد التدريبات المركزية ومتابعة نسب المشاركة والنتائج لرفع الجاهزية القياسية لجميع طلاب المدرسة.
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">

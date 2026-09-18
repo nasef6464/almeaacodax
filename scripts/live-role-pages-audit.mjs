@@ -10,6 +10,7 @@ const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audi
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
 const LOADING_TIMEOUT_MS = 10000;
 const BASE_ORIGIN = new URL(BASE_URL);
+const API_ORIGIN = new URL(API_BASE_URL);
 const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
@@ -183,6 +184,16 @@ async function login(page, role) {
       secure: BASE_ORIGIN.protocol === "https:",
       sameSite: "Lax",
     });
+    if (API_ORIGIN.origin !== BASE_ORIGIN.origin) {
+      authCookies.push({
+        name: "almeaa_access_token",
+        value: authCookie,
+        url: API_ORIGIN.origin,
+        httpOnly: true,
+        secure: API_ORIGIN.protocol === "https:",
+        sameSite: "Lax",
+      });
+    }
   }
   await page.context().addCookies(authCookies);
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
@@ -224,10 +235,10 @@ async function inspectPage(page, role, pageSpec, viewport) {
   let navigationWarning = "";
 
   try {
-    await page.goto(url, { waitUntil: "networkidle", timeout: PAGE_TIMEOUT_MS }).catch(async (error) => {
-      navigationWarning = String(error?.message || error || "").slice(0, 500);
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
-    });
+    // Long-lived realtime/SSE requests can keep Playwright's networkidle state
+    // open even after the role page is fully usable. Wait for the document,
+    // then rely on the explicit loading-state probe below for UI readiness.
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
     await page.waitForTimeout(800);
     await page.waitForFunction(
       ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
@@ -402,4 +413,6 @@ fs.writeFileSync(
 );
 
 console.log(JSON.stringify({ outDir: OUT_DIR, total: summary.total, pass: summary.pass, fail: summary.fail, blocked: summary.blocked }, null, 2));
-if (summary.fail || summary.blocked) process.exit(1);
+// Browser and evidence work are complete. Exit explicitly so lingering HTTP/realtime handles
+// cannot turn a fully green role audit into a GitHub step timeout.
+process.exit(summary.fail || summary.blocked ? 1 : 0);

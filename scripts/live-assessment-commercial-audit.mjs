@@ -149,6 +149,8 @@ async function main() {
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-kind-test").click();
     await admin.page.getByTestId("assessment-builder-title").fill(marker);
+    const pathSelect = admin.page.getByTestId("assessment-builder-path");
+    await pathSelect.locator(`option[value="${String(question.pathId)}"]`).waitFor({ state: "attached", timeout: 60000 });
     await admin.page.getByTestId("assessment-builder-path").selectOption(String(question.pathId));
     await admin.page.getByTestId("assessment-builder-subject").selectOption(String(question.subject || question.subjectId));
     await admin.page.getByTestId("assessment-builder-next").click();
@@ -199,13 +201,13 @@ async function main() {
     await admin.page.getByTestId("assessment-question-search").fill(marker);
     const selectedQuestion = admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`);
     await selectedQuestion.waitFor({ timeout: 30000 });
-    if (!await selectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await selectedQuestion.evaluate((element) => (element.textContent || "").includes("محدد للاختبار"))) {
       throw new Error("Published edit did not restore the selected question in the Builder.");
     }
     await admin.page.getByTestId("assessment-question-page-next").click();
     const secondSelectedQuestion = admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`);
     await secondSelectedQuestion.waitFor({ timeout: 30000 });
-    if (!await secondSelectedQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await secondSelectedQuestion.evaluate((element) => (element.textContent || "").includes("محدد للاختبار"))) {
       throw new Error("Published edit did not retain the second-page selected question in the Builder.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
@@ -231,13 +233,13 @@ async function main() {
     await admin.page.getByTestId("assessment-question-search").fill(marker);
     const restoredQuestion = admin.page.getByTestId(`assessment-question-select-${firstPageQuestion.id}`);
     await restoredQuestion.waitFor({ timeout: 30000 });
-    if (!await restoredQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await restoredQuestion.evaluate((element) => (element.textContent || "").includes("محدد للاختبار"))) {
       throw new Error("Published edit did not preserve the selected question after manager reload.");
     }
     await admin.page.getByTestId("assessment-question-page-next").click();
     const restoredSecondQuestion = admin.page.getByTestId(`assessment-question-select-${secondPageQuestion.id}`);
     await restoredSecondQuestion.waitFor({ timeout: 30000 });
-    if (!await restoredSecondQuestion.evaluate((element) => element.className.includes("bg-indigo-50"))) {
+    if (!await restoredSecondQuestion.evaluate((element) => (element.textContent || "").includes("محدد للاختبار"))) {
       throw new Error("Published edit did not preserve the second-page question after manager reload.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
@@ -335,7 +337,7 @@ async function main() {
     const hasServerResult = Boolean(serverResult);
     if (!serverResult?.date) throw new Error(`Server result is missing its attempt date: ${JSON.stringify(resultResponse)}`);
     await freshStudent.page.goto(`${BASE_URL}/results?attempt=${encodeURIComponent(String(serverResult.date))}`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    const reviewButton = freshStudent.page.getByRole("button", { name: "مراجعة الحلول والأخطاء", exact: true });
+    const reviewButton = freshStudent.page.getByRole("button", { name: /^مراجعة الحلول والأخطاء/ });
     await reviewButton.waitFor({ timeout: 30000 });
     await reviewButton.click();
     await freshStudent.page.getByRole("heading", { name: "مراجعة الحلول" }).waitFor({ timeout: 30000 });

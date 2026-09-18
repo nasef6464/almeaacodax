@@ -240,9 +240,9 @@ async function inspectRoute(page, viewport, routeSpec) {
   };
   page.on("console", onConsole);
   page.on("response", onResponse);
-  await page.goto(`${BASE_URL}${routeSpec.path}`, { waitUntil: "networkidle", timeout: 60000 }).catch(async () => {
-    await page.goto(`${BASE_URL}${routeSpec.path}`, { waitUntil: "domcontentloaded", timeout: 60000 });
-  });
+  // Background requests can keep networkidle open after the page is usable.
+  // Use document readiness and the explicit assertions below instead.
+  await page.goto(`${BASE_URL}${routeSpec.path}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForTimeout(1000);
   page.off("console", onConsole);
   page.off("response", onResponse);

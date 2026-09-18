@@ -81,7 +81,10 @@
     "schoolAccessRouter|PUT|/directors/:schoolId/:userId",
     "schoolAccessRouter|GET|/entitlements/:schoolId/:module",
     "schoolAccessRouter|PUT|/memberships",
-    "schoolAccessRouter|GET|/teacher-workspace"
+    "schoolAccessRouter|GET|/teacher-workspace",
+    "authRouter|PATCH|/admin/users/bulk-status",
+    "authRouter|GET|/admin/users/summary",
+    "authRouter|GET|/trainer/performance"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
@@ -101,6 +104,8 @@
     "LEARNING_MANAGER_AUDIT_RUN_ID",
     "PILOT_ALLOW_EXTERNAL_RUN",
     "PILOT_WRITE_AUTHORIZATION",
-    "UI_AUDIT_ROLE_CREDENTIALS_JSON"
+    "UI_AUDIT_ROLE_CREDENTIALS_JSON",
+    "SMART_CLASSROOM_LOAD_STUDENTS",
+    "SMART_CLASSROOM_SCENARIO"
   ]
 }

@@ -18,6 +18,7 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { ActivityModel } from "../models/Activity.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
+import { SchoolContractModel } from "../models/SchoolContract.js";
 
 const NOW = Date.now();
 const SAMPLE_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
@@ -315,6 +316,18 @@ async function seedUsersAndGroups() {
         description: "مدرسة تشغيلية لاختبار العقود والباقات والمتابعة.",
         location: "الرياض",
         settings: { seedScenario: true },
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  );
+
+  await SchoolContractModel.findOneAndUpdate(
+    { schoolId: String(school._id || school.id) },
+    {
+      $set: {
+        schoolId: String(school._id || school.id),
+        status: "active",
+        modules: ["SCHOOL_CORE", "SMART_CLASSROOM", "EXECUTIVE_ANALYTICS", "INTERVENTION_CENTER", "SCHOOL_INTELLIGENCE"],
       },
     },
     { upsert: true, new: true, setDefaultsOnInsert: true },

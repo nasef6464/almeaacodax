@@ -153,9 +153,8 @@ async function inspectReports(page, role, viewport) {
   };
   page.on("console", onConsole);
   page.on("response", onResponse);
-  await page.goto(`${BASE_URL}/reports`, { waitUntil: "networkidle", timeout: 60000 }).catch(async () => {
-    await page.goto(`${BASE_URL}/reports`, { waitUntil: "domcontentloaded", timeout: 60000 });
-  });
+  // Reports may keep authenticated realtime requests open; networkidle is not a stable readiness signal.
+  await page.goto(`${BASE_URL}/reports`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForTimeout(1000);
 
   let printProbe = null;

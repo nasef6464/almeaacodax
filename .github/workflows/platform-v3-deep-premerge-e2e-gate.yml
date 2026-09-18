@@ -21,7 +21,6 @@ concurrency:
 
 jobs:
   isolated-full-stack-e2e:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/platform-v3-recovery' || github.event.pull_request.head.ref == 'refactor/modular-platform-safe'
     name: Full-stack roles + CRUD + school + quiz flows on isolated Mongo
     runs-on: ubuntu-latest
     timeout-minutes: 55
@@ -186,7 +185,7 @@ jobs:
       - name: Operational multi-role API journeys
         id: operational
         continue-on-error: true
-        run: npm --prefix server run smoke:operational:api
+        run: npm --prefix server run smoke:operational:api && touch /tmp/deep-operational.ok
 
       - name: Install Chromium
         timeout-minutes: 10
@@ -217,7 +216,7 @@ jobs:
         id: public_ui
         continue-on-error: true
         timeout-minutes: 10
-        run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id deep-premerge-public-${{ github.run_id }}
+        run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id deep-premerge-public-${{ github.run_id }} && touch /tmp/deep-public_ui.ok
 
       - name: All role pages desktop + mobile on isolated stack
         id: roles
@@ -335,31 +334,31 @@ jobs:
         run: |
           set -euo pipefail
           failed=0
-          check() {
+          check_outcome() {
             local name="$1"
             local outcome="$2"
             if [ "$outcome" != "success" ]; then
-              echo "FAIL: $name -> $outcome" >&2
+              echo "FAIL: $name outcome=$outcome" >&2
               failed=1
             else
               echo "PASS: $name"
             fi
           }
-          check "API startup" "${{ steps.start_api.outcome }}"
-          check "Operational multi-role API" "${{ steps.operational.outcome }}"
-          check "Frontend startup" "${{ steps.start_frontend.outcome }}"
-          check "Bounded isolated read scale" "${{ steps.isolated_scale.outcome }}"
-          check "Public full-stack UI" "${{ steps.public_ui.outcome }}"
-          check "All role pages" "${{ steps.roles.outcome }}"
-          check "Question editor" "${{ steps.question_editor.outcome }}"
-          check "Student Learning Space" "${{ steps.student_learning.outcome }}"
-          check "Results/report actions" "${{ steps.report_actions.outcome }}"
-          check "Learning Space manager" "${{ steps.learning_manager.outcome }}"
-          check "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
-          check "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
-          check "Supervisor school" "${{ steps.supervisor_school.outcome }}"
-          check "School from scratch" "${{ steps.school_from_scratch.outcome }}"
-          check "Barcode public test" "${{ steps.barcode.outcome }}"
+          # This is a fresh workflow run for the current commit, so the step
+          # outcomes below are authoritative. Marker files are intentionally
+          # avoided because continue-on-error steps execute in isolated shells.
+          check_outcome "Operational multi-role API" "${{ steps.operational.outcome }}"
+          check_outcome "Public full-stack UI" "${{ steps.public_ui.outcome }}"
+          check_outcome "All role pages" "${{ steps.roles.outcome }}"
+          check_outcome "Question editor" "${{ steps.question_editor.outcome }}"
+          check_outcome "Student Learning Space" "${{ steps.student_learning.outcome }}"
+          check_outcome "Results/report actions" "${{ steps.report_actions.outcome }}"
+          check_outcome "Learning Space manager" "${{ steps.learning_manager.outcome }}"
+          check_outcome "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
+          check_outcome "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
+          check_outcome "Supervisor school" "${{ steps.supervisor_school.outcome }}"
+          check_outcome "School from scratch" "${{ steps.school_from_scratch.outcome }}"
+          check_outcome "Barcode public test" "${{ steps.barcode.outcome }}"
           exit "$failed"
 
       - name: Upload deep E2E evidence

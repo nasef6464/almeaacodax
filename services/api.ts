@@ -35,7 +35,7 @@ const defaultApiBaseUrl = isLocalhost ? "http://localhost:4000/api" : "/api";
 // when VITE_APP_ENV=staging, guaranteeing same-origin transport.
 // Localhost and production/custom production domains preserve their configured or default API URL.
 const API_BASE_URL = (
-  isStagingEnv ? "/api" : (configuredApiBaseUrl || defaultApiBaseUrl)
+  configuredApiBaseUrl || (isStagingEnv ? "/api" : defaultApiBaseUrl)
 ).replace(/\/$/, "");
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

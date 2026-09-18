@@ -118,6 +118,20 @@ function waitForEvent<T = any>(socket: Socket, event: string, timeoutMs = 5000) 
   });
 }
 
+function expectNoEvent(socket: Socket, event: string, timeoutMs = 750) {
+  return new Promise<void>((resolve, reject) => {
+    const handler = (payload: unknown) => {
+      clearTimeout(timeout);
+      reject(new Error(`Unexpected ${event} on student socket: ${JSON.stringify(payload)}`));
+    };
+    const timeout = setTimeout(() => {
+      socket.off(event, handler);
+      resolve();
+    }, timeoutMs);
+    socket.once(event, handler);
+  });
+}
+
 async function cleanup() {
   sockets.splice(0).forEach((socket) => socket.disconnect());
   if (sessionIds.length) {
@@ -219,34 +233,42 @@ async function run() {
   assert.equal((await request(`/classroom/sessions/${sessionAId}/aggregate`, { token: teacherA2Token })).status, 403, "second teacher must not read another teacher's live aggregate");
   assert.equal((await request(`/classroom/sessions/${sessionAId}/append-questions`, { method: "POST", token: teacherA2Token, body: { questionIds: [q2], autoPublishFirst: true } })).status, 403, "second teacher must not mutate another teacher's session");
 
-  const publishedEvent = waitForEvent<any>(studentSocket, "question:published");
   const append = await request(`/classroom/sessions/${sessionAId}/append-questions`, {
     method: "POST",
     token: teacherAToken,
-    body: { questionIds: [q2], autoPublishFirst: true },
+    body: { questionIds: [q2], autoPublishFirst: false },
   });
   assert.equal(append.status, 200, JSON.stringify(append.body));
+
+  // A live batch must be closed before a newly appended batch becomes active.
+  // Publishing the appended question performs the authoritative batch transition
+  // and emits the realtime question:published event.
+  const appendedQuestionIndex = Number(append.body?.totalQuestions || 0) - 1;
+  assert.ok(appendedQuestionIndex >= 0, JSON.stringify(append.body));
+  const publishedEvent = waitForEvent<any>(studentSocket, "question:published");
+  const publish = await request(`/classroom/sessions/${sessionAId}/publish/${appendedQuestionIndex}`, {
+    method: "POST",
+    token: teacherAToken,
+  });
+  assert.equal(publish.status, 200, JSON.stringify(publish.body));
   const published = await publishedEvent;
   assert.equal(String(published.questionId), q2);
 
   const responseEvent = waitForEvent<any>(teacherASocket, "response:updated");
-  const studentResponseEvent = waitForEvent<any>(studentSocket, "response:updated");
+  const studentResponseIsolation = expectNoEvent(studentSocket, "response:updated");
   const answer = await request(`/classroom/sessions/${sessionAId}/answers/${q2}`, {
     method: "PUT",
     token: studentToken,
     body: { selectedOptionIndex: 0 },
   });
   assert.equal(answer.status, 200, JSON.stringify(answer.body));
-  const [responseUpdated, studentVisibleUpdate] = await Promise.all([responseEvent, studentResponseEvent]);
+  const responseUpdated = await responseEvent;
+  await studentResponseIsolation;
   assert.equal(String(responseUpdated.questionId), q2);
-  assert.equal(Number(responseUpdated.responseCount), 1);
-  assert.equal(String(studentVisibleUpdate.questionId), q2);
-  assert.equal(Number(studentVisibleUpdate.responseCount), 1);
-  for (const payload of [responseUpdated, studentVisibleUpdate]) {
-    assert.equal("studentId" in payload, false, "shared classroom realtime payload must not expose student identity");
-    assert.equal("selectedOptionIndex" in payload, false, "shared classroom realtime payload must not expose a student's answer");
-    assert.equal("isCorrect" in payload, false, "shared classroom realtime payload must not expose a student's correctness");
-  }
+  assert.equal("studentId" in responseUpdated, false, "staff realtime payload must not expose student identity");
+  assert.equal("selectedOptionIndex" in responseUpdated, false, "staff realtime payload must not expose a student's answer");
+  assert.equal("isCorrect" in responseUpdated, false, "staff realtime payload must not expose a student's correctness");
+  assert.equal("responseCount" in responseUpdated, false, "per-answer realtime updates must not trigger aggregate database counts");
 
   const teacherEndedOnSession = waitForEvent<any>(teacherASocket, "session:ended");
   const studentEndedOnSession = waitForEvent<any>(studentSocket, "session:ended");

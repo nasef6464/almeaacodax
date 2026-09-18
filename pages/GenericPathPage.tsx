@@ -477,7 +477,23 @@ export const GenericPathPage: React.FC = () => {
         params.set('tab', tab);
         return `/category/${path.id}?${params.toString()}`;
     };
-    const renderSubjectNextAction = () => null;
+    const renderSubjectNextAction = () => {
+        if (!selectedSubjectId) return null;
+        const subjectName = selectedSubject?.name || 'هذه المادة';
+        const availableTests = getVisibleLearningSlotQuizzes('tests', selectedSubjectId);
+        return (
+            <StudentNextActionStrip
+                title={`ابدأ خطوتك التالية في ${subjectName}`}
+                description="ابدأ بالتأسيس والمهارات أولاً، ثم انتقل للتدريب والاختبارات عندما تكون جاهزًا."
+                primaryLabel="ابدأ التعلم"
+                primaryHref={buildSubjectLearningRoute('skills')}
+                secondaryLabel={availableTests.length > 0 ? 'فتح الاختبارات' : undefined}
+                secondaryHref={availableTests.length > 0 ? buildSubjectLearningRoute('tests') : undefined}
+                tone="indigo"
+                icon={<Sparkles size={18} className="text-indigo-600" />}
+            />
+        );
+    };
     const getPackageKindLabel = (contentTypes: string[]) =>
         contentTypes.includes('all')
             ? 'باقة شاملة'
@@ -1349,6 +1365,9 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         </div>
                     </header>
                     <div className="max-w-7xl mx-auto px-4 py-6">
+                        <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6">
+                            {renderSubjectNextAction()}
+                        </div>
                         {renderSubjectAccessGuide(selectedSubjectId)}
                         <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={activeSubjectColor as any} />
                         {renderPackagePaymentModal()}
@@ -1463,6 +1482,9 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             </header>
 
             <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6">
+                    {renderSubjectNextAction()}
+                </div>
                 {renderSubjectAccessGuide(selectedSubjectId)}
                 <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={activeSubjectColor as any} />
                 {renderPackagePaymentModal()}

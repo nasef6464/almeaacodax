@@ -29,10 +29,14 @@
         font-family: var(--platform-font-body), 'Tajawal', sans-serif;
       }
     </style>
-    <!-- Production API transport is intentionally same-origin. This runtime override
-         takes precedence over stale build-time VITE_API_URL values and routes all
-         browser API calls through the verified Vercel /api proxy. -->
-    <script>window.__API_BASE_URL__ = "/api";</script>
+    <!-- Production API transport is intentionally same-origin on deployed hosts.
+         Local/CI previews must preserve VITE_API_URL so isolated E2E can target its
+         local API instead of sending /api requests to the Vite preview server. -->
+    <script>
+      if (!["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+        window.__API_BASE_URL__ = "/api";
+      }
+    </script>
     <!-- Typography contract markers:
     sans: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui']
     tajawal: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui']

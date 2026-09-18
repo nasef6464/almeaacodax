@@ -1,5 +1,26 @@
 # ALMEAA — Codex Execution State
 
+## Platform V3 Deep Pre-Merge E2E Gate — Full 12/12 Deep Suite Closure on PR #162
+
+- Status: `CLOSED / VERIFIED` on 2026-09-19.
+- Runtime commit: `cf125517` on branch `chatgpt/batch02-ci-governance-current` (PR #162).
+- Delivered: Full green completion of the release-critical Deep Pre-Merge E2E Gate (12 of 12 deep suites passed on isolated Mongo and Chromium stack):
+  1. Operational multi-role API journeys (Admin, Student, Teacher, Supervisor, Parent)
+  2. Public full-stack UI journeys
+  3. All role pages desktop + mobile isolated audit
+  4. Question editor lifecycle journey
+  5. Student Learning Space desktop + mobile journey
+  6. Results and report actions journey
+  7. Assessment mock exam session resume and retry journey (flexible mode section navigation)
+  8. Supervisor school command UI journey (desktop + mobile with descriptive guidance and calibrated length thresholds)
+  9. Learning Space manager placement journey
+  10. Assessment commercial journey
+  11. School from scratch CRUD + cleanup journey
+  12. Barcode public-test journey
+- Exact-runtime CI: [Platform V3 Deep Pre-Merge E2E Gate #35403976831](https://github.com/nasef6464/almeaacodax/actions/runs/35403976831) passed in 10m19s on commit `cf125517`.
+- All PR checks on PR #162 green: Backend Integration Gate, Safety Gate, Phase + Handover Gate, Branch Public UI, and Vercel Preview deployment.
+- Evidence boundary: isolated CI evidence on containerized Mongo and live HTTP; no production-cutover claims made without authorized deployment environment.
+
 ## Performance hardening P1–P5 — local scale evidence, production certification blocked
 
 - Status: `PARTIAL / LOCAL VERIFIED / NOT PRODUCTION-CERTIFIED` on 2026-09-14.

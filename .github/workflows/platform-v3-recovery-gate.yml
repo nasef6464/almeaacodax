@@ -54,8 +54,8 @@ jobs:
         run: node tools/refactor/architecture-gate.mjs
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
-      # smoke:frontend:strict intentionally stays out of PR CI because it verifies
-      # the currently deployed production commit. It belongs to post-deploy verification.
+      # Production-deployment smokes intentionally stay out of PR CI because they
+      # verify deployed state rather than the checked-out PR commit.
       - name: Route loading contract
         run: npm run smoke:route-loading
       - name: Runtime source contract
@@ -76,7 +76,10 @@ jobs:
       - run: npm ci
       - name: Global student journey
         run: npm run smoke:global-student-journey
-      - name: Student learning journey
+      # smoke:student-learning-journey fetches a deployed API and catalog IDs. It is
+      # a post-deploy/data smoke, not a deterministic source contract for PRs.
+      - name: Student learning journey (deployed-data smoke)
+        if: github.event_name != 'pull_request'
         run: npm run smoke:student-learning-journey
       - name: Mock exams
         run: npm run smoke:mock-exams
@@ -96,7 +99,10 @@ jobs:
         run: npm run smoke:results
       - name: Certificate integrity
         run: npm run smoke:certificate-integrity
-      - name: Data visibility regression
+      # This smoke reads the deployed Vercel/Render catalog by default, so it validates
+      # deployed data visibility rather than the checked-out PR source.
+      - name: Data visibility regression (deployed-data smoke)
+        if: github.event_name != 'pull_request'
         run: npm run smoke:data-visibility-regression
 
   auth-and-security:

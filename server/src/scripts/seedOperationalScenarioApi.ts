@@ -4,7 +4,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const SAMPLE_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
 const SAMPLE_PDF_URL = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 
-type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 type AuthSession = {
   token: string;
@@ -1236,6 +1236,12 @@ async function upsertGroupsAndAssignments(adminToken: string, usersByEmail: Map<
       settings: { allowParentFollowUp: true },
     },
   });
+
+  await request<any>(`/school-access/contracts/${school._id || school.id}`, "PUT", {
+    schoolId: String(school._id || school.id),
+    status: "active",
+    modules: ["SCHOOL_CORE", "SMART_CLASSROOM", "EXECUTIVE_ANALYTICS", "INTERVENTION_CENTER", "SCHOOL_INTELLIGENCE"],
+  }, adminToken).catch(() => {});
 
   const quantClass = await upsertGroup("مجموعة القدرات الكمي - تشغيل", "CLASS", {
     name: "مجموعة القدرات الكمي - تشغيل",

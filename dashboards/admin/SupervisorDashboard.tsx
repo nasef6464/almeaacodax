@@ -210,7 +210,7 @@ export const SupervisorDashboard: React.FC = () => {
         let hasMore = true;
 
         while (hasMore) {
-          const response = await api.getAdminUsers({ role: Role.STUDENT as Role, limit: 1000, page });
+          const response = await api.getAdminUsers({ role: Role.STUDENT as Role, limit: 100, page });
           if (response?.users && response.users.length > 0) {
             allStudents = [...allStudents, ...response.users];
             const pagination = (response as any).pagination;
@@ -544,7 +544,12 @@ export const SupervisorDashboard: React.FC = () => {
       }
     >
       <div className="space-y-6 animate-fade-in print:bg-white print:p-0">
-        
+        {/* Mobile-only page title — always visible for auditing, sidebar title is hidden on small screens */}
+        <div className="flex md:hidden items-center gap-2 px-1 pt-1">
+          <GraduationCap className="text-indigo-600 shrink-0" size={20} />
+          <h2 className="text-lg font-black text-gray-900">لوحة الإشراف</h2>
+        </div>
+
         {/* Top Header Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4 print:hidden">
           {/* Mobile Tab Scroller */}
@@ -716,7 +721,7 @@ export const SupervisorDashboard: React.FC = () => {
         {activeTab === 'overview' && (
           <div className="space-y-5">
             {/* Streamlined Welcome Hero Banner */}
-            <div className="rounded-2xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-slate-900 p-4 sm:p-5 text-white shadow-md relative overflow-hidden">
+            <div data-testid="supervisor-school-scope-card" className="rounded-2xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-slate-900 p-4 sm:p-5 text-white shadow-md relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.2),transparent)]"></div>
               <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
@@ -740,6 +745,11 @@ export const SupervisorDashboard: React.FC = () => {
               </div>
             </div>
 
+            <div data-testid="supervisor-role-operating-contract" className="rounded-xl border border-indigo-100 bg-indigo-50/50 px-4 py-3 text-xs text-indigo-950">
+              <span className="font-black">نطاق عمل المشرف: </span>
+              متابعة الطلاب والفصول، توجيه الاختبارات والتدخلات، ومراجعة التقارير داخل نطاق الإشراف المسند فقط.
+            </div>
+
             {/* KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <KpiCard title="مجموع الطلاب" value={supervisorScopeSummary.studentCount} subtitle="تحت الإشراف المباشر" icon={<Users size={18} />} color="blue" />
@@ -752,7 +762,7 @@ export const SupervisorDashboard: React.FC = () => {
 
             {/* Supervisor Quick Decision Board */}
             <div data-testid="supervisor-quick-decision-board" className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 to-white p-4 sm:p-5 shadow-xs">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3.5">
+              <div data-testid="supervisor-scope-action-guide" className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3.5">
                 <div>
                   <h3 className="text-sm sm:text-base font-black text-gray-900 flex items-center gap-2">
                     <Trophy className="text-amber-500" size={17} />
@@ -1748,6 +1758,7 @@ export const SupervisorDashboard: React.FC = () => {
                     confirmLabel="إرسال للطالب"
                     onCancel={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
                     onAssign={async (config) => {
+                      const { api } = await import('../../services/api');
                       await updateQuiz(pickedQuiz.id, {
                         targetUserIds: [
                           ...(pickedQuiz.targetUserIds || []).filter((id) => id !== assignToStudentId),
@@ -1757,8 +1768,7 @@ export const SupervisorDashboard: React.FC = () => {
                         supervisorMessage: config.message || null,
                         settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 },
                       });
-                      const { api: apiService } = await import('../../services/api');
-                      await apiService.sendStudentAlert({
+                      await api.sendStudentAlert({
                         studentIds: [assignToStudentId],
                         title: 'اختبار جديد من مشرفك',
                         body: config.message || `تم تكليفك باختبار: ${pickedQuiz.title}`,
