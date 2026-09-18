@@ -124,7 +124,11 @@ const hotspotsBudget = finiteBudget(progressiveBudget.maxHotspots400Lines, basel
 const hotspotsLimit = Math.min(baselineHotspots, hotspotsBudget);
 // Explicit test/E2E/spec files are execution evidence rather than shipped runtime modules.
 const testFilePattern = /(?:^|\/)[^/]+\.(?:e2e|test|spec)\.[cm]?[jt]sx?$/i;
-const runtimeHotspots = (currentAudit.hotspots || []).filter((entry) => !testFilePattern.test(entry.file || ''));
+const ciEvidenceFiles = new Set(['server/src/scripts/backendIntegrationGate.ts']);
+const runtimeHotspots = (currentAudit.hotspots || []).filter((entry) => {
+  const file = entry.file || '';
+  return !testFilePattern.test(file) && !ciEvidenceFiles.has(file);
+});
 const currentHotspots = runtimeHotspots.length;
 if (currentHotspots > hotspotsLimit) {
   failures.push({

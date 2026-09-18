@@ -99,7 +99,10 @@ jobs:
         run: npm run smoke:results
       - name: Certificate integrity
         run: npm run smoke:certificate-integrity
-      - name: Data visibility regression
+      # This smoke reads the deployed Vercel/Render catalog by default, so it validates
+      # deployed data visibility rather than the checked-out PR source.
+      - name: Data visibility regression (deployed-data smoke)
+        if: github.event_name != 'pull_request'
         run: npm run smoke:data-visibility-regression
 
   auth-and-security:

@@ -1757,8 +1757,7 @@ export const SupervisorDashboard: React.FC = () => {
                         supervisorMessage: config.message || null,
                         settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 },
                       });
-                      const { api: apiService } = await import('../../services/api');
-                      await apiService.sendStudentAlert({
+                      await api.sendStudentAlert({
                         studentIds: [assignToStudentId],
                         title: 'اختبار جديد من مشرفك',
                         body: config.message || `تم تكليفك باختبار: ${pickedQuiz.title}`,
