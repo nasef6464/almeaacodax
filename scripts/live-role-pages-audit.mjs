@@ -224,10 +224,10 @@ async function inspectPage(page, role, pageSpec, viewport) {
   let navigationWarning = "";
 
   try {
-    await page.goto(url, { waitUntil: "networkidle", timeout: PAGE_TIMEOUT_MS }).catch(async (error) => {
-      navigationWarning = String(error?.message || error || "").slice(0, 500);
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
-    });
+    // Long-lived realtime/SSE requests can keep Playwright's networkidle state
+    // open even after the role page is fully usable. Wait for the document,
+    // then rely on the explicit loading-state probe below for UI readiness.
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
     await page.waitForTimeout(800);
     await page.waitForFunction(
       ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
