@@ -544,7 +544,12 @@ export const SupervisorDashboard: React.FC = () => {
       }
     >
       <div className="space-y-6 animate-fade-in print:bg-white print:p-0">
-        
+        {/* Mobile-only page title — always visible for auditing, sidebar title is hidden on small screens */}
+        <div className="flex md:hidden items-center gap-2 px-1 pt-1">
+          <GraduationCap className="text-indigo-600 shrink-0" size={20} />
+          <h2 className="text-lg font-black text-gray-900">لوحة الإشراف</h2>
+        </div>
+
         {/* Top Header Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4 print:hidden">
           {/* Mobile Tab Scroller */}
