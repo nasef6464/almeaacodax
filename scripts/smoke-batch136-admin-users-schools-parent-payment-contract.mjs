@@ -46,7 +46,7 @@ const schoolsRuntimeSource = [
 
 assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "toggleActionsMenu",
-  "Delete user",
+  { needle: "حذف المستخدم", label: "Delete user action" },
   "handleDeleteUser",
   "allStudentsForLinking",
   "linkableStudents",

@@ -1748,6 +1748,7 @@ export const SupervisorDashboard: React.FC = () => {
                     confirmLabel="إرسال للطالب"
                     onCancel={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
                     onAssign={async (config) => {
+                      const { api } = await import('../../services/api');
                       await updateQuiz(pickedQuiz.id, {
                         targetUserIds: [
                           ...(pickedQuiz.targetUserIds || []).filter((id) => id !== assignToStudentId),
