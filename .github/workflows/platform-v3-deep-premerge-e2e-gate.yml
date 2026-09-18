@@ -224,7 +224,7 @@ jobs:
         timeout-minutes: 10
         env:
           ROLE_PAGES_AUDIT_RUN_ID: deep-premerge-roles-${{ github.run_id }}
-        run: node scripts/live-role-pages-audit.mjs && touch /tmp/deep-roles.ok
+        run: node scripts/live-role-pages-audit.mjs
 
       - name: Question editor create/render/delete journey
         id: question_editor
@@ -232,7 +232,7 @@ jobs:
         timeout-minutes: 10
         env:
           QUESTION_EDITOR_AUDIT_RUN_ID: deep-premerge-question-editor-${{ github.run_id }}
-        run: node scripts/live-question-editor-audit.mjs && touch /tmp/deep-question_editor.ok
+        run: node scripts/live-question-editor-audit.mjs
 
       - name: Assessment normal and directed commercial journey
         id: assessment_commercial
@@ -240,7 +240,7 @@ jobs:
         timeout-minutes: 10
         env:
           ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID: deep-premerge-assessment-${{ github.run_id }}
-        run: node scripts/live-assessment-commercial-audit.mjs && touch /tmp/deep-assessment_commercial.ok
+        run: node scripts/live-assessment-commercial-audit.mjs
 
       - name: Assessment mock session resume and retry journey
         id: assessment_mock_session
@@ -248,7 +248,7 @@ jobs:
         timeout-minutes: 10
         env:
           ASSESSMENT_MOCK_SESSION_AUDIT_RUN_ID: deep-premerge-assessment-mock-${{ github.run_id }}
-        run: node scripts/live-assessment-mock-session-audit.mjs && touch /tmp/deep-assessment_mock_session.ok
+        run: node scripts/live-assessment-mock-session-audit.mjs
 
       - name: Student Learning Space desktop + mobile journey
         id: student_learning
@@ -258,7 +258,7 @@ jobs:
           STUDENT_LEARNING_AUDIT_RUN_ID: deep-premerge-student-learning-${{ github.run_id }}
           SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
           SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
-        run: node scripts/live-student-learning-deep-audit.mjs && touch /tmp/deep-student_learning.ok
+        run: node scripts/live-student-learning-deep-audit.mjs
 
       - name: Results and report actions desktop + mobile journey
         id: report_actions
@@ -266,7 +266,7 @@ jobs:
         timeout-minutes: 10
         env:
           REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
-        run: node scripts/live-report-actions-audit.mjs && touch /tmp/deep-report_actions.ok
+        run: node scripts/live-report-actions-audit.mjs
 
       - name: Learning Space manager placement journey
         id: learning_manager
@@ -276,7 +276,7 @@ jobs:
           LEARNING_MANAGER_AUDIT_RUN_ID: deep-premerge-learning-manager-${{ github.run_id }}
           SMOKE_STUDENT_JOURNEY_PATH_ID: p_qudrat
           SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
-        run: node scripts/live-learning-manager-deep-audit.mjs && touch /tmp/deep-learning_manager.ok
+        run: node scripts/live-learning-manager-deep-audit.mjs
 
       - name: Supervisor school command UI journey
         id: supervisor_school
@@ -284,7 +284,7 @@ jobs:
         timeout-minutes: 10
         env:
           SUPERVISOR_SCHOOL_AUDIT_RUN_ID: deep-premerge-supervisor-school-${{ github.run_id }}
-        run: node scripts/live-supervisor-school-command-audit.mjs && touch /tmp/deep-supervisor_school.ok
+        run: node scripts/live-supervisor-school-command-audit.mjs
 
       - name: School from scratch CRUD + relations + cleanup
         id: school_from_scratch
@@ -292,7 +292,7 @@ jobs:
         timeout-minutes: 10
         env:
           SCHOOL_FROM_SCRATCH_RUN_ID: deep-premerge-school-${{ github.run_id }}
-        run: node scripts/live-school-from-scratch-audit.mjs && touch /tmp/deep-school_from_scratch.ok
+        run: node scripts/live-school-from-scratch-audit.mjs
 
       - name: Barcode public-test admin + anonymous journey
         id: barcode
@@ -300,7 +300,7 @@ jobs:
         timeout-minutes: 10
         env:
           BARCODE_LIVE_AUDIT_RUN_ID: deep-premerge-barcode-${{ github.run_id }}
-        run: node scripts/live-barcode-public-tests-audit.mjs && touch /tmp/deep-barcode.ok
+        run: node scripts/live-barcode-public-tests-audit.mjs
 
       - name: Record deep pre-merge manifest
         if: always()
@@ -334,31 +334,31 @@ jobs:
         run: |
           set -euo pipefail
           failed=0
-          check_marker() {
+          check_outcome() {
             local name="$1"
-            local marker="$2"
-            if [ ! -f "$marker" ]; then
-              echo "FAIL: $name did not complete successfully in this attempt" >&2
+            local outcome="$2"
+            if [ "$outcome" != "success" ]; then
+              echo "FAIL: $name outcome=$outcome" >&2
               failed=1
             else
               echo "PASS: $name"
             fi
           }
-          # Marker files are created only after a suite exits 0 in the current
-          # job attempt. This avoids stale steps.<id>.outcome values observed
-          # by GitHub when a failed workflow job is re-run.
-          check_marker "Operational multi-role API" "/tmp/deep-operational.ok"
-          check_marker "Public full-stack UI" "/tmp/deep-public_ui.ok"
-          check_marker "All role pages" "/tmp/deep-roles.ok"
-          check_marker "Question editor" "/tmp/deep-question_editor.ok"
-          check_marker "Student Learning Space" "/tmp/deep-student_learning.ok"
-          check_marker "Results/report actions" "/tmp/deep-report_actions.ok"
-          check_marker "Learning Space manager" "/tmp/deep-learning_manager.ok"
-          check_marker "Assessment commercial" "/tmp/deep-assessment_commercial.ok"
-          check_marker "Assessment mock session" "/tmp/deep-assessment_mock_session.ok"
-          check_marker "Supervisor school" "/tmp/deep-supervisor_school.ok"
-          check_marker "School from scratch" "/tmp/deep-school_from_scratch.ok"
-          check_marker "Barcode public test" "/tmp/deep-barcode.ok"
+          # This is a fresh workflow run for the current commit, so the step
+          # outcomes below are authoritative. Marker files are intentionally
+          # avoided because continue-on-error steps execute in isolated shells.
+          check_outcome "Operational multi-role API" "${{ steps.operational.outcome }}"
+          check_outcome "Public full-stack UI" "${{ steps.public_ui.outcome }}"
+          check_outcome "All role pages" "${{ steps.roles.outcome }}"
+          check_outcome "Question editor" "${{ steps.question_editor.outcome }}"
+          check_outcome "Student Learning Space" "${{ steps.student_learning.outcome }}"
+          check_outcome "Results/report actions" "${{ steps.report_actions.outcome }}"
+          check_outcome "Learning Space manager" "${{ steps.learning_manager.outcome }}"
+          check_outcome "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
+          check_outcome "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
+          check_outcome "Supervisor school" "${{ steps.supervisor_school.outcome }}"
+          check_outcome "School from scratch" "${{ steps.school_from_scratch.outcome }}"
+          check_outcome "Barcode public test" "${{ steps.barcode.outcome }}"
           exit "$failed"
 
       - name: Upload deep E2E evidence
