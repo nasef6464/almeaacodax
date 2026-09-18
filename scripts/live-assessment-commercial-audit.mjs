@@ -149,6 +149,8 @@ async function main() {
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-kind-test").click();
     await admin.page.getByTestId("assessment-builder-title").fill(marker);
+    const pathSelect = admin.page.getByTestId("assessment-builder-path");
+    await pathSelect.locator(`option[value="${String(question.pathId)}"]`).waitFor({ state: "attached", timeout: 60000 });
     await admin.page.getByTestId("assessment-builder-path").selectOption(String(question.pathId));
     await admin.page.getByTestId("assessment-builder-subject").selectOption(String(question.subject || question.subjectId));
     await admin.page.getByTestId("assessment-builder-next").click();
