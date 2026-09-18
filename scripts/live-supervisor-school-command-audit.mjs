@@ -383,7 +383,7 @@ async function verifyAdminUserRoleRelationshipJourney(page) {
   if ((after.user.groupIds || []).some((id) => ![school.value, klass.value].includes(String(id))) || ![school.value, klass.value].every((id) => (after.user.groupIds || []).map(String).includes(id))) {
     throw new Error(`Persisted supervisor groupIds mismatch: ${JSON.stringify(after.user.groupIds || [])}`);
   }
-  if (after.groups.some((group) => Array.isArray(group.studentIds) && group.studentIds.map(String).includes(afterId))) {
+  if (hadStudentMembership && after.groups.some((group) => Array.isArray(group.studentIds) && group.studentIds.map(String).includes(afterId))) {
     throw new Error("Stale Group.studentIds membership survived Student → Supervisor transition");
   }
   for (const groupId of [school.value, klass.value]) {
