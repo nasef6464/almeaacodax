@@ -219,13 +219,24 @@ async function run() {
   assert.equal((await request(`/classroom/sessions/${sessionAId}/aggregate`, { token: teacherA2Token })).status, 403, "second teacher must not read another teacher's live aggregate");
   assert.equal((await request(`/classroom/sessions/${sessionAId}/append-questions`, { method: "POST", token: teacherA2Token, body: { questionIds: [q2], autoPublishFirst: true } })).status, 403, "second teacher must not mutate another teacher's session");
 
-  const publishedEvent = waitForEvent<any>(studentSocket, "question:published");
   const append = await request(`/classroom/sessions/${sessionAId}/append-questions`, {
     method: "POST",
     token: teacherAToken,
-    body: { questionIds: [q2], autoPublishFirst: true },
+    body: { questionIds: [q2], autoPublishFirst: false },
   });
   assert.equal(append.status, 200, JSON.stringify(append.body));
+
+  // A live batch must be closed before a newly appended batch becomes active.
+  // Publishing the appended question performs the authoritative batch transition
+  // and emits the realtime question:published event.
+  const appendedQuestionIndex = Number(append.body?.totalQuestions || 0) - 1;
+  assert.ok(appendedQuestionIndex >= 0, JSON.stringify(append.body));
+  const publishedEvent = waitForEvent<any>(studentSocket, "question:published");
+  const publish = await request(`/classroom/sessions/${sessionAId}/publish/${appendedQuestionIndex}`, {
+    method: "POST",
+    token: teacherAToken,
+  });
+  assert.equal(publish.status, 200, JSON.stringify(publish.body));
   const published = await publishedEvent;
   assert.equal(String(published.questionId), q2);
 
