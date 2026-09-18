@@ -86,7 +86,7 @@ check("student live gate covers packages, payment activation, mobile layout, and
 });
 
 check("student contract keeps Saher, directed tests, reports, foundation actions, and payment path visible", () => {
-  assertIncludes(files.studentContract, "quiz center separates self Saher, directed tests");
+  assertIncludes(files.studentContract, "quiz center separates self Saher, school-directed tests");
   assertIncludes(files.studentContract, "student report remains simple first");
   assertIncludes(files.studentContract, "buildFoundationTopicLink");
   assertIncludes(files.studentContract, "student membership and activation purchase path is explicit and live-audited");
@@ -113,6 +113,8 @@ check("role live gate covers every requested role on desktop and mobile before d
   assertIncludes(files.roleLive, "MOJIBAKE_PATTERN");
   assertIncludes(files.roleLive, "hasMojibakeText");
   assertIncludes(files.roleLive, "visible mojibake text");
+  assertIncludes(files.roleLive, "const API_ORIGIN = new URL(API_BASE_URL);");
+  assertIncludes(files.roleLive, "url: API_ORIGIN.origin");
 });
 
 check("report action gate proves the important next action buttons by role", () => {

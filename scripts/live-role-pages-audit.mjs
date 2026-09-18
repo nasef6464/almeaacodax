@@ -10,6 +10,7 @@ const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audi
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
 const LOADING_TIMEOUT_MS = 10000;
 const BASE_ORIGIN = new URL(BASE_URL);
+const API_ORIGIN = new URL(API_BASE_URL);
 const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
@@ -183,6 +184,16 @@ async function login(page, role) {
       secure: BASE_ORIGIN.protocol === "https:",
       sameSite: "Lax",
     });
+    if (API_ORIGIN.origin !== BASE_ORIGIN.origin) {
+      authCookies.push({
+        name: "almeaa_access_token",
+        value: authCookie,
+        url: API_ORIGIN.origin,
+        httpOnly: true,
+        secure: API_ORIGIN.protocol === "https:",
+        sameSite: "Lax",
+      });
+    }
   }
   await page.context().addCookies(authCookies);
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
