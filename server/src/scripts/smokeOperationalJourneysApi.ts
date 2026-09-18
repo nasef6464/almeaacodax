@@ -741,8 +741,8 @@ async function run() {
     `requests=${studentPaymentRequests?.requests?.length || 0}`,
   );
 
-  const referencedStudentQuestionIds = uniqueStrings(
-    asArray(studentQuizzes).flatMap((quiz: any) => quizQuestionIds(quiz)),
+  const referencedStudentQuestionIds = Array.from(
+    new Set(normalizeLinkedIds(asArray(studentQuizzes).flatMap((quiz: any) => quizQuestionIds(quiz)))),
   );
   const linkedStudentQuestions: any[] = [];
   for (let offset = 0; offset < referencedStudentQuestionIds.length; offset += 100) {
