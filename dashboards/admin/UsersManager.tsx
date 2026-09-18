@@ -322,26 +322,8 @@ export const UsersManager: React.FC = () => {
         setUsersPage(1);
         setRoleFilter(value);
     };
-    const handleRoleChange = (currentUser: User, newRole: Role) => {
-        if (currentUser.role === newRole) return;
-        setRelationshipActionUserId(currentUser.id);
-        setRelationshipActionError('');
-        void api.updateAdminUser(currentUser.id, { role: newRole })
-            .then((response) => {
-                const persistedPayload = (response as { user?: AdminUserPayload })?.user;
-                if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
-                const persistedUser = buildStoreUser(persistedPayload);
-                replacePageUser(persistedUser);
-            })
-            .catch((error) => {
-                const message = error instanceof Error ? error.message : 'تعذر تغيير دور المستخدم الآن.';
-                console.error('Failed to persist user role change:', error);
-                setRelationshipActionError(message);
-                window.alert(message);
-            })
-            .finally(() => {
-                setRelationshipActionUserId((current) => current === currentUser.id ? null : current);
-            });
+    const handleRoleChange = (currentUser: User, newRole: Role | string) => {
+        handleCustomRoleChange(currentUser, newRole as string);
     };
 
     const handleCustomRoleChange = (currentUser: User, newRoleValue: string) => {
@@ -361,7 +343,11 @@ export const UsersManager: React.FC = () => {
             updatePayload.groupIds = [];
         }
 
-        void api.updateAdminUser(currentUser.id, updatePayload)
+        const newRole = targetRole;
+        const updatePromise = isSchoolTeacher || isPlatformTrainer
+            ? api.updateAdminUser(currentUser.id, updatePayload)
+            : api.updateAdminUser(currentUser.id, { role: newRole });
+        void updatePromise
             .then((response) => {
                 const persistedPayload = (response as { user?: AdminUserPayload })?.user;
                 if (!persistedPayload) throw new Error('لم يُرجع الخادم بيانات المستخدم بعد تغيير الدور.');
@@ -537,12 +523,12 @@ export const UsersManager: React.FC = () => {
 
     const handleSupervisorGroupsChange = (currentUser: User, nextGroupIds: string[]) => {
         void withRelationshipSave(currentUser.id, async () => {
-            const validGroupIds = Array.from(new Set(nextGroupIds)).filter((groupId) => groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')));
-            const currentGroupIds = (currentUser.groupIds || []).filter((groupId) => groups.some((group) => group.id === groupId && (group.type === 'SCHOOL' || group.type === 'CLASS')));
-            const selectedGroups = groups.filter((group) => validGroupIds.includes(group.id));
+            const validGroupIds = Array.from(new Set(nextGroupIds)).filter((groupId) => groups.some((group) => (group.id === groupId || (group as any)._id === groupId) && (group.type === 'SCHOOL' || group.type === 'CLASS')));
+            const currentGroupIds = (currentUser.groupIds || []).filter((groupId) => groups.some((group) => (group.id === groupId || (group as any)._id === groupId) && (group.type === 'SCHOOL' || group.type === 'CLASS')));
+            const selectedGroups = groups.filter((group) => validGroupIds.includes(group.id) || validGroupIds.includes((group as any)._id));
             const selectedSchool = selectedGroups.find((group) => group.type === 'SCHOOL');
             const selectedClass = selectedGroups.find((group) => group.type === 'CLASS');
-            const nextSchoolId = selectedSchool?.id || selectedClass?.parentId || null;
+            const nextSchoolId = selectedSchool?.id || (selectedSchool as any)?._id || selectedClass?.parentId || null;
 
             // Persist the complete selection first. The UsersManager page is
             // intentionally backed by its own paginated server result rather
@@ -555,30 +541,27 @@ export const UsersManager: React.FC = () => {
             const persistedPayload = (response as { user?: AdminUserPayload }).user;
             if (!persistedPayload) throw new Error('لم يُرجع الخادم نطاق المشرف بعد الحفظ.');
 
-            // Keep the inverse Group.supervisorIds relationship in sync as well.
-            // The paginated admin row is not guaranteed to exist in store.users,
-            // so calling the store helpers alone can no-op before reaching the API.
+            // Keep the inverse Group.supervisorIds relationship in sync as well
+            // directly via api.updateGroup for each affected group.
             for (const groupId of currentGroupIds.filter((groupId) => !validGroupIds.includes(groupId))) {
-                const group = groups.find((item) => item.id === groupId);
+                const group = groups.find((item) => item.id === groupId || (item as any)._id === groupId);
                 if (group) {
                     const supervisorIds = (group.supervisorIds || []).filter((id) => id !== currentUser.id);
-                    await api.updateGroup(groupId, {
+                    await api.updateGroup(group.id || (group as any)._id, {
                         supervisorIds,
                         totalSupervisors: supervisorIds.length,
                     });
                 }
-                await removeSupervisorFromGroupAsync(currentUser.id, groupId);
             }
             for (const groupId of validGroupIds.filter((groupId) => !currentGroupIds.includes(groupId))) {
-                const group = groups.find((item) => item.id === groupId);
+                const group = groups.find((item) => item.id === groupId || (item as any)._id === groupId);
                 if (group) {
                     const supervisorIds = Array.from(new Set([...(group.supervisorIds || []), currentUser.id]));
-                    await api.updateGroup(groupId, {
+                    await api.updateGroup(group.id || (group as any)._id, {
                         supervisorIds,
                         totalSupervisors: supervisorIds.length,
                     });
                 }
-                await assignSupervisorToGroupAsync(currentUser.id, groupId);
             }
 
             replacePageUser(buildStoreUser(persistedPayload));
@@ -965,7 +948,7 @@ export const UsersManager: React.FC = () => {
                                             ? (Boolean(currentUser.schoolId || currentUser.groupIds?.length) ? 'school_teacher' : 'platform_trainer')
                                             : currentUser.role
                                     }
-                                    onChange={(event) => handleCustomRoleChange(currentUser, event.target.value)}
+                                    onChange={(event) => handleRoleChange(currentUser, event.target.value as Role)}
                                 >
                                     <option value={Role.STUDENT}>طالب</option>
                                     <option value="school_teacher">معلم مدرسة (B2B)</option>

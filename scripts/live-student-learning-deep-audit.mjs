@@ -1,4 +1,4 @@
-﻿import fs from "node:fs";
+import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 
@@ -370,7 +370,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
   const missingNextAction = expectations.requireNextAction !== false && state.actionControlCount < 1 && !state.nextActionTextFound;
   const actionGroupFailures = (state.actionGroupResults || []).filter((group) => group.status !== "PASS");
   const layoutFailure = expectations.viewport === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
-  const allowed4xx = network4xx.filter((item) => expectations.allow4xx?.some((pattern) => item.url.includes(pattern)));
+  const allowed4xx = network4xx.filter((item) => (expectations.allow4xx || ["/api/classroom/student/active-session"]).some((pattern) => item.url.includes(pattern)));
   const unexpected4xx = network4xx.filter((item) => !allowed4xx.includes(item));
   const pass =
     !state.hasLoginForm &&

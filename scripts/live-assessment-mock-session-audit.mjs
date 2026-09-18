@@ -116,6 +116,7 @@ async function main() {
     await admin.page.getByTestId("assessment-manager-create").click();
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-kind-mock").click();
+    await admin.page.getByTestId("presentation-mode-flexible").click();
     await admin.page.getByTestId("assessment-builder-title").fill(marker);
     const pathSelect = admin.page.getByTestId("assessment-builder-path");
     await pathSelect.locator(`option[value="${String(firstQuestion.pathId)}"]`).waitFor({ state: "attached", timeout: 60000 });
