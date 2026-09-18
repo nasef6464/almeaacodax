@@ -186,15 +186,31 @@ const serializeUser = (user: any) => {
 };
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const buildDocumentQuery = (value: string) =>
-  mongoose.Types.ObjectId.isValid(value) ? { $or: [{ id: value }, { _id: value }] } : { id: value };
+const buildDocumentQuery = (value: string) => {
+  const trimmed = String(value || "").trim();
+  if (mongoose.Types.ObjectId.isValid(trimmed)) {
+    return {
+      $or: [
+        { id: trimmed },
+        { _id: new mongoose.Types.ObjectId(trimmed) },
+      ],
+    };
+  }
+  return { id: trimmed };
+};
+
 const buildDocumentsQuery = (values: string[]) => {
   const normalized = Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
   if (!normalized.length) return { id: "__none__" };
+  const objectIds = normalized
+    .filter((id) => mongoose.Types.ObjectId.isValid(id))
+    .map((id) => new mongoose.Types.ObjectId(id));
+
   return {
-    $or: normalized.flatMap((value) =>
-      mongoose.Types.ObjectId.isValid(value) ? [{ id: value }, { _id: value }] : [{ id: value }],
-    ),
+    $or: [
+      { id: { $in: normalized } },
+      ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+    ],
   };
 };
 

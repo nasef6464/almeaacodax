@@ -296,7 +296,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           <RichTextEditor
             value={question.text || ''}
             onChange={value => setQuestion(prev => ({ ...prev, text: value }))}
-            minHeightClass="h-44 sm:h-56"
+            minHeightClass="min-h-[360px] [&_.ql-container]:min-h-[310px]"
           />
 
           <div className="grid grid-cols-2 gap-4">

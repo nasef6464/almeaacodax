@@ -80,8 +80,8 @@ async function main() {
       api(student.page, "/auth/me"),
     ]);
     const questions = listOf(questionsResponse.payload, "questions");
-    const firstQuestion = questions.find((question) => question.pathId && (question.subject || question.subjectId));
-    let secondQuestion = questions.find((question) => String(question.id || question._id) !== String(firstQuestion?.id || firstQuestion?._id) && String(question.pathId) === String(firstQuestion?.pathId) && String(question.subject || question.subjectId) === String(firstQuestion?.subject || firstQuestion?.subjectId));
+    const firstQuestion = questions.find((question) => String(question.pathId) === "p_qudrat" && String(question.subject || question.subjectId).includes("quant")) || questions.find((question) => question.pathId && (question.subject || question.subjectId));
+    let secondQuestion = questions.find((question) => String(question.pathId) === "p_qudrat" && String(question.subject || question.subjectId).includes("verbal")) || questions.find((question) => String(question.id || question._id) !== String(firstQuestion?.id || firstQuestion?._id) && String(question.pathId) === String(firstQuestion?.pathId));
     const groupIds = new Set([...(student.user.groupIds || []), ...(studentMe.payload?.groupIds || []), ...(studentMe.payload?.user?.groupIds || [])].map(String));
     const targetGroup = listOf(bootstrapResponse.payload, "groups").find((group) => groupIds.has(String(group.id || group._id)));
     if (!questionsResponse.ok || !firstQuestion || !targetGroup) throw new Error("Fixture lacks an approved scoped question or a target student group.");
@@ -92,6 +92,7 @@ async function main() {
     // genuinely distinct.
     if (!secondQuestion) {
       temporaryQuestionId = `assessment-mock-question-${Date.now()}`;
+      const targetSubject = String(firstQuestion.subject || firstQuestion.subjectId).includes("quant") ? "sub_verbal" : String(firstQuestion.subject || firstQuestion.subjectId);
       const createdQuestion = await api(admin.page, "/quizzes/questions", {
         method: "POST",
         body: JSON.stringify({
@@ -102,7 +103,7 @@ async function main() {
           explanation: "سؤال مؤقت لدليل الجلسة المعزولة.",
           skillIds: [String(firstQuestion.skillIds?.[0] || `assessment-mock-skill-${Date.now()}`)],
           pathId: firstQuestion.pathId,
-          subject: firstQuestion.subject || firstQuestion.subjectId,
+          subject: targetSubject,
           approvalStatus: "approved",
         }),
       });
