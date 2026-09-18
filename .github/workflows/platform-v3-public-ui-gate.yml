@@ -85,7 +85,7 @@ jobs:
         run: >
           node scripts/live-public-ui-audit.mjs
           --base-url http://127.0.0.1:4173
-          --api-target https://almeaacodax-k2ux.onrender.com/api
+          --api-target https://almeaacodax-codex.onrender.com/api
           --run-id platform-v3-public-${{ github.run_id }}
 
       - name: Upload public UI evidence
