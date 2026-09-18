@@ -193,12 +193,10 @@ async function main() {
     await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "networkidle", timeout: 60000 });
     const searchInput = page.getByTestId("question-bank-search-input");
     await searchInput.fill(marker);
-    await page.waitForFunction(
-      (needle) => Array.from(document.querySelectorAll("tbody tr")).some((row) => (row.textContent || "").includes(needle)),
-      marker,
-      { timeout: 30000 },
-    );
     const markerRow = page.locator("tbody tr").filter({ hasText: marker }).first();
+    // Search is debounced and the table can be replaced during React renders.
+    // A locator tracks the replacement DOM and avoids a stale global predicate.
+    await markerRow.waitFor({ state: "visible", timeout: 60000 });
     await markerRow.scrollIntoViewIfNeeded();
     const listState = await page.evaluate((marker) => {
       const text = document.body.innerText || "";
