@@ -111,7 +111,7 @@ async function main() {
     }
 
     const marker = `assessment-mock-session-${Date.now()}`;
-    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await admin.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await admin.page.getByTestId("assessment-manager-create").click();
     await admin.page.getByTestId("assessment-builder").waitFor();
     await admin.page.getByTestId("assessment-builder-kind-mock").click();
@@ -164,10 +164,10 @@ async function main() {
     // starts, then prove its analytics refresh after the persisted submission.
     managerContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
     const manager = await login(managerContext, credentials.admin);
-    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "networkidle", timeout: 60000 });
+    await manager.page.goto(`${BASE_URL}/admin-dashboard?tab=quizzes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await manager.page.getByTestId(`assessment-manager-preview-${mockQuizId}`).waitFor({ timeout: 30000 });
 
-    await student.page.goto(`${BASE_URL}/quiz/${encodeURIComponent(mockQuizId)}?source=mock-exam`, { waitUntil: "networkidle", timeout: 60000 });
+    await student.page.goto(`${BASE_URL}/quiz/${encodeURIComponent(mockQuizId)}?source=mock-exam`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await student.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
     await student.page.getByTestId("quiz-mock-section-0").waitFor();
     await student.page.getByTestId("quiz-mock-section-1").waitFor();
