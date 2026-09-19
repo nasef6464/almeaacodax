@@ -2,7 +2,7 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { requireAuth, requireRole } from "../middleware/auth.js";
+import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { PublicBarcodeTestModel } from "../models/PublicBarcodeTest.js";
 import { PublicBarcodeSubmissionModel } from "../models/PublicBarcodeSubmission.js";
@@ -198,6 +198,32 @@ const resolvePublicBarcodeScopeFilter = async (authUser: any) => {
   });
 };
 
+const assertTargetedStudentAccess = async (test: any, authUser: any) => {
+  if (test.audience !== "targeted") return;
+  if (!authUser?.id) {
+    const error = new Error("Authentication required for targeted barcode tests") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.UNAUTHORIZED;
+    throw error;
+  }
+
+  const student = await UserModel.findById(authUser.id).select("id role isActive groupIds").lean();
+  if (!student || student.isActive === false || student.role !== "student") {
+    const error = new Error("This targeted barcode test is only available to assigned students") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
+  }
+
+  const studentId = String((student as any).id || (student as any)._id);
+  const groupIds = new Set(Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : []);
+  const directlyAssigned = Array.isArray(test.targetUserIds) && test.targetUserIds.map(String).includes(studentId);
+  const groupAssigned = Array.isArray(test.targetGroupIds) && test.targetGroupIds.some((groupId: unknown) => groupIds.has(String(groupId)));
+  if (!directlyAssigned && !groupAssigned) {
+    const error = new Error("This barcode test is not assigned to this student") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
+  }
+};
+
 publicTestsRouter.post(
   "/admin",
   requireAuth,
@@ -357,12 +383,14 @@ publicTestsRouter.get(
 
 publicTestsRouter.get(
   "/:slug",
+  optionalAuth,
   asyncHandler(async (req, res) => {
     const slug = slugSchema.parse(req.params.slug);
     const test = await PublicBarcodeTestModel.findOne({ slug }).lean();
     if (!test || !ensureActiveWindow(test)) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test is not available" });
     }
+    await assertTargetedStudentAccess(test, req.authUser);
 
     const questions = await QuestionModel.find({
       $or: [{ id: { $in: test.questionIds } }, { _id: { $in: test.questionIds.filter((id: string) => /^[a-f0-9]{24}$/i.test(id)) } }],
@@ -460,6 +488,7 @@ publicTestsRouter.post(
 
 publicTestsRouter.post(
   "/:slug/submit",
+  optionalAuth,
   asyncHandler(async (req, res) => {
     const slug = slugSchema.parse(req.params.slug);
     const payload = publicBarcodeSubmitSchema.parse(req.body || {});
@@ -467,6 +496,7 @@ publicTestsRouter.post(
     if (!test || !ensureActiveWindow(test)) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test is not available" });
     }
+    await assertTargetedStudentAccess(test, req.authUser);
     if (!payload.schoolName.trim() || !payload.classroomName.trim()) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "Student name, school name, and classroom are required for barcode public tests.",
