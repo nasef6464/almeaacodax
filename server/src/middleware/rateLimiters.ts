@@ -7,6 +7,7 @@ import { createRedisClient, isRedisConfigured } from "../config/redis.js";
 type RateLimitOptions = Pick<Options, "windowMs" | "limit" | "message"> & {
   keyPrefix: string;
   skip?: NonNullable<Options["skip"]>;
+  passOnStoreError?: boolean;
 };
 
 const resolveRequestKey = (req: Request) => {
@@ -66,7 +67,9 @@ export function createRateLimiter(options: RateLimitOptions) {
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: resolveRequestKey,
-    passOnStoreError: true,
+    // Global traffic may fail open for availability, but auth/sensitive actions
+    // fail closed when the distributed Redis limiter is configured and unavailable.
+    passOnStoreError: options.passOnStoreError ?? true,
     ...(options.skip ? { skip: options.skip } : {}),
     ...(useRedis && redis
       ? {
@@ -102,6 +105,7 @@ export const globalRateLimiter = createRateLimiter({
 
 export const authRateLimiter = createRateLimiter({
   keyPrefix: "auth",
+  passOnStoreError: false,
   windowMs: env.RATE_LIMIT_AUTH_WINDOW_MS,
   limit: env.RATE_LIMIT_AUTH_LIMIT,
   message: { message: "Too many authentication attempts, please try again later" },
@@ -110,6 +114,7 @@ export const authRateLimiter = createRateLimiter({
 
 export const sensitiveActionRateLimiter = createRateLimiter({
   keyPrefix: "sensitive",
+  passOnStoreError: false,
   windowMs: env.RATE_LIMIT_SENSITIVE_WINDOW_MS,
   limit: env.RATE_LIMIT_SENSITIVE_LIMIT,
   message: { message: "Too many requests, please slow down" },
