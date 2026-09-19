@@ -67,6 +67,27 @@ userSchema.pre("save", function (next) {
   next();
 });
 
+// Query updates bypass document save middleware. Keep the same revocation
+// boundary for admin upserts and any future findOneAndUpdate password rotation.
+userSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate() as Record<string, any> | null;
+  if (!update) return next();
+
+  const changesPassword =
+    Object.prototype.hasOwnProperty.call(update, "passwordHash") ||
+    Object.prototype.hasOwnProperty.call(update.$set || {}, "passwordHash");
+
+  if (changesPassword) {
+    if (update.$set) {
+      update.$set.passwordChangedAt = Date.now();
+    } else {
+      update.passwordChangedAt = Date.now();
+    }
+  }
+
+  next();
+});
+
 userSchema.set("toJSON", {
   transform: (_doc, ret) => {
     const safeRet = ret as Record<string, unknown>;
