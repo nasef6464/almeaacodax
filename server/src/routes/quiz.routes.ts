@@ -2,6 +2,7 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import { z } from "zod";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { QuizModel } from "../models/Quiz.js";
 import { QuestionModel } from "../models/Question.js";
 import { QuizResultModel } from "../models/QuizResult.js";
@@ -734,6 +735,59 @@ quizRouter.get(
     }
 
     res.json(items);
+  }),
+);
+
+quizRouter.post(
+  "/questions/upload-image",
+  requireAuth,
+  requireRole(["admin", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const { imageBase64, filename, folder } = req.body as {
+      imageBase64?: string;
+      filename?: string;
+      folder?: string;
+    };
+
+    if (!imageBase64 || typeof imageBase64 !== "string") {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "imageBase64 is required" });
+    }
+
+    const matches = imageBase64.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+    const mimeType = matches ? matches[1] : "webp";
+    const rawBase64 = matches ? matches[2] : imageBase64;
+    const buffer = Buffer.from(rawBase64, "base64");
+
+    const endpoint = `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+    const bucket = process.env.R2_BUCKET_NAME || "almeaa-media";
+    const publicBase = process.env.R2_PUBLIC_URL || "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev";
+
+    const targetFolder = folder && /^[a-zA-Z0-9_-]+$/.test(folder) ? folder : "custom";
+    const safeName = (filename || `q_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`)
+      .replace(/[^a-zA-Z0-9_-]/g, "_");
+    const extension = mimeType === "jpeg" || mimeType === "jpg" ? "jpg" : mimeType === "png" ? "png" : "webp";
+    const key = `questions/${targetFolder}/${safeName}.${extension}`;
+
+    const s3 = new S3Client({
+      region: "auto",
+      endpoint,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+      },
+    });
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: `image/${extension}`,
+      }),
+    );
+
+    const imageUrl = `${publicBase}/${key}`;
+    res.json({ success: true, imageUrl, key });
   }),
 );
 

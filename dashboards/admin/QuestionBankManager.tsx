@@ -154,6 +154,38 @@ const difficultyLabel = (difficulty: Question['difficulty']) => {
 
 const arabicOptionLabels = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
 
+const resolveQuestionMeta = (q: Question) => {
+  let pageBadge = '';
+  let qNumBadge = '';
+  let bookBadge = '';
+
+  const tags = q.tags || [];
+  for (const t of tags) {
+    if (t.startsWith('صفحة_')) pageBadge = t.replace('صفحة_', 'صفحة ');
+    if (t.startsWith('سؤال_')) qNumBadge = t.replace('سؤال_', 'سؤال ');
+    if (t.includes('تجميعات')) bookBadge = 'كتاب التجميعات';
+    if (t.includes('تأسيس') || t.includes('taas')) bookBadge = 'كتاب التأسيس';
+  }
+
+  if (!pageBadge || !qNumBadge) {
+    const pMatch = q.id?.match(/_p(\d+)_(\d+)/);
+    if (pMatch) {
+      if (!pageBadge) pageBadge = `صفحة ${pMatch[1]}`;
+      if (!qNumBadge) qNumBadge = `سؤال ${pMatch[2]}`;
+      if (!bookBadge) bookBadge = 'كتاب التجميعات';
+    } else {
+      const qMatch = q.id?.match(/^q_taj_(\d+)$/);
+      if (qMatch) {
+        if (!pageBadge) pageBadge = 'صفحة 5';
+        if (!qNumBadge) qNumBadge = `سؤال ${qMatch[1]}`;
+        if (!bookBadge) bookBadge = 'كتاب التجميعات';
+      }
+    }
+  }
+
+  return { pageBadge, qNumBadge, bookBadge };
+};
+
 export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjectId }) => {
   const {
     user,
@@ -1569,29 +1601,50 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                     </td>
                     <td className="px-6 py-4">
                       <div>
+                        {/* بطاقة كود السؤال ورقم الصفحة — مظهر نظيف وبدون زحمة */}
+                        {(() => {
+                          const meta = resolveQuestionMeta(question);
+                          return (
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <span className="inline-flex items-center font-mono text-xs font-black px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-2xs" title="كود السؤال">
+                                {question.id}
+                              </span>
+                              {(meta.pageBadge || meta.qNumBadge) && (
+                                <span className="inline-flex items-center text-xs font-black px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs">
+                                  {[meta.bookBadge, meta.pageBadge, meta.qNumBadge].filter(Boolean).join(' • ')}
+                                </span>
+                              )}
+                              {question.description && (
+                                <span className="text-xs font-bold text-slate-700 truncate max-w-xs" title={question.description}>
+                                  {question.description}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
+
                         {hasMediaPreview ? (
-                          <div className="space-y-2" data-testid="question-row-media-preview">
+                          <div className="space-y-1.5" data-testid="question-row-media-preview">
                             {question.text ? (
                               <div
-                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-60 max-w-[480px] sm:max-w-[560px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2.5 shadow-xs' : 'line-clamp-2'}`}
+                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-36 max-w-[360px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2 shadow-xs' : 'line-clamp-2'}`}
                                 data-testid={hasInlineMedia ? 'question-row-inline-media-preview' : undefined}
                                 dangerouslySetInnerHTML={{ __html: normalizedQuestionText }}
                               />
-                            ) : (
-                              <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
-                            )}
+                            ) : null}
                             {question.imageUrl ? (
-                              <div className="w-full max-w-[480px] sm:max-w-[560px] overflow-hidden rounded-xl border border-indigo-100/80 bg-slate-50 p-2 shadow-xs" data-testid="question-row-image-below-text">
+                              <div className="w-fit max-w-[280px] sm:max-w-[320px] overflow-hidden rounded-xl border border-indigo-100/90 bg-slate-50 p-1.5 shadow-2xs hover:border-indigo-300 transition-colors" data-testid="question-row-image-below-text">
                                 <img
                                   src={question.imageUrl}
                                   alt="معاينة صورة السؤال"
-                                  className="h-48 sm:h-56 w-full object-contain cursor-pointer hover:scale-[1.02] transition-transform duration-200"
+                                  className="h-20 sm:h-24 w-auto max-w-full object-contain cursor-pointer hover:scale-[1.03] transition-transform duration-150 rounded-lg"
                                   loading="lazy"
                                   onClick={() => handlePreviewQuestion(question)}
+                                  title="اضغط للمعاينة الكاملة والشرح"
                                 />
                               </div>
                             ) : null}
-                            <div className="line-clamp-1 text-[11px] font-bold text-gray-400">اضغط معاينة لرؤية السؤال كاملًا.</div>
+                            <div className="text-[11px] font-bold text-slate-400">سؤال بصورة مرفقة — اضغط معاينة أو الصورة للتفاصيل.</div>
                           </div>
                         ) : question.text ? (
                           <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizedQuestionText }} />
@@ -1811,11 +1864,32 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           >
             <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-4">
               <div>
-                <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">معاينة السؤال</div>
-                <h3 className="mt-3 text-xl font-black text-gray-900">
-                  {previewQuestion.text || 'سؤال بصوري/بدون نص'}
-                </h3>
-                <p className="mt-1 text-sm leading-7 text-gray-500">هذا الشكل يطابق ما يراه الطالب قبل النشر أو داخل الاختبار.</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                    معاينة السؤال
+                  </span>
+                  <span className="inline-flex font-mono rounded-lg bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-black text-slate-700" title="كود السؤال">
+                    {previewQuestion.id}
+                  </span>
+                  {(() => {
+                    const meta = resolveQuestionMeta(previewQuestion);
+                    return (meta.pageBadge || meta.qNumBadge) ? (
+                      <span className="inline-flex rounded-lg bg-blue-50 border border-blue-200/70 px-2.5 py-0.5 text-xs font-black text-blue-700">
+                        {[meta.bookBadge, meta.pageBadge, meta.qNumBadge].filter(Boolean).join(' • ')}
+                      </span>
+                    ) : null;
+                  })()}
+                </div>
+                {previewQuestion.description ? (
+                  <h3 className="mt-3 text-lg font-black text-gray-900">
+                    {previewQuestion.description}
+                  </h3>
+                ) : (
+                  <h3 className="mt-3 text-lg font-black text-gray-900">
+                    {previewQuestion.text || 'سؤال بصورة مرفقة'}
+                  </h3>
+                )}
+                <p className="mt-1 text-xs leading-6 text-gray-500">هذا الشكل يطابق ما يراه الطالب قبل النشر أو داخل الاختبار، ومزود ببيانات المدرب الذكي.</p>
               </div>
               <button
                 onClick={() => setPreviewQuestion(null)}
@@ -1915,8 +1989,35 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   </div>
                 </div>
 
+                {/* تلميح المدرب الذكي */}
+                {previewQuestion.hint && (
+                  <div className="rounded-3xl border border-amber-200/90 bg-amber-50/70 p-4">
+                    <div className="flex items-center gap-1.5 text-sm font-black text-amber-900">
+                      <span>💡 تلميح المدرب الذكي (AI Hint)</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-amber-950 font-medium">{previewQuestion.hint}</p>
+                  </div>
+                )}
+
+                {/* إستراتيجية الحل السريعة */}
+                {previewQuestion.solvingStrategy && (
+                  <div className="rounded-3xl border border-emerald-200/90 bg-emerald-50/70 p-4">
+                    <div className="flex items-center gap-1.5 text-sm font-black text-emerald-900">
+                      <span>⚡ إستراتيجية الحل (Solving Strategy)</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-emerald-950 font-medium">{previewQuestion.solvingStrategy}</p>
+                  </div>
+                )}
+
+                {/* الشرح والخطوات المفصلة */}
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xs">
+                  <div className="text-sm font-black text-slate-900 mb-1">📘 الشرح والخطوات المفصلة</div>
+                  <p className="mt-2 text-sm leading-7 text-slate-700 whitespace-pre-wrap">{previewQuestion.explanation || 'لا يوجد شرح تفصيلي محفوظ لهذا السؤال بعد.'}</p>
+                </div>
+
+                {/* فيديو الشرح */}
                 <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
-                  <div className="text-sm font-black text-indigo-800">الشرح / الفيديو</div>
+                  <div className="text-sm font-black text-indigo-800">فيديو الشرح</div>
                   <div className="mt-2 text-sm leading-7 text-indigo-900">
                     {previewQuestion.videoUrl ? (
                       <a href={previewQuestion.videoUrl} target="_blank" rel="noreferrer" className="font-black underline decoration-dotted">
@@ -1928,10 +2029,19 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-slate-100 bg-white p-4">
-                  <div className="text-sm font-black text-slate-800">ملاحظات السؤال</div>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{previewQuestion.explanation || 'لا توجد ملاحظة تفسيرية محفوظة لهذا السؤال بعد.'}</p>
-                </div>
+                {/* وسوم الفهرسة والمرجع */}
+                {(previewQuestion.tags || []).length > 0 && (
+                  <div className="rounded-3xl border border-slate-100 bg-slate-50/80 p-4">
+                    <div className="text-xs font-black text-slate-600 mb-2">🏷️ وسوم الفهرسة والمرجع</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {previewQuestion.tags!.map((t, idx) => (
+                        <span key={idx} className="rounded-lg bg-white border border-slate-200 px-2.5 py-0.5 text-xs font-bold text-slate-700 shadow-2xs">
+                          #{t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

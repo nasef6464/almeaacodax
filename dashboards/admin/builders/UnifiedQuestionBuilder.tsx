@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Question } from '../../../types';
 import { RichTextEditor } from '../../../components/RichTextEditor';
-import { Save, X, Wand2, Loader2, BookOpen } from 'lucide-react';
+import { Save, X, Wand2, Loader2, BookOpen, Upload, Image as ImageIcon, Trash2, Link as LinkIcon, Sparkles } from 'lucide-react';
 import { useStore } from '../../../store/useStore';
+import { api } from '../../../services/api';
 import { generateQuizQuestion } from '../../../services/geminiService';
 
 interface UnifiedQuestionBuilderProps {
@@ -34,16 +35,23 @@ const normalizeQuestionForEditing = (source?: Partial<Question>, fallbackSubject
         ? []
         : [...((source?.options || []).map((option) => String(option ?? ''))), ...emptyMcqOptions].slice(0, Math.max(4, source?.options?.length || 0));
 
+  const resolvedSubject = (source as any)?.subjectId || source?.subject || fallbackSubjectId || '';
+  const resolvedSectionId = (source as any)?.sectionId || (source as any)?.mainSkillId || fallbackSectionId || '';
+
   return {
     text: '',
     explanation: '',
     videoUrl: '',
+    imageUrl: '',
+    hint: '',
+    solvingStrategy: '',
+    description: '',
+    tags: [],
     difficulty: 'Medium',
-    pathId: '',
-    subject: fallbackSubjectId,
-    sectionId: fallbackSectionId,
-    skillIds: [],
+    pathId: source?.pathId || '',
     ...(source || {}),
+    subject: resolvedSubject,
+    sectionId: resolvedSectionId,
     type,
     options,
     correctOptionIndex: Math.max(0, Math.min(Number(source?.correctOptionIndex ?? 0), Math.max(options.length - 1, 0))),
@@ -62,6 +70,9 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
 }) => {
   const { skills, subjects, sections, paths } = useStore();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [showImageUrlInput, setShowImageUrlInput] = useState(false);
+  const [showAiFields, setShowAiFields] = useState(Boolean(initialQuestion?.hint || initialQuestion?.solvingStrategy || initialQuestion?.description));
   const [validationError, setValidationError] = useState('');
   const [generationError, setGenerationError] = useState('');
   const [question, setQuestion] = useState<Partial<Question>>(() => normalizeQuestionForEditing(initialQuestion, subjectId || '', sectionId || ''));
@@ -79,8 +90,8 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   );
 
   const selectedSubSkills = useMemo(
-    () => availableSubSkills.filter((skill) => question.skillIds?.includes(skill.id)),
-    [availableSubSkills, question.skillIds]
+    () => skills.filter((skill) => question.skillIds?.includes(skill.id)),
+    [skills, question.skillIds]
   );
 
   useEffect(() => {
@@ -94,31 +105,73 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     if (!currentSubject) return;
 
     const nextPathId = currentSubject.pathId;
+    if (sections.length === 0 || skills.length === 0) return;
+
     const sectionBelongsToSubject = !question.sectionId || sections.some(
       (section) => section.id === question.sectionId && section.subjectId === question.subject
     );
-    const filteredSkillIds = (question.skillIds || []).filter((skillId) =>
-      skills.some(
-        (skill) =>
-          skill.id === skillId &&
-          skill.subjectId === question.subject &&
-          (!question.sectionId || skill.sectionId === question.sectionId)
-      )
-    );
 
-    if (
-      question.pathId !== nextPathId ||
-      !sectionBelongsToSubject ||
-      filteredSkillIds.length !== (question.skillIds || []).length
-    ) {
+    if (question.pathId !== nextPathId || !sectionBelongsToSubject) {
       setQuestion((prev) => ({
         ...prev,
         pathId: nextPathId,
         sectionId: sectionBelongsToSubject ? prev.sectionId : '',
-        skillIds: filteredSkillIds
       }));
     }
-  }, [question.subject, question.sectionId, question.pathId, question.skillIds, subjects, sections, skills]);
+  }, [question.subject, subjects, sections, skills]);
+
+  const handleUploadImageFile = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setValidationError('يرجى اختيار ملف صورة صالح (PNG, JPEG, WebP).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setValidationError('حجم الصورة يجب ألا يتجاوز 5 ميجابايت.');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    setValidationError('');
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64 = reader.result as string;
+          const res = await api.uploadQuestionImage({
+            imageBase64: base64,
+            filename: file.name,
+            folder: 'custom'
+          });
+          if (res?.imageUrl) {
+            setQuestion(prev => ({ ...prev, imageUrl: res.imageUrl }));
+          }
+        } catch (err) {
+          setValidationError(err instanceof Error ? err.message : 'تعذر رفع الصورة إلى الخادم.');
+        } finally {
+          setIsUploadingImage(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch {
+      setIsUploadingImage(false);
+      setValidationError('تعذر قراءة ملف الصورة.');
+    }
+  };
+
+  const handleContainerPaste = async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          await handleUploadImageFile(file);
+          break;
+        }
+      }
+    }
+  };
 
   const handleSave = () => {
     handleValidatedSave();
@@ -131,8 +184,8 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   };
 
   const handleValidatedSave = () => {
-    if (!question.text) {
-      setValidationError('يرجى إدخال نص السؤال.');
+    if (!question.text?.trim() && !question.imageUrl?.trim()) {
+      setValidationError('يرجى إدخال نص السؤال أو إرفاق صورة للسؤال.');
       return;
     }
     if (!question.pathId) {
@@ -170,6 +223,12 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     setValidationError('');
     onSave({
       ...question,
+      text: question.text || '',
+      imageUrl: question.imageUrl?.trim() || undefined,
+      description: question.description?.trim() || undefined,
+      hint: question.hint?.trim() || undefined,
+      solvingStrategy: question.solvingStrategy?.trim() || undefined,
+      tags: question.tags || [],
       passage: question.passage?.trim() || undefined,
       options: question.type === 'essay' ? [] : question.type === 'true_false' ? ['صح', 'خطأ'] : trimmedOptions,
       correctOptionIndex: question.type === 'essay' ? 0 : question.type === 'true_false' ? Number(question.correctOptionIndex ?? 0) : normalizedCorrectOptionIndex,
@@ -238,7 +297,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           </button>
         </div>
 
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5" onPaste={handleContainerPaste}>
           {validationError && (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
               {validationError}
@@ -249,6 +308,113 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               {generationError}
             </div>
           )}
+
+          {/* قسم صورة السؤال مع المعاينة والرفع المباشر وCtrl+V */}
+          <div className="rounded-2xl border border-indigo-100 bg-indigo-50/30 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-bold text-indigo-900">
+                <ImageIcon size={18} className="text-indigo-600" />
+                <span>صورة السؤال (تظهر كبطاقة في بنك الأسئلة والاختبارات)</span>
+              </div>
+              <span className="text-xs text-indigo-600 font-semibold">تدعم اللصق المباشر (Ctrl + V) من لقطة الشاشة</span>
+            </div>
+
+            {question.imageUrl ? (
+              <div className="space-y-3">
+                <div className="relative group overflow-hidden rounded-xl border border-indigo-200 bg-white p-2 flex items-center justify-center max-h-72">
+                  <img
+                    src={question.imageUrl}
+                    alt="صورة السؤال"
+                    className="max-h-64 max-w-full object-contain rounded-lg"
+                  />
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold transition-colors">
+                    <Upload size={14} />
+                    {isUploadingImage ? 'جارٍ الرفع لكلاود فلير...' : 'استبدال الصورة'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        if (file) void handleUploadImageFile(file);
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setQuestion(prev => ({ ...prev, imageUrl: '' }))}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <Trash2 size={14} />
+                    حذف الصورة
+                  </button>
+                  <a
+                    href={question.imageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-slate-500 hover:underline ms-auto font-mono dir-ltr"
+                  >
+                    {question.imageUrl.slice(0, 45)}...
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-indigo-200 rounded-xl p-5 text-center bg-white/70 hover:bg-white transition-colors">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="p-3 bg-indigo-50 rounded-full text-indigo-600">
+                    <Upload size={22} />
+                  </div>
+                  <div className="text-sm font-bold text-gray-800">
+                    اسحب الصورة وأفلتها هنا، أو اضغط للاختيار من جهازك
+                  </div>
+                  <div className="text-xs text-indigo-600 font-semibold bg-indigo-50/80 px-3 py-1 rounded-full">
+                    💡 نصيحة: يمكنك التقاط لقطة شاشة والضغط مباشرة على (Ctrl + V) للصقها هنا!
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-colors shadow-xs">
+                      {isUploadingImage ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                      {isUploadingImage ? 'جارٍ رفع الصورة لكلاود فلير...' : 'اختيار صورة من الجهاز'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={e => {
+                          const file = e.target.files?.[0];
+                          if (file) void handleUploadImageFile(file);
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowImageUrlInput(!showImageUrlInput)}
+                      className="inline-flex items-center gap-1 px-3 py-2 text-slate-600 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold transition-colors"
+                    >
+                      <LinkIcon size={13} />
+                      رابط صورة مباشر
+                    </button>
+                  </div>
+                  {showImageUrlInput && (
+                    <div className="w-full mt-3 flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="https://pub-...r2.dev/..."
+                        className="flex-1 px-3 py-1.5 text-xs border border-slate-300 rounded-lg text-left dir-ltr"
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            setQuestion(prev => ({ ...prev, imageUrl: (e.target as HTMLInputElement).value.trim() }));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* حقل القطعة القرائية (استيعاب المقروء) - اختياري */}
           <div className="border border-amber-200/80 bg-amber-50/40 rounded-xl p-3.5 space-y-2">
@@ -485,6 +651,97 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               </div>
             </div>
           )}
+
+          {/* قسم بيانات المدرب الذكي والبيانات المتقدمة (AI Coach & Advanced Metadata) */}
+          <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50/40 via-white to-purple-50/30 p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-indigo-100 text-indigo-700 font-bold">🤖</span>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-800">بيانات المدرب الذكي وتوجيه الحل (AI Coach)</h4>
+                  <p className="text-xs text-slate-500">تلميحات وإستراتيجيات الحل التي يعتمد عليها الذكاء الاصطناعي لتوجيه الطالب</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAiFields(!showAiFields)}
+                className="text-xs font-bold text-indigo-700 hover:text-indigo-900 bg-white border border-indigo-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer shadow-2xs"
+              >
+                {showAiFields ? 'إخفاء الحقول' : '+ تعديل التلميح والإستراتيجية والوسوم'}
+              </button>
+            </div>
+
+            {showAiFields && (
+              <div className="space-y-4 pt-2 border-t border-indigo-100/80">
+                {/* وصف/عنوان السؤال */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    عنوان أو موضوع السؤال المختصر (اختياري)
+                  </label>
+                  <input
+                    type="text"
+                    value={question.description || ''}
+                    onChange={e => setQuestion(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="مثال: مقارنة بين الجذور، أو مسألة الأعمار وحساب الفرق"
+                    className="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 bg-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* تلميح المدرب الذكي */}
+                  <div>
+                    <label className="flex items-center gap-1.5 text-xs font-bold text-amber-900 mb-1">
+                      <span>💡 تلميح المدرب الذكي (AI Hint)</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={question.hint || ''}
+                      onChange={e => setQuestion(prev => ({ ...prev, hint: e.target.value }))}
+                      placeholder="تلميح خطوة أولى دون حرق الحل (مثال: تذكر أن جذر س + ص لا يساوي جذر س + جذر ص...)"
+                      className="w-full px-3 py-2 text-xs border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 bg-white leading-relaxed"
+                    />
+                  </div>
+
+                  {/* إستراتيجية الحل */}
+                  <div>
+                    <label className="flex items-center gap-1.5 text-xs font-bold text-emerald-900 mb-1">
+                      <span>⚡ إستراتيجية الحل (Solving Strategy)</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={question.solvingStrategy || ''}
+                      onChange={e => setQuestion(prev => ({ ...prev, solvingStrategy: e.target.value }))}
+                      placeholder="مثال: تبسيط الجذور، أو الرسم الهندسي السريع، أو التجريب الذكي للخيارات..."
+                      className="w-full px-3 py-2 text-xs border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-white leading-relaxed"
+                    />
+                  </div>
+                </div>
+
+                {/* وسوم السؤال */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    🏷️ الوسوم والمرجع (مفصولة بفواصل)
+                  </label>
+                  <input
+                    type="text"
+                    value={(question.tags || []).join(', ')}
+                    onChange={e => {
+                      const tagsArray = e.target.value
+                        .split(',')
+                        .map(t => t.trim())
+                        .filter(Boolean);
+                      setQuestion(prev => ({ ...prev, tags: tagsArray }));
+                    }}
+                    placeholder="مثال: كتاب_تجميعات_2026, صفحة_8, سؤال_18, مقارنات"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 bg-white"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    تساعد الوسوم في تنظيم الأسئلة وربطها برقم الصفحة والسؤال في الكتاب المصدري.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">شرح الإجابة (اختياري)</label>

@@ -93,4 +93,11 @@ export const createQuestionsApi = (request: ApiRequest) => ({
       method: "DELETE",
       token,
     }),
+
+  uploadQuestionImage: (payload: { imageBase64: string; filename?: string; folder?: string }, token?: string | null) =>
+    request<{ success: boolean; imageUrl: string; key: string }>("/quizzes/questions/upload-image", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
 });

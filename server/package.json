@@ -43,6 +43,7 @@
     "restore:learning": "tsx src/scripts/restoreLearningContent.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1135.0",
     "@sentry/node": "^9.18.0",
     "@socket.io/redis-adapter": "^8.3.0",
     "bcryptjs": "^2.4.3",
