@@ -10,7 +10,7 @@ import { UserModel } from "../../../models/User.js";
 
 type DeleteUserLifecycleInput = {
   targetUserId: string;
-  targetMongoId: unknown;
+  targetMongoId: string;
   actorUserId: string;
 };
 
