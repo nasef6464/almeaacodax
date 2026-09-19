@@ -50,7 +50,7 @@ searchRouter.get(
       includeQuestions
         ? QuestionModel.find({
             approvalStatus: "approved",
-            $or: [{ text: matcher }, { explanation: matcher }],
+            $or: [{ text: matcher }, { description: matcher }, { explanation: matcher }],
           })
             .select("id text pathId subject sectionId difficulty")
             .limit(query.limit)

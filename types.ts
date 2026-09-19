@@ -540,6 +540,10 @@ export interface PublicBarcodeTestConfig {
 export interface Question extends ContentWorkflow {
     id: string;
     text: string;
+    description?: string;
+    hint?: string;
+    solvingStrategy?: string;
+    tags?: string[];
     passage?: string;
     options: string[];
     correctOptionIndex: number;

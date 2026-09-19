@@ -1227,6 +1227,16 @@ const Quiz: React.FC = () => {
                 const borderClass = isSelected
                   ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
                   : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50 bg-white';
+                const arabicLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+                const latinLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+                const fallbackLabel = arabicLetters[idx] || String(idx + 1);
+                const trimmed = (option || '').trim();
+                const isLetterOnly =
+                  !trimmed ||
+                  trimmed === fallbackLabel ||
+                  trimmed === latinLetters[idx] ||
+                  ['أ', 'ب', 'ج', 'د', 'A', 'B', 'C', 'D'].includes(trimmed);
+                const displayLetter = trimmed && isLetterOnly ? trimmed : fallbackLabel;
 
                 return (
                   <button
@@ -1234,8 +1244,17 @@ const Quiz: React.FC = () => {
                     onClick={() => handleAnswerSelect(idx)}
                     className={`${currentOptionHeightClass} px-2 sm:px-2.5 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-1.5 shadow-sm ${borderClass}`}
                   >
-                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-5 text-center break-words">
-                      {sanitizeArabicText(option)}
+                    <span className={`flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-5 break-words ${isLetterOnly ? 'text-center' : 'text-right'}`}>
+                      {isLetterOnly ? (
+                        <span className="font-black text-base sm:text-lg">{displayLetter}</span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-indigo-100 text-indigo-800 text-xs font-black">
+                            {displayLetter}
+                          </span>
+                          <span>{sanitizeArabicText(trimmed)}</span>
+                        </div>
+                      )}
                     </span>
                     <div className="flex items-center shrink-0">
                       <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${

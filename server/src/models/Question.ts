@@ -4,6 +4,10 @@ const questionSchema = new Schema(
   {
     id: { type: String, index: true, sparse: true },
     text: { type: String, default: "", trim: true },
+    description: { type: String, default: "", trim: true },
+    hint: { type: String, default: "", trim: true },
+    solvingStrategy: { type: String, default: "", trim: true },
+    tags: { type: [String], default: [] },
     options: { type: [String], default: [] },
     correctOptionIndex: { type: Number, default: 0 },
     explanation: { type: String, default: "" },

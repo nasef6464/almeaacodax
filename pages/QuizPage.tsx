@@ -1635,9 +1635,16 @@ export const QuizPage: React.FC = () => {
                     <div className={`grid ${optionGridClass} gap-3 pt-2`}>
                       {currentDisplayOptions.map((displayOption, displayIndex) => {
                         const isSelected = selectedOptions[currentQuestion.id] === displayOption.originalIndex;
-                        const optionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
-                        const fallbackLetter = optionLetters[displayIndex] || String(displayIndex + 1);
-                        const hasText = Boolean(displayOption.text && displayOption.text.trim().length > 0);
+                        const arabicOptionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+                        const latinOptionLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+                        const fallbackLetter = arabicOptionLetters[displayIndex] || String(displayIndex + 1);
+                        const trimmed = (displayOption.text || '').trim();
+                        const isLetterOnly =
+                          !trimmed ||
+                          trimmed === fallbackLetter ||
+                          trimmed === latinOptionLetters[displayIndex] ||
+                          ['أ', 'ب', 'ج', 'د', 'A', 'B', 'C', 'D'].includes(trimmed);
+                        const displayLetter = trimmed && isLetterOnly ? trimmed : fallbackLetter;
 
                         return (
                           <button
@@ -1650,15 +1657,26 @@ export const QuizPage: React.FC = () => {
                                 : (isNightMode ? 'border-slate-800 bg-slate-950/80 hover:border-slate-700 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/90 bg-white')
                             }`}
                           >
-                            <span className={`flex-1 text-xs sm:text-sm md:text-base font-bold leading-relaxed break-words text-center ${
+                            <span className={`flex-1 text-xs sm:text-sm md:text-base font-bold leading-relaxed break-words ${
+                              isLetterOnly ? 'text-center' : 'text-right'
+                            } ${
                               isSelected
                                 ? (isNightMode ? 'text-white' : 'text-indigo-950')
                                 : (isNightMode ? 'text-slate-200 group-hover:text-slate-100' : 'text-gray-800 group-hover:text-indigo-950')
                             }`}>
-                              {hasText ? (
-                                <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
+                              {isLetterOnly ? (
+                                <span className="question-html font-black text-lg sm:text-xl">{displayLetter}</span>
                               ) : (
-                                <span className="question-html font-black">{fallbackLetter}</span>
+                                <div className="flex items-center gap-2.5">
+                                  <span className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs sm:text-sm font-black border ${
+                                    isSelected
+                                      ? (isNightMode ? 'bg-indigo-900 border-indigo-700 text-indigo-200' : 'bg-indigo-100 border-indigo-300 text-indigo-800')
+                                      : (isNightMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700')
+                                  }`}>
+                                    {displayLetter}
+                                  </span>
+                                  <span className="question-html flex-1 leading-snug" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(trimmed) }} />
+                                </div>
                               )}
                             </span>
 

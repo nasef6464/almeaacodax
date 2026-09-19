@@ -1863,15 +1863,29 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {(previewQuestion.type === 'essay' ? ['إجابة كتابية'] : previewQuestion.options || []).map((option, index) => {
                       const isCorrect = previewQuestion.type !== 'essay' && previewQuestion.correctOptionIndex === index;
+                      const trimmed = (option || '').trim();
+                      const fallbackLabel = arabicOptionLabels[index] || 'خيار';
+                      const isLetterOnly =
+                        !trimmed ||
+                        trimmed === arabicOptionLabels[index] ||
+                        ['A', 'B', 'C', 'D', 'E', 'F'][index] === trimmed ||
+                        ['أ', 'ب', 'ج', 'د', 'A', 'B', 'C', 'D'].includes(trimmed);
+                      const displayLetter = trimmed && isLetterOnly ? trimmed : fallbackLabel;
                       return (
                         <div
                           key={`${option}-${index}`}
-                          className={`min-h-[72px] rounded-2xl border px-4 py-3 text-center text-base font-black leading-8 ${
+                          className={`min-h-[72px] rounded-2xl border px-4 py-3 text-center text-base font-black leading-8 flex flex-col items-center justify-center ${
                             isCorrect ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-800'
                           }`}
                         >
-                          <div className="text-xs font-bold text-slate-400 mb-1">{arabicOptionLabels[index] || 'خيار'}</div>
-                          <div>{option}</div>
+                          {!isLetterOnly ? (
+                            <>
+                              <div className="text-xs font-bold text-slate-400 mb-1">{fallbackLabel}</div>
+                              <div className="font-bold text-slate-900">{trimmed}</div>
+                            </>
+                          ) : (
+                            <div className="text-xl font-black">{displayLetter}</div>
+                          )}
                         </div>
                       );
                     })}
