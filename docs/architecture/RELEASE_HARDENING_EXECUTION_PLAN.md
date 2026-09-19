@@ -251,6 +251,15 @@ Outcome must be one of:
 
 No readiness label without supporting evidence.
 
+## Deep modularity/resource execution overlay
+
+The repository-wide modularity/resource audit is canonical at:
+`docs/architecture/DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`.
+
+From Batch 9 onward, modular decomposition is no longer deferred wholesale to Batch 14. Each domain batch must complete worthwhile decomposition while its behavior and authority are already under inspection, then protect the new boundary with tests and exact-head CI. Batch 14 is a residual architecture sweep only.
+
+Origin-bandwidth/resource efficiency is also an explicit release concern. Heavy images/media should use the configured Cloudflare-backed asset delivery layer rather than repeated Node-origin streaming where the product/security contract permits it. Batch 13 must measure API payloads, repeated reads/polling/realtime traffic, media origin egress and cache behavior; live Cloudflare behavior requires live verification.
+
 ## Batch handoff template
 
 Every completed or paused batch must leave this information in the repository execution state:
