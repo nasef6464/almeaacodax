@@ -7,6 +7,7 @@ const files = {
   providers: await readFile(new URL("../server/src/services/notificationProviders.ts", import.meta.url), "utf8"),
   route: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   audience: await readFile(new URL("../server/src/modules/notifications/application/notificationAudienceAuthority.ts", import.meta.url), "utf8"),
+  campaign: await readFile(new URL("../server/src/modules/notifications/application/createNotificationCampaign.ts", import.meta.url), "utf8"),
   index: await readFile(new URL("../server/src/routes/index.ts", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/.env.example", import.meta.url), "utf8"),
   guide: await readFile(new URL("../docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md", import.meta.url), "utf8"),
@@ -43,10 +44,12 @@ check("notification models include templates and delivery states", () => {
   assertIncludes(files.delivery, "notificationDeliverySchema.index({ recipientUserId: 1, channel: 1, createdAt: -1 })");
 });
 
-check("notification service creates delivery records without bulk provider calls", () => {
+check("notification service creates bounded delivery records without silent truncation", () => {
   assertIncludes(files.service, "MAX_RECIPIENTS_PER_REQUEST = 500");
+  assertIncludes(files.service, "NotificationAudienceTooLargeError");
   assertIncludes(files.service, 'status: channel === "in_app" ? "sent" : "pending"');
   assertIncludes(files.service, "processPendingNotifications");
+  assertNotIncludes(files.service, ".slice(0, MAX_RECIPIENTS_PER_REQUEST)");
   assertNotIncludes(files.service, "fetch(");
 });
 
@@ -58,10 +61,12 @@ check("external provider adapter supports production delivery modes", () => {
   assertIncludes(files.providers, "provider_http_");
 });
 
-check("notification routes protect admin actions", () => {
+check("notification routes protect admin actions and use campaign orchestration", () => {
   assertIncludes(files.route, 'requireRole(["admin"])');
   assertIncludes(files.route, '"/admin/send"');
   assertIncludes(files.route, '"/admin/process-pending"');
+  assertIncludes(files.route, "createNotificationCampaignDeliveries");
+  assertIncludes(files.route, "maxRecipientsPerCampaign");
   assertIncludes(files.index, 'apiRouter.use("/notifications", notificationRouter)');
 });
 
@@ -69,6 +74,14 @@ check("intervention parent recipients use canonical parent authority resolver", 
   assertIncludes(files.route, "getAuthorizedParentIdsForStudent");
   assertIncludes(files.route, "authorizedParentIds");
   assertNotIncludes(files.route, 'ParentStudentRelationshipModel.find({ studentUserId: studentId, status: "active" })');
+});
+
+check("large notification campaigns are resolved fully then batched", () => {
+  assertIncludes(files.campaign, "MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS");
+  assertIncludes(files.campaign, "countDocuments");
+  assertIncludes(files.campaign, "getNotificationBatchLimit()");
+  assertIncludes(files.campaign, "for (const userIds of batches)");
+  assertIncludes(files.campaign, "enqueueNotificationDeliveries");
 });
 
 check("teacher and supervisor notification reachability is module-owned and canonical-first", () => {

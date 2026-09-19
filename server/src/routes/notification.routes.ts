@@ -25,6 +25,11 @@ import {
   getAuthorizedStudentIdsForNotificationActor,
   getAuthorizedSupervisorRecipientIdsForStudent,
 } from "../modules/notifications/application/notificationAudienceAuthority.js";
+import {
+  createNotificationCampaignDeliveries,
+  MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS,
+  NotificationCampaignTooLargeError,
+} from "../modules/notifications/application/createNotificationCampaign.js";
 
 export const notificationRouter = Router();
 
@@ -219,7 +224,7 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Select users or roles before sending" });
     }
 
-    const result = await createNotificationDeliveries({
+    const result = await createNotificationCampaignDeliveries({
       templateKey: payload.templateKey,
       title: payload.title,
       subject: payload.subject,
@@ -230,17 +235,23 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
       variables: payload.variables,
       createdBy: req.authUser!.id,
     });
-    const queueResult = await enqueueNotificationDeliveries(result.deliveryIds || []);
 
     res.status(StatusCodes.ACCEPTED).json({
       ...result,
-      queue: queueResult,
-      maxRecipientsPerRequest: getNotificationBatchLimit(),
-      message: queueResult.queued
-        ? "Notification delivery records created and external deliveries queued."
-        : "Notification delivery records created. External channels stay pending until Redis/BullMQ is configured or processed manually.",
+      maxRecipientsPerBatch: getNotificationBatchLimit(),
+      maxRecipientsPerCampaign: MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS,
+      message: result.queue.queued
+        ? "Notification campaign delivery records created in bounded batches and external deliveries queued."
+        : "Notification campaign delivery records created in bounded batches. External channels stay pending until Redis/BullMQ is configured or processed manually.",
     });
   } catch (error) {
+    if (error instanceof NotificationCampaignTooLargeError) {
+      return res.status(StatusCodes.REQUEST_TOO_LONG).json({
+        message: "Notification campaign audience exceeds the configured safety limit.",
+        maxRecipientsPerCampaign: error.maxRecipients,
+        resolvedRecipients: error.resolvedRecipients,
+      });
+    }
     next(error);
   }
 });
