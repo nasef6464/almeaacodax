@@ -68,7 +68,11 @@ const quizResultSchema = new Schema(
 
 quizResultSchema.index({ userId: 1, createdAt: -1 });
 quizResultSchema.index({ quizId: 1, createdAt: -1 });
-quizResultSchema.index({ userId: 1, quizId: 1, attemptNumber: 1 });
+// This is the database-level concurrency guard for max-attempt enforcement.
+// Two concurrent submissions can both observe the same previous count, but only
+// one may claim a given learner+quiz attempt number. The submit route already
+// translates E11000 into HTTP 409, so the loser cannot exceed maxAttempts.
+quizResultSchema.index({ userId: 1, quizId: 1, attemptNumber: 1 }, { unique: true });
 quizResultSchema.index({ "skillsAnalysis.skillId": 1, userId: 1 });
 quizResultSchema.index({ "skillsAnalysis.subjectId": 1, createdAt: -1 });
 
