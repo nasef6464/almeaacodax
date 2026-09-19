@@ -89,7 +89,15 @@ check("certificate recipients and school relation imports use canonical parent a
   includes(files.certificates, "getAuthorizedParentIdsForStudent");
   excludes(files.certificates, "linkedStudentIds: { $in:");
   includes(files.contentRoute, "ensureCanonicalParentRelationship");
+  includes(files.contentRoute, "SchoolMembershipModel.findOneAndUpdate");
+  includes(files.contentRoute, "TeachingAssignmentModel.findOneAndUpdate");
   includes(files.authority, "ensureCanonicalParentRelationship");
+});
+
+check("admin role changes retire stale school and teacher authority", () => {
+  includes(files.authRoute, "SchoolMembershipModel.updateMany(");
+  includes(files.authRoute, "TeachingAssignmentModel.updateMany(");
+  includes(files.authRoute, 'previousRole === "teacher"');
 });
 
 check("operations audit respects canonical parent relationship tombstones", () => {

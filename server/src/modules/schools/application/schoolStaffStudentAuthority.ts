@@ -108,56 +108,65 @@ async function resolveTeacherStudentIds(
     .select("schoolId classId status")
     .lean();
 
-  if (assignments.length > 0) {
-    const activeAssignments = (assignments as any[]).filter((assignment) => {
-      if (String(assignment.status || "active") !== "active") return false;
-      const schoolId = String(assignment.schoolId || "").trim();
-      return schoolId && (!actorContext.activeSchoolIds.size || actorContext.activeSchoolIds.has(schoolId));
-    });
-    const classIds = normalizeIds(activeAssignments.map((assignment) => assignment.classId));
-    const groups = await loadGroupsByIds(classIds);
-    const studentsByClass = new Map<string, Set<string>>();
-    for (const group of groups as any[]) {
-      const ids = new Set(normalizeIds(Array.isArray(group.studentIds) ? group.studentIds : []));
-      studentsByClass.set(String(group.id || group._id), ids);
-      studentsByClass.set(String(group._id), ids);
-    }
+  const canonicalClassIds = new Set(
+    normalizeIds((assignments as any[]).map((assignment) => assignment.classId)),
+  );
+  const activeAssignments = (assignments as any[]).filter((assignment) => {
+    if (String(assignment.status || "active") !== "active") return false;
+    const schoolId = String(assignment.schoolId || "").trim();
+    return schoolId && (!actorContext.activeSchoolIds.size || actorContext.activeSchoolIds.has(schoolId));
+  });
 
-    const authorized = new Set<string>();
-    for (const student of students) {
-      const studentId = studentIdOf(student);
-      if (!studentId) continue;
-      const targetSchools = studentContexts.activeSchoolIds.get(studentId) || new Set<string>();
-      if (studentContexts.hasCanonical.has(studentId) && targetSchools.size === 0) continue;
-      const legacyGroups = new Set(normalizeIds(Array.isArray(student.groupIds) ? student.groupIds : []));
-      const matches = activeAssignments.some((assignment) => {
-        const schoolId = String(assignment.schoolId || "");
-        const classId = String(assignment.classId || "");
-        if (targetSchools.size && !targetSchools.has(schoolId)) return false;
-        return legacyGroups.has(classId) || studentsByClass.get(classId)?.has(studentId) === true;
-      });
-      if (matches) authorized.add(studentId);
-    }
-    return authorized;
+  // Compatibility is per class: a canonical assignment row (active OR
+  // inactive) tombstones the legacy groupIds value for that same class only.
+  // Unmigrated classes may continue through groupIds until they receive their
+  // own canonical row.
+  const legacyClassIds = normalizeIds(actor.groupIds || []).filter(
+    (classId) => !canonicalClassIds.has(classId),
+  );
+  const effectiveClassIds = normalizeIds([
+    ...activeAssignments.map((assignment) => assignment.classId),
+    ...legacyClassIds,
+  ]);
+  const groups = await loadGroupsByIds(effectiveClassIds);
+  const groupById = new Map<string, any>();
+  for (const group of groups as any[]) {
+    groupById.set(String(group.id || group._id), group);
+    groupById.set(String(group._id), group);
   }
 
-  const legacyClassIds = normalizeIds(actor.groupIds || []);
-  const legacyGroups = await loadGroupsByIds(legacyClassIds);
-  const groupStudents = new Set(
-    normalizeIds((legacyGroups as any[]).flatMap((group) => Array.isArray(group.studentIds) ? group.studentIds : [])),
-  );
   const authorized = new Set<string>();
   for (const student of students) {
     const studentId = studentIdOf(student);
     if (!studentId) continue;
     const targetSchools = studentContexts.activeSchoolIds.get(studentId) || new Set<string>();
     if (studentContexts.hasCanonical.has(studentId) && targetSchools.size === 0) continue;
-    if (actorContext.activeSchoolIds.size && targetSchools.size && !hasSharedSchool(actorContext.activeSchoolIds, targetSchools)) continue;
     const studentGroups = new Set(normalizeIds(Array.isArray(student.groupIds) ? student.groupIds : []));
-    if (groupStudents.has(studentId) || legacyClassIds.some((groupId) => studentGroups.has(groupId))) {
+
+    const canonicalMatch = activeAssignments.some((assignment) => {
+      const schoolId = String(assignment.schoolId || "");
+      const classId = String(assignment.classId || "");
+      if (targetSchools.size && !targetSchools.has(schoolId)) return false;
+      const group = groupById.get(classId);
+      const groupStudents = normalizeIds(Array.isArray(group?.studentIds) ? group.studentIds : []);
+      return studentGroups.has(classId) || groupStudents.includes(studentId);
+    });
+    if (canonicalMatch) {
       authorized.add(studentId);
+      continue;
     }
+
+    const legacyMatch = legacyClassIds.some((classId) => {
+      const group = groupById.get(classId);
+      const groupSchoolId = String(group?.parentId || "");
+      if (actorContext.activeSchoolIds.size && groupSchoolId && !actorContext.activeSchoolIds.has(groupSchoolId)) return false;
+      if (targetSchools.size && groupSchoolId && !targetSchools.has(groupSchoolId)) return false;
+      const groupStudents = normalizeIds(Array.isArray(group?.studentIds) ? group.studentIds : []);
+      return studentGroups.has(classId) || groupStudents.includes(studentId);
+    });
+    if (legacyMatch) authorized.add(studentId);
   }
+
   return authorized;
 }
 

@@ -25,6 +25,7 @@ import { env } from "../config/env.js";
 import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
 import { isPackageSeatAvailable } from "../services/packageSeatCapacity.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { QuestionModel } from "../models/Question.js";
@@ -1209,10 +1210,18 @@ authRouter.patch(
           GroupModel.updateMany({ supervisorIds: membershipUserId }, { $pull: { supervisorIds: membershipUserId } }),
         );
       }
-      if (previousRole === "school_admin") {
+      if (["student", "teacher", "supervisor", "school_admin", "parent"].includes(previousRole)) {
         staleMembershipUpdates.push(
           SchoolMembershipModel.updateMany(
-            { userId: String(targetUser.id || targetUser._id || targetId), role: "school_admin", status: "active" },
+            { userId: membershipUserId, role: previousRole, status: "active" },
+            { $set: { status: "inactive" } },
+          ),
+        );
+      }
+      if (previousRole === "teacher") {
+        staleMembershipUpdates.push(
+          TeachingAssignmentModel.updateMany(
+            { teacherId: membershipUserId, status: "active" },
             { $set: { status: "inactive" } },
           ),
         );

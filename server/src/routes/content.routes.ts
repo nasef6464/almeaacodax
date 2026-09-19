@@ -23,6 +23,8 @@ import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationS
 import { PlatformIntegrationHistoryModel } from "../models/PlatformIntegrationHistory.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
@@ -2534,6 +2536,12 @@ contentRouter.post(
         summary.assignedClasses += 1;
       }
 
+      await SchoolMembershipModel.findOneAndUpdate(
+        { userId: String(student.id || student._id), schoolId, role: "student" },
+        { $set: { status: "active" } },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
+
       const parentEmail = String(row.parentEmail || "").trim().toLowerCase();
       if (parentEmail) {
         const parent = await createUserIfMissing(
@@ -2557,6 +2565,11 @@ contentRouter.post(
               schoolId,
               createdBy: String(req.authUser!.id),
             }),
+            SchoolMembershipModel.findOneAndUpdate(
+              { userId: String(parent.id || parent._id), schoolId, role: "parent" },
+              { $set: { status: "active" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true },
+            ),
           ]);
           summary.linkedParents += 1;
         }
@@ -2577,6 +2590,11 @@ contentRouter.post(
           await Promise.all([
             UserModel.findByIdAndUpdate(supervisor._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } }),
             GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: supervisor.id || String(supervisor._id) } }),
+            SchoolMembershipModel.findOneAndUpdate(
+              { userId: String(supervisor.id || supervisor._id), schoolId, role: "supervisor" },
+              { $set: { status: "active" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true },
+            ),
           ]);
           summary.linkedSupervisors += 1;
         }
@@ -2594,7 +2612,25 @@ contentRouter.post(
           summary.missingTeachers += 1;
         } else {
           const targetGroupId = classroom ? classroom.id || String(classroom._id) : schoolId;
-          await UserModel.findByIdAndUpdate(teacher._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } });
+          const teacherUserId = String(teacher.id || teacher._id);
+          const canonicalWrites: Promise<unknown>[] = [
+            UserModel.findByIdAndUpdate(teacher._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } }),
+            SchoolMembershipModel.findOneAndUpdate(
+              { userId: teacherUserId, schoolId, role: "teacher" },
+              { $set: { status: "active" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true },
+            ),
+          ];
+          if (classroom) {
+            canonicalWrites.push(
+              TeachingAssignmentModel.findOneAndUpdate(
+                { schoolId, teacherId: teacherUserId, classId: targetGroupId, subjectId: "" },
+                { $set: { status: "active" } },
+                { upsert: true, new: true, setDefaultsOnInsert: true },
+              ),
+            );
+          }
+          await Promise.all(canonicalWrites);
           summary.linkedTeachers += 1;
         }
       }
