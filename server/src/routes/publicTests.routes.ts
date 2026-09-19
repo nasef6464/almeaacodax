@@ -586,7 +586,9 @@ publicTestsRouter.post(
     const wrongAnswers = Math.max(totalQuestions - correctAnswers - unanswered, 0);
     const score = totalQuestions ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
     const skillsAnalysis = buildSkillsAnalysis(questions, answersByQuestionId);
-    let submission;\n    try {\n      submission = await PublicBarcodeSubmissionModel.create({
+    let submission;
+    try {
+      submission = await PublicBarcodeSubmissionModel.create({
       id: `pbts_${Date.now()}_${randomUUID().slice(0, 8)}`,
       testId: test.id,
       slug,
