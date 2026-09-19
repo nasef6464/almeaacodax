@@ -13,6 +13,8 @@ const files = {
   backfill: await read("server/src/scripts/backfillParentStudentRelationships.ts"),
   quizReportScope: await read("server/src/modules/quizzes/application/quizReportStudentScope.ts"),
   parentWeeklyReport: await read("server/src/modules/reports/application/sendParentWeeklyPerformanceReport.ts"),
+  certificates: await read("server/src/routes/certificates.routes.ts"),
+  contentRoute: await read("server/src/routes/content.routes.ts"),
 };
 
 const checks = [];
@@ -80,6 +82,13 @@ check("compatibility weekly report uses canonical parent authority", () => {
   includes(files.parentWeeklyReport, "getAuthorizedStudentIdsForParent");
   includes(files.parentWeeklyReport, "authorizedStudentIds");
   excludes(files.parentWeeklyReport, "linkedStudentIds");
+});
+
+check("certificate recipients and school relation imports use canonical parent authority", () => {
+  includes(files.certificates, "getAuthorizedParentIdsForStudent");
+  excludes(files.certificates, "linkedStudentIds: { $in:");
+  includes(files.contentRoute, "ensureCanonicalParentRelationship");
+  includes(files.authority, "ensureCanonicalParentRelationship");
 });
 
 check("parent relationship backfill is explicit and dry-run by default", () => {

@@ -43,6 +43,8 @@ import {
   getScopedContentBootstrapOperationalData,
   PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT,
 } from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
+import { getAuthorizedStudentIdsForSchoolStaffActor } from "../modules/schools/application/schoolStaffStudentAuthority.js";
+import { ensureCanonicalParentRelationship } from "../services/parentAuthorityService.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -858,7 +860,7 @@ contentRouter.post(
       role: "student",
       ...studentLookup,
     })
-      .select("_id id name role groupIds")
+      .select("_id id name role schoolId groupIds")
       .lean();
 
     if (!student) {
@@ -866,28 +868,12 @@ contentRouter.post(
     }
 
     const studentId = String((student as any).id || (student as any)._id);
-    const studentGroupIds = Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : [];
-    const groupObjectIds = studentGroupIds.filter((id: string) => mongoose.isValidObjectId(id));
-    const scopedGroups = await GroupModel.find({
-      $or: [
-        { studentIds: studentId },
-        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
-        { id: { $in: studentGroupIds } },
-      ],
-    })
-      .select("_id id supervisorIds studentIds")
-      .lean();
-
-    if (authUser.role !== "admin") {
-      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
-      const canReachStudent =
-        authGroupIds.some((groupId: string) => studentGroupIds.includes(groupId)) ||
-        scopedGroups.some((group: any) => (group.supervisorIds || []).map(String).includes(String(authUser.id))) ||
-        (Array.isArray((authUser as any).linkedStudentIds) && (authUser as any).linkedStudentIds.map(String).includes(studentId));
-
-      if (!canReachStudent) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
-      }
+    const authorizedStudentIds = await getAuthorizedStudentIdsForSchoolStaffActor(
+      authUser,
+      [student as any],
+    );
+    if (!authorizedStudentIds.has(studentId)) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
     }
 
     const today = new Date();
@@ -2559,7 +2545,19 @@ contentRouter.post(
         if (!parent) {
           summary.missingParents += 1;
         } else {
-          await UserModel.findByIdAndUpdate(parent._id, { $set: { schoolId }, $addToSet: { linkedStudentIds: student.id || String(student._id) } });
+          const studentUserId = String(student.id || student._id);
+          await Promise.all([
+            UserModel.findByIdAndUpdate(parent._id, {
+              $set: { schoolId },
+              $addToSet: { linkedStudentIds: studentUserId },
+            }),
+            ensureCanonicalParentRelationship({
+              parentUserId: String(parent.id || parent._id),
+              studentUserId,
+              schoolId,
+              createdBy: String(req.authUser!.id),
+            }),
+          ]);
           summary.linkedParents += 1;
         }
       }

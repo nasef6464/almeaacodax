@@ -10,6 +10,7 @@ import { AccessGrantModel } from "../models/AccessGrant.js";
 import { UserModel } from "../models/User.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { enqueueNotificationDeliveries } from "../queues/notificationQueue.js";
+import { getAuthorizedParentIdsForStudent } from "../services/parentAuthorityService.js";
 
 export const certificateRouter = Router();
 
@@ -102,14 +103,7 @@ certificateRouter.post(
       completionPercentage,
     });
 
-    const linkedParents = await UserModel.find({
-      role: "parent",
-      linkedStudentIds: { $in: [String(userId)] },
-      isActive: { $ne: false },
-    })
-      .select("id _id")
-      .lean();
-    const parentUserIds = linkedParents.map((parent: any) => String(parent.id || parent._id)).filter(Boolean);
+    const parentUserIds = await getAuthorizedParentIdsForStudent(String(userId));
     if (parentUserIds.length > 0) {
       const delivery = await createNotificationDeliveries({
         title: "إشعار إنجاز جديد",
