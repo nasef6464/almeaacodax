@@ -9,6 +9,7 @@ import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
 import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
+import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
 import { enqueueNotificationDeliveries, enqueuePendingNotifications } from "../queues/notificationQueue.js";
 import {
   createNotificationDeliveries,
@@ -488,15 +489,9 @@ notificationRouter.post(
       const parentId = String((req as any).user?.id || (req as any).user?._id || "");
       if (!parentId) return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
 
-      // جلب الطلاب المرتبطين بولي الأمر
-      const parentUser = await UserModel.findOne({ $or: [{ _id: parentId }, { id: parentId }] })
-        .select("linkedStudentIds childrenIds name")
-        .lean() as any;
-
-      const linkedIds: string[] = [
-        ...(parentUser?.linkedStudentIds || []),
-        ...(parentUser?.childrenIds || []),
-      ];
+      // Resolve parent authority through the canonical relationship model.
+      // Legacy linkedStudentIds is used only by the resolver for parents not yet backfilled.
+      const linkedIds = await getAuthorizedStudentIdsForParent(parentId);
 
       if (!linkedIds.length) {
         return res.status(StatusCodes.OK).json({ ok: true, message: "no_linked_students", sent: 0 });
