@@ -3,6 +3,7 @@ import { GroupModel } from "../../../models/Group.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
 import { resolveSchoolContexts } from "../../schools/application/schoolContextResolver.js";
+import { getAuthorizedStudentIdsForParent } from "../../parents/application/parentAuthority.js";
 
 /**
  * Authoritative scope check for AI operations that read a student's learning
@@ -18,10 +19,9 @@ export const canTargetStudentForAi = async (actor: AuthUser, targetStudentId: st
   const target = await UserModel.findById(targetId).select("role schoolId").lean();
   if (!target || String(target.role) !== "student") return false;
 
-  // Parent linkage is still the platform's current parent-child authority.
-  // Batch 9 will migrate this legacy field to the canonical relationship.
   if (actor.role === "parent") {
-    return (actor.linkedStudentIds || []).map(String).includes(targetId);
+    const authorizedStudentIds = await getAuthorizedStudentIdsForParent(actorId);
+    return authorizedStudentIds.includes(targetId);
   }
 
   const [actorContexts, targetContexts] = await Promise.all([

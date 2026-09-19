@@ -39,6 +39,7 @@
     "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts",
     "repair:current-course-visibility": "tsx src/scripts/repairMissingCurrentCourseVisibility.ts",
     "backfill:learning-placements": "tsx src/scripts/backfillLearningPlacementsApi.ts",
+    "backfill:parent-relationships": "tsx src/scripts/backfillParentStudentRelationships.ts",
     "backup:learning": "tsx src/scripts/backupLearningContent.ts",
     "restore:learning": "tsx src/scripts/restoreLearningContent.ts"
   },

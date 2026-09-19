@@ -7,6 +7,7 @@ import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { enqueueNotificationDeliveries } from "../queues/notificationQueue.js";
 import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
+import { runParentWhatsappDigestBatch } from "../modules/reports/application/runParentWhatsappDigestBatch.js";
 
 export const parentRouter = Router();
 
@@ -230,56 +231,10 @@ parentRouter.post(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const parents = await UserModel.find({
-      role: "parent",
-      whatsappDigestEnabled: true,
-      phone: { $exists: true, $ne: "" },
-    }).select("id name phone linkedStudentIds").lean();
-
-    let sentCount = 0;
-
-    for (const parent of parents) {
-      const p = parent as any;
-      const linkedStudentIds = Array.isArray(p.linkedStudentIds)
-        ? p.linkedStudentIds.map(String).filter(Boolean)
-        : [];
-      if (!linkedStudentIds.length) continue;
-
-      const latestResults = await QuizResultModel.find({ userId: { $in: linkedStudentIds } })
-        .select("userId score createdAt")
-        .sort({ createdAt: -1 })
-        .lean();
-
-      const latestByUser = new Map<string, any>();
-      for (const row of latestResults as any[]) {
-        const key = String(row.userId || "");
-        if (!latestByUser.has(key)) latestByUser.set(key, row);
-      }
-
-      const rows = linkedStudentIds.map((sid: string) => {
-        const row = latestByUser.get(String(sid));
-        return row ? `- الطالب ${sid}: آخر نتيجة ${Number(row.score || 0)}%` : `- الطالب ${sid}: لا توجد نتيجة حديثة`;
-      });
-      const body = `تقرير منصة المئة الأسبوعي:\nمرحباً بك ${p.name || ""}\n\n${rows.join("\n")}`;
-
-      const delivery = await createNotificationDeliveries({
-        title: "تقرير أسبوعي للأبناء",
-        subject: "تقرير منصة المئة الأسبوعي",
-        body,
-        channels: ["whatsapp"],
-        userIds: [String(p.id)],
-        createdBy: String(req.authUser!.id),
-      });
-      if (delivery.deliveryIds?.length) {
-        await enqueueNotificationDeliveries(delivery.deliveryIds);
-        sentCount++;
-      }
-    }
-
+    const summary = await runParentWhatsappDigestBatch(String(req.authUser!.id));
     return res.json({
       ok: true,
-      processedParents: parents.length,
-      sentWhatsApp: sentCount,
+      ...summary,
     });
   }),
 );

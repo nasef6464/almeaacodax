@@ -4,6 +4,7 @@ import { AnnouncementAdModel } from "../../../models/AnnouncementAd.js";
 import { B2BPackageModel } from "../../../models/B2BPackage.js";
 import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
+import { getAuthorizedStudentIdsForParent } from "../../parents/application/parentAuthority.js";
 
 export const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
 
@@ -48,7 +49,7 @@ export const getScopedContentBootstrapOperationalData = async (authUser?: AuthUs
     return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
-  const user = await UserModel.findById(authUser.id).select("schoolId groupIds linkedStudentIds role");
+  const user = await UserModel.findById(authUser.id).select("schoolId groupIds role");
   if (!user) {
     const announcementAds = await getPublicAnnouncementAds();
     return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
@@ -65,10 +66,13 @@ export const getScopedContentBootstrapOperationalData = async (authUser?: AuthUs
         }).select("id _id parentId type")
       : [];
 
-  const linkedStudents =
-    user.role === "parent" && Array.isArray(user.linkedStudentIds) && user.linkedStudentIds.length
-      ? await UserModel.find(buildDocumentsByIdsQuery(user.linkedStudentIds.map(String))).select("schoolId groupIds")
+  const authorizedStudentIds =
+    user.role === "parent"
+      ? await getAuthorizedStudentIdsForParent(String(user.id || user._id))
       : [];
+  const linkedStudents = authorizedStudentIds.length
+    ? await UserModel.find(buildDocumentsByIdsQuery(authorizedStudentIds)).select("schoolId groupIds")
+    : [];
 
   const seedGroupIds = uniqueStrings([
     String(user.schoolId || ""),

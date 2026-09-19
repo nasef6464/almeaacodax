@@ -7,6 +7,10 @@ const files = {
   authRoute: await read("server/src/routes/auth.routes.ts"),
   notificationRoute: await read("server/src/routes/notification.routes.ts"),
   weeklyBatch: await read("server/src/modules/reports/application/runWeeklyParentReportBatch.ts"),
+  whatsappBatch: await read("server/src/modules/reports/application/runParentWhatsappDigestBatch.ts"),
+  aiAuthority: await read("server/src/modules/ai/application/aiStudentTargetAuthorization.ts"),
+  contentBootstrap: await read("server/src/modules/content/infrastructure/contentBootstrapOperationalData.ts"),
+  backfill: await read("server/src/scripts/backfillParentStudentRelationships.ts"),
 };
 
 const checks = [];
@@ -47,6 +51,28 @@ check("admin role transitions revoke stale parent authority", () => {
   includes(files.authRoute, 'studentUserIds: isParentRole ? normalizedLinkedStudentIds : []');
   includes(files.authRoute, "ParentStudentRelationshipModel.updateMany(");
   includes(files.authRoute, 'status: "revoked"');
+});
+
+check("AI and content parent readers use canonical parent authority", () => {
+  includes(files.aiAuthority, "getAuthorizedStudentIdsForParent");
+  excludes(files.aiAuthority, "actor.linkedStudentIds");
+  includes(files.contentBootstrap, "getAuthorizedStudentIdsForParent");
+  excludes(files.contentBootstrap, "user.linkedStudentIds");
+});
+
+check("admin WhatsApp digest batch is bulk-authority and bulk-result based", () => {
+  includes(files.whatsappBatch, "getAuthorizedStudentIdsForParents");
+  includes(files.whatsappBatch, "QuizResultModel.aggregate");
+  excludes(files.whatsappBatch, "QuizResultModel.find(");
+  excludes(files.whatsappBatch, "linkedStudentIds");
+});
+
+check("parent relationship backfill is explicit and dry-run by default", () => {
+  includes(files.backfill, 'const APPLY = process.argv.includes("--apply")');
+  includes(files.backfill, 'mode: APPLY ? "apply" : "dry-run"');
+  includes(files.backfill, "$setOnInsert");
+  includes(files.backfill, 'source: SOURCE');
+  excludes(files.backfill, "deleteMany(");
 });
 
 check("legacy service path is only a compatibility facade", () => {
