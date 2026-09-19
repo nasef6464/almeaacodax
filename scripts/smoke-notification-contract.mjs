@@ -6,6 +6,7 @@ const files = {
   service: await readFile(new URL("../server/src/services/notificationService.ts", import.meta.url), "utf8"),
   providers: await readFile(new URL("../server/src/services/notificationProviders.ts", import.meta.url), "utf8"),
   route: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
+  audience: await readFile(new URL("../server/src/modules/notifications/application/notificationAudienceAuthority.ts", import.meta.url), "utf8"),
   index: await readFile(new URL("../server/src/routes/index.ts", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/.env.example", import.meta.url), "utf8"),
   guide: await readFile(new URL("../docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md", import.meta.url), "utf8"),
@@ -68,6 +69,17 @@ check("intervention parent recipients use canonical parent authority resolver", 
   assertIncludes(files.route, "getAuthorizedParentIdsForStudent");
   assertIncludes(files.route, "authorizedParentIds");
   assertNotIncludes(files.route, 'ParentStudentRelationshipModel.find({ studentUserId: studentId, status: "active" })');
+});
+
+check("teacher and supervisor notification reachability is module-owned and canonical-first", () => {
+  assertIncludes(files.route, "getAuthorizedStudentIdsForNotificationActor");
+  assertIncludes(files.route, "getAuthorizedSupervisorRecipientIdsForStudent");
+  assertIncludes(files.audience, "SchoolMembershipModel");
+  assertIncludes(files.audience, "TeachingAssignmentModel");
+  assertIncludes(files.audience, "assignments.length > 0");
+  assertIncludes(files.audience, "actorContext.hasCanonical");
+  assertNotIncludes(files.route, "const sharesSchool =");
+  assertNotIncludes(files.route, "const sharesAssignedGroup =");
 });
 
 check("notification env and docs exist", () => {

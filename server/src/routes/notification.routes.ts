@@ -6,7 +6,6 @@ import { roles } from "../constants/roles.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
-import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
 import {
   getAuthorizedParentIdsForStudent,
@@ -22,6 +21,10 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { openNotificationSseStream } from "../modules/notifications/http/openNotificationSseStream.js";
 import { interventionAlertSchema, studentAlertSchema } from "../modules/notifications/application/notificationAlertSchemas.js";
+import {
+  getAuthorizedStudentIdsForNotificationActor,
+  getAuthorizedSupervisorRecipientIdsForStudent,
+} from "../modules/notifications/application/notificationAudienceAuthority.js";
 
 export const notificationRouter = Router();
 
@@ -261,37 +264,19 @@ notificationRouter.post("/intervention-alert", requireAuth, requireRole(["admin"
     }
 
     const studentId = String((student as any).id || (student as any)._id);
-    const studentGroupIds = Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : [];
-    const groupObjectIds = studentGroupIds.filter((id: string) => mongoose.isValidObjectId(id));
-    const scopedGroups = await GroupModel.find({
-      $or: [
-        { studentIds: studentId },
-        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
-        { id: { $in: studentGroupIds } },
-      ],
-    })
-      .select("_id id supervisorIds studentIds")
-      .lean();
-
-    if (authUser.role !== "admin") {
-      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
-      const canReachStudent =
-        authGroupIds.some((groupId: string) => studentGroupIds.includes(groupId)) ||
-        scopedGroups.some((group: any) => (group.supervisorIds || []).map(String).includes(String(authUser.id))) ||
-        (Array.isArray((authUser as any).linkedStudentIds) && (authUser as any).linkedStudentIds.map(String).includes(studentId));
-
-      if (!canReachStudent) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
-      }
+    const authorizedStudentIds = await getAuthorizedStudentIdsForNotificationActor(authUser, [student as any]);
+    if (!authorizedStudentIds.has(studentId)) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
     }
 
-    const supervisorIds = new Set<string>();
-    scopedGroups.forEach((group: any) => (group.supervisorIds || []).forEach((id: unknown) => supervisorIds.add(String(id))));
-    const authorizedParentIds = await getAuthorizedParentIdsForStudent(studentId);
+    const [authorizedParentIds, supervisorIds] = await Promise.all([
+      getAuthorizedParentIdsForStudent(studentId),
+      getAuthorizedSupervisorRecipientIdsForStudent(student as any),
+    ]);
     const recipientIds = Array.from(
       new Set([
         ...authorizedParentIds,
-        ...Array.from(supervisorIds),
+        ...supervisorIds,
       ]),
     ).filter((id) => id && id !== String(authUser.id));
 
@@ -343,43 +328,12 @@ notificationRouter.post("/student-alert", requireAuth, requireRole(["admin", "su
     }
 
     const recipientIds = students.map((student: any) => String(student.id || student._id));
-    const studentGroupIds = Array.from(
-      new Set(students.flatMap((student: any) => (Array.isArray(student.groupIds) ? student.groupIds.map(String) : []))),
+    const authorizedStudentIds = await getAuthorizedStudentIdsForNotificationActor(
+      authUser,
+      students as any[],
     );
-    const groupObjectIds = studentGroupIds.filter((id) => mongoose.isValidObjectId(id));
-    const scopedGroups = await GroupModel.find({
-      $or: [
-        { studentIds: { $in: recipientIds } },
-        { id: { $in: studentGroupIds } },
-        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
-      ],
-    })
-      .select("_id id supervisorIds studentIds")
-      .lean();
-
-    if (authUser.role !== "admin") {
-      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
-      const authSchoolId = String((authUser as any).schoolId || "");
-      const scopedGroupIds = new Set(scopedGroups.map((group: any) => String(group.id || group._id)));
-      const supervisedGroups = scopedGroups.filter((group: any) =>
-        (group.supervisorIds || []).map(String).includes(String(authUser.id)),
-      );
-
-      const forbiddenStudent = students.find((student: any) => {
-        const studentId = String(student.id || student._id);
-        const groupsForStudent = Array.isArray(student.groupIds) ? student.groupIds.map(String) : [];
-        const sharesSchool = authSchoolId && String(student.schoolId || "") === authSchoolId;
-        const sharesAssignedGroup = authGroupIds.some((groupId: string) => groupsForStudent.includes(groupId) || scopedGroupIds.has(groupId));
-        const supervisedGroupContainsStudent = supervisedGroups.some((group: any) => {
-          const groupId = String(group.id || group._id);
-          return groupsForStudent.includes(groupId) || (group.studentIds || []).map(String).includes(studentId);
-        });
-        return !sharesSchool && !sharesAssignedGroup && !supervisedGroupContainsStudent;
-      });
-
-      if (forbiddenStudent) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to one or more students" });
-      }
+    if (recipientIds.some((studentId) => !authorizedStudentIds.has(studentId))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to one or more students" });
     }
 
     const result = await createNotificationDeliveries({
