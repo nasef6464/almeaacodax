@@ -30,6 +30,12 @@ check("batch has deterministic idempotency and retry visibility", () => {
   includes(files.batch, "campaignId");
   includes(files.batch, "partial_failure");
 });
+check("weekly report batch avoids per-parent result queries", () => {
+  includes(files.batch, "allStudentIds");
+  includes(files.batch, "resultsByStudent");
+  const queryCount = (files.batch.match(/QuizResultModel\.find\(/g) || []).length;
+  if (queryCount !== 1) throw new Error(`expected one batched QuizResult query, got ${queryCount}`);
+});
 check("existing bootstrap facade and shutdown are preserved", () => {
   includes(files.facade, "startWeeklyParentReportQueue");
   includes(files.shutdown, "closeWeeklyParentReportQueue");
