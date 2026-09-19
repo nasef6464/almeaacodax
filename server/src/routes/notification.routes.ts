@@ -19,6 +19,7 @@ import {
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { openNotificationSseStream } from "../modules/notifications/http/openNotificationSseStream.js";
+import { interventionAlertSchema, studentAlertSchema } from "../modules/notifications/application/notificationAlertSchemas.js";
 
 export const notificationRouter = Router();
 
@@ -44,23 +45,6 @@ const sendNotificationSchema = z.object({
   userIds: z.array(z.string().min(1).max(120)).optional().default([]),
   roles: z.array(z.enum(roles)).optional().default([]),
   variables: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
-});
-
-const interventionAlertSchema = z.object({
-  studentId: z.string().min(1).max(120),
-  studentName: z.string().min(1).max(160).optional().default(""),
-  skillName: z.string().max(180).optional().default(""),
-  mastery: z.number().min(0).max(100).optional(),
-  title: z.string().min(2).max(220),
-  body: z.string().min(2).max(1200),
-  channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
-});
-
-const studentAlertSchema = z.object({
-  studentIds: z.array(z.string().min(1).max(120)).min(1).max(50),
-  title: z.string().min(2).max(220),
-  body: z.string().min(2).max(1200),
-  channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
 });
 
 const processPendingSchema = z.object({
