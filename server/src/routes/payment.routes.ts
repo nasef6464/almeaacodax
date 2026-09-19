@@ -11,6 +11,7 @@ import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { PaymentSettingsModel } from "../models/PaymentSettings.js";
 import { UserModel } from "../models/User.js";
 import { grantAccessToUser } from "../services/accessGrantService.js";
+import { PaymentGatewayEventGuardModel } from "../models/PaymentGatewayEventGuard.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 
@@ -580,6 +581,37 @@ const validatePaymentTargetKind = (
   }
 
   return "";
+};
+
+const reservePaymentGatewayEvent = async (payload: {
+  paymentRequestId: string;
+  provider: string;
+  eventId: string;
+  transactionId?: string;
+}) => {
+  const key = `${payload.provider.trim().toLowerCase()}:${payload.eventId.trim()}`;
+  try {
+    await PaymentGatewayEventGuardModel.create({
+      key,
+      paymentRequestId: payload.paymentRequestId,
+      provider: payload.provider.trim().toLowerCase(),
+      eventId: payload.eventId.trim(),
+      transactionId: String(payload.transactionId || "").trim(),
+    });
+    return { reserved: true, key };
+  } catch (error: any) {
+    if (error?.code !== 11000) throw error;
+    const existing = await PaymentGatewayEventGuardModel.findOne({ key }).lean();
+    return {
+      reserved: false,
+      key,
+      sameRequest: String(existing?.paymentRequestId || "") === payload.paymentRequestId,
+    };
+  }
+};
+
+const releasePaymentGatewayEvent = async (key: string) => {
+  await PaymentGatewayEventGuardModel.deleteOne({ key });
 };
 
 const calculateDiscountAmount = (discountCode: any, amount: number) => {
@@ -1685,16 +1717,22 @@ paymentRouter.post(
       return res.json({ ok: true, duplicate: true, request: requestDoc });
     }
 
-    const duplicateGatewayEvent = await PaymentRequestModel.findOne({
-      gatewayEventId: payload.eventId,
-      _id: { $ne: requestDoc._id },
+    const eventReservation = await reservePaymentGatewayEvent({
+      paymentRequestId: String(requestDoc.id || requestDoc._id),
+      provider: payload.provider,
+      eventId: payload.eventId,
+      transactionId: payload.transactionId,
     });
 
-    if (duplicateGatewayEvent) {
+    if (!eventReservation.reserved) {
+      if (eventReservation.sameRequest) {
+        return res.json({ ok: true, duplicate: true, request: requestDoc });
+      }
       return res.status(StatusCodes.CONFLICT).json({ message: "Payment gateway event was already used" });
     }
 
     if (requestDoc.status !== "pending") {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
     }
 
@@ -1718,10 +1756,12 @@ paymentRouter.post(
     }
 
     if (payload.currency && payload.currency !== requestDoc.currency) {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment currency mismatch" });
     }
 
     if (typeof payload.paidAmount === "number" && payload.paidAmount < requestDoc.amount) {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Paid amount is lower than request amount" });
     }
 
@@ -1736,6 +1776,7 @@ paymentRouter.post(
     });
 
     if (approved.duplicate || !approved.request) {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
     }
 
@@ -1747,8 +1788,11 @@ paymentRouter.post(
           reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
           reviewedBy: "",
           reviewedAt: null,
+          gatewayEventId: "",
+          gatewayPaidAt: null,
         },
       });
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.CONFLICT).json({ message: "لا يمكن اعتماد طلب غير معلق" });
     }
 

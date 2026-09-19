@@ -83,7 +83,8 @@ check('verified payment webhook can approve requests without trusting the browse
   assertIncludes(paymentRoutesSource, 'crypto.timingSafeEqual');
   assertIncludes(paymentRoutesSource, 'PAYMENT_WEBHOOK_SECRET');
   assertIncludes(paymentRoutesSource, 'requestDoc.gatewayEventId === payload.eventId');
-  assertIncludes(paymentRoutesSource, 'duplicateGatewayEvent');
+  assertIncludes(paymentRoutesSource, 'reservePaymentGatewayEvent');
+  assertIncludes(paymentRoutesSource, 'PaymentGatewayEventGuardModel.create');
   assertIncludes(paymentRoutesSource, 'Payment gateway event was already used');
   assertIncludes(paymentRoutesSource, 'Payment request is not pending');
   assertIncludes(paymentRoutesSource, 'Payment currency mismatch');
