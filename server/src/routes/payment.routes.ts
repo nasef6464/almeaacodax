@@ -1106,6 +1106,7 @@ paymentRouter.post(
     });
 
     if (approved.duplicate || !approved.request) {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
     }
 
@@ -1756,10 +1757,12 @@ paymentRouter.post(
     }
 
     if (payload.currency && payload.currency !== requestDoc.currency) {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment currency mismatch" });
     }
 
     if (typeof payload.paidAmount === "number" && payload.paidAmount < requestDoc.amount) {
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Paid amount is lower than request amount" });
     }
 
@@ -1785,8 +1788,11 @@ paymentRouter.post(
           reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
           reviewedBy: "",
           reviewedAt: null,
+          gatewayEventId: "",
+          gatewayPaidAt: null,
         },
       });
+      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.CONFLICT).json({ message: "لا يمكن اعتماد طلب غير معلق" });
     }
 
