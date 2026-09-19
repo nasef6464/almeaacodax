@@ -8,7 +8,7 @@
 
 Do not perform a giant repair commit. Use bounded batches:
 
-`sync exact baseline → inspect → branch → minimal implementation → focused tests → typecheck/build → integration/security tests → PR/review → merge → update execution state`
+`sync exact baseline → inspect domain + authority + structural debt → branch → repair → worthwhile modular extraction → focused tests → typecheck/build → integration/security tests → exact-head CI → PR/review → merge → update execution state/maps`
 
 Do not merge a functional/security-sensitive batch to `main` while its required evidence is failing.
 
@@ -16,7 +16,9 @@ Do not merge a functional/security-sensitive batch to `main` while its required 
 
 1. `docs/architecture/ALMEAA_SYSTEM_MAP.md` — architecture, domains, source of truth, dependencies, findings, what not to touch.
 2. `docs/architecture/CODEX_EXECUTION_STATE.md` — historical execution/evidence log. Future release-hardening batches must append/update explicit current state rather than relying on chat history.
-3. This file — ordered remediation plan.
+3. `docs/architecture/CURRENT_DIRECTORY_AND_MODULE_MAP.md` — current filesystem/module ownership and hotspots; this is current state, not a target tree.
+4. `docs/architecture/DEEP_MODULARITY_AND_RESOURCE_AUDIT.md` — repository-wide authority/modularity/data-access/bandwidth debt and batch ownership.
+5. This file — ordered remediation plan.
 
 ## Local/Codex synchronization rule
 
@@ -212,7 +214,10 @@ Measure:
 - Mongo latency/pool/query plans;
 - Redis/Socket.IO behavior;
 - queue lag;
-- network/runtime bottlenecks.
+- network/runtime bottlenecks;
+- compressed API payload bytes and request counts per journey;
+- Cloudflare/media origin egress and cache-hit behavior where live metrics are available;
+- bootstrap/cache duplication and static/media transfer.
 
 Optimize only measured bottlenecks. Do not claim 10k/50k capacity without evidence.
 
@@ -250,6 +255,15 @@ Outcome must be one of:
 - PRODUCTION READY.
 
 No readiness label without supporting evidence.
+
+## Deep modularity/resource execution overlay
+
+The repository-wide modularity/resource audit is canonical at:
+`docs/architecture/DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`.
+
+From Batch 9 onward, modular decomposition is no longer deferred wholesale to Batch 14. Each domain batch must complete worthwhile decomposition while its behavior and authority are already under inspection, then protect the new boundary with tests and exact-head CI. Batch 14 is a residual architecture sweep only.
+
+Origin-bandwidth/resource efficiency is also an explicit release concern. Heavy images/media should use the configured Cloudflare-backed asset delivery layer rather than repeated Node-origin streaming where the product/security contract permits it. Batch 13 must measure API payloads, repeated reads/polling/realtime traffic, media origin egress and cache behavior; live Cloudflare behavior requires live verification.
 
 ## Batch handoff template
 

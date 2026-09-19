@@ -138,37 +138,13 @@ Frozen pre-structural evidence is in:
 docs/architecture/baseline/
 ```
 
-At baseline the AST audit identified:
-
-- 704 tracked files;
-- 435 source files including operational/test scripts;
-- 289 runtime source files;
-- about 123k runtime source lines;
-- 49 frontend route literals;
-- 236 backend HTTP route entries;
-- 25 router mount points;
-- 1,020 runtime relative-import edges;
-- 2 runtime dependency cycles;
-- 83 runtime files at or above 400 lines.
+Historical AST baselines are retained under `docs/architecture/baseline/`, but they are not current-branch inventory. The current Batch 9 audit sees 1,466 files and records current directory/module ownership in `CURRENT_DIRECTORY_AND_MODULE_MAP.md`. Generated hotspot/import/cycle counts must be regenerated on the exact head before they are quoted as current evidence.
 
 `tools/refactor/architecture-gate.mjs` prevents structural commits from silently losing frontend routes, backend route contracts, router mounts, or environment-key contracts, and prevents import/cycle regressions.
 
 ## Top maintainability hotspots
 
-The current largest runtime files include:
-
-1. `dashboards/admin/SchoolsManager.tsx` — ~5.2k lines
-2. `pages/Reports.tsx` — ~3.7k lines
-3. `server/src/routes/content.routes.ts` — ~3.4k lines
-4. `server/src/routes/quiz.routes.ts` — ~3.1k lines
-5. `dashboards/admin/PathsManager.tsx` — ~2.3k lines
-6. `pages/Dashboard.tsx` — ~2.2k lines
-7. `store/useStore.ts` — ~2.2k lines
-8. `pages/Results.tsx` — ~2.2k lines
-9. `dashboards/admin/FinancialManager.tsx` — ~2.1k lines
-10. `services/api.ts` — ~2.0k lines
-
-These files should be decomposed incrementally behind stable facades. They should not be replaced wholesale.
+Current hotspots are maintained in `CURRENT_DIRECTORY_AND_MODULE_MAP.md` and `DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`. The current branch still has major route facades (`content`, `quiz`, `payment`, `auth`, `ai`) and frontend orchestration hotspots (`Reports`, `QuizPage`, `PathsManager`, `Dashboard`, `useStore`, `App`), while `SchoolsManager` has already delegated substantial ownership into its 74-file feature folder. Decompose by responsibility/change radius, never by line count alone.
 
 ## Known dependency cycles
 
@@ -194,11 +170,11 @@ No new cycles are allowed during Refactor V2.
 
 ### Notifications — P0
 
-The existing SSE implementation polls MongoDB per connected client. With large concurrent student counts, realtime fan-out must move to event-driven Redis/Socket/PubSub semantics while preserving the frontend notification contract.
+Current SSE is event-driven: Mongo is read once for the initial unread count, then events use the Redis Pub/Sub realtime bridge (or local-process fallback) with SSE keepalive. The remaining P0/P1 notification scale debt is campaign batching/orchestration, canonical audience authority, and measured multi-instance connection/queue capacity.
 
 ### Scheduled parent reports — P0
 
-The weekly report scheduler currently lives inside the API process. Critical scheduled jobs must move to queue-backed scheduling with idempotency/distributed locking before multi-instance API scaling.
+The weekly parent report is already queue-backed with a BullMQ recurring scheduler for Sunday 08:00 Asia/Riyadh and worker concurrency 1. Remaining debt is bulk parent-authority/idempotency reads and campaign-scale delivery; do not reintroduce `setInterval` scheduling.
 
 ### Large bootstrap/read payloads — P0
 

@@ -33,6 +33,8 @@ const quizReportStudentScopeSource = await readFile(new URL('../server/src/modul
 const quizReportAttemptGapsSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportAttemptGaps.ts', import.meta.url), 'utf8');
 const quizSupervisorScopeRepositorySource = await readFile(new URL('../server/src/modules/quizzes/infrastructure/quizSupervisorScopeRepository.ts', import.meta.url), 'utf8');
 const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
+const notificationAudienceSource = await readFile(new URL('../server/src/modules/notifications/application/notificationAudienceAuthority.ts', import.meta.url), 'utf8');
+const parentAuthoritySource = await readFile(new URL('../server/src/modules/parents/application/parentAuthority.ts', import.meta.url), 'utf8');
 const contentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
 const apiSource = [
   await readFile(new URL('../services/api.ts', import.meta.url), 'utf8'),
@@ -272,8 +274,10 @@ check('staff reports can send a real intervention alert to linked parent and sup
   assertIncludes(apiSource, '"/notifications/intervention-alert"');
   assertIncludes(notificationRoutesSource, 'notificationRouter.post("/intervention-alert"');
   assertIncludes(notificationRoutesSource, 'requireRole(["admin", "supervisor", "teacher"])');
-  assertIncludes(notificationRoutesSource, 'linkedStudentIds: studentId');
-  assertIncludes(notificationRoutesSource, 'supervisorIds');
+  assertIncludes(notificationRoutesSource, 'getAuthorizedParentIdsForStudent');
+  assertIncludes(notificationRoutesSource, 'getAuthorizedSupervisorRecipientIdsForStudent');
+  assertIncludes(notificationAudienceSource, 'SchoolMembershipModel');
+  assertIncludes(parentAuthoritySource, 'getAuthorizedParentIdsForStudent');
   assertIncludes(notificationRoutesSource, 'createNotificationDeliveries');
 });
 
@@ -320,7 +324,8 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'const scopedStudentIds = students.map((student) => idOf(student));');
   assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
   assertIncludes(quizReportStudentScopeSource, 'authUser.role === "parent"');
-  assertIncludes(quizReportStudentScopeSource, 'linkedStudentIds');
+  assertIncludes(quizReportStudentScopeSource, 'getAuthorizedStudentIdsForParent');
+  assertIncludes(quizReportStudentScopeSource, 'authorizedStudentIds');
   assertIncludes(quizRoutesSource, 'matchesManagedContentScope');
   assertIncludes(quizRoutesSource, 'filterResultsByManagedContentScope');
   assertIncludes(quizRoutesSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');

@@ -6,6 +6,8 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { enqueueNotificationDeliveries } from "../queues/notificationQueue.js";
+import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
+import { runParentWhatsappDigestBatch } from "../modules/reports/application/runParentWhatsappDigestBatch.js";
 
 export const parentRouter = Router();
 
@@ -15,11 +17,9 @@ parentRouter.get(
   requireRole(["parent"]),
   asyncHandler(async (req, res) => {
     const parent = await UserModel.findById(req.authUser!.id)
-      .select("id linkedStudentIds name email")
+      .select("id name email")
       .lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.length) {
       return res.json({ children: [], summary: { count: 0, weakSkills: 0 } });
@@ -105,10 +105,8 @@ parentRouter.post(
   requireAuth,
   requireRole(["parent"]),
   asyncHandler(async (req, res) => {
-    const parent = await UserModel.findById(req.authUser!.id).select("id name linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const parent = await UserModel.findById(req.authUser!.id).select("id name").lean();
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
     if (!linkedStudentIds.length) {
       return res.status(400).json({ message: "No linked students found for this parent account." });
     }
@@ -154,10 +152,7 @@ parentRouter.get(
   requireAuth,
   requireRole(["parent"]),
   asyncHandler(async (req, res) => {
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.length) {
       return res.json([]);
@@ -182,10 +177,7 @@ parentRouter.post(
     const request = await PaymentRequestModel.findOne({ id: req.params.id, status: "pending" });
     if (!request) return res.status(404).json({ message: "Request not found" });
 
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.includes(request.userId)) {
       return res.status(403).json({ message: "Not authorized to approve this request" });
@@ -208,10 +200,7 @@ parentRouter.post(
     const request = await PaymentRequestModel.findOne({ id: req.params.id, status: "pending" });
     if (!request) return res.status(404).json({ message: "Request not found" });
 
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.includes(request.userId)) {
       return res.status(403).json({ message: "Not authorized to reject this request" });
@@ -242,56 +231,10 @@ parentRouter.post(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const parents = await UserModel.find({
-      role: "parent",
-      whatsappDigestEnabled: true,
-      phone: { $exists: true, $ne: "" },
-    }).select("id name phone linkedStudentIds").lean();
-
-    let sentCount = 0;
-
-    for (const parent of parents) {
-      const p = parent as any;
-      const linkedStudentIds = Array.isArray(p.linkedStudentIds)
-        ? p.linkedStudentIds.map(String).filter(Boolean)
-        : [];
-      if (!linkedStudentIds.length) continue;
-
-      const latestResults = await QuizResultModel.find({ userId: { $in: linkedStudentIds } })
-        .select("userId score createdAt")
-        .sort({ createdAt: -1 })
-        .lean();
-
-      const latestByUser = new Map<string, any>();
-      for (const row of latestResults as any[]) {
-        const key = String(row.userId || "");
-        if (!latestByUser.has(key)) latestByUser.set(key, row);
-      }
-
-      const rows = linkedStudentIds.map((sid: string) => {
-        const row = latestByUser.get(String(sid));
-        return row ? `- الطالب ${sid}: آخر نتيجة ${Number(row.score || 0)}%` : `- الطالب ${sid}: لا توجد نتيجة حديثة`;
-      });
-      const body = `تقرير منصة المئة الأسبوعي:\nمرحباً بك ${p.name || ""}\n\n${rows.join("\n")}`;
-
-      const delivery = await createNotificationDeliveries({
-        title: "تقرير أسبوعي للأبناء",
-        subject: "تقرير منصة المئة الأسبوعي",
-        body,
-        channels: ["whatsapp"],
-        userIds: [String(p.id)],
-        createdBy: String(req.authUser!.id),
-      });
-      if (delivery.deliveryIds?.length) {
-        await enqueueNotificationDeliveries(delivery.deliveryIds);
-        sentCount++;
-      }
-    }
-
+    const summary = await runParentWhatsappDigestBatch(String(req.authUser!.id));
     return res.json({
       ok: true,
-      processedParents: parents.length,
-      sentWhatsApp: sentCount,
+      ...summary,
     });
   }),
 );

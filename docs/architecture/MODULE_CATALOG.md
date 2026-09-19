@@ -2,7 +2,7 @@
 
 | Domain | يملك | لا يملك | المداخل الحالية | الحالة |
 |---|---|---|---|---|
-| auth | identity/login/account | تقارير أو scoring | `server/src/routes/auth.routes.ts`, auth UI | Legacy boundary |
+| auth | identity/login/account/session/admin-user lifecycle | تقارير أو scoring | `server/src/routes/auth.routes.ts`, `server/src/modules/auth/` | HIGH DEBT — ~1.9k route facade; split by owning use-cases while preserving auth contracts |
 | schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolsManager/` action/hooks/services, `SupervisorDashboard`, school routes | VERIFIED — Sellable School MVP Admin setup/access and Supervisor scoped follow-up vertical slice closed; advanced reporting/UX scalability deferred |
 | curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Subject Learning Space boundary VERIFIED; School MVP remains |
 | questions | bank/authoring/types/import/search | report presentation | QuestionBankManager, question routes | Boundary pending |
@@ -11,9 +11,9 @@
 | courses | catalog/builder/enrollment/linkage | low-level media storage | course builders/API groups | Mixed legacy |
 | reports | result views/student/class/school/skill/export | write-side scoring | Reports, Results, report routes | Gate 4 CLOSED — Student/Class/School reports, skill/weakness analysis, scoped staff views, and shared export read-model are verified on isolated CI; advanced analytics/custom reports deferred |
 | commerce | packages/memberships/payments/access | learning content ownership | payment routes, FinancialManager | High caution |
-| notifications | templates/delivery/read/realtime | assessment rules | notification routes/service/queue | P0 scale risk |
-| media | assets/storage/processing | business permissions | URL fields and players | Future platform |
-| ai | provider/runtime/study advice | source-of-truth scoring | ai routes/gemini service | Provider adapter needed |
+| notifications | templates/delivery/read/realtime/audience campaigns | assessment rules | notification module + route/service/queue | PARTIAL — Redis/SSE/BullMQ realtime foundation is sound; Batch 9 must close canonical audience authority and campaign batching |
+| media | asset URL/key/storage/delivery policy | domain business permissions | URL fields/players; Cloudflare-backed delivery is target | PARTIAL — runtime uses external URL/CDN references and no normal binary upload; provider-neutral storage adapter required when first-party upload/manage is added |
+| ai | provider runtime/config, AI use-cases, advice | source-of-truth scoring | `ai.routes.ts`, `modules/ai`, frontend AI service | HIGH DEBT — route mixes provider/config/use-cases/analytics; split before major AI/voice expansion |
 | operations | health/backups/monitoring/jobs | user-facing business rules | operations routes/scripts | Production readiness |
 | content | homepage/editorial/public content | learning catalog semantics | content routes/HomepageManager | Large route hotspot |
 | white-label | product name/branding/features/settings/policies/provider selection | customer-specific forks أو business logic copies | planned `ProductConfig` boundary; current branding/config entry points | NOT PROVEN — Gate 5 after assessment, learning-space, school MVP, and reports boundaries |

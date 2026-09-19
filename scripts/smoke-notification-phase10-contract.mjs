@@ -9,6 +9,7 @@ const files = {
   queue: await read("server/src/queues/notificationQueue.ts"),
   service: await read("server/src/services/notificationService.ts"),
   route: await read("server/src/routes/notification.routes.ts"),
+  parentWeeklyReport: await read("server/src/modules/reports/application/sendParentWeeklyPerformanceReport.ts"),
   server: await read("server/src/server.ts"),
   bootstrap: await read("server/src/app/bootstrap/bootstrapServer.ts"),
   guide: await read("docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md"),
@@ -65,6 +66,15 @@ check("admin send route queues external deliveries and keeps inline fallback", (
   assertIncludes(files.route, "enqueuePendingNotifications");
   assertIncludes(files.route, 'mode: "inline-fallback"');
   assertIncludes(files.route, 'mode: "queued"');
+});
+
+check("parent weekly notification route is role-protected and delegates to reports application", () => {
+  assertIncludes(files.route, '"/parent-weekly-report"');
+  assertIncludes(files.route, 'requireRole(["parent"])');
+  assertIncludes(files.route, "sendParentWeeklyPerformanceReport");
+  assertIncludes(files.parentWeeklyReport, "getAuthorizedStudentIdsForParent");
+  assertIncludes(files.parentWeeklyReport, "createNotificationDeliveries");
+  assertNotIncludes(files.route, "const studentMap = new Map");
 });
 
 check("notification service processes one delivery at a time without bulk provider calls in create path", () => {

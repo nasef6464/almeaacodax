@@ -21,15 +21,15 @@
 | Subject Learning Space composition | `pages/GenericPathPage.tsx`, `components/LearningSection.tsx`, `utils/learningSpaceTabs.ts` | نقل Course أو Assessment ownership |
 | إدارة placement داخل المادة | `dashboards/admin/PathsManager.tsx` و`live-learning-manager-deep-audit.mjs` | بناء content graph أو microservice |
 | التقارير | Reports/Results view-models وreports backend | result write path |
-| الإشعارات والبث | notification module + SSE adapter + queue | إضافة polling جديد |
+| الإشعارات والبث | `modules/notifications` + audience/campaign application services + SSE/Redis/BullMQ | إضافة polling جديد أو صلاحية audience داخل route |
 | الدفع والوصول | payments routes/services/policies | UI unlock فقط |
 | اسم/ألوان/شعار العميل | ProductConfig/branding | Search/Replace شامل |
 | Feature أو provider خاص بعميل | ProductConfig feature/policy/provider adapter | `if customerName` أو fork للـCore |
-| تخزين الفيديو والصور | media/storage adapter | Binary داخل Mongo |
+| تخزين الفيديو والصور | provider-neutral media/storage adapter؛ Cloudflare-backed delivery هو الاتجاه الحالي | Binary داخل Mongo أو proxy دائم للملفات الكبيرة عبر Node |
 | مهمة مجدولة | operations/queue/scheduler | `setInterval` داخل route |
 
 ## Contract قبل النقل
 
-قبل أي نقل: سجل callers، API/route contract، state contract، smoke contracts، ثم انقل concern واحدًا مع facade واختبارات.
+قبل أي نقل: اقرأ `CURRENT_DIRECTORY_AND_MODULE_MAP.md` و`DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`، سجل callers وcanonical authority وAPI/route/state/smoke contracts، ثم انقل concern واحدًا مع facade واختبارات.
 
 الأولوية بعد إغلاق checkpoint المدارس الحالي هي سد فجوة Product Gate، لا استخراج concern إضافي لمجرد تقليل حجم ملف. راجع `FINAL_MASTER_PLAN_V3_AR.md` قبل اختيار موضع التغيير.

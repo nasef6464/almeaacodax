@@ -6,8 +6,11 @@ import { roles } from "../constants/roles.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
-import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
+import {
+  getAuthorizedParentIdsForStudent,
+  getAuthorizedStudentIdsForParent,
+} from "../services/parentAuthorityService.js";
 import { enqueueNotificationDeliveries, enqueuePendingNotifications } from "../queues/notificationQueue.js";
 import {
   createNotificationDeliveries,
@@ -17,6 +20,17 @@ import {
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { openNotificationSseStream } from "../modules/notifications/http/openNotificationSseStream.js";
+import { interventionAlertSchema, studentAlertSchema } from "../modules/notifications/application/notificationAlertSchemas.js";
+import {
+  getAuthorizedStudentIdsForNotificationActor,
+  getAuthorizedSupervisorRecipientIdsForStudent,
+} from "../modules/notifications/application/notificationAudienceAuthority.js";
+import {
+  createNotificationCampaignDeliveries,
+  MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS,
+  NotificationCampaignTooLargeError,
+} from "../modules/notifications/application/createNotificationCampaign.js";
+import { sendParentWeeklyPerformanceReport } from "../modules/reports/application/sendParentWeeklyPerformanceReport.js";
 
 export const notificationRouter = Router();
 
@@ -42,23 +56,6 @@ const sendNotificationSchema = z.object({
   userIds: z.array(z.string().min(1).max(120)).optional().default([]),
   roles: z.array(z.enum(roles)).optional().default([]),
   variables: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
-});
-
-const interventionAlertSchema = z.object({
-  studentId: z.string().min(1).max(120),
-  studentName: z.string().min(1).max(160).optional().default(""),
-  skillName: z.string().max(180).optional().default(""),
-  mastery: z.number().min(0).max(100).optional(),
-  title: z.string().min(2).max(220),
-  body: z.string().min(2).max(1200),
-  channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
-});
-
-const studentAlertSchema = z.object({
-  studentIds: z.array(z.string().min(1).max(120)).min(1).max(50),
-  title: z.string().min(2).max(220),
-  body: z.string().min(2).max(1200),
-  channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
 });
 
 const processPendingSchema = z.object({
@@ -140,7 +137,7 @@ notificationRouter.patch("/me/read-all", requireAuth, async (req, res, next) => 
  * GET /api/notifications/stream
  * ─────────────────────────────────────────────────────────────────────────────
  * Server-Sent Events (SSE) — إرسال فوري عند وصول إشعار جديد.
- * يستخدم polling خفيف على MongoDB كل 10 ثواني.
+ * يعتمد على Redis Pub/Sub (أو local fan-out fallback) ولا يعمل polling دوري على Mongo.
  * الـ Client يستمع بـ EventSource('/api/notifications/stream').
  * يُرسل حدثين: 'notification' (إشعار جديد) و'unread_count' (عدد غير المقروء).
  */
@@ -228,7 +225,7 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Select users or roles before sending" });
     }
 
-    const result = await createNotificationDeliveries({
+    const result = await createNotificationCampaignDeliveries({
       templateKey: payload.templateKey,
       title: payload.title,
       subject: payload.subject,
@@ -239,17 +236,23 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
       variables: payload.variables,
       createdBy: req.authUser!.id,
     });
-    const queueResult = await enqueueNotificationDeliveries(result.deliveryIds || []);
 
     res.status(StatusCodes.ACCEPTED).json({
       ...result,
-      queue: queueResult,
-      maxRecipientsPerRequest: getNotificationBatchLimit(),
-      message: queueResult.queued
-        ? "Notification delivery records created and external deliveries queued."
-        : "Notification delivery records created. External channels stay pending until Redis/BullMQ is configured or processed manually.",
+      maxRecipientsPerBatch: getNotificationBatchLimit(),
+      maxRecipientsPerCampaign: MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS,
+      message: result.queue.queued
+        ? "Notification campaign delivery records created in bounded batches and external deliveries queued."
+        : "Notification campaign delivery records created in bounded batches. External channels stay pending until Redis/BullMQ is configured or processed manually.",
     });
   } catch (error) {
+    if (error instanceof NotificationCampaignTooLargeError) {
+      return res.status(StatusCodes.REQUEST_TOO_LONG).json({
+        message: "Notification campaign audience exceeds the configured safety limit.",
+        maxRecipientsPerCampaign: error.maxRecipients,
+        resolvedRecipients: error.resolvedRecipients,
+      });
+    }
     next(error);
   }
 });
@@ -273,37 +276,19 @@ notificationRouter.post("/intervention-alert", requireAuth, requireRole(["admin"
     }
 
     const studentId = String((student as any).id || (student as any)._id);
-    const studentGroupIds = Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : [];
-    const groupObjectIds = studentGroupIds.filter((id: string) => mongoose.isValidObjectId(id));
-    const scopedGroups = await GroupModel.find({
-      $or: [
-        { studentIds: studentId },
-        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
-        { id: { $in: studentGroupIds } },
-      ],
-    })
-      .select("_id id supervisorIds studentIds")
-      .lean();
-
-    if (authUser.role !== "admin") {
-      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
-      const canReachStudent =
-        authGroupIds.some((groupId: string) => studentGroupIds.includes(groupId)) ||
-        scopedGroups.some((group: any) => (group.supervisorIds || []).map(String).includes(String(authUser.id))) ||
-        (Array.isArray((authUser as any).linkedStudentIds) && (authUser as any).linkedStudentIds.map(String).includes(studentId));
-
-      if (!canReachStudent) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
-      }
+    const authorizedStudentIds = await getAuthorizedStudentIdsForNotificationActor(authUser, [student as any]);
+    if (!authorizedStudentIds.has(studentId)) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
     }
 
-    const supervisorIds = new Set<string>();
-    scopedGroups.forEach((group: any) => (group.supervisorIds || []).forEach((id: unknown) => supervisorIds.add(String(id))));
-    const parentUsers = await UserModel.find({ role: "parent", linkedStudentIds: studentId }).select("_id id").lean();
+    const [authorizedParentIds, supervisorIds] = await Promise.all([
+      getAuthorizedParentIdsForStudent(studentId),
+      getAuthorizedSupervisorRecipientIdsForStudent(student as any),
+    ]);
     const recipientIds = Array.from(
       new Set([
-        ...parentUsers.map((user: any) => String(user.id || user._id)),
-        ...Array.from(supervisorIds),
+        ...authorizedParentIds,
+        ...supervisorIds,
       ]),
     ).filter((id) => id && id !== String(authUser.id));
 
@@ -355,43 +340,12 @@ notificationRouter.post("/student-alert", requireAuth, requireRole(["admin", "su
     }
 
     const recipientIds = students.map((student: any) => String(student.id || student._id));
-    const studentGroupIds = Array.from(
-      new Set(students.flatMap((student: any) => (Array.isArray(student.groupIds) ? student.groupIds.map(String) : []))),
+    const authorizedStudentIds = await getAuthorizedStudentIdsForNotificationActor(
+      authUser,
+      students as any[],
     );
-    const groupObjectIds = studentGroupIds.filter((id) => mongoose.isValidObjectId(id));
-    const scopedGroups = await GroupModel.find({
-      $or: [
-        { studentIds: { $in: recipientIds } },
-        { id: { $in: studentGroupIds } },
-        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
-      ],
-    })
-      .select("_id id supervisorIds studentIds")
-      .lean();
-
-    if (authUser.role !== "admin") {
-      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
-      const authSchoolId = String((authUser as any).schoolId || "");
-      const scopedGroupIds = new Set(scopedGroups.map((group: any) => String(group.id || group._id)));
-      const supervisedGroups = scopedGroups.filter((group: any) =>
-        (group.supervisorIds || []).map(String).includes(String(authUser.id)),
-      );
-
-      const forbiddenStudent = students.find((student: any) => {
-        const studentId = String(student.id || student._id);
-        const groupsForStudent = Array.isArray(student.groupIds) ? student.groupIds.map(String) : [];
-        const sharesSchool = authSchoolId && String(student.schoolId || "") === authSchoolId;
-        const sharesAssignedGroup = authGroupIds.some((groupId: string) => groupsForStudent.includes(groupId) || scopedGroupIds.has(groupId));
-        const supervisedGroupContainsStudent = supervisedGroups.some((group: any) => {
-          const groupId = String(group.id || group._id);
-          return groupsForStudent.includes(groupId) || (group.studentIds || []).map(String).includes(studentId);
-        });
-        return !sharesSchool && !sharesAssignedGroup && !supervisedGroupContainsStudent;
-      });
-
-      if (forbiddenStudent) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to one or more students" });
-      }
+    if (recipientIds.some((studentId) => !authorizedStudentIds.has(studentId))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to one or more students" });
     }
 
     const result = await createNotificationDeliveries({
@@ -470,87 +424,18 @@ notificationRouter.post("/admin/test-delivery", requireAuth, requireRole(["admin
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/notifications/parent-weekly-report
-// يُرسل تقريراً أسبوعياً لولي الأمر بنتائج أبنائه (7 أيام الأخيرة)
+// Compatibility HTTP path. Report generation belongs to the reports application module.
 // ─────────────────────────────────────────────────────────────────────────────
 notificationRouter.post(
   "/parent-weekly-report",
   requireAuth,
+  requireRole(["parent"]),
   async (req, res, next) => {
     try {
-      const parentId = String((req as any).user?.id || (req as any).user?._id || "");
-      if (!parentId) return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
-
-      // جلب الطلاب المرتبطين بولي الأمر
-      const parentUser = await UserModel.findOne({ $or: [{ _id: parentId }, { id: parentId }] })
-        .select("linkedStudentIds childrenIds name")
-        .lean() as any;
-
-      const linkedIds: string[] = [
-        ...(parentUser?.linkedStudentIds || []),
-        ...(parentUser?.childrenIds || []),
-      ];
-
-      if (!linkedIds.length) {
-        return res.status(StatusCodes.OK).json({ ok: true, message: "no_linked_students", sent: 0 });
-      }
-
-      // جلب نتائج 7 أيام الأخيرة
-      const since = Date.now() - 7 * 24 * 60 * 60 * 1000;
-      const { QuizResultModel } = await import("../models/QuizResult.js");
-      const userFilter = { $or: linkedIds.flatMap(id => [{ userId: id }, { studentId: id }]) };
-      const dateFilter = { $or: [{ createdAt: { $gte: new Date(since) } }, { date: { $gte: new Date(since) } }] };
-      const results = await QuizResultModel.find({ $and: [userFilter, dateFilter] })
-        .select("userId studentId quizTitle score skillsAnalysis date createdAt").lean() as any[];
-
-      if (!results.length) {
-        return res.status(StatusCodes.OK).json({ ok: true, message: "no_results_this_week", sent: 0 });
-      }
-
-      // بناء ملخص لكل طالب
-      const studentMap = new Map<string, { name?: string; scores: number[]; weakSkills: string[] }>();
-      for (const r of results) {
-        const sid = String(r.userId || r.studentId || "");
-        if (!sid) continue;
-        if (!studentMap.has(sid)) studentMap.set(sid, { scores: [], weakSkills: [] });
-        const entry = studentMap.get(sid)!;
-        entry.scores.push(Number(r.score || 0));
-        (r.skillsAnalysis || []).filter((s: any) => Number(s.mastery || 0) < 70).slice(0, 2).forEach((s: any) => {
-          if (s.skill && !entry.weakSkills.includes(s.skill)) entry.weakSkills.push(s.skill);
-        });
-      }
-
-      // تحديث الأسماء
-      const studentUsers = await UserModel.find({
-        $or: Array.from(studentMap.keys()).map(id => ({ $or: [{ _id: id }, { id }] })).flat(),
-      }).select("_id id name").lean() as any[];
-
-      for (const su of studentUsers) {
-        const sid = String(su.id || su._id);
-        if (studentMap.has(sid)) studentMap.get(sid)!.name = su.name || "الابن/الابنة";
-      }
-
-      // بناء رسالة الإشعار
-      const summaries = Array.from(studentMap.entries()).map(([, v]) => {
-        const avg = v.scores.length ? Math.round(v.scores.reduce((a, b) => a + b, 0) / v.scores.length) : 0;
-        const emoji = avg >= 80 ? "🌟" : avg >= 60 ? "📈" : "📌";
-        const weakPart = v.weakSkills.length ? ` · يحتاج تعزيز: ${v.weakSkills.slice(0,2).join("، ")}` : "";
-        return `${emoji} ${v.name || "الابن"}: متوسط ${avg}%${weakPart}`;
-      });
-
-      const title = "📋 تقريرك الأسبوعي عن أداء أبنائك";
-      const body = `هذا الأسبوع — ${summaries.join(" | ")} · استمر بالمتابعة!`;
-
-      await createNotificationDeliveries({
-        title,
-        body: body.slice(0, 500),
-        channels: ["in_app"],
-        userIds: [parentId],
-        createdBy: "system_weekly_report",
-      });
-
-      return res.json({ ok: true, sent: 1, studentsReported: studentMap.size });
+      const result = await sendParentWeeklyPerformanceReport(String(req.authUser!.id));
+      return res.json(result);
     } catch (error) {
       return next(error);
     }
-  }
+  },
 );

@@ -17,7 +17,7 @@ type NotificationRecipient = {
   name?: string;
 };
 
-type CreateNotificationInput = {
+export type CreateNotificationInput = {
   campaignId?: string;
   templateKey?: string;
   title?: string;
@@ -31,6 +31,16 @@ type CreateNotificationInput = {
 };
 
 const MAX_RECIPIENTS_PER_REQUEST = 500;
+
+export class NotificationAudienceTooLargeError extends Error {
+  constructor(
+    public readonly maxRecipients: number,
+    public readonly resolvedRecipients: number,
+  ) {
+    super(`notification_audience_too_large:${resolvedRecipients}>${maxRecipients}`);
+    this.name = "NotificationAudienceTooLargeError";
+  }
+}
 
 function renderTemplate(source: string, variables: Record<string, unknown>) {
   return source.replace(/\{\{\s*([a-zA-Z0-9_.-]+)\s*\}\}/g, (_match, key: string) => String(variables[key] ?? ""));
@@ -71,7 +81,14 @@ async function resolveRecipients(input: Pick<CreateNotificationInput, "userIds" 
     }
   }
 
-  return Array.from(unique.values()).slice(0, MAX_RECIPIENTS_PER_REQUEST);
+  const recipients = Array.from(unique.values());
+  if (users.length > MAX_RECIPIENTS_PER_REQUEST || recipients.length > MAX_RECIPIENTS_PER_REQUEST) {
+    throw new NotificationAudienceTooLargeError(
+      MAX_RECIPIENTS_PER_REQUEST,
+      Math.max(users.length, recipients.length),
+    );
+  }
+  return recipients;
 }
 
 async function resolveMessage(input: CreateNotificationInput) {

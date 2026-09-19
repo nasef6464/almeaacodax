@@ -91,7 +91,7 @@ Cross-cutting runtime dependencies:
 | Payments | `PaymentRequest` | Active |
 | User/content entitlement | `AccessGrant` | Canonical direction |
 | Legacy entitlement mirror | `User.subscription`, purchased/enrolled arrays | Compatibility; do not expand |
-| Parent relation | `User.linkedStudentIds` | Legacy compatibility; migration required |
+| Parent relation | `ParentStudentRelationship` | Canonical direction introduced in Batch 9; `User.linkedStudentIds` remains compatibility fallback until backfill/cutover proof |
 | Notifications | `NotificationDelivery`, Redis realtime, BullMQ | Active and scalable foundation |
 | AI | AI routes/runtime provider configuration, `AiInteraction` | Active; authorization/privacy hardening required |
 | Public barcode tests | Public test/submission models/routes | Active; targeting/concurrency hardening required |
@@ -122,7 +122,7 @@ Any agent changing authorization or relationships must consult this table first.
 | New assessment lifecycle | Version → Assignment → Attempt → Response | Coexists with legacy production records |
 | User paid/content access | `AccessGrant` | User purchased/enrolled arrays remain compatibility mirrors/readers |
 | Payment state | `PaymentRequest` | Gateway event uniqueness needs DB hardening |
-| Parent-child relation | currently `User.linkedStudentIds` | Must migrate to explicit/canonical relation |
+| Parent-child relation | `ParentStudentRelationship` canonical direction | `User.linkedStudentIds` compatibility only; canonical rows, including revoked rows, must tombstone legacy fallback |
 | Notification delivery | `NotificationDelivery` | Campaign batching required for very large audiences |
 | Audit history | `AdminAuditLog` | Retention/access policy required |
 
@@ -319,14 +319,9 @@ Audit hardening items:
 
 ### Parent
 
-Current parent-child linkage still relies heavily on `User.linkedStudentIds`. This is legacy authority debt and affects parent progress, reports, certificate notifications, and authorization checks.
+Batch 9 introduces `ParentStudentRelationship` as the canonical parent↔student direction while `User.linkedStudentIds` remains a temporary compatibility mirror/fallback. Migration is not complete: every parent reader/writer must route through the canonical authority service, and the existence of canonical rows (including revoked rows) must prevent fail-open fallback to stale legacy links.
 
-Target direction:
-- explicit canonical parent↔student relationship tied to school context where appropriate;
-- compatibility adapter during migration;
-- do not silently reinterpret unrelated school/group fields.
-
-Weekly parent reporting uses BullMQ/Redis scheduling infrastructure, which is a good foundation. Current batch generation performs per-parent result work and needs N+1 optimization for large populations.
+Weekly parent reporting uses BullMQ/Redis scheduling infrastructure, which is a good foundation. The result read has already been batched, but parent-authority resolution and delivery-idempotency checks still need bulk handling for large populations.
 
 ### Notifications
 
