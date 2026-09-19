@@ -78,6 +78,15 @@ check("ai route reads and retries multiple keys per provider", () => {
   assertIncludes(aiRouteSource, "errors.push(error instanceof Error ? error.message");
 });
 
+check("ai provider outbound URLs reject unsafe destinations", () => {
+  assertIncludes(aiRouteSource, "assertSafeAiProviderUrl");
+  assertIncludes(aiRouteSource, 'parsed.protocol !== "https:"');
+  assertIncludes(aiRouteSource, 'hostname === "localhost"');
+  assertIncludes(aiRouteSource, "isPrivateIpv4(hostname)");
+  assertIncludes(aiRouteSource, 'throw new Error("AI provider URL must use HTTPS and a public host")');
+  assertIncludes(aiRouteSource, "assertSafeAiProviderUrl(url);");
+});
+
 check("live AI audit records real-provider success separately from fallback", () => {
   assertIncludes(liveAuditSource, "configured provider live test succeeds");
   assertIncludes(liveAuditSource, "student chat used a real provider");
