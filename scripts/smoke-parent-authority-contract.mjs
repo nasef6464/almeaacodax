@@ -11,6 +11,7 @@ const files = {
   aiAuthority: await read("server/src/modules/ai/application/aiStudentTargetAuthorization.ts"),
   contentBootstrap: await read("server/src/modules/content/infrastructure/contentBootstrapOperationalData.ts"),
   backfill: await read("server/src/scripts/backfillParentStudentRelationships.ts"),
+  quizReportScope: await read("server/src/modules/quizzes/application/quizReportStudentScope.ts"),
 };
 
 const checks = [];
@@ -63,8 +64,15 @@ check("AI and content parent readers use canonical parent authority", () => {
 check("admin WhatsApp digest batch is bulk-authority and bulk-result based", () => {
   includes(files.whatsappBatch, "getAuthorizedStudentIdsForParents");
   includes(files.whatsappBatch, "QuizResultModel.aggregate");
+  includes(files.whatsappBatch, "authorizedStudentIds");
   excludes(files.whatsappBatch, "QuizResultModel.find(");
   excludes(files.whatsappBatch, "linkedStudentIds");
+});
+
+check("parent quiz report scope uses canonical authority", () => {
+  includes(files.quizReportScope, "getAuthorizedStudentIdsForParent");
+  includes(files.quizReportScope, "authorizedStudentIds");
+  excludes(files.quizReportScope, "authUser.linkedStudentIds");
 });
 
 check("parent relationship backfill is explicit and dry-run by default", () => {

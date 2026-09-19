@@ -44,13 +44,13 @@ export async function runParentWhatsappDigestBatch(createdBy: string) {
 
   for (const parent of parents) {
     const parentId = String(parent._id);
-    const linkedStudentIds = authorizedStudentsByParent.get(parentId) || [];
-    if (!linkedStudentIds.length) {
+    const authorizedStudentIds = authorizedStudentsByParent.get(parentId) || [];
+    if (!authorizedStudentIds.length) {
       skippedNoStudents += 1;
       continue;
     }
 
-    const rows = linkedStudentIds.map((studentId) => {
+    const rows = authorizedStudentIds.map((studentId) => {
       const row = latestByUser.get(String(studentId));
       return row
         ? `- الطالب ${studentId}: آخر نتيجة ${Number(row.score || 0)}%`

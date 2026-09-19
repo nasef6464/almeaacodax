@@ -1,10 +1,10 @@
 import type { SupervisorDirectScope } from "./quizSupervisorScope.js";
 import type { SupervisorScopeAuthUser } from "./quizSupervisorReportScope.js";
+import { getAuthorizedStudentIdsForParent } from "../../parents/application/parentAuthority.js";
 
 export type QuizReportScopeAuthUser = SupervisorScopeAuthUser & {
   managedPathIds?: unknown[];
   managedSubjectIds?: unknown[];
-  linkedStudentIds?: unknown[];
 };
 
 export type QuizReportStudentScope = {
@@ -52,9 +52,10 @@ export const buildQuizReportStudentScope = async (
   }
 
   if (authUser.role === "parent") {
-    const linkedStudentIds = uniqueStrings(authUser.linkedStudentIds || []);
-    const studentIdentityFilter = linkedStudentIds.length
-      ? buildDocumentsByIdsQuery(linkedStudentIds)
+    const parentUserId = String(authUser.id || authUser._id || "");
+    const authorizedStudentIds = await getAuthorizedStudentIdsForParent(parentUserId);
+    const studentIdentityFilter = authorizedStudentIds.length
+      ? buildDocumentsByIdsQuery(authorizedStudentIds)
       : { _id: { $exists: false } };
     return { filter: { role: "student", ...studentIdentityFilter }, managedPathIds, managedSubjectIds };
   }
