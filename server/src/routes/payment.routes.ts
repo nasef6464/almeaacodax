@@ -1106,7 +1106,6 @@ paymentRouter.post(
     });
 
     if (approved.duplicate || !approved.request) {
-      await releasePaymentGatewayEvent(eventReservation.key);
       return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
     }
 
