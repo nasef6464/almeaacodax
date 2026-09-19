@@ -130,7 +130,7 @@ const canStaffAccessCourseDiscussion = (user: any, course: any) => {
 async function assertCanAccessEntity(userId: string, entityType: string, entityId: string, role: string) {
   if (role === "admin") return true;
   const user = await UserModel.findById(userId)
-    .select("role enrolledCourses schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds")
+    .select("role enrolledCourses schoolId groupIds managedPathIds managedSubjectIds")
     .lean();
   if (!user) return false;
 

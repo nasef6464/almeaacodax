@@ -15,6 +15,7 @@ const files = {
   parentWeeklyReport: await read("server/src/modules/reports/application/sendParentWeeklyPerformanceReport.ts"),
   certificates: await read("server/src/routes/certificates.routes.ts"),
   contentRoute: await read("server/src/routes/content.routes.ts"),
+  operationsAudit: await read("server/src/services/operationsAudit.ts"),
 };
 
 const checks = [];
@@ -89,6 +90,12 @@ check("certificate recipients and school relation imports use canonical parent a
   excludes(files.certificates, "linkedStudentIds: { $in:");
   includes(files.contentRoute, "ensureCanonicalParentRelationship");
   includes(files.authority, "ensureCanonicalParentRelationship");
+});
+
+check("operations audit respects canonical parent relationship tombstones", () => {
+  includes(files.operationsAudit, "parentsWithCanonicalRows");
+  includes(files.operationsAudit, "parentsWithActiveCanonicalChildren");
+  includes(files.operationsAudit, "ParentStudentRelationshipModel.find()");
 });
 
 check("parent relationship backfill is explicit and dry-run by default", () => {
