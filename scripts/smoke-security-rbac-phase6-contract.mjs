@@ -45,13 +45,15 @@ check("Redis security dependencies are installed and documented", () => {
   assertIncludes(files.envExample, "REDIS_URL=");
 });
 
-check("rate limits use RedisStore when Redis is configured", () => {
+check("rate limits use RedisStore with availability and sensitive failure policies", () => {
   assertIncludes(files.rateLimiters, "RedisStore");
   assertIncludes(files.rateLimiters, "createRedisClient");
   assertIncludes(files.rateLimiters, "globalRateLimiter");
   assertIncludes(files.rateLimiters, "authRateLimiter");
   assertIncludes(files.rateLimiters, "sensitiveActionRateLimiter");
-  assertIncludes(files.rateLimiters, "passOnStoreError: true");
+  assertIncludes(files.rateLimiters, "passOnStoreError: options.passOnStoreError ?? true");
+  assertIncludes(files.rateLimiters, 'keyPrefix: "auth",\n  passOnStoreError: false');
+  assertIncludes(files.rateLimiters, 'keyPrefix: "sensitive",\n  passOnStoreError: false');
   assertIncludes(files.app, "globalRateLimiter");
   assertIncludes(files.app, "authRateLimiter");
   assertIncludes(files.app, "sensitiveActionRateLimiter");
