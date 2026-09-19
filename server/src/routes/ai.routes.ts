@@ -578,7 +578,44 @@ type AiCallOptions = {
   timeoutMs?: number;
 };
 
+const isPrivateIpv4 = (hostname: string) => {
+  const parts = hostname.split(".").map((part) => Number(part));
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
+  const [a, b] = parts;
+  return a === 10
+    || a === 127
+    || (a === 169 && b === 254)
+    || (a === 172 && b >= 16 && b <= 31)
+    || (a === 192 && b === 168)
+    || a === 0;
+};
+
+const assertSafeAiProviderUrl = (rawUrl: string) => {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    throw new Error("AI provider URL is invalid");
+  }
+
+  const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
+  const isLocalHost = hostname === "localhost" || hostname.endsWith(".localhost");
+  const isPrivateIpv6 = hostname === "::1"
+    || hostname === "[::1]"
+    || hostname.startsWith("fc")
+    || hostname.startsWith("fd")
+    || hostname.startsWith("fe8")
+    || hostname.startsWith("fe9")
+    || hostname.startsWith("fea")
+    || hostname.startsWith("feb");
+
+  if (parsed.protocol !== "https:" || isLocalHost || isPrivateIpv4(hostname) || isPrivateIpv6) {
+    throw new Error("AI provider URL must use HTTPS and a public host");
+  }
+};
+
 const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = env.AI_REQUEST_TIMEOUT_MS) => {
+  assertSafeAiProviderUrl(url);
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
