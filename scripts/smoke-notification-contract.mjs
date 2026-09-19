@@ -7,6 +7,7 @@ const files = {
   providers: await readFile(new URL("../server/src/services/notificationProviders.ts", import.meta.url), "utf8"),
   route: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   audience: await readFile(new URL("../server/src/modules/notifications/application/notificationAudienceAuthority.ts", import.meta.url), "utf8"),
+  schoolStudentAuthority: await readFile(new URL("../server/src/modules/schools/application/schoolStaffStudentAuthority.ts", import.meta.url), "utf8"),
   campaign: await readFile(new URL("../server/src/modules/notifications/application/createNotificationCampaign.ts", import.meta.url), "utf8"),
   index: await readFile(new URL("../server/src/routes/index.ts", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/.env.example", import.meta.url), "utf8"),
@@ -87,10 +88,15 @@ check("large notification campaigns are resolved fully then batched", () => {
 check("teacher and supervisor notification reachability is module-owned and canonical-first", () => {
   assertIncludes(files.route, "getAuthorizedStudentIdsForNotificationActor");
   assertIncludes(files.route, "getAuthorizedSupervisorRecipientIdsForStudent");
-  assertIncludes(files.audience, "SchoolMembershipModel");
-  assertIncludes(files.audience, "TeachingAssignmentModel");
-  assertIncludes(files.audience, "assignments.length > 0");
-  assertIncludes(files.audience, "actorContext.hasCanonical");
+  assertIncludes(files.audience, "getAuthorizedStudentIdsForSchoolStaffActor");
+  assertIncludes(files.schoolStudentAuthority, "SchoolMembershipModel");
+  assertIncludes(files.schoolStudentAuthority, "TeachingAssignmentModel");
+  assertIncludes(files.schoolStudentAuthority, "canonicalClassIds");
+  assertIncludes(files.schoolStudentAuthority, "!canonicalClassIds.has(classId)");
+  assertIncludes(files.schoolStudentAuthority, "actorContext.hasCanonical");
+  assertIncludes(files.schoolStudentAuthority, "authorizedGroups");
+  assertIncludes(files.audience, "candidateSupervisorIds");
+  assertIncludes(files.audience, "membershipsBySupervisor");
   assertNotIncludes(files.route, "const sharesSchool =");
   assertNotIncludes(files.route, "const sharesAssignedGroup =");
 });

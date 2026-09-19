@@ -155,3 +155,35 @@ export async function syncCanonicalParentRelationships(payload: {
     ),
   );
 }
+
+
+export async function ensureCanonicalParentRelationship(payload: {
+  parentUserId: string;
+  studentUserId: string;
+  schoolId?: string | null;
+  createdBy: string;
+}) {
+  const parentUserId = String(payload.parentUserId || "").trim();
+  const studentUserId = String(payload.studentUserId || "").trim();
+  if (!parentUserId || !studentUserId) {
+    throw new Error("parent_and_student_ids_are_required");
+  }
+
+  return ParentStudentRelationshipModel.findOneAndUpdate(
+    { parentUserId, studentUserId },
+    {
+      $set: {
+        status: "active",
+        schoolId: String(payload.schoolId || ""),
+        source: "admin",
+        createdBy: payload.createdBy,
+        revokedAt: null,
+        revokedBy: "",
+      },
+      $setOnInsert: {
+        id: `parent-student:${parentUserId}:${studentUserId}`,
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  );
+}

@@ -13,6 +13,9 @@ const files = {
   backfill: await read("server/src/scripts/backfillParentStudentRelationships.ts"),
   quizReportScope: await read("server/src/modules/quizzes/application/quizReportStudentScope.ts"),
   parentWeeklyReport: await read("server/src/modules/reports/application/sendParentWeeklyPerformanceReport.ts"),
+  certificates: await read("server/src/routes/certificates.routes.ts"),
+  contentRoute: await read("server/src/routes/content.routes.ts"),
+  operationsAudit: await read("server/src/services/operationsAudit.ts"),
 };
 
 const checks = [];
@@ -80,6 +83,27 @@ check("compatibility weekly report uses canonical parent authority", () => {
   includes(files.parentWeeklyReport, "getAuthorizedStudentIdsForParent");
   includes(files.parentWeeklyReport, "authorizedStudentIds");
   excludes(files.parentWeeklyReport, "linkedStudentIds");
+});
+
+check("certificate recipients and school relation imports use canonical parent authority", () => {
+  includes(files.certificates, "getAuthorizedParentIdsForStudent");
+  excludes(files.certificates, "linkedStudentIds: { $in:");
+  includes(files.contentRoute, "ensureCanonicalParentRelationship");
+  includes(files.contentRoute, "SchoolMembershipModel.findOneAndUpdate");
+  includes(files.contentRoute, "TeachingAssignmentModel.findOneAndUpdate");
+  includes(files.authority, "ensureCanonicalParentRelationship");
+});
+
+check("admin role changes retire stale school and teacher authority", () => {
+  includes(files.authRoute, "SchoolMembershipModel.updateMany(");
+  includes(files.authRoute, "TeachingAssignmentModel.updateMany(");
+  includes(files.authRoute, 'previousRole === "teacher"');
+});
+
+check("operations audit respects canonical parent relationship tombstones", () => {
+  includes(files.operationsAudit, "parentsWithCanonicalRows");
+  includes(files.operationsAudit, "parentsWithActiveCanonicalChildren");
+  includes(files.operationsAudit, "ParentStudentRelationshipModel.find()");
 });
 
 check("parent relationship backfill is explicit and dry-run by default", () => {

@@ -100,7 +100,10 @@ check("Backend school relation endpoint is protected and updates parent/supervis
   assertIncludes(sources.contentRoutes, "assertSchoolManagementScope(req.authUser!, school as any)");
   assertIncludes(sources.contentRoutes, "You cannot manage this school");
   assertIncludes(sources.contentRoutes, "groupIds: nextGroupIds");
-  assertIncludes(sources.contentRoutes, "$addToSet: { linkedStudentIds: student.id");
+  assertIncludes(sources.contentRoutes, "$addToSet: { linkedStudentIds: studentUserId");
+  assertIncludes(sources.contentRoutes, "ensureCanonicalParentRelationship");
+  assertIncludes(sources.contentRoutes, "SchoolMembershipModel.findOneAndUpdate");
+  assertIncludes(sources.contentRoutes, "TeachingAssignmentModel.findOneAndUpdate");
   assertIncludes(sources.contentRoutes, "$addToSet: { supervisorIds: supervisor.id");
   assertIncludes(sources.contentRoutes, "groups: updatedGroups");
   assertIncludes(sources.contentRoutes, "users: updatedUsers");

@@ -15,6 +15,7 @@ import { SkillModel } from "../models/Skill.js";
 import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
 import { UserModel } from "../models/User.js";
+import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
 
 type Severity = "critical" | "warning" | "info" | "success";
 type Area = "student_journey" | "content" | "assessment" | "media" | "accounts" | "payments" | "seo" | "security" | "deployment";
@@ -126,6 +127,7 @@ async function buildOperationsAudit(): Promise<OperationsAuditResult> {
     courses,
     libraryItems,
     users,
+    parentRelationships,
     groups,
     b2bPackages,
     paymentRequests,
@@ -171,6 +173,7 @@ async function buildOperationsAudit(): Promise<OperationsAuditResult> {
     CourseModel.find().select(OPERATIONS_AUDIT_COURSE_SELECT).lean(),
     LibraryItemModel.find().select(OPERATIONS_AUDIT_LIBRARY_SELECT).lean(),
     UserModel.find().select(OPERATIONS_AUDIT_USER_SELECT).lean(),
+    ParentStudentRelationshipModel.find().select("parentUserId studentUserId status").lean(),
     GroupModel.find().select(OPERATIONS_AUDIT_GROUP_SELECT).lean(),
     B2BPackageModel.find().select(OPERATIONS_AUDIT_B2B_PACKAGE_SELECT).lean(),
     PaymentRequestModel.find().select(OPERATIONS_AUDIT_PAYMENT_SELECT).lean(),
@@ -257,9 +260,23 @@ async function buildOperationsAudit(): Promise<OperationsAuditResult> {
       (user.managedPathIds || []).length === 0 &&
       (user.managedSubjectIds || []).length === 0,
   );
-  const parentsWithoutChildren = users.filter(
-    (user: any) => user.isActive !== false && user.role === "parent" && (user.linkedStudentIds || []).length === 0,
+  const parentsWithCanonicalRows = new Set(
+    (parentRelationships as any[]).map((row) => String(row.parentUserId || "")).filter(Boolean),
   );
+  const parentsWithActiveCanonicalChildren = new Set(
+    (parentRelationships as any[])
+      .filter((row) => String(row.status || "active") === "active")
+      .map((row) => String(row.parentUserId || ""))
+      .filter(Boolean),
+  );
+  const parentsWithoutChildren = users.filter((user: any) => {
+    if (user.isActive === false || user.role !== "parent") return false;
+    const parentId = idOf(user);
+    if (parentsWithCanonicalRows.has(parentId)) {
+      return !parentsWithActiveCanonicalChildren.has(parentId);
+    }
+    return (user.linkedStudentIds || []).length === 0;
+  });
   const inactiveUsers = users.filter((user: any) => user.isActive === false);
   const pendingPayments = paymentRequests.filter((request: any) => request.status === "pending");
   const activeSchoolPackagesWithoutStudents = b2bPackages.filter((item: any) => item.status === "active" && item.maxStudents <= 0);

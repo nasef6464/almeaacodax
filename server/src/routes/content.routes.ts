@@ -23,6 +23,8 @@ import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationS
 import { PlatformIntegrationHistoryModel } from "../models/PlatformIntegrationHistory.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
@@ -43,6 +45,8 @@ import {
   getScopedContentBootstrapOperationalData,
   PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT,
 } from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
+import { getAuthorizedStudentIdsForSchoolStaffActor } from "../modules/schools/application/schoolStaffStudentAuthority.js";
+import { ensureCanonicalParentRelationship } from "../services/parentAuthorityService.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -858,7 +862,7 @@ contentRouter.post(
       role: "student",
       ...studentLookup,
     })
-      .select("_id id name role groupIds")
+      .select("_id id name role schoolId groupIds")
       .lean();
 
     if (!student) {
@@ -866,28 +870,12 @@ contentRouter.post(
     }
 
     const studentId = String((student as any).id || (student as any)._id);
-    const studentGroupIds = Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : [];
-    const groupObjectIds = studentGroupIds.filter((id: string) => mongoose.isValidObjectId(id));
-    const scopedGroups = await GroupModel.find({
-      $or: [
-        { studentIds: studentId },
-        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
-        { id: { $in: studentGroupIds } },
-      ],
-    })
-      .select("_id id supervisorIds studentIds")
-      .lean();
-
-    if (authUser.role !== "admin") {
-      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
-      const canReachStudent =
-        authGroupIds.some((groupId: string) => studentGroupIds.includes(groupId)) ||
-        scopedGroups.some((group: any) => (group.supervisorIds || []).map(String).includes(String(authUser.id))) ||
-        (Array.isArray((authUser as any).linkedStudentIds) && (authUser as any).linkedStudentIds.map(String).includes(studentId));
-
-      if (!canReachStudent) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
-      }
+    const authorizedStudentIds = await getAuthorizedStudentIdsForSchoolStaffActor(
+      authUser,
+      [student as any],
+    );
+    if (!authorizedStudentIds.has(studentId)) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
     }
 
     const today = new Date();
@@ -2548,6 +2536,12 @@ contentRouter.post(
         summary.assignedClasses += 1;
       }
 
+      await SchoolMembershipModel.findOneAndUpdate(
+        { userId: String(student.id || student._id), schoolId, role: "student" },
+        { $set: { status: "active" } },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
+
       const parentEmail = String(row.parentEmail || "").trim().toLowerCase();
       if (parentEmail) {
         const parent = await createUserIfMissing(
@@ -2559,7 +2553,24 @@ contentRouter.post(
         if (!parent) {
           summary.missingParents += 1;
         } else {
-          await UserModel.findByIdAndUpdate(parent._id, { $set: { schoolId }, $addToSet: { linkedStudentIds: student.id || String(student._id) } });
+          const studentUserId = String(student.id || student._id);
+          await Promise.all([
+            UserModel.findByIdAndUpdate(parent._id, {
+              $set: { schoolId },
+              $addToSet: { linkedStudentIds: studentUserId },
+            }),
+            ensureCanonicalParentRelationship({
+              parentUserId: String(parent.id || parent._id),
+              studentUserId,
+              schoolId,
+              createdBy: String(req.authUser!.id),
+            }),
+            SchoolMembershipModel.findOneAndUpdate(
+              { userId: String(parent.id || parent._id), schoolId, role: "parent" },
+              { $set: { status: "active" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true },
+            ),
+          ]);
           summary.linkedParents += 1;
         }
       }
@@ -2579,6 +2590,11 @@ contentRouter.post(
           await Promise.all([
             UserModel.findByIdAndUpdate(supervisor._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } }),
             GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: supervisor.id || String(supervisor._id) } }),
+            SchoolMembershipModel.findOneAndUpdate(
+              { userId: String(supervisor.id || supervisor._id), schoolId, role: "supervisor" },
+              { $set: { status: "active" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true },
+            ),
           ]);
           summary.linkedSupervisors += 1;
         }
@@ -2596,7 +2612,25 @@ contentRouter.post(
           summary.missingTeachers += 1;
         } else {
           const targetGroupId = classroom ? classroom.id || String(classroom._id) : schoolId;
-          await UserModel.findByIdAndUpdate(teacher._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } });
+          const teacherUserId = String(teacher.id || teacher._id);
+          const canonicalWrites: Promise<unknown>[] = [
+            UserModel.findByIdAndUpdate(teacher._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } }),
+            SchoolMembershipModel.findOneAndUpdate(
+              { userId: teacherUserId, schoolId, role: "teacher" },
+              { $set: { status: "active" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true },
+            ),
+          ];
+          if (classroom) {
+            canonicalWrites.push(
+              TeachingAssignmentModel.findOneAndUpdate(
+                { schoolId, teacherId: teacherUserId, classId: targetGroupId, subjectId: "" },
+                { $set: { status: "active" } },
+                { upsert: true, new: true, setDefaultsOnInsert: true },
+              ),
+            );
+          }
+          await Promise.all(canonicalWrites);
           summary.linkedTeachers += 1;
         }
       }
