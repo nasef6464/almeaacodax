@@ -15,4 +15,6 @@ export interface AuthUser {
   linkedStudentIds?: string[];
   managedPathIds?: string[];
   managedSubjectIds?: string[];
+  /** JWT NumericDate added automatically by jsonwebtoken. */
+  iat?: number;
 }
