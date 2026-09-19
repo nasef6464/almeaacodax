@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
+import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
+import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
 import { GroupModel } from "../models/Group.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
 import { AccessGrantModel } from "../models/AccessGrant.js";
@@ -1808,7 +1810,14 @@ authRouter.delete(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
     }
     const { studentId } = req.params;
-    await UserModel.findByIdAndUpdate(req.authUser!.id, { $pull: { linkedStudentIds: studentId } });
+    const parentUserId = String(req.authUser!.id);
+    await Promise.all([
+      ParentStudentRelationshipModel.findOneAndUpdate(
+        { parentUserId, studentUserId: String(studentId), status: "active" },
+        { $set: { status: "revoked", revokedAt: Date.now(), revokedBy: parentUserId } },
+      ),
+      UserModel.findByIdAndUpdate(parentUserId, { $pull: { linkedStudentIds: studentId } }),
+    ]);
     return res.json({ message: "تم إلغاء ربط الطالب" });
   }),
 );
@@ -1823,11 +1832,10 @@ authRouter.get(
     if (req.authUser?.role !== "parent") {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
     }
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const ids: string[] = (parent as any)?.linkedStudentIds ?? [];
+    const ids = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
     if (ids.length === 0) return res.json({ students: [] });
 
-    const students = await UserModel.find({ _id: { $in: ids } })
+    const students = await UserModel.find({ $or: [{ _id: { $in: ids } }, { id: { $in: ids } }] })
       .select("_id name role schoolId")
       .lean();
 
