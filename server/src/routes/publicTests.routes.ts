@@ -6,6 +6,7 @@ import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { PublicBarcodeTestModel } from "../models/PublicBarcodeTest.js";
 import { PublicBarcodeSubmissionModel } from "../models/PublicBarcodeSubmission.js";
+import { PublicBarcodeSubmissionGuardModel } from "../models/PublicBarcodeSubmissionGuard.js";
 import { QuestionModel } from "../models/Question.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
@@ -140,6 +141,31 @@ const buildAttemptIdentityFilter = (testId: string, payload: z.infer<typeof publ
     classroomName: payload.classroomName,
   });
   return { testId, $or: or };
+};
+
+const buildAttemptGuardKey = (testId: string, payload: z.infer<typeof publicBarcodeSubmitSchema>) => {
+  const fingerprint = payload.sessionFingerprint?.trim();
+  if (fingerprint) return `public-test:${testId}:attempt:fingerprint:${fingerprint}`;
+  const contact = payload.contact?.trim().toLowerCase();
+  if (contact) return `public-test:${testId}:attempt:contact:${contact}`;
+  return `public-test:${testId}:attempt:name:${payload.studentName.trim().toLowerCase()}|${payload.schoolName.trim().toLowerCase()}|${payload.classroomName.trim().toLowerCase()}`;
+};
+
+const reserveGuardSlot = async (key: string, limit: number, historicalCount: number) => {
+  await PublicBarcodeSubmissionGuardModel.updateOne(
+    { key },
+    { $setOnInsert: { key, count: historicalCount } },
+    { upsert: true },
+  );
+  return PublicBarcodeSubmissionGuardModel.findOneAndUpdate(
+    { key, count: { $lt: limit } },
+    { $inc: { count: 1 } },
+    { new: true },
+  ).lean();
+};
+
+const releaseGuardSlot = async (key: string) => {
+  await PublicBarcodeSubmissionGuardModel.updateOne({ key, count: { $gt: 0 } }, { $inc: { count: -1 } });
 };
 
 const assertTargetScope = async (authUser: any, targetGroupIds: string[], targetUserIds: string[]) => {
@@ -503,23 +529,33 @@ publicTestsRouter.post(
       });
     }
 
+    const reservedGuardKeys: string[] = [];
     if (test.maxSubmissions) {
-      const currentCount = await PublicBarcodeSubmissionModel.countDocuments({ testId: test.id });
-      if (currentCount >= Number(test.maxSubmissions)) {
+      const limit = Number(test.maxSubmissions);
+      const key = `public-test:${test.id}:submissions`;
+      const historicalCount = await PublicBarcodeSubmissionModel.countDocuments({ testId: test.id });
+      const reservation = await reserveGuardSlot(key, limit, historicalCount);
+      if (!reservation) {
         return res.status(StatusCodes.CONFLICT).json({ message: "Public test reached the submission limit" });
       }
+      reservedGuardKeys.push(key);
     }
 
     const maxAttempts = Number(test.settings?.maxAttempts || 1);
     if (maxAttempts > 0) {
-      const previousAttempts = await PublicBarcodeSubmissionModel.countDocuments(buildAttemptIdentityFilter(test.id, payload));
-      if (previousAttempts >= maxAttempts) {
+      const identityFilter = buildAttemptIdentityFilter(test.id, payload);
+      const previousAttempts = await PublicBarcodeSubmissionModel.countDocuments(identityFilter);
+      const key = buildAttemptGuardKey(test.id, payload);
+      const reservation = await reserveGuardSlot(key, maxAttempts, previousAttempts);
+      if (!reservation) {
+        await Promise.all(reservedGuardKeys.map(releaseGuardSlot));
         return res.status(StatusCodes.CONFLICT).json({
           message: "وصل الطالب للحد المسموح من محاولات هذا الاختبار.",
-          attemptsUsed: previousAttempts,
+          attemptsUsed: Math.max(previousAttempts, maxAttempts),
           maxAttempts,
         });
       }
+      reservedGuardKeys.push(key);
     }
 
     const timeLimitMinutes = Number(test.settings?.timeLimit || 0);
@@ -550,7 +586,7 @@ publicTestsRouter.post(
     const wrongAnswers = Math.max(totalQuestions - correctAnswers - unanswered, 0);
     const score = totalQuestions ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
     const skillsAnalysis = buildSkillsAnalysis(questions, answersByQuestionId);
-    const submission = await PublicBarcodeSubmissionModel.create({
+    let submission;\n    try {\n      submission = await PublicBarcodeSubmissionModel.create({
       id: `pbts_${Date.now()}_${randomUUID().slice(0, 8)}`,
       testId: test.id,
       slug,
@@ -568,7 +604,11 @@ publicTestsRouter.post(
       skillsAnalysis,
       timeSpentSeconds: payload.timeSpentSeconds,
       submittedAt: Date.now(),
-    });
+      });
+    } catch (error) {
+      await Promise.all(reservedGuardKeys.map(releaseGuardSlot));
+      throw error;
+    }
 
     return res.status(StatusCodes.CREATED).json({
       submissionId: submission.id,
