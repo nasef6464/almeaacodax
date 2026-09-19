@@ -8,6 +8,7 @@ import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
+import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
 import { enqueueNotificationDeliveries, enqueuePendingNotifications } from "../queues/notificationQueue.js";
 import {
   createNotificationDeliveries,
@@ -299,10 +300,17 @@ notificationRouter.post("/intervention-alert", requireAuth, requireRole(["admin"
 
     const supervisorIds = new Set<string>();
     scopedGroups.forEach((group: any) => (group.supervisorIds || []).forEach((id: unknown) => supervisorIds.add(String(id))));
-    const parentUsers = await UserModel.find({ role: "parent", linkedStudentIds: studentId }).select("_id id").lean();
+    const canonicalParentLinks = await ParentStudentRelationshipModel.find({ studentUserId: studentId, status: "active" })
+      .select("parentUserId")
+      .lean();
+    const canonicalParentIds = canonicalParentLinks.map((link: any) => String(link.parentUserId || "")).filter(Boolean);
+    const legacyParentUsers = canonicalParentIds.length
+      ? []
+      : await UserModel.find({ role: "parent", linkedStudentIds: studentId }).select("_id id").lean();
     const recipientIds = Array.from(
       new Set([
-        ...parentUsers.map((user: any) => String(user.id || user._id)),
+        ...canonicalParentIds,
+        ...legacyParentUsers.map((user: any) => String(user.id || user._id)),
         ...Array.from(supervisorIds),
       ]),
     ).filter((id) => id && id !== String(authUser.id));
