@@ -93,6 +93,9 @@ check("teacher and supervisor notification reachability is module-owned and cano
   assertIncludes(files.schoolStudentAuthority, "TeachingAssignmentModel");
   assertIncludes(files.schoolStudentAuthority, "assignments.length > 0");
   assertIncludes(files.schoolStudentAuthority, "actorContext.hasCanonical");
+  assertIncludes(files.schoolStudentAuthority, "authorizedGroups");
+  assertIncludes(files.audience, "candidateSupervisorIds");
+  assertIncludes(files.audience, "membershipsBySupervisor");
   assertNotIncludes(files.route, "const sharesSchool =");
   assertNotIncludes(files.route, "const sharesAssignedGroup =");
 });

@@ -182,12 +182,21 @@ async function resolveSupervisorStudentIds(
     .select("_id id type parentId studentIds")
     .lean();
 
+  const authorizedGroups = (supervisedGroups as any[]).filter((group) => {
+    if (!actorContext.activeSchoolIds.size) return true;
+    const groupSchoolId =
+      String(group.type) === "SCHOOL"
+        ? String(group.id || group._id || "")
+        : String(group.parentId || "");
+    return Boolean(groupSchoolId && actorContext.activeSchoolIds.has(groupSchoolId));
+  });
+
   const schoolWideIds = new Set(
-    normalizeIds((supervisedGroups as any[])
+    normalizeIds(authorizedGroups
       .filter((group) => String(group.type) === "SCHOOL")
       .map((group) => group.id || group._id)),
   );
-  const scopedGroups = (supervisedGroups as any[]).filter((group) => String(group.type) !== "SCHOOL");
+  const scopedGroups = authorizedGroups.filter((group) => String(group.type) !== "SCHOOL");
   const scopedGroupIds = new Set(normalizeIds(scopedGroups.map((group) => group.id || group._id)));
   const scopedStudents = new Set(
     normalizeIds(scopedGroups.flatMap((group) => Array.isArray(group.studentIds) ? group.studentIds : [])),

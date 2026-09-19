@@ -33,49 +33,49 @@ export async function getAuthorizedSupervisorRecipientIdsForStudent(
   const activeSchoolIds = studentContexts.activeSchoolIds.get(studentId) || new Set<string>();
   if (studentContexts.hasCanonical.has(studentId) && activeSchoolIds.size === 0) return [];
 
-  const canonicalSupervisors = activeSchoolIds.size
-    ? await SchoolMembershipModel.find({
-        schoolId: { $in: Array.from(activeSchoolIds) },
-        role: "supervisor",
-        status: "active",
-      })
-        .select("userId")
-        .lean()
-    : [];
-  const canonicalSupervisorIds = normalizeIds(
-    (canonicalSupervisors as any[]).map((membership) => membership.userId),
-  );
-
   const studentGroupIds = normalizeIds(Array.isArray(student.groupIds) ? student.groupIds : []);
-  const objectIds = groupObjectIds(studentGroupIds);
-  const legacyGroups = await GroupModel.find({
+  const groupIds = normalizeIds([...studentGroupIds, ...Array.from(activeSchoolIds)]);
+  const objectIds = groupObjectIds(groupIds);
+  const relevantGroups = await GroupModel.find({
     $or: [
       { studentIds: studentId },
-      { id: { $in: studentGroupIds } },
+      { id: { $in: groupIds } },
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   })
-    .select("supervisorIds")
+    .select("_id id type parentId supervisorIds")
     .lean();
-  const legacySupervisorIds = normalizeIds(
-    (legacyGroups as any[]).flatMap((group) =>
+
+  const candidateSupervisorIds = normalizeIds(
+    (relevantGroups as any[]).flatMap((group) =>
       Array.isArray(group.supervisorIds) ? group.supervisorIds : [],
     ),
   );
-  if (!legacySupervisorIds.length) return canonicalSupervisorIds;
+  if (!candidateSupervisorIds.length) return [];
 
-  const canonicalPresence = await SchoolMembershipModel.find({
-    userId: { $in: legacySupervisorIds },
+  const canonicalMemberships = await SchoolMembershipModel.find({
+    userId: { $in: candidateSupervisorIds },
     role: "supervisor",
   })
-    .select("userId")
+    .select("userId schoolId status")
     .lean();
-  const supervisorsWithCanonicalMembership = new Set(
-    normalizeIds((canonicalPresence as any[]).map((membership) => membership.userId)),
-  );
 
-  return normalizeIds([
-    ...canonicalSupervisorIds,
-    ...legacySupervisorIds.filter((userId) => !supervisorsWithCanonicalMembership.has(userId)),
-  ]);
+  const membershipsBySupervisor = new Map<string, any[]>();
+  for (const membership of canonicalMemberships as any[]) {
+    const userId = String(membership.userId || "");
+    if (!userId) continue;
+    const current = membershipsBySupervisor.get(userId) || [];
+    current.push(membership);
+    membershipsBySupervisor.set(userId, current);
+  }
+
+  return candidateSupervisorIds.filter((userId) => {
+    const memberships = membershipsBySupervisor.get(userId) || [];
+    if (!memberships.length) return true;
+    return memberships.some(
+      (membership) =>
+        String(membership.status || "active") === "active" &&
+        activeSchoolIds.has(String(membership.schoolId || "")),
+    );
+  });
 }
