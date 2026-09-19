@@ -12,6 +12,8 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { rejectUnsafeMongoKeys } from "./middleware/mongoSanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { authRateLimiter, globalRateLimiter, sensitiveActionRateLimiter } from "./middleware/rateLimiters.js";
+import { requireActiveAuth, requireAuth } from "./middleware/auth.js";
+import { aiStudentTargetGuard } from "./middleware/aiStudentTargetGuard.js";
 import { initSentry } from "./observability/sentry.js";
 
 function parseAllowedOrigins() {
@@ -110,6 +112,11 @@ export function createApp() {
   app.use(rejectUnsafeMongoKeys);
   app.use(cookieParser());
   app.use("/api", csrfGuard);
+
+  // This AI operation reads private learning results and creates content targeted
+  // to a student. Refresh the principal and enforce role/school/assignment scope
+  // before the route can touch the target student's data.
+  app.use("/api/ai/generate-mock-exam", requireAuth, requireActiveAuth, aiStudentTargetGuard);
 
   app.get("/", (_req, res) => {
     res.json({
