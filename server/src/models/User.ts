@@ -6,6 +6,7 @@ const userSchema = new Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
+    passwordChangedAt: { type: Number, default: null },
     failedLoginAttempts: { type: Number, default: 0 },
     lastFailedLoginAt: { type: Number, default: null },
     loginLockedUntil: { type: Number, default: null, index: true },
@@ -56,10 +57,21 @@ const userSchema = new Schema(
   },
 );
 
+// Password changes are a security boundary: JWTs issued before this instant
+// must no longer authorize requests. Skip initial creation because the first
+// token is issued immediately after the new user is saved.
+userSchema.pre("save", function (next) {
+  if (!this.isNew && this.isModified("passwordHash")) {
+    this.set("passwordChangedAt", Date.now());
+  }
+  next();
+});
+
 userSchema.set("toJSON", {
   transform: (_doc, ret) => {
     const safeRet = ret as Record<string, unknown>;
     delete safeRet.passwordHash;
+    delete safeRet.passwordChangedAt;
     delete safeRet.failedLoginAttempts;
     delete safeRet.lastFailedLoginAt;
     delete safeRet.loginLockedUntil;
