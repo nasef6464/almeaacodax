@@ -7,7 +7,7 @@ import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
 import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
-import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
+import { getAuthorizedStudentIdsForParent, syncCanonicalParentRelationships } from "../services/parentAuthorityService.js";
 import { GroupModel } from "../models/Group.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
 import { AccessGrantModel } from "../models/AccessGrant.js";
@@ -855,6 +855,15 @@ authRouter.post(
       },
     );
 
+    if (isParentRole) {
+      await syncCanonicalParentRelationships({
+        parentUserId: String(user.id || user._id),
+        studentUserIds: normalizedLinkedStudentIds,
+        schoolId: payload.schoolId || null,
+        createdBy: String(req.authUser!.id),
+      });
+    }
+
     await recordAdminAuditLog(req, {
       action: "auth.admin_user.upsert",
       resourceType: "user",
@@ -1217,6 +1226,15 @@ authRouter.patch(
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "User not found",
+      });
+    }
+
+    if (Array.isArray(payload.linkedStudentIds)) {
+      await syncCanonicalParentRelationships({
+        parentUserId: String(updated.id || updated._id),
+        studentUserIds: effectiveRole === "parent" ? ((nextPayload.linkedStudentIds as string[]) || []) : [],
+        schoolId: effectiveRole === "parent" ? String(updated.schoolId || "") : null,
+        createdBy: String(req.authUser!.id),
       });
     }
 
