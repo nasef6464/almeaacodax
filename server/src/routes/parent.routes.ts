@@ -6,6 +6,7 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { enqueueNotificationDeliveries } from "../queues/notificationQueue.js";
+import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
 
 export const parentRouter = Router();
 
@@ -15,11 +16,9 @@ parentRouter.get(
   requireRole(["parent"]),
   asyncHandler(async (req, res) => {
     const parent = await UserModel.findById(req.authUser!.id)
-      .select("id linkedStudentIds name email")
+      .select("id name email")
       .lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.length) {
       return res.json({ children: [], summary: { count: 0, weakSkills: 0 } });
@@ -105,10 +104,8 @@ parentRouter.post(
   requireAuth,
   requireRole(["parent"]),
   asyncHandler(async (req, res) => {
-    const parent = await UserModel.findById(req.authUser!.id).select("id name linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const parent = await UserModel.findById(req.authUser!.id).select("id name").lean();
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
     if (!linkedStudentIds.length) {
       return res.status(400).json({ message: "No linked students found for this parent account." });
     }
@@ -154,10 +151,7 @@ parentRouter.get(
   requireAuth,
   requireRole(["parent"]),
   asyncHandler(async (req, res) => {
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.length) {
       return res.json([]);
@@ -182,10 +176,7 @@ parentRouter.post(
     const request = await PaymentRequestModel.findOne({ id: req.params.id, status: "pending" });
     if (!request) return res.status(404).json({ message: "Request not found" });
 
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.includes(request.userId)) {
       return res.status(403).json({ message: "Not authorized to approve this request" });
@@ -208,10 +199,7 @@ parentRouter.post(
     const request = await PaymentRequestModel.findOne({ id: req.params.id, status: "pending" });
     if (!request) return res.status(404).json({ message: "Request not found" });
 
-    const parent = await UserModel.findById(req.authUser!.id).select("linkedStudentIds").lean();
-    const linkedStudentIds = Array.isArray((parent as any)?.linkedStudentIds)
-      ? (parent as any).linkedStudentIds.map(String).filter(Boolean)
-      : [];
+    const linkedStudentIds = await getAuthorizedStudentIdsForParent(String(req.authUser!.id));
 
     if (!linkedStudentIds.includes(request.userId)) {
       return res.status(403).json({ message: "Not authorized to reject this request" });
