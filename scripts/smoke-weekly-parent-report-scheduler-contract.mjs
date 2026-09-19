@@ -26,13 +26,18 @@ check("scheduler is distributed and Riyadh-time based", () => {
 });
 check("batch has deterministic idempotency and retry visibility", () => {
   includes(files.batch, "weeklyParentReportExecutionKey");
-  includes(files.batch, "NotificationDeliveryModel.exists");
+  includes(files.batch, "deliveredCampaignKeys");
   includes(files.batch, "campaignId");
   includes(files.batch, "partial_failure");
 });
-check("weekly report batch avoids per-parent result queries", () => {
+check("weekly report batch avoids per-parent authority, result and idempotency queries", () => {
+  includes(files.batch, "getAuthorizedStudentIdsForParents");
+  includes(files.batch, "authorizedStudentsByParent");
   includes(files.batch, "allStudentIds");
   includes(files.batch, "resultsByStudent");
+  includes(files.batch, "existingDeliveries");
+  excludes(files.batch, "getAuthorizedStudentIdsForParent(");
+  excludes(files.batch, "NotificationDeliveryModel.exists(");
   const queryCount = (files.batch.match(/QuizResultModel\.find\(/g) || []).length;
   if (queryCount !== 1) throw new Error(`expected one batched QuizResult query, got ${queryCount}`);
 });

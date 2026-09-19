@@ -64,11 +64,10 @@ check("notification routes protect admin actions", () => {
   assertIncludes(files.index, 'apiRouter.use("/notifications", notificationRouter)');
 });
 
-check("intervention parent recipients prefer canonical relationships", () => {
-  assertIncludes(files.route, "ParentStudentRelationshipModel.find");
-  assertIncludes(files.route, 'studentUserId: studentId, status: "active"');
-  assertIncludes(files.route, "canonicalParentIds.length");
-  assertIncludes(files.route, 'linkedStudentIds: studentId');
+check("intervention parent recipients use canonical parent authority resolver", () => {
+  assertIncludes(files.route, "getAuthorizedParentIdsForStudent");
+  assertIncludes(files.route, "authorizedParentIds");
+  assertNotIncludes(files.route, 'ParentStudentRelationshipModel.find({ studentUserId: studentId, status: "active" })');
 });
 
 check("notification env and docs exist", () => {

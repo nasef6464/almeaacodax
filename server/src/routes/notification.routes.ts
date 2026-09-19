@@ -8,8 +8,10 @@ import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
-import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
-import { getAuthorizedStudentIdsForParent } from "../services/parentAuthorityService.js";
+import {
+  getAuthorizedParentIdsForStudent,
+  getAuthorizedStudentIdsForParent,
+} from "../services/parentAuthorityService.js";
 import { enqueueNotificationDeliveries, enqueuePendingNotifications } from "../queues/notificationQueue.js";
 import {
   createNotificationDeliveries,
@@ -126,7 +128,7 @@ notificationRouter.patch("/me/read-all", requireAuth, async (req, res, next) => 
  * GET /api/notifications/stream
  * ─────────────────────────────────────────────────────────────────────────────
  * Server-Sent Events (SSE) — إرسال فوري عند وصول إشعار جديد.
- * يستخدم polling خفيف على MongoDB كل 10 ثواني.
+ * يعتمد على Redis Pub/Sub (أو local fan-out fallback) ولا يعمل polling دوري على Mongo.
  * الـ Client يستمع بـ EventSource('/api/notifications/stream').
  * يُرسل حدثين: 'notification' (إشعار جديد) و'unread_count' (عدد غير المقروء).
  */
@@ -285,17 +287,10 @@ notificationRouter.post("/intervention-alert", requireAuth, requireRole(["admin"
 
     const supervisorIds = new Set<string>();
     scopedGroups.forEach((group: any) => (group.supervisorIds || []).forEach((id: unknown) => supervisorIds.add(String(id))));
-    const canonicalParentLinks = await ParentStudentRelationshipModel.find({ studentUserId: studentId, status: "active" })
-      .select("parentUserId")
-      .lean();
-    const canonicalParentIds = canonicalParentLinks.map((link: any) => String(link.parentUserId || "")).filter(Boolean);
-    const legacyParentUsers = canonicalParentIds.length
-      ? []
-      : await UserModel.find({ role: "parent", linkedStudentIds: studentId }).select("_id id").lean();
+    const authorizedParentIds = await getAuthorizedParentIdsForStudent(studentId);
     const recipientIds = Array.from(
       new Set([
-        ...canonicalParentIds,
-        ...legacyParentUsers.map((user: any) => String(user.id || user._id)),
+        ...authorizedParentIds,
         ...Array.from(supervisorIds),
       ]),
     ).filter((id) => id && id !== String(authUser.id));

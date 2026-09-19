@@ -855,14 +855,12 @@ authRouter.post(
       },
     );
 
-    if (isParentRole) {
-      await syncCanonicalParentRelationships({
-        parentUserId: String(user.id || user._id),
-        studentUserIds: normalizedLinkedStudentIds,
-        schoolId: payload.schoolId || null,
-        createdBy: String(req.authUser!.id),
-      });
-    }
+    await syncCanonicalParentRelationships({
+      parentUserId: String(user.id || user._id),
+      studentUserIds: isParentRole ? normalizedLinkedStudentIds : [],
+      schoolId: isParentRole ? payload.schoolId || null : null,
+      createdBy: String(req.authUser!.id),
+    });
 
     await recordAdminAuditLog(req, {
       action: "auth.admin_user.upsert",
@@ -1182,6 +1180,9 @@ authRouter.patch(
     if (roleChanged) {
       nextPayload.schoolId = null;
       nextPayload.groupIds = [];
+      if (effectiveRole !== "parent" || previousRole !== "parent") {
+        nextPayload.linkedStudentIds = [];
+      }
     }
     if (Array.isArray(payload.linkedStudentIds)) {
       if (effectiveRole !== "parent") {
@@ -1229,10 +1230,16 @@ authRouter.patch(
       });
     }
 
-    if (Array.isArray(payload.linkedStudentIds)) {
+    const shouldSyncParentRelationships =
+      Array.isArray(payload.linkedStudentIds) ||
+      (roleChanged && (previousRole === "parent" || effectiveRole === "parent"));
+    if (shouldSyncParentRelationships) {
       await syncCanonicalParentRelationships({
         parentUserId: String(updated.id || updated._id),
-        studentUserIds: effectiveRole === "parent" ? ((nextPayload.linkedStudentIds as string[]) || []) : [],
+        studentUserIds:
+          effectiveRole === "parent" && Array.isArray(updated.linkedStudentIds)
+            ? updated.linkedStudentIds.map(String)
+            : [],
         schoolId: effectiveRole === "parent" ? String(updated.schoolId || "") : null,
         createdBy: String(req.authUser!.id),
       });
@@ -1359,6 +1366,19 @@ authRouter.delete(
 
     await Promise.all([
       UserModel.updateMany({ linkedStudentIds: targetUserId }, { $pull: { linkedStudentIds: targetUserId } }),
+      ParentStudentRelationshipModel.updateMany(
+        {
+          status: "active",
+          $or: [{ parentUserId: targetUserId }, { studentUserId: targetUserId }],
+        },
+        {
+          $set: {
+            status: "revoked",
+            revokedAt: Date.now(),
+            revokedBy: String(req.authUser!.id),
+          },
+        },
+      ),
       GroupModel.updateMany(
         { $or: [{ studentIds: targetUserId }, { supervisorIds: targetUserId }] },
         { $pull: { studentIds: targetUserId, supervisorIds: targetUserId } },

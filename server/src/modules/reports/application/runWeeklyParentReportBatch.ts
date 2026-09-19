@@ -2,7 +2,7 @@ import { UserModel } from "../../../models/User.js";
 import { QuizResultModel } from "../../../models/QuizResult.js";
 import { NotificationDeliveryModel } from "../../../models/NotificationDelivery.js";
 import { createNotificationDeliveries } from "../../../services/notificationService.js";
-import { getAuthorizedStudentIdsForParent } from "../../../services/parentAuthorityService.js";
+import { getAuthorizedStudentIdsForParents } from "../../../services/parentAuthorityService.js";
 
 const RIYADH_TIME_ZONE = "Asia/Riyadh";
 
@@ -39,12 +39,15 @@ export async function runWeeklyParentReportBatch(executionKey = weeklyParentRepo
   let skipped = 0;
   let failed = 0;
 
-  const parentLinks = await Promise.all(
-    parents.map(async (parent) => ({
+  const parentIds = parents.map((parent) => String(parent.id || parent._id));
+  const authorizedStudentsByParent = await getAuthorizedStudentIdsForParents(parentIds);
+  const parentLinks = parents.map((parent) => {
+    const parentId = String(parent.id || parent._id);
+    return {
       parent,
-      linkedIds: await getAuthorizedStudentIdsForParent(String(parent.id || parent._id)),
-    })),
-  );
+      linkedIds: authorizedStudentsByParent.get(parentId) || [],
+    };
+  });
   const allStudentIds = Array.from(new Set(parentLinks.flatMap(({ linkedIds }) => linkedIds)));
   const weeklyResults = allStudentIds.length
     ? await QuizResultModel.find({
@@ -65,17 +68,35 @@ export async function runWeeklyParentReportBatch(executionKey = weeklyParentRepo
     resultsByStudent.set(studentId, rows);
   }
 
+  const candidateCampaigns = parentLinks
+    .filter(({ linkedIds }) => linkedIds.length > 0)
+    .map(({ parent }) => {
+      const parentId = String(parent.id || parent._id);
+      return {
+        parentId,
+        campaignId: `${executionKey}:${parentId}`,
+      };
+    });
+  const existingDeliveries = candidateCampaigns.length
+    ? await NotificationDeliveryModel.find({
+        campaignId: { $in: candidateCampaigns.map((item) => item.campaignId) },
+        channel: "in_app",
+      })
+        .select("campaignId recipientUserId")
+        .lean()
+    : [];
+  const deliveredCampaignKeys = new Set(
+    (existingDeliveries as any[]).map(
+      (item) => `${String(item.campaignId || "")}:${String(item.recipientUserId || "")}`,
+    ),
+  );
+
   for (const { parent, linkedIds } of parentLinks) {
     if (!linkedIds.length) continue;
 
     const pId = String(parent.id || parent._id);
     const campaignId = `${executionKey}:${pId}`;
-    const alreadyDelivered = await NotificationDeliveryModel.exists({
-      campaignId,
-      recipientUserId: pId,
-      channel: "in_app",
-    });
-    if (alreadyDelivered) {
+    if (deliveredCampaignKeys.has(`${campaignId}:${pId}`)) {
       skipped += 1;
       continue;
     }
