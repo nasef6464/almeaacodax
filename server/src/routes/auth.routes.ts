@@ -1376,7 +1376,7 @@ authRouter.delete(
 
     const lifecycle = await deleteUserLifecycle({
       targetUserId,
-      targetMongoId: target._id,
+      targetMongoId: String(target._id),
       actorUserId: String(req.authUser!.id),
     });
 
@@ -1385,7 +1385,6 @@ authRouter.delete(
       resourceType: "user",
       resourceId: targetUserId,
       metadata: {
-        targetEmail: target.email,
         targetRole: target.role,
         lifecycle,
       },
