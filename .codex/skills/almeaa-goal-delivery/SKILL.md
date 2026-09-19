@@ -11,7 +11,7 @@ Use this workflow automatically for an ALMEAA Product Goal, Product Gate, featur
 
 ## Start once
 
-Read Git HEAD, `git status`, only relevant recent commits, `docs/architecture/MAIN_INTEGRATION_CHECKPOINT_AR.md` when present, `docs/architecture/CODEX_EXECUTION_STATE.md`, the current goal, and directly affected maps/routes/callers/models/loaders/tests. Do a goal-scoped assessment—not a repository-wide audit.
+Read Git HEAD, `git status`, only relevant recent commits, `docs/architecture/MAIN_INTEGRATION_CHECKPOINT_AR.md` when present, `docs/architecture/CODEX_EXECUTION_STATE.md`, and—when the goal changes domain ownership, architecture, authority, data access, media, performance, or module boundaries—`docs/architecture/CURRENT_DIRECTORY_AND_MODULE_MAP.md` plus `docs/architecture/DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`. Then read the current goal and directly affected maps/routes/callers/models/loaders/tests. Do a goal-scoped assessment—not a repository-wide audit.
 
 If `MAIN_INTEGRATION_CHECKPOINT_AR.md` records that a delivery branch was already merged into `main`, start new implementation from the latest `main` on a fresh focused branch. Do not redo already-integrated closed gates unless a proved runtime defect, failing acceptance evidence, security/data-integrity risk, or explicit product change requires it.
 
@@ -20,7 +20,7 @@ State concisely: `CURRENT STATE`, `VERIFIED`, `REAL GAPS`, `BLOCKERS`, `STRONG M
 ## Delivery rules
 
 - Use existing working behavior before building anything new. Do not redo `VERIFIED` work without an impact reason.
-- Execute related changes as one vertical slice. Do not create batches for trivial details.
+- Execute related changes as one vertical slice. From Batch 9 onward, complete worthwhile modular extraction while that domain is already under inspection; do not postpone a second wholesale refactor pass to Batch 14. Do not create batches for trivial details.
 - A non-blocking improvement is `DEFERRED` / Future Improvement; do not implement it in the active goal.
 - Use targeted checks during implementation. Run final CI/gates only when the bounded goal is near closure; do not chase speculative issues while CI is live.
 - Preserve public API, authentication/RBAC, scoring, payments, data compatibility, and production data/cutover unless the goal explicitly authorizes a change.
