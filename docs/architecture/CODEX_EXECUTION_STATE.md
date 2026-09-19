@@ -1,5 +1,36 @@
 # ALMEAA — Codex Execution State
 
+
+## Release Hardening Batch 10 — Privacy & Data Lifecycle
+
+- Status: `READY FOR MERGE / RUNTIME VERIFIED` on 2026-09-20.
+- Baseline: `main @ b726f7ecd50c5472cfcabed630e7e8e8ea495890`.
+- Branch: `chatgpt/batch10-privacy-lifecycle`.
+- PR: #180.
+- Verified runtime head: `94c3bfb3afbfa5f14781e81f4c9758601633861a`.
+- Problem reproduced: admin user deletion removed the User plus limited legacy links but could leave canonical `SchoolMembership`, `TeachingAssignment`, and active `AccessGrant` authority behind.
+- Implementation:
+  - added `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` before destructive retention automation;
+  - extracted account erasure into `modules/privacy/application/deleteUserLifecycle.ts`;
+  - revoke/deactivate canonical parent, school, teacher, and entitlement authority before deleting identity;
+  - unlink legacy User/Group references in the same lifecycle;
+  - minimize direct operational PII in AI interactions, client telemetry and notification delivery;
+  - preserve academic/payment/audit/classroom/certificate history rather than blanket-cascading it;
+  - corrected the parent-authority contract so it verifies the real application boundary rather than succeeding accidentally because unrelated delete code lived in `auth.routes.ts`.
+- Compatibility retained: legacy relationship fields/adapters remain; this batch removes references for the erased account but does not delete compatibility schemas or reinterpret assessment/payment history.
+- Policy boundary: exact retention periods for financial, academic, audit, AI, telemetry, notification and activity history require owner/legal/business policy; no arbitrary TTL was introduced.
+- Exact runtime CI on `94c3bfb3...`:
+  - Recovery Gate #35475687354 — PASS;
+  - Production Readiness Gate #35475687206 — PASS;
+  - Safety Gate #35475687430 — PASS;
+  - Backend Integration Gate #35475687315 — PASS;
+  - Phase + Handover Gate #35475687298 — PASS;
+  - Deep Pre-Merge E2E #35475687296 — PASS, including all 12 deep suites;
+  - Vercel preview deployment — PASS.
+- Architecture change: account erasure now has a privacy-owned application boundary; maps and deep audit were updated in this PR.
+- Next exact action: require the final documentation head of PR #180 to remain green, merge it, record Batch 10 as DONE from the merge, then start Batch 11 from fresh `main` with full-backup/DR evidence. The existing learning snapshot remains an operational feature, not full disaster recovery.
+
+
 ## Platform V3 Deep Pre-Merge E2E Gate — Full 12/12 Deep Suite Closure on PR #162
 
 - Status: `CLOSED / VERIFIED` on 2026-09-19.
