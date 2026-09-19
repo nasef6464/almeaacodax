@@ -2,7 +2,7 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { requireAuth, requireRole } from "../middleware/auth.js";
+import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { PublicBarcodeTestModel } from "../models/PublicBarcodeTest.js";
 import { PublicBarcodeSubmissionModel } from "../models/PublicBarcodeSubmission.js";
@@ -185,6 +185,34 @@ const assertTargetScope = async (authUser: any, targetGroupIds: string[], target
       error.statusCode = StatusCodes.FORBIDDEN;
       throw error;
     }
+  }
+};
+
+const assertPublicTargetAccess = async (test: any, authUser: any) => {
+  if (test.audience !== "targeted") return;
+
+  if (!authUser || authUser.role !== "student") {
+    const error = new Error("Authentication required for targeted barcode tests") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.UNAUTHORIZED;
+    throw error;
+  }
+
+  const student = await UserModel.findById(authUser.id).select("id _id role isActive groupIds").lean();
+  if (!student || student.role !== "student" || student.isActive === false) {
+    const error = new Error("Authentication required for targeted barcode tests") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.UNAUTHORIZED;
+    throw error;
+  }
+
+  const studentIds = new Set([String(student._id), String(student.id || "")].filter(Boolean));
+  const studentGroupIds = new Set((student.groupIds || []).map(String));
+  const directlyTargeted = (test.targetUserIds || []).some((id: unknown) => studentIds.has(String(id)));
+  const groupTargeted = (test.targetGroupIds || []).some((id: unknown) => studentGroupIds.has(String(id)));
+
+  if (!directlyTargeted && !groupTargeted) {
+    const error = new Error("This targeted barcode test is not assigned to the current student") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
   }
 };
 
