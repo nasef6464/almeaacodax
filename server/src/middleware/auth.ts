@@ -48,8 +48,14 @@ function isStrictLocalRequest(req: Request) {
 }
 
 const refreshActiveAuthUser = async (req: Request) => {
-  const currentUser = await UserModel.findById(req.authUser!.id).select("email name role isActive schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds");
+  const currentUser = await UserModel.findById(req.authUser!.id).select("email name role isActive passwordChangedAt schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds");
   if (!currentUser || currentUser.isActive === false) return false;
+
+  const passwordChangedAt = Number(currentUser.passwordChangedAt || 0);
+  const tokenIssuedAtMs = Number(req.authUser!.iat || 0) * 1000;
+  if (passwordChangedAt > 0 && (!tokenIssuedAtMs || tokenIssuedAtMs < passwordChangedAt)) {
+    return false;
+  }
 
   req.authUser = {
     ...req.authUser!,
