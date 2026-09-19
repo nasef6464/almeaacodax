@@ -70,9 +70,15 @@ addCheck(
   "staff must reopen old QR tests and review submissions after creation",
 );
 addCheck(
-  "barcode public test view does not require auth",
-  publicRoutes.includes('publicTestsRouter.get(') && publicRoutes.includes('"/:slug"') && !publicRoutes.includes('"/:slug",\n  requireAuth'),
-  "students can open a barcode test without logging in",
+  "barcode open tests remain public while targeted tests enforce assignment",
+  publicRoutes.includes('publicTestsRouter.get(') &&
+    publicRoutes.includes('"/:slug"') &&
+    publicRoutes.includes("optionalAuth") &&
+    publicRoutes.includes("assertTargetedStudentAccess") &&
+    publicRoutes.includes('test.audience !== "targeted"') &&
+    publicRoutes.includes("directlyAssigned") &&
+    publicRoutes.includes("groupAssigned"),
+  "open QR tests remain registration-free, while targeted tests require an assigned active student",
 );
 addCheck(
   "barcode public submit captures student identity fields",
