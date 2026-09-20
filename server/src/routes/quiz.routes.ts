@@ -667,6 +667,11 @@ quizRouter.get(
     } else if (query.videoStatus === "without") {
       scopeFilter.videoUrl = { $in: ["", null] };
     }
+    if (query.explanationStatus === "with") {
+      scopeFilter.explanation = { $exists: true, $nin: ["", null] };
+    } else if (query.explanationStatus === "without") {
+      scopeFilter.explanation = { $in: ["", null] };
+    }
     if (query.search) {
       const safeSearch = escapeRegex(query.search);
       scopeFilter.$or = [
