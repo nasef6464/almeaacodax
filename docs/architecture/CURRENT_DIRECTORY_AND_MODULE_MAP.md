@@ -115,7 +115,8 @@ Line count is only a signal. Split when responsibilities, state ownership, autho
 | Assessment historical production record | `QuizResult` until verified cutover | additive assessment Version/Assignment/Attempt/Response layer |
 | Notification delivery | `NotificationDelivery` + Redis + BullMQ | some legacy audience resolution |
 | Account erasure / privacy lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | exact retention durations for retained history remain policy-dependent |
-| Media | external URL/CDN references | upload backup scripts/volume are operations compatibility only |
+| Media | external URL/CDN references; production question images verified on Cloudflare R2 public delivery | application stores URL/key metadata; R2 object bytes require independent recovery evidence |
+| Disaster recovery | `DISASTER_RECOVERY_RUNBOOK.md` + verified Mongo/R2 backup/restore scripts | live scheduling, independent off-site destination and measured restore drills remain deployment evidence |
 
 ## 5. Runtime areas that should NOT be restructured for appearance
 
@@ -139,7 +140,7 @@ Target:
 - API/private responses remain authorization-aware and are not blindly CDN cached.
 - Batch 13 measures origin egress, payload bytes, request counts, cache hit behavior, SSE/socket traffic and bootstrap duplication before optimization.
 
-Cloudflare live configuration is not repository-verifiable and must be checked separately in runtime/deployment verification.
+Read-only production inspection on 2026-09-20 confirmed 1,768 question documents with `imageUrl` values on `*.r2.dev/questions/pilot/...`. This proves current R2-backed media references, not R2 recoverability. Cloudflare bucket policy, independent backup destination, access controls and recovery drill remain live verification items.
 
 ## 7. Agent navigation rules
 
