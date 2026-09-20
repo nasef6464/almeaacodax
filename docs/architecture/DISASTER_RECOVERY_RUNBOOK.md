@@ -24,9 +24,11 @@ Required production controls outside Git:
 
 Restore only into an isolated recovery database/cluster first:
 
-`BACKUP_ARCHIVE=/path/mongodb-...archive.gz RESTORE_MONGODB_URI=<isolated-uri> scripts/restore-db-verified.sh`
+`BACKUP_ARCHIVE=/path/mongodb-...archive.gz RESTORE_MONGODB_URI=<isolated-uri> RESTORE_TARGET_CONFIRMATION=isolated-recovery scripts/restore-db-verified.sh`
 
-The script refuses missing checksum evidence and does not use `--drop` by default. `ALLOW_DESTRUCTIVE_RESTORE=true` is an explicit operator-only switch and must never target production during a drill.
+The script refuses missing checksum evidence and refuses to run until the operator explicitly confirms an isolated recovery target. A Mongo archive preserves source database/namespace names; therefore a different database name embedded in a URI is **not by itself** proof of isolation. Prefer a separate recovery cluster/failure domain. If an intentional same-cluster namespace remap is ever introduced, it must be explicit, reviewed and separately tested rather than inferred.
+
+The script does not use `--drop` by default. `ALLOW_DESTRUCTIVE_RESTORE=true` is an additional operator-only switch and must never target production during a drill.
 
 After restore, run application/server type/build gates and recovery/integration smoke suites against the isolated target. Record archive timestamp, checksum result, restore start/end, restored DB target, application SHA and gate results.
 
