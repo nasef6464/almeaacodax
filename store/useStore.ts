@@ -309,6 +309,19 @@ export const useStore = create<AppState>()(
                         pathId: String(skill?.pathId || ''),
                         subjectId: String(skill?.subjectId || ''),
                         sectionId: String(skill?.sectionId || ''),
+                        order: typeof skill?.order === 'number' ? skill.order : undefined,
+                        subSkills: Array.isArray(skill?.subSkills)
+                          ? skill.subSkills
+                              .map((subSkill: any) => ({
+                                ...subSkill,
+                                id: String(subSkill?.id || ''),
+                                name: String(subSkill?.name || ''),
+                                code: subSkill?.code ? String(subSkill.code) : undefined,
+                                description: subSkill?.description ? String(subSkill.description) : undefined,
+                                order: typeof subSkill?.order === 'number' ? subSkill.order : undefined,
+                              }))
+                              .filter((subSkill: any) => subSkill.id && subSkill.name)
+                          : [],
                         lessonIds: Array.isArray(skill?.lessonIds) ? skill.lessonIds.map(String) : [],
                         questionIds: Array.isArray(skill?.questionIds) ? skill.questionIds.map(String) : [],
                         createdAt: typeof skill?.createdAt === 'number' ? skill.createdAt : Date.now(),
