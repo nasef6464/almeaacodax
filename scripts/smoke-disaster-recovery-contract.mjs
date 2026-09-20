@@ -18,6 +18,11 @@ assert.doesNotMatch(restore, /restore_args=\([^\n]*--drop/);
 assert.match(runbook, /isolated recovery database\/cluster/i);
 assert.match(runbook, /RPO \/ RTO/);
 assert.match(runbook, /External media/);
+assert.match(runbook, /Cloudflare-backed production contract/i);
+assert.match(runbook, /MongoDB DR must restore the URL\/key references exactly/i);
+assert.match(runbook, /CDN cache hit is not a backup/i);
+assert.match(runbook, /sample recovery drill/i);
+assert.match(runbook, /BLOCKED for full production DR/i);
 assert.match(runbook, /not a full database backup/i);
 
 console.log('Disaster recovery contract smoke: PASS');
