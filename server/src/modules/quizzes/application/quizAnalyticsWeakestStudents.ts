@@ -111,7 +111,7 @@ export const buildWeakestStudentSummaries = ({
         schoolId: student.schoolId || undefined,
         schoolName: student.schoolId ? groupNameById.get(String(student.schoolId)) : undefined,
         groupIds: (student.groupIds || []).map(String),
-        groupNames: (student.groupIds || []).map((groupId) => groupNameById.get(String(groupId))).filter(Boolean),
+        groupNames: (student.groupIds || []).map((groupId: string) => groupNameById.get(String(groupId))).filter(Boolean),
         attempts,
         questionAttempts: granularAttempts.length,
         averageScore,
