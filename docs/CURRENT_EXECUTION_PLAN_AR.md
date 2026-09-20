@@ -206,7 +206,7 @@ Submit -> تحليل أدلة كل مهارة -> تحديث SkillProgress مرة
 - نمط المساعدة المفضل: تلميح -> توجيه للفكرة -> شرح خطوة بخطوة عند طلب الطالب، مع عدم جعل AI مصدر الإجابة الصحيحة أو mastery.
 - لاحقًا يمكن إضافة الصوت فوق نفس عقد المحادثة دون تغيير محرك التعلم.
 
-### إضافات مرشحة — لا تنفذ قبل موافقة الإدارة
+### إضافات معتمدة للتنفيذ — موافقة الإدارة 2026-09-21
 1. **Mastery Challenge / مراجعة متباعدة قصيرة** مستلهمة من Khan Academy: تحدٍ صغير دوري يمزج عدة مهارات سبق تعلمها بدل one-and-done، ويستخدم ReviewCard/SM-2 الموجود لدينا. لا يحتاج AI.
 2. **مستويات إتقان مفهومة للطالب** مع انتقالات واضحة بعد النشاط، مستلهمة من Familiar/Proficient/Mastered في Khan Academy، مع إبقاء النسبة والأدلة الداخلية وعدم نسخ التسميات إن لم تناسب المنتج.
 3. **أهداف إتقان قصيرة وطويلة** (موضوع/قسم/مسار) للطالب والمعلم، مع تقدم قابل للقياس، مستلهمة من Unit/Course Mastery Goals.
@@ -225,3 +225,24 @@ Submit -> تحليل أدلة كل مهارة -> تحديث SkillProgress مرة
 8. تقارير المعلم/ولي الأمر/المشرف من نفس الأدلة بدون إعادة حساب ثقيل.
 9. Performance/bandwidth/resource audit + E2E كامل.
 10. Batch 15 Final Integration / Production Certification وتحديث handoff/current-state بالأدلة وSHA/CI.
+
+
+### تحديث معتمد 2026-09-21 — Skill Analytics الحديثة وتقارير المدرسة
+- تقرير المهارات لا يعتمد على آخر اختبار منفرد. النافذة الحديثة الافتراضية = آخر 5 اختبارات ذات أدلة للمهارة، مع جعل الرقم policy/configurable وليس hard-coded في الواجهة.
+- الحساب الحديث evidence-weighted على مستوى الأسئلة، لا average خام لدرجات الاختبارات. يعرض بجانب الإتقان التراكمي: recent mastery + evidence count + trend.
+- الحالات التعليمية تفرق بين: يحتاج دعمًا، يتحسن، مستقر، يتراجع، ومتقن؛ وإذا كانت الأدلة دون حد الثقة تعرض «بيانات غير كافية/يحتاج قياسًا» بدل وصم المهارة بالضعف.
+- أنواع الأدلة تحفظ دلاليًا: assessment / remediation / recheck، لمنع خلط القياس العلاجي بالاختبار العام ولإثبات أثر العلاج.
+- اتجاه المهارة يحسب داخليًا بدون AI من snapshots/aggregates صغيرة، مع منع إعادة تحليل تاريخ الطالب عند كل فتح.
+- تقارير المدرسة/المشرف تستخدم نفس مصدر الحقيقة: school -> class -> student -> skill وكذلك skill -> classes -> students، مع denominator واضح لعدد الطلاب ذوي الأدلة الكافية.
+- «المهارات الأكثر احتياجًا للدعم» لا ترتب بمتوسط خام فقط؛ تراعي coverage/evidence + نسبة الطلاب المحتاجين للدعم + الاتجاه الحديث، وتمنع العينات الصغيرة من تصدر التقرير بلا دلالة.
+- المشرف يستطيع فتح الطالب ورؤية الاختبارات/الأدلة التي كوّنت التشخيص، مع pagination وsummary endpoints بدل تنزيل المحاولات كاملة.
+- كل التجميعات المدرسية الثقيلة تكون pre-aggregated/incremental عند تغير النتائج أو cached بمدة مناسبة؛ ممنوع full-history scan عند كل dashboard view.
+- هذه المنظومة Internal-first وAI cost = 0؛ AI يبقى للمساعدة التفاعلية في السؤال فقط.
+
+### ميزانية الموارد الإلزامية للتعلم
+- لا LLM call لحساب mastery/trend/readiness/next-best-action/mastery challenge/spaced review.
+- لا media bytes عبر API server إذا أمكن تقديمها من object storage/CDN؛ API يعيد metadata/URLs فقط.
+- لا full question bank أو full attempt history في dashboard/report endpoints.
+- pagination + projections + indexed queries + incremental aggregates + ETag/cache عند الملاءمة.
+- لا parallel multi-provider AI requests؛ fallback تسلسلي فقط مع circuit breaker وtoken/rate budgets.
+- قبل Batch 15 يسجل benchmark قبل/بعد: request count، transferred bytes، DB query count/latency، server CPU/memory إن توفر القياس، AI calls/tokens، وmedia bandwidth.
