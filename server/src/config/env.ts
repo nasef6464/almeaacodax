@@ -34,6 +34,10 @@ const envSchema = z.object({
   R2_PUBLIC_BASE_URL: z.string().optional().default(""),
   R2_UPLOAD_MAX_BYTES: z.coerce.number().int().min(1024).max(10 * 1024 * 1024).default(4 * 1024 * 1024),
   R2_PRESIGN_EXPIRES_SECONDS: z.coerce.number().int().min(30).max(900).default(300),
+  ALMEAA_APPLY_FOUNDATION_SKILL_MAPPING: z.preprocess((value) => {
+    if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+    return value;
+  }, z.boolean()).default(false),
   REDIS_KEY_PREFIX: z.string().default("almeaa"),
   RATE_LIMIT_REDIS_ENABLED: z.preprocess((value) => {
     if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
