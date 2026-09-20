@@ -45,6 +45,7 @@ export const questionListQuerySchema = z.object({
   sectionId: z.string().trim().optional(),
   skillId: z.string().trim().optional(),
   skillIds: z.string().trim().optional(),
+  skillLinkStatus: z.enum(["linked", "unlinked"]).optional(),
   difficulty: z.string().trim().optional(),
   type: z.enum(["mcq", "true_false", "essay"]).optional(),
   examType: z.enum(["qudurat", "tahsili", "general"]).optional(),
