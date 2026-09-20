@@ -23,7 +23,15 @@ const localDeclarations = [
   'const schoolRelationSchema = z.object({',
 ];
 
-const alreadyApplied = source.includes(schemaImport) && localDeclarations.every((declaration) => !source.includes(declaration));
+const delegatedSchoolOperations = [
+  'contentRouter.use(contentGroupRouter);',
+  'contentRouter.use(contentSchoolCommercialRouter);',
+  'contentRouter.use(contentSchoolReportImportRouter);',
+  'contentRouter.use(contentSchoolRelationsRouter);',
+].every((fragment) => source.includes(fragment));
+const alreadyApplied =
+  localDeclarations.every((declaration) => !source.includes(declaration)) &&
+  (source.includes(schemaImport) || delegatedSchoolOperations);
 if (alreadyApplied) {
   console.log(JSON.stringify({ status: 'ALREADY_APPLIED', phase: 'content-school-operations-schemas' }, null, 2));
   process.exit(0);
