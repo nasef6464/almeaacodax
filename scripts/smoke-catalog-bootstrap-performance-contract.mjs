@@ -27,7 +27,7 @@ const check = (name, assertion) => {
 check('course bootstrap skips unused total count', () => {
   assert.ok(coursesApi.includes("const query = { limit: 200, noTotal: true"));
   for (const fragment of [
-    'noTotal: z.coerce.boolean().default(false)',
+    'if (["true", "1", "yes", "on"].includes(normalized)) return true;',
     '.limit(query.noTotal ? pagination.limit + 1 : pagination.limit)',
     ': await CourseModel.countDocuments(filter)',
     'res.setHeader("X-Has-More", String(hasMore))',
