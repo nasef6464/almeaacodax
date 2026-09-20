@@ -31,14 +31,16 @@ check('skill progress persists evidence count', () => {
 });
 
 check('mastery merge is weighted by evidence rather than quiz count only', () => {
-  for (const fragment of [
-    'export const mergeSkillMasteryEvidence',
-    'previousMastery * safePreviousEvidence',
-    'safeCurrentMastery * safeCurrentEvidence',
-    'return { mastery, evidenceCount }',
-  ]) {
-    assert.ok(analytics.includes(fragment), `skillAnalytics lost ${fragment}`);
-  }
+  assert.ok(analytics.includes('export const mergeSkillMasteryEvidence'));
+  assert.ok(
+    /safePreviousMastery\s*\*\s*safePreviousEvidence/.test(analytics),
+    'skillAnalytics lost previous mastery evidence weighting',
+  );
+  assert.ok(
+    /safeCurrentMastery\s*\*\s*safeCurrentEvidence/.test(analytics),
+    'skillAnalytics lost current mastery evidence weighting',
+  );
+  assert.ok(analytics.includes('return { mastery, evidenceCount }'));
 });
 
 check('quiz and single-question progress use the shared evidence merge', () => {
