@@ -94,7 +94,7 @@ assertIncludes(questionQuerySchemas, "paginate: z.coerce.boolean().default(false
 assertIncludes(quizRoutes, "data: items", "questions API returns data array when paginate=true");
 assertIncludes(quizRoutes, "hasNext:", "questions API returns pagination navigation metadata");
 assertIncludes(questionBankCatalogData, "const [questionsRefreshKey, setQuestionsRefreshKey]", "question bank can refresh paginated list after mutations");
-assertIncludes(questionBankCatalogData, "questionsRefreshKey]", "question bank reload effect depends on refresh key");
+assertIncludes(questionBankCatalogData, "questionsRefreshKey,", "question bank reload effect depends on refresh key");
 assertIncludes(questionBankManager, "refreshPagedQuestions();", "question bank refreshes after create/update/delete/review actions");
 assertIncludes(questionBankManager, "useQuestionBankCatalogData({", "question bank delegates paginated loading to the catalog data boundary");
 
