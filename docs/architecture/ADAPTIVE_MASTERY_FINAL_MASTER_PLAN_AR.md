@@ -162,3 +162,69 @@ GitHub يبقى source of truth وCI evidence. يمكن استخدام GitHub co
 - resource report موثق.
 - full E2E + typecheck/build/server/security/architecture gates المطلوبة Green.
 - canonical handoff/current-state/module maps محدثة بالـSHA/PR/CI evidence.
+
+
+## 19) تعدد المسارات والمواد — عقد التحليلات والتعلم التكيفي
+
+### نموذج النطاق
+الطالب قد يكون مسجلاً في مسار واحد أو أكثر في الوقت نفسه. أمثلة المنتج الحالية:
+- القدرات: نطاقات/مواد مثل الكمي واللفظي.
+- التحصيلي: مواده وأقسامه المستقلة.
+- نافس: مواده وأقسامه المستقلة.
+لا يجوز أن يفترض أي تقرير أو Adaptive Engine أن للطالب path واحدًا فقط.
+
+### مفتاح التحليل
+كل Evidence/SkillProgress/Read Model يجب أن يحافظ على scope الفعلي:
+`userId + pathId + subjectId + skillId`
+مع section/topic عند الحاجة للتصفح، لا كبديل عن هوية المهارة.
+إذا كانت نفس المهارة المنطقية مشتركة بين أكثر من مسار، لا نخلط نتائجها تلقائيًا؛ aggregation cross-path يكون عرضًا صريحًا فوق بيانات scoped، وليس overwrite لسجل واحد.
+
+### مستويات التقرير
+1. **المسار الحالي**: الأداء والإتقان داخل القدرات أو التحصيلي أو نافس فقط.
+2. **المادة داخل المسار**: مثل كمي/لفظي أو مادة نافس.
+3. **المهارة**: cumulative + recent window + trend/confidence.
+4. **كل تعلم الطالب**: Portfolio summary يجمع المسارات المسجل بها الطالب للعرض فقط، مع إبقاء كل رقم منسوبًا لمساره/مادته.
+
+### نافذة «آخر 5 اختبارات»
+- ليست آخر خمسة اختبارات للطالب عالميًا.
+- الافتراضي: آخر 5 محاولات مؤهلة **داخل scope التقرير الحالي** والتي تحتوي evidence للمهارة/المادة محل القياس.
+- عند تقرير مهارة: آخر 5 اختبارات فيها evidence لهذه المهارة في path/subject المحدد.
+- عند تقرير مادة: آخر 5 اختبارات مؤهلة في تلك المادة.
+- عند تقرير مسار: آخر 5 اختبارات مؤهلة في المسار، مع drill-down للمواد والمهارات.
+- Portfolio لا يخلط درجات اختبارات غير متجانسة في mastery واحد؛ يعرض summaries مستقلة لكل مسار.
+- recentWindowSize policy قابلة للتعديل؛ 5 default وليست hard-coded.
+
+### نوع الاختبار وسياق الأدلة
+نسجل source/context كي لا تتساوى كل المحاولات دلاليًا:
+`diagnostic | regular | mock | remediation | recheck | mastery_review`.
+الـmastery يبنى من evidence على مستوى الأسئلة؛ نوع الاختبار يستخدم للتفسير/التقارير والسياسات، لا لخلط درجات خام مختلفة.
+
+### لوحة الطالب متعددة المسارات
+- تعرض المسارات المسجل بها فقط.
+- لكل مسار summary خفيف: التقدم، المهارات المحتاجة دعمًا، المهارات المتقنة، trend، Next Best Action، وموعد مراجعة عند وجوده.
+- اختيار المسار يثبت context لكل Results/Reports/SmartLearningPath/Foundation links.
+- إذا كان الطالب مسجلاً في القدرات والتحصيلي معًا، لكل منهما Smart Path وReadiness مستقلان؛ ويمكن Portfolio أعلى الصفحة أن يعرض الحالة العامة بدون دمج mastery بينهما.
+- لا تحميل تفاصيل كل المسارات عند أول فتح؛ summary endpoint صغير، والتفاصيل lazy عند فتح المسار.
+
+### المدرسة/المشرف
+التدرج:
+`school -> path -> subject -> class/group -> student -> skill`
+مع إمكان العرض العكسي:
+`path/subject/skill -> classes/groups -> students`.
+كل aggregate يحمل denominator/coverage/confidence، ويمنع مقارنة أو ترتيب مواد/مسارات مختلفة بمتوسط خام غير متجانس.
+
+### الأداء والبيانات
+- فهارس واستعلامات التقارير يجب أن تبدأ بـ user/school + path + subject حسب query shape.
+- aggregates منفصلة scoped ومحدثة incrementally بعد result events.
+- لا scan لكل نتائج الطالب لتغيير المسار في الواجهة.
+- لا preload للكمي واللفظي والتحصيلي ونافس معًا؛ route/tab scoped fetch + cache.
+- YouTube/video metadata وFoundation content يحمّل فقط للمسار/الموضوع المفتوح.
+
+### اختبارات قبول إضافية
+- طالب مسجل قدرات فقط.
+- طالب مسجل قدرات + تحصيلي، ولا تتسرب أدلة أحدهما للآخر.
+- طالب نافس متعدد المواد.
+- تقرير كمي لا يتأثر باختبار لفظي لا يحمل evidence لنفس scope.
+- تقرير مهارة يستخدم آخر 5 محاولات مؤهلة لها، لا آخر 5 محاولات عالمية.
+- تغيير المسار يحدث SmartLearningPath/Readiness/Reports بدون إعادة تحميل بيانات المسارات الأخرى.
+- supervisor aggregation يحافظ على path/subject scope.
