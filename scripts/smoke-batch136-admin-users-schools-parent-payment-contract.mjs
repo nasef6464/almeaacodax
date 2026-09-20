@@ -109,8 +109,12 @@ assertAllIncludesSource(schoolsRuntimeSource, [
 assertAllIncludes("store/useStore.ts", [
   "assignSupervisorToGroupAsync: async",
   "removeSupervisorFromGroupAsync: async",
-  "assignStudentToGroupAsync: async",
-  "removeStudentFromGroupAsync: async",
+  "...createStudentGroupMembershipSlice<AppState>(set, get, api)",
+]);
+
+assertAllIncludes("store/slices/studentGroupMembershipSlice.ts", [
+  "assignStudentToGroupAsync:",
+  "removeStudentFromGroupAsync:",
 ]);
 
 assertAllIncludes("dashboards/admin/UsersManager.tsx", [
