@@ -16,6 +16,8 @@ interface RichTextEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   minHeightClass?: string;
+  externalImageUrl?: string;
+  onUploadImage?: (file: File) => Promise<string>;
 }
 
 const WORD_PASTE_PATTERN = /(?:class="?Mso|mso-|<o:p|xmlns:o|urn:schemas-microsoft-com:office:word|<!--\[if)/i;
@@ -241,13 +243,21 @@ const cleanWordPasteHtml = (html: string) => {
   return normalizeQuestionHtml(document.body.innerHTML);
 };
 
-export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder, minHeightClass = 'h-64' }) => {
+export const RichTextEditor: React.FC<RichTextEditorProps> = ({
+  value,
+  onChange,
+  placeholder,
+  minHeightClass = 'h-64',
+  externalImageUrl,
+  onUploadImage,
+}) => {
   const editorRef = useRef<ReactQuill | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
   const [showDrawingPad, setShowDrawingPad] = useState(false);
   const [equationDraft, setEquationDraft] = useState('\\frac{x}{y}');
-  const modules = useMemo(
-    () => ({
-      toolbar: [
+  const [imageUploadError, setImageUploadError] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const toolbarContainer = [
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ direction: 'rtl' }, { align: [] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
@@ -255,14 +265,25 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
         [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
         ['link', 'image', 'video', 'formula'],
         [{ color: [] }, { background: [] }],
-        ['clean'],
-      ],
+    ['clean'],
+  ];
+
+  const modules = useMemo(
+    () => ({
+      toolbar: onUploadImage
+        ? {
+            container: toolbarContainer,
+            handlers: {
+              image: () => imageInputRef.current?.click(),
+            },
+          }
+        : toolbarContainer,
       table: true,
       clipboard: {
         matchVisual: false,
       },
     }),
-    [],
+    [onUploadImage],
   );
 
   const insertFormulaTemplate = (formula: string) => {
@@ -294,20 +315,65 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     onChange(normalizeQuestionHtml(editor.root.innerHTML));
   };
 
-  const insertDrawingImage = (dataUrl: string) => {
+  const insertUploadedImageUrl = (url: string) => {
     const editor = editorRef.current?.getEditor();
-    if (!editor) return;
+    if (!editor || !url) return;
 
     const range = editor.getSelection(true);
     const insertAt = range?.index ?? editor.getLength();
-    editor.insertEmbed(insertAt, 'image', dataUrl, 'user');
+    editor.insertEmbed(insertAt, 'image', url, 'user');
     editor.setSelection(insertAt + 1, 0, 'silent');
     onChange(normalizeQuestionHtml(editor.root.innerHTML));
+  };
+
+  const uploadAndInsertImage = async (file: File) => {
+    if (!onUploadImage) return;
+    setImageUploadError('');
+    setIsUploadingImage(true);
+    try {
+      const url = await onUploadImage(file);
+      insertUploadedImageUrl(url);
+    } catch (error) {
+      setImageUploadError(error instanceof Error ? error.message : 'تعذر رفع الصورة الآن.');
+    } finally {
+      setIsUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
+  };
+
+  const insertDrawingImage = (dataUrl: string) => {
+    if (!onUploadImage) {
+      const editor = editorRef.current?.getEditor();
+      if (!editor) return;
+      const range = editor.getSelection(true);
+      const insertAt = range?.index ?? editor.getLength();
+      editor.insertEmbed(insertAt, 'image', dataUrl, 'user');
+      editor.setSelection(insertAt + 1, 0, 'silent');
+      onChange(normalizeQuestionHtml(editor.root.innerHTML));
+      return;
+    }
+
+    void (async () => {
+      try {
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const file = new File([blob], `question-drawing-${Date.now()}.png`, { type: blob.type || 'image/png' });
+        await uploadAndInsertImage(file);
+      } catch (error) {
+        setImageUploadError(error instanceof Error ? error.message : 'تعذر رفع الرسم الآن.');
+      }
+    })();
   };
 
   const handlePasteCapture = (event: React.ClipboardEvent<HTMLDivElement>) => {
     const html = event.clipboardData.getData('text/html');
     if (!html || (!WORD_PASTE_PATTERN.test(html) && !RICH_PASTE_PATTERN.test(html))) return;
+
+    if (onUploadImage && /src=(["'])data:image\//i.test(html)) {
+      event.preventDefault();
+      setImageUploadError('الصور الملصقة بصيغة Base64 غير مسموحة لتقليل استهلاك البيانات. استخدم زر الصورة ليتم رفعها مباشرة إلى التخزين الخارجي.');
+      return;
+    }
 
     const editor = editorRef.current?.getEditor();
     const cleanedHtml = cleanWordPasteHtml(html);
@@ -439,6 +505,34 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
           </div>
         </div>
       </div>
+      {externalImageUrl ? (
+        <div className="border-b border-indigo-100 bg-indigo-50/40 p-3" dir="rtl" data-testid="question-editor-external-image">
+          <div className="mb-2 text-xs font-black text-indigo-700">صورة السؤال الحالية</div>
+          <img src={externalImageUrl} alt="صورة السؤال الحالية" className="max-h-72 w-full rounded-xl object-contain bg-white" />
+        </div>
+      ) : null}
+      {imageUploadError ? (
+        <div className="border-b border-red-100 bg-red-50 px-3 py-2 text-xs font-bold text-red-700" dir="rtl">
+          {imageUploadError}
+        </div>
+      ) : null}
+      {isUploadingImage ? (
+        <div className="border-b border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700" dir="rtl">
+          جارٍ رفع الصورة مباشرة إلى التخزين الخارجي...
+        </div>
+      ) : null}
+      {onUploadImage ? (
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) void uploadAndInsertImage(file);
+          }}
+        />
+      ) : null}
       {showDrawingPad ? <QuestionDrawingPad onInsertImage={insertDrawingImage} /> : null}
       <ReactQuill
         ref={editorRef}

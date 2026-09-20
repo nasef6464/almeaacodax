@@ -6,7 +6,7 @@ import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../../utils/questionHtml';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 import { api } from '../../services/api';
-import type { QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
+import type { QuestionBankCoverage, QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -196,12 +196,14 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || '');
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [selectedSkillId, setSelectedSkillId] = useState('');
+  const [skillLinkFilter, setSkillLinkFilter] = useState<'all' | 'linked' | 'unlinked'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [videoFilter, setVideoFilter] = useState<'all' | 'with_video' | 'without_video'>('all');
+  const [explanationFilter, setExplanationFilter] = useState<'all' | 'with' | 'without'>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
-  const hasExplanationVideo = videoFilter === 'with_video';
-  const setHasExplanationVideo = (value: boolean) => setVideoFilter(value ? 'with_video' : 'all');
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoadingEditQuestion, setIsLoadingEditQuestion] = useState(false);
+  const [editorLoadError, setEditorLoadError] = useState<string | null>(null);
   const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isImporting, setIsImporting] = useState(false);
@@ -212,6 +214,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
   const [pagedQuestions, setPagedQuestions] = useState<Question[] | null>(null);
   const [pagedPagination, setPagedPagination] = useState<QuestionPaginationMeta | null>(null);
+  const [questionBankCoverage, setQuestionBankCoverage] = useState<QuestionBankCoverage | null>(null);
   const [pagedQuestionsError, setPagedQuestionsError] = useState<string | null>(null);
   const [isLoadingPagedQuestions, setIsLoadingPagedQuestions] = useState(false);
   const [questionsRefreshKey, setQuestionsRefreshKey] = useState(0);
@@ -287,7 +290,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId, hasExplanationVideo, selectedDifficulty, videoFilter]);
+  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, skillLinkFilter, searchTerm, subjectId, selectedDifficulty, videoFilter, explanationFilter]);
 
   useEffect(() => {
     let active = true;
@@ -303,18 +306,23 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           subject: (subjectId || selectedSubjectId) || undefined,
           sectionId: selectedSectionId || undefined,
           skillId: selectedSkillId || undefined,
+          skillLinkStatus: skillLinkFilter === 'all' ? undefined : skillLinkFilter,
           search: searchTerm || undefined,
           difficulty: selectedDifficulty || undefined,
-          hasExplanationVideo: hasExplanationVideo || undefined,
+          videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
+          explanationStatus: explanationFilter === 'all' ? undefined : explanationFilter,
+          includeCoverage: true,
         });
 
         if (!active) return;
         setPagedQuestions(Array.isArray(response?.data) ? (response.data as Question[]) : []);
         setPagedPagination(response?.pagination || null);
+        setQuestionBankCoverage(response?.coverage || null);
       } catch (error) {
         if (!active) return;
         setPagedQuestions(null);
         setPagedPagination(null);
+        setQuestionBankCoverage(null);
         setPagedQuestionsError(error instanceof Error ? error.message : 'تعذر تحميل الأسئلة المرقمة الآن.');
       } finally {
         if (active) {
@@ -327,7 +335,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     return () => {
       active = false;
     };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, hasExplanationVideo, selectedDifficulty, questionsRefreshKey]);
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, explanationFilter, questionsRefreshKey]);
 
   const displayedQuestions = useMemo(() => {
     const base = pagedQuestions ?? filteredQuestions;
@@ -338,12 +346,24 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       if (videoFilter === 'without_video' && Boolean(question.videoUrl && String(question.videoUrl).trim())) {
         return false;
       }
+      if (explanationFilter === 'with' && !String(question.explanation || '').trim()) {
+        return false;
+      }
+      if (explanationFilter === 'without' && String(question.explanation || '').trim()) {
+        return false;
+      }
+      if (skillLinkFilter === 'linked' && !(question.skillIds || []).length) {
+        return false;
+      }
+      if (skillLinkFilter === 'unlinked' && (question.skillIds || []).length > 0) {
+        return false;
+      }
       if (selectedDifficulty && question.difficulty !== selectedDifficulty) {
         return false;
       }
       return true;
     });
-  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty]);
+  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty, skillLinkFilter, explanationFilter]);
   const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
 
   useEffect(() => {
@@ -395,6 +415,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   }, [displayedQuestions]);
 
   const questionCoverageSummary = useMemo(() => {
+    if (questionBankCoverage) return questionBankCoverage;
+
     const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
     const subSkillCount = new Set(displayedQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
     const pendingCount = displayedQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
@@ -407,7 +429,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       pendingCount,
       approvedCount,
     };
-  }, [displayedQuestions, pagedPagination?.total]);
+  }, [displayedQuestions, pagedPagination?.total, questionBankCoverage]);
 
   const resetEditorQuestion = (approvalStatus?: Question['approvalStatus']) => {
     setCurrentQuestion({
@@ -440,10 +462,25 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setIsEditing(true);
   };
 
-  const handleEdit = (question: Question) => {
+  const handleEdit = async (question: Question) => {
+    const questionId = String(question.id || (question as Question & { _id?: string })._id || '').trim();
+    if (!questionId) {
+      setEditorLoadError('تعذر تحديد السؤال المطلوب تعديله.');
+      return;
+    }
+
     setGenerateAiDraftOnOpen(false);
-    setCurrentQuestion(question);
-    setIsEditing(true);
+    setEditorLoadError(null);
+    setIsLoadingEditQuestion(true);
+    try {
+      const fullQuestion = await api.getQuestionForEditing(questionId);
+      setCurrentQuestion(fullQuestion as Question);
+      setIsEditing(true);
+    } catch (error) {
+      setEditorLoadError(error instanceof Error ? error.message : 'تعذر تحميل السؤال الكامل للتعديل.');
+    } finally {
+      setIsLoadingEditQuestion(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -1184,6 +1221,17 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
       )}
 
+      {editorLoadError ? (
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+          {editorLoadError}
+        </div>
+      ) : null}
+      {isLoadingEditQuestion ? (
+        <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700">
+          جارٍ تحميل السؤال الكامل والصورة والمهارات المرتبطة للتعديل...
+        </div>
+      ) : null}
+
       {(importMessage || importError || isImporting) && (
         <div
           className={`rounded-xl border px-4 py-3 text-sm ${
@@ -1232,11 +1280,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           <p className="mt-2 text-2xl font-black text-gray-900">{questionCoverageSummary.total}</p>
         </div>
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
-          <p className="text-xs font-black text-indigo-700">المهارات الرئيسية</p>
+          <p className="text-xs font-black text-indigo-700">المهارات الرئيسية المغطاة بالأسئلة</p>
           <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount}</p>
         </div>
         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-          <p className="text-xs font-black text-emerald-700">المهارات الفرعية</p>
+          <p className="text-xs font-black text-emerald-700">المهارات الفرعية المغطاة بالأسئلة</p>
           <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount}</p>
         </div>
         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
@@ -1312,7 +1360,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
           <select
             value={selectedSkillId}
-            onChange={(event) => setSelectedSkillId(event.target.value)}
+            onChange={(event) => {
+              const nextSkillId = event.target.value;
+              setSelectedSkillId(nextSkillId);
+              if (nextSkillId) setSkillLinkFilter('linked');
+            }}
             className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium disabled:opacity-50"
             aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
             title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
@@ -1324,6 +1376,23 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 {subSkill.name}
               </option>
             ))}
+          </select>
+
+          <select
+            value={skillLinkFilter}
+            onChange={(event) => {
+              const next = event.target.value as 'all' | 'linked' | 'unlinked';
+              setSkillLinkFilter(next);
+              if (next === 'unlinked') setSelectedSkillId('');
+            }}
+            className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium"
+            aria-label="فلتر ربط السؤال بالمهارات"
+            title="فلترة كل بنك الأسئلة حسب وجود ربط بمهارة فرعية"
+            data-testid="question-bank-skill-link-filter"
+          >
+            <option value="all">كل الأسئلة - ربط المهارات</option>
+            <option value="linked">مربوط بمهارة فرعية</option>
+            <option value="unlinked">غير مربوط بمهارة فرعية</option>
           </select>
 
           <div className={`relative ${subjectId ? 'col-span-full sm:col-span-2' : 'col-span-1 sm:col-span-2 lg:col-span-4 xl:col-span-1'}`}>
@@ -1386,6 +1455,32 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
               </button>
             </div>
 
+            <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-gray-200">
+              <span className="text-xs font-bold text-gray-500 px-2">الشرح النصي:</span>
+              <button
+                type="button"
+                onClick={() => setExplanationFilter('all')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${explanationFilter === 'all' ? 'bg-slate-700 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                الكل
+              </button>
+              <button
+                type="button"
+                onClick={() => setExplanationFilter('with')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${explanationFilter === 'with' ? 'bg-emerald-600 text-white' : 'text-emerald-700 hover:bg-emerald-50'}`}
+              >
+                موجود
+              </button>
+              <button
+                type="button"
+                onClick={() => setExplanationFilter('without')}
+                data-testid="question-bank-missing-explanation-filter"
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${explanationFilter === 'without' ? 'bg-rose-600 text-white' : 'text-rose-700 hover:bg-rose-50'}`}
+              >
+                بدون شرح
+              </button>
+            </div>
+
             {/* فلتر مستوى الصعوبة */}
             <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-gray-200">
               <span className="text-xs font-bold text-gray-500 px-2 flex items-center gap-1">
@@ -1440,17 +1535,19 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           </div>
 
           {/* زر إعادة ضبط الفلاتر */}
-          {(videoFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
+          {(videoFilter !== 'all' || explanationFilter !== 'all' || skillLinkFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
             <button
               type="button"
               onClick={() => {
                 setVideoFilter('all');
+                setExplanationFilter('all');
                 setSelectedDifficulty('');
                 setSearchTerm('');
                 setSelectedPathId('');
                 setSelectedSubjectId('');
                 setSelectedSectionId('');
                 setSelectedSkillId('');
+                setSkillLinkFilter('all');
               }}
               className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-red-600 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
             >

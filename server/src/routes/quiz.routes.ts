@@ -50,6 +50,7 @@ import { buildQuizSubmissionResultDocument } from "../modules/quizzes/applicatio
 import { resolveQuizSubmissionLearningContext } from "../modules/quizzes/application/quizSubmissionLearningContext.js";
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
+import { getQuestionBankCoverage } from "../modules/quizzes/application/questionBankCoverage.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
 import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
@@ -652,13 +653,25 @@ quizRouter.get(
       const skillIds = uniqueStrings(query.skillIds.split(",").map((item) => item.trim()));
       if (skillIds.length > 0) scopeFilter.skillIds = { $in: skillIds };
     }
+    if (query.skillLinkStatus === "linked" && !query.skillId && !query.skillIds) {
+      scopeFilter["skillIds.0"] = { $exists: true };
+    } else if (query.skillLinkStatus === "unlinked") {
+      scopeFilter["skillIds.0"] = { $exists: false };
+    }
     if (query.difficulty) scopeFilter.difficulty = query.difficulty;
     if (query.examType) scopeFilter.examType = query.examType;
     if (query.source) scopeFilter.source = query.source;
     if (typeof query.year === "number") scopeFilter.year = query.year;
     if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
-    if (query.hasExplanationVideo) {
-      scopeFilter.videoUrl = { $exists: true, $ne: "" };
+    if (query.videoStatus === "with" || query.hasExplanationVideo) {
+      scopeFilter.videoUrl = { $exists: true, $nin: ["", null] };
+    } else if (query.videoStatus === "without") {
+      scopeFilter.videoUrl = { $in: ["", null] };
+    }
+    if (query.explanationStatus === "with") {
+      scopeFilter.explanation = { $exists: true, $nin: ["", null] };
+    } else if (query.explanationStatus === "without") {
+      scopeFilter.explanation = { $in: ["", null] };
     }
     if (query.search) {
       const safeSearch = escapeRegex(query.search);
@@ -684,9 +697,11 @@ quizRouter.get(
       queryBuilder.select("id text imageUrl options correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
-    const [rawItems, total] = await Promise.all([
+    const shouldIncludeCoverage = query.includeCoverage && isStaffRole(req.authUser?.role);
+    const [rawItems, total, coverage] = await Promise.all([
       queryBuilder,
       query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),
+      shouldIncludeCoverage ? getQuestionBankCoverage(filter) : Promise.resolve(null),
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
@@ -722,6 +737,7 @@ quizRouter.get(
       const totalPages = Math.max(1, Math.ceil(resolvedTotal / Math.max(query.limit, 1)));
       return res.json({
         data: items,
+        ...(coverage ? { coverage } : {}),
         pagination: {
           total: resolvedTotal,
           page: query.page,
@@ -754,6 +770,20 @@ quizRouter.post(
           : workflowDefaults.approvalStatus,
     });
     res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+quizRouter.get(
+  "/questions/:id",
+  requireAuth,
+  requireRole(["admin", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const question = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!)).lean();
+    if (!question) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
+    }
+    await assertManagedContentScope(req.authUser!, question);
+    return res.json(question);
   }),
 );
 

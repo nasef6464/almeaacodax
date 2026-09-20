@@ -21,13 +21,25 @@ export interface QuestionQuery {
   sectionId?: string;
   skillId?: string;
   skillIds?: string;
+  skillLinkStatus?: "linked" | "unlinked";
   difficulty?: string;
   type?: "mcq" | "true_false" | "essay";
   search?: string;
   approvalStatus?: string;
   hasExplanationVideo?: boolean;
+  videoStatus?: "with" | "without";
+  explanationStatus?: "with" | "without";
+  includeCoverage?: boolean;
   summary?: boolean;
   noTotal?: boolean;
+}
+
+export interface QuestionBankCoverage {
+  total: number;
+  mainSkillCount: number;
+  subSkillCount: number;
+  pendingCount: number;
+  approvedCount: number;
 }
 
 export interface QuestionUsageMetric {
@@ -60,7 +72,7 @@ export const createQuestionsApi = (request: ApiRequest) => ({
 
   getQuestionsPaginated: (params?: QuestionQuery) => {
     const query = withQuery("/quizzes/questions", { ...(params || {}), paginate: true });
-    return request<{ data: unknown[]; pagination: PaginationMeta }>(query);
+    return request<{ data: unknown[]; pagination: PaginationMeta; coverage?: QuestionBankCoverage }>(query);
   },
 
   getQuestionUsageAnalytics: (ids: string[], token?: string | null) => {
@@ -72,6 +84,52 @@ export const createQuestionsApi = (request: ApiRequest) => ({
       token,
       cache: "no-store",
     });
+  },
+
+  getQuestionForEditing: (id: string, token?: string | null) =>
+    request<unknown>(`/quizzes/questions/${encodeURIComponent(id)}`, {
+      token,
+      cache: "no-store",
+    }),
+
+  createQuestionImageUploadIntent: (payload: { contentType: string; sizeBytes: number }, token?: string | null) =>
+    request<{
+      uploadUrl: string;
+      publicUrl: string;
+      key: string;
+      method: "PUT";
+      headers: { "Content-Type": string };
+      expiresIn: number;
+      maxBytes: number;
+    }>("/media/question-images/presign", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+
+  uploadQuestionImage: async (file: File, token?: string | null) => {
+    const intent = await request<{
+      uploadUrl: string;
+      publicUrl: string;
+      key: string;
+      method: "PUT";
+      headers: { "Content-Type": string };
+      expiresIn: number;
+      maxBytes: number;
+    }>("/media/question-images/presign", {
+      method: "POST",
+      body: { contentType: file.type, sizeBytes: file.size },
+      token,
+    });
+    const response = await fetch(intent.uploadUrl, {
+      method: intent.method,
+      headers: intent.headers,
+      body: file,
+    });
+    if (!response.ok) {
+      throw new Error(`تعذر رفع الصورة إلى التخزين الخارجي (HTTP ${response.status}).`);
+    }
+    return { publicUrl: intent.publicUrl, key: intent.key };
   },
 
   createQuestion: (payload: unknown, token?: string | null) =>

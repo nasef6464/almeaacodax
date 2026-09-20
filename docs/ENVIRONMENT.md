@@ -44,9 +44,14 @@ Optional infrastructure read by the backend runtime:
 - `NOTIFICATION_QUEUE_CONCURRENCY`
 
 Media note:
-- The current backend stores lesson/library media references as URLs; it does not expose a binary-media upload runtime controlled by `UPLOAD_DIR` or `MAX_UPLOAD_SIZE`.
-- `UPLOAD_DIR` is only an operations-script override for `scripts/backup-uploads.sh`; it is not a backend application setting.
-- If a buyer later requires first-party binary uploads, select and wire a real storage provider/persistent-volume contract first instead of adding unused environment variables.
+- Learning media continues to be stored as external URLs rather than large binary payloads in MongoDB.
+- Question-editor images can use direct browser → Cloudflare R2 uploads when `R2_UPLOAD_ENABLED=true`.
+- Required when R2 question uploads are enabled: `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, and HTTPS `R2_PUBLIC_BASE_URL`.
+- Optional bounds: `R2_UPLOAD_MAX_BYTES` (default 4 MiB) and `R2_PRESIGN_EXPIRES_SECONDS` (default 300 seconds).
+- The API only returns a short-lived signed PUT URL; image bytes upload directly from the browser to R2 and do not traverse Render.
+- The R2 bucket must have CORS configured for the allowed frontend origins and PUT with the approved image content types.
+- Do not store R2 secrets in frontend variables or commit them to the repository.
+- `UPLOAD_DIR` remains only an operations-script override for legacy upload-backup tooling; it is not the question-image runtime path.
 
 Optional integrations requiring owner secrets:
 - `PAYMENT_PROVIDER`
@@ -93,4 +98,4 @@ The existence of these maintenance scripts does not prove that the web applicati
 
 ## Owner-Provided Values
 
-Before launch the owner must provide: domain, VPS IP, MongoDB URI, optional Redis URL, payment keys, email keys, WhatsApp keys, AI keys, Sentry DSN, and GitHub/Vercel/Render secrets.
+Before launch the owner must provide: domain, VPS IP, MongoDB URI, optional Redis URL, payment keys, email keys, WhatsApp keys, AI keys, Sentry DSN, GitHub/Vercel/Render secrets, and (when enabled) rotated R2 upload credentials plus the public R2 delivery base URL.

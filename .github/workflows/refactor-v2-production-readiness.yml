@@ -18,6 +18,11 @@ on:
       - 'pages/CourseView.tsx'
       - 'components/LearningSection.tsx'
       - 'components/PaymentModal.tsx'
+      - 'dashboards/admin/QuestionBankManager.tsx'
+      - 'dashboards/admin/builders/UnifiedQuestionBuilder.tsx'
+      - 'components/RichTextEditor.tsx'
+      - 'services/apiGroups/questionsApi.ts'
+      - 'scripts/smoke-question-bank-full-coverage-contract.mjs'
       - 'deploy/**'
       - 'Dockerfile.frontend'
       - 'Dockerfile.backend'
@@ -77,6 +82,11 @@ on:
       - 'pages/CourseView.tsx'
       - 'components/LearningSection.tsx'
       - 'components/PaymentModal.tsx'
+      - 'dashboards/admin/QuestionBankManager.tsx'
+      - 'dashboards/admin/builders/UnifiedQuestionBuilder.tsx'
+      - 'components/RichTextEditor.tsx'
+      - 'services/apiGroups/questionsApi.ts'
+      - 'scripts/smoke-question-bank-full-coverage-contract.mjs'
       - 'deploy/**'
       - 'Dockerfile.frontend'
       - 'Dockerfile.backend'
@@ -195,6 +205,9 @@ jobs:
 
       - name: Database contract
         run: npm run smoke:database
+
+      - name: Question bank full coverage contract
+        run: npm run smoke:question-bank-full-coverage
 
       - name: Disaster recovery contract
         run: npm run smoke:disaster-recovery

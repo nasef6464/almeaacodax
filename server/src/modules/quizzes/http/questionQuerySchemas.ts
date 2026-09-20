@@ -45,6 +45,7 @@ export const questionListQuerySchema = z.object({
   sectionId: z.string().trim().optional(),
   skillId: z.string().trim().optional(),
   skillIds: z.string().trim().optional(),
+  skillLinkStatus: z.enum(["linked", "unlinked"]).optional(),
   difficulty: z.string().trim().optional(),
   type: z.enum(["mcq", "true_false", "essay"]).optional(),
   examType: z.enum(["qudurat", "tahsili", "general"]).optional(),
@@ -52,6 +53,12 @@ export const questionListQuerySchema = z.object({
   year: z.coerce.number().int().min(1990).max(2100).optional(),
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
   hasExplanationVideo: z.coerce.boolean().optional(),
+  videoStatus: z.enum(["with", "without"]).optional(),
+  explanationStatus: z.enum(["with", "without"]).optional(),
+  includeCoverage: z.preprocess((value) => {
+    if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+    return value;
+  }, z.boolean()).default(false),
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
   noTotal: z.coerce.boolean().default(false),

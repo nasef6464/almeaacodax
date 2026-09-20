@@ -84,7 +84,9 @@
     "schoolAccessRouter|GET|/teacher-workspace",
     "authRouter|PATCH|/admin/users/bulk-status",
     "authRouter|GET|/admin/users/summary",
-    "authRouter|GET|/trainer/performance"
+    "authRouter|GET|/trainer/performance",
+    "mediaRouter|POST|/question-images/presign",
+    "quizRouter|GET|/questions/:id"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
@@ -93,7 +95,8 @@
     "apiRouter|/classroom|classroomRouter",
     "apiRouter|/school-access|schoolAdminIntegrityRouter",
     "apiRouter|/school-access|schoolAccessRouter",
-    "app|/api/ai/generate-mock-exam|requireAuth"
+    "app|/api/ai/generate-mock-exam|requireAuth",
+    "apiRouter|/media|mediaRouter"
   ],
   "envKeys": [
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
@@ -107,6 +110,15 @@
     "PILOT_WRITE_AUTHORIZATION",
     "UI_AUDIT_ROLE_CREDENTIALS_JSON",
     "SMART_CLASSROOM_LOAD_STUDENTS",
-    "SMART_CLASSROOM_SCENARIO"
+    "SMART_CLASSROOM_SCENARIO",
+    "APPLY_R2_INLINE_IMAGE_MIGRATION",
+    "R2_ACCESS_KEY_ID",
+    "R2_ACCOUNT_ID",
+    "R2_BUCKET",
+    "R2_PRESIGN_EXPIRES_SECONDS",
+    "R2_PUBLIC_BASE_URL",
+    "R2_SECRET_ACCESS_KEY",
+    "R2_UPLOAD_ENABLED",
+    "R2_UPLOAD_MAX_BYTES"
   ]
 }

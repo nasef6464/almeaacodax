@@ -57,11 +57,15 @@ assertExcludes(envRuntime, 'UPLOAD_DIR', 'backend runtime env schema');
 assertExcludes(productionEnvExample, 'UPLOAD_DIR=', 'server production env example');
 assertExcludes(hostingerEnvExample, 'UPLOAD_DIR=', 'Hostinger backend env example');
 
-assertIncludes(environmentDocs, 'stores lesson/library media references as URLs', 'environment media contract');
-assertIncludes(environmentDocs, '`UPLOAD_DIR` is only an operations-script override', 'environment operations distinction');
-assertIncludes(featureAudit, 'First-party binary upload ingestion is NOT IMPLEMENTED', 'feature activation classification');
+assertIncludes(environmentDocs, 'Learning media continues to be stored as external URLs', 'environment media contract');
+assertIncludes(environmentDocs, 'Question-editor images can use direct browser → Cloudflare R2 uploads', 'question media upload contract');
+assertIncludes(environmentDocs, 'image bytes upload directly from the browser to R2 and do not traverse Render', 'question media bandwidth contract');
+assertIncludes(environmentDocs, '`UPLOAD_DIR` remains only an operations-script override', 'environment operations distinction');
+assertIncludes(featureAudit, 'Question-editor image ingestion supports configurable direct browser → Cloudflare R2 uploads', 'question media activation classification');
+assertIncludes(featureAudit, 'Generic lesson/library binary upload ingestion into the application server is NOT IMPLEMENTED', 'lesson media activation classification');
 assertExcludes(featureAudit, 'Uploads: ENABLED/PARTIAL', 'feature activation stale upload claim');
-assertIncludes(hostingerReadme, 'does not expose first-party binary upload ingestion', 'Hostinger deployment contract');
+assertIncludes(hostingerReadme, 'does not expose generic lesson/library binary upload ingestion into the application server', 'Hostinger lesson-media deployment contract');
+assertIncludes(hostingerReadme, 'browser uploads directly to Cloudflare R2', 'Hostinger question-media deployment contract');
 assertIncludes(hostingerReadme, 'lesson media playback from configured direct/CDN/YouTube/Vimeo URLs', 'Hostinger verification contract');
 assertExcludes(hostingerReadme, 'Upload failures: confirm `UPLOAD_DIR` ownership', 'Hostinger stale upload troubleshooting');
 

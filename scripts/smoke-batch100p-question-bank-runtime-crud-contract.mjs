@@ -65,8 +65,18 @@ assertMatches(
 );
 assertIncludes(
   'dashboards/admin/QuestionBankManager.tsx',
-  'hasExplanationVideo: hasExplanationVideo || undefined',
-  'Question bank must send the optional hasExplanationVideo filter to the paginated API.',
+  "videoStatus: videoFilter === 'all' ? undefined",
+  'Question bank must send the full-bank video status filter to the paginated API.',
+);
+assertIncludes(
+  'dashboards/admin/QuestionBankManager.tsx',
+  "explanationStatus: explanationFilter === 'all' ? undefined",
+  'Question bank must send explanation completeness filtering to the paginated API.',
+);
+assertIncludes(
+  'dashboards/admin/QuestionBankManager.tsx',
+  "skillLinkStatus: skillLinkFilter === 'all' ? undefined",
+  'Question bank must send skill-link completeness filtering to the paginated API.',
 );
 assertIncludes(
   'dashboards/admin/QuestionBankManager.tsx',
@@ -136,8 +146,8 @@ assertMatches(
 );
 assertMatches(
   'server/src/routes/quiz.routes.ts',
-  /quizRouter\.post\([\s\S]*"\/questions"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "teacher", "supervisor"\]\)/,
-  'Question creation route must require authenticated admin/teacher/supervisor access.',
+  /quizRouter\.post\(\s*"\/questions",\s*requireAuth,\s*requireRole\(\["admin", "teacher"\]\)/,
+  'Question creation route must require authenticated admin/teacher access at the question route boundary.',
 );
 assertMatches(
   'server/src/routes/quiz.routes.ts',

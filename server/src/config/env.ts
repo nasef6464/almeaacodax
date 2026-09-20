@@ -23,6 +23,17 @@ const envSchema = z.object({
   MONGODB_SOCKET_TIMEOUT_MS: z.coerce.number().int().min(5000).max(120000).default(45000),
   MONGODB_MAX_IDLE_TIME_MS: z.coerce.number().int().min(10000).max(300000).default(60000),
   REDIS_URL: z.string().optional().default(""),
+  R2_UPLOAD_ENABLED: z.preprocess((value) => {
+    if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+    return value;
+  }, z.boolean()).default(false),
+  R2_ACCOUNT_ID: z.string().optional().default(""),
+  R2_BUCKET: z.string().optional().default(""),
+  R2_ACCESS_KEY_ID: z.string().optional().default(""),
+  R2_SECRET_ACCESS_KEY: z.string().optional().default(""),
+  R2_PUBLIC_BASE_URL: z.string().optional().default(""),
+  R2_UPLOAD_MAX_BYTES: z.coerce.number().int().min(1024).max(10 * 1024 * 1024).default(4 * 1024 * 1024),
+  R2_PRESIGN_EXPIRES_SECONDS: z.coerce.number().int().min(30).max(900).default(300),
   REDIS_KEY_PREFIX: z.string().default("almeaa"),
   RATE_LIMIT_REDIS_ENABLED: z.preprocess((value) => {
     if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
@@ -106,6 +117,23 @@ const envSchema = z.object({
   }
   if (value.ADMIN_PASSWORD_SYNC_ON_BOOT) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ADMIN_PASSWORD_SYNC_ON_BOOT"], message: "ADMIN_PASSWORD_SYNC_ON_BOOT must remain disabled in production" });
+  }
+  if (value.R2_UPLOAD_ENABLED) {
+    const requiredR2Fields = [
+      ["R2_ACCOUNT_ID", value.R2_ACCOUNT_ID],
+      ["R2_BUCKET", value.R2_BUCKET],
+      ["R2_ACCESS_KEY_ID", value.R2_ACCESS_KEY_ID],
+      ["R2_SECRET_ACCESS_KEY", value.R2_SECRET_ACCESS_KEY],
+      ["R2_PUBLIC_BASE_URL", value.R2_PUBLIC_BASE_URL],
+    ] as const;
+    for (const [field, fieldValue] of requiredR2Fields) {
+      if (!String(fieldValue || "").trim()) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: [field], message: `${field} is required when R2_UPLOAD_ENABLED=true` });
+      }
+    }
+    if (value.R2_PUBLIC_BASE_URL && !/^https:\/\//i.test(value.R2_PUBLIC_BASE_URL)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["R2_PUBLIC_BASE_URL"], message: "R2_PUBLIC_BASE_URL must use HTTPS in production" });
+    }
   }
 });
 
