@@ -42,6 +42,10 @@ on:
       - 'scripts/smoke-handover-blockers-contract.mjs'
       - 'scripts/smoke-monitoring-contract.mjs'
       - 'scripts/smoke-database-index-contract.mjs'
+      - 'scripts/smoke-disaster-recovery-contract.mjs'
+      - 'scripts/verify-db-backup.sh'
+      - 'scripts/restore-db-verified.sh'
+      - 'docs/architecture/DISASTER_RECOVERY_RUNBOOK.md'
       - 'scripts/smoke-notification-contract.mjs'
       - 'scripts/smoke-notification-phase10-contract.mjs'
       - 'scripts/smoke-sentry-runtime-contract.mjs'
@@ -183,6 +187,9 @@ jobs:
 
       - name: Database contract
         run: npm run smoke:database
+
+      - name: Disaster recovery contract
+        run: npm run smoke:disaster-recovery
 
       - name: Notification contract
         run: npm run smoke:notifications
