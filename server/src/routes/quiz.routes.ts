@@ -1572,10 +1572,18 @@ quizRouter.get(
   asyncHandler(async (req, res) => {
     const filter = { userId: req.authUser!.id };
     const pagination = resolvePagination(req.query, { limit: 80 });
-    const [items, total] = await Promise.all([
-      SkillProgressModel.find(filter).sort({ mastery: 1, lastAttemptAt: -1 }).skip(pagination.skip).limit(pagination.limit),
-      SkillProgressModel.countDocuments(filter),
-    ]);
+    const noTotal = ["true", "1", "yes", "on"].includes(String(req.query.noTotal || "").trim().toLowerCase());
+    const rawItems = await SkillProgressModel.find(filter)
+      .sort({ mastery: 1, lastAttemptAt: -1 })
+      .skip(pagination.skip)
+      .limit(noTotal ? pagination.limit + 1 : pagination.limit)
+      .lean();
+    const hasMore = noTotal && rawItems.length > pagination.limit;
+    const items = noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
+    const total = noTotal
+      ? pagination.skip + items.length + (hasMore ? 1 : 0)
+      : await SkillProgressModel.countDocuments(filter);
+    res.setHeader("X-Has-More", String(hasMore));
     res.json({
       skillProgress: items,
       pagination: buildPaginatedResponse([], pagination, total),
