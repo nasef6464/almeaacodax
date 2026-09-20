@@ -1,16 +1,10 @@
-const COMMIT_ENV_KEYS = [
-  "RENDER_GIT_COMMIT",
-  "VERCEL_GIT_COMMIT_SHA",
-  "GIT_COMMIT_SHA",
-  "COMMIT_SHA",
-] as const;
-
 export function resolveRuntimeCommit() {
-  for (const key of COMMIT_ENV_KEYS) {
-    const value = String(process.env[key] || "").trim();
-    if (value) return value;
-  }
-  return "";
+  return (
+    String(process.env.RENDER_GIT_COMMIT || "").trim() ||
+    String(process.env.VERCEL_GIT_COMMIT_SHA || "").trim() ||
+    String(process.env.GIT_COMMIT_SHA || "").trim() ||
+    String(process.env.COMMIT_SHA || "").trim()
+  );
 }
 
 export function shortRuntimeCommit(length = 12) {
