@@ -353,7 +353,7 @@ check("school bulk import and relation uploads keep class membership singular", 
   assertIncludes(files.reportImportRoutes, '{ type: "CLASS", parentId: schoolId }');
   assertIncludes(files.reportImportRoutes, "$pull: { studentIds: { $in: studentIdAliases } }");
   assertIncludes(files.relationsRoutes, "groupIds: [],");
-  assertIncludes(files.reportImportRoutes, "UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } })");
+  assertIncludes(files.relationsRoutes, "UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } })");
   const relationsRouteIndex = files.relationsRoutes.indexOf('"/schools/:id/relations"');
   const relationCleanupIndex = files.relationsRoutes.indexOf('await GroupModel.updateMany(\n          { type: "CLASS", parentId: schoolId }', relationsRouteIndex);
   const relationAddIndex = files.relationsRoutes.indexOf("GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } })", relationsRouteIndex);
