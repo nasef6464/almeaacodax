@@ -12,7 +12,8 @@ const firstEnd = 'const sanitizeVideoUrl = (rawUrl?: string | null) => {';
 const secondStart = 'const librarySchema = z.object({';
 const secondEnd = 'const groupSchema = z.object({';
 
-const alreadyApplied = source.includes(schemaImport)
+const delegatedLearning = source.includes('contentRouter.use(contentLearningRouter);');
+const alreadyApplied = (source.includes(schemaImport) || delegatedLearning)
   && !source.includes(firstStart)
   && !source.includes('const topicUpdateSchema = z.object({')
   && !source.includes('const lessonSchema = z.object({')

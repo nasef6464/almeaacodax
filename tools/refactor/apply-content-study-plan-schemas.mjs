@@ -14,7 +14,10 @@ const localDeclarations = [
   'const interventionStudyPlanSchema = z.object({',
 ];
 
-const alreadyApplied = source.includes(schemaImport) && localDeclarations.every((declaration) => !source.includes(declaration));
+const delegatedStudyPlans = source.includes('contentRouter.use(contentStudyPlanRouter);');
+const alreadyApplied =
+  (source.includes(schemaImport) || delegatedStudyPlans) &&
+  localDeclarations.every((declaration) => !source.includes(declaration));
 if (alreadyApplied) {
   console.log(JSON.stringify({ status: 'ALREADY_APPLIED', phase: 'content-study-plan-schemas' }, null, 2));
   process.exit(0);
