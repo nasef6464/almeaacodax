@@ -40,6 +40,45 @@ Repository tooling cannot truthfully set production RPO/RTO. Production owners m
 
 A backup is not successful merely because a file exists. Checksum verification is mandatory. A restore is not proven merely because `mongorestore` exits zero: application integrity/smoke gates must pass against the restored target. Never weaken tests to certify a restore.
 
+## Verified live evidence — 2026-09-20
+
+Read-only production inspection established the following current facts without using application secrets in Git:
+
+- MongoDB Atlas project `almeaacodax` has cluster `almeaa`, currently a FREE Atlas cluster on AWS `AP_SOUTHEAST_1`, MongoDB 8.0.32.
+- Production database `almeaa` currently contains 58 collections.
+- A read-only query found 1,768 `questions` documents whose `imageUrl` points to Cloudflare R2 public delivery URLs matching `https://pub-…r2.dev/questions/pilot/...`.
+- Therefore MongoDB recovery preserves media references/metadata, while the referenced image bytes require an independent R2 backup/recovery path.
+- The available Atlas connector did not expose a provider-native backup policy for this cluster. Do not assume provider-native snapshots/continuous backup unless separately proven from the Atlas control plane.
+
+These observations are evidence of current topology and references, **not** proof of recoverability. Live backup schedule, independent off-site copies and recovery drills are still required.
+
+## R2 media backup contract
+
+Use:
+
+`npm run backup:media:r2`
+
+with standard AWS-compatible credentials supplied only through the runtime secret store plus:
+- `R2_ENDPOINT`;
+- `R2_BUCKET`;
+- optional `MEDIA_BACKUP_DIR`;
+- optional `MEDIA_OFFSITE_DIR`;
+- optional `RETENTION_DAYS`.
+
+The script:
+- inventories current R2 object keys/sizes/ETags;
+- downloads the bucket through the S3-compatible endpoint;
+- creates a gzip archive;
+- writes and immediately verifies SHA-256 evidence using portable basename references;
+- optionally copies archive/checksum/inventory to an independent off-site directory and verifies the copied archive;
+- applies configurable local retention.
+
+For a media restore drill use:
+
+`MEDIA_BACKUP_ARCHIVE=/path/r2-...tar.gz R2_ENDPOINT=<endpoint> R2_RESTORE_BUCKET=<non-production-bucket> MEDIA_RESTORE_TARGET_CONFIRMATION=isolated-recovery-bucket npm run restore:media:r2`
+
+The restore is additive/non-destructive and does not use `--delete`. It must target a non-production recovery bucket. A final production recovery plan must also prove how the same stable URL/key mapping is restored or deliberately migrated.
+
 ## External media — Cloudflare-backed production contract
 
 The repository stores learning media primarily as external URLs. The current production/content practice uses Cloudflare-backed delivery for uploaded images/media; MongoDB therefore backs up the **references and metadata**, not the media bytes.
