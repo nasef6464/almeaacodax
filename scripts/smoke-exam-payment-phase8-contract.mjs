@@ -4,6 +4,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const [
   quizRoutes,
+  quizResultsRoutes,
   questionBankRoutes,
   questionPresentation,
   quizResultModel,
@@ -16,6 +17,7 @@ const [
   answerReview,
 ] = await Promise.all([
   read("server/src/routes/quiz.routes.ts"),
+  read("server/src/modules/quizzes/http/quizResultsRoutes.ts"),
   read("server/src/modules/quizzes/http/questionBankRoutes.ts"),
   read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   read("server/src/models/QuizResult.ts"),
@@ -52,10 +54,12 @@ function assertNotIncludes(source, fragment, message) {
 }
 
 check("direct result creation remains blocked and audited", () => {
-  assertIncludes(quizRoutes, '"/results"');
-  assertIncludes(quizRoutes, "quiz.direct_result.blocked");
-  assertIncludes(quizRoutes, "StatusCodes.GONE");
-  assertIncludes(quizRoutes, "DIRECT_RESULT_DISABLED_MESSAGE");
+  assertIncludes(quizRoutes, "quizRouter.use(quizResultsRouter)");
+  assertNotIncludes(quizRoutes, 'quizRouter.post(\n  "/results"');
+  assertIncludes(quizResultsRoutes, '"/results"');
+  assertIncludes(quizResultsRoutes, "quiz.direct_result.blocked");
+  assertIncludes(quizResultsRoutes, "StatusCodes.GONE");
+  assertIncludes(quizResultsRoutes, "DIRECT_RESULT_DISABLED_MESSAGE");
 });
 
 check("quiz submit enforces server-side window, attempt limits, and duplicate protection", () => {
