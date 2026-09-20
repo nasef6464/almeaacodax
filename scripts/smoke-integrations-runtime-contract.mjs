@@ -28,7 +28,7 @@ check("platform integrations response masks secrets and preserves old values on 
   includes(integrationRoutes, "decryptIntegrationSecretsForRuntime");
   includes(integrationRoutes, "encryptIntegrationSecretsAtRest");
   includes(integrationRuntime, "providerSecretState");
-  includes(contentRoutes, '"/platform-integrations"');
+  includes(integrationRoutes, '"/platform-integrations"');
 });
 
 check("platform integrations route uses encryption helper import", () => {
@@ -52,16 +52,16 @@ check("integration restore endpoint returns masked settings", () => {
 });
 
 check("runtime audit endpoint exists and includes env/runtime readiness checks", () => {
-  includes(contentRoutes, '"/platform-integrations/runtime-audit"');
-  includes(contentRoutes, "runtimeReady");
-  includes(contentRoutes, "getRedisHealth(\"queue\"");
+  includes(integrationRoutes, '"/platform-integrations/runtime-audit"');
+  includes(integrationRoutes, "runtimeReady");
+  includes(integrationRoutes, "getRedisHealth(\"queue\"");
   includes(integrationRoutes, "WHATSAPP_PROVIDER");
   includes(integrationRoutes, "EMAIL_PROVIDER");
   includes(integrationRoutes, "SENTRY_DSN");
 });
 
 check("setup checklist endpoint still exists with callback/webhook guidance", () => {
-  includes(contentRoutes, '"/platform-integrations/setup-checklist"');
+  includes(integrationRoutes, '"/platform-integrations/setup-checklist"');
   includes(integrationRoutes, "callbackUrl");
   includes(integrationRoutes, "webhookUrl");
   includes(integrationRoutes, "GOOGLE_CLIENT_ID");
