@@ -8,8 +8,13 @@ const runbook = fs.readFileSync(new URL('../docs/architecture/DISASTER_RECOVERY_
 assert.match(backup, /mongodump/);
 assert.match(backup, /--archive=/);
 assert.match(backup, /--gzip/);
-assert.match(backup, /sha256sum --check/);
+assert.match(backup, /archive_name="\$\(basename "\$archive"\)"/);
+assert.match(backup, /checksum_name="\$\(basename "\$checksum"\)"/);
+assert.match(backup, /cd "\$BACKUP_DIR"/);
+assert.match(backup, /sha256sum "\$archive_name" > "\$checksum_name"/);
+assert.match(backup, /sha256sum --check "\$checksum_name"/);
 assert.match(backup, /OFFSITE_DIR/);
+assert.match(backup, /cd "\$OFFSITE_DIR"/);
 assert.match(backup, /RETENTION_DAYS/);
 assert.match(restore, /sha256sum --check/);
 assert.match(restore, /ALLOW_DESTRUCTIVE_RESTORE/);
