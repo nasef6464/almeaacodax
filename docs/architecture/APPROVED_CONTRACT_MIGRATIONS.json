@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Explicit, reviewed structural contract migrations. Each entry replaces one immutable-baseline architecture signature with its new internal owner while preserving the externally mounted HTTP method/path contract. This file must never be used for product route removal or blanket allowlisting.",
+  "backendRouteSignatureReplacements": [
+    {
+      "from": "contentRouter|GET|/announcement-ads",
+      "to": "contentPresentationRouter|GET|/announcement-ads",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/announcement-ads",
+      "to": "contentPresentationRouter|POST|/announcement-ads",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/announcement-ads/:id",
+      "to": "contentPresentationRouter|DELETE|/announcement-ads/:id",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/announcement-ads/:id",
+      "to": "contentPresentationRouter|PATCH|/announcement-ads/:id",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/homepage-settings",
+      "to": "contentPresentationRouter|GET|/homepage-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/homepage-settings",
+      "to": "contentPresentationRouter|PATCH|/homepage-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-font-settings",
+      "to": "contentPresentationRouter|GET|/platform-font-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/platform-font-settings",
+      "to": "contentPresentationRouter|PATCH|/platform-font-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    }
+  ]
+}
