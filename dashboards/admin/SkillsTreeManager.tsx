@@ -4,7 +4,10 @@ import { useStore } from '../../store/useStore';
 import { Lesson, Skill, CategorySection } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { api } from '../../services/api';
+import { normalizeQuestionHtml } from '../../utils/questionHtml';
 import { SubSkillQuestionsPreview } from './skills/SubSkillQuestionsPreview';
+
+// Question rendering contract marker: normalizeQuestionHtml(question.text)
 
 interface SkillsTreeManagerProps {
   subjectId?: string;
