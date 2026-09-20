@@ -38,6 +38,9 @@ const files = {
   store: [
     await read("store/useStore.ts"),
     await read("store/slices/accessEnrollmentSlice.ts"),
+    await read("store/slices/groupCrudSlice.ts"),
+    await read("store/slices/studentGroupMembershipSlice.ts"),
+    await read("store/slices/studentGroupMembershipTransitions.ts"),
   ].join("\n"),
   accessEnrollment: await read("store/slices/accessEnrollmentSlice.ts"),
   packageJson: await read("package.json"),
@@ -161,11 +164,12 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.schools, 'data-testid="school-delete-button"');
   assertIncludes(files.schools, "window.confirm");
   assertIncludes(files.schools, "deleteGroupAsync(selectedSchool.id)");
+  assertIncludes(files.store, "...createGroupCrudSlice<AppState>(set, api)");
   assertIncludes(files.store, "deleteGroupAsync: async");
   assertIncludes(files.schools, "setSelectedSchool(null)");
   assertIncludes(files.store, "deletedGroupIds");
   assertIncludes(files.store, "deletedPackageIds");
-  assertIncludes(files.store, "state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)");
+  assertIncludes(files.store, "state.b2bPackages.filter((pkg) => pkg.schoolId !== groupId)");
   assertIncludes(files.routes, "GroupModel.deleteMany({ type: \"CLASS\", parentId: groupId })");
   assertIncludes(files.routes, "B2BPackageModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
   assertIncludes(files.routes, "AccessCodeModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
@@ -332,9 +336,9 @@ check("school supervisor links preserve school scope", () => {
 check("school student class assignment keeps one clear school/class relation", () => {
   assertIncludes(files.store, "const getSchoolClassIds = (schoolId?: string) =>");
   assertIncludes(files.store, "targetGroup.type === 'CLASS' && targetGroup.parentId");
-  assertIncludes(files.store, ".filter(classId => classId !== targetGroup.id)");
-  assertIncludes(files.store, "addUserToGroup(targetGroup.parentId, true)");
-  assertIncludes(files.store, "nextGroupIds = nextGroupIds.filter(id => id !== groupId && !relatedClassIds.includes(id))");
+  assertIncludes(files.store, ".filter((classId) => classId !== targetGroup.id)");
+  assertIncludes(files.store, "addStudentToGroup(targetGroup.parentId)");
+  assertIncludes(files.store, "id !== targetGroup.id && !relatedClassIds.includes(id)");
 });
 
 check("school bulk import and relation uploads keep class membership singular", () => {

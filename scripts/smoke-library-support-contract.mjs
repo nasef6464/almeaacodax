@@ -8,6 +8,7 @@ const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPa
 const typeSource = await readFile(new URL('../types.ts', import.meta.url), 'utf8');
 const adapterSource = await readFile(new URL('../services/adapter.ts', import.meta.url), 'utf8');
 const storeSource = await readFile(new URL('../store/useStore.ts', import.meta.url), 'utf8');
+const topicCatalogSliceSource = await readFile(new URL('../store/slices/topicCatalogSlice.ts', import.meta.url), 'utf8');
 const serverTopicModelSource = await readFile(new URL('../server/src/models/Topic.ts', import.meta.url), 'utf8');
 const serverContentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
 const serverLearningSchemasSource = await readFile(new URL('../server/src/modules/content/http/learningContentSchemas.ts', import.meta.url), 'utf8');
@@ -93,7 +94,8 @@ check('foundation support links persist through server, adapter, and store reloa
   assertIncludes(serverContentRoutesSource, 'const payload = topicUpdateSchema.parse(req.body)');
   assertIncludes(adapterSource, 'libraryItemIds: Array.isArray(topic?.libraryItemIds) ? topic.libraryItemIds.map(String) : []');
   assertIncludes(storeSource, 'libraryItemIds: normalizeIdList(topic?.libraryItemIds)');
-  assertIncludes(storeSource, 'api.updateTopic(topicId, data)');
+  assertIncludes(storeSource, '...createTopicCatalogSlice<AppState>(set, api)');
+  assertIncludes(topicCatalogSliceSource, 'api.updateTopic(topicId, data)');
 });
 
 check('library paid/free and visibility updates do not reset missing file fields', () => {

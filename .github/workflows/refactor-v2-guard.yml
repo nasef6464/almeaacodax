@@ -90,6 +90,27 @@ jobs:
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
 
+      - name: Question catalog store boundary contract
+        run: node scripts/smoke-question-catalog-store-boundary-contract.mjs
+
+      - name: Quiz catalog store boundary contract
+        run: node scripts/smoke-quiz-catalog-store-boundary-contract.mjs
+
+      - name: Course catalog store boundary contract
+        run: node scripts/smoke-course-catalog-store-boundary-contract.mjs
+
+      - name: Lesson catalog store boundary contract
+        run: node scripts/smoke-lesson-catalog-store-boundary-contract.mjs
+
+      - name: Topic catalog store boundary contract
+        run: node scripts/smoke-topic-catalog-store-boundary-contract.mjs
+
+      - name: Group CRUD store boundary contract
+        run: node scripts/smoke-group-crud-store-boundary-contract.mjs
+
+      - name: Student group membership boundary contract
+        run: node scripts/smoke-student-group-membership-boundary-contract.mjs
+
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 
@@ -347,7 +368,7 @@ jobs:
                 fi
 
                 mapfile -t deployable_changes < <(
-                  git diff --name-only "$ancestor" "$DEPLOY_SHA" | grep -Ev '^(docs/|\.github/)' || true
+                  git diff --name-only "$ancestor" "$DEPLOY_SHA" | grep -Ev '^(docs/|\.github/|scripts/smoke-[^/]+\.mjs$)' || true
                 )
                 if [ "${#deployable_changes[@]}" -eq 0 ]; then
                   echo "No deployable changes since Vercel-ready ancestor $ancestor; accepting its READY preview."
