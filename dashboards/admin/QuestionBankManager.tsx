@@ -199,6 +199,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [skillLinkFilter, setSkillLinkFilter] = useState<'all' | 'linked' | 'unlinked'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [videoFilter, setVideoFilter] = useState<'all' | 'with_video' | 'without_video'>('all');
+  const [explanationFilter, setExplanationFilter] = useState<'all' | 'with' | 'without'>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
   const [isLoadingEditQuestion, setIsLoadingEditQuestion] = useState(false);
@@ -289,7 +290,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, skillLinkFilter, searchTerm, subjectId, selectedDifficulty, videoFilter]);
+  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, skillLinkFilter, searchTerm, subjectId, selectedDifficulty, videoFilter, explanationFilter]);
 
   useEffect(() => {
     let active = true;
@@ -309,6 +310,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           search: searchTerm || undefined,
           difficulty: selectedDifficulty || undefined,
           videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
+          explanationStatus: explanationFilter === 'all' ? undefined : explanationFilter,
           includeCoverage: true,
         });
 
@@ -333,7 +335,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     return () => {
       active = false;
     };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, questionsRefreshKey]);
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, explanationFilter, questionsRefreshKey]);
 
   const displayedQuestions = useMemo(() => {
     const base = pagedQuestions ?? filteredQuestions;
@@ -342,6 +344,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         return false;
       }
       if (videoFilter === 'without_video' && Boolean(question.videoUrl && String(question.videoUrl).trim())) {
+        return false;
+      }
+      if (explanationFilter === 'with' && !String(question.explanation || '').trim()) {
+        return false;
+      }
+      if (explanationFilter === 'without' && String(question.explanation || '').trim()) {
         return false;
       }
       if (skillLinkFilter === 'linked' && !(question.skillIds || []).length) {
@@ -355,7 +363,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       }
       return true;
     });
-  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty, skillLinkFilter]);
+  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty, skillLinkFilter, explanationFilter]);
   const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
 
   useEffect(() => {
@@ -1447,6 +1455,32 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
               </button>
             </div>
 
+            <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-gray-200">
+              <span className="text-xs font-bold text-gray-500 px-2">الشرح النصي:</span>
+              <button
+                type="button"
+                onClick={() => setExplanationFilter('all')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${explanationFilter === 'all' ? 'bg-slate-700 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                الكل
+              </button>
+              <button
+                type="button"
+                onClick={() => setExplanationFilter('with')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${explanationFilter === 'with' ? 'bg-emerald-600 text-white' : 'text-emerald-700 hover:bg-emerald-50'}`}
+              >
+                موجود
+              </button>
+              <button
+                type="button"
+                onClick={() => setExplanationFilter('without')}
+                data-testid="question-bank-missing-explanation-filter"
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${explanationFilter === 'without' ? 'bg-rose-600 text-white' : 'text-rose-700 hover:bg-rose-50'}`}
+              >
+                بدون شرح
+              </button>
+            </div>
+
             {/* فلتر مستوى الصعوبة */}
             <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-gray-200">
               <span className="text-xs font-bold text-gray-500 px-2 flex items-center gap-1">
@@ -1501,11 +1535,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           </div>
 
           {/* زر إعادة ضبط الفلاتر */}
-          {(videoFilter !== 'all' || skillLinkFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
+          {(videoFilter !== 'all' || explanationFilter !== 'all' || skillLinkFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
             <button
               type="button"
               onClick={() => {
                 setVideoFilter('all');
+                setExplanationFilter('all');
                 setSelectedDifficulty('');
                 setSearchTerm('');
                 setSelectedPathId('');
