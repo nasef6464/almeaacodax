@@ -344,6 +344,9 @@ for (const file of trackedFiles) {
 
   if (file.startsWith('server/src/')) {
     backendRouteEntries.push(...collectBackendRoutes(file, sourceFile));
+  }
+
+  if (file === 'server/src/app.ts' || file === 'server/src/routes/index.ts') {
     routerMounts.push(...collectRouterMounts(file, sourceFile));
   }
 
