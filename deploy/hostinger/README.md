@@ -1,6 +1,8 @@
 # Hostinger VPS / Generic Linux VPS Deployment
 
-This folder is a production deployment template. It keeps Vercel/Render rollback possible because the app still reads URLs and secrets from environment variables.
+> **Secondary / recovery deployment path.** Current production is Vercel frontend → Vercel `/api` rewrite → Render backend. Do not treat this VPS template as the active production source of truth unless an explicit cutover is performed and verified. The canonical live release identity is checked through `npm run smoke:release-identity`.
+
+This folder is a secondary deployment/recovery template. It keeps Vercel/Render rollback possible because the app still reads URLs and secrets from environment variables.
 
 ## 1. Prepare The VPS
 
