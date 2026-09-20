@@ -28,6 +28,7 @@ export interface QuestionQuery {
   approvalStatus?: string;
   hasExplanationVideo?: boolean;
   videoStatus?: "with" | "without";
+  explanationStatus?: "with" | "without";
   includeCoverage?: boolean;
   summary?: boolean;
   noTotal?: boolean;
