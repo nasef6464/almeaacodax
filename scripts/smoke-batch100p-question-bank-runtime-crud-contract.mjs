@@ -140,37 +140,37 @@ assertIncludes(
 );
 
 assertIncludes(
-  'server/src/routes/quiz.routes.ts',
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
   'if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;',
   'Question approvalStatus filtering must stay restricted to staff.',
 );
 assertMatches(
-  'server/src/routes/quiz.routes.ts',
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
   /if \(query\.search\) \{[\s\S]*const safeSearch = escapeRegex\(query\.search\);[\s\S]*\$regex: safeSearch/,
   'Question search filter must escape regex metacharacters before querying MongoDB.',
 );
 assertMatches(
-  'server/src/routes/quiz.routes.ts',
-  /quizRouter\.post\(\s*"\/questions",\s*requireAuth,\s*requireRole\(\["admin", "teacher"\]\)/,
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
+  /questionBankRouter\.post\(\s*"\/questions",\s*requireAuth,\s*requireRole\(\["admin", "teacher"\]\)/,
   'Question creation route must require authenticated admin/teacher access at the question route boundary.',
 );
 assertMatches(
-  'server/src/routes/quiz.routes.ts',
-  /quizRouter\.patch\([\s\S]*"\/questions\/:id"[\s\S]*requireAuth[\s\S]*sanitizeWorkflowUpdate/,
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
+  /questionBankRouter\.patch\([\s\S]*"\/questions\/:id"[\s\S]*requireAuth[\s\S]*sanitizeWorkflowUpdate/,
   'Question update route must require auth and sanitize workflow updates.',
 );
 assertMatches(
-  'server/src/routes/quiz.routes.ts',
-  /quizRouter\.delete\([\s\S]*"\/questions\/:id"[\s\S]*requireAuth[\s\S]*findOneAndDelete/,
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
+  /questionBankRouter\.delete\([\s\S]*"\/questions\/:id"[\s\S]*requireAuth[\s\S]*findOneAndDelete/,
   'Question deletion route must require auth and delete only the owned/scoped document.',
 );
 assertIncludes(
-  'server/src/routes/quiz.routes.ts',
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
   'data: items',
   'Paginated question response must include the data array.',
 );
 assertIncludes(
-  'server/src/routes/quiz.routes.ts',
+  'server/src/modules/quizzes/http/questionBankRoutes.ts',
   'pagination: {',
   'Paginated question response must include pagination metadata.',
 );
