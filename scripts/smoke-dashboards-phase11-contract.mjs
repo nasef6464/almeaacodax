@@ -4,6 +4,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const files = {
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
+  quizResultsRoutes: await read("server/src/modules/quizzes/http/quizResultsRoutes.ts"),
   quizReportScope: await read("server/src/modules/quizzes/application/quizReportScope.ts"),
   quizAnalyticsRoutes: await read("server/src/modules/quizzes/http/quizAnalyticsRoutes.ts"),
   quizAnalyticsOverview: await read("server/src/modules/quizzes/application/quizAnalyticsOverview.ts"),
@@ -70,12 +71,13 @@ check("analytics overview has bounded work for high-scale dashboards", () => {
 });
 
 check("scoped quiz results remain paginated and role-scoped", () => {
-  assertIncludes(files.quizRoutes, '"/results/scoped"');
-  assertIncludes(files.quizRoutes, "resolvePagination(req.query");
-  assertIncludes(files.quizRoutes, 'import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";');
-  assertIncludes(files.quizRoutes, "filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds)");
+  assertIncludes(files.quizRoutes, "quizRouter.use(quizResultsRouter)");
+  assertIncludes(files.quizResultsRoutes, '"/results/scoped"');
+  assertIncludes(files.quizResultsRoutes, "resolvePagination(query");
+  assertIncludes(files.quizResultsRoutes, 'import { filterResultsByManagedContentScope } from "../application/quizManagedContentScope.js";');
+  assertIncludes(files.quizResultsRoutes, "filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds)");
   assertIncludes(files.managedContentScope, "export const filterResultsByManagedContentScope");
-  assertIncludes(files.quizRoutes, "sampledStudentCount");
+  assertIncludes(files.quizResultsRoutes, "sampledStudentCount");
 });
 
 check("frontend API requests dashboard data with safe limits without visual rewrites", () => {
