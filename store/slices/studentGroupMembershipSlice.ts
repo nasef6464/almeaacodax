@@ -143,7 +143,7 @@ assignStudentToGroup: (userId, groupId) => set((state) => {
         groups: newGroups,
         users: newUsers,
         user: newUsers.find(u => u.id === state.user.id) || state.user
-    };
+    } as Partial<TState>;
 }),
 
 assignStudentToGroupAsync: async (userId, groupId) => {
@@ -258,7 +258,7 @@ assignStudentToGroupAsync: async (userId, groupId) => {
         groups: newGroups,
         users: newUsers,
         user: newUsers.find(u => u.id === state.user.id) || state.user,
-    });
+    } as Partial<TState>);
 },
 
 removeStudentFromGroup: (userId, groupId) => set((state) => {
@@ -326,7 +326,7 @@ removeStudentFromGroup: (userId, groupId) => set((state) => {
         groups: newGroups,
         users: newUsers,
         user: newUsers.find(u => u.id === state.user.id) || state.user
-    };
+    } as Partial<TState>;
 }),
 
 removeStudentFromGroupAsync: async (userId, groupId) => {
@@ -395,6 +395,6 @@ removeStudentFromGroupAsync: async (userId, groupId) => {
         groups: newGroups,
         users: newUsers,
         user: newUsers.find(u => u.id === state.user.id) || state.user,
-    });
+    } as Partial<TState>);
 },
 });
