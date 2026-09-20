@@ -29,7 +29,8 @@ import { contentPlatformIntegrationRouter } from "../modules/content/http/conten
 import { contentPlatformIntegrationRuntimeRouter } from "../modules/content/http/contentPlatformIntegrationRuntimeRoutes.js";
 import { contentStudyPlanRouter } from "../modules/content/http/contentStudyPlanRoutes.js";
 import { contentLearningRouter } from "../modules/content/http/contentLearningRoutes.js";
-import { buildDocumentQuery } from "../modules/content/infrastructure/contentDocumentQuery.js";
+import { buildDocumentQuery, buildDocumentsByIdsQuery } from "../modules/content/infrastructure/contentDocumentQuery.js";
+import { assertSchoolManagementScope, hasGroupManagementScope, hasSchoolIdManagementScope, resolveSupervisorManagementScope } from "../modules/content/application/schoolOperationsScope.js";
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
@@ -97,20 +98,6 @@ const uniqueStrings = (values: Array<string | undefined | null>) =>
 
 const getModelDocumentId = (document: { id?: unknown; _id?: unknown }) => String(document.id || document._id || "");
 
-const buildDocumentsByIdsQuery = (values: string[]) => {
-  const ids = uniqueStrings(values.map((value) => String(value || "").trim()));
-  const objectIds = ids
-    .filter((id) => mongoose.Types.ObjectId.isValid(id))
-    .map((id) => new mongoose.Types.ObjectId(id));
-
-  return {
-    $or: [
-      { id: { $in: ids } },
-      ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
-    ],
-  };
-};
-
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -144,116 +131,6 @@ const normalizeAccessCodeResponse = (code: any) => ({
   expiresAt: Number(code.expiresAt || 0),
   createdAt: Number(code.createdAt || 0),
 });
-
-type SupervisorManagementScope = {
-  schoolIds: string[];
-  classIds: string[];
-};
-
-const resolveSupervisorManagementScope = async (authUser: { id: string }): Promise<SupervisorManagementScope> => {
-  const user = await UserModel.findById(authUser.id).select("schoolId groupIds role").lean();
-  if (!user) {
-    return { schoolIds: [], classIds: [] };
-  }
-
-  const managedGroupIds = uniqueStrings([...(user.groupIds || []).map(String)]);
-  const [seedGroups, directlySupervisedGroups] = await Promise.all([
-    managedGroupIds.length
-      ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type")
-      : Promise.resolve([]),
-    GroupModel.find({ supervisorIds: authUser.id }).select("id _id parentId type"),
-  ]);
-
-  const schoolIds = uniqueStrings([
-    String(user.schoolId || ""),
-    ...directlySupervisedGroups
-      .filter((group) => group.type === "SCHOOL")
-      .map((group) => String(group.id || group._id)),
-    ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
-  ]);
-  const classIds = uniqueStrings([
-    ...directlySupervisedGroups
-      .filter((group) => group.type === "CLASS")
-      .map((group) => String(group.id || group._id)),
-    ...seedGroups.filter((group) => group.type === "CLASS").map((group) => String(group.id || group._id)),
-  ]);
-
-  return {
-    schoolIds: schoolIds.filter(Boolean),
-    classIds: classIds.filter(Boolean),
-  };
-};
-
-const assertSchoolManagementScope = async (
-  authUser: { id: string; role: string },
-  school: { id?: string; _id?: unknown; supervisorIds?: unknown[] },
-) => {
-  if (authUser.role === "admin") {
-    return true;
-  }
-
-  const schoolId = String(school.id || school._id || "");
-  if (!schoolId) {
-    return false;
-  }
-
-  const { schoolIds } = await resolveSupervisorManagementScope({ id: authUser.id });
-  if (schoolIds.includes(schoolId)) {
-    return true;
-  }
-
-  const supervisorIds = Array.isArray(school.supervisorIds) ? school.supervisorIds.map(String) : [];
-  return supervisorIds.includes(String(authUser.id));
-};
-
-const hasGroupManagementScope = async (
-  authUser: { id: string; role: string },
-  group: { id?: string; _id?: unknown; type?: unknown; parentId?: unknown; ownerId?: unknown; supervisorIds?: unknown[] },
-) => {
-  if (authUser.role === "admin") {
-    return true;
-  }
-
-  const groupId = String(group.id || group._id || "");
-  const parentId = String(group.parentId || "");
-  const ownerId = String(group.ownerId || "");
-  const supervisorIds = Array.isArray(group.supervisorIds) ? group.supervisorIds.map(String) : [];
-
-  if (ownerId && ownerId === String(authUser.id)) {
-    return true;
-  }
-
-  if (supervisorIds.includes(String(authUser.id))) {
-    return true;
-  }
-
-  if (authUser.role === "supervisor") {
-    const { schoolIds, classIds } = await resolveSupervisorManagementScope({ id: authUser.id });
-    if (String(group.type || "") === "SCHOOL" && schoolIds.includes(groupId)) {
-      return true;
-    }
-    if (schoolIds.includes(parentId)) {
-      return true;
-    }
-    if (classIds.includes(groupId) || classIds.includes(parentId)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const hasSchoolIdManagementScope = async (
-  authUser: { id: string; role: string },
-  schoolId: string,
-) => {
-  if (authUser.role === "admin") {
-    return true;
-  }
-
-  const { schoolIds } = await resolveSupervisorManagementScope({ id: authUser.id });
-  return schoolIds.includes(String(schoolId || ""));
-};
 
 type GroupCreatePayload = z.infer<typeof groupSchema>;
 
