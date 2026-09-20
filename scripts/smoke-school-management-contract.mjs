@@ -167,7 +167,7 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.schools, "setSelectedSchool(null)");
   assertIncludes(files.store, "deletedGroupIds");
   assertIncludes(files.store, "deletedPackageIds");
-  assertIncludes(files.store, "state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)");
+  assertIncludes(files.store, "state.b2bPackages.filter((pkg) => pkg.schoolId !== groupId)");
   assertIncludes(files.routes, "GroupModel.deleteMany({ type: \"CLASS\", parentId: groupId })");
   assertIncludes(files.routes, "B2BPackageModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
   assertIncludes(files.routes, "AccessCodeModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
