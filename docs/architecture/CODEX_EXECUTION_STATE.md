@@ -1,7 +1,23 @@
 # ALMEAA — Codex Execution State
 
 
-## Release Hardening Batch 10 — Privacy & Data Lifecycle
+## General Aptitude (Qudurat) — Verbal Section Deployment (13 Skills, 76 Subskills, 938 Live-Text Questions)
+
+- Status: `DEPLOYED / RUNTIME VERIFIED` on 2026-09-21.
+- Subject: `sub_1777779759038` (القسم اللفظي) | Path: `p_1777779639431` (مسار القدرات العامة).
+- Reference: `C:\book\خطة_مهارات_القسم_اللفظي_منسقة_للمنصة.docx` & `C:\book\______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf`.
+- Delivered:
+  1. **Taxonomy & Sections:** Exactly 13 Main Skills (`skill_verbal_01` to `skill_verbal_13`) and 76 Subskills (`sub_verbal_01_1` to `sub_verbal_13_7`), synced to 13 sections in `sections`.
+  2. **Foundation Topics:** Exactly 13 Parent Topics (`top_verbal_main_01` to `13`) and 76 Child Topics (`top_verbal_sub_01_1` to `13_7`) mirroring 1:1.
+  3. **Live-Text Question Bank:** Exactly 938 questions extracted from the 33 trainings of the book, normalized from custom Arabic font ligatures, formatted with 4 options `[أ, ب, ج, د]`, validated correct option indices, and pedagogical Arabic explanations. Reading Comprehension questions include responsive HTML passage cards visible directly above the question stem.
+  4. **Assessment & Practice Ecosystem:**
+     - 76 Foundation Short Drills (`slot: "foundation"`, max 10 questions each, linked to child topics in `topics.quizIds`).
+     - 13 Comprehensive Skill Drills (`slot: "training"`, 40 questions each, named `تدريب: [اسم المهارة الرئيسية]`).
+     - 5 Standard Verbal Mock Exams (`slot: "tests"`, 60 questions each, named `اختبار تجريبي — القسم اللفظي (1)` to `(5)`).
+  5. **Quantitative Preservation:** 25 Main Skills, 95 Subskills, 25 Parent Topics, 95 Child Topics, 2,314 questions, 95 foundation drills, 25 training drills, and 5 mock exams preserved 100% untouched.
+  6. **Reports Generated:** `C:\book\تقرير_توزيع_أسئلة_المهارات_اللفظي_13.docx` and `C:\book\تقرير_توزيع_أسئلة_المهارات_اللفظي_13.pdf`.
+- Verification: Passed `npm run server:check` and root `tsc --noEmit` with 0 errors. Database integrity verified via `verify_complete_platform_aptitude.ts`.
+
 
 - Status: `READY FOR MERGE / RUNTIME VERIFIED` on 2026-09-20.
 - Baseline: `main @ b726f7ecd50c5472cfcabed630e7e8e8ea495890`.
