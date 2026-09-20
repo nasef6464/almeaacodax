@@ -23,6 +23,7 @@ import { createLearningProgressSlice } from './slices/learningProgressSlice';
 import { createLibraryItemsSlice } from './slices/libraryItemsSlice';
 import { createStudyPlansSlice } from './slices/studyPlansSlice';
 import { createQuestionCatalogSlice } from './slices/questionCatalogSlice';
+import { createQuizCatalogSlice } from './slices/quizCatalogSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -505,62 +506,7 @@ export const useStore = create<AppState>()(
 
             ...createQuestionCatalogSlice<AppState>(set, api),
 
-            // Quiz Actions
-            addQuiz: async (quiz) => {
-                const normalizedQuiz = normalizeQuizPlacement({
-                    ...quiz,
-                    showOnPlatform: typeof quiz.showOnPlatform === 'boolean' ? quiz.showOnPlatform : false,
-                });
-                const saved = await api.createQuiz(normalizedQuiz) as any;
-                const finalQuiz: Quiz = {
-                    ...normalizedQuiz,
-                    ...saved,
-                    id: String(saved?.id || saved?._id || normalizedQuiz.id),
-                };
-                set((state) => ({
-                    quizzes: [finalQuiz, ...state.quizzes.filter(q => q.id !== finalQuiz.id)]
-                }));
-                return finalQuiz;
-            },
-            updateQuiz: async (quizId, data) => {
-                const shouldNormalizePlacement =
-                    'type' in data ||
-                    'placement' in data ||
-                    'showInTraining' in data ||
-                    'showInMock' in data ||
-                    'quizKind' in data ||
-                    'mockExam' in data ||
-                    'learningPlacements' in data;
-                const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
-                const saved = await api.updateQuiz(quizId, updatePayload) as any;
-                // نقرأ الـ quiz الحالية من state لنُرجع النسخة الكاملة
-                const currentQuiz = get().quizzes.find(q => q.id === quizId) ?? {};
-                const finalQuiz: Quiz = {
-                    ...(currentQuiz as Quiz),
-                    ...updatePayload,
-                    ...saved,
-                    id: String(saved?.id || saved?._id || quizId),
-                };
-                const normalized = shouldNormalizePlacement ? normalizeQuizPlacement(finalQuiz) : finalQuiz;
-                set((state) => ({
-                    quizzes: state.quizzes.map(q =>
-                        q.id === quizId ? normalized : q
-                    )
-                }));
-                return normalized as Quiz;
-            },
-            deleteQuiz: (quizId) => {
-                api.deleteQuiz(quizId).catch(console.error);
-                set((state) => ({
-                    quizzes: state.quizzes.filter(q => q.id !== quizId),
-                    topics: state.topics.map((topic) => {
-                        if (!topic.quizIds?.includes(quizId)) return topic;
-                        const nextQuizIds = topic.quizIds.filter((id) => id !== quizId);
-                        api.updateTopic(topic.id, { quizIds: nextQuizIds }).catch(console.error);
-                        return { ...topic, quizIds: nextQuizIds };
-                    })
-                }));
-            },
+            ...createQuizCatalogSlice<AppState>(set, get, api, { normalizeQuizPlacement }),
 
             // Lesson Actions
             addLesson: (lesson) => {
