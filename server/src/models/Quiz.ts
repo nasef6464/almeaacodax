@@ -122,7 +122,9 @@ const quizSchema = new Schema(
   },
 );
 
-quizSchema.index({ createdAt: -1 });\nquizSchema.index({ isPublished: 1, showOnPlatform: 1, createdAt: -1 });\nquizSchema.index({ pathId: 1, subjectId: 1, type: 1, placement: 1, showOnPlatform: 1, isPublished: 1 });
+quizSchema.index({ createdAt: -1 });
+quizSchema.index({ isPublished: 1, showOnPlatform: 1, createdAt: -1 });
+quizSchema.index({ pathId: 1, subjectId: 1, type: 1, placement: 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ pathId: 1, subjectId: 1, mode: 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ pathId: 1, subjectId: 1, "learningPlacements.slot": 1, "learningPlacements.isVisible": 1 });
 quizSchema.index({ pathId: 1, "mockExam.enabled": 1, showOnPlatform: 1, isPublished: 1 });
