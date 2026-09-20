@@ -168,7 +168,11 @@ check('student weak-skill actions open the linked foundation topic first', () =>
   assertIncludes(recommendationSource, "const lessonLink = buildFoundationTopicLink('lessons')");
   assertIncludes(recommendationSource, "params.set('tab', 'skills')");
   assertIncludes(recommendationSource, "params.set('content', content)");
-  assertIncludes(recommendationSource, 'const foundationTrainingLink = recommendedTopic');
+  assertPattern(
+    recommendationSource,
+    /const foundationTrainingLink[\s\S]{0,160}buildFoundationTopicLink\('quizzes'\)/,
+    'foundation training must route through the linked foundation topic',
+  );
   assertIncludes(studentReportActionsSource, "relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses'");
   assertIncludes(recommendationSource, "quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined)");
 });
