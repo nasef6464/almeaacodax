@@ -6,7 +6,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [model, querySchemas, routes, bank, catalogData, builder, aiContract, analyticsContract] = await Promise.all([
   read("server/src/models/Question.ts"),
   read("server/src/modules/quizzes/http/questionQuerySchemas.ts"),
-  read("server/src/routes/quiz.routes.ts"),
+  read("server/src/modules/quizzes/http/questionBankRoutes.ts"),
   read("dashboards/admin/QuestionBankManager.tsx"),
   read("dashboards/admin/questionBank/useQuestionBankCatalogData.ts"),
   read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx"),
