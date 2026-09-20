@@ -44,6 +44,10 @@ assertAllIncludes("components/PwaInstallBanner.tsx", [
 assertAllIncludes("store/useStore.ts", [
   "addQuestion: (question: Question) => Promise<Question>;",
   "updateQuestion: (questionId: string, data: Partial<Question>) => Promise<Question>;",
+  "...createQuestionCatalogSlice<AppState>(set, api)",
+]);
+
+assertAllIncludes("store/slices/questionCatalogSlice.ts", [
   "const created = await api.createQuestion(question)",
   "const updated = await api.updateQuestion(questionId, data)",
   "await api.deleteQuestion(questionId)",
