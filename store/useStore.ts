@@ -26,6 +26,7 @@ import { createQuestionCatalogSlice } from './slices/questionCatalogSlice';
 import { createQuizCatalogSlice } from './slices/quizCatalogSlice';
 import { createCourseCatalogSlice } from './slices/courseCatalogSlice';
 import { createLessonCatalogSlice } from './slices/lessonCatalogSlice';
+import { createTopicCatalogSlice } from './slices/topicCatalogSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -461,29 +462,7 @@ export const useStore = create<AppState>()(
 
             ...createLessonCatalogSlice<AppState>(set, api),
 
-            // Topic Actions
-            addTopic: (topic) => {
-                const normalizedTopic = {
-                    ...topic,
-                    showOnPlatform: typeof topic.showOnPlatform === 'boolean' ? topic.showOnPlatform : false,
-                };
-                api.createTopic(normalizedTopic).catch(console.error);
-                set((state) => ({
-                    topics: [...state.topics, normalizedTopic]
-                }));
-            },
-            updateTopic: (topicId, data) => {
-                api.updateTopic(topicId, data).catch(console.error);
-                set((state) => ({
-                    topics: state.topics.map(t => t.id === topicId ? { ...t, ...data } : t)
-                }));
-            },
-            deleteTopic: (topicId) => {
-                api.deleteTopic(topicId).catch(console.error);
-                set((state) => ({
-                    topics: state.topics.filter(t => t.id !== topicId)
-                }));
-            },
+            ...createTopicCatalogSlice<AppState>(set, api),
 
             // Group Actions
             createGroup: (group) => set((state) => {
