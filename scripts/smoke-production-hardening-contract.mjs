@@ -59,7 +59,7 @@ check('question attempts calculate correctness on the server', () => {
   assertNotIncludes(quizRoutesSource, 'isCorrect: z.boolean().default(false)');
   assertIncludes(adaptiveTelemetryRoutesSource, 'correctOptionIndex');
   assertIncludes(adaptiveTelemetryRoutesSource, 'selectedOptionIndex === Number(question.correctOptionIndex ?? 0)');
-  assertIncludes(quizRoutesSource, 'isCorrect,');
+  assertIncludes(adaptiveTelemetryRoutesSource, 'isCorrect,');
 });
 
 check('server has baseline production security middleware', () => {
