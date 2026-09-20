@@ -6,7 +6,7 @@ import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../../utils/questionHtml';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 import { api } from '../../services/api';
-import type { QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
+import type { QuestionBankCoverage, QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -212,6 +212,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
   const [pagedQuestions, setPagedQuestions] = useState<Question[] | null>(null);
   const [pagedPagination, setPagedPagination] = useState<QuestionPaginationMeta | null>(null);
+  const [questionBankCoverage, setQuestionBankCoverage] = useState<QuestionBankCoverage | null>(null);
   const [pagedQuestionsError, setPagedQuestionsError] = useState<string | null>(null);
   const [isLoadingPagedQuestions, setIsLoadingPagedQuestions] = useState(false);
   const [questionsRefreshKey, setQuestionsRefreshKey] = useState(0);
@@ -305,16 +306,19 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           skillId: selectedSkillId || undefined,
           search: searchTerm || undefined,
           difficulty: selectedDifficulty || undefined,
-          hasExplanationVideo: hasExplanationVideo || undefined,
+          videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
+          includeCoverage: true,
         });
 
         if (!active) return;
         setPagedQuestions(Array.isArray(response?.data) ? (response.data as Question[]) : []);
         setPagedPagination(response?.pagination || null);
+        setQuestionBankCoverage(response?.coverage || null);
       } catch (error) {
         if (!active) return;
         setPagedQuestions(null);
         setPagedPagination(null);
+        setQuestionBankCoverage(null);
         setPagedQuestionsError(error instanceof Error ? error.message : 'تعذر تحميل الأسئلة المرقمة الآن.');
       } finally {
         if (active) {
@@ -395,6 +399,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   }, [displayedQuestions]);
 
   const questionCoverageSummary = useMemo(() => {
+    if (questionBankCoverage) return questionBankCoverage;
+
     const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
     const subSkillCount = new Set(displayedQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
     const pendingCount = displayedQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
@@ -407,7 +413,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       pendingCount,
       approvedCount,
     };
-  }, [displayedQuestions, pagedPagination?.total]);
+  }, [displayedQuestions, pagedPagination?.total, questionBankCoverage]);
 
   const resetEditorQuestion = (approvalStatus?: Question['approvalStatus']) => {
     setCurrentQuestion({
