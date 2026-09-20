@@ -261,6 +261,31 @@
       "from": "quizRouter|GET|/analytics/overview",
       "to": "quizAnalyticsRouter|GET|/analytics/overview",
       "reason": "Quiz analytics overview moved to the dedicated analytics HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results",
+      "to": "quizResultsRouter|GET|/results",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|POST|/results",
+      "to": "quizResultsRouter|POST|/results",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results/latest",
+      "to": "quizResultsRouter|GET|/results/latest",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results/scoped",
+      "to": "quizResultsRouter|GET|/results/scoped",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results/section-analytics/:quizId",
+      "to": "quizResultsRouter|GET|/results/section-analytics/:quizId",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
     }
   ]
 }
