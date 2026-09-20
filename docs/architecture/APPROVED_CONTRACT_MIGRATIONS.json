@@ -141,6 +141,21 @@
       "from": "contentRouter|DELETE|/library-items/:id",
       "to": "contentLearningRouter|DELETE|/library-items/:id",
       "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/groups",
+      "to": "contentGroupRouter|POST|/groups",
+      "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/groups/:id",
+      "to": "contentGroupRouter|PATCH|/groups/:id",
+      "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/groups/:id",
+      "to": "contentGroupRouter|DELETE|/groups/:id",
+      "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
