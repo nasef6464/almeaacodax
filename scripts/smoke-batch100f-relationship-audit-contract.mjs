@@ -98,7 +98,7 @@ check("User model stores role relationship fields with indexes", () => {
 
 check("Backend school relation endpoint is protected and updates parent/supervisor/student links server-side", () => {
   assertIncludes(sources.schoolRelationsRoutes, '"/schools/:id/relations"');
-  assertIncludes(sources.contentRoutes, 'requireRole(["admin", "supervisor"])');
+  assertIncludes(sources.schoolRelationsRoutes, 'requireRole(["admin", "supervisor"])');
   assertIncludes(sources.schoolRelationsRoutes, "schoolRelationSchema.parse(req.body)");
   assertIncludes(sources.schoolRelationsRoutes, "assertSchoolManagementScope(req.authUser!, school as any)");
   assertIncludes(sources.schoolRelationsRoutes, "You cannot manage this school");
