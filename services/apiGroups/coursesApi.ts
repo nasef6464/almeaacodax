@@ -41,12 +41,13 @@ export const createCoursesApi = (
   }: CoursesApiDependencies,
 ) => {
   const getCoursesByKind = async (pagination: CourseListOptions = {}) => {
-    const query = { limit: 200, kind: 'all' as const, ...pagination };
+    const query = { limit: 200, noTotal: true, kind: 'all' as const, ...pagination };
     const path = withQuery("/courses", query);
     const cacheKey = [
       "courses",
       query.page || 1,
       query.limit,
+      query.noTotal ? "no-total" : "with-total",
       query.pathId || "all-paths",
       query.subjectId || "all-subjects",
       query.search || "",
