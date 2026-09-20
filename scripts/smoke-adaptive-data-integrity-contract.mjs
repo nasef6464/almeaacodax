@@ -10,6 +10,7 @@ const questionModel = read('server/src/models/Question.ts');
 const questionSchemas = read('server/src/modules/quizzes/http/questionQuerySchemas.ts');
 const topicModel = read('server/src/models/Topic.ts');
 const contentSchemas = read('server/src/modules/content/http/learningContentSchemas.ts');
+const store = read('store/useStore.ts');
 const audit = read('server/src/scripts/auditFoundationSkillMapping.ts');
 const env = read('server/src/config/env.ts');
 const approved = JSON.parse(read('docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json'));
@@ -50,6 +51,7 @@ check('foundation topic persistence supports explicit skill mapping without repl
   assert.ok(topicModel.includes('skillId: { type: String, default: null }'));
   assert.ok(topicModel.includes('{ pathId: 1, subjectId: 1, skillId: 1 }, { sparse: true }'));
   assert.ok(contentSchemas.includes('skillId: z.string().min(1).nullable().optional()'));
+  assert.ok(store.includes("skillId: topic?.skillId ? String(topic.skillId) : undefined"));
 });
 
 check('foundation mapping audit is dry-run by default and refuses unsafe writes', () => {
