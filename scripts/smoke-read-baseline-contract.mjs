@@ -8,8 +8,8 @@ const checks = [
   ["baseline requires an explicit target URL", script.includes('getArgument("--base-url")') && script.includes("Missing --base-url")],
   ["baseline defaults to a small bounded request count", script.includes("const DEFAULT_REQUESTS = 3") && script.includes("const MAX_REQUESTS = 20")],
   ["baseline measures latency and decoded payload bytes", script.includes("p95DurationMs") && script.includes("maxBytes")],
-  ["baseline records wire-byte evidence when Content-Length is available", script.includes("medianWireBytes") && script.includes("wireBytesObserved") && script.includes('response.headers.get("content-length")')],
-  ["baseline records compression and cache-state evidence", script.includes("contentEncoding") && script.includes("cacheStates") && script.includes('response.headers.get("content-encoding")')],
+  ["baseline records wire-byte evidence when Content-Length is available", script.includes("medianWireBytes") && script.includes("wireBytesObserved") && script.includes('response.headers.get("content-length")') && script.includes("wireBytes: contentLength > 0 ? contentLength : null")],
+  ["baseline records compression and cache-state evidence", script.includes("contentEncoding") && script.includes("cacheStates") && script.includes('response.headers.get("content-encoding")') && script.includes("contentEncoding,")],
   ["baseline covers learner bootstrap and catalog reads", script.includes("taxonomy-compact") && script.includes("content-learning-core") && script.includes("courses-first-page")],
   ["runbook refuses unsupported scale claims", runbook.includes("NOT PROVEN") && runbook.includes("لا تشغّل الأداة ضد الإنتاج")],
 ];
