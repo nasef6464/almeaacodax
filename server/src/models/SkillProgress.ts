@@ -11,6 +11,7 @@ const skillProgressSchema = new Schema(
     mastery: { type: Number, default: 0 },
     status: { type: String, enum: ["weak", "average", "good", "mastered"], default: "weak", index: true },
     attempts: { type: Number, default: 0 },
+    evidenceCount: { type: Number, default: 0 },
     lastQuizId: { type: String, default: "" },
     lastQuizTitle: { type: String, default: "" },
     lastAttemptAt: { type: Date, default: () => new Date(), index: true },
