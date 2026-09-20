@@ -29,6 +29,7 @@ import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content
 import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
 import { contentPresentationRouter } from "../modules/content/http/contentPresentationRoutes.js";
 import { contentPlatformIntegrationRouter } from "../modules/content/http/contentPlatformIntegrationRoutes.js";
+import { contentPlatformIntegrationRuntimeRouter } from "../modules/content/http/contentPlatformIntegrationRuntimeRoutes.js";
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
@@ -464,6 +465,7 @@ contentRouter.use((req, _res, next) => {
 
 contentRouter.use(contentPresentationRouter);
 contentRouter.use(contentPlatformIntegrationRouter);
+contentRouter.use(contentPlatformIntegrationRuntimeRouter);
 
 contentRouter.get(
   "/review-queue",
