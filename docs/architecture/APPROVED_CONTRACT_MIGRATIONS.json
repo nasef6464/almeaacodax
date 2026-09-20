@@ -256,6 +256,11 @@
       "from": "quizRouter|POST|/question-attempts",
       "to": "adaptiveTelemetryRouter|POST|/question-attempts",
       "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/analytics/overview",
+      "to": "quizAnalyticsRouter|GET|/analytics/overview",
+      "reason": "Quiz analytics overview moved to the dedicated analytics HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
