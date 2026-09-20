@@ -99,7 +99,7 @@ Cross-cutting runtime dependencies:
 | Discussions/review | Discussion routes, review cards | Active |
 | Audit | `AdminAuditLog` | Active; retention/governance required |
 | Privacy / data lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | Batch 10 boundary active; exact retention periods for retained history remain policy-dependent |
-| Backup/restore | learning snapshot + shell Mongo dump/restore | Partial production DR evidence |
+| Backup/restore | learning snapshot + verified Mongo archive/checksum/off-site tooling + Cloudflare R2 media archive/restore tooling | Batch 11 recovery boundary active; live schedule/off-site/restore-drill evidence still required |
 | Deployment | Vercel frontend; VPS/PM2/Nginx and Docker artifacts exist | Deployment paths need canonicalization |
 
 ---
@@ -759,7 +759,8 @@ Severity meaning:
 - Redis production health and failure behavior.
 - VPS CPU/RAM/disk/network behavior.
 - Nginx/Cloudflare/TLS real configuration.
-- backup destination, encryption, retention and successful restore.
+- backup destination, encryption, retention and successful restore;
+- Cloudflare R2 bucket recovery/off-site evidence for media bytes referenced by MongoDB.
 - exact production environment variables/secrets policy.
 - production/staging load tests.
 - monitoring/alert delivery.
