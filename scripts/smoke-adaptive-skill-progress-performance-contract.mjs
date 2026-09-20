@@ -7,7 +7,7 @@ const read = (relativePath) =>
   fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n/g, '\n');
 
 const model = read('server/src/models/SkillProgress.ts');
-const routes = read('server/src/routes/quiz.routes.ts');
+const routes = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
 const api = read('services/apiGroups/quizzesApi.ts');
 const app = read('App.tsx');
 
