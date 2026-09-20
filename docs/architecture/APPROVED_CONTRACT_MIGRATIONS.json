@@ -41,6 +41,41 @@
       "from": "contentRouter|PATCH|/platform-font-settings",
       "to": "contentPresentationRouter|PATCH|/platform-font-settings",
       "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations",
+      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/public-contact-widget",
+      "to": "contentPlatformIntegrationRouter|GET|/public-contact-widget",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/platform-integrations",
+      "to": "contentPlatformIntegrationRouter|PATCH|/platform-integrations",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations/history",
+      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations/history",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations/setup-checklist",
+      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations/setup-checklist",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations/runtime-audit",
+      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations/runtime-audit",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/platform-integrations/history/:id/restore",
+      "to": "contentPlatformIntegrationRouter|POST|/platform-integrations/history/:id/restore",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
