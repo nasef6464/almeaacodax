@@ -4,6 +4,8 @@ const read = async (path) => (await readFile(new URL(`../${path}`, import.meta.u
 
 const files = {
   routes: await read("server/src/routes/content.routes.ts"),
+  groupRoutes: await read("server/src/modules/content/http/contentGroupRoutes.ts"),
+  schoolScope: await read("server/src/modules/content/application/schoolOperationsScope.ts"),
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
@@ -79,7 +81,7 @@ check("backend has one real school relations endpoint", () => {
 check("school relations endpoint is scoped for supervisors", () => {
   assertIncludes(files.routes, "canManageSchool");
   assertIncludes(files.routes, "You cannot manage this school");
-  assertIncludes(files.routes, "school.supervisorIds");
+  assertIncludes(files.schoolScope, "school.supervisorIds");
 });
 
 check("frontend uses server relation workflow and supports one student add", () => {
@@ -170,9 +172,9 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.store, "deletedGroupIds");
   assertIncludes(files.store, "deletedPackageIds");
   assertIncludes(files.store, "state.b2bPackages.filter((pkg) => pkg.schoolId !== groupId)");
-  assertIncludes(files.routes, "GroupModel.deleteMany({ type: \"CLASS\", parentId: groupId })");
-  assertIncludes(files.routes, "B2BPackageModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
-  assertIncludes(files.routes, "AccessCodeModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
+  assertIncludes(files.groupRoutes, "GroupModel.deleteMany({ type: \"CLASS\", parentId: groupId })");
+  assertIncludes(files.groupRoutes, "B2BPackageModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
+  assertIncludes(files.groupRoutes, "AccessCodeModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
 });
 
 check("school workspace exposes all guided setup panels", () => {
