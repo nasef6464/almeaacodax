@@ -128,7 +128,16 @@ const courseListQuerySchema = z.object({
   pathId: z.string().trim().optional(),
   subjectId: z.string().trim().optional(),
   search: z.string().trim().max(120).optional(),
-  noTotal: z.coerce.boolean().default(false),
+  noTotal: z.preprocess((value) => {
+    if (value === undefined || value === null || value === "") return false;
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+      const normalized = value.trim().toLowerCase();
+      if (["true", "1", "yes", "on"].includes(normalized)) return true;
+      if (["false", "0", "no", "off"].includes(normalized)) return false;
+    }
+    return value;
+  }, z.boolean()).default(false),
   kind: z.enum(['learning', 'package', 'all']).default('all'),
 });
 
