@@ -368,7 +368,7 @@ jobs:
                 fi
 
                 mapfile -t deployable_changes < <(
-                  git diff --name-only "$ancestor" "$DEPLOY_SHA" | grep -Ev '^(docs/|\.github/)' || true
+                  git diff --name-only "$ancestor" "$DEPLOY_SHA" | grep -Ev '^(docs/|\.github/|scripts/smoke-[^/]+\.mjs$)' || true
                 )
                 if [ "${#deployable_changes[@]}" -eq 0 ]; then
                   echo "No deployable changes since Vercel-ready ancestor $ancestor; accepting its READY preview."
