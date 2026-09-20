@@ -50,10 +50,10 @@ const main = async () => {
   if (!db) throw new Error("MongoDB connection has no database handle");
 
   try {
-    const [skills, topics, quizzes, questions] = await Promise.all([
+    const [allSkills, topics, quizzes, questions] = await Promise.all([
       db
         .collection<SkillDocument>("skills")
-        .find({ "subSkills.0": { $exists: true } })
+        .find({})
         .project({
           _id: 1,
           id: 1,
@@ -92,6 +92,8 @@ const main = async () => {
         .toArray(),
     ]);
 
+    const skills = allSkills.filter((skill) => Array.isArray(skill.subSkills) && skill.subSkills.length > 0);
+
     const quizIdentifiers = new Set<string>();
     for (const quiz of quizzes) {
       quizIdentifiers.add(stringId(quiz._id));
@@ -102,7 +104,7 @@ const main = async () => {
       string,
       { pathId: string; subjectId: string; kind: "main" | "sub"; parentSkillId?: string }
     >();
-    for (const skill of skills) {
+    for (const skill of allSkills) {
       const mainId = stringId(skill.id || skill._id);
       const pathId = stringId(skill.pathId);
       const subjectId = stringId(skill.subjectId);
