@@ -117,6 +117,9 @@ jobs:
       - name: Modern skill taxonomy hierarchy contract
         run: node scripts/smoke-modern-skill-taxonomy-contract.mjs
 
+      - name: Adaptive data integrity contract
+        run: node scripts/smoke-adaptive-data-integrity-contract.mjs
+
       - name: Question bank HTTP boundary contract
         run: node scripts/smoke-question-bank-http-boundary-contract.mjs
 
