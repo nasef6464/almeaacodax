@@ -120,6 +120,9 @@ jobs:
       - name: Adaptive skill progress performance contract
         run: node scripts/smoke-adaptive-skill-progress-performance-contract.mjs
 
+      - name: Adaptive telemetry HTTP boundary contract
+        run: node scripts/smoke-adaptive-telemetry-http-boundary-contract.mjs
+
       - name: Adaptive mastery evidence contract
         run: node scripts/smoke-adaptive-mastery-evidence-contract.mjs
 
