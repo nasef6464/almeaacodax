@@ -305,8 +305,8 @@ check('staff scoped reports keep intervention plan, summary, and smart remediati
   assertIncludes(studyPlansApiSource, 'createInterventionStudyPlan');
   assertIncludes(studyPlansApiSource, '"/content/study-plans/intervention"');
   assertIncludes(studyPlanRoutesSource, '"/study-plans/intervention"');
-  assertIncludes(contentRoutesSource, 'requireRole(["admin", "supervisor", "teacher"])');
-  assertIncludes(contentRoutesSource, 'userId: studentId');
+  assertIncludes(studyPlanRoutesSource, 'requireRole(["admin", "supervisor", "teacher"])');
+  assertIncludes(studyPlanRoutesSource, 'userId: studentId');
   assertIncludes(reportsSource, 'خطة تدخل للنطاق الحالي');
 });
 
