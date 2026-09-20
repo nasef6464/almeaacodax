@@ -178,7 +178,9 @@ assertIncludes('server/src/routes/quiz.routes.ts', 'QUESTION_SUMMARY_CACHE_TTL_M
 assertIncludes('server/src/routes/quiz.routes.ts', 'X-Question-Summary-Cache');
 assertIncludes('server/src/routes/course.routes.ts', 'PUBLIC_COURSE_LIST_CACHE_TTL_MS');
 assertIncludes('server/src/routes/course.routes.ts', 'X-Course-List-Cache');
-assertIncludes('server/src/routes/course.routes.ts', 'CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()');
+assertIncludes('server/src/routes/course.routes.ts', '.limit(query.noTotal ? pagination.limit + 1 : pagination.limit)');
+assertIncludes('server/src/routes/course.routes.ts', ': await CourseModel.countDocuments(filter)');
+assertIncludes('server/src/routes/course.routes.ts', 'res.setHeader("X-Has-More", String(hasMore))');
 assertIncludes('server/src/services/visibility.ts', 'ACTIVE_PATH_CACHE_TTL_MS');
 assertIncludes('server/src/services/visibility.ts', 'clearActivePathIdsCache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearActivePathIdsCache();');
