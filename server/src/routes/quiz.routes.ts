@@ -652,6 +652,11 @@ quizRouter.get(
       const skillIds = uniqueStrings(query.skillIds.split(",").map((item) => item.trim()));
       if (skillIds.length > 0) scopeFilter.skillIds = { $in: skillIds };
     }
+    if (query.skillLinkStatus === "linked" && !query.skillId && !query.skillIds) {
+      scopeFilter["skillIds.0"] = { $exists: true };
+    } else if (query.skillLinkStatus === "unlinked") {
+      scopeFilter["skillIds.0"] = { $exists: false };
+    }
     if (query.difficulty) scopeFilter.difficulty = query.difficulty;
     if (query.examType) scopeFilter.examType = query.examType;
     if (query.source) scopeFilter.source = query.source;
