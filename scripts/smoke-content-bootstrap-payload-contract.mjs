@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const routeSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentBootstrapRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/contentBootstrapPayload.ts'), 'utf8').replace(/\r\n/g, '\n');
 const checks = [];
 const check = (name, assertion) => {
@@ -12,10 +12,10 @@ const check = (name, assertion) => {
 };
 
 check('bootstrap payload is delegated while route retains data reads', () => {
-  assert.ok(routeSource.includes('import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";'));
+  assert.ok(routeSource.includes('from "../application/contentBootstrapPayload.js";'));
   assert.ok(routeSource.includes('return buildContentBootstrapPayload({'));
-  assert.ok(routeSource.includes('TopicModel.find(finalTopicFilter)'));
-  assert.ok(routeSource.includes('getScopedOperationalData(req.authUser)'));
+  assert.ok(routeSource.includes('TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter))'));
+  assert.ok(routeSource.includes('getScopedContentBootstrapOperationalData(req.authUser)'));
 });
 
 check('bootstrap response keys remain explicit', () => {
