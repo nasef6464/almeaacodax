@@ -60,7 +60,7 @@ assertExcludes(hostingerEnvExample, 'UPLOAD_DIR=', 'Hostinger backend env exampl
 assertIncludes(environmentDocs, 'Learning media continues to be stored as external URLs', 'environment media contract');
 assertIncludes(environmentDocs, 'Question-editor images can use direct browser → Cloudflare R2 uploads', 'question media upload contract');
 assertIncludes(environmentDocs, 'image bytes upload directly from the browser to R2 and do not traverse Render', 'question media bandwidth contract');
-assertIncludes(environmentDocs, '`UPLOAD_DIR` is only an operations-script override', 'environment operations distinction');
+assertIncludes(environmentDocs, '`UPLOAD_DIR` remains only an operations-script override', 'environment operations distinction');
 assertIncludes(featureAudit, 'Question-editor image ingestion supports configurable direct browser → Cloudflare R2 uploads', 'question media activation classification');
 assertIncludes(featureAudit, 'Generic lesson/library binary upload ingestion into the application server is NOT IMPLEMENTED', 'lesson media activation classification');
 assertExcludes(featureAudit, 'Uploads: ENABLED/PARTIAL', 'feature activation stale upload claim');
