@@ -5,6 +5,8 @@ const read = async (path) => (await readFile(new URL(`../${path}`, import.meta.u
 const files = {
   routes: await read("server/src/routes/content.routes.ts"),
   groupRoutes: await read("server/src/modules/content/http/contentGroupRoutes.ts"),
+  reportImportRoutes: await read("server/src/modules/content/http/contentSchoolReportImportRoutes.ts"),
+  relationsRoutes: await read("server/src/modules/content/http/contentSchoolRelationsRoutes.ts"),
   schoolScope: await read("server/src/modules/content/application/schoolOperationsScope.ts"),
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
   authRoutes: await read("server/src/routes/auth.routes.ts"),
@@ -70,17 +72,17 @@ function assertNotIncludes(source, fragment, message) {
 }
 
 check("backend has one real school relations endpoint", () => {
-  assertIncludes(files.routes, '"/schools/:id/relations"');
-  assertIncludes(files.routes, "schoolRelationSchema");
-  assertIncludes(files.routes, "createMissingUsers");
-  assertIncludes(files.routes, "linkedParents");
-  assertIncludes(files.routes, "linkedSupervisors");
-  assertIncludes(files.routes, "assignedClasses");
+  assertIncludes(files.relationsRoutes, '"/schools/:id/relations"');
+  assertIncludes(files.relationsRoutes, "schoolRelationSchema");
+  assertIncludes(files.relationsRoutes, "createMissingUsers");
+  assertIncludes(files.relationsRoutes, "linkedParents");
+  assertIncludes(files.relationsRoutes, "linkedSupervisors");
+  assertIncludes(files.relationsRoutes, "assignedClasses");
 });
 
 check("school relations endpoint is scoped for supervisors", () => {
-  assertIncludes(files.routes, "canManageSchool");
-  assertIncludes(files.routes, "You cannot manage this school");
+  assertIncludes(files.relationsRoutes, "canManageSchool");
+  assertIncludes(files.relationsRoutes, "You cannot manage this school");
   assertIncludes(files.schoolScope, "school.supervisorIds");
 });
 
@@ -319,11 +321,11 @@ check("school from scratch live audit is wired and cleans up", () => {
 });
 
 check("school reports count students only", () => {
-  assertIncludes(files.routes, 'const studentFilter = { schoolId, role: "student" };');
-  assertIncludes(files.routes, "UserModel.find(studentFilter)");
-  assertIncludes(files.routes, "UserModel.countDocuments(studentFilter)");
-  assertIncludes(files.routes, 'UserModel.countDocuments({ schoolId, role: "student" })');
-  assertIncludes(files.routes, 'UserModel.countDocuments({ role: "student", groupIds: classId })');
+  assertIncludes(files.reportImportRoutes, 'const studentFilter = { schoolId, role: "student" };');
+  assertIncludes(files.reportImportRoutes, "UserModel.find(studentFilter)");
+  assertIncludes(files.reportImportRoutes, "UserModel.countDocuments(studentFilter)");
+  assertIncludes(files.reportImportRoutes, 'UserModel.countDocuments({ schoolId, role: "student" })');
+  assertIncludes(files.reportImportRoutes, 'UserModel.countDocuments({ role: "student", groupIds: classId })');
   assertIncludes(files.schoolFromScratchAudit, "metrics.totalStudents === 1");
   assertIncludes(files.schoolFromScratchAudit, "metrics.activeStudents === 1");
 });
@@ -344,17 +346,17 @@ check("school student class assignment keeps one clear school/class relation", (
 });
 
 check("school bulk import and relation uploads keep class membership singular", () => {
-  assertIncludes(files.routes, "let currentSchoolClassIds = uniqueStrings(existingClasses.flatMap((item) => [item.id, String(item._id)]));");
-  assertIncludes(files.routes, "currentSchoolClassIds = uniqueStrings([...currentSchoolClassIds, createdClassId, String(targetClass._id)]);");
-  assertIncludes(files.routes, "...existingGroupIds.filter((id) => !currentSchoolClassIds.includes(id))");
-  assertIncludes(files.routes, "GroupModel.updateMany(");
-  assertIncludes(files.routes, '{ type: "CLASS", parentId: schoolId }');
-  assertIncludes(files.routes, "$pull: { studentIds: { $in: studentIdAliases } }");
-  assertIncludes(files.routes, "groupIds: [],");
-  assertIncludes(files.routes, "UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } })");
-  const relationsRouteIndex = files.routes.indexOf('"/schools/:id/relations"');
-  const relationCleanupIndex = files.routes.indexOf('await GroupModel.updateMany(\n          { type: "CLASS", parentId: schoolId }', relationsRouteIndex);
-  const relationAddIndex = files.routes.indexOf("GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } })", relationsRouteIndex);
+  assertIncludes(files.reportImportRoutes, "let currentSchoolClassIds = uniqueStrings(existingClasses.flatMap((item) => [item.id, String(item._id)]));");
+  assertIncludes(files.reportImportRoutes, "currentSchoolClassIds = uniqueStrings([...currentSchoolClassIds, createdClassId, String(targetClass._id)]);");
+  assertIncludes(files.reportImportRoutes, "...existingGroupIds.filter((id) => !currentSchoolClassIds.includes(id))");
+  assertIncludes(files.reportImportRoutes, "GroupModel.updateMany(");
+  assertIncludes(files.reportImportRoutes, '{ type: "CLASS", parentId: schoolId }');
+  assertIncludes(files.reportImportRoutes, "$pull: { studentIds: { $in: studentIdAliases } }");
+  assertIncludes(files.reportImportRoutes, "groupIds: [],");
+  assertIncludes(files.reportImportRoutes, "UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } })");
+  const relationsRouteIndex = files.relationsRoutes.indexOf('"/schools/:id/relations"');
+  const relationCleanupIndex = files.relationsRoutes.indexOf('await GroupModel.updateMany(\n          { type: "CLASS", parentId: schoolId }', relationsRouteIndex);
+  const relationAddIndex = files.relationsRoutes.indexOf("GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } })", relationsRouteIndex);
   if (relationsRouteIndex < 0 || relationCleanupIndex < 0 || relationAddIndex < 0 || relationCleanupIndex > relationAddIndex) {
     throw new Error("relations endpoint must clean old class memberships before adding the new class");
   }
@@ -373,11 +375,11 @@ check("school access codes attach students to the school roster", () => {
 });
 
 check("school relation import assigns teachers without supervisor elevation", () => {
-  assertIncludes(files.routes, "teacherEmail");
-  assertIncludes(files.routes, 'createUserIfMissing(\n          teacherEmail,');
-  assertIncludes(files.routes, '"teacher",');
-  assertIncludes(files.routes, 'summary.linkedTeachers += 1');
-  assertNotIncludes(files.routes, 'GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: teacher');
+  assertIncludes(files.relationsRoutes, "teacherEmail");
+  assertIncludes(files.relationsRoutes, 'createUserIfMissing(\n          teacherEmail,');
+  assertIncludes(files.relationsRoutes, '"teacher",');
+  assertIncludes(files.relationsRoutes, 'summary.linkedTeachers += 1');
+  assertNotIncludes(files.relationsRoutes, 'GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: teacher');
 });
 
 check("school package access requires a user-specific active grant", () => {
