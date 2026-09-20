@@ -10,7 +10,7 @@ const adapterSource = await readFile(new URL('../services/adapter.ts', import.me
 const storeSource = await readFile(new URL('../store/useStore.ts', import.meta.url), 'utf8');
 const topicCatalogSliceSource = await readFile(new URL('../store/slices/topicCatalogSlice.ts', import.meta.url), 'utf8');
 const serverTopicModelSource = await readFile(new URL('../server/src/models/Topic.ts', import.meta.url), 'utf8');
-const serverContentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
+const serverLearningRoutesSource = await readFile(new URL('../server/src/modules/content/http/contentLearningRoutes.ts', import.meta.url), 'utf8');
 const serverLearningSchemasSource = await readFile(new URL('../server/src/modules/content/http/learningContentSchemas.ts', import.meta.url), 'utf8');
 
 const checks = [];
@@ -91,7 +91,7 @@ check('foundation support links persist through server, adapter, and store reloa
   assertIncludes(serverLearningSchemasSource, 'libraryItemIds: z.array(z.string()).default([])');
   assertIncludes(serverLearningSchemasSource, 'export const topicUpdateSchema = z.object({');
   assertIncludes(serverLearningSchemasSource, 'libraryItemIds: z.array(z.string()).optional()');
-  assertIncludes(serverContentRoutesSource, 'const payload = topicUpdateSchema.parse(req.body)');
+  assertIncludes(serverLearningRoutesSource, 'const payload = topicUpdateSchema.parse(req.body)');
   assertIncludes(adapterSource, 'libraryItemIds: Array.isArray(topic?.libraryItemIds) ? topic.libraryItemIds.map(String) : []');
   assertIncludes(storeSource, 'libraryItemIds: normalizeIdList(topic?.libraryItemIds)');
   assertIncludes(storeSource, '...createTopicCatalogSlice<AppState>(set, api)');
@@ -102,7 +102,7 @@ check('library paid/free and visibility updates do not reset missing file fields
   assertIncludes(serverLearningSchemasSource, 'export const libraryUpdateSchema = z.object({');
   assertIncludes(serverLearningSchemasSource, 'showOnPlatform: z.boolean().optional()');
   assertIncludes(serverLearningSchemasSource, 'isLocked: z.boolean().optional()');
-  assertIncludes(serverContentRoutesSource, 'const payload = libraryUpdateSchema.parse(req.body)');
+  assertIncludes(serverLearningRoutesSource, 'const payload = libraryUpdateSchema.parse(req.body)');
 });
 
 check('support files shown inside foundation topics come from explicit topic links', () => {
