@@ -196,11 +196,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || '');
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [selectedSkillId, setSelectedSkillId] = useState('');
+  const [skillLinkFilter, setSkillLinkFilter] = useState<'all' | 'linked' | 'unlinked'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [videoFilter, setVideoFilter] = useState<'all' | 'with_video' | 'without_video'>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
-  const hasExplanationVideo = videoFilter === 'with_video';
-  const setHasExplanationVideo = (value: boolean) => setVideoFilter(value ? 'with_video' : 'all');
   const [isEditing, setIsEditing] = useState(false);
   const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -288,7 +287,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId, hasExplanationVideo, selectedDifficulty, videoFilter]);
+  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, skillLinkFilter, searchTerm, subjectId, selectedDifficulty, videoFilter]);
 
   useEffect(() => {
     let active = true;
@@ -304,6 +303,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           subject: (subjectId || selectedSubjectId) || undefined,
           sectionId: selectedSectionId || undefined,
           skillId: selectedSkillId || undefined,
+          skillLinkStatus: skillLinkFilter === 'all' ? undefined : skillLinkFilter,
           search: searchTerm || undefined,
           difficulty: selectedDifficulty || undefined,
           videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
@@ -331,7 +331,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     return () => {
       active = false;
     };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, hasExplanationVideo, selectedDifficulty, questionsRefreshKey]);
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, questionsRefreshKey]);
 
   const displayedQuestions = useMemo(() => {
     const base = pagedQuestions ?? filteredQuestions;
@@ -342,12 +342,18 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       if (videoFilter === 'without_video' && Boolean(question.videoUrl && String(question.videoUrl).trim())) {
         return false;
       }
+      if (skillLinkFilter === 'linked' && !(question.skillIds || []).length) {
+        return false;
+      }
+      if (skillLinkFilter === 'unlinked' && (question.skillIds || []).length > 0) {
+        return false;
+      }
       if (selectedDifficulty && question.difficulty !== selectedDifficulty) {
         return false;
       }
       return true;
     });
-  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty]);
+  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty, skillLinkFilter]);
   const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
 
   useEffect(() => {
@@ -1238,11 +1244,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           <p className="mt-2 text-2xl font-black text-gray-900">{questionCoverageSummary.total}</p>
         </div>
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
-          <p className="text-xs font-black text-indigo-700">المهارات الرئيسية</p>
+          <p className="text-xs font-black text-indigo-700">المهارات الرئيسية المغطاة بالأسئلة</p>
           <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount}</p>
         </div>
         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-          <p className="text-xs font-black text-emerald-700">المهارات الفرعية</p>
+          <p className="text-xs font-black text-emerald-700">المهارات الفرعية المغطاة بالأسئلة</p>
           <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount}</p>
         </div>
         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
@@ -1318,7 +1324,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
           <select
             value={selectedSkillId}
-            onChange={(event) => setSelectedSkillId(event.target.value)}
+            onChange={(event) => {
+              const nextSkillId = event.target.value;
+              setSelectedSkillId(nextSkillId);
+              if (nextSkillId) setSkillLinkFilter('linked');
+            }}
             className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium disabled:opacity-50"
             aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
             title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
@@ -1330,6 +1340,23 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 {subSkill.name}
               </option>
             ))}
+          </select>
+
+          <select
+            value={skillLinkFilter}
+            onChange={(event) => {
+              const next = event.target.value as 'all' | 'linked' | 'unlinked';
+              setSkillLinkFilter(next);
+              if (next === 'unlinked') setSelectedSkillId('');
+            }}
+            className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 font-medium"
+            aria-label="فلتر ربط السؤال بالمهارات"
+            title="فلترة كل بنك الأسئلة حسب وجود ربط بمهارة فرعية"
+            data-testid="question-bank-skill-link-filter"
+          >
+            <option value="all">كل الأسئلة - ربط المهارات</option>
+            <option value="linked">مربوط بمهارة فرعية</option>
+            <option value="unlinked">غير مربوط بمهارة فرعية</option>
           </select>
 
           <div className={`relative ${subjectId ? 'col-span-full sm:col-span-2' : 'col-span-1 sm:col-span-2 lg:col-span-4 xl:col-span-1'}`}>
@@ -1446,7 +1473,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           </div>
 
           {/* زر إعادة ضبط الفلاتر */}
-          {(videoFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
+          {(videoFilter !== 'all' || skillLinkFilter !== 'all' || selectedDifficulty || searchTerm || selectedPathId || selectedSubjectId || selectedSectionId || selectedSkillId) && (
             <button
               type="button"
               onClick={() => {
@@ -1457,6 +1484,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 setSelectedSubjectId('');
                 setSelectedSectionId('');
                 setSelectedSkillId('');
+                setSkillLinkFilter('all');
               }}
               className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-red-600 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
             >
