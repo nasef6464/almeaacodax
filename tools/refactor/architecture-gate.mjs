@@ -5,10 +5,11 @@ const ROOT = process.cwd();
 const baselineContractsPath = path.join(ROOT, 'docs', 'architecture', 'baseline', 'CONTRACTS_PRE_STRUCTURAL.json');
 const baselineAuditPath = path.join(ROOT, 'docs', 'architecture', 'baseline', 'REPOSITORY_PRE_STRUCTURAL.json');
 const approvedExtensionsPath = path.join(ROOT, 'docs', 'architecture', 'APPROVED_CONTRACT_EXTENSIONS.json');
+const approvedMigrationsPath = path.join(ROOT, 'docs', 'architecture', 'APPROVED_CONTRACT_MIGRATIONS.json');
 const progressiveBudgetPath = path.join(ROOT, 'docs', 'architecture', 'ARCHITECTURE_BUDGET.json');
 const currentAuditPath = path.join(ROOT, 'docs', 'architecture', 'generated', 'CURRENT_REPOSITORY_AUDIT.json');
 
-for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensionsPath, progressiveBudgetPath, currentAuditPath]) {
+for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensionsPath, approvedMigrationsPath, progressiveBudgetPath, currentAuditPath]) {
   if (!fs.existsSync(file)) {
     throw new Error(`[architecture-gate] required evidence file is missing: ${path.relative(ROOT, file)}`);
   }
@@ -17,6 +18,7 @@ for (const file of [baselineContractsPath, baselineAuditPath, approvedExtensions
 const baselineContracts = JSON.parse(fs.readFileSync(baselineContractsPath, 'utf8'));
 const baselineAudit = JSON.parse(fs.readFileSync(baselineAuditPath, 'utf8'));
 const approvedExtensions = JSON.parse(fs.readFileSync(approvedExtensionsPath, 'utf8'));
+const approvedMigrations = JSON.parse(fs.readFileSync(approvedMigrationsPath, 'utf8'));
 const progressiveBudget = JSON.parse(fs.readFileSync(progressiveBudgetPath, 'utf8'));
 const currentAudit = JSON.parse(fs.readFileSync(currentAuditPath, 'utf8'));
 const failures = [];
@@ -54,12 +56,37 @@ function finiteBudget(value, fallback) {
   return Number.isFinite(value) && value >= 0 ? value : fallback;
 }
 
+function applyReviewedReplacements(values, replacements, label) {
+  const next = [...values];
+  const seenFrom = new Set();
+  const seenTo = new Set();
+  for (const replacement of replacements) {
+    const from = replacement?.from;
+    const to = replacement?.to;
+    const reason = replacement?.reason;
+    if (!from || !to || !reason || from === to || seenFrom.has(from) || seenTo.has(to)) {
+      failures.push({ label: `${label} contains an invalid replacement`, replacement });
+      continue;
+    }
+    seenFrom.add(from);
+    seenTo.add(to);
+    const index = next.indexOf(from);
+    if (index < 0) {
+      failures.push({ label: `${label} references a signature outside the immutable baseline`, replacement });
+      continue;
+    }
+    next[index] = to;
+  }
+  return next;
+}
+
 const routeSignature = (entry) => `${entry.receiver}|${entry.method}|${entry.path}`;
 const mountSignature = (entry) => `${entry.receiver}|${entry.prefix}|${entry.mounted}`;
 const approvedFrontendRoutes = approvedExtensions.frontendRoutes || [];
 const approvedBackendRouteSignatures = approvedExtensions.backendRouteSignatures || [];
 const approvedRouterMountSignatures = approvedExtensions.routerMountSignatures || [];
 const approvedEnvKeys = approvedExtensions.envKeys || [];
+const approvedBackendRouteReplacements = approvedMigrations.backendRouteSignatureReplacements || [];
 
 requireExact(
   'frontend route literals changed outside the immutable baseline and approved product extensions',
@@ -67,12 +94,14 @@ requireExact(
   currentAudit.frontendRoutes || [],
 );
 
+const migratedBaselineBackendRoutes = applyReviewedReplacements(
+  (baselineContracts.backendRouteEntries || []).map(routeSignature),
+  approvedBackendRouteReplacements,
+  'approved backend route ownership migrations',
+);
 requireExact(
-  'backend HTTP route contract changed outside the immutable baseline and approved product extensions',
-  [
-    ...(baselineContracts.backendRouteEntries || []).map(routeSignature),
-    ...approvedBackendRouteSignatures,
-  ],
+  'backend HTTP route contract changed outside the immutable baseline, reviewed ownership migrations, and approved product extensions',
+  [...migratedBaselineBackendRoutes, ...approvedBackendRouteSignatures],
   (currentAudit.backendRouteEntries || []).map(routeSignature),
 );
 
@@ -122,7 +151,6 @@ if (currentCycles > cyclesLimit) {
 const baselineHotspots = baselineAudit.summary?.hotspots400Lines ?? Number.MAX_SAFE_INTEGER;
 const hotspotsBudget = finiteBudget(progressiveBudget.maxHotspots400Lines, baselineHotspots);
 const hotspotsLimit = Math.min(baselineHotspots, hotspotsBudget);
-// Explicit test/E2E/spec files are execution evidence rather than shipped runtime modules.
 const testFilePattern = /(?:^|\/)[^/]+\.(?:e2e|test|spec)\.[cm]?[jt]sx?$/i;
 const ciEvidenceFiles = new Set(['server/src/scripts/backendIntegrationGate.ts']);
 const runtimeHotspots = (currentAudit.hotspots || []).filter((entry) => {
@@ -151,12 +179,15 @@ console.log(JSON.stringify({
   frontendRoutes: currentAudit.frontendRoutes?.length || 0,
   backendRouteEntries: currentAudit.backendRouteEntries?.length || 0,
   routerMounts: currentAudit.routerMounts?.length || 0,
-  envKeys: currentAudit.envKeys?.length || 0,
+  envKeys: currentAudit.envKeys || [],
   approvedContractExtensions: {
     frontendRoutes: approvedFrontendRoutes.length,
     backendRouteEntries: approvedBackendRouteSignatures.length,
     routerMounts: approvedRouterMountSignatures.length,
     envKeys: approvedEnvKeys.length,
+  },
+  approvedContractMigrations: {
+    backendRouteOwnershipReplacements: approvedBackendRouteReplacements.length,
   },
   unresolvedRuntimeRelativeImports: currentUnresolved,
   unresolvedRuntimeRelativeImportsLimit: unresolvedLimit,
