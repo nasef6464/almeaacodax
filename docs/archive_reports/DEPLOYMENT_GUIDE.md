@@ -5,7 +5,7 @@ Primary operational deployment notes live in `docs/DEPLOYMENT.md`.
 ## Current Production Targets
 
 - Frontend: Vercel, `https://almeaacodax.vercel.app`
-- Backend: Render, `https://almeaacodax-k2ux.onrender.com/api`
+- Backend: Render, `https://almeaacodax-codex.onrender.com/api` (reached canonically through the Vercel `/api` rewrite)
 - Database: MongoDB Atlas
 - Production branch: `main`
 
