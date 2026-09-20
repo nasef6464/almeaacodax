@@ -9,6 +9,7 @@ const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeT
 const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8').catch(() => '');
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8').catch(() => '');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8').catch(() => '');
+const questionBankRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/questionBankRoutes.ts', import.meta.url), 'utf8').catch(() => '');
 const querySchemaSource = await readFile(new URL('../server/src/modules/quizzes/http/questionQuerySchemas.ts', import.meta.url), 'utf8').catch(() => '');
 
 const checks = [];
@@ -77,8 +78,8 @@ check('SmartQuestionSelector delegates filtering and paging to the API', () => {
   assertIncludes(smartSelectorSource, 'totalManualPages');
   assertIncludes(smartSelectorSource, 'skillIds: mode === "skills"');
   assertIncludes(smartSelectorSource, 'difficulty: difficulty === "all"');
-  assertIncludes(quizRoutesSource, 'if (query.skillIds)');
-  assertIncludes(quizRoutesSource, 'scopeFilter.difficulty = query.difficulty');
+  assertIncludes(questionBankRoutesSource, 'if (query.skillIds)');
+  assertIncludes(questionBankRoutesSource, 'scopeFilter.difficulty = query.difficulty');
 });
 
 check('SmartQuestionSelector surfaces selected-question integrity diagnostics', () => {
