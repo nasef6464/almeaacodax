@@ -246,3 +246,9 @@ Submit -> تحليل أدلة كل مهارة -> تحديث SkillProgress مرة
 - pagination + projections + indexed queries + incremental aggregates + ETag/cache عند الملاءمة.
 - لا parallel multi-provider AI requests؛ fallback تسلسلي فقط مع circuit breaker وtoken/rate budgets.
 - قبل Batch 15 يسجل benchmark قبل/بعد: request count، transferred bytes، DB query count/latency، server CPU/memory إن توفر القياس، AI calls/tokens، وmedia bandwidth.
+
+
+## Canonical Adaptive/Mastery Plan — 2026-09-21
+الخطة التنفيذية النهائية الموحدة للتعلم التكيفي/الإتقان/التأسيس/تقارير المهارات/AI Question Assistant/ميزانية الموارد موجودة في:
+`docs/architecture/ADAPTIVE_MASTERY_FINAL_MASTER_PLAN_AR.md`
+أي Agent يعمل في هذه المنطقة يجب أن يقرأها قبل التعديل، ويطبق ترتيب المراحل وDefinition of Done وResource Report فيها. لا تُستخدم الملاحظات الأقدم لتجاوز هذا العقد؛ حالة التنفيذ الزمنية تُثبت دائمًا من GitHub/CI exact-head.
