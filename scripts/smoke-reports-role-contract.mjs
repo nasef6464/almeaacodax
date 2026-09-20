@@ -25,6 +25,8 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
+const recommendationSource = await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8');
+const studentReportActionsSource = await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const quizSupervisorScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorScope.ts', import.meta.url), 'utf8');
@@ -160,15 +162,15 @@ check('student compact report is period-based and prints the simple skill rows',
 });
 
 check('student weak-skill actions open the linked foundation topic first', () => {
-  assertIncludes(reportsSource, "const buildFoundationTopicLink = (content: 'lessons' | 'quizzes')");
-  assertIncludes(reportsSource, 'scoredFoundationTopics');
-  assertIncludes(reportsSource, 'foundationTopicLink');
-  assertIncludes(reportsSource, "const lessonLink = buildFoundationTopicLink('lessons')");
-  assertIncludes(reportsSource, "params.set('tab', 'skills')");
-  assertIncludes(reportsSource, "params.set('content', content)");
-  assertIncludes(reportsSource, 'const foundationTrainingLink = recommendedTopic');
-  assertIncludes(reportsSource, "relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses'");
-  assertIncludes(reportsSource, "quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined)");
+  assertIncludes(recommendationSource, "const buildFoundationTopicLink = (content: 'lessons' | 'quizzes')");
+  assertIncludes(recommendationSource, 'scoredFoundationTopics');
+  assertIncludes(recommendationSource, 'foundationTopicLink');
+  assertIncludes(recommendationSource, "const lessonLink = buildFoundationTopicLink('lessons')");
+  assertIncludes(recommendationSource, "params.set('tab', 'skills')");
+  assertIncludes(recommendationSource, "params.set('content', content)");
+  assertIncludes(recommendationSource, 'const foundationTrainingLink = recommendedTopic');
+  assertIncludes(studentReportActionsSource, "relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses'");
+  assertIncludes(recommendationSource, "quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined)");
 });
 
 check('student smart remediation uses AI with a local fallback plan', () => {
