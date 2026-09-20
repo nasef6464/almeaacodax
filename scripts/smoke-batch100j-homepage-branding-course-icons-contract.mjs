@@ -35,9 +35,9 @@ const homepageModel = read("server/src/models/HomepageSettings.ts");
 assertIncludes(homepageModel, 'tertiaryCtaLabel: { type: String, default: "" }', "homepage model stores third button label");
 assertIncludes(homepageModel, 'titleHighlightColor: { type: String, default: "" }', "homepage model stores title color");
 
-const contentRoutes = read("server/src/routes/content.routes.ts");
+const presentationRoutes = read("server/src/modules/content/http/contentPresentationRoutes.ts");
 const presentationSchemas = read("server/src/modules/content/http/platformPresentationSchemas.ts");
-assertIncludes(contentRoutes, "homepageSettingsSchema", "homepage route uses extracted presentation schema");
+assertIncludes(presentationRoutes, "homepageSettingsSchema", "homepage route uses extracted presentation schema");
 assertIncludes(presentationSchemas, "tertiaryCtaLabel: z.string().optional()", "homepage update validates third button label");
 assertIncludes(presentationSchemas, "titleHighlightColor: z.string().optional()", "homepage update validates title color");
 
