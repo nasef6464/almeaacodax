@@ -336,6 +336,7 @@ export const useStore = create<AppState>()(
                       .map((topic: any) => ({
                         ...topic,
                         id: String(topic?.id || topic?._id || ''),
+                        skillId: topic?.skillId ? String(topic.skillId) : undefined,
                         lessonIds: normalizeIdList(topic?.lessonIds),
                         quizIds: normalizeIdList(topic?.quizIds),
                         libraryItemIds: normalizeIdList(topic?.libraryItemIds),
