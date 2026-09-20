@@ -29,6 +29,11 @@ type TopicDocument = {
   quizIds?: string[];
 };
 
+type QuizIdentifierDocument = {
+  _id: unknown;
+  id?: string;
+};
+
 type QuestionDocument = {
   _id: unknown;
   pathId?: string;
@@ -54,7 +59,7 @@ const main = async () => {
       db
         .collection<SkillDocument>("skills")
         .find({})
-        .project({
+        .project<SkillDocument>({
           _id: 1,
           id: 1,
           pathId: 1,
@@ -67,7 +72,7 @@ const main = async () => {
       db
         .collection<TopicDocument>("topics")
         .find({ parentId: { $ne: null } })
-        .project({
+        .project<TopicDocument>({
           _id: 1,
           id: 1,
           pathId: 1,
@@ -81,14 +86,14 @@ const main = async () => {
         })
         .toArray(),
       db
-        .collection("quizzes")
+        .collection<QuizIdentifierDocument>("quizzes")
         .find({})
-        .project({ _id: 1, id: 1 })
+        .project<QuizIdentifierDocument>({ _id: 1, id: 1 })
         .toArray(),
       db
         .collection<QuestionDocument>("questions")
         .find({})
-        .project({ _id: 1, pathId: 1, subjectId: 1, subject: 1, skillIds: 1 })
+        .project<QuestionDocument>({ _id: 1, pathId: 1, subjectId: 1, subject: 1, skillIds: 1 })
         .toArray(),
     ]);
 
@@ -284,7 +289,7 @@ const main = async () => {
       }));
 
       if (operations.length > 0) {
-        const result = await db.collection("topics").bulkWrite(operations, { ordered: false });
+        const result = await db.collection<TopicDocument>("topics").bulkWrite(operations, { ordered: false });
         updatedTopics = result.modifiedCount;
       }
     }
