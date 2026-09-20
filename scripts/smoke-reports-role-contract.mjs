@@ -29,6 +29,7 @@ const recommendationSource = await readFile(new URL('../pages/Reports/recommenda
 const studentReportActionsSource = await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizResultsRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/quizResultsRoutes.ts', import.meta.url), 'utf8');
 const quizAnalyticsRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/quizAnalyticsRoutes.ts', import.meta.url), 'utf8');
 const quizAnalyticsOverviewSource = await readFile(new URL('../server/src/modules/quizzes/application/quizAnalyticsOverview.ts', import.meta.url), 'utf8');
 const quizAnalyticsWeakestStudentsSource = await readFile(new URL('../server/src/modules/quizzes/application/quizAnalyticsWeakestStudents.ts', import.meta.url), 'utf8');
@@ -78,7 +79,7 @@ check('reports load scoped analytics and scoped quiz results for non-student rol
   assertIncludes(apiSource, 'getQuizAnalyticsOverview');
   assertIncludes(apiSource, 'getScopedQuizResults');
   assertIncludes(quizAnalyticsRoutesSource, '"/analytics/overview"');
-  assertIncludes(quizRoutesSource, '"/results/scoped"');
+  assertIncludes(quizResultsRoutesSource, '"/results/scoped"');
 });
 
 check('student report starts simple and keeps details opt-in', () => {
@@ -333,12 +334,12 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizSupervisorReportScopeSource, 'const schoolWideChildGroups = await repository.findSchoolWideChildGroups(directScope.schoolIds);');
   assertIncludes(quizReportStudentScopeSource, 'scopeFilters.push({ schoolId: { $in: supervisorScope.schoolIds } })');
   assertIncludes(quizAnalyticsOverviewSource, 'const scopedStudentIds = scopedStudents.map((student) => idOf(student));');
-  assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
+  assertIncludes(quizResultsRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
   assertIncludes(quizReportStudentScopeSource, 'authUser.role === "parent"');
   assertIncludes(quizReportStudentScopeSource, 'getAuthorizedStudentIdsForParent');
   assertIncludes(quizReportStudentScopeSource, 'authorizedStudentIds');
   assertIncludes(quizAnalyticsOverviewSource, 'matchesManagedContentScope');
-  assertIncludes(quizRoutesSource, 'filterResultsByManagedContentScope');
+  assertIncludes(quizResultsRoutesSource, 'filterResultsByManagedContentScope');
   assertIncludes(quizAnalyticsOverviewSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');
   assertIncludes(quizReportAttemptGapsSource, 'Converts one persisted question attempt into the report');
   assertIncludes(quizReportAttemptGapsSource, 'mastery: attempt.isCorrect ? 100 : 0');
