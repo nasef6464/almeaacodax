@@ -29,6 +29,10 @@ const recommendationSource = await readFile(new URL('../pages/Reports/recommenda
 const studentReportActionsSource = await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizAnalyticsRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/quizAnalyticsRoutes.ts', import.meta.url), 'utf8');
+const quizAnalyticsOverviewSource = await readFile(new URL('../server/src/modules/quizzes/application/quizAnalyticsOverview.ts', import.meta.url), 'utf8');
+const quizAnalyticsWeakestStudentsSource = await readFile(new URL('../server/src/modules/quizzes/application/quizAnalyticsWeakestStudents.ts', import.meta.url), 'utf8');
+const quizReportScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportScope.ts', import.meta.url), 'utf8');
 const quizSupervisorScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorScope.ts', import.meta.url), 'utf8');
 const quizSupervisorReportScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizSupervisorReportScope.ts', import.meta.url), 'utf8');
 const quizReportStudentScopeSource = await readFile(new URL('../server/src/modules/quizzes/application/quizReportStudentScope.ts', import.meta.url), 'utf8');
@@ -73,7 +77,7 @@ check('reports load scoped analytics and scoped quiz results for non-student rol
   assertIncludes(reportsSource, 'api.getScopedQuizResults()');
   assertIncludes(apiSource, 'getQuizAnalyticsOverview');
   assertIncludes(apiSource, 'getScopedQuizResults');
-  assertIncludes(quizRoutesSource, '"/analytics/overview"');
+  assertIncludes(quizAnalyticsRoutesSource, '"/analytics/overview"');
   assertIncludes(quizRoutesSource, '"/results/scoped"');
 });
 
@@ -311,11 +315,11 @@ check('staff scoped reports keep intervention plan, summary, and smart remediati
 });
 
 check('server analytics scopes reports by role before returning weak skills and students', () => {
-  assertIncludes(quizRoutesSource, 'buildQuizReportStudentScope(authUser, resolveSupervisorSchoolReportScope)');
+  assertIncludes(quizReportScopeSource, 'buildQuizReportStudentScope(');
+  assertIncludes(quizReportScopeSource, 'resolveSupervisorSchoolReportScope');
   assertIncludes(quizReportStudentScopeSource, 'authUser.role === "admin"');
   assertIncludes(quizReportStudentScopeSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
-  assertIncludes(quizRoutesSource, 'const resolveSupervisorSchoolReportScope = async');
-  assertIncludes(quizRoutesSource, 'resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository)');
+  assertIncludes(quizReportScopeSource, 'resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository)');
   assertIncludes(quizSupervisorReportScopeSource, 'without promoting a class-level supervisor to school-wide access');
   assertIncludes(quizSupervisorReportScopeSource, 'repository.findDirectlySupervisedGroups');
   assertIncludes(quizSupervisorReportScopeSource, 'repository.findSchoolWideChildGroups(directScope.schoolIds)');
@@ -328,24 +332,24 @@ check('server analytics scopes reports by role before returning weak skills and 
   }
   assertIncludes(quizSupervisorReportScopeSource, 'const schoolWideChildGroups = await repository.findSchoolWideChildGroups(directScope.schoolIds);');
   assertIncludes(quizReportStudentScopeSource, 'scopeFilters.push({ schoolId: { $in: supervisorScope.schoolIds } })');
-  assertIncludes(quizRoutesSource, 'const scopedStudentIds = students.map((student) => idOf(student));');
+  assertIncludes(quizAnalyticsOverviewSource, 'const scopedStudentIds = scopedStudents.map((student) => idOf(student));');
   assertIncludes(quizRoutesSource, 'Scope aggregate input to the same authoritative student relationship');
   assertIncludes(quizReportStudentScopeSource, 'authUser.role === "parent"');
   assertIncludes(quizReportStudentScopeSource, 'getAuthorizedStudentIdsForParent');
   assertIncludes(quizReportStudentScopeSource, 'authorizedStudentIds');
-  assertIncludes(quizRoutesSource, 'matchesManagedContentScope');
+  assertIncludes(quizAnalyticsOverviewSource, 'matchesManagedContentScope');
   assertIncludes(quizRoutesSource, 'filterResultsByManagedContentScope');
-  assertIncludes(quizRoutesSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');
+  assertIncludes(quizAnalyticsOverviewSource, 'buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById)');
   assertIncludes(quizReportAttemptGapsSource, 'Converts one persisted question attempt into the report');
   assertIncludes(quizReportAttemptGapsSource, 'mastery: attempt.isCorrect ? 100 : 0');
-  if (quizRoutesSource.includes('buildAttemptGaps(')) {
+  if (quizAnalyticsOverviewSource.includes('buildAttemptGaps(')) {
     throw new Error('Analytics must use the extracted question-attempt gap read model consistently');
   }
-  assertIncludes(quizRoutesSource, 'const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
-  assertIncludes(quizRoutesSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
-  assertIncludes(quizRoutesSource, 'earlyWeakSkillSignalCount');
-  assertIncludes(quizRoutesSource, 'minSkillEvidence: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT');
-  assertPattern(quizRoutesSource, /weakestStudents[\s\S]*weakestSkills[\s\S]*subjectSummaries/, 'analytics response should include students, skills, and subjects');
+  assertIncludes(quizAnalyticsWeakestStudentsSource, 'export const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
+  assertIncludes(quizAnalyticsOverviewSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
+  assertIncludes(quizAnalyticsOverviewSource, 'earlyWeakSkillSignalCount');
+  assertIncludes(quizAnalyticsOverviewSource, 'minSkillEvidence: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT');
+  assertPattern(quizAnalyticsOverviewSource, /weakestStudents[\s\S]*weakestSkills[\s\S]*subjectSummaries/, 'analytics response should include students, skills, and subjects');
 });
 
 check('dashboard keeps parent report tabs separate from student report tabs', () => {
