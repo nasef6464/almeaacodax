@@ -24,14 +24,16 @@ const integrationDefaultsSource = integrationDefaultsExists
 const lineCount = (source) => source.split(/\r?\n/).length;
 
 const defaultsImport = 'from "../presentation/platformPresentationDefaults.js";';
-const integrationDefaultsImport = 'import { defaultPlatformIntegrationSettings } from "../modules/content/integrations/platformIntegrationDefaults.js";';
+const integrationDefaultsImport = 'from "../integrations/platformIntegrationDefaults.js";';
 const homepageDeclaration = 'const defaultHomepageSettings = {';
 const fontDeclaration = 'const defaultPlatformFontSettings = {';
 const integrationDefaultsDeclaration = 'const defaultPlatformIntegrationSettings = {';
 const delegated =
   routeSource.includes('contentRouter.use(contentPresentationRouter);') &&
   presentationRouteSource.includes(defaultsImport);
-const integrationDefaultsDelegated = routeSource.includes(integrationDefaultsImport);
+const integrationDefaultsDelegated =
+  routeSource.includes('contentRouter.use(contentPlatformIntegrationRouter);') &&
+  integrationRouteSource.includes(integrationDefaultsImport);
 const ownerSource = delegated ? defaultsSource : routeSource;
 const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
 const newHomepageOwnerAssertion = `assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
@@ -119,7 +121,8 @@ check('integration defaults keep their own owner and never cross into presentati
       integrationDefaultsSource.includes('export const defaultPlatformIntegrationSettings = {'),
       'delegated integration defaults export is missing',
     );
-    assert.ok(!routeSource.includes(integrationDefaultsDeclaration), 'route retained integration defaults after dedicated delegation');
+    assert.ok(!routeSource.includes(integrationDefaultsDeclaration), 'root route retained integration defaults after dedicated delegation');
+    assert.ok(!integrationRouteSource.includes(integrationDefaultsDeclaration), 'integration route retained local integration defaults after delegation');
   } else {
     assert.ok(routeSource.includes(integrationDefaultsDeclaration), 'pre-integration-delegation route lost integration defaults');
   }
