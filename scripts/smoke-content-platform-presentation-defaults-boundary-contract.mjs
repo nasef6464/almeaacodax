@@ -7,12 +7,16 @@ const routeFile = 'server/src/routes/content.routes.ts';
 const presentationRouteFile = 'server/src/modules/content/http/contentPresentationRoutes.ts';
 const defaultsFile = 'server/src/modules/content/presentation/platformPresentationDefaults.ts';
 const integrationDefaultsFile = 'server/src/modules/content/integrations/platformIntegrationDefaults.ts';
+const integrationRouteFile = 'server/src/modules/content/http/contentPlatformIntegrationRoutes.ts';
+const integrationRuntimeFile = 'server/src/modules/content/integrations/platformIntegrationRuntime.ts';
 const homepageContractFile = 'scripts/smoke-homepage-hero-contract.mjs';
 const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
 const presentationRouteSource = fs.readFileSync(path.join(root, presentationRouteFile), 'utf8').replace(/\r\n/g, '\n');
 const homepageContractSource = fs.readFileSync(path.join(root, homepageContractFile), 'utf8').replace(/\r\n/g, '\n');
 const defaultsExists = fs.existsSync(path.join(root, defaultsFile));
 const defaultsSource = defaultsExists ? fs.readFileSync(path.join(root, defaultsFile), 'utf8').replace(/\r\n/g, '\n') : '';
+const integrationRouteSource = fs.readFileSync(path.join(root, integrationRouteFile), 'utf8').replace(/\r\n/g, '\n');
+const integrationRuntimeSource = fs.readFileSync(path.join(root, integrationRuntimeFile), 'utf8').replace(/\r\n/g, '\n');
 const integrationDefaultsExists = fs.existsSync(path.join(root, integrationDefaultsFile));
 const integrationDefaultsSource = integrationDefaultsExists
   ? fs.readFileSync(path.join(root, integrationDefaultsFile), 'utf8').replace(/\r\n/g, '\n')
@@ -123,15 +127,19 @@ check('integration defaults keep their own owner and never cross into presentati
 
 check('security and runtime ownership stays outside the presentation-default batch', () => {
   for (const fragment of [
-    'const sanitizeAndValidateExternalPlatforms =',
     'const hasSchoolIdManagementScope = async (',
     'const buildScopedGroupCreatePayload = async (',
+  ]) assert.ok(routeSource.includes(fragment), `content route lost school security ownership: ${fragment}`);
+  for (const fragment of [
+    'export const sanitizeAndValidateExternalPlatforms =',
     'const SENSITIVE_PROVIDER_FIELDS =',
-    'const maskSensitiveProviderValues =',
-    'const mergeSensitiveProviderValues =',
+    'export const maskSensitiveProviderValues =',
+    'export const mergeSensitiveProviderValues =',
+  ]) assert.ok(integrationRuntimeSource.includes(fragment), `integration runtime lost security ownership: ${fragment}`);
+  for (const fragment of [
     'decryptIntegrationSecretsForRuntime',
     'encryptIntegrationSecretsAtRest',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost security/runtime ownership: ${fragment}`);
+  ]) assert.ok(integrationRouteSource.includes(fragment), `integration route lost crypto ownership: ${fragment}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
