@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const appSource = await readFile(new URL('../server/src/app.ts', import.meta.url), 'utf8');
 const authRoutesSource = await readFile(new URL('../server/src/routes/auth.routes.ts', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const adaptiveTelemetryRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -56,8 +57,8 @@ check('direct quiz result creation is disabled', () => {
 
 check('question attempts calculate correctness on the server', () => {
   assertNotIncludes(quizRoutesSource, 'isCorrect: z.boolean().default(false)');
-  assertIncludes(quizRoutesSource, 'correctOptionIndex');
-  assertIncludes(quizRoutesSource, 'selectedOptionIndex === Number(question.correctOptionIndex ?? 0)');
+  assertIncludes(adaptiveTelemetryRoutesSource, 'correctOptionIndex');
+  assertIncludes(adaptiveTelemetryRoutesSource, 'selectedOptionIndex === Number(question.correctOptionIndex ?? 0)');
   assertIncludes(quizRoutesSource, 'isCorrect,');
 });
 
