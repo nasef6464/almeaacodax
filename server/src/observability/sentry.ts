@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { env } from "../config/env.js";
+import { resolveRuntimeCommit } from "./releaseIdentity.js";
 
 let initialized = false;
 
@@ -17,6 +18,7 @@ export function initSentry() {
   Sentry.init({
     dsn: env.SENTRY_DSN,
     environment: env.SENTRY_ENVIRONMENT || env.NODE_ENV,
+    release: resolveRuntimeCommit() || undefined,
     tracesSampleRate: resolveSampleRate(),
   });
 
