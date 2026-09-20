@@ -22,6 +22,7 @@ import { createLearningInteractionsSlice } from './slices/learningInteractionsSl
 import { createLearningProgressSlice } from './slices/learningProgressSlice';
 import { createLibraryItemsSlice } from './slices/libraryItemsSlice';
 import { createStudyPlansSlice } from './slices/studyPlansSlice';
+import { createQuestionCatalogSlice } from './slices/questionCatalogSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -502,55 +503,7 @@ export const useStore = create<AppState>()(
                 }
             },
 
-            // Question Actions
-            addQuestion: async (question) => {
-                const created = await api.createQuestion(question) as any;
-                const normalizedQuestion = {
-                    ...question,
-                    id: String(created?.id || created?._id || question.id),
-                    ...created,
-                } as Question;
-                set((state) => ({
-                    questions: [normalizedQuestion, ...state.questions.filter((item) => item.id !== normalizedQuestion.id)]
-                }));
-                return normalizedQuestion;
-            },
-            updateQuestion: async (questionId, data) => {
-                const updated = await api.updateQuestion(questionId, data) as any;
-                const persistedQuestion = {
-                    ...data,
-                    ...updated,
-                    id: String(updated?.id || updated?._id || questionId),
-                } as Question;
-                set((state) => ({
-                    questions: state.questions.map(q => q.id === questionId ? { ...q, ...persistedQuestion } : q)
-                }));
-                return persistedQuestion;
-            },
-            deleteQuestion: async (questionId) => {
-                await api.deleteQuestion(questionId);
-                set((state) => ({
-                    questions: state.questions.filter(q => q.id !== questionId),
-                    // مزامنة محلية: إزالة الـ questionId من الاختبارات التي تُشير إليه
-                    // (السيرفر يقوم بنفس الشيء عبر cascade delete)
-                    quizzes: state.quizzes.map(quiz => {
-                        const hasInRoot = quiz.questionIds?.includes(questionId);
-                        const hasInSections = quiz.mockExam?.sections?.some(s => s.questionIds?.includes(questionId));
-                        if (!hasInRoot && !hasInSections) return quiz;
-                        return {
-                            ...quiz,
-                            questionIds: quiz.questionIds?.filter(id => id !== questionId),
-                            mockExam: quiz.mockExam ? {
-                                ...quiz.mockExam,
-                                sections: quiz.mockExam.sections?.map(s => ({
-                                    ...s,
-                                    questionIds: s.questionIds?.filter(id => id !== questionId) ?? [],
-                                })),
-                            } : quiz.mockExam,
-                        };
-                    }),
-                }));
-            },
+            ...createQuestionCatalogSlice<AppState>(set, api),
 
             // Quiz Actions
             addQuiz: async (quiz) => {
