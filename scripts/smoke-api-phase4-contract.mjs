@@ -8,6 +8,8 @@ const files = {
   quizRoutes: await readFile(new URL("../server/src/routes/quiz.routes.ts", import.meta.url), "utf8"),
   courseRoutes: await readFile(new URL("../server/src/routes/course.routes.ts", import.meta.url), "utf8"),
   contentRoutes: await readFile(new URL("../server/src/routes/content.routes.ts", import.meta.url), "utf8"),
+  schoolReportImportRoutes: await readFile(new URL("../server/src/modules/content/http/contentSchoolReportImportRoutes.ts", import.meta.url), "utf8"),
+  schoolCommercialRoutes: await readFile(new URL("../server/src/modules/content/http/contentSchoolCommercialRoutes.ts", import.meta.url), "utf8"),
   notificationRoutes: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   operationsRoutes: await readFile(new URL("../server/src/routes/operations.routes.ts", import.meta.url), "utf8"),
   apiClient: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
@@ -55,13 +57,20 @@ check("large list endpoints expose pagination metadata", () => {
     files.paymentRoutes,
     files.quizRoutes,
     files.courseRoutes,
-    files.contentRoutes,
+    files.schoolReportImportRoutes,
     files.notificationRoutes,
     files.operationsRoutes,
   ]) {
     assertIncludes(source, "resolvePagination");
     assertIncludes(source, "buildPaginatedResponse");
   }
+});
+
+check("school commercial lists retain bounded pagination metadata", () => {
+  assertIncludes(files.schoolCommercialRoutes, "resolvePagination");
+  assertIncludes(files.schoolCommercialRoutes, "buildPaginationMeta");
+  assertIncludes(files.schoolCommercialRoutes, '"/access-codes"');
+  assertIncludes(files.schoolCommercialRoutes, '"/access-code-redemptions"');
 });
 
 check("payment lists return bounded filtered pages with real items in pagination metadata", () => {
@@ -76,12 +85,12 @@ check("payment lists return bounded filtered pages with real items in pagination
 });
 
 check("school report uses bounded quiz result sampling instead of loading all results", () => {
-  assertIncludes(files.contentRoutes, '"/schools/:id/report"');
-  assertIncludes(files.contentRoutes, "QuizResultModel.countDocuments");
-  assertIncludes(files.contentRoutes, ".skip(pagination.skip)");
-  assertIncludes(files.contentRoutes, ".limit(pagination.limit)");
-  assertIncludes(files.contentRoutes, "quizResultsPagination: buildPaginatedResponse");
-  assertIncludes(files.contentRoutes, "sampledQuizAttempts");
+  assertIncludes(files.schoolReportImportRoutes, '"/schools/:id/report"');
+  assertIncludes(files.schoolReportImportRoutes, "QuizResultModel.countDocuments");
+  assertIncludes(files.schoolReportImportRoutes, ".skip(pagination.skip)");
+  assertIncludes(files.schoolReportImportRoutes, ".limit(pagination.limit)");
+  assertIncludes(files.schoolReportImportRoutes, "quizResultsPagination: buildPaginatedResponse");
+  assertIncludes(files.schoolReportImportRoutes, "sampledQuizAttempts");
 });
 
 check("frontend service clients safely unwrap paginated list payloads", () => {
