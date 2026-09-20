@@ -762,6 +762,20 @@ quizRouter.post(
   }),
 );
 
+quizRouter.get(
+  "/questions/:id",
+  requireAuth,
+  requireRole(["admin", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const question = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!)).lean();
+    if (!question) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
+    }
+    await assertManagedContentScope(req.authUser!, question);
+    return res.json(question);
+  }),
+);
+
 quizRouter.patch(
   "/questions/:id",
   requireAuth,
