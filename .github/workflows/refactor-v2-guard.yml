@@ -93,6 +93,9 @@ jobs:
       - name: Question catalog store boundary contract
         run: node scripts/smoke-question-catalog-store-boundary-contract.mjs
 
+      - name: Quiz catalog store boundary contract
+        run: node scripts/smoke-quiz-catalog-store-boundary-contract.mjs
+
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 
