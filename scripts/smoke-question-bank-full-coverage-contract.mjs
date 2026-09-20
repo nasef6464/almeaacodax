@@ -9,6 +9,7 @@ const querySchema = read("server/src/modules/quizzes/http/questionQuerySchemas.t
 const coverage = read("server/src/modules/quizzes/application/questionBankCoverage.ts");
 const questionApi = read("services/apiGroups/questionsApi.ts");
 const manager = read("dashboards/admin/QuestionBankManager.tsx");
+const catalogData = read("dashboards/admin/questionBank/useQuestionBankCatalogData.ts");
 const builder = read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx");
 const editor = read("components/RichTextEditor.tsx");
 const mediaRoute = read("server/src/routes/media.routes.ts");
@@ -20,9 +21,9 @@ const checks = [
   ["skill-link filter is server-side", querySchema.includes('skillLinkStatus: z.enum(["linked", "unlinked"])') && route.includes('scopeFilter["skillIds.0"]')],
   ["video status filter is server-side", querySchema.includes('videoStatus: z.enum(["with", "without"])') && route.includes('query.videoStatus === "without"')],
   ["explanation completeness filter is server-side", querySchema.includes('explanationStatus: z.enum(["with", "without"])') && route.includes('query.explanationStatus === "without"')],
-  ["client requests global coverage", manager.includes("includeCoverage: true") && manager.includes("questionBankCoverage")],
-  ["client exposes linked/unlinked skill filter", manager.includes('data-testid="question-bank-skill-link-filter"') && manager.includes("skillLinkStatus:")],
-  ["client exposes missing explanation filter", manager.includes('data-testid="question-bank-missing-explanation-filter"') && manager.includes("explanationStatus:")],
+  ["client requests global coverage", catalogData.includes("includeCoverage: true") && manager.includes("questionBankCoverage")],
+  ["client exposes linked/unlinked skill filter", manager.includes('data-testid="question-bank-skill-link-filter"') && catalogData.includes("skillLinkStatus:")],
+  ["client exposes missing explanation filter", manager.includes('data-testid="question-bank-missing-explanation-filter"') && catalogData.includes("explanationStatus:")],
   ["full record is loaded before editing", manager.includes("api.getQuestionForEditing(questionId)") && questionApi.includes("getQuestionForEditing")],
   ["summary row is not directly opened for edit", !manager.includes("setCurrentQuestion(question);\n    setIsEditing(true);")],
   ["builder preserves existing multi-skill ids", builder.includes("Existing skill links are authoritative while taxonomy is loading") && builder.includes("[...(prev.skillIds || []), event.target.value]")],
