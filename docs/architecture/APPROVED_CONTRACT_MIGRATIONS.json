@@ -221,6 +221,26 @@
       "from": "contentRouter|GET|/bootstrap",
       "to": "contentBootstrapRouter|GET|/bootstrap",
       "reason": "Scoped content bootstrap moved to the dedicated bootstrap HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/questions",
+      "to": "questionBankRouter|GET|/questions",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|POST|/questions",
+      "to": "questionBankRouter|POST|/questions",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|PATCH|/questions/:id",
+      "to": "questionBankRouter|PATCH|/questions/:id",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|DELETE|/questions/:id",
+      "to": "questionBankRouter|DELETE|/questions/:id",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
     }
   ]
 }
