@@ -25,6 +25,7 @@ import { createStudyPlansSlice } from './slices/studyPlansSlice';
 import { createQuestionCatalogSlice } from './slices/questionCatalogSlice';
 import { createQuizCatalogSlice } from './slices/quizCatalogSlice';
 import { createCourseCatalogSlice } from './slices/courseCatalogSlice';
+import { createLessonCatalogSlice } from './slices/lessonCatalogSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -458,35 +459,7 @@ export const useStore = create<AppState>()(
 
             ...createQuizCatalogSlice<AppState>(set, get, api, { normalizeQuizPlacement }),
 
-            // Lesson Actions
-            addLesson: (lesson) => {
-                const normalizedLesson = {
-                    ...lesson,
-                    showOnPlatform: typeof lesson.showOnPlatform === 'boolean' ? lesson.showOnPlatform : false,
-                };
-                api.createLesson(normalizedLesson).catch(console.error);
-                set((state) => ({
-                    lessons: [normalizedLesson, ...state.lessons]
-                }));
-            },
-            updateLesson: (lessonId, data) => {
-                api.updateLesson(lessonId, data).catch(console.error);
-                set((state) => ({
-                    lessons: state.lessons.map(l => l.id === lessonId ? { ...l, ...data } : l)
-                }));
-            },
-            deleteLesson: (lessonId) => {
-                api.deleteLesson(lessonId).catch(console.error);
-                set((state) => ({
-                    lessons: state.lessons.filter(l => l.id !== lessonId),
-                    topics: state.topics.map((topic) => {
-                        if (!topic.lessonIds?.includes(lessonId)) return topic;
-                        const nextLessonIds = topic.lessonIds.filter((id) => id !== lessonId);
-                        api.updateTopic(topic.id, { lessonIds: nextLessonIds }).catch(console.error);
-                        return { ...topic, lessonIds: nextLessonIds };
-                    })
-                }));
-            },
+            ...createLessonCatalogSlice<AppState>(set, api),
 
             // Topic Actions
             addTopic: (topic) => {
