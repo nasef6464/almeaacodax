@@ -38,6 +38,32 @@ Repository tooling cannot truthfully set production RPO/RTO. Production owners m
 
 A backup is not successful merely because a file exists. Checksum verification is mandatory. A restore is not proven merely because `mongorestore` exits zero: application integrity/smoke gates must pass against the restored target. Never weaken tests to certify a restore.
 
-## External media
+## External media — Cloudflare-backed production contract
 
-The repository stores learning media primarily as external URLs. Production certification must separately verify storage versioning/backup, lifecycle policy, encryption/access controls and a sample media recovery. Do not proxy or duplicate large media into MongoDB as a DR shortcut.
+The repository stores learning media primarily as external URLs. The current production/content practice uses Cloudflare-backed delivery for uploaded images/media; MongoDB therefore backs up the **references and metadata**, not the media bytes.
+
+Treat database recovery and media recovery as two independent failure domains:
+
+1. MongoDB DR must restore the URL/key references exactly.
+2. Cloudflare-backed storage/delivery must independently preserve or recover the referenced objects.
+3. A CDN cache hit is not a backup. Purging or losing the origin object must not be considered recoverable merely because an edge cache may still contain a copy.
+4. Do not copy large media bytes into MongoDB as a DR shortcut.
+5. Do not rewrite existing Cloudflare URLs during restore unless a deliberate migration/cutover plan proves the replacement mapping.
+
+### Live Cloudflare recovery evidence required
+
+Before Batch 11 can claim production DR closure, record provider-side evidence for the Cloudflare product actually in use (for example R2, Cloudflare Images, or another Cloudflare-backed origin):
+
+- exact storage/delivery product and account/bucket/namespace identity without committing secrets;
+- custom/public delivery hostname and whether stored DB URLs remain stable after restore;
+- object/versioning or independent backup/export capability;
+- encryption-at-rest and transport protection;
+- least-privilege credentials and access/audit policy;
+- lifecycle/retention rules, including protection from accidental deletion;
+- a media inventory/sample that maps a MongoDB URL reference to the corresponding Cloudflare object/key;
+- one sample recovery drill: remove or isolate a test object, recover it from the provider backup/version/source of truth, and verify the original or intentionally migrated URL resolves again;
+- cache behavior after recovery, including purge/revalidation where required.
+
+If the Cloudflare layer has no independent object recovery/versioning/export path, Batch 11 must remain **BLOCKED for full production DR** even when MongoDB restore succeeds.
+
+The exact Cloudflare account/bucket configuration is live-environment evidence and must not be inferred from repository templates. A public delivery URL alone can prove reachability, but not backup/versioning, access control, or recoverability.
