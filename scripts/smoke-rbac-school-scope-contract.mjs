@@ -2,7 +2,6 @@ import fs from "node:fs";
 
 const source = fs.readFileSync("server/src/routes/content.routes.ts", "utf8");
 const scopeSource = fs.readFileSync("server/src/modules/content/application/schoolOperationsScope.ts", "utf8");
-const scopeSource = fs.readFileSync("server/src/modules/content/application/schoolOperationsScope.ts", "utf8");
 
 const checks = [];
 const add = (name, fn) => checks.push({ name, fn });
