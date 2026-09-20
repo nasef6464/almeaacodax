@@ -1,3 +1,27 @@
+export const mergeSkillMasteryEvidence = ({
+  previousMastery,
+  previousEvidence,
+  currentMastery,
+  currentEvidence,
+}: {
+  previousMastery: number;
+  previousEvidence: number;
+  currentMastery: number;
+  currentEvidence: number;
+}) => {
+  const safePreviousMastery = Math.max(0, Math.min(100, Number(previousMastery || 0)));
+  const safeCurrentMastery = Math.max(0, Math.min(100, Number(currentMastery || 0)));
+  const safePreviousEvidence = Math.max(0, Number(previousEvidence || 0));
+  const safeCurrentEvidence = Math.max(1, Number(currentEvidence || 1));
+  const evidenceCount = safePreviousEvidence + safeCurrentEvidence;
+  const mastery = Math.round(
+    ((safePreviousMastery * safePreviousEvidence) + (safeCurrentMastery * safeCurrentEvidence)) /
+      Math.max(evidenceCount, 1),
+  );
+
+  return { mastery, evidenceCount };
+};
+
 export const buildRecommendedAction = (mastery: number, attemptCount: number) => {
   if (mastery < 45) {
     return "خطة علاج عاجلة: شرح + تدريب + اختبار موجه";
