@@ -23,13 +23,13 @@ import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
-import { lessonSchema, librarySchema, libraryUpdateSchema, topicSchema, topicUpdateSchema } from "../modules/content/http/learningContentSchemas.js";
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
-import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
 import { contentPresentationRouter } from "../modules/content/http/contentPresentationRoutes.js";
 import { contentPlatformIntegrationRouter } from "../modules/content/http/contentPlatformIntegrationRoutes.js";
 import { contentPlatformIntegrationRuntimeRouter } from "../modules/content/http/contentPlatformIntegrationRuntimeRoutes.js";
 import { contentStudyPlanRouter } from "../modules/content/http/contentStudyPlanRoutes.js";
+import { contentLearningRouter } from "../modules/content/http/contentLearningRoutes.js";
+import { buildDocumentQuery } from "../modules/content/infrastructure/contentDocumentQuery.js";
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
@@ -40,13 +40,10 @@ import {
 } from "../modules/content/infrastructure/contentBootstrapOperationalData.js";
 import { ensureCanonicalParentRelationship } from "../services/parentAuthorityService.js";
 import {
-  assertManagedContentScope,
   buildManagedContentScopeFilter,
   combineMongoFilters,
   resolveManagedContentScope,
 } from "../services/managedContentScope.js";
-
-const sanitizeLessonPayload = sanitizeLessonResourcePayload;
 
 const reviewQueueQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -60,14 +57,6 @@ const reviewDecisionSchema = z.object({
   reviewerNotes: z.string().trim().max(2000).default(""),
   publish: z.boolean().optional(),
 });
-
-const buildDocumentQuery = (value: string) => {
-  if (mongoose.Types.ObjectId.isValid(value)) {
-    return { $or: [{ id: value }, { _id: value }] };
-  }
-
-  return { id: value };
-};
 
 const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
 const CONTENT_BOOTSTRAP_MINIMAL_CACHE_TTL_MS = 3 * 60 * 1000;
@@ -120,97 +109,6 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
-};
-
-const buildOwnedDocumentQuery = (
-  value: string,
-  authUser: { id: string; role: string; schoolId?: string | null },
-) => {
-  const baseQuery = buildDocumentQuery(value);
-
-  if (authUser.role === "admin") {
-    return baseQuery;
-  }
-
-  const ownershipConditions: Array<Record<string, string>> = [
-    { ownerId: authUser.id },
-    { createdBy: authUser.id },
-    { assignedTeacherId: authUser.id },
-  ];
-
-  if (authUser.schoolId) {
-    ownershipConditions.push({ ownerId: authUser.schoolId }, { createdBy: authUser.schoolId });
-  }
-
-  return { $and: [baseQuery, { $or: ownershipConditions }] };
-};
-
-const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
-  if (!authUser) {
-    return {};
-  }
-
-  if (authUser.role === "admin") {
-    return {
-      ownerType: "platform",
-      ownerId: authUser.id,
-      createdBy: authUser.id,
-      approvalStatus: "approved",
-      approvedBy: authUser.id,
-      approvedAt: Date.now(),
-    };
-  }
-
-  if (authUser.role === "teacher") {
-    return {
-      ownerType: "teacher",
-      ownerId: authUser.id,
-      createdBy: authUser.id,
-      assignedTeacherId: authUser.id,
-      approvalStatus: "pending_review",
-      approvedBy: "",
-      approvedAt: null,
-    };
-  }
-
-  return {
-    ownerType: "school",
-    ownerId: authUser.schoolId || authUser.id,
-    createdBy: authUser.id,
-    approvalStatus: "pending_review",
-    approvedBy: "",
-    approvedAt: null,
-  };
-};
-
-const sanitizeWorkflowUpdate = (
-  payload: Record<string, unknown>,
-  authUser: { id: string; role: string; schoolId?: string | null },
-) => {
-  const nextPayload = { ...payload };
-
-  if (authUser.role !== "admin") {
-    delete nextPayload.ownerType;
-    delete nextPayload.ownerId;
-    delete nextPayload.createdBy;
-    delete nextPayload.approvedBy;
-    delete nextPayload.approvedAt;
-    delete nextPayload.reviewerNotes;
-    delete nextPayload.revenueSharePercentage;
-    if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
-      nextPayload.approvalStatus = "pending_review";
-    }
-  } else if (typeof nextPayload.approvalStatus === "string") {
-    if (nextPayload.approvalStatus === "approved") {
-      nextPayload.approvedBy = authUser.id;
-      nextPayload.approvedAt = Date.now();
-    } else if (nextPayload.approvalStatus === "rejected" || nextPayload.approvalStatus === "pending_review") {
-      nextPayload.approvedBy = "";
-      nextPayload.approvedAt = null;
-    }
-  }
-
-  return nextPayload;
 };
 
 const escapeRegExp = (value: string) =>
@@ -306,22 +204,6 @@ const assertSchoolManagementScope = async (
 
   const supervisorIds = Array.isArray(school.supervisorIds) ? school.supervisorIds.map(String) : [];
   return supervisorIds.includes(String(authUser.id));
-};
-
-const hasTopicManagementScope = (
-  authUser: { role: string; managedPathIds?: string[]; managedSubjectIds?: string[] },
-  topic: { pathId?: unknown; subjectId?: unknown },
-) => {
-  if (authUser.role === "admin") {
-    return true;
-  }
-
-  const topicPathId = String(topic.pathId || "");
-  const topicSubjectId = String(topic.subjectId || "");
-  const managedPathIds = Array.isArray(authUser.managedPathIds) ? authUser.managedPathIds.map(String) : [];
-  const managedSubjectIds = Array.isArray(authUser.managedSubjectIds) ? authUser.managedSubjectIds.map(String) : [];
-
-  return managedPathIds.includes(topicPathId) || managedSubjectIds.includes(topicSubjectId);
 };
 
 const hasGroupManagementScope = async (
@@ -466,6 +348,7 @@ contentRouter.use(contentPresentationRouter);
 contentRouter.use(contentPlatformIntegrationRouter);
 contentRouter.use(contentPlatformIntegrationRuntimeRouter);
 contentRouter.use(contentStudyPlanRouter);
+contentRouter.use(contentLearningRouter);
 
 contentRouter.get(
   "/review-queue",
@@ -646,207 +529,6 @@ contentRouter.get(
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
     res.json(payload);
-  }),
-);
-
-contentRouter.post(
-  "/topics",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = topicSchema.parse(req.body);
-    await assertManagedContentScope(req.authUser!, payload);
-    const created = await TopicModel.create(payload);
-    res.status(StatusCodes.CREATED).json(created);
-  }),
-);
-
-contentRouter.patch(
-  "/topics/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = topicUpdateSchema.parse(req.body);
-    const existing = await TopicModel.findOne(buildDocumentQuery(req.params.id));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
-    }
-
-    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
-
-    const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
-    if (!canManageTopic) {
-      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this topic" });
-    }
-
-    const updated = await TopicModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
-      new: true,
-    });
-
-    if (!updated) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
-    }
-
-    return res.json(updated);
-  }),
-);
-
-contentRouter.delete(
-  "/topics/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const existing = await TopicModel.findOne(buildDocumentQuery(req.params.id));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
-    }
-
-    await assertManagedContentScope(req.authUser!, existing.toObject());
-
-    const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
-    if (!canManageTopic) {
-      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this topic" });
-    }
-
-    const deleted = await TopicModel.findOneAndDelete(buildDocumentQuery(String(existing._id)));
-
-    if (!deleted) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
-    }
-
-    return res.json({ success: true });
-  }),
-);
-
-contentRouter.post(
-  "/lessons",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = sanitizeLessonPayload(lessonSchema.parse(req.body));
-    await assertManagedContentScope(req.authUser!, payload);
-    const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const created = await LessonModel.create({
-      ...payload,
-      ...workflowDefaults,
-      approvalStatus:
-        req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
-          : workflowDefaults.approvalStatus,
-    });
-    res.status(StatusCodes.CREATED).json(created);
-  }),
-);
-
-contentRouter.patch(
-  "/lessons/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = sanitizeLessonPayload(lessonSchema.partial().parse(req.body));
-    const existing = await LessonModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
-    }
-    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
-    const updated = await LessonModel.findOneAndUpdate({ _id: existing._id }, sanitizedPayload, {
-      new: true,
-    });
-
-    if (!updated) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
-    }
-
-    return res.json(updated);
-  }),
-);
-
-contentRouter.delete(
-  "/lessons/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const existing = await LessonModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
-    }
-    await assertManagedContentScope(req.authUser!, existing.toObject());
-    const deleted = await LessonModel.findOneAndDelete({ _id: existing._id });
-    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
-
-    const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
-    await TopicModel.updateMany({ lessonIds: { $in: deletedIds } }, { $pull: { lessonIds: { $in: deletedIds } } });
-
-    return res.json({ success: true });
-  }),
-);
-
-contentRouter.post(
-  "/library-items",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = librarySchema.parse(req.body);
-    await assertManagedContentScope(req.authUser!, payload);
-    const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const created = await LibraryItemModel.create({
-      ...payload,
-      ...workflowDefaults,
-      approvalStatus:
-        req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
-          : workflowDefaults.approvalStatus,
-    });
-    res.status(StatusCodes.CREATED).json(created);
-  }),
-);
-
-contentRouter.patch(
-  "/library-items/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = libraryUpdateSchema.parse(req.body);
-    const existing = await LibraryItemModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
-    }
-    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
-    const updated = await LibraryItemModel.findOneAndUpdate(
-      { _id: existing._id },
-      sanitizedPayload,
-      {
-        new: true,
-      },
-    );
-
-    if (!updated) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
-    }
-
-    return res.json(updated);
-  }),
-);
-
-contentRouter.delete(
-  "/library-items/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const existing = await LibraryItemModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
-    }
-    await assertManagedContentScope(req.authUser!, existing.toObject());
-    const deleted = await LibraryItemModel.findOneAndDelete({ _id: existing._id });
-    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
-
-    const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
-    await TopicModel.updateMany({ libraryItemIds: { $in: deletedIds } }, { $pull: { libraryItemIds: { $in: deletedIds } } });
-
-    return res.json({ success: true });
   }),
 );
 
