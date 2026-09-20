@@ -8,6 +8,9 @@ const sources = {
   groupModel: read("server/src/models/Group.ts"),
   userModel: read("server/src/models/User.ts"),
   contentRoutes: read("server/src/routes/content.routes.ts"),
+  schoolRelationsRoutes: read("server/src/modules/content/http/contentSchoolRelationsRoutes.ts"),
+  schoolReportImportRoutes: read("server/src/modules/content/http/contentSchoolReportImportRoutes.ts"),
+  groupRoutes: read("server/src/modules/content/http/contentGroupRoutes.ts"),
   api: read("services/api.ts"),
   store: read("store/useStore.ts"),
   schoolsManager: [
@@ -94,36 +97,36 @@ check("User model stores role relationship fields with indexes", () => {
 });
 
 check("Backend school relation endpoint is protected and updates parent/supervisor/student links server-side", () => {
-  assertIncludes(sources.contentRoutes, '"/schools/:id/relations"');
+  assertIncludes(sources.schoolRelationsRoutes, '"/schools/:id/relations"');
   assertIncludes(sources.contentRoutes, 'requireRole(["admin", "supervisor"])');
-  assertIncludes(sources.contentRoutes, "schoolRelationSchema.parse(req.body)");
-  assertIncludes(sources.contentRoutes, "assertSchoolManagementScope(req.authUser!, school as any)");
-  assertIncludes(sources.contentRoutes, "You cannot manage this school");
-  assertIncludes(sources.contentRoutes, "groupIds: nextGroupIds");
-  assertIncludes(sources.contentRoutes, "$addToSet: { linkedStudentIds: studentUserId");
-  assertIncludes(sources.contentRoutes, "ensureCanonicalParentRelationship");
-  assertIncludes(sources.contentRoutes, "SchoolMembershipModel.findOneAndUpdate");
-  assertIncludes(sources.contentRoutes, "TeachingAssignmentModel.findOneAndUpdate");
-  assertIncludes(sources.contentRoutes, "$addToSet: { supervisorIds: supervisor.id");
-  assertIncludes(sources.contentRoutes, "groups: updatedGroups");
-  assertIncludes(sources.contentRoutes, "users: updatedUsers");
+  assertIncludes(sources.schoolRelationsRoutes, "schoolRelationSchema.parse(req.body)");
+  assertIncludes(sources.schoolRelationsRoutes, "assertSchoolManagementScope(req.authUser!, school as any)");
+  assertIncludes(sources.schoolRelationsRoutes, "You cannot manage this school");
+  assertIncludes(sources.schoolRelationsRoutes, "groupIds: nextGroupIds");
+  assertIncludes(sources.schoolRelationsRoutes, "$addToSet: { linkedStudentIds: studentUserId");
+  assertIncludes(sources.schoolRelationsRoutes, "ensureCanonicalParentRelationship");
+  assertIncludes(sources.schoolRelationsRoutes, "SchoolMembershipModel.findOneAndUpdate");
+  assertIncludes(sources.schoolRelationsRoutes, "TeachingAssignmentModel.findOneAndUpdate");
+  assertIncludes(sources.schoolRelationsRoutes, "$addToSet: { supervisorIds: supervisor.id");
+  assertIncludes(sources.schoolRelationsRoutes, "groups: updatedGroups");
+  assertIncludes(sources.schoolRelationsRoutes, "users: updatedUsers");
 });
 
 check("School report and import-students routes reuse the same school scope guard", () => {
   assertPattern(
-    sources.contentRoutes,
+    sources.schoolReportImportRoutes,
     /"\/schools\/:id\/report"[\s\S]*assertSchoolManagementScope\(req\.authUser!, school as any\)[\s\S]*"You cannot manage this school"/,
   );
   assertPattern(
-    sources.contentRoutes,
+    sources.schoolReportImportRoutes,
     /"\/schools\/:id\/import-students"[\s\S]*assertSchoolManagementScope\(req\.authUser!, school as any\)[\s\S]*"You cannot manage this school"/,
   );
 });
 
 check("Group CRUD requires auth, supervisor/admin role, and group-scope validation before mutating existing groups", () => {
-  assertPattern(sources.contentRoutes, /"\/groups\/:id"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "supervisor"\]\)/);
-  assertIncludes(sources.contentRoutes, "const canManageGroup = await hasGroupManagementScope(req.authUser!, existing as any);");
-  assertIncludes(sources.contentRoutes, "You cannot manage this group");
+  assertPattern(sources.groupRoutes, /"\/groups\/:id"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "supervisor"\]\)/);
+  assertIncludes(sources.groupRoutes, "const canManageGroup = await hasGroupManagementScope(req.authUser!, existing as any);");
+  assertIncludes(sources.groupRoutes, "You cannot manage this group");
 });
 
 check("Frontend uses the server relations endpoint and refreshes users/groups from authoritative response", () => {
