@@ -98,6 +98,7 @@ Cross-cutting runtime dependencies:
 | Certificates | `Certificate` + course entitlement | Active |
 | Discussions/review | Discussion routes, review cards | Active |
 | Audit | `AdminAuditLog` | Active; retention/governance required |
+| Privacy / data lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | Batch 10 boundary active; exact retention periods for retained history remain policy-dependent |
 | Backup/restore | learning snapshot + shell Mongo dump/restore | Partial production DR evidence |
 | Deployment | Vercel frontend; VPS/PM2/Nginx and Docker artifacts exist | Deployment paths need canonicalization |
 
@@ -125,6 +126,7 @@ Any agent changing authorization or relationships must consult this table first.
 | Parent-child relation | `ParentStudentRelationship` canonical direction | `User.linkedStudentIds` compatibility only; canonical rows, including revoked rows, must tombstone legacy fallback |
 | Notification delivery | `NotificationDelivery` | Campaign batching required for very large audiences |
 | Audit history | `AdminAuditLog` | Retention/access policy required |
+| Account erasure | privacy lifecycle application service | revoke live school/teacher/parent/access authority first; minimize operational PII; do not blanket-delete required academic/payment/audit evidence |
 
 ### Legacy compatibility fields — migrate, do not expand
 

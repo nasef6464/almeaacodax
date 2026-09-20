@@ -262,25 +262,30 @@ Those belong to measured Batch 13 certification after Batch 9 correctness closes
 
 ## 11. Privacy / data lifecycle audit
 
-Current admin user deletion removes limited legacy references then deletes User. It does not implement a platform-wide lifecycle policy.
+Batch 10 now has an explicit application boundary and policy baseline:
+- `docs/architecture/PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` classifies delete/anonymize/retain/revoke behavior before destructive automation;
+- `server/src/modules/privacy/application/deleteUserLifecycle.ts` owns admin account erasure rather than leaving cross-domain deletion inside `auth.routes.ts`;
+- live canonical authority is retired on erasure: active parent relationships are revoked, `SchoolMembership` and `TeachingAssignment` are deactivated, and active `AccessGrant` rows are revoked;
+- legacy User/Group relationship mirrors are unlinked in the same lifecycle;
+- direct operational PII is minimized in `AiInteraction`, `ClientEvent`, and `NotificationDelivery`;
+- academic, payment, certificate, classroom and audit history is deliberately not blanket-cascaded.
 
-Collections requiring explicit retention/anonymize/delete decisions include at least:
-- User and school/parent relationships;
-- QuizResult/QuestionAttempt/assessment models;
-- classroom sessions/responses/history;
-- PaymentRequest/AccessGrant/payment event guards;
-- AiInteraction;
-- ClientEvent;
-- AdminAuditLog;
-- NotificationDelivery;
-- Activity;
-- certificates;
-- progress/study plans.
+Repository inspection for Batch 10 confirmed distinct lifecycle classes:
+- identity/authentication data can be removed after authority is retired;
+- operational diagnostics/free-text require minimization and explicit bounded retention;
+- academic/classroom/certificate history needs integrity-preserving de-identification rules rather than casual deletion;
+- payment/grant and admin/security audit evidence may require retention for reconciliation, fraud, legal or governance reasons.
 
-Observed models such as AiInteraction, ClientEvent, AdminAuditLog and QuestionAttempt have no TTL retention policy.
+Exact retention durations remain an owner/legal/business policy decision. No TTL or destructive expiry period is invented by the code. Future retention automation must use scheduled/batched anonymization where deletion would break historical integrity and may only add TTL where expiry semantics are explicit.
 
-Batch 10 rule:
-first produce a retention matrix and legal/business policy; then implement orchestrated anonymize/delete/retain behavior. Never blanket-cascade learning/payment/audit history.
+Batch 10 runtime evidence on PR #180 at `94c3bfb3afbfa5f14781e81f4c9758601633861a`:
+- Recovery Gate PASS;
+- Production Readiness Gate PASS;
+- Safety Gate PASS;
+- Backend Integration Gate PASS;
+- Phase + Handover Gate PASS;
+- Deep Pre-Merge E2E PASS across all 12 isolated suites;
+- Vercel preview PASS.
 
 ## 12. Backup / DR audit
 

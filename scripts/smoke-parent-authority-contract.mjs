@@ -16,6 +16,7 @@ const files = {
   certificates: await read("server/src/routes/certificates.routes.ts"),
   contentRoute: await read("server/src/routes/content.routes.ts"),
   operationsAudit: await read("server/src/services/operationsAudit.ts"),
+  privacyLifecycle: await read("server/src/modules/privacy/application/deleteUserLifecycle.ts"),
 };
 
 const checks = [];
@@ -54,8 +55,18 @@ check("reverse parent recipient resolution respects canonical presence per paren
 check("admin role transitions revoke stale parent authority", () => {
   includes(files.authRoute, 'previousRole === "parent" || effectiveRole === "parent"');
   includes(files.authRoute, 'studentUserIds: isParentRole ? normalizedLinkedStudentIds : []');
-  includes(files.authRoute, "ParentStudentRelationshipModel.updateMany(");
-  includes(files.authRoute, 'status: "revoked"');
+  includes(files.authRoute, "syncCanonicalParentRelationships({");
+  includes(files.authority, "ParentStudentRelationshipModel.updateMany(");
+  includes(files.authority, 'status: "revoked"');
+});
+
+check("account erasure delegates canonical authority cleanup to privacy lifecycle", () => {
+  includes(files.authRoute, "deleteUserLifecycle({");
+  includes(files.privacyLifecycle, "ParentStudentRelationshipModel.updateMany(");
+  includes(files.privacyLifecycle, "SchoolMembershipModel.updateMany(");
+  includes(files.privacyLifecycle, "TeachingAssignmentModel.updateMany(");
+  includes(files.privacyLifecycle, "AccessGrantModel.updateMany(");
+  includes(files.privacyLifecycle, 'revokeReason: "user_erasure"');
 });
 
 check("AI and content parent readers use canonical parent authority", () => {

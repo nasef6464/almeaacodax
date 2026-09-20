@@ -32,6 +32,7 @@ import { QuestionModel } from "../models/Question.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
+import { deleteUserLifecycle } from "../modules/privacy/application/deleteUserLifecycle.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -1373,36 +1374,19 @@ authRouter.delete(
 
     const targetUserId = String(target.id || target._id);
 
-    await Promise.all([
-      UserModel.updateMany({ linkedStudentIds: targetUserId }, { $pull: { linkedStudentIds: targetUserId } }),
-      ParentStudentRelationshipModel.updateMany(
-        {
-          status: "active",
-          $or: [{ parentUserId: targetUserId }, { studentUserId: targetUserId }],
-        },
-        {
-          $set: {
-            status: "revoked",
-            revokedAt: Date.now(),
-            revokedBy: String(req.authUser!.id),
-          },
-        },
-      ),
-      GroupModel.updateMany(
-        { $or: [{ studentIds: targetUserId }, { supervisorIds: targetUserId }] },
-        { $pull: { studentIds: targetUserId, supervisorIds: targetUserId } },
-      ),
-    ]);
-
-    await UserModel.findOneAndDelete(buildDocumentQuery(targetUserId));
+    const lifecycle = await deleteUserLifecycle({
+      targetUserId,
+      targetMongoId: String(target._id),
+      actorUserId: String(req.authUser!.id),
+    });
 
     await recordAdminAuditLog(req, {
       action: "auth.admin_user.delete",
       resourceType: "user",
       resourceId: targetUserId,
       metadata: {
-        targetEmail: target.email,
         targetRole: target.role,
+        lifecycle,
       },
     });
 

@@ -44,6 +44,7 @@ Important: the planned frontend `src/app`, `src/core`, `src/features`, and `src/
 - `modules/reports/` — 3 files.
 - `modules/ai/` — 1 file.
 - `modules/auth/` — 1 file.
+- `modules/privacy/` — 1 application file; Batch 10 account-erasure lifecycle boundary.
 - `modules/public-tests/` — 1 file.
 - `app/bootstrap/` — 4 files; healthy composition boundary.
 - `middleware/`, `config/`, `sockets/`, `queues/`, `observability/` — cross-cutting runtime infrastructure.
@@ -60,7 +61,7 @@ This is the preferred incremental pattern for other large routes.
 - `content.routes.ts`: ~2,640 lines, 43 imports, broad content/school/bootstrap responsibilities.
 - `quiz.routes.ts`: ~2,350 lines, 66 imports; many application extracts already exist, continue them instead of rewriting.
 - `payment.routes.ts`: ~1,930 lines; payment lifecycle/webhooks/admin/settings remain in one transport file.
-- `auth.routes.ts`: ~1,919 lines; account/auth/admin-user/parent/access-code/trainer concerns cross domains.
+- `auth.routes.ts`: large mixed transport for account/auth/admin-user/parent/access-code/trainer concerns; Batch 10 extracted account erasure/revocation into `modules/privacy/application/deleteUserLifecycle.ts`, but further decomposition remains domain-owned rather than line-count-driven.
 - `ai.routes.ts`: ~1,685 lines; provider runtime/config/use-cases/analytics mixed.
 - `publicTests.routes.ts`: ~765 lines; partial application extraction.
 - `operations.routes.ts`: ~792 lines; broad diagnostic/read/repair ownership.
@@ -113,6 +114,7 @@ Line count is only a signal. Split when responsibilities, state ownership, autho
 | Paid/content access | `AccessGrant` | `User.subscription.purchased*`, enrollment mirrors |
 | Assessment historical production record | `QuizResult` until verified cutover | additive assessment Version/Assignment/Attempt/Response layer |
 | Notification delivery | `NotificationDelivery` + Redis + BullMQ | some legacy audience resolution |
+| Account erasure / privacy lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | exact retention durations for retained history remain policy-dependent |
 | Media | external URL/CDN references | upload backup scripts/volume are operations compatibility only |
 
 ## 5. Runtime areas that should NOT be restructured for appearance
