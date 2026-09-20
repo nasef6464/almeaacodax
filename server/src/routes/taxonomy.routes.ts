@@ -56,6 +56,14 @@ const sectionSchema = z.object({
   name: z.string().min(1),
 });
 
+const embeddedSubSkillSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  code: z.string().optional(),
+  description: z.string().optional(),
+  order: z.number().int().nonnegative().optional(),
+});
+
 const skillSchema = z.object({
   id: z.string().optional(),
   pathId: z.string().min(1),
@@ -63,6 +71,8 @@ const skillSchema = z.object({
   sectionId: z.string().min(1),
   name: z.string().min(1),
   description: z.string().optional(),
+  order: z.number().int().nonnegative().optional(),
+  subSkills: z.array(embeddedSubSkillSchema).optional(),
   lessonIds: z.array(z.string()).default([]),
   questionIds: z.array(z.string()).default([]),
 });
@@ -106,7 +116,7 @@ const buildStaffTaxonomyBootstrapPayload = async (): Promise<TaxonomyBootstrapPa
     LevelModel.find().select("id pathId name createdAt").sort({ createdAt: 1 }).lean(),
     SubjectModel.find().select("id pathId levelId name color icon iconUrl iconStyle settings createdAt").sort({ createdAt: 1 }).lean(),
     SectionModel.find().select("id subjectId name createdAt").sort({ createdAt: 1 }).lean(),
-    SkillModel.find().select("id pathId subjectId sectionId name description lessonIds questionIds createdAt").sort({ createdAt: 1 }).lean(),
+    SkillModel.find().select("id pathId subjectId sectionId name description order subSkills lessonIds questionIds createdAt").sort({ createdAt: 1 }).lean(),
   ]);
   return { paths, levels, subjects, sections, skills };
 };
@@ -184,8 +194,8 @@ const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "compact" | "
           })
             .select(
               phase === "compact"
-                ? "id pathId subjectId sectionId name description createdAt"
-                : "id pathId subjectId sectionId name description lessonIds questionIds createdAt",
+                ? "id pathId subjectId sectionId name description order subSkills createdAt"
+                : "id pathId subjectId sectionId name description order subSkills lessonIds questionIds createdAt",
             )
             .sort({ createdAt: 1 })
             .lean()
