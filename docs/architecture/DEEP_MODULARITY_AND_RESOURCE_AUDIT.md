@@ -289,25 +289,37 @@ Batch 10 runtime evidence on PR #180 at `94c3bfb3afbfa5f14781e81f4c9758601633861
 
 ## 12. Backup / DR audit
 
-Two different products exist and must remain distinct:
+Two different products remain intentionally distinct:
 
 ### Learning snapshot
 Application JSON snapshot of selected learning/config collections with dry-run restore, safety snapshot and optional replace. Useful operational feature, not full DR.
 
-### Database scripts
-`mongodump` and `mongorestore --drop` shell tooling exists.
+### Full database recovery boundary — Batch 11
+Batch 11 adds:
+- `scripts/verify-db-backup.sh`: compressed `mongodump` archive, portable SHA-256 evidence, optional independent off-site copy verification, configurable retention;
+- `scripts/restore-db-verified.sh`: checksum verification plus explicit isolated-target confirmation, non-destructive by default;
+- `docs/architecture/DISASTER_RECOVERY_RUNBOOK.md`: recovery contract, failure rules, RPO/RTO evidence requirements;
+- `scripts/smoke-disaster-recovery-contract.mjs`: required Production Readiness contract.
 
-Missing production proof:
-- scheduled full backup evidence;
-- off-site destination;
-- encryption/access controls;
-- retention rotation;
-- checksums/verification;
-- restore drill evidence;
-- RPO/RTO;
-- full treatment of external media/storage backups.
+### External media recovery boundary — Batch 11
+Read-only live inspection on 2026-09-20 confirmed:
+- current Atlas cluster `almeaa`: FREE, AWS `AP_SOUTHEAST_1`, MongoDB 8.0.32;
+- database `almeaa`: 58 collections;
+- 1,768 question documents currently reference Cloudflare R2 public delivery URLs via `imageUrl` on `*.r2.dev/questions/pilot/...`.
 
-Batch 11 must demonstrate recoverability, not only backup-file creation.
+Therefore MongoDB backup protects the references, not the R2 object bytes. Batch 11 also adds:
+- `scripts/verify-r2-media-backup.sh`: S3-compatible R2 inventory + verified archive + optional off-site copy;
+- `scripts/restore-r2-media-verified.sh`: additive restore to an explicitly confirmed non-production recovery bucket.
+
+Current production evidence still missing:
+- scheduled database and media backup execution with alerting;
+- independently verified off-site failure domain;
+- encryption/access-control review for the actual backup destination;
+- measured database restore drill and R2 media recovery drill;
+- achieved RPO/RTO based on live schedule and measured drill duration;
+- proof that stable public media URL/key mappings can be restored or deliberately migrated.
+
+Do not treat R2 durability or CDN cache as backup evidence. Batch 11 closes only after recoverability is demonstrated, not merely because tooling exists.
 
 ## 13. Runtime / deployment / observability audit
 
