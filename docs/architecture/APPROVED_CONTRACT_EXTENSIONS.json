@@ -86,7 +86,8 @@
     "authRouter|GET|/admin/users/summary",
     "authRouter|GET|/trainer/performance",
     "mediaRouter|POST|/question-images/presign",
-    "quizRouter|GET|/questions/:id"
+    "quizRouter|GET|/questions/:id",
+    "healthRouter|GET|/scale-metrics"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
@@ -124,6 +125,7 @@
     "REQUIRE_SCALE_READY",
     "SMART_CLASSROOM_LOAD_STUDENTS",
     "SMART_CLASSROOM_SCENARIO",
-    "UI_AUDIT_ROLE_CREDENTIALS_JSON"
+    "UI_AUDIT_ROLE_CREDENTIALS_JSON",
+    "LOAD_PROFILE"
   ]
 }

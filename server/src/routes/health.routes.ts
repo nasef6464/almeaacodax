@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import { env } from "../config/env.js";
 import { getRedisHealth } from "../config/redis.js";
 import { resolveRuntimeCommit } from "../observability/releaseIdentity.js";
+import { getNotificationQueueMetrics } from "../queues/notificationQueue.js";
+import { getNotificationRealtimeMetrics } from "../modules/notifications/infrastructure/notificationRealtime.js";
+import { requireAuth, requireRole } from "../middleware/auth.js";
 
 export const healthRouter = Router();
 
@@ -96,6 +99,21 @@ healthRouter.get("/ready", async (_req, res) => {
     redis: dependencies.redis,
     checks: dependencies.checks,
     summary: dependencies.summary,
+    ...getRuntimeHealth(),
+  });
+});
+
+healthRouter.get("/scale-metrics", requireAuth, requireRole(["admin"]), async (_req, res) => {
+  const [dependencies, notificationQueue] = await Promise.all([
+    getDependencyHealth(),
+    getNotificationQueueMetrics(),
+  ]);
+  res.json({
+    status: "ok",
+    database: dependencies.database,
+    redis: dependencies.redis,
+    notificationQueue,
+    notificationRealtime: getNotificationRealtimeMetrics(),
     ...getRuntimeHealth(),
   });
 });

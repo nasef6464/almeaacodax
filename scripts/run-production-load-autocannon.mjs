@@ -2,10 +2,30 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
-const apiBase = (process.env.LOAD_API_BASE || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
-const studentEmail = process.env.LOAD_STUDENT_EMAIL || "student.a@almeaa.local";
-const studentPassword = process.env.LOAD_STUDENT_PASSWORD || "Student@123";
-const levels = [20, 100, 500, 1000];
+const rawApiBase = String(process.env.LOAD_API_BASE || "").trim();
+const studentEmail = String(process.env.LOAD_STUDENT_EMAIL || "").trim();
+const studentPassword = String(process.env.LOAD_STUDENT_PASSWORD || "");
+if (!rawApiBase) {
+  throw new Error("LOAD_API_BASE is required. Choose an explicit local/staging/production-like target.");
+}
+if (!studentEmail || !studentPassword) {
+  throw new Error("LOAD_STUDENT_EMAIL and LOAD_STUDENT_PASSWORD are required.");
+}
+const parsedApiBase = new URL(rawApiBase);
+if (!["http:", "https:"].includes(parsedApiBase.protocol)) {
+  throw new Error("LOAD_API_BASE must use http or https.");
+}
+const apiBase = rawApiBase.replace(/\/$/, "");
+const profileName = (process.env.LOAD_PROFILE || "pilot").toLowerCase();
+const profileLevels = {
+  pilot: [20, 100],
+  scale500: [500],
+  scale1000: [1000],
+};
+if (!profileLevels[profileName]) {
+  throw new Error("Unknown LOAD_PROFILE. Expected pilot, scale500, or scale1000.");
+}
+const levels = profileLevels[profileName];
 const durationSeconds = Number(process.env.LOAD_DURATION_SECONDS || 12);
 const outDir = path.resolve("load-tests/results");
 
@@ -94,6 +114,6 @@ for (const c of levels) {
 }
 
 const summary = summarize(generated);
-const summaryPath = path.join(outDir, "prod_load_summary.json");
+const summaryPath = path.join(outDir, "prod_load_" + profileName + "_summary.json");
 fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), "utf8");
 console.log(`Load test summary saved: ${summaryPath}`);

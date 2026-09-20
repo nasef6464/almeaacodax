@@ -65,10 +65,14 @@ const measure = async (endpoint) => {
         signal: controller.signal,
       });
       const body = await response.arrayBuffer();
+      const contentLength = Number(response.headers.get("content-length") || 0);
+      const contentEncoding = response.headers.get("content-encoding") || "identity";
       samples.push({
         status: response.status,
         durationMs: Number((performance.now() - startedAt).toFixed(2)),
         bytes: body.byteLength,
+        wireBytes: contentLength > 0 ? contentLength : null,
+        contentEncoding,
         cache: response.headers.get("x-taxonomy-cache") || response.headers.get("x-content-cache") || response.headers.get("x-course-list-cache") || "none",
       });
     } catch (error) {
@@ -76,6 +80,8 @@ const measure = async (endpoint) => {
         status: 0,
         durationMs: Number((performance.now() - startedAt).toFixed(2)),
         bytes: 0,
+        wireBytes: null,
+        contentEncoding: "error",
         cache: "error",
         error: error instanceof Error ? error.name : "request_failed",
       });
@@ -87,6 +93,11 @@ const measure = async (endpoint) => {
   const successful = samples.filter((sample) => sample.status >= 200 && sample.status < 400);
   const durations = successful.map((sample) => sample.durationMs).sort((left, right) => left - right);
   const bytes = successful.map((sample) => sample.bytes).sort((left, right) => left - right);
+  const wireBytes = successful.map((sample) => sample.wireBytes).filter((value) => Number.isFinite(value) && value > 0).sort((left, right) => left - right);
+  const cacheStates = successful.reduce((counts, sample) => {
+    counts[sample.cache] = (counts[sample.cache] || 0) + 1;
+    return counts;
+  }, {});
   return {
     ...endpoint,
     samples,
@@ -97,6 +108,10 @@ const measure = async (endpoint) => {
       p95DurationMs: percentile(durations, 0.95),
       medianBytes: percentile(bytes, 0.5),
       maxBytes: bytes.at(-1) || 0,
+      medianWireBytes: percentile(wireBytes, 0.5),
+      maxWireBytes: wireBytes.at(-1) || 0,
+      wireBytesObserved: wireBytes.length,
+      cacheStates,
     },
   };
 };

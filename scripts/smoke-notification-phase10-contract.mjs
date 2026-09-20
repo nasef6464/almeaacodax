@@ -10,6 +10,7 @@ const files = {
   service: await read("server/src/services/notificationService.ts"),
   route: await read("server/src/routes/notification.routes.ts"),
   parentWeeklyReport: await read("server/src/modules/reports/application/sendParentWeeklyPerformanceReport.ts"),
+  campaign: await read("server/src/modules/notifications/application/createNotificationCampaign.ts"),
   server: await read("server/src/server.ts"),
   bootstrap: await read("server/src/app/bootstrap/bootstrapServer.ts"),
   guide: await read("docs/archive_reports/NOTIFICATION_SYSTEM_GUIDE.md"),
@@ -75,6 +76,14 @@ check("parent weekly notification route is role-protected and delegates to repor
   assertIncludes(files.parentWeeklyReport, "getAuthorizedStudentIdsForParent");
   assertIncludes(files.parentWeeklyReport, "createNotificationDeliveries");
   assertNotIncludes(files.route, "const studentMap = new Map");
+});
+
+check("large campaign audience resolution is keyset-paged before delivery batching", () => {
+  assertIncludes(files.campaign, "CAMPAIGN_AUDIENCE_PAGE_SIZE = 500");
+  assertIncludes(files.campaign, '{ _id: { $gt: afterId } }');
+  assertIncludes(files.campaign, ".limit(CAMPAIGN_AUDIENCE_PAGE_SIZE)");
+  assertIncludes(files.campaign, "totalRecipients > MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS");
+  assertNotIncludes(files.campaign, ".limit(MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS + 1)");
 });
 
 check("notification service processes one delivery at a time without bulk provider calls in create path", () => {

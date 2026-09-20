@@ -75,6 +75,18 @@ export function subscribeToNotificationEvents(userId: string, listener: Notifica
   };
 }
 
+export function getNotificationRealtimeMetrics() {
+  let listenerCount = 0;
+  listenersByUser.forEach((listeners) => {
+    listenerCount += listeners.size;
+  });
+  return {
+    mode: publisher && subscriber ? "redis" : "local",
+    subscribedUsers: listenersByUser.size,
+    listenerCount,
+  };
+}
+
 export async function publishInAppNotificationEvents(events: NotificationRealtimeEvent[]) {
   if (!events.length) return;
   startNotificationRealtime();

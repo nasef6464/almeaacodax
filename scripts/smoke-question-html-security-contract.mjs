@@ -6,6 +6,7 @@ const files = {
   packageJson: await read("package.json"),
   sanitizer: await read("utils/questionHtml.ts"),
   skillsTree: await read("dashboards/admin/SkillsTreeManager.tsx"),
+  subSkillQuestionsPreview: await read("dashboards/admin/skills/SubSkillQuestionsPreview.tsx"),
   questionBank: await read("dashboards/admin/QuestionBankManager.tsx"),
   quizBuilder: await read("dashboards/admin/QuizBuilder.tsx"),
   unifiedQuestionBuilder: await read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx"),
@@ -61,11 +62,12 @@ check("question HTML sanitizer removes active script surfaces", () => {
 });
 
 check("admin question previews use normalized HTML", () => {
-  assertIncludes(files.skillsTree, "normalizeQuestionHtml(question.text)");
+  assertIncludes(files.skillsTree, "SubSkillQuestionsPreview");
+  assertIncludes(files.subSkillQuestionsPreview, "normalizeQuestionHtml(question.text)");
   assertIncludes(files.questionBank, "normalizeQuestionHtml(question.text)");
   assertIncludes(files.questionBank, "normalizeQuestionHtml(previewQuestion.text)");
   assertIncludes(files.quizBuilder, "normalizeQuestionHtml(q.text)");
-  assertNotIncludes(files.skillsTree, "__html: question.text");
+  assertNotIncludes(files.subSkillQuestionsPreview, "__html: question.text");
   assertNotIncludes(files.questionBank, "__html: question.text");
   assertNotIncludes(files.questionBank, "__html: previewQuestion.text");
   assertNotIncludes(files.quizBuilder, "__html: q.text");

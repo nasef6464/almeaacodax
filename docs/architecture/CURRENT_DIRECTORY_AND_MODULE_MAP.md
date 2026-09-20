@@ -156,3 +156,15 @@ Before changing a feature:
 7. update maps if authority or ownership changed.
 
 Do not use stale generated migration maps as automatic move instructions. `generated/CURRENT_REPOSITORY_AUDIT.md` and `generated/MIGRATION_MAP_V2_CANDIDATE.json` are historical snapshots from an older head and must be regenerated before using their counts/targets as current evidence.
+
+
+## 8. Batch 13 measured-performance boundary — 2026-09-20
+
+Batch 13 owns measurement and certification, not speculative optimization. The current load-tooling boundary is now explicit: both k6 journey and the legacy Autocannon endpoint runner require one selected profile per invocation (`pilot`, `scale500`, or `scale1000`), defaulting to the safe pilot tier. Evidence files are profile-specific so one scale tier cannot overwrite another.
+
+No runtime product module was split merely for size in this checkpoint: inspection found the concrete responsibility defect in load orchestration itself (implicit escalation across capacity tiers). Live 500/1000-user certification remains blocked until exact release identity, Redis-backed scale readiness, production-like Render capacity/metrics, Atlas metrics, and queue/realtime/provider evidence are available.
+
+
+### Batch 13 final repository-side checkpoint
+
+Performance ownership now includes: isolated load profiles; profile-specific evidence; bootstrap cache counters; bounded authenticated queue/realtime scale metrics; decoded-vs-wire-byte read baseline evidence; and keyset-paged notification campaign audience resolution. No frontend/domain bulk move is part of Batch 13. Remaining certification evidence is deployment/infrastructure-owned and must not be replaced with speculative code refactors.

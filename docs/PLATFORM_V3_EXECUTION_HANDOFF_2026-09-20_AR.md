@@ -60,3 +60,19 @@
 ## ملاحظة عن الوثائق الأقدم
 
 `docs/AGENT_HANDOFF_AR.md` و`docs/CURRENT_EXECUTION_PLAN_AR.md` يحتويان تاريخًا مهمًا لكن أجزاء منهما ترجع إلى مايو 2026. عند التعارض في حالة التنفيذ الزمنية، استخدم GitHub/CI الحالي ثم هذه الوثيقة كـhandoff للحالة الحالية، مع الرجوع للوثائق المعمارية الأصلية للعقود التي لم تتغير.
+
+
+## تحديث التنفيذ — Batch 13 / PR #184
+
+- Batch 13 يعمل على الفرع `chatgpt/batch13-measured-performance` ومبني الآن مباشرة فوق `main` بعد دمج PR #183 بنجاح.
+- الفحص كشف أن مساري k6 وAutocannon للحمل كانا يسمحان بتصعيد مستويات الحمل داخل تشغيل واحد؛ تم تحويلهما إلى profile صريح مستقل، والافتراضي الآمن `pilot`.
+- تم تحديث smoke contract ليحرس عدم التصعيد الضمني ويحافظ على evidence منفصل لكل profile.
+- لا يتم تشغيل 500/1000 مستخدم على البنية الحالية لمجرد إنتاج رقم؛ إثبات scale الحي يتطلب Redis/scale-ready أخضر، release identity متزامن، وسعة/metrics مناسبة من Render وAtlas مع queue/realtime/bandwidth evidence.
+- تم دمج Batch 12 عبر PR #183 بعد نجاح بوابات الكود exact-head؛ بقي Vercel preview rate-limit عائقًا خارجيًا موثقًا بدون bypass.
+
+
+## Batch 13 repository-side completion checkpoint
+
+تم إغلاق العمل المستقل الآمن داخل المستودع لـ Batch 13: عزل مستويات الحمل، منع التصعيد الضمني، قياس bytes/cache، قياسات queue/realtime محمية للمدير، وتحويل جمهور حملات الإشعارات إلى keyset pages بحجم 500 بدل تحميل الجمهور الكامل في استعلام واحد. لم يتم تشغيل 500/1000 VU على البنية الحالية.
+
+PR #184 أصبح الآن مستهدفًا إلى `main` مباشرة بعد دمج #183. بوابات GitHub exact-head مطلوبة على الرأس الحالي قبل الدمج؛ Vercel exact-head ما زال محجوبًا حاليًا بحد أكثر من 100 deployments/day، بينما الشهادة الحية الكاملة تحتاج release identity متزامن وRedis scale-ready وسعة/metrics من Render/Atlas/provider. لا يتم bypass لأي gate.

@@ -56,6 +56,7 @@ on:
       - 'docs/architecture/DISASTER_RECOVERY_RUNBOOK.md'
       - 'scripts/smoke-notification-contract.mjs'
       - 'scripts/smoke-notification-phase10-contract.mjs'
+      - 'scripts/smoke-notification-realtime-contract.mjs'
       - 'scripts/smoke-sentry-runtime-contract.mjs'
       - 'scripts/smoke-auth-account-contract.mjs'
       - 'scripts/smoke-auth-frontend-contract.mjs'
@@ -66,6 +67,9 @@ on:
       - 'scripts/smoke-nosql-sanitizer-contract.mjs'
       - 'scripts/smoke-deployment-cache-contract.mjs'
       - 'scripts/smoke-load-test-contract.mjs'
+      - 'scripts/smoke-read-baseline-contract.mjs'
+      - 'scripts/measure-read-baseline.mjs'
+      - 'load-tests/**'
       - 'scripts/smoke-runtime-source-contract.mjs'
       - '.github/workflows/refactor-v2-production-readiness.yml'
   pull_request:
@@ -123,6 +127,9 @@ on:
       - 'scripts/smoke-nosql-sanitizer-contract.mjs'
       - 'scripts/smoke-deployment-cache-contract.mjs'
       - 'scripts/smoke-load-test-contract.mjs'
+      - 'scripts/smoke-read-baseline-contract.mjs'
+      - 'scripts/measure-read-baseline.mjs'
+      - 'load-tests/**'
       - 'scripts/smoke-runtime-source-contract.mjs'
       - '.github/workflows/refactor-v2-production-readiness.yml'
 
@@ -205,6 +212,9 @@ jobs:
       - name: Load-test contract
         run: npm run smoke:load-tests
 
+      - name: Read baseline contract
+        run: npm run smoke:read-baseline
+
       - name: Monitoring contract
         run: npm run smoke:monitoring
 
@@ -222,6 +232,9 @@ jobs:
 
       - name: Notification Phase 10 contract
         run: npm run smoke:notification-phase10
+
+      - name: Notification realtime contract
+        run: npm run smoke:notification-realtime
 
       - name: Sentry runtime contract
         run: npm run smoke:sentry-runtime
