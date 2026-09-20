@@ -86,7 +86,7 @@
     "authRouter|GET|/admin/users/summary",
     "authRouter|GET|/trainer/performance",
     "mediaRouter|POST|/question-images/presign",
-    "quizRouter|GET|/questions/:id",
+    "questionBankRouter|GET|/questions/:id",
     "healthRouter|GET|/scale-metrics"
   ],
   "routerMountSignatures": [
