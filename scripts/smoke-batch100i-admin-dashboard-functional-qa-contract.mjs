@@ -35,6 +35,7 @@ const api = [
 const coursePlayer = read("components/CoursePlayer.tsx");
 const courseView = read("pages/CourseView.tsx");
 const questionBankManager = read("dashboards/admin/QuestionBankManager.tsx");
+const questionBankCatalogData = read("dashboards/admin/questionBank/useQuestionBankCatalogData.ts");
 const quizRoutes = read("server/src/routes/quiz.routes.ts");
 const questionQuerySchemas = read("server/src/modules/quizzes/http/questionQuerySchemas.ts");
 
@@ -92,8 +93,9 @@ assertIncludes(quizRoutes, "questionListQuerySchema.parse(req.query)", "question
 assertIncludes(questionQuerySchemas, "paginate: z.coerce.boolean().default(false)", "questions API accepts paginate=true query flag");
 assertIncludes(quizRoutes, "data: items", "questions API returns data array when paginate=true");
 assertIncludes(quizRoutes, "hasNext:", "questions API returns pagination navigation metadata");
-assertIncludes(questionBankManager, "const [questionsRefreshKey, setQuestionsRefreshKey]", "question bank can refresh paginated list after mutations");
-assertIncludes(questionBankManager, "questionsRefreshKey]", "question bank reload effect depends on refresh key");
+assertIncludes(questionBankCatalogData, "const [questionsRefreshKey, setQuestionsRefreshKey]", "question bank can refresh paginated list after mutations");
+assertIncludes(questionBankCatalogData, "questionsRefreshKey]", "question bank reload effect depends on refresh key");
 assertIncludes(questionBankManager, "refreshPagedQuestions();", "question bank refreshes after create/update/delete/review actions");
+assertIncludes(questionBankManager, "useQuestionBankCatalogData({", "question bank delegates paginated loading to the catalog data boundary");
 
 console.log("[batch100i] admin dashboard functional QA contract PASS");
