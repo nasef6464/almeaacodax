@@ -1,9 +1,10 @@
-﻿import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Plus, Edit2, Trash2, Video, Lock, Unlock, ChevronDown, ChevronUp, GripVertical, Save, X, Target, Layers, CornerDownLeft, HelpCircle, Link2, FileText, BarChart3 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Lesson, Skill, CategorySection } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
-import { normalizeQuestionHtml } from '../../utils/questionHtml';
+import { api } from '../../services/api';
+import { SubSkillQuestionsPreview } from './skills/SubSkillQuestionsPreview';
 
 interface SkillsTreeManagerProps {
   subjectId?: string;
@@ -85,10 +86,43 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
     [lessons, relatedSubSkills]
   );
 
-  const totalLinkedQuestions = useMemo(
+  const [serverQuestionCount, setServerQuestionCount] = useState<number | null>(null);
+  const [subSkillCounts, setSubSkillCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    let active = true;
+    const loadQuestionCoverage = async () => {
+      try {
+        const response = await api.getQuestionsPaginated({
+          pathId: selectedPathId || undefined,
+          subject: (subjectId || selectedSubjectId) || undefined,
+          limit: 1,
+          includeCoverage: true,
+        });
+        if (!active) return;
+        const count = response?.coverage?.total ?? response?.pagination?.total ?? null;
+        setServerQuestionCount(count);
+      } catch {
+        if (!active) return;
+        setServerQuestionCount(null);
+      }
+    };
+    void loadQuestionCoverage();
+    return () => {
+      active = false;
+    };
+  }, [selectedPathId, selectedSubjectId, subjectId]);
+
+  const handleSubSkillQuestionCount = useCallback((id: string, count: number) => {
+    setSubSkillCounts((prev) => (prev[id] === count ? prev : { ...prev, [id]: count }));
+  }, []);
+
+  const fallbackLocalQuestionsCount = useMemo(
     () => questions.filter((question) => (question.skillIds || []).some((skillId) => relatedSubSkills.some((skill) => skill.id === skillId))).length,
     [questions, relatedSubSkills]
   );
+
+  const totalLinkedQuestions = serverQuestionCount ?? fallbackLocalQuestionsCount;
 
   const totalLinkedQuizzes = useMemo(
     () =>
@@ -507,7 +541,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                               <div>
                                 <h5 className="font-bold text-gray-800">{subSkill.name}</h5>
                                 <p className="text-xs text-gray-500">
-                                  {subSkillLessons.length} درس · {subSkillQuestions.length} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
+                                  {subSkillLessons.length} درس · {subSkillCounts[subSkill.id] ?? subSkillQuestions.length} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
                                 </p>
                               </div>
                             </div>
@@ -589,27 +623,12 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                                   </div>
                                 </div>
 
-                                <div className="border border-gray-100 rounded-xl p-4">
-                                  <div className="flex items-center justify-between mb-3">
-                                    <h6 className="font-bold text-gray-800 flex items-center gap-2">
-                                      <HelpCircle size={16} className="text-amber-500" />
-                                      الأسئلة المرتبطة
-                                    </h6>
-                                    <div className="text-xs font-bold text-amber-600">{subSkillQuestions.length} سؤال</div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    {subSkillQuestions.length > 0 ? subSkillQuestions.slice(0, 8).map((question) => (
-                                      <div key={question.id} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-                                        <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
-                                      </div>
-                                    )) : (
-                                      <div className="text-center py-6 text-sm text-gray-400 border border-dashed border-gray-200 rounded-lg">لا توجد أسئلة مرتبطة.</div>
-                                    )}
-                                    {subSkillQuestions.length > 8 && (
-                                      <div className="text-xs text-gray-500 text-center">+ {subSkillQuestions.length - 8} سؤال إضافي</div>
-                                    )}
-                                  </div>
-                                </div>
+                                <SubSkillQuestionsPreview
+                                  subSkillId={subSkill.id}
+                                  subSkillName={subSkill.name}
+                                  fallbackQuestions={subSkillQuestions}
+                                  onTotalCountChange={(count) => handleSubSkillQuestionCount(subSkill.id, count)}
+                                />
 
                                 <div className="border border-gray-100 rounded-xl p-4">
                                   <div className="flex items-center justify-between mb-3">
