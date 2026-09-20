@@ -9,7 +9,7 @@ const apiSource = [
   await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
   await readFile(new URL("../services/apiGroups/aiApi.ts", import.meta.url), "utf8"),
 ].join("\n");
-const contentRouteSource = await readFile(new URL("../server/src/routes/content.routes.ts", import.meta.url), "utf8");
+const integrationRuntimeSource = await readFile(new URL("../server/src/modules/content/integrations/platformIntegrationRuntime.ts", import.meta.url), "utf8");
 const packageJsonSource = await readFile(new URL("../package.json", import.meta.url), "utf8");
 const liveAuditSource = await readFile(new URL("../scripts/live-ai-runtime-audit.mjs", import.meta.url), "utf8");
 
@@ -101,14 +101,14 @@ check("integrations manager warns/fixes invalid AI config", () => {
 });
 
 check("backend enforces unique non-empty external platform ids", () => {
-  assertIncludes(contentRouteSource, "sanitizeAndValidateExternalPlatforms");
-  assertIncludes(contentRouteSource, "externalPlatforms contains duplicate ids");
+  assertIncludes(integrationRuntimeSource, "sanitizeAndValidateExternalPlatforms");
+  assertIncludes(integrationRuntimeSource, "externalPlatforms contains duplicate ids");
 });
 
 check("backend preserves and masks external AI secrets", () => {
-  assertIncludes(contentRouteSource, "SENSITIVE_EXTERNAL_PLATFORM_FIELDS");
-  assertIncludes(contentRouteSource, "SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS");
-  assertIncludes(contentRouteSource, "externalPlatformSecretState");
+  assertIncludes(integrationRuntimeSource, "SENSITIVE_EXTERNAL_PLATFORM_FIELDS");
+  assertIncludes(integrationRuntimeSource, "SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS");
+  assertIncludes(integrationRuntimeSource, "externalPlatformSecretState");
 });
 
 check("assistant manager shows source and bridges to integrations", () => {
