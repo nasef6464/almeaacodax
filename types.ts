@@ -261,6 +261,7 @@ export interface Topic {
     subjectId: string;
     pathId?: string;
     sectionId?: string;
+    skillId?: string | null;
     title: string;
     parentId?: string | null; // null or undefined for main topics
     order: number;
