@@ -24,6 +24,7 @@ import { createLibraryItemsSlice } from './slices/libraryItemsSlice';
 import { createStudyPlansSlice } from './slices/studyPlansSlice';
 import { createQuestionCatalogSlice } from './slices/questionCatalogSlice';
 import { createQuizCatalogSlice } from './slices/quizCatalogSlice';
+import { createCourseCatalogSlice } from './slices/courseCatalogSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -451,58 +452,7 @@ export const useStore = create<AppState>()(
                 };
             }),
 
-            // Course Actions
-            addCourse: async (course) => {
-                const normalizedCourse = normalizeCourseForStore(course);
-                try {
-                    const created = await api.createCourse(normalizedCourse) as any;
-                    const persistedCourse = normalizeCourseForStore({
-                        ...normalizedCourse,
-                        ...created,
-                        id: resolveEntityId(created, normalizedCourse.id),
-                    });
-                    set((state) => ({
-                        courses: [
-                            persistedCourse,
-                            ...state.courses.filter((item: any) => resolveEntityId(item) !== persistedCourse.id),
-                        ],
-                    }));
-                    return persistedCourse;
-                } catch (error) {
-                    console.error('Failed to persist course:', error);
-                    throw error;
-                }
-            },
-            updateCourse: async (courseId, data) => {
-                try {
-                    const updated = await api.updateCourse(courseId, data) as any;
-                    const persistedCourse = normalizeCourseForStore({
-                        ...data,
-                        ...updated,
-                        id: resolveEntityId(updated, courseId),
-                    });
-                    set((state) => ({
-                        courses: state.courses.map((c: any) =>
-                            resolveEntityId(c) === String(courseId) ? { ...c, ...persistedCourse } : c
-                        )
-                    }));
-                    return persistedCourse;
-                } catch (error) {
-                    console.error('Failed to persist course update:', error);
-                    throw error;
-                }
-            },
-            deleteCourse: async (courseId) => {
-                try {
-                    await api.deleteCourse(courseId);
-                    set((state) => ({
-                        courses: state.courses.filter((c: any) => resolveEntityId(c) !== String(courseId))
-                    }));
-                } catch (error) {
-                    console.error('Failed to delete course:', error);
-                    throw error;
-                }
-            },
+            ...createCourseCatalogSlice<AppState>(set, api, { normalizeCourseForStore, resolveEntityId }),
 
             ...createQuestionCatalogSlice<AppState>(set, api),
 
