@@ -336,9 +336,9 @@ check("school supervisor links preserve school scope", () => {
 check("school student class assignment keeps one clear school/class relation", () => {
   assertIncludes(files.store, "const getSchoolClassIds = (schoolId?: string) =>");
   assertIncludes(files.store, "targetGroup.type === 'CLASS' && targetGroup.parentId");
-  assertIncludes(files.store, ".filter(classId => classId !== targetGroup.id)");
+  assertIncludes(files.store, ".filter((classId) => classId !== targetGroup.id)");
   assertIncludes(files.store, "addUserToGroup(targetGroup.parentId, true)");
-  assertIncludes(files.store, "nextGroupIds = nextGroupIds.filter(id => id !== groupId && !relatedClassIds.includes(id))");
+  assertIncludes(files.store, "id !== targetGroup.id && !relatedClassIds.includes(id)");
 });
 
 check("school bulk import and relation uploads keep class membership singular", () => {
