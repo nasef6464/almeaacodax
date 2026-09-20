@@ -6,6 +6,7 @@ const read = (file) => readFileSync(path.join(root, file), "utf8");
 
 const sources = {
   contentRoutes: read("server/src/routes/content.routes.ts"),
+  groupRoutes: read("server/src/modules/content/http/contentGroupRoutes.ts"),
   groupModel: read("server/src/models/Group.ts"),
   authMiddleware: read("server/src/middleware/auth.ts"),
 };
@@ -54,43 +55,43 @@ check("Auth middleware refreshes role and school relationship fields before prot
 
 check("POST /content/groups is protected by auth and school-operations roles", () => {
   assertPattern(
-    sources.contentRoutes,
-    /contentRouter\.post\(\s*"\/groups"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "supervisor"\]\)/,
+    sources.groupRoutes,
+    /contentGroupRouter\.post\(\s*"\/groups"[\s\S]*requireAuth[\s\S]*requireRole\(\["admin", "supervisor"\]\)/,
   );
 });
 
 check("Group creation no longer writes the raw frontend payload directly", () => {
-  if (sources.contentRoutes.includes("GroupModel.create(payload)")) {
+  if (sources.groupRoutes.includes("GroupModel.create(payload)")) {
     throw new Error("POST /groups still calls GroupModel.create(payload) directly");
   }
-  assertIncludes(sources.contentRoutes, "buildScopedGroupCreatePayload(req.authUser!, payload)");
-  assertIncludes(sources.contentRoutes, "GroupModel.create(createScope.payload)");
+  assertIncludes(sources.groupRoutes, "buildScopedGroupCreatePayload(req.authUser!, payload)");
+  assertIncludes(sources.groupRoutes, "GroupModel.create(createScope.payload)");
 });
 
 check("Non-admin users cannot create top-level SCHOOL groups", () => {
   assertPattern(
-    sources.contentRoutes,
+    sources.groupRoutes,
     /payload\.type === "SCHOOL"[\s\S]*Only admins can create schools/,
     "Missing explicit non-admin SCHOOL creation denial",
   );
 });
 
 check("Scoped creation resolves and validates the parent school from server data", () => {
-  assertIncludes(sources.contentRoutes, "GroupModel.findOne(buildDocumentQuery(parentId))");
-  assertIncludes(sources.contentRoutes, 'parentGroup.type !== "SCHOOL"');
-  assertIncludes(sources.contentRoutes, 'parentGroup.type !== "CLASS"');
-  assertIncludes(sources.contentRoutes, "hasGroupManagementScope(authUser, parentGroup as any)");
+  assertIncludes(sources.groupRoutes, "GroupModel.findOne(buildDocumentQuery(parentId))");
+  assertIncludes(sources.groupRoutes, 'parentGroup.type !== "SCHOOL"');
+  assertIncludes(sources.groupRoutes, 'parentGroup.type !== "CLASS"');
+  assertIncludes(sources.groupRoutes, "hasGroupManagementScope(authUser, parentGroup as any)");
 });
 
 check("Non-admin group creation ignores frontend relationship escalation fields", () => {
-  assertPattern(sources.contentRoutes, /ownerId:\s*String\(authUser\.id\)/);
-  assertPattern(sources.contentRoutes, /studentIds:\s*\[\]/);
-  assertPattern(sources.contentRoutes, /courseIds:\s*\[\]/);
-  assertPattern(sources.contentRoutes, /supervisorIds:\s*uniqueStrings\(\[String\(authUser\.id\)\]\)/);
+  assertPattern(sources.groupRoutes, /ownerId:\s*String\(authUser\.id\)/);
+  assertPattern(sources.groupRoutes, /studentIds:\s*\[\]/);
+  assertPattern(sources.groupRoutes, /courseIds:\s*\[\]/);
+  assertPattern(sources.groupRoutes, /supervisorIds:\s*uniqueStrings\(\[String\(authUser\.id\)\]\)/);
 });
 
 check("Teacher is not a school-operations group manager", () => {
-  const groupRouteRoleLists = [...sources.contentRoutes.matchAll(/contentRouter\.(?:post|patch|delete)\(\s*"\/groups(?:\/:id)?"[\s\S]*?requireRole\(\[([^\]]+)\]\)/g)]
+  const groupRouteRoleLists = [...sources.groupRoutes.matchAll(/contentGroupRouter\.(?:post|patch|delete)\(\s*"\/groups(?:\/:id)?"[\s\S]*?requireRole\(\[([^\]]+)\]\)/g)]
     .map((match) => match[1]);
   if (groupRouteRoleLists.length !== 3) throw new Error("Expected three protected group routes");
   if (groupRouteRoleLists.some((roles) => roles.includes('"teacher"'))) {
@@ -99,8 +100,8 @@ check("Teacher is not a school-operations group manager", () => {
 });
 
 check("Out-of-scope users receive a safe forbidden response", () => {
-  assertIncludes(sources.contentRoutes, "You cannot create a group under this school");
-  assertIncludes(sources.contentRoutes, "createScope.statusCode");
+  assertIncludes(sources.groupRoutes, "You cannot create a group under this school");
+  assertIncludes(sources.groupRoutes, "createScope.statusCode");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
