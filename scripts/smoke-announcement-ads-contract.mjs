@@ -13,7 +13,7 @@ const checks = [
   ['types.ts', ['AnnouncementAd', 'AnnouncementAudience', 'AnnouncementDisplayMode', 'AnnouncementFrequency', 'ctaUrl', 'audience', 'delaySeconds']],
   ['server/src/models/AnnouncementAd.ts', ['AnnouncementAdModel', 'imageUrl', 'ctaLabel', 'priority', 'displayMode', 'frequency', 'delaySeconds']],
   [
-    'server/src/routes/content.routes.ts',
+    'server/src/modules/content/http/contentPresentationRoutes.ts',
     [
       'announcementAdSchema',
       'announcementAdUpdateSchema',
