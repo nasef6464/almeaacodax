@@ -26,20 +26,25 @@ checksum="$archive.sha256"
 manifest="$archive.manifest"
 
 mongodump --uri="$MONGODB_URI" --archive="$archive" --gzip
-sha256sum "$archive" > "$checksum"
-sha256sum --check "$checksum"
+archive_name="$(basename "$archive")"
+checksum_name="$(basename "$checksum")"
+(
+  cd "$BACKUP_DIR"
+  sha256sum "$archive_name" > "$checksum_name"
+  sha256sum --check "$checksum_name"
+)
 bytes="$(wc -c < "$archive" | tr -d ' ')"
 {
   printf 'created_at_utc=%s\n' "$timestamp"
   printf 'format=mongodump-archive-gzip\n'
   printf 'bytes=%s\n' "$bytes"
-  printf 'checksum_file=%s\n' "$(basename "$checksum")"
+  printf 'checksum_file=%s\n' "$checksum_name"
 } > "$manifest"
 
 if [[ -n "$OFFSITE_DIR" ]]; then
   mkdir -p "$OFFSITE_DIR"
   cp "$archive" "$checksum" "$manifest" "$OFFSITE_DIR/"
-  (cd "$OFFSITE_DIR" && sha256sum --check "$(basename "$checksum")")
+  (cd "$OFFSITE_DIR" && sha256sum --check "$checksum_name")
 fi
 
 if (( RETENTION_DAYS > 0 )); then
