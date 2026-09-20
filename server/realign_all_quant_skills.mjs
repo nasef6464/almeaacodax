@@ -1,6 +1,10 @@
 import { MongoClient } from 'mongodb';
 
-const uri = 'mongodb://nasef64:Nn0508438250@ac-5fh0moi-shard-00-00.5y2fzx5.mongodb.net:27017,ac-5fh0moi-shard-00-01.5y2fzx5.mongodb.net:27017,ac-5fh0moi-shard-00-02.5y2fzx5.mongodb.net:27017/almeaa?ssl=true&replicaSet=atlas-915t4d-shard-0&authSource=admin&retryWrites=true&w=majority';
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  throw new Error('MONGODB_URI is required. Database credentials must be supplied through the environment.');
+}
+const applyChanges = process.env.ALMEAA_APPLY_SKILL_MIGRATION === 'true';
 const client = new MongoClient(uri);
 
 // Helper to extract page and book
@@ -498,9 +502,11 @@ async function run() {
     });
   }
 
-  if (bulkOps.length > 0) {
+  if (bulkOps.length > 0 && applyChanges) {
     const res = await coll.bulkWrite(bulkOps);
     updatedCount = res.modifiedCount;
+  } else if (bulkOps.length > 0) {
+    console.log('Dry run only: no question documents were changed. Set ALMEAA_APPLY_SKILL_MIGRATION=true to apply after review.');
   }
 
   console.log(`\nRealignment completed!`);
