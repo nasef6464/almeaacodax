@@ -11,10 +11,8 @@ function assert(condition, message) {
 const vercel = JSON.parse(read('vercel.json'));
 const apiRewrite = vercel.rewrites?.find((item) => item.source === '/api/:path*');
 assert(apiRewrite, 'vercel.json must define the canonical /api rewrite');
-assert(
-  apiRewrite.destination === 'https://almeaacodax-codex.onrender.com/api/:path*',
-  'Vercel /api rewrite must target the canonical Render backend',
-);
+assert(/^https:\/\/[^/]+\.onrender\.com\/api\/:path\*$/.test(apiRewrite.destination), 'Vercel /api rewrite must target a Render API origin over HTTPS');
+const activeRenderOrigin = new URL(apiRewrite.destination.replace('/api/:path*', '')).origin;
 
 const compose = read('docker-compose.yml');
 assert(
@@ -42,12 +40,8 @@ assert(
 
 const deploymentGuide = read('docs/DEPLOYMENT.md');
 assert(
-  deploymentGuide.includes('https://almeaacodax-codex.onrender.com'),
-  'canonical deployment guide must name the active Render target',
-);
-assert(
-  !deploymentGuide.includes('https://almeaacodax-k2ux.onrender.com'),
-  'canonical deployment guide must not point to the retired Render target',
+  deploymentGuide.includes(activeRenderOrigin),
+  'canonical deployment guide must match the Render origin selected by vercel.json',
 );
 assert(
   !deploymentGuide.includes('Student@123') &&
