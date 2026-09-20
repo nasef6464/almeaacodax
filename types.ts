@@ -283,6 +283,14 @@ export interface NestedSkill {
     subSkills: NestedSubSkill[];
 }
 
+export interface SkillSubSkill {
+    id: string;
+    name: string;
+    code?: string;
+    description?: string;
+    order?: number;
+}
+
 export interface Skill {
     id: string;
     name: string;
@@ -290,6 +298,8 @@ export interface Skill {
     subjectId: string;
     sectionId: string;
     description?: string;
+    order?: number;
+    subSkills?: SkillSubSkill[];
     lessonIds: string[]; // Lessons (videos/articles) that teach this skill
     questionIds: string[]; // Questions that test this skill
     createdAt: number;
