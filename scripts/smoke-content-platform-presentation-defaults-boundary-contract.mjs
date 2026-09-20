@@ -4,10 +4,12 @@ import path from 'node:path';
 
 const root = process.cwd();
 const routeFile = 'server/src/routes/content.routes.ts';
+const presentationRouteFile = 'server/src/modules/content/http/contentPresentationRoutes.ts';
 const defaultsFile = 'server/src/modules/content/presentation/platformPresentationDefaults.ts';
 const integrationDefaultsFile = 'server/src/modules/content/integrations/platformIntegrationDefaults.ts';
 const homepageContractFile = 'scripts/smoke-homepage-hero-contract.mjs';
 const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
+const presentationRouteSource = fs.readFileSync(path.join(root, presentationRouteFile), 'utf8').replace(/\r\n/g, '\n');
 const homepageContractSource = fs.readFileSync(path.join(root, homepageContractFile), 'utf8').replace(/\r\n/g, '\n');
 const defaultsExists = fs.existsSync(path.join(root, defaultsFile));
 const defaultsSource = defaultsExists ? fs.readFileSync(path.join(root, defaultsFile), 'utf8').replace(/\r\n/g, '\n') : '';
@@ -17,12 +19,14 @@ const integrationDefaultsSource = integrationDefaultsExists
   : '';
 const lineCount = (source) => source.split(/\r?\n/).length;
 
-const defaultsImport = 'import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";';
+const defaultsImport = 'from "../presentation/platformPresentationDefaults.js";';
 const integrationDefaultsImport = 'import { defaultPlatformIntegrationSettings } from "../modules/content/integrations/platformIntegrationDefaults.js";';
 const homepageDeclaration = 'const defaultHomepageSettings = {';
 const fontDeclaration = 'const defaultPlatformFontSettings = {';
 const integrationDefaultsDeclaration = 'const defaultPlatformIntegrationSettings = {';
-const delegated = routeSource.includes(defaultsImport);
+const delegated =
+  routeSource.includes('contentRouter.use(contentPresentationRouter);') &&
+  presentationRouteSource.includes(defaultsImport);
 const integrationDefaultsDelegated = routeSource.includes(integrationDefaultsImport);
 const ownerSource = delegated ? defaultsSource : routeSource;
 const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
@@ -90,7 +94,7 @@ check('homepage and platform-font HTTP behavior remains route-owned', () => {
     'requireRole(["admin"])',
     '"/homepage-settings"',
     '"/platform-font-settings"',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost presentation HTTP behavior: ${fragment}`);
+  ]) assert.ok(presentationRouteSource.includes(fragment), `presentation route lost HTTP behavior: ${fragment}`);
 });
 
 check('presentation defaults module remains data-only and bounded after delegation', () => {
@@ -137,6 +141,7 @@ console.log(JSON.stringify({
   delegated,
   integrationDefaultsDelegated,
   routeLines: lineCount(routeSource),
+  presentationRouteLines: lineCount(presentationRouteSource),
   defaultsLines: defaultsExists ? lineCount(defaultsSource) : 0,
   checks,
 }, null, 2));
