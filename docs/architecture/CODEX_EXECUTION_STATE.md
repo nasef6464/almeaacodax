@@ -1298,3 +1298,24 @@
 - Documentation synchronized: `AGENTS.md`, goal-delivery skill, Project Map, Module Catalog, Change Map, Data Access Map, System Map and Release Hardening Plan now point to/currently reflect this audit.
 - Historical generated audit/migration candidate artifacts are not treated as exact-head current evidence until regenerated.
 - Next exact action: return to Batch 9 implementation, fix the canonical-parent tombstone/role-transition defects first, then modularize audience authority + bulk weekly/campaign delivery, run focused tests/typecheck/build/exact-head CI, and only then consider PR #177 ready for merge.
+
+
+## Batch 11 — Backup / Disaster Recovery — 2026-09-20
+
+- Status: IN PROGRESS on PR #181 (`fix/disaster-recovery-b11`), baseline `main@4c398773466ddcdd19243f8176c4e099d067b7a9`.
+- Root cause confirmed: the existing learning snapshot is intentionally partial and stores snapshots inside MongoDB; it cannot protect against full database failure. Existing media records store external URLs, so Mongo backup alone cannot recover media bytes.
+- Repository remediation:
+  - verified compressed MongoDB archive + portable SHA-256 verification;
+  - optional verified off-site copy + configurable local retention;
+  - restore refuses execution without explicit isolated-recovery target confirmation and remains non-destructive by default;
+  - Cloudflare R2 media inventory/archive/checksum/off-site tooling;
+  - R2 restore is additive and requires an explicitly confirmed non-production recovery bucket;
+  - Production Readiness now requires `smoke:disaster-recovery`.
+- Live read-only evidence:
+  - Atlas cluster `almeaa`: FREE / AWS `AP_SOUTHEAST_1` / MongoDB 8.0.32;
+  - production database `almeaa`: 58 collections;
+  - 1,768 `questions` documents currently use Cloudflare R2 `*.r2.dev/questions/pilot/...` image references.
+- Current CI evidence before final documentation reconciliation: Production Readiness PASS on head `de76518160e8da6be1bee9ff72b4a6cb94ee4dc8`, including Disaster recovery contract PASS; Backend Integration PASS; Recovery PASS; Phase + Handover PASS; dependency audit PASS. Safety/Deep E2E evidence must be re-established on the final Batch 11 head.
+- Live blockers before DONE: actual scheduled execution/alerting, independent off-site destination evidence, backup-destination encryption/access review, measured isolated Mongo restore drill, measured R2 media recovery drill, and achieved RPO/RTO.
+- Secrets rule: never commit or echo provider tokens/access keys. Any credential pasted into chat must be rotated before production use.
+- Next exact action: run final exact-head CI after the R2/architecture reconciliation; then merge repository-safe tooling if green, while keeping Batch 11 open until live recoverability evidence is completed.
