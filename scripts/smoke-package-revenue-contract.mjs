@@ -4,7 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const typeSource = fs.readFileSync(path.join(root, 'types.ts'), 'utf8');
 const packageModelSource = fs.readFileSync(path.join(root, 'server/src/models/B2BPackage.ts'), 'utf8');
-const contentRoutesSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8');
+const schoolCommercialRoutesSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolCommercialRoutes.ts'), 'utf8');
 const schoolOperationsSchemaSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/schoolOperationsSchemas.ts'), 'utf8');
 const schoolsManagerParentSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager.tsx'), 'utf8');
 const schoolPackagesPanelSource = fs.readFileSync(path.join(root, 'dashboards/admin/SchoolsManager/SchoolPackagesPanel.tsx'), 'utf8');
@@ -28,7 +28,7 @@ check('B2B package contract stores teacher and revenue share metadata', () => {
   assertIncludes(packageModelSource, 'revenueSharePercentage: { type: Number');
   assertIncludes(schoolOperationsSchemaSource, 'assignedTeacherId: z.string().optional()');
   assertIncludes(schoolOperationsSchemaSource, 'revenueSharePercentage: z.number().nullable().optional()');
-  assertIncludes(contentRoutesSource, 'const payload = b2bPackageSchema.parse(req.body);');
+  assertIncludes(schoolCommercialRoutesSource, 'const payload = b2bPackageSchema.parse(req.body);');
 });
 
 check('school package manager lets admin assign trainer and share percentage', () => {
