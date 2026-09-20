@@ -4,15 +4,21 @@ import path from 'node:path';
 
 const root = process.cwd();
 const routeFile = 'server/src/routes/content.routes.ts';
+const integrationRouteFile = 'server/src/modules/content/http/contentPlatformIntegrationRoutes.ts';
+const runtimeFile = 'server/src/modules/content/integrations/platformIntegrationRuntime.ts';
 const defaultsFile = 'server/src/modules/content/integrations/platformIntegrationDefaults.ts';
 const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
+const integrationRouteSource = fs.readFileSync(path.join(root, integrationRouteFile), 'utf8').replace(/\r\n/g, '\n');
+const runtimeSource = fs.readFileSync(path.join(root, runtimeFile), 'utf8').replace(/\r\n/g, '\n');
 const defaultsExists = fs.existsSync(path.join(root, defaultsFile));
 const defaultsSource = defaultsExists ? fs.readFileSync(path.join(root, defaultsFile), 'utf8').replace(/\r\n/g, '\n') : '';
 const lineCount = (source) => source.split(/\r?\n/).length;
 
-const defaultsImport = 'import { defaultPlatformIntegrationSettings } from "../modules/content/integrations/platformIntegrationDefaults.js";';
+const defaultsImport = 'from "../integrations/platformIntegrationDefaults.js";';
 const localDeclaration = 'const defaultPlatformIntegrationSettings = {';
-const delegated = routeSource.includes(defaultsImport);
+const delegated =
+  routeSource.includes('contentRouter.use(contentPlatformIntegrationRouter);') &&
+  integrationRouteSource.includes(defaultsImport);
 const ownerSource = delegated ? defaultsSource : routeSource;
 
 const checks = [];
@@ -60,21 +66,23 @@ check('platform integration HTTP and persistence behavior stays route-owned', ()
     'platformIntegrationSettingsPatchSchema.parse(',
     'sanitizeAndValidateExternalPlatforms',
     'requireRole(["admin"])',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost platform integration behavior: ${fragment}`);
+  ]) assert.ok(integrationRouteSource.includes(fragment), `integration route lost platform integration behavior: ${fragment}`);
 });
 
 check('secret handling and runtime integration security stay route-owned', () => {
   for (const fragment of [
     'const SENSITIVE_PROVIDER_FIELDS =',
     'const SENSITIVE_EXTERNAL_PLATFORM_FIELDS =',
-    'const maskSensitiveProviderValues =',
-    'const mergeSensitiveProviderValues =',
+    'export const maskSensitiveProviderValues =',
+    'export const mergeSensitiveProviderValues =',
+    'export const maskIntegrationSnapshot =',
+    'export const normalizeBaseUrl =',
+    'export const buildPublicBaseUrl =',
+  ]) assert.ok(runtimeSource.includes(fragment), `integration runtime helper lost ${fragment}`);
+  for (const fragment of [
     'decryptIntegrationSecretsForRuntime',
     'encryptIntegrationSecretsAtRest',
-    'const maskIntegrationSnapshot =',
-    'const normalizeBaseUrl =',
-    'const buildPublicBaseUrl =',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost integration security/runtime ownership: ${fragment}`);
+  ]) assert.ok(integrationRouteSource.includes(fragment), `integration route lost crypto ownership: ${fragment}`);
 });
 
 check('integration defaults module remains data-only and bounded after delegation', () => {
@@ -94,6 +102,8 @@ console.log(JSON.stringify({
   status: failed.length ? 'FAIL' : 'PASS',
   delegated,
   routeLines: lineCount(routeSource),
+  integrationRouteLines: lineCount(integrationRouteSource),
+  runtimeLines: lineCount(runtimeSource),
   defaultsLines: defaultsExists ? lineCount(defaultsSource) : 0,
   checks,
 }, null, 2));
