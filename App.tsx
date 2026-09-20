@@ -1401,7 +1401,7 @@ const App: React.FC = () => {
         }
 
         if (profile.loadSkillProgress && options.deferSkillProgress && isRegisteredUser(user)) {
-          void api.getSkillProgress()
+          void api.getSkillProgress({ noTotal: true })
             .then((skillProgress) => {
               if (mounted) {
                 hydrateSkillProgress(skillProgress as any[]);
