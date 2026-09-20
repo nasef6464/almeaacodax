@@ -875,11 +875,13 @@ quizRouter.get(
     const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
     const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
     const requestedLimit = typeof req.query.limit === "string" ? req.query.limit.trim() : "200";
+    const noTotal = ["true", "1", "yes", "on"].includes(String(req.query.noTotal || "").trim().toLowerCase());
     const publicQuizListCacheKey = [
       requestedPage || "1",
       requestedLimit || "200",
       requestedPathId || "all-paths",
       requestedSubjectId || "all-subjects",
+      noTotal ? "no-total" : "with-total",
     ].join(":");
 
     if (
@@ -950,10 +952,16 @@ quizRouter.get(
       buildManagedContentScopeFilter(managedScope),
     );
     const pagination = resolvePagination(req.query, { limit: 200 });
-    const [items, total] = await Promise.all([
-      QuizModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
-      QuizModel.countDocuments(filter),
-    ]);
+    const rawItems = await QuizModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(pagination.skip)
+      .limit(noTotal ? pagination.limit + 1 : pagination.limit)
+      .lean();
+    const hasMore = noTotal && rawItems.length > pagination.limit;
+    const items = noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
+    const total = noTotal
+      ? pagination.skip + items.length + (hasMore ? 1 : 0)
+      : await QuizModel.countDocuments(filter);
     let safeItems = items;
 
     if (!isStaffRole(req.authUser?.role) && items.length > 0) {
@@ -986,8 +994,15 @@ quizRouter.get(
 
     const payload = {
       quizzes: safeItems,
-      pagination: buildPaginatedResponse([], pagination, isStaffRole(req.authUser?.role) ? total : safeItems.length),
+      pagination: buildPaginatedResponse(
+        [],
+        pagination,
+        isStaffRole(req.authUser?.role)
+          ? total
+          : (noTotal ? pagination.skip + safeItems.length + (hasMore ? 1 : 0) : safeItems.length),
+      ),
     };
+    res.setHeader("X-Has-More", String(hasMore));
     if (canUsePublicCache) {
       publicQuizListCache = {
         key: publicQuizListCacheKey,
