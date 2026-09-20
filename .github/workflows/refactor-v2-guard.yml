@@ -105,6 +105,9 @@ jobs:
       - name: Topic catalog store boundary contract
         run: node scripts/smoke-topic-catalog-store-boundary-contract.mjs
 
+      - name: Group CRUD store boundary contract
+        run: node scripts/smoke-group-crud-store-boundary-contract.mjs
+
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 
