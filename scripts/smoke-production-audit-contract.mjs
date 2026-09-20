@@ -34,7 +34,7 @@ const checks = [
   },
   {
     name: "blocked direct quiz result creation is audited",
-    ok: () => /quiz\.direct_result\.blocked/.test(read("server/src/routes/quiz.routes.ts")),
+    ok: () => /quiz\.direct_result\.blocked/.test(read("server/src/modules/quizzes/http/quizResultsRoutes.ts")),
   },
   {
     name: "payment review is audited",
