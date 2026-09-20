@@ -342,11 +342,8 @@ for (const file of trackedFiles) {
     for (const route of collectFrontendRoutes(sourceFile)) frontendRoutes.add(route);
   }
 
-  if (file.startsWith('server/src/routes/')) {
+  if (file.startsWith('server/src/')) {
     backendRouteEntries.push(...collectBackendRoutes(file, sourceFile));
-  }
-
-  if (file === 'server/src/app.ts' || file === 'server/src/routes/index.ts') {
     routerMounts.push(...collectRouterMounts(file, sourceFile));
   }
 
@@ -435,7 +432,13 @@ const report = {
   files,
 };
 
-const routeFiles = files.filter((item) => item.file === 'App.tsx' || item.file === 'server/src/app.ts' || item.file === 'server/src/routes/index.ts' || item.file.startsWith('server/src/routes/'));
+const backendContractFiles = new Set([
+  ...backendRouteEntries.map((entry) => entry.file),
+  ...routerMounts.map((entry) => entry.file),
+]);
+const routeFiles = files.filter(
+  (item) => item.file === 'App.tsx' || backendContractFiles.has(item.file),
+);
 const manifest = {
   schemaVersion: 2,
   generatedAt: report.generatedAt,
