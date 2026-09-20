@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 const files = {
   types: "types.ts",
   lessonModel: "server/src/models/Lesson.ts",
-  contentRoutes: "server/src/routes/content.routes.ts",
+  learningRoutes: "server/src/modules/content/http/contentLearningRoutes.ts",
   learningSchemas: "server/src/modules/content/http/learningContentSchemas.ts",
   lessonBuilder: "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
   videoQuestionPicker: "dashboards/admin/builders/VideoQuestionPicker.tsx",
@@ -32,8 +32,8 @@ const checks = [
       source.learningSchemas.includes("interactiveQuestions: z") &&
       source.learningSchemas.includes("timestamp: z.number().min(0)") &&
       source.learningSchemas.includes("correctOptionIndex: z.number().min(0)") &&
-      source.contentRoutes.includes("sanitizeLessonPayload(lessonSchema.parse(req.body))") &&
-      source.contentRoutes.includes("sanitizeLessonPayload(lessonSchema.partial().parse(req.body))"),
+      source.learningRoutes.includes("sanitizeLessonPayload(lessonSchema.parse(req.body))") &&
+      source.learningRoutes.includes("sanitizeLessonPayload(lessonSchema.partial().parse(req.body))"),
   ],
   [
     "lesson builder can author timed video questions",
