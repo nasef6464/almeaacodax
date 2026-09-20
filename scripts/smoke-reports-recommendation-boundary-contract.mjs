@@ -41,9 +41,9 @@ check('Reports delegates recommendation ranking to a dedicated view-model', () =
 
 check('recommendation view-model preserves content ranking and links', () => {
   assertIncludes(recommendation, 'export const buildSkillRecommendation = (');
-  assertIncludes(recommendation, 'lesson.skillIds?.includes(resolvedSkill.id)');
+  assertIncludes(recommendation, 'lesson.skillIds?.includes(resolvedSkillId)');
   assertIncludes(recommendation, 'quiz.questionIds?.some((questionId) =>');
-  assertIncludes(recommendation, 'item.skillIds?.includes(resolvedSkill.id)');
+  assertIncludes(recommendation, 'item.skillIds?.includes(resolvedSkillId)');
   assertIncludes(recommendation, '(topicHasLesson ? 60 : 0)');
   assertIncludes(recommendation, '(topicHasQuiz ? 55 : 0)');
   assertIncludes(recommendation, '(topicMatchesSkill ? 80 : 0)');
