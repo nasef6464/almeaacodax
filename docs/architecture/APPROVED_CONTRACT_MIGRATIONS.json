@@ -96,6 +96,51 @@
       "from": "contentRouter|DELETE|/study-plans/:id",
       "to": "contentStudyPlanRouter|DELETE|/study-plans/:id",
       "reason": "Study plan routes moved to the dedicated content study-plan HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/topics",
+      "to": "contentLearningRouter|POST|/topics",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/topics/:id",
+      "to": "contentLearningRouter|PATCH|/topics/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/topics/:id",
+      "to": "contentLearningRouter|DELETE|/topics/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/lessons",
+      "to": "contentLearningRouter|POST|/lessons",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/lessons/:id",
+      "to": "contentLearningRouter|PATCH|/lessons/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/lessons/:id",
+      "to": "contentLearningRouter|DELETE|/lessons/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/library-items",
+      "to": "contentLearningRouter|POST|/library-items",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/library-items/:id",
+      "to": "contentLearningRouter|PATCH|/library-items/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/library-items/:id",
+      "to": "contentLearningRouter|DELETE|/library-items/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
