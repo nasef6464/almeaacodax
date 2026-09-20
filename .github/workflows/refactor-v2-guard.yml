@@ -90,6 +90,9 @@ jobs:
       - name: Progressive module boundary gate
         run: node tools/refactor/module-boundary-gate.mjs
 
+      - name: Question catalog store boundary contract
+        run: node scripts/smoke-question-catalog-store-boundary-contract.mjs
+
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 
