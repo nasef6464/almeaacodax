@@ -14,7 +14,7 @@ const files = {
   quizReportScope: await read("server/src/modules/quizzes/application/quizReportStudentScope.ts"),
   parentWeeklyReport: await read("server/src/modules/reports/application/sendParentWeeklyPerformanceReport.ts"),
   certificates: await read("server/src/routes/certificates.routes.ts"),
-  contentRoute: await read("server/src/routes/content.routes.ts"),
+  schoolRelations: await read("server/src/modules/content/http/contentSchoolRelationsRoutes.ts"),
   schoolRelationsRoute: await read("server/src/modules/content/http/contentSchoolRelationsRoutes.ts"),
   operationsAudit: await read("server/src/services/operationsAudit.ts"),
   privacyLifecycle: await read("server/src/modules/privacy/application/deleteUserLifecycle.ts"),
@@ -101,8 +101,8 @@ check("certificate recipients and school relation imports use canonical parent a
   includes(files.certificates, "getAuthorizedParentIdsForStudent");
   excludes(files.certificates, "linkedStudentIds: { $in:");
   includes(files.schoolRelationsRoute, "ensureCanonicalParentRelationship");
-  includes(files.contentRoute, "SchoolMembershipModel.findOneAndUpdate");
-  includes(files.contentRoute, "TeachingAssignmentModel.findOneAndUpdate");
+  includes(files.schoolRelations, "SchoolMembershipModel.findOneAndUpdate");
+  includes(files.schoolRelations, "TeachingAssignmentModel.findOneAndUpdate");
   includes(files.authority, "ensureCanonicalParentRelationship");
 });
 
