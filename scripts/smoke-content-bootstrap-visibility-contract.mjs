@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const routeSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentBootstrapRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/contentBootstrapVisibility.ts'), 'utf8').replace(/\r\n/g, '\n');
 const checks = [];
 const check = (name, assertion) => {
@@ -12,7 +12,7 @@ const check = (name, assertion) => {
 };
 
 check('bootstrap visibility filters are delegated while active-path lookup stays in the route', () => {
-  assert.ok(routeSource.includes('import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";'));
+  assert.ok(routeSource.includes('from "../application/contentBootstrapVisibility.js";'));
   assert.ok(routeSource.includes('const activePathIds = canSeeAllContent ? [] : await getActivePathIds();'));
   assert.ok(routeSource.includes('buildContentBootstrapVisibilityFilters({ canSeeAllContent, activePathIds })'));
   assert.ok(!routeSource.includes('const scopeFilterToActivePaths ='));
