@@ -87,24 +87,30 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
   );
 
   const [serverQuestionCount, setServerQuestionCount] = useState<number | null>(null);
+  const [isLoadingServerQuestionCount, setIsLoadingServerQuestionCount] = useState(true);
   const [subSkillCounts, setSubSkillCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     let active = true;
     const loadQuestionCoverage = async () => {
+      setIsLoadingServerQuestionCount(true);
       try {
         const response = await api.getQuestionsPaginated({
           pathId: selectedPathId || undefined,
           subject: (subjectId || selectedSubjectId) || undefined,
+          skillLinkStatus: 'linked',
           limit: 1,
+          summary: true,
+          noTotal: true,
           includeCoverage: true,
         });
         if (!active) return;
-        const count = response?.coverage?.total ?? response?.pagination?.total ?? null;
-        setServerQuestionCount(count);
+        setServerQuestionCount(response?.coverage?.total ?? null);
       } catch {
         if (!active) return;
         setServerQuestionCount(null);
+      } finally {
+        if (active) setIsLoadingServerQuestionCount(false);
       }
     };
     void loadQuestionCoverage();
@@ -117,12 +123,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
     setSubSkillCounts((prev) => (prev[id] === count ? prev : { ...prev, [id]: count }));
   }, []);
 
-  const fallbackLocalQuestionsCount = useMemo(
-    () => questions.filter((question) => (question.skillIds || []).some((skillId) => relatedSubSkills.some((skill) => skill.id === skillId))).length,
-    [questions, relatedSubSkills]
-  );
-
-  const totalLinkedQuestions = serverQuestionCount ?? fallbackLocalQuestionsCount;
+  const totalLinkedQuestions = serverQuestionCount;
 
   const totalLinkedQuizzes = useMemo(
     () =>
@@ -443,7 +444,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
         </div>
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="text-gray-500 text-sm mb-1">الأسئلة المرتبطة</div>
-          <div className="text-2xl font-bold text-amber-600">{totalLinkedQuestions}</div>
+          <div className="text-2xl font-bold text-amber-600">{isLoadingServerQuestionCount ? '…' : (totalLinkedQuestions ?? '—')}</div>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="text-gray-500 text-sm mb-1">الاختبارات المرتبطة</div>
