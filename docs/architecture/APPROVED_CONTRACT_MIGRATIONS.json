@@ -211,6 +211,26 @@
       "from": "contentRouter|POST|/schools/:id/relations",
       "to": "contentSchoolRelationsRouter|POST|/schools/:id/relations",
       "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/review-queue",
+      "to": "contentReviewRouter|GET|/review-queue",
+      "reason": "Review queue list route moved to the dedicated content review HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/review-queue/:type/:id",
+      "to": "contentReviewRouter|PATCH|/review-queue/:type/:id",
+      "reason": "Review decision route moved to the dedicated content review HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/bootstrap/minimal",
+      "to": "contentBootstrapRouter|GET|/bootstrap/minimal",
+      "reason": "Minimal content bootstrap moved to the dedicated bootstrap HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/bootstrap",
+      "to": "contentBootstrapRouter|GET|/bootstrap",
+      "reason": "Scoped content bootstrap moved to the dedicated bootstrap HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
