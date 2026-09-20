@@ -27,6 +27,7 @@ import { createQuizCatalogSlice } from './slices/quizCatalogSlice';
 import { createCourseCatalogSlice } from './slices/courseCatalogSlice';
 import { createLessonCatalogSlice } from './slices/lessonCatalogSlice';
 import { createTopicCatalogSlice } from './slices/topicCatalogSlice';
+import { createGroupCrudSlice } from './slices/groupCrudSlice';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
@@ -465,127 +466,7 @@ export const useStore = create<AppState>()(
             ...createTopicCatalogSlice<AppState>(set, api),
 
             // Group Actions
-            createGroup: (group) => set((state) => {
-                api.createGroup(group).catch(console.error);
-                return {
-                    groups: [...state.groups, group]
-                };
-            }),
-
-            createGroupAsync: async (group) => {
-                const persisted = await api.createGroup(group);
-                const nextGroup = {
-                    ...group,
-                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<Group> : {}),
-                };
-                set((state) => ({
-                    groups: state.groups.some(g => g.id === nextGroup.id)
-                        ? state.groups.map(g => g.id === nextGroup.id ? nextGroup : g)
-                        : [...state.groups, nextGroup]
-                }));
-                return nextGroup;
-            },
-
-            updateGroup: (groupId, data) => set((state) => {
-                api.updateGroup(groupId, data).catch(console.error);
-                return {
-                    groups: state.groups.map(g => g.id === groupId ? { ...g, ...data } : g)
-                };
-            }),
-
-            updateGroupAsync: async (groupId, data) => {
-                const persisted = await api.updateGroup(groupId, data);
-                let nextGroup: Group | null = null;
-                set((state) => ({
-                    groups: state.groups.map(g => {
-                        if (g.id !== groupId) return g;
-                        nextGroup = {
-                            ...g,
-                            ...data,
-                            ...((persisted && typeof persisted === 'object') ? persisted as Partial<Group> : {}),
-                        };
-                        return nextGroup;
-                    })
-                }));
-                if (!nextGroup) {
-                    throw new Error('تعذر العثور على المدرسة أو الفصل بعد الحفظ.');
-                }
-                return nextGroup;
-            },
-
-            deleteGroup: (groupId) => set((state) => {
-                api.deleteGroup(groupId).catch(console.error);
-                const targetGroup = state.groups.find(g => g.id === groupId);
-                const deletedGroupIds = new Set<string>([
-                    groupId,
-                    ...(targetGroup?.type === 'SCHOOL'
-                        ? state.groups.filter(g => g.parentId === groupId).map(g => g.id)
-                        : []),
-                ]);
-                const deletedPackageIds = new Set(
-                    targetGroup?.type === 'SCHOOL'
-                        ? state.b2bPackages.filter(pkg => pkg.schoolId === groupId).map(pkg => pkg.id)
-                        : [],
-                );
-
-                const newGroups = state.groups.filter(g => !deletedGroupIds.has(g.id));
-                const newUsers = state.users.map(u => ({
-                    ...u,
-                    schoolId: u.schoolId === groupId ? undefined : u.schoolId,
-                    groupIds: u.groupIds?.filter(id => !deletedGroupIds.has(id)) || []
-                }));
-                
-                const currentUser = newUsers.find(u => u.id === state.user.id) || state.user;
-
-                return {
-                    groups: newGroups,
-                    b2bPackages: targetGroup?.type === 'SCHOOL'
-                        ? state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)
-                        : state.b2bPackages,
-                    accessCodes: targetGroup?.type === 'SCHOOL'
-                        ? state.accessCodes.filter(code => code.schoolId !== groupId && !deletedPackageIds.has(code.packageId))
-                        : state.accessCodes,
-                    users: newUsers,
-                    user: currentUser
-                };
-            }),
-
-            deleteGroupAsync: async (groupId) => {
-                await api.deleteGroup(groupId);
-                set((state) => {
-                    const targetGroup = state.groups.find(g => g.id === groupId);
-                    const deletedGroupIds = new Set<string>([
-                        groupId,
-                        ...(targetGroup?.type === 'SCHOOL'
-                            ? state.groups.filter(g => g.parentId === groupId).map(g => g.id)
-                            : []),
-                    ]);
-                    const deletedPackageIds = new Set(
-                        targetGroup?.type === 'SCHOOL'
-                            ? state.b2bPackages.filter(pkg => pkg.schoolId === groupId).map(pkg => pkg.id)
-                            : [],
-                    );
-
-                    const newUsers = state.users.map(u => ({
-                        ...u,
-                        schoolId: u.schoolId === groupId ? undefined : u.schoolId,
-                        groupIds: u.groupIds?.filter(id => !deletedGroupIds.has(id)) || []
-                    }));
-                    const currentUser = newUsers.find(u => u.id === state.user.id) || state.user;
-
-                    return {
-                        groups: state.groups.filter(g => !deletedGroupIds.has(g.id)),
-                        b2bPackages: targetGroup?.type === 'SCHOOL'
-                            ? state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)
-                            : state.b2bPackages,
-                        accessCodes: targetGroup?.type === 'SCHOOL'
-                            ? state.accessCodes.filter(code => code.schoolId !== groupId && !deletedPackageIds.has(code.packageId))
-                            : state.accessCodes,
-                        users: newUsers,
-                        user: currentUser
-                    };
-                });
-            },
+            ...createGroupCrudSlice<AppState>(set, api),
 
             assignStudentToGroup: (userId, groupId) => set((state) => {
                 const targetGroup = state.groups.find(g => g.id === groupId);
