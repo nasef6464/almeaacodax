@@ -8,6 +8,7 @@ const read = (relativePath) =>
 
 const rootRoutes = read('server/src/routes/quiz.routes.ts');
 const telemetryRoutes = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
+const analyticsOverview = read('server/src/modules/quizzes/application/quizAnalyticsOverview.ts');
 
 const checks = [];
 const check = (name, assertion) => {
@@ -71,10 +72,12 @@ check('telemetry router stays learner-scoped and does not absorb quiz analytics 
   ]) assert.ok(!telemetryRoutes.includes(forbidden), `telemetry router absorbed unrelated owner ${forbidden}`);
 });
 
-check('root analytics may still read question attempts but cannot write them', () => {
-  assert.ok(rootRoutes.includes('QuestionAttemptModel.find('));
+check('analytics reads attempts while telemetry exclusively owns attempt writes', () => {
+  assert.ok(analyticsOverview.includes('QuestionAttemptModel.find('));
+  assert.ok(!analyticsOverview.includes('QuestionAttemptModel.create('));
   assert.ok(!rootRoutes.includes('QuestionAttemptModel.create('));
   assert.ok(!rootRoutes.includes('SkillProgressModel'));
+  assert.ok(telemetryRoutes.includes('QuestionAttemptModel.create('));
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
