@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const server = await read("server/src/routes/content.routes.ts");
+const server = await read("server/src/modules/content/http/contentBootstrapRoutes.ts");
 const operationalData = await read("server/src/modules/content/infrastructure/contentBootstrapOperationalData.ts");
 const api = await read("services/apiGroups/taxonomyContentApi.ts");
 const schools = await read("dashboards/admin/SchoolsManager.tsx");
