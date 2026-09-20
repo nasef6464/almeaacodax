@@ -64,13 +64,13 @@
     },
     {
       "from": "contentRouter|GET|/platform-integrations/setup-checklist",
-      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations/setup-checklist",
-      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+      "to": "contentPlatformIntegrationRuntimeRouter|GET|/platform-integrations/setup-checklist",
+      "reason": "Platform integration runtime checklist moved to the dedicated runtime integration HTTP module; public HTTP method/path remains unchanged."
     },
     {
       "from": "contentRouter|GET|/platform-integrations/runtime-audit",
-      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations/runtime-audit",
-      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+      "to": "contentPlatformIntegrationRuntimeRouter|GET|/platform-integrations/runtime-audit",
+      "reason": "Platform integration runtime audit moved to the dedicated runtime integration HTTP module; public HTTP method/path remains unchanged."
     },
     {
       "from": "contentRouter|POST|/platform-integrations/history/:id/restore",
