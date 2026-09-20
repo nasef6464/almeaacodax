@@ -156,6 +156,46 @@
       "from": "contentRouter|DELETE|/groups/:id",
       "to": "contentGroupRouter|DELETE|/groups/:id",
       "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/b2b-packages",
+      "to": "contentSchoolCommercialRouter|POST|/b2b-packages",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/b2b-packages/:id",
+      "to": "contentSchoolCommercialRouter|PATCH|/b2b-packages/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/b2b-packages/:id",
+      "to": "contentSchoolCommercialRouter|DELETE|/b2b-packages/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/access-codes",
+      "to": "contentSchoolCommercialRouter|POST|/access-codes",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/access-codes/:id",
+      "to": "contentSchoolCommercialRouter|PATCH|/access-codes/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/access-codes/:id",
+      "to": "contentSchoolCommercialRouter|DELETE|/access-codes/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/access-codes",
+      "to": "contentSchoolCommercialRouter|GET|/access-codes",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/access-code-redemptions",
+      "to": "contentSchoolCommercialRouter|GET|/access-code-redemptions",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
