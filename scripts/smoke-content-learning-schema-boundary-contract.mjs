@@ -3,13 +3,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const routeFile = 'server/src/routes/content.routes.ts';
-const schemaFile = 'server/src/modules/content/http/learningContentSchemas.ts';
-const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
-const schemaSource = fs.readFileSync(path.join(root, schemaFile), 'utf8').replace(/\r\n/g, '\n');
+const rootRouteSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const learningRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentLearningRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const workflowSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/learningContentWorkflow.ts'), 'utf8').replace(/\r\n/g, '\n');
+const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/learningContentSchemas.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
-const schemaImport = 'import { lessonSchema, librarySchema, libraryUpdateSchema, topicSchema, topicUpdateSchema } from "../modules/content/http/learningContentSchemas.js";';
-const delegated = routeSource.includes(schemaImport);
+
+const delegated =
+  rootRouteSource.includes('contentRouter.use(contentLearningRouter);') &&
+  learningRouteSource.includes('from "./learningContentSchemas.js"');
 
 const checks = [];
 const check = (name, assertion) => {
@@ -43,9 +45,7 @@ check('topic schema preserves required scope, defaults, and update optionality',
     'libraryItemIds: z.array(z.string()).default([])',
     'pathId: z.string().min(1).optional()',
     'subjectId: z.string().min(1).optional()',
-  ]) {
-    assert.ok(schemaSource.includes(fragment), `topic contract missing ${fragment}`);
-  }
+  ]) assert.ok(schemaSource.includes(fragment), `topic contract missing ${fragment}`);
 });
 
 check('lesson schema preserves learning types, interactive questions, skills, and workflow metadata', () => {
@@ -58,9 +58,7 @@ check('lesson schema preserves learning types, interactive questions, skills, an
     'ownerType: z.enum(["platform", "teacher", "school"]).optional()',
     'approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional()',
     'revenueSharePercentage: z.number().nullable().optional()',
-  ]) {
-    assert.ok(schemaSource.includes(fragment), `lesson contract missing ${fragment}`);
-  }
+  ]) assert.ok(schemaSource.includes(fragment), `lesson contract missing ${fragment}`);
 });
 
 check('library create/update schemas preserve file types, skill scope, and workflow fields', () => {
@@ -71,12 +69,10 @@ check('library create/update schemas preserve file types, skill scope, and workf
     'skillIds: z.array(z.string()).min(1).optional()',
     'createdBy: z.string().optional()',
     'assignedTeacherId: z.string().optional()',
-  ]) {
-    assert.ok(schemaSource.includes(fragment), `library contract missing ${fragment}`);
-  }
+  ]) assert.ok(schemaSource.includes(fragment), `library contract missing ${fragment}`);
 });
 
-check('content routes preserve the same parser call sites before and after ownership moves', () => {
+check('learning route parser call sites remain unchanged after extraction', () => {
   for (const fragment of [
     'topicSchema.parse(req.body)',
     'topicUpdateSchema.parse(req.body)',
@@ -84,27 +80,58 @@ check('content routes preserve the same parser call sites before and after owner
     'sanitizeLessonPayload(lessonSchema.partial().parse(req.body))',
     'librarySchema.parse(req.body)',
     'libraryUpdateSchema.parse(req.body)',
-  ]) {
-    assert.ok(routeSource.includes(fragment), `route parser call missing ${fragment}`);
-  }
+  ]) assert.ok(learningRouteSource.includes(fragment), `learning route parser call missing ${fragment}`);
 });
 
-check('schema ownership is exclusive after delegation while staging remains baseline-compatible', () => {
-  const localDeclarations = [
-    'const topicSchema = z.object({',
-    'const topicUpdateSchema = z.object({',
-    'const lessonSchema = z.object({',
-    'const librarySchema = z.object({',
-    'const libraryUpdateSchema = z.object({',
-  ];
-  if (delegated) {
-    for (const declaration of localDeclarations) {
-      assert.ok(!routeSource.includes(declaration), `delegated route still owns ${declaration}`);
-    }
-  } else {
-    for (const declaration of localDeclarations) {
-      assert.ok(routeSource.includes(declaration), `pre-apply route lost ${declaration}`);
-    }
+check('learning HTTP route surface remains stable', () => {
+  for (const fragment of [
+    '"/topics"',
+    '"/topics/:id"',
+    '"/lessons"',
+    '"/lessons/:id"',
+    '"/library-items"',
+    '"/library-items/:id"',
+    'requireRole(["admin", "teacher"])',
+  ]) assert.ok(learningRouteSource.includes(fragment), `learning route missing ${fragment}`);
+  assert.ok(rootRouteSource.includes('contentRouter.use(contentLearningRouter);'));
+});
+
+check('learning workflow ownership is extracted from the root route', () => {
+  for (const fragment of [
+    'export const buildOwnedDocumentQuery',
+    'export const getWorkflowDefaults',
+    'export const sanitizeWorkflowUpdate',
+    'export const hasTopicManagementScope',
+  ]) assert.ok(workflowSource.includes(fragment), `learning workflow lost ${fragment}`);
+
+  for (const fragment of [
+    'const buildOwnedDocumentQuery =',
+    'const getWorkflowDefaults =',
+    'const sanitizeWorkflowUpdate =',
+    'const hasTopicManagementScope =',
+  ]) assert.ok(!rootRouteSource.includes(fragment), `root route retained learning workflow helper ${fragment}`);
+});
+
+check('learning authorization and persistence remain intact', () => {
+  for (const fragment of [
+    'assertManagedContentScope(req.authUser!',
+    'hasTopicManagementScope(req.authUser!',
+    'buildOwnedDocumentQuery(req.params.id, req.authUser!)',
+    'getWorkflowDefaults(req.authUser!)',
+    'sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!)',
+    'TopicModel.findOneAndUpdate',
+    'LessonModel.findOneAndUpdate',
+    'LibraryItemModel.findOneAndUpdate',
+  ]) assert.ok(learningRouteSource.includes(fragment), `learning route lost ${fragment}`);
+});
+
+check('learning modules stay bounded and domain-specific', () => {
+  assert.ok(delegated, 'learning router delegation is incomplete');
+  assert.ok(lineCount(learningRouteSource) <= 300, `contentLearningRoutes.ts exceeded 300 lines (${lineCount(learningRouteSource)}).`);
+  assert.ok(lineCount(workflowSource) <= 150, `learningContentWorkflow.ts exceeded 150 lines (${lineCount(workflowSource)}).`);
+  for (const forbidden of ['GroupModel', 'B2BPackageModel', 'AccessCodeModel', 'PlatformIntegrationSettingsModel', 'StudyPlanModel']) {
+    assert.ok(!learningRouteSource.includes(forbidden), `learning route absorbed unrelated owner ${forbidden}`);
+    assert.ok(!workflowSource.includes(forbidden), `learning workflow absorbed unrelated owner ${forbidden}`);
   }
 });
 
@@ -113,17 +140,16 @@ check('learning content schema module stays transport-only and bounded', () => {
     assert.ok(!schemaSource.includes(forbidden), `schema module must not include ${forbidden}`);
   }
   assert.ok(lineCount(schemaSource) <= 170, `learningContentSchemas.ts exceeded 170 lines (${lineCount(schemaSource)}).`);
-  if (delegated) {
-    assert.ok(lineCount(routeSource) <= 3300, `content.routes.ts did not shrink below 3300 lines (${lineCount(routeSource)}).`);
-  }
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({
   phase: 'content-learning-schema-boundary',
   status: failed.length === 0 ? 'PASS' : 'FAIL',
-  ownership: delegated ? 'content-module' : 'route-staging',
-  routeLines: lineCount(routeSource),
+  ownership: delegated ? 'content-learning-module' : 'root-route',
+  rootRouteLines: lineCount(rootRouteSource),
+  learningRouteLines: lineCount(learningRouteSource),
+  workflowLines: lineCount(workflowSource),
   schemaLines: lineCount(schemaSource),
   checks,
 }, null, 2));
