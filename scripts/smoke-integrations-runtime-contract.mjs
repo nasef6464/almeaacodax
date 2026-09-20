@@ -53,16 +53,16 @@ check("integration restore endpoint returns masked settings", () => {
 });
 
 check("runtime audit endpoint exists and includes env/runtime readiness checks", () => {
-  includes(integrationRoutes, '"/platform-integrations/runtime-audit"');
+  includes(integrationRuntimeRoutes, '"/platform-integrations/runtime-audit"');
   includes(integrationRuntimeRoutes, "runtimeReady");
-  includes(integrationRoutes, "getRedisHealth(\"queue\"");
+  includes(integrationRuntimeRoutes, "getRedisHealth(\"queue\"");
   includes(integrationRuntimeRoutes, "WHATSAPP_PROVIDER");
   includes(integrationRuntimeRoutes, "EMAIL_PROVIDER");
   includes(integrationRuntimeRoutes, "SENTRY_DSN");
 });
 
 check("setup checklist endpoint still exists with callback/webhook guidance", () => {
-  includes(integrationRoutes, '"/platform-integrations/setup-checklist"');
+  includes(integrationRuntimeRoutes, '"/platform-integrations/setup-checklist"');
   includes(integrationRuntimeRoutes, "callbackUrl");
   includes(integrationRuntimeRoutes, "webhookUrl");
   includes(integrationRuntimeRoutes, "GOOGLE_CLIENT_ID");
