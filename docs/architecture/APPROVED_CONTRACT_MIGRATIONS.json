@@ -241,6 +241,21 @@
       "from": "quizRouter|DELETE|/questions/:id",
       "to": "questionBankRouter|DELETE|/questions/:id",
       "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/skill-progress",
+      "to": "adaptiveTelemetryRouter|GET|/skill-progress",
+      "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/question-attempts",
+      "to": "adaptiveTelemetryRouter|GET|/question-attempts",
+      "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|POST|/question-attempts",
+      "to": "adaptiveTelemetryRouter|POST|/question-attempts",
+      "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
     }
   ]
 }
