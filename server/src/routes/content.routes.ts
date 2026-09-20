@@ -17,8 +17,6 @@ import { AccessCodeModel } from "../models/AccessCode.js";
 import { AccessGrantModel } from "../models/AccessGrant.js";
 import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
-import { HomepageSettingsModel } from "../models/HomepageSettings.js";
-import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
 import { PlatformIntegrationHistoryModel } from "../models/PlatformIntegrationHistory.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
@@ -32,11 +30,10 @@ import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } 
 import { lessonSchema, librarySchema, libraryUpdateSchema, topicSchema, topicUpdateSchema } from "../modules/content/http/learningContentSchemas.js";
 import { platformIntegrationSettingsPatchSchema, platformIntegrationSettingsSchema } from "../modules/content/http/platformIntegrationSchemas.js";
 import { defaultPlatformIntegrationSettings } from "../modules/content/integrations/platformIntegrationDefaults.js";
-import { announcementAdSchema, announcementAdUpdateSchema, homepageSettingsSchema, platformFontSettingsSchema } from "../modules/content/http/platformPresentationSchemas.js";
-import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";
 import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";
 import { interventionStudyPlanSchema, studyPlanSchema } from "../modules/content/http/studyPlanSchemas.js";
 import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";
+import { contentPresentationRouter } from "../modules/content/http/contentPresentationRoutes.js";
 import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../modules/content/application/contentBootstrapVisibility.js";
 import { buildContentBootstrapPayload } from "../modules/content/application/contentBootstrapPayload.js";
@@ -600,6 +597,7 @@ const maskIntegrationSnapshot = (snapshot: unknown) => {
 };
 
 export const contentRouter = Router();
+contentRouter.use(contentPresentationRouter);
 
 contentRouter.use((req, _res, next) => {
   if (req.method !== "GET") {
@@ -669,64 +667,6 @@ contentRouter.patch(
     }
     const updated = await model.findOneAndUpdate({ _id: item._id }, update, { new: true });
     return res.json({ item: updated, decision: payload.decision });
-  }),
-);
-
-contentRouter.get(
-  "/homepage-settings",
-  optionalAuth,
-  asyncHandler(async (_req, res) => {
-    let settings = await HomepageSettingsModel.findOne({ key: "default" });
-    if (!settings) {
-      settings = await HomepageSettingsModel.create(defaultHomepageSettings);
-    }
-
-    return res.json(settings);
-  }),
-);
-
-contentRouter.patch(
-  "/homepage-settings",
-  requireAuth,
-  requireRole(["admin"]),
-  asyncHandler(async (req, res) => {
-    const payload = homepageSettingsSchema.parse(req.body);
-    const settings = await HomepageSettingsModel.findOneAndUpdate(
-      { key: "default" },
-      { $set: payload, $setOnInsert: { key: "default" } },
-      { new: true, upsert: true },
-    );
-
-    return res.json(settings);
-  }),
-);
-
-contentRouter.get(
-  "/platform-font-settings",
-  optionalAuth,
-  asyncHandler(async (_req, res) => {
-    let settings = await PlatformFontSettingsModel.findOne({ key: "default" });
-    if (!settings) {
-      settings = await PlatformFontSettingsModel.create(defaultPlatformFontSettings);
-    }
-
-    return res.json(settings);
-  }),
-);
-
-contentRouter.patch(
-  "/platform-font-settings",
-  requireAuth,
-  requireRole(["admin"]),
-  asyncHandler(async (req, res) => {
-    const payload = platformFontSettingsSchema.parse(req.body);
-    const settings = await PlatformFontSettingsModel.findOneAndUpdate(
-      { key: "default" },
-      { $set: payload, $setOnInsert: { key: "default" } },
-      { new: true, upsert: true },
-    );
-
-    return res.json(settings);
   }),
 );
 
@@ -1342,76 +1282,6 @@ contentRouter.delete(
     }
 
     await AccessCodeModel.deleteMany({ packageId: deleted.id || String(deleted._id) });
-    return res.json({ success: true });
-  }),
-);
-
-contentRouter.get(
-  "/announcement-ads",
-  optionalAuth,
-  asyncHandler(async (_req, res) => {
-    const now = Date.now();
-    const announcementAds = await AnnouncementAdModel.find({
-      isActive: { $ne: false },
-      $and: [
-        { $or: [{ startsAt: { $exists: false } }, { startsAt: null }, { startsAt: { $lte: now } }] },
-        { $or: [{ endsAt: { $exists: false } }, { endsAt: null }, { endsAt: { $gte: now } }] },
-      ],
-    })
-      .select("title body imageUrl ctaLabel ctaUrl audience displayMode frequency imageFit delaySeconds isActive startsAt endsAt priority createdAt updatedAt")
-      .sort({ priority: 1, createdAt: -1 })
-      .limit(8);
-
-    return res.json({ announcementAds });
-  }),
-);
-
-contentRouter.post(
-  "/announcement-ads",
-  requireAuth,
-  requireRole(["admin"]),
-  asyncHandler(async (req, res) => {
-    const payload = announcementAdSchema.parse(req.body);
-    const created = await AnnouncementAdModel.create({
-      ...payload,
-      createdAt: payload.createdAt ?? Date.now(),
-      updatedAt: Date.now(),
-    });
-    res.status(StatusCodes.CREATED).json(created);
-  }),
-);
-
-contentRouter.patch(
-  "/announcement-ads/:id",
-  requireAuth,
-  requireRole(["admin"]),
-  asyncHandler(async (req, res) => {
-    const payload = announcementAdUpdateSchema.parse(req.body);
-    const updated = await AnnouncementAdModel.findOneAndUpdate(
-      buildDocumentQuery(req.params.id),
-      { ...payload, updatedAt: Date.now() },
-      { new: true },
-    );
-
-    if (!updated) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Announcement ad not found" });
-    }
-
-    return res.json(updated);
-  }),
-);
-
-contentRouter.delete(
-  "/announcement-ads/:id",
-  requireAuth,
-  requireRole(["admin"]),
-  asyncHandler(async (req, res) => {
-    const deleted = await AnnouncementAdModel.findOneAndDelete(buildDocumentQuery(req.params.id));
-
-    if (!deleted) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Announcement ad not found" });
-    }
-
     return res.json({ success: true });
   }),
 );
