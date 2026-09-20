@@ -19,14 +19,15 @@ const files = {
   questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
   liveQuestionEditorAudit: await read("scripts/live-question-editor-audit.mjs"),
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
+  questionBankRoutes: await read("server/src/modules/quizzes/http/questionBankRoutes.ts"),
   questionPresentation: await read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   styles: await read("styles/main.css"),
 };
 
-const questionPresentationImport = 'import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";';
-const questionSummaryOwner = files.quizRoutes.includes(questionPresentationImport)
+const questionPresentationImport = 'import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";';
+const questionSummaryOwner = files.questionBankRoutes.includes(questionPresentationImport)
   ? files.questionPresentation
-  : files.quizRoutes;
+  : files.questionBankRoutes;
 
 const checks = [];
 
