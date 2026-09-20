@@ -3,7 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const courseRoutes = fs.readFileSync(path.join(root, "server/src/routes/course.routes.ts"), "utf8");
-const contentRoutes = fs.readFileSync(path.join(root, "server/src/routes/content.routes.ts"), "utf8");
+const contentBootstrapRoutes = fs.readFileSync(path.join(root, "server/src/modules/content/http/contentBootstrapRoutes.ts"), "utf8");
 const contentBootstrapRoutes = fs.readFileSync(path.join(root, "server/src/modules/content/http/contentBootstrapRoutes.ts"), "utf8");
 const contentVisibility = fs.readFileSync(path.join(root, "server/src/modules/content/application/contentBootstrapVisibility.ts"), "utf8");
 const subjectLearningPage = fs.readFileSync(path.join(root, "pages/SubjectLearningPage.tsx"), "utf8");
