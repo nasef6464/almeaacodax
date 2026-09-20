@@ -6,6 +6,8 @@ const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const groupRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentGroupRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const commercialRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolCommercialRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const reportImportRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolReportImportRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const relationsRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolRelationsRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const queryUtilitySource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentQueryUtilities.ts'), 'utf8').replace(/\r\n/g, '\n');
 const scopeSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/schoolOperationsScope.ts'), 'utf8').replace(/\r\n/g, '\n');
 const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/schoolOperationsSchemas.ts'), 'utf8').replace(/\r\n/g, '\n');
@@ -13,8 +15,12 @@ const lineCount = (source) => source.split(/\r?\n/).length;
 const delegated =
   routeSource.includes('contentRouter.use(contentGroupRouter);') &&
   routeSource.includes('contentRouter.use(contentSchoolCommercialRouter);') &&
+  routeSource.includes('contentRouter.use(contentSchoolReportImportRouter);') &&
+  routeSource.includes('contentRouter.use(contentSchoolRelationsRouter);') &&
   groupRouteSource.includes('from "./schoolOperationsSchemas.js"') &&
-  commercialRouteSource.includes('from "./schoolOperationsSchemas.js"');
+  commercialRouteSource.includes('from "./schoolOperationsSchemas.js"') &&
+  reportImportRouteSource.includes('from "./schoolOperationsSchemas.js"') &&
+  relationsRouteSource.includes('from "./schoolOperationsSchemas.js"');
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -69,10 +75,8 @@ check('route parser call sites remain unchanged after schema ownership moves', (
     'const query = accessCodesListQuerySchema.parse(req.query);',
     'const query = accessCodeRedemptionsListQuerySchema.parse(req.query);',
   ]) assert.ok(commercialRouteSource.includes(fragment), `commercial route parser call missing ${fragment}`);
-  for (const fragment of [
-    'const payload = schoolImportSchema.parse(req.body);',
-    'const payload = schoolRelationSchema.parse(req.body);',
-  ]) assert.ok(routeSource.includes(fragment), `root school route parser call missing ${fragment}`);
+  assert.ok(reportImportRouteSource.includes('const payload = schoolImportSchema.parse(req.body);'), 'report/import route parser call missing school import parser');
+  assert.ok(relationsRouteSource.includes('const payload = schoolRelationSchema.parse(req.body);'), 'relations route parser call missing school relation parser');
 });
 
 check('school schema ownership is exclusive after delegation while staging remains baseline-compatible', () => {
@@ -91,6 +95,8 @@ check('school schema ownership is exclusive after delegation while staging remai
     assert.ok(!routeSource.includes(declaration), `root route retained transport schema ${declaration}`);
     assert.ok(!groupRouteSource.includes(declaration), `group route retained local transport schema ${declaration}`);
     assert.ok(!commercialRouteSource.includes(declaration), `commercial route retained local transport schema ${declaration}`);
+    assert.ok(!reportImportRouteSource.includes(declaration), `report/import route retained local transport schema ${declaration}`);
+    assert.ok(!relationsRouteSource.includes(declaration), `relations route retained local transport schema ${declaration}`);
   }
 });
 
@@ -115,5 +121,5 @@ check('school operations schema module stays transport-only and bounded', () => 
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
-console.log(JSON.stringify({ phase: 'content-school-operations-schema-boundary', status: failed.length ? 'FAIL' : 'PASS', delegated, routeLines: lineCount(routeSource), groupRouteLines: lineCount(groupRouteSource), commercialRouteLines: lineCount(commercialRouteSource), queryUtilityLines: lineCount(queryUtilitySource), scopeLines: lineCount(scopeSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
+console.log(JSON.stringify({ phase: 'content-school-operations-schema-boundary', status: failed.length ? 'FAIL' : 'PASS', delegated, routeLines: lineCount(routeSource), groupRouteLines: lineCount(groupRouteSource), commercialRouteLines: lineCount(commercialRouteSource), reportImportRouteLines: lineCount(reportImportRouteSource), relationsRouteLines: lineCount(relationsRouteSource), queryUtilityLines: lineCount(queryUtilitySource), scopeLines: lineCount(scopeSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
 if (failed.length) process.exit(1);
