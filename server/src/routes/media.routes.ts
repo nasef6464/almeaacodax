@@ -16,7 +16,10 @@ mediaRouter.post(
   requireAuth,
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
-    const payload = questionImageIntentSchema.parse(req.body || {});
+    const payload = questionImageIntentSchema.parse(req.body || {}) as {
+      contentType: "image/jpeg" | "image/png" | "image/webp";
+      sizeBytes: number;
+    };
     const intent = createQuestionImageUploadIntent(payload);
     res.json(intent);
   }),
