@@ -1,6 +1,8 @@
 import fs from "node:fs";
 
 const source = fs.readFileSync("server/src/routes/content.routes.ts", "utf8");
+const reportImportSource = fs.readFileSync("server/src/modules/content/http/contentSchoolReportImportRoutes.ts", "utf8");
+const relationsSource = fs.readFileSync("server/src/modules/content/http/contentSchoolRelationsRoutes.ts", "utf8");
 const scopeSource = fs.readFileSync("server/src/modules/content/application/schoolOperationsScope.ts", "utf8");
 
 const checks = [];
@@ -8,6 +10,11 @@ const add = (name, fn) => checks.push({ name, fn });
 
 const assertIncludes = (snippet, message) => {
   if (!source.includes(snippet)) {
+    throw new Error(message || `Missing snippet: ${snippet}`);
+  }
+};
+const assertIn = (target, snippet, message) => {
+  if (!target.includes(snippet)) {
     throw new Error(message || `Missing snippet: ${snippet}`);
   }
 };
@@ -31,21 +38,21 @@ add("defines shared school scope guard", () => {
 });
 
 add("enforces scope on school report endpoint", () => {
-  assertIncludes("\"/schools/:id/report\"", "Missing school report endpoint");
-  assertIncludes("const canManageSchool = await assertSchoolManagementScope(req.authUser!, school as any);", "Report endpoint must enforce scope guard");
+  assertIn(reportImportSource, "\"/schools/:id/report\"", "Missing school report endpoint");
+  assertIn(reportImportSource, "const canManageSchool = await assertSchoolManagementScope(req.authUser!, school as any);", "Report endpoint must enforce scope guard");
 });
 
 add("enforces scope on import-students endpoint", () => {
-  assertIncludes("\"/schools/:id/import-students\"", "Missing import-students endpoint");
-  assertIncludes("return res.status(StatusCodes.FORBIDDEN).json({ message: \"You cannot manage this school\" });", "Missing forbidden guard message");
+  assertIn(reportImportSource, "\"/schools/:id/import-students\"", "Missing import-students endpoint");
+  assertIn(reportImportSource, "return res.status(StatusCodes.FORBIDDEN).json({ message: \"You cannot manage this school\" });", "Missing forbidden guard message");
 });
 
 add("uses same scope guard on relations endpoint", () => {
-  const relationsIdx = source.indexOf("\"/schools/:id/relations\"");
+  const relationsIdx = relationsSource.indexOf("\"/schools/:id/relations\"");
   if (relationsIdx < 0) {
     throw new Error("Missing relations endpoint");
   }
-  const block = source.slice(relationsIdx, relationsIdx + 1200);
+  const block = relationsSource.slice(relationsIdx, relationsIdx + 1200);
   if (!block.includes("assertSchoolManagementScope")) {
     throw new Error("Relations endpoint is not using shared scope guard");
   }
