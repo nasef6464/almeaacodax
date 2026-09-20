@@ -1302,7 +1302,7 @@
 
 ## Batch 11 — Backup / Disaster Recovery — 2026-09-20
 
-- Status: IN PROGRESS on PR #181 (`fix/disaster-recovery-b11`), baseline `main@4c398773466ddcdd19243f8176c4e099d067b7a9`.
+- Status: REPOSITORY TOOLING MERGED via PR #181 into `main@3108872714ca28c24d89c1067b3b27eb249ab545`; live recoverability evidence remains open as an infrastructure/operations requirement.
 - Root cause confirmed: the existing learning snapshot is intentionally partial and stores snapshots inside MongoDB; it cannot protect against full database failure. Existing media records store external URLs, so Mongo backup alone cannot recover media bytes.
 - Repository remediation:
   - verified compressed MongoDB archive + portable SHA-256 verification;
@@ -1319,3 +1319,31 @@
 - Live blockers before DONE: actual scheduled execution/alerting, independent off-site destination evidence, backup-destination encryption/access review, measured isolated Mongo restore drill, measured R2 media recovery drill, and achieved RPO/RTO.
 - Secrets rule: never commit or echo provider tokens/access keys. Any credential pasted into chat must be rotated before production use.
 - Next exact action: run final exact-head CI after the R2/architecture reconciliation; then merge repository-safe tooling if green, while keeping Batch 11 open until live recoverability evidence is completed.
+
+
+## Batch 12 — Deployment / Release Identity / Observability — 2026-09-20
+
+- Status: IN PROGRESS on branch `chatgpt/batch12-release-observability`, baseline `main@f9db56188cccf0977842cce0b84ac13add9da117`.
+- Live production inspection:
+  - Vercel project `almeaacodax` production deployment is READY on exact frontend commit `f9db56188cccf0977842cce0b84ac13add9da117`.
+  - The canonical browser path `https://almeaacodax.vercel.app/api` is served by Render through the Vercel rewrite.
+  - Backend `/api/health/live` reports commit `848e12790a1e`, proving a frontend/backend release identity mismatch.
+  - `/api/health/ready` returns HTTP 200 with MongoDB connected.
+  - `/api/health/scale-ready` returns HTTP 503 with blocker `redis_not_configured_for_multi_instance_scale`; do not treat normal readiness as scale certification.
+- Root causes:
+  - release closure did not require the live backend SHA to match the intended GitHub release;
+  - deployment documentation still referenced a retired Render URL while `vercel.json` pointed at the active Render service;
+  - Docker used the compatibility health endpoint instead of readiness;
+  - runtime health and Sentry did not share one release-identity helper;
+  - repository deployment docs exposed reusable operational test passwords and have been corrected.
+- Repository remediation on this branch:
+  - central runtime release identity helper consumed by health and Sentry;
+  - post-deploy smoke waits for and verifies exact backend SHA plus readiness;
+  - optional `REQUIRE_SCALE_READY` gate preserves the stronger multi-instance release boundary;
+  - Docker backend healthcheck uses `/api/health/ready`;
+  - canonical deployment docs define Vercel → Render as current production and VPS/Docker as secondary/recovery paths;
+  - Production Readiness receives a static release/deployment contract.
+- External blockers:
+  - the active Render workspace is not selected in the connected Render tool, so direct service settings/log/metric inspection cannot be performed safely without owner workspace selection;
+  - live backend must be redeployed from current `main` and Redis configured before scale-ready can become green.
+- Next exact action: open the Batch 12 PR, run exact-head CI/typecheck/build/security/integration/E2E gates, fix any root-cause failures, then verify the live post-deploy SHA/readiness evidence before marking Batch 12 DONE. Independent repository work continues even while Render configuration remains externally blocked.
