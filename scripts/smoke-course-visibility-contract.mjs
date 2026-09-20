@@ -4,6 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const courseRoutes = fs.readFileSync(path.join(root, "server/src/routes/course.routes.ts"), "utf8");
 const contentRoutes = fs.readFileSync(path.join(root, "server/src/routes/content.routes.ts"), "utf8");
+const contentBootstrapRoutes = fs.readFileSync(path.join(root, "server/src/modules/content/http/contentBootstrapRoutes.ts"), "utf8");
 const contentVisibility = fs.readFileSync(path.join(root, "server/src/modules/content/application/contentBootstrapVisibility.ts"), "utf8");
 const subjectLearningPage = fs.readFileSync(path.join(root, "pages/SubjectLearningPage.tsx"), "utf8");
 
@@ -22,7 +23,7 @@ check("learner course API filter enforces publish/visibility/approval", () => {
 });
 
 check("bootstrap learner filters gate lesson and library visibility", () => {
-  assertIncludes(contentRoutes, "buildContentBootstrapVisibilityFilters({ canSeeAllContent, activePathIds })", "bootstrap visibility delegation");
+  assertIncludes(contentBootstrapRoutes, "buildContentBootstrapVisibilityFilters({ canSeeAllContent, activePathIds })", "bootstrap visibility delegation");
   assertIncludes(contentVisibility, "const lessonFilter =", "lesson filter block");
   assertIncludes(contentVisibility, "const libraryFilter =", "library filter block");
   assertIncludes(contentVisibility, "showOnPlatform: { $ne: false }", "showOnPlatform gate");
