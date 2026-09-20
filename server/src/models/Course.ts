@@ -96,7 +96,7 @@ const courseSchema = new Schema(
   },
 );
 
-courseSchema.index({ pathId: 1, subjectId: 1, isPublished: 1, showOnPlatform: 1, createdAt: -1 });
+courseSchema.index({ createdAt: -1 });\ncourseSchema.index({ isPublished: 1, showOnPlatform: 1, createdAt: -1 });\ncourseSchema.index({ pathId: 1, subjectId: 1, isPublished: 1, showOnPlatform: 1, createdAt: -1 });
 courseSchema.index({ isPackage: 1, packageType: 1, isPublished: 1, showOnPlatform: 1, createdAt: -1 });
 courseSchema.index({ packageContentTypes: 1, isPublished: 1, showOnPlatform: 1 });
 courseSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1, createdAt: -1 });
