@@ -201,6 +201,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [videoFilter, setVideoFilter] = useState<'all' | 'with_video' | 'without_video'>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoadingEditQuestion, setIsLoadingEditQuestion] = useState(false);
+  const [editorLoadError, setEditorLoadError] = useState<string | null>(null);
   const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isImporting, setIsImporting] = useState(false);
@@ -452,10 +454,25 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setIsEditing(true);
   };
 
-  const handleEdit = (question: Question) => {
+  const handleEdit = async (question: Question) => {
+    const questionId = String(question.id || (question as Question & { _id?: string })._id || '').trim();
+    if (!questionId) {
+      setEditorLoadError('تعذر تحديد السؤال المطلوب تعديله.');
+      return;
+    }
+
     setGenerateAiDraftOnOpen(false);
-    setCurrentQuestion(question);
-    setIsEditing(true);
+    setEditorLoadError(null);
+    setIsLoadingEditQuestion(true);
+    try {
+      const fullQuestion = await api.getQuestionForEditing(questionId);
+      setCurrentQuestion(fullQuestion as Question);
+      setIsEditing(true);
+    } catch (error) {
+      setEditorLoadError(error instanceof Error ? error.message : 'تعذر تحميل السؤال الكامل للتعديل.');
+    } finally {
+      setIsLoadingEditQuestion(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -1195,6 +1212,17 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           ) : null}
         </div>
       )}
+
+      {editorLoadError ? (
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+          {editorLoadError}
+        </div>
+      ) : null}
+      {isLoadingEditQuestion ? (
+        <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700">
+          جارٍ تحميل السؤال الكامل والصورة والمهارات المرتبطة للتعديل...
+        </div>
+      ) : null}
 
       {(importMessage || importError || isImporting) && (
         <div
