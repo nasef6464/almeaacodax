@@ -21,6 +21,7 @@ function assertIncludes(file, needle) {
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/live"');
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/ready"');
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/scale-ready"');
+assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/scale-metrics", requireAuth, requireRole(["admin"])');
 assertIncludes('server/src/routes/health.routes.ts', 'res.status(200).json({');
 assertIncludes('server/src/routes/health.routes.ts', 'ready: dependencies.ok');
 assertIncludes('server/src/routes/health.routes.ts', 'res.status(databaseReady ? 200 : 503)');

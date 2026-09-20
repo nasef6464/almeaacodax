@@ -7,6 +7,8 @@ const files = {
   service: await read("server/src/services/notificationService.ts"),
   bootstrap: await read("server/src/app/bootstrap/bootstrapServer.ts"),
   shutdown: await read("server/src/app/bootstrap/registerGracefulShutdown.ts"),
+  queue: await read("server/src/queues/notificationQueue.ts"),
+  health: await read("server/src/routes/health.routes.ts"),
 };
 
 const checks = [];
@@ -33,6 +35,19 @@ check("delivery creation publishes only persisted in-app events", () => {
   includes(files.service, "publishInAppNotificationEvents(inAppEvents)");
   includes(files.service, 'item.channel === "in_app"');
 });
+check("scale metrics expose bounded queue and realtime counts without scanning deliveries", () => {
+  includes(files.queue, "getNotificationQueueMetrics");
+  includes(files.queue, "getJobCounts");
+  includes(files.queue, 'status: "unavailable" as const');
+  includes(files.queue, "workerConcurrency: env.NOTIFICATION_QUEUE_CONCURRENCY");
+  includes(files.queue, "catch {");
+  includes(files.realtime, "getNotificationRealtimeMetrics");
+  includes(files.realtime, "subscribedUsers");
+  includes(files.health, 'healthRouter.get("/scale-metrics"');
+  includes(files.health, "notificationQueue");
+  includes(files.health, "notificationRealtime");
+});
+
 check("lifecycle starts and closes the realtime bridge", () => {
   includes(files.bootstrap, "startNotificationRealtime()");
   includes(files.shutdown, "closeNotificationRealtime()");

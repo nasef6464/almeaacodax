@@ -11,6 +11,7 @@ import {
 } from "../../../services/notificationService.js";
 
 export const MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS = 10_000;
+const CAMPAIGN_AUDIENCE_PAGE_SIZE = 500;
 
 export class NotificationCampaignTooLargeError extends Error {
   constructor(
@@ -89,20 +90,21 @@ export async function createNotificationCampaignDeliveries(input: CampaignInput)
     );
   }
 
-  const users = await UserModel.find(filter)
-    .select("_id")
-    .sort({ _id: 1 })
-    .limit(MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS + 1)
-    .lean();
-
-  if (users.length > MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS) {
-    throw new NotificationCampaignTooLargeError(
-      MAX_NOTIFICATION_CAMPAIGN_RECIPIENTS,
-      users.length,
-    );
+  const recipientIds: string[] = [];
+  let afterId: mongoose.Types.ObjectId | null = null;
+  while (recipientIds.length < totalRecipients) {
+    const pageFilter = afterId ? { $and: [filter, { _id: { $gt: afterId } }] } : filter;
+    const users = await UserModel.find(pageFilter)
+      .select("_id")
+      .sort({ _id: 1 })
+      .limit(CAMPAIGN_AUDIENCE_PAGE_SIZE)
+      .lean();
+    if (!users.length) break;
+    recipientIds.push(...users.map((user) => String(user._id)));
+    afterId = users.at(-1)?._id as mongoose.Types.ObjectId;
+    if (users.length < CAMPAIGN_AUDIENCE_PAGE_SIZE) break;
   }
 
-  const recipientIds = users.map((user) => String(user._id));
   const batches = chunk(recipientIds, getNotificationBatchLimit());
   const deliveryIds: string[] = [];
   let created = 0;

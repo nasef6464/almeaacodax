@@ -47,3 +47,8 @@ node scripts/measure-read-baseline.mjs --base-url http://localhost:5000 --reques
 - raw output attached to the release/architecture checkpoint.
 
 The first later controlled test should cover learner bootstrap, question listing/search, quiz start/save/submit, result/report reads, notification fan-out, and school supervisor reports separately.
+
+
+## Batch 13 bandwidth evidence
+
+The bounded read baseline now records decoded response bytes for every sample, cache state, `Content-Encoding`, and wire-byte evidence when the response exposes `Content-Length`. Missing `Content-Length` is reported as unavailable rather than guessed. This distinction prevents decoded body size from being mislabeled as compressed transfer bytes. Use CDN/provider egress analytics for authoritative origin-egress totals.

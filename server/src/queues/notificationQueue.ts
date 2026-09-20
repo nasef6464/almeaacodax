@@ -82,6 +82,35 @@ export async function enqueuePendingNotifications(limit = 100) {
   return enqueueNotificationDeliveries(pending.map((item) => String(item.id)));
 }
 
+export async function getNotificationQueueMetrics() {
+  const activeQueue = getNotificationQueue();
+  if (!activeQueue) {
+    return {
+      enabled: false,
+      status: "disabled" as const,
+      workerConcurrency: env.NOTIFICATION_QUEUE_CONCURRENCY,
+      counts: null,
+    };
+  }
+
+  try {
+    const counts = await activeQueue.getJobCounts("wait", "active", "completed", "failed", "delayed");
+    return {
+      enabled: true,
+      status: "ok" as const,
+      workerConcurrency: env.NOTIFICATION_QUEUE_CONCURRENCY,
+      counts,
+    };
+  } catch {
+    return {
+      enabled: true,
+      status: "unavailable" as const,
+      workerConcurrency: env.NOTIFICATION_QUEUE_CONCURRENCY,
+      counts: null,
+    };
+  }
+}
+
 export function startNotificationWorkers() {
   if (!isNotificationQueueEnabled()) {
     console.info("[notifications] BullMQ worker disabled; set REDIS_URL and NOTIFICATION_QUEUE_ENABLED=true to enable it.");

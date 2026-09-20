@@ -422,3 +422,15 @@ The intended final state is not “many small files”. It is:
 - automated tests proving the boundaries.
 
 No second wholesale modularization pass is planned after the batch sequence.
+
+
+## 19. Batch 13 checkpoint — measured load safety
+
+Inspection found two load orchestration paths. The k6 journey and `scripts/run-production-load-autocannon.mjs` could historically escalate a single invocation across multiple capacity tiers. Batch 13 isolates each run behind an explicit `LOAD_PROFILE`, defaults to `pilot`, and preserves separate evidence artifacts. The contract smoke now guards both runners against implicit 500/1000-user escalation.
+
+This is a responsibility-boundary correction in performance tooling, not a product-runtime refactor. No compatibility or production data path is removed. Full Batch 13 certification remains live-evidence dependent: synchronized release SHA, green scale-readiness/Redis, provider-sized compute, Mongo/Redis/queue/realtime metrics, response/wire bytes, cache behavior, and origin-egress evidence are required before scale claims.
+
+
+### Batch 13 campaign audience memory boundary
+
+The notification campaign application keeps the existing hard ceiling of 10,000 recipients but no longer materializes that entire audience in one MongoDB query. Audience IDs are resolved in deterministic 500-row keyset pages (`_id > afterId`) and then passed through the existing bounded delivery batches. The preflight `countDocuments` still rejects audiences above the hard campaign ceiling before any delivery creation. This reduces peak query/materialization pressure without changing campaign semantics or provider delivery compatibility.

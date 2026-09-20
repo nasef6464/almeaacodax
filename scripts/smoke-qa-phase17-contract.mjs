@@ -58,9 +58,12 @@ check("production and performance smoke scripts exist", () => {
   ].forEach(assertScript);
 });
 
-check("k6 script covers staged load levels and thresholds", () => {
-  ["pilot_100", "scale_500", "scale_1000", "http_req_failed", "p(95)<1500", "p(99)<3000"].forEach((fragment) =>
+check("k6 script covers isolated load profiles and thresholds", () => {
+  ["LOAD_PROFILE", "pilot:", "scale500:", "scale1000:", "[LOAD_PROFILE]: PROFILES[LOAD_PROFILE]", "http_req_failed", "p(95)<1500", "p(99)<3000"].forEach((fragment) =>
     assertIncludes(k6Source, fragment),
+  );
+  ["pilot_100:", "scale_500:", "scale_1000:", "startTime:"].forEach((fragment) =>
+    assert(!k6Source.includes(fragment), `Unexpected legacy load orchestration fragment: ${fragment}`),
   );
 });
 
