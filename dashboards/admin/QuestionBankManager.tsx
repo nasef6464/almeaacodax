@@ -311,18 +311,15 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           difficulty: selectedDifficulty || undefined,
           videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
           explanationStatus: explanationFilter === 'all' ? undefined : explanationFilter,
-          includeCoverage: true,
         });
 
         if (!active) return;
         setPagedQuestions(Array.isArray(response?.data) ? (response.data as Question[]) : []);
         setPagedPagination(response?.pagination || null);
-        setQuestionBankCoverage(response?.coverage || null);
       } catch (error) {
         if (!active) return;
         setPagedQuestions(null);
         setPagedPagination(null);
-        setQuestionBankCoverage(null);
         setPagedQuestionsError(error instanceof Error ? error.message : 'تعذر تحميل الأسئلة المرقمة الآن.');
       } finally {
         if (active) {
@@ -336,6 +333,42 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       active = false;
     };
   }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, explanationFilter, questionsRefreshKey]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadQuestionCoverage = async () => {
+      try {
+        const response = await api.getQuestionsPaginated({
+          page: 1,
+          limit: 1,
+          summary: true,
+          noTotal: true,
+          includeCoverage: true,
+          pathId: selectedPathId || undefined,
+          subject: (subjectId || selectedSubjectId) || undefined,
+          sectionId: selectedSectionId || undefined,
+          skillId: selectedSkillId || undefined,
+          skillLinkStatus: skillLinkFilter === 'all' ? undefined : skillLinkFilter,
+          search: searchTerm || undefined,
+          difficulty: selectedDifficulty || undefined,
+          videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
+          explanationStatus: explanationFilter === 'all' ? undefined : explanationFilter,
+        });
+
+        if (!active) return;
+        setQuestionBankCoverage(response?.coverage || null);
+      } catch {
+        if (!active) return;
+        setQuestionBankCoverage(null);
+      }
+    };
+
+    void loadQuestionCoverage();
+    return () => {
+      active = false;
+    };
+  }, [searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, explanationFilter, questionsRefreshKey]);
 
   const displayedQuestions = useMemo(() => {
     const base = pagedQuestions ?? filteredQuestions;
@@ -417,17 +450,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const questionCoverageSummary = useMemo(() => {
     if (questionBankCoverage) return questionBankCoverage;
 
-    const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
-    const subSkillCount = new Set(displayedQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
-    const pendingCount = displayedQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
-    const approvedCount = displayedQuestions.filter((question) => question.approvalStatus === 'approved').length;
-
     return {
       total: pagedPagination?.total ?? displayedQuestions.length,
-      mainSkillCount,
-      subSkillCount,
-      pendingCount,
-      approvedCount,
+      mainSkillCount: null,
+      subSkillCount: null,
+      pendingCount: null,
+      approvedCount: null,
     };
   }, [displayedQuestions, pagedPagination?.total, questionBankCoverage]);
 
@@ -1281,15 +1309,15 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
           <p className="text-xs font-black text-indigo-700">المهارات الرئيسية المغطاة بالأسئلة</p>
-          <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount}</p>
+          <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount ?? '—'}</p>
         </div>
         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
           <p className="text-xs font-black text-emerald-700">المهارات الفرعية المغطاة بالأسئلة</p>
-          <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount}</p>
+          <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount ?? '—'}</p>
         </div>
         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
           <p className="text-xs font-black text-amber-700">بانتظار المراجعة</p>
-          <p className="mt-2 text-2xl font-black text-amber-800">{questionCoverageSummary.pendingCount}</p>
+          <p className="mt-2 text-2xl font-black text-amber-800">{questionCoverageSummary.pendingCount ?? '—'}</p>
         </div>
       </div>
 
