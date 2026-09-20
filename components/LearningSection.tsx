@@ -530,11 +530,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         .map(topic => {
             const subTopics = topicList.filter(t => t.parentId === topic.id && canStudentSeeTopic(t) && matchesScopedContent(t.pathId, t.subjectId));
             const progressStats = getTopicProgressStats(topic, subTopics);
+            const totalSubLessons = subTopics.length > 0 ? subTopics.length : (progressStats.totalLessons || 1);
             
             return {
                 id: topic.id,
                 title: topic.title,
-                totalLessons: progressStats.totalLessons || 1,
+                totalLessons: totalSubLessons,
                 completed: progressStats.completedLessons,
                 totalQuizzes: progressStats.totalQuizzes,
                 isLocked: isFoundationTopicLockedForStudent(topic),
@@ -1021,7 +1022,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                 {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
                                             </span>
                                             <span className="text-gray-300">•</span>
-                                            <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} درس</span>
+                                            <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} {skill.totalLessons === 1 ? 'درس' : skill.totalLessons === 2 ? 'درسان' : skill.totalLessons >= 3 && skill.totalLessons <= 10 ? 'دروس' : 'درساً'}</span>
                                         </div>
 
                                         <div className="shrink-0 flex items-center gap-1">
