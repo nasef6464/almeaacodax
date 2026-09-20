@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const routeSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/questionAttemptDocument.ts'), 'utf8').replace(/\r\n/g, '\n');
 const checks = [];
 const check = (name, assertion) => {
