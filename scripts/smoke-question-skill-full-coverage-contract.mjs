@@ -7,6 +7,7 @@ const read = (relativePath) =>
   fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n/g, '\n');
 
 const questionBank = read('dashboards/admin/QuestionBankManager.tsx');
+const questionBankCatalogData = read('dashboards/admin/questionBank/useQuestionBankCatalogData.ts');
 const skillsTree = read('dashboards/admin/SkillsTreeManager.tsx');
 const coverage = read('server/src/modules/quizzes/application/questionBankCoverage.ts');
 
@@ -25,11 +26,12 @@ const check = (name, assertion) => {
 };
 
 check('question bank coverage is independent from the visible page', () => {
-  assert.ok(questionBank.includes('const loadQuestionCoverage = async () =>'));
-  assert.ok(questionBank.includes('limit: 1,'));
-  assert.ok(questionBank.includes('summary: true,'));
-  assert.ok(questionBank.includes('noTotal: true,'));
-  assert.equal((questionBank.match(/includeCoverage: true/g) || []).length, 1);
+  assert.ok(questionBank.includes('useQuestionBankCatalogData({'));
+  assert.ok(questionBankCatalogData.includes('const loadQuestionCoverage = async () =>'));
+  assert.ok(questionBankCatalogData.includes('limit: 1,'));
+  assert.ok(questionBankCatalogData.includes('summary: true,'));
+  assert.ok(questionBankCatalogData.includes('noTotal: true,'));
+  assert.equal((questionBankCatalogData.match(/includeCoverage: true/g) || []).length, 1);
 });
 
 check('question bank never presents current-page skill counts as full-bank coverage', () => {
@@ -37,6 +39,8 @@ check('question bank never presents current-page skill counts as full-bank cover
   assert.ok(questionBank.includes('subSkillCount: null'));
   assert.ok(questionBank.includes("questionCoverageSummary.mainSkillCount ?? '—'"));
   assert.ok(questionBank.includes("questionCoverageSummary.subSkillCount ?? '—'"));
+  assert.ok(!questionBankCatalogData.includes('mainSkillCount:'));
+  assert.ok(!questionBankCatalogData.includes('subSkillCount:'));
 });
 
 check('skills center counts only linked questions from full server coverage', () => {
