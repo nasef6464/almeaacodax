@@ -8,6 +8,7 @@ const read = (relativePath) =>
 
 const questionModel = read('server/src/models/Question.ts');
 const questionSchemas = read('server/src/modules/quizzes/http/questionQuerySchemas.ts');
+const questionAttemptDocument = read('server/src/modules/quizzes/application/questionAttemptDocument.ts');
 const topicModel = read('server/src/models/Topic.ts');
 const contentSchemas = read('server/src/modules/content/http/learningContentSchemas.ts');
 const store = read('store/useStore.ts');
@@ -45,6 +46,13 @@ check('question persistence preserves canonical taxonomy fields alongside legacy
   ]) {
     assert.ok(questionSchemas.includes(fragment), `Question write schema lost ${fragment}`);
   }
+});
+
+check('question attempt scope prefers canonical subjectId with legacy fallback', () => {
+  assert.ok(
+    questionAttemptDocument.includes('subjectId: String(question?.subjectId || question?.subject || "")'),
+    'question attempt subject scope lost canonical-first compatibility fallback',
+  );
 });
 
 check('foundation topic persistence supports explicit skill mapping without replacing legacy ids', () => {
