@@ -5,8 +5,8 @@
 - GitHub repo: `https://github.com/nasef6464/almeaacodax`
 - Production branch: `main`
 - Render service: `almeaacodax`
-- Render primary URL: `https://almeaacodax-k2ux.onrender.com`
-- Backend API base: `https://almeaacodax-k2ux.onrender.com/api`
+- Render primary URL: `https://almeaacodax-codex.onrender.com`
+- Backend API base: `https://almeaacodax-codex.onrender.com/api`
 - Vercel production domain: `https://almeaacodax.vercel.app`
 - Vercel preview/main domain: `https://almeaacodax-git-main-nasefs-projects-18e6bdb1.vercel.app`
 - MongoDB Atlas project: `almeaacodax`
@@ -14,6 +14,10 @@
 - Production database name: `almeaa`
 
 Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Render/Vercel/Atlas.
+
+### Release identity rule
+
+The canonical production path is Vercel frontend → Vercel `/api` rewrite → Render backend. A release is not considered deployed merely because the Vercel build is READY: the backend `/api/health/live` commit must match the intended GitHub SHA and `/api/health/ready` must pass. Use `npm run smoke:release-identity` from the post-deploy workflow. `/api/health/scale-ready` remains the explicit multi-instance gate and must not be bypassed.
 
 ## 1. Backend (Render.com)
 1.  Create a **Web Service**.
@@ -71,7 +75,7 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
 4.  **Build Command:** `npm run build`
 5.  **Output Directory:** `dist`
 6.  **Environment Variables:**
-    - `VITE_API_URL`: `https://almeaacodax-k2ux.onrender.com/api`
+    - `VITE_API_URL`: `/api` (canonical on Vercel; `vercel.json` owns the Render target so frontend builds do not pin a stale backend URL)
 
 Set `VITE_API_URL` for both Production and Preview environments if preview deployments should talk to the same Render backend.
 
@@ -154,22 +158,17 @@ Forgot-password and email-verification flows now create hashed tokens, queue not
 3.  Network Access: Allow `0.0.0.0/0` (or specific IPs for tighter security).
 4.  Use the `almeaa` database name in the connection string so production data lands in the same database Render reads from.
 
-## Current Seeded Test Accounts
+## Operational Test Accounts
 
-Use these only for operational testing and rotate credentials before a public launch:
-
-| Role | Email | Password |
-|---|---|---|
-| Admin | `nasef64@gmail.com` | stored in Render only |
-| Teacher | `teacher.quant@almeaa.local` | `Teacher@123` |
-| Student | `student.a@almeaa.local` | `Student@123` |
-| Parent | `parent.a@almeaa.local` | `Parent@123` |
-| Supervisor | `supervisor.group@almeaa.local` | `Supervisor@123` |
+Do not publish reusable account passwords in repository documentation. Operational smoke credentials belong in GitHub Actions / Render secrets and must be rotated if they were ever committed or pasted into chat.
 
 ## Current Verification Status
 
-- Render build: successful from GitHub `main`.
-- Render health: `/api/health` returns `status=ok` and `database=connected`.
-- MongoDB Atlas data size observed after seed: about `2.03 MB`.
-- Admin inventory through Render shows seeded users.
-- Latest smoke test: `48/53` checks passed. Remaining gaps are missing demo content for some learning spaces and teacher analytics seed depth.
+Read-only production evidence captured on 2026-09-20:
+
+- Vercel production is READY on frontend commit `f9db56188cccf0977842cce0b84ac13add9da117`.
+- The Vercel `/api` route reaches the Render backend selected by `vercel.json`.
+- Live backend `/api/health/live` reports commit `848e12790a1e`, which does not match the current frontend/main release and therefore blocks synchronized-release closure.
+- `/api/health/ready` returns HTTP 200 with MongoDB connected.
+- `/api/health/scale-ready` returns HTTP 503 because Redis is not configured for multi-instance scale.
+- A release is synchronized only when `npm run smoke:release-identity` passes for the intended SHA. Scale certification additionally requires the stronger scale-ready gate and Batch 13 measured load evidence.

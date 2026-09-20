@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { env } from "../config/env.js";
 import { getRedisHealth } from "../config/redis.js";
+import { resolveRuntimeCommit } from "../observability/releaseIdentity.js";
 
 export const healthRouter = Router();
 
@@ -24,12 +25,7 @@ function getDatabaseHealth() {
 }
 
 function getRuntimeHealth() {
-  const commit =
-    process.env.RENDER_GIT_COMMIT ||
-    process.env.VERCEL_GIT_COMMIT_SHA ||
-    process.env.GIT_COMMIT_SHA ||
-    process.env.COMMIT_SHA ||
-    "";
+  const commit = resolveRuntimeCommit();
 
   return {
     service: "The Hundred Platform API",

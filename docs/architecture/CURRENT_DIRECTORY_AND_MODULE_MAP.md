@@ -117,6 +117,7 @@ Line count is only a signal. Split when responsibilities, state ownership, autho
 | Account erasure / privacy lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | exact retention durations for retained history remain policy-dependent |
 | Media | external URL/CDN references; production question images verified on Cloudflare R2 public delivery | application stores URL/key metadata; R2 object bytes require independent recovery evidence |
 | Disaster recovery | `DISASTER_RECOVERY_RUNBOOK.md` + verified Mongo/R2 backup/restore scripts | live scheduling, independent off-site destination and measured restore drills remain deployment evidence |
+| Production release identity | `server/src/observability/releaseIdentity.ts` + health payload + post-deploy identity smoke | Vercel is the frontend release owner; Render backend SHA must match the intended GitHub release before closure |
 
 ## 5. Runtime areas that should NOT be restructured for appearance
 
@@ -126,6 +127,7 @@ Line count is only a signal. Split when responsibilities, state ownership, autho
 - Smart Classroom route registrar pattern.
 - Vite root + nested `server` package topology unless a measured deployment need justifies change.
 - API/PWA rule that API responses are not service-worker cached.
+- current production deployment ownership is Vercel frontend → Vercel `/api` rewrite → Render backend; Hostinger/VPS and Docker remain secondary/recovery paths until an explicit cutover.
 
 ## 6. Resource / bandwidth map
 

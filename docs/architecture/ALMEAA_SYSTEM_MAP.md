@@ -100,7 +100,7 @@ Cross-cutting runtime dependencies:
 | Audit | `AdminAuditLog` | Active; retention/governance required |
 | Privacy / data lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | Batch 10 boundary active; exact retention periods for retained history remain policy-dependent |
 | Backup/restore | learning snapshot + verified Mongo archive/checksum/off-site tooling + Cloudflare R2 media archive/restore tooling | Batch 11 recovery boundary active; live schedule/off-site/restore-drill evidence still required |
-| Deployment | Vercel frontend; VPS/PM2/Nginx and Docker artifacts exist | Deployment paths need canonicalization |
+| Deployment | Vercel frontend → Vercel `/api` rewrite → Render backend | Canonical current production path; VPS/PM2/Nginx and Docker remain secondary/recovery templates until explicit cutover |
 
 ---
 

@@ -18,6 +18,8 @@ jobs:
       SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
       SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
       SMOKE_ALLOW_PASSWORD_LOGIN: "true"
+      RELEASE_API_BASE: https://almeaacodax.vercel.app/api
+      EXPECTED_RELEASE_SHA: ${{ github.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,6 +55,12 @@ jobs:
           if [ -n "$SMOKE_ADMIN_EMAIL" ] && [ -n "$SMOKE_ADMIN_PASSWORD" ]; then
             echo "SMOKE_ADMIN_TOKEN=" >> "$GITHUB_ENV"
           fi
+
+      - name: Release identity and readiness
+        env:
+          RELEASE_IDENTITY_MAX_ATTEMPTS: "40"
+          RELEASE_IDENTITY_INTERVAL_MS: "15000"
+        run: npm run smoke:release-identity
 
       - name: Operational smoke
         # Use the same production transport as real browsers. Vercel owns the

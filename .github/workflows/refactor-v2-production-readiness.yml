@@ -44,6 +44,7 @@ on:
       - 'scripts/smoke-production-hardening-contract.mjs'
       - 'scripts/smoke-real-usage-readiness-contract.mjs'
       - 'scripts/smoke-health-readiness-contract.mjs'
+      - 'scripts/smoke-release-deployment-contract.mjs'
       - 'scripts/smoke-handover-blockers-contract.mjs'
       - 'scripts/smoke-monitoring-contract.mjs'
       - 'scripts/smoke-database-index-contract.mjs'
@@ -104,6 +105,7 @@ on:
       - 'scripts/smoke-production-*.mjs'
       - 'scripts/smoke-real-usage-readiness-contract.mjs'
       - 'scripts/smoke-health-readiness-contract.mjs'
+      - 'scripts/smoke-release-deployment-contract.mjs'
       - 'scripts/smoke-handover-blockers-contract.mjs'
       - 'scripts/smoke-monitoring-contract.mjs'
       - 'scripts/smoke-database-index-contract.mjs'
@@ -193,6 +195,9 @@ jobs:
 
       - name: Health readiness contract
         run: npm run smoke:health-readiness
+
+      - name: Release deployment contract
+        run: npm run smoke:release-deployment
 
       - name: Deployment cache contract
         run: npm run smoke:deployment-cache

@@ -343,6 +343,16 @@ Unverified/live-dependent:
 
 Batch 12 must inspect live state before choosing/canonicalizing deployment; do not infer it from templates.
 
+Batch 12 live inspection on 2026-09-20 established:
+- Vercel production is the active frontend and reports `main@f9db56188cccf0977842cce0b84ac13add9da117` READY;
+- Vercel `/api` traffic reaches Render (confirmed by live response headers and repository rewrite);
+- the live Render API currently reports commit `848e12790a1e`, so frontend/backend release identity is mismatched;
+- `/api/health/ready` is HTTP 200 with MongoDB connected;
+- `/api/health/scale-ready` is HTTP 503 because Redis is not configured for multi-instance scale;
+- Hostinger/VPS and Docker are therefore secondary/recovery templates, not the current production authority.
+
+Batch 12 remediation must fail deployment closure on release-SHA mismatch, keep normal readiness separate from scale-readiness, tag observability with the same runtime release identity, and avoid claiming scale certification until Redis/live load evidence exists.
+
 ## 14. AI architecture audit
 
 `ai.routes.ts` combines:
