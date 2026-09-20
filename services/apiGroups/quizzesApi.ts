@@ -91,7 +91,7 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
 
-  getSkillProgress: async (pagination: PaginationOptions = {}) =>
+  getSkillProgress: async (pagination: PaginationOptions & { noTotal?: boolean } = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
 
   getQuestionAttempts: async (pagination: PaginationOptions = {}) =>
