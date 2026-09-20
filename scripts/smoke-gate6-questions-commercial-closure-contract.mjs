@@ -3,11 +3,12 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [model, querySchemas, routes, bank, builder, aiContract, analyticsContract] = await Promise.all([
+const [model, querySchemas, routes, bank, catalogData, builder, aiContract, analyticsContract] = await Promise.all([
   read("server/src/models/Question.ts"),
   read("server/src/modules/quizzes/http/questionQuerySchemas.ts"),
   read("server/src/routes/quiz.routes.ts"),
   read("dashboards/admin/QuestionBankManager.tsx"),
+  read("dashboards/admin/questionBank/useQuestionBankCatalogData.ts"),
   read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx"),
   read("scripts/smoke-gate6-question-ai-authoring-contract.mjs"),
   read("scripts/smoke-gate6-question-usage-analytics-contract.mjs"),
@@ -51,9 +52,10 @@ check("unified builder provides explicit review-first authoring for all supporte
 });
 
 check("question bank supports bounded browse, search, preview, duplicate, edit, delete and review", () => {
-  assert.ok(bank.includes("api.getQuestionsPaginated"));
-  assert.ok(bank.includes("limit: 100"));
-  assert.ok(bank.includes("search: searchTerm || undefined"));
+  assert.ok(catalogData.includes("api.getQuestionsPaginated"));
+  assert.ok(catalogData.includes("limit: 100"));
+  assert.ok(catalogData.includes("search: searchTerm || undefined"));
+  assert.ok(bank.includes("useQuestionBankCatalogData({"));
   for (const handler of ["handlePreviewQuestion", "handleDuplicate", "handleEdit", "handleDelete", "handleApprove", "handleReject"]) {
     assert.ok(bank.includes(handler), `missing bank operation ${handler}`);
   }
