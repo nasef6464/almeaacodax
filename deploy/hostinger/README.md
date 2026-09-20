@@ -26,7 +26,7 @@ cp deploy/hostinger/env.backend.example server/.env.production
 
 Fill the env files with owner-provided values. Do not commit real secrets.
 
-The current application stores lesson and library media as URL references. It does not expose first-party binary upload ingestion, so do not add `UPLOAD_DIR` or `MAX_UPLOAD_SIZE` to the backend runtime env. `UPLOAD_DIR` remains available only as an override for the separate backup/restore shell scripts when a deployment actually has a filesystem media directory to preserve.
+The current application stores lesson and library media as URL references. It does not expose generic lesson/library binary upload ingestion into the application server, so do not add `UPLOAD_DIR` or `MAX_UPLOAD_SIZE` to the backend runtime env. Question-editor images are a separate boundary: when the R2 variables are configured, the API issues a short-lived presigned PUT URL and the browser uploads directly to Cloudflare R2. `UPLOAD_DIR` remains available only as an override for separate backup/restore shell scripts when a deployment actually has a filesystem media directory to preserve.
 
 ## 3. Deploy
 
@@ -59,7 +59,7 @@ pm2 status
 pm2 logs almeaa-codax-api --lines 100
 ```
 
-Verify login, admin dashboard, student dashboard, package/path navigation, payment dry-run, question bank CRUD, and lesson media playback from configured direct/CDN/YouTube/Vimeo URLs.
+Verify login, admin dashboard, student dashboard, package/path navigation, payment dry-run, question bank CRUD, question-image direct R2 upload (when enabled), and lesson media playback from configured direct/CDN/YouTube/Vimeo URLs.
 
 ## 6. Rollback
 
