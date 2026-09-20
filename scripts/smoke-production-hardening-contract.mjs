@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const appSource = await readFile(new URL('../server/src/app.ts', import.meta.url), 'utf8');
 const authRoutesSource = await readFile(new URL('../server/src/routes/auth.routes.ts', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizResultsRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/quizResultsRoutes.ts', import.meta.url), 'utf8');
 const adaptiveTelemetryRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts', import.meta.url), 'utf8');
 
 const checks = [];
@@ -49,10 +50,12 @@ check('access-code redemption uses an atomic usage reservation', () => {
 });
 
 check('direct quiz result creation is disabled', () => {
-  assertIncludes(quizRoutesSource, '"/results"');
-  assertIncludes(quizRoutesSource, 'Direct quiz result creation is disabled');
-  assertIncludes(quizRoutesSource, 'Submit quiz answers through /api/quizzes/:id/submit');
-  assertNotIncludes(quizRoutesSource, '...req.body,');
+  assertIncludes(quizRoutesSource, 'quizRouter.use(quizResultsRouter)');
+  assertNotIncludes(quizRoutesSource, 'quizRouter.post(\n  "/results"');
+  assertIncludes(quizResultsRoutesSource, '"/results"');
+  assertIncludes(quizResultsRoutesSource, 'Direct quiz result creation is disabled');
+  assertIncludes(quizResultsRoutesSource, 'Submit quiz answers through /api/quizzes/:id/submit');
+  assertNotIncludes(quizResultsRoutesSource, '...req.body,');
 });
 
 check('question attempts calculate correctness on the server', () => {
