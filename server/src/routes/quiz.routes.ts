@@ -22,12 +22,14 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
-import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
+import { dashboardAnalyticsQuerySchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
-import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
+import { isQuestionContentUsable, sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
 import { buildRecommendedAction, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
+import { clearQuestionBankSummaryCache, questionBankRouter } from "../modules/quizzes/http/questionBankRoutes.js";
+import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
 import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";
@@ -50,7 +52,6 @@ import { buildQuizSubmissionResultDocument } from "../modules/quizzes/applicatio
 import { resolveQuizSubmissionLearningContext } from "../modules/quizzes/application/quizSubmissionLearningContext.js";
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
-import { getQuestionBankCoverage } from "../modules/quizzes/application/questionBankCoverage.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
 import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
@@ -72,8 +73,6 @@ import {
 } from "../services/managedContentScope.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
-const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
-const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
 const QUIZ_RESULTS_CACHE_TTL_MS = 5 * 1000;
 const QUIZ_RESULTS_CACHE_MAX_ENTRIES = 300;
 
@@ -94,14 +93,6 @@ let publicQuizListCache:
       payload: unknown;
     }
   | null = null;
-let publicQuestionSummaryCache = new Map<
-  string,
-  {
-    expiresAt: number;
-    payload: unknown[];
-    hasMore: boolean;
-  }
->();
 let quizResultsCache = new Map<
   string,
   {
@@ -112,10 +103,6 @@ let quizResultsCache = new Map<
 
 const clearPublicQuizListCache = () => {
   publicQuizListCache = null;
-};
-
-const clearPublicQuestionSummaryCache = () => {
-  publicQuestionSummaryCache.clear();
 };
 
 const clearQuizResultsCache = () => {
@@ -133,72 +120,8 @@ const trimQuizResultsCacheIfNeeded = () => {
 const resolveAuthUserByAuthId = async (authId: string) =>
   mongoose.isValidObjectId(authId) ? UserModel.findById(authId) : UserModel.findOne({ id: authId });
 
-const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySchema>) =>
-  JSON.stringify({
-    page: query.page,
-    limit: query.limit,
-    pathId: query.pathId || "",
-    subject: query.subject || "",
-    sectionId: query.sectionId || "",
-    skillId: query.skillId || "",
-  });
-
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
-
-const buildDocumentQuery = (value: string) => {
-  if (mongoose.Types.ObjectId.isValid(value)) {
-    return { $or: [{ id: value }, { _id: value }] };
-  }
-
-  return { id: value };
-};
-
-const buildOwnedDocumentQuery = (
-  value: string,
-  authUser: { id: string; role: string; schoolId?: string | null },
-) => {
-  const baseQuery = buildDocumentQuery(value);
-
-  if (authUser.role === "admin") {
-    return baseQuery;
-  }
-
-  const ownershipConditions: Array<Record<string, string>> = [
-    { ownerId: authUser.id },
-    { createdBy: authUser.id },
-    { assignedTeacherId: authUser.id },
-  ];
-
-  if (authUser.schoolId) {
-    ownershipConditions.push({ ownerId: authUser.schoolId }, { createdBy: authUser.schoolId });
-  }
-
-  return { $and: [baseQuery, { $or: ownershipConditions }] };
-};
-
-const buildDocumentsByIdsQuery = (values: string[]) => {
-  const ids = uniqueStrings(
-    values
-      .flatMap((value) => {
-        const id = String(value || "").trim();
-        if (!id) return [];
-        const withoutCopySuffix = id.replace(/_copy(?:_\d+)?$/i, "");
-        return withoutCopySuffix && withoutCopySuffix !== id ? [id, withoutCopySuffix] : [id];
-      })
-      .filter(Boolean),
-  );
-  const objectIds = ids
-    .filter((id) => mongoose.Types.ObjectId.isValid(id))
-    .map((id) => new mongoose.Types.ObjectId(id));
-
-  return {
-    $or: [
-      { id: { $in: ids } },
-      ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
-    ],
-  };
-};
 
 const assertSupervisorDirectedQuizScope = async (
   authUser: any,
@@ -250,9 +173,6 @@ const assertSupervisorDirectedQuizScope = async (
     }
   }
 };
-
-const uniqueStrings = (values: Array<string | undefined | null>) =>
-  [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
 
 const idOf = (item: any) => String(item?.id || item?._id || "");
 
@@ -564,287 +484,12 @@ export const quizRouter = Router();
 quizRouter.use((req, _res, next) => {
   if (req.method !== "GET") {
     clearPublicQuizListCache();
-    clearPublicQuestionSummaryCache();
+    clearQuestionBankSummaryCache();
   }
   next();
 });
 
-quizRouter.get(
-  "/questions",
-  optionalAuth,
-  asyncHandler(async (req, res) => {
-    const query = questionListQuerySchema.parse(req.query);
-    const canUseSummaryCache =
-      query.summary &&
-      query.noTotal &&
-      !query.ids &&
-      !query.search &&
-      !query.approvalStatus &&
-      !isStaffRole(req.authUser?.role);
-    const summaryCacheKey = canUseSummaryCache ? buildQuestionSummaryCacheKey(query) : "";
-    const summaryCacheItem = summaryCacheKey ? publicQuestionSummaryCache.get(summaryCacheKey) : undefined;
-    if (summaryCacheItem && summaryCacheItem.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "private, max-age=30");
-      res.setHeader("X-Question-Summary-Cache", "hit");
-      res.setHeader("X-Has-More", String(summaryCacheItem.hasMore));
-      res.setHeader("X-Page", String(query.page));
-      res.setHeader("X-Limit", String(query.limit));
-      return res.json(summaryCacheItem.payload);
-    }
-
-    let baseFilter: Record<string, any> = {};
-
-    if (!isStaffRole(req.authUser?.role)) {
-      const visibleQuizFilter = await withLearnerVisiblePaths(
-        {
-          isPublished: true,
-          showOnPlatform: { $ne: false },
-          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-        },
-        req.authUser,
-      );
-      const shouldExpandLinkedQuizQuestions = !query.summary || Boolean(query.ids) || Boolean(query.search);
-      const linkedQuestionConditions: Record<string, any>[] = [];
-
-      if (shouldExpandLinkedQuizQuestions) {
-        const visibleQuizzes = await QuizModel.find(visibleQuizFilter).select("questionIds mockExam").lean();
-        const linkedQuestionIds = uniqueStrings(
-          visibleQuizzes.flatMap((quiz: any) => getQuizQuestionIds(quiz)),
-        );
-        const linkedObjectIds = linkedQuestionIds
-          .filter((id) => mongoose.Types.ObjectId.isValid(id))
-          .map((id) => new mongoose.Types.ObjectId(id));
-
-        if (linkedQuestionIds.length > 0) {
-          linkedQuestionConditions.push({ id: { $in: linkedQuestionIds } });
-        }
-        if (linkedObjectIds.length > 0) {
-          linkedQuestionConditions.push({ _id: { $in: linkedObjectIds } });
-        }
-      }
-
-      baseFilter = {
-        $or: [
-          { approvalStatus: "approved" },
-          { approvalStatus: { $exists: false } },
-          { approvalStatus: null },
-          ...linkedQuestionConditions,
-        ],
-      };
-    }
-
-    const managedScope = await resolveManagedContentScope(req.authUser);
-
-    const scopeFilter: Record<string, any> = {};
-    if (query.pathId) scopeFilter.pathId = query.pathId;
-    if (query.ids) {
-      const ids = uniqueStrings(query.ids.split(",").map((item) => item.trim()).filter(Boolean)).slice(0, 200);
-      const objectIds = ids.filter((id) => mongoose.Types.ObjectId.isValid(id)).map((id) => new mongoose.Types.ObjectId(id));
-      scopeFilter.$or = [
-        ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
-        { id: { $in: ids } },
-        ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
-      ];
-    }
-    if (query.subject) scopeFilter.subject = query.subject;
-    if (query.sectionId) scopeFilter.sectionId = query.sectionId;
-    if (query.skillId) scopeFilter.skillIds = query.skillId;
-    if (query.skillIds) {
-      const skillIds = uniqueStrings(query.skillIds.split(",").map((item) => item.trim()));
-      if (skillIds.length > 0) scopeFilter.skillIds = { $in: skillIds };
-    }
-    if (query.skillLinkStatus === "linked" && !query.skillId && !query.skillIds) {
-      scopeFilter["skillIds.0"] = { $exists: true };
-    } else if (query.skillLinkStatus === "unlinked") {
-      scopeFilter["skillIds.0"] = { $exists: false };
-    }
-    if (query.difficulty) scopeFilter.difficulty = query.difficulty;
-    if (query.examType) scopeFilter.examType = query.examType;
-    if (query.source) scopeFilter.source = query.source;
-    if (typeof query.year === "number") scopeFilter.year = query.year;
-    if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
-    if (query.videoStatus === "with" || query.hasExplanationVideo) {
-      scopeFilter.videoUrl = { $exists: true, $nin: ["", null] };
-    } else if (query.videoStatus === "without") {
-      scopeFilter.videoUrl = { $in: ["", null] };
-    }
-    if (query.explanationStatus === "with") {
-      scopeFilter.explanation = { $exists: true, $nin: ["", null] };
-    } else if (query.explanationStatus === "without") {
-      scopeFilter.explanation = { $in: ["", null] };
-    }
-    if (query.search) {
-      const safeSearch = escapeRegex(query.search);
-      scopeFilter.$or = [
-        ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
-        { text: { $regex: safeSearch, $options: "i" } },
-        { explanation: { $regex: safeSearch, $options: "i" } },
-        { id: { $regex: safeSearch, $options: "i" } },
-      ];
-    }
-
-    const filter = await withLearnerVisiblePaths(
-      combineMongoFilters(baseFilter, scopeFilter, buildManagedContentScopeFilter(managedScope)),
-      req.authUser,
-    );
-    const skip = (query.page - 1) * query.limit;
-    const queryBuilder = QuestionModel.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(query.noTotal ? query.limit + 1 : query.limit)
-      .lean();
-    if (query.summary) {
-      queryBuilder.select("id text imageUrl options correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
-    }
-
-    const shouldIncludeCoverage = query.includeCoverage && isStaffRole(req.authUser?.role);
-    const [rawItems, total, coverage] = await Promise.all([
-      queryBuilder,
-      query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),
-      shouldIncludeCoverage ? getQuestionBankCoverage(filter) : Promise.resolve(null),
-    ]);
-    const hasMore = query.noTotal && rawItems.length > query.limit;
-    const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
-    const canSeeAnswers = isStaffRole(req.authUser?.role);
-    const items = query.summary
-      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
-      : canSeeAnswers
-        ? limitedItems
-        : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
-    if (total !== null) {
-      res.setHeader("X-Total-Count", String(total));
-    }
-    res.setHeader("X-Has-More", String(hasMore));
-    res.setHeader("X-Page", String(query.page));
-    res.setHeader("X-Limit", String(query.limit));
-    if (summaryCacheKey) {
-      if (publicQuestionSummaryCache.size >= QUESTION_SUMMARY_CACHE_MAX_ENTRIES) {
-        const oldestKey = publicQuestionSummaryCache.keys().next().value;
-        if (oldestKey) {
-          publicQuestionSummaryCache.delete(oldestKey);
-        }
-      }
-      publicQuestionSummaryCache.set(summaryCacheKey, {
-        expiresAt: Date.now() + QUESTION_SUMMARY_CACHE_TTL_MS,
-        payload: items,
-        hasMore,
-      });
-      res.setHeader("Cache-Control", "private, max-age=30");
-      res.setHeader("X-Question-Summary-Cache", "miss");
-    }
-    if (query.paginate) {
-      const resolvedTotal = total ?? skip + limitedItems.length + (hasMore ? 1 : 0);
-      const totalPages = Math.max(1, Math.ceil(resolvedTotal / Math.max(query.limit, 1)));
-      return res.json({
-        data: items,
-        ...(coverage ? { coverage } : {}),
-        pagination: {
-          total: resolvedTotal,
-          page: query.page,
-          limit: query.limit,
-          totalPages,
-          hasNext: query.noTotal ? hasMore : query.page < totalPages,
-          hasPrev: query.page > 1,
-        },
-      });
-    }
-
-    res.json(items);
-  }),
-);
-
-quizRouter.post(
-  "/questions",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = questionSchema.parse(req.body);
-    await assertManagedContentScope(req.authUser!, payload);
-    const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const created = await QuestionModel.create({
-      ...payload,
-      ...workflowDefaults,
-      approvalStatus:
-        req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
-          : workflowDefaults.approvalStatus,
-    });
-    res.status(StatusCodes.CREATED).json(created);
-  }),
-);
-
-quizRouter.get(
-  "/questions/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const question = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!)).lean();
-    if (!question) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-    await assertManagedContentScope(req.authUser!, question);
-    return res.json(question);
-  }),
-);
-
-quizRouter.patch(
-  "/questions/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = questionBaseSchema.partial().parse(req.body);
-    const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
-    const existing = await QuestionModel.findOne(documentQuery);
-
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-
-    const mergedPayload = questionSchema.parse({
-      ...existing.toObject(),
-      ...payload,
-    });
-
-    await assertManagedContentScope(req.authUser!, mergedPayload);
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
-    const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
-    return res.json(updated);
-  }),
-);
-
-quizRouter.delete(
-  "/questions/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const existing = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-    await assertManagedContentScope(req.authUser!, existing.toObject());
-    const deleted = await QuestionModel.findOneAndDelete({ _id: existing._id });
-    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-
-    const deletedId = String(deleted.id || deleted._id);
-
-    // Cascade: remove deleted questionId from all quizzes that reference it
-    // This prevents broken references in published quizzes
-    await Promise.all([
-      // Remove from root questionIds array
-      QuizModel.updateMany(
-        { questionIds: deletedId },
-        { $pull: { questionIds: deletedId } }
-      ),
-      // Remove from mockExam sections
-      QuizModel.updateMany(
-        { "mockExam.sections.questionIds": deletedId },
-        { $pull: { "mockExam.sections.$[].questionIds": deletedId } }
-      ),
-    ]);
-
-    return res.json({ success: true, cascadeRemovedFromQuizzes: true });
-  }),
-);
+quizRouter.use(questionBankRouter);
 
 quizRouter.get(
   "/",
@@ -2352,7 +1997,7 @@ quizRouter.post(
     }
 
     clearPublicQuizListCache();
-    clearPublicQuestionSummaryCache();
+    clearQuestionBankSummaryCache();
 
     res.json({
       dryRun,
