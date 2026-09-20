@@ -99,6 +99,9 @@ jobs:
       - name: Course catalog store boundary contract
         run: node scripts/smoke-course-catalog-store-boundary-contract.mjs
 
+      - name: Lesson catalog store boundary contract
+        run: node scripts/smoke-lesson-catalog-store-boundary-contract.mjs
+
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 
