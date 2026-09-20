@@ -70,6 +70,7 @@ const skillSchema = z.object({
 export const taxonomyRouter = Router();
 
 const TAXONOMY_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
+const TAXONOMY_STAFF_BOOTSTRAP_CACHE_TTL_MS = 60 * 1000;
 const TAXONOMY_SEED_CHECK_TTL_MS = 5 * 60 * 1000;
 const TAXONOMY_PUBLIC_CACHE_CONTROL = "public, max-age=60, stale-while-revalidate=120";
 const taxonomyBootstrapPhaseSchema = z.enum(["full", "compact", "core"]).default("full");
@@ -85,14 +86,49 @@ type TaxonomyBootstrapPayload = {
 let publicTaxonomyBootstrapCache = new Map<"core" | "compact" | "full", { expiresAt: number; payload: TaxonomyBootstrapPayload }>();
 let publicTaxonomyBootstrapPromises = new Map<"core" | "compact" | "full", Promise<TaxonomyBootstrapPayload>>();
 const publicTaxonomyBootstrapPromise = publicTaxonomyBootstrapPromises;
+let staffTaxonomyBootstrapCache: { expiresAt: number; payload: TaxonomyBootstrapPayload } | null = null;
+let staffTaxonomyBootstrapPromise: Promise<TaxonomyBootstrapPayload> | null = null;
 let skillTaxonomySeedCheckedAt = 0;
 let skillTaxonomySeedPromise: Promise<unknown> | null = null;
 
 const clearTaxonomyBootstrapCache = () => {
   publicTaxonomyBootstrapCache.clear();
   publicTaxonomyBootstrapPromises.clear();
+  staffTaxonomyBootstrapCache = null;
+  staffTaxonomyBootstrapPromise = null;
   skillTaxonomySeedCheckedAt = 0;
   clearActivePathIdsCache();
+};
+
+const buildStaffTaxonomyBootstrapPayload = async (): Promise<TaxonomyBootstrapPayload> => {
+  const [paths, levels, subjects, sections, skills] = await Promise.all([
+    PathModel.find().select("id name color icon iconUrl iconStyle showInNavbar showInHome isActive parentPathId description settings createdAt").sort({ createdAt: 1 }).lean(),
+    LevelModel.find().select("id pathId name createdAt").sort({ createdAt: 1 }).lean(),
+    SubjectModel.find().select("id pathId levelId name color icon iconUrl iconStyle settings createdAt").sort({ createdAt: 1 }).lean(),
+    SectionModel.find().select("id subjectId name createdAt").sort({ createdAt: 1 }).lean(),
+    SkillModel.find().select("id pathId subjectId sectionId name description lessonIds questionIds createdAt").sort({ createdAt: 1 }).lean(),
+  ]);
+  return { paths, levels, subjects, sections, skills };
+};
+
+const getStaffTaxonomyBootstrapPayload = async () => {
+  if (staffTaxonomyBootstrapCache && staffTaxonomyBootstrapCache.expiresAt > Date.now()) {
+    return { payload: staffTaxonomyBootstrapCache.payload, cache: "hit" as const };
+  }
+  if (!staffTaxonomyBootstrapPromise) {
+    staffTaxonomyBootstrapPromise = buildStaffTaxonomyBootstrapPayload()
+      .then((payload) => {
+        staffTaxonomyBootstrapCache = {
+          expiresAt: Date.now() + TAXONOMY_STAFF_BOOTSTRAP_CACHE_TTL_MS,
+          payload,
+        };
+        return payload;
+      })
+      .finally(() => {
+        staffTaxonomyBootstrapPromise = null;
+      });
+  }
+  return { payload: await staffTaxonomyBootstrapPromise, cache: "miss" as const };
 };
 
 const ensureSkillTaxonomyIfStale = async () => {
@@ -221,14 +257,11 @@ taxonomyRouter.get(
     }
 
     if (canSeeInactiveTaxonomy) {
-      const [paths, levels, subjects, sections, skills] = await Promise.all([
-        PathModel.find().select("id name color icon iconUrl iconStyle showInNavbar showInHome isActive parentPathId description settings createdAt").sort({ createdAt: 1 }).lean(),
-        LevelModel.find().select("id pathId name createdAt").sort({ createdAt: 1 }).lean(),
-        SubjectModel.find().select("id pathId levelId name color icon iconUrl iconStyle settings createdAt").sort({ createdAt: 1 }).lean(),
-        SectionModel.find().select("id subjectId name createdAt").sort({ createdAt: 1 }).lean(),
-        SkillModel.find().select("id pathId subjectId sectionId name description lessonIds questionIds createdAt").sort({ createdAt: 1 }).lean(),
-      ]);
-      return res.json({ paths, levels, subjects, sections, skills });
+      const { payload, cache } = await getStaffTaxonomyBootstrapPayload();
+      res.setHeader("Cache-Control", "private, max-age=30");
+      res.setHeader("X-Taxonomy-Cache", `staff-${cache}`);
+      res.setHeader("X-Taxonomy-Phase", "full");
+      return res.json(payload);
     }
 
     const { payload, cache } = await getPublicTaxonomyBootstrapPayload(phase);
