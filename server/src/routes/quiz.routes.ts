@@ -10,7 +10,6 @@ import { GroupModel } from "../models/Group.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { AccessGrantModel } from "../models/AccessGrant.js";
 import { CourseModel } from "../models/Course.js";
-import { SkillProgressModel } from "../models/SkillProgress.js";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
 import { SkillModel } from "../models/Skill.js";
 import { SubjectModel } from "../models/Subject.js";
@@ -24,13 +23,14 @@ import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../servi
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { dashboardAnalyticsQuerySchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
-import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
+import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { isQuestionContentUsable, sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
 import { buildRecommendedAction, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
 import { clearQuestionBankSummaryCache, questionBankRouter } from "../modules/quizzes/http/questionBankRoutes.js";
+import { adaptiveTelemetryRouter } from "../modules/quizzes/http/adaptiveTelemetryRoutes.js";
 import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
-import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { runQuizSubmissionSideEffects } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
 import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";
 import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
@@ -40,7 +40,6 @@ import { processInlineQuestions } from "../modules/quizzes/application/quizInlin
 import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
 import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
-import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
 import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
 import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
 import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
@@ -490,6 +489,7 @@ quizRouter.use((req, _res, next) => {
 });
 
 quizRouter.use(questionBankRouter);
+quizRouter.use(adaptiveTelemetryRouter);
 
 quizRouter.get(
   "/",
@@ -1223,77 +1223,6 @@ quizRouter.get(
         };
       }),
     });
-  }),
-);
-
-quizRouter.get(
-  "/skill-progress",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const filter = { userId: req.authUser!.id };
-    const pagination = resolvePagination(req.query, { limit: 80 });
-    const noTotal = ["true", "1", "yes", "on"].includes(String(req.query.noTotal || "").trim().toLowerCase());
-    const rawItems = await SkillProgressModel.find(filter)
-      .sort({ mastery: 1, lastAttemptAt: -1 })
-      .skip(pagination.skip)
-      .limit(noTotal ? pagination.limit + 1 : pagination.limit)
-      .lean();
-    const hasMore = noTotal && rawItems.length > pagination.limit;
-    const items = noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
-    const total = noTotal
-      ? pagination.skip + items.length + (hasMore ? 1 : 0)
-      : await SkillProgressModel.countDocuments(filter);
-    res.setHeader("X-Has-More", String(hasMore));
-    res.json({
-      skillProgress: items,
-      pagination: buildPaginatedResponse([], pagination, total),
-    });
-  }),
-);
-
-quizRouter.get(
-  "/question-attempts",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const filter = { userId: req.authUser!.id };
-    const pagination = resolvePagination(req.query, { limit: 100 });
-    const [items, total] = await Promise.all([
-      QuestionAttemptModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
-      QuestionAttemptModel.countDocuments(filter),
-    ]);
-    res.json({
-      questionAttempts: items,
-      pagination: buildPaginatedResponse([], pagination, total),
-    });
-  }),
-);
-
-quizRouter.post(
-  "/question-attempts",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const payload = questionAttemptSchema.parse(req.body);
-    const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select(
-      "id pathId subject sectionId skillIds correctOptionIndex",
-    );
-
-    if (!question) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-
-    const selectedOptionIndex = Number(payload.selectedOptionIndex);
-    const isCorrect =
-      selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
-    const created = await QuestionAttemptModel.create(buildQuestionAttemptDocument({
-      payload,
-      selectedOptionIndex,
-      isCorrect,
-      userId: req.authUser!.id,
-      question,
-    }));
-    await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);
-
-    res.status(StatusCodes.CREATED).json(created);
   }),
 );
 
