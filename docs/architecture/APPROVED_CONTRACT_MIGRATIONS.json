@@ -196,6 +196,21 @@
       "from": "contentRouter|GET|/access-code-redemptions",
       "to": "contentSchoolCommercialRouter|GET|/access-code-redemptions",
       "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/schools/:id/report",
+      "to": "contentSchoolReportImportRouter|GET|/schools/:id/report",
+      "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/schools/:id/import-students",
+      "to": "contentSchoolReportImportRouter|POST|/schools/:id/import-students",
+      "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/schools/:id/relations",
+      "to": "contentSchoolRelationsRouter|POST|/schools/:id/relations",
+      "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
     }
   ]
 }
