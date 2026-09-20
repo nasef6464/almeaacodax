@@ -25,6 +25,7 @@ import { schoolAdminIntegrityRouter } from "./schoolAdminIntegrity.routes.js";
 import { schoolAccessRouter } from "./schoolAccess.routes.js";
 import { classroomRouter } from "./classroomRoot.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
+import { mediaRouter } from "./media.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
 
 export const apiRouter = Router();
@@ -36,6 +37,7 @@ apiRouter.use("/content", contentRouter);
 apiRouter.use("/courses", courseRouter);
 apiRouter.use("/quizzes", quizRouter);
 apiRouter.use("/question-analytics", questionAnalyticsRouter);
+apiRouter.use("/media", mediaRouter);
 apiRouter.use("/live-exams", liveExamsRouter);
 apiRouter.use("/payments", paymentRouter);
 apiRouter.use("/ai", aiRouter);
