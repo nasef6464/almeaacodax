@@ -71,6 +71,8 @@ const measure = async (endpoint) => {
         status: response.status,
         durationMs: Number((performance.now() - startedAt).toFixed(2)),
         bytes: body.byteLength,
+        wireBytes: contentLength > 0 ? contentLength : null,
+        contentEncoding,
         cache: response.headers.get("x-taxonomy-cache") || response.headers.get("x-content-cache") || response.headers.get("x-course-list-cache") || "none",
       });
     } catch (error) {
@@ -78,6 +80,8 @@ const measure = async (endpoint) => {
         status: 0,
         durationMs: Number((performance.now() - startedAt).toFixed(2)),
         bytes: 0,
+        wireBytes: null,
+        contentEncoding: "error",
         cache: "error",
         error: error instanceof Error ? error.name : "request_failed",
       });
