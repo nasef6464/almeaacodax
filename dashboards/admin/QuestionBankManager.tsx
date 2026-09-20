@@ -403,7 +403,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       setCurrentQuestion(fullQuestion as Question);
       setIsEditing(true);
     } catch (error) {
-      setEditorLoadError(error instanceof Error ? error.message : 'تعذر تحميل السؤال الكامل للتعديل.');
+      console.warn('Could not load full question details from API, falling back to row record:', error);
+      const fallbackRecord: Question = { ...question };
+      setCurrentQuestion(fallbackRecord);
+      setIsEditing(true);
+      setEditorLoadError(null);
     } finally {
       setIsLoadingEditQuestion(false);
     }
@@ -1596,7 +1600,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                           <div className="space-y-2" data-testid="question-row-media-preview">
                             {question.text ? (
                               <div
-                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-60 max-w-[480px] sm:max-w-[560px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2.5 shadow-xs' : 'line-clamp-2'}`}
+                                className={`question-html text-sm text-gray-800 leading-relaxed ${hasInlineMedia ? 'max-h-60 max-w-[480px] sm:max-w-[560px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2.5 shadow-xs' : 'max-w-[560px]'}`}
                                 data-testid={hasInlineMedia ? 'question-row-inline-media-preview' : undefined}
                                 dangerouslySetInnerHTML={{ __html: normalizedQuestionText }}
                               />
@@ -1617,7 +1621,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                             <div className="line-clamp-1 text-[11px] font-bold text-gray-400">اضغط معاينة لرؤية السؤال كاملًا.</div>
                           </div>
                         ) : question.text ? (
-                          <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizedQuestionText }} />
+                          <div className="question-html text-sm text-gray-800 leading-relaxed max-w-[560px]" dangerouslySetInnerHTML={{ __html: normalizedQuestionText }} />
                         ) : (
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}

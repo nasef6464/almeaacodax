@@ -122,15 +122,43 @@ export const explainQuestion = async (
   return response.text;
 };
 
+const resolveSmartSkillLink = (skill?: SkillGap, isQuiz = false): string => {
+  if (!skill) return "/dashboard";
+  const pathId = skill.pathId || "p_1777779639431";
+  const subjectId = skill.subjectId || "sub_1777779748206";
+  const skillId = skill.skillId || "";
+  const topicId = skillId ? `topic_sub_${skillId}` : "";
+  const contentTab = isQuiz ? "quizzes" : "lessons";
+
+  if (topicId) {
+    return `/category/${pathId}?subject=${subjectId}&tab=skills&topic=${topicId}&content=${contentTab}`;
+  }
+  return `/category/${pathId}?subject=${subjectId}&tab=skills`;
+};
+
 export const generateLearningPath = async (skills: SkillGap[]): Promise<LearningRecommendation[]> => {
   const targetSkills = skills.filter((skill) => skill.status === "weak" || skill.status === "average");
   if (targetSkills.length === 0) return [];
 
   try {
     const response = await api.aiLearningPath({ skills: targetSkills });
-    return Array.isArray(response)
-      ? (response as LearningRecommendation[]).map(sanitizeRecommendation)
-      : buildLearningFallback(targetSkills);
+    if (Array.isArray(response) && response.length > 0) {
+      return (response as LearningRecommendation[]).map((rec, index) => {
+        const sanitized = sanitizeRecommendation(rec);
+        const matchingSkill =
+          targetSkills.find((s) => displayText(s.skill) === sanitized.skillTargeted) ||
+          targetSkills[index % targetSkills.length];
+        const link =
+          sanitized.link && sanitized.link !== "/dashboard" && sanitized.link !== "#"
+            ? sanitized.link
+            : resolveSmartSkillLink(matchingSkill, sanitized.type === "quiz");
+        return {
+          ...sanitized,
+          link,
+        };
+      });
+    }
+    return buildLearningFallback(targetSkills);
   } catch {
     return buildLearningFallback(targetSkills);
   }
@@ -164,14 +192,17 @@ export const generateCourseSummary = async (courseTitle: string): Promise<string
 };
 
 const buildLearningFallback = (skills: SkillGap[]): LearningRecommendation[] =>
-  skills.slice(0, 3).map((skill, index) => ({
-    id: `rec_${index + 1}`,
-    type: index === 1 ? "quiz" : "lesson",
-    title: `مراجعة ${displayText(skill.skill)}`,
-    duration: index === 1 ? "10 دقائق" : "15 دقيقة",
-    reason: `لأن مستوى الإتقان يحتاج دعمًا في ${displayText(skill.skill)}.`,
-    skillTargeted: displayText(skill.skill),
-    priority: skill.status === "weak" ? "high" : "medium",
-    actionLabel: index === 1 ? "ابدأ التدريب" : "ابدأ الدرس",
-    link: "/dashboard",
-  }));
+  skills.slice(0, 3).map((skill, index) => {
+    const isQuiz = index === 1;
+    return {
+      id: `rec_${index + 1}`,
+      type: isQuiz ? "quiz" : "lesson",
+      title: `مراجعة ${displayText(skill.skill)}`,
+      duration: isQuiz ? "10 دقائق" : "15 دقيقة",
+      reason: `لأن مستوى الإتقان يحتاج دعمًا في ${displayText(skill.skill)}.`,
+      skillTargeted: displayText(skill.skill),
+      priority: skill.status === "weak" ? "high" : "medium",
+      actionLabel: isQuiz ? "ابدأ التدريب" : "ابدأ الدرس",
+      link: resolveSmartSkillLink(skill, isQuiz),
+    };
+  });

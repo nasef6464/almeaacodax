@@ -135,36 +135,56 @@ const getSkillRecommendation = (
   }
 
   const resolvedSkill = skill.skillId
-    ? allSkills.find((item) => item.id === skill.skillId)
-    : allSkills.find((item) => item.name === skill.skill);
+    ? allSkills.find((item) => item.id === skill.skillId || (item as any)._id === skill.skillId)
+    : allSkills.find((item) => displayText(item.name) === displayText(skill.skill));
 
   if (!resolvedSkill) {
     return {};
   }
 
-  const recommendedLesson = lessons.find(
-    (lesson) =>
-      lesson.skillIds?.includes(resolvedSkill.id) &&
-      lesson.showOnPlatform !== false &&
-      (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
-  );
-  const recommendedQuiz = quizzes.find((quiz) =>
-    quiz.showOnPlatform !== false &&
-    quiz.isPublished !== false &&
-    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
-      quiz.skillIds?.includes(resolvedSkill.id)),
-  );
-  const recommendedResource = libraryItems.find(
-    (item) =>
-      item.skillIds?.includes(resolvedSkill.id) &&
-      item.showOnPlatform !== false &&
-      (!item.approvalStatus || item.approvalStatus === 'approved'),
-  );
+  const resolvedSkillId = resolvedSkill.id || (resolvedSkill as any)._id;
   const recommendationPathId = resolvedSkill.pathId;
   const recommendationSubjectId = resolvedSkill.subjectId;
   const recommendationSectionId = resolvedSkill.sectionId;
-  const recommendedTopic =
+
+  // 1. Direct sub-topic lookup
+  const directTopic = topics.find((topic) =>
+    topic.showOnPlatform !== false &&
+    (matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ||
+     (topic.parentId && displayText(topic.title) === displayText(resolvedSkill.name) && (!recommendationSubjectId || topic.subjectId === recommendationSubjectId)) ||
+     (topic.quizIds || []).some((qid) => matchesEntityId({ id: qid }, `quiz_drill_${resolvedSkillId}`)))
+  );
+
+  // 2. Direct drill quiz lookup
+  const directDrill = quizzes.find((quiz) =>
+    quiz.showOnPlatform !== false &&
+    quiz.isPublished !== false &&
+    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
+    (matchesEntityId(quiz, `quiz_drill_${resolvedSkillId}`) ||
+     quiz.skillIds?.includes(resolvedSkillId))
+  );
+
+  const recommendedLesson = lessons.find(
+    (lesson) =>
+      lesson.skillIds?.includes(resolvedSkillId) &&
+      lesson.showOnPlatform !== false &&
+      (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
+  );
+  const recommendedQuiz = directDrill || quizzes.find((quiz) =>
+    quiz.showOnPlatform !== false &&
+    quiz.isPublished !== false &&
+    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
+    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkillId)) ||
+      quiz.skillIds?.includes(resolvedSkillId)),
+  );
+  const recommendedResource = libraryItems.find(
+    (item) =>
+      item.skillIds?.includes(resolvedSkillId) &&
+      item.showOnPlatform !== false &&
+      (!item.approvalStatus || item.approvalStatus === 'approved'),
+  );
+
+  const recommendedTopic = directTopic || (
     recommendedLesson && recommendationPathId && recommendationSubjectId
       ? topics.find(
           (topic) =>
@@ -173,7 +193,10 @@ const getSkillRecommendation = (
             topic.showOnPlatform !== false &&
             (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId)),
         )
-      : undefined;
+      : undefined
+  );
+  const targetTopicId = recommendedTopic?.id || (resolvedSkillId ? `topic_sub_${resolvedSkillId}` : undefined);
+
   const lessonLink =
     recommendationPathId && recommendationSubjectId
       ? (() => {
@@ -182,12 +205,27 @@ const getSkillRecommendation = (
             tab: 'skills',
           });
 
-          if (recommendedTopic?.id && recommendedLesson?.id) {
-            params.set('topic', recommendedTopic.id);
+          if (targetTopicId) {
+            params.set('topic', targetTopicId);
             params.set('content', 'lessons');
+          }
+          if (recommendedLesson?.id) {
             params.set('lesson', recommendedLesson.id);
           }
 
+          return `/category/${recommendationPathId}?${params.toString()}`;
+        })()
+      : undefined;
+
+  const foundationTrainingLink =
+    recommendationPathId && recommendationSubjectId && targetTopicId
+      ? (() => {
+          const params = new URLSearchParams({
+            subject: recommendationSubjectId,
+            tab: 'skills',
+          });
+          params.set('topic', targetTopicId);
+          params.set('content', 'quizzes');
           return `/category/${recommendationPathId}?${params.toString()}`;
         })()
       : undefined;
@@ -196,9 +234,9 @@ const getSkillRecommendation = (
     lessonTitle: displayText(recommendedLesson?.title),
     lessonLink,
     lessonVideoUrl: recommendedLesson?.videoUrl,
-    lessonTopicTitle: displayText(recommendedTopic?.title),
-    quizTitle: displayText(recommendedQuiz?.title),
-    quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
+    lessonTopicTitle: displayText(recommendedTopic?.title || resolvedSkill.name),
+    quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
+    quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
     resourceTitle: displayText(recommendedResource?.title),
     resourceUrl: recommendedResource?.url,
     subjectName: recommendationSubjectId ? displayText(useStore.getState().subjects.find((item) => item.id === recommendationSubjectId)?.name) : undefined,
