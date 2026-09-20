@@ -26,8 +26,18 @@ export interface QuestionQuery {
   search?: string;
   approvalStatus?: string;
   hasExplanationVideo?: boolean;
+  videoStatus?: "with" | "without";
+  includeCoverage?: boolean;
   summary?: boolean;
   noTotal?: boolean;
+}
+
+export interface QuestionBankCoverage {
+  total: number;
+  mainSkillCount: number;
+  subSkillCount: number;
+  pendingCount: number;
+  approvedCount: number;
 }
 
 export interface QuestionUsageMetric {
@@ -60,7 +70,7 @@ export const createQuestionsApi = (request: ApiRequest) => ({
 
   getQuestionsPaginated: (params?: QuestionQuery) => {
     const query = withQuery("/quizzes/questions", { ...(params || {}), paginate: true });
-    return request<{ data: unknown[]; pagination: PaginationMeta }>(query);
+    return request<{ data: unknown[]; pagination: PaginationMeta; coverage?: QuestionBankCoverage }>(query);
   },
 
   getQuestionUsageAnalytics: (ids: string[], token?: string | null) => {
