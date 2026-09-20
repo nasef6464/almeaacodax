@@ -4,7 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "utf8");
 
-const route = read("server/src/routes/quiz.routes.ts");
+const route = read("server/src/modules/quizzes/http/questionBankRoutes.ts");
 const querySchema = read("server/src/modules/quizzes/http/questionQuerySchemas.ts");
 const coverage = read("server/src/modules/quizzes/application/questionBankCoverage.ts");
 const questionApi = read("services/apiGroups/questionsApi.ts");
