@@ -47,6 +47,7 @@ const persistTransition = (
     api: StudentGroupMembershipApi,
     userId: string,
     transition: StudentMembershipTransition,
+    includeSupervisorMetadata = false,
 ) => Promise.all([
     api.updateAdminUser(userId, {
         schoolId: transition.schoolId || null,
@@ -55,10 +56,15 @@ const persistTransition = (
     ...transition.groupIdsToPersist.map((groupId) => {
         const group = transition.groups.find((item) => item.id === groupId);
         if (!group) return Promise.resolve();
-        return api.updateGroup(group.id, {
+        const payload: Partial<Group> = {
             studentIds: group.studentIds,
             totalStudents: group.totalStudents,
-        });
+        };
+        if (includeSupervisorMetadata) {
+            payload.supervisorIds = group.supervisorIds;
+            payload.totalSupervisors = group.totalSupervisors;
+        }
+        return api.updateGroup(group.id, payload);
     }),
 ]);
 
@@ -66,8 +72,9 @@ const persistTransitionInBackground = (
     api: StudentGroupMembershipApi,
     userId: string,
     transition: StudentMembershipTransition,
+    includeSupervisorMetadata = false,
 ) => {
-    persistTransition(api, userId, transition).catch(console.error);
+    persistTransition(api, userId, transition, includeSupervisorMetadata).catch(console.error);
 };
 
 export const createStudentGroupMembershipSlice = <TState extends StudentGroupMembershipSliceState>(
@@ -80,7 +87,7 @@ export const createStudentGroupMembershipSlice = <TState extends StudentGroupMem
         const currentUser = state.users.find((user) => user.id === userId);
         if (!targetGroup || !currentUser) return state;
         const transition = assignStudentMembership(state.groups, currentUser, targetGroup);
-        persistTransitionInBackground(api, userId, transition);
+        persistTransitionInBackground(api, userId, transition, true);
         return buildStatePatch(state, userId, transition);
     }),
 
@@ -90,7 +97,7 @@ export const createStudentGroupMembershipSlice = <TState extends StudentGroupMem
         const currentUser = state.users.find((user) => user.id === userId);
         if (!targetGroup || !currentUser) return;
         const transition = assignStudentMembership(state.groups, currentUser, targetGroup);
-        await persistTransition(api, userId, transition);
+        await persistTransition(api, userId, transition, true);
         set(buildStatePatch(state, userId, transition));
     },
 
