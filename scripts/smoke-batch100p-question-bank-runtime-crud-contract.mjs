@@ -43,19 +43,24 @@ assertIncludes(
 );
 
 assertMatches(
-  'store/useStore.ts',
-  /addQuestion:\s*async[\s\S]*await api\.createQuestion[\s\S]*questions: \[normalizedQuestion,/,
+  'store/slices/questionCatalogSlice.ts',
+  /addQuestion:\s*async[\s\S]*await api\.createQuestion[\s\S]*questions: \[/,
   'Store addQuestion must await the backend and prepend the persisted question.',
 );
 assertMatches(
-  'store/useStore.ts',
+  'store/slices/questionCatalogSlice.ts',
   /updateQuestion:\s*async[\s\S]*await api\.updateQuestion[\s\S]*questions: state\.questions\.map/,
   'Store updateQuestion must await the backend and update local state from the persisted response.',
 );
 assertMatches(
-  'store/useStore.ts',
+  'store/slices/questionCatalogSlice.ts',
   /deleteQuestion:\s*async[\s\S]*await api\.deleteQuestion[\s\S]*questions: state\.questions\.filter/,
   'Store deleteQuestion must await the backend before removing local state.',
+);
+assertIncludes(
+  'store/useStore.ts',
+  '...createQuestionCatalogSlice<AppState>(set, api)',
+  'Root store must compose the question catalog slice.',
 );
 
 assertMatches(
