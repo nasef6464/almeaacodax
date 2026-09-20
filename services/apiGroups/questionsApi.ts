@@ -21,6 +21,7 @@ export interface QuestionQuery {
   sectionId?: string;
   skillId?: string;
   skillIds?: string;
+  skillLinkStatus?: "linked" | "unlinked";
   difficulty?: string;
   type?: "mcq" | "true_false" | "essay";
   search?: string;
