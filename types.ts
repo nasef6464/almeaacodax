@@ -558,8 +558,11 @@ export interface Question extends ContentWorkflow {
     videoUrl?: string;
     imageUrl?: string;
     skillIds?: string[];
+    skillId?: string | null;
+    subSkillId?: string | null;
     pathId?: string; // Added to support Path selection
     subject: string;
+    subjectId?: string | null;
     sectionId?: string;
     difficulty: 'Easy' | 'Medium' | 'Hard';
     type: 'mcq' | 'true_false' | 'essay';
