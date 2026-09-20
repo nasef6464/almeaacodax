@@ -176,3 +176,18 @@ Phase 1 can be marked DONE only after:
 Phase 2: idempotent skill evidence + recent-five scoped analytics + double-count prevention + query/index audit. It must use:
 `userId + pathId + subjectId + skillId`
 and keep the default recent window configurable rather than hard-coded.
+
+
+## Live index baseline
+
+Read-only Atlas index inspection was captured before adding any production index.
+
+Relevant existing coverage:
+- `questions`: `pathId + subject + sectionId + approvalStatus`, `skillIds + difficulty`, plus subject/update and workflow indexes.
+- `skills`: path/subject/section indexes and scoped section composites.
+- `topics`: path/subject/section/show/order, parent/order, lessonIds, quizIds, libraryItemIds.
+- `skillprogresses`: user/skill unique, user/status/mastery, subject/status/mastery, path/subject/section.
+- `quizresults`: user/createdAt, quiz/createdAt, skill-analysis indexes and submission identity.
+- `questionattempts`: user/question/createdAt, user/skillIds/createdAt, path/subject/section/createdAt.
+
+The source model contains some newer desired indexes that are not yet visible in the live Atlas index list. Phase 2 MUST validate actual query shapes and `explain`/latency before adding or changing indexes; no speculative production index build is part of Phase 1.
