@@ -38,6 +38,7 @@ const files = {
   store: [
     await read("store/useStore.ts"),
     await read("store/slices/accessEnrollmentSlice.ts"),
+    await read("store/slices/groupCrudSlice.ts"),
   ].join("\n"),
   accessEnrollment: await read("store/slices/accessEnrollmentSlice.ts"),
   packageJson: await read("package.json"),
@@ -161,6 +162,7 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.schools, 'data-testid="school-delete-button"');
   assertIncludes(files.schools, "window.confirm");
   assertIncludes(files.schools, "deleteGroupAsync(selectedSchool.id)");
+  assertIncludes(files.store, "...createGroupCrudSlice<AppState>(set, api)");
   assertIncludes(files.store, "deleteGroupAsync: async");
   assertIncludes(files.schools, "setSelectedSchool(null)");
   assertIncludes(files.store, "deletedGroupIds");
