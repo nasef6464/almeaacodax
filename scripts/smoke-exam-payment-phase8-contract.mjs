@@ -4,6 +4,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const [
   quizRoutes,
+  questionBankRoutes,
   questionPresentation,
   quizResultModel,
   accessGrantService,
@@ -15,6 +16,7 @@ const [
   answerReview,
 ] = await Promise.all([
   read("server/src/routes/quiz.routes.ts"),
+  read("server/src/modules/quizzes/http/questionBankRoutes.ts"),
   read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   read("server/src/models/QuizResult.ts"),
   read("server/src/services/accessGrantService.ts"),
@@ -80,8 +82,8 @@ check("quiz score and pass/fail are calculated only on the server", () => {
 });
 
 check("learner question list does not expose answer keys before submission", () => {
-  assertIncludes(quizRoutes, "sanitizeQuestionForLearner");
-  assertIncludes(quizRoutes, "canSeeAnswers");
+  assertIncludes(questionBankRoutes, "sanitizeQuestionForLearner");
+  assertIncludes(questionBankRoutes, "canSeeAnswers");
   assertIncludes(questionPresentation, "export const sanitizeQuestionForLearner");
   assertIncludes(questionPresentation, "const { correctOptionIndex, explanation, __v, ...safeQuestion } = question");
   assertIncludes(questionPresentation, "return safeQuestion");
