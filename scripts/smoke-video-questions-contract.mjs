@@ -11,6 +11,7 @@ const files = {
   questionsApi: "services/apiGroups/questionsApi.ts",
   authApi: "services/apiGroups/authApi.ts",
   quizRoutes: "server/src/routes/quiz.routes.ts",
+  questionBankRoutes: "server/src/modules/quizzes/http/questionBankRoutes.ts",
   videoPlayer: "components/CustomVideoPlayer.tsx",
   videoModal: "components/VideoModal.tsx",
   subjectPage: "pages/SubjectLearningPage.tsx",
@@ -59,7 +60,7 @@ const checks = [
       source.videoQuestionPicker.includes("approvalStatus: 'approved'") &&
       source.videoQuestionPicker.includes("hasExplanationVideo") &&
       source.questionsApi.includes("hasExplanationVideo?: boolean") &&
-      source.quizRoutes.includes("query.hasExplanationVideo"),
+      source.questionBankRoutes.includes("query.hasExplanationVideo"),
   ],
   [
     "picker requires explicit selection and blocks duplicates or essay questions",
