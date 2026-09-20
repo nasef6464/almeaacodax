@@ -33,5 +33,9 @@ assert(!findHeader('/(.*)', 'Cache-Control'), 'Do not add a catch-all Cache-Cont
 assert(!viteConfig.includes("url.pathname.startsWith('/api/')"), 'Service worker must not broadly cache authenticated /api/* responses');
 assert(!viteConfig.includes("cacheName: 'api-cache'"), 'Service worker API cache must remain disabled until an explicit safe allowlist exists');
 assert(viteConfig.includes("globPatterns: ['**/*.{js,css,html,svg,woff2}']"), 'large public images must remain out of the PWA install precache');
+assert(
+  vercel.ignoreCommand === '[ "$VERCEL_GIT_COMMIT_REF" != "main" ] && exit 0 || exit 1',
+  'Vercel must ignore automatic preview builds outside main to protect the Hobby deployment quota',
+);
 
-console.log('Deployment cache contract passed: hashed assets are immutable and HTML shell revalidates.');
+console.log('Deployment cache contract passed: cache headers are safe and non-main Vercel preview builds are ignored.');
