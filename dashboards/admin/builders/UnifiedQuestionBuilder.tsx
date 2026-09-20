@@ -5,6 +5,7 @@ import { RichTextEditor } from '../../../components/RichTextEditor';
 import { Save, X, Wand2, Loader2, BookOpen } from 'lucide-react';
 import { useStore } from '../../../store/useStore';
 import { generateQuizQuestion } from '../../../services/geminiService';
+import { api } from '../../../services/api';
 
 interface UnifiedQuestionBuilderProps {
   initialQuestion?: Partial<Question>;
@@ -79,8 +80,11 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   );
 
   const selectedSubSkills = useMemo(
-    () => availableSubSkills.filter((skill) => question.skillIds?.includes(skill.id)),
-    [availableSubSkills, question.skillIds]
+    () => (question.skillIds || []).map((skillId) => ({
+      id: skillId,
+      skill: skills.find((skill) => skill.id === skillId),
+    })),
+    [question.skillIds, skills]
   );
 
   useEffect(() => {
@@ -97,28 +101,18 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     const sectionBelongsToSubject = !question.sectionId || sections.some(
       (section) => section.id === question.sectionId && section.subjectId === question.subject
     );
-    const filteredSkillIds = (question.skillIds || []).filter((skillId) =>
-      skills.some(
-        (skill) =>
-          skill.id === skillId &&
-          skill.subjectId === question.subject &&
-          (!question.sectionId || skill.sectionId === question.sectionId)
-      )
-    );
 
-    if (
-      question.pathId !== nextPathId ||
-      !sectionBelongsToSubject ||
-      filteredSkillIds.length !== (question.skillIds || []).length
-    ) {
+    if (question.pathId !== nextPathId || !sectionBelongsToSubject) {
       setQuestion((prev) => ({
         ...prev,
         pathId: nextPathId,
         sectionId: sectionBelongsToSubject ? prev.sectionId : '',
-        skillIds: filteredSkillIds
+        // Existing skill links are authoritative while taxonomy is loading.
+        // They are cleared only when the operator explicitly changes subject/section.
+        skillIds: sectionBelongsToSubject ? prev.skillIds : [],
       }));
     }
-  }, [question.subject, question.sectionId, question.pathId, question.skillIds, subjects, sections, skills]);
+  }, [question.subject, question.sectionId, question.pathId, subjects, sections]);
 
   const handleSave = () => {
     handleValidatedSave();
@@ -131,8 +125,8 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   };
 
   const handleValidatedSave = () => {
-    if (!question.text) {
-      setValidationError('يرجى إدخال نص السؤال.');
+    if (!String(question.text || '').trim() && !String(question.imageUrl || '').trim()) {
+      setValidationError('يرجى إدخال نص السؤال أو إضافة صورة للسؤال.');
       return;
     }
     if (!question.pathId) {
@@ -295,7 +289,12 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           </div>
           <RichTextEditor
             value={question.text || ''}
+            externalImageUrl={question.imageUrl || ''}
             onChange={value => setQuestion(prev => ({ ...prev, text: value }))}
+            onUploadImage={async (file) => {
+              const uploaded = await api.uploadQuestionImage(file);
+              return uploaded.publicUrl;
+            }}
             minHeightClass="min-h-[360px] [&_.ql-container]:min-h-[310px]"
           />
 
@@ -379,11 +378,11 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
             <div className="col-span-2">
               <label className="block text-sm font-bold text-gray-700 mb-2">ربط بالمهارات الفرعية</label>
               <div className="flex flex-wrap gap-2 mb-2">
-                {selectedSubSkills.map(subSkill => (
-                  <span key={subSkill.id} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                    {subSkill.name}
+                {selectedSubSkills.map(({ id, skill }) => (
+                  <span key={id} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                    {skill?.name || `مهارة مرتبطة (${id})`}
                     <button
-                      onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== subSkill.id) }))}
+                      onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(skillId => skillId !== id) }))}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       <X size={14} />
@@ -414,7 +413,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                   <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">المهارات هنا تُسحب من مركز المهارات الحقيقي: المهارة الرئيسة ثم المهارات الفرعية التابعة لها.</p>
+              <p className="text-xs text-gray-500 mt-1">المهارات هنا تُسحب من مركز المهارات الحقيقي، ويمكن ربط السؤال بأكثر من مهارة فرعية معًا.</p>
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">رابط فيديو الشرح (اختياري)</label>
