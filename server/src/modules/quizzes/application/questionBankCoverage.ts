@@ -65,14 +65,14 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
                 $reduce: {
                   input: "$skillIdArrays",
                   initialValue: [],
-                  in: { $setUnion: ["$value", "$this"] },
+                  in: { $setUnion: ["$$value", "$$this"] },
                 },
               },
               as: "skillId",
               cond: {
                 $and: [
-                  { $ne: ["$skillId", null] },
-                  { $ne: ["$skillId", ""] },
+                  { $ne: ["$$skillId", null] },
+                  { $ne: ["$$skillId", ""] },
                 ],
               },
             },
