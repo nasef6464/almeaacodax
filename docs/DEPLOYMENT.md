@@ -164,8 +164,11 @@ Do not publish reusable account passwords in repository documentation. Operation
 
 ## Current Verification Status
 
-- Render build: successful from GitHub `main`.
-- Render health: `/api/health` returns `status=ok` and `database=connected`.
-- MongoDB Atlas data size observed after seed: about `2.03 MB`.
-- Admin inventory through Render shows seeded users.
-- Latest smoke test: `48/53` checks passed. Remaining gaps are missing demo content for some learning spaces and teacher analytics seed depth.
+Read-only production evidence captured on 2026-09-20:
+
+- Vercel production is READY on frontend commit `f9db56188cccf0977842cce0b84ac13add9da117`.
+- The Vercel `/api` route reaches the Render backend selected by `vercel.json`.
+- Live backend `/api/health/live` reports commit `848e12790a1e`, which does not match the current frontend/main release and therefore blocks synchronized-release closure.
+- `/api/health/ready` returns HTTP 200 with MongoDB connected.
+- `/api/health/scale-ready` returns HTTP 503 because Redis is not configured for multi-instance scale.
+- A release is synchronized only when `npm run smoke:release-identity` passes for the intended SHA. Scale certification additionally requires the stronger scale-ready gate and Batch 13 measured load evidence.
