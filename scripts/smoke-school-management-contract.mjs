@@ -39,6 +39,7 @@ const files = {
     await read("store/useStore.ts"),
     await read("store/slices/accessEnrollmentSlice.ts"),
     await read("store/slices/groupCrudSlice.ts"),
+    await read("store/slices/studentGroupMembershipSlice.ts"),
   ].join("\n"),
   accessEnrollment: await read("store/slices/accessEnrollmentSlice.ts"),
   packageJson: await read("package.json"),
