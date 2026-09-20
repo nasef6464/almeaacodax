@@ -64,22 +64,22 @@ assertIncludes(
 );
 
 assertMatches(
-  'dashboards/admin/QuestionBankManager.tsx',
+  'dashboards/admin/questionBank/useQuestionBankCatalogData.ts',
   /const loadPagedQuestions = async[\s\S]*api\.getQuestionsPaginated\(\{[\s\S]*pathId: selectedPathId \|\| undefined,[\s\S]*subject: \(subjectId \|\| selectedSubjectId\) \|\| undefined,[\s\S]*sectionId: selectedSectionId \|\| undefined,[\s\S]*skillId: selectedSkillId \|\| undefined,[\s\S]*search: searchTerm \|\| undefined,/,
   'Question bank must load paginated questions with path, subject, section, skill, and search filters.',
 );
 assertIncludes(
-  'dashboards/admin/QuestionBankManager.tsx',
+  'dashboards/admin/questionBank/useQuestionBankCatalogData.ts',
   "videoStatus: videoFilter === 'all' ? undefined",
   'Question bank must send the full-bank video status filter to the paginated API.',
 );
 assertIncludes(
-  'dashboards/admin/QuestionBankManager.tsx',
+  'dashboards/admin/questionBank/useQuestionBankCatalogData.ts',
   "explanationStatus: explanationFilter === 'all' ? undefined",
   'Question bank must send explanation completeness filtering to the paginated API.',
 );
 assertIncludes(
-  'dashboards/admin/QuestionBankManager.tsx',
+  'dashboards/admin/questionBank/useQuestionBankCatalogData.ts',
   "skillLinkStatus: skillLinkFilter === 'all' ? undefined",
   'Question bank must send skill-link completeness filtering to the paginated API.',
 );
@@ -89,13 +89,13 @@ assertIncludes(
   'Question bank must expose a clear video-explanation filter control.',
 );
 assertIncludes(
-  'dashboards/admin/QuestionBankManager.tsx',
-  'questionsRefreshKey]',
+  'dashboards/admin/questionBank/useQuestionBankCatalogData.ts',
+  'questionsRefreshKey,',
   'Question bank paginated loader must depend on the refresh key.',
 );
 assertIncludes(
-  'dashboards/admin/QuestionBankManager.tsx',
-  'const refreshPagedQuestions = () => setQuestionsRefreshKey',
+  'dashboards/admin/questionBank/useQuestionBankCatalogData.ts',
+  'refreshPagedQuestions: () => setQuestionsRefreshKey',
   'Question bank must expose a refresh helper after runtime mutations.',
 );
 assertMatches(
