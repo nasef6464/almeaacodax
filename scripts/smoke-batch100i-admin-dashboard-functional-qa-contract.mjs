@@ -37,6 +37,7 @@ const courseView = read("pages/CourseView.tsx");
 const questionBankManager = read("dashboards/admin/QuestionBankManager.tsx");
 const questionBankCatalogData = read("dashboards/admin/questionBank/useQuestionBankCatalogData.ts");
 const quizRoutes = read("server/src/routes/quiz.routes.ts");
+const questionBankRoutes = read("server/src/modules/quizzes/http/questionBankRoutes.ts");
 const questionQuerySchemas = read("server/src/modules/quizzes/http/questionQuerySchemas.ts");
 
 for (const [label, source] of [
@@ -89,10 +90,10 @@ assertIncludes(courseView, "setSearchParams(nextParams", "course view keeps less
 
 assertIncludes(api, "getQuestionsPaginated", "admin question bank uses paginated question API helper");
 assertIncludes(api, "paginate: true", "paginated question helper sends paginate=true contract flag");
-assertIncludes(quizRoutes, "questionListQuerySchema.parse(req.query)", "questions API parses the delegated question query schema");
+assertIncludes(questionBankRoutes, "questionListQuerySchema.parse(req.query)", "questions API parses the delegated question query schema");
 assertIncludes(questionQuerySchemas, "paginate: z.coerce.boolean().default(false)", "questions API accepts paginate=true query flag");
-assertIncludes(quizRoutes, "data: items", "questions API returns data array when paginate=true");
-assertIncludes(quizRoutes, "hasNext:", "questions API returns pagination navigation metadata");
+assertIncludes(questionBankRoutes, "data: items", "questions API returns data array when paginate=true");
+assertIncludes(questionBankRoutes, "hasNext:", "questions API returns pagination navigation metadata");
 assertIncludes(questionBankCatalogData, "const [questionsRefreshKey, setQuestionsRefreshKey]", "question bank can refresh paginated list after mutations");
 assertIncludes(questionBankCatalogData, "questionsRefreshKey,", "question bank reload effect depends on refresh key");
 assertIncludes(questionBankManager, "refreshPagedQuestions();", "question bank refreshes after create/update/delete/review actions");
