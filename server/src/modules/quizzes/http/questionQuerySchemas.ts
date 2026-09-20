@@ -54,6 +54,7 @@ export const questionListQuerySchema = z.object({
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
   hasExplanationVideo: z.coerce.boolean().optional(),
   videoStatus: z.enum(["with", "without"]).optional(),
+  explanationStatus: z.enum(["with", "without"]).optional(),
   includeCoverage: z.preprocess((value) => {
     if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
     return value;
