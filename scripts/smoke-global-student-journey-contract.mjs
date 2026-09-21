@@ -71,8 +71,11 @@ function assertPattern(source, pattern, message) {
 
 check('student dashboard keeps a clear continuation area and learner shortcuts', () => {
   assertIncludes(files.dashboard, "import { EmptyState } from '../components/ui/EmptyState'");
-  assertIncludes(files.dashboard, 'const smartPathSkills = buildSmartPathSkillsFromResults(examResults);');
-  assertIncludes(files.dashboard, '<SmartLearningPath skills={smartPathSkills} />');
+  assertIncludes(files.dashboard, "import { buildSmartPathSkillsFromResults } from './Dashboard/smartPathEvidenceViewModel';");
+  assertIncludes(files.dashboard, 'pathId: selectedPathId || undefined');
+  assertIncludes(files.dashboard, "subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId");
+  assertIncludes(files.dashboard, '<SmartLearningPath skills={smartPathSkills} topics={topics} scopeLabel={scopeLabel} />');
+  assertIncludes(files.dashboard, 'بدون استدعاء AI تلقائي');
   assertIncludes(files.dashboard, 'أكمل مساراتك');
   assertIncludes(files.dashboard, 'to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}');
   assertIncludes(files.dashboard, 'data-testid="student-path-enroll"');
