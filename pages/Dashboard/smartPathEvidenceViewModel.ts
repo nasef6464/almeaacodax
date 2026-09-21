@@ -1,5 +1,5 @@
 import type { QuizResult, SkillGap } from '../../types';
-import { getResultSkillStatus, normalizeMastery } from '../../utils/masteryPolicy';
+import { MASTERY_POLICY, getResultSkillStatus, normalizeMastery } from '../../utils/masteryPolicy';
 
 export const SMART_PATH_RECENT_RESULT_LIMIT = 5;
 
@@ -95,9 +95,9 @@ export const buildSmartPathSkillsFromResults = (
         trend,
         status: getResultSkillStatus(mastery),
         recommendation:
-          mastery < 50
+          mastery < MASTERY_POLICY.supportBelow
             ? 'شرح وتدريب موجه ثم إعادة قياس'
-            : mastery < 75
+            : mastery < MASTERY_POLICY.readyAt
               ? 'تدريب قصير ثم إعادة قياس'
               : 'تثبيت خفيف ومراجعة دورية',
       };
