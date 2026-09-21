@@ -1423,7 +1423,7 @@ const Reports: React.FC = () => {
                             <p className="text-sm text-gray-500 mt-1">{roleScopeTitle[user.role] || 'نطاقك الحالي'}</p>
                         </div>
                         <div className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold">
-                            {user.role === Role.ADMIN ? 'مدير' : user.role === Role.SUPERVISOR ? 'مشرف' : user.role === Role.TEACHER ? 'معلم' : 'ولي أمر'}
+                            {user.role === Role.ADMIN ? 'مدير منصة' : user.role === Role.SCHOOL_ADMIN ? 'مدير مدرسة' : user.role === Role.SUPERVISOR ? 'مشرف' : user.role === Role.TEACHER ? 'معلم' : 'ولي أمر'}
                         </div>
                     </div>
                     <div className="mb-4 flex flex-wrap items-center gap-2">
