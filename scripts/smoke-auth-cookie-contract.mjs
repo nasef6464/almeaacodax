@@ -59,6 +59,11 @@ check("auth middleware accepts bearer token or cookie token", () => {
 check("frontend sends credentials and clears client profile on logout (cookie-first)", () => {
   assertIncludes(apiSource, 'credentials: "include"');
   assertIncludes(apiSource, 'VITE_AUTH_COOKIE_FIRST !== "false"');
+  assertIncludes(apiSource, 'const resolveClientAuthToken = (token?: string | null) =>');
+  assertIncludes(apiSource, 'COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken()');
+  if (apiSource.includes('getCookieValue(AUTH_COOKIE_NAME)')) {
+    throw new Error('Frontend must not try to inspect the HttpOnly auth cookie');
+  }
   assertIncludes(authApiSource, "logout: () =>");
   assertIncludes(authApiSource, 'request<void>("/auth/logout"');
   assertIncludes(authContextSource, "await api.logout()");

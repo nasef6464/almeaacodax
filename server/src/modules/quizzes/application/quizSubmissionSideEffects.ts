@@ -30,33 +30,68 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
   };
 };
 
+const loadExistingSkillProgress = async (userId: string, skillIds: string[]) => {
+  if (skillIds.length === 0) return new Map<string, any>();
+
+  const existingRows = await SkillProgressModel.find({
+    userId,
+    skillId: { $in: uniqueStrings(skillIds) },
+  }).lean();
+
+  return new Map(existingRows.map((row: any) => [String(row.skillId || ""), row]));
+};
+
 export async function updateSkillProgressFromResult(result: any, userId: string) {
   const skillsAnalysis = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
   if (skillsAnalysis.length === 0) return;
 
-  await Promise.all(
-    skillsAnalysis
-      .filter((skill: any) => skill?.skillId || skill?.skill)
-      .map(async (skill: any) => {
-        const skillId = String(skill.skillId || `${skill.subjectId || "subject"}:${skill.sectionId || "section"}:${skill.skill}`);
-        const mastery = Math.max(0, Math.min(100, Number(skill.mastery || 0)));
-        const existing = await SkillProgressModel.findOne({ userId, skillId });
-        const previousAttempts = Number(existing?.attempts || 0);
-        const nextAttempts = previousAttempts + 1;
-        const previousMastery = Number(existing?.mastery || 0);
-        const previousEvidence = Number(existing?.evidenceCount || existing?.attempts || 0);
-        const currentEvidence = Math.max(1, Number(skill.questionCount || skill.total || 1));
-        const mergedMastery = mergeSkillMasteryEvidence({
-          previousMastery,
-          previousEvidence,
-          currentMastery: mastery,
-          currentEvidence,
-        });
-        const nextMastery = mergedMastery.mastery;
+  const normalizedSkills = new Map<string, any>();
+  for (const skill of skillsAnalysis) {
+    if (!skill?.skillId && !skill?.skill) continue;
+    const skillId = String(
+      skill.skillId || `${skill.subjectId || "subject"}:${skill.sectionId || "section"}:${skill.skill}`,
+    );
+    normalizedSkills.set(skillId, { ...skill, skillId });
+  }
 
-        await SkillProgressModel.findOneAndUpdate(
-          { userId, skillId },
-          {
+  const rows = [...normalizedSkills.values()];
+  const existingBySkillId = await loadExistingSkillProgress(
+    userId,
+    rows.map((skill) => String(skill.skillId)),
+  );
+  const evidenceKey = String(result.submissionKey || result._id || result.id || "").trim();
+  const operations: any[] = [];
+
+  for (const skill of rows) {
+    const skillId = String(skill.skillId);
+    const existing = existingBySkillId.get(skillId);
+    const recentEvidenceKeys = uniqueStrings(
+      Array.isArray(existing?.recentEvidenceKeys) ? existing.recentEvidenceKeys.map(String) : [],
+    ).slice(-20);
+    if (evidenceKey && recentEvidenceKeys.includes(evidenceKey)) continue;
+
+    const mastery = Math.max(0, Math.min(100, Number(skill.mastery || 0)));
+    const previousAttempts = Number(existing?.attempts || 0);
+    const nextAttempts = previousAttempts + 1;
+    const previousMastery = Number(existing?.mastery || 0);
+    const previousEvidence = Number(existing?.evidenceCount || existing?.attempts || 0);
+    const currentEvidence = Math.max(1, Number(skill.questionCount || skill.total || 1));
+    const mergedMastery = mergeSkillMasteryEvidence({
+      previousMastery,
+      previousEvidence,
+      currentMastery: mastery,
+      currentEvidence,
+    });
+    const nextMastery = mergedMastery.mastery;
+    const nextEvidenceKeys = evidenceKey
+      ? [...recentEvidenceKeys.filter((key) => key !== evidenceKey), evidenceKey].slice(-20)
+      : recentEvidenceKeys;
+
+    operations.push({
+      updateOne: {
+        filter: { userId, skillId },
+        update: {
+          $set: {
             userId,
             skillId,
             skill: String(skill.skill || existing?.skill || "مهارة غير مسماة"),
@@ -67,62 +102,91 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
             status: buildSkillStatus(nextMastery),
             attempts: nextAttempts,
             evidenceCount: mergedMastery.evidenceCount,
+            recentEvidenceKeys: nextEvidenceKeys,
             lastQuizId: String(result.quizId || ""),
             lastQuizTitle: String(result.quizTitle || ""),
             lastAttemptAt: new Date(),
             recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
           },
-          { new: true, upsert: true },
-        );
-      }),
-  );
+        },
+        upsert: true,
+      },
+    });
+  }
+
+  if (operations.length > 0) {
+    await SkillProgressModel.bulkWrite(operations, { ordered: false });
+  }
 }
 
 export async function updateSkillProgressFromQuestionAttempt(attempt: any, userId: string) {
   const skillIds = uniqueStrings(Array.isArray(attempt.skillIds) ? attempt.skillIds.map(String) : []);
   if (skillIds.length === 0) return;
 
-  const skills = await SkillModel.find(buildDocumentsByIdsQuery(skillIds));
+  const skills = await SkillModel.find(buildDocumentsByIdsQuery(skillIds)).lean();
+  const resolvedSkillIds = skills.map((skill: any) => String(skill.id || skill._id));
+  const existingBySkillId = await loadExistingSkillProgress(userId, resolvedSkillIds);
   const mastery = attempt.isCorrect ? 100 : 0;
+  const evidenceKey = [
+    "question-attempt",
+    String(attempt._id || attempt.id || attempt.questionId || ""),
+    String(attempt.date || attempt.createdAt || ""),
+    String(attempt.selectedOptionIndex ?? ""),
+    attempt.isCorrect ? "1" : "0",
+  ].join(":");
+  const operations: any[] = [];
 
-  await Promise.all(
-    skills.map(async (skill) => {
-      const skillId = String(skill.id || skill._id);
-      const existing = await SkillProgressModel.findOne({ userId, skillId });
-      const previousAttempts = Number(existing?.attempts || 0);
-      const nextAttempts = previousAttempts + 1;
-      const previousMastery = Number(existing?.mastery || 0);
-      const previousEvidence = Number(existing?.evidenceCount || existing?.attempts || 0);
-      const mergedMastery = mergeSkillMasteryEvidence({
-        previousMastery,
-        previousEvidence,
-        currentMastery: mastery,
-        currentEvidence: 1,
-      });
-      const nextMastery = mergedMastery.mastery;
+  for (const skill of skills as any[]) {
+    const skillId = String(skill.id || skill._id);
+    const existing = existingBySkillId.get(skillId);
+    const recentEvidenceKeys = uniqueStrings(
+      Array.isArray(existing?.recentEvidenceKeys) ? existing.recentEvidenceKeys.map(String) : [],
+    ).slice(-20);
+    if (recentEvidenceKeys.includes(evidenceKey)) continue;
 
-      await SkillProgressModel.findOneAndUpdate(
-        { userId, skillId },
-        {
-          userId,
-          skillId,
-          skill: String(skill.name || existing?.skill || "مهارة غير مسماة"),
-          pathId: String(skill.pathId || existing?.pathId || attempt.pathId || ""),
-          subjectId: String(skill.subjectId || existing?.subjectId || attempt.subjectId || ""),
-          sectionId: String(skill.sectionId || existing?.sectionId || attempt.sectionId || ""),
-          mastery: nextMastery,
-          status: buildSkillStatus(nextMastery),
-          attempts: nextAttempts,
-          evidenceCount: mergedMastery.evidenceCount,
-          lastQuizId: String(existing?.lastQuizId || ""),
-          lastQuizTitle: String(existing?.lastQuizTitle || ""),
-          lastAttemptAt: new Date(),
-          recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
+    const previousAttempts = Number(existing?.attempts || 0);
+    const nextAttempts = previousAttempts + 1;
+    const previousMastery = Number(existing?.mastery || 0);
+    const previousEvidence = Number(existing?.evidenceCount || existing?.attempts || 0);
+    const mergedMastery = mergeSkillMasteryEvidence({
+      previousMastery,
+      previousEvidence,
+      currentMastery: mastery,
+      currentEvidence: 1,
+    });
+    const nextMastery = mergedMastery.mastery;
+    const nextEvidenceKeys = [...recentEvidenceKeys.filter((key) => key !== evidenceKey), evidenceKey].slice(-20);
+
+    operations.push({
+      updateOne: {
+        filter: { userId, skillId },
+        update: {
+          $set: {
+            userId,
+            skillId,
+            skill: String(skill.name || existing?.skill || "مهارة غير مسماة"),
+            pathId: String(skill.pathId || existing?.pathId || attempt.pathId || ""),
+            subjectId: String(skill.subjectId || existing?.subjectId || attempt.subjectId || ""),
+            sectionId: String(skill.sectionId || existing?.sectionId || attempt.sectionId || ""),
+            mastery: nextMastery,
+            status: buildSkillStatus(nextMastery),
+            attempts: nextAttempts,
+            evidenceCount: mergedMastery.evidenceCount,
+            recentEvidenceKeys: nextEvidenceKeys,
+            lastQuizId: String(existing?.lastQuizId || ""),
+            lastQuizTitle: String(existing?.lastQuizTitle || ""),
+            lastAttemptAt: new Date(),
+            recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
+          },
         },
-        { new: true, upsert: true },
-      );
-    }),
-  );
+        upsert: true,
+      },
+    });
+  }
+
+  if (operations.length > 0) {
+    await SkillProgressModel.bulkWrite(operations, { ordered: false });
+  }
 }
 
 const qualityFromAttempt = (selectedOptionIndex?: number, isCorrect?: boolean) => {

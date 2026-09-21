@@ -53,12 +53,16 @@ const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
 const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
 
 const SESSION_STORAGE_KEY = "the-hundred-auth-profile";
-const AUTH_COOKIE_NAME = "almeaa_access_token";
 const CSRF_COOKIE_NAME = "almeaa_csrf_token";
 const CSRF_HEADER_NAME = "x-csrf-token";
 const CSRF_SESSION_STORAGE_KEY = "almeaa:csrf-token";
 const COOKIE_FIRST_AUTH_ENABLED =
   runtimeEnv?.VITE_AUTH_COOKIE_FIRST !== "false";
+
+const resolveClientAuthToken = (token?: string | null) =>
+  token === undefined
+    ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
+    : token;
 
 const getPublicCacheStorage = (): Storage | null => {
   try {
@@ -138,10 +142,7 @@ const ensureCsrfToken = async () => {
 };
 
 async function request<T>(path: string, options: RequestOptions = {}, retryingAfterCsrfRefresh = false): Promise<T> {
-  const resolvedToken =
-    options.token === undefined
-      ? (getCookieValue(AUTH_COOKIE_NAME) ? null : getStoredSessionToken())
-      : options.token;
+  const resolvedToken = resolveClientAuthToken(options.token);
   const startedAt = performance.now();
 
   let csrfToken: string | null = null;
@@ -218,7 +219,7 @@ async function request<T>(path: string, options: RequestOptions = {}, retryingAf
 }
 
 async function downloadText(path: string, token?: string | null) {
-  const resolvedToken = token === undefined ? (getCookieValue(AUTH_COOKIE_NAME) ? null : getStoredSessionToken()) : token;
+  const resolvedToken = resolveClientAuthToken(token);
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "GET",
     cache: "no-store",

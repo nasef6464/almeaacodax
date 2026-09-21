@@ -314,6 +314,8 @@ export interface SkillGap {
     section?: string;
     skill: string;
     mastery: number; // 0-100 percentage
+    questionCount?: number;
+    correctCount?: number;
     status: 'weak' | 'average' | 'strong';
     recommendation?: string; // Action text like "Additional test available"
 }
@@ -329,6 +331,8 @@ export interface SkillProgress {
     mastery: number;
     status: 'weak' | 'average' | 'good' | 'mastered';
     attempts: number;
+    evidenceCount?: number;
+    recentEvidenceKeys?: string[];
     lastQuizId?: string;
     lastQuizTitle?: string;
     lastAttemptAt?: string;
@@ -385,6 +389,9 @@ export interface QuizResult {
     unanswered: number;
     timeSpent: string;
     date: string;
+    createdAt?: string | number;
+    attemptNumber?: number;
+    submissionKey?: string;
     skillsAnalysis: SkillGap[];
     questionReview?: QuizQuestionReview[];
     sectionResults?: QuizSectionResult[]; // تحليل لكل قسم (للمحاكيات فقط)
@@ -574,6 +581,11 @@ export interface QuestionAttempt {
     isCorrect: boolean;
     timeSpentSeconds: number;
     date: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
+    skillIds?: string[];
+    createdAt?: string | number;
 }
 
 export interface Activity {
