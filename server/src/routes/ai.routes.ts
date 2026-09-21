@@ -65,6 +65,13 @@ const questionSchema = z.object({
   topic: z.string().min(1).max(500),
 });
 
+const questionAssistantSchema = z.object({
+  resultId: z.string().trim().min(1).max(160),
+  questionId: z.string().trim().min(1).max(160),
+  helpLevel: z.enum(["hint", "stronger_hint", "concept", "steps", "follow_up"]).default("hint"),
+  message: z.string().trim().max(800).optional().default(""),
+});
+
 const courseSummarySchema = z.object({
   courseTitle: z.string().min(1).max(500),
 });
@@ -557,6 +564,7 @@ const recordAiInteraction = async (payload: {
   personalized?: boolean;
   latencyMs: number;
   error?: string;
+  schoolId?: string;
   metadata?: Record<string, unknown>;
 }) => {
   try {
@@ -575,6 +583,7 @@ const recordAiInteraction = async (payload: {
       responseLength: String(payload.responseText || "").length,
       error: preview(payload.error, 500),
       userId: payload.req.authUser?.id || "",
+      schoolId: payload.schoolId || "",
       userEmail: payload.req.authUser?.email || "",
       role,
       metadata: payload.metadata || {},
