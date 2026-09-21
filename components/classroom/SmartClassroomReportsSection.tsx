@@ -39,6 +39,8 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const [selectedReport, setSelectedReport] = useState<CanonicalClassroomReport | null>(null);
   const [timeFilter, setTimeFilter] = useState<ClassroomReportTimeFilter>('all');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
+  const [selectedPathFilter, setSelectedPathFilter] = useState('all');
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState('all');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -66,12 +68,45 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schoolId, smartClassroomEnabled]);
 
-  const filteredReports = useMemo(
+  const classAndTimeReports = useMemo(
     () => reports.filter((report) => {
       if (selectedClassFilter !== 'all' && report.classId !== selectedClassFilter) return false;
       return isClassroomReportWithinPeriod(report.endedAt, timeFilter);
     }),
     [reports, selectedClassFilter, timeFilter],
+  );
+
+  const pathOptions = useMemo(
+    () => Array.from(new Set(
+      classAndTimeReports.flatMap((report) => report.questions.map((question) => String(question.pathId || '')).filter(Boolean)),
+    )).sort(),
+    [classAndTimeReports],
+  );
+
+  const subjectOptions = useMemo(
+    () => Array.from(new Set(
+      classAndTimeReports.flatMap((report) => report.questions
+        .filter((question) => selectedPathFilter === 'all' || String(question.pathId || '') === selectedPathFilter)
+        .map((question) => String(question.subject || report.subjectName || ''))
+        .filter(Boolean)),
+    )).sort((left, right) => left.localeCompare(right, 'ar')),
+    [classAndTimeReports, selectedPathFilter],
+  );
+
+  useEffect(() => {
+    if (selectedSubjectFilter === 'all') return;
+    if (!subjectOptions.includes(selectedSubjectFilter)) setSelectedSubjectFilter('all');
+  }, [selectedSubjectFilter, subjectOptions]);
+
+  const filteredReports = useMemo(
+    () => classAndTimeReports.map((report) => ({
+      ...report,
+      questions: report.questions.filter((question) =>
+        (selectedPathFilter === 'all' || String(question.pathId || '') === selectedPathFilter) &&
+        (selectedSubjectFilter === 'all' || String(question.subject || report.subjectName || '') === selectedSubjectFilter),
+      ),
+    })).filter((report) => report.questions.length > 0),
+    [classAndTimeReports, selectedPathFilter, selectedSubjectFilter],
   );
 
   const totalSessions = filteredReports.length;
@@ -139,12 +174,27 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {assignments.length > 1 && (
-            <select value={selectedClassFilter} onChange={(event) => setSelectedClassFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+            <select value={selectedClassFilter} onChange={(event) => {
+              setSelectedClassFilter(event.target.value);
+              setSelectedPathFilter('all');
+              setSelectedSubjectFilter('all');
+            }} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
               <option value="all">جميع الفصول</option>
               {assignments.map((assignment) => <option key={assignment.classId} value={assignment.classId}>{assignment.className}</option>)}
             </select>
           )}
-          <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value as ClassroomReportTimeFilter)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+          <select value={selectedPathFilter} onChange={(event) => {
+            setSelectedPathFilter(event.target.value);
+            setSelectedSubjectFilter('all');
+          }} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+            <option value="all">كل المسارات</option>
+            {pathOptions.map((pathId) => <option key={pathId} value={pathId}>{pathId}</option>)}
+          </select>
+          <select value={selectedSubjectFilter} onChange={(event) => setSelectedSubjectFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+            <option value="all">كل المواد</option>
+            {subjectOptions.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+          </select>
+                    <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value as ClassroomReportTimeFilter)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
             <option value="all">كامل الفترة</option><option value="month">آخر شهر</option><option value="week">آخر أسبوع</option><option value="today">اليوم</option>
           </select>
           <button type="button" onClick={() => void loadReports()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50 dark:bg-slate-700"><RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> تحديث</button>
