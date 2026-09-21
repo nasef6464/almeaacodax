@@ -59,6 +59,11 @@ const CSRF_SESSION_STORAGE_KEY = "almeaa:csrf-token";
 const COOKIE_FIRST_AUTH_ENABLED =
   runtimeEnv?.VITE_AUTH_COOKIE_FIRST !== "false";
 
+const resolveClientAuthToken = (token?: string | null) =>
+  token === undefined
+    ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
+    : token;
+
 const getPublicCacheStorage = (): Storage | null => {
   try {
     return typeof globalThis !== "undefined" && "sessionStorage" in globalThis ? globalThis.sessionStorage : null;
@@ -141,10 +146,7 @@ const ensureCsrfToken = async () => {
 };
 
 async function request<T>(path: string, options: RequestOptions = {}, retryingAfterCsrfRefresh = false): Promise<T> {
-  const resolvedToken =
-    options.token === undefined
-      ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
-      : options.token;
+  const resolvedToken = resolveClientAuthToken(options.token);
   const startedAt = performance.now();
 
   let csrfToken: string | null = null;
@@ -221,7 +223,7 @@ async function request<T>(path: string, options: RequestOptions = {}, retryingAf
 }
 
 async function downloadText(path: string, token?: string | null) {
-  const resolvedToken = token === undefined ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken()) : token;
+  const resolvedToken = resolveClientAuthToken(token);
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "GET",
     cache: "no-store",
