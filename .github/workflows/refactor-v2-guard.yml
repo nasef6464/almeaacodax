@@ -135,6 +135,9 @@ jobs:
       - name: Adaptive server recheck contract
         run: node scripts/smoke-adaptive-server-recheck-contract.mjs
 
+      - name: Adaptive internal learning path contract
+        run: node scripts/smoke-adaptive-internal-learning-path-contract.mjs
+
       - name: Catalog bootstrap performance contract
         run: node scripts/smoke-catalog-bootstrap-performance-contract.mjs
 
