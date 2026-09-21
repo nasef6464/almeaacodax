@@ -74,6 +74,17 @@ check('smart path evidence uses latest five after path and subject scoping', () 
   includes(evidence, 'getResultSkillStatus(mastery)');
 });
 
+check('dashboard mastery decisions use the canonical policy instead of raw thresholds', () => {
+  includes(dashboard, "from '../utils/masteryPolicy'");
+  includes(dashboard, 'MASTERY_POLICY.readyAt');
+  includes(dashboard, 'MASTERY_POLICY.supportBelow');
+  excludes(dashboard, 'skill.mastery < 75');
+  excludes(dashboard, 'skill.mastery >= 75');
+  excludes(dashboard, 'skill.mastery < 50');
+  excludes(dashboard, 'item.mastery < 75');
+  excludes(dashboard, 'item.mastery < 50');
+});
+
 check('dashboard keeps simultaneous learning paths isolated', () => {
   includes(dashboard, 'new Set(enrolledPaths || [])');
   includes(dashboard, 'paths.filter((path) => enrolledSet.has(path.id))');
