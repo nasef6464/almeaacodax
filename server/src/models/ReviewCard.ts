@@ -14,6 +14,8 @@ const reviewCardSchema = new Schema(
     repetitions: { type: Number, default: 0 },
     nextReviewDate: { type: Date, default: Date.now, index: true },
     lastQuality: { type: Number, min: 0, max: 5, default: 0 },
+    lastReviewEventId: { type: String, default: "", index: true },
+    lastReviewedAt: { type: Date, default: undefined },
   },
   {
     timestamps: true,
