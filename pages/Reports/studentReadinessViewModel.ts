@@ -1,7 +1,11 @@
 import { displayText } from './reportDomain';
 import type { StudentWeeklyPlanItem } from './studentWeeklyPlanViewModel';
 import { buildReadinessInterpretation } from '../../services/masteryPolicy';
-import { buildSkillMasteryReviewActionLink, buildSkillRecheckActionLink, buildSkillRemediationActionLink } from '../../utils/skillActionLinks';
+import {
+    buildSkillMasteryReviewActionLink,
+    buildSkillRecheckActionLink,
+    buildSkillRemediationActionLink,
+} from '../../utils/skillActionLinks';
 
 export type StudentReadinessIconKey = 'target' | 'checkCircle' | 'fileText' | 'bookOpen';
 export type StudentReadinessStatus = 'needsMeasurement' | 'readyToAdvance' | 'needsPractice' | 'needsRemediation';
@@ -130,7 +134,7 @@ export const buildStudentReadinessDecision = (
             title: 'قريب من الجاهزية؛ أعد القياس بعد تدريب قصير',
             body: serverReadiness?.explanation || `راجع ${skillName} بتدريب مركز ثم أعد القياس.`,
             evidence: evidenceText,
-            actionLabel: 'تدريب ثم قياس',
+            actionLabel: 'قياس التحسن',
             actionHref: recheckHref,
             cardClass: 'border-amber-100 bg-amber-50/80',
             badgeClass: 'bg-amber-500 text-white',
@@ -152,46 +156,6 @@ export const buildStudentReadinessDecision = (
         actionHref: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink
             ? foundationHref
             : remediationHref,
-        cardClass: 'border-rose-100 bg-rose-50/80',
-        badgeClass: 'bg-rose-600 text-white',
-        textClass: 'text-rose-900',
-        iconKey: 'bookOpen',
-    };
-};
-    }
-
-    if (needsPractice) {
-        return {
-            status: 'needsPractice',
-            readyToAdvance,
-            badge: 'راجع ثم قِس',
-            title: 'ليس بعد، تحتاج تدريبًا قصيرًا',
-            body: `ابدأ بتدريب على ${skillName} ثم أعد القياس. لا تحتاج أكثر من خطوة واحدة الآن.`,
-            evidence: studentTodayFocus.isReliable
-                ? `${mastery}% من ${studentTodayFocus.attempts} محاولات`
-                : `قراءة أولية ${mastery}%`,
-            actionLabel: studentTodayFocus.quizLink ? 'ابدأ التدريب' : 'اختيار تدريب',
-            actionHref: trainingHref,
-            cardClass: 'border-amber-100 bg-amber-50/80',
-            badgeClass: 'bg-amber-500 text-white',
-            textClass: 'text-amber-900',
-            iconKey: 'fileText',
-        };
-    }
-
-    return {
-        status: 'needsRemediation',
-        readyToAdvance,
-        badge: 'يحتاج علاج',
-        title: 'ليس الآن، ابدأ بموضوع التأسيس',
-        body: `افتح موضوع التأسيس المرتبط بـ ${skillName}، ثم حل تدريبًا قصيرًا وبعدها أعد القياس.`,
-        evidence: studentTodayFocus.isReliable
-            ? `${mastery}% من ${studentTodayFocus.attempts} محاولات`
-            : `قراءة أولية ${mastery}%`,
-        actionLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink
-            ? 'فتح موضوع التأسيس'
-            : 'استعراض الشروح',
-        actionHref: foundationHref,
         cardClass: 'border-rose-100 bg-rose-50/80',
         badgeClass: 'bg-rose-600 text-white',
         textClass: 'text-rose-900',
