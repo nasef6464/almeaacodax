@@ -55,9 +55,33 @@ export const buildSkillRecommendation = (
     const recommendationPathId = target.pathId;
     const recommendationSubjectId = target.subjectId;
     const recommendationSectionId = target.sectionId;
-    const recommendedTopic = target.topicId
+    const directMappedTopic = target.topicId
         ? topics.find((topic) => matchesEntityId(topic, target.topicId!))
         : undefined;
+
+    const scoredFoundationTopics = recommendationPathId && recommendationSubjectId
+        ? topics
+            .filter((topic) =>
+                topic.pathId === recommendationPathId &&
+                topic.subjectId === recommendationSubjectId &&
+                topic.showOnPlatform !== false &&
+                (target.kind !== 'sub' || Boolean(topic.parentId)),
+            )
+            .map((topic) => {
+                const explicitSkillScore = topic.skillId === resolvedSkillId ? 120 : 0;
+                const legacyIdScore = matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ? 90 : 0;
+                const titleScore = displayText(topic.title) === displayText(target.skillName) ? 70 : 0;
+                const sectionScore = recommendationSectionId && topic.sectionId === recommendationSectionId ? 30 : 0;
+                return {
+                    topic,
+                    score: explicitSkillScore + legacyIdScore + titleScore + sectionScore,
+                };
+            })
+            .filter((item) => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+        : [];
+
+    const recommendedTopic = directMappedTopic || scoredFoundationTopics[0]?.topic;
 
     const approvedQuiz = (quiz: Quiz) =>
         quiz.showOnPlatform !== false &&
@@ -114,12 +138,8 @@ export const buildSkillRecommendation = (
 
     // For a subskill, both explanation and practice stay inside its exact foundation topic.
     // Explanation deliberately opens the topic (not one lesson) because a topic can contain multiple videos.
-    const lessonLink = recommendedTopic
-        ? buildFoundationActionLink(actionContext, 'lessons')
-        : undefined;
-    const foundationTrainingLink = recommendedTopic && target.kind === 'sub'
-        ? buildFoundationActionLink(actionContext, 'quizzes')
-        : undefined;
+    const lessonLink = buildFoundationActionLink(actionContext, 'lessons');
+    const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes');
 
     const mainSkillTrainingLink = target.kind === 'main' && recommendedQuiz?.id
         ? `/quiz/${encodeURIComponent(String(recommendedQuiz.id))}?source=training`
@@ -127,11 +147,11 @@ export const buildSkillRecommendation = (
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
-        lessonLink,
+        lessonLink: recommendedTopic ? lessonLink : undefined,
         lessonTopicTitle: displayText(recommendedTopic?.title || target.skillName),
-        foundationTopicLink: lessonLink,
+        foundationTopicLink: recommendedTopic ? lessonLink : undefined,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-        quizLink: foundationTrainingLink || mainSkillTrainingLink,
+        quizLink: recommendedTopic && target.kind === 'sub' ? foundationTrainingLink : mainSkillTrainingLink,
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
         subjectName: recommendationSubjectId
