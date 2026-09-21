@@ -21,24 +21,31 @@ const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
 
 const buildResultTaxonomyScopeFilter = (query: { pathId?: string; subjectId?: string }) => {
-  const clauses: Record<string, unknown>[] = [];
+  if (query.pathId && query.subjectId) {
+    return {
+      $or: [
+        { "quizSnapshot.pathId": query.pathId, "quizSnapshot.subjectId": query.subjectId },
+        { skillsAnalysis: { $elemMatch: { pathId: query.pathId, subjectId: query.subjectId } } },
+      ],
+    };
+  }
   if (query.pathId) {
-    clauses.push({
+    return {
       $or: [
         { "quizSnapshot.pathId": query.pathId },
         { skillsAnalysis: { $elemMatch: { pathId: query.pathId } } },
       ],
-    });
+    };
   }
   if (query.subjectId) {
-    clauses.push({
+    return {
       $or: [
         { "quizSnapshot.subjectId": query.subjectId },
         { skillsAnalysis: { $elemMatch: { subjectId: query.subjectId } } },
       ],
-    });
+    };
   }
-  return clauses.length ? { $and: clauses } : {};
+  return {};
 };
 
 
