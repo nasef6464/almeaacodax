@@ -7,6 +7,9 @@ import {
 export interface StudentWeeklyPlanItem {
     day: string;
     skillId?: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
     skill: string;
     subjectName: string;
     sectionName: string;
@@ -34,6 +37,9 @@ export const buildStudentWeeklyPlan = (
         return {
             day: dayLabels[index],
             skillId: skill.skillId,
+            pathId: skill.pathId,
+            subjectId: skill.subjectId,
+            sectionId: skill.sectionId,
             skill: displayText(skill.skill),
             subjectName: displayText(skill.subjectName),
             sectionName: displayText(skill.sectionName),
