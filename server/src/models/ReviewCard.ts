@@ -5,6 +5,7 @@ const reviewCardSchema = new Schema(
     userId: { type: String, required: true, index: true },
     questionId: { type: String, required: true, index: true },
     skillId: { type: String, default: "", index: true },
+    skillIds: { type: [String], default: [] },
     pathId: { type: String, default: "" },
     subjectId: { type: String, default: "" },
     sectionId: { type: String, default: "" },
