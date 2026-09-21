@@ -273,6 +273,26 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     [questions, searchTerm],
   );
 
+  const selectedPath = allowedPaths.find((p) => p.id === selectedPathId);
+  const selectedSubject = allowedSubjects.find((s) => s.id === (subjectId || selectedSubjectId));
+  const selectedSection = availableMainSkills.find((s) => s.id === selectedSectionId);
+  const selectedSkill = availableSubSkills.find((s) => s.id === selectedSkillId);
+
+  const activeScopeParts = useMemo(
+    () =>
+      [
+        selectedPath?.name,
+        selectedSubject?.name,
+        selectedSection?.name,
+        selectedSkill?.name,
+        searchTerm ? `بحث: "${searchTerm}"` : null,
+      ].filter(Boolean) as string[],
+    [searchTerm, selectedPath?.name, selectedSection?.name, selectedSkill?.name, selectedSubject?.name],
+  );
+
+  const hasActiveScope = activeScopeParts.length > 0;
+  const scopeDescription = activeScopeParts.join(' ⟵ ');
+
   const {
     currentPage,
     setCurrentPage,
@@ -1206,7 +1226,14 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-          <p className="text-xs font-black text-gray-500">الأسئلة الحالية</p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-black text-gray-500">الأسئلة الحالية</p>
+            {hasActiveScope ? (
+              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">حسب الفلتر</span>
+            ) : (
+              <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">إجمالي المنصة</span>
+            )}
+          </div>
           <p className="mt-2 text-2xl font-black text-gray-900">{questionCoverageSummary.total}</p>
         </div>
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
@@ -1487,6 +1514,56 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           )}
         </div>
       </div>
+
+      {hasActiveScope && (
+        <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/90 via-slate-50 to-purple-50/90 p-4 shadow-sm animate-fade-in" data-testid="question-bank-scoped-inspection-bar">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white font-black text-sm shadow-xs">
+                🎯
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-indigo-900">نطاق الفحص النشط:</span>
+                  <span className="text-xs font-extrabold text-indigo-700 bg-white/90 px-2.5 py-0.5 rounded-lg border border-indigo-100">
+                    {scopeDescription}
+                  </span>
+                </div>
+                <p className="text-[11px] font-bold text-gray-500 mt-0.5">
+                  إحصائيات متجاوبة ومطابقة لكامل البنك بحسب معايير الفلترة المحددة
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 border border-indigo-100 shadow-2xs">
+                <span className="font-bold text-gray-500">أسئلة النطاق:</span>
+                <span className="font-black text-indigo-600">{questionCoverageSummary.total}</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 border border-indigo-100 shadow-2xs">
+                <span className="font-bold text-gray-500">الرئيسية:</span>
+                <span className="font-black text-indigo-600">{questionCoverageSummary.mainSkillCount ?? '—'}</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 border border-indigo-100 shadow-2xs">
+                <span className="font-bold text-gray-500">الفرعية:</span>
+                <span className="font-black text-emerald-600">{questionCoverageSummary.subSkillCount ?? '—'}</span>
+              </div>
+              {questionCoverageSummary.approvedCount !== null && (
+                <div className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 border border-emerald-100 shadow-2xs">
+                  <span className="font-bold text-gray-500">معتمد:</span>
+                  <span className="font-black text-emerald-700">{questionCoverageSummary.approvedCount}</span>
+                </div>
+              )}
+              {questionCoverageSummary.pendingCount !== null && questionCoverageSummary.pendingCount > 0 && (
+                <div className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 border border-amber-200 bg-amber-50/50 shadow-2xs">
+                  <span className="font-bold text-amber-700">بانتظار المراجعة:</span>
+                  <span className="font-black text-amber-800">{questionCoverageSummary.pendingCount}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {questionUsageError && (
         <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-700">

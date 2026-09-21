@@ -176,7 +176,7 @@ questionBankRouter.get(
       queryBuilder.select("id text imageUrl options correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
-    const shouldIncludeCoverage = query.includeCoverage && isStaffRole(req.authUser?.role);
+    const shouldIncludeCoverage = Boolean(query.includeCoverage);
     const [rawItems, total, coverage] = await Promise.all([
       queryBuilder,
       query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),

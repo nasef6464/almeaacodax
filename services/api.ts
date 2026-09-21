@@ -68,10 +68,6 @@ const getPublicCacheStorage = (): Storage | null => {
 };
 
 const getStoredSessionToken = (): string | null => {
-  if (COOKIE_FIRST_AUTH_ENABLED) {
-    return null;
-  }
-
   try {
     const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) {
@@ -143,7 +139,7 @@ const ensureCsrfToken = async () => {
 async function request<T>(path: string, options: RequestOptions = {}, retryingAfterCsrfRefresh = false): Promise<T> {
   const resolvedToken =
     options.token === undefined
-      ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
+      ? (getCookieValue(AUTH_COOKIE_NAME) ? null : getStoredSessionToken())
       : options.token;
   const startedAt = performance.now();
 
@@ -221,7 +217,7 @@ async function request<T>(path: string, options: RequestOptions = {}, retryingAf
 }
 
 async function downloadText(path: string, token?: string | null) {
-  const resolvedToken = token === undefined ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken()) : token;
+  const resolvedToken = token === undefined ? (getCookieValue(AUTH_COOKIE_NAME) ? null : getStoredSessionToken()) : token;
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "GET",
     cache: "no-store",

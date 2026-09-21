@@ -1,6 +1,26 @@
 # ALMEAA — Codex Execution State
 
 
+## Learning Space & Question Bank — Verbal Foundation Drills Resolution & Scoped Counters
+
+- Status: `VERIFIED / PRODUCTION READY` on 2026-09-21.
+- Scope Delivered:
+  1. **Foundation Drills Resolution (`components/SkillDetailsModal.tsx`, `components/LearningSection.tsx`):**
+     - Resolved verbal short drills appearing under Foundation subtopic modal ("التدريبات القصيرة") by supporting multiple resolution strategies: explicit `activeTopic.quizIds`, `quiz.learningPlacements` where `topicId === activeTopic.id` and `slot === 'foundation'`, conventional ID resolution (`drill_${topicId.replace(/^top_/, '')}`), and exact title match (`تدريب: ${topicTitle}`).
+     - Updated `LearningSection.tsx` to include foundation quizzes mapped via placements in the progress calculations.
+  2. **Question Bank Scoped Inspection Bar & Dual Counters (`dashboards/admin/QuestionBankManager.tsx`):**
+     - Added dynamic Scoped Inspection Bar (`data-testid="question-bank-scoped-inspection-bar"`) under filters displaying active scope breadcrumbs, scoped question count, main skills, subskills, approved count, and pending count.
+     - Added visual scope indicator badge (`حسب الفلتر` vs `إجمالي المنصة`) on top-level question counter card.
+  3. **Backend Coverage & Auth Fallback (`server/src/modules/quizzes/http/questionBankRoutes.ts`, `services/api.ts`):**
+     - Unblocked coverage metrics for partitioned cross-domain cookies by allowing `includeCoverage` in question bank route without strict server cookie dependency.
+     - Enhanced `services/api.ts` to transmit stored session token via `Authorization: Bearer` header when partitioned cookies cannot be read across origins.
+- Verification:
+  - `smoke-question-bank-full-coverage-contract.mjs` — PASS.
+  - `smoke-question-skill-full-coverage-contract.mjs` — PASS.
+  - `smoke-learning-placement-admin-contract.mjs` — PASS.
+  - Frontend production build (`vite build`) — PASS (0 errors, built in 2m 53s).
+
+
 ## General Aptitude (Qudurat) — Verbal Section Deployment (13 Skills, 76 Subskills, 938 Live-Text Questions)
 
 - Status: `DEPLOYED / RUNTIME VERIFIED` on 2026-09-21.

@@ -108,17 +108,46 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
       if (!activeTopic || !selectedTopic) return [];
 
       const explicitQuizIds = new Set(activeTopic.quizIds || []);
+      const activeTopicCleanTitle = (activeTopic.title || '').trim();
+      const activeTopicId = String(activeTopic.id || (activeTopic as any)._id || '').trim();
+      const conventionalDrillId = activeTopicId ? `drill_${activeTopicId.replace(/^top_/, '')}` : '';
 
       return quizzes
         .filter((quiz) => {
           if (!canStudentSeeQuiz(quiz)) return false;
           if (!isMaterialQuizCandidate(quiz)) return false;
+
           if ([...explicitQuizIds].some((quizId) => matchesEntityId(quiz, quizId))) return true;
+
+          if (
+            activeTopicId &&
+            quiz.learningPlacements?.some(
+              (p) =>
+                matchesEntityId({ id: p.topicId }, activeTopicId) &&
+                (p.slot === 'foundation' || !p.slot),
+            )
+          ) {
+            return true;
+          }
+
+          if (conventionalDrillId && matchesEntityId(quiz, conventionalDrillId)) {
+            return true;
+          }
+
+          if (
+            activeTopicCleanTitle &&
+            (quiz.title === `تدريب: ${activeTopicCleanTitle}` || quiz.title === activeTopicCleanTitle)
+          ) {
+            const matchesSubject = !selectedTopic.subjectId || quiz.subjectId === selectedTopic.subjectId;
+            const matchesPath = !selectedTopic.pathId || quiz.pathId === selectedTopic.pathId;
+            if (matchesSubject && matchesPath) return true;
+          }
+
           return false;
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     },
-    [activeTopic, quizzes],
+    [activeTopic, quizzes, selectedTopic],
   );
 
   const relatedLessonSuggestions = useMemo(
@@ -138,19 +167,23 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   );
 
   const relatedQuizSuggestions = useMemo(
-    () =>
-      quizzes
+    () => {
+      const activeQuizIds = new Set(activeTopicQuizzes.map((q) => q.id));
+      return quizzes
         .filter((quiz) => {
           if (!selectedTopic || !activeTopic) return false;
           const matchesPath = selectedTopic.pathId ? quiz.pathId === selectedTopic.pathId : true;
           const matchesSubject = quiz.subjectId === selectedTopic.subjectId;
           const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
-          const notAttached = !(activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
+          const notAttached =
+            !activeQuizIds.has(quiz.id) &&
+            !(activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
           return matchesPath && matchesSubject && matchesSection && notAttached && canStudentSeeQuiz(quiz) && isMaterialQuizCandidate(quiz);
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
-        .slice(0, 3),
-    [activeTopic, quizzes, selectedTopic?.pathId, selectedTopic?.subjectId],
+        .slice(0, 3);
+    },
+    [activeTopic, activeTopicQuizzes, quizzes, selectedTopic?.pathId, selectedTopic?.subjectId],
   );
 
   const relatedLibrarySuggestions = useMemo(

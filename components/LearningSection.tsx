@@ -505,11 +505,20 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 const lesson = findByEntityId(lessons, lessonId);
                 return lesson ? canStudentSeeLesson(lesson) : false;
             });
-        const quizIds = Array.from(new Set(topicGroup.flatMap(item => item.quizIds || [])))
-            .filter(quizId => {
-                const quiz = findByEntityId(quizList, quizId);
-                return quiz ? canStudentSeeQuiz(quiz) : false;
-            });
+        const quizIds = Array.from(new Set([
+            ...topicGroup.flatMap(item => item.quizIds || []),
+            ...quizList
+                .filter(quiz =>
+                    canStudentSeeQuiz(quiz) &&
+                    (quiz.learningPlacements || []).some(p =>
+                        (p.slot === 'foundation' || !p.slot) && topicGroup.some(t => matchesEntityId(t, p.topicId))
+                    )
+                )
+                .map(q => String(q.id)),
+        ])).filter(quizId => {
+            const quiz = findByEntityId(quizList, quizId);
+            return quiz ? canStudentSeeQuiz(quiz) : false;
+        });
         const completedLessonCount = lessonIds.filter(lessonId => completedLessons.includes(String(lessonId))).length;
         const completedQuizCount = quizIds.filter(quizId =>
             examResults.some(result => String(result.quizId || '') === String(quizId)),
