@@ -48,10 +48,10 @@ check('student analytics view-model preserves performance and aggregation semant
   assertIncludes(analytics, "worstSubject: { name: 'تحتاج متابعة', score: averageScore }");
   assertIncludes(analytics, "displayText(result.quizTitle).replace('اختبار ', '').replace('الوحدة الأولى', 'أساسيات')");
   assertIncludes(analytics, 'export const buildStudentAggregatedSkills = ({');
-  assertIncludes(analytics, 'skillsMap[skillKey].totalMastery += skill.mastery');
-  assertIncludes(analytics, 'skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0');
-  assertIncludes(analytics, 'correctAttempts: Math.round((mastery / 100) * data.count)');
-  assertIncludes(analytics, 'isReliable: data.count >= minSkillEvidence');
+  assertIncludes(analytics, 'row.weightedMasteryTotal += mastery * evidenceCount');
+  assertIncludes(analytics, 'row.weightedMasteryTotal += mastery');
+  assertIncludes(analytics, 'correctAttempts: Math.round(data.correctEvidence)');
+  assertIncludes(analytics, 'isReliable: data.evidenceCount >= minSkillEvidence');
   assertIncludes(analytics, ".sort((a, b) => a.mastery - b.mastery)");
 });
 
@@ -84,7 +84,7 @@ check('student analytics and evidence view-models are deterministic and runtime-
 check('source contracts keep the stable student analytics facade while evidence has separate ownership', () => {
   assertIncludes(reportsRole, "../pages/Reports/studentAnalyticsViewModel.ts");
   assertIncludes(globalJourney, "../pages/Reports/studentAnalyticsViewModel.ts");
-  assertIncludes(performance, "assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.count >= minSkillEvidence');");
+  assertIncludes(performance, "assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.evidenceCount >= minSkillEvidence');");
   assertNotIncludes(performance, "assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');");
 });
 
