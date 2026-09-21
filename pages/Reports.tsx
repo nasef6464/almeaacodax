@@ -40,9 +40,10 @@ import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
 import { StudentWeeklyPlanPanel } from './Reports/StudentWeeklyPlanPanel';
 import { StudentSmartRemediationPanel } from './Reports/StudentSmartRemediationPanel';
 import { StudentSelectedSkillPanel } from './Reports/StudentSelectedSkillPanel';
+import { StudentMasteryGoalsPanel, type StudentMasteryGoal } from './Reports/StudentMasteryGoalsPanel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
-import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
+import { buildStudentReadinessDecision, type ServerReadinessSnapshot, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
 import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
@@ -122,6 +123,10 @@ const Reports: React.FC = () => {
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
     const [selectedFollowUpQuizId, setSelectedFollowUpQuizId] = useState<string>('all');
+    const [studentServerReadiness, setStudentServerReadiness] = useState<ServerReadinessSnapshot | null>(null);
+    const [studentMasteryGoals, setStudentMasteryGoals] = useState<StudentMasteryGoal[]>([]);
+    const [studentMasteryGoalsLoading, setStudentMasteryGoalsLoading] = useState(false);
+    const [studentMasteryGoalSaving, setStudentMasteryGoalSaving] = useState(false);
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -268,6 +273,49 @@ const Reports: React.FC = () => {
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
     const studentTodayFocus = studentWeeklyPlan[0] || null;
+    useEffect(() => {
+        let cancelled = false;
+        if (!isStudentView || !studentTodayFocus?.pathId) {
+            setStudentServerReadiness(null);
+            setStudentMasteryGoals([]);
+            return () => { cancelled = true; };
+        }
+
+        setStudentMasteryGoalsLoading(true);
+        Promise.all([
+            api.getMasteryReadiness({
+                pathId: studentTodayFocus.pathId,
+                ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+            }),
+            api.getMasteryGoals({
+                pathId: studentTodayFocus.pathId,
+                ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+                status: 'active',
+            }),
+        ])
+            .then(([readinessResponse, goalsResponse]) => {
+                if (cancelled) return;
+                setStudentServerReadiness(readinessResponse.readiness);
+                setStudentMasteryGoals(Array.isArray(goalsResponse.goals) ? goalsResponse.goals : []);
+            })
+            .catch(() => {
+                if (cancelled) return;
+                setStudentServerReadiness(null);
+                setStudentMasteryGoals([]);
+            })
+            .finally(() => {
+                if (!cancelled) setStudentMasteryGoalsLoading(false);
+            });
+
+        return () => { cancelled = true; };
+    }, [
+        isStudentView,
+        studentTodayFocus?.pathId,
+        studentTodayFocus?.subjectId,
+        studentTodayFocus?.skillId,
+        studentTodayFocus?.attempts,
+        studentTodayFocus?.mastery,
+    ]);
     const studentQuickActions = useMemo(
         () => buildStudentQuickActions(studentTodayFocus),
         [studentTodayFocus],
@@ -284,14 +332,64 @@ const Reports: React.FC = () => {
         };
     }, [studentQuickActions, studentTodayFocus]);
     const studentReadinessDecision = useMemo(() => {
-        const decision = buildStudentReadinessDecision(isStudentView, studentTodayFocus);
+        const decision = buildStudentReadinessDecision(isStudentView, studentTodayFocus, studentServerReadiness);
         if (!decision) return null;
 
         return {
             ...decision,
             Icon: studentReadinessIcons[decision.iconKey],
         };
-    }, [isStudentView, studentTodayFocus]);
+    }, [isStudentView, studentServerReadiness, studentTodayFocus]);
+    const refreshStudentMasteryGoals = async () => {
+        if (!studentTodayFocus?.pathId) return;
+        const response = await api.getMasteryGoals({
+            pathId: studentTodayFocus.pathId,
+            ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+            status: 'active',
+        });
+        setStudentMasteryGoals(Array.isArray(response.goals) ? response.goals : []);
+    };
+
+    const createStudentMasteryGoal = async (horizon: 'short' | 'long') => {
+        if (!studentTodayFocus?.pathId || studentMasteryGoalSaving) return;
+        setStudentMasteryGoalSaving(true);
+        try {
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + (horizon === 'short' ? 14 : 60));
+            const shortTargetId = studentTodayFocus.sectionId || studentTodayFocus.pathId;
+            const shortTargetType = studentTodayFocus.sectionId ? 'section' : 'path';
+            await api.createMasteryGoal({
+                pathId: studentTodayFocus.pathId,
+                subjectId: studentTodayFocus.subjectId,
+                targetType: horizon === 'short' ? shortTargetType : 'path',
+                targetId: horizon === 'short' ? shortTargetId : studentTodayFocus.pathId,
+                title: horizon === 'short'
+                    ? `إتقان ${displayText(studentTodayFocus.skill) || 'المهارة الحالية'}`
+                    : `إتقان مسار ${studentTrackLabel || 'التعلم الحالي'}`,
+                targetMastery: 90,
+                horizon,
+                dueDate: dueDate.toISOString().slice(0, 10),
+            });
+            await refreshStudentMasteryGoals();
+        } finally {
+            setStudentMasteryGoalSaving(false);
+        }
+    };
+
+    const updateStudentMasteryGoalStatus = async (
+        goalId: string,
+        status: 'achieved' | 'archived',
+    ) => {
+        if (studentMasteryGoalSaving) return;
+        setStudentMasteryGoalSaving(true);
+        try {
+            await api.updateMasteryGoal(goalId, { status });
+            await refreshStudentMasteryGoals();
+        } finally {
+            setStudentMasteryGoalSaving(false);
+        }
+    };
+
     const compactStudentSkillRows = useMemo(
         () => buildStudentSkillReportRows(focusedReportSkills, {
             allSkills: skills,
@@ -2377,6 +2475,19 @@ const Reports: React.FC = () => {
                     </div>
                 ) : null}
             </div>
+
+            {isStudentView && (studentTodayFocus || studentMasteryGoals.length > 0) ? (
+                <StudentMasteryGoalsPanel
+                    goals={studentMasteryGoals}
+                    loading={studentMasteryGoalsLoading}
+                    saving={studentMasteryGoalSaving}
+                    canCreateShort={Boolean(studentTodayFocus?.pathId)}
+                    canCreateLong={Boolean(studentTodayFocus?.pathId)}
+                    onCreateShort={() => void createStudentMasteryGoal('short')}
+                    onCreateLong={() => void createStudentMasteryGoal('long')}
+                    onSetStatus={(goalId, status) => void updateStudentMasteryGoalStatus(goalId, status)}
+                />
+            ) : null}
 
             {studentAdaptiveLearningBridge && isStudentReportFull ? (
                 <Card className="p-4 sm:p-5 border border-violet-100 bg-white shadow-sm">
