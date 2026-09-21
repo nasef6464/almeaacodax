@@ -10,6 +10,7 @@ import { questionAttemptSchema } from "./submissionSchemas.js";
 import { buildQuestionAttemptDocument } from "../application/questionAttemptDocument.js";
 import { updateSkillProgressFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
+import { buildServerNextBestAction } from "../analytics/nextBestAction.js";
 
 export const adaptiveTelemetryRouter = Router();
 
@@ -35,6 +36,37 @@ adaptiveTelemetryRouter.get(
       skillProgress: items,
       pagination: buildPaginatedResponse([], pagination, total),
     });
+  }),
+);
+
+adaptiveTelemetryRouter.get(
+  "/next-best-action",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const pathId = String(req.query.pathId || "").trim();
+    const subjectId = String(req.query.subjectId || "").trim();
+    if (!pathId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "pathId is required" });
+    }
+
+    const rows = await SkillProgressModel.find({
+      userId: req.authUser!.id,
+      pathId,
+      ...(subjectId ? { subjectId } : {}),
+    })
+      .select("skillId skill pathId subjectId sectionId mastery status attempts evidenceCount lastAttemptAt recentEvidence")
+      .sort({ mastery: 1, lastAttemptAt: -1 })
+      .limit(100)
+      .lean();
+
+    const payload = buildServerNextBestAction(rows as any[], { pathId, ...(subjectId ? { subjectId } : {}) });
+    const etag = `"${payload.fingerprint}"`;
+    if (String(req.headers["if-none-match"] || "") === etag) {
+      return res.status(StatusCodes.NOT_MODIFIED).end();
+    }
+    res.setHeader("ETag", etag);
+    res.setHeader("Cache-Control", "private, max-age=30");
+    return res.json(payload);
   }),
 );
 
