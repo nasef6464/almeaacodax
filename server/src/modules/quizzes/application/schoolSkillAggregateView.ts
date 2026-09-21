@@ -44,8 +44,14 @@ export const buildSchoolSkillAggregateView = async (
     managedSubjectIds,
   } = await resolveScopedStudents(authUser, { limit: 1000 });
 
-  const studentIds = students.map(idOf).filter(Boolean);
-  const studentNameById = new Map(students.map((student: any) => [idOf(student), String(student.name || "طالب")]));
+  const eligibleStudents = students.filter((student: any) => {
+    const studentId = idOf(student);
+    if (query.studentId && studentId !== query.studentId) return false;
+    if (query.classId && !(student.groupIds || []).map(String).includes(query.classId)) return false;
+    return true;
+  });
+  const studentIds = eligibleStudents.map(idOf).filter(Boolean);
+  const studentNameById = new Map(eligibleStudents.map((student: any) => [idOf(student), String(student.name || "طالب")]));
   if (studentIds.length === 0) {
     return {
       status: "ok" as const,
@@ -69,12 +75,11 @@ export const buildSchoolSkillAggregateView = async (
     ...(query.pathId ? { pathId: query.pathId } : {}),
     ...(query.subjectId ? { subjectId: query.subjectId } : {}),
     ...(query.classId ? { classId: query.classId } : {}),
-    ...(query.studentId ? { userId: query.studentId } : {}),
     ...(query.skillId ? { skillId: query.skillId } : {}),
   };
   const managedClause = buildManagedScopeClause(String(authUser.role || ""), managedPathIds, managedSubjectIds);
   const match = managedClause ? { $and: [baseMatch, managedClause] } : baseMatch;
-  const sampledStudentCount = studentIds.length;
+  const sampledStudentCount = eligibleStudents.length;
 
   if (query.groupBy === "student") {
     const docs = await SchoolSkillAggregateModel.find(match)
