@@ -2,6 +2,7 @@ import type { LearningRecommendation, SkillGap } from '../types';
 import { buildFoundationActionLink, buildSkillRemediationActionLink } from '../utils/skillActionLinks';
 
 export type AdaptiveSkillSignal = SkillGap & {
+  topicId?: string;
   evidenceCount?: number;
   trend?: 'improving' | 'stable' | 'declining';
   lastAttemptAt?: string | number | Date;
@@ -20,6 +21,7 @@ const normalizeSignal = (skill: AdaptiveSkillSignal) => ({
   pathId: String(skill.pathId || ''),
   subjectId: String(skill.subjectId || ''),
   sectionId: String(skill.sectionId || ''),
+  topicId: String(skill.topicId || ''),
   skill: String(skill.skill || '').trim(),
   mastery: Math.max(0, Math.min(100, Number(skill.mastery || 0))),
   status: skill.status,
@@ -33,8 +35,8 @@ export const buildAdaptivePathFingerprint = (skills: AdaptiveSkillSignal[]) =>
     skills
       .map(normalizeSignal)
       .sort((a, b) =>
-        [a.pathId, a.subjectId, a.skillId, a.skill].join('|').localeCompare(
-          [b.pathId, b.subjectId, b.skillId, b.skill].join('|'),
+        [a.pathId, a.subjectId, a.skillId, a.topicId, a.skill].join('|').localeCompare(
+          [b.pathId, b.subjectId, b.skillId, b.topicId, b.skill].join('|'),
         ),
       ),
   );
@@ -55,7 +57,7 @@ const recommendationForSkill = (
   index: number,
 ): LearningRecommendation => {
   const skill = normalizeSignal(rawSkill);
-  const topicId = skill.skillId ? `topic_sub_${skill.skillId}` : undefined;
+  const topicId = skill.topicId || (skill.skillId ? `topic_sub_${skill.skillId}` : undefined);
   const scope = {
     pathId: skill.pathId || undefined,
     subjectId: skill.subjectId || undefined,
@@ -66,13 +68,17 @@ const recommendationForSkill = (
 
   const insufficientEvidence = skill.evidenceCount > 0 && skill.evidenceCount < 3;
   const usePractice = insufficientEvidence || index % 2 === 1;
-  const link = usePractice
-    ? buildSkillRemediationActionLink(scope, insufficientEvidence ? 5 : 7)
+  const link = insufficientEvidence
+    ? buildSkillRemediationActionLink(scope, 5)
       || buildFoundationActionLink(scope, 'quizzes')
       || '/reports'
-    : buildFoundationActionLink(scope, 'lessons')
-      || buildSkillRemediationActionLink(scope)
-      || '/reports';
+    : usePractice
+      ? buildFoundationActionLink(scope, 'quizzes')
+        || buildSkillRemediationActionLink(scope, 7)
+        || '/reports'
+      : buildFoundationActionLink(scope, 'lessons')
+        || buildSkillRemediationActionLink(scope)
+        || '/reports';
 
   return {
     id: `internal_${skill.skillId || index + 1}`,

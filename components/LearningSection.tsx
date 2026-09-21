@@ -15,6 +15,7 @@ import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScop
 import { getCourseAudienceCount } from '../utils/courseStats';
 import { api } from '../services/api';
 import { normalizeLearningTab, type LearningTab } from '../utils/learningSpaceTabs';
+import { resolveFoundationSkillTarget } from '../utils/foundationSkillTarget';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
 const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
@@ -480,9 +481,21 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     };
 
     const topicList = useStore(state => state.topics);
+    const skillList = useStore(state => state.skills);
     const quizList = useStore(state => state.quizzes);
-    const previewTopicId = searchParams.get('topic');
-    const previewTopic = previewTopicId ? findByEntityId(topicList, previewTopicId) || null : null;
+    const requestedFoundationSkillId = searchParams.get('skillId') || undefined;
+    const requestedFoundationTarget = requestedFoundationSkillId
+        ? resolveFoundationSkillTarget(
+            { skillId: requestedFoundationSkillId, pathId: category, subjectId: subject },
+            skillList,
+            topicList,
+        )
+        : null;
+    const previewTopicParam = searchParams.get('topic');
+    const previewTopic =
+        (previewTopicParam ? findByEntityId(topicList, previewTopicParam) || null : null) ||
+        (requestedFoundationTarget?.topicId ? findByEntityId(topicList, requestedFoundationTarget.topicId) || null : null);
+    const previewTopicId = previewTopic?.id || previewTopicParam;
     const previewParentTopic = previewTopic?.parentId
         ? findByEntityId(topicList, previewTopic.parentId) || previewTopic
         : previewTopic;
@@ -557,10 +570,18 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const requestedTab = searchParams.get('tab');
         if (requestedTab && requestedTab !== 'skills') return;
 
-        const previewTopicId = searchParams.get('topic');
-        if (!previewTopicId) return;
-
-        const requestedTopic = findByEntityId(topicList, previewTopicId);
+        const requestedTopicParam = searchParams.get('topic');
+        const requestedSkillId = searchParams.get('skillId') || undefined;
+        const fallbackTarget = requestedSkillId
+            ? resolveFoundationSkillTarget(
+                { skillId: requestedSkillId, pathId: category, subjectId: subject },
+                skillList,
+                topicList,
+            )
+            : null;
+        const requestedTopic =
+            (requestedTopicParam ? findByEntityId(topicList, requestedTopicParam) : null) ||
+            (fallbackTarget?.topicId ? findByEntityId(topicList, fallbackTarget.topicId) : null);
         if (!requestedTopic) return;
 
         const parentTopic = requestedTopic.parentId
@@ -612,7 +633,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             initialLessonId: requestedLessonId || null,
             trainingDone: hasReturnedFromFoundationTraining,
         });
-    }, [category, completedLessons, examResults, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, lockFoundationForSubject, quizList, searchParams, subject, topicList]);
+    }, [category, completedLessons, examResults, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, lockFoundationForSubject, quizList, searchParams, skillList, subject, topicList]);
 
     let banks = getLearningSlotQuizzes(
         quizzes.filter(isMaterialQuizCandidate),
