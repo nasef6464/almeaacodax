@@ -11,6 +11,7 @@ import { buildQuestionAttemptDocument } from "../application/questionAttemptDocu
 import { updateSkillProgressFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
 import { buildServerNextBestAction } from "../analytics/nextBestAction.js";
+import { buildScopedMasteryReadiness } from "../analytics/masteryReadiness.js";
 
 export const adaptiveTelemetryRouter = Router();
 
@@ -35,6 +36,32 @@ adaptiveTelemetryRouter.get(
     res.json({
       skillProgress: items,
       pagination: buildPaginatedResponse([], pagination, total),
+    });
+  }),
+);
+
+adaptiveTelemetryRouter.get(
+  "/mastery-readiness",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const pathId = String(req.query.pathId || "").trim();
+    const subjectId = String(req.query.subjectId || "").trim();
+    if (!pathId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "pathId is required" });
+    }
+
+    const rows = await SkillProgressModel.find({
+      userId: req.authUser!.id,
+      pathId,
+      ...(subjectId ? { subjectId } : {}),
+    })
+      .select("mastery evidenceCount attempts lastAttemptAt")
+      .limit(500)
+      .lean();
+
+    return res.json({
+      scope: { pathId, ...(subjectId ? { subjectId } : {}) },
+      readiness: buildScopedMasteryReadiness(rows as any[]),
     });
   }),
 );
