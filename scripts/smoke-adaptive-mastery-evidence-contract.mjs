@@ -52,7 +52,7 @@ check('quiz and single-question progress use the shared evidence merge', () => {
 });
 
 check('legacy progress remains backward compatible', () => {
-  assert.ok(sideEffects.includes('existing?.evidenceCount || existing?.attempts || 0'));
+  assert.ok(sideEffects.includes('existingRow?.evidenceCount || existingRow?.attempts || 0'));
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
