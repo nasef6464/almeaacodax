@@ -11,7 +11,7 @@ import { buildPaginatedResponse, resolvePagination } from "../../../utils/pagina
 import { questionAttemptSchema } from "./submissionSchemas.js";
 import { createMasteryGoalSchema, updateMasteryGoalSchema } from "./masteryGoalSchemas.js";
 import { buildQuestionAttemptDocument } from "../application/questionAttemptDocument.js";
-import { updateSkillProgressFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
+import { updateSkillProgressFromQuestionAttempt, upsertReviewCardFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
 import { resolveScopedStudents } from "../application/quizReportScope.js";
 import { buildServerNextBestAction } from "../analytics/nextBestAction.js";
@@ -216,7 +216,14 @@ adaptiveTelemetryRouter.post(
       userId: req.authUser!.id,
       question,
     }));
-    await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);
+    await Promise.all([
+      updateSkillProgressFromQuestionAttempt(created, req.authUser!.id),
+      upsertReviewCardFromQuestionAttempt({
+        userId: req.authUser!.id,
+        attempt: created,
+        question,
+      }),
+    ]);
 
     res.status(StatusCodes.CREATED).json(created);
   }),
