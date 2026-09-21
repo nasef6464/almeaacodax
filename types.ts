@@ -332,6 +332,7 @@ export interface SkillProgress {
     status: 'weak' | 'average' | 'good' | 'mastered';
     attempts: number;
     evidenceCount?: number;
+    recentEvidenceKeys?: string[];
     lastQuizId?: string;
     lastQuizTitle?: string;
     lastAttemptAt?: string;
