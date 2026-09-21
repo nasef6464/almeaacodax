@@ -1,6 +1,8 @@
 ﻿import fs from "node:fs";
 
 const source = fs.readFileSync("server/src/routes/content.routes.ts", "utf8");
+const learningRouteSource = fs.readFileSync("server/src/modules/content/http/contentLearningRoutes.ts", "utf8");
+const learningWorkflowSource = fs.readFileSync("server/src/modules/content/application/learningContentWorkflow.ts", "utf8");
 
 const checks = [];
 const add = (name, fn) => checks.push({ name, fn });
@@ -12,8 +14,12 @@ const assertIncludes = (snippet, message) => {
 };
 
 add("adds topic scope guard helper", () => {
-  assertIncludes("const hasTopicManagementScope = (", "Missing topic scope helper");
-  assertIncludes("You do not have access to this topic", "Missing topic forbidden response");
+  if (!learningWorkflowSource.includes("export const hasTopicManagementScope = (")) {
+    throw new Error("Missing topic scope helper");
+  }
+  if (!learningRouteSource.includes("You do not have access to this topic")) {
+    throw new Error("Missing topic forbidden response");
+  }
 });
 
 add("adds group scope guard helper", () => {

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const routeSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentBootstrapRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/contentBootstrapRequest.ts'), 'utf8').replace(/\r\n/g, '\n');
 const checks = [];
 const check = (name, assertion) => {
@@ -12,11 +12,12 @@ const check = (name, assertion) => {
 };
 
 check('bootstrap request policy is delegated while route retains parsing and cache IO', () => {
-  assert.ok(routeSource.includes('import { resolveContentBootstrapRequest } from "../modules/content/application/contentBootstrapRequest.js";'));
+  assert.ok(routeSource.includes('from "../application/contentBootstrapRequest.js";'));
   assert.ok(routeSource.includes('const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);'));
   assert.ok(routeSource.includes('} = resolveContentBootstrapRequest({'));
-  assert.ok(routeSource.includes('contentBootstrapCache.get(cacheKey)'));
-  assert.ok(routeSource.includes('contentBootstrapPromises.get(cacheKey)'));
+  assert.ok(routeSource.includes('resolveContentBootstrapCache({'));
+  assert.ok(routeSource.includes('cache: contentBootstrapCache'));
+  assert.ok(routeSource.includes('pending: contentBootstrapPromises'));
   assert.ok(!routeSource.includes('const isNonStaffAuthedLearning ='));
 });
 

@@ -6,7 +6,8 @@ import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../../utils/questionHtml';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 import { api } from '../../services/api';
-import type { QuestionBankCoverage, QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
+import type { QuestionUsageMetric } from '../../services/apiGroups/questionsApi';
+import { useQuestionBankCatalogData } from './questionBank/useQuestionBankCatalogData';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -30,15 +31,6 @@ type PendingImportBatch = {
   importedQuestions: Question[];
   rowErrors: string[];
   previewRows: ImportPreviewRow[];
-};
-
-type QuestionPaginationMeta = {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
 };
 
 const normalizeLookup = (value?: string) =>
@@ -205,19 +197,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [isLoadingEditQuestion, setIsLoadingEditQuestion] = useState(false);
   const [editorLoadError, setEditorLoadError] = useState<string | null>(null);
   const [generateAiDraftOnOpen, setGenerateAiDraftOnOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isImporting, setIsImporting] = useState(false);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSummary, setImportSummary] = useState<{ imported: number; failed: number; samples: string[] } | null>(null);
   const [pendingImportBatch, setPendingImportBatch] = useState<PendingImportBatch | null>(null);
   const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
-  const [pagedQuestions, setPagedQuestions] = useState<Question[] | null>(null);
-  const [pagedPagination, setPagedPagination] = useState<QuestionPaginationMeta | null>(null);
-  const [questionBankCoverage, setQuestionBankCoverage] = useState<QuestionBankCoverage | null>(null);
-  const [pagedQuestionsError, setPagedQuestionsError] = useState<string | null>(null);
-  const [isLoadingPagedQuestions, setIsLoadingPagedQuestions] = useState(false);
-  const [questionsRefreshKey, setQuestionsRefreshKey] = useState(0);
   const [questionUsageById, setQuestionUsageById] = useState<Record<string, QuestionUsageMetric>>({});
   const [isLoadingQuestionUsage, setIsLoadingQuestionUsage] = useState(false);
   const [questionUsageError, setQuestionUsageError] = useState<string | null>(null);
@@ -288,83 +273,29 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     [questions, searchTerm],
   );
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, skillLinkFilter, searchTerm, subjectId, selectedDifficulty, videoFilter, explanationFilter]);
+  const {
+    currentPage,
+    setCurrentPage,
+    pagedPagination,
+    questionBankCoverage,
+    pagedQuestionsError,
+    isLoadingPagedQuestions,
+    displayedQuestions,
+    refreshPagedQuestions,
+  } = useQuestionBankCatalogData({
+    subjectId,
+    selectedPathId,
+    selectedSubjectId,
+    selectedSectionId,
+    selectedSkillId,
+    skillLinkFilter,
+    searchTerm,
+    selectedDifficulty,
+    videoFilter,
+    explanationFilter,
+    fallbackQuestions: filteredQuestions,
+  });
 
-  useEffect(() => {
-    let active = true;
-    const loadPagedQuestions = async () => {
-      setIsLoadingPagedQuestions(true);
-      setPagedQuestionsError(null);
-      try {
-        const response = await api.getQuestionsPaginated({
-          page: currentPage,
-          limit: 100,
-          summary: true,
-          pathId: selectedPathId || undefined,
-          subject: (subjectId || selectedSubjectId) || undefined,
-          sectionId: selectedSectionId || undefined,
-          skillId: selectedSkillId || undefined,
-          skillLinkStatus: skillLinkFilter === 'all' ? undefined : skillLinkFilter,
-          search: searchTerm || undefined,
-          difficulty: selectedDifficulty || undefined,
-          videoStatus: videoFilter === 'all' ? undefined : (videoFilter === 'with_video' ? 'with' : 'without'),
-          explanationStatus: explanationFilter === 'all' ? undefined : explanationFilter,
-          includeCoverage: true,
-        });
-
-        if (!active) return;
-        setPagedQuestions(Array.isArray(response?.data) ? (response.data as Question[]) : []);
-        setPagedPagination(response?.pagination || null);
-        setQuestionBankCoverage(response?.coverage || null);
-      } catch (error) {
-        if (!active) return;
-        setPagedQuestions(null);
-        setPagedPagination(null);
-        setQuestionBankCoverage(null);
-        setPagedQuestionsError(error instanceof Error ? error.message : 'تعذر تحميل الأسئلة المرقمة الآن.');
-      } finally {
-        if (active) {
-          setIsLoadingPagedQuestions(false);
-        }
-      }
-    };
-
-    void loadPagedQuestions();
-    return () => {
-      active = false;
-    };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, skillLinkFilter, subjectId, selectedDifficulty, videoFilter, explanationFilter, questionsRefreshKey]);
-
-  const displayedQuestions = useMemo(() => {
-    const base = pagedQuestions ?? filteredQuestions;
-    return base.filter((question) => {
-      if (videoFilter === 'with_video' && !Boolean(question.videoUrl && String(question.videoUrl).trim())) {
-        return false;
-      }
-      if (videoFilter === 'without_video' && Boolean(question.videoUrl && String(question.videoUrl).trim())) {
-        return false;
-      }
-      if (explanationFilter === 'with' && !String(question.explanation || '').trim()) {
-        return false;
-      }
-      if (explanationFilter === 'without' && String(question.explanation || '').trim()) {
-        return false;
-      }
-      if (skillLinkFilter === 'linked' && !(question.skillIds || []).length) {
-        return false;
-      }
-      if (skillLinkFilter === 'unlinked' && (question.skillIds || []).length > 0) {
-        return false;
-      }
-      if (selectedDifficulty && question.difficulty !== selectedDifficulty) {
-        return false;
-      }
-      return true;
-    });
-  }, [pagedQuestions, filteredQuestions, videoFilter, selectedDifficulty, skillLinkFilter, explanationFilter]);
-  const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
 
   useEffect(() => {
     let active = true;
@@ -417,17 +348,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const questionCoverageSummary = useMemo(() => {
     if (questionBankCoverage) return questionBankCoverage;
 
-    const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
-    const subSkillCount = new Set(displayedQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
-    const pendingCount = displayedQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
-    const approvedCount = displayedQuestions.filter((question) => question.approvalStatus === 'approved').length;
-
     return {
       total: pagedPagination?.total ?? displayedQuestions.length,
-      mainSkillCount,
-      subSkillCount,
-      pendingCount,
-      approvedCount,
+      mainSkillCount: null,
+      subSkillCount: null,
+      pendingCount: null,
+      approvedCount: null,
     };
   }, [displayedQuestions, pagedPagination?.total, questionBankCoverage]);
 
@@ -1285,15 +1211,15 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
           <p className="text-xs font-black text-indigo-700">المهارات الرئيسية المغطاة بالأسئلة</p>
-          <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount}</p>
+          <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount ?? '—'}</p>
         </div>
         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
           <p className="text-xs font-black text-emerald-700">المهارات الفرعية المغطاة بالأسئلة</p>
-          <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount}</p>
+          <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount ?? '—'}</p>
         </div>
         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
           <p className="text-xs font-black text-amber-700">بانتظار المراجعة</p>
-          <p className="mt-2 text-2xl font-black text-amber-800">{questionCoverageSummary.pendingCount}</p>
+          <p className="mt-2 text-2xl font-black text-amber-800">{questionCoverageSummary.pendingCount ?? '—'}</p>
         </div>
       </div>
 

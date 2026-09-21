@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const contentRoute = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const learningRoute = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentLearningRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const operationsRoute = fs.readFileSync(path.join(root, 'server/src/routes/operations.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/content/domain/learningResourceUrl.ts'), 'utf8').replace(/\r\n/g, '\n');
 const checks = [];
@@ -13,11 +13,11 @@ const check = (name, assertion) => {
 };
 
 check('content and operations routes delegate the same URL normalization', () => {
-  assert.ok(contentRoute.includes('import { sanitizeLessonResourcePayload } from "../modules/content/domain/learningResourceUrl.js";'));
-  assert.ok(contentRoute.includes('const sanitizeLessonPayload = sanitizeLessonResourcePayload;'));
+  assert.ok(learningRoute.includes('import { sanitizeLessonResourcePayload } from "../domain/learningResourceUrl.js";'));
+  assert.ok(learningRoute.includes('const sanitizeLessonPayload = sanitizeLessonResourcePayload;'));
   assert.ok(operationsRoute.includes('import { sanitizeLearningResourceUrl } from "../modules/content/domain/learningResourceUrl.js";'));
   assert.ok(operationsRoute.includes('sanitizeLearningResourceUrl(lesson?.videoUrl)'));
-  assert.ok(!contentRoute.includes('const sanitizeVideoUrl ='));
+  assert.ok(!learningRoute.includes('const sanitizeVideoUrl ='));
   assert.ok(!operationsRoute.includes('const sanitizeVideoUrl ='));
 });
 

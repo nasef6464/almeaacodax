@@ -4,26 +4,36 @@ import path from 'node:path';
 
 const root = process.cwd();
 const routeFile = 'server/src/routes/content.routes.ts';
+const presentationRouteFile = 'server/src/modules/content/http/contentPresentationRoutes.ts';
 const defaultsFile = 'server/src/modules/content/presentation/platformPresentationDefaults.ts';
 const integrationDefaultsFile = 'server/src/modules/content/integrations/platformIntegrationDefaults.ts';
+const integrationRouteFile = 'server/src/modules/content/http/contentPlatformIntegrationRoutes.ts';
+const integrationRuntimeFile = 'server/src/modules/content/integrations/platformIntegrationRuntime.ts';
 const homepageContractFile = 'scripts/smoke-homepage-hero-contract.mjs';
 const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
+const presentationRouteSource = fs.readFileSync(path.join(root, presentationRouteFile), 'utf8').replace(/\r\n/g, '\n');
 const homepageContractSource = fs.readFileSync(path.join(root, homepageContractFile), 'utf8').replace(/\r\n/g, '\n');
 const defaultsExists = fs.existsSync(path.join(root, defaultsFile));
 const defaultsSource = defaultsExists ? fs.readFileSync(path.join(root, defaultsFile), 'utf8').replace(/\r\n/g, '\n') : '';
+const integrationRouteSource = fs.readFileSync(path.join(root, integrationRouteFile), 'utf8').replace(/\r\n/g, '\n');
+const integrationRuntimeSource = fs.readFileSync(path.join(root, integrationRuntimeFile), 'utf8').replace(/\r\n/g, '\n');
 const integrationDefaultsExists = fs.existsSync(path.join(root, integrationDefaultsFile));
 const integrationDefaultsSource = integrationDefaultsExists
   ? fs.readFileSync(path.join(root, integrationDefaultsFile), 'utf8').replace(/\r\n/g, '\n')
   : '';
 const lineCount = (source) => source.split(/\r?\n/).length;
 
-const defaultsImport = 'import { defaultHomepageSettings, defaultPlatformFontSettings } from "../modules/content/presentation/platformPresentationDefaults.js";';
-const integrationDefaultsImport = 'import { defaultPlatformIntegrationSettings } from "../modules/content/integrations/platformIntegrationDefaults.js";';
+const defaultsImport = 'from "../presentation/platformPresentationDefaults.js";';
+const integrationDefaultsImport = 'from "../integrations/platformIntegrationDefaults.js";';
 const homepageDeclaration = 'const defaultHomepageSettings = {';
 const fontDeclaration = 'const defaultPlatformFontSettings = {';
 const integrationDefaultsDeclaration = 'const defaultPlatformIntegrationSettings = {';
-const delegated = routeSource.includes(defaultsImport);
-const integrationDefaultsDelegated = routeSource.includes(integrationDefaultsImport);
+const delegated =
+  routeSource.includes('contentRouter.use(contentPresentationRouter);') &&
+  presentationRouteSource.includes(defaultsImport);
+const integrationDefaultsDelegated =
+  routeSource.includes('contentRouter.use(contentPlatformIntegrationRouter);') &&
+  integrationRouteSource.includes(integrationDefaultsImport);
 const ownerSource = delegated ? defaultsSource : routeSource;
 const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
 const newHomepageOwnerAssertion = `assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
@@ -90,7 +100,7 @@ check('homepage and platform-font HTTP behavior remains route-owned', () => {
     'requireRole(["admin"])',
     '"/homepage-settings"',
     '"/platform-font-settings"',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost presentation HTTP behavior: ${fragment}`);
+  ]) assert.ok(presentationRouteSource.includes(fragment), `presentation route lost HTTP behavior: ${fragment}`);
 });
 
 check('presentation defaults module remains data-only and bounded after delegation', () => {
@@ -111,7 +121,8 @@ check('integration defaults keep their own owner and never cross into presentati
       integrationDefaultsSource.includes('export const defaultPlatformIntegrationSettings = {'),
       'delegated integration defaults export is missing',
     );
-    assert.ok(!routeSource.includes(integrationDefaultsDeclaration), 'route retained integration defaults after dedicated delegation');
+    assert.ok(!routeSource.includes(integrationDefaultsDeclaration), 'root route retained integration defaults after dedicated delegation');
+    assert.ok(!integrationRouteSource.includes(integrationDefaultsDeclaration), 'integration route retained local integration defaults after delegation');
   } else {
     assert.ok(routeSource.includes(integrationDefaultsDeclaration), 'pre-integration-delegation route lost integration defaults');
   }
@@ -119,15 +130,19 @@ check('integration defaults keep their own owner and never cross into presentati
 
 check('security and runtime ownership stays outside the presentation-default batch', () => {
   for (const fragment of [
-    'const sanitizeAndValidateExternalPlatforms =',
     'const hasSchoolIdManagementScope = async (',
     'const buildScopedGroupCreatePayload = async (',
+  ]) assert.ok(routeSource.includes(fragment), `content route lost school security ownership: ${fragment}`);
+  for (const fragment of [
+    'export const sanitizeAndValidateExternalPlatforms =',
     'const SENSITIVE_PROVIDER_FIELDS =',
-    'const maskSensitiveProviderValues =',
-    'const mergeSensitiveProviderValues =',
+    'export const maskSensitiveProviderValues =',
+    'export const mergeSensitiveProviderValues =',
+  ]) assert.ok(integrationRuntimeSource.includes(fragment), `integration runtime lost security ownership: ${fragment}`);
+  for (const fragment of [
     'decryptIntegrationSecretsForRuntime',
     'encryptIntegrationSecretsAtRest',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost security/runtime ownership: ${fragment}`);
+  ]) assert.ok(integrationRouteSource.includes(fragment), `integration route lost crypto ownership: ${fragment}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
@@ -137,6 +152,7 @@ console.log(JSON.stringify({
   delegated,
   integrationDefaultsDelegated,
   routeLines: lineCount(routeSource),
+  presentationRouteLines: lineCount(presentationRouteSource),
   defaultsLines: defaultsExists ? lineCount(defaultsSource) : 0,
   checks,
 }, null, 2));

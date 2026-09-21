@@ -147,6 +147,8 @@ export const UsersManager: React.FC = () => {
     const [usersLoadError, setUsersLoadError] = useState('');
     const [activeActionsUserId, setActiveActionsUserId] = useState<string | null>(null);
     const [allStudentsForLinking, setAllStudentsForLinking] = useState<User[]>([]);
+    const [hasLoadedStudentsForLinking, setHasLoadedStudentsForLinking] = useState(false);
+    const [isLoadingStudentsForLinking, setIsLoadingStudentsForLinking] = useState(false);
     const [createError, setCreateError] = useState('');
     const [relationshipActionUserId, setRelationshipActionUserId] = useState<string | null>(null);
     const [relationshipActionError, setRelationshipActionError] = useState('');
@@ -290,29 +292,52 @@ export const UsersManager: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        const editedUser = editingUserId ? pageUsers.find((user) => user.id === editingUserId) : null;
+        const needsParentCandidates = newUser.role === Role.PARENT || editedUser?.role === Role.PARENT;
+        if (!needsParentCandidates || hasLoadedStudentsForLinking || isLoadingStudentsForLinking) return;
+
         let isMounted = true;
-        const loadAllStudentsForLinking = async () => {
+        const loadStudentsForLinking = async () => {
+            setIsLoadingStudentsForLinking(true);
             try {
                 const firstPage = await api.getAdminUsers({ role: Role.STUDENT, page: 1, limit: 100 });
-                const firstPageUsers = (firstPage.users || []).map(buildStoreUser).filter((user) => user.role === Role.STUDENT);
+                const combined = (firstPage.users || []).map(buildStoreUser).filter((user) => user.role === Role.STUDENT);
                 const totalPages = Math.max(1, Number(firstPage.pagination?.totalPages || 1));
-                const nextPages = Array.from({ length: totalPages - 1 }, (_, index) => index + 2);
-                const remaining = await Promise.all(nextPages.map((page) => api.getAdminUsers({ role: Role.STUDENT, page, limit: 100 })));
-                const combined = [
-                    ...firstPageUsers,
-                    ...remaining.flatMap((response) => (response.users || []).map(buildStoreUser).filter((user) => user.role === Role.STUDENT)),
-                ];
-                if (isMounted) setAllStudentsForLinking(combined);
+                const batchSize = 4;
+
+                for (let startPage = 2; startPage <= totalPages; startPage += batchSize) {
+                    const pageNumbers = Array.from(
+                        { length: Math.min(batchSize, totalPages - startPage + 1) },
+                        (_, index) => startPage + index,
+                    );
+                    const batch = await Promise.all(
+                        pageNumbers.map((page) => api.getAdminUsers({ role: Role.STUDENT, page, limit: 100 })),
+                    );
+                    batch.forEach((response) => {
+                        combined.push(
+                            ...(response.users || []).map(buildStoreUser).filter((user) => user.role === Role.STUDENT),
+                        );
+                    });
+                    if (!isMounted) return;
+                }
+
+                if (isMounted) {
+                    setAllStudentsForLinking(combined);
+                    setHasLoadedStudentsForLinking(true);
+                }
             } catch (error) {
                 if (isMounted) {
                     console.error('Failed to load students list for parent linking:', error);
                     setAllStudentsForLinking([]);
                 }
+            } finally {
+                if (isMounted) setIsLoadingStudentsForLinking(false);
             }
         };
-        void loadAllStudentsForLinking();
+
+        void loadStudentsForLinking();
         return () => { isMounted = false; };
-    }, []);
+    }, [editingUserId, hasLoadedStudentsForLinking, isLoadingStudentsForLinking, newUser.role, pageUsers]);
 
     const handleSearchTermChange = (value: string) => {
         setUsersPage(1);

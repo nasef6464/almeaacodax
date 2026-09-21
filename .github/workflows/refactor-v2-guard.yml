@@ -111,6 +111,27 @@ jobs:
       - name: Student group membership boundary contract
         run: node scripts/smoke-student-group-membership-boundary-contract.mjs
 
+      - name: Question and skill full coverage contract
+        run: node scripts/smoke-question-skill-full-coverage-contract.mjs
+
+      - name: Question bank HTTP boundary contract
+        run: node scripts/smoke-question-bank-http-boundary-contract.mjs
+
+      - name: Adaptive skill progress performance contract
+        run: node scripts/smoke-adaptive-skill-progress-performance-contract.mjs
+
+      - name: Adaptive telemetry HTTP boundary contract
+        run: node scripts/smoke-adaptive-telemetry-http-boundary-contract.mjs
+
+      - name: Adaptive mastery evidence contract
+        run: node scripts/smoke-adaptive-mastery-evidence-contract.mjs
+
+      - name: Catalog bootstrap performance contract
+        run: node scripts/smoke-catalog-bootstrap-performance-contract.mjs
+
+      - name: Admin users linking performance contract
+        run: node scripts/smoke-admin-users-linking-performance-contract.mjs
+
       - name: Content learning schema boundary contract
         run: node scripts/smoke-content-learning-schema-boundary-contract.mjs
 

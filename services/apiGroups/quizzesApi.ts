@@ -31,7 +31,7 @@ export interface SubmitQuizPayload {
 
 export const createQuizzesApi = (request: ApiRequest) => ({
   getQuizzes: async (pagination: PaginationOptions = {}) =>
-    extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, ...pagination })), "quizzes"),
+    extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, noTotal: true, ...pagination })), "quizzes"),
 
   getQuizAnalyticsOverview: (pagination: PaginationOptions = {}) =>
     request<unknown>(withQuery("/quizzes/analytics/overview", { studentLimit: 500, resultLimit: 2000, attemptLimit: 3000, ...pagination })),
@@ -91,7 +91,7 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
 
-  getSkillProgress: async (pagination: PaginationOptions = {}) =>
+  getSkillProgress: async (pagination: PaginationOptions & { noTotal?: boolean } = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
 
   getQuestionAttempts: async (pagination: PaginationOptions = {}) =>

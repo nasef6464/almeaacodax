@@ -19,14 +19,15 @@ const files = {
   questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
   liveQuestionEditorAudit: await read("scripts/live-question-editor-audit.mjs"),
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
+  questionBankRoutes: await read("server/src/modules/quizzes/http/questionBankRoutes.ts"),
   questionPresentation: await read("server/src/modules/quizzes/presentation/questionPresentation.ts"),
   styles: await read("styles/main.css"),
 };
 
-const questionPresentationImport = 'import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";';
-const questionSummaryOwner = files.quizRoutes.includes(questionPresentationImport)
+const questionPresentationImport = 'import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";';
+const questionSummaryOwner = files.questionBankRoutes.includes(questionPresentationImport)
   ? files.questionPresentation
-  : files.quizRoutes;
+  : files.questionBankRoutes;
 
 const checks = [];
 
@@ -94,13 +95,13 @@ check("question summary API keeps one inline media preview for admin lists", () 
   assertIncludes(questionSummaryOwner, "<svg\\b[\\s\\S]*?<\\/svg>");
   assertIncludes(questionSummaryOwner, "<table\\b[\\s\\S]*?<\\/table>");
   assertIncludes(questionSummaryOwner, "<p>${escapeHtml(summaryText)}</p>");
-  assertIncludes(files.quizRoutes, "options correctOptionIndex explanation videoUrl");
-  assertIncludes(files.quizRoutes, "toQuestionSummaryText(item.text)");
+  assertIncludes(files.questionBankRoutes, "options correctOptionIndex explanation videoUrl");
+  assertIncludes(files.questionBankRoutes, "toQuestionSummaryText(item.text)");
 });
 
 check("question builder keeps MCQ options when editing summary rows", () => {
   assertIncludes(files.questionBank, 'data-testid="question-row-edit"');
-  assertIncludes(files.quizRoutes, "options correctOptionIndex explanation videoUrl");
+  assertIncludes(files.questionBankRoutes, "options correctOptionIndex explanation videoUrl");
   assertIncludes(files.unifiedQuestionBuilder, "normalizeQuestionForEditing");
   assertIncludes(files.unifiedQuestionBuilder, "data-testid=\"question-builder-modal\"");
   assertIncludes(files.unifiedQuestionBuilder, "max-w-6xl");

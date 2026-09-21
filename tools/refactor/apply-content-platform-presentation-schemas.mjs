@@ -21,7 +21,10 @@ const localDeclarations = [
   'const homepageSettingsSchema = z.object({',
 ];
 
-const alreadyApplied = source.includes(schemaImport) && localDeclarations.every((declaration) => !source.includes(declaration));
+const delegatedPresentation = source.includes('contentRouter.use(contentPresentationRouter);');
+const alreadyApplied =
+  (source.includes(schemaImport) || delegatedPresentation) &&
+  localDeclarations.every((declaration) => !source.includes(declaration));
 if (alreadyApplied) {
   console.log(JSON.stringify({ status: 'ALREADY_APPLIED', phase: 'content-platform-presentation-schemas' }, null, 2));
   process.exit(0);

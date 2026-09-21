@@ -10,7 +10,6 @@ import { GroupModel } from "../models/Group.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { AccessGrantModel } from "../models/AccessGrant.js";
 import { CourseModel } from "../models/Course.js";
-import { SkillProgressModel } from "../models/SkillProgress.js";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
 import { SkillModel } from "../models/Skill.js";
 import { SubjectModel } from "../models/Subject.js";
@@ -19,16 +18,20 @@ import { TopicModel } from "../models/Topic.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
-import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
+import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
-import { recordAdminAuditLog } from "../services/adminAuditLog.js";
-import { dashboardAnalyticsQuerySchema, questionBaseSchema, questionListQuerySchema, questionSchema, quizResultsListQuerySchema } from "../modules/quizzes/http/questionQuerySchemas.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
-import { questionAttemptSchema, quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
-import { isQuestionContentUsable, sanitizeQuestionForLearner, toQuestionSummaryText } from "../modules/quizzes/presentation/questionPresentation.js";
-import { buildRecommendedAction, buildSkillStatus } from "../modules/quizzes/analytics/skillAnalytics.js";
-import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "../modules/quizzes/http/queryUtilities.js";
-import { runQuizSubmissionSideEffects, updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
+import { isQuestionContentUsable, sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
+import { clearQuestionBankSummaryCache, questionBankRouter } from "../modules/quizzes/http/questionBankRoutes.js";
+import { quizAnalyticsRouter } from "../modules/quizzes/http/quizAnalyticsRoutes.js";
+import { quizResultsRouter } from "../modules/quizzes/http/quizResultsRoutes.js";
+import { resolveScopedStudents, resolveSupervisorSchoolReportScope } from "../modules/quizzes/application/quizReportScope.js";
+import { resolveAuthUserByAuthId } from "../modules/quizzes/application/quizUserLookup.js";
+import { adaptiveTelemetryRouter } from "../modules/quizzes/http/adaptiveTelemetryRoutes.js";
+import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
+import { clearQuizResultsCache } from "../modules/quizzes/infrastructure/quizResultsCache.js";
+import { runQuizSubmissionSideEffects } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
 import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/quizPlacement.js";
 import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
@@ -38,7 +41,6 @@ import { processInlineQuestions } from "../modules/quizzes/application/quizInlin
 import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
 import { buildQuizValidationState } from "../modules/quizzes/application/quizValidationState.js";
-import { buildQuestionAttemptDocument } from "../modules/quizzes/application/questionAttemptDocument.js";
 import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";
 import { buildQuizQuestionLookup, resolveOrderedQuizQuestions } from "../modules/quizzes/application/quizSubmissionQuestions.js";
 import { buildQuizSubmissionScoreSummary } from "../modules/quizzes/application/quizSubmissionScoreSummary.js";
@@ -50,20 +52,11 @@ import { buildQuizSubmissionResultDocument } from "../modules/quizzes/applicatio
 import { resolveQuizSubmissionLearningContext } from "../modules/quizzes/application/quizSubmissionLearningContext.js";
 import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
-import { getQuestionBankCoverage } from "../modules/quizzes/application/questionBankCoverage.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
-import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
-import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "../modules/quizzes/application/quizSupervisorReportScope.js";
-import { buildQuizReportStudentScope } from "../modules/quizzes/application/quizReportStudentScope.js";
-import { buildQuizReportAttemptGaps } from "../modules/quizzes/application/quizReportAttemptGaps.js";
-import { quizSupervisorScopeRepository } from "../modules/quizzes/infrastructure/quizSupervisorScopeRepository.js";
+import { matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
 import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
-import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
-import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
-import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
-import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -72,21 +65,6 @@ import {
 } from "../services/managedContentScope.js";
 
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
-const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
-const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
-const QUIZ_RESULTS_CACHE_TTL_MS = 5 * 1000;
-const QUIZ_RESULTS_CACHE_MAX_ENTRIES = 300;
-
-const resolveCompatibleQuizResultList = async (results: Record<string, unknown>[]) => {
-  const legacyIds = results.map((result) => String(result.id || result._id || "")).filter(Boolean);
-  const quizIds = results.map((result) => String(result.quizId || "")).filter(Boolean);
-  const [assessmentResultsByLegacyId, readerModesByQuizId] = await Promise.all([
-    findAssessmentResultsByLegacyIds(legacyIds),
-    findAssessmentResultReaderModes(quizIds),
-  ]);
-  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
-};
-
 let publicQuizListCache:
   | {
       key: string;
@@ -94,110 +72,8 @@ let publicQuizListCache:
       payload: unknown;
     }
   | null = null;
-let publicQuestionSummaryCache = new Map<
-  string,
-  {
-    expiresAt: number;
-    payload: unknown[];
-    hasMore: boolean;
-  }
->();
-let quizResultsCache = new Map<
-  string,
-  {
-    expiresAt: number;
-    payload: unknown;
-  }
->();
-
 const clearPublicQuizListCache = () => {
   publicQuizListCache = null;
-};
-
-const clearPublicQuestionSummaryCache = () => {
-  publicQuestionSummaryCache.clear();
-};
-
-const clearQuizResultsCache = () => {
-  quizResultsCache.clear();
-};
-
-const trimQuizResultsCacheIfNeeded = () => {
-  if (quizResultsCache.size <= QUIZ_RESULTS_CACHE_MAX_ENTRIES) return;
-  const firstKey = quizResultsCache.keys().next().value;
-  if (firstKey) {
-    quizResultsCache.delete(firstKey);
-  }
-};
-
-const resolveAuthUserByAuthId = async (authId: string) =>
-  mongoose.isValidObjectId(authId) ? UserModel.findById(authId) : UserModel.findOne({ id: authId });
-
-const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySchema>) =>
-  JSON.stringify({
-    page: query.page,
-    limit: query.limit,
-    pathId: query.pathId || "",
-    subject: query.subject || "",
-    sectionId: query.sectionId || "",
-    skillId: query.skillId || "",
-  });
-
-const DIRECT_RESULT_DISABLED_MESSAGE =
-  "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
-
-const buildDocumentQuery = (value: string) => {
-  if (mongoose.Types.ObjectId.isValid(value)) {
-    return { $or: [{ id: value }, { _id: value }] };
-  }
-
-  return { id: value };
-};
-
-const buildOwnedDocumentQuery = (
-  value: string,
-  authUser: { id: string; role: string; schoolId?: string | null },
-) => {
-  const baseQuery = buildDocumentQuery(value);
-
-  if (authUser.role === "admin") {
-    return baseQuery;
-  }
-
-  const ownershipConditions: Array<Record<string, string>> = [
-    { ownerId: authUser.id },
-    { createdBy: authUser.id },
-    { assignedTeacherId: authUser.id },
-  ];
-
-  if (authUser.schoolId) {
-    ownershipConditions.push({ ownerId: authUser.schoolId }, { createdBy: authUser.schoolId });
-  }
-
-  return { $and: [baseQuery, { $or: ownershipConditions }] };
-};
-
-const buildDocumentsByIdsQuery = (values: string[]) => {
-  const ids = uniqueStrings(
-    values
-      .flatMap((value) => {
-        const id = String(value || "").trim();
-        if (!id) return [];
-        const withoutCopySuffix = id.replace(/_copy(?:_\d+)?$/i, "");
-        return withoutCopySuffix && withoutCopySuffix !== id ? [id, withoutCopySuffix] : [id];
-      })
-      .filter(Boolean),
-  );
-  const objectIds = ids
-    .filter((id) => mongoose.Types.ObjectId.isValid(id))
-    .map((id) => new mongoose.Types.ObjectId(id));
-
-  return {
-    $or: [
-      { id: { $in: ids } },
-      ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
-    ],
-  };
 };
 
 const assertSupervisorDirectedQuizScope = async (
@@ -251,12 +127,7 @@ const assertSupervisorDirectedQuizScope = async (
   }
 };
 
-const uniqueStrings = (values: Array<string | undefined | null>) =>
-  [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
-
 const idOf = (item: any) => String(item?.id || item?._id || "");
-
-const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;
 
 const matchesContentScope = (
   item: { contentTypes?: string[]; pathIds?: string[]; subjectIds?: string[] },
@@ -532,319 +403,20 @@ const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   return false;
 };
 
-const toSafeDate = (value?: string) => {
-  if (!value) return undefined;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
-};
-
-const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActive role";
-
-const resolveSupervisorSchoolReportScope = async (authUser: any) => {
-  return resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository);
-};
-
-const buildScopedStudentFilter = async (authUser: any) => {
-  return buildQuizReportStudentScope(authUser, resolveSupervisorSchoolReportScope);
-};
-
-const resolveScopedStudents = async (authUser: any, options?: { limit?: number }) => {
-  const { filter, managedPathIds, managedSubjectIds } = await buildScopedStudentFilter(authUser);
-  const limit = Math.max(1, Math.min(options?.limit || 500, 1000));
-  const [students, totalStudents] = await Promise.all([
-    UserModel.find(filter).select(STUDENT_DASHBOARD_SELECT).sort({ createdAt: -1 }).limit(limit).lean(),
-    UserModel.countDocuments(filter),
-  ]);
-
-  return { students, totalStudents, isTruncated: totalStudents > students.length, managedPathIds, managedSubjectIds };
-};
-
 export const quizRouter = Router();
 
 quizRouter.use((req, _res, next) => {
   if (req.method !== "GET") {
     clearPublicQuizListCache();
-    clearPublicQuestionSummaryCache();
+    clearQuestionBankSummaryCache();
   }
   next();
 });
 
-quizRouter.get(
-  "/questions",
-  optionalAuth,
-  asyncHandler(async (req, res) => {
-    const query = questionListQuerySchema.parse(req.query);
-    const canUseSummaryCache =
-      query.summary &&
-      query.noTotal &&
-      !query.ids &&
-      !query.search &&
-      !query.approvalStatus &&
-      !isStaffRole(req.authUser?.role);
-    const summaryCacheKey = canUseSummaryCache ? buildQuestionSummaryCacheKey(query) : "";
-    const summaryCacheItem = summaryCacheKey ? publicQuestionSummaryCache.get(summaryCacheKey) : undefined;
-    if (summaryCacheItem && summaryCacheItem.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "private, max-age=30");
-      res.setHeader("X-Question-Summary-Cache", "hit");
-      res.setHeader("X-Has-More", String(summaryCacheItem.hasMore));
-      res.setHeader("X-Page", String(query.page));
-      res.setHeader("X-Limit", String(query.limit));
-      return res.json(summaryCacheItem.payload);
-    }
-
-    let baseFilter: Record<string, any> = {};
-
-    if (!isStaffRole(req.authUser?.role)) {
-      const visibleQuizFilter = await withLearnerVisiblePaths(
-        {
-          isPublished: true,
-          showOnPlatform: { $ne: false },
-          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-        },
-        req.authUser,
-      );
-      const shouldExpandLinkedQuizQuestions = !query.summary || Boolean(query.ids) || Boolean(query.search);
-      const linkedQuestionConditions: Record<string, any>[] = [];
-
-      if (shouldExpandLinkedQuizQuestions) {
-        const visibleQuizzes = await QuizModel.find(visibleQuizFilter).select("questionIds mockExam").lean();
-        const linkedQuestionIds = uniqueStrings(
-          visibleQuizzes.flatMap((quiz: any) => getQuizQuestionIds(quiz)),
-        );
-        const linkedObjectIds = linkedQuestionIds
-          .filter((id) => mongoose.Types.ObjectId.isValid(id))
-          .map((id) => new mongoose.Types.ObjectId(id));
-
-        if (linkedQuestionIds.length > 0) {
-          linkedQuestionConditions.push({ id: { $in: linkedQuestionIds } });
-        }
-        if (linkedObjectIds.length > 0) {
-          linkedQuestionConditions.push({ _id: { $in: linkedObjectIds } });
-        }
-      }
-
-      baseFilter = {
-        $or: [
-          { approvalStatus: "approved" },
-          { approvalStatus: { $exists: false } },
-          { approvalStatus: null },
-          ...linkedQuestionConditions,
-        ],
-      };
-    }
-
-    const managedScope = await resolveManagedContentScope(req.authUser);
-
-    const scopeFilter: Record<string, any> = {};
-    if (query.pathId) scopeFilter.pathId = query.pathId;
-    if (query.ids) {
-      const ids = uniqueStrings(query.ids.split(",").map((item) => item.trim()).filter(Boolean)).slice(0, 200);
-      const objectIds = ids.filter((id) => mongoose.Types.ObjectId.isValid(id)).map((id) => new mongoose.Types.ObjectId(id));
-      scopeFilter.$or = [
-        ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
-        { id: { $in: ids } },
-        ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
-      ];
-    }
-    if (query.subject) scopeFilter.subject = query.subject;
-    if (query.sectionId) scopeFilter.sectionId = query.sectionId;
-    if (query.skillId) scopeFilter.skillIds = query.skillId;
-    if (query.skillIds) {
-      const skillIds = uniqueStrings(query.skillIds.split(",").map((item) => item.trim()));
-      if (skillIds.length > 0) scopeFilter.skillIds = { $in: skillIds };
-    }
-    if (query.skillLinkStatus === "linked" && !query.skillId && !query.skillIds) {
-      scopeFilter["skillIds.0"] = { $exists: true };
-    } else if (query.skillLinkStatus === "unlinked") {
-      scopeFilter["skillIds.0"] = { $exists: false };
-    }
-    if (query.difficulty) scopeFilter.difficulty = query.difficulty;
-    if (query.examType) scopeFilter.examType = query.examType;
-    if (query.source) scopeFilter.source = query.source;
-    if (typeof query.year === "number") scopeFilter.year = query.year;
-    if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
-    if (query.videoStatus === "with" || query.hasExplanationVideo) {
-      scopeFilter.videoUrl = { $exists: true, $nin: ["", null] };
-    } else if (query.videoStatus === "without") {
-      scopeFilter.videoUrl = { $in: ["", null] };
-    }
-    if (query.explanationStatus === "with") {
-      scopeFilter.explanation = { $exists: true, $nin: ["", null] };
-    } else if (query.explanationStatus === "without") {
-      scopeFilter.explanation = { $in: ["", null] };
-    }
-    if (query.search) {
-      const safeSearch = escapeRegex(query.search);
-      scopeFilter.$or = [
-        ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
-        { text: { $regex: safeSearch, $options: "i" } },
-        { explanation: { $regex: safeSearch, $options: "i" } },
-        { id: { $regex: safeSearch, $options: "i" } },
-      ];
-    }
-
-    const filter = await withLearnerVisiblePaths(
-      combineMongoFilters(baseFilter, scopeFilter, buildManagedContentScopeFilter(managedScope)),
-      req.authUser,
-    );
-    const skip = (query.page - 1) * query.limit;
-    const queryBuilder = QuestionModel.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(query.noTotal ? query.limit + 1 : query.limit)
-      .lean();
-    if (query.summary) {
-      queryBuilder.select("id text imageUrl options correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
-    }
-
-    const shouldIncludeCoverage = query.includeCoverage && isStaffRole(req.authUser?.role);
-    const [rawItems, total, coverage] = await Promise.all([
-      queryBuilder,
-      query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),
-      shouldIncludeCoverage ? getQuestionBankCoverage(filter) : Promise.resolve(null),
-    ]);
-    const hasMore = query.noTotal && rawItems.length > query.limit;
-    const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
-    const canSeeAnswers = isStaffRole(req.authUser?.role);
-    const items = query.summary
-      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
-      : canSeeAnswers
-        ? limitedItems
-        : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
-    if (total !== null) {
-      res.setHeader("X-Total-Count", String(total));
-    }
-    res.setHeader("X-Has-More", String(hasMore));
-    res.setHeader("X-Page", String(query.page));
-    res.setHeader("X-Limit", String(query.limit));
-    if (summaryCacheKey) {
-      if (publicQuestionSummaryCache.size >= QUESTION_SUMMARY_CACHE_MAX_ENTRIES) {
-        const oldestKey = publicQuestionSummaryCache.keys().next().value;
-        if (oldestKey) {
-          publicQuestionSummaryCache.delete(oldestKey);
-        }
-      }
-      publicQuestionSummaryCache.set(summaryCacheKey, {
-        expiresAt: Date.now() + QUESTION_SUMMARY_CACHE_TTL_MS,
-        payload: items,
-        hasMore,
-      });
-      res.setHeader("Cache-Control", "private, max-age=30");
-      res.setHeader("X-Question-Summary-Cache", "miss");
-    }
-    if (query.paginate) {
-      const resolvedTotal = total ?? skip + limitedItems.length + (hasMore ? 1 : 0);
-      const totalPages = Math.max(1, Math.ceil(resolvedTotal / Math.max(query.limit, 1)));
-      return res.json({
-        data: items,
-        ...(coverage ? { coverage } : {}),
-        pagination: {
-          total: resolvedTotal,
-          page: query.page,
-          limit: query.limit,
-          totalPages,
-          hasNext: query.noTotal ? hasMore : query.page < totalPages,
-          hasPrev: query.page > 1,
-        },
-      });
-    }
-
-    res.json(items);
-  }),
-);
-
-quizRouter.post(
-  "/questions",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = questionSchema.parse(req.body);
-    await assertManagedContentScope(req.authUser!, payload);
-    const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const created = await QuestionModel.create({
-      ...payload,
-      ...workflowDefaults,
-      approvalStatus:
-        req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
-          : workflowDefaults.approvalStatus,
-    });
-    res.status(StatusCodes.CREATED).json(created);
-  }),
-);
-
-quizRouter.get(
-  "/questions/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const question = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!)).lean();
-    if (!question) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-    await assertManagedContentScope(req.authUser!, question);
-    return res.json(question);
-  }),
-);
-
-quizRouter.patch(
-  "/questions/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const payload = questionBaseSchema.partial().parse(req.body);
-    const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
-    const existing = await QuestionModel.findOne(documentQuery);
-
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-
-    const mergedPayload = questionSchema.parse({
-      ...existing.toObject(),
-      ...payload,
-    });
-
-    await assertManagedContentScope(req.authUser!, mergedPayload);
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
-    const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
-    return res.json(updated);
-  }),
-);
-
-quizRouter.delete(
-  "/questions/:id",
-  requireAuth,
-  requireRole(["admin", "teacher"]),
-  asyncHandler(async (req, res) => {
-    const existing = await QuestionModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-    await assertManagedContentScope(req.authUser!, existing.toObject());
-    const deleted = await QuestionModel.findOneAndDelete({ _id: existing._id });
-    if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-
-    const deletedId = String(deleted.id || deleted._id);
-
-    // Cascade: remove deleted questionId from all quizzes that reference it
-    // This prevents broken references in published quizzes
-    await Promise.all([
-      // Remove from root questionIds array
-      QuizModel.updateMany(
-        { questionIds: deletedId },
-        { $pull: { questionIds: deletedId } }
-      ),
-      // Remove from mockExam sections
-      QuizModel.updateMany(
-        { "mockExam.sections.questionIds": deletedId },
-        { $pull: { "mockExam.sections.$[].questionIds": deletedId } }
-      ),
-    ]);
-
-    return res.json({ success: true, cascadeRemovedFromQuizzes: true });
-  }),
-);
+quizRouter.use(questionBankRouter);
+quizRouter.use(quizAnalyticsRouter);
+quizRouter.use(quizResultsRouter);
+quizRouter.use(adaptiveTelemetryRouter);
 
 quizRouter.get(
   "/",
@@ -875,11 +447,13 @@ quizRouter.get(
     const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
     const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
     const requestedLimit = typeof req.query.limit === "string" ? req.query.limit.trim() : "200";
+    const noTotal = ["true", "1", "yes", "on"].includes(String(req.query.noTotal || "").trim().toLowerCase());
     const publicQuizListCacheKey = [
       requestedPage || "1",
       requestedLimit || "200",
       requestedPathId || "all-paths",
       requestedSubjectId || "all-subjects",
+      noTotal ? "no-total" : "with-total",
     ].join(":");
 
     if (
@@ -950,10 +524,16 @@ quizRouter.get(
       buildManagedContentScopeFilter(managedScope),
     );
     const pagination = resolvePagination(req.query, { limit: 200 });
-    const [items, total] = await Promise.all([
-      QuizModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
-      QuizModel.countDocuments(filter),
-    ]);
+    const rawItems = await QuizModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(pagination.skip)
+      .limit(noTotal ? pagination.limit + 1 : pagination.limit)
+      .lean();
+    const hasMore = noTotal && rawItems.length > pagination.limit;
+    const items = noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
+    const total = noTotal
+      ? pagination.skip + items.length + (hasMore ? 1 : 0)
+      : await QuizModel.countDocuments(filter);
     let safeItems = items;
 
     if (!isStaffRole(req.authUser?.role) && items.length > 0) {
@@ -986,8 +566,15 @@ quizRouter.get(
 
     const payload = {
       quizzes: safeItems,
-      pagination: buildPaginatedResponse([], pagination, isStaffRole(req.authUser?.role) ? total : safeItems.length),
+      pagination: buildPaginatedResponse(
+        [],
+        pagination,
+        isStaffRole(req.authUser?.role)
+          ? total
+          : (noTotal ? pagination.skip + safeItems.length + (hasMore ? 1 : 0) : safeItems.length),
+      ),
     };
+    res.setHeader("X-Has-More", String(hasMore));
     if (canUsePublicCache) {
       publicQuizListCache = {
         key: publicQuizListCacheKey,
@@ -998,634 +585,6 @@ quizRouter.get(
       res.setHeader("X-Quiz-List-Cache", "miss");
     }
     res.json(payload);
-  }),
-);
-
-quizRouter.get(
-  "/analytics/overview",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const query = dashboardAnalyticsQuerySchema.parse(req.query);
-    const authUserId = String(req.authUser!.id || "");
-    const authUser = await resolveAuthUserByAuthId(authUserId);
-
-    if (!authUser) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
-    }
-
-    const { students: scopedStudents, totalStudents, isTruncated, managedPathIds, managedSubjectIds } =
-      await resolveScopedStudents(authUser, { limit: query.studentLimit });
-
-    const scopedStudentIds = scopedStudents.map((student) => idOf(student));
-    const relatedGroupIds = uniqueStrings([
-      ...scopedStudents.flatMap((student) => (student.groupIds || []).map(String)),
-      ...(authUser.groupIds || []).map(String),
-      authUser.schoolId ? String(authUser.schoolId) : undefined,
-    ]);
-
-    const groups = relatedGroupIds.length
-      ? await GroupModel.find(buildDocumentsByIdsQuery(relatedGroupIds)).select("id name").lean()
-      : [];
-
-    const groupNameById = new Map(groups.map((group: any) => [idOf(group), String(group.name || "")]));
-
-    let quizResults = scopedStudentIds.length
-      ? await QuizResultModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(query.resultLimit).lean()
-      : [];
-
-    if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
-      quizResults = quizResults.filter((result) => {
-        const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
-        return skills.some((gap: any) => matchesManagedContentScope(gap, managedPathIds, managedSubjectIds));
-      });
-    }
-
-    let questionAttempts = scopedStudentIds.length
-      ? await QuestionAttemptModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(query.attemptLimit).lean()
-      : [];
-
-    if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
-      questionAttempts = questionAttempts.filter((attempt) => matchesManagedContentScope(attempt, managedPathIds, managedSubjectIds));
-    }
-
-    const attemptSkillIds = uniqueStrings(questionAttempts.flatMap((attempt) => (attempt.skillIds || []).map(String)));
-    const attemptSkills = attemptSkillIds.length ? await SkillModel.find(buildDocumentsByIdsQuery(attemptSkillIds)).lean() : [];
-    const skillById = new Map(attemptSkills.map((skill: any) => [idOf(skill), skill]));
-    const attemptSubjectIds = uniqueStrings([
-      ...questionAttempts.map((attempt) => String(attempt.subjectId || "")),
-      ...attemptSkills.map((skill) => String(skill.subjectId || "")),
-    ]);
-    const attemptSectionIds = uniqueStrings([
-      ...questionAttempts.map((attempt) => String(attempt.sectionId || "")),
-      ...attemptSkills.map((skill) => String(skill.sectionId || "")),
-    ]);
-    const attemptSubjects = attemptSubjectIds.length ? await SubjectModel.find(buildDocumentsByIdsQuery(attemptSubjectIds)).select("id name").lean() : [];
-    const attemptSections = attemptSectionIds.length ? await SectionModel.find(buildDocumentsByIdsQuery(attemptSectionIds)).select("id name").lean() : [];
-    const subjectNameById = new Map(attemptSubjects.map((subject: any) => [idOf(subject), String(subject.name || "")]));
-    const sectionNameById = new Map(attemptSections.map((section: any) => [idOf(section), String(section.name || "")]));
-    const attemptsByStudent = new Map<string, any[]>();
-    questionAttempts.forEach((attempt) => {
-      const key = String(attempt.userId || "");
-      const bucket = attemptsByStudent.get(key) || [];
-      bucket.push(attempt);
-      attemptsByStudent.set(key, bucket);
-    });
-
-    const resultsByStudent = new Map<string, any[]>();
-    quizResults.forEach((result) => {
-      const key = String(result.userId || "");
-      const bucket = resultsByStudent.get(key) || [];
-      bucket.push(result);
-      resultsByStudent.set(key, bucket);
-    });
-
-    const weakestStudents = scopedStudents
-      .map((student) => {
-        const studentId = idOf(student);
-        const results = resultsByStudent.get(studentId) || [];
-        const granularAttempts = attemptsByStudent.get(studentId) || [];
-        const attempts = results.length;
-        const granularAnswered = granularAttempts.filter((attempt) => Number(attempt.selectedOptionIndex ?? -1) >= 0);
-        const granularAverage = granularAnswered.length
-          ? Math.round((granularAnswered.filter((attempt) => Boolean(attempt.isCorrect)).length / granularAnswered.length) * 100)
-          : 0;
-        const averageScore = attempts
-          ? Math.round(results.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / attempts)
-          : granularAverage;
-
-        const weakSkillMap = new Map<string, { skill: string; masterySum: number; count: number }>();
-
-        results.forEach((result) => {
-          const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-            authUser.role === "teacher"
-              ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-              : true,
-          );
-          skills.forEach((gap: any) => {
-            const mastery = Number(gap?.mastery || 0);
-            if (mastery >= 75) return;
-            const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
-            const current = weakSkillMap.get(key) || {
-              skill: String(gap?.skill || "مهارة غير مسماة"),
-              masterySum: 0,
-              count: 0,
-            };
-            current.masterySum += mastery;
-            current.count += 1;
-            weakSkillMap.set(key, current);
-          });
-        });
-
-        granularAttempts.forEach((attempt) => {
-          buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
-            const mastery = Number(gap?.mastery || 0);
-            if (mastery >= 75) return;
-            const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
-            const current = weakSkillMap.get(key) || {
-              skill: String(gap?.skill || "مهارة غير مسماة"),
-              masterySum: 0,
-              count: 0,
-            };
-            current.masterySum += mastery;
-            current.count += 1;
-            weakSkillMap.set(key, current);
-          });
-        });
-
-        const reliableWeakSkillItems = Array.from(weakSkillMap.values()).filter((item) => item.count >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT);
-        const earlyWeakSignalCount = Array.from(weakSkillMap.values()).filter((item) => item.count < MIN_ANALYTICS_SKILL_EVIDENCE_COUNT).length;
-        const weakestSkills = reliableWeakSkillItems
-          .map((item) => ({
-            skill: item.skill,
-            mastery: Math.round(item.masterySum / Math.max(item.count, 1)),
-            attempts: item.count,
-            isReliable: true,
-            evidenceThreshold: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
-          }))
-          .sort((a, b) => a.mastery - b.mastery)
-          .slice(0, 3);
-
-        return {
-          id: studentId,
-          name: student.name,
-          email: student.email,
-          schoolId: student.schoolId || undefined,
-          schoolName: student.schoolId ? groupNameById.get(String(student.schoolId)) : undefined,
-          groupIds: (student.groupIds || []).map(String),
-          groupNames: (student.groupIds || []).map((groupId) => groupNameById.get(String(groupId))).filter(Boolean),
-          attempts,
-          questionAttempts: granularAttempts.length,
-          averageScore,
-          weakSkillCount: reliableWeakSkillItems.length,
-          earlyWeakSignalCount,
-          weakestSkills,
-          latestAttemptAt: toSafeDate(results[0]?.createdAt),
-          recommendedAction:
-            attempts === 0
-              ? "ابدأ باختبار تشخيصي موجه لهذه الحالة"
-              : averageScore < 50
-                ? "أرسل خطة علاج عاجلة واختبار متابعة موجه"
-                : averageScore < 70
-                  ? "أضف تدريبات علاجية واختبار ساهر مخصص"
-                  : "استمر في التثبيت والمتابعة الدورية",
-        };
-      })
-      .sort((a, b) => a.averageScore - b.averageScore || b.weakSkillCount - a.weakSkillCount)
-      .slice(0, 12);
-
-    const weakSkillMap = new Map<
-      string,
-      {
-        skillId?: string;
-        skill: string;
-        subjectId?: string;
-        sectionId?: string;
-        section?: string;
-        masterySum: number;
-        attempts: number;
-        studentIds: Set<string>;
-      }
-    >();
-
-    quizResults.forEach((result) => {
-      const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-        authUser.role === "teacher"
-          ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-          : true,
-      );
-      skills.forEach((gap: any) => {
-        const mastery = Number(gap?.mastery || 0);
-        if (mastery >= 75) return;
-
-        const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
-        const current = weakSkillMap.get(key) || {
-          skillId: gap?.skillId,
-          skill: String(gap?.skill || "مهارة غير مسماة"),
-          subjectId: gap?.subjectId,
-          sectionId: gap?.sectionId,
-          section: gap?.section,
-          masterySum: 0,
-          attempts: 0,
-          studentIds: new Set<string>(),
-        };
-
-        current.masterySum += mastery;
-        current.attempts += 1;
-        current.studentIds.add(String(result.userId || ""));
-        weakSkillMap.set(key, current);
-      });
-    });
-
-    questionAttempts.forEach((attempt) => {
-      buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
-        const mastery = Number(gap?.mastery || 0);
-        if (mastery >= 75) return;
-
-        const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
-        const current = weakSkillMap.get(key) || {
-          skillId: gap?.skillId,
-          skill: String(gap?.skill || "مهارة غير مسماة"),
-          subjectId: gap?.subjectId,
-          sectionId: gap?.sectionId,
-          section: gap?.section,
-          masterySum: 0,
-          attempts: 0,
-          studentIds: new Set<string>(),
-        };
-
-        current.masterySum += mastery;
-        current.attempts += 1;
-        current.studentIds.add(String(attempt.userId || ""));
-        weakSkillMap.set(key, current);
-      });
-    });
-
-    const earlyWeakSkillSignalCount = Array.from(weakSkillMap.values()).filter((item) => item.attempts < MIN_ANALYTICS_SKILL_EVIDENCE_COUNT).length;
-    const weakestSkills = Array.from(weakSkillMap.values())
-      .filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)
-      .map((item) => {
-        const mastery = Math.round(item.masterySum / Math.max(item.attempts, 1));
-        return {
-          skillId: item.skillId,
-          skill: item.skill,
-          subjectId: item.subjectId,
-          sectionId: item.sectionId,
-          section: item.section,
-          mastery,
-          attempts: item.attempts,
-          isReliable: true,
-          evidenceThreshold: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
-          affectedStudents: item.studentIds.size,
-          recommendedAction: buildRecommendedAction(mastery, item.attempts),
-        };
-      })
-      .sort((a, b) => a.mastery - b.mastery || b.affectedStudents - a.affectedStudents)
-      .slice(0, 12);
-
-    const subjectMap = new Map<
-      string,
-      {
-        subjectId?: string;
-        subjectName: string;
-        masterySum: number;
-        count: number;
-        weakStudents: Set<string>;
-      }
-    >();
-
-    quizResults.forEach((result) => {
-      const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-        authUser.role === "teacher"
-          ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-          : true,
-      );
-      skills.forEach((gap: any) => {
-        if (!gap?.subjectId && !gap?.subjectName && !result.quizTitle) return;
-        const key = String(gap?.subjectId || gap?.subjectName || result.quizTitle);
-        const current = subjectMap.get(key) || {
-          subjectId: gap?.subjectId,
-          subjectName: String(gap?.subjectName || result.quizTitle || "مادة غير مسماة"),
-          masterySum: 0,
-          count: 0,
-          weakStudents: new Set<string>(),
-        };
-
-        current.masterySum += Number(gap?.mastery || 0);
-        current.count += 1;
-        if (Number(gap?.mastery || 0) < 75) {
-          current.weakStudents.add(String(result.userId || ""));
-        }
-        subjectMap.set(key, current);
-      });
-    });
-
-    questionAttempts.forEach((attempt) => {
-      buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
-        if (!gap?.subjectId) return;
-        const key = String(gap.subjectId);
-        const current = subjectMap.get(key) || {
-          subjectId: gap.subjectId,
-          subjectName: String(gap.subjectName || subjectNameById.get(String(gap.subjectId)) || "مادة غير مسماة"),
-          masterySum: 0,
-          count: 0,
-          weakStudents: new Set<string>(),
-        };
-
-        current.masterySum += Number(gap.mastery || 0);
-        current.count += 1;
-        if (Number(gap.mastery || 0) < 75) {
-          current.weakStudents.add(String(attempt.userId || ""));
-        }
-        subjectMap.set(key, current);
-      });
-    });
-
-    const subjectSummaries = Array.from(subjectMap.values())
-      .map((item) => ({
-        subjectId: item.subjectId,
-        subjectName: item.subjectName,
-        mastery: Math.round(item.masterySum / Math.max(item.count, 1)),
-        weakStudents: item.weakStudents.size,
-      }))
-      .sort((a, b) => a.mastery - b.mastery)
-      .slice(0, 10);
-
-    let assignedFollowUps = await QuizModel.find({
-      isPublished: true,
-      mode: { $in: ["saher", "central"] },
-      $or: [
-        { targetUserIds: { $in: scopedStudentIds } },
-        { targetGroupIds: { $in: relatedGroupIds } },
-      ],
-    }).sort({ createdAt: -1 }).limit(12).lean();
-
-    if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
-      assignedFollowUps = assignedFollowUps.filter((quiz) => {
-        const quizPathId = String(quiz.pathId || "");
-        const quizSubjectId = String(quiz.subjectId || "");
-
-        if (managedSubjectIds.size > 0 && quizSubjectId && managedSubjectIds.has(quizSubjectId)) {
-          return true;
-        }
-
-        if (managedPathIds.size > 0 && quizPathId && managedPathIds.has(quizPathId)) {
-          return true;
-        }
-
-        return false;
-      });
-    }
-
-    return res.json({
-      scope: {
-        role: authUser.role,
-        studentCount: totalStudents,
-        sampledStudentCount: scopedStudents.length,
-        isTruncated,
-        groupCount: relatedGroupIds.length,
-        quizAttempts: quizResults.length,
-        questionAttempts: questionAttempts.length,
-        earlyWeakSkillSignalCount,
-        minSkillEvidence: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
-        limits: {
-          studentLimit: query.studentLimit,
-          resultLimit: query.resultLimit,
-          attemptLimit: query.attemptLimit,
-        },
-      },
-      weakestStudents,
-      weakestSkills,
-      subjectSummaries,
-      assignedFollowUps: assignedFollowUps.map((quiz) => ({
-        id: String(quiz.id),
-        title: quiz.title,
-        mode: quiz.mode || "regular",
-        pathId: quiz.pathId,
-        subjectId: quiz.subjectId,
-        targetGroupIds: quiz.targetGroupIds || [],
-        targetUserIds: quiz.targetUserIds || [],
-        dueDate: quiz.dueDate || undefined,
-      })),
-    });
-  }),
-);
-
-quizRouter.get(
-  "/results",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const query = quizResultsListQuerySchema.parse(req.query);
-    const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
-    const canUseShortCache = !includeReview && query.noTotal;
-    const cacheKey = buildQuizResultsCacheKey(req.authUser!.id, req.originalUrl || req.url || "/results", includeReview);
-    if (canUseShortCache) {
-      const cached = quizResultsCache.get(cacheKey);
-      if (cached && cached.expiresAt > Date.now()) {
-        res.setHeader("X-Quiz-Results-Cache", "hit");
-        return res.json(cached.payload);
-      }
-      if (cached) {
-        quizResultsCache.delete(cacheKey);
-      }
-      res.setHeader("X-Quiz-Results-Cache", "miss");
-    }
-    const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
-    const filter: Record<string, unknown> = { userId: req.authUser!.id };
-    if (query.quizId) {
-      filter.quizId = query.quizId;
-    }
-    if (query.status) {
-      filter.passed = query.status === "passed";
-    }
-    if (query.search) {
-      filter.quizTitle = { $regex: escapeRegex(query.search), $options: "i" };
-    }
-    const createdAtRange: Record<string, Date> = {};
-    const dateFrom = parseDateFilter(query.dateFrom);
-    const dateTo = parseDateFilter(query.dateTo);
-    if (dateFrom) {
-      createdAtRange.$gte = dateFrom;
-    }
-    if (dateTo) {
-      createdAtRange.$lte = dateTo;
-    }
-    if (Object.keys(createdAtRange).length > 0) {
-      filter.createdAt = createdAtRange;
-    }
-    const sortDirection = query.sortOrder === "asc" ? 1 : -1;
-    const sort: Record<string, 1 | -1> = { [query.sortBy]: sortDirection };
-    if (query.sortBy !== "createdAt") {
-      sort.createdAt = -1;
-    }
-    const projection = includeReview
-      ? null
-      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
-    const resultsQuery = QuizResultModel.find(filter)
-      .sort(sort)
-      .skip(pagination.skip)
-      .limit(pagination.limit);
-    if (projection) {
-      resultsQuery.select(projection);
-    }
-    const items = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await resultsQuery.lean() as Record<string, unknown>[]));
-    const total = query.noTotal
-      ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
-      : await QuizResultModel.countDocuments(filter);
-    const payload = {
-      results: items,
-      pagination: buildPaginatedResponse([], pagination, total),
-    };
-    if (canUseShortCache) {
-      quizResultsCache.set(cacheKey, {
-        expiresAt: Date.now() + QUIZ_RESULTS_CACHE_TTL_MS,
-        payload,
-      });
-      trimQuizResultsCacheIfNeeded();
-    }
-    res.json(payload);
-  }),
-);
-
-quizRouter.get(
-  "/results/scoped",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const query = quizResultsListQuerySchema.parse(req.query);
-    const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
-
-    if (!authUser) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
-    }
-
-    const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
-    const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
-    const projection = includeReview
-      ? null
-      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt pathId subjectId sectionId";
-    const { students, totalStudents, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser, {
-      limit: Math.max(pagination.limit, 200),
-    });
-    const studentIds = students.map((student) => idOf(student));
-    const studentById = new Map(students.map((student) => [idOf(student), student]));
-
-    const scopedFilter: Record<string, unknown> = {};
-    if (query.quizId) {
-      scopedFilter.quizId = query.quizId;
-    }
-    if (query.status) {
-      scopedFilter.passed = query.status === "passed";
-    }
-    if (query.search) {
-      scopedFilter.quizTitle = { $regex: escapeRegex(query.search), $options: "i" };
-    }
-    const scopedCreatedAtRange: Record<string, Date> = {};
-    const scopedDateFrom = parseDateFilter(query.dateFrom);
-    const scopedDateTo = parseDateFilter(query.dateTo);
-    if (scopedDateFrom) {
-      scopedCreatedAtRange.$gte = scopedDateFrom;
-    }
-    if (scopedDateTo) {
-      scopedCreatedAtRange.$lte = scopedDateTo;
-    }
-    if (Object.keys(scopedCreatedAtRange).length > 0) {
-      scopedFilter.createdAt = scopedCreatedAtRange;
-    }
-    const sortDirection = query.sortOrder === "asc" ? 1 : -1;
-    const sort: Record<string, 1 | -1> = { [query.sortBy]: sortDirection };
-    if (query.sortBy !== "createdAt") {
-      sort.createdAt = -1;
-    }
-
-    let results: any[] = [];
-    let selectedStudentIds = studentIds;
-    if (query.studentId) {
-      selectedStudentIds = studentIds.includes(query.studentId) ? [query.studentId] : [];
-    }
-    if (selectedStudentIds.length) {
-      const scopedResultsQuery = QuizResultModel.find({
-        userId: { $in: selectedStudentIds },
-        ...scopedFilter,
-      })
-        .sort(sort)
-        .skip(pagination.skip)
-        .limit(pagination.limit);
-      if (projection) {
-        scopedResultsQuery.select(projection);
-      }
-      results = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await scopedResultsQuery.lean() as Record<string, unknown>[]));
-    }
-    const total = selectedStudentIds.length
-      ? (query.noTotal
-        ? pagination.skip + results.length + (results.length === pagination.limit ? 1 : 0)
-        : await QuizResultModel.countDocuments({
-            userId: { $in: selectedStudentIds },
-            ...scopedFilter,
-          }))
-      : 0;
-    results = filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds);
-
-    return res.json({
-      scope: {
-        role: authUser.role,
-        studentCount: totalStudents,
-        sampledStudentCount: students.length,
-        resultCount: results.length,
-      },
-      pagination: buildPaginatedResponse([], pagination, total),
-      results: results.map((result) => {
-        const student = studentById.get(String(result.userId || ""));
-        return {
-          ...result,
-          studentName: student?.name || "",
-          studentEmail: student?.email || "",
-          studentSchoolId: student?.schoolId || undefined,
-          studentGroupIds: student?.groupIds || [],
-        };
-      }),
-    });
-  }),
-);
-
-quizRouter.get(
-  "/skill-progress",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const filter = { userId: req.authUser!.id };
-    const pagination = resolvePagination(req.query, { limit: 80 });
-    const [items, total] = await Promise.all([
-      SkillProgressModel.find(filter).sort({ mastery: 1, lastAttemptAt: -1 }).skip(pagination.skip).limit(pagination.limit),
-      SkillProgressModel.countDocuments(filter),
-    ]);
-    res.json({
-      skillProgress: items,
-      pagination: buildPaginatedResponse([], pagination, total),
-    });
-  }),
-);
-
-quizRouter.get(
-  "/question-attempts",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const filter = { userId: req.authUser!.id };
-    const pagination = resolvePagination(req.query, { limit: 100 });
-    const [items, total] = await Promise.all([
-      QuestionAttemptModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
-      QuestionAttemptModel.countDocuments(filter),
-    ]);
-    res.json({
-      questionAttempts: items,
-      pagination: buildPaginatedResponse([], pagination, total),
-    });
-  }),
-);
-
-quizRouter.post(
-  "/question-attempts",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const payload = questionAttemptSchema.parse(req.body);
-    const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select(
-      "id pathId subject sectionId skillIds correctOptionIndex",
-    );
-
-    if (!question) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
-    }
-
-    const selectedOptionIndex = Number(payload.selectedOptionIndex);
-    const isCorrect =
-      selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
-    const created = await QuestionAttemptModel.create(buildQuestionAttemptDocument({
-      payload,
-      selectedOptionIndex,
-      isCorrect,
-      userId: req.authUser!.id,
-      question,
-    }));
-    await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);
-
-    res.status(StatusCodes.CREATED).json(created);
   }),
 );
 
@@ -1670,123 +629,6 @@ quizRouter.get(
     });
   }),
 );
-
-quizRouter.get(
-  "/results/latest",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    const item = await QuizResultModel.findOne({ userId: req.authUser!.id }).sort({ createdAt: -1 }).lean();
-
-    if (!item) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "No quiz results found" });
-    }
-
-    const readerMode = await findAssessmentResultReaderMode(String(item.quizId || ""));
-    const assessmentResult = shouldReadAssessmentCompatibilityProjection(readerMode)
-      ? await findAssessmentResultByLegacyId(String(item._id))
-      : null;
-    return res.json(serializeQuizResultForLearner(resolveAssessmentResultRead(item as Record<string, unknown>, assessmentResult)));
-  }),
-);
-
-/**
- * GET /api/quizzes/results/section-analytics/:quizId
- * ─────────────────────────────────────────────────────────────────────────────
- * تقرير إجمالي لأداء جميع الطلاب في كل قسم من أقسام محاكٍ معين.
- * للمدير والمشرف فقط.
- *
- * الاستجابة:
- *   {
- *     quizId, quizTitle,
- *     totalAttempts,
- *     sections: [{ sectionId, sectionName, avgScore, passRate, attempts }]
- *   }
- */
-quizRouter.get(
-  "/results/section-analytics/:quizId",
-  requireAuth,
-  requireRole(["admin", "supervisor"]),
-  asyncHandler(async (req, res) => {
-    const quizId = String(req.params.quizId || "").trim();
-    if (!quizId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "quizId is required" });
-    }
-
-    const quiz = await QuizModel.findOne(buildDocumentQuery(quizId))
-      .select("id title mockExam")
-      .lean();
-
-    if (!quiz) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
-    }
-
-    if (!(quiz as any).mockExam?.enabled) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Section analytics are only available for mock exams",
-      });
-    }
-
-    const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
-    if (!authUser) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
-    }
-
-    const { students } = authUser.role === "admin"
-      ? { students: [] as any[] }
-      : await resolveScopedStudents(authUser, { limit: 1000 });
-    const scopedStudentIds = students.map((student) => idOf(student));
-
-    // Scope aggregate input to the same authoritative student relationship used
-    // by school reports; never aggregate every attempt for a supervisor request.
-    const results = authUser.role === "admin" || scopedStudentIds.length
-      ? await QuizResultModel.find({
-      quizId,
-      ...(authUser.role === "admin" ? {} : { userId: { $in: scopedStudentIds } }),
-      sectionResults: { $exists: true, $ne: [] },
-    })
-      .select("sectionResults score passed")
-      .lean()
-      : [];
-
-    const totalAttempts = results.length;
-
-    // بناء خريطة إحصائيات لكل قسم
-    const sectionMap = new Map<
-      string,
-      { name: string; scoreSum: number; passCount: number; count: number }
-    >();
-
-    for (const result of results) {
-      const sections = (result as any).sectionResults || [];
-      for (const sec of sections) {
-        const id = String(sec.sectionId);
-        if (!sectionMap.has(id)) {
-          sectionMap.set(id, { name: sec.sectionName || id, scoreSum: 0, passCount: 0, count: 0 });
-        }
-        const entry = sectionMap.get(id)!;
-        entry.scoreSum += Number(sec.score || 0);
-        entry.passCount += sec.score >= 60 ? 1 : 0;
-        entry.count += 1;
-      }
-    }
-
-    const sections = Array.from(sectionMap.entries()).map(([sectionId, data]) => ({
-      sectionId,
-      sectionName: data.name,
-      attempts: data.count,
-      avgScore: data.count > 0 ? Math.round(data.scoreSum / data.count) : 0,
-      passRate: data.count > 0 ? Math.round((data.passCount / data.count) * 100) : 0,
-    }));
-
-    return res.json({
-      quizId,
-      quizTitle: String((quiz as any).title || ""),
-      totalAttempts,
-      sections,
-    });
-  }),
-);
-
 
 quizRouter.post(
   "/",
@@ -2329,7 +1171,7 @@ quizRouter.post(
     }
 
     clearPublicQuizListCache();
-    clearPublicQuestionSummaryCache();
+    clearQuestionBankSummaryCache();
 
     res.json({
       dryRun,
@@ -2358,22 +1200,5 @@ quizRouter.delete(
     await TopicModel.updateMany({ quizIds: { $in: deletedIds } }, { $pull: { quizIds: { $in: deletedIds } } });
 
     return res.json({ success: true });
-  }),
-);
-
-quizRouter.post(
-  "/results",
-  requireAuth,
-  asyncHandler(async (req, res) => {
-    await recordAdminAuditLog(req, {
-      action: "quiz.direct_result.blocked",
-      resourceType: "quiz-result",
-      status: "blocked",
-      metadata: { bodyKeys: Object.keys(req.body || {}) },
-    });
-
-    return res.status(StatusCodes.GONE).json({
-      message: DIRECT_RESULT_DISABLED_MESSAGE,
-    });
   }),
 );

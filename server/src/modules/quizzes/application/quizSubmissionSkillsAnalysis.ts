@@ -29,6 +29,8 @@ export const buildQuizSubmissionSkillsAnalysis = ({
       sectionId,
       skill: String(skill?.name || "مهارة غير مسماة"),
       mastery,
+      questionCount: stats.total,
+      correctCount: stats.correct,
       status,
       recommendation: buildSkillRecommendation(mastery),
       section: sectionNameById.get(sectionId) || subjectNameById.get(subjectId) || "",

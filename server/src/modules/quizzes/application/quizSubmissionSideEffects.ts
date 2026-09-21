@@ -4,7 +4,7 @@ import { SkillModel } from "../../../models/Skill.js";
 import { SkillProgressModel } from "../../../models/SkillProgress.js";
 import { createNotificationDeliveries } from "../../../services/notificationService.js";
 import { sm2 } from "../../../services/spacedRepetition.js";
-import { buildRecommendedAction, buildSkillStatus } from "../analytics/skillAnalytics.js";
+import { buildRecommendedAction, buildSkillStatus, mergeSkillMasteryEvidence } from "../analytics/skillAnalytics.js";
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
@@ -44,7 +44,15 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
         const previousAttempts = Number(existing?.attempts || 0);
         const nextAttempts = previousAttempts + 1;
         const previousMastery = Number(existing?.mastery || 0);
-        const nextMastery = Math.round(((previousMastery * previousAttempts) + mastery) / nextAttempts);
+        const previousEvidence = Number(existing?.evidenceCount || existing?.attempts || 0);
+        const currentEvidence = Math.max(1, Number(skill.questionCount || skill.total || 1));
+        const mergedMastery = mergeSkillMasteryEvidence({
+          previousMastery,
+          previousEvidence,
+          currentMastery: mastery,
+          currentEvidence,
+        });
+        const nextMastery = mergedMastery.mastery;
 
         await SkillProgressModel.findOneAndUpdate(
           { userId, skillId },
@@ -58,6 +66,7 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
             mastery: nextMastery,
             status: buildSkillStatus(nextMastery),
             attempts: nextAttempts,
+            evidenceCount: mergedMastery.evidenceCount,
             lastQuizId: String(result.quizId || ""),
             lastQuizTitle: String(result.quizTitle || ""),
             lastAttemptAt: new Date(),
@@ -83,7 +92,14 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
       const previousAttempts = Number(existing?.attempts || 0);
       const nextAttempts = previousAttempts + 1;
       const previousMastery = Number(existing?.mastery || 0);
-      const nextMastery = Math.round(((previousMastery * previousAttempts) + mastery) / nextAttempts);
+      const previousEvidence = Number(existing?.evidenceCount || existing?.attempts || 0);
+      const mergedMastery = mergeSkillMasteryEvidence({
+        previousMastery,
+        previousEvidence,
+        currentMastery: mastery,
+        currentEvidence: 1,
+      });
+      const nextMastery = mergedMastery.mastery;
 
       await SkillProgressModel.findOneAndUpdate(
         { userId, skillId },
@@ -97,6 +113,7 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
           mastery: nextMastery,
           status: buildSkillStatus(nextMastery),
           attempts: nextAttempts,
+          evidenceCount: mergedMastery.evidenceCount,
           lastQuizId: String(existing?.lastQuizId || ""),
           lastQuizTitle: String(existing?.lastQuizTitle || ""),
           lastAttemptAt: new Date(),

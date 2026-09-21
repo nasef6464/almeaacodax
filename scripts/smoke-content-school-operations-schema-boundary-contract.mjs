@@ -4,10 +4,23 @@ import path from 'node:path';
 
 const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const groupRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentGroupRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const commercialRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolCommercialRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const reportImportRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolReportImportRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const relationsRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolRelationsRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const queryUtilitySource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentQueryUtilities.ts'), 'utf8').replace(/\r\n/g, '\n');
+const scopeSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/schoolOperationsScope.ts'), 'utf8').replace(/\r\n/g, '\n');
 const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/schoolOperationsSchemas.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
-const schemaImport = 'import { accessCodeRedemptionsListQuerySchema, accessCodeSchema, accessCodesListQuerySchema, b2bPackageSchema, groupSchema, schoolImportSchema, schoolRelationSchema } from "../modules/content/http/schoolOperationsSchemas.js";';
-const delegated = routeSource.includes(schemaImport);
+const delegated =
+  routeSource.includes('contentRouter.use(contentGroupRouter);') &&
+  routeSource.includes('contentRouter.use(contentSchoolCommercialRouter);') &&
+  routeSource.includes('contentRouter.use(contentSchoolReportImportRouter);') &&
+  routeSource.includes('contentRouter.use(contentSchoolRelationsRouter);') &&
+  groupRouteSource.includes('from "./schoolOperationsSchemas.js"') &&
+  commercialRouteSource.includes('from "./schoolOperationsSchemas.js"') &&
+  reportImportRouteSource.includes('from "./schoolOperationsSchemas.js"') &&
+  relationsRouteSource.includes('from "./schoolOperationsSchemas.js"');
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -55,13 +68,15 @@ check('school import and relation payload semantics are preserved', () => {
 check('route parser call sites remain unchanged after schema ownership moves', () => {
   for (const fragment of [
     'const payload = groupSchema.parse(req.body);',
+  ]) assert.ok(groupRouteSource.includes(fragment), `group route parser call missing ${fragment}`);
+  for (const fragment of [
     'const payload = b2bPackageSchema.parse(req.body);',
     'const payload = accessCodeSchema.parse(req.body);',
     'const query = accessCodesListQuerySchema.parse(req.query);',
     'const query = accessCodeRedemptionsListQuerySchema.parse(req.query);',
-    'const payload = schoolImportSchema.parse(req.body);',
-    'const payload = schoolRelationSchema.parse(req.body);',
-  ]) assert.ok(routeSource.includes(fragment), `route parser call missing ${fragment}`);
+  ]) assert.ok(commercialRouteSource.includes(fragment), `commercial route parser call missing ${fragment}`);
+  assert.ok(reportImportRouteSource.includes('const payload = schoolImportSchema.parse(req.body);'), 'report/import route parser call missing school import parser');
+  assert.ok(relationsRouteSource.includes('const payload = schoolRelationSchema.parse(req.body);'), 'relations route parser call missing school relation parser');
 });
 
 check('school schema ownership is exclusive after delegation while staging remains baseline-compatible', () => {
@@ -77,19 +92,25 @@ check('school schema ownership is exclusive after delegation while staging remai
     'const schoolRelationSchema = z.object({',
   ];
   for (const declaration of declarations) {
-    assert.equal(routeSource.includes(declaration), !delegated, `${delegated ? 'delegated' : 'pre-apply'} ownership mismatch for ${declaration}`);
+    assert.ok(!routeSource.includes(declaration), `root route retained transport schema ${declaration}`);
+    assert.ok(!groupRouteSource.includes(declaration), `group route retained local transport schema ${declaration}`);
+    assert.ok(!commercialRouteSource.includes(declaration), `commercial route retained local transport schema ${declaration}`);
+    assert.ok(!reportImportRouteSource.includes(declaration), `report/import route retained local transport schema ${declaration}`);
+    assert.ok(!relationsRouteSource.includes(declaration), `relations route retained local transport schema ${declaration}`);
   }
 });
 
-check('authorization, pagination and school workflow logic remain route-owned', () => {
+check('authorization, pagination and school workflow ownership follows bounded modules', () => {
+  assert.ok(groupRouteSource.includes('const buildScopedGroupCreatePayload = async ('), 'group route lost create-scope orchestration');
   for (const fragment of [
-    'const buildScopedGroupCreatePayload = async (',
-    'const hasSchoolIdManagementScope = async (',
-    'const assertSchoolManagementScope = async (',
-    'const resolveSupervisorManagementScope = async (',
-    'const normalizeAccessCodeResponse = (code: any) => ({',
-    'const buildPaginationMeta = (total: number, page: number, limit: number) => {',
-  ]) assert.ok(routeSource.includes(fragment), `route lost operational ownership: ${fragment}`);
+    'export const hasSchoolIdManagementScope = async (',
+    'export const assertSchoolManagementScope = async (',
+    'export const resolveSupervisorManagementScope = async (',
+  ]) assert.ok(scopeSource.includes(fragment), `school scope module lost ${fragment}`);
+  assert.ok(commercialRouteSource.includes('const normalizeAccessCodeResponse = (code: any) => ({'), 'commercial route lost access-code response normalization');
+  assert.ok(queryUtilitySource.includes('export const buildPaginationMeta = (total: number, page: number, limit: number) => {'), 'shared query utility lost pagination metadata helper');
+  assert.ok(queryUtilitySource.includes('export const parseDateToTimestamp = (value?: string) => {'), 'shared query utility lost date parsing helper');
+  assert.ok(queryUtilitySource.includes('export const escapeRegExp = (value: string) =>'), 'shared query utility lost search escaping helper');
 });
 
 check('school operations schema module stays transport-only and bounded', () => {
@@ -100,5 +121,5 @@ check('school operations schema module stays transport-only and bounded', () => 
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
-console.log(JSON.stringify({ phase: 'content-school-operations-schema-boundary', status: failed.length ? 'FAIL' : 'PASS', delegated, routeLines: lineCount(routeSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
+console.log(JSON.stringify({ phase: 'content-school-operations-schema-boundary', status: failed.length ? 'FAIL' : 'PASS', delegated, routeLines: lineCount(routeSource), groupRouteLines: lineCount(groupRouteSource), commercialRouteLines: lineCount(commercialRouteSource), reportImportRouteLines: lineCount(reportImportRouteSource), relationsRouteLines: lineCount(relationsRouteSource), queryUtilityLines: lineCount(queryUtilitySource), scopeLines: lineCount(scopeSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
 if (failed.length) process.exit(1);

@@ -128,6 +128,16 @@ const courseListQuerySchema = z.object({
   pathId: z.string().trim().optional(),
   subjectId: z.string().trim().optional(),
   search: z.string().trim().max(120).optional(),
+  noTotal: z.preprocess((value) => {
+    if (value === undefined || value === null || value === "") return false;
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+      const normalized = value.trim().toLowerCase();
+      if (["true", "1", "yes", "on"].includes(normalized)) return true;
+      if (["false", "0", "no", "off"].includes(normalized)) return false;
+    }
+    return value;
+  }, z.boolean()).default(false),
   kind: z.enum(['learning', 'package', 'all']).default('all'),
 });
 
@@ -588,6 +598,7 @@ courseRouter.get(
       query.subjectId || "all-subjects",
       query.search || "",
       query.kind || "all",
+      query.noTotal ? "no-total" : "with-total",
     ].join(":");
 
     if (!isStaffViewer && publicCourseListCache?.key === cacheKey && publicCourseListCache.expiresAt > Date.now()) {
@@ -624,15 +635,22 @@ courseRouter.get(
       buildTrainerCourseListFilter(req.authUser),
       buildManagedContentScopeFilter(managedScope),
     );
-    const [items, total] = await Promise.all([
-      CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
-      CourseModel.countDocuments(filter),
-    ]);
+    const rawItems = await CourseModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(pagination.skip)
+      .limit(query.noTotal ? pagination.limit + 1 : pagination.limit)
+      .lean();
+    const hasMore = query.noTotal && rawItems.length > pagination.limit;
+    const items = query.noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
+    const total = query.noTotal
+      ? pagination.skip + items.length + (hasMore ? 1 : 0)
+      : await CourseModel.countDocuments(filter);
     const projectedItems = isStaffViewer ? items : items.map(projectRestrictedCoursePayload);
     const payload = {
       courses: projectedItems,
       pagination: buildPaginatedResponse([], pagination, total),
     };
+    res.setHeader("X-Has-More", String(hasMore));
 
     if (!isStaffViewer) {
       publicCourseListCache = {

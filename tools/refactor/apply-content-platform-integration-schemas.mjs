@@ -19,7 +19,10 @@ const localDeclarations = [
   'const providerSettingsPatchSchema = providerSettingsSchema.partial();',
   'const platformIntegrationSettingsPatchSchema = z.object({',
 ];
-const alreadyApplied = source.includes(schemaImport) && localDeclarations.every((declaration) => !source.includes(declaration));
+const delegatedIntegration = source.includes('contentRouter.use(contentPlatformIntegrationRouter);');
+const alreadyApplied =
+  (source.includes(schemaImport) || delegatedIntegration) &&
+  localDeclarations.every((declaration) => !source.includes(declaration));
 
 if (alreadyApplied) {
   console.log(JSON.stringify({ status: 'ALREADY_APPLIED', phase: 'content-platform-integration-schemas' }, null, 2));

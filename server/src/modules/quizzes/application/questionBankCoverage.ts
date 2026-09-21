@@ -60,10 +60,21 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
         },
         subSkillCount: {
           $size: {
-            $reduce: {
-              input: "$skillIdArrays",
-              initialValue: [],
-              in: { $setUnion: ["$$value", "$$this"] },
+            $filter: {
+              input: {
+                $reduce: {
+                  input: "$skillIdArrays",
+                  initialValue: [],
+                  in: { $setUnion: ["$$value", "$$this"] },
+                },
+              },
+              as: "skillId",
+              cond: {
+                $and: [
+                  { $ne: ["$$skillId", null] },
+                  { $ne: ["$$skillId", ""] },
+                ],
+              },
             },
           },
         },

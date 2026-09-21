@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 const files = {
   types: "types.ts",
   lessonModel: "server/src/models/Lesson.ts",
-  contentRoutes: "server/src/routes/content.routes.ts",
+  learningRoutes: "server/src/modules/content/http/contentLearningRoutes.ts",
   learningSchemas: "server/src/modules/content/http/learningContentSchemas.ts",
   lessonBuilder: "dashboards/admin/builders/UnifiedLessonBuilder.tsx",
   videoQuestionPicker: "dashboards/admin/builders/VideoQuestionPicker.tsx",
@@ -11,6 +11,7 @@ const files = {
   questionsApi: "services/apiGroups/questionsApi.ts",
   authApi: "services/apiGroups/authApi.ts",
   quizRoutes: "server/src/routes/quiz.routes.ts",
+  questionBankRoutes: "server/src/modules/quizzes/http/questionBankRoutes.ts",
   videoPlayer: "components/CustomVideoPlayer.tsx",
   videoModal: "components/VideoModal.tsx",
   subjectPage: "pages/SubjectLearningPage.tsx",
@@ -32,8 +33,8 @@ const checks = [
       source.learningSchemas.includes("interactiveQuestions: z") &&
       source.learningSchemas.includes("timestamp: z.number().min(0)") &&
       source.learningSchemas.includes("correctOptionIndex: z.number().min(0)") &&
-      source.contentRoutes.includes("sanitizeLessonPayload(lessonSchema.parse(req.body))") &&
-      source.contentRoutes.includes("sanitizeLessonPayload(lessonSchema.partial().parse(req.body))"),
+      source.learningRoutes.includes("sanitizeLessonPayload(lessonSchema.parse(req.body))") &&
+      source.learningRoutes.includes("sanitizeLessonPayload(lessonSchema.partial().parse(req.body))"),
   ],
   [
     "lesson builder can author timed video questions",
@@ -59,7 +60,7 @@ const checks = [
       source.videoQuestionPicker.includes("approvalStatus: 'approved'") &&
       source.videoQuestionPicker.includes("hasExplanationVideo") &&
       source.questionsApi.includes("hasExplanationVideo?: boolean") &&
-      source.quizRoutes.includes("query.hasExplanationVideo"),
+      source.questionBankRoutes.includes("query.hasExplanationVideo"),
   ],
   [
     "picker requires explicit selection and blocks duplicates or essay questions",

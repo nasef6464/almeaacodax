@@ -1258,7 +1258,7 @@ const App: React.FC = () => {
         const contentPhase = profile.contentScope === 'learning' ? 'core' : 'full';
         const contentPromise = profile.loadContent ? adapter.getContentBootstrap(profile.contentScope, contentPhase) : null;
         const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 100 }) : null;
-        const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress() : null;
+        const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress({ noTotal: true }) : null;
 
         coursesPromise?.then((courses) => {
           if (mounted && courses.length > 0) {
@@ -1401,7 +1401,7 @@ const App: React.FC = () => {
         }
 
         if (profile.loadSkillProgress && options.deferSkillProgress && isRegisteredUser(user)) {
-          void api.getSkillProgress()
+          void api.getSkillProgress({ noTotal: true })
             .then((skillProgress) => {
               if (mounted) {
                 hydrateSkillProgress(skillProgress as any[]);

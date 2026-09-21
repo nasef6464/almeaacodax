@@ -4,10 +4,13 @@ import path from 'node:path';
 
 const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/content.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const presentationRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentPresentationRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const schemaSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/platformPresentationSchemas.ts'), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
-const schemaImport = 'import { announcementAdSchema, announcementAdUpdateSchema, homepageSettingsSchema, platformFontSettingsSchema } from "../modules/content/http/platformPresentationSchemas.js";';
-const delegated = routeSource.includes(schemaImport);
+const delegated =
+  routeSource.includes('import { contentPresentationRouter } from "../modules/content/http/contentPresentationRoutes.js";') &&
+  routeSource.includes('contentRouter.use(contentPresentationRouter);') &&
+  presentationRouteSource.includes('from "./platformPresentationSchemas.js"');
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -58,7 +61,7 @@ check('route parser call sites remain stable', () => {
     'const payload = platformFontSettingsSchema.parse(req.body);',
     'const payload = announcementAdSchema.parse(req.body);',
     'const payload = announcementAdUpdateSchema.parse(req.body);',
-  ]) assert.ok(routeSource.includes(fragment), `route parser call missing ${fragment}`);
+  ]) assert.ok(presentationRouteSource.includes(fragment), `presentation route parser call missing ${fragment}`);
 });
 
 check('presentation schema ownership moves exclusively after delegation', () => {
@@ -72,8 +75,22 @@ check('presentation schema ownership moves exclusively after delegation', () => 
     'const homepageSettingsSchema = z.object({',
   ];
   for (const declaration of declarations) {
-    assert.equal(routeSource.includes(declaration), !delegated, `${delegated ? 'delegated' : 'pre-apply'} ownership mismatch for ${declaration}`);
+    assert.ok(!routeSource.includes(declaration), `root content route still owns ${declaration}`);
+    assert.ok(!presentationRouteSource.includes(declaration), `presentation route still owns transport schema ${declaration}`);
   }
+});
+
+check('presentation HTTP routes are composed through a dedicated bounded router', () => {
+  for (const fragment of [
+    'export const contentPresentationRouter = Router();',
+    '"/homepage-settings"',
+    '"/platform-font-settings"',
+    '"/announcement-ads"',
+    'requireRole(["admin"])',
+    'optionalAuth',
+  ]) assert.ok(presentationRouteSource.includes(fragment), `presentation route missing ${fragment}`);
+  assert.ok(routeSource.includes('contentRouter.use(contentPresentationRouter);'));
+  assert.ok(lineCount(presentationRouteSource) <= 190, `contentPresentationRoutes.ts exceeded 190 lines (${lineCount(presentationRouteSource)}).`);
 });
 
 check('presentation schema module stays transport-only and bounded', () => {
@@ -84,5 +101,5 @@ check('presentation schema module stays transport-only and bounded', () => {
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
-console.log(JSON.stringify({ phase: 'content-platform-presentation-schema-boundary', status: failed.length ? 'FAIL' : 'PASS', delegated, routeLines: lineCount(routeSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
+console.log(JSON.stringify({ phase: 'content-platform-presentation-schema-boundary', status: failed.length ? 'FAIL' : 'PASS', delegated, routeLines: lineCount(routeSource), presentationRouteLines: lineCount(presentationRouteSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
 if (failed.length) process.exit(1);

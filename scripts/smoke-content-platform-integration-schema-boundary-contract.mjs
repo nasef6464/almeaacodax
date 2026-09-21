@@ -4,12 +4,16 @@ import path from 'node:path';
 
 const root = process.cwd();
 const routeFile = 'server/src/routes/content.routes.ts';
+const integrationRouteFile = 'server/src/modules/content/http/contentPlatformIntegrationRoutes.ts';
 const schemaFile = 'server/src/modules/content/http/platformIntegrationSchemas.ts';
 const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
+const integrationRouteSource = fs.readFileSync(path.join(root, integrationRouteFile), 'utf8').replace(/\r\n/g, '\n');
 const schemaSource = fs.readFileSync(path.join(root, schemaFile), 'utf8').replace(/\r\n/g, '\n');
 const lineCount = (source) => source.split(/\r?\n/).length;
-const schemaImport = 'import { platformIntegrationSettingsPatchSchema, platformIntegrationSettingsSchema } from "../modules/content/http/platformIntegrationSchemas.js";';
-const delegated = routeSource.includes(schemaImport);
+const schemaImport = 'from "./platformIntegrationSchemas.js";';
+const delegated =
+  routeSource.includes('contentRouter.use(contentPlatformIntegrationRouter);') &&
+  integrationRouteSource.includes(schemaImport);
 
 const checks = [];
 const check = (name, assertion) => {
@@ -82,7 +86,7 @@ check('route parser call sites remain unchanged after ownership moves', () => {
     'const partialPayload = platformIntegrationSettingsPatchSchema.parse(req.body);',
     'const payload = platformIntegrationSettingsSchema.parse(nextPayload);',
     'const parsedSnapshot = platformIntegrationSettingsSchema.parse(runtimeSnapshot as Record<string, unknown>);',
-  ]) assert.ok(routeSource.includes(fragment), `route parser call missing ${fragment}`);
+  ]) assert.ok(integrationRouteSource.includes(fragment), `route parser call missing ${fragment}`);
 });
 
 check('schema ownership is exclusive after delegation while staging remains baseline-compatible', () => {
@@ -96,9 +100,9 @@ check('schema ownership is exclusive after delegation while staging remains base
     'const platformIntegrationSettingsPatchSchema = z.object({',
   ];
   if (delegated) {
-    for (const declaration of localDeclarations) assert.ok(!routeSource.includes(declaration), `delegated route still owns ${declaration}`);
+    for (const declaration of localDeclarations) assert.ok(!integrationRouteSource.includes(declaration), `delegated route still owns ${declaration}`);
   } else {
-    for (const declaration of localDeclarations) assert.ok(routeSource.includes(declaration), `pre-apply route lost ${declaration}`);
+    for (const declaration of localDeclarations) assert.ok(integrationRouteSource.includes(declaration), `pre-apply route lost ${declaration}`);
   }
 });
 
@@ -117,4 +121,4 @@ if (failed.length) {
   process.exit(1);
 }
 console.log('[content-platform-integration-schema-boundary] PASS');
-console.log(JSON.stringify({ delegated, routeLines: lineCount(routeSource), schemaLines: lineCount(schemaSource), checks }, null, 2));
+console.log(JSON.stringify({ delegated, routeLines: lineCount(routeSource), integrationRouteLines: lineCount(integrationRouteSource), schemaLines: lineCount(schemaSource), checks }, null, 2));

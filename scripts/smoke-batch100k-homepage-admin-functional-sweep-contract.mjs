@@ -16,12 +16,12 @@ const homepageManager = read("dashboards/admin/HomepageManager.tsx");
 const header = read("components/Header.tsx");
 const types = read("types.ts");
 const model = read("server/src/models/HomepageSettings.ts");
-const routes = read("server/src/routes/content.routes.ts");
+const presentationRoutes = read("server/src/modules/content/http/contentPresentationRoutes.ts");
 const presentationSchemas = read("server/src/modules/content/http/platformPresentationSchemas.ts");
 
 assertContains("HomepageSettings type exposes brand settings", types, "HomepageBrandSettings");
 assertContains("Homepage model persists brand settings", model, "homepageBrandSchema");
-assertContains("Homepage route uses extracted homepage settings schema", routes, "homepageSettingsSchema");
+assertContains("Homepage route uses extracted homepage settings schema", presentationRoutes, "homepageSettingsSchema");
 assertContains("Homepage presentation schema validates brand payload", presentationSchemas, "brand: z");
 assertContains("Homepage manager has logo upload handler", homepageManager, "handleBrandLogoUpload");
 assertContains("Homepage manager renders logo settings section", homepageManager, "شعار المنصة");

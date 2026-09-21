@@ -4,6 +4,10 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const files = {
   quizRoutes: await read("server/src/routes/quiz.routes.ts"),
+  quizResultsRoutes: await read("server/src/modules/quizzes/http/quizResultsRoutes.ts"),
+  quizReportScope: await read("server/src/modules/quizzes/application/quizReportScope.ts"),
+  quizAnalyticsRoutes: await read("server/src/modules/quizzes/http/quizAnalyticsRoutes.ts"),
+  quizAnalyticsOverview: await read("server/src/modules/quizzes/application/quizAnalyticsOverview.ts"),
   managedContentScope: await read("server/src/modules/quizzes/application/quizManagedContentScope.ts"),
   api: [
     await read("services/api.ts"),
@@ -42,17 +46,13 @@ function assertAnyIncludes(source, fragments, message) {
   }
 }
 
-const analyticsStart = files.quizRoutes.indexOf('"/analytics/overview"');
-const analyticsEnd = files.quizRoutes.indexOf('"/results"', analyticsStart);
-const analyticsRoute = files.quizRoutes.slice(analyticsStart, analyticsEnd);
-
-const scopedStudentsStart = files.quizRoutes.indexOf("const resolveScopedStudents");
-const scopedStudentsEnd = files.quizRoutes.indexOf("const resolveSupervisorSchoolReportScope", scopedStudentsStart);
-const scopedStudentsHelper = files.quizRoutes.slice(scopedStudentsStart, scopedStudentsEnd);
+const analyticsRoute = files.quizAnalyticsRoutes;
+const analyticsOverview = files.quizAnalyticsOverview;
+const scopedStudentsHelper = files.quizReportScope;
 
 check("dashboard scoped students are queried by role instead of loading every student", () => {
-  assertIncludes(files.quizRoutes, "buildScopedStudentFilter");
-  assertIncludes(files.quizRoutes, "STUDENT_DASHBOARD_SELECT");
+  assertIncludes(files.quizReportScope, "buildQuizReportStudentScope");
+  assertIncludes(files.quizReportScope, "STUDENT_DASHBOARD_SELECT");
   assertIncludes(scopedStudentsHelper, "UserModel.find(filter)");
   assertIncludes(scopedStudentsHelper, "countDocuments(filter)");
   assertIncludes(scopedStudentsHelper, ".limit(limit)");
@@ -60,23 +60,24 @@ check("dashboard scoped students are queried by role instead of loading every st
 });
 
 check("analytics overview has bounded work for high-scale dashboards", () => {
-  assertIncludes(files.quizRoutes, "dashboardAnalyticsQuerySchema");
-  assertIncludes(analyticsRoute, "studentLimit");
-  assertIncludes(analyticsRoute, "resultLimit");
-  assertIncludes(analyticsRoute, "attemptLimit");
-  assertIncludes(analyticsRoute, ".limit(query.resultLimit).lean()");
-  assertIncludes(analyticsRoute, ".limit(query.attemptLimit).lean()");
-  assertIncludes(analyticsRoute, "sampledStudentCount");
-  assertIncludes(analyticsRoute, "isTruncated");
+  assertIncludes(files.quizAnalyticsRoutes, "dashboardAnalyticsQuerySchema");
+  assertIncludes(analyticsOverview, "studentLimit");
+  assertIncludes(analyticsOverview, "resultLimit");
+  assertIncludes(analyticsOverview, "attemptLimit");
+  assertIncludes(analyticsOverview, ".limit(query.resultLimit).lean()");
+  assertIncludes(analyticsOverview, ".limit(query.attemptLimit).lean()");
+  assertIncludes(analyticsOverview, "sampledStudentCount");
+  assertIncludes(analyticsOverview, "isTruncated");
 });
 
 check("scoped quiz results remain paginated and role-scoped", () => {
-  assertIncludes(files.quizRoutes, '"/results/scoped"');
-  assertIncludes(files.quizRoutes, "resolvePagination(req.query");
-  assertIncludes(files.quizRoutes, 'import { filterResultsByManagedContentScope, matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";');
-  assertIncludes(files.quizRoutes, "filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds)");
+  assertIncludes(files.quizRoutes, "quizRouter.use(quizResultsRouter)");
+  assertIncludes(files.quizResultsRoutes, '"/results/scoped"');
+  assertIncludes(files.quizResultsRoutes, "resolvePagination(query");
+  assertIncludes(files.quizResultsRoutes, 'import { filterResultsByManagedContentScope } from "../application/quizManagedContentScope.js";');
+  assertIncludes(files.quizResultsRoutes, "filterResultsByManagedContentScope(results, authUser.role, managedPathIds, managedSubjectIds)");
   assertIncludes(files.managedContentScope, "export const filterResultsByManagedContentScope");
-  assertIncludes(files.quizRoutes, "sampledStudentCount");
+  assertIncludes(files.quizResultsRoutes, "sampledStudentCount");
 });
 
 check("frontend API requests dashboard data with safe limits without visual rewrites", () => {

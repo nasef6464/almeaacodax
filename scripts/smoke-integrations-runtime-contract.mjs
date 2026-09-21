@@ -5,6 +5,9 @@ const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 
 const contentRoutes = read("server/src/routes/content.routes.ts");
+const integrationRoutes = read("server/src/modules/content/http/contentPlatformIntegrationRoutes.ts");
+const integrationRuntimeRoutes = read("server/src/modules/content/http/contentPlatformIntegrationRuntimeRoutes.ts");
+const integrationRuntime = read("server/src/modules/content/integrations/platformIntegrationRuntime.ts");
 const notificationRoutes = read("server/src/routes/notification.routes.ts");
 const notificationService = read("server/src/services/notificationService.ts");
 const api = read("services/api.ts");
@@ -21,49 +24,49 @@ const includes = (source, snippet) => {
 };
 
 check("platform integrations response masks secrets and preserves old values on partial save", () => {
-  includes(contentRoutes, "maskSensitiveProviderValues");
-  includes(contentRoutes, "mergeSensitiveProviderValues");
-  includes(contentRoutes, "decryptIntegrationSecretsForRuntime");
-  includes(contentRoutes, "encryptIntegrationSecretsAtRest");
-  includes(contentRoutes, "providerSecretState");
-  includes(contentRoutes, '"/platform-integrations"');
+  includes(integrationRuntime, "maskSensitiveProviderValues");
+  includes(integrationRuntime, "mergeSensitiveProviderValues");
+  includes(integrationRoutes, "decryptIntegrationSecretsForRuntime");
+  includes(integrationRoutes, "encryptIntegrationSecretsAtRest");
+  includes(integrationRuntime, "providerSecretState");
+  includes(integrationRoutes, '"/platform-integrations"');
 });
 
 check("platform integrations route uses encryption helper import", () => {
-  includes(contentRoutes, 'from "../utils/integrationSecretsCrypto.js"');
+  includes(integrationRoutes, 'from "../../../utils/integrationSecretsCrypto.js"');
 });
 
 check("integration history list returns masked secret state only", () => {
-  includes(contentRoutes, "/platform-integrations/history");
-  includes(contentRoutes, "safeHistory");
-  includes(contentRoutes, "providerSecretState");
-  includes(contentRoutes, "snapshot");
-  includes(contentRoutes, "maskIntegrationSnapshot");
+  includes(integrationRoutes, "/platform-integrations/history");
+  includes(integrationRoutes, "safeHistory");
+  includes(integrationRuntime, "providerSecretState");
+  includes(integrationRoutes, "snapshot");
+  includes(integrationRuntime, "maskIntegrationSnapshot");
 });
 
 check("integration restore endpoint returns masked settings", () => {
-  includes(contentRoutes, "/platform-integrations/history/:id/restore");
-  includes(contentRoutes, "runtimeSnapshot");
-  includes(contentRoutes, "encryptedPayload");
-  includes(contentRoutes, "safeSettings");
-  includes(contentRoutes, "return res.json({ settings: safeSettings, restoredFrom");
+  includes(integrationRoutes, "/platform-integrations/history/:id/restore");
+  includes(integrationRoutes, "runtimeSnapshot");
+  includes(integrationRoutes, "encryptedPayload");
+  includes(integrationRoutes, "safeSettings");
+  includes(integrationRoutes, "return res.json({ settings: safeSettings, restoredFrom");
 });
 
 check("runtime audit endpoint exists and includes env/runtime readiness checks", () => {
-  includes(contentRoutes, '"/platform-integrations/runtime-audit"');
-  includes(contentRoutes, "runtimeReady");
-  includes(contentRoutes, "getRedisHealth(\"queue\"");
-  includes(contentRoutes, "WHATSAPP_PROVIDER");
-  includes(contentRoutes, "EMAIL_PROVIDER");
-  includes(contentRoutes, "SENTRY_DSN");
+  includes(integrationRuntimeRoutes, '"/platform-integrations/runtime-audit"');
+  includes(integrationRuntimeRoutes, "runtimeReady");
+  includes(integrationRuntimeRoutes, "getRedisHealth(\"queue\"");
+  includes(integrationRuntimeRoutes, "WHATSAPP_PROVIDER");
+  includes(integrationRuntimeRoutes, "EMAIL_PROVIDER");
+  includes(integrationRuntimeRoutes, "SENTRY_DSN");
 });
 
 check("setup checklist endpoint still exists with callback/webhook guidance", () => {
-  includes(contentRoutes, '"/platform-integrations/setup-checklist"');
-  includes(contentRoutes, "callbackUrl");
-  includes(contentRoutes, "webhookUrl");
-  includes(contentRoutes, "GOOGLE_CLIENT_ID");
-  includes(contentRoutes, "WHATSAPP_ACCESS_TOKEN");
+  includes(integrationRuntimeRoutes, '"/platform-integrations/setup-checklist"');
+  includes(integrationRuntimeRoutes, "callbackUrl");
+  includes(integrationRuntimeRoutes, "webhookUrl");
+  includes(integrationRuntimeRoutes, "GOOGLE_CLIENT_ID");
+  includes(integrationRuntimeRoutes, "WHATSAPP_ACCESS_TOKEN");
 });
 
 check("admin test-delivery endpoint exists for email and whatsapp", () => {

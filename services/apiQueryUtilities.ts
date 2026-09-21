@@ -6,6 +6,7 @@ export interface PaginationOptions {
   isActive?: boolean;
   pathId?: string;
   subjectId?: string;
+  noTotal?: boolean;
   /** Restrict the admin user directory to active platform trainers with a content scope. */
   platformTrainer?: boolean;
 }
