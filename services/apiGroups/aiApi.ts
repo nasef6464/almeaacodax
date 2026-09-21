@@ -25,6 +25,33 @@ export const createAiApi = (request: ApiRequest) => ({
       token,
     }),
 
+  aiQuestionAssistant: (
+    payload: {
+      resultId: string;
+      questionId: string;
+      helpLevel: "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
+      message?: string;
+    },
+    token?: string | null,
+  ) =>
+    request<{
+      text: string;
+      helpLevel: "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
+      provider: AiProvider;
+      model: string;
+      usedFallback: boolean;
+      cacheHit: boolean;
+      hasImage: boolean;
+      imageSentToProvider: boolean;
+      visualContextBlocked?: boolean;
+      budgetLimited?: boolean;
+      rateLimited?: boolean;
+    }>("/ai/question-assistant", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+
   aiStatus: (token?: string | null) =>
     request<{
       provider: AiProvider;
@@ -46,6 +73,13 @@ export const createAiApi = (request: ApiRequest) => ({
       routingMode?: "manual" | "auto";
       model: string;
       timeoutMs: number;
+      providerHealth?: Array<{
+        provider: string;
+        failures: number;
+        open: boolean;
+        openUntil?: number;
+        lastFailureAt?: number;
+      }>;
     }>("/ai/status", { token }),
 
   aiReadiness: (token?: string | null) =>
