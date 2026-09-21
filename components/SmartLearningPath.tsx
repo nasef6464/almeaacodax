@@ -1,39 +1,93 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SkillGap } from '../types';
-import { buildSmartLearningPath } from '../services/smartLearningPath';
+import { getInternalLearningPath, type AdaptiveSkillSignal } from '../services/adaptiveLearningPathService';
+import { api } from '../services/api';
 import { Sparkles, Zap, ArrowLeft, Clock } from 'lucide-react';
+import { Card } from './ui/Card';
 
 interface Props {
     skills: SkillGap[];
 }
 
 export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
-    const smartPath = useMemo(() => buildSmartLearningPath(skills), [skills]);
-    const recommendations = smartPath.recommendations;
+    const localPath = useMemo(() => getInternalLearningPath(skills), [skills]);
+    const [serverSignals, setServerSignals] = useState<AdaptiveSkillSignal[] | null>(null);
+    const [serverFingerprint, setServerFingerprint] = useState('');
+
+    const scope = useMemo(() => {
+        const pathIds = [...new Set(skills.map((skill) => skill.pathId).filter(Boolean))] as string[];
+        const subjectIds = [...new Set(skills.map((skill) => skill.subjectId).filter(Boolean))] as string[];
+        return pathIds.length === 1
+            ? { pathId: pathIds[0], ...(subjectIds.length === 1 ? { subjectId: subjectIds[0] } : {}) }
+            : null;
+    }, [skills]);
+
+    useEffect(() => {
+        let cancelled = false;
+        if (!scope?.pathId) {
+            setServerSignals(null);
+            setServerFingerprint('');
+            return () => { cancelled = true; };
+        }
+
+        api.getNextBestAction(scope)
+            .then((payload) => {
+                if (cancelled) return;
+                setServerFingerprint(payload.fingerprint || '');
+                setServerSignals(
+                    (payload.candidates || []).map((candidate) => ({
+                        skillId: candidate.skillId,
+                        skill: candidate.skill,
+                        pathId: candidate.pathId,
+                        subjectId: candidate.subjectId,
+                        sectionId: candidate.sectionId,
+                        mastery: candidate.mastery,
+                        status: candidate.mastery >= 80 ? 'strong' : candidate.mastery < 50 ? 'weak' : 'average',
+                        evidenceCount: candidate.evidenceCount,
+                        trend: candidate.trend,
+                    })),
+                );
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setServerSignals(null);
+                    setServerFingerprint('');
+                }
+            });
+
+        return () => { cancelled = true; };
+    }, [scope?.pathId, scope?.subjectId, localPath.fingerprint]);
+
+    const effectivePath = useMemo(
+        () => serverSignals && serverSignals.length ? getInternalLearningPath(serverSignals) : localPath,
+        [localPath, serverSignals],
+    );
+    const recommendations = effectivePath.recommendations;
+    const fingerprint = serverFingerprint || effectivePath.fingerprint;
 
     if (recommendations.length === 0) return null;
 
     return (
-        <div className="relative" data-smart-path-version={smartPath.version} data-smart-path-fingerprint={smartPath.fingerprint}>
+        <div className="relative" data-adaptive-fingerprint={fingerprint}>
             <div className="flex items-center gap-2 mb-4">
                 <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-2 rounded-lg shadow-lg shadow-purple-200">
                     <Sparkles size={20} />
                 </div>
                 <div>
                     <h3 className="font-bold text-lg text-gray-900">مسار التعلم الذكي</h3>
-                    <p className="text-xs text-gray-500">اختيار داخلي مبني على الإتقان والأدلة والنطاق الحالي، بدون استدعاء AI</p>
+                    <p className="text-xs text-gray-500">تم اختياره لك بناءً على المهارات التي تحتاج دعمًا</p>
                 </div>
             </div>
 
             <div className="relative border-r-2 border-purple-100 mr-4 space-y-6">
                 {recommendations.map((item, index) => (
-                    <div key={item.id} className="relative pr-8 animate-fade-in" style={{ animationDelay: `${index * 120}ms` }}>
+                    <div key={item.id} className="relative pr-8 animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
                         <div
                             className={`absolute -right-[9px] top-0 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
-                                item.priority === 'high' ? 'bg-red-500' : item.priority === 'medium' ? 'bg-purple-500' : 'bg-emerald-500'
+                                item.priority === 'high' ? 'bg-red-500' : 'bg-purple-500'
                             }`}
-                        />
+                        ></div>
 
                         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
                             <div className="flex justify-between items-start mb-2">
@@ -47,17 +101,17 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
                                                   : 'bg-emerald-500'
                                         }`}
                                     >
-                                        {item.type === 'lesson' ? 'شرح' : item.type === 'quiz' ? 'قياس/تدريب' : 'مراجعة'}
+                                        {item.type === 'lesson' ? 'درس' : item.type === 'quiz' ? 'اختبار' : 'مراجعة'}
                                     </span>
                                     <span className="text-xs text-gray-400 flex items-center gap-1">
                                         <Clock size={12} /> {item.duration}
                                     </span>
                                 </div>
-                                {item.priority === 'high' ? (
+                                {item.priority === 'high' && (
                                     <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded font-bold flex items-center gap-1">
-                                        <Zap size={12} /> أولوية
+                                        <Zap size={12} /> أولوية عالية
                                     </span>
-                                ) : null}
+                                )}
                             </div>
 
                             <h4 className="font-bold text-gray-800 text-lg mb-1">{item.title}</h4>
