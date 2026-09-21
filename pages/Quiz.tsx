@@ -534,14 +534,6 @@ const Quiz: React.FC = () => {
     setSelectedAnswer(index);
     setAnswers((prev) => ({ ...prev, [currentQuestion]: index }));
 
-    const isCorrect = index === questions[currentQuestion].correctOptionIndex;
-    recordQuestionAttempt({
-      questionId: questions[currentQuestion].id.toString(),
-      selectedOptionIndex: index,
-      isCorrect,
-      timeSpentSeconds: 0,
-      date: new Date().toISOString(),
-    });
   };
 
   const handleFinish = () => {
@@ -620,6 +612,19 @@ const Quiz: React.FC = () => {
     });
 
     const resultDate = new Date().toISOString();
+
+    // Commit one evidence row per question only when the self-quiz is finished.
+    // Recording on every option click would double-count answer changes.
+    questions.forEach((question, idx) => {
+      const selectedOptionIndex = answers[idx] ?? -1;
+      recordQuestionAttempt({
+        questionId: question.id.toString(),
+        selectedOptionIndex,
+        isCorrect: selectedOptionIndex >= 0 && selectedOptionIndex === question.correctOptionIndex,
+        timeSpentSeconds: 0,
+        date: resultDate,
+      });
+    });
 
     try {
       saveExamResult({
