@@ -10,6 +10,7 @@ import { questionAttemptSchema } from "./submissionSchemas.js";
 import { buildQuestionAttemptDocument } from "../application/questionAttemptDocument.js";
 import { updateSkillProgressFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
+import { summarizeRecentSkillEvidence } from "../analytics/skillAnalytics.js";
 
 export const adaptiveTelemetryRouter = Router();
 
@@ -17,7 +18,9 @@ adaptiveTelemetryRouter.get(
   "/skill-progress",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const filter = { userId: req.authUser!.id };
+    const pathId = String(req.query.pathId || "").trim();
+    const subjectId = String(req.query.subjectId || "").trim();
+    const filter = { userId: req.authUser!.id, ...(pathId ? { pathId } : {}), ...(subjectId ? { subjectId } : {}) };
     const pagination = resolvePagination(req.query, { limit: 80 });
     const noTotal = ["true", "1", "yes", "on"].includes(String(req.query.noTotal || "").trim().toLowerCase());
     const rawItems = await SkillProgressModel.find(filter)
@@ -32,7 +35,10 @@ adaptiveTelemetryRouter.get(
       : await SkillProgressModel.countDocuments(filter);
     res.setHeader("X-Has-More", String(hasMore));
     res.json({
-      skillProgress: items,
+      skillProgress: items.map((item: any) => ({
+        ...item,
+        recent: summarizeRecentSkillEvidence(Array.isArray(item.recentEvidence) ? item.recentEvidence : []),
+      })),
       pagination: buildPaginatedResponse([], pagination, total),
     });
   }),
