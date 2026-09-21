@@ -38,10 +38,11 @@ Added additive `MasteryGoal` model and scoped APIs:
 - PATCH /quizzes/mastery-goals/:goalId
 Targets: topic | section | path.
 Horizons: short | long.
-Students may manage their own goals. Staff may target only students resolved inside their existing report scope.
+Students may manage their own goals. Staff may target only students resolved inside their existing report scope. Goal creation also validates that the path exists and, when a subject is supplied, that the subject belongs to that exact path.
 
 ## Student UI
 Reports now:
+- preserves the Phase 5 path + subject filters before readiness/goal reads;
 - consumes server readiness for the active path/subject with deterministic local fallback;
 - routes ready learners to mastery review, insufficient evidence to measurement, and weak learners to treatment;
 - shows active mastery goals and supports quick short/long goal creation;
@@ -52,7 +53,7 @@ Reports now:
 MasteryGoal is additive. No existing scoring, QuizResult, QuestionAttempt, SkillProgress, RBAC, or historical data is deleted or rewritten.
 
 ## Resource impact
-Readiness read is projection-limited and capped at 500 scoped progress rows. Goal list is capped at 100. No media load and no AI call is introduced.
+Readiness read is projection-limited and capped at 500 scoped progress rows. Goal list is capped at 100. Taxonomy validation performs only point lookups for path/subject. No media load and no AI call is introduced.
 
 ## Verification
 Focused contract: `node scripts/smoke-adaptive-phase6-mastery-readiness-contract.mjs`.
