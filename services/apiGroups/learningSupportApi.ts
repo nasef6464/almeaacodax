@@ -27,15 +27,41 @@ export const createLearningSupportApi = (request: ApiRequest) => ({
   getReviewDue: (limit = 20, token?: string | null) =>
     request<{ dueCount: number; items: any[] }>(withQuery("/review/due", { limit }), { token }),
 
-  answerReviewCard: (cardId: string, quality: number, token?: string | null) =>
-    request<{ success: boolean; card: any }>(`/review/${encodeURIComponent(cardId)}/answer`, {
-      method: "POST",
-      body: { quality },
-      token,
-    }),
+  answerReviewCard: (
+    cardId: string,
+    payload: number | { quality?: number; selectedOptionIndex?: number; eventId?: string },
+    token?: string | null,
+  ) =>
+    request<{ success: boolean; idempotent?: boolean; isCorrect?: boolean; card: any }>(
+      `/review/${encodeURIComponent(cardId)}/answer`,
+      {
+        method: "POST",
+        body: typeof payload === "number" ? { quality: payload } : payload,
+        token,
+      },
+    ),
 
   getReviewStats: (token?: string | null) =>
-    request<{ dueToday: number; dueThisWeek: number; totalCards: number }>("/review/stats", { token }),
+    request<{ dueToday: number; dueThisWeek: number; totalCards: number; masteryReviewDue?: number }>("/review/stats", { token }),
+
+  getMasteryChallenges: (
+    scope: { pathId: string; subjectId?: string; limit?: number },
+    token?: string | null,
+  ) =>
+    request<{
+      scope: { pathId: string; subjectId?: string };
+      challenges: Array<{
+        skillId: string;
+        skill: string;
+        pathId: string;
+        subjectId: string;
+        sectionId: string;
+        mastery: number;
+        evidenceCount: number;
+        lastAttemptAt?: string;
+        dueReviewCount: number;
+      }>;
+    }>(withQuery("/review/mastery-challenges", scope), { token }),
 
   search: (
     params: { q: string; type?: "all" | "lesson" | "question" | "course"; limit?: number },
