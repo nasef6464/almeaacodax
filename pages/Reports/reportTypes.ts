@@ -70,6 +70,8 @@ export interface StudentAggregatedSkill {
     skill: string;
     skillId?: string;
     pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
     subjectName?: string;
     sectionName?: string;
     mastery: number;
