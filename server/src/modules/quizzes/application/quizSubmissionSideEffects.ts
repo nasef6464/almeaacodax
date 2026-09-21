@@ -132,6 +132,7 @@ const qualityFromAttempt = (selectedOptionIndex?: number, isCorrect?: boolean) =
 
 const upsertReviewCardsFromQuestionReview = async (args: {
   userId: string;
+  result?: any;
   questionReview: Array<{ questionId: string; selectedOptionIndex?: number; isCorrect?: boolean }>;
   questionById: Map<string, any>;
 }) => {
@@ -139,14 +140,35 @@ const upsertReviewCardsFromQuestionReview = async (args: {
     .map((item) => {
       const question = args.questionById.get(String(item.questionId || ""));
       if (!question) return null;
+      const questionId = String(item.questionId || "");
+      if (!questionId) return null;
       const skillId = Array.isArray(question.skillIds) && question.skillIds.length > 0 ? String(question.skillIds[0]) : "";
-      const previous = sm2({ easeFactor: 2.5, interval: 1, repetitions: 0 }, qualityFromAttempt(item.selectedOptionIndex, item.isCorrect));
+      const pathId = String(question.pathId || "");
+      const subjectId = String(question.subjectId || question.subject || "");
+      const sectionId = String(question.sectionId || "");
+      const reviewType =
+        String(args.result?.source || "") === "mastery_review" || Boolean(item.isCorrect)
+          ? "mastery_review"
+          : "error_recovery";
+      const quality = qualityFromAttempt(item.selectedOptionIndex, item.isCorrect);
+      const previous = sm2({ easeFactor: 2.5, interval: 1, repetitions: 0 }, quality);
       return {
         updateOne: {
-          filter: { userId: args.userId, questionId: String(item.questionId || "") },
+          filter: { userId: args.userId, questionId },
           update: {
-            $setOnInsert: { userId: args.userId, questionId: String(item.questionId || ""), skillId },
-            $set: { skillId, easeFactor: previous.easeFactor, interval: previous.interval, repetitions: previous.repetitions, nextReviewDate: previous.nextReviewDate, lastQuality: qualityFromAttempt(item.selectedOptionIndex, item.isCorrect) },
+            $setOnInsert: { userId: args.userId, questionId },
+            $set: {
+              skillId,
+              pathId,
+              subjectId,
+              sectionId,
+              reviewType,
+              easeFactor: previous.easeFactor,
+              interval: previous.interval,
+              repetitions: previous.repetitions,
+              nextReviewDate: previous.nextReviewDate,
+              lastQuality: quality,
+            },
           },
           upsert: true,
         },
@@ -158,6 +180,48 @@ const upsertReviewCardsFromQuestionReview = async (args: {
     await ReviewCardModel.bulkWrite(operations as any[], { ordered: false });
   }
 };
+
+export async function upsertReviewCardFromQuestionAttempt(args: {
+  userId: string;
+  attempt: any;
+  question: any;
+}) {
+  const questionId = String(args.attempt?.questionId || args.question?.id || args.question?._id || "");
+  if (!questionId) return;
+
+  const skillId = Array.isArray(args.question?.skillIds) && args.question.skillIds.length > 0
+    ? String(args.question.skillIds[0])
+    : "";
+  const quality = qualityFromAttempt(
+    Number(args.attempt?.selectedOptionIndex ?? -1),
+    Boolean(args.attempt?.isCorrect),
+  );
+  const previous = sm2({ easeFactor: 2.5, interval: 1, repetitions: 0 }, quality);
+  const reviewType =
+    String(args.attempt?.evidenceType || "") === "mastery_review" || Boolean(args.attempt?.isCorrect)
+      ? "mastery_review"
+      : "error_recovery";
+
+  await ReviewCardModel.findOneAndUpdate(
+    { userId: args.userId, questionId },
+    {
+      $setOnInsert: { userId: args.userId, questionId },
+      $set: {
+        skillId,
+        pathId: String(args.question?.pathId || args.attempt?.pathId || ""),
+        subjectId: String(args.question?.subjectId || args.question?.subject || args.attempt?.subjectId || ""),
+        sectionId: String(args.question?.sectionId || args.attempt?.sectionId || ""),
+        reviewType,
+        easeFactor: previous.easeFactor,
+        interval: previous.interval,
+        repetitions: previous.repetitions,
+        nextReviewDate: previous.nextReviewDate,
+        lastQuality: quality,
+      },
+    },
+    { upsert: true, new: true },
+  );
+}
 
 export async function runQuizSubmissionSideEffects(args: {
   requestId?: string;
@@ -171,7 +235,7 @@ export async function runQuizSubmissionSideEffects(args: {
   const scoreEmoji = score >= 80 ? "🎉" : score >= 60 ? "👍" : "💪";
   const outcomes = await Promise.allSettled([
     updateSkillProgressFromResult(args.result, args.userId),
-    upsertReviewCardsFromQuestionReview(args),
+    upsertReviewCardsFromQuestionReview({ ...args, result: args.result }),
     createNotificationDeliveries({
       title: `${scoreEmoji} نتيجة ${quizTitle}`,
       body: `حصلت على ${score}% في هذا الاختبار. ${score >= 80 ? "أداء رائع!" : score >= 60 ? "جيد جداً، استمر!" : "لا تيأس، راجع الأخطاء وأعد المحاولة."}`,
