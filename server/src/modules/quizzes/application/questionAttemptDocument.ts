@@ -17,7 +17,7 @@ export const buildQuestionAttemptDocument = ({
   userId,
   date: payload.date || new Date().toISOString(),
   pathId: String(question?.pathId || ""),
-  subjectId: String(question?.subject || ""),
+  subjectId: String(question?.subjectId || question?.subject || ""),
   sectionId: String(question?.sectionId || ""),
   skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
 });

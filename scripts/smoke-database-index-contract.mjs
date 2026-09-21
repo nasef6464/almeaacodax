@@ -40,6 +40,12 @@ function assertIncludes(source, fragment) {
   }
 }
 
+function assertIncludesOneOf(source, fragments) {
+  if (!fragments.some((fragment) => source.includes(fragment))) {
+    throw new Error(`Missing all accepted fragments: ${fragments.join(" | ")}`);
+  }
+}
+
 check("learning-space models have path/subject visibility indexes", () => {
   assertIncludes(files.topic, "topicSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, order: 1 })");
   assertIncludes(files.lesson, "lessonSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, createdAt: -1 })");
@@ -51,7 +57,10 @@ check("taxonomy bootstrap models have compound lookup indexes", () => {
   assertIncludes(files.level, "levelSchema.index({ pathId: 1, createdAt: 1 })");
   assertIncludes(files.subject, "subjectSchema.index({ pathId: 1, createdAt: 1 })");
   assertIncludes(files.section, "sectionSchema.index({ subjectId: 1, createdAt: 1 })");
-  assertIncludes(files.skill, "skillSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, createdAt: 1 })");
+  assertIncludesOneOf(files.skill, [
+    "skillSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, createdAt: 1 })",
+    "skillSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, order: 1, createdAt: 1 })",
+  ]);
 });
 
 check("package and access models have discovery indexes", () => {

@@ -261,6 +261,7 @@ export interface Topic {
     subjectId: string;
     pathId?: string;
     sectionId?: string;
+    skillId?: string | null;
     title: string;
     parentId?: string | null; // null or undefined for main topics
     order: number;
@@ -283,6 +284,14 @@ export interface NestedSkill {
     subSkills: NestedSubSkill[];
 }
 
+export interface SkillSubSkill {
+    id: string;
+    name: string;
+    code?: string;
+    description?: string;
+    order?: number;
+}
+
 export interface Skill {
     id: string;
     name: string;
@@ -290,6 +299,8 @@ export interface Skill {
     subjectId: string;
     sectionId: string;
     description?: string;
+    order?: number;
+    subSkills?: SkillSubSkill[];
     lessonIds: string[]; // Lessons (videos/articles) that teach this skill
     questionIds: string[]; // Questions that test this skill
     createdAt: number;
@@ -547,8 +558,11 @@ export interface Question extends ContentWorkflow {
     videoUrl?: string;
     imageUrl?: string;
     skillIds?: string[];
+    skillId?: string | null;
+    subSkillId?: string | null;
     pathId?: string; // Added to support Path selection
     subject: string;
+    subjectId?: string | null;
     sectionId?: string;
     difficulty: 'Easy' | 'Medium' | 'Hard';
     type: 'mcq' | 'true_false' | 'essay';

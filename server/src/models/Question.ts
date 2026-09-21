@@ -10,8 +10,11 @@ const questionSchema = new Schema(
     videoUrl: { type: String, default: "" },
     imageUrl: { type: String, default: "" },
     skillIds: { type: [String], default: [] },
+    skillId: { type: String, default: null },
+    subSkillId: { type: String, default: null },
     pathId: { type: String, default: null },
     subject: { type: String, required: true, index: true },
+    subjectId: { type: String, default: null, index: true },
     sectionId: { type: String, default: null },
     examType: { type: String, enum: ["qudurat", "tahsili", "general"], default: "general", index: true },
     source: { type: String, enum: ["internal", "official_exam", "mock", "imported"], default: "internal", index: true },
@@ -34,6 +37,7 @@ const questionSchema = new Schema(
 );
 
 questionSchema.index({ pathId: 1, subject: 1, sectionId: 1, approvalStatus: 1 });
+questionSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, approvalStatus: 1 }, { sparse: true });
 questionSchema.index({ skillIds: 1, difficulty: 1 });
 questionSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
 questionSchema.index({ examType: 1, source: 1, year: -1, approvalStatus: 1 });
