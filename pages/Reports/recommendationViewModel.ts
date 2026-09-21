@@ -129,11 +129,12 @@ export const buildSkillRecommendation = (
             (!item.approvalStatus || item.approvalStatus === 'approved'),
     );
 
+    const targetTopicId = recommendedTopic?.id;
     const actionContext = {
         pathId: recommendationPathId,
         subjectId: recommendationSubjectId,
         skillId: resolvedSkillId,
-        topicId: recommendedTopic?.id,
+        topicId: targetTopicId,
     };
 
     // For a subskill, both explanation and practice stay inside its exact foundation topic.
@@ -144,6 +145,9 @@ export const buildSkillRecommendation = (
     const mainSkillTrainingLink = target.kind === 'main' && recommendedQuiz?.id
         ? `/quiz/${encodeURIComponent(String(recommendedQuiz.id))}?source=training`
         : undefined;
+    const subskillLinks = {
+        quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
+    };
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
@@ -151,7 +155,9 @@ export const buildSkillRecommendation = (
         lessonTopicTitle: displayText(recommendedTopic?.title || target.skillName),
         foundationTopicLink: recommendedTopic ? lessonLink : undefined,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-        quizLink: recommendedTopic && target.kind === 'sub' ? foundationTrainingLink : mainSkillTrainingLink,
+        quizLink: target.kind === 'sub' && targetTopicId
+            ? subskillLinks.quizLink
+            : mainSkillTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}?source=training` : undefined),
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
         subjectName: recommendationSubjectId
