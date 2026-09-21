@@ -53,6 +53,7 @@ const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
 const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
 
 const SESSION_STORAGE_KEY = "the-hundred-auth-profile";
+const AUTH_COOKIE_NAME = "almeaa_access_token";
 const CSRF_COOKIE_NAME = "almeaa_csrf_token";
 const CSRF_HEADER_NAME = "x-csrf-token";
 const CSRF_SESSION_STORAGE_KEY = "almeaa:csrf-token";

@@ -1,6 +1,16 @@
 # ALMEAA — Codex Execution State
 
 
+## Authentication & Client Transport — Fix Missing AUTH_COOKIE_NAME Constant
+
+- Status: `FIXED & VERIFIED` on 2026-09-21.
+- Scope Delivered:
+  - Fixed runtime `ReferenceError: AUTH_COOKIE_NAME is not defined` during login and API requests by adding the missing constant `const AUTH_COOKIE_NAME = "almeaa_access_token";` in `services/api.ts`.
+- Verification:
+  - `smoke-auth-cookie-contract.mjs` — PASS (5/5).
+  - Production frontend build (`npx vite build`) — PASS (built in 3m 12s, 0 errors).
+
+
 ## General Aptitude (Qudurat) — Verbal Foundation Expansion: Anas Booklet Ingestion & Foundation Drill Feeding
 
 - Status: `VERIFIED / DATABASE & RUNTIME SYNCHRONIZED` on 2026-09-21.
