@@ -80,7 +80,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
     () => Array.from(new Set(
       classReports.flatMap((report) => report.questions
         .filter((question) => selectedPathId === 'all' || String(question.pathId || '') === selectedPathId)
-        .map((question) => String(question.subject || report.subjectName || ''))
+        .map((question) => String(question.subjectId || question.subject || report.subjectName || ''))
         .filter(Boolean)),
     )).sort((a, b) => a.localeCompare(b, 'ar')),
     [classReports, selectedPathId],
@@ -102,30 +102,18 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
     [classReports, selectedPathId, selectedSubjectId],
   );
 
-  const skills = useMemo<SkillRow[]>(() => {
-    const diagnostics = buildClassroomSkillDiagnostics(scopedReports);
-    return diagnostics.map((diagnostic) => {
-      const supportingQuestions = scopedReports.flatMap((report) =>
-        report.questions.filter((question) =>
-          question.skillIds.includes(diagnostic.skillId) ||
-          (!question.skillIds.length && diagnostic.skillId === `subject:${question.subject || report.subjectName}`),
-        ),
-      );
-      const first = supportingQuestions[0];
-      const pathId = first?.pathId;
-      const subjectId = first?.subject || scopedReports[0]?.subjectName || undefined;
-      return {
-        key: [String(pathId || ''), String(subjectId || ''), diagnostic.skillId].join('::'),
-        skillId: diagnostic.skillId,
-        skillName: diagnostic.skillName,
-        pathId,
-        subjectId,
-        accuracy: diagnostic.accuracy ?? 0,
-        totalAttempts: diagnostic.totalAnswered,
-        studentsAtRiskCount: 0,
-      };
-    });
-  }, [scopedReports]);
+  const skills = useMemo<SkillRow[]>(() =>
+    buildClassroomSkillDiagnostics(scopedReports).map((diagnostic) => ({
+      key: diagnostic.scopeKey,
+      skillId: diagnostic.skillId,
+      skillName: diagnostic.skillName,
+      pathId: diagnostic.pathId,
+      subjectId: diagnostic.subjectId,
+      accuracy: diagnostic.accuracy ?? 0,
+      totalAttempts: diagnostic.totalAnswered,
+      studentsAtRiskCount: 0,
+    })),
+  [scopedReports]);
 
   const criticalGapsCount = skills.filter((skill) => skill.accuracy < 60).length;
   const masteredSkillsCount = skills.filter((skill) => skill.accuracy >= 80).length;
