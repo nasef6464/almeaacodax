@@ -57,7 +57,7 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
             });
 
         return () => { cancelled = true; };
-    }, [scope?.pathId, scope?.subjectId]);
+    }, [scope?.pathId, scope?.subjectId, localPath.fingerprint]);
 
     const effectivePath = useMemo(
         () => serverSignals && serverSignals.length ? getInternalLearningPath(serverSignals) : localPath,
