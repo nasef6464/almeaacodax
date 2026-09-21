@@ -46,10 +46,11 @@ check('learning loop preserves explain, practice, and remeasure sequence', () =>
   assertIncludes(learningLoop, "'/dashboard?tab=saher'");
 });
 
-check('learning loop preserves evidence and readiness thresholds', () => {
-  assertIncludes(learningLoop, 'mastery >= 75');
+check('learning loop preserves evidence and canonical readiness policy', () => {
+  assertIncludes(learningLoop, "from '../../utils/masteryPolicy';");
+  assertIncludes(learningLoop, 'mastery >= MASTERY_POLICY.readyAt');
   assertIncludes(learningLoop, "? 'جاهز للتثبيت'");
-  assertIncludes(learningLoop, 'mastery >= 50');
+  assertIncludes(learningLoop, 'mastery >= MASTERY_POLICY.supportBelow');
   assertIncludes(learningLoop, "? 'راجع ثم قِس'");
   assertIncludes(learningLoop, ": 'ابدأ من الشرح'");
   assertIncludes(learningLoop, '`قراءة أولية من ${studentTodayFocus.attempts} محاولة`');
