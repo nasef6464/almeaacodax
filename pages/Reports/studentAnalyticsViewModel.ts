@@ -88,8 +88,10 @@ export const buildStudentAggregatedSkills = ({
     minSkillEvidence,
 }: StudentAggregatedSkillsInput): StudentAggregatedSkill[] => {
     const skillsMap: Record<string, {
-        totalMastery: number;
-        count: number;
+        weightedMasteryTotal: number;
+        evidenceCount: number;
+        observationCount: number;
+        correctEvidence: number;
         skillName: string;
         skillId?: string;
         pathId?: string;
@@ -102,8 +104,10 @@ export const buildStudentAggregatedSkills = ({
             const skillKey = skill.skillId || skill.skill;
             if (!skillsMap[skillKey]) {
                 skillsMap[skillKey] = {
-                    totalMastery: 0,
-                    count: 0,
+                    weightedMasteryTotal: 0,
+                    evidenceCount: 0,
+                    observationCount: 0,
+                    correctEvidence: 0,
                     skillName: skill.skill,
                     skillId: skill.skillId,
                     pathId: skill.pathId,
@@ -111,8 +115,18 @@ export const buildStudentAggregatedSkills = ({
                     sectionId: skill.sectionId,
                 };
             }
-            skillsMap[skillKey].totalMastery += skill.mastery;
-            skillsMap[skillKey].count += 1;
+            const reportedEvidence = Number(skill.questionCount);
+            const evidenceCount = Number.isFinite(reportedEvidence) && reportedEvidence > 0
+                ? Math.max(1, Math.round(reportedEvidence))
+                : 1;
+            const reportedCorrect = Number(skill.correctCount);
+            const correctEvidence = Number.isFinite(reportedCorrect)
+                ? Math.max(0, Math.min(evidenceCount, reportedCorrect))
+                : (Math.max(0, Math.min(100, Number(skill.mastery || 0))) / 100) * evidenceCount;
+            skillsMap[skillKey].weightedMasteryTotal += Math.max(0, Math.min(100, Number(skill.mastery || 0))) * evidenceCount;
+            skillsMap[skillKey].evidenceCount += evidenceCount;
+            skillsMap[skillKey].observationCount += 1;
+            skillsMap[skillKey].correctEvidence += correctEvidence;
             if (!skillsMap[skillKey].skillId && skill.skillId) skillsMap[skillKey].skillId = skill.skillId;
             if (!skillsMap[skillKey].pathId && skill.pathId) skillsMap[skillKey].pathId = skill.pathId;
             if (!skillsMap[skillKey].subjectId && skill.subjectId) skillsMap[skillKey].subjectId = skill.subjectId;
@@ -135,10 +149,12 @@ export const buildStudentAggregatedSkills = ({
                 const skillName = displayText(resolvedSkill.name);
                 if (!skillName) return;
 
-                if (!skillsMap[skillName]) {
-                    skillsMap[skillName] = {
-                        totalMastery: 0,
-                        count: 0,
+                if (!skillsMap[skillId]) {
+                    skillsMap[skillId] = {
+                        weightedMasteryTotal: 0,
+                        evidenceCount: 0,
+                        observationCount: 0,
+                        correctEvidence: 0,
                         skillName,
                         skillId: resolvedSkill.id,
                         pathId: resolvedSkill.pathId,
@@ -147,15 +163,17 @@ export const buildStudentAggregatedSkills = ({
                     };
                 }
 
-                skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0;
-                skillsMap[skillName].count += 1;
+                skillsMap[skillId].weightedMasteryTotal += attempt.isCorrect ? 100 : 0;
+                skillsMap[skillId].evidenceCount += 1;
+                skillsMap[skillId].observationCount += 1;
+                skillsMap[skillId].correctEvidence += attempt.isCorrect ? 1 : 0;
             });
         });
     }
 
     return Object.entries(skillsMap)
         .map(([skill, data]): StudentAggregatedSkill => {
-            const mastery = Math.round(data.totalMastery / data.count);
+            const mastery = Math.round(data.weightedMasteryTotal / Math.max(data.evidenceCount, 1));
             const resolvedSkill = data.skillId
                 ? skills.find((item) => item.id === data.skillId)
                 : skills.find((item) => displayText(item.name) === displayText(skill));
@@ -174,10 +192,10 @@ export const buildStudentAggregatedSkills = ({
                 subjectName,
                 sectionName,
                 mastery,
-                attempts: data.count,
-                correctAttempts: Math.round((mastery / 100) * data.count),
-                totalEvidence: data.count,
-                isReliable: data.count >= minSkillEvidence,
+                attempts: data.observationCount,
+                correctAttempts: Math.round(data.correctEvidence),
+                totalEvidence: data.evidenceCount,
+                isReliable: data.evidenceCount >= minSkillEvidence,
                 status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong',
             };
         })
