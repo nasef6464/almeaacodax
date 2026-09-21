@@ -29,11 +29,12 @@ assert.ok(skillAnalytics.includes('.slice(0, boundedWindow)'));
 
 assert.ok(skillProgressSideEffects.includes('SkillProgressModel.bulkWrite'));
 assert.ok(skillProgressSideEffects.includes('skillProgressScopeKey'));
-assert.ok(sideEffects.includes('boundedReplayKeys'));
-assert.ok(sideEffects.includes('filter: { userId, pathId, subjectId, skillId }'));
-assert.ok(sideEffects.includes('recentEvidenceKeys: replay.keys'));
-assert.ok(sideEffects.includes('mergeRecentSkillEvidence'));
-assert.ok(!sideEffects.includes('Promise.all(\n    skillsAnalysis'), 'per-skill N+1 regression returned');
+assert.ok(sideEffects.includes('updateSkillProgressFromResult'));
+assert.ok(skillProgressSideEffects.includes('boundedReplayKeys'));
+assert.ok(skillProgressSideEffects.includes('filter: { userId, pathId, subjectId, skillId }'));
+assert.ok(skillProgressSideEffects.includes('recentEvidenceKeys: replay.keys'));
+assert.ok(skillProgressSideEffects.includes('mergeRecentSkillEvidence'));
+assert.ok(!skillProgressSideEffects.includes('Promise.all(\n    skillsAnalysis'), 'per-skill N+1 regression returned');
 
 assert.ok(telemetry.includes('const pathId = String(req.query.pathId'));
 assert.ok(telemetry.includes('const subjectId = String(req.query.subjectId'));
