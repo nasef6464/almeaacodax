@@ -89,7 +89,7 @@ check("frontend API requests dashboard data with safe limits without visual rewr
     "getScopedQuizResults: (pagination: QuizResultsPaginationOptions = {})",
   ]);
   assertIncludes(files.dashboard, "api.getScopedQuizResults()");
-  assertIncludes(files.reports, "api.getQuizAnalyticsOverview()");
+  assertIncludes(files.reports, "api.getQuizAnalyticsOverview(taxonomyScope)");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

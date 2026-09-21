@@ -31,13 +31,26 @@ export const questionBaseSchema = z.object({
   revenueSharePercentage: z.number().nullable().optional(),
 });
 
-export const questionSchema = questionBaseSchema.refine(
-  (value) => value.text.trim().length > 0 || String(value.imageUrl || "").trim().length > 0,
-  {
-    message: "Question must include text or an image URL",
-    path: ["text"],
-  },
-);
+export const questionSchema = questionBaseSchema
+  .refine(
+    (value) => value.text.trim().length > 0 || String(value.imageUrl || "").trim().length > 0,
+    {
+      message: "Question must include text or an image URL",
+      path: ["text"],
+    },
+  )
+  .refine(
+    (value) => {
+      const hasImage = String(value.imageUrl || "").trim().length > 0;
+      const publishable = value.approvalStatus === "approved" || value.approvalStatus === "pending_review";
+      if (!hasImage || !publishable) return true;
+      return String(value.explanation || "").trim().length > 0;
+    },
+    {
+      message: "Published or review-ready image questions require a written explanation",
+      path: ["explanation"],
+    },
+  );
 
 export const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -69,6 +82,8 @@ export const questionListQuerySchema = z.object({
 });
 
 export const dashboardAnalyticsQuerySchema = z.object({
+  pathId: z.string().trim().optional(),
+  subjectId: z.string().trim().optional(),
   studentLimit: z.coerce.number().int().min(1).max(1000).default(500),
   resultLimit: z.coerce.number().int().min(100).max(5000).default(2000),
   attemptLimit: z.coerce.number().int().min(100).max(5000).default(3000),
@@ -81,6 +96,8 @@ export const quizResultsListQuerySchema = z.object({
   search: z.string().trim().max(120).optional(),
   quizId: z.string().trim().max(120).optional(),
   studentId: z.string().trim().max(120).optional(),
+  pathId: z.string().trim().max(120).optional(),
+  subjectId: z.string().trim().max(120).optional(),
   status: z.enum(["passed", "failed"]).optional(),
   dateFrom: z.string().trim().optional(),
   dateTo: z.string().trim().optional(),

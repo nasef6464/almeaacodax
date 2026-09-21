@@ -1,12 +1,14 @@
-import { Role, type CategoryPath } from '../../types';
+import { Role, type CategoryPath, type CategorySubject } from '../../types';
 import { displayText, getReportSkillKey, type StudentAggregatedSkill } from './reportDomain';
 
 export interface StudentReportScopeInput {
     aggregatedSkills: StudentAggregatedSkill[];
     paths: CategoryPath[];
+    subjects: CategorySubject[];
     enrolledPaths?: string[];
     selectedStudentPathId: string;
-    selectedSkillKey: string;
+    selectedStudentSubjectId: string;
+    selectedSkillKey: string | null;
     role: Role;
 }
 
@@ -15,7 +17,9 @@ export interface StudentReportScope {
     studentEnrolledPathIds: string[];
     studentEnrolledPathLabels: string[];
     studentReportPathOptions: CategoryPath[];
+    studentReportSubjectOptions: CategorySubject[];
     studentPathScopedSkills: StudentAggregatedSkill[];
+    studentSubjectScopedSkills: StudentAggregatedSkill[];
     reportBaseSkills: StudentAggregatedSkill[];
     reliableAggregatedSkills: StudentAggregatedSkill[];
     reliableWeakSkills: StudentAggregatedSkill[];
@@ -25,14 +29,17 @@ export interface StudentReportScope {
     primaryReportSkill: StudentAggregatedSkill | null;
     selectedReportSkill: StudentAggregatedSkill | null;
     studentTrackLabel: string;
+    studentSubjectLabel: string;
     hasStudentTrackScope: boolean;
 }
 
 export const buildStudentReportScope = ({
     aggregatedSkills,
     paths,
+    subjects,
     enrolledPaths,
     selectedStudentPathId,
+    selectedStudentSubjectId,
     selectedSkillKey,
     role,
 }: StudentReportScopeInput): StudentReportScope => {
@@ -50,7 +57,17 @@ export const buildStudentReportScope = ({
     const studentPathScopedSkills = effectiveStudentPathIds.length > 0
         ? aggregatedSkills.filter((skill) => skill.pathId && effectiveStudentPathIds.includes(skill.pathId))
         : aggregatedSkills;
-    const reportBaseSkills = studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills;
+    const effectivePathIdsForSubjects = selectedStudentPathId === 'all'
+        ? (studentEnrolledPathIds.length > 0 ? studentEnrolledPathIds : paths.map((path) => path.id))
+        : [selectedStudentPathId];
+    const studentReportSubjectOptions = subjects.filter((subject) => effectivePathIdsForSubjects.includes(subject.pathId));
+    const studentSubjectScopedSkills = selectedStudentSubjectId === 'all'
+        ? studentPathScopedSkills
+        : studentPathScopedSkills.filter((skill) => skill.subjectId === selectedStudentSubjectId);
+    const reportBaseSkills = selectedStudentSubjectId === 'all'
+        ? (studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills)
+        : studentSubjectScopedSkills;
+    const scopedWeakestSkill = reportBaseSkills[0] || null;
     const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
     const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);
     const reliableAverageSkills = reliableAggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75);
@@ -62,17 +79,19 @@ export const buildStudentReportScope = ({
                 ? reliableAggregatedSkills
                 : reportBaseSkills
     ).slice(0, 6);
-    const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
-    const selectedReportSkill = aggregatedSkills.find(
+    const primaryReportSkill = focusedReportSkills[0] || scopedWeakestSkill;
+    const selectedReportSkill = reportBaseSkills.find(
         (skill) => getReportSkillKey(skill) === selectedSkillKey,
     ) || primaryReportSkill;
 
     return {
-        weakestSkill,
+        weakestSkill: scopedWeakestSkill,
         studentEnrolledPathIds,
         studentEnrolledPathLabels,
         studentReportPathOptions,
+        studentReportSubjectOptions,
         studentPathScopedSkills,
+        studentSubjectScopedSkills,
         reportBaseSkills,
         reliableAggregatedSkills,
         reliableWeakSkills,
@@ -81,7 +100,12 @@ export const buildStudentReportScope = ({
         focusedReportSkills,
         primaryReportSkill,
         selectedReportSkill,
-        studentTrackLabel: studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '',
+        studentTrackLabel: selectedStudentPathId !== 'all'
+            ? displayText(paths.find((path) => path.id === selectedStudentPathId)?.name)
+            : studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '',
+        studentSubjectLabel: selectedStudentSubjectId !== 'all'
+            ? displayText(subjects.find((subject) => subject.id === selectedStudentSubjectId)?.name)
+            : '',
         hasStudentTrackScope: studentEnrolledPathIds.length > 0,
     };
 };

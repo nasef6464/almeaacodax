@@ -6,7 +6,7 @@ const root = process.cwd();
 const read = (relativePath) =>
   fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n/g, '\n');
 
-const sideEffects = read('server/src/modules/quizzes/application/quizSubmissionSideEffects.ts');
+const sideEffects = read('server/src/modules/quizzes/application/quizSubmissionSkillProgress.ts');
 const analytics = read('server/src/modules/quizzes/analytics/skillAnalytics.ts');
 const skillsAnalysis = read('server/src/modules/quizzes/application/quizSubmissionSkillsAnalysis.ts');
 const model = read('server/src/models/SkillProgress.ts');
@@ -52,7 +52,7 @@ check('quiz and single-question progress use the shared evidence merge', () => {
 });
 
 check('legacy progress remains backward compatible', () => {
-  assert.ok(sideEffects.includes('existing?.evidenceCount || existing?.attempts || 0'));
+  assert.ok(sideEffects.includes('existingRow?.evidenceCount || existingRow?.attempts || 0'));
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

@@ -46,7 +46,7 @@ check('skill progress route supports count-free reads', () => {
 });
 
 check('client API exposes noTotal for skill progress reads', () => {
-  assert.ok(api.includes('PaginationOptions & { noTotal?: boolean }'));
+  assert.ok(api.includes('PaginationOptions & { noTotal?: boolean; pathId?: string; subjectId?: string }'));
   assert.ok(api.includes('withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })'));
 });
 

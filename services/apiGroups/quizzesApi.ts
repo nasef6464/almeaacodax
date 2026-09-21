@@ -36,6 +36,53 @@ export const createQuizzesApi = (request: ApiRequest) => ({
   getQuizAnalyticsOverview: (pagination: PaginationOptions = {}) =>
     request<unknown>(withQuery("/quizzes/analytics/overview", { studentLimit: 500, resultLimit: 2000, attemptLimit: 3000, ...pagination })),
 
+  getSchoolSkillAggregates: (params: {
+    groupBy?: "skill" | "class" | "student";
+    pathId?: string;
+    subjectId?: string;
+    classId?: string;
+    studentId?: string;
+    skillId?: string;
+    limit?: number;
+  } = {}) =>
+    request<{
+      status: "ok";
+      scope: {
+        role: string;
+        totalStudents: number;
+        sampledStudents: number;
+        isTruncated: boolean;
+        groupBy: "skill" | "class" | "student";
+        pathId?: string;
+        subjectId?: string;
+        classId?: string;
+        skillId?: string;
+        supportThreshold?: number;
+      };
+      rows: Array<{
+        classId?: string;
+        userId?: string;
+        studentName?: string;
+        pathId: string;
+        subjectId: string;
+        sectionId?: string;
+        skillId: string;
+        skill: string;
+        mastery: number;
+        recentMastery: number;
+        trend?: string;
+        trendBreakdown?: { improving: number; stable: number; declining: number };
+        confidence: number;
+        evidenceCount: number;
+        studentCount?: number;
+        coverage?: number;
+        supportStudents?: number;
+        supportRate?: number;
+        needsSupport?: boolean;
+        lastEvidenceAt?: string;
+      }>;
+    }>(withQuery("/quizzes/analytics/school-skills", params)),
+
   createQuiz: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes", {
       method: "POST",
@@ -91,8 +138,97 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
 
-  getSkillProgress: async (pagination: PaginationOptions & { noTotal?: boolean } = {}) =>
-    extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
+  getMasteryGoals: (scope: { userId?: string; pathId?: string; subjectId?: string; status?: string } = {}) =>
+    request<{ goals: Array<{
+      id: string;
+      userId: string;
+      pathId: string;
+      subjectId?: string;
+      targetType: "topic" | "section" | "path";
+      targetId: string;
+      title: string;
+      targetMastery: number;
+      horizon: "short" | "long";
+      dueDate?: string;
+      status: "active" | "achieved" | "archived";
+    }> }>(withQuery("/quizzes/mastery-goals", scope)),
+
+  createMasteryGoal: (payload: {
+    userId?: string;
+    pathId: string;
+    subjectId?: string;
+    targetType: "topic" | "section" | "path";
+    targetId: string;
+    title: string;
+    targetMastery?: number;
+    horizon?: "short" | "long";
+    dueDate?: string;
+  }) => request<unknown>("/quizzes/mastery-goals", { method: "POST", body: payload }),
+
+  updateMasteryGoal: (goalId: string, payload: {
+    title?: string;
+    targetMastery?: number;
+    dueDate?: string;
+    status?: "active" | "achieved" | "archived";
+  }) => request<unknown>(`/quizzes/mastery-goals/${encodeURIComponent(goalId)}`, { method: "PATCH", body: payload }),
+
+  getMasteryReadiness: (scope: { pathId: string; subjectId?: string }) =>
+    request<{
+      scope: { pathId: string; subjectId?: string };
+      readiness: {
+        score: number;
+        status: "needs_measurement" | "ready_to_advance" | "ready_for_recheck" | "building";
+        mastery: number;
+        coverage: number;
+        evidenceConfidence: number;
+        recency: number;
+        totalSkills: number;
+        reliableSkills: number;
+        totalEvidence: number;
+        explanation: string;
+      };
+    }>(withQuery("/quizzes/mastery-readiness", scope)),
+
+  getNextBestAction: (scope: { pathId: string; subjectId?: string }) =>
+    request<{
+      version: string;
+      fingerprint: string;
+      scope: { pathId: string; subjectId?: string };
+      nextAction: null | {
+        skillId: string;
+        skill: string;
+        pathId: string;
+        subjectId: string;
+        sectionId: string;
+        mastery: number;
+        evidenceCount: number;
+        status: string;
+        trend: "improving" | "stable" | "declining";
+        action: string;
+      };
+      candidates: Array<{
+        skillId: string;
+        skill: string;
+        pathId: string;
+        subjectId: string;
+        sectionId: string;
+        mastery: number;
+        evidenceCount: number;
+        status: string;
+        trend: "improving" | "stable" | "declining";
+        action: string;
+      }>;
+    }>(withQuery("/quizzes/next-best-action", scope)),
+
+  getSkillProgress: async (
+    pagination: PaginationOptions & { noTotal?: boolean; pathId?: string; subjectId?: string } = {},
+  ) =>
+    extractList(
+      await request<unknown>(
+        withQuery("/quizzes/skill-progress", { limit: 200, ...pagination }),
+      ),
+      "skillProgress",
+    ),
 
   getQuestionAttempts: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/question-attempts", { limit: 100, ...pagination })), "questionAttempts"),

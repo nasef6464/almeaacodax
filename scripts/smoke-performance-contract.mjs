@@ -71,7 +71,7 @@ assertIncludes('components/results/ResultDonutChart.tsx', "from 'recharts';");
 assertIncludes('pages/Reports/reportDomain.ts', 'export const MIN_SKILL_EVIDENCE_COUNT = 3;');
 assertIncludes('pages/Reports.tsx', 'MIN_SKILL_EVIDENCE_COUNT,');
 assertIncludes('pages/Reports.tsx', "from './Reports/reportDomain';");
-assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.count >= minSkillEvidence');
+assertIncludes('pages/Reports/studentSkillAggregationFinalize.ts', 'isReliable: data.evidenceCount >= minSkillEvidence');
 assertIncludes('pages/Reports/studentReportScopeViewModel.ts', 'const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);');
 assertIncludes('pages/Reports/studentReportActionsViewModel.ts', 'weaknessLabel = weakest?.isReliable');
 assertIncludes('pages/Reports/studentSkillRowsViewModel.ts', 'evidenceLabel: skill.isReliable');

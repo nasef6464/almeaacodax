@@ -6,6 +6,7 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n
 
 const reports = read('pages/Reports.tsx');
 const analytics = read('pages/Reports/studentAnalyticsViewModel.ts');
+const aggregationFinalize = read('pages/Reports/studentSkillAggregationFinalize.ts');
 const evidence = read('pages/Reports/studentEvidenceViewModel.ts');
 const reportsRole = read('scripts/smoke-reports-role-contract.mjs');
 const globalJourney = read('scripts/smoke-global-student-journey-contract.mjs');
@@ -48,11 +49,12 @@ check('student analytics view-model preserves performance and aggregation semant
   assertIncludes(analytics, "worstSubject: { name: 'تحتاج متابعة', score: averageScore }");
   assertIncludes(analytics, "displayText(result.quizTitle).replace('اختبار ', '').replace('الوحدة الأولى', 'أساسيات')");
   assertIncludes(analytics, 'export const buildStudentAggregatedSkills = ({');
-  assertIncludes(analytics, 'skillsMap[skillKey].totalMastery += skill.mastery');
-  assertIncludes(analytics, 'skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0');
-  assertIncludes(analytics, 'correctAttempts: Math.round((mastery / 100) * data.count)');
-  assertIncludes(analytics, 'isReliable: data.count >= minSkillEvidence');
-  assertIncludes(analytics, ".sort((a, b) => a.mastery - b.mastery)");
+  assertIncludes(analytics, 'row.weightedMasteryTotal += mastery * evidenceCount');
+  assertIncludes(analytics, 'row.weightedMasteryTotal += mastery');
+  assertIncludes(aggregationFinalize, 'correctAttempts: Math.round(data.correctEvidence)');
+  assertIncludes(aggregationFinalize, 'isReliable: data.evidenceCount >= minSkillEvidence');
+  assertIncludes(aggregationFinalize, 'const aPriority = a.isReliable ? a.recentMastery ?? a.mastery : a.mastery');
+  assertIncludes(aggregationFinalize, 'return aPriority - bPriority');
 });
 
 check('student evidence view-model owns evidence totals and readiness messaging', () => {
@@ -70,7 +72,7 @@ check('student evidence view-model owns evidence totals and readiness messaging'
 });
 
 check('student analytics and evidence view-models are deterministic and runtime-side-effect free', () => {
-  for (const source of [analytics, evidence]) {
+  for (const source of [analytics, evidence, aggregationFinalize]) {
     assertNotIncludes(source, 'useStore');
     assertNotIncludes(source, "from 'react'");
     assertNotIncludes(source, "from '../../services/api'");
@@ -84,7 +86,7 @@ check('student analytics and evidence view-models are deterministic and runtime-
 check('source contracts keep the stable student analytics facade while evidence has separate ownership', () => {
   assertIncludes(reportsRole, "../pages/Reports/studentAnalyticsViewModel.ts");
   assertIncludes(globalJourney, "../pages/Reports/studentAnalyticsViewModel.ts");
-  assertIncludes(performance, "assertIncludes('pages/Reports/studentAnalyticsViewModel.ts', 'isReliable: data.count >= minSkillEvidence');");
+  assertIncludes(performance, "assertIncludes('pages/Reports/studentSkillAggregationFinalize.ts', 'isReliable: data.evidenceCount >= minSkillEvidence');");
   assertNotIncludes(performance, "assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');");
 });
 
@@ -92,9 +94,11 @@ check('student analytics split reduces responsibility without creating a replace
   const reportLines = reports.split('\n').length;
   const analyticsLines = analytics.split('\n').length;
   const evidenceLines = evidence.split('\n').length;
+  const aggregationFinalizeLines = aggregationFinalize.split('\n').length;
   if (reportLines >= 3350) throw new Error(`Reports.tsx remained too large after student analytics extraction: ${reportLines}`);
   if (analyticsLines > 220) throw new Error(`studentAnalyticsViewModel.ts exceeded 220 lines: ${analyticsLines}`);
   if (evidenceLines > 100) throw new Error(`studentEvidenceViewModel.ts exceeded 100 lines: ${evidenceLines}`);
+  if (aggregationFinalizeLines > 120) throw new Error(`studentSkillAggregationFinalize.ts exceeded 120 lines: ${aggregationFinalizeLines}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
@@ -104,6 +108,7 @@ const result = {
   reportsLines: reports.split('\n').length,
   analyticsLines: analytics.split('\n').length,
   evidenceLines: evidence.split('\n').length,
+  aggregationFinalizeLines: aggregationFinalize.split('\n').length,
   checks,
 };
 

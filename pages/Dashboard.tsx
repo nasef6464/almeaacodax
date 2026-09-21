@@ -44,7 +44,10 @@ const TabLoading = () => (
     </div>
 );
 
-const buildSmartPathSkillsFromResults = (examResults: QuizResult[]): SkillGap[] => {
+const buildSmartPathSkillsFromResults = (
+    examResults: QuizResult[],
+    scope: { pathId?: string; subjectId?: string } = {},
+): SkillGap[] => {
     if (!examResults || examResults.length === 0) return [];
 
     const skillMap = new globalThis.Map<string, {
@@ -59,8 +62,13 @@ const buildSmartPathSkillsFromResults = (examResults: QuizResult[]): SkillGap[] 
     }>();
 
     examResults.forEach(result => {
-        result.skillsAnalysis?.forEach(skill => {
-            const key = skill.skillId || [skill.pathId, skill.subjectId, skill.sectionId, skill.skill].join(':');
+        result.skillsAnalysis
+            ?.filter((skill) =>
+                (!scope.pathId || skill.pathId === scope.pathId) &&
+                (!scope.subjectId || skill.subjectId === scope.subjectId),
+            )
+            .forEach(skill => {
+            const key = [skill.pathId || '', skill.subjectId || '', skill.skillId || skill.skill].join(':');
             const existing = skillMap.get(key);
 
             if (existing) {
@@ -500,13 +508,70 @@ const PathsTab = () => {
 };
 
 const SmartPathTab = () => {
-    const { examResults } = useStore();
-    const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
+    const { examResults, paths, subjects, enrolledPaths } = useStore();
+    const [selectedPathId, setSelectedPathId] = useState('all');
+    const [selectedSubjectId, setSelectedSubjectId] = useState('all');
+
+    const enrolledPathSet = useMemo(() => new Set(enrolledPaths || []), [enrolledPaths]);
+    const pathOptions = useMemo(
+        () => paths.filter((path) => path.isActive !== false && (enrolledPathSet.size === 0 || enrolledPathSet.has(path.id))),
+        [enrolledPathSet, paths],
+    );
+    const subjectOptions = useMemo(
+        () => subjects.filter((subject) => selectedPathId === 'all'
+            ? (enrolledPathSet.size === 0 || enrolledPathSet.has(subject.pathId))
+            : subject.pathId === selectedPathId),
+        [enrolledPathSet, selectedPathId, subjects],
+    );
+
+    useEffect(() => {
+        if (selectedSubjectId === 'all') return;
+        if (!subjectOptions.some((subject) => subject.id === selectedSubjectId)) {
+            setSelectedSubjectId('all');
+        }
+    }, [selectedSubjectId, subjectOptions]);
+
+    const smartPathSkills = useMemo(
+        () => buildSmartPathSkillsFromResults(examResults, {
+            pathId: selectedPathId === 'all' ? undefined : selectedPathId,
+            subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId,
+        }),
+        [examResults, selectedPathId, selectedSubjectId],
+    );
 
     return (
         <div className="space-y-6 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">مسار التعلم الذكي</h2>
-            <p className="text-gray-600 mb-8">نظام الذكاء الاصطناعي يحلل أداءك ويقترح لك أفضل الخطوات التالية لرفع مستواك.</p>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-800">مسار التعلم الذكي</h2>
+                    <p className="mt-2 text-gray-600">ترتيب داخلي مبني على أدلتك الفعلية، ويمكنك عزل أي مسار أو مادة بدون خلط المهارات.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    <select
+                        value={selectedPathId}
+                        onChange={(event) => {
+                            setSelectedPathId(event.target.value);
+                            setSelectedSubjectId('all');
+                        }}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700"
+                    >
+                        <option value="all">كل مساراتي</option>
+                        {pathOptions.map((path) => (
+                            <option key={path.id} value={path.id}>{path.name}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={selectedSubjectId}
+                        onChange={(event) => setSelectedSubjectId(event.target.value)}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700"
+                    >
+                        <option value="all">كل المواد</option>
+                        {subjectOptions.map((subject) => (
+                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
             <SmartLearningPath skills={smartPathSkills} />
         </div>
     );

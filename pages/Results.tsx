@@ -37,8 +37,10 @@ import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
+import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
 
 const ResultDonutChart = React.lazy(() =>
   import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
@@ -197,38 +199,18 @@ const getSkillRecommendation = (
   );
   const targetTopicId = recommendedTopic?.id || (resolvedSkillId ? `topic_sub_${resolvedSkillId}` : undefined);
 
-  const lessonLink =
-    recommendationPathId && recommendationSubjectId
-      ? (() => {
-          const params = new URLSearchParams({
-            subject: recommendationSubjectId,
-            tab: 'skills',
-          });
-
-          if (targetTopicId) {
-            params.set('topic', targetTopicId);
-            params.set('content', 'lessons');
-          }
-          if (recommendedLesson?.id) {
-            params.set('lesson', recommendedLesson.id);
-          }
-
-          return `/category/${recommendationPathId}?${params.toString()}`;
-        })()
-      : undefined;
-
-  const foundationTrainingLink =
-    recommendationPathId && recommendationSubjectId && targetTopicId
-      ? (() => {
-          const params = new URLSearchParams({
-            subject: recommendationSubjectId,
-            tab: 'skills',
-          });
-          params.set('topic', targetTopicId);
-          params.set('content', 'quizzes');
-          return `/category/${recommendationPathId}?${params.toString()}`;
-        })()
-      : undefined;
+  const actionContext = {
+    pathId: recommendationPathId,
+    subjectId: recommendationSubjectId,
+    skillId: resolvedSkillId,
+    topicId: targetTopicId,
+    lessonId: recommendedLesson?.id,
+    quizId: recommendedQuiz?.id,
+  };
+  const lessonLink = buildFoundationActionLink(actionContext, 'lessons');
+  const foundationTrainingLink = targetTopicId
+    ? buildFoundationActionLink(actionContext, 'quizzes')
+    : undefined;
 
   return {
     lessonTitle: displayText(recommendedLesson?.title),
@@ -653,7 +635,7 @@ const Results: React.FC = () => {
         label: 'فتح التقرير',
         Icon: BarChart3,
         tone: 'slate',
-        to: '/reports',
+        to: buildSkillReportActionLink({ pathId: weakestSkill?.pathId, subjectId: weakestSkill?.subjectId, skillId: weakestSkill?.skillId }),
       },
     ];
   }, [questionReviewCount, weakestSkill]);
@@ -1390,6 +1372,11 @@ const ReviewSolutions = ({
   const [showExplanation, setShowExplanation] = React.useState(false);
   const [zoomedImageUrl, setZoomedImageUrl] = React.useState<string | null>(null);
   const [filterMode, setFilterMode] = React.useState<'all' | 'wrong' | 'unanswered' | 'correct'>('all');
+  const resultId = String(
+    (result as QuizResult & { id?: string; _id?: string }).id ||
+    (result as QuizResult & { id?: string; _id?: string })._id ||
+    '',
+  );
 
   const questions: QuizQuestionReview[] = React.useMemo(() => {
     const reviewById = new Map((result.questionReview || []).map((question) => [question.questionId, question]));
@@ -1727,6 +1714,13 @@ const ReviewSolutions = ({
                 </p>
               </div>
             ) : null}
+
+            <QuestionAssistantPanel
+              key={`${resultId}::${q.questionId}`}
+              resultId={resultId}
+              questionId={q.questionId}
+              hasImage={Boolean(q.imageUrl || questionHasInlineMedia)}
+            />
 
             {/* Question Card Navigation Bar */}
             <div className="flex items-center justify-between pt-5 border-t border-slate-100">

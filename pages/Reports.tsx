@@ -40,9 +40,12 @@ import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
 import { StudentWeeklyPlanPanel } from './Reports/StudentWeeklyPlanPanel';
 import { StudentSmartRemediationPanel } from './Reports/StudentSmartRemediationPanel';
 import { StudentSelectedSkillPanel } from './Reports/StudentSelectedSkillPanel';
+import { StudentMasteryGoalsPanel, type StudentMasteryGoal } from './Reports/StudentMasteryGoalsPanel';
+import { StudentMasteryReviewPanel } from './Reports/StudentMasteryReviewPanel';
+import { SchoolSkillAggregatePanel } from './Reports/SchoolSkillAggregatePanel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
-import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
+import { buildStudentReadinessDecision, type ServerReadinessSnapshot, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
 import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
@@ -116,9 +119,16 @@ const Reports: React.FC = () => {
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
+    const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all');
+    const [selectedScopedPathId, setSelectedScopedPathId] = useState<string>('all');
+    const [selectedScopedSubjectId, setSelectedScopedSubjectId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
     const [selectedFollowUpQuizId, setSelectedFollowUpQuizId] = useState<string>('all');
+    const [studentServerReadiness, setStudentServerReadiness] = useState<ServerReadinessSnapshot | null>(null);
+    const [studentMasteryGoals, setStudentMasteryGoals] = useState<StudentMasteryGoal[]>([]);
+    const [studentMasteryGoalsLoading, setStudentMasteryGoalsLoading] = useState(false);
+    const [studentMasteryGoalSaving, setStudentMasteryGoalSaving] = useState(false);
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -129,9 +139,14 @@ const Reports: React.FC = () => {
         let cancelled = false;
         setScopedAnalyticsLoading(true);
 
+        const taxonomyScope = {
+            pathId: selectedScopedPathId === 'all' ? undefined : selectedScopedPathId,
+            subjectId: selectedScopedSubjectId === 'all' ? undefined : selectedScopedSubjectId,
+        };
+
         Promise.all([
-            api.getQuizAnalyticsOverview(),
-            api.getScopedQuizResults(),
+            api.getQuizAnalyticsOverview(taxonomyScope),
+            api.getScopedQuizResults(taxonomyScope),
         ])
             .then(([analyticsResponse, resultsResponse]) => {
                 if (!cancelled) {
@@ -156,7 +171,7 @@ const Reports: React.FC = () => {
         return () => {
             cancelled = true;
         };
-    }, [user?.email, user.role]);
+    }, [selectedScopedPathId, selectedScopedSubjectId, user?.email, user.role]);
 
     const studentPeriodExamResults = useMemo(
         () => filterStudentReportPeriod(examResults, studentReportPeriod),
@@ -195,20 +210,45 @@ const Reports: React.FC = () => {
     );
     const {
         weakestSkill, studentEnrolledPathIds, studentEnrolledPathLabels, studentReportPathOptions,
-        studentPathScopedSkills, reportBaseSkills, reliableAggregatedSkills, reliableWeakSkills,
-        reliableAverageSkills, earlyWeakSignals, focusedReportSkills, primaryReportSkill,
-        selectedReportSkill, studentTrackLabel, hasStudentTrackScope,
+        studentReportSubjectOptions, studentPathScopedSkills, studentSubjectScopedSkills, reportBaseSkills,
+        reliableAggregatedSkills, reliableWeakSkills, reliableAverageSkills, earlyWeakSignals,
+        focusedReportSkills, primaryReportSkill, selectedReportSkill, studentTrackLabel,
+        studentSubjectLabel, hasStudentTrackScope,
     } = useMemo(
         () => buildStudentReportScope({
             aggregatedSkills,
             paths,
+            subjects,
             enrolledPaths,
             selectedStudentPathId,
+            selectedStudentSubjectId,
             selectedSkillKey,
             role: user.role,
         }),
-        [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, user.role],
+        [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, selectedStudentSubjectId, subjects, user.role],
     );
+    useEffect(() => {
+        if (selectedStudentSubjectId === 'all') return;
+        if (!studentReportSubjectOptions.some((subject) => subject.id === selectedStudentSubjectId)) {
+            setSelectedStudentSubjectId('all');
+        }
+    }, [selectedStudentSubjectId, studentReportSubjectOptions]);
+
+    const scopedPathOptions = useMemo(
+        () => paths.filter((path) => path.isActive !== false),
+        [paths],
+    );
+    const scopedSubjectOptions = useMemo(
+        () => subjects.filter((subject) => selectedScopedPathId === 'all' || subject.pathId === selectedScopedPathId),
+        [selectedScopedPathId, subjects],
+    );
+    useEffect(() => {
+        if (selectedScopedSubjectId === 'all') return;
+        if (!scopedSubjectOptions.some((subject) => subject.id === selectedScopedSubjectId)) {
+            setSelectedScopedSubjectId('all');
+        }
+    }, [scopedSubjectOptions, selectedScopedSubjectId]);
+
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
@@ -235,6 +275,49 @@ const Reports: React.FC = () => {
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
     const studentTodayFocus = studentWeeklyPlan[0] || null;
+    useEffect(() => {
+        let cancelled = false;
+        if (!isStudentView || !studentTodayFocus?.pathId) {
+            setStudentServerReadiness(null);
+            setStudentMasteryGoals([]);
+            return () => { cancelled = true; };
+        }
+
+        setStudentMasteryGoalsLoading(true);
+        Promise.all([
+            api.getMasteryReadiness({
+                pathId: studentTodayFocus.pathId,
+                ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+            }),
+            api.getMasteryGoals({
+                pathId: studentTodayFocus.pathId,
+                ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+                status: 'active',
+            }),
+        ])
+            .then(([readinessResponse, goalsResponse]) => {
+                if (cancelled) return;
+                setStudentServerReadiness(readinessResponse.readiness);
+                setStudentMasteryGoals(Array.isArray(goalsResponse.goals) ? goalsResponse.goals : []);
+            })
+            .catch(() => {
+                if (cancelled) return;
+                setStudentServerReadiness(null);
+                setStudentMasteryGoals([]);
+            })
+            .finally(() => {
+                if (!cancelled) setStudentMasteryGoalsLoading(false);
+            });
+
+        return () => { cancelled = true; };
+    }, [
+        isStudentView,
+        studentTodayFocus?.pathId,
+        studentTodayFocus?.subjectId,
+        studentTodayFocus?.skillId,
+        studentTodayFocus?.attempts,
+        studentTodayFocus?.mastery,
+    ]);
     const studentQuickActions = useMemo(
         () => buildStudentQuickActions(studentTodayFocus),
         [studentTodayFocus],
@@ -251,14 +334,64 @@ const Reports: React.FC = () => {
         };
     }, [studentQuickActions, studentTodayFocus]);
     const studentReadinessDecision = useMemo(() => {
-        const decision = buildStudentReadinessDecision(isStudentView, studentTodayFocus);
+        const decision = buildStudentReadinessDecision(isStudentView, studentTodayFocus, studentServerReadiness);
         if (!decision) return null;
 
         return {
             ...decision,
             Icon: studentReadinessIcons[decision.iconKey],
         };
-    }, [isStudentView, studentTodayFocus]);
+    }, [isStudentView, studentServerReadiness, studentTodayFocus]);
+    const refreshStudentMasteryGoals = async () => {
+        if (!studentTodayFocus?.pathId) return;
+        const response = await api.getMasteryGoals({
+            pathId: studentTodayFocus.pathId,
+            ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+            status: 'active',
+        });
+        setStudentMasteryGoals(Array.isArray(response.goals) ? response.goals : []);
+    };
+
+    const createStudentMasteryGoal = async (horizon: 'short' | 'long') => {
+        if (!studentTodayFocus?.pathId || studentMasteryGoalSaving) return;
+        setStudentMasteryGoalSaving(true);
+        try {
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + (horizon === 'short' ? 14 : 60));
+            const shortTargetId = studentTodayFocus.sectionId || studentTodayFocus.pathId;
+            const shortTargetType = studentTodayFocus.sectionId ? 'section' : 'path';
+            await api.createMasteryGoal({
+                pathId: studentTodayFocus.pathId,
+                subjectId: studentTodayFocus.subjectId,
+                targetType: horizon === 'short' ? shortTargetType : 'path',
+                targetId: horizon === 'short' ? shortTargetId : studentTodayFocus.pathId,
+                title: horizon === 'short'
+                    ? `إتقان ${displayText(studentTodayFocus.skill) || 'المهارة الحالية'}`
+                    : `إتقان مسار ${studentTrackLabel || 'التعلم الحالي'}`,
+                targetMastery: 90,
+                horizon,
+                dueDate: dueDate.toISOString().slice(0, 10),
+            });
+            await refreshStudentMasteryGoals();
+        } finally {
+            setStudentMasteryGoalSaving(false);
+        }
+    };
+
+    const updateStudentMasteryGoalStatus = async (
+        goalId: string,
+        status: 'achieved' | 'archived',
+    ) => {
+        if (studentMasteryGoalSaving) return;
+        setStudentMasteryGoalSaving(true);
+        try {
+            await api.updateMasteryGoal(goalId, { status });
+            await refreshStudentMasteryGoals();
+        } finally {
+            setStudentMasteryGoalSaving(false);
+        }
+    };
+
     const compactStudentSkillRows = useMemo(
         () => buildStudentSkillReportRows(focusedReportSkills, {
             allSkills: skills,
@@ -390,7 +523,7 @@ const Reports: React.FC = () => {
         const resolvedSkill = leadSkill?.skillId ? skills.find((skill) => skill.id === leadSkill.skillId) : undefined;
         const subjectId = resolvedSkill?.subjectId || scopedAnalytics.subjectSummaries[0]?.subjectId;
         const pathId = resolvedSkill?.pathId || subjects.find((subject) => subject.id === subjectId)?.pathId || paths[0]?.id;
-        if (leadStudent && leadSkill && pathId && [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role)) {
+        if (leadStudent && leadSkill && pathId && [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role)) {
             try {
                 await api.createInterventionStudyPlan({
                     studentId: leadStudent.id,
@@ -503,7 +636,7 @@ const Reports: React.FC = () => {
     };
     const canSendInterventionAlert =
         Boolean(institutionalReportHub?.alertText && scopedLeadStudent) &&
-        [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role);
+        [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role);
     const sendInterventionAlert = async () => {
         if (!canSendInterventionAlert || !scopedLeadStudent || !institutionalReportHub?.alertText) return;
 
@@ -692,7 +825,7 @@ const Reports: React.FC = () => {
 
         const skillRows = isStudentView
             ? [
-                ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
+                ['المادة', 'المهارة الرئيسية', 'المهارة', 'الإتقان التراكمي', 'إتقان آخر 5', 'الاتجاه', 'الأدلة', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
                 ...studentPrintableSkillRows.map((skill) => {
                     const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
                     const tone = getReportMasteryTone(skill.mastery);
@@ -702,6 +835,9 @@ const Reports: React.FC = () => {
                         displayText(skill.sectionName) || '-',
                         displayText(skill.skill) || '-',
                         `${skill.mastery}%`,
+                        `${skill.recentMastery ?? skill.mastery}%`,
+                        skill.trend === 'improving' ? 'يتحسن' : skill.trend === 'declining' ? 'يتراجع' : 'مستقر',
+                        skill.totalEvidence,
                         tone.label,
                         displayText(recommendation.actionText) || 'شرح قصير ثم تدريب ثم إعادة قياس.',
                         displayText(recommendation.lessonTitle) || '-',
@@ -1290,7 +1426,7 @@ const Reports: React.FC = () => {
                             <p className="text-sm text-gray-500 mt-1">{roleScopeTitle[user.role] || 'نطاقك الحالي'}</p>
                         </div>
                         <div className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold">
-                            {user.role === Role.ADMIN ? 'مدير' : user.role === Role.SUPERVISOR ? 'مشرف' : user.role === Role.TEACHER ? 'معلم' : 'ولي أمر'}
+                            {user.role === Role.ADMIN ? 'مدير منصة' : user.role === Role.SCHOOL_ADMIN ? 'مدير مدرسة' : user.role === Role.SUPERVISOR ? 'مشرف' : user.role === Role.TEACHER ? 'معلم' : 'ولي أمر'}
                         </div>
                     </div>
                     <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -1315,6 +1451,33 @@ const Reports: React.FC = () => {
                         >
                             تقرير مفرد
                         </button>
+                        {[Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role) ? (
+                            <>
+                                <select
+                                    value={selectedScopedPathId}
+                                    onChange={(event) => {
+                                        setSelectedScopedPathId(event.target.value);
+                                        setSelectedScopedSubjectId('all');
+                                    }}
+                                    className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 focus:border-indigo-400 focus:outline-none"
+                                >
+                                    <option value="all">كل المسارات</option>
+                                    {scopedPathOptions.map((path) => (
+                                        <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                    ))}
+                                </select>
+                                <select
+                                    value={selectedScopedSubjectId}
+                                    onChange={(event) => setSelectedScopedSubjectId(event.target.value)}
+                                    className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 focus:border-indigo-400 focus:outline-none"
+                                >
+                                    <option value="all">كل المواد</option>
+                                    {scopedSubjectOptions.map((subject) => (
+                                        <option key={subject.id} value={subject.id}>{displayText(subject.name)}</option>
+                                    ))}
+                                </select>
+                            </>
+                        ) : null}
                         {scopedAvailableGroups.length > 0 ? (
                             <select
                                 value={scopedGroupFilter}
@@ -1356,7 +1519,18 @@ const Reports: React.FC = () => {
                                 {scopedAnalytics.scope.earlyWeakSkillSignalCount ? ` توجد ${scopedAnalytics.scope.earlyWeakSkillSignalCount} إشارة أولية تحتاج قياسًا إضافيًا قبل الحكم.` : ''}
                             </div>
 
-                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER ? (
+                            {[Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role) ? (
+                                <SchoolSkillAggregatePanel
+                                    pathId={selectedScopedPathId !== 'all' ? selectedScopedPathId : undefined}
+                                    subjectId={selectedScopedSubjectId !== 'all' ? selectedScopedSubjectId : undefined}
+                                    classId={scopedGroupFilter !== 'all'
+                                        ? groups.find((group) => displayText(group.name) === scopedGroupFilter)?.id
+                                        : undefined}
+                                    groups={groups.map((group) => ({ id: group.id, name: displayText(group.name) }))}
+                                />
+                            ) : null}
+
+                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SCHOOL_ADMIN ? (
                                 <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-sm">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                         <div>
@@ -1533,7 +1707,7 @@ const Reports: React.FC = () => {
                                 </div>
                             ) : null}
 
-                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER ? (
+                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SCHOOL_ADMIN ? (
                                 <div className="rounded-3xl border border-emerald-100 bg-white p-4 shadow-sm">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                         <div>
@@ -2223,7 +2397,7 @@ const Reports: React.FC = () => {
                             </div>
                             <h3 className="mt-1 text-sm sm:text-base font-black text-gray-900 leading-snug">
                                 {hasStudentTrackScope
-                                    ? `نركز الآن على: ${studentTrackLabel}.`
+                                    ? `نركز الآن على: ${studentTrackLabel}${studentSubjectLabel ? ` — ${studentSubjectLabel}` : ''}.`
                                     : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
                             </h3>
                             <p className="mt-0.5 text-xs font-bold text-gray-500">
@@ -2237,12 +2411,31 @@ const Reports: React.FC = () => {
                             <div className="relative min-w-[150px] flex-1 sm:flex-initial">
                                 <select
                                     value={selectedStudentPathId}
-                                    onChange={(event) => setSelectedStudentPathId(event.target.value)}
+                                    onChange={(event) => {
+                                        setSelectedStudentPathId(event.target.value);
+                                        setSelectedStudentSubjectId('all');
+                                    }}
                                     className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-emerald-400 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 cursor-pointer transition-colors"
                                 >
                                     <option value="all">كل مساراتي</option>
                                     {studentReportPathOptions.map((path) => (
                                         <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            </div>
+                        ) : null}
+
+                        {studentReportSubjectOptions.length > 0 ? (
+                            <div className="relative min-w-[150px] flex-1 sm:flex-initial">
+                                <select
+                                    value={selectedStudentSubjectId}
+                                    onChange={(event) => setSelectedStudentSubjectId(event.target.value)}
+                                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-emerald-400 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 cursor-pointer transition-colors"
+                                >
+                                    <option value="all">كل المواد</option>
+                                    {studentReportSubjectOptions.map((subject) => (
+                                        <option key={subject.id} value={subject.id}>{displayText(subject.name)}</option>
                                     ))}
                                 </select>
                                 <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -2298,6 +2491,26 @@ const Reports: React.FC = () => {
                     </div>
                 ) : null}
             </div>
+
+            {isStudentView && (studentTodayFocus || studentMasteryGoals.length > 0) ? (
+                <StudentMasteryGoalsPanel
+                    goals={studentMasteryGoals}
+                    loading={studentMasteryGoalsLoading}
+                    saving={studentMasteryGoalSaving}
+                    canCreateShort={Boolean(studentTodayFocus?.pathId)}
+                    canCreateLong={Boolean(studentTodayFocus?.pathId)}
+                    onCreateShort={() => void createStudentMasteryGoal('short')}
+                    onCreateLong={() => void createStudentMasteryGoal('long')}
+                    onSetStatus={(goalId, status) => void updateStudentMasteryGoalStatus(goalId, status)}
+                />
+            ) : null}
+
+            {isStudentView ? (
+                <StudentMasteryReviewPanel
+                    pathId={selectedStudentPathId !== 'all' ? selectedStudentPathId : studentTodayFocus?.pathId}
+                    subjectId={selectedStudentSubjectId !== 'all' ? selectedStudentSubjectId : undefined}
+                />
+            ) : null}
 
             {studentAdaptiveLearningBridge && isStudentReportFull ? (
                 <Card className="p-4 sm:p-5 border border-violet-100 bg-white shadow-sm">

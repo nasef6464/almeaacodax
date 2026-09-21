@@ -215,7 +215,8 @@
         "smoke:handover-consistency": "node scripts/smoke-handover-consistency-contract.mjs",
         "smoke:handover-gates": "node scripts/smoke-handover-gates-contract.mjs",
         "smoke:handover-blockers": "node scripts/smoke-handover-blockers-contract.mjs",
-        "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers"
+        "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers",
+        "smoke:adaptive-phase11-final-certification": "node scripts/smoke-adaptive-phase11-final-certification-contract.mjs"
     },
     "dependencies": {
         "@e965/xlsx": "^0.20.3",

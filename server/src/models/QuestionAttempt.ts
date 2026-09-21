@@ -12,6 +12,7 @@ const questionAttemptSchema = new Schema(
     subjectId: { type: String, default: "", index: true },
     sectionId: { type: String, default: "", index: true },
     skillIds: { type: [String], default: [], index: true },
+    evidenceType: { type: String, enum: ["assessment", "remediation", "recheck", "mastery_review"], default: "assessment" },
   },
   {
     timestamps: true,

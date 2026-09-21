@@ -20,6 +20,35 @@ const idOf = (item: any) => String(item?.id || item?._id || "");
 const DIRECT_RESULT_DISABLED_MESSAGE =
   "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
 
+const buildResultTaxonomyScopeFilter = (query: { pathId?: string; subjectId?: string }) => {
+  if (query.pathId && query.subjectId) {
+    return {
+      $or: [
+        { "quizSnapshot.pathId": query.pathId, "quizSnapshot.subjectId": query.subjectId },
+        { skillsAnalysis: { $elemMatch: { pathId: query.pathId, subjectId: query.subjectId } } },
+      ],
+    };
+  }
+  if (query.pathId) {
+    return {
+      $or: [
+        { "quizSnapshot.pathId": query.pathId },
+        { skillsAnalysis: { $elemMatch: { pathId: query.pathId } } },
+      ],
+    };
+  }
+  if (query.subjectId) {
+    return {
+      $or: [
+        { "quizSnapshot.subjectId": query.subjectId },
+        { skillsAnalysis: { $elemMatch: { subjectId: query.subjectId } } },
+      ],
+    };
+  }
+  return {};
+};
+
+
 export const quizResultsRouter = Router();
 
 quizResultsRouter.get(
@@ -39,7 +68,7 @@ quizResultsRouter.get(
       res.setHeader("X-Quiz-Results-Cache", "miss");
     }
     const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
-    const filter: Record<string, unknown> = { userId: req.authUser!.id };
+    const filter: Record<string, unknown> = { userId: req.authUser!.id, ...buildResultTaxonomyScopeFilter(query) };
     if (query.quizId) {
       filter.quizId = query.quizId;
     }
@@ -114,7 +143,7 @@ quizResultsRouter.get(
     const studentIds = students.map((student) => idOf(student));
     const studentById = new Map(students.map((student) => [idOf(student), student]));
 
-    const scopedFilter: Record<string, unknown> = {};
+    const scopedFilter: Record<string, unknown> = { ...buildResultTaxonomyScopeFilter(query) };
     if (query.quizId) {
       scopedFilter.quizId = query.quizId;
     }

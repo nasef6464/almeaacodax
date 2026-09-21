@@ -13,6 +13,7 @@ const files = {
     await readFile(new URL('../pages/Reports/reportDomain.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/studentAnalyticsViewModel.ts', import.meta.url), 'utf8'),
+    await readFile(new URL('../pages/Reports/studentSkillAggregationFinalize.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/studentWeeklyPlanViewModel.ts', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/StudentWeeklyPlanPanel.tsx', import.meta.url), 'utf8'),
     await readFile(new URL('../pages/Reports/StudentSmartRemediationPanel.tsx', import.meta.url), 'utf8'),
@@ -170,11 +171,14 @@ check('student report remains simple first and exposes retest/remediation action
   assertIncludes(files.reports, 'studentAdaptiveLearningBridge');
   assertIncludes(files.reports, 'studentReportPeriod');
   assertIncludes(files.reports, 'compactStudentSkillRows');
-  assertIncludes(files.reports, 'buildFoundationTopicLink');
+  assertIncludes(files.reports, 'buildFoundationActionLink');
   assertIncludes(files.reports, 'scoredFoundationTopics');
   assertIncludes(files.reports, 'foundationTopicLink');
-  assertIncludes(files.reports, "const lessonLink = buildFoundationTopicLink('lessons')");
-  assertIncludes(files.reports, "params.set('content', content)");
+  assertIncludes(files.reports, "const lessonLink = buildFoundationActionLink(actionContext, 'lessons')");
+  assertIncludes(files.reports, "const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes')");
+  assertIncludes(files.reports, 'pathId: recommendationPathId');
+  assertIncludes(files.reports, 'subjectId: recommendationSubjectId');
+  assertIncludes(files.reports, 'skillId: resolvedSkillId');
   assertIncludes(files.reports, 'retestLink');
   assertIncludes(files.reports, 'downloadStudentSkillsWorkbook');
   assertAnyIncludes(files.reports, ['خطوة واحدة واضحة اليوم', 'Ø®Ø·ÙˆØ© ÙˆØ§Ø­Ø¯Ø© ÙˆØ§Ø¶Ø­Ø© Ø§Ù„ÙŠÙˆÙ…']);

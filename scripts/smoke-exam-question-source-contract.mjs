@@ -156,8 +156,11 @@ check('learner quiz lists are audience-scoped and never share a public cache acr
 check('quiz submission result response delegates non-critical side effects', () => {
   assertIncludes(quizRoutesSource, 'import { runQuizSubmissionSideEffects }');
   assertIncludes(quizRoutesSource, 'await runQuizSubmissionSideEffects({');
-  assertIncludes(adaptiveTelemetryRoutesSource, 'import { updateSkillProgressFromQuestionAttempt }');
-  assertIncludes(adaptiveTelemetryRoutesSource, 'await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);');
+  assertIncludes(
+    adaptiveTelemetryRoutesSource,
+    'import { updateSkillProgressFromQuestionAttempt, upsertReviewCardFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";',
+  );
+  assertIncludes(adaptiveTelemetryRoutesSource, 'updateSkillProgressFromQuestionAttempt(created, req.authUser!.id),');
   assertIncludes(quizRoutesSource, 'return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));');
 });
 

@@ -46,7 +46,8 @@ check('learner skill progress is persisted in its own user-scoped model', () => 
   includes(skillProgressModel, 'skillId: { type: String, required: true, index: true }');
   includes(skillProgressModel, 'mastery: { type: Number, default: 0 }');
   includes(skillProgressModel, 'attempts: { type: Number, default: 0 }');
-  includes(skillProgressModel, 'skillProgressSchema.index({ userId: 1, skillId: 1 }, { unique: true });');
+  includes(skillProgressModel, 'skillProgressSchema.index({ userId: 1, pathId: 1, subjectId: 1, skillId: 1 }, { unique: true });');
+  excludes(skillProgressModel, 'skillProgressSchema.index({ userId: 1, skillId: 1 }, { unique: true });');
   includes(skillProgressModel, 'mongoose.model("SkillProgress", skillProgressSchema)');
 });
 

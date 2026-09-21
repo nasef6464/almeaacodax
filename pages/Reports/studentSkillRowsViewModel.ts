@@ -1,5 +1,7 @@
 import { getReportMasteryTone, type StudentAggregatedSkill } from './reportDomain';
 import { buildSkillRecommendation, type SkillRecommendationCatalog } from './recommendationViewModel';
+import { resolveMasteryLevel, type MasteryLevel } from '../../services/masteryPolicy';
+import { buildSkillRecheckActionLink } from '../../utils/skillActionLinks';
 
 export interface StudentSkillReportRow extends StudentAggregatedSkill {
     tone: ReturnType<typeof getReportMasteryTone>;
@@ -9,6 +11,7 @@ export interface StudentSkillReportRow extends StudentAggregatedSkill {
     quizLabel: string;
     retestLink: string;
     evidenceLabel: string;
+    masteryLevel: MasteryLevel;
 }
 
 export const buildStudentSkillReportRows = (
@@ -20,6 +23,12 @@ export const buildStudentSkillReportRows = (
         const recommendation = buildSkillRecommendation(skill, catalog);
         const quizLink = recommendation.quizLink
             || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
+        const retestLink = buildSkillRecheckActionLink({
+            pathId: skill.pathId,
+            subjectId: skill.subjectId,
+            sectionId: skill.sectionId,
+            skillId: skill.skillId,
+        }) || quizLink;
 
         return {
             ...skill,
@@ -28,9 +37,14 @@ export const buildStudentSkillReportRows = (
             lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
             quizLink,
             quizLabel: recommendation.quizTitle || 'تدريب',
-            retestLink: quizLink,
+            retestLink,
+            masteryLevel: resolveMasteryLevel(skill.mastery, skill.totalEvidence || skill.attempts),
             evidenceLabel: skill.isReliable
-                ? `${skill.correctAttempts}/${skill.totalEvidence} صحيح`
-                : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence}`,
+                ? [
+                    `${skill.correctAttempts}/${skill.totalEvidence} صحيح`,
+                    typeof skill.recentMastery === 'number' ? `آخر 5: ${skill.recentMastery}%` : '',
+                    skill.trend === 'improving' ? 'الاتجاه يتحسن' : skill.trend === 'declining' ? 'الاتجاه يتراجع' : 'الاتجاه مستقر',
+                ].filter(Boolean).join(' · ')
+                : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence} — تحتاج قياسًا إضافيًا`,
         };
     });

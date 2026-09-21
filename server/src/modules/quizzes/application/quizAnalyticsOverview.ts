@@ -30,6 +30,34 @@ export const buildQuizAnalyticsOverview = async (
     await resolveScopedStudents(authUser, { limit: query.studentLimit });
   
   const scopedStudentIds = scopedStudents.map((student) => idOf(student));
+  const selectedPathId = String(query.pathId || "").trim();
+  const selectedSubjectId = String(query.subjectId || "").trim();
+  const resultScopeClauses: Record<string, unknown>[] = [];
+  if (selectedPathId && selectedSubjectId) {
+    resultScopeClauses.push({
+      $or: [
+        { "quizSnapshot.pathId": selectedPathId, "quizSnapshot.subjectId": selectedSubjectId },
+        { skillsAnalysis: { $elemMatch: { pathId: selectedPathId, subjectId: selectedSubjectId } } },
+      ],
+    });
+  } else if (selectedPathId) {
+    resultScopeClauses.push({
+      $or: [
+        { "quizSnapshot.pathId": selectedPathId },
+        { skillsAnalysis: { $elemMatch: { pathId: selectedPathId } } },
+      ],
+    });
+  } else if (selectedSubjectId) {
+    resultScopeClauses.push({
+      $or: [
+        { "quizSnapshot.subjectId": selectedSubjectId },
+        { skillsAnalysis: { $elemMatch: { subjectId: selectedSubjectId } } },
+      ],
+    });
+  }
+  const matchesSelectedTaxonomyScope = (gap: any) =>
+    (!selectedPathId || String(gap?.pathId || "") === selectedPathId) &&
+    (!selectedSubjectId || String(gap?.subjectId || "") === selectedSubjectId);
   const relatedGroupIds = uniqueStrings([
     ...scopedStudents.flatMap((student) => (student.groupIds || []).map(String)),
     ...(authUser.groupIds || []).map(String),
@@ -43,7 +71,10 @@ export const buildQuizAnalyticsOverview = async (
   const groupNameById = new Map(groups.map((group: any) => [idOf(group), String(group.name || "")]));
   
   let quizResults = scopedStudentIds.length
-    ? await QuizResultModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(query.resultLimit).lean()
+    ? await QuizResultModel.find({
+        userId: { $in: scopedStudentIds },
+        ...(resultScopeClauses.length ? { $and: resultScopeClauses } : {}),
+      }).sort({ createdAt: -1 }).limit(query.resultLimit).lean()
     : [];
   
   if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
@@ -54,7 +85,11 @@ export const buildQuizAnalyticsOverview = async (
   }
   
   let questionAttempts = scopedStudentIds.length
-    ? await QuestionAttemptModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(query.attemptLimit).lean()
+    ? await QuestionAttemptModel.find({
+        userId: { $in: scopedStudentIds },
+        ...(selectedPathId ? { pathId: selectedPathId } : {}),
+        ...(selectedSubjectId ? { subjectId: selectedSubjectId } : {}),
+      }).sort({ createdAt: -1 }).limit(query.attemptLimit).lean()
     : [];
   
   if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
@@ -110,6 +145,7 @@ export const buildQuizAnalyticsOverview = async (
     {
       skillId?: string;
       skill: string;
+      pathId?: string;
       subjectId?: string;
       sectionId?: string;
       section?: string;
@@ -121,18 +157,24 @@ export const buildQuizAnalyticsOverview = async (
   
   quizResults.forEach((result) => {
     const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-      authUser.role === "teacher"
+      matchesSelectedTaxonomyScope(gap) &&
+      (authUser.role === "teacher"
         ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-        : true,
+        : true),
     );
     skills.forEach((gap: any) => {
       const mastery = Number(gap?.mastery || 0);
       if (mastery >= 75) return;
   
-      const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
+      const key = [
+        String(gap?.pathId || ""),
+        String(gap?.subjectId || ""),
+        String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown"),
+      ].join("::");
       const current = weakSkillMap.get(key) || {
         skillId: gap?.skillId,
         skill: String(gap?.skill || "مهارة غير مسماة"),
+        pathId: gap?.pathId,
         subjectId: gap?.subjectId,
         sectionId: gap?.sectionId,
         section: gap?.section,
@@ -153,11 +195,16 @@ export const buildQuizAnalyticsOverview = async (
       const mastery = Number(gap?.mastery || 0);
       if (mastery >= 75) return;
   
-      const key = String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown");
+      const key = [
+        String(gap?.pathId || attempt.pathId || ""),
+        String(gap?.subjectId || attempt.subjectId || ""),
+        String(gap?.skillId || gap?.skill || gap?.sectionId || "unknown"),
+      ].join("::");
       const current = weakSkillMap.get(key) || {
         skillId: gap?.skillId,
         skill: String(gap?.skill || "مهارة غير مسماة"),
-        subjectId: gap?.subjectId,
+        pathId: gap?.pathId || attempt.pathId,
+        subjectId: gap?.subjectId || attempt.subjectId,
         sectionId: gap?.sectionId,
         section: gap?.section,
         masterySum: 0,
@@ -180,6 +227,7 @@ export const buildQuizAnalyticsOverview = async (
       return {
         skillId: item.skillId,
         skill: item.skill,
+        pathId: item.pathId,
         subjectId: item.subjectId,
         sectionId: item.sectionId,
         section: item.section,
@@ -197,6 +245,7 @@ export const buildQuizAnalyticsOverview = async (
   const subjectMap = new Map<
     string,
     {
+      pathId?: string;
       subjectId?: string;
       subjectName: string;
       masterySum: number;
@@ -207,14 +256,17 @@ export const buildQuizAnalyticsOverview = async (
   
   quizResults.forEach((result) => {
     const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-      authUser.role === "teacher"
+      matchesSelectedTaxonomyScope(gap) &&
+      (authUser.role === "teacher"
         ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-        : true,
+        : true),
     );
     skills.forEach((gap: any) => {
       if (!gap?.subjectId && !gap?.subjectName && !result.quizTitle) return;
-      const key = String(gap?.subjectId || gap?.subjectName || result.quizTitle);
+      const gapPathId = String(gap?.pathId || (result as any)?.quizSnapshot?.pathId || "");
+      const key = [gapPathId, String(gap?.subjectId || gap?.subjectName || result.quizTitle)].join("::");
       const current = subjectMap.get(key) || {
+        pathId: gapPathId || undefined,
         subjectId: gap?.subjectId,
         subjectName: String(gap?.subjectName || result.quizTitle || "مادة غير مسماة"),
         masterySum: 0,
@@ -234,8 +286,10 @@ export const buildQuizAnalyticsOverview = async (
   questionAttempts.forEach((attempt) => {
     buildQuizReportAttemptGaps(attempt, skillById, subjectNameById, sectionNameById).forEach((gap) => {
       if (!gap?.subjectId) return;
-      const key = String(gap.subjectId);
+      const gapPathId = String(gap.pathId || attempt.pathId || "");
+      const key = [gapPathId, String(gap.subjectId)].join("::");
       const current = subjectMap.get(key) || {
+        pathId: gapPathId || undefined,
         subjectId: gap.subjectId,
         subjectName: String(gap.subjectName || subjectNameById.get(String(gap.subjectId)) || "مادة غير مسماة"),
         masterySum: 0,
@@ -254,6 +308,7 @@ export const buildQuizAnalyticsOverview = async (
   
   const subjectSummaries = Array.from(subjectMap.values())
     .map((item) => ({
+      pathId: item.pathId,
       subjectId: item.subjectId,
       subjectName: item.subjectName,
       mastery: Math.round(item.masterySum / Math.max(item.count, 1)),
@@ -265,6 +320,8 @@ export const buildQuizAnalyticsOverview = async (
   let assignedFollowUps = await QuizModel.find({
     isPublished: true,
     mode: { $in: ["saher", "central"] },
+    ...(selectedPathId ? { pathId: selectedPathId } : {}),
+    ...(selectedSubjectId ? { subjectId: selectedSubjectId } : {}),
     $or: [
       { targetUserIds: { $in: scopedStudentIds } },
       { targetGroupIds: { $in: relatedGroupIds } },
@@ -299,6 +356,8 @@ export const buildQuizAnalyticsOverview = async (
       questionAttempts: questionAttempts.length,
       earlyWeakSkillSignalCount,
       minSkillEvidence: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
+      selectedPathId: selectedPathId || undefined,
+      selectedSubjectId: selectedSubjectId || undefined,
       limits: {
         studentLimit: query.studentLimit,
         resultLimit: query.resultLimit,

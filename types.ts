@@ -314,6 +314,8 @@ export interface SkillGap {
     section?: string;
     skill: string;
     mastery: number; // 0-100 percentage
+    questionCount?: number;
+    correctCount?: number;
     status: 'weak' | 'average' | 'strong';
     recommendation?: string; // Action text like "Additional test available"
 }
@@ -329,6 +331,19 @@ export interface SkillProgress {
     mastery: number;
     status: 'weak' | 'average' | 'good' | 'mastered';
     attempts: number;
+    evidenceCount?: number;
+    recentEvidence?: Array<{
+        sourceId: string;
+        mastery: number;
+        evidenceCount: number;
+        occurredAt: string;
+    }>;
+    recent?: {
+        mastery: number;
+        evidenceCount: number;
+        sampleSize: number;
+        trend: 'improving' | 'stable' | 'declining';
+    };
     lastQuizId?: string;
     lastQuizTitle?: string;
     lastAttemptAt?: string;
@@ -373,6 +388,8 @@ export interface QuizSnapshot {
 }
 
 export interface QuizResult {
+    id?: string;
+    _id?: string;
     userId?: string;
     quizId: string;
     quizTitle: string;
@@ -385,6 +402,7 @@ export interface QuizResult {
     unanswered: number;
     timeSpent: string;
     date: string;
+    createdAt?: string | number;
     skillsAnalysis: SkillGap[];
     questionReview?: QuizQuestionReview[];
     sectionResults?: QuizSectionResult[]; // تحليل لكل قسم (للمحاكيات فقط)
@@ -568,12 +586,19 @@ export interface Question extends ContentWorkflow {
     type: 'mcq' | 'true_false' | 'essay';
 }
 
+export type SkillEvidenceType = 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
+
 export interface QuestionAttempt {
     questionId: string;
     selectedOptionIndex: number;
     isCorrect: boolean;
     timeSpentSeconds: number;
     date: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
+    skillIds?: string[];
+    evidenceType?: SkillEvidenceType;
 }
 
 export interface Activity {

@@ -9,6 +9,7 @@ import type {
     Topic,
 } from '../../types';
 import { matchesEntityId } from '../../utils/entityIds';
+import { buildFoundationActionLink } from '../../utils/skillActionLinks';
 import { displayText, type SkillRecommendation } from './reportDomain';
 
 export interface SkillRecommendationCatalog {
@@ -124,24 +125,17 @@ export const buildSkillRecommendation = (
     const recommendedTopic = directTopic || scoredFoundationTopics[0]?.topic;
     const targetTopicId = recommendedTopic?.id || (resolvedSkillId ? `topic_sub_${resolvedSkillId}` : undefined);
 
-    const buildFoundationTopicLink = (content: 'lessons' | 'quizzes') =>
-        recommendationPathId && recommendationSubjectId
-            ? (() => {
-                const params = new URLSearchParams({ subject: recommendationSubjectId });
-                params.set('tab', 'skills');
-
-                if (targetTopicId) {
-                    params.set('topic', targetTopicId);
-                    params.set('content', content);
-                }
-
-                return `/category/${recommendationPathId}?${params.toString()}`;
-            })()
-            : undefined;
-
-    const lessonLink = buildFoundationTopicLink('lessons');
-    const foundationTrainingLink = buildFoundationTopicLink('quizzes');
-    const foundationTopicLink = buildFoundationTopicLink('lessons');
+    const actionContext = {
+        pathId: recommendationPathId,
+        subjectId: recommendationSubjectId,
+        skillId: resolvedSkillId,
+        topicId: targetTopicId,
+        lessonId: recommendedLesson?.id,
+        quizId: recommendedQuiz?.id,
+    };
+    const lessonLink = buildFoundationActionLink(actionContext, 'lessons');
+    const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes');
+    const foundationTopicLink = lessonLink;
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),

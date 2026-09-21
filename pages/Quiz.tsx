@@ -23,6 +23,7 @@ interface SavedQuizSnapshot {
   questionCount: number;
   timeLimitMinutes: number;
   targetSkillIds: string[];
+  evidenceType: 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
   currentQuestion: number;
   answers: { [key: number]: number };
   timeLeft: number;
@@ -59,6 +60,7 @@ const Quiz: React.FC = () => {
   const [questionCount, setQuestionCount] = useState(15);
   const [timeLimitMinutes, setTimeLimitMinutes] = useState(DEFAULT_TIME_MINUTES);
   const [targetSkillIds, setTargetSkillIds] = useState<string[]>([]);
+  const [evidenceType, setEvidenceType] = useState<'assessment' | 'remediation' | 'recheck' | 'mastery_review'>('assessment');
   const [activePreparedQuizId, setActivePreparedQuizId] = useState('');
 
   const [sessionQuestions, setSessionQuestions] = useState<typeof globalQuestionBank>([]);
@@ -102,6 +104,7 @@ const Quiz: React.FC = () => {
     const nextQuestionCount = Number(params.get('questionCount') || '');
     const nextTimeLimit = Number(params.get('timeLimit') || '');
     const autoStart = params.get('autostart') === '1';
+    const nextEvidenceType = params.get('evidenceType');
 
     if (pathId !== null) {
       setSelectedPathId(pathId);
@@ -123,6 +126,9 @@ const Quiz: React.FC = () => {
     }
     if (!Number.isNaN(nextTimeLimit) && nextTimeLimit > 0) {
       setTimeLimitMinutes(Math.max(5, Math.min(180, nextTimeLimit)));
+    }
+    if (nextEvidenceType === 'assessment' || nextEvidenceType === 'remediation' || nextEvidenceType === 'recheck' || nextEvidenceType === 'mastery_review') {
+      setEvidenceType(nextEvidenceType);
     }
 
     if (autoStart && mode === 'self') {
@@ -315,6 +321,7 @@ const Quiz: React.FC = () => {
     setQuestionCount(savedSnapshot.questionCount);
     setTimeLimitMinutes(savedSnapshot.timeLimitMinutes);
     setTargetSkillIds(savedSnapshot.targetSkillIds || []);
+    setEvidenceType(savedSnapshot.evidenceType || 'assessment');
     setActivePreparedQuizId(savedSnapshot.activePreparedQuizId);
     setSessionQuestions(savedSnapshot.sessionQuestions);
     setCurrentQuestion(savedSnapshot.currentQuestion);
@@ -534,14 +541,6 @@ const Quiz: React.FC = () => {
     setSelectedAnswer(index);
     setAnswers((prev) => ({ ...prev, [currentQuestion]: index }));
 
-    const isCorrect = index === questions[currentQuestion].correctOptionIndex;
-    recordQuestionAttempt({
-      questionId: questions[currentQuestion].id.toString(),
-      selectedOptionIndex: index,
-      isCorrect,
-      timeSpentSeconds: 0,
-      date: new Date().toISOString(),
-    });
   };
 
   const handleFinish = () => {
@@ -621,10 +620,24 @@ const Quiz: React.FC = () => {
 
     const resultDate = new Date().toISOString();
 
+    // Evidence is committed once per question at finish so answer changes do not double-count mastery.
+    questions.forEach((question, idx) => {
+      const selectedOptionIndex = answers[idx] ?? -1;
+      recordQuestionAttempt({
+        questionId: question.id.toString(),
+        selectedOptionIndex,
+        isCorrect: selectedOptionIndex >= 0 && selectedOptionIndex === question.correctOptionIndex,
+        timeSpentSeconds: 0,
+        date: resultDate,
+        evidenceType,
+      });
+    });
+
     try {
       saveExamResult({
         quizId: `self-quiz-${Date.now()}`,
         quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${getQuizDifficultyLabel(difficulty)})`,
+        source: evidenceType === 'assessment' ? 'self' : evidenceType,
         score,
         correctAnswers: correct,
         wrongAnswers: wrong,
@@ -684,6 +697,7 @@ const Quiz: React.FC = () => {
       questionCount,
       timeLimitMinutes,
       targetSkillIds,
+      evidenceType,
       currentQuestion,
       answers,
       timeLeft,

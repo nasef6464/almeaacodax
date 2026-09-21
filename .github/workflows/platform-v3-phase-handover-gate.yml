@@ -6,6 +6,7 @@ on:
     branches:
       - develop/platform-v3-recovery
       - codex/supervisor-student-journey-hardening
+      - chatgpt/adaptive-phase11-final-certification
   pull_request:
     branches:
       - main
@@ -90,6 +91,14 @@ jobs:
         run: npm --prefix server run verify:customer-bootstrap
       - name: Customer deployment package proof
         run: npm --prefix server run verify:customer-packaging
+      - name: Adaptive Phase 8 school aggregate contract
+        run: node scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs
+      - name: Adaptive Phase 9 question assistant contract
+        run: node scripts/smoke-adaptive-phase9-question-assistant-contract.mjs
+      - name: Adaptive Phase 10 resource hardening contract
+        run: node scripts/smoke-adaptive-phase10-resource-hardening-contract.mjs
+      - name: Adaptive Phase 11 final certification contract
+        run: npm run smoke:adaptive-phase11-final-certification
       - name: API phase 4 contract
         run: npm run smoke:api-phase4
       - name: Frontend phase 5 contract

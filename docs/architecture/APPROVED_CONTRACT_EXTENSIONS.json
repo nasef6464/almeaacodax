@@ -87,7 +87,15 @@
     "authRouter|GET|/trainer/performance",
     "mediaRouter|POST|/question-images/presign",
     "questionBankRouter|GET|/questions/:id",
-    "healthRouter|GET|/scale-metrics"
+    "healthRouter|GET|/scale-metrics",
+    "adaptiveMasteryRouter|GET|/mastery-goals",
+    "adaptiveMasteryRouter|POST|/mastery-goals",
+    "adaptiveMasteryRouter|PATCH|/mastery-goals/:goalId",
+    "adaptiveMasteryRouter|GET|/mastery-readiness",
+    "adaptiveMasteryRouter|GET|/next-best-action",
+    "quizAnalyticsRouter|GET|/analytics/school-skills",
+    "aiRouter|POST|/question-assistant",
+    "reviewRouter|GET|/mastery-challenges"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
@@ -128,6 +136,10 @@
     "REQUIRE_SCALE_READY",
     "SMART_CLASSROOM_LOAD_STUDENTS",
     "SMART_CLASSROOM_SCENARIO",
-    "UI_AUDIT_ROLE_CREDENTIALS_JSON"
+    "UI_AUDIT_ROLE_CREDENTIALS_JSON",
+    "AI_PER_SCHOOL_DAILY_LIMIT",
+    "AI_QUESTION_ASSISTANT_CACHE_MINUTES",
+    "AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS",
+    "AI_QUESTION_ASSISTANT_PER_MINUTE"
   ]
 }

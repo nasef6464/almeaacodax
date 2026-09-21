@@ -7,6 +7,8 @@ export interface ScopedAnalyticsOverview {
         questionAttempts?: number;
         earlyWeakSkillSignalCount?: number;
         minSkillEvidence?: number;
+        selectedPathId?: string;
+        selectedSubjectId?: string;
     };
     weakestStudents: Array<{
         id: string;
@@ -24,6 +26,8 @@ export interface ScopedAnalyticsOverview {
     weakestSkills: Array<{
         skillId?: string;
         skill: string;
+        pathId?: string;
+        subjectId?: string;
         section?: string;
         mastery: number;
         affectedStudents: number;
@@ -33,6 +37,7 @@ export interface ScopedAnalyticsOverview {
         recommendedAction?: string;
     }>;
     subjectSummaries: Array<{
+        pathId?: string;
         subjectId?: string;
         subjectName: string;
         mastery: number;
@@ -70,9 +75,16 @@ export interface StudentAggregatedSkill {
     skill: string;
     skillId?: string;
     pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
     subjectName?: string;
     sectionName?: string;
     mastery: number;
+    recentMastery?: number;
+    trend?: 'improving' | 'stable' | 'declining';
+    confidence?: number;
+    recentEvidence?: number;
+    recentSampleSize?: number;
     attempts: number;
     correctAttempts: number;
     totalEvidence: number;

@@ -4,7 +4,7 @@ const aiInteractionSchema = new Schema(
   {
     audience: {
       type: String,
-      enum: ["student", "admin", "teacher", "supervisor", "parent", "guest", "system"],
+      enum: ["student", "admin", "teacher", "supervisor", "school_admin", "parent", "guest", "system"],
       default: "guest",
       index: true,
     },
@@ -30,6 +30,7 @@ const aiInteractionSchema = new Schema(
     responseLength: { type: Number, default: 0 },
     error: { type: String, default: "" },
     userId: { type: String, default: "", index: true },
+    schoolId: { type: String, default: "" },
     userEmail: { type: String, default: "" },
     role: { type: String, default: "", index: true },
     metadata: { type: Schema.Types.Mixed, default: {} },
@@ -45,5 +46,6 @@ aiInteractionSchema.index({ status: 1, createdAt: -1 });
 aiInteractionSchema.index({ usedFallback: 1, createdAt: -1 });
 aiInteractionSchema.index({ personalized: 1, createdAt: -1 });
 aiInteractionSchema.index({ userId: 1, createdAt: -1 });
+aiInteractionSchema.index({ schoolId: 1, endpoint: 1, createdAt: -1 });
 
 export const AiInteractionModel = mongoose.model("AiInteraction", aiInteractionSchema);
