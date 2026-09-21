@@ -1,5 +1,6 @@
 import { displayText } from './reportDomain';
 import type { StudentWeeklyPlanItem } from './studentWeeklyPlanViewModel';
+import { MASTERY_POLICY } from '../../utils/masteryPolicy';
 
 export type StudentLearningActionIconKey = 'checkCircle' | 'video' | 'fileText';
 
@@ -111,9 +112,9 @@ export const buildStudentTodayLearningLoop = (
         evidenceLabel: studentTodayFocus.isReliable
             ? `${studentTodayFocus.attempts} محاولات`
             : `قراءة أولية من ${studentTodayFocus.attempts} محاولة`,
-        readinessLabel: mastery >= 75
+        readinessLabel: mastery >= MASTERY_POLICY.readyAt
             ? 'جاهز للتثبيت'
-            : mastery >= 50
+            : mastery >= MASTERY_POLICY.supportBelow
                 ? 'راجع ثم قِس'
                 : 'ابدأ من الشرح',
         steps,
