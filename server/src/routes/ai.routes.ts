@@ -979,6 +979,7 @@ aiRouter.get(
       routingMode: runtimeAiConfig.routingMode,
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+      providerHealth: getAiProviderCircuitSnapshot(),
     });
   }),
 );
@@ -1288,6 +1289,316 @@ ${message}
         fallbackReason,
       });
     }
+  }),
+);
+
+aiRouter.post(
+  "/question-assistant",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = questionAssistantSchema.parse(req.body || {});
+    const userId = String(req.authUser!.id || "");
+    const resultFilter = mongoose.Types.ObjectId.isValid(payload.resultId)
+      ? { _id: payload.resultId }
+      : { id: payload.resultId };
+
+    const result = await QuizResultModel.findOne({ ...resultFilter, userId }).lean();
+    if (!result) {
+      return res.status(404).json({ message: "Quiz result not found in your account" });
+    }
+
+    const review = (Array.isArray((result as any).questionReview) ? (result as any).questionReview : [])
+      .find((item: any) => String(item?.questionId || "") === payload.questionId);
+    if (!review) {
+      return res.status(404).json({ message: "Question is not part of this result review" });
+    }
+
+    const question = await QuestionModel.findOne(buildDocumentsByIdsQuery([payload.questionId]))
+      .select("id text options correctOptionIndex explanation imageUrl skillIds updatedAt")
+      .lean();
+
+    const questionText = String(review?.text || (question as any)?.text || "").trim();
+    const options = Array.isArray(review?.options)
+      ? review.options.map(String)
+      : Array.isArray((question as any)?.options)
+        ? (question as any).options.map(String)
+        : [];
+    const selectedOptionIndex = Number.isInteger(review?.selectedOptionIndex)
+      ? Number(review.selectedOptionIndex)
+      : undefined;
+    const correctOptionIndex = Number.isInteger(review?.correctOptionIndex)
+      ? Number(review.correctOptionIndex)
+      : Number.isInteger((question as any)?.correctOptionIndex)
+        ? Number((question as any).correctOptionIndex)
+        : undefined;
+    const trustedExplanation = String(review?.explanation || (question as any)?.explanation || "").trim();
+    const hasImage = Boolean(
+      review?.imageUrl ||
+      (question as any)?.imageUrl ||
+      /<img\b/i.test(questionText),
+    );
+    const skillIds = uniqueNonEmpty(
+      Array.isArray((question as any)?.skillIds) ? (question as any).skillIds.map(String) : [],
+    );
+    const skills = skillIds.length
+      ? await SkillModel.find(buildDocumentsByIdsQuery(skillIds)).select("id name").lean()
+      : [];
+    const skillLabels = skills.map((skill: any) => String(skill.name || "")).filter(Boolean);
+
+    const owner = (result as any).schoolId
+      ? null
+      : await UserModel.findById(userId).select("schoolId").lean();
+    const schoolId = String((result as any).schoolId || (owner as any)?.schoolId || "").trim();
+    const resultIdentity = String((result as any)._id || payload.resultId);
+    const contextVersion = [
+      String((result as any).updatedAt || (result as any).createdAt || ""),
+      String((question as any)?.updatedAt || ""),
+      String(selectedOptionIndex ?? ""),
+      String(correctOptionIndex ?? ""),
+      String(trustedExplanation.length),
+    ].join("::");
+    const cacheKey = buildQuestionAssistantCacheKey({
+      userId,
+      resultId: resultIdentity,
+      questionId: payload.questionId,
+      level: payload.helpLevel as QuestionHelpLevel,
+      message: payload.message,
+      contextVersion,
+    });
+    const now = new Date();
+    const cached = await AiQuestionAssistCacheModel.findOne({
+      cacheKey,
+      expiresAt: { $gt: now },
+    }).lean();
+
+    if (cached) {
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/question-assistant-cache",
+        audience: "student",
+        message: payload.message || payload.helpLevel,
+        responseText: String(cached.responseText || ""),
+        provider: (cached.provider || "none") as AiProvider,
+        model: String(cached.model || ""),
+        usedFallback: String(cached.provider || "none") === "none",
+        latencyMs: 0,
+        schoolId,
+        metadata: {
+          billable: false,
+          cacheHit: true,
+          resultId: resultIdentity,
+          questionId: payload.questionId,
+          helpLevel: payload.helpLevel,
+          hasImage,
+          imageSentToProvider: false,
+        },
+      });
+      return res.json({
+        text: String(cached.responseText || ""),
+        helpLevel: payload.helpLevel,
+        provider: cached.provider || "none",
+        model: cached.model || "local-fallback",
+        usedFallback: String(cached.provider || "none") === "none",
+        cacheHit: true,
+        hasImage,
+        imageSentToProvider: false,
+      });
+    }
+
+    const fallback = buildQuestionAssistantFallback({
+      level: payload.helpLevel as QuestionHelpLevel,
+      explanation: trustedExplanation,
+      hasImage,
+    });
+
+    if (hasImage && !trustedExplanation) {
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/question-assistant",
+        audience: "student",
+        message: payload.message || payload.helpLevel,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        latencyMs: 0,
+        schoolId,
+        metadata: {
+          billable: false,
+          visualContextBlocked: true,
+          resultId: resultIdentity,
+          questionId: payload.questionId,
+          helpLevel: payload.helpLevel,
+          hasImage: true,
+          imageSentToProvider: false,
+        },
+      });
+      return res.json({
+        text: fallback,
+        helpLevel: payload.helpLevel,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        cacheHit: false,
+        hasImage: true,
+        imageSentToProvider: false,
+        visualContextBlocked: true,
+      });
+    }
+
+    const [budget, minuteRate] = await Promise.all([
+      withinAiBudget(userId, schoolId || undefined),
+      withinQuestionAssistantMinuteLimit(userId),
+    ]);
+    if (!budget.allowed || !minuteRate.allowed) {
+      const reason = !minuteRate.allowed
+        ? "تم الوصول إلى حد المحاولات القصير لهذا السؤال. استخدم الشرح الحالي ثم أعد المحاولة لاحقًا."
+        : "تم الوصول إلى ميزانية المساعد الحالية. استخدم الشرح الموثوق المتاح لهذا السؤال.";
+      const responseText = trustedExplanation ? `${reason}\n\n${fallback}` : reason;
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/question-assistant",
+        audience: "student",
+        message: payload.message || payload.helpLevel,
+        responseText,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        latencyMs: 0,
+        schoolId,
+        metadata: {
+          billable: false,
+          budgetExceeded: !budget.allowed,
+          minuteRateExceeded: !minuteRate.allowed,
+          globalCount: budget.globalCount,
+          userCount: budget.userCount,
+          schoolCount: budget.schoolCount,
+          resultId: resultIdentity,
+          questionId: payload.questionId,
+          helpLevel: payload.helpLevel,
+          hasImage,
+          imageSentToProvider: false,
+        },
+      });
+      return res.json({
+        text: responseText,
+        helpLevel: payload.helpLevel,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        cacheHit: false,
+        hasImage,
+        imageSentToProvider: false,
+        budgetLimited: !budget.allowed,
+        rateLimited: !minuteRate.allowed,
+      });
+    }
+
+    const prompt = buildQuestionAssistantPrompt({
+      level: payload.helpLevel as QuestionHelpLevel,
+      questionText,
+      options,
+      selectedOptionIndex,
+      correctOptionIndex,
+      explanation: trustedExplanation,
+      skillLabels,
+      studentMessage: payload.message,
+      hasImage,
+    });
+
+    const response = await withQuestionAssistantInflight(cacheKey, async () => {
+      const secondCache = await AiQuestionAssistCacheModel.findOne({
+        cacheKey,
+        expiresAt: { $gt: new Date() },
+      }).lean();
+      if (secondCache) {
+        return {
+          text: String(secondCache.responseText || ""),
+          provider: (secondCache.provider || "none") as AiProvider,
+          model: String(secondCache.model || "local-fallback"),
+          usedFallback: String(secondCache.provider || "none") === "none",
+          cacheHit: true,
+          errors: [] as string[],
+        };
+      }
+
+      const startedAt = Date.now();
+      const resultCall = await callAiWithMeta(prompt, undefined, undefined, {
+        timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+        maxOutputTokens: env.AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS,
+      });
+      const responseText = String(resultCall.text || fallback).trim().slice(0, 4_000);
+      const provider = resultCall.text ? resultCall.provider : "none";
+      const model = resultCall.text ? resultCall.model : "local-fallback";
+      const expiresAt = new Date(
+        Date.now() + Math.max(1, env.AI_QUESTION_ASSISTANT_CACHE_MINUTES) * 60 * 1000,
+      );
+
+      await AiQuestionAssistCacheModel.updateOne(
+        { cacheKey },
+        {
+          $set: {
+            userId,
+            schoolId,
+            resultId: resultIdentity,
+            questionId: payload.questionId,
+            helpLevel: payload.helpLevel,
+            responseText,
+            provider,
+            model,
+            expiresAt,
+          },
+          $setOnInsert: { cacheKey },
+        },
+        { upsert: true },
+      );
+
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/question-assistant",
+        audience: "student",
+        message: payload.message || payload.helpLevel,
+        responseText,
+        provider,
+        model,
+        usedFallback: provider === "none",
+        latencyMs: Date.now() - startedAt,
+        schoolId,
+        error: provider === "none" && resultCall.errors.length ? fallbackReasonFromErrors(resultCall.errors) : undefined,
+        metadata: {
+          billable: true,
+          cacheHit: false,
+          resultId: resultIdentity,
+          questionId: payload.questionId,
+          helpLevel: payload.helpLevel,
+          hasImage,
+          imageSentToProvider: false,
+          promptChars: prompt.length,
+          responseChars: responseText.length,
+          providerErrors: compactProviderErrors(resultCall.errors),
+        },
+      });
+
+      return {
+        text: responseText,
+        provider,
+        model,
+        usedFallback: provider === "none",
+        cacheHit: false,
+        errors: resultCall.errors,
+      };
+    });
+
+    return res.json({
+      text: response.text,
+      helpLevel: payload.helpLevel,
+      provider: response.provider,
+      model: response.model,
+      usedFallback: response.usedFallback,
+      cacheHit: response.cacheHit,
+      hasImage,
+      imageSentToProvider: false,
+    });
   }),
 );
 
