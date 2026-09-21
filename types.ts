@@ -576,6 +576,10 @@ export interface QuestionAttempt {
     isCorrect: boolean;
     timeSpentSeconds: number;
     date: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
+    skillIds?: string[];
     evidenceType?: SkillEvidenceType;
 }
 
