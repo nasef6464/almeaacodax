@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { LearningRecommendation, SkillGap } from '../types';
-import { generateLearningPath } from '../services/geminiService';
-import { Sparkles, Zap, ArrowLeft, BrainCircuit, Clock } from 'lucide-react';
+import { getInternalLearningPath } from '../services/adaptiveLearningPathService';
+import { Sparkles, Zap, ArrowLeft, Clock } from 'lucide-react';
 import { Card } from './ui/Card';
 
 interface Props {
@@ -10,38 +10,15 @@ interface Props {
 }
 
 export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
-    const [recommendations, setRecommendations] = useState<LearningRecommendation[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchPath = async () => {
-            setLoading(true);
-            const data = await generateLearningPath(skills);
-            setRecommendations(data);
-            setLoading(false);
-        };
-        fetchPath();
-    }, [skills]);
-
-    if (loading) {
-        return (
-            <Card className="p-6 border-secondary-200 bg-gradient-to-br from-secondary-50 to-white">
-                <div className="flex items-center gap-3 mb-4">
-                    <BrainCircuit className="text-secondary-500 animate-pulse" size={24} />
-                    <h3 className="font-bold text-lg text-gray-800">جاري تحليل أدائك وبناء مسار ذكي...</h3>
-                </div>
-                <div className="space-y-3">
-                    <div className="h-16 bg-gray-100 rounded-xl animate-pulse"></div>
-                    <div className="h-16 bg-gray-100 rounded-xl animate-pulse"></div>
-                </div>
-            </Card>
-        );
-    }
+    const { recommendations, fingerprint } = useMemo(
+        () => getInternalLearningPath(skills),
+        [skills],
+    );
 
     if (recommendations.length === 0) return null;
 
     return (
-        <div className="relative">
+        <div className="relative" data-adaptive-fingerprint={fingerprint}>
             <div className="flex items-center gap-2 mb-4">
                 <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-2 rounded-lg shadow-lg shadow-purple-200">
                     <Sparkles size={20} />
