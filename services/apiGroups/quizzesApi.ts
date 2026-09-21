@@ -91,6 +91,37 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
 
+  getNextBestAction: (scope: { pathId: string; subjectId?: string }) =>
+    request<{
+      version: string;
+      fingerprint: string;
+      scope: { pathId: string; subjectId?: string };
+      nextAction: null | {
+        skillId: string;
+        skill: string;
+        pathId: string;
+        subjectId: string;
+        sectionId: string;
+        mastery: number;
+        evidenceCount: number;
+        status: string;
+        trend: "improving" | "stable" | "declining";
+        action: string;
+      };
+      candidates: Array<{
+        skillId: string;
+        skill: string;
+        pathId: string;
+        subjectId: string;
+        sectionId: string;
+        mastery: number;
+        evidenceCount: number;
+        status: string;
+        trend: "improving" | "stable" | "declining";
+        action: string;
+      }>;
+    }>(withQuery("/quizzes/next-best-action", scope)),
+
   getSkillProgress: async (pagination: PaginationOptions & { noTotal?: boolean } = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
 
