@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { LearningRecommendation, SkillGap } from '../types';
+import { SkillGap } from '../types';
 import { getInternalLearningPath } from '../services/adaptiveLearningPathService';
 import { Sparkles, Zap, ArrowLeft, Clock } from 'lucide-react';
 import { Card } from './ui/Card';
