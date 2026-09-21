@@ -837,31 +837,36 @@ const callOpenAiCompatible = async (
   return "";
 };
 
-const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }): Promise<AiCallResult> => {
+const callAiWithMeta = async (
+  prompt: string,
+  responseMimeType?: AiResponseMimeType,
+  image?: { data: string; mimeType: string },
+  options: AiCallOptions = {},
+): Promise<AiCallResult> => {
   await loadRuntimeAiConfig();
   const errors: string[] = [];
 
   for (const provider of providerPriority()) {
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
-    if (!descriptor?.configured || provider === "none") {
+    if (!descriptor?.configured || provider === "none") continue;
+    if (isAiProviderCircuitOpen(provider)) {
+      errors.push(`${provider}: circuit-open`);
       continue;
     }
 
     try {
       let text = "";
       if (provider === "gemini") {
-        text = await callGemini(prompt, responseMimeType, image);
-      }
-      if (provider === "ollama") {
-        text = await callOllama(prompt, responseMimeType);
-      }
-      if (provider === "lmstudio") {
-        text = await callLmStudio(prompt, responseMimeType);
-      }
-      if (provider === "openrouter" || provider === "deepseek" || provider === "qwen" || provider === "openai") {
-        text = await callOpenAiCompatible(provider, prompt, responseMimeType);
+        text = await callGemini(prompt, responseMimeType, image, options);
+      } else if (provider === "ollama") {
+        text = await callOllama(prompt, responseMimeType, options);
+      } else if (provider === "lmstudio") {
+        text = await callLmStudio(prompt, responseMimeType, options);
+      } else if (provider === "openrouter" || provider === "deepseek" || provider === "qwen" || provider === "openai") {
+        text = await callOpenAiCompatible(provider, prompt, responseMimeType, options);
       }
       if (text) {
+        recordAiProviderSuccess(provider);
         return {
           text,
           provider,
@@ -870,7 +875,10 @@ const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeT
           errors,
         };
       }
+      recordAiProviderFailure(provider);
+      errors.push(`${provider}: empty-response`);
     } catch (error) {
+      recordAiProviderFailure(provider);
       errors.push(`${provider}: ${error instanceof Error ? error.message : "unknown error"}`);
     }
   }
