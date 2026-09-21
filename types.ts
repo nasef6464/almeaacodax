@@ -111,6 +111,7 @@ export interface CourseQA {
     answer?: string;
     user: string;
     date: string;
+    evidenceType?: SkillEvidenceType;
 }
 
 export type CourseAssessmentPhase = 'pre_course' | 'during_course' | 'final_course';
@@ -567,6 +568,8 @@ export interface Question extends ContentWorkflow {
     difficulty: 'Easy' | 'Medium' | 'Hard';
     type: 'mcq' | 'true_false' | 'essay';
 }
+
+export type SkillEvidenceType = 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
 
 export interface QuestionAttempt {
     questionId: string;
