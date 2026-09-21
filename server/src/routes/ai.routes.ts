@@ -4,15 +4,31 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { AiInteractionModel } from "../models/AiInteraction.js";
+import { AiQuestionAssistCacheModel } from "../models/AiQuestionAssistCache.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
+import { SkillModel } from "../models/Skill.js";
 import { UserModel } from "../models/User.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuestionModel } from "../models/Question.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
+import {
+  buildQuestionAssistantCacheKey,
+  buildQuestionAssistantFallback,
+  buildQuestionAssistantPrompt,
+  withQuestionAssistantInflight,
+  type QuestionHelpLevel,
+} from "../modules/ai/application/questionAssistant.js";
+import {
+  getAiProviderCircuitSnapshot,
+  isAiProviderCircuitOpen,
+  recordAiProviderFailure,
+  recordAiProviderSuccess,
+} from "../modules/ai/application/providerCircuitBreaker.js";
+import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 
 const imageInputSchema = z.object({
   data: z.string().min(1),
