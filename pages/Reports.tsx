@@ -42,6 +42,7 @@ import { StudentSmartRemediationPanel } from './Reports/StudentSmartRemediationP
 import { StudentSelectedSkillPanel } from './Reports/StudentSelectedSkillPanel';
 import { StudentMasteryGoalsPanel, type StudentMasteryGoal } from './Reports/StudentMasteryGoalsPanel';
 import { StudentMasteryReviewPanel } from './Reports/StudentMasteryReviewPanel';
+import { SchoolSkillAggregatePanel } from './Reports/SchoolSkillAggregatePanel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
 import { buildStudentReadinessDecision, type ServerReadinessSnapshot, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
@@ -522,7 +523,7 @@ const Reports: React.FC = () => {
         const resolvedSkill = leadSkill?.skillId ? skills.find((skill) => skill.id === leadSkill.skillId) : undefined;
         const subjectId = resolvedSkill?.subjectId || scopedAnalytics.subjectSummaries[0]?.subjectId;
         const pathId = resolvedSkill?.pathId || subjects.find((subject) => subject.id === subjectId)?.pathId || paths[0]?.id;
-        if (leadStudent && leadSkill && pathId && [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role)) {
+        if (leadStudent && leadSkill && pathId && [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role)) {
             try {
                 await api.createInterventionStudyPlan({
                     studentId: leadStudent.id,
@@ -635,7 +636,7 @@ const Reports: React.FC = () => {
     };
     const canSendInterventionAlert =
         Boolean(institutionalReportHub?.alertText && scopedLeadStudent) &&
-        [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role);
+        [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role);
     const sendInterventionAlert = async () => {
         if (!canSendInterventionAlert || !scopedLeadStudent || !institutionalReportHub?.alertText) return;
 
@@ -1447,7 +1448,7 @@ const Reports: React.FC = () => {
                         >
                             تقرير مفرد
                         </button>
-                        {[Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role) ? (
+                        {[Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role) ? (
                             <>
                                 <select
                                     value={selectedScopedPathId}
@@ -1515,7 +1516,18 @@ const Reports: React.FC = () => {
                                 {scopedAnalytics.scope.earlyWeakSkillSignalCount ? ` توجد ${scopedAnalytics.scope.earlyWeakSkillSignalCount} إشارة أولية تحتاج قياسًا إضافيًا قبل الحكم.` : ''}
                             </div>
 
-                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER ? (
+                            {[Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role) ? (
+                                <SchoolSkillAggregatePanel
+                                    pathId={selectedScopedPathId !== 'all' ? selectedScopedPathId : undefined}
+                                    subjectId={selectedScopedSubjectId !== 'all' ? selectedScopedSubjectId : undefined}
+                                    classId={scopedGroupFilter !== 'all'
+                                        ? groups.find((group) => displayText(group.name) === scopedGroupFilter)?.id
+                                        : undefined}
+                                    groups={groups.map((group) => ({ id: group.id, name: displayText(group.name) }))}
+                                />
+                            ) : null}
+
+                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SCHOOL_ADMIN ? (
                                 <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-sm">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                         <div>
@@ -1692,7 +1704,7 @@ const Reports: React.FC = () => {
                                 </div>
                             ) : null}
 
-                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER ? (
+                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SCHOOL_ADMIN ? (
                                 <div className="rounded-3xl border border-emerald-100 bg-white p-4 shadow-sm">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                         <div>
