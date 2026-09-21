@@ -16,6 +16,7 @@ export const buildQuestionAssistantCacheKey = (input: {
   questionId: string;
   level: QuestionHelpLevel;
   message?: string;
+  contextVersion?: string;
 }) =>
   createHash("sha256")
     .update([
@@ -24,6 +25,7 @@ export const buildQuestionAssistantCacheKey = (input: {
       input.questionId,
       input.level,
       String(input.message || "").trim().toLowerCase(),
+      String(input.contextVersion || ""),
     ].join("::"))
     .digest("hex");
 
@@ -81,4 +83,19 @@ export const buildQuestionAssistantFallback = (input: {
   return input.hasImage
     ? "هذا السؤال يعتمد على صورة، ولا يوجد وصف نصي موثوق كافٍ لمناقشته بأمان الآن. راجع الصورة والشرح المعتمد أو اطلب من المعلم إضافة شرح نصي."
     : "لا يوجد شرح نصي موثوق كافٍ لهذا السؤال حاليًا. راجع الحل المعتمد أو اطلب شرحًا من المعلم.";
+};
+
+
+const inFlight = new Map<string, Promise<unknown>>();
+
+export const withQuestionAssistantInflight = async <T>(cacheKey: string, factory: () => Promise<T>): Promise<T> => {
+  const existing = inFlight.get(cacheKey);
+  if (existing) return existing as Promise<T>;
+  const pending = factory();
+  inFlight.set(cacheKey, pending);
+  try {
+    return await pending;
+  } finally {
+    if (inFlight.get(cacheKey) === pending) inFlight.delete(cacheKey);
+  }
 };
