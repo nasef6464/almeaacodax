@@ -33,15 +33,21 @@ export const buildQuizAnalyticsOverview = async (
   const selectedPathId = String(query.pathId || "").trim();
   const selectedSubjectId = String(query.subjectId || "").trim();
   const resultScopeClauses: Record<string, unknown>[] = [];
-  if (selectedPathId) {
+  if (selectedPathId && selectedSubjectId) {
+    resultScopeClauses.push({
+      $or: [
+        { "quizSnapshot.pathId": selectedPathId, "quizSnapshot.subjectId": selectedSubjectId },
+        { skillsAnalysis: { $elemMatch: { pathId: selectedPathId, subjectId: selectedSubjectId } } },
+      ],
+    });
+  } else if (selectedPathId) {
     resultScopeClauses.push({
       $or: [
         { "quizSnapshot.pathId": selectedPathId },
         { skillsAnalysis: { $elemMatch: { pathId: selectedPathId } } },
       ],
     });
-  }
-  if (selectedSubjectId) {
+  } else if (selectedSubjectId) {
     resultScopeClauses.push({
       $or: [
         { "quizSnapshot.subjectId": selectedSubjectId },
@@ -49,6 +55,9 @@ export const buildQuizAnalyticsOverview = async (
       ],
     });
   }
+  const matchesSelectedTaxonomyScope = (gap: any) =>
+    (!selectedPathId || String(gap?.pathId || "") === selectedPathId) &&
+    (!selectedSubjectId || String(gap?.subjectId || "") === selectedSubjectId);
   const relatedGroupIds = uniqueStrings([
     ...scopedStudents.flatMap((student) => (student.groupIds || []).map(String)),
     ...(authUser.groupIds || []).map(String),
@@ -148,9 +157,10 @@ export const buildQuizAnalyticsOverview = async (
   
   quizResults.forEach((result) => {
     const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-      authUser.role === "teacher"
+      matchesSelectedTaxonomyScope(gap) &&
+      (authUser.role === "teacher"
         ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-        : true,
+        : true),
     );
     skills.forEach((gap: any) => {
       const mastery = Number(gap?.mastery || 0);
