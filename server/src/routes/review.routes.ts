@@ -103,6 +103,7 @@ reviewRouter.get(
           cardId: String(card.id || card._id),
           questionId: String(card.questionId || ""),
           skillId: String(card.skillId || ""),
+          skillIds: Array.isArray(card.skillIds) ? card.skillIds.map(String) : [],
           pathId: String(card.pathId || ""),
           subjectId: String(card.subjectId || ""),
           sectionId: String(card.sectionId || ""),
@@ -326,19 +327,24 @@ reviewRouter.get(
           userId,
           pathId: query.pathId,
           ...(query.subjectId ? { subjectId: query.subjectId } : {}),
-          skillId: { $in: skillIds },
+          $or: [{ skillId: { $in: skillIds } }, { skillIds: { $in: skillIds } }],
           reviewType: "mastery_review",
           nextReviewDate: { $lte: new Date() },
         })
-          .select("skillId nextReviewDate")
+          .select("skillId skillIds nextReviewDate")
           .limit(100)
           .lean()
       : [];
 
     const dueCountBySkill = new Map<string, number>();
     dueCards.forEach((card: any) => {
-      const skillId = String(card.skillId || "");
-      dueCountBySkill.set(skillId, (dueCountBySkill.get(skillId) || 0) + 1);
+      const linkedSkills = [
+        String(card.skillId || ""),
+        ...(Array.isArray(card.skillIds) ? card.skillIds.map(String) : []),
+      ].filter(Boolean);
+      [...new Set(linkedSkills)].forEach((skillId) => {
+        dueCountBySkill.set(skillId, (dueCountBySkill.get(skillId) || 0) + 1);
+      });
     });
 
     return res.json({
