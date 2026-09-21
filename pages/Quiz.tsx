@@ -637,6 +637,7 @@ const Quiz: React.FC = () => {
       saveExamResult({
         quizId: `self-quiz-${Date.now()}`,
         quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${getQuizDifficultyLabel(difficulty)})`,
+        source: evidenceType === 'assessment' ? 'self' : evidenceType,
         score,
         correctAnswers: correct,
         wrongAnswers: wrong,
