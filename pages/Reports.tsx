@@ -825,7 +825,7 @@ const Reports: React.FC = () => {
 
         const skillRows = isStudentView
             ? [
-                ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
+                ['المادة', 'المهارة الرئيسية', 'المهارة', 'الإتقان التراكمي', 'إتقان آخر 5', 'الاتجاه', 'الأدلة', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
                 ...studentPrintableSkillRows.map((skill) => {
                     const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
                     const tone = getReportMasteryTone(skill.mastery);
@@ -835,6 +835,9 @@ const Reports: React.FC = () => {
                         displayText(skill.sectionName) || '-',
                         displayText(skill.skill) || '-',
                         `${skill.mastery}%`,
+                        `${skill.recentMastery ?? skill.mastery}%`,
+                        skill.trend === 'improving' ? 'يتحسن' : skill.trend === 'declining' ? 'يتراجع' : 'مستقر',
+                        skill.totalEvidence,
                         tone.label,
                         displayText(recommendation.actionText) || 'شرح قصير ثم تدريب ثم إعادة قياس.',
                         displayText(recommendation.lessonTitle) || '-',
