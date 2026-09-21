@@ -7,6 +7,8 @@ const quiz=read('pages/Quiz.tsx');
 const model=read('server/src/models/QuestionAttempt.ts');
 const schema=read('server/src/modules/quizzes/http/submissionSchemas.ts');
 const loop=read('pages/Reports/studentLearningLoopViewModel.ts');
+const report=read('pages/Reports/studentAnalyticsViewModel.ts');
+const questionSchema=read('server/src/modules/quizzes/http/questionQuerySchemas.ts');
 
 for (const evidenceType of ['assessment','remediation','recheck','mastery_review']) {
   assert.ok(model.includes(evidenceType), `model missing ${evidenceType}`);
@@ -24,4 +26,7 @@ const answerHandler=quiz.slice(quiz.indexOf('const handleAnswerSelect'),quiz.ind
 assert.ok(!answerHandler.includes('recordQuestionAttempt('), 'answer changes must not persist evidence');
 assert.ok(quiz.includes('Evidence is committed once per question at finish'));
 assert.ok(quiz.includes('evidenceType,'));
+assert.ok(report.includes("String(skill.pathId || '')"));
+assert.ok(report.includes("String(skill.subjectId || '')"));
+assert.ok(questionSchema.includes('Published or review-ready image questions require a written explanation'));
 console.log(JSON.stringify({phase:'adaptive-phase4-treatment-recheck',status:'PASS'},null,2));
