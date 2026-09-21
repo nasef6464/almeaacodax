@@ -8,7 +8,7 @@ export interface StudentReportScopeInput {
     enrolledPaths?: string[];
     selectedStudentPathId: string;
     selectedStudentSubjectId: string;
-    selectedSkillKey: string;
+    selectedSkillKey: string | null;
     role: Role;
 }
 
@@ -67,6 +67,7 @@ export const buildStudentReportScope = ({
     const reportBaseSkills = selectedStudentSubjectId === 'all'
         ? (studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills)
         : studentSubjectScopedSkills;
+    const scopedWeakestSkill = reportBaseSkills[0] || null;
     const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
     const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);
     const reliableAverageSkills = reliableAggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75);
@@ -78,13 +79,13 @@ export const buildStudentReportScope = ({
                 ? reliableAggregatedSkills
                 : reportBaseSkills
     ).slice(0, 6);
-    const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
-    const selectedReportSkill = aggregatedSkills.find(
+    const primaryReportSkill = focusedReportSkills[0] || scopedWeakestSkill;
+    const selectedReportSkill = reportBaseSkills.find(
         (skill) => getReportSkillKey(skill) === selectedSkillKey,
     ) || primaryReportSkill;
 
     return {
-        weakestSkill,
+        weakestSkill: scopedWeakestSkill,
         studentEnrolledPathIds,
         studentEnrolledPathLabels,
         studentReportPathOptions,
