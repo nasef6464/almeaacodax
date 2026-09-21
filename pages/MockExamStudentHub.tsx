@@ -45,9 +45,9 @@ const scoreLabel = (score: number) => {
   return 'يحتاج مراجعة';
 };
 
-type MockAttemptResult = QuizResult & {
+type MockAttemptResult = Omit<QuizResult, 'createdAt' | 'date'> & {
   id?: string;
-  createdAt?: number;
+  createdAt?: number | string;
   submittedAt?: number | string;
   date?: number | string;
 };
