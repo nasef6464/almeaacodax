@@ -45,6 +45,7 @@ import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel
 import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
+import { buildStudentEvidenceWindow } from './Reports/studentEvidenceWindowViewModel';
 import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
 import { buildScopedRemediationFallback } from './Reports/scopedRemediationFallbackViewModel';
 import { buildScopedSkillsWorkbookRows, buildScopedStudentsWorkbookRows } from './Reports/scopedExportRowsViewModel';
@@ -116,6 +117,7 @@ const Reports: React.FC = () => {
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
+    const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
     const [selectedFollowUpQuizId, setSelectedFollowUpQuizId] = useState<string>('all');
@@ -167,26 +169,49 @@ const Reports: React.FC = () => {
         [questionAttempts, studentReportPeriod],
     );
     const studentPeriodLabel = studentReportPeriodLabels[studentReportPeriod];
-    const studentReportDataCount = studentPeriodExamResults.length + studentPeriodQuestionAttempts.length;
-
-    // Calculate Performance Analysis
-    const stats = useMemo(
-        () => buildStudentPerformanceStats(studentPeriodExamResults, studentPeriodQuestionAttempts),
-        [studentPeriodExamResults, studentPeriodQuestionAttempts],
-    );
-
-    // Aggregate Skill Analysis
-    const aggregatedSkills = useMemo(
-        () => buildStudentAggregatedSkills({
+    const studentEvidenceWindow = useMemo(
+        () => buildStudentEvidenceWindow({
             examResults: studentPeriodExamResults,
             questionAttempts: studentPeriodQuestionAttempts,
+            selectedPathId: selectedStudentPathId,
+            selectedSubjectId: selectedStudentSubjectId,
+        }),
+        [selectedStudentPathId, selectedStudentSubjectId, studentPeriodExamResults, studentPeriodQuestionAttempts],
+    );
+    const studentReportDataCount =
+        studentEvidenceWindow.pathScopedExamResults.length + studentEvidenceWindow.pathScopedQuestionAttempts.length;
+
+    // Period performance stays broader, while adaptive skill evidence uses the latest bounded result window.
+    const stats = useMemo(
+        () => buildStudentPerformanceStats(
+            studentEvidenceWindow.pathScopedExamResults,
+            studentEvidenceWindow.pathScopedQuestionAttempts,
+        ),
+        [studentEvidenceWindow.pathScopedExamResults, studentEvidenceWindow.pathScopedQuestionAttempts],
+    );
+
+    // Aggregate recent skill evidence (last five quiz results by default) with question-attempt fallback.
+    const aggregatedSkills = useMemo(
+        () => buildStudentAggregatedSkills({
+            examResults: studentEvidenceWindow.recentExamResults,
+            questionAttempts:
+                studentEvidenceWindow.recentExamResults.length > 0
+                    ? []
+                    : studentEvidenceWindow.pathScopedQuestionAttempts,
             questions,
             skills,
             subjects,
             sections,
             minSkillEvidence: MIN_SKILL_EVIDENCE_COUNT,
         }),
-        [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects],
+        [
+            questions,
+            sections,
+            skills,
+            studentEvidenceWindow.pathScopedQuestionAttempts,
+            studentEvidenceWindow.recentExamResults,
+            subjects,
+        ],
     );
 
     const studentEvidenceSummary = useMemo(
@@ -209,9 +234,17 @@ const Reports: React.FC = () => {
         }),
         [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, user.role],
     );
+    const studentReportSubjectOptions = useMemo(
+        () => subjects.filter((subject) =>
+            selectedStudentPathId === 'all'
+                ? (studentEnrolledPathIds.length === 0 || studentEnrolledPathIds.includes(subject.pathId))
+                : subject.pathId === selectedStudentPathId,
+        ),
+        [selectedStudentPathId, studentEnrolledPathIds, subjects],
+    );
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
-    const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
+    const hasStudentAnalytics = studentReportDataCount > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
     const skillReadinessSummary = useMemo(
         () => buildStudentSkillReadinessSummary(
@@ -2237,12 +2270,31 @@ const Reports: React.FC = () => {
                             <div className="relative min-w-[150px] flex-1 sm:flex-initial">
                                 <select
                                     value={selectedStudentPathId}
-                                    onChange={(event) => setSelectedStudentPathId(event.target.value)}
+                                    onChange={(event) => {
+                                        setSelectedStudentPathId(event.target.value);
+                                        setSelectedStudentSubjectId('all');
+                                    }}
                                     className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-emerald-400 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 cursor-pointer transition-colors"
                                 >
                                     <option value="all">كل مساراتي</option>
                                     {studentReportPathOptions.map((path) => (
                                         <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            </div>
+                        ) : null}
+
+                        {studentReportSubjectOptions.length > 0 ? (
+                            <div className="relative min-w-[150px] flex-1 sm:flex-initial">
+                                <select
+                                    value={selectedStudentSubjectId}
+                                    onChange={(event) => setSelectedStudentSubjectId(event.target.value)}
+                                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-indigo-400 focus:border-indigo-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 cursor-pointer transition-colors"
+                                >
+                                    <option value="all">كل المواد</option>
+                                    {studentReportSubjectOptions.map((subject) => (
+                                        <option key={subject.id} value={subject.id}>{displayText(subject.name)}</option>
                                     ))}
                                 </select>
                                 <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
