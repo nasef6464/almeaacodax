@@ -73,10 +73,6 @@ const getPublicCacheStorage = (): Storage | null => {
 };
 
 const getStoredSessionToken = (): string | null => {
-  if (COOKIE_FIRST_AUTH_ENABLED) {
-    return null;
-  }
-
   try {
     const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) {
