@@ -1,6 +1,6 @@
 import { displayText, type StudentAggregatedSkill } from './reportDomain';
 import type { StudentWeeklyPlanItem } from './studentWeeklyPlanViewModel';
-import { buildSkillPracticeActionLink } from '../../utils/skillActionLinks';
+import { buildSkillPracticeActionLink, buildSkillRecheckActionLink, buildSkillRemediationActionLink } from '../../utils/skillActionLinks';
 
 export interface StudentAdaptiveLearningBridge {
     skillName: string;
@@ -35,12 +35,17 @@ export const buildStudentAdaptiveLearningBridge = (
 ): StudentAdaptiveLearningBridge | null => {
     if (!studentTodayFocus) return null;
 
-    const scopedPracticeLink = buildSkillPracticeActionLink({
+    const actionContext = {
         pathId: studentTodayFocus.pathId,
         subjectId: studentTodayFocus.subjectId,
+        sectionId: studentTodayFocus.sectionId,
         skillId: studentTodayFocus.skillId,
         quizId: studentTodayFocus.quizLink?.startsWith('/quiz/') ? studentTodayFocus.quizLink.split('/quiz/')[1]?.split(/[?#]/)[0] : undefined,
-    });
+    };
+    const scopedPracticeLink = buildSkillRemediationActionLink(actionContext)
+        || buildSkillPracticeActionLink(actionContext);
+    const scopedRecheckLink = buildSkillRecheckActionLink(actionContext)
+        || scopedPracticeLink;
 
     return {
         skillName: displayText(studentTodayFocus.skill),
@@ -50,7 +55,7 @@ export const buildStudentAdaptiveLearningBridge = (
         relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
         adaptiveTrainingLink: studentTodayFocus.quizLink || scopedPracticeLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
         smartPathLink: '/plan',
-        retestLink: studentTodayFocus.quizLink || scopedPracticeLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
+        retestLink: scopedRecheckLink || studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
     };
 };
 
@@ -63,7 +68,12 @@ export const buildStudentReportNextAction = (
     if (studentTodayFocus) {
         const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
         const learningLink = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
-        const trainingLink = studentTodayFocus.quizLink || buildSkillPracticeActionLink({
+        const trainingLink = studentTodayFocus.quizLink || buildSkillRemediationActionLink({
+            pathId: studentTodayFocus.pathId,
+            subjectId: studentTodayFocus.subjectId,
+            sectionId: studentTodayFocus.sectionId,
+            skillId: studentTodayFocus.skillId,
+        }) || buildSkillPracticeActionLink({
             pathId: studentTodayFocus.pathId,
             subjectId: studentTodayFocus.subjectId,
             skillId: studentTodayFocus.skillId,
