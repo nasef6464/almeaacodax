@@ -30,7 +30,7 @@ const skillSchema = new Schema(
   },
 );
 
-skillSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, order: 1, createdAt: 1 });
-skillSchema.index({ subjectId: 1, sectionId: 1, order: 1, createdAt: 1 });
+skillSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, createdAt: 1 });
+skillSchema.index({ subjectId: 1, sectionId: 1, createdAt: 1 });
 
 export const SkillModel = mongoose.model("Skill", skillSchema);
