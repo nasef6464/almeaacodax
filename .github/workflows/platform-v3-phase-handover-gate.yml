@@ -6,6 +6,7 @@ on:
     branches:
       - develop/platform-v3-recovery
       - codex/supervisor-student-journey-hardening
+      - chatgpt/adaptive-phase11-final-certification
   pull_request:
     branches:
       - main
