@@ -160,17 +160,21 @@ export const buildStudentAggregatedSkills = ({
                 ? skills.find((item) => item.id === data.skillId)
                 : skills.find((item) => displayText(item.name) === displayText(skill));
             const pathId = data.pathId || resolvedSkill?.pathId;
-            const subjectName = resolvedSkill?.subjectId
-                ? displayText(subjects.find((subject) => subject.id === resolvedSkill.subjectId)?.name)
+            const subjectId = data.subjectId || resolvedSkill?.subjectId;
+            const sectionId = data.sectionId || resolvedSkill?.sectionId;
+            const subjectName = subjectId
+                ? displayText(subjects.find((subject) => subject.id === subjectId)?.name)
                 : undefined;
-            const sectionName = resolvedSkill?.sectionId
-                ? displayText(sections.find((section) => section.id === resolvedSkill.sectionId)?.name)
+            const sectionName = sectionId
+                ? displayText(sections.find((section) => section.id === sectionId)?.name)
                 : undefined;
 
             return {
                 skill: displayText(data.skillName || skill),
                 skillId: data.skillId,
                 pathId,
+                subjectId,
+                sectionId,
                 subjectName,
                 sectionName,
                 mastery,
