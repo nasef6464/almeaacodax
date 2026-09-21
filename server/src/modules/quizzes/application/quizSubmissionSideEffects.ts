@@ -5,6 +5,7 @@ import { SkillProgressModel } from "../../../models/SkillProgress.js";
 import { createNotificationDeliveries } from "../../../services/notificationService.js";
 import { sm2 } from "../../../services/spacedRepetition.js";
 import { buildRecommendedAction, buildSkillStatus, mergeSkillMasteryEvidence } from "../analytics/skillAnalytics.js";
+import { updateSchoolSkillReadModelFromResult } from "./schoolSkillReadModel.js";
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
@@ -238,6 +239,7 @@ export async function runQuizSubmissionSideEffects(args: {
   const outcomes = await Promise.allSettled([
     updateSkillProgressFromResult(args.result, args.userId),
     upsertReviewCardsFromQuestionReview({ ...args, result: args.result }),
+    updateSchoolSkillReadModelFromResult(args.result, args.userId),
     createNotificationDeliveries({
       title: `${scoreEmoji} نتيجة ${quizTitle}`,
       body: `حصلت على ${score}% في هذا الاختبار. ${score >= 80 ? "أداء رائع!" : score >= 60 ? "جيد جداً، استمر!" : "لا تيأس، راجع الأخطاء وأعد المحاولة."}`,
@@ -249,7 +251,7 @@ export async function runQuizSubmissionSideEffects(args: {
 
   outcomes.forEach((outcome, index) => {
     if (outcome.status === "fulfilled") return;
-    const sideEffect = index === 0 ? "skill-progress" : index === 1 ? "review-cards" : "notification";
+    const sideEffect = index === 0 ? "skill-progress" : index === 1 ? "review-cards" : index === 2 ? "school-skill-read-model" : "notification";
     const reason = outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason || "unknown");
     console.warn("[quiz-submit] non-critical side effect failed", {
       requestId: args.requestId || "",
