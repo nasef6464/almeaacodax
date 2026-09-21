@@ -1347,7 +1347,11 @@ aiRouter.post(
 
     const owner = (result as any).schoolId
       ? null
-      : await UserModel.findById(userId).select("schoolId").lean();
+      : await (mongoose.Types.ObjectId.isValid(userId)
+        ? UserModel.findById(userId)
+        : UserModel.findOne({ id: userId }))
+          .select("schoolId")
+          .lean();
     const schoolId = String((result as any).schoolId || (owner as any)?.schoolId || "").trim();
     const resultIdentity = String((result as any)._id || payload.resultId);
     const contextVersion = [
@@ -1530,9 +1534,10 @@ aiRouter.post(
       const responseText = String(resultCall.text || fallback).trim().slice(0, 4_000);
       const provider = resultCall.text ? resultCall.provider : "none";
       const model = resultCall.text ? resultCall.model : "local-fallback";
-      const expiresAt = new Date(
-        Date.now() + Math.max(1, env.AI_QUESTION_ASSISTANT_CACHE_MINUTES) * 60 * 1000,
-      );
+      const cacheMinutes = provider === "none"
+        ? Math.min(2, Math.max(1, env.AI_QUESTION_ASSISTANT_CACHE_MINUTES))
+        : Math.max(1, env.AI_QUESTION_ASSISTANT_CACHE_MINUTES);
+      const expiresAt = new Date(Date.now() + cacheMinutes * 60 * 1000);
 
       await AiQuestionAssistCacheModel.updateOne(
         { cacheKey },
