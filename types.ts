@@ -316,6 +316,8 @@ export interface SkillGap {
     mastery: number; // 0-100 percentage
     questionCount?: number;
     correctCount?: number;
+    evidenceCount?: number;
+    trend?: 'improving' | 'stable' | 'declining';
     status: 'weak' | 'average' | 'strong';
     recommendation?: string; // Action text like "Additional test available"
 }
@@ -1024,11 +1026,13 @@ export interface LearningRecommendation {
     type: 'lesson' | 'quiz' | 'flashcard';
     title: string;
     duration: string; // e.g., "15 دقيقة"
-    reason: string; // AI generated reason
+    reason: string; // deterministic/explainable reason; AI enrichment is optional
     skillTargeted: string;
     priority: 'high' | 'medium' | 'low';
     actionLabel: string;
     link: string;
+    isPrimary?: boolean;
+    source?: 'internal' | 'ai_enriched';
 }
 
 export type StudyPlanDay =
