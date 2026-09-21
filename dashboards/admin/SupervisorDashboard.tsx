@@ -133,7 +133,7 @@ const getRequestedSupervisorTab = (): SupervisorTab | null => {
 };
 
 export const SupervisorDashboard: React.FC = () => {
-  const { user, groups, users, examResults, quizzes, updateQuiz, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
+  const { user, groups, users, examResults, quizzes, paths, subjects, updateQuiz, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
   const [scopedStudentUsers, setScopedStudentUsers] = useState<any[]>([]);
   const [scopedStudentUsersLoaded, setScopedStudentUsersLoaded] = useState(false);
   const [activeTab, setActiveTabState] = useState<SupervisorTab>(() => getRequestedSupervisorTab() || 'overview');
@@ -166,6 +166,8 @@ export const SupervisorDashboard: React.FC = () => {
   const [schoolFilter, setSchoolFilter] = useState('all');
   const [classFilter, setClassFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [skillPathFilter, setSkillPathFilter] = useState('all');
+  const [skillSubjectFilter, setSkillSubjectFilter] = useState('all');
   const [weeklyAlertState, setWeeklyAlertState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [studentActionState, setStudentActionState] = useState<{ id: string; action: 'alert' | 'quiz' } | null>(null);
   const [studentActionFeedback, setStudentActionFeedback] = useState('');
@@ -252,6 +254,21 @@ export const SupervisorDashboard: React.FC = () => {
     loadStudents();
   }, [user.id]);
 
+  const skillPathOptions = useMemo(
+    () => paths.filter((path) => path.isActive !== false),
+    [paths],
+  );
+  const skillSubjectOptions = useMemo(
+    () => subjects.filter((subject) => skillPathFilter === 'all' || subject.pathId === skillPathFilter),
+    [skillPathFilter, subjects],
+  );
+  useEffect(() => {
+    if (skillSubjectFilter === 'all') return;
+    if (!skillSubjectOptions.some((subject) => subject.id === skillSubjectFilter)) {
+      setSkillSubjectFilter('all');
+    }
+  }, [skillSubjectFilter, skillSubjectOptions]);
+
   const supervisorScopeSummary = useMemo(() => {
     const directGroupIds = new Set(user.groupIds || []);
     const directGroups = groups.filter((g) => directGroupIds.has(g.id) || g.supervisorIds?.includes(user.id));
@@ -285,13 +302,24 @@ export const SupervisorDashboard: React.FC = () => {
     const averageScore = scopedResults.length
       ? Math.round(scopedResults.reduce((t, r) => t + Number(r.score || 0), 0) / scopedResults.length) : 0;
 
-    const weakSkillMap = new Map<string, { skill: string; total: number; count: number; students: Set<string> }>();
+    const weakSkillMap = new Map<string, { key: string; skill: string; skillId?: string; pathId?: string; subjectId?: string; total: number; count: number; students: Set<string> }>();
     scopedResults.forEach((r) => {
       (r.skillsAnalysis || []).forEach((sk) => {
         const s = String(sk.skill || '').trim();
         if (!s) return;
-        const key = sk.skillId || s;
-        const cur = weakSkillMap.get(key) || { skill: s, total: 0, count: 0, students: new Set<string>() };
+        if (skillPathFilter !== 'all' && String(sk.pathId || '') !== skillPathFilter) return;
+        if (skillSubjectFilter !== 'all' && String(sk.subjectId || '') !== skillSubjectFilter) return;
+        const key = [String(sk.pathId || ''), String(sk.subjectId || ''), String(sk.skillId || s)].join('::');
+        const cur = weakSkillMap.get(key) || {
+          key,
+          skill: s,
+          skillId: sk.skillId,
+          pathId: sk.pathId,
+          subjectId: sk.subjectId,
+          total: 0,
+          count: 0,
+          students: new Set<string>(),
+        };
         cur.total += Number(sk.mastery || 0);
         cur.count += 1;
         if (r.userId) cur.students.add(r.userId);
@@ -300,7 +328,16 @@ export const SupervisorDashboard: React.FC = () => {
     });
 
     const weakestSkills = Array.from(weakSkillMap.values())
-      .map((sk) => ({ skill: sk.skill, mastery: sk.count ? Math.round(sk.total / sk.count) : 0, attempts: sk.count, affectedStudents: sk.students.size }))
+      .map((sk) => ({
+        key: sk.key,
+        skill: sk.skill,
+        skillId: sk.skillId,
+        pathId: sk.pathId,
+        subjectId: sk.subjectId,
+        mastery: sk.count ? Math.round(sk.total / sk.count) : 0,
+        attempts: sk.count,
+        affectedStudents: sk.students.size,
+      }))
       .sort((a, b) => a.mastery - b.mastery || b.affectedStudents - a.affectedStudents);
 
     const allStudentsList = scopedStudents.map((student) => {
@@ -370,7 +407,7 @@ export const SupervisorDashboard: React.FC = () => {
       groupSnapshots, bestClass, weakestClass, pendingFollowUpCount, scopedStudentIdSet, scopedResults,
       primarySchoolName, scopeTypeName,
     };
-  }, [examResults, groups, quizzes, scopedStudentUsers, scopedStudentUsersLoaded, user.groupIds, user.id, user.schoolId, users]);
+  }, [examResults, groups, quizzes, scopedStudentUsers, scopedStudentUsersLoaded, skillPathFilter, skillSubjectFilter, user.groupIds, user.id, user.schoolId, users]);
 
   const activeStudentDetails = useMemo(() => {
     if (!selectedStudentId) return null;
@@ -839,7 +876,7 @@ export const SupervisorDashboard: React.FC = () => {
                 {supervisorScopeSummary.weakestSkills.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {supervisorScopeSummary.weakestSkills.slice(0, 4).map((sk) => (
-                      <div key={sk.skill} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                      <div key={sk.key} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
                         <div className="flex items-center justify-between gap-2 mb-1.5">
                           <span className="text-xs font-bold text-gray-900 truncate">{sk.skill}</span>
                           <span className="text-xs font-bold text-rose-600">{sk.mastery}%</span>
@@ -1134,9 +1171,32 @@ export const SupervisorDashboard: React.FC = () => {
         {/* ===== SKILLS TAB ===== */}
         {activeTab === 'skills' && (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-black text-gray-900">خريطة تمكن المهارات (Curriculum Skills Map)</h1>
-              <p className="mt-1 text-sm text-gray-500">خريطة توضيحية لنسبة تمكن الطلاب من مهارات المنهج داخل نطاق إشرافك</p>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h1 className="text-2xl font-black text-gray-900">خريطة تمكن المهارات (Curriculum Skills Map)</h1>
+                <p className="mt-1 text-sm text-gray-500">خريطة توضيحية لنسبة تمكن الطلاب مع فصل المسارات والمواد بدون دمج المهارات المتشابهة.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <select
+                  value={skillPathFilter}
+                  onChange={(event) => {
+                    setSkillPathFilter(event.target.value);
+                    setSkillSubjectFilter('all');
+                  }}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700"
+                >
+                  <option value="all">كل المسارات</option>
+                  {skillPathOptions.map((path) => <option key={path.id} value={path.id}>{path.name}</option>)}
+                </select>
+                <select
+                  value={skillSubjectFilter}
+                  onChange={(event) => setSkillSubjectFilter(event.target.value)}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700"
+                >
+                  <option value="all">كل المواد</option>
+                  {skillSubjectOptions.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+                </select>
+              </div>
             </div>
 
             {/* مصفوفة طالب × مهارة */}
@@ -1166,7 +1226,7 @@ export const SupervisorDashboard: React.FC = () => {
                 {skillsOverviewList.critical.length === 0 ? (
                   <p className="text-xs text-gray-400 text-center py-6">لا توجد مهارات حرجة في هذا النطاق.</p>
                 ) : skillsOverviewList.critical.map((sk) => (
-                  <div key={sk.skill} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
+                  <div key={sk.key} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
                     <div className="flex justify-between items-start">
                       <h4 className="text-sm font-bold text-gray-900 max-w-[70%] truncate" title={sk.skill}>{sk.skill}</h4>
                       <span className="rounded-lg bg-rose-50 px-2 py-0.5 text-xs font-black text-rose-600">{sk.mastery}%</span>
@@ -1176,7 +1236,7 @@ export const SupervisorDashboard: React.FC = () => {
                     </div>
                     <div className="flex justify-between items-center text-[11px] text-gray-500 pt-1">
                       <span>{sk.affectedStudents} طلاب متعثرين</span>
-                      <button onClick={() => setSelectedSkillFilter({ name: sk.skill, level: 'critical', students: supervisorScopeSummary.allStudentsList.filter((s) => s.weakSkills.includes(sk.skill)).map(s => s.id) })}
+                      <button onClick={() => setSelectedSkillFilter({ name: sk.skill, level: 'critical', students: supervisorScopeSummary.allStudentsList.filter((s) => s.resultsList.some((result) => (result.skillsAnalysis || []).some((candidate) => String(candidate.pathId || '') === String(sk.pathId || '') && String(candidate.subjectId || '') === String(sk.subjectId || '') && String(candidate.skillId || candidate.skill || '') === String(sk.skillId || sk.skill || '') && Number(candidate.mastery || 0) < 75))).map((s) => s.id) })}
                         className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">عرض الطلاب ←</button>
                     </div>
                   </div>
@@ -1196,7 +1256,7 @@ export const SupervisorDashboard: React.FC = () => {
                 {skillsOverviewList.watch.length === 0 ? (
                   <p className="text-xs text-gray-400 text-center py-6">لا توجد مهارات قيد التعزيز.</p>
                 ) : skillsOverviewList.watch.map((sk) => (
-                  <div key={sk.skill} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
+                  <div key={sk.key} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
                     <div className="flex justify-between items-start">
                       <h4 className="text-sm font-bold text-gray-900 max-w-[70%] truncate" title={sk.skill}>{sk.skill}</h4>
                       <span className="rounded-lg bg-amber-50 px-2 py-0.5 text-xs font-black text-amber-600">{sk.mastery}%</span>
@@ -1206,7 +1266,7 @@ export const SupervisorDashboard: React.FC = () => {
                     </div>
                     <div className="flex justify-between items-center text-[11px] text-gray-500 pt-1">
                       <span>{sk.affectedStudents} طلاب يحتاجون تعزيز</span>
-                      <button onClick={() => setSelectedSkillFilter({ name: sk.skill, level: 'watch', students: supervisorScopeSummary.allStudentsList.filter((s) => s.weakSkills.includes(sk.skill)).map(s => s.id) })}
+                      <button onClick={() => setSelectedSkillFilter({ name: sk.skill, level: 'watch', students: supervisorScopeSummary.allStudentsList.filter((s) => s.resultsList.some((result) => (result.skillsAnalysis || []).some((candidate) => String(candidate.pathId || '') === String(sk.pathId || '') && String(candidate.subjectId || '') === String(sk.subjectId || '') && String(candidate.skillId || candidate.skill || '') === String(sk.skillId || sk.skill || '') && Number(candidate.mastery || 0) < 75))).map((s) => s.id) })}
                         className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">عرض الطلاب ←</button>
                     </div>
                   </div>
@@ -1226,7 +1286,7 @@ export const SupervisorDashboard: React.FC = () => {
                 {skillsOverviewList.mastered.length === 0 ? (
                   <p className="text-xs text-gray-400 text-center py-6">لا تتوفر مهارات بنسبة تمكن عالية حالياً.</p>
                 ) : skillsOverviewList.mastered.map((sk) => (
-                  <div key={sk.skill} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
+                  <div key={sk.key} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
                     <div className="flex justify-between items-start">
                       <h4 className="text-sm font-bold text-gray-900 max-w-[70%] truncate" title={sk.skill}>{sk.skill}</h4>
                       <span className="rounded-lg bg-emerald-50 px-2 py-0.5 text-xs font-black text-emerald-600">{sk.mastery}%</span>
