@@ -60,6 +60,31 @@ assertIncludes(
   'Learning section blocks direct deep links into locked foundation subtopics.',
 );
 assertIncludes(
+  'dashboards/admin/FoundationManager.tsx',
+  'المهارة الفرعية المرتبطة',
+  'Foundation admin can explicitly map a child topic to a subskill.',
+);
+assertIncludes(
+  'dashboards/admin/FoundationManager.tsx',
+  'topic.skillId === option.id',
+  'Foundation admin prevents duplicate child-topic mapping to the same subskill.',
+);
+assertIncludes(
+  'dashboards/admin/FoundationManager.tsx',
+  'learningPlacements: buildFoundationPlacements(quiz, topic)',
+  'Foundation training attachments persist the exact foundation topic placement.',
+);
+assertIncludes(
+  'dashboards/admin/FoundationManager.tsx',
+  'skillIds: mergeTopicSkillIds(lesson.skillIds, topic)',
+  'Foundation lessons inherit the explicitly mapped subskill without removing existing skill links.',
+);
+assertIncludes(
+  'components/SkillDetailsModal.tsx',
+  'to={buildTrainingQuizPath(quiz.id)}',
+  'Selecting a ready short training starts that exact quiz from the foundation topic.',
+);
+assertIncludes(
   'components/CourseOverview.tsx',
   'هذه المساحة مخصصة للاستفسار عن محتوى الدورة',
   'Course Q&A clearly says it is for content inquiries, not session booking.',

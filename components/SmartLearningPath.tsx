@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SkillGap } from '../types';
+import { SkillGap, type Skill, type Topic } from '../types';
 import { getInternalLearningPath, type AdaptiveSkillSignal } from '../services/adaptiveLearningPathService';
+import { useStore } from '../store/useStore';
+import { resolveFoundationSkillTarget } from '../utils/foundationSkillTarget';
 import { api } from '../services/api';
 import { Sparkles, Zap, ArrowLeft, Clock } from 'lucide-react';
 import { Card } from './ui/Card';
@@ -10,8 +12,36 @@ interface Props {
     skills: SkillGap[];
 }
 
+const enrichSignalsWithFoundationTarget = (
+    signals: AdaptiveSkillSignal[],
+    skillCatalog: Skill[],
+    topics: Topic[],
+): AdaptiveSkillSignal[] =>
+    signals.map((signal) => {
+        const target = resolveFoundationSkillTarget({
+            skillId: signal.skillId,
+            skillName: signal.skill,
+            pathId: signal.pathId,
+            subjectId: signal.subjectId,
+            sectionId: signal.sectionId,
+        }, skillCatalog, topics);
+        return {
+            ...signal,
+            pathId: target.pathId || signal.pathId,
+            subjectId: target.subjectId || signal.subjectId,
+            sectionId: target.sectionId || signal.sectionId,
+            topicId: target.topicId,
+        };
+    });
+
 export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
-    const localPath = useMemo(() => getInternalLearningPath(skills), [skills]);
+    const skillCatalog = useStore((state) => state.skills);
+    const topics = useStore((state) => state.topics);
+    const localSignals = useMemo(
+        () => enrichSignalsWithFoundationTarget(skills, skillCatalog, topics),
+        [skillCatalog, skills, topics],
+    );
+    const localPath = useMemo(() => getInternalLearningPath(localSignals), [localSignals]);
     const [serverSignals, setServerSignals] = useState<AdaptiveSkillSignal[] | null>(null);
     const [serverFingerprint, setServerFingerprint] = useState('');
 
@@ -60,8 +90,10 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
     }, [scope?.pathId, scope?.subjectId, localPath.fingerprint]);
 
     const effectivePath = useMemo(
-        () => serverSignals && serverSignals.length ? getInternalLearningPath(serverSignals) : localPath,
-        [localPath, serverSignals],
+        () => serverSignals && serverSignals.length
+            ? getInternalLearningPath(enrichSignalsWithFoundationTarget(serverSignals, skillCatalog, topics))
+            : localPath,
+        [localPath, serverSignals, skillCatalog, topics],
     );
     const recommendations = effectivePath.recommendations;
     const fingerprint = serverFingerprint || effectivePath.fingerprint;
