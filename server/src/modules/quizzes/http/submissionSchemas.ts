@@ -5,6 +5,7 @@ export const questionAttemptSchema = z.object({
   selectedOptionIndex: z.number().default(-1),
   timeSpentSeconds: z.number().default(0),
   date: z.string().optional(),
+  evidenceType: z.enum(["assessment", "remediation", "recheck", "mastery_review"]).default("assessment"),
 });
 
 export const quizSubmitSchema = z.object({
