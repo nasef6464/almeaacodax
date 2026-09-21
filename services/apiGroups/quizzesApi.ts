@@ -220,8 +220,15 @@ export const createQuizzesApi = (request: ApiRequest) => ({
       }>;
     }>(withQuery("/quizzes/next-best-action", scope)),
 
-  getSkillProgress: async (pagination: PaginationOptions & { noTotal?: boolean } = {}) =>
-    extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
+  getSkillProgress: async (
+    pagination: PaginationOptions & { noTotal?: boolean; pathId?: string; subjectId?: string } = {},
+  ) =>
+    extractList(
+      await request<unknown>(
+        withQuery("/quizzes/skill-progress", { limit: 200, ...pagination }),
+      ),
+      "skillProgress",
+    ),
 
   getQuestionAttempts: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/question-attempts", { limit: 100, ...pagination })), "questionAttempts"),
