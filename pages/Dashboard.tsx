@@ -12,7 +12,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
 import { calculateStreak } from '../utils/streak';
 import { useStore } from '../store/useStore';
-import { Activity, QuizResult, Role, SkillGap } from '../types';
+import { Activity, QuizResult, Role } from '../types';
 import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -26,6 +26,7 @@ import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgre
 import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
 import { DailySpeedDrillCard } from '../components/DailySpeedDrillCard';
 import { ReferralAmbassadorCard } from '../components/ReferralAmbassadorCard';
+import { buildSmartPathSkillsFromResults } from './Dashboard/smartPathEvidenceViewModel';
 
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
@@ -43,69 +44,6 @@ const TabLoading = () => (
         <Loader2 size={40} className="animate-spin" />
     </div>
 );
-
-const buildSmartPathSkillsFromResults = (examResults: QuizResult[]): SkillGap[] => {
-    if (!examResults || examResults.length === 0) return [];
-
-    const skillMap = new globalThis.Map<string, {
-        skillId?: string;
-        pathId?: string;
-        subjectId?: string;
-        sectionId?: string;
-        section?: string;
-        skill: string;
-        masterySum: number;
-        attempts: number;
-    }>();
-
-    examResults.forEach(result => {
-        result.skillsAnalysis?.forEach(skill => {
-            const key = skill.skillId || [skill.pathId, skill.subjectId, skill.sectionId, skill.skill].join(':');
-            const existing = skillMap.get(key);
-
-            if (existing) {
-                existing.masterySum += skill.mastery;
-                existing.attempts += 1;
-                return;
-            }
-
-            skillMap.set(key, {
-                skillId: skill.skillId,
-                pathId: skill.pathId,
-                subjectId: skill.subjectId,
-                sectionId: skill.sectionId,
-                section: skill.section,
-                skill: skill.skill,
-                masterySum: skill.mastery,
-                attempts: 1
-            });
-        });
-    });
-
-    return Array.from(skillMap.values())
-        .map((item): SkillGap => {
-            const mastery = Math.round(item.masterySum / item.attempts);
-            const status: SkillGap['status'] = mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong';
-
-            return {
-                skillId: item.skillId,
-                pathId: item.pathId,
-                subjectId: item.subjectId,
-                sectionId: item.sectionId,
-                section: item.section,
-                skill: item.skill,
-                mastery,
-                status,
-                recommendation: status === 'weak'
-                    ? 'مراجعة عاجلة مع درس وتدريب'
-                    : status === 'average'
-                        ? 'تثبيت المهارة بتدريب إضافي'
-                        : 'استمرار وتمارين تعزيز'
-            };
-        })
-        .sort((a, b) => a.mastery - b.mastery)
-        .slice(0, 12);
-};
 
 const formatQuizCardDate = (createdAt?: number) => {
     if (!createdAt) return 'متاح الآن';
@@ -500,14 +438,90 @@ const PathsTab = () => {
 };
 
 const SmartPathTab = () => {
-    const { examResults } = useStore();
-    const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
+    const { examResults, enrolledPaths, paths, subjects, topics } = useStore();
+    const enrolledSet = useMemo(() => new Set(enrolledPaths || []), [enrolledPaths]);
+    const pathOptions = useMemo(
+        () => paths.filter((path) => enrolledSet.has(path.id)),
+        [enrolledSet, paths],
+    );
+    const [selectedPathId, setSelectedPathId] = useState<string>(pathOptions[0]?.id || '');
+    const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
+
+    useEffect(() => {
+        if (pathOptions.length === 0) {
+            setSelectedPathId('');
+            setSelectedSubjectId('all');
+            return;
+        }
+        if (!pathOptions.some((path) => path.id === selectedPathId)) {
+            setSelectedPathId(pathOptions[0].id);
+            setSelectedSubjectId('all');
+        }
+    }, [pathOptions, selectedPathId]);
+
+    const subjectOptions = useMemo(
+        () => subjects.filter((subject) => subject.pathId === selectedPathId),
+        [selectedPathId, subjects],
+    );
+    const smartPathSkills = useMemo(
+        () => buildSmartPathSkillsFromResults(examResults, {
+            pathId: selectedPathId || undefined,
+            subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId,
+        }),
+        [examResults, selectedPathId, selectedSubjectId],
+    );
+    const selectedPath = pathOptions.find((path) => path.id === selectedPathId);
+    const selectedSubject = subjectOptions.find((subject) => subject.id === selectedSubjectId);
+    const scopeLabel = [selectedPath?.name, selectedSubject?.name].filter(Boolean).join(' · ');
 
     return (
         <div className="space-y-6 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">مسار التعلم الذكي</h2>
-            <p className="text-gray-600 mb-8">نظام الذكاء الاصطناعي يحلل أداءك ويقترح لك أفضل الخطوات التالية لرفع مستواك.</p>
-            <SmartLearningPath skills={smartPathSkills} />
+            <div className="flex flex-col gap-4 rounded-2xl border border-indigo-100 bg-white p-4 shadow-2xs sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-800">مسار التعلم الذكي</h2>
+                    <p className="mt-1 text-sm font-bold text-gray-500">
+                        ترتيب داخلي من آخر 5 نتائج داخل المسار والمادة، بدون استدعاء AI تلقائي.
+                    </p>
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                    <select
+                        value={selectedPathId}
+                        onChange={(event) => {
+                            setSelectedPathId(event.target.value);
+                            setSelectedSubjectId('all');
+                        }}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700"
+                        aria-label="اختيار مسار التعلم الذكي"
+                    >
+                        {pathOptions.length === 0 ? <option value="">لا توجد مسارات مسجلة</option> : null}
+                        {pathOptions.map((path) => (
+                            <option key={path.id} value={path.id}>{path.name}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={selectedSubjectId}
+                        onChange={(event) => setSelectedSubjectId(event.target.value)}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700"
+                        aria-label="اختيار مادة التعلم الذكي"
+                        disabled={!selectedPathId}
+                    >
+                        <option value="all">كل مواد المسار</option>
+                        {subjectOptions.map((subject) => (
+                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {selectedPathId ? (
+                <SmartLearningPath skills={smartPathSkills} topics={topics} scopeLabel={scopeLabel} />
+            ) : (
+                <EmptyState
+                    icon={<RouteIcon size={24} />}
+                    title="سجّل في مسار أولًا"
+                    description="بعد التسجيل في مسار تعليمي سيظهر مسارك الذكي هنا بصورة مستقلة."
+                />
+            )}
         </div>
     );
 };
@@ -1762,8 +1776,7 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes, addActivity } = useStore();
-    const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes, addActivity, topics } = useStore();
     
     const [copiedCode, setCopiedCode] = useState(false);
     const [showCalculator, setShowCalculator] = useState(false);
@@ -1792,6 +1805,10 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const relevantPaths = enrolledPathSet.size > 0
         ? storePaths.filter((path) => enrolledPathSet.has(path.id))
         : [];
+    const primarySmartPath = relevantPaths[0];
+    const smartPathSkills = buildSmartPathSkillsFromResults(examResults, {
+        pathId: primarySmartPath?.id,
+    });
 
     const paths = relevantPaths
         .map((path) => {
@@ -2015,7 +2032,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                     </section>
                 )}
 
-                <SmartLearningPath skills={smartPathSkills} />
+                <SmartLearningPath skills={smartPathSkills} topics={topics} scopeLabel={primarySmartPath?.name} />
             </div>
 
             {/* Recent Activity */}
