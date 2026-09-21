@@ -35,7 +35,7 @@ export const buildQuizReportStudentScope = async (
     return { filter: { role: "student" }, managedPathIds, managedSubjectIds };
   }
 
-  if (authUser.role === "teacher" || authUser.role === "supervisor") {
+  if (authUser.role === "teacher" || authUser.role === "supervisor" || authUser.role === "school_admin") {
     const supervisorScope = await resolveSupervisorScope(authUser);
     const scopeFilters: Record<string, unknown>[] = [];
     if (supervisorScope.groupIds.length > 0) {
