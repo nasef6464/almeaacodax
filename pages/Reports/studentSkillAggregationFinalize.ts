@@ -33,7 +33,7 @@ export const finalizeStudentAggregatedSkills = ({
     sections: CategorySection[];
     minSkillEvidence: number;
 }): StudentAggregatedSkill[] =>
-return Object.entries(skillsMap)
+    Object.entries(skillsMap)
         .map(([skillKey, data]): StudentAggregatedSkill => {
             const mastery = data.evidenceCount > 0
                 ? Math.round(data.weightedMasteryTotal / data.evidenceCount)
@@ -99,4 +99,4 @@ return Object.entries(skillsMap)
             const aPriority = a.isReliable ? a.recentMastery ?? a.mastery : a.mastery;
             const bPriority = b.isReliable ? b.recentMastery ?? b.mastery : b.mastery;
             return aPriority - bPriority;
-        });;
+        });
