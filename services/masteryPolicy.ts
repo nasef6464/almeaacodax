@@ -10,7 +10,7 @@ export type MasteryLevel = 'needs_measurement' | 'foundation' | 'developing' | '
 export const resolveMasteryLevel = (
   mastery: number,
   evidenceCount: number,
-  minEvidence = MASTERY_THRESHOLDS.minEvidence,
+  minEvidence: number = MASTERY_THRESHOLDS.minEvidence,
 ): MasteryLevel => {
   const safeMastery = Math.max(0, Math.min(100, Number(mastery || 0)));
   const safeEvidence = Math.max(0, Number(evidenceCount || 0));
