@@ -54,7 +54,8 @@ check("learner progress remains separately user-scoped", () => {
   assert.ok(skillProgress.includes("skillId:"));
   assert.ok(skillProgress.includes("mastery:"));
   assert.ok(skillProgress.includes("attempts:"));
-  assert.ok(skillProgress.includes('skillProgressSchema.index({ userId: 1, skillId: 1 }, { unique: true })'));
+  assert.ok(skillProgress.includes('skillProgressSchema.index({ userId: 1, pathId: 1, subjectId: 1, skillId: 1 }, { unique: true })'));
+  assert.ok(!skillProgress.includes('skillProgressSchema.index({ userId: 1, skillId: 1 }, { unique: true })'));
 });
 
 check("existing ownership contract covers taxonomy definition/progress separation", () => {
