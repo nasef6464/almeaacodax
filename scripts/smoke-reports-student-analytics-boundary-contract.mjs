@@ -35,6 +35,9 @@ check('Reports delegates student analytics and recent evidence selection through
   assertIncludes(reports, "from './Reports/studentAnalyticsViewModel';");
   assertIncludes(reports, "from './Reports/studentEvidenceWindowViewModel';");
   assertIncludes(reports, 'buildStudentEvidenceWindow({');
+  assertIncludes(reports, 'selectedSubjectId: selectedStudentSubjectId');
+  assertIncludes(reports, "const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all')");
+  assertIncludes(reports, '<option value="all">كل المواد</option>');
   assertIncludes(reports, 'buildStudentPerformanceStats(');
   assertIncludes(reports, 'buildStudentAggregatedSkills({');
   assertIncludes(reports, 'examResults: studentEvidenceWindow.recentExamResults');
@@ -48,9 +51,12 @@ check('Reports delegates student analytics and recent evidence selection through
 check('recent evidence window scopes by selected path before taking the latest five quiz results', () => {
   assertIncludes(evidenceWindow, 'export const RECENT_STUDENT_QUIZ_RESULT_LIMIT = 5');
   assertIncludes(evidenceWindow, "selectedPathId === 'all'");
+  assertIncludes(evidenceWindow, "selectedSubjectId === 'all'");
   assertIncludes(evidenceWindow, 'resolveQuizResultPathId(result) === selectedPathId');
+  assertIncludes(evidenceWindow, 'resolveQuizResultSubjectId(result) === selectedSubjectId');
   assertIncludes(evidenceWindow, 'resolveQuestionAttemptPathId(attempt) === selectedPathId');
-  assertIncludes(evidenceWindow, 'sortRecentFirst(pathScopedExamResults).slice(0, boundedLimit)');
+  assertIncludes(evidenceWindow, 'resolveQuestionAttemptSubjectId(attempt) === selectedSubjectId');
+  assertIncludes(evidenceWindow, 'sortRecentFirst(subjectScopedExamResults).slice(0, boundedLimit)');
   assertIncludes(evidenceWindow, 'Math.max(1, Math.min(20');
 });
 
