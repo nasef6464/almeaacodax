@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
+import { useAuth } from '../contexts/AuthContext';
+import { api } from '../services/api';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
@@ -12,6 +14,7 @@ import { flattenMockExamQuestionIds, isStandaloneMockExam } from '../utils/mockE
 const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
+const buildSelfSubmissionId = () => globalThis.crypto?.randomUUID?.() || `self-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
 interface SavedQuizSnapshot {
   entryMode: 'prepared' | 'self';
@@ -23,6 +26,8 @@ interface SavedQuizSnapshot {
   questionCount: number;
   timeLimitMinutes: number;
   targetSkillIds: string[];
+  selfSubmissionId: string;
+  selfEvidenceType: 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
   currentQuestion: number;
   answers: { [key: number]: number };
   timeLeft: number;
@@ -33,6 +38,8 @@ interface SavedQuizSnapshot {
 const Quiz: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user: authUser } = useAuth();
+  const hasAuthoritativeSession = Boolean(authUser && !String(authUser.id || '').startsWith('dev-'));
   const {
     saveExamResult,
     toggleFavorite: toggleStoreFavorite,
@@ -59,6 +66,8 @@ const Quiz: React.FC = () => {
   const [questionCount, setQuestionCount] = useState(15);
   const [timeLimitMinutes, setTimeLimitMinutes] = useState(DEFAULT_TIME_MINUTES);
   const [targetSkillIds, setTargetSkillIds] = useState<string[]>([]);
+  const [selfSubmissionId, setSelfSubmissionId] = useState('');
+  const [selfEvidenceType, setSelfEvidenceType] = useState<'assessment' | 'remediation' | 'recheck' | 'mastery_review'>('assessment');
   const [activePreparedQuizId, setActivePreparedQuizId] = useState('');
 
   const [sessionQuestions, setSessionQuestions] = useState<typeof globalQuestionBank>([]);
@@ -102,6 +111,10 @@ const Quiz: React.FC = () => {
     const nextQuestionCount = Number(params.get('questionCount') || '');
     const nextTimeLimit = Number(params.get('timeLimit') || '');
     const autoStart = params.get('autostart') === '1';
+    const evidenceType = params.get('evidenceType');
+    if (evidenceType === 'assessment' || evidenceType === 'remediation' || evidenceType === 'recheck' || evidenceType === 'mastery_review') {
+      setSelfEvidenceType(evidenceType);
+    }
 
     if (pathId !== null) {
       setSelectedPathId(pathId);
@@ -177,7 +190,22 @@ const Quiz: React.FC = () => {
   );
   const targetSkills = useMemo(
     () => targetSkillIds
-      .map((skillId) => skills.find((skill) => skill.id === skillId))
+      .map((skillId) => {
+        const direct = skills.find((skill) => skill.id === skillId);
+        if (direct) return direct;
+        const parent = skills.find((skill) => skill.subSkills?.some((subSkill) => subSkill.id === skillId));
+        const subSkill = parent?.subSkills?.find((item) => item.id === skillId);
+        return parent && subSkill
+          ? {
+              ...parent,
+              id: subSkill.id,
+              name: subSkill.name,
+              description: subSkill.description || parent.description,
+              order: subSkill.order,
+              subSkills: [],
+            }
+          : undefined;
+      })
       .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill)),
     [skills, targetSkillIds],
   );
@@ -315,6 +343,8 @@ const Quiz: React.FC = () => {
     setQuestionCount(savedSnapshot.questionCount);
     setTimeLimitMinutes(savedSnapshot.timeLimitMinutes);
     setTargetSkillIds(savedSnapshot.targetSkillIds || []);
+    setSelfSubmissionId(savedSnapshot.selfSubmissionId || buildSelfSubmissionId());
+    setSelfEvidenceType(savedSnapshot.selfEvidenceType || 'assessment');
     setActivePreparedQuizId(savedSnapshot.activePreparedQuizId);
     setSessionQuestions(savedSnapshot.sessionQuestions);
     setCurrentQuestion(savedSnapshot.currentQuestion);
@@ -411,7 +441,7 @@ const Quiz: React.FC = () => {
 
     const strictPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const subjectMatches = !selectedSubjectId || (question.subjectId || question.subject) === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
       const difficultyMatches = !difficulty || question.difficulty === difficulty;
       return pathMatches && subjectMatches && sectionMatches && matchesTargetSkills(question) && difficultyMatches && matchesQuestionType(question);
@@ -419,7 +449,7 @@ const Quiz: React.FC = () => {
 
     const relaxedPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const subjectMatches = !selectedSubjectId || (question.subjectId || question.subject) === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
       return pathMatches && subjectMatches && sectionMatches && matchesTargetSkills(question) && matchesQuestionType(question);
     });
@@ -456,7 +486,7 @@ const Quiz: React.FC = () => {
     });
     const contextFillPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const subjectMatches = !selectedSubjectId || (question.subjectId || question.subject) === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
       return pathMatches && subjectMatches && sectionMatches && matchesQuestionType(question);
     });
@@ -507,6 +537,7 @@ const Quiz: React.FC = () => {
     localStorage.removeItem(QUIZ_PROGRESS_SNAPSHOT_KEY);
     setSavedSnapshot(null);
     setSessionQuestions(picked);
+    setSelfSubmissionId(buildSelfSubmissionId());
     setTimeLeft(Math.max(5, timeLimitMinutes) * 60);
     setCurrentQuestion(0);
     setAnswers({});
@@ -534,18 +565,81 @@ const Quiz: React.FC = () => {
     setSelectedAnswer(index);
     setAnswers((prev) => ({ ...prev, [currentQuestion]: index }));
 
-    const isCorrect = index === questions[currentQuestion].correctOptionIndex;
-    recordQuestionAttempt({
-      questionId: questions[currentQuestion].id.toString(),
-      selectedOptionIndex: index,
-      isCorrect,
-      timeSpentSeconds: 0,
-      date: new Date().toISOString(),
-    });
+    if (!hasAuthoritativeSession) {
+      const question = questions[currentQuestion];
+      const isCorrect = index === question.correctOptionIndex;
+      recordQuestionAttempt({
+        questionId: question.id.toString(),
+        selectedOptionIndex: index,
+        isCorrect,
+        timeSpentSeconds: 0,
+        date: new Date().toISOString(),
+        pathId: question.pathId || selectedPathId,
+        subjectId: question.subjectId || question.subject || selectedSubjectId,
+        sectionId: question.sectionId || selectedSectionId,
+        skillIds: question.skillIds || [],
+      });
+    }
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     if (questions.length === 0) return;
+
+    if (hasAuthoritativeSession) {
+      setShowFinishDialog(false);
+      const submissionId = selfSubmissionId || buildSelfSubmissionId();
+      if (!selfSubmissionId) setSelfSubmissionId(submissionId);
+      const effectivePathId = selectedPathId || questions[0]?.pathId || targetSkills[0]?.pathId || '';
+      const effectiveSubjectId =
+        selectedSubjectId ||
+        questions[0]?.subjectId ||
+        questions[0]?.subject ||
+        targetSkills[0]?.subjectId ||
+        '';
+      const effectiveSectionId = selectedSectionId || questions[0]?.sectionId || targetSkills[0]?.sectionId || '';
+      if (!effectivePathId || !effectiveSubjectId) {
+        showStatus('تعذر تحديد المسار أو المادة لهذا القياس. أعد فتح الاختبار من المسار الصحيح.', 'error');
+        return;
+      }
+
+      const serverAnswers = Object.fromEntries(
+        questions.flatMap((question, index) =>
+          typeof answers[index] === 'number'
+            ? [[String(question.id), answers[index]]]
+            : [],
+        ),
+      );
+
+      try {
+        const serverResult = await api.submitSelfAssessment({
+          submissionId,
+          questionIds: questions.map((question) => String(question.id)),
+          answers: serverAnswers,
+          timeSpentSeconds: Math.max(0, timeLimitMinutes * 60 - timeLeft),
+          pathId: effectivePathId,
+          subjectId: effectiveSubjectId,
+          sectionId: effectiveSectionId || undefined,
+          skillIds: targetSkillIds,
+          evidenceType: selfEvidenceType,
+          title: selfEvidenceType === 'recheck'
+            ? 'إعادة قياس مهارة'
+            : `اختبار ذاتي - ${selectedSubjectLabel} (${getQuizDifficultyLabel(difficulty)})`,
+        });
+        saveExamResult(serverResult);
+        localStorage.removeItem(QUIZ_PROGRESS_KEY);
+        clearSavedSnapshot();
+        const attemptDate = String(serverResult.date || serverResult.createdAt || new Date().toISOString());
+        navigate(`/results?attempt=${encodeURIComponent(attemptDate)}`);
+        return;
+      } catch (error) {
+        console.error('فشل في حفظ القياس على الخادم:', error);
+        showStatus(
+          error instanceof Error ? error.message : 'تعذر حفظ القياس على الخادم. حاول مرة أخرى.',
+          'error',
+        );
+        return;
+      }
+    }
 
     let correct = 0;
     let wrong = 0;
@@ -684,6 +778,8 @@ const Quiz: React.FC = () => {
       questionCount,
       timeLimitMinutes,
       targetSkillIds,
+      selfSubmissionId,
+      selfEvidenceType,
       currentQuestion,
       answers,
       timeLeft,

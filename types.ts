@@ -381,6 +381,7 @@ export interface QuizResult {
     quizId: string;
     quizTitle: string;
     source?: 'foundation' | 'training' | 'tests' | 'mock-exam' | 'course' | 'self' | string;
+    evidenceType?: 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
     returnTo?: string;
     score: number; // percentage
     totalQuestions: number;

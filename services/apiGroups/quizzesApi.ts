@@ -1,3 +1,4 @@
+import type { QuizResult } from '../../types';
 import {
   extractList,
   withQuery,
@@ -18,6 +19,7 @@ export interface SubmitQuizPayload {
   answers: Record<string, number>;
   timeSpentSeconds?: number;
   source?: string;
+  evidenceType?: 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
   sectionResults?: Array<{
     sectionId: string;
     sectionName: string;
@@ -58,6 +60,24 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   submitQuiz: (id: string, payload: SubmitQuizPayload, token?: string | null) =>
     request<unknown>(`/quizzes/${id}/submit`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+
+  submitSelfAssessment: (payload: {
+    submissionId: string;
+    questionIds: string[];
+    answers: Record<string, number>;
+    timeSpentSeconds?: number;
+    pathId: string;
+    subjectId: string;
+    sectionId?: string;
+    skillIds?: string[];
+    evidenceType?: 'assessment' | 'remediation' | 'recheck' | 'mastery_review';
+    title?: string;
+  }, token?: string | null) =>
+    request<QuizResult>("/quizzes/self-assessment/submit", {
       method: "POST",
       body: payload,
       token,

@@ -30,6 +30,44 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
   };
 };
 
+const buildSkillDocumentsByIdsQuery = (values: string[]) => {
+  const ids = uniqueStrings(values);
+  const baseQuery = buildDocumentsByIdsQuery(ids);
+  return {
+    $or: [
+      ...baseQuery.$or,
+      { "subSkills.id": { $in: ids } },
+    ],
+  };
+};
+
+const expandRequestedSkillRows = (skillDocuments: any[], requestedSkillIds: string[]) => {
+  const requested = new Set(uniqueStrings(requestedSkillIds));
+  return skillDocuments.flatMap((skill: any) => {
+    const parentId = String(skill.id || skill._id || "");
+    const rows: any[] = [];
+    if (parentId && requested.has(parentId)) {
+      rows.push(skill);
+    }
+
+    for (const subSkill of Array.isArray(skill.subSkills) ? skill.subSkills : []) {
+      const subSkillId = String(subSkill?.id || "").trim();
+      if (!subSkillId || !requested.has(subSkillId)) continue;
+      rows.push({
+        ...subSkill,
+        id: subSkillId,
+        name: String(subSkill.name || skill.name || "مهارة غير مسماة"),
+        parentSkillId: parentId,
+        pathId: String(skill.pathId || ""),
+        subjectId: String(skill.subjectId || ""),
+        sectionId: String(skill.sectionId || ""),
+      });
+    }
+
+    return rows;
+  });
+};
+
 const loadExistingSkillProgress = async (userId: string, skillIds: string[]) => {
   if (skillIds.length === 0) return new Map<string, any>();
 
@@ -123,7 +161,8 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
   const skillIds = uniqueStrings(Array.isArray(attempt.skillIds) ? attempt.skillIds.map(String) : []);
   if (skillIds.length === 0) return;
 
-  const skills = await SkillModel.find(buildDocumentsByIdsQuery(skillIds)).lean();
+  const skillDocuments = await SkillModel.find(buildSkillDocumentsByIdsQuery(skillIds)).lean();
+  const skills = expandRequestedSkillRows(skillDocuments, skillIds);
   const resolvedSkillIds = skills.map((skill: any) => String(skill.id || skill._id));
   const existingBySkillId = await loadExistingSkillProgress(userId, resolvedSkillIds);
   const mastery = attempt.isCorrect ? 100 : 0;
