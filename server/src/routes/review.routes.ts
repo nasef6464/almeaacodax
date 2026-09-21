@@ -6,12 +6,21 @@ import { requireAuth } from "../middleware/auth.js";
 import { QuestionModel } from "../models/Question.js";
 import { ReviewCardModel } from "../models/ReviewCard.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
+import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sm2 } from "../services/spacedRepetition.js";
+import { updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 
-const answerSchema = z.object({
-  quality: z.number().min(0).max(5),
-});
+const answerSchema = z
+  .object({
+    quality: z.number().min(0).max(5).optional(),
+    selectedOptionIndex: z.number().int().min(-1).optional(),
+    eventId: z.string().min(8).max(120).optional(),
+  })
+  .refine(
+    (value) => value.quality !== undefined || value.selectedOptionIndex !== undefined,
+    "quality or selectedOptionIndex is required",
+  );
 
 const dueQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
@@ -104,24 +113,85 @@ reviewRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Review card not found" });
     }
 
+    if (payload.eventId && String(card.lastReviewEventId || "") === payload.eventId) {
+      return res.json({
+        success: true,
+        idempotent: true,
+        card: {
+          id: String(card.id || card._id),
+          nextReviewDate: card.nextReviewDate,
+          interval: card.interval,
+          repetitions: card.repetitions,
+          easeFactor: card.easeFactor,
+          lastQuality: card.lastQuality,
+        },
+      });
+    }
+
+    let selectedOptionIndex: number | undefined;
+    let isCorrect: boolean | undefined;
+    let question: any = null;
+    let quality = payload.quality;
+
+    if (payload.selectedOptionIndex !== undefined) {
+      selectedOptionIndex = Number(payload.selectedOptionIndex);
+      question = await QuestionModel.findOne({ id: String(card.questionId || "") })
+        .select("id correctOptionIndex pathId subject subjectId sectionId skillIds")
+        .lean();
+      if (!question) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: "Review question not found" });
+      }
+      isCorrect = selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
+      quality = isCorrect ? 4 : 2;
+    }
+
     const next = sm2(
       {
         easeFactor: Number(card.easeFactor || 2.5),
         interval: Number(card.interval || 1),
         repetitions: Number(card.repetitions || 0),
       },
-      payload.quality,
+      Number(quality ?? 0),
     );
 
     card.easeFactor = next.easeFactor;
     card.interval = next.interval;
     card.repetitions = next.repetitions;
     card.nextReviewDate = next.nextReviewDate;
-    card.lastQuality = payload.quality;
+    card.lastQuality = Number(quality ?? 0);
+    card.lastReviewEventId = String(payload.eventId || "");
+    card.lastReviewedAt = new Date();
     await card.save();
+
+    if (question && selectedOptionIndex !== undefined && isCorrect !== undefined) {
+      try {
+        const attempt = await QuestionAttemptModel.create({
+          userId,
+          questionId: String(card.questionId || ""),
+          selectedOptionIndex,
+          isCorrect,
+          timeSpentSeconds: 0,
+          date: new Date().toISOString(),
+          pathId: String(card.pathId || question.pathId || ""),
+          subjectId: String(card.subjectId || question.subjectId || question.subject || ""),
+          sectionId: String(card.sectionId || question.sectionId || ""),
+          skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
+          evidenceType: "mastery_review",
+        });
+        await updateSkillProgressFromQuestionAttempt(attempt, userId);
+      } catch (error) {
+        console.warn("[review] mastery evidence side effect failed", {
+          userId,
+          cardId: String(card.id || card._id),
+          reason: error instanceof Error ? error.message : String(error || "unknown"),
+        });
+      }
+    }
 
     return res.json({
       success: true,
+      idempotent: false,
+      isCorrect,
       card: {
         id: String(card.id || card._id),
         nextReviewDate: card.nextReviewDate,
