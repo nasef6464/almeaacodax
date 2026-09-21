@@ -10,6 +10,8 @@ const skillProgressSideEffects = read('server/src/modules/quizzes/application/qu
 const telemetry = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
 const masteryRoutes = read('server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts');
 const studentAnalytics = read('pages/Reports/studentAnalyticsViewModel.ts');
+const studentAggregationFinalize = read('pages/Reports/studentSkillAggregationFinalize.ts');
+const studentAnalyticsSource = `${studentAnalytics}\n${studentAggregationFinalize}`;
 const reportTypes = read('pages/Reports/reportTypes.ts');
 const quizApi = read('services/apiGroups/quizzesApi.ts');
 const aiPolicy = read('server/src/modules/ai/application/questionAssistant.ts');
@@ -42,16 +44,16 @@ assert.ok(telemetry.includes('const subjectId = String(req.query.subjectId'));
 assert.ok(telemetry.includes('summarizeRecentSkillEvidence'));
 assert.ok(masteryRoutes.includes('"school_admin"'));
 
-assert.ok(studentAnalytics.includes('weightedMasteryTotal'));
+assert.ok(studentAnalyticsSource.includes('weightedMasteryTotal'));
 assert.ok(studentAnalytics.includes('questionCount'));
 assert.ok(studentAnalytics.includes('correctCount'));
-assert.ok(studentAnalytics.includes('.slice(0, 5)'));
+assert.ok(studentAnalyticsSource.includes('.slice(0, 5)'));
 assert.ok(studentAnalytics.includes("String(pathId || '')"));
 assert.ok(studentAnalytics.includes("String(subjectId || '')"));
 assert.ok(studentAnalytics.includes('if (skillsMap[key]?.hasResultEvidence) return'));
-assert.ok(studentAnalytics.includes('recentMastery'));
-assert.ok(studentAnalytics.includes('confidence'));
-assert.ok(studentAnalytics.includes('trend'));
+assert.ok(studentAnalyticsSource.includes('recentMastery'));
+assert.ok(studentAnalyticsSource.includes('confidence'));
+assert.ok(studentAnalyticsSource.includes('trend'));
 
 for (const field of ['recentMastery','trend','confidence','recentEvidence','recentSampleSize']) {
   assert.ok(reportTypes.includes(field), `student report type lost ${field}`);
