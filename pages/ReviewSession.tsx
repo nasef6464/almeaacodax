@@ -27,6 +27,7 @@ const ReviewSession: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [doneCount, setDoneCount] = useState(0);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -51,14 +52,25 @@ const ReviewSession: React.FC = () => {
   const current = useMemo(() => items[index] || null, [items, index]);
   const isFinished = !loading && (items.length === 0 || index >= items.length);
 
-  const answer = async (quality: number) => {
+  const answer = async (quality?: number) => {
     if (!current || saving) return;
+    if (current.question.options?.length && selectedOptionIndex === null) {
+      setError("اختر إجابتك أولًا.");
+      return;
+    }
     setSaving(true);
     setError(null);
     try {
-      await api.answerReviewCard(current.cardId, quality);
+      const eventId = `review-${current.cardId}-${Date.now()}`;
+      await api.answerReviewCard(
+        current.cardId,
+        current.question.options?.length
+          ? { selectedOptionIndex: selectedOptionIndex ?? -1, eventId }
+          : { quality: quality ?? 3, eventId },
+      );
       setDoneCount((prev) => prev + 1);
       setIndex((prev) => prev + 1);
+      setSelectedOptionIndex(null);
     } catch (err) {
       console.error("Failed to answer review card", err);
       setError("تعذر حفظ نتيجة المراجعة. حاول مرة أخرى.");
@@ -98,31 +110,56 @@ const ReviewSession: React.FC = () => {
           />
         ) : null}
         {Array.isArray(current?.question?.options) && current?.question?.options.length > 0 ? (
-          <ul className="mt-4 space-y-2">
+          <div className="mt-4 space-y-2">
             {current?.question?.options.map((option, i) => (
-              <li key={`${current.question.id}-opt-${i}`} className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+              <button
+                type="button"
+                key={`${current.question.id}-opt-${i}`}
+                onClick={() => setSelectedOptionIndex(i)}
+                className={`w-full rounded-xl border px-3 py-2 text-right text-sm transition ${
+                  selectedOptionIndex === i
+                    ? "border-indigo-400 bg-indigo-50 font-black text-indigo-800"
+                    : "border-gray-100 bg-gray-50 text-gray-700 hover:border-indigo-200"
+                }`}
+              >
                 {option}
-              </li>
+              </button>
             ))}
-          </ul>
+          </div>
         ) : null}
       </div>
 
       <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
-        <div className="mb-3 text-sm font-bold text-indigo-800">ما تقييمك لهذا السؤال بعد المراجعة؟</div>
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-          {QUALITY_OPTIONS.map((item) => (
+        {current?.question?.options?.length ? (
+          <>
+            <div className="mb-3 text-sm font-bold text-indigo-800">اختر الإجابة ثم سجّل نتيجة المراجعة.</div>
             <button
-              key={`quality-${item.value}`}
               type="button"
-              disabled={saving}
-              onClick={() => void answer(item.value)}
-              className={`rounded-xl px-3 py-2 text-sm font-black text-white transition-colors disabled:opacity-60 ${item.className}`}
+              disabled={saving || selectedOptionIndex === null}
+              onClick={() => void answer()}
+              className="w-full rounded-xl bg-indigo-600 px-3 py-2 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
             >
-              {item.label}
+              تحقق وسجّل المراجعة
             </button>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="mb-3 text-sm font-bold text-indigo-800">ما تقييمك لهذا السؤال بعد المراجعة؟</div>
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+              {QUALITY_OPTIONS.map((item) => (
+                <button
+                  key={`quality-${item.value}`}
+                  type="button"
+                  disabled={saving}
+                  onClick={() => void answer(item.value)}
+                  className={`rounded-xl px-3 py-2 text-sm font-black text-white transition-colors disabled:opacity-60 ${item.className}`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
         {error ? <p className="mt-3 text-xs text-rose-700">{error}</p> : null}
       </div>
     </div>
