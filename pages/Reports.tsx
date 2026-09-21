@@ -2543,15 +2543,26 @@ const Reports: React.FC = () => {
                                         ابحث عن تدريب
                                     </Link>
                                 )}
-                                {selectedSkillRecommendation.resourceUrl ? (
+                                {selectedSkillRecommendation.supportLink ? (
+                                    <Link to={selectedSkillRecommendation.supportLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
+                                        <BookOpen size={16} />
+                                        ملف الدعم
+                                    </Link>
+                                ) : selectedSkillRecommendation.resourceUrl ? (
                                     <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
                                         <BookOpen size={16} />
                                         ملف مساعد
                                     </a>
                                 ) : null}
-                                <Link to={buildSkillSessionLink(selectedReportSkill)} className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center justify-center gap-2">
+                                {selectedSkillRecommendation.recheckLink ? (
+                                    <Link to={selectedSkillRecommendation.recheckLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-purple-700 border border-purple-100 hover:bg-purple-50 flex items-center justify-center gap-2">
+                                        <Target size={16} />
+                                        قياس
+                                    </Link>
+                                ) : null}
+                                <Link to={buildSkillSessionLink(selectedReportSkill)} className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center justify-center gap-2 sm:col-span-2">
                                     <Clock size={16} />
-                                    حجز حصة
+                                    حجز حصة عند الحاجة
                                 </Link>
                             </div>
                         </div>
