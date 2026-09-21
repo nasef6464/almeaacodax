@@ -6,6 +6,7 @@ const read = (path) => fs.readFileSync(path, 'utf8');
 const skillModel = read('server/src/models/SkillProgress.ts');
 const skillAnalytics = read('server/src/modules/quizzes/analytics/skillAnalytics.ts');
 const sideEffects = read('server/src/modules/quizzes/application/quizSubmissionSideEffects.ts');
+const skillProgressSideEffects = read('server/src/modules/quizzes/application/quizSubmissionSkillProgress.ts');
 const telemetry = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
 const studentAnalytics = read('pages/Reports/studentAnalyticsViewModel.ts');
 const reportTypes = read('pages/Reports/reportTypes.ts');
@@ -26,8 +27,8 @@ assert.ok(skillAnalytics.includes('mergeRecentSkillEvidence'));
 assert.ok(skillAnalytics.includes('summarizeRecentSkillEvidence'));
 assert.ok(skillAnalytics.includes('.slice(0, boundedWindow)'));
 
-assert.ok(sideEffects.includes('SkillProgressModel.bulkWrite'));
-assert.ok(sideEffects.includes('skillProgressScopeKey'));
+assert.ok(skillProgressSideEffects.includes('SkillProgressModel.bulkWrite'));
+assert.ok(skillProgressSideEffects.includes('skillProgressScopeKey'));
 assert.ok(sideEffects.includes('boundedReplayKeys'));
 assert.ok(sideEffects.includes('filter: { userId, pathId, subjectId, skillId }'));
 assert.ok(sideEffects.includes('recentEvidenceKeys: replay.keys'));
