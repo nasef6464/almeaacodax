@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const read=(p)=>fs.readFileSync(p,'utf8');
+const model=read('server/src/models/SkillProgress.ts');
+const side=read('server/src/modules/quizzes/application/quizSubmissionSideEffects.ts');
+const analytics=read('server/src/modules/quizzes/analytics/skillAnalytics.ts');
+const routes=read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
+assert.ok(model.includes('userId: 1, pathId: 1, subjectId: 1, skillId: 1'));
+assert.ok(model.includes('recentEvidence'));
+assert.ok(side.includes('findOne({ userId, pathId, subjectId, skillId })'));
+assert.ok(side.includes('mergeRecentSkillEvidence'));
+assert.ok(analytics.includes('DEFAULT_RECENT_EVIDENCE_WINDOW = 5'));
+assert.ok(analytics.includes('bySource.set(sourceId'));
+assert.ok(analytics.includes('.slice(0, boundedWindow)'));
+assert.ok(routes.includes('req.query.pathId'));
+assert.ok(routes.includes('req.query.subjectId'));
+assert.ok(routes.includes('summarizeRecentSkillEvidence'));
+console.log(JSON.stringify({phase:'adaptive-phase2-scoped-recent-evidence',status:'PASS'},null,2));
