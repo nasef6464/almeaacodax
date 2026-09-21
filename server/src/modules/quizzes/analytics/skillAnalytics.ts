@@ -1,3 +1,10 @@
+export const MASTERY_POLICY = {
+  supportBelow: 50,
+  readyAt: 75,
+  masteredAt: 90,
+  reliableEvidence: 3,
+} as const;
+
 export const mergeSkillMasteryEvidence = ({
   previousMastery,
   previousEvidence,
@@ -23,32 +30,43 @@ export const mergeSkillMasteryEvidence = ({
 };
 
 export const buildRecommendedAction = (mastery: number, attemptCount: number) => {
-  if (mastery < 45) {
-    return "خطة علاج عاجلة: شرح + تدريب + اختبار موجه";
+  if (mastery < MASTERY_POLICY.supportBelow) {
+    return "خطة علاج: شرح + تدريب + إعادة قياس";
   }
 
-  if (mastery < 65) {
-    return attemptCount >= 3 ? "زيادة التدريب ثم اختبار ساهر علاجي" : "إضافة تدريب قصير ومتابعة الأداء";
+  if (mastery < MASTERY_POLICY.readyAt) {
+    return attemptCount >= MASTERY_POLICY.reliableEvidence
+      ? "زيادة التدريب ثم إعادة قياس على نفس المهارة"
+      : "إضافة تدريب قصير ثم جمع دليل إضافي";
   }
 
-  return "تثبيت المهارة بتدريب خفيف وإعادة قياس لاحقًا";
+  return mastery >= MASTERY_POLICY.masteredAt
+    ? "المهارة متقنة: مراجعة دورية متباعدة"
+    : "تثبيت المهارة بتدريب خفيف وإعادة قياس لاحقًا";
 };
 
 export const buildSkillStatus = (mastery: number) => {
-  if (mastery >= 90) return "mastered";
-  if (mastery >= 75) return "good";
-  if (mastery >= 50) return "average";
+  if (mastery >= MASTERY_POLICY.masteredAt) return "mastered";
+  if (mastery >= MASTERY_POLICY.readyAt) return "good";
+  if (mastery >= MASTERY_POLICY.supportBelow) return "average";
   return "weak";
 };
 
 export const buildResultSkillStatus = (mastery: number) => {
-  if (mastery >= 80) return "strong";
-  if (mastery >= 50) return "average";
+  if (mastery >= MASTERY_POLICY.readyAt) return "strong";
+  if (mastery >= MASTERY_POLICY.supportBelow) return "average";
   return "weak";
 };
 
 export const buildSkillRecommendation = (mastery: number) => {
-  if (mastery < 50) return "راجع شرحًا قصيرًا ثم حل تدريبًا موجّهًا على نفس المهارة";
-  if (mastery < 80) return "أداؤك قريب من الإتقان. زد التدريب قليلًا ثم أعد القياس";
-  return "أداء ممتاز. حافظ على المهارة بتدريب خفيف من وقت لآخر";
+  if (mastery < MASTERY_POLICY.supportBelow) {
+    return "راجع شرحًا قصيرًا ثم حل تدريبًا موجّهًا على نفس المهارة";
+  }
+  if (mastery < MASTERY_POLICY.readyAt) {
+    return "أداؤك يتطور. زد التدريب قليلًا ثم أعد القياس";
+  }
+  if (mastery >= MASTERY_POLICY.masteredAt) {
+    return "المهارة متقنة. حافظ عليها بمراجعة متباعدة من وقت لآخر";
+  }
+  return "أداء جيد. ثبّت المهارة بتدريب خفيف ثم انتقل للخطوة التالية";
 };
