@@ -47,9 +47,7 @@ const scoreLabel = (score: number) => {
 
 type MockAttemptResult = QuizResult & {
   id?: string;
-  createdAt?: number;
   submittedAt?: number | string;
-  date?: number | string;
 };
 
 const getTimestamp = (r?: MockAttemptResult | null) => {
