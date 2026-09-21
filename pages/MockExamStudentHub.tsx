@@ -47,7 +47,7 @@ const scoreLabel = (score: number) => {
 
 type MockAttemptResult = QuizResult & {
   id?: string;
-  createdAt?: number;
+  createdAt?: number | string;
   submittedAt?: number | string;
   date?: number | string;
 };
