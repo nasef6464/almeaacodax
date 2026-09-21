@@ -9,6 +9,11 @@ import type {
     Topic,
 } from '../../types';
 import { matchesEntityId } from '../../utils/entityIds';
+import {
+    buildFoundationSkillLink,
+    buildSkillRecheckLink,
+    resolveFoundationSkillTopic,
+} from '../../utils/foundationSkillNavigation';
 import { displayText, type SkillRecommendation } from './reportDomain';
 
 export interface SkillRecommendationCatalog {
@@ -46,32 +51,29 @@ export const buildSkillRecommendation = (
     if (!resolvedSkill) return {};
 
     const resolvedSkillId = resolvedSkill.id || (resolvedSkill as any)._id;
-    const recommendationPathId = resolvedSkill.pathId;
-    const recommendationSubjectId = resolvedSkill.subjectId;
-    const recommendationSectionId = resolvedSkill.sectionId;
+    const target = {
+        skillId: resolvedSkillId,
+        pathId: resolvedSkill.pathId,
+        subjectId: resolvedSkill.subjectId,
+        sectionId: resolvedSkill.sectionId,
+        skillName: resolvedSkill.name,
+    };
 
-    // 1. Direct sub-topic lookup from foundation topics
-    const directTopic = topics.find((topic) =>
-        topic.showOnPlatform !== false &&
-        (matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ||
-         (topic.parentId && displayText(topic.title) === displayText(resolvedSkill.name) && (!recommendationSubjectId || topic.subjectId === recommendationSubjectId)) ||
-         (topic.quizIds || []).some((qid) => matchesEntityId({ id: qid }, `quiz_drill_${resolvedSkillId}`)))
-    );
-
-    // 2. Direct drill quiz lookup
-    const directDrill = quizzes.find((quiz) =>
-        quiz.showOnPlatform !== false &&
-        quiz.isPublished !== false &&
-        (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-        (matchesEntityId(quiz, `quiz_drill_${resolvedSkillId}`) ||
-         quiz.skillIds?.includes(resolvedSkillId))
-    );
-
+    const recommendedTopic = resolveFoundationSkillTopic(target, topics);
     const recommendedLesson = lessons.find(
         (lesson) =>
             lesson.skillIds?.includes(resolvedSkillId) &&
             lesson.showOnPlatform !== false &&
             (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
+    );
+    const directDrill = quizzes.find((quiz) =>
+        quiz.showOnPlatform !== false &&
+        quiz.isPublished !== false &&
+        (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
+        (
+            matchesEntityId(quiz, `quiz_drill_${resolvedSkillId}`) ||
+            quiz.skillIds?.includes(resolvedSkillId)
+        ),
     );
     const recommendedQuiz = directDrill || quizzes.find((quiz) =>
         quiz.showOnPlatform !== false &&
@@ -90,83 +92,40 @@ export const buildSkillRecommendation = (
             (!item.approvalStatus || item.approvalStatus === 'approved'),
     );
 
-    const scoredFoundationTopics = recommendationPathId && recommendationSubjectId
-        ? topics
-            .filter((topic) =>
-                topic.pathId === recommendationPathId &&
-                topic.subjectId === recommendationSubjectId &&
-                topic.showOnPlatform !== false,
-            )
-            .map((topic) => {
-                const topicHasLesson = recommendedLesson
-                    ? (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId))
-                    : false;
-                const topicHasQuiz = recommendedQuiz
-                    ? (topic.quizIds || []).some((quizId) => matchesEntityId(recommendedQuiz, quizId))
-                    : false;
-                const topicMatchesSkill = matchesEntityId(topic, resolvedSkillId) || matchesEntityId(topic, `topic_sub_${resolvedSkillId}`);
-                const topicMatchesSection = Boolean(recommendationSectionId && topic.sectionId === recommendationSectionId);
-                const linkedContentScore =
-                    (topicHasLesson ? 60 : 0) +
-                    (topicHasQuiz ? 55 : 0) +
-                    (topicMatchesSkill ? 80 : 0) +
-                    (topicMatchesSection ? 35 : 0);
-
-                return {
-                    topic,
-                    score: linkedContentScore + (topic.parentId ? 4 : 0),
-                };
-            })
-            .filter((item) => item.score > 0)
-            .sort((a, b) => b.score - a.score)
-        : [];
-
-    const recommendedTopic = directTopic || scoredFoundationTopics[0]?.topic;
-    const targetTopicId = recommendedTopic?.id || (resolvedSkillId ? `topic_sub_${resolvedSkillId}` : undefined);
-
-    const buildFoundationTopicLink = (content: 'lessons' | 'quizzes') =>
-        recommendationPathId && recommendationSubjectId
-            ? (() => {
-                const params = new URLSearchParams({ subject: recommendationSubjectId });
-                params.set('tab', 'skills');
-
-                if (targetTopicId) {
-                    params.set('topic', targetTopicId);
-                    params.set('content', content);
-                }
-
-                return `/category/${recommendationPathId}?${params.toString()}`;
-            })()
-            : undefined;
-
-    const lessonLink = buildFoundationTopicLink('lessons');
-    const foundationTrainingLink = buildFoundationTopicLink('quizzes');
-    const foundationTopicLink = buildFoundationTopicLink('lessons');
+    const lessonLink = buildFoundationSkillLink({ target, topics, content: 'lessons' });
+    const quizLink =
+        buildFoundationSkillLink({ target, topics, content: 'quizzes' }) ||
+        (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined);
+    const supportLink = buildFoundationSkillLink({ target, topics, content: 'support' });
+    const recheckLink = buildSkillRecheckLink(target);
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
         lessonLink,
+        lessonVideoUrl: recommendedLesson?.videoUrl,
         lessonTopicTitle: displayText(recommendedTopic?.title || resolvedSkill.name),
-        foundationTopicLink,
+        foundationTopicLink: lessonLink,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-        quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
+        quizLink,
+        supportLink,
+        recheckLink,
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
-        subjectName: recommendationSubjectId
-            ? displayText(subjects.find((item) => item.id === recommendationSubjectId)?.name)
+        subjectName: resolvedSkill.subjectId
+            ? displayText(subjects.find((item) => item.id === resolvedSkill.subjectId)?.name)
             : undefined,
-        sectionName: recommendationSectionId
-            ? displayText(sections.find((item) => item.id === recommendationSectionId)?.name)
+        sectionName: resolvedSkill.sectionId
+            ? displayText(sections.find((item) => item.id === resolvedSkill.sectionId)?.name)
             : undefined,
         actionText:
             recommendedLesson && recommendedQuiz
-                ? 'ابدأ بالشرح أولًا ثم نفّذ اختبارًا قصيرًا لقياس التحسن.'
+                ? 'ابدأ بالشرح، ثم التدريب، ثم أعد القياس على نفس المهارة.'
                 : recommendedLesson
-                    ? 'هذه المهارة تحتاج مراجعة شرحها قبل أي تدريب إضافي.'
+                    ? 'راجع الشرح ثم انتقل إلى القياس القصير على نفس المهارة.'
                     : recommendedQuiz
-                        ? 'هذه المهارة جاهزة لتدريب علاجي مباشر عبر الاختبار المقترح.'
+                        ? 'ابدأ بالتدريب العلاجي ثم أعد القياس.'
                         : recommendedResource
-                            ? 'راجع الملف الداعم ثم ارجع لتكرار التدريب على نفس المهارة.'
-                            : 'أعد المحاولة عبر اختبار ساهر مخصص لهذه المهارة.',
+                            ? 'راجع الملف الداعم ثم ارجع للتدريب والقياس.'
+                            : 'ابدأ من موضوع التأسيس ثم نفّذ قياسًا قصيرًا.',
     };
 };
