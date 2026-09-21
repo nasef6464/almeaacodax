@@ -41,6 +41,9 @@ check('Reports delegates student analytics and recent evidence selection through
   assertIncludes(reports, 'buildStudentPerformanceStats(');
   assertIncludes(reports, 'buildStudentAggregatedSkills({');
   assertIncludes(reports, 'examResults: studentEvidenceWindow.recentExamResults');
+  assertIncludes(reports, 'studentEvidenceWindow.recentExamResults.length > 0');
+  assertIncludes(reports, '? []');
+  assertIncludes(reports, ': studentEvidenceWindow.pathScopedQuestionAttempts');
   assertIncludes(reports, 'buildStudentEvidenceSummary(aggregatedSkills)');
   assertIncludes(reports, 'buildStudentSkillReadinessSummary(');
   assertIncludes(reports, 'minSkillEvidence: MIN_SKILL_EVIDENCE_COUNT');
