@@ -74,8 +74,10 @@ function assertPattern(source, pattern, message) {
 }
 
 check('reports load scoped analytics and scoped quiz results for non-student roles', () => {
-  assertIncludes(reportsSource, 'api.getQuizAnalyticsOverview()');
-  assertIncludes(reportsSource, 'api.getScopedQuizResults()');
+  assertIncludes(reportsSource, 'api.getQuizAnalyticsOverview(taxonomyScope)');
+  assertIncludes(reportsSource, 'api.getScopedQuizResults(taxonomyScope)');
+  assertIncludes(reportsSource, "pathId: selectedScopedPathId === 'all' ? undefined : selectedScopedPathId");
+  assertIncludes(reportsSource, "subjectId: selectedScopedSubjectId === 'all' ? undefined : selectedScopedSubjectId");
   assertIncludes(apiSource, 'getQuizAnalyticsOverview');
   assertIncludes(apiSource, 'getScopedQuizResults');
   assertIncludes(quizAnalyticsRoutesSource, '"/analytics/overview"');
@@ -168,16 +170,18 @@ check('student compact report is period-based and prints the simple skill rows',
 });
 
 check('student weak-skill actions open the linked foundation topic first', () => {
-  assertIncludes(recommendationSource, "const buildFoundationTopicLink = (content: 'lessons' | 'quizzes')");
+  assertIncludes(recommendationSource, "import { buildFoundationActionLink } from '../../utils/skillActionLinks'");
   assertIncludes(recommendationSource, 'scoredFoundationTopics');
   assertIncludes(recommendationSource, 'foundationTopicLink');
-  assertIncludes(recommendationSource, "const lessonLink = buildFoundationTopicLink('lessons')");
-  assertIncludes(recommendationSource, "params.set('tab', 'skills')");
-  assertIncludes(recommendationSource, "params.set('content', content)");
+  assertIncludes(recommendationSource, "const lessonLink = buildFoundationActionLink(actionContext, 'lessons')");
+  assertIncludes(recommendationSource, "const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes')");
+  assertIncludes(recommendationSource, 'pathId: recommendationPathId');
+  assertIncludes(recommendationSource, 'subjectId: recommendationSubjectId');
+  assertIncludes(recommendationSource, 'skillId: resolvedSkillId');
   assertPattern(
     recommendationSource,
-    /const foundationTrainingLink[\s\S]{0,160}buildFoundationTopicLink\('quizzes'\)/,
-    'foundation training must route through the linked foundation topic',
+    /const actionContext[\s\S]{0,360}topicId: targetTopicId/,
+    'foundation action context must preserve the resolved scoped topic',
   );
   assertIncludes(studentReportActionsSource, "relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses'");
   assertIncludes(recommendationSource, "quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined)");
