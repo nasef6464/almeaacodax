@@ -48,8 +48,9 @@ check('recommendation view-model preserves content ranking and links', () => {
   assertIncludes(recommendation, '(topicHasQuiz ? 55 : 0)');
   assertIncludes(recommendation, '(topicMatchesSkill ? 80 : 0)');
   assertIncludes(recommendation, '(topicMatchesSection ? 35 : 0)');
-  assertIncludes(recommendation, "params.set('tab', 'skills')");
-  assertIncludes(recommendation, "params.set('content', content)");
+  assertIncludes(recommendation, "import { buildFoundationActionLink } from '../../utils/skillActionLinks';");
+  assertIncludes(recommendation, "buildFoundationActionLink(actionContext, 'lessons')");
+  assertIncludes(recommendation, "buildFoundationActionLink(actionContext, 'quizzes')");
   assertIncludes(recommendation, 'quizLink: foundationTrainingLink ||');
   assertIncludes(recommendation, 'ابدأ بالشرح أولًا ثم نفّذ اختبارًا قصيرًا لقياس التحسن.');
   assertIncludes(recommendation, 'أعد المحاولة عبر اختبار ساهر مخصص لهذه المهارة.');
