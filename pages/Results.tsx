@@ -40,6 +40,7 @@ import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
+import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
 
 const ResultDonutChart = React.lazy(() =>
   import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
@@ -1371,6 +1372,11 @@ const ReviewSolutions = ({
   const [showExplanation, setShowExplanation] = React.useState(false);
   const [zoomedImageUrl, setZoomedImageUrl] = React.useState<string | null>(null);
   const [filterMode, setFilterMode] = React.useState<'all' | 'wrong' | 'unanswered' | 'correct'>('all');
+  const resultId = String(
+    (result as QuizResult & { id?: string; _id?: string }).id ||
+    (result as QuizResult & { id?: string; _id?: string })._id ||
+    '',
+  );
 
   const questions: QuizQuestionReview[] = React.useMemo(() => {
     const reviewById = new Map((result.questionReview || []).map((question) => [question.questionId, question]));
@@ -1708,6 +1714,13 @@ const ReviewSolutions = ({
                 </p>
               </div>
             ) : null}
+
+            <QuestionAssistantPanel
+              key={`${resultId}::${q.questionId}`}
+              resultId={resultId}
+              questionId={q.questionId}
+              hasImage={Boolean(q.imageUrl || questionHasInlineMedia)}
+            />
 
             {/* Question Card Navigation Bar */}
             <div className="flex items-center justify-between pt-5 border-t border-slate-100">
