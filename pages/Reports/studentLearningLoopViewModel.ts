@@ -1,6 +1,7 @@
 import { displayText } from './reportDomain';
 import type { StudentWeeklyPlanItem } from './studentWeeklyPlanViewModel';
-import { buildSkillPracticeActionLink } from '../../utils/skillActionLinks';
+import { buildSkillPracticeActionLink, buildSkillRecheckActionLink, buildSkillRemediationActionLink } from '../../utils/skillActionLinks';
+import { decideAdaptiveTreatment } from '../../services/adaptiveTreatmentPolicy';
 
 export type StudentLearningActionIconKey = 'checkCircle' | 'video' | 'fileText';
 
@@ -53,13 +54,18 @@ export const buildStudentQuickActions = (
         ];
     }
 
+    const actionContext = {
+        pathId: studentTodayFocus.pathId,
+        subjectId: studentTodayFocus.subjectId,
+        sectionId: studentTodayFocus.sectionId,
+        skillId: studentTodayFocus.skillId,
+    };
     const quizLink = studentTodayFocus.quizLink
-        || buildSkillPracticeActionLink({
-            pathId: studentTodayFocus.pathId,
-            subjectId: studentTodayFocus.subjectId,
-            skillId: studentTodayFocus.skillId,
-        })
+        || buildSkillRemediationActionLink(actionContext)
+        || buildSkillPracticeActionLink(actionContext)
         || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
+    const recheckLink = buildSkillRecheckActionLink(actionContext)
+        || quizLink;
 
     return [
         {
@@ -86,7 +92,7 @@ export const buildStudentQuickActions = (
             title: 'أعد القياس',
             body: 'اختبار قصير بعد الشرح والتدريب.',
             label: 'قياس التحسن',
-            link: quizLink,
+            link: recheckLink,
             iconKey: 'checkCircle',
             className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
         },
@@ -110,6 +116,10 @@ export const buildStudentTodayLearningLoop = (
     }
 
     const mastery = Number(studentTodayFocus.mastery || 0);
+    const treatment = decideAdaptiveTreatment({
+        mastery,
+        evidenceCount: studentTodayFocus.attempts,
+    });
 
     return {
         skillName: displayText(studentTodayFocus.skill) || 'المهارة الأضعف',
@@ -117,11 +127,13 @@ export const buildStudentTodayLearningLoop = (
         evidenceLabel: studentTodayFocus.isReliable
             ? `${studentTodayFocus.attempts} محاولات`
             : `قراءة أولية من ${studentTodayFocus.attempts} محاولة`,
-        readinessLabel: mastery >= 75
+        readinessLabel: treatment.state === 'mastered'
             ? 'جاهز للتثبيت'
-            : mastery >= 50
-                ? 'راجع ثم قِس'
-                : 'ابدأ من الشرح',
+            : treatment.state === 'measure'
+                ? 'ابدأ بقياس'
+                : treatment.state === 'weak'
+                    ? 'ابدأ من الشرح'
+                    : 'راجع ثم قِس',
         steps,
     };
 };
