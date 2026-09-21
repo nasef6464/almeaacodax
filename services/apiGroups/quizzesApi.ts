@@ -36,6 +36,53 @@ export const createQuizzesApi = (request: ApiRequest) => ({
   getQuizAnalyticsOverview: (pagination: PaginationOptions = {}) =>
     request<unknown>(withQuery("/quizzes/analytics/overview", { studentLimit: 500, resultLimit: 2000, attemptLimit: 3000, ...pagination })),
 
+  getSchoolSkillAggregates: (params: {
+    groupBy?: "skill" | "class" | "student";
+    pathId?: string;
+    subjectId?: string;
+    classId?: string;
+    studentId?: string;
+    skillId?: string;
+    limit?: number;
+  } = {}) =>
+    request<{
+      status: "ok";
+      scope: {
+        role: string;
+        totalStudents: number;
+        sampledStudents: number;
+        isTruncated: boolean;
+        groupBy: "skill" | "class" | "student";
+        pathId?: string;
+        subjectId?: string;
+        classId?: string;
+        skillId?: string;
+        supportThreshold?: number;
+      };
+      rows: Array<{
+        classId?: string;
+        userId?: string;
+        studentName?: string;
+        pathId: string;
+        subjectId: string;
+        sectionId?: string;
+        skillId: string;
+        skill: string;
+        mastery: number;
+        recentMastery: number;
+        trend?: string;
+        trendBreakdown?: { improving: number; stable: number; declining: number };
+        confidence: number;
+        evidenceCount: number;
+        studentCount?: number;
+        coverage?: number;
+        supportStudents?: number;
+        supportRate?: number;
+        needsSupport?: boolean;
+        lastEvidenceAt?: string;
+      }>;
+    }>(withQuery("/quizzes/analytics/school-skills", params)),
+
   createQuiz: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes", {
       method: "POST",
