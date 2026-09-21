@@ -31,13 +31,26 @@ export const questionBaseSchema = z.object({
   revenueSharePercentage: z.number().nullable().optional(),
 });
 
-export const questionSchema = questionBaseSchema.refine(
-  (value) => value.text.trim().length > 0 || String(value.imageUrl || "").trim().length > 0,
-  {
-    message: "Question must include text or an image URL",
-    path: ["text"],
-  },
-);
+export const questionSchema = questionBaseSchema
+  .refine(
+    (value) => value.text.trim().length > 0 || String(value.imageUrl || "").trim().length > 0,
+    {
+      message: "Question must include text or an image URL",
+      path: ["text"],
+    },
+  )
+  .refine(
+    (value) => {
+      const hasImage = String(value.imageUrl || "").trim().length > 0;
+      const publishable = value.approvalStatus === "approved" || value.approvalStatus === "pending_review";
+      if (!hasImage || !publishable) return true;
+      return String(value.explanation || "").trim().length > 0;
+    },
+    {
+      message: "Published or review-ready image questions require a written explanation",
+      path: ["explanation"],
+    },
+  );
 
 export const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
