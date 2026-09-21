@@ -1,5 +1,6 @@
 import { displayText } from './reportDomain';
 import type { StudentWeeklyPlanItem } from './studentWeeklyPlanViewModel';
+import { buildSkillPracticeActionLink } from '../../utils/skillActionLinks';
 
 export type StudentLearningActionIconKey = 'checkCircle' | 'video' | 'fileText';
 
@@ -53,6 +54,11 @@ export const buildStudentQuickActions = (
     }
 
     const quizLink = studentTodayFocus.quizLink
+        || buildSkillPracticeActionLink({
+            pathId: studentTodayFocus.pathId,
+            subjectId: studentTodayFocus.subjectId,
+            skillId: studentTodayFocus.skillId,
+        })
         || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
 
     return [
