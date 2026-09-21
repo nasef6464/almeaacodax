@@ -51,6 +51,10 @@ export const createLearningInteractionsSlice = <TState extends LearningInteracti
                 isCorrect: Boolean(attempt?.isCorrect),
                 timeSpentSeconds: Number(attempt?.timeSpentSeconds ?? 0),
                 date: String(attempt?.date || attempt?.createdAt || new Date().toISOString()),
+                pathId: String(attempt?.pathId || ''),
+                subjectId: String(attempt?.subjectId || ''),
+                sectionId: String(attempt?.sectionId || ''),
+                skillIds: Array.isArray(attempt?.skillIds) ? attempt.skillIds.map(String) : [],
                 evidenceType: attempt?.evidenceType || 'assessment',
             }))
             .filter((attempt) => attempt.questionId),
