@@ -26,8 +26,9 @@ check('skill analysis preserves evidence volume', () => {
   assert.ok(skillsAnalysis.includes('correctCount: stats.correct'));
 });
 
-check('skill progress persists evidence count', () => {
+check('skill progress persists evidence count and bounded replay keys', () => {
   assert.ok(model.includes('evidenceCount: { type: Number, default: 0 }'));
+  assert.ok(model.includes('recentEvidenceKeys: { type: [String], default: [] }'));
 });
 
 check('mastery merge is weighted by evidence rather than quiz count only', () => {
@@ -49,6 +50,13 @@ check('quiz and single-question progress use the shared evidence merge', () => {
   assert.ok(sideEffects.includes('currentEvidence = Math.max(1, Number(skill.questionCount || skill.total || 1))'));
   assert.ok(sideEffects.includes('currentEvidence: 1'));
   assert.ok(sideEffects.includes('evidenceCount: mergedMastery.evidenceCount'));
+});
+
+check('recent evidence replay is bounded and duplicate-safe', () => {
+  assert.ok(sideEffects.includes('Array.isArray(existing?.recentEvidenceKeys)'));
+  assert.ok(sideEffects.includes('.slice(-20)'));
+  assert.ok(sideEffects.includes('recentEvidenceKeys.includes(evidenceKey)'));
+  assert.ok(sideEffects.includes('recentEvidenceKeys: nextEvidenceKeys'));
 });
 
 check('legacy progress remains backward compatible', () => {
