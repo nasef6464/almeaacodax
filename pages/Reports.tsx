@@ -116,6 +116,9 @@ const Reports: React.FC = () => {
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
+    const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all');
+    const [selectedScopedPathId, setSelectedScopedPathId] = useState<string>('all');
+    const [selectedScopedSubjectId, setSelectedScopedSubjectId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
     const [selectedFollowUpQuizId, setSelectedFollowUpQuizId] = useState<string>('all');
@@ -129,9 +132,14 @@ const Reports: React.FC = () => {
         let cancelled = false;
         setScopedAnalyticsLoading(true);
 
+        const taxonomyScope = {
+            pathId: selectedScopedPathId === 'all' ? undefined : selectedScopedPathId,
+            subjectId: selectedScopedSubjectId === 'all' ? undefined : selectedScopedSubjectId,
+        };
+
         Promise.all([
-            api.getQuizAnalyticsOverview(),
-            api.getScopedQuizResults(),
+            api.getQuizAnalyticsOverview(taxonomyScope),
+            api.getScopedQuizResults(taxonomyScope),
         ])
             .then(([analyticsResponse, resultsResponse]) => {
                 if (!cancelled) {
@@ -156,7 +164,7 @@ const Reports: React.FC = () => {
         return () => {
             cancelled = true;
         };
-    }, [user?.email, user.role]);
+    }, [selectedScopedPathId, selectedScopedSubjectId, user?.email, user.role]);
 
     const studentPeriodExamResults = useMemo(
         () => filterStudentReportPeriod(examResults, studentReportPeriod),
@@ -195,20 +203,45 @@ const Reports: React.FC = () => {
     );
     const {
         weakestSkill, studentEnrolledPathIds, studentEnrolledPathLabels, studentReportPathOptions,
-        studentPathScopedSkills, reportBaseSkills, reliableAggregatedSkills, reliableWeakSkills,
-        reliableAverageSkills, earlyWeakSignals, focusedReportSkills, primaryReportSkill,
-        selectedReportSkill, studentTrackLabel, hasStudentTrackScope,
+        studentReportSubjectOptions, studentPathScopedSkills, studentSubjectScopedSkills, reportBaseSkills,
+        reliableAggregatedSkills, reliableWeakSkills, reliableAverageSkills, earlyWeakSignals,
+        focusedReportSkills, primaryReportSkill, selectedReportSkill, studentTrackLabel,
+        studentSubjectLabel, hasStudentTrackScope,
     } = useMemo(
         () => buildStudentReportScope({
             aggregatedSkills,
             paths,
+            subjects,
             enrolledPaths,
             selectedStudentPathId,
+            selectedStudentSubjectId,
             selectedSkillKey,
             role: user.role,
         }),
-        [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, user.role],
+        [aggregatedSkills, enrolledPaths, paths, selectedSkillKey, selectedStudentPathId, selectedStudentSubjectId, subjects, user.role],
     );
+    useEffect(() => {
+        if (selectedStudentSubjectId === 'all') return;
+        if (!studentReportSubjectOptions.some((subject) => subject.id === selectedStudentSubjectId)) {
+            setSelectedStudentSubjectId('all');
+        }
+    }, [selectedStudentSubjectId, studentReportSubjectOptions]);
+
+    const scopedPathOptions = useMemo(
+        () => paths.filter((path) => path.isActive !== false),
+        [paths],
+    );
+    const scopedSubjectOptions = useMemo(
+        () => subjects.filter((subject) => selectedScopedPathId === 'all' || subject.pathId === selectedScopedPathId),
+        [selectedScopedPathId, subjects],
+    );
+    useEffect(() => {
+        if (selectedScopedSubjectId === 'all') return;
+        if (!scopedSubjectOptions.some((subject) => subject.id === selectedScopedSubjectId)) {
+            setSelectedScopedSubjectId('all');
+        }
+    }, [scopedSubjectOptions, selectedScopedSubjectId]);
+
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
@@ -1315,6 +1348,33 @@ const Reports: React.FC = () => {
                         >
                             تقرير مفرد
                         </button>
+                        {[Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role) ? (
+                            <>
+                                <select
+                                    value={selectedScopedPathId}
+                                    onChange={(event) => {
+                                        setSelectedScopedPathId(event.target.value);
+                                        setSelectedScopedSubjectId('all');
+                                    }}
+                                    className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 focus:border-indigo-400 focus:outline-none"
+                                >
+                                    <option value="all">كل المسارات</option>
+                                    {scopedPathOptions.map((path) => (
+                                        <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                    ))}
+                                </select>
+                                <select
+                                    value={selectedScopedSubjectId}
+                                    onChange={(event) => setSelectedScopedSubjectId(event.target.value)}
+                                    className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 focus:border-indigo-400 focus:outline-none"
+                                >
+                                    <option value="all">كل المواد</option>
+                                    {scopedSubjectOptions.map((subject) => (
+                                        <option key={subject.id} value={subject.id}>{displayText(subject.name)}</option>
+                                    ))}
+                                </select>
+                            </>
+                        ) : null}
                         {scopedAvailableGroups.length > 0 ? (
                             <select
                                 value={scopedGroupFilter}
@@ -2223,7 +2283,7 @@ const Reports: React.FC = () => {
                             </div>
                             <h3 className="mt-1 text-sm sm:text-base font-black text-gray-900 leading-snug">
                                 {hasStudentTrackScope
-                                    ? `نركز الآن على: ${studentTrackLabel}.`
+                                    ? `نركز الآن على: ${studentTrackLabel}${studentSubjectLabel ? ` — ${studentSubjectLabel}` : ''}.`
                                     : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
                             </h3>
                             <p className="mt-0.5 text-xs font-bold text-gray-500">
@@ -2237,12 +2297,31 @@ const Reports: React.FC = () => {
                             <div className="relative min-w-[150px] flex-1 sm:flex-initial">
                                 <select
                                     value={selectedStudentPathId}
-                                    onChange={(event) => setSelectedStudentPathId(event.target.value)}
+                                    onChange={(event) => {
+                                        setSelectedStudentPathId(event.target.value);
+                                        setSelectedStudentSubjectId('all');
+                                    }}
                                     className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-emerald-400 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 cursor-pointer transition-colors"
                                 >
                                     <option value="all">كل مساراتي</option>
                                     {studentReportPathOptions.map((path) => (
                                         <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            </div>
+                        ) : null}
+
+                        {studentReportSubjectOptions.length > 0 ? (
+                            <div className="relative min-w-[150px] flex-1 sm:flex-initial">
+                                <select
+                                    value={selectedStudentSubjectId}
+                                    onChange={(event) => setSelectedStudentSubjectId(event.target.value)}
+                                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pr-3.5 pl-8 text-xs sm:text-sm font-black text-slate-700 shadow-2xs hover:border-emerald-400 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 cursor-pointer transition-colors"
+                                >
+                                    <option value="all">كل المواد</option>
+                                    {studentReportSubjectOptions.map((subject) => (
+                                        <option key={subject.id} value={subject.id}>{displayText(subject.name)}</option>
                                     ))}
                                 </select>
                                 <ChevronDown size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
