@@ -10,7 +10,7 @@ interface FoundationManagerProps {
 }
 
 export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId }) => {
-  const { topics, addTopic, updateTopic, deleteTopic, lessons, updateLesson, quizzes, updateQuiz, libraryItems, updateLibraryItem, subjects } = useStore();
+  const { topics, addTopic, updateTopic, deleteTopic, lessons, updateLesson, quizzes, updateQuiz, libraryItems, updateLibraryItem, subjects, skills } = useStore();
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   
   // Editing state
@@ -25,6 +25,26 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   const currentSubject = subjects.find(item => item.id === subjectId);
   const subjectTopics = topics.filter(t => t.subjectId === subjectId).sort((a, b) => a.order - b.order);
   const mainTopics = subjectTopics.filter(t => !t.parentId);
+  const foundationSubSkillOptions = skills
+    .filter((skill) =>
+      skill.subjectId === subjectId &&
+      (!currentSubject?.pathId || skill.pathId === currentSubject.pathId),
+    )
+    .flatMap((skill) =>
+      (skill.subSkills || []).map((subSkill) => ({
+        id: subSkill.id,
+        name: subSkill.name,
+        parentSkillId: skill.id,
+        parentSkillName: skill.name,
+        pathId: skill.pathId,
+        subjectId: skill.subjectId,
+        sectionId: skill.sectionId,
+      })),
+    )
+    .sort((a, b) =>
+      a.parentSkillName.localeCompare(b.parentSkillName, 'ar') ||
+      a.name.localeCompare(b.name, 'ar'),
+    );
   const availableLessons = lessons
     .filter((lesson) => {
       const matchesSubject = lesson.subjectId === subjectId;
@@ -60,6 +80,19 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const issues: string[] = [];
 
     if (!topic.title.trim()) issues.push('العنوان غير مكتمل');
+    if (topic.parentId && !topic.skillId) {
+      issues.push('الموضوع الفرعي غير مربوط بمهارة فرعية');
+    }
+    if (topic.parentId && topic.skillId && !foundationSubSkillOptions.some((option) => option.id === topic.skillId)) {
+      issues.push('ربط المهارة الفرعية غير صالح لهذا المسار/المادة');
+    }
+    if (
+      topic.parentId &&
+      topic.skillId &&
+      subjectTopics.some((item) => item.id !== topic.id && item.parentId && item.skillId === topic.skillId)
+    ) {
+      issues.push('المهارة الفرعية مرتبطة بأكثر من موضوع تأسيسي');
+    }
     if (!topic.subjectId) issues.push('غير مربوط بمادة');
     if (!topic.pathId && !currentSubject?.pathId) issues.push('غير مربوط بمسار');
     if (topic.showOnPlatform === false) issues.push('مخفي عن المنصة');
@@ -134,9 +167,12 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   };
 
   const handleCreateNew = (parentId?: string) => {
+    const parentTopic = parentId ? topics.find((topic) => topic.id === parentId) : null;
     setEditingTopic({
       pathId: currentSubject?.pathId,
       subjectId,
+      sectionId: parentTopic?.sectionId,
+      skillId: null,
       parentId,
       title: '',
       order: subjectTopics.filter(t => t.parentId === parentId).length,
@@ -148,26 +184,106 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     setIsEditing(true);
   };
 
+  const mergeTopicSkillIds = (existing: string[] | undefined, topic: Partial<Topic>) =>
+    topic.skillId ? Array.from(new Set([...(existing || []), topic.skillId])) : (existing || []);
+
+  const buildFoundationPlacements = (quiz: Quiz, topic: Partial<Topic>) => {
+    if (!topic.id || !topic.parentId) return quiz.learningPlacements || [];
+    const pathId = topic.pathId || currentSubject?.pathId;
+    const targetSubjectId = topic.subjectId || subjectId;
+    if (!pathId || !targetSubjectId) return quiz.learningPlacements || [];
+
+    const preserved = (quiz.learningPlacements || []).filter(
+      (placement) => !(placement.slot === 'foundation' && placement.topicId === topic.id),
+    );
+    return [
+      ...preserved,
+      {
+        pathId,
+        subjectId: targetSubjectId,
+        slot: 'foundation' as const,
+        topicId: topic.id,
+        accessType: 'inherit' as const,
+        isVisible: true,
+      },
+    ];
+  };
+
+  const syncAttachedContentToTopicSkill = (topic: Topic) => {
+    const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
+    const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
+    const attachedLibraryItems = libraryItems.filter((item) => topic.libraryItemIds?.includes(item.id));
+
+    attachedLessons.forEach((lesson) => {
+      updateLesson(lesson.id, {
+        skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
+        sectionId: lesson.sectionId || topic.sectionId,
+      });
+    });
+
+    attachedQuizzes.forEach((quiz) => {
+      updateQuiz(quiz.id, {
+        skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+        sectionId: quiz.sectionId || topic.sectionId,
+        learningPlacements: buildFoundationPlacements(quiz, topic),
+      });
+    });
+
+    attachedLibraryItems.forEach((item) => {
+      updateLibraryItem(item.id, {
+        skillIds: mergeTopicSkillIds(item.skillIds, topic),
+        sectionId: item.sectionId || topic.sectionId,
+      });
+    });
+  };
+
   const handleSaveTopic = () => {
     if (!editingTopic?.title) return;
     const subject = subjects.find(item => item.id === (editingTopic.subjectId || subjectId));
+    const selectedSubSkill = editingTopic.skillId
+      ? foundationSubSkillOptions.find((option) => option.id === editingTopic.skillId)
+      : undefined;
+
+    if (editingTopic.parentId && editingTopic.skillId) {
+      const duplicateTopic = subjectTopics.find(
+        (topic) =>
+          topic.id !== editingTopic.id &&
+          topic.parentId &&
+          topic.skillId === editingTopic.skillId,
+      );
+      if (duplicateTopic) {
+        window.alert(`المهارة الفرعية مرتبطة بالفعل بالموضوع: ${duplicateTopic.title}`);
+        return;
+      }
+    }
 
     if (editingTopic.id) {
-      const updateData = { ...editingTopic, pathId: editingTopic.pathId || subject?.pathId };
+      const updateData = {
+        ...editingTopic,
+        pathId: selectedSubSkill?.pathId || editingTopic.pathId || subject?.pathId,
+        subjectId: selectedSubSkill?.subjectId || editingTopic.subjectId || subjectId,
+        sectionId: selectedSubSkill?.sectionId || editingTopic.sectionId,
+        skillId: editingTopic.parentId ? editingTopic.skillId || null : editingTopic.skillId || null,
+      };
       if (updateData.parentId === undefined) {
         updateData.parentId = null;
       }
       updateTopic(editingTopic.id, updateData);
+      syncAttachedContentToTopicSkill(updateData as Topic);
     } else {
       const newTopic: Topic = {
         ...(editingTopic as Topic),
-        pathId: editingTopic.pathId || subject?.pathId,
+        pathId: selectedSubSkill?.pathId || editingTopic.pathId || subject?.pathId,
+        subjectId: selectedSubSkill?.subjectId || editingTopic.subjectId || subjectId,
+        sectionId: selectedSubSkill?.sectionId || editingTopic.sectionId,
+        skillId: editingTopic.parentId ? editingTopic.skillId || null : editingTopic.skillId || null,
         id: `topic_${Date.now()}`
       };
       if (newTopic.parentId === undefined) {
         newTopic.parentId = null;
       }
       addTopic(newTopic);
+      syncAttachedContentToTopicSkill(newTopic);
     }
     setIsEditing(false);
     setEditingTopic(null);
@@ -193,15 +309,18 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         updateTopic(topic.id, { lessonIds: [...topic.lessonIds, itemId] });
       }
       const lesson = lessons.find((item) => item.id === itemId);
-      if (lesson && topic.showOnPlatform !== false) {
+      if (lesson) {
         updateLesson(itemId, {
           pathId: lesson.pathId || topic.pathId || currentSubject?.pathId,
           subjectId: lesson.subjectId || topic.subjectId,
           sectionId: lesson.sectionId || topic.sectionId,
+          skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
+          ...(topic.showOnPlatform !== false ? {
           showOnPlatform: true,
           approvalStatus: 'approved',
           approvedAt: lesson.approvedAt || Date.now(),
           videoUrl: lesson.videoUrl ? sanitizeVideoUrl(lesson.videoUrl) : lesson.videoUrl,
+          } : {}),
         });
       }
     } else if (attachType === 'quiz') {
@@ -209,11 +328,14 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         updateTopic(topic.id, { quizIds: [...topic.quizIds, itemId] });
       }
       const quiz = quizzes.find((item) => item.id === itemId);
-      if (quiz && topic.showOnPlatform !== false) {
+      if (quiz) {
         updateQuiz(itemId, {
           pathId: quiz.pathId || topic.pathId || currentSubject?.pathId || '',
           subjectId: quiz.subjectId || topic.subjectId,
           sectionId: quiz.sectionId || topic.sectionId,
+          skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+          learningPlacements: buildFoundationPlacements(quiz, topic),
+          ...(topic.showOnPlatform !== false ? {
           showOnPlatform: true,
           isPublished: true,
           type: 'bank',
@@ -222,6 +344,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           showInMock: false,
           approvalStatus: 'approved',
           approvedAt: quiz.approvedAt || Date.now(),
+          } : {}),
         });
       }
     } else {
@@ -230,14 +353,17 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         updateTopic(topic.id, { libraryItemIds: [...currentLibraryItemIds, itemId] });
       }
       const libraryItem = libraryItems.find((item) => item.id === itemId);
-      if (libraryItem && topic.showOnPlatform !== false) {
+      if (libraryItem) {
         updateLibraryItem(itemId, {
           pathId: libraryItem.pathId || topic.pathId || currentSubject?.pathId,
           subjectId: libraryItem.subjectId || topic.subjectId,
           sectionId: libraryItem.sectionId || topic.sectionId,
+          skillIds: mergeTopicSkillIds(libraryItem.skillIds, topic),
+          ...(topic.showOnPlatform !== false ? {
           showOnPlatform: true,
           approvalStatus: 'approved',
           approvedAt: libraryItem.approvedAt || Date.now(),
+          } : {}),
         });
       }
     }
@@ -286,6 +412,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         pathId: lesson.pathId || topic.pathId || currentSubject?.pathId,
         subjectId: lesson.subjectId || topic.subjectId || subjectId,
         sectionId: lesson.sectionId || topic.sectionId,
+        skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
         showOnPlatform: true,
         approvalStatus: 'approved',
         approvedAt: lesson.approvedAt || Date.now(),
@@ -298,6 +425,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         pathId: quiz.pathId || topic.pathId || currentSubject?.pathId || '',
         subjectId: quiz.subjectId || topic.subjectId || subjectId,
         sectionId: quiz.sectionId || topic.sectionId,
+        skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+        learningPlacements: buildFoundationPlacements(quiz, topic),
         showOnPlatform: true,
         isPublished: true,
         type: 'bank',
@@ -314,6 +443,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         pathId: item.pathId || topic.pathId || currentSubject?.pathId,
         subjectId: item.subjectId || topic.subjectId || subjectId,
         sectionId: item.sectionId || topic.sectionId,
+        skillIds: mergeTopicSkillIds(item.skillIds, topic),
         showOnPlatform: true,
         approvalStatus: 'approved',
         approvedAt: item.approvedAt || Date.now(),
@@ -347,6 +477,9 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const attachedQuizzes = quizzes.filter(q => topic.quizIds?.includes(q.id));
     const attachedLibraryItems = libraryItems.filter(item => topic.libraryItemIds?.includes(item.id));
     const totalAttachments = attachedLessons.length + attachedQuizzes.length + attachedLibraryItems.length;
+    const linkedSubSkill = topic.skillId
+      ? foundationSubSkillOptions.find((option) => option.id === topic.skillId)
+      : undefined;
     const readinessMeta = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, attachedLibraryItems, subtopics.length);
 
     return (
@@ -366,6 +499,11 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
               {subtopics.length} مواضيع فرعية
             </span>
+            {level > 0 ? (
+              <span className={`text-xs px-2 py-1 rounded-full font-bold ${linkedSubSkill ? 'bg-violet-50 text-violet-700' : 'bg-rose-50 text-rose-700'}`}>
+                {linkedSubSkill ? `مهارة: ${linkedSubSkill.name}` : 'غير مربوط بمهارة فرعية'}
+              </span>
+            ) : null}
             <span className={`text-xs px-2 py-1 rounded-full font-bold ${topic.showOnPlatform === false ? 'bg-gray-100 text-gray-600' : 'bg-sky-50 text-sky-700'}`}>
               {topic.showOnPlatform === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}
             </span>
@@ -586,6 +724,43 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                   placeholder="مثال: الكسور العشرية"
                 />
               </div>
+              {editingTopic.parentId ? (
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الفرعية المرتبطة</label>
+                  <select
+                    value={editingTopic.skillId || ''}
+                    onChange={(e) => {
+                      const selected = foundationSubSkillOptions.find((option) => option.id === e.target.value);
+                      setEditingTopic({
+                        ...editingTopic,
+                        skillId: selected?.id || null,
+                        sectionId: selected?.sectionId || editingTopic.sectionId,
+                        pathId: selected?.pathId || editingTopic.pathId,
+                        subjectId: selected?.subjectId || editingTopic.subjectId || subjectId,
+                      });
+                    }}
+                    className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                  >
+                    <option value="">بدون ربط — يحتاج ضبط قبل الاعتماد</option>
+                    {foundationSubSkillOptions.map((option) => {
+                      const usedBy = subjectTopics.find(
+                        (topic) =>
+                          topic.id !== editingTopic.id &&
+                          topic.parentId &&
+                          topic.skillId === option.id,
+                      );
+                      return (
+                        <option key={option.id} value={option.id} disabled={Boolean(usedBy)}>
+                          {option.parentSkillName} ← {option.name}{usedBy ? ` — مرتبط بـ ${usedBy.title}` : ''}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <p className="mt-1.5 text-xs leading-5 text-gray-500">
+                    هذا هو الربط القانوني الذي تستخدمه التقارير والتعلم الذكي لفتح نفس موضوع التأسيس ونفس تدريبات المهارة.
+                  </p>
+                </div>
+              ) : null}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">الترتيب</label>
                 <input 
