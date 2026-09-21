@@ -91,6 +91,23 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
 
+  getMasteryReadiness: (scope: { pathId: string; subjectId?: string }) =>
+    request<{
+      scope: { pathId: string; subjectId?: string };
+      readiness: {
+        score: number;
+        status: "needs_measurement" | "ready_to_advance" | "ready_for_recheck" | "building";
+        mastery: number;
+        coverage: number;
+        evidenceConfidence: number;
+        recency: number;
+        totalSkills: number;
+        reliableSkills: number;
+        totalEvidence: number;
+        explanation: string;
+      };
+    }>(withQuery("/quizzes/mastery-readiness", scope)),
+
   getNextBestAction: (scope: { pathId: string; subjectId?: string }) =>
     request<{
       version: string;
