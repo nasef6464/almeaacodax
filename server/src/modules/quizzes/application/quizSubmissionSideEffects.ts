@@ -4,7 +4,7 @@ import { SkillModel } from "../../../models/Skill.js";
 import { SkillProgressModel } from "../../../models/SkillProgress.js";
 import { createNotificationDeliveries } from "../../../services/notificationService.js";
 import { sm2 } from "../../../services/spacedRepetition.js";
-import { buildRecommendedAction, buildSkillStatus, mergeSkillMasteryEvidence } from "../analytics/skillAnalytics.js";
+import { buildRecommendedAction, buildSkillStatus, mergeRecentSkillEvidence, mergeSkillMasteryEvidence } from "../analytics/skillAnalytics.js";
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
@@ -55,6 +55,15 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
           currentEvidence,
         });
         const nextMastery = mergedMastery.mastery;
+        const recentEvidence = mergeRecentSkillEvidence({
+          previous: Array.isArray(existing?.recentEvidence) ? existing.recentEvidence as any : [],
+          current: {
+            sourceId: String(result.submissionKey || result._id || result.id || `${result.quizId || "quiz"}:${result.attemptNumber || 1}`),
+            mastery,
+            evidenceCount: currentEvidence,
+            occurredAt: new Date(result.createdAt || new Date()),
+          },
+        });
 
         await SkillProgressModel.findOneAndUpdate(
           { userId, pathId, subjectId, skillId },
@@ -69,6 +78,7 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
             status: buildSkillStatus(nextMastery),
             attempts: nextAttempts,
             evidenceCount: mergedMastery.evidenceCount,
+            recentEvidence,
             lastQuizId: String(result.quizId || ""),
             lastQuizTitle: String(result.quizTitle || ""),
             lastAttemptAt: new Date(),
@@ -104,6 +114,15 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
         currentEvidence: 1,
       });
       const nextMastery = mergedMastery.mastery;
+      const recentEvidence = mergeRecentSkillEvidence({
+        previous: Array.isArray(existing?.recentEvidence) ? existing.recentEvidence as any : [],
+        current: {
+          sourceId: String(attempt._id || attempt.id || `${attempt.questionId || "question"}:${attempt.createdAt || Date.now()}`),
+          mastery,
+          evidenceCount: 1,
+          occurredAt: new Date(attempt.createdAt || new Date()),
+        },
+      });
 
       await SkillProgressModel.findOneAndUpdate(
         { userId, pathId, subjectId, skillId },
@@ -118,6 +137,7 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
           status: buildSkillStatus(nextMastery),
           attempts: nextAttempts,
           evidenceCount: mergedMastery.evidenceCount,
+          recentEvidence,
           lastQuizId: String(existing?.lastQuizId || ""),
           lastQuizTitle: String(existing?.lastQuizTitle || ""),
           lastAttemptAt: new Date(),
