@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SkillGap } from '../types';
-import { getInternalLearningPath } from '../services/adaptiveLearningPathService';
+import { getInternalLearningPath, type AdaptiveSkillSignal } from '../services/adaptiveLearningPathService';
+import { api } from '../services/api';
 import { Sparkles, Zap, ArrowLeft, Clock } from 'lucide-react';
 import { Card } from './ui/Card';
 
@@ -10,10 +11,60 @@ interface Props {
 }
 
 export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
-    const { recommendations, fingerprint } = useMemo(
-        () => getInternalLearningPath(skills),
-        [skills],
+    const localPath = useMemo(() => getInternalLearningPath(skills), [skills]);
+    const [serverSignals, setServerSignals] = useState<AdaptiveSkillSignal[] | null>(null);
+    const [serverFingerprint, setServerFingerprint] = useState('');
+
+    const scope = useMemo(() => {
+        const pathIds = [...new Set(skills.map((skill) => skill.pathId).filter(Boolean))] as string[];
+        const subjectIds = [...new Set(skills.map((skill) => skill.subjectId).filter(Boolean))] as string[];
+        return pathIds.length === 1
+            ? { pathId: pathIds[0], ...(subjectIds.length === 1 ? { subjectId: subjectIds[0] } : {}) }
+            : null;
+    }, [skills]);
+
+    useEffect(() => {
+        let cancelled = false;
+        if (!scope?.pathId) {
+            setServerSignals(null);
+            setServerFingerprint('');
+            return () => { cancelled = true; };
+        }
+
+        api.getNextBestAction(scope)
+            .then((payload) => {
+                if (cancelled) return;
+                setServerFingerprint(payload.fingerprint || '');
+                setServerSignals(
+                    (payload.candidates || []).map((candidate) => ({
+                        skillId: candidate.skillId,
+                        skill: candidate.skill,
+                        pathId: candidate.pathId,
+                        subjectId: candidate.subjectId,
+                        sectionId: candidate.sectionId,
+                        mastery: candidate.mastery,
+                        status: candidate.mastery >= 80 ? 'strong' : candidate.mastery < 50 ? 'weak' : 'average',
+                        evidenceCount: candidate.evidenceCount,
+                        trend: candidate.trend,
+                    })),
+                );
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setServerSignals(null);
+                    setServerFingerprint('');
+                }
+            });
+
+        return () => { cancelled = true; };
+    }, [scope?.pathId, scope?.subjectId]);
+
+    const effectivePath = useMemo(
+        () => serverSignals && serverSignals.length ? getInternalLearningPath(serverSignals) : localPath,
+        [localPath, serverSignals],
     );
+    const recommendations = effectivePath.recommendations;
+    const fingerprint = serverFingerprint || effectivePath.fingerprint;
 
     if (recommendations.length === 0) return null;
 
