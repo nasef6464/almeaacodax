@@ -27,7 +27,16 @@ quizAnalyticsRouter.get(
   "/analytics/school-skills",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const query = schoolSkillAggregateQuerySchema.parse(req.query);
+    const parsed = schoolSkillAggregateQuerySchema.parse(req.query);
+    const query = {
+      groupBy: parsed.groupBy || "skill",
+      pathId: parsed.pathId || "",
+      subjectId: parsed.subjectId || "",
+      classId: parsed.classId || "",
+      studentId: parsed.studentId || "",
+      skillId: parsed.skillId || "",
+      limit: parsed.limit || 30,
+    } as const;
     const payload = await buildSchoolSkillAggregateView(String(req.authUser!.id || ""), query);
     if (payload.status === "not_found") {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
