@@ -19,7 +19,7 @@ Phase 2 preserves mastery identity as `userId + pathId + subjectId + skillId`, a
 Existing legacy SkillProgress rows are preserved. Changing the source unique index is additive at model level but production index replacement/backfill MUST remain guarded: do not drop the historical unique index until duplicate/collision audit and deployment evidence prove safe cutover. Runtime writes include the full scoped identity.
 
 ## Double-count boundary
-Recent windows deduplicate by source ID. Cumulative mastery remains driven by the submission side-effect call; existing QuizResult `submissionKey` is the canonical retry guard. Phase 2 does not weaken submission idempotency.
+Recent windows deduplicate by source ID. Cumulative mastery remains driven by the submission side-effect call; existing QuizResult `submissionKey` is the canonical retry guard. Self-quiz question telemetry is now committed once per question at finish rather than on every option click, preventing answer changes from inflating QuestionAttempt/SkillProgress evidence. Phase 2 does not weaken submission idempotency.
 
 ## Resource impact
 Recent evidence is capped and contains only sourceId/mastery/evidenceCount/time. No media and no full result/question payload. Scoped index supports report reads without global student-history scans.
