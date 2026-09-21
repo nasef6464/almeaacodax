@@ -1,3 +1,5 @@
+export const SUPPORT_MASTERY_THRESHOLD = 75;
+
 export const mergeSkillMasteryEvidence = ({
   previousMastery,
   previousEvidence,
@@ -36,7 +38,7 @@ export const buildRecommendedAction = (mastery: number, attemptCount: number) =>
 
 export const buildSkillStatus = (mastery: number) => {
   if (mastery >= 90) return "mastered";
-  if (mastery >= 75) return "good";
+  if (mastery >= SUPPORT_MASTERY_THRESHOLD) return "good";
   if (mastery >= 50) return "average";
   return "weak";
 };
