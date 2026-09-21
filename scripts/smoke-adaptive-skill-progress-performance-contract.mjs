@@ -7,6 +7,7 @@ const read = (relativePath) =>
   fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n/g, '\n');
 
 const model = read('server/src/models/SkillProgress.ts');
+const sideEffects = read('server/src/modules/quizzes/application/quizSubmissionSideEffects.ts');
 const routes = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
 const api = read('services/apiGroups/quizzesApi.ts');
 const app = read('App.tsx');
@@ -30,6 +31,14 @@ check('skill progress list has an index that matches learner mastery ordering', 
     model.includes('skillProgressSchema.index({ userId: 1, mastery: 1, lastAttemptAt: -1 });'),
     'missing compound index for userId/mastery/lastAttemptAt',
   );
+});
+
+check('skill progress writes batch reads and updates instead of N+1 writes', () => {
+  assert.ok(sideEffects.includes('const loadExistingSkillProgress = async'));
+  assert.ok(sideEffects.includes('SkillProgressModel.find({'));
+  const bulkWrites = sideEffects.match(/SkillProgressModel\.bulkWrite\(/g) || [];
+  assert.equal(bulkWrites.length, 2, `expected 2 batched skill-progress writes, found ${bulkWrites.length}`);
+  assert.ok(!sideEffects.includes('SkillProgressModel.findOneAndUpdate('), 'per-skill findOneAndUpdate returned');
 });
 
 check('skill progress route supports count-free reads', () => {
