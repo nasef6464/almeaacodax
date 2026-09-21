@@ -5,6 +5,8 @@ import { SkillProgressModel } from "../../../models/SkillProgress.js";
 import { QuestionAttemptModel } from "../../../models/QuestionAttempt.js";
 import { QuestionModel } from "../../../models/Question.js";
 import { MasteryGoalModel } from "../../../models/MasteryGoal.js";
+import { PathModel } from "../../../models/Path.js";
+import { SubjectModel } from "../../../models/Subject.js";
 import { requireAuth } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../../../utils/pagination.js";
@@ -20,6 +22,18 @@ import { buildScopedMasteryReadiness } from "../analytics/masteryReadiness.js";
 export const adaptiveTelemetryRouter = Router();
 
 const STAFF_ROLES = new Set(["admin", "supervisor", "teacher"]);
+
+const assertMasteryTaxonomyScope = async (pathId: string, subjectId?: string) => {
+  const path = await PathModel.findById(pathId).select("_id").lean();
+  if (!path) return { ok: false as const, message: "Learning path not found" };
+  if (subjectId) {
+    const subject = await SubjectModel.findById(subjectId).select("_id pathId").lean();
+    if (!subject || String((subject as any).pathId || "") !== pathId) {
+      return { ok: false as const, message: "Subject does not belong to the selected path" };
+    }
+  }
+  return { ok: true as const };
+};
 
 const resolveMasteryGoalTargetUserId = async (authUser: any, requestedUserId?: string) => {
   const ownId = String(authUser?.id || "");
@@ -85,6 +99,8 @@ adaptiveTelemetryRouter.post(
     const payload = createMasteryGoalSchema.parse(req.body);
     const targetUserId = await resolveMasteryGoalTargetUserId(req.authUser, payload.userId);
     if (!targetUserId) return res.status(StatusCodes.FORBIDDEN).json({ message: "Goal scope is not allowed" });
+    const taxonomyScope = await assertMasteryTaxonomyScope(payload.pathId, payload.subjectId);
+    if (!taxonomyScope.ok) return res.status(StatusCodes.BAD_REQUEST).json({ message: taxonomyScope.message });
     const created = await MasteryGoalModel.create({
       id: randomUUID(),
       userId: targetUserId,
@@ -127,6 +143,10 @@ adaptiveTelemetryRouter.get(
     const subjectId = String(req.query.subjectId || "").trim();
     if (!pathId) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "pathId is required" });
+    }
+    const taxonomyScope = await assertMasteryTaxonomyScope(pathId, subjectId);
+    if (!taxonomyScope.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: taxonomyScope.message });
     }
 
     const rows = await SkillProgressModel.find({
