@@ -23,9 +23,16 @@ assert.ok(route.includes('withQuestionAssistantInflight'));
 assert.ok(route.includes('withinQuestionAssistantMinuteLimit'));
 assert.ok(route.includes('withinAiBudget(userId, schoolId || undefined)'));
 assert.ok(route.includes('AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS'));
-assert.ok(route.includes('imageSentToProvider: false'));
-assert.ok(route.includes('callAiWithMeta(prompt, undefined, undefined'));
-assert.ok(!route.includes('callAiWithMeta(prompt, undefined, image'), 'question assistant must not send image bytes by default');
+const questionAssistantRoute = route.slice(
+  route.indexOf('"/question-assistant"'),
+  route.indexOf('"/admin-assistant"', route.indexOf('"/question-assistant"')),
+);
+assert.ok(questionAssistantRoute.includes('imageSentToProvider: false'));
+assert.ok(questionAssistantRoute.includes('callAiWithMeta(prompt, undefined, undefined'));
+assert.ok(
+  !questionAssistantRoute.includes('callAiWithMeta(prompt, undefined, image'),
+  'question assistant must not send image bytes by default',
+);
 assert.ok(route.includes('getAiProviderCircuitSnapshot()'));
 assert.ok(route.includes('isAiProviderCircuitOpen(provider)'));
 assert.ok(route.includes('recordAiProviderFailure(provider)'));
@@ -39,6 +46,8 @@ for (const level of ['hint','stronger_hint','concept','steps','follow_up']) {
   assert.ok(assistant.includes(level), `question assistant lost help level ${level}`);
 }
 assert.ok(assistant.includes('contextVersion'));
+assert.ok(assistant.includes('sanitizeQuestionAssistantText'));
+assert.ok(assistant.includes('[رابط صورة محجوب]'));
 assert.ok(assistant.includes('createHash("sha256")'));
 assert.ok(assistant.includes('const inFlight = new Map'));
 
