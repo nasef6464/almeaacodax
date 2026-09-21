@@ -323,7 +323,7 @@ const Reports: React.FC = () => {
         try {
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + (horizon === 'short' ? 14 : 60));
-            const shortTargetId = studentTodayFocus.sectionId || studentTodayFocus.skillId || studentTodayFocus.pathId;
+            const shortTargetId = studentTodayFocus.sectionId || studentTodayFocus.pathId;
             const shortTargetType = studentTodayFocus.sectionId ? 'section' : 'path';
             await api.createMasteryGoal({
                 pathId: studentTodayFocus.pathId,
