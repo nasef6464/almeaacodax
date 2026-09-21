@@ -256,9 +256,10 @@ export const buildQuizAnalyticsOverview = async (
   
   quizResults.forEach((result) => {
     const skills = (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []).filter((gap: any) =>
-      authUser.role === "teacher"
+      matchesSelectedTaxonomyScope(gap) &&
+      (authUser.role === "teacher"
         ? matchesManagedContentScope(gap, managedPathIds, managedSubjectIds)
-        : true,
+        : true),
     );
     skills.forEach((gap: any) => {
       if (!gap?.subjectId && !gap?.subjectName && !result.quizTitle) return;
