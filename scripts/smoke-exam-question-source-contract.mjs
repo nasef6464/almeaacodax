@@ -160,7 +160,7 @@ check('quiz submission result response delegates non-critical side effects', () 
     adaptiveTelemetryRoutesSource,
     'import { updateSkillProgressFromQuestionAttempt, upsertReviewCardFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";',
   );
-  assertIncludes(adaptiveTelemetryRoutesSource, 'await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);');
+  assertIncludes(adaptiveTelemetryRoutesSource, 'updateSkillProgressFromQuestionAttempt(created, req.authUser!.id),');
   assertIncludes(quizRoutesSource, 'return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));');
 });
 
