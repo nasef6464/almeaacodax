@@ -40,7 +40,9 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
       .map(async (skill: any) => {
         const skillId = String(skill.skillId || `${skill.subjectId || "subject"}:${skill.sectionId || "section"}:${skill.skill}`);
         const mastery = Math.max(0, Math.min(100, Number(skill.mastery || 0)));
-        const existing = await SkillProgressModel.findOne({ userId, skillId });
+        const pathId = String(skill.pathId || "");
+        const subjectId = String(skill.subjectId || "");
+        const existing = await SkillProgressModel.findOne({ userId, pathId, subjectId, skillId });
         const previousAttempts = Number(existing?.attempts || 0);
         const nextAttempts = previousAttempts + 1;
         const previousMastery = Number(existing?.mastery || 0);
@@ -55,13 +57,13 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
         const nextMastery = mergedMastery.mastery;
 
         await SkillProgressModel.findOneAndUpdate(
-          { userId, skillId },
+          { userId, pathId, subjectId, skillId },
           {
             userId,
             skillId,
             skill: String(skill.skill || existing?.skill || "مهارة غير مسماة"),
-            pathId: String(skill.pathId || existing?.pathId || ""),
-            subjectId: String(skill.subjectId || existing?.subjectId || ""),
+            pathId,
+            subjectId,
             sectionId: String(skill.sectionId || existing?.sectionId || ""),
             mastery: nextMastery,
             status: buildSkillStatus(nextMastery),
@@ -88,7 +90,9 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
   await Promise.all(
     skills.map(async (skill) => {
       const skillId = String(skill.id || skill._id);
-      const existing = await SkillProgressModel.findOne({ userId, skillId });
+      const pathId = String(skill.pathId || attempt.pathId || "");
+      const subjectId = String(skill.subjectId || attempt.subjectId || "");
+      const existing = await SkillProgressModel.findOne({ userId, pathId, subjectId, skillId });
       const previousAttempts = Number(existing?.attempts || 0);
       const nextAttempts = previousAttempts + 1;
       const previousMastery = Number(existing?.mastery || 0);
@@ -102,13 +106,13 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
       const nextMastery = mergedMastery.mastery;
 
       await SkillProgressModel.findOneAndUpdate(
-        { userId, skillId },
+        { userId, pathId, subjectId, skillId },
         {
           userId,
           skillId,
           skill: String(skill.name || existing?.skill || "مهارة غير مسماة"),
-          pathId: String(skill.pathId || existing?.pathId || attempt.pathId || ""),
-          subjectId: String(skill.subjectId || existing?.subjectId || attempt.subjectId || ""),
+          pathId,
+          subjectId,
           sectionId: String(skill.sectionId || existing?.sectionId || attempt.sectionId || ""),
           mastery: nextMastery,
           status: buildSkillStatus(nextMastery),
