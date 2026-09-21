@@ -37,7 +37,7 @@ import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
-import { buildFoundationActionLink, buildSkillPracticeActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
+import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 
