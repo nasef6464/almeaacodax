@@ -919,22 +919,45 @@ const callSingleProvider = async (
   return callOpenAiCompatible(provider, prompt, undefined, options);
 };
 
-const withinAiBudget = async (userId?: string) => {
+const withinAiBudget = async (userId?: string, schoolId?: string) => {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const billableFilter = {
+    createdAt: { $gte: since },
+    "metadata.billable": { $ne: false },
+  };
   const dailyLimit = Math.max(1, Number(env.AI_DAILY_LIMIT || 800));
   const perUserLimit = Math.max(1, Number(env.AI_PER_USER_DAILY_LIMIT || 80));
-  const [globalCount, userCount] = await Promise.all([
-    AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
-    userId ? AiInteractionModel.countDocuments({ createdAt: { $gte: since }, userId }) : Promise.resolve(0),
+  const perSchoolLimit = Math.max(1, Number(env.AI_PER_SCHOOL_DAILY_LIMIT || 400));
+  const [globalCount, userCount, schoolCount] = await Promise.all([
+    AiInteractionModel.countDocuments(billableFilter),
+    userId ? AiInteractionModel.countDocuments({ ...billableFilter, userId }) : Promise.resolve(0),
+    schoolId ? AiInteractionModel.countDocuments({ ...billableFilter, schoolId }) : Promise.resolve(0),
   ]);
 
   return {
-    allowed: globalCount < dailyLimit && (!userId || userCount < perUserLimit),
+    allowed:
+      globalCount < dailyLimit &&
+      (!userId || userCount < perUserLimit) &&
+      (!schoolId || schoolCount < perSchoolLimit),
     globalCount,
     userCount,
+    schoolCount,
     dailyLimit,
     perUserLimit,
+    perSchoolLimit,
   };
+};
+
+const withinQuestionAssistantMinuteLimit = async (userId: string) => {
+  const since = new Date(Date.now() - 60 * 1000);
+  const limit = Math.max(1, Number(env.AI_QUESTION_ASSISTANT_PER_MINUTE || 8));
+  const count = await AiInteractionModel.countDocuments({
+    endpoint: "/ai/question-assistant",
+    userId,
+    createdAt: { $gte: since },
+    "metadata.billable": { $ne: false },
+  });
+  return { allowed: count < limit, count, limit };
 };
 
 export const aiRouter = Router();
