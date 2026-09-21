@@ -99,7 +99,11 @@ export const buildStudentAggregatedSkills = ({
 
     examResults.forEach((result) => {
         result.skillsAnalysis?.forEach((skill) => {
-            const skillKey = skill.skillId || skill.skill;
+            const skillKey = [
+                String(skill.pathId || ''),
+                String(skill.subjectId || ''),
+                String(skill.skillId || skill.skill || ''),
+            ].join('::');
             if (!skillsMap[skillKey]) {
                 skillsMap[skillKey] = {
                     totalMastery: 0,
@@ -126,7 +130,11 @@ export const buildStudentAggregatedSkills = ({
 
         questionAttempts.forEach((attempt) => {
             const question = questionById.get(attempt.questionId);
-            const questionSkillIds = Array.isArray(question?.skillIds) ? question.skillIds : [];
+            const questionSkillIds = Array.isArray(attempt.skillIds) && attempt.skillIds.length > 0
+                ? attempt.skillIds
+                : Array.isArray(question?.skillIds)
+                    ? question.skillIds
+                    : [];
 
             questionSkillIds.forEach((skillId) => {
                 const resolvedSkill = skillById.get(skillId);
@@ -135,20 +143,29 @@ export const buildStudentAggregatedSkills = ({
                 const skillName = displayText(resolvedSkill.name);
                 if (!skillName) return;
 
-                if (!skillsMap[skillName]) {
-                    skillsMap[skillName] = {
+                const pathId = attempt.pathId || resolvedSkill.pathId || question?.pathId;
+                const subjectId = attempt.subjectId || resolvedSkill.subjectId || question?.subjectId || question?.subject;
+                const sectionId = attempt.sectionId || resolvedSkill.sectionId || question?.sectionId;
+                const skillKey = [
+                    String(pathId || ''),
+                    String(subjectId || ''),
+                    String(resolvedSkill.id || skillId),
+                ].join('::');
+
+                if (!skillsMap[skillKey]) {
+                    skillsMap[skillKey] = {
                         totalMastery: 0,
                         count: 0,
                         skillName,
                         skillId: resolvedSkill.id,
-                        pathId: resolvedSkill.pathId,
-                        subjectId: resolvedSkill.subjectId,
-                        sectionId: resolvedSkill.sectionId,
+                        pathId,
+                        subjectId,
+                        sectionId,
                     };
                 }
 
-                skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0;
-                skillsMap[skillName].count += 1;
+                skillsMap[skillKey].totalMastery += attempt.isCorrect ? 100 : 0;
+                skillsMap[skillKey].count += 1;
             });
         });
     }
@@ -158,7 +175,7 @@ export const buildStudentAggregatedSkills = ({
             const mastery = Math.round(data.totalMastery / data.count);
             const resolvedSkill = data.skillId
                 ? skills.find((item) => item.id === data.skillId)
-                : skills.find((item) => displayText(item.name) === displayText(skill));
+                : skills.find((item) => displayText(item.name) === displayText(data.skillName));
             const pathId = data.pathId || resolvedSkill?.pathId;
             const subjectId = data.subjectId || resolvedSkill?.subjectId;
             const sectionId = data.sectionId || resolvedSkill?.sectionId;
