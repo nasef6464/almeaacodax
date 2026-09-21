@@ -15,6 +15,7 @@ export const roleScopeTitle: Record<string, string> = {
     admin: 'نطاق المنصة بالكامل',
     supervisor: 'نطاق المجموعات والمدرسة التابعة لك',
     teacher: 'نطاق الطلاب المرتبطين بك',
+    school_admin: 'نطاق المدرسة التابعة لك',
     parent: 'الأبناء المرتبطون بك',
     student: 'نطاقك الشخصي',
 };
