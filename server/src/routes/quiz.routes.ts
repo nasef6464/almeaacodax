@@ -29,6 +29,7 @@ import { quizResultsRouter } from "../modules/quizzes/http/quizResultsRoutes.js"
 import { resolveScopedStudents, resolveSupervisorSchoolReportScope } from "../modules/quizzes/application/quizReportScope.js";
 import { resolveAuthUserByAuthId } from "../modules/quizzes/application/quizUserLookup.js";
 import { adaptiveTelemetryRouter } from "../modules/quizzes/http/adaptiveTelemetryRoutes.js";
+import { adaptiveMasteryRouter } from "../modules/quizzes/http/adaptiveMasteryRoutes.js";
 import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 import { clearQuizResultsCache } from "../modules/quizzes/infrastructure/quizResultsCache.js";
 import { runQuizSubmissionSideEffects } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
@@ -417,6 +418,7 @@ quizRouter.use(questionBankRouter);
 quizRouter.use(quizAnalyticsRouter);
 quizRouter.use(quizResultsRouter);
 quizRouter.use(adaptiveTelemetryRouter);
+quizRouter.use(adaptiveMasteryRouter);
 
 quizRouter.get(
   "/",

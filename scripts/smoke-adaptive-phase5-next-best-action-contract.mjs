@@ -4,7 +4,7 @@ const read=(p)=>fs.readFileSync(p,'utf8');
 const service=read('services/adaptiveLearningPathService.ts');
 const gemini=read('services/geminiService.ts');
 const component=read('components/SmartLearningPath.tsx');
-const route=read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
+const route=read('server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts');
 const serverPolicy=read('server/src/modules/quizzes/analytics/nextBestAction.ts');
 const api=read('services/apiGroups/quizzesApi.ts');
 assert.ok(service.includes('buildAdaptivePathFingerprint'));

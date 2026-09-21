@@ -8,6 +8,7 @@ const skillAnalytics = read('server/src/modules/quizzes/analytics/skillAnalytics
 const sideEffects = read('server/src/modules/quizzes/application/quizSubmissionSideEffects.ts');
 const skillProgressSideEffects = read('server/src/modules/quizzes/application/quizSubmissionSkillProgress.ts');
 const telemetry = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
+const masteryRoutes = read('server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts');
 const studentAnalytics = read('pages/Reports/studentAnalyticsViewModel.ts');
 const reportTypes = read('pages/Reports/reportTypes.ts');
 const quizApi = read('services/apiGroups/quizzesApi.ts');
@@ -39,7 +40,7 @@ assert.ok(!skillProgressSideEffects.includes('Promise.all(\n    skillsAnalysis')
 assert.ok(telemetry.includes('const pathId = String(req.query.pathId'));
 assert.ok(telemetry.includes('const subjectId = String(req.query.subjectId'));
 assert.ok(telemetry.includes('summarizeRecentSkillEvidence'));
-assert.ok(telemetry.includes('"school_admin"'));
+assert.ok(masteryRoutes.includes('"school_admin"'));
 
 assert.ok(studentAnalytics.includes('weightedMasteryTotal'));
 assert.ok(studentAnalytics.includes('questionCount'));

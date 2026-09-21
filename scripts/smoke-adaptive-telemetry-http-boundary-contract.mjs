@@ -8,6 +8,7 @@ const read = (relativePath) =>
 
 const rootRoutes = read('server/src/routes/quiz.routes.ts');
 const telemetryRoutes = read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
+const masteryRoutes = read('server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts');
 const analyticsOverview = read('server/src/modules/quizzes/application/quizAnalyticsOverview.ts');
 
 const checks = [];
@@ -23,6 +24,8 @@ const check = (name, assertion) => {
 check('quiz root composes dedicated adaptive telemetry router', () => {
   assert.ok(rootRoutes.includes('import { adaptiveTelemetryRouter }'));
   assert.ok(rootRoutes.includes('quizRouter.use(adaptiveTelemetryRouter);'));
+  assert.ok(rootRoutes.includes('import { adaptiveMasteryRouter }'));
+  assert.ok(rootRoutes.includes('quizRouter.use(adaptiveMasteryRouter);'));
   assert.ok(!rootRoutes.includes('quizRouter.get(\n  "/skill-progress",'));
   assert.ok(!rootRoutes.includes('quizRouter.get(\n  "/question-attempts",'));
   assert.ok(!rootRoutes.includes('quizRouter.post(\n  "/question-attempts",'));
@@ -53,12 +56,12 @@ check('question attempt write remains server-scored and updates adaptive progres
     'QuestionModel.findOne(buildDocumentQuery(payload.questionId))',
     'const isCorrect =',
     'QuestionAttemptModel.create(buildQuestionAttemptDocument({',
-    'await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id)',
+    'updateSkillProgressFromQuestionAttempt(created, req.authUser!.id),',
     'res.status(StatusCodes.CREATED).json(created)',
   ]) assert.ok(telemetryRoutes.includes(fragment), `attempt write lost ${fragment}`);
 });
 
-check('telemetry router stays learner-scoped and does not absorb quiz analytics or lifecycle', () => {
+check('telemetry router stays learner-scoped and mastery HTTP owns its separate boundary', () => {
   const lineCount = telemetryRoutes.split(/\r?\n/).length;
   assert.ok(lineCount <= 140, `adaptiveTelemetryRoutes.ts exceeded 140 lines (${lineCount})`);
   for (const forbidden of [
@@ -70,6 +73,10 @@ check('telemetry router stays learner-scoped and does not absorb quiz analytics 
     'QuizModel.create',
     'QuizModel.findOneAndUpdate',
   ]) assert.ok(!telemetryRoutes.includes(forbidden), `telemetry router absorbed unrelated owner ${forbidden}`);
+  for (const route of ['"/mastery-goals"', '"/mastery-readiness"', '"/next-best-action"']) {
+    assert.ok(!telemetryRoutes.includes(route), `telemetry router retained mastery owner ${route}`);
+    assert.ok(masteryRoutes.includes(route), `mastery router lost ${route}`);
+  }
 });
 
 check('analytics reads attempts while telemetry exclusively owns attempt writes', () => {

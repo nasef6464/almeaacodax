@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const read=(p)=>fs.readFileSync(p,'utf8');
 const policy=read('services/masteryPolicy.ts');
 const server=read('server/src/modules/quizzes/analytics/masteryReadiness.ts');
-const routes=read('server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts');
+const routes=read('server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts');
 const model=read('server/src/models/MasteryGoal.ts');
 const api=read('services/apiGroups/quizzesApi.ts');
 const reports=read('pages/Reports.tsx');
