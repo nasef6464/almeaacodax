@@ -12,6 +12,17 @@ const skillProgressSchema = new Schema(
     status: { type: String, enum: ["weak", "average", "good", "mastered"], default: "weak", index: true },
     attempts: { type: Number, default: 0 },
     evidenceCount: { type: Number, default: 0 },
+    recentEvidence: {
+      type: [
+        {
+          sourceId: { type: String, required: true },
+          mastery: { type: Number, min: 0, max: 100, required: true },
+          evidenceCount: { type: Number, min: 1, required: true },
+          occurredAt: { type: Date, required: true },
+        },
+      ],
+      default: [],
+    },
     lastQuizId: { type: String, default: "" },
     lastQuizTitle: { type: String, default: "" },
     lastAttemptAt: { type: Date, default: () => new Date(), index: true },
@@ -22,9 +33,11 @@ const skillProgressSchema = new Schema(
   },
 );
 
-skillProgressSchema.index({ userId: 1, skillId: 1 }, { unique: true });
+// Canonical application identity is scoped by learner + taxonomy + skill.
+skillProgressSchema.index({ userId: 1, pathId: 1, subjectId: 1, skillId: 1 }, { unique: true });
 skillProgressSchema.index({ userId: 1, status: 1, mastery: 1 });
 skillProgressSchema.index({ userId: 1, mastery: 1, lastAttemptAt: -1 });
+skillProgressSchema.index({ userId: 1, pathId: 1, subjectId: 1, mastery: 1, lastAttemptAt: -1 });
 skillProgressSchema.index({ subjectId: 1, status: 1, mastery: 1 });
 skillProgressSchema.index({ pathId: 1, subjectId: 1, sectionId: 1 });
 
