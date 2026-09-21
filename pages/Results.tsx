@@ -33,30 +33,18 @@ import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
-import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
+import { buildSkillRecommendation } from './Reports/recommendationViewModel';
+import type { SkillRecommendation } from './Reports/reportDomain';
 
 const ResultDonutChart = React.lazy(() =>
   import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
 );
 
-interface SkillRecommendation {
-  lessonTitle?: string;
-  lessonLink?: string;
-  lessonVideoUrl?: string;
-  lessonTopicTitle?: string;
-  quizTitle?: string;
-  quizLink?: string;
-  resourceTitle?: string;
-  resourceUrl?: string;
-  subjectName?: string;
-  sectionName?: string;
-  actionText?: string;
-}
 
 interface ResolvedAnalysisItem {
   skillId?: string;
@@ -75,6 +63,8 @@ interface ResolvedAnalysisItem {
   lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
+  supportLink?: string;
+  recheckLink?: string;
   resourceTitle?: string;
   resourceUrl?: string;
   actionText?: string;
@@ -129,130 +119,19 @@ const getSkillRecommendation = (
   libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
   questions: ReturnType<typeof useStore.getState>['questions'],
   topics: ReturnType<typeof useStore.getState>['topics'],
-): SkillRecommendation => {
-  if (!skill) {
-    return {};
-  }
-
-  const resolvedSkill = skill.skillId
-    ? allSkills.find((item) => item.id === skill.skillId || (item as any)._id === skill.skillId)
-    : allSkills.find((item) => displayText(item.name) === displayText(skill.skill));
-
-  if (!resolvedSkill) {
-    return {};
-  }
-
-  const resolvedSkillId = resolvedSkill.id || (resolvedSkill as any)._id;
-  const recommendationPathId = resolvedSkill.pathId;
-  const recommendationSubjectId = resolvedSkill.subjectId;
-  const recommendationSectionId = resolvedSkill.sectionId;
-
-  // 1. Direct sub-topic lookup
-  const directTopic = topics.find((topic) =>
-    topic.showOnPlatform !== false &&
-    (matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ||
-     (topic.parentId && displayText(topic.title) === displayText(resolvedSkill.name) && (!recommendationSubjectId || topic.subjectId === recommendationSubjectId)) ||
-     (topic.quizIds || []).some((qid) => matchesEntityId({ id: qid }, `quiz_drill_${resolvedSkillId}`)))
-  );
-
-  // 2. Direct drill quiz lookup
-  const directDrill = quizzes.find((quiz) =>
-    quiz.showOnPlatform !== false &&
-    quiz.isPublished !== false &&
-    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    (matchesEntityId(quiz, `quiz_drill_${resolvedSkillId}`) ||
-     quiz.skillIds?.includes(resolvedSkillId))
-  );
-
-  const recommendedLesson = lessons.find(
-    (lesson) =>
-      lesson.skillIds?.includes(resolvedSkillId) &&
-      lesson.showOnPlatform !== false &&
-      (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
-  );
-  const recommendedQuiz = directDrill || quizzes.find((quiz) =>
-    quiz.showOnPlatform !== false &&
-    quiz.isPublished !== false &&
-    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkillId)) ||
-      quiz.skillIds?.includes(resolvedSkillId)),
-  );
-  const recommendedResource = libraryItems.find(
-    (item) =>
-      item.skillIds?.includes(resolvedSkillId) &&
-      item.showOnPlatform !== false &&
-      (!item.approvalStatus || item.approvalStatus === 'approved'),
-  );
-
-  const recommendedTopic = directTopic || (
-    recommendedLesson && recommendationPathId && recommendationSubjectId
-      ? topics.find(
-          (topic) =>
-            topic.pathId === recommendationPathId &&
-            topic.subjectId === recommendationSubjectId &&
-            topic.showOnPlatform !== false &&
-            (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId)),
-        )
-      : undefined
-  );
-  const targetTopicId = recommendedTopic?.id || (resolvedSkillId ? `topic_sub_${resolvedSkillId}` : undefined);
-
-  const lessonLink =
-    recommendationPathId && recommendationSubjectId
-      ? (() => {
-          const params = new URLSearchParams({
-            subject: recommendationSubjectId,
-            tab: 'skills',
-          });
-
-          if (targetTopicId) {
-            params.set('topic', targetTopicId);
-            params.set('content', 'lessons');
-          }
-          if (recommendedLesson?.id) {
-            params.set('lesson', recommendedLesson.id);
-          }
-
-          return `/category/${recommendationPathId}?${params.toString()}`;
-        })()
-      : undefined;
-
-  const foundationTrainingLink =
-    recommendationPathId && recommendationSubjectId && targetTopicId
-      ? (() => {
-          const params = new URLSearchParams({
-            subject: recommendationSubjectId,
-            tab: 'skills',
-          });
-          params.set('topic', targetTopicId);
-          params.set('content', 'quizzes');
-          return `/category/${recommendationPathId}?${params.toString()}`;
-        })()
-      : undefined;
-
-  return {
-    lessonTitle: displayText(recommendedLesson?.title),
-    lessonLink,
-    lessonVideoUrl: recommendedLesson?.videoUrl,
-    lessonTopicTitle: displayText(recommendedTopic?.title || resolvedSkill.name),
-    quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-    quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
-    resourceTitle: displayText(recommendedResource?.title),
-    resourceUrl: recommendedResource?.url,
-    subjectName: recommendationSubjectId ? displayText(useStore.getState().subjects.find((item) => item.id === recommendationSubjectId)?.name) : undefined,
-    sectionName: recommendationSectionId ? displayText(useStore.getState().sections.find((item) => item.id === recommendationSectionId)?.name) : undefined,
-    actionText:
-      recommendedLesson && recommendedQuiz
-        ? 'ابدأ بمراجعة الشرح أولًا ثم نفّذ تدريبًا قصيرًا على نفس المهارة.'
-        : recommendedLesson
-          ? 'الأولوية الآن لمراجعة الشرح المرتبط بهذه المهارة.'
-          : recommendedQuiz
-            ? 'ابدأ بتدريب قصير على هذه المهارة ثم أعد القياس.'
-            : recommendedResource
-              ? 'راجع الملف الداعم ثم ارجع للتدريب مرة أخرى.'
-              : 'هذه المهارة تحتاج متابعة أبسط خطوة بخطوة.',
-  };
-};
+  subjects: ReturnType<typeof useStore.getState>['subjects'],
+  sections: ReturnType<typeof useStore.getState>['sections'],
+): SkillRecommendation =>
+  buildSkillRecommendation(skill, {
+    allSkills,
+    lessons,
+    quizzes,
+    libraryItems,
+    questions,
+    topics,
+    subjects,
+    sections,
+  });
 
 const getStatusFromMastery = (mastery: number): ResolvedAnalysisItem['status'] => {
   if (mastery >= 80) return 'strong';
@@ -379,7 +258,7 @@ const Results: React.FC = () => {
     >();
 
     (latestResult.skillsAnalysis || []).forEach((item) => {
-        const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+        const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections);
         const subjectName =
           recommendation.subjectName ||
           (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined);
@@ -409,6 +288,8 @@ const Results: React.FC = () => {
             lessonTopicTitle: recommendation.lessonTopicTitle,
             quizTitle: recommendation.quizTitle,
             quizLink: recommendation.quizLink,
+            supportLink: recommendation.supportLink,
+            recheckLink: recommendation.recheckLink,
             resourceTitle: recommendation.resourceTitle,
             resourceUrl: recommendation.resourceUrl,
             actionText: recommendation.actionText,
@@ -432,6 +313,8 @@ const Results: React.FC = () => {
           current.lessonTopicTitle = recommendation.lessonTopicTitle || current.lessonTopicTitle;
           current.quizTitle = recommendation.quizTitle || current.quizTitle;
           current.quizLink = recommendation.quizLink || current.quizLink;
+          current.supportLink = recommendation.supportLink || current.supportLink;
+          current.recheckLink = recommendation.recheckLink || current.recheckLink;
           current.resourceTitle = recommendation.resourceTitle || current.resourceTitle;
           current.resourceUrl = recommendation.resourceUrl || current.resourceUrl;
         }
@@ -543,7 +426,7 @@ const Results: React.FC = () => {
     }
 
     const cards: Array<{
-      id: 'lesson' | 'video' | 'quiz' | 'resource' | 'session';
+      id: 'lesson' | 'video' | 'quiz' | 'support' | 'recheck' | 'resource' | 'session';
       title: string;
       body: string;
       label: string;
@@ -588,7 +471,16 @@ const Results: React.FC = () => {
       });
     }
 
-    if (weakestSkill.resourceUrl) {
+    if (weakestSkill.supportLink) {
+      cards.push({
+        id: 'support',
+        title: 'افتح ملف الدعم',
+        body: 'يعرض مواد الدعم المرتبطة بنفس موضوع التأسيس دون الخروج من سياق المهارة.',
+        label: 'ملف الدعم',
+        tone: 'slate',
+        to: weakestSkill.supportLink,
+      });
+    } else if (weakestSkill.resourceUrl) {
       cards.push({
         id: 'resource',
         title: 'راجع الملف الداعم',
@@ -596,6 +488,17 @@ const Results: React.FC = () => {
         label: 'فتح الملف',
         tone: 'slate',
         href: weakestSkill.resourceUrl,
+      });
+    }
+
+    if (weakestSkill.recheckLink) {
+      cards.push({
+        id: 'recheck',
+        title: 'أعد القياس',
+        body: 'قياس قصير على نفس المهارة بعد الشرح والتدريب لمعرفة التحسن.',
+        label: 'بدء القياس',
+        tone: 'indigo',
+        to: weakestSkill.recheckLink,
       });
     }
 
@@ -1930,7 +1833,7 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
   const { skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
   const analysisItems = (result.skillsAnalysis || [])
     .map((item) => {
-      const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+      const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections);
       return {
         ...item,
         subjectName:
@@ -1996,6 +1899,16 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
               {s.quizTitle ? (
                 <Link to={s.quizLink || '/dashboard?tab=saher'} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
                   تدريب قصير
+                </Link>
+              ) : null}
+              {s.supportLink ? (
+                <Link to={s.supportLink} className="inline-flex rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-100 sm:text-sm">
+                  ملف الدعم
+                </Link>
+              ) : null}
+              {s.recheckLink ? (
+                <Link to={s.recheckLink} className="inline-flex rounded-xl border border-purple-100 bg-purple-50 px-3 py-1.5 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100 sm:text-sm">
+                  قياس
                 </Link>
               ) : null}
               {s.resourceTitle && s.resourceUrl ? (
