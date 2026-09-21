@@ -51,6 +51,18 @@ check('retry result action preserves quiz context', () => {
   assertIncludes(resultsSource, 'to={retryQuizLink}');
 });
 
+check('result skill actions reuse the unified recommendation router', () => {
+  assertIncludes(resultsSource, "import { buildSkillRecommendation } from './Reports/recommendationViewModel';");
+  assertIncludes(resultsSource, 'buildSkillRecommendation(skill, {');
+  assertIncludes(resultsSource, 'supportLink: recommendation.supportLink');
+  assertIncludes(resultsSource, 'recheckLink: recommendation.recheckLink');
+  assertIncludes(resultsSource, "id: 'support'");
+  assertIncludes(resultsSource, "id: 'recheck'");
+  if (resultsSource.includes('const directTopic = topics.find')) {
+    throw new Error('Results must not own a second foundation-topic resolver');
+  }
+});
+
 check('additional quiz is targeted from weak skills', () => {
   assertIncludes(resultsSource, "params.set('mode', 'self')");
   assertIncludes(resultsSource, "params.set('autostart', '1')");
