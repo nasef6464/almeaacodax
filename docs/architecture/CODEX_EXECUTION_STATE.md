@@ -1,6 +1,35 @@
 # ALMEAA — Codex Execution State
 
 
+## General Aptitude (Qudurat) — Verbal Foundation Expansion: Anas Booklet Ingestion & Foundation Drill Feeding
+
+- Status: `VERIFIED / DATABASE & RUNTIME SYNCHRONIZED` on 2026-09-21.
+- Subject: `sub_1777779759038` (القسم اللفظي) | Path: `p_1777779639431` (مسار القدرات العامة).
+- Reference: `C:\book\تأسيس لفظي انس.pdf` (تأسيس لفظي د. أنس صالح).
+- Scope Delivered:
+  1. **Comprehensive Analysis & Extraction:**
+     - Analyzed 43 pages of the booklet and visually transcribed all 135 practice questions and answer keys across 5 verbal domains (الخطأ السياقي: 35 سؤال، إكمال الجمل: 31 سؤال، التناظر اللفظي: 25 سؤال، المفردة الشاذة: 23 سؤال، استيعاب المقروء: 21 سؤال موزعة على 5 نصوص مع بطاقات نصوص HTML تفاعلية).
+  2. **Zero-Duplicate Deduplication:**
+     - Exhaustively cross-referenced all 135 questions against the existing 938 verbal questions in the bank.
+     - Identified and excluded exactly 3 duplicates (`خط : نسخ`, `محرم : صفر`, `حب : اتباع`).
+     - Generated exactly 132 net-new verified questions (`q_verbal_0939` to `q_verbal_1070`).
+  3. **Foundation Drill Feeding & Exam Isolation:**
+     - Mapped each question to its corresponding subskill (`sub_verbal_XX_Y`), main skill (`skill_verbal_XX`), and section (`sec_sub_1777779759038_X`).
+     - Fed 56 foundation drills (`drill_verbal_sub_XX_Y`, `slot: "foundation"`) with the new questions via `$addToSet`.
+     - Preserved 100% untouched the 13 comprehensive 40-question skill drills and 5 60-question mock exams (reserved for upcoming dedicated files).
+     - Preserved 100% untouched all 2,314 quantitative questions.
+  4. **Live Bank Totals:**
+     - Verbal questions in Bank: **1,070** (938 Abdelbaset + 132 Anas net-new).
+     - Platform-wide questions in Bank: **3,384** (2,314 Quant + 1,070 Verbal).
+     - All 1,070 verbal questions approved and active.
+- Verification:
+  - `server/verify_solution_runtime.mjs` — PASS (1,070 verbal questions, 13 main skills, 76 subskills, 76/76 foundation drills resolved).
+  - `server/audit_anas_isolation.mjs` — PASS (All 18 non-foundation quizzes and mock exams untouched, 56 drills fed, 2,314 quant untouched).
+  - `scripts/smoke-question-bank-full-coverage-contract.mjs` — PASS.
+  - `scripts/smoke-question-skill-full-coverage-contract.mjs` — PASS.
+  - `scripts/smoke-question-html-security-contract.mjs` — PASS (11/11).
+
+
 ## Learning Space & Question Bank — Verbal Foundation Drills Resolution & Scoped Counters
 
 - Status: `VERIFIED / PRODUCTION READY` on 2026-09-21.
