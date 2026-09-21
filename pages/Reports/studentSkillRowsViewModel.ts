@@ -40,7 +40,11 @@ export const buildStudentSkillReportRows = (
             retestLink,
             masteryLevel: resolveMasteryLevel(skill.mastery, skill.totalEvidence || skill.attempts),
             evidenceLabel: skill.isReliable
-                ? `${skill.correctAttempts}/${skill.totalEvidence} صحيح`
-                : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence}`,
+                ? [
+                    `${skill.correctAttempts}/${skill.totalEvidence} صحيح`,
+                    typeof skill.recentMastery === 'number' ? `آخر 5: ${skill.recentMastery}%` : '',
+                    skill.trend === 'improving' ? 'الاتجاه يتحسن' : skill.trend === 'declining' ? 'الاتجاه يتراجع' : 'الاتجاه مستقر',
+                ].filter(Boolean).join(' · ')
+                : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence} — تحتاج قياسًا إضافيًا`,
         };
     });
