@@ -26,6 +26,7 @@ import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgre
 import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
 import { DailySpeedDrillCard } from '../components/DailySpeedDrillCard';
 import { ReferralAmbassadorCard } from '../components/ReferralAmbassadorCard';
+import { MASTERY_POLICY } from '../utils/masteryPolicy';
 import { buildSmartPathSkillsFromResults } from './Dashboard/smartPathEvidenceViewModel';
 
 
@@ -191,7 +192,7 @@ const useParentScopedResults = () => {
                     ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
                     : 0;
                 const weakCount = studentResults.reduce(
-                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < MASTERY_POLICY.readyAt || skill.status === 'weak').length,
                     0
                 );
                 return {
@@ -211,7 +212,7 @@ const useParentScopedResults = () => {
                     ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
                     : 0;
                 const weakCount = studentResults.reduce(
-                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < MASTERY_POLICY.readyAt || skill.status === 'weak').length,
                     0
                 );
                 const studentName = String(name);
@@ -230,7 +231,7 @@ const useParentScopedResults = () => {
         const weakSkills = scopedResults
             .flatMap((result) =>
                 (result.skillsAnalysis || [])
-                    .filter((skill) => skill.mastery < 75 || skill.status === 'weak')
+                    .filter((skill) => skill.mastery < MASTERY_POLICY.readyAt || skill.status === 'weak')
                     .map((skill) => ({
                         key: skill.skillId || `${skill.subjectId || ''}:${skill.sectionId || ''}:${skill.skill}`,
                         skill: skill.skill,
@@ -246,13 +247,13 @@ const useParentScopedResults = () => {
         const followUpPlan = weakSkills.slice(0, 3).map((skill, index) => {
             const dayLabels = ['اليوم الأول', 'اليوم الثاني', 'اليوم الثالث'];
             const action =
-                skill.mastery < 50
+                skill.mastery < MASTERY_POLICY.supportBelow
                     ? 'راجع معه شرحًا قصيرًا ثم اطلب منه حل 5 أسئلة سهلة فقط.'
                     : 'اطلب منه حل تدريب متوسط ثم مراجعة السؤال الذي أخطأ فيه بصوت عال.';
             const check =
-                skill.mastery < 50
+                skill.mastery < MASTERY_POLICY.supportBelow
                     ? 'علامة النجاح: يشرح لك فكرة المهارة في دقيقة واحدة.'
-                    : 'علامة النجاح: يصل إلى 75% أو أكثر في محاولة قصيرة.';
+                    : `علامة النجاح: يصل إلى ${MASTERY_POLICY.readyAt}% أو أكثر في محاولة قصيرة.`;
 
             return {
                 id: `${skill.key}-${skill.studentName}-${index}`,
@@ -1669,7 +1670,7 @@ const ParentFollowUpTab = () => {
                             <div key={item.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-5">
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{item.day}</span>
-                                    <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                    <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < MASTERY_POLICY.supportBelow ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
                                         {Math.round(item.mastery)}%
                                     </span>
                                 </div>
@@ -2118,7 +2119,7 @@ const SaherTab = () => {
     const weakSkillRecommendations = Array.from(
         examResults.reduce((map, result) => {
             (result.skillsAnalysis || []).forEach(skill => {
-                if (skill.mastery >= 75 && skill.status !== 'weak') return;
+                if (skill.mastery >= MASTERY_POLICY.readyAt && skill.status !== 'weak') return;
 
                 const key = skill.skillId || [skill.subjectId, skill.sectionId, skill.skill].filter(Boolean).join(':');
                 const existing = map.get(key);
@@ -2182,7 +2183,7 @@ const SaherTab = () => {
                 ),
             };
         })
-        .filter(item => item.mastery < 75)
+        .filter(item => item.mastery < MASTERY_POLICY.readyAt)
         .sort((a, b) => a.mastery - b.mastery)
         .slice(0, 2);
 
@@ -2225,7 +2226,7 @@ const SaherTab = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className={`font-bold ${item.mastery < 50 ? 'text-red-500' : 'text-amber-600'}`}>{item.mastery}%</span>
+                                        <span className={`font-bold ${item.mastery < MASTERY_POLICY.supportBelow ? 'text-red-500' : 'text-amber-600'}`}>{item.mastery}%</span>
                                         <span className="text-gray-500">الإتقان الحالي</span>
                                     </div>
                                     {(item.recommendedLesson || item.recommendedResource) ? (
