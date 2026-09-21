@@ -1,5 +1,6 @@
 import { displayText } from './reportDomain';
 import type { StudentWeeklyPlanItem } from './studentWeeklyPlanViewModel';
+import { MASTERY_POLICY, isReadyToAdvance } from '../../utils/masteryPolicy';
 
 export type StudentReadinessIconKey = 'target' | 'checkCircle' | 'fileText' | 'bookOpen';
 export type StudentReadinessStatus = 'needsMeasurement' | 'readyToAdvance' | 'needsPractice' | 'needsRemediation';
@@ -43,8 +44,8 @@ export const buildStudentReadinessDecision = (
     }
 
     const mastery = Number(studentTodayFocus.mastery || 0);
-    const readyToAdvance = mastery >= 75 && Boolean(studentTodayFocus.isReliable);
-    const needsPractice = mastery >= 50;
+    const readyToAdvance = isReadyToAdvance(mastery, Boolean(studentTodayFocus.isReliable));
+    const needsPractice = mastery >= MASTERY_POLICY.supportBelow;
     const skillName = displayText(studentTodayFocus.skill) || 'هذه المهارة';
     const trainingHref = studentTodayFocus.quizLink
         || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
