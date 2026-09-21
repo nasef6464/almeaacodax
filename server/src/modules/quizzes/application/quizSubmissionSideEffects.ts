@@ -59,10 +59,17 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
     userId,
     rows.map((skill) => String(skill.skillId)),
   );
+  const evidenceKey = String(result.submissionKey || result._id || result.id || "").trim();
+  const operations: any[] = [];
 
-  const operations = rows.map((skill) => {
+  for (const skill of rows) {
     const skillId = String(skill.skillId);
     const existing = existingBySkillId.get(skillId);
+    const recentEvidenceKeys = uniqueStrings(
+      Array.isArray(existing?.recentEvidenceKeys) ? existing.recentEvidenceKeys.map(String) : [],
+    ).slice(-20);
+    if (evidenceKey && recentEvidenceKeys.includes(evidenceKey)) continue;
+
     const mastery = Math.max(0, Math.min(100, Number(skill.mastery || 0)));
     const previousAttempts = Number(existing?.attempts || 0);
     const nextAttempts = previousAttempts + 1;
@@ -76,8 +83,11 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
       currentEvidence,
     });
     const nextMastery = mergedMastery.mastery;
+    const nextEvidenceKeys = evidenceKey
+      ? [...recentEvidenceKeys.filter((key) => key !== evidenceKey), evidenceKey].slice(-20)
+      : recentEvidenceKeys;
 
-    return {
+    operations.push({
       updateOne: {
         filter: { userId, skillId },
         update: {
@@ -92,6 +102,7 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
             status: buildSkillStatus(nextMastery),
             attempts: nextAttempts,
             evidenceCount: mergedMastery.evidenceCount,
+            recentEvidenceKeys: nextEvidenceKeys,
             lastQuizId: String(result.quizId || ""),
             lastQuizTitle: String(result.quizTitle || ""),
             lastAttemptAt: new Date(),
@@ -100,8 +111,8 @@ export async function updateSkillProgressFromResult(result: any, userId: string)
         },
         upsert: true,
       },
-    };
-  });
+    });
+  }
 
   if (operations.length > 0) {
     await SkillProgressModel.bulkWrite(operations, { ordered: false });
@@ -116,10 +127,23 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
   const resolvedSkillIds = skills.map((skill: any) => String(skill.id || skill._id));
   const existingBySkillId = await loadExistingSkillProgress(userId, resolvedSkillIds);
   const mastery = attempt.isCorrect ? 100 : 0;
+  const evidenceKey = [
+    "question-attempt",
+    String(attempt._id || attempt.id || attempt.questionId || ""),
+    String(attempt.date || attempt.createdAt || ""),
+    String(attempt.selectedOptionIndex ?? ""),
+    attempt.isCorrect ? "1" : "0",
+  ].join(":");
+  const operations: any[] = [];
 
-  const operations = skills.map((skill: any) => {
+  for (const skill of skills as any[]) {
     const skillId = String(skill.id || skill._id);
     const existing = existingBySkillId.get(skillId);
+    const recentEvidenceKeys = uniqueStrings(
+      Array.isArray(existing?.recentEvidenceKeys) ? existing.recentEvidenceKeys.map(String) : [],
+    ).slice(-20);
+    if (recentEvidenceKeys.includes(evidenceKey)) continue;
+
     const previousAttempts = Number(existing?.attempts || 0);
     const nextAttempts = previousAttempts + 1;
     const previousMastery = Number(existing?.mastery || 0);
@@ -131,8 +155,9 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
       currentEvidence: 1,
     });
     const nextMastery = mergedMastery.mastery;
+    const nextEvidenceKeys = [...recentEvidenceKeys.filter((key) => key !== evidenceKey), evidenceKey].slice(-20);
 
-    return {
+    operations.push({
       updateOne: {
         filter: { userId, skillId },
         update: {
@@ -147,6 +172,7 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
             status: buildSkillStatus(nextMastery),
             attempts: nextAttempts,
             evidenceCount: mergedMastery.evidenceCount,
+            recentEvidenceKeys: nextEvidenceKeys,
             lastQuizId: String(existing?.lastQuizId || ""),
             lastQuizTitle: String(existing?.lastQuizTitle || ""),
             lastAttemptAt: new Date(),
@@ -155,8 +181,8 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
         },
         upsert: true,
       },
-    };
-  });
+    });
+  }
 
   if (operations.length > 0) {
     await SkillProgressModel.bulkWrite(operations, { ordered: false });
