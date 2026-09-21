@@ -426,7 +426,7 @@ const Results: React.FC = () => {
     }
 
     const cards: Array<{
-      id: 'lesson' | 'video' | 'quiz' | 'resource' | 'session';
+      id: 'lesson' | 'video' | 'quiz' | 'support' | 'recheck' | 'resource' | 'session';
       title: string;
       body: string;
       label: string;
@@ -471,7 +471,16 @@ const Results: React.FC = () => {
       });
     }
 
-    if (weakestSkill.resourceUrl) {
+    if (weakestSkill.supportLink) {
+      cards.push({
+        id: 'support',
+        title: 'افتح ملف الدعم',
+        body: 'يعرض مواد الدعم المرتبطة بنفس موضوع التأسيس دون الخروج من سياق المهارة.',
+        label: 'ملف الدعم',
+        tone: 'slate',
+        to: weakestSkill.supportLink,
+      });
+    } else if (weakestSkill.resourceUrl) {
       cards.push({
         id: 'resource',
         title: 'راجع الملف الداعم',
@@ -479,6 +488,17 @@ const Results: React.FC = () => {
         label: 'فتح الملف',
         tone: 'slate',
         href: weakestSkill.resourceUrl,
+      });
+    }
+
+    if (weakestSkill.recheckLink) {
+      cards.push({
+        id: 'recheck',
+        title: 'أعد القياس',
+        body: 'قياس قصير على نفس المهارة بعد الشرح والتدريب لمعرفة التحسن.',
+        label: 'بدء القياس',
+        tone: 'indigo',
+        to: weakestSkill.recheckLink,
       });
     }
 
@@ -1879,6 +1899,16 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
               {s.quizTitle ? (
                 <Link to={s.quizLink || '/dashboard?tab=saher'} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
                   تدريب قصير
+                </Link>
+              ) : null}
+              {s.supportLink ? (
+                <Link to={s.supportLink} className="inline-flex rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-100 sm:text-sm">
+                  ملف الدعم
+                </Link>
+              ) : null}
+              {s.recheckLink ? (
+                <Link to={s.recheckLink} className="inline-flex rounded-xl border border-purple-100 bg-purple-50 px-3 py-1.5 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100 sm:text-sm">
+                  قياس
                 </Link>
               ) : null}
               {s.resourceTitle && s.resourceUrl ? (
