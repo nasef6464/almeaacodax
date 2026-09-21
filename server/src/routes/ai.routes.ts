@@ -592,6 +592,7 @@ const resolveProvider = (): AiProvider =>
 
 type AiCallOptions = {
   timeoutMs?: number;
+  maxOutputTokens?: number;
 };
 
 const isPrivateIpv4 = (hostname: string) => {
@@ -672,7 +673,10 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts }],
-            generationConfig: responseMimeType ? { responseMimeType } : undefined,
+            generationConfig: {
+              ...(responseMimeType ? { responseMimeType } : {}),
+              ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
+            },
           }),
         },
         options.timeoutMs,
@@ -711,6 +715,7 @@ const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType,
         prompt,
         stream: false,
         format: responseMimeType === "application/json" ? "json" : undefined,
+        ...(options.maxOutputTokens ? { options: { num_predict: options.maxOutputTokens } } : {}),
       }),
     },
     options.timeoutMs,
@@ -738,6 +743,7 @@ const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeTyp
         messages: [{ role: "user", content: prompt }],
         temperature: 0.3,
         response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+        ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
       }),
     },
     options.timeoutMs,
@@ -806,6 +812,7 @@ const callOpenAiCompatible = async (
             messages: [{ role: "user", content: prompt }],
             temperature: 0.25,
             response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+            ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
           }),
         },
         options.timeoutMs,
