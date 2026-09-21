@@ -80,6 +80,11 @@ export interface StudentAggregatedSkill {
     subjectName?: string;
     sectionName?: string;
     mastery: number;
+    recentMastery?: number;
+    trend?: 'improving' | 'stable' | 'declining';
+    confidence?: number;
+    recentEvidence?: number;
+    recentSampleSize?: number;
     attempts: number;
     correctAttempts: number;
     totalEvidence: number;
