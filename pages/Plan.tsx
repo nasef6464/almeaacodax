@@ -26,6 +26,7 @@ import { StudyPlan, StudyPlanDay } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { shareTextSummary } from '../utils/shareText';
 import { printElementAsPdf } from '../utils/printPdf';
+import { getInternalLearningPath } from '../services/adaptiveLearningPathService';
 
 type QuizKind = 'drill' | 'test' | 'mock';
 
@@ -452,6 +453,23 @@ const Plan: React.FC = () => {
       .sort((a, b) => a.mastery - b.mastery)
       .slice(0, 4);
   }, [activePathId, examResults, libraryItems, lessons, quizzes, skills, topics]);
+
+  const internalSmartPath = useMemo(
+    () =>
+      getInternalLearningPath(
+        smartSkillPlan.map((item) => ({
+          skillId: item.skillId,
+          pathId: item.pathId,
+          subjectId: item.subjectId,
+          skill: item.skillName,
+          mastery: item.mastery,
+          status: item.mastery < 50 ? 'weak' : item.mastery < 80 ? 'average' : 'strong',
+          evidenceCount: item.attempts,
+        })),
+      ),
+    [smartSkillPlan],
+  );
+  const primarySmartRecommendation = internalSmartPath.recommendations[0] || null;
 
   const smartPlanSummary = useMemo(() => {
     if (!smartSkillPlan.length) {
@@ -892,10 +910,10 @@ const Plan: React.FC = () => {
       }
     : primarySmartSkill
       ? {
-          title: `ابدأ بمهارة: ${primarySmartSkill.skillName}`,
-          description: `الإتقان الحالي ${primarySmartSkill.mastery}%. افتح شرحًا قصيرًا، ثم ارجع للخطة.`,
-          primaryLabel: primarySmartSkill.lesson ? 'افتح الشرح' : 'اختبار ساهر',
-          primaryHref: primarySmartSkill.lesson?.link || '/dashboard?tab=saher',
+          title: primarySmartRecommendation?.title || `ابدأ بمهارة: ${primarySmartSkill.skillName}`,
+          description: primarySmartRecommendation?.reason || `الإتقان الحالي ${primarySmartSkill.mastery}%. افتح شرحًا قصيرًا، ثم ارجع للخطة.`,
+          primaryLabel: primarySmartRecommendation?.actionLabel || (primarySmartSkill.lesson ? 'افتح الشرح' : 'اختبار ساهر'),
+          primaryHref: primarySmartRecommendation?.link || primarySmartSkill.lesson?.link || '/dashboard?tab=saher',
           secondaryLabel: 'تقريري',
           secondaryHref: '/reports',
           tone: primarySmartSkill.mastery < 50 ? ('rose' as const) : ('amber' as const),
