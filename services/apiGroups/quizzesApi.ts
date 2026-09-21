@@ -91,6 +91,57 @@ export const createQuizzesApi = (request: ApiRequest) => ({
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
 
+  getMasteryGoals: (scope: { userId?: string; pathId?: string; subjectId?: string; status?: string } = {}) =>
+    request<{ goals: Array<{
+      id: string;
+      userId: string;
+      pathId: string;
+      subjectId?: string;
+      targetType: "topic" | "section" | "path";
+      targetId: string;
+      title: string;
+      targetMastery: number;
+      horizon: "short" | "long";
+      dueDate?: string;
+      status: "active" | "achieved" | "archived";
+    }> }>(withQuery("/quizzes/mastery-goals", scope)),
+
+  createMasteryGoal: (payload: {
+    userId?: string;
+    pathId: string;
+    subjectId?: string;
+    targetType: "topic" | "section" | "path";
+    targetId: string;
+    title: string;
+    targetMastery?: number;
+    horizon?: "short" | "long";
+    dueDate?: string;
+  }) => request<unknown>("/quizzes/mastery-goals", { method: "POST", body: payload }),
+
+  updateMasteryGoal: (goalId: string, payload: {
+    title?: string;
+    targetMastery?: number;
+    dueDate?: string;
+    status?: "active" | "achieved" | "archived";
+  }) => request<unknown>(`/quizzes/mastery-goals/${encodeURIComponent(goalId)}`, { method: "PATCH", body: payload }),
+
+  getMasteryReadiness: (scope: { pathId: string; subjectId?: string }) =>
+    request<{
+      scope: { pathId: string; subjectId?: string };
+      readiness: {
+        score: number;
+        status: "needs_measurement" | "ready_to_advance" | "ready_for_recheck" | "building";
+        mastery: number;
+        coverage: number;
+        evidenceConfidence: number;
+        recency: number;
+        totalSkills: number;
+        reliableSkills: number;
+        totalEvidence: number;
+        explanation: string;
+      };
+    }>(withQuery("/quizzes/mastery-readiness", scope)),
+
   getNextBestAction: (scope: { pathId: string; subjectId?: string }) =>
     request<{
       version: string;
