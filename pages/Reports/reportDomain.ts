@@ -57,7 +57,8 @@ export const studentReportPeriodLabels: Record<StudentReportPeriod, string> = {
     all: 'كل الفترات',
 };
 
-export const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
+export const getReportSkillKey = (skill: { skill: string; skillId?: string; pathId?: string; subjectId?: string }) =>
+    [String(skill.pathId || ''), String(skill.subjectId || ''), String(skill.skillId || skill.skill || '')].join('::');
 
 export const buildSkillSessionLink = (skill?: { skill?: string; skillId?: string; subjectName?: string; sectionName?: string } | null) => {
     if (!skill) return '/book-session';
