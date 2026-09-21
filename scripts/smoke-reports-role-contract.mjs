@@ -175,7 +175,7 @@ check('student weak-skill actions open the linked foundation topic first', () =>
   assertIncludes(recommendationSource, "buildFoundationSkillLink({ target, topics, content: 'support' })");
   assertIncludes(recommendationSource, 'buildSkillRecheckLink(target)');
   assertIncludes(recommendationSource, 'foundationTopicLink: lessonLink');
-  assertIncludes(foundationNavigationSource, "params.set('tab', 'skills')");
+  assertIncludes(foundationNavigationSource, "tab: 'skills'");
   assertIncludes(foundationNavigationSource, 'const params = new URLSearchParams({');
   assertIncludes(foundationNavigationSource, 'content,');
   assertIncludes(foundationNavigationSource, "String(topic.skillId || '').trim() === skillId");
