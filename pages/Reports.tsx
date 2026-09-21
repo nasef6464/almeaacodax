@@ -41,6 +41,7 @@ import { StudentWeeklyPlanPanel } from './Reports/StudentWeeklyPlanPanel';
 import { StudentSmartRemediationPanel } from './Reports/StudentSmartRemediationPanel';
 import { StudentSelectedSkillPanel } from './Reports/StudentSelectedSkillPanel';
 import { StudentMasteryGoalsPanel, type StudentMasteryGoal } from './Reports/StudentMasteryGoalsPanel';
+import { StudentMasteryReviewPanel } from './Reports/StudentMasteryReviewPanel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
 import { buildStudentReadinessDecision, type ServerReadinessSnapshot, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
@@ -2486,6 +2487,13 @@ const Reports: React.FC = () => {
                     onCreateShort={() => void createStudentMasteryGoal('short')}
                     onCreateLong={() => void createStudentMasteryGoal('long')}
                     onSetStatus={(goalId, status) => void updateStudentMasteryGoalStatus(goalId, status)}
+                />
+            ) : null}
+
+            {isStudentView ? (
+                <StudentMasteryReviewPanel
+                    pathId={selectedStudentPathId !== 'all' ? selectedStudentPathId : studentTodayFocus?.pathId}
+                    subjectId={selectedStudentSubjectId !== 'all' ? selectedStudentSubjectId : undefined}
                 />
             ) : null}
 
