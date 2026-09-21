@@ -2,6 +2,16 @@ import { createHash } from "node:crypto";
 
 export type QuestionHelpLevel = "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
 
+export const sanitizeQuestionAssistantText = (value: unknown) => {
+  const raw = String(value || "");
+  return raw
+    .replace(/<img\b[^>]*>/gi, " [صورة غير مرسلة] ")
+    .replace(/https?:\/\/[^\s"'<>]+\.(?:png|jpe?g|webp|gif|svg)(?:\?[^\s"'<>]*)?/gi, "[رابط صورة محجوب]")
+    .replace(/data:image\/[^;]+;base64,[A-Za-z0-9+/=]+/gi, "[بيانات صورة محجوبة]")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
 const levelInstruction: Record<QuestionHelpLevel, string> = {
   hint: "أعط تلميحًا واحدًا قصيرًا دون كشف الحل مباشرة.",
   stronger_hint: "أعط تلميحًا أقوى يقرب الطالب من الخطوة التالية دون سرد الحل كاملًا.",
@@ -40,11 +50,15 @@ export const buildQuestionAssistantPrompt = (input: {
   studentMessage?: string;
   hasImage: boolean;
 }) => {
+  const safeQuestionText = sanitizeQuestionAssistantText(input.questionText);
+  const safeOptions = input.options.map(sanitizeQuestionAssistantText);
+  const safeExplanation = sanitizeQuestionAssistantText(input.explanation);
+  const safeStudentMessage = sanitizeQuestionAssistantText(input.studentMessage || "");
   const selected = Number.isInteger(input.selectedOptionIndex)
-    ? input.options[input.selectedOptionIndex as number] || "غير محدد"
+    ? safeOptions[input.selectedOptionIndex as number] || "غير محدد"
     : "لم يختر إجابة";
   const correct = Number.isInteger(input.correctOptionIndex)
-    ? input.options[input.correctOptionIndex as number] || "غير محدد"
+    ? safeOptions[input.correctOptionIndex as number] || "غير محدد"
     : "غير متاح";
 
   const prompt = [
@@ -56,12 +70,12 @@ export const buildQuestionAssistantPrompt = (input: {
       ? "السؤال يحتوي صورة، لكن الصورة نفسها غير مرسلة لك. اعتمد على النص والشرح الموثوق، واذكر بوضوح إذا كان جزء بصري ضروري غير موصوف نصيًا."
       : "",
     `المهارات: ${input.skillLabels.join("، ") || "غير محددة"}`,
-    `نص السؤال: ${input.questionText}`,
-    input.options.length ? `الاختيارات: ${input.options.map((option, index) => `${index + 1}) ${option}`).join(" | ")}` : "",
+    `نص السؤال: ${safeQuestionText}`,
+    safeOptions.length ? `الاختيارات: ${safeOptions.map((option, index) => `${index + 1}) ${option}`).join(" | ")}` : "",
     `اختيار الطالب: ${selected}`,
     `الإجابة الصحيحة الموثوقة: ${correct}`,
-    `الشرح الموثوق: ${input.explanation || "لا يوجد شرح نصي موثوق متاح."}`,
-    input.studentMessage ? `سؤال الطالب الآن: ${input.studentMessage}` : "",
+    `الشرح الموثوق: ${safeExplanation || "لا يوجد شرح نصي موثوق متاح."}`,
+    safeStudentMessage ? `سؤال الطالب الآن: ${safeStudentMessage}` : "",
     "اجعل الرد بالعربية، عمليًا ومختصرًا، وبحد أقصى نحو 180 كلمة.",
   ].filter(Boolean).join("\n");
 
