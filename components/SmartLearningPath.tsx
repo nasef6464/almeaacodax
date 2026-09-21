@@ -1,65 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { LearningRecommendation, SkillGap } from '../types';
-import { generateLearningPath } from '../services/geminiService';
-import { Sparkles, Zap, ArrowLeft, BrainCircuit, Clock } from 'lucide-react';
-import { Card } from './ui/Card';
+import { SkillGap } from '../types';
+import { buildSmartLearningPath } from '../services/smartLearningPath';
+import { Sparkles, Zap, ArrowLeft, Clock } from 'lucide-react';
 
 interface Props {
     skills: SkillGap[];
 }
 
 export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
-    const [recommendations, setRecommendations] = useState<LearningRecommendation[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchPath = async () => {
-            setLoading(true);
-            const data = await generateLearningPath(skills);
-            setRecommendations(data);
-            setLoading(false);
-        };
-        fetchPath();
-    }, [skills]);
-
-    if (loading) {
-        return (
-            <Card className="p-6 border-secondary-200 bg-gradient-to-br from-secondary-50 to-white">
-                <div className="flex items-center gap-3 mb-4">
-                    <BrainCircuit className="text-secondary-500 animate-pulse" size={24} />
-                    <h3 className="font-bold text-lg text-gray-800">جاري تحليل أدائك وبناء مسار ذكي...</h3>
-                </div>
-                <div className="space-y-3">
-                    <div className="h-16 bg-gray-100 rounded-xl animate-pulse"></div>
-                    <div className="h-16 bg-gray-100 rounded-xl animate-pulse"></div>
-                </div>
-            </Card>
-        );
-    }
+    const smartPath = useMemo(() => buildSmartLearningPath(skills), [skills]);
+    const recommendations = smartPath.recommendations;
 
     if (recommendations.length === 0) return null;
 
     return (
-        <div className="relative">
+        <div className="relative" data-smart-path-version={smartPath.version} data-smart-path-fingerprint={smartPath.fingerprint}>
             <div className="flex items-center gap-2 mb-4">
                 <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-2 rounded-lg shadow-lg shadow-purple-200">
                     <Sparkles size={20} />
                 </div>
                 <div>
                     <h3 className="font-bold text-lg text-gray-900">مسار التعلم الذكي</h3>
-                    <p className="text-xs text-gray-500">تم اختياره لك بناءً على المهارات التي تحتاج دعمًا</p>
+                    <p className="text-xs text-gray-500">اختيار داخلي مبني على الإتقان والأدلة والنطاق الحالي، بدون استدعاء AI</p>
                 </div>
             </div>
 
             <div className="relative border-r-2 border-purple-100 mr-4 space-y-6">
                 {recommendations.map((item, index) => (
-                    <div key={item.id} className="relative pr-8 animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
+                    <div key={item.id} className="relative pr-8 animate-fade-in" style={{ animationDelay: `${index * 120}ms` }}>
                         <div
                             className={`absolute -right-[9px] top-0 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
-                                item.priority === 'high' ? 'bg-red-500' : 'bg-purple-500'
+                                item.priority === 'high' ? 'bg-red-500' : item.priority === 'medium' ? 'bg-purple-500' : 'bg-emerald-500'
                             }`}
-                        ></div>
+                        />
 
                         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
                             <div className="flex justify-between items-start mb-2">
@@ -73,17 +47,17 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
                                                   : 'bg-emerald-500'
                                         }`}
                                     >
-                                        {item.type === 'lesson' ? 'درس' : item.type === 'quiz' ? 'اختبار' : 'مراجعة'}
+                                        {item.type === 'lesson' ? 'شرح' : item.type === 'quiz' ? 'قياس/تدريب' : 'مراجعة'}
                                     </span>
                                     <span className="text-xs text-gray-400 flex items-center gap-1">
                                         <Clock size={12} /> {item.duration}
                                     </span>
                                 </div>
-                                {item.priority === 'high' && (
+                                {item.priority === 'high' ? (
                                     <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded font-bold flex items-center gap-1">
-                                        <Zap size={12} /> أولوية عالية
+                                        <Zap size={12} /> أولوية
                                     </span>
-                                )}
+                                ) : null}
                             </div>
 
                             <h4 className="font-bold text-gray-800 text-lg mb-1">{item.title}</h4>
