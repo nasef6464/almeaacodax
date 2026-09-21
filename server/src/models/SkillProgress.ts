@@ -23,6 +23,8 @@ const skillProgressSchema = new Schema(
       ],
       default: [],
     },
+    // Bounded replay guard; separate from the five-item analytics window.
+    recentEvidenceKeys: { type: [String], default: [] },
     lastQuizId: { type: String, default: "" },
     lastQuizTitle: { type: String, default: "" },
     lastAttemptAt: { type: Date, default: () => new Date(), index: true },
