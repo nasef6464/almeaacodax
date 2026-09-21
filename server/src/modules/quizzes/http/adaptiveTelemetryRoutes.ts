@@ -61,7 +61,7 @@ adaptiveTelemetryRouter.post(
   asyncHandler(async (req, res) => {
     const payload = questionAttemptSchema.parse(req.body);
     const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select(
-      "id pathId subject sectionId skillIds correctOptionIndex",
+      "id pathId subject subjectId sectionId skillIds correctOptionIndex",
     );
 
     if (!question) {

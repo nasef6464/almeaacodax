@@ -21,7 +21,7 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
-import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
+import { quizSubmitSchema, selfAssessmentSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { isQuestionContentUsable, sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
 import { clearQuestionBankSummaryCache, questionBankRouter } from "../modules/quizzes/http/questionBankRoutes.js";
 import { quizAnalyticsRouter } from "../modules/quizzes/http/quizAnalyticsRoutes.js";
@@ -29,7 +29,7 @@ import { quizResultsRouter } from "../modules/quizzes/http/quizResultsRoutes.js"
 import { resolveScopedStudents, resolveSupervisorSchoolReportScope } from "../modules/quizzes/application/quizReportScope.js";
 import { resolveAuthUserByAuthId } from "../modules/quizzes/application/quizUserLookup.js";
 import { adaptiveTelemetryRouter } from "../modules/quizzes/http/adaptiveTelemetryRoutes.js";
-import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
+import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, buildSkillDocumentsByIdsQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 import { clearQuizResultsCache } from "../modules/quizzes/infrastructure/quizResultsCache.js";
 import { runQuizSubmissionSideEffects } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
 import { validateQuizQuestionIntegrity } from "../modules/quizzes/application/quizQuestionIntegrity.js";
@@ -809,6 +809,181 @@ quizRouter.post(
 );
 
 quizRouter.post(
+  "/self-assessment/submit",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = selfAssessmentSubmitSchema.parse(req.body);
+    const userId = String(req.authUser!.id || "");
+    const submissionKey = `self-assessment:${userId}:${payload.submissionId}`;
+
+    const existing = await QuizResultModel.findOne({ submissionKey }).lean();
+    if (existing) {
+      return res.status(StatusCodes.OK).json(serializeQuizResultForLearner(existing));
+    }
+
+    const requestedQuestionIds = uniqueStrings(payload.questionIds.map(String));
+    if (requestedQuestionIds.length !== payload.questionIds.length) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Duplicate question ids are not allowed" });
+    }
+
+    const questions = await QuestionModel.find(buildDocumentsByIdsQuery(requestedQuestionIds)).lean();
+    const orderedQuestions = resolveOrderedQuizQuestions(requestedQuestionIds, questions);
+
+    if (orderedQuestions.length !== requestedQuestionIds.length) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "One or more self-assessment questions are unavailable",
+      });
+    }
+
+    const requestedSkillIds = new Set(payload.skillIds.map(String));
+    const invalidQuestions = orderedQuestions.filter((question: any) => {
+      const questionPathId = String(question.pathId || "");
+      const questionSubjectId = String(question.subjectId || question.subject || "");
+      const questionSkillIds = uniqueStrings(Array.isArray(question.skillIds) ? question.skillIds.map(String) : []);
+      const approvalStatus = String(question.approvalStatus || "");
+      const matchesRequestedSkill =
+        requestedSkillIds.size === 0 || questionSkillIds.some((skillId) => requestedSkillIds.has(skillId));
+
+      return (
+        !isQuestionContentUsable(question) ||
+        question.showOnPlatform === false ||
+        (approvalStatus && approvalStatus !== "approved") ||
+        questionPathId !== payload.pathId ||
+        questionSubjectId !== payload.subjectId ||
+        !matchesRequestedSkill
+      );
+    });
+
+    if (invalidQuestions.length > 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Self-assessment question scope is invalid",
+        invalidCount: invalidQuestions.length,
+      });
+    }
+
+    const answerReview = buildQuizSubmissionAnswerReview({
+      orderedQuestions,
+      answers: payload.answers,
+    });
+    const filteredSkillStats =
+      requestedSkillIds.size === 0
+        ? answerReview.skillStats
+        : new Map(
+            [...answerReview.skillStats.entries()].filter(([skillId]) => requestedSkillIds.has(skillId)),
+          );
+
+    if (filteredSkillStats.size === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Self-assessment has no valid skill evidence",
+      });
+    }
+
+    const skillIds = [...filteredSkillStats.keys()];
+    const skills = await SkillModel.find(buildSkillDocumentsByIdsQuery(skillIds)).lean();
+    const sectionIds = uniqueStrings([
+      payload.sectionId || "",
+      ...skills.map((skill: any) => String(skill.sectionId || "")),
+    ]);
+    const [subjects, sections] = await Promise.all([
+      SubjectModel.find(buildDocumentsByIdsQuery([payload.subjectId])).lean(),
+      sectionIds.length ? SectionModel.find(buildDocumentsByIdsQuery(sectionIds)).lean() : [],
+    ]);
+    const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({
+      skills,
+      subjects,
+      sections,
+    });
+
+    const syntheticQuiz = {
+      pathId: payload.pathId,
+      subjectId: payload.subjectId,
+      sectionId: payload.sectionId || "",
+      title: payload.title || "قياس مهارة",
+      mode: "saher",
+      quizKind: "drill",
+      settings: { passingScore: 60 },
+    };
+    const skillsAnalysis = buildQuizSubmissionSkillsAnalysis({
+      skillStats: filteredSkillStats,
+      skillById,
+      quiz: syntheticQuiz,
+      subjectNameById,
+      sectionNameById,
+    });
+
+    const scoreSummary = buildQuizSubmissionScoreSummary({
+      correctAnswers: answerReview.correctAnswers,
+      wrongAnswers: answerReview.wrongAnswers,
+      unanswered: answerReview.unanswered,
+      totalQuestions: orderedQuestions.length,
+      passingScore: 60,
+    });
+    const scopeKey = payload.skillIds.length
+      ? [...payload.skillIds].map(String).sort().join("+")
+      : payload.sectionId || "general";
+    const quizId = `self-assessment:${payload.pathId}:${payload.subjectId}:${scopeKey}`;
+    const attemptNumber =
+      (await QuizResultModel.countDocuments({ userId, quizId })) + 1;
+    const quizSnapshot = buildQuizSubmissionSnapshot({
+      quiz: syntheticQuiz,
+      passingScore: 60,
+      totalQuestions: scoreSummary.totalQuestions,
+    });
+
+    let result;
+    try {
+      result = await QuizResultModel.create(
+        buildQuizSubmissionResultDocument({
+          userId,
+          quizId,
+          quizTitle: String(syntheticQuiz.title),
+          score: scoreSummary.score,
+          passed: scoreSummary.passed,
+          attemptNumber,
+          source: "self",
+          evidenceType: payload.evidenceType,
+          learningContext: "platform_self_study",
+          totalQuestions: scoreSummary.totalQuestions,
+          correctAnswers: scoreSummary.correctAnswers,
+          wrongAnswers: scoreSummary.wrongAnswers,
+          unanswered: scoreSummary.unanswered,
+          timeSpentSeconds: payload.timeSpentSeconds,
+          skillsAnalysis,
+          questionReview: answerReview.questionReview,
+          submissionKey,
+          quizSnapshot,
+        }),
+      );
+    } catch (error: any) {
+      if (error?.code === 11000) {
+        const duplicate = await QuizResultModel.findOne({ submissionKey }).lean();
+        if (duplicate) {
+          return res.status(StatusCodes.OK).json(serializeQuizResultForLearner(duplicate));
+        }
+      }
+      throw error;
+    }
+
+    const questionById = buildQuizQuestionLookup(orderedQuestions);
+    await runQuizSubmissionSideEffects({
+      requestId: req.requestId,
+      result,
+      userId,
+      questionReview: answerReview.questionReview.map((item) => ({
+        questionId: String(item.questionId || ""),
+        selectedOptionIndex:
+          typeof item.selectedOptionIndex === "number" ? Number(item.selectedOptionIndex) : undefined,
+        isCorrect: Boolean(item.isCorrect),
+      })),
+      questionById,
+    });
+
+    clearQuizResultsCache();
+    return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));
+  }),
+);
+
+quizRouter.post(
   "/:id/submit",
   requireAuth,
   asyncHandler(async (req, res) => {
@@ -954,6 +1129,7 @@ quizRouter.post(
           passed,
           attemptNumber,
           source: payload.source || "",
+          evidenceType: payload.evidenceType || "assessment",
           ...learningContext,
           totalQuestions,
           correctAnswers,

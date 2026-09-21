@@ -56,3 +56,16 @@ export const buildDocumentsByIdsQuery = (values: string[]) => {
     ],
   };
 };
+
+
+export const buildSkillDocumentsByIdsQuery = (values: string[]) => {
+  const ids = uniqueStrings(values.map((value) => String(value || "").trim()));
+  const baseQuery = buildDocumentsByIdsQuery(ids);
+
+  return {
+    $or: [
+      ...baseQuery.$or,
+      { "subSkills.id": { $in: ids } },
+    ],
+  };
+};

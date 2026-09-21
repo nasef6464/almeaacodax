@@ -132,6 +132,9 @@ jobs:
       - name: Adaptive mastery evidence contract
         run: node scripts/smoke-adaptive-mastery-evidence-contract.mjs
 
+      - name: Adaptive server recheck contract
+        run: node scripts/smoke-adaptive-server-recheck-contract.mjs
+
       - name: Catalog bootstrap performance contract
         run: node scripts/smoke-catalog-bootstrap-performance-contract.mjs
 
