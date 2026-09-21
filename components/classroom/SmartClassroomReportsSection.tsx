@@ -87,7 +87,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
     () => Array.from(new Set(
       classAndTimeReports.flatMap((report) => report.questions
         .filter((question) => selectedPathFilter === 'all' || String(question.pathId || '') === selectedPathFilter)
-        .map((question) => String(question.subject || report.subjectName || ''))
+        .map((question) => String(question.subjectId || question.subject || report.subjectName || ''))
         .filter(Boolean)),
     )).sort((left, right) => left.localeCompare(right, 'ar')),
     [classAndTimeReports, selectedPathFilter],
@@ -99,13 +99,19 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   }, [selectedSubjectFilter, subjectOptions]);
 
   const filteredReports = useMemo(
-    () => classAndTimeReports.map((report) => ({
-      ...report,
-      questions: report.questions.filter((question) =>
+    () => classAndTimeReports.map((report) => {
+      const questions = report.questions.filter((question) =>
         (selectedPathFilter === 'all' || String(question.pathId || '') === selectedPathFilter) &&
-        (selectedSubjectFilter === 'all' || String(question.subject || report.subjectName || '') === selectedSubjectFilter),
-      ),
-    })).filter((report) => report.questions.length > 0),
+        (selectedSubjectFilter === 'all' || String(question.subjectId || question.subject || report.subjectName || '') === selectedSubjectFilter),
+      );
+      const responses = questions.reduce((sum, question) => sum + question.answered, 0);
+      const correct = questions.reduce((sum, question) => sum + question.correct, 0);
+      return {
+        ...report,
+        questions,
+        totals: { responses, correct },
+      };
+    }).filter((report) => report.questions.length > 0),
     [classAndTimeReports, selectedPathFilter, selectedSubjectFilter],
   );
 
@@ -218,7 +224,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {skillDiagnostics.slice(0, 9).map((skill) => (
-              <div key={skill.skillId} className="rounded-xl border border-slate-100 p-4 dark:border-slate-800">
+              <div key={skill.scopeKey} className="rounded-xl border border-slate-100 p-4 dark:border-slate-800">
                 <div className="flex items-start justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{skill.skillName}</span><span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${skill.isWeak ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>{skill.accuracy}%</span></div>
                 <p className="mt-2 text-[11px] text-slate-500">{skill.correct}/{skill.totalAnswered} صحيحة · {skill.sessions.size} حصة</p>
                 {skill.isWeak && onPrepareIntervention && !skill.skillId.startsWith('subject:') && <button type="button" onClick={() => onPrepareIntervention(skill.skillId)} className="mt-3 inline-flex items-center gap-1 text-[11px] font-black text-rose-600"><Zap size={12} /> إعداد تدخل علاجي</button>}
