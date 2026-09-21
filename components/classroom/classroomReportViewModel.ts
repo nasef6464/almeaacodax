@@ -37,6 +37,7 @@ export interface ClassroomSavedReport {
     skillId?: string;
     skillName?: string;
     pathId?: string;
+    subjectId?: string;
     sectionId?: string;
     subject?: string;
     answered?: number;
@@ -55,6 +56,7 @@ export type CanonicalQuestionReport = {
   text: string;
   skillIds: string[];
   pathId?: string;
+  subjectId?: string;
   sectionId?: string;
   subject?: string;
   answered: number;
@@ -97,8 +99,11 @@ export type CanonicalClassroomReport = {
 export type ClassroomReportTimeFilter = 'all' | 'today' | 'week' | 'month';
 
 export type ClassroomSkillDiagnostic = {
+  scopeKey: string;
   skillId: string;
   skillName: string;
+  pathId?: string;
+  subjectId?: string;
   totalAnswered: number;
   correct: number;
   sessions: Set<string>;
@@ -142,6 +147,7 @@ export const normalizeClassroomReport = (raw: ClassroomSavedReport): CanonicalCl
       text: question.text,
       skillIds,
       pathId: question.pathId,
+      subjectId: question.subjectId,
       sectionId: question.sectionId,
       subject: question.subject,
       answered,
@@ -210,14 +216,28 @@ export const buildClassroomSkillDiagnostics = (reports: CanonicalClassroomReport
   const map = new Map<string, Omit<ClassroomSkillDiagnostic, 'accuracy' | 'isWeak'>>();
   for (const report of reports) {
     for (const question of report.questions) {
+      const pathId = String(question.pathId || '');
+      const subjectId = String(question.subjectId || question.subject || report.subjectName || '');
       const skillIds = Array.from(new Set(question.skillIds.filter(Boolean)));
-      const keys = skillIds.length > 0 ? skillIds : (question.subject ? [`subject:${question.subject}`] : []);
-      for (const key of keys) {
-        const current = map.get(key) || { skillId: key, skillName: key.startsWith('subject:') ? key.slice(8) : key, totalAnswered: 0, correct: 0, sessions: new Set<string>() };
+      const evidenceSkillIds = skillIds.length > 0
+        ? skillIds
+        : (subjectId ? [`subject:${subjectId}`] : []);
+      for (const skillId of evidenceSkillIds) {
+        const scopeKey = [pathId, subjectId, skillId].join('::');
+        const current = map.get(scopeKey) || {
+          scopeKey,
+          skillId,
+          skillName: skillId.startsWith('subject:') ? skillId.slice(8) : skillId,
+          pathId: pathId || undefined,
+          subjectId: subjectId || undefined,
+          totalAnswered: 0,
+          correct: 0,
+          sessions: new Set<string>(),
+        };
         current.totalAnswered += question.answered;
         current.correct += question.correct;
         current.sessions.add(report.sessionId);
-        map.set(key, current);
+        map.set(scopeKey, current);
       }
     }
   }
