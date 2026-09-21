@@ -68,14 +68,14 @@ export const buildSkillRecommendation = (
                 (target.kind !== 'sub' || Boolean(topic.parentId)),
             )
             .map((topic) => {
+                const topicHasLesson = (topic.lessonIds || []).some((lessonId) =>
+                    lessons.some((lesson) => matchesEntityId(lesson, lessonId) && lesson.skillIds?.includes(resolvedSkillId)));
+                const topicHasQuiz = (topic.quizIds || []).some((quizId) =>
+                    quizzes.some((quiz) => matchesEntityId(quiz, quizId) && (quiz.skillIds?.includes(resolvedSkillId) || quiz.questionIds?.some((id) => questions.find((q) => q.id === id)?.skillIds?.includes(resolvedSkillId)))));
+                const topicMatchesSkill = topic.skillId === resolvedSkillId || matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) || displayText(topic.title) === displayText(target.skillName);
+                const topicMatchesSection = Boolean(recommendationSectionId && topic.sectionId === recommendationSectionId);
                 const explicitSkillScore = topic.skillId === resolvedSkillId ? 120 : 0;
-                const legacyIdScore = matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ? 90 : 0;
-                const titleScore = displayText(topic.title) === displayText(target.skillName) ? 70 : 0;
-                const sectionScore = recommendationSectionId && topic.sectionId === recommendationSectionId ? 30 : 0;
-                return {
-                    topic,
-                    score: explicitSkillScore + legacyIdScore + titleScore + sectionScore,
-                };
+                return { topic, score: explicitSkillScore + (topicHasLesson ? 60 : 0) + (topicHasQuiz ? 55 : 0) + (topicMatchesSkill ? 80 : 0) + (topicMatchesSection ? 35 : 0) };
             })
             .filter((item) => item.score > 0)
             .sort((a, b) => b.score - a.score)
@@ -168,11 +168,15 @@ export const buildSkillRecommendation = (
             : undefined,
         actionText:
             recommendedTopic && target.kind === 'sub'
-                ? 'افتح موضوع التأسيس المرتبط بالمهارة، راجع الشروح الموجودة داخله، ثم انتقل إلى تدريب المهارة الفرعية الجاهز.'
+                ? recommendedLesson && recommendedQuiz
+                    ? 'ابدأ بالشرح أولًا ثم نفّذ اختبارًا قصيرًا لقياس التحسن.'
+                    : recommendedLesson
+                        ? 'هذه المهارة تحتاج مراجعة شرحها قبل أي تدريب إضافي.'
+                        : 'افتح موضوع التأسيس المرتبط بالمهارة ثم انتقل إلى تدريب المهارة الفرعية الجاهز.'
                 : recommendedQuiz
                     ? 'ابدأ بالتدريب الجاهز المرتبط بهذه المهارة ثم أعد القياس.'
                     : recommendedResource
                         ? 'راجع الملف الداعم ثم ارجع للتدريب المرتبط بنفس المهارة.'
-                        : 'راجع موضوع التأسيس المرتبط بالمهارة ثم أعد القياس.',
+                        : 'أعد المحاولة عبر اختبار ساهر مخصص لهذه المهارة.',
     };
 };
