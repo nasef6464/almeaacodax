@@ -15,6 +15,7 @@ Question/Attempt -> Evidence -> SkillProgress -> Diagnosis -> Next Best Action -
 - Foundation target المفضل للمهارة الفرعية: topic_sub_${skillId} أو mapping محفوظ صراحة.
 - كل تغيير schema additive أولًا، backfill dry-run افتراضيًا، verification، ثم cutover.
 - منع double-counting بأثر idempotency/evidence identity لمحاولة/سؤال.
+- Taxonomy data-driven بالكامل: إضافة Path/Subject/Section/Skill جديدة يجب ألا تحتاج تعديل hard-coded IDs أو قوائم ثابتة في المحرك/التقارير/الروابط؛ كل النطاقات الجديدة تدخل من البيانات والعلاقات نفسها.
 
 ## 3) المحتوى والوسائط
 - الفيديوهات روابط YouTube؛ لا ترفع/تمر bytes الفيديو عبر Render. نخزن metadata + URL/videoId فقط، thumbnail/lazy embed عند الفتح، وعدم تحميل player لكل البطاقات.
@@ -76,6 +77,7 @@ pagination/projection/indexes في drill-down.
 - explicit click فقط في مراجعة السؤال/الاختبار.
 - AI لا يصحح ولا يحدد mastery.
 - context minimization: questionId، النص/الاختيارات اللازمة، student answer، skill، trusted explanation عند الحاجة؛ لا full test/history.
+- السؤال الذي يعتمد على صورة لا يُعتمد للنشر/المراجعة بدون شرح نصي موثوق. الـAI يستخدم النص/الشرح الموثوق أولًا؛ لا تُرسل bytes الصورة أو سياق بصري إضافي إلا عند طلب الطالب ومتى كان ذلك لازمًا للمناقشة.
 - progressive help: hint -> stronger hint -> concept -> steps -> follow-up.
 - per-question conversation scope، dedupe/cache، token cap، rate limit، timeout، telemetry cost.
 - AI Gateway provider-agnostic: provider A ثم sequential fallback provider B عند failure/quota وفق policy؛ ممنوع parallel fan-out المدفوع.
@@ -92,6 +94,7 @@ limits للمدة/الحجم، وعدم streaming دائم بلا طلب.
 - YouTube bytes لا تمر عبر API.
 - lazy-load embeds/thumbnails؛ لا player grid.
 - text-first للفظي.
+- visual-question text-first أيضًا: explanation/metadata أولًا، والصورة من storage/CDN مباشرة ولا تمر عبر API أو AI افتراضيًا.
 - no full question bank/full attempt history في reports.
 - indexed query shapes، pagination، projections، bulk read/write عند ثبوت N+1.
 - incremental aggregates، ETag/cache عند الملاءمة.
