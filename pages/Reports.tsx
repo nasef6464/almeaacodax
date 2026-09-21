@@ -194,7 +194,10 @@ const Reports: React.FC = () => {
     const aggregatedSkills = useMemo(
         () => buildStudentAggregatedSkills({
             examResults: studentEvidenceWindow.recentExamResults,
-            questionAttempts: studentEvidenceWindow.pathScopedQuestionAttempts,
+            questionAttempts:
+                studentEvidenceWindow.recentExamResults.length > 0
+                    ? []
+                    : studentEvidenceWindow.pathScopedQuestionAttempts,
             questions,
             skills,
             subjects,
