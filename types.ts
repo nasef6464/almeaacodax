@@ -111,7 +111,6 @@ export interface CourseQA {
     answer?: string;
     user: string;
     date: string;
-    evidenceType?: SkillEvidenceType;
 }
 
 export type CourseAssessmentPhase = 'pre_course' | 'during_course' | 'final_course';
@@ -577,6 +576,7 @@ export interface QuestionAttempt {
     isCorrect: boolean;
     timeSpentSeconds: number;
     date: string;
+    evidenceType?: SkillEvidenceType;
 }
 
 export interface Activity {
