@@ -3,17 +3,17 @@
     "private": true,
     "version": "0.0.0",
     "type": "module",
-  "scripts": {
-    "smoke:smart-classroom-g2-contract": "node scripts/smoke-smart-classroom-g2-contract.mjs",
-    "smoke:account-workspaces-g7": "node scripts/smoke-account-workspaces-g7-contract.mjs",
+    "scripts": {
+        "smoke:smart-classroom-g2-contract": "node scripts/smoke-smart-classroom-g2-contract.mjs",
+        "smoke:account-workspaces-g7": "node scripts/smoke-account-workspaces-g7-contract.mjs",
         "smoke:account-workspaces-g8": "node scripts/smoke-account-workspaces-g8-contract.mjs",
         "smoke:account-workspaces-g9": "node scripts/smoke-account-workspaces-g9-contract.mjs",
         "smoke:account-workspaces-g10": "node scripts/smoke-account-workspaces-g10-contract.mjs",
         "smoke:account-workspaces-g11": "node scripts/smoke-account-workspaces-g11-contract.mjs",
-    "smoke:account-workspaces-g12": "node scripts/smoke-account-workspaces-g12-contract.mjs",
-    "smoke:school-roster-runtime": "node scripts/smoke-school-roster-contract.mjs",
-    "smoke:school-people-hub-scope": "node scripts/smoke-school-people-hub-scope.mjs",
-    "audit:smart-classroom-surfaces": "node scripts/live-smart-classroom-surfaces-audit.mjs",
+        "smoke:account-workspaces-g12": "node scripts/smoke-account-workspaces-g12-contract.mjs",
+        "smoke:school-roster-runtime": "node scripts/smoke-school-roster-contract.mjs",
+        "smoke:school-people-hub-scope": "node scripts/smoke-school-people-hub-scope.mjs",
+        "audit:smart-classroom-surfaces": "node scripts/live-smart-classroom-surfaces-audit.mjs",
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
@@ -215,7 +215,8 @@
         "smoke:handover-consistency": "node scripts/smoke-handover-consistency-contract.mjs",
         "smoke:handover-gates": "node scripts/smoke-handover-gates-contract.mjs",
         "smoke:handover-blockers": "node scripts/smoke-handover-blockers-contract.mjs",
-        "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers"
+        "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers",
+        "smoke:adaptive-phase11-final-certification": "node scripts/smoke-adaptive-phase11-final-certification-contract.mjs"
     },
     "dependencies": {
         "@e965/xlsx": "^0.20.3",
