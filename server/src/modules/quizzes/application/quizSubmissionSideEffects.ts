@@ -142,7 +142,8 @@ const upsertReviewCardsFromQuestionReview = async (args: {
       if (!question) return null;
       const questionId = String(item.questionId || "");
       if (!questionId) return null;
-      const skillId = Array.isArray(question.skillIds) && question.skillIds.length > 0 ? String(question.skillIds[0]) : "";
+      const skillIds = Array.isArray(question.skillIds) ? uniqueStrings(question.skillIds.map(String)) : [];
+      const skillId = skillIds[0] || "";
       const pathId = String(question.pathId || "");
       const subjectId = String(question.subjectId || question.subject || "");
       const sectionId = String(question.sectionId || "");
@@ -159,6 +160,7 @@ const upsertReviewCardsFromQuestionReview = async (args: {
             $setOnInsert: { userId: args.userId, questionId },
             $set: {
               skillId,
+              skillIds,
               pathId,
               subjectId,
               sectionId,
@@ -189,9 +191,8 @@ export async function upsertReviewCardFromQuestionAttempt(args: {
   const questionId = String(args.attempt?.questionId || args.question?.id || args.question?._id || "");
   if (!questionId) return;
 
-  const skillId = Array.isArray(args.question?.skillIds) && args.question.skillIds.length > 0
-    ? String(args.question.skillIds[0])
-    : "";
+  const skillIds = Array.isArray(args.question?.skillIds) ? uniqueStrings(args.question.skillIds.map(String)) : [];
+  const skillId = skillIds[0] || "";
   const quality = qualityFromAttempt(
     Number(args.attempt?.selectedOptionIndex ?? -1),
     Boolean(args.attempt?.isCorrect),
@@ -208,6 +209,7 @@ export async function upsertReviewCardFromQuestionAttempt(args: {
       $setOnInsert: { userId: args.userId, questionId },
       $set: {
         skillId,
+        skillIds,
         pathId: String(args.question?.pathId || args.attempt?.pathId || ""),
         subjectId: String(args.question?.subjectId || args.question?.subject || args.attempt?.subjectId || ""),
         sectionId: String(args.question?.sectionId || args.attempt?.sectionId || ""),
