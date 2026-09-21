@@ -45,6 +45,7 @@ import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel
 import { buildStudentReadinessDecision, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
+import { buildStudentEvidenceWindow } from './Reports/studentEvidenceWindowViewModel';
 import { buildStudentRemediationFallback } from './Reports/studentRemediationFallbackViewModel';
 import { buildScopedRemediationFallback } from './Reports/scopedRemediationFallbackViewModel';
 import { buildScopedSkillsWorkbookRows, buildScopedStudentsWorkbookRows } from './Reports/scopedExportRowsViewModel';
@@ -167,26 +168,45 @@ const Reports: React.FC = () => {
         [questionAttempts, studentReportPeriod],
     );
     const studentPeriodLabel = studentReportPeriodLabels[studentReportPeriod];
-    const studentReportDataCount = studentPeriodExamResults.length + studentPeriodQuestionAttempts.length;
-
-    // Calculate Performance Analysis
-    const stats = useMemo(
-        () => buildStudentPerformanceStats(studentPeriodExamResults, studentPeriodQuestionAttempts),
-        [studentPeriodExamResults, studentPeriodQuestionAttempts],
-    );
-
-    // Aggregate Skill Analysis
-    const aggregatedSkills = useMemo(
-        () => buildStudentAggregatedSkills({
+    const studentEvidenceWindow = useMemo(
+        () => buildStudentEvidenceWindow({
             examResults: studentPeriodExamResults,
             questionAttempts: studentPeriodQuestionAttempts,
+            selectedPathId: selectedStudentPathId,
+        }),
+        [selectedStudentPathId, studentPeriodExamResults, studentPeriodQuestionAttempts],
+    );
+    const studentReportDataCount =
+        studentEvidenceWindow.pathScopedExamResults.length + studentEvidenceWindow.pathScopedQuestionAttempts.length;
+
+    // Period performance stays broader, while adaptive skill evidence uses the latest bounded result window.
+    const stats = useMemo(
+        () => buildStudentPerformanceStats(
+            studentEvidenceWindow.pathScopedExamResults,
+            studentEvidenceWindow.pathScopedQuestionAttempts,
+        ),
+        [studentEvidenceWindow.pathScopedExamResults, studentEvidenceWindow.pathScopedQuestionAttempts],
+    );
+
+    // Aggregate recent skill evidence (last five quiz results by default) with question-attempt fallback.
+    const aggregatedSkills = useMemo(
+        () => buildStudentAggregatedSkills({
+            examResults: studentEvidenceWindow.recentExamResults,
+            questionAttempts: studentEvidenceWindow.pathScopedQuestionAttempts,
             questions,
             skills,
             subjects,
             sections,
             minSkillEvidence: MIN_SKILL_EVIDENCE_COUNT,
         }),
-        [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects],
+        [
+            questions,
+            sections,
+            skills,
+            studentEvidenceWindow.pathScopedQuestionAttempts,
+            studentEvidenceWindow.recentExamResults,
+            subjects,
+        ],
     );
 
     const studentEvidenceSummary = useMemo(
@@ -211,7 +231,7 @@ const Reports: React.FC = () => {
     );
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
-    const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
+    const hasStudentAnalytics = studentReportDataCount > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
     const skillReadinessSummary = useMemo(
         () => buildStudentSkillReadinessSummary(
