@@ -82,6 +82,8 @@ export const questionListQuerySchema = z.object({
 });
 
 export const dashboardAnalyticsQuerySchema = z.object({
+  pathId: z.string().trim().optional(),
+  subjectId: z.string().trim().optional(),
   studentLimit: z.coerce.number().int().min(1).max(1000).default(500),
   resultLimit: z.coerce.number().int().min(100).max(5000).default(2000),
   attemptLimit: z.coerce.number().int().min(100).max(5000).default(3000),
@@ -94,6 +96,8 @@ export const quizResultsListQuerySchema = z.object({
   search: z.string().trim().max(120).optional(),
   quizId: z.string().trim().max(120).optional(),
   studentId: z.string().trim().max(120).optional(),
+  pathId: z.string().trim().max(120).optional(),
+  subjectId: z.string().trim().max(120).optional(),
   status: z.enum(["passed", "failed"]).optional(),
   dateFrom: z.string().trim().optional(),
   dateTo: z.string().trim().optional(),
