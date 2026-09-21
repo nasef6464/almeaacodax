@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireAuth } from "../middleware/auth.js";
 import { QuestionModel } from "../models/Question.js";
 import { ReviewCardModel } from "../models/ReviewCard.js";
+import { SkillProgressModel } from "../models/SkillProgress.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sm2 } from "../services/spacedRepetition.js";
 
@@ -14,6 +15,14 @@ const answerSchema = z.object({
 
 const dueQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
+  pathId: z.string().optional().default(""),
+  subjectId: z.string().optional().default(""),
+});
+
+const masteryChallengeQuerySchema = z.object({
+  pathId: z.string().min(1),
+  subjectId: z.string().optional().default(""),
+  limit: z.coerce.number().int().min(1).max(20).default(5),
 });
 
 export const reviewRouter = Router();
@@ -29,6 +38,8 @@ reviewRouter.get(
     const cards = await ReviewCardModel.find({
       userId,
       nextReviewDate: { $lte: now },
+      ...(query.pathId ? { pathId: query.pathId } : {}),
+      ...(query.subjectId ? { subjectId: query.subjectId } : {}),
     })
       .sort({ nextReviewDate: 1, updatedAt: 1 })
       .limit(query.limit)
@@ -50,6 +61,10 @@ reviewRouter.get(
           cardId: String(card.id || card._id),
           questionId: String(card.questionId || ""),
           skillId: String(card.skillId || ""),
+          pathId: String(card.pathId || ""),
+          subjectId: String(card.subjectId || ""),
+          sectionId: String(card.sectionId || ""),
+          reviewType: String(card.reviewType || "error_recovery"),
           dueAt: card.nextReviewDate,
           interval: Number(card.interval || 1),
           repetitions: Number(card.repetitions || 0),
@@ -123,20 +138,82 @@ reviewRouter.get(
   "/stats",
   requireAuth,
   asyncHandler(async (req, res) => {
+    const query = dueQuerySchema.parse(req.query);
     const userId = String(req.authUser!.id);
     const now = new Date();
     const weekEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const scope = {
+      userId,
+      ...(query.pathId ? { pathId: query.pathId } : {}),
+      ...(query.subjectId ? { subjectId: query.subjectId } : {}),
+    };
 
-    const [dueToday, dueThisWeek, totalCards] = await Promise.all([
-      ReviewCardModel.countDocuments({ userId, nextReviewDate: { $lte: now } }),
-      ReviewCardModel.countDocuments({ userId, nextReviewDate: { $lte: weekEnd } }),
-      ReviewCardModel.countDocuments({ userId }),
+    const [dueToday, dueThisWeek, totalCards, masteryReviewDue] = await Promise.all([
+      ReviewCardModel.countDocuments({ ...scope, nextReviewDate: { $lte: now } }),
+      ReviewCardModel.countDocuments({ ...scope, nextReviewDate: { $lte: weekEnd } }),
+      ReviewCardModel.countDocuments(scope),
+      ReviewCardModel.countDocuments({ ...scope, reviewType: "mastery_review", nextReviewDate: { $lte: now } }),
     ]);
 
     return res.json({
       dueToday,
       dueThisWeek,
       totalCards,
+      masteryReviewDue,
+    });
+  }),
+);
+
+reviewRouter.get(
+  "/mastery-challenges",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const query = masteryChallengeQuerySchema.parse(req.query);
+    const userId = String(req.authUser!.id);
+    const progressRows = await SkillProgressModel.find({
+      userId,
+      pathId: query.pathId,
+      ...(query.subjectId ? { subjectId: query.subjectId } : {}),
+      mastery: { $gte: 90 },
+      $or: [{ evidenceCount: { $gte: 3 } }, { attempts: { $gte: 3 } }],
+    })
+      .select("skillId skill pathId subjectId sectionId mastery evidenceCount attempts lastAttemptAt")
+      .sort({ lastAttemptAt: 1, mastery: -1 })
+      .limit(query.limit)
+      .lean();
+
+    const skillIds = progressRows.map((row: any) => String(row.skillId || "")).filter(Boolean);
+    const dueCards = skillIds.length
+      ? await ReviewCardModel.find({
+          userId,
+          pathId: query.pathId,
+          ...(query.subjectId ? { subjectId: query.subjectId } : {}),
+          skillId: { $in: skillIds },
+          reviewType: "mastery_review",
+          nextReviewDate: { $lte: new Date() },
+        })
+          .select("skillId nextReviewDate")
+          .lean()
+      : [];
+    const dueCountBySkill = new Map<string, number>();
+    dueCards.forEach((card: any) => {
+      const skillId = String(card.skillId || "");
+      dueCountBySkill.set(skillId, (dueCountBySkill.get(skillId) || 0) + 1);
+    });
+
+    return res.json({
+      scope: { pathId: query.pathId, ...(query.subjectId ? { subjectId: query.subjectId } : {}) },
+      challenges: progressRows.map((row: any) => ({
+        skillId: String(row.skillId || ""),
+        skill: String(row.skill || "مهارة"),
+        pathId: String(row.pathId || ""),
+        subjectId: String(row.subjectId || ""),
+        sectionId: String(row.sectionId || ""),
+        mastery: Number(row.mastery || 0),
+        evidenceCount: Number(row.evidenceCount || row.attempts || 0),
+        lastAttemptAt: row.lastAttemptAt,
+        dueReviewCount: dueCountBySkill.get(String(row.skillId || "")) || 0,
+      })),
     });
   }),
 );
