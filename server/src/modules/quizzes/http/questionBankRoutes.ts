@@ -237,17 +237,18 @@ questionBankRouter.post(
   requireAuth,
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
-    const payload = questionSchema.parse(req.body);
-    await assertManagedContentScope(req.authUser!, payload);
+    const draftPayload = questionBaseSchema.parse(req.body);
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const created = await QuestionModel.create({
-      ...payload,
+    const payload = questionSchema.parse({
+      ...draftPayload,
       ...workflowDefaults,
       approvalStatus:
         req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
+          ? draftPayload.approvalStatus || workflowDefaults.approvalStatus
           : workflowDefaults.approvalStatus,
     });
+    await assertManagedContentScope(req.authUser!, payload);
+    const created = await QuestionModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
