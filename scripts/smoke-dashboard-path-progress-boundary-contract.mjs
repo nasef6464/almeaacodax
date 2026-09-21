@@ -6,8 +6,10 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const dashboardPath = 'pages/Dashboard.tsx';
 const helperPath = 'pages/Dashboard/pathProgressProjection.ts';
+const smartPathHelperPath = 'pages/Dashboard/smartPathEvidenceViewModel.ts';
 const dashboardSource = read(dashboardPath);
 const helperSource = read(helperPath);
+const smartPathHelperSource = read(smartPathHelperPath);
 
 const importLine = "import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';";
 const localMarkers = [
@@ -70,9 +72,9 @@ check('path progress helper owns only deterministic projection logic', () => {
   }
 });
 
-check('Dashboard retains page, store, smart-path, parent, routing, and path composition ownership', () => {
+check('Dashboard retains page, store, parent, routing, and path composition ownership', () => {
   for (const marker of [
-    'const buildSmartPathSkillsFromResults =',
+    "import { buildSmartPathSkillsFromResults } from './Dashboard/smartPathEvidenceViewModel';",
     'const useParentScopedResults =',
     'const Dashboard: React.FC = () =>',
     'const { user } = useStore();',
@@ -84,6 +86,24 @@ check('Dashboard retains page, store, smart-path, parent, routing, and path comp
   ]) {
     assertIncludes(dashboardSource, marker);
   }
+});
+
+check('smart path evidence is extracted, recent, scoped, and side-effect free', () => {
+  for (const marker of [
+    'export const SMART_PATH_RECENT_RESULT_LIMIT = 5',
+    'resultPathId(result) === pathId',
+    'resultSubjectId(result) === subjectId',
+    '.slice(0, limit)',
+    'weightedMasteryTotal',
+    'evidenceCount',
+    "trend: SkillGap['trend']",
+  ]) {
+    assertIncludes(smartPathHelperSource, marker);
+  }
+  for (const banned of ['useStore(', 'useEffect(', 'useMemo(', 'api.', 'fetch(', 'window.', 'localStorage', 'sessionStorage']) {
+    assertExcludes(smartPathHelperSource, banned, `smart-path helper must stay deterministic: ${banned}`);
+  }
+  assertExcludes(dashboardSource, 'const buildSmartPathSkillsFromResults =', 'Dashboard must not re-own smart-path aggregation');
 });
 
 check('post-boundary Dashboard consumes the projection helper instead of redefining it', () => {
