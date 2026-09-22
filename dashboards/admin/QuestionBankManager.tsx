@@ -229,12 +229,31 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     [sections, selectedSubjectId],
   );
 
+  const nestedSubSkills = useMemo(
+    () =>
+      skills.flatMap((skill) =>
+        (skill.subSkills || []).map((subSkill) => ({
+          ...subSkill,
+          pathId: skill.pathId,
+          subjectId: skill.subjectId,
+          sectionId: skill.sectionId,
+          parentSkillId: skill.id,
+          parentSkillName: skill.name,
+        })),
+      ),
+    [skills],
+  );
+
   const availableSubSkills = useMemo(
     () =>
-      skills
-        .filter((skill) => skill.subjectId === selectedSubjectId && (!selectedSectionId || skill.sectionId === selectedSectionId))
+      nestedSubSkills
+        .filter(
+          (subSkill) =>
+            subSkill.subjectId === selectedSubjectId &&
+            (!selectedSectionId || subSkill.sectionId === selectedSectionId),
+        )
         .sort((a, b) => a.name.localeCompare(b.name, 'ar')),
-    [selectedSectionId, selectedSubjectId, skills],
+    [nestedSubSkills, selectedSectionId, selectedSubjectId],
   );
 
   const questions = useMemo(
@@ -478,7 +497,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || '';
       const mainSkillName = sections.find((section) => section.id === question.sectionId)?.name || '';
       const subSkillNames = (question.skillIds || [])
-        .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+        .map((skillId) => nestedSubSkills.find((subSkill) => subSkill.id === skillId)?.name || '')
         .filter(Boolean)
         .join(' | ');
 
@@ -553,7 +572,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     const sampleSubject = allowedSubjects.find((subject) => subject.pathId === samplePath?.id) || allowedSubjects[0];
     const sampleMainSkill = sections.find((section) => section.subjectId === sampleSubject?.id) || sections[0];
     const sampleSubSkill =
-      skills.find((skill) => skill.subjectId === sampleSubject?.id && skill.sectionId === sampleMainSkill?.id) || skills[0];
+      nestedSubSkills.find(
+        (subSkill) => subSkill.subjectId === sampleSubject?.id && subSkill.sectionId === sampleMainSkill?.id,
+      ) || nestedSubSkills[0];
 
     const templateRows = [
       {
@@ -637,17 +658,18 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     XLSX.utils.book_append_sheet(
       workbook,
       XLSX.utils.json_to_sheet(
-        skills
-          .filter((skill) => allowedSubjects.some((subject) => subject.id === skill.subjectId))
-          .map((skill) => {
-            const subject = subjects.find((item) => item.id === skill.subjectId);
-            const section = sections.find((item) => item.id === skill.sectionId);
+        nestedSubSkills
+          .filter((subSkill) => allowedSubjects.some((subject) => subject.id === subSkill.subjectId))
+          .map((subSkill) => {
+            const subject = subjects.find((item) => item.id === subSkill.subjectId);
+            const section = sections.find((item) => item.id === subSkill.sectionId);
             return {
-              subSkillId: skill.id,
-              mainSkillId: skill.sectionId || '',
-              subjectId: skill.subjectId,
-              subSkillName: skill.name,
-              mainSkillName: section?.name || '',
+              subSkillId: subSkill.id,
+              parentSkillId: subSkill.parentSkillId,
+              mainSkillId: subSkill.sectionId || '',
+              subjectId: subSkill.subjectId,
+              subSkillName: subSkill.name,
+              mainSkillName: section?.name || subSkill.parentSkillName || '',
               subjectName: subject?.name || '',
               pathName: paths.find((path) => path.id === subject?.pathId)?.name || '',
             };
@@ -679,7 +701,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           subject: subjects.find((subject) => subject.id === question.subject)?.name || 'غير محدد',
           mainSkill: sections.find((section) => section.id === question.sectionId)?.name || 'غير محدد',
           subSkills: (question.skillIds || [])
-            .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+            .map((skillId) => nestedSubSkills.find((subSkill) => subSkill.id === skillId)?.name || '')
             .filter(Boolean)
             .join('، '),
           difficulty: difficultyLabel(question.difficulty),
