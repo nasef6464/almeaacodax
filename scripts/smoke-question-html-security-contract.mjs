@@ -24,7 +24,7 @@ const files = {
   styles: await read("styles/main.css"),
 };
 
-const questionPresentationImport = 'import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";';
+const questionPresentationImport = 'import { buildQuestionResponseItems } from "../presentation/questionPresentation.js";';
 const questionSummaryOwner = files.questionBankRoutes.includes(questionPresentationImport)
   ? files.questionPresentation
   : files.questionBankRoutes;
@@ -98,7 +98,7 @@ check("question summary API keeps one inline media preview for admin lists", () 
   for (const fragment of ["options", "correctOptionIndex", "explanation", "videoUrl"]) {
     assertIncludes(files.questionBankRoutes, fragment);
   }
-  assertIncludes(files.questionBankRoutes, "toQuestionSummaryText(item.text)");
+  assertIncludes(files.questionPresentation, "toQuestionSummaryText(item.text)");
 });
 
 check("question builder keeps MCQ options when editing summary rows", () => {
