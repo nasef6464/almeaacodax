@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Question } from '../../../types';
 import { RichTextEditor } from '../../../components/RichTextEditor';
+import { QuestionVoiceExplanationEditor } from './QuestionVoiceExplanationEditor';
 import { Save, X, Wand2, Loader2, BookOpen, ImagePlus, Trash2 } from 'lucide-react';
 import { useStore } from '../../../store/useStore';
 import { generateQuizQuestion } from '../../../services/geminiService';
@@ -663,6 +664,11 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               minHeightClass="h-52"
             />
           </div>
+
+          <QuestionVoiceExplanationEditor
+            value={question.voiceExplanation}
+            onChange={(voiceExplanation) => setQuestion((prev) => ({ ...prev, voiceExplanation }))}
+          />
 
           <div className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4 space-y-4">
             <div>
