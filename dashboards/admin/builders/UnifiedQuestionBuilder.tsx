@@ -21,6 +21,12 @@ interface UnifiedQuestionBuilderProps {
 
 const emptyMcqOptions = ['', '', '', ''];
 
+const normalizeStoredOption = (option: unknown) => {
+  if (typeof option === 'string') return option;
+  if (option && typeof option === 'object' && 'text' in option) return String((option as { text?: unknown }).text ?? '');
+  return String(option ?? '');
+};
+
 const normalizeQuestionType = (type?: Partial<Question>['type'] | string): Question['type'] => {
   if (type === 'true_false' || type === 'essay') return type;
   return 'mcq';
@@ -33,7 +39,7 @@ const normalizeQuestionForEditing = (source?: Partial<Question>, fallbackSubject
       ? ['صح', 'خطأ']
       : type === 'essay'
         ? []
-        : [...((source?.options || []).map((option) => String(option ?? ''))), ...emptyMcqOptions].slice(0, Math.max(4, source?.options?.length || 0));
+        : [...((source?.options || []).map(normalizeStoredOption)), ...emptyMcqOptions].slice(0, Math.max(4, source?.options?.length || 0));
 
   return {
     text: '',
