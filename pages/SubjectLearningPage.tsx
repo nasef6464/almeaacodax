@@ -87,6 +87,19 @@ export const SubjectLearningPage: React.FC = () => {
   const openPackageTab = (contentType: PackageContentType) => navigate(buildPackagePath(contentType));
   const getQuizAccessType = (quiz: (typeof quizzes)[number], slot?: 'training' | 'tests') =>
     resolveQuizLearningAccessType(quiz, slot && pathId && subjectId ? { pathId, subjectId, slot } : undefined);
+  const getQuizAccessLabel = (quiz: (typeof quizzes)[number], slot?: 'training' | 'tests') => {
+    const accessType = getQuizAccessType(quiz, slot);
+    if (accessType === 'free') return 'مجاني';
+    if (accessType === 'private') return 'خاص';
+    if (accessType === 'course_only') return 'ضمن دورة';
+    return 'ضمن باقة';
+  };
+  const getQuizAccessBadgeClass = (quiz: (typeof quizzes)[number], slot?: 'training' | 'tests') => {
+    const accessType = getQuizAccessType(quiz, slot);
+    if (accessType === 'free') return 'bg-emerald-50 text-emerald-700';
+    if (accessType === 'private' || accessType === 'course_only') return 'bg-violet-50 text-violet-700';
+    return 'bg-amber-50 text-amber-700';
+  };
   const isQuizLockedForStudent = (quiz: (typeof quizzes)[number], contentType: 'banks' | 'tests', slot?: 'training' | 'tests') => {
     if (isStaffViewer) return false;
     const accessType = getQuizAccessType(quiz, slot);
@@ -96,16 +109,22 @@ export const SubjectLearningPage: React.FC = () => {
   };
   const getTopicParent = (topic: Topic | null | undefined) =>
     topic?.parentId ? findByEntityId(topics as Topic[], topic.parentId) : null;
-  const isTopicLockedForStudent = (topic: Topic | null | undefined) => {
-    if (!topic || hasFoundationAccess || isStaffViewer) return false;
+  const topicRequiresFoundationPackage = (topic: Topic | null | undefined) => {
+    if (!topic) return false;
     const parentTopic = getTopicParent(topic);
+
+    // The subject-wide switch is an explicit admin policy that locks the whole
+    // foundation area. Otherwise each topic (and a locked parent) carries the
+    // free/package classification shown to the learner.
     return Boolean(lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true);
   };
+  const isTopicLockedForStudent = (topic: Topic | null | undefined) =>
+    Boolean(topic && !isStaffViewer && topicRequiresFoundationPackage(topic) && !hasFoundationAccess);
   const isLibraryItemLockedForStudent = (item: (typeof libraryItems)[number]) =>
     Boolean(item.isLocked && !hasLibraryAccess && !isStaffViewer);
   const isTopicSupportLockedForStudent = (topic: Topic | null | undefined) => isTopicLockedForStudent(topic);
   const getTopicSupportAccessLabel = (topic: Topic | null | undefined) =>
-    isTopicLockedForStudent(topic) ? 'ضمن باقة' : 'مجاني';
+    topicRequiresFoundationPackage(topic) ? 'ضمن باقة' : 'مجاني';
 
   const renderLockedAccessPanel = (contentType: PackageContentType, title: string, description: string) => (
     <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-center">
@@ -200,18 +219,21 @@ export const SubjectLearningPage: React.FC = () => {
   );
 
   const mainTopics = useMemo(() => subjectTopics.filter((topic) => !topic.parentId), [subjectTopics]);
-  const firstOpenTopic = mainTopics.find((topic) => !isTopicLockedForStudent(topic)) || mainTopics[0] || null;
-  const firstOpenBank = subjectBanks.find((quiz) => !isQuizLockedForStudent(quiz, 'banks', 'training')) || subjectBanks[0] || null;
-  const firstOpenExam = subjectExams.find((quiz) => !isQuizLockedForStudent(quiz, 'tests', 'tests')) || subjectExams[0] || null;
+  const firstAccessibleTopic = mainTopics.find((topic) => !isTopicLockedForStudent(topic)) || null;
+  const firstOpenTopic = firstAccessibleTopic || mainTopics[0] || null;
+  const firstAccessibleBank = subjectBanks.find((quiz) => !isQuizLockedForStudent(quiz, 'banks', 'training')) || null;
+  const firstOpenBank = firstAccessibleBank || subjectBanks[0] || null;
+  const firstAccessibleExam = subjectExams.find((quiz) => !isQuizLockedForStudent(quiz, 'tests', 'tests')) || null;
+  const firstOpenExam = firstAccessibleExam || subjectExams[0] || null;
   const subjectNextAction = (() => {
     if (activeTab === 'questions') {
-      return hasBanksAccess || firstOpenBank
+      return hasBanksAccess || firstAccessibleBank
         ? {
             title: 'ابدأ تدريبًا قصيرًا',
             description: 'حل تدريبًا واحدًا، ثم راجع نتيجتك.',
-            primaryLabel: firstOpenBank && !isQuizLockedForStudent(firstOpenBank, 'banks', 'training') ? 'ابدأ التدريب' : 'ابدأ تدريبًا عشوائيًا',
-            primaryHref: firstOpenBank && !isQuizLockedForStudent(firstOpenBank, 'banks', 'training')
-              ? buildQuizRouteWithContext(firstOpenBank.id, { returnTo: buildSubjectTabPath('questions'), source: 'training' })
+            primaryLabel: firstAccessibleBank ? 'ابدأ التدريب' : 'ابدأ تدريبًا عشوائيًا',
+            primaryHref: firstAccessibleBank
+              ? buildQuizRouteWithContext(firstAccessibleBank.id, { returnTo: buildSubjectTabPath('questions'), source: 'training' })
               : '/quiz',
             secondaryLabel: 'التأسيس',
             secondaryHref: buildSubjectTabPath('skills'),
@@ -231,13 +253,13 @@ export const SubjectLearningPage: React.FC = () => {
     }
 
     if (activeTab === 'exams') {
-      return hasTestsAccess || firstOpenExam
+      return hasTestsAccess || firstAccessibleExam
         ? {
             title: 'اختبر جاهزيتك',
             description: 'اختبار واحد يكفي لمعرفة الخطوة التالية.',
-            primaryLabel: firstOpenExam && !isQuizLockedForStudent(firstOpenExam, 'tests', 'tests') ? 'ابدأ الاختبار' : 'اختبار ساهر',
-            primaryHref: firstOpenExam && !isQuizLockedForStudent(firstOpenExam, 'tests', 'tests')
-              ? buildQuizRouteWithContext(firstOpenExam.id, { returnTo: buildSubjectTabPath('exams'), source: 'tests' })
+            primaryLabel: firstAccessibleExam ? 'ابدأ الاختبار' : 'اختبار ساهر',
+            primaryHref: firstAccessibleExam
+              ? buildQuizRouteWithContext(firstAccessibleExam.id, { returnTo: buildSubjectTabPath('exams'), source: 'tests' })
               : '/quiz',
             secondaryLabel: 'تقاريري',
             secondaryHref: '/reports',
@@ -269,7 +291,7 @@ export const SubjectLearningPage: React.FC = () => {
       };
     }
 
-    if (!hasFoundationAccess && lockFoundationForSubject) {
+    if (!hasFoundationAccess && mainTopics.length > 0 && !firstAccessibleTopic) {
       return {
         title: 'افتح التأسيس أولًا',
         description: 'ابدأ من الأساسيات قبل التدريب والاختبار.',
@@ -612,7 +634,7 @@ export const SubjectLearningPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mainTopics.length > 0 ? mainTopics.map((topic) => {
                 const subTopics = subjectTopics.filter((item) => item.parentId === topic.id);
-                const isLocked = isTopicLockedForStudent(topic);
+                const requiresPackage = topicRequiresFoundationPackage(topic);
                 let totalLessons = topic.lessonIds?.length || 0;
                 let totalQuizzes = topic.quizIds?.length || 0;
                 subTopics.forEach((subTopic) => {
@@ -625,7 +647,7 @@ export const SubjectLearningPage: React.FC = () => {
                     key={topic.id}
                     onClick={() => handleOpenTopicModal(topic)}
                     className={`bg-white p-6 rounded-2xl border hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between h-56 relative overflow-hidden group ${
-                      isLocked ? 'border-amber-200' : 'border-gray-200 hover:border-indigo-400'
+                      requiresPackage ? 'border-amber-200' : 'border-gray-200 hover:border-indigo-400'
                     }`}
                   >
                     <div className="flex justify-between items-start mb-4">
@@ -637,10 +659,10 @@ export const SubjectLearningPage: React.FC = () => {
                           {subTopics.length} موضوعات فرعية
                         </span>
                         <span className={`mt-2 flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg ${
-                          isLocked ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50'
+                          requiresPackage ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50'
                         }`}>
-                          {isLocked ? <Lock size={13} /> : <Eye size={13} />}
-                          {isLocked ? 'ضمن باقة' : 'مجاني'}
+                          {requiresPackage ? <Lock size={13} /> : <Eye size={13} />}
+                          {requiresPackage ? 'ضمن باقة' : 'مجاني'}
                         </span>
                       </div>
                     </div>
@@ -758,7 +780,14 @@ export const SubjectLearningPage: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-800">{topic.title}</h4>
-                        <p className="text-xs text-gray-500">{questionCount} سؤال متاح</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <p className="text-xs text-gray-500">{questionCount} سؤال متاح</p>
+                          {relatedBank && (
+                            <span className={`rounded-lg px-2 py-0.5 text-[10px] font-black ${getQuizAccessBadgeClass(relatedBank, 'training')}`}>
+                              {getQuizAccessLabel(relatedBank, 'training')}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -790,9 +819,14 @@ export const SubjectLearningPage: React.FC = () => {
                   <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                     <Award size={24} />
                   </div>
-                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-                    <Clock size={14} /> {quiz.settings?.timeLimit || 60} دقيقة
-                  </span>
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    <span className={`rounded-lg px-3 py-1 text-xs font-black ${getQuizAccessBadgeClass(quiz, 'tests')}`}>
+                      {getQuizAccessLabel(quiz, 'tests')}
+                    </span>
+                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+                      <Clock size={14} /> {quiz.settings?.timeLimit || 60} دقيقة
+                    </span>
+                  </div>
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">{quiz.title}</h3>
                 <p className="text-gray-500 text-sm mb-6 line-clamp-2">{quiz.description}</p>
