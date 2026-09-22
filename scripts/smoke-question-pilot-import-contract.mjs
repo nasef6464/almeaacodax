@@ -58,7 +58,8 @@ check("pilot import enforces canonical source identity and content-addressed ima
   includes(importRoutes, "questionCode must match canonical source identity");
   includes(importRoutes, "sourceItemId must match canonical source identity");
   includes(importRoutes, "sourceMeta.imageHash must be the SHA-256 hash of the uploaded WebP");
-  includes(importRoutes, "imageUrl must point to the content-addressed V2 object");
+  includes(importRoutes, "imageUrl must be the exact R2 V2 object URL returned by the presign flow");
+  includes(importRoutes, "env.R2_PUBLIC_BASE_URL.replace(/\\/+$/");
 });
 
 check("pilot import forces imported draft workflow and canonical taxonomy", () => {
