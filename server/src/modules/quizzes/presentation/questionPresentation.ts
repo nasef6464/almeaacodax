@@ -37,6 +37,7 @@ export const sanitizeQuestionForLearner = (question: Record<string, any>) => {
     hint,
     solvingStrategy,
     aiContext,
+    voiceExplanation,
     sourceMeta,
     reviewerNotes,
     __v,
