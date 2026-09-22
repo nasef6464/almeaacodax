@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { createQuestionImageUploadIntent } from "../modules/media/application/questionImageUpload.js";
+import { createQuestionExplanationAudioUploadIntent } from "../modules/media/application/questionExplanationAudioUpload.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const mediaRouter = Router();
@@ -21,6 +22,22 @@ mediaRouter.post(
       sizeBytes: number;
     };
     const intent = createQuestionImageUploadIntent(payload);
+    res.json(intent);
+  }),
+);
+
+const questionExplanationAudioIntentSchema = z.object({
+  contentType: z.enum(["audio/mpeg", "audio/webm", "audio/mp4", "audio/ogg", "audio/wav", "audio/x-wav"]),
+  sizeBytes: z.coerce.number().int().positive(),
+});
+
+mediaRouter.post(
+  "/question-explanations/presign",
+  requireAuth,
+  requireRole(["admin", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const payload = questionExplanationAudioIntentSchema.parse(req.body || {});
+    const intent = createQuestionExplanationAudioUploadIntent(payload);
     res.json(intent);
   }),
 );
