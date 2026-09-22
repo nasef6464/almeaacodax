@@ -28,6 +28,7 @@ import { quizAnalyticsRouter } from "../modules/quizzes/http/quizAnalyticsRoutes
 import { quizResultsRouter } from "../modules/quizzes/http/quizResultsRoutes.js";
 import { resolveScopedStudents, resolveSupervisorSchoolReportScope } from "../modules/quizzes/application/quizReportScope.js";
 import { resolveAuthUserByAuthId } from "../modules/quizzes/application/quizUserLookup.js";
+import { loadLearnerSafeQuizCatalogPage } from "../modules/quizzes/application/learnerQuizCatalog.js";
 import { adaptiveTelemetryRouter } from "../modules/quizzes/http/adaptiveTelemetryRoutes.js";
 import { adaptiveMasteryRouter } from "../modules/quizzes/http/adaptiveMasteryRoutes.js";
 import { buildDocumentQuery, buildDocumentsByIdsQuery, buildOwnedDocumentQuery, uniqueStrings } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
@@ -526,55 +527,38 @@ quizRouter.get(
       buildManagedContentScopeFilter(managedScope),
     );
     const pagination = resolvePagination(req.query, { limit: 200 });
-    const rawItems = await QuizModel.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(pagination.skip)
-      .limit(noTotal ? pagination.limit + 1 : pagination.limit)
-      .lean();
-    const hasMore = noTotal && rawItems.length > pagination.limit;
-    const items = noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
-    const total = noTotal
-      ? pagination.skip + items.length + (hasMore ? 1 : 0)
-      : await QuizModel.countDocuments(filter);
-    let safeItems = items;
+    const staffViewer = isStaffRole(req.authUser?.role);
+    let safeItems: any[] = [];
+    let total = 0;
+    let hasMore = false;
 
-    if (!isStaffRole(req.authUser?.role) && items.length > 0) {
-      const allQuestionIds = uniqueStrings(items.flatMap((quiz: any) => getQuizQuestionIds(quiz).map(String)));
-      const questions = allQuestionIds.length
-        ? await QuestionModel.find(buildDocumentsByIdsQuery(allQuestionIds)).select("id text imageUrl options type").lean()
-        : [];
-      const usableById = new Map<string, boolean>();
-      questions.forEach((question: any) => {
-        const canonicalId = String(question.id || question._id);
-        const usable = isQuestionContentUsable(question);
-        usableById.set(canonicalId, usable);
-        const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
-        if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
-          usableById.set(withoutCopySuffix, usable);
-        }
+    if (staffViewer) {
+      const rawItems = await QuizModel.find(filter)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(pagination.skip)
+        .limit(noTotal ? pagination.limit + 1 : pagination.limit)
+        .lean();
+      hasMore = noTotal && rawItems.length > pagination.limit;
+      safeItems = noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
+      total = noTotal
+        ? pagination.skip + safeItems.length + (hasMore ? 1 : 0)
+        : await QuizModel.countDocuments(filter);
+    } else {
+      const learnerPage = await loadLearnerSafeQuizCatalogPage({
+        filter,
+        page: pagination.page,
+        limit: pagination.limit,
+        noTotal,
+        learnerAudience: learnerAudienceForCatalog,
       });
-
-      safeItems = items
-        .filter(
-          (quiz: any) =>
-            isQuizTargetedToLearner(quiz, learnerAudienceForCatalog) &&
-            getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
-        )
-        .map((quiz: any) => {
-          const hasExplicitTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
-          return hasExplicitTarget ? { ...quiz, viewerAudienceVerified: true } : quiz;
-        });
+      safeItems = learnerPage.items;
+      total = learnerPage.total;
+      hasMore = learnerPage.hasMore;
     }
 
     const payload = {
       quizzes: safeItems,
-      pagination: buildPaginatedResponse(
-        [],
-        pagination,
-        isStaffRole(req.authUser?.role)
-          ? total
-          : (noTotal ? pagination.skip + safeItems.length + (hasMore ? 1 : 0) : safeItems.length),
-      ),
+      pagination: buildPaginatedResponse([], pagination, total),
     };
     res.setHeader("X-Has-More", String(hasMore));
     if (canUsePublicCache) {
