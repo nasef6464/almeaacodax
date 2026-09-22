@@ -4,7 +4,6 @@ import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { Award, CheckCircle2, ChevronLeft, ChevronRight, Clock, CreditCard, FileQuestion, GraduationCap, Layers, LayoutGrid, Lock, Sparkles, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
-import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { normalizePathId } from '../utils/normalizePathId';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
@@ -480,30 +479,6 @@ export const GenericPathPage: React.FC = () => {
         params.set('tab', preferredTab);
 
         return `/category/${path.id}?${params.toString()}`;
-    };
-    const buildSubjectLearningRoute = (tab: 'skills' | 'questions' | 'tests' | 'library' = 'skills') => {
-        const params = new URLSearchParams();
-        if (selectedLevelId) params.set('level', selectedLevelId);
-        if (selectedSubjectId) params.set('subject', selectedSubjectId);
-        params.set('tab', tab);
-        return `/category/${path.id}?${params.toString()}`;
-    };
-    const renderSubjectNextAction = () => {
-        if (!selectedSubjectId) return null;
-        const subjectName = selectedSubject?.name || 'هذه المادة';
-        const availableTests = getVisibleLearningSlotQuizzes('tests', selectedSubjectId);
-        return (
-            <StudentNextActionStrip
-                title={`ابدأ خطوتك التالية في ${subjectName}`}
-                description="ابدأ بالتأسيس والمهارات أولاً، ثم انتقل للتدريب والاختبارات عندما تكون جاهزًا."
-                primaryLabel="ابدأ التعلم"
-                primaryHref={buildSubjectLearningRoute('skills')}
-                secondaryLabel={availableTests.length > 0 ? 'فتح الاختبارات' : undefined}
-                secondaryHref={availableTests.length > 0 ? buildSubjectLearningRoute('tests') : undefined}
-                tone="indigo"
-                icon={<Sparkles size={18} className="text-indigo-600" />}
-            />
-        );
     };
     const getPackageKindLabel = (contentTypes: string[]) =>
         contentTypes.includes('all')
@@ -1376,9 +1351,6 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         </div>
                     </header>
                     <div className="max-w-7xl mx-auto px-4 py-6">
-                        <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6">
-                            {renderSubjectNextAction()}
-                        </div>
                         {renderSubjectAccessGuide(selectedSubjectId)}
                         <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={activeSubjectColor as any} />
                         {renderPackagePaymentModal()}
@@ -1493,9 +1465,6 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             </header>
 
             <div className="max-w-7xl mx-auto px-4 py-6">
-                <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6">
-                    {renderSubjectNextAction()}
-                </div>
                 {renderSubjectAccessGuide(selectedSubjectId)}
                 <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={activeSubjectColor as any} />
                 {renderPackagePaymentModal()}
