@@ -82,4 +82,8 @@ if (failed.length > 0) {
   process.exit(1);
 }
 
+assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'api.getIntegrationsReadiness()');
+assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'جاهزية التكاملات الخارجية');
+assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'Sentry وCloudflare R2 وRedis');
+assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'item.requiredEnv.map');
 console.log(`Production ops phase 14 contract passed (${checks.length} checks).`);
