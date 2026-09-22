@@ -65,8 +65,15 @@ const buildQuestionUsabilityMap = async (quizzes: any[]) => {
 };
 
 const sanitizeLearnerQuizQuestionRefs = (quiz: any, usableById: Map<string, boolean>) => {
-  const isUsableQuestionId = (questionId: unknown) =>
-    usableById.get(String(questionId || "").trim()) === true;
+  const isUsableQuestionId = (questionId: unknown) => {
+    const id = String(questionId || "").trim();
+    if (!id) return false;
+    const withoutCopySuffix = id.replace(/_copy(?:_\\d+)?$/i, "");
+    return (
+      usableById.get(id) === true ||
+      (withoutCopySuffix !== id && usableById.get(withoutCopySuffix) === true)
+    );
+  };
 
   const safeQuestionIds = getQuizQuestionIds(quiz).filter(isUsableQuestionId);
   const mockSections = Array.isArray(quiz?.mockExam?.sections) ? quiz.mockExam.sections : [];
