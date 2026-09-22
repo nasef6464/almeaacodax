@@ -407,7 +407,18 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       pathId: selectedPathId || '',
       subject: selectedSubjectId || '',
       sectionId: selectedSectionId || '',
-      skillIds: selectedSkillId ? [selectedSkillId] : [],
+      skillIds: [
+        ...new Set([
+          ...(skills.find(
+            (skill) => skill.subjectId === selectedSubjectId && skill.sectionId === selectedSectionId,
+          )?.id
+            ? [skills.find(
+                (skill) => skill.subjectId === selectedSubjectId && skill.sectionId === selectedSectionId,
+              )!.id]
+            : []),
+          ...(selectedSkillId ? [selectedSkillId] : []),
+        ]),
+      ],
       ownerType: user.role === 'teacher' ? 'teacher' : 'platform',
       ownerId: user.id,
       createdBy: user.id,
