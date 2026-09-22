@@ -83,17 +83,54 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     [sections, question.subject]
   );
 
+  const nestedSubSkills = useMemo(
+    () =>
+      skills.flatMap((skill) =>
+        (skill.subSkills || []).map((subSkill) => ({
+          ...subSkill,
+          pathId: skill.pathId,
+          subjectId: skill.subjectId,
+          sectionId: skill.sectionId,
+          parentSkillId: skill.id,
+          parentSkillName: skill.name,
+        })),
+      ),
+    [skills],
+  );
+
+  const activeMainSkill = useMemo(
+    () =>
+      skills.find(
+        (skill) =>
+          !!question.subject &&
+          !!question.sectionId &&
+          skill.subjectId === question.subject &&
+          skill.sectionId === question.sectionId,
+      ),
+    [question.sectionId, question.subject, skills],
+  );
+
   const availableSubSkills = useMemo(
-    () => skills.filter((skill) => !!question.subject && skill.subjectId === question.subject && (!question.sectionId || skill.sectionId === question.sectionId)),
-    [skills, question.subject, question.sectionId]
+    () =>
+      nestedSubSkills.filter(
+        (subSkill) =>
+          !!question.subject &&
+          subSkill.subjectId === question.subject &&
+          (!question.sectionId || subSkill.sectionId === question.sectionId),
+      ),
+    [nestedSubSkills, question.subject, question.sectionId],
   );
 
   const selectedSubSkills = useMemo(
-    () => (question.skillIds || []).map((skillId) => ({
-      id: skillId,
-      skill: skills.find((skill) => skill.id === skillId),
-    })),
-    [question.skillIds, skills]
+    () =>
+      (question.skillIds || [])
+        .filter((skillId) => skillId !== activeMainSkill?.id)
+        .map((skillId) => ({
+          id: skillId,
+          skill: nestedSubSkills.find((subSkill) => subSkill.id === skillId),
+        }))
+        .filter((item) => Boolean(item.skill)),
+    [activeMainSkill?.id, nestedSubSkills, question.skillIds],
   );
 
   useEffect(() => {
@@ -172,10 +209,20 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       setValidationError('يرجى اختيار المهارة الرئيسة.');
       return;
     }
-    if (!question.skillIds || question.skillIds.length === 0) {
-      setValidationError('يرجى ربط السؤال بمهارة فرعية واحدة على الأقل.');
+    const selectedNestedSkillIds = (question.skillIds || []).filter((skillId) =>
+      availableSubSkills.some((subSkill) => subSkill.id === skillId),
+    );
+    if (availableSubSkills.length > 0 && selectedNestedSkillIds.length === 0) {
+      setValidationError('يرجى ربط السؤال بمهارة فرعية واحدة على الأقل من المهارات التابعة للمهارة الرئيسة.');
       return;
     }
+    if (!activeMainSkill && (!question.skillIds || question.skillIds.length === 0)) {
+      setValidationError('تعذر تحديد المهارة الرئيسة المرتبطة بالسؤال.');
+      return;
+    }
+    const normalizedSkillIds = Array.from(
+      new Set([activeMainSkill?.id, ...selectedNestedSkillIds].filter(Boolean) as string[]),
+    );
     const optionRows = (question.options || [])
       .map((option, index) => ({ index, value: String(option || '').trim() }))
       .filter((option) => option.value);
@@ -197,6 +244,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       ...question,
       passage: question.passage?.trim() || undefined,
       options: question.type === 'essay' ? [] : question.type === 'true_false' ? ['صح', 'خطأ'] : trimmedOptions,
+      skillIds: normalizedSkillIds,
       correctOptionIndex: question.type === 'essay' ? 0 : question.type === 'true_false' ? Number(question.correctOptionIndex ?? 0) : normalizedCorrectOptionIndex,
     });
   };
@@ -447,7 +495,17 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-2">المهارة الرئيسة</label>
               <select
                 value={question.sectionId || ''}
-                onChange={event => setQuestion({ ...question, sectionId: event.target.value, skillIds: [] })}
+                onChange={event => {
+                  const nextSectionId = event.target.value;
+                  const nextMainSkill = skills.find(
+                    (skill) => skill.subjectId === question.subject && skill.sectionId === nextSectionId,
+                  );
+                  setQuestion({
+                    ...question,
+                    sectionId: nextSectionId,
+                    skillIds: nextMainSkill ? [nextMainSkill.id] : [],
+                  });
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                 disabled={!question.subject}
               >
@@ -464,7 +522,15 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                   <span key={id} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
                     {skill?.name || `مهارة مرتبطة (${id})`}
                     <button
-                      onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(skillId => skillId !== id) }))}
+                      onClick={() => setQuestion((prev) => ({
+                        ...prev,
+                        skillIds: Array.from(
+                          new Set([
+                            ...(activeMainSkill?.id ? [activeMainSkill.id] : []),
+                            ...((prev.skillIds || []).filter((skillId) => skillId !== id && skillId !== activeMainSkill?.id)),
+                          ]),
+                        ),
+                      }))}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       <X size={14} />
@@ -476,7 +542,16 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                 value=""
                 onChange={event => {
                   if (event.target.value && !question.skillIds?.includes(event.target.value)) {
-                    setQuestion(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), event.target.value] }));
+                    setQuestion((prev) => ({
+                      ...prev,
+                      skillIds: Array.from(
+                        new Set([
+                          ...(activeMainSkill?.id ? [activeMainSkill.id] : []),
+                          ...(prev.skillIds || []).filter((skillId) => skillId !== activeMainSkill?.id),
+                          event.target.value,
+                        ]),
+                      ),
+                    }));
                   }
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
@@ -495,7 +570,9 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                   <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">المهارات هنا تُسحب من مركز المهارات الحقيقي، ويمكن ربط السؤال بأكثر من مهارة فرعية معًا.</p>
+              <p className="text-xs text-gray-500 mt-1">
+                المهارات الفرعية هنا تُسحب من داخل المهارة الرئيسة الفعلية في مركز المهارات، وتُحفظ مع معرف المهارة الرئيسة تلقائيًا.
+              </p>
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">رابط فيديو الشرح (اختياري)</label>
