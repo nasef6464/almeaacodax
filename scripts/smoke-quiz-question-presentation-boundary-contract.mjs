@@ -29,10 +29,22 @@ check('question summary presentation semantics are preserved', () => {
 });
 
 check('learner question sanitization semantics are preserved', () => {
-  assert.ok(
-    presentationSource.includes('const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;'),
-    'learner sanitizer must remove answer-key and mongoose metadata fields',
-  );
+  for (const fragment of [
+    'correctOptionIndex,',
+    'explanation,',
+    'hint,',
+    'solvingStrategy,',
+    'aiContext,',
+    'sourceMeta,',
+    'reviewerNotes,',
+    '__v,',
+    '...safeQuestion',
+  ]) {
+    assert.ok(
+      presentationSource.includes(fragment),
+      `learner sanitizer must remove protected field fragment: ${fragment}`,
+    );
+  }
   assert.ok(presentationSource.includes('return safeQuestion;'), 'learner sanitizer must return the safe projection');
 });
 
