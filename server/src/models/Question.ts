@@ -1,14 +1,57 @@
 import mongoose, { Schema } from "mongoose";
 
+const questionMathExpressionSchema = new Schema(
+  {
+    latex: { type: String, default: "", trim: true },
+    spokenArabic: { type: String, default: "", trim: true },
+  },
+  { _id: false },
+);
+
+const questionAiContextSchema = new Schema(
+  {
+    readableText: { type: String, default: "", trim: true },
+    speechText: { type: String, default: "", trim: true },
+    visualDescription: { type: String, default: "", trim: true },
+    optionTexts: { type: [String], default: [] },
+    mathExpressions: { type: [questionMathExpressionSchema], default: [] },
+    concepts: { type: [String], default: [] },
+    requiredData: { type: [String], default: [] },
+    version: { type: Number, default: 1 },
+  },
+  { _id: false },
+);
+
+const questionSourceMetaSchema = new Schema(
+  {
+    documentCode: { type: String, default: "", trim: true },
+    documentTitle: { type: String, default: "", trim: true },
+    page: { type: Number, default: null },
+    questionNumber: { type: String, default: "", trim: true },
+    cropIndex: { type: Number, default: null },
+    importBatchId: { type: String, default: "", trim: true },
+    imageVersion: { type: Number, default: 1 },
+    imageHash: { type: String, default: "", trim: true },
+  },
+  { _id: false },
+);
+
 const questionSchema = new Schema(
   {
     id: { type: String, index: true, sparse: true },
+    questionCode: { type: String, unique: true, index: true, sparse: true, trim: true, uppercase: true },
     text: { type: String, default: "", trim: true },
     options: { type: [String], default: [] },
     correctOptionIndex: { type: Number, default: 0 },
     explanation: { type: String, default: "" },
+    hint: { type: String, default: "" },
+    solvingStrategy: { type: String, default: "" },
     videoUrl: { type: String, default: "" },
     imageUrl: { type: String, default: "" },
+    imageAlt: { type: String, default: "" },
+    optionsEmbeddedInImage: { type: Boolean, default: false },
+    aiContext: { type: questionAiContextSchema, default: () => ({}) },
+    sourceMeta: { type: questionSourceMetaSchema, default: () => ({}) },
     skillIds: { type: [String], default: [] },
     skillId: { type: String, default: null },
     subSkillId: { type: String, default: null },
@@ -41,6 +84,7 @@ questionSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, approvalStatus: 1 
 questionSchema.index({ skillIds: 1, difficulty: 1 });
 questionSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
 questionSchema.index({ examType: 1, source: 1, year: -1, approvalStatus: 1 });
+questionSchema.index({ "sourceMeta.documentCode": 1, "sourceMeta.page": 1, "sourceMeta.questionNumber": 1 });
 questionSchema.index({ subject: 1, approvalStatus: 1, updatedAt: -1 });
 
 export const QuestionModel = mongoose.model("Question", questionSchema);
