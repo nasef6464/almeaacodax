@@ -1361,9 +1361,21 @@ aiRouter.post(
       Array.isArray((question as any)?.skillIds) ? (question as any).skillIds.map(String) : [],
     );
     const skills = skillIds.length
-      ? await SkillModel.find(buildDocumentsByIdsQuery(skillIds)).select("id name").lean()
+      ? await SkillModel.find({
+          $or: [
+            buildDocumentsByIdsQuery(skillIds),
+            { "subSkills.id": { $in: skillIds } },
+          ],
+        }).select("id name subSkills").lean()
       : [];
-    const skillLabels = skills.map((skill: any) => String(skill.name || "")).filter(Boolean);
+    const skillLabels = uniqueNonEmpty(
+      skills.flatMap((skill: any) => [
+        ...(skillIds.includes(String(skill.id || skill._id || "")) ? [String(skill.name || "")] : []),
+        ...((Array.isArray(skill.subSkills) ? skill.subSkills : [])
+          .filter((subSkill: any) => skillIds.includes(String(subSkill?.id || "")))
+          .map((subSkill: any) => String(subSkill?.name || ""))),
+      ]),
+    );
 
     const owner = (result as any).schoolId
       ? null
