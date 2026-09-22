@@ -240,6 +240,7 @@ questionBankRouter.post(
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const draftPayload = questionBaseSchema.parse(req.body);
+    await assertManagedContentScope(req.authUser!, draftPayload);
     const canonicalSkills = await resolveCanonicalQuestionSkillIds(draftPayload);
     if (!canonicalSkills.ok) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: canonicalSkills.message });
@@ -338,6 +339,7 @@ questionBankRouter.patch(
       ...existing.toObject(),
       ...payload,
     };
+    await assertManagedContentScope(req.authUser!, mergedDraft);
     const canonicalSkills = await resolveCanonicalQuestionSkillIds(mergedDraft);
     if (!canonicalSkills.ok) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: canonicalSkills.message });
