@@ -22,6 +22,16 @@ const questionAiContextSchema = new Schema(
   { _id: false },
 );
 
+const questionVoiceExplanationSchema = new Schema(
+  {
+    text: { type: String, default: "", trim: true },
+    audioUrl: { type: String, default: "", trim: true },
+    audioMimeType: { type: String, default: "", trim: true },
+    version: { type: Number, default: 1 },
+  },
+  { _id: false },
+);
+
 const questionSourceMetaSchema = new Schema(
   {
     documentCode: { type: String, default: "", trim: true },
@@ -51,6 +61,7 @@ const questionSchema = new Schema(
     imageAlt: { type: String, default: "" },
     optionsEmbeddedInImage: { type: Boolean, default: false },
     aiContext: { type: questionAiContextSchema, default: () => ({}) },
+    voiceExplanation: { type: questionVoiceExplanationSchema, default: () => ({}) },
     sourceMeta: { type: questionSourceMetaSchema, default: () => ({}) },
     skillIds: { type: [String], default: [] },
     skillId: { type: String, default: null },
