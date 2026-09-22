@@ -65,7 +65,8 @@ check('coverage exposes exact per-skill and per-section counts from the same ful
     '$facet',
     'skillCounts:',
     'sectionCounts:',
-    'skillQuestionCounts: toCountMap(result?.skillCounts)',
+    'const skillQuestionCounts = toCountMap(result?.skillCounts)',
+    'skillQuestionCounts,',
     'sectionQuestionCounts: toCountMap(result?.sectionCounts)',
   ]) {
     assert.ok(coverage.includes(fragment), `questionBankCoverage lost ${fragment}`);
