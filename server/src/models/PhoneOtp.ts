@@ -4,7 +4,7 @@ const phoneOtpSchema = new Schema(
   {
     phone: { type: String, required: true, index: true },
     codeHash: { type: String, required: true },
-    expiresAt: { type: Number, required: true, index: true },
+    expiresAt: { type: Number, required: true },
     attempts: { type: Number, default: 0 },
     usedAt: { type: Number, default: null },
     channel: { type: String, enum: ["whatsapp"], default: "whatsapp" },
