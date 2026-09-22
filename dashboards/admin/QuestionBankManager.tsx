@@ -503,7 +503,31 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   const downloadQuestionsExport = async () => {
     const XLSX = await loadXlsx();
-    const questionRows = filteredQuestions.map((question) => {
+    const exportIds = filteredQuestions
+      .map((question) => String(question.id || (question as Question & { _id?: string })._id || '').trim())
+      .filter(Boolean);
+    let exportQuestions = filteredQuestions;
+    if (exportIds.length > 0) {
+      try {
+        const fullRows = await api.getQuestions({
+          ids: exportIds.join(','),
+          limit: Math.min(100, exportIds.length),
+          noTotal: true,
+        });
+        const fullById = new Map(
+          (fullRows as Question[]).map((question) => [
+            String(question.id || (question as Question & { _id?: string })._id || ''),
+            question,
+          ]),
+        );
+        exportQuestions = filteredQuestions.map((question) =>
+          fullById.get(String(question.id || (question as Question & { _id?: string })._id || '')) || question,
+        );
+      } catch (error) {
+        console.warn('Could not hydrate full question rows for export; using visible rows.', error);
+      }
+    }
+    const questionRows = exportQuestions.map((question) => {
       const pathName = paths.find((path) => path.id === question.pathId)?.name || '';
       const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || '';
       const mainSkillName = sections.find((section) => section.id === question.sectionId)?.name || '';
