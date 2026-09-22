@@ -143,3 +143,12 @@ The exact deployed SHA and core PR gates are strong, but Batch 15 remains open u
 6. Establish required `main` protection/checks through repository administration.
 7. Run production-like staged performance certification before any 500/1000-user capacity claim.
 8. Produce the final Batch 15 evidence table and only then assign the release label.
+
+## 2026-09-22 production closure update after PR #226
+
+- `main`, Vercel Production and Render are aligned on `6f1fab225216368333c30e225bc9b250a01851aa`.
+- Production Operational Smoke is now **GREEN** on that exact release.
+- The previous learner question-reference false positives were fixed by resolving both logical question IDs and Mongo `_id` aliases in the production smoke.
+- Sentry live proof remains **BLOCKED** with HTTP 412 because production has no `SENTRY_DSN` configured.
+- Verified MongoDB/R2 backup and isolated-restore tooling exists, but repository tooling is not equivalent to a live scheduled backup, off-site copy, restore drill or measured RPO/RTO.
+- The top-level production backup guide has been hardened to point only to the verified backup/restore path.
