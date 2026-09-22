@@ -1787,7 +1787,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1 max-w-[200px]">
                         {question.skillIds?.map((skillId) => {
-                          const subSkill = skills.find((skill) => skill.id === skillId);
+                          const subSkill = nestedSubSkills.find((item) => item.id === skillId);
                           return subSkill ? (
                             <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold border border-indigo-100/60">
                               {subSkill.name}
@@ -2043,10 +2043,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   <div className="mt-3 flex flex-wrap gap-2">
                     {(previewQuestion.skillIds || []).length > 0 ? (
                       previewQuestion.skillIds!.map((skillId) => {
-                        const skill = skills.find((item) => item.id === skillId);
-                        return skill ? (
+                        const subSkill = nestedSubSkills.find((item) => item.id === skillId);
+                        return subSkill ? (
                           <span key={skillId} className="rounded-full bg-white px-3 py-1 text-xs font-black text-gray-700 shadow-sm">
-                            {skill.name}
+                            {subSkill.name}
                           </span>
                         ) : null;
                       })
