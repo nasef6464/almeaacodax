@@ -83,7 +83,8 @@ check("AI question generation is staff-only and review-first", () => {
   assertIncludes(files.aiService, "api.aiQuestion({ topic })");
   assertIncludes(files.questionBank, "onClick={handleCreateAiDraft}");
   assertIncludes(files.questionBank, "resetEditorQuestion('draft')");
-  assertIncludes(files.questionBank, "skillIds: selectedSkillId ? [selectedSkillId] : []");
+  assertIncludes(files.questionBank, "skillIds: [");
+  assertIncludes(files.questionBank, "selectedSkillId ? [selectedSkillId] : []");
   assertIncludes(files.questionBank, "generateOnOpen={generateAiDraftOnOpen}");
   assertIncludes(files.questionBuilder, "generateOnOpen?: boolean;");
   assertIncludes(files.questionBuilder, "void handleGenerateWithFeedback();");
