@@ -69,8 +69,9 @@ check('question bank mutations remain scoped and workflow-safe', () => {
 });
 
 check('learner summary responses are sanitized before caching', () => {
-  assert.ok(questionRoutes.includes('const summaryItems = limitedItems.map((item) => ({'));
-  assert.ok(questionRoutes.includes('summaryItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>))'));
+  assert.ok(questionRoutes.includes('buildQuestionResponseItems('));
+  assert.ok(questionPresentation.includes('options.summary'));
+  assert.ok(questionPresentation.includes('sanitizeQuestionForLearner(item)'));
   assert.ok(questionPresentation.includes('correctOptionIndex,'));
   assert.ok(questionPresentation.includes('explanation,'));
   assert.ok(questionPresentation.includes('aiContext,'));
