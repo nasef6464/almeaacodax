@@ -45,6 +45,7 @@ export const buildQuizSubmissionAnswerReview = ({
       explanation: question.explanation || "",
       videoUrl: question.videoUrl || "",
       imageUrl: question.imageUrl || "",
+      voiceExplanation: question.voiceExplanation || undefined,
       isCorrect,
     };
   });

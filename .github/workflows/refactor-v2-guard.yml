@@ -126,6 +126,9 @@ jobs:
       - name: Question pilot import contract
         run: node scripts/smoke-question-pilot-import-contract.mjs
 
+      - name: Question voice explanation contract
+        run: npm run smoke:question-voice-explanation
+
       - name: Adaptive skill progress performance contract
         run: node scripts/smoke-adaptive-skill-progress-performance-contract.mjs
 
