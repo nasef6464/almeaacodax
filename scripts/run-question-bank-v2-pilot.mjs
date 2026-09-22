@@ -122,15 +122,43 @@ if (mode === "prepare") {
   process.exit(0);
 }
 
+let activeCsrfToken = process.env.PILOT_CSRF_TOKEN?.trim() || "";
+let activeCsrfCookie = process.env.PILOT_CSRF_COOKIE?.trim() || "";
+
+const ensureCsrf = async () => {
+  if (activeCsrfToken && activeCsrfCookie) return;
+  try {
+    const csrfRes = await fetch(`${apiBase}/auth/csrf-token`, { signal: AbortSignal.timeout(10_000) });
+    if (csrfRes.ok) {
+      const data = await csrfRes.json();
+      if (!activeCsrfToken) activeCsrfToken = data?.csrfToken || "";
+      if (!activeCsrfCookie) {
+        const setCookie = csrfRes.headers.get("set-cookie") || "";
+        const match = setCookie.match(/almeaa_csrf_token=([^;]+)/);
+        activeCsrfCookie = match ? `almeaa_csrf_token=${match[1]}` : setCookie.split(";")[0];
+      }
+    }
+  } catch {
+    // Non-fatal if server does not enforce csrf
+  }
+};
+
 const request = async (requestPath, options = {}) => {
+  const method = String(options.method || "GET").toUpperCase();
+  if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+    await ensureCsrf();
+  }
+  const headers = {
+    accept: "application/json",
+    ...(adminToken ? { authorization: `Bearer ${adminToken}` } : {}),
+    ...(activeCsrfToken ? { "x-csrf-token": activeCsrfToken } : {}),
+    ...(activeCsrfCookie ? { cookie: activeCsrfCookie } : {}),
+    ...(options.body ? { "content-type": "application/json" } : {}),
+    ...(options.headers || {}),
+  };
   const response = await fetch(`${apiBase}${requestPath}`, {
     ...options,
-    headers: {
-      accept: "application/json",
-      authorization: `Bearer ${adminToken}`,
-      ...(options.body ? { "content-type": "application/json" } : {}),
-      ...(options.headers || {}),
-    },
+    headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
     signal: AbortSignal.timeout(30_000),
   });

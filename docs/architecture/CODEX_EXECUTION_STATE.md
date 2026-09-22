@@ -1,5 +1,28 @@
 # ALMEAA — Codex Execution State
 
+## Question Bank V2 — Quantitative Pilot 40 Ingestion & Content-Addressed R2 Verification
+
+- Status: `VERIFIED / PILOT RUNTIME INGESTED` on 2026-09-22.
+- Batch ID: `QBANK-COL2627-PILOT40-20260922-V1`
+- Subject: `sub_1777779748206` (القسم الكمي) | Path: `p_1777779639431` (مسار القدرات العامة)
+- Scope Delivered:
+  1. **Pilot Dry-Run (40/40 PASS):**
+     - Verified all 40 lossless WebP images, SHA-256 digests, and canonical source metadata against the live API on Render (`https://almeaacodax-codex.onrender.com/api`).
+     - Obtained 40 valid presigned upload intents with content-addressed keys (`/questions/v2/${questionCode}/${imageHash}.webp`).
+     - Executed dry-run batch ingestion: 0 conflicts, 0 duplicate codes, 0 hash mismatches.
+  2. **Canary Ingestion (5/5 PASS):**
+     - Ingested first 5 questions with WebP image uploads to Cloudflare R2 bucket `almeaa-media`.
+     - Read-only runtime verification confirmed 5 draft questions, 0 linked quizzes, 0 public exposure.
+  3. **Full Batch Ingestion (35/35 PASS -> 40/40 Total):**
+     - Ingested remaining 35 questions with WebP uploads to Cloudflare R2.
+     - Confirmed question `QDR-QNT-COL2627-P037-Q30` (corrected from temporary P060-Q01) is cleanly stored with canonical provenance.
+  4. **Runtime Draft Isolation Verification:**
+     - Verified entire 40-question batch via `/quizzes/questions/import-batch/QBANK-COL2627-PILOT40-20260922-V1`.
+     - Confirmed 40 drafts, 0 linked quizzes, 0 integrity issues.
+     - Confirmed draft isolation: visible to admin (40), hidden from unauthenticated/learner queries (0).
+
+
+
 
 ## Authentication & Integrations — Bridge Google OAuth to Platform Integration Settings
 
