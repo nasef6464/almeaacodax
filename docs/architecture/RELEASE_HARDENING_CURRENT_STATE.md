@@ -1,5 +1,35 @@
 # ALMEAA — Release Hardening Current State
 
+## 2026-09-22 — Superseding production-closure checkpoint
+
+> This checkpoint supersedes the older Batch 1/2 status below for **current execution state**. The historical entries are retained as evidence of how the hardening program progressed.
+
+- Current production baseline: `main @ 71da69db7ef95ff8fe6312848c555ae7a3f01c94`.
+- Adaptive/Mastery Phases 0–11: complete under their separate certification evidence; do not reopen without a reproduced regression.
+- Release-hardening Batches 0–14: the implementation history has advanced far beyond the historical Batch 2 section below; current GitHub/main and live evidence are authoritative.
+- Batch 15 — Final Production Certification: **IN PROGRESS / NOT CLOSED**.
+- Active closure task: **ALM-PRD-001 — Final Product & Production Closure**.
+- Active branch: `chatgpt/alm-prd-001-production-closure`.
+- Detailed current evidence: `docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md`.
+
+### Current verified facts
+
+- GitHub `main`, Vercel production and Render production backend were verified on the same SHA `71da69db7ef95ff8fe6312848c555ae7a3f01c94`.
+- Pull-request gates on the student-dashboard release were green, but the live Post Deploy Smoke still fails an operational learner-content reference check.
+- Production read-only inspection found two visible topic-linked drills with zero resolvable question references and one 60-question mock exam with 12 missing references.
+- ALM-PRD-001 hardens the learner catalog so stale/missing question IDs are not returned to learners and adds a read-only integrity audit. It does not silently mutate production data.
+- `main` remains unprotected with required-check enforcement off.
+- Full live Mongo/R2 restore evidence and measured RPO/RTO remain open.
+- 500/1000-user production-equivalent performance remains unproven.
+
+### Current release label
+
+**NOT YET PRODUCTION CERTIFIED.**
+
+Next exact action: complete exact-head CI for ALM-PRD-001, then deploy and re-run live operational evidence before repairing any production content references.
+
+---
+
 ## 2026-09-17 — Batch 1 complete; Batch 2 in progress
 
 - Canonical references: `ALMEAA_SYSTEM_MAP.md` first, then `RELEASE_HARDENING_EXECUTION_PLAN.md`.

@@ -284,6 +284,8 @@ jobs:
         run: npm run smoke:production-audit
       - name: Real usage readiness
         run: npm run smoke:real-usage-readiness
+      - name: Learner reference audit stays read-only
+        run: npm run smoke:learner-reference-audit-contract
       - name: Health readiness contract
         run: npm run smoke:health-readiness
       - name: Deployment cache contract

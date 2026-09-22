@@ -46,7 +46,9 @@
     "backup:learning": "tsx src/scripts/backupLearningContent.ts",
     "restore:learning": "tsx src/scripts/restoreLearningContent.ts",
     "migrate:question-inline-images:r2": "tsx src/scripts/migrateQuestionInlineImagesToR2.ts",
-    "audit:foundation-skill-mapping": "tsx src/scripts/auditFoundationSkillMapping.ts"
+    "audit:foundation-skill-mapping": "tsx src/scripts/auditFoundationSkillMapping.ts",
+    "audit:learner-references": "tsx src/scripts/auditLearnerReferenceIntegrity.ts",
+    "repair:learner-references": "tsx src/scripts/repairLearnerReferenceIntegrity.ts"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",

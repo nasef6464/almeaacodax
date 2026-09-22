@@ -48,7 +48,10 @@ check("learner quiz listing excludes unusable quizzes", () => {
   assertIncludes(quizRoutesSource, "learnerAudience: learnerAudienceForCatalog");
   assertIncludes(learnerQuizCatalogSource, "const filterLearnerSafeQuizzes = async");
   assertIncludes(learnerQuizCatalogSource, "isQuizTargetedToLearner(quiz, learnerAudience)");
-  assertIncludes(learnerQuizCatalogSource, "getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)");
+  assertIncludes(learnerQuizCatalogSource, "const sanitizeLearnerQuizQuestionRefs =");
+  assertIncludes(learnerQuizCatalogSource, "const safeQuestionIds = getQuizQuestionIds(quiz).filter(isUsableQuestionId);");
+  assertIncludes(learnerQuizCatalogSource, ".filter((section: any) => section.questionIds.length > 0)");
+  assertIncludes(learnerQuizCatalogSource, "getQuizQuestionIds(sanitizedQuiz).length === 0");
   assertIncludes(learnerQuizCatalogSource, "const aliases = uniqueStrings([");
   assertIncludes(learnerQuizCatalogSource, "question._id ? String(question._id) :");
 });
