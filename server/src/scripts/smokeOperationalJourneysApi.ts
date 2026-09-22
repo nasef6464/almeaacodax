@@ -255,6 +255,31 @@ function asArray(value: unknown): any[] {
   return [];
 }
 
+async function requestAllQuizCatalog(token: string) {
+  const pageSize = 200;
+  const quizzesById = new Map<string, any>();
+
+  for (let page = 1; page <= 25; page += 1) {
+    const payload = await request<any>(
+      `/quizzes?page=${page}&limit=${pageSize}&noTotal=true`,
+      "GET",
+      undefined,
+      token,
+    );
+    const batch = asArray(payload);
+    batch.forEach((quiz) => {
+      const id = String(quiz?.id || quiz?._id || "").trim();
+      if (id) quizzesById.set(id, quiz);
+    });
+
+    if (batch.length < pageSize) {
+      break;
+    }
+  }
+
+  return Array.from(quizzesById.values());
+}
+
 function hasItemById(items: any[] | undefined, expectedId: string) {
   return asArray(items).some((item: any) => String(item.id || item._id || "") === expectedId);
 }
@@ -444,9 +469,9 @@ async function run() {
     request<any[]>("/quizzes", "GET", undefined, teacher.token),
     request<any[]>("/quizzes/questions", "GET", undefined, student.token),
     request<any[]>("/courses", "GET", undefined, student.token),
-    request<any[]>("/quizzes", "GET", undefined, student.token),
+    requestAllQuizCatalog(student.token),
     request<any[]>("/courses", "GET", undefined, studentRedeemed.token),
-    request<any[]>("/quizzes", "GET", undefined, studentRedeemed.token),
+    requestAllQuizCatalog(studentRedeemed.token),
     request<any[]>("/quizzes/results", "GET", undefined, student.token),
     request<any>("/quizzes/analytics/overview", "GET", undefined, teacher.token),
     request<any>("/quizzes/analytics/overview", "GET", undefined, supervisor.token),

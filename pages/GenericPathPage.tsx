@@ -11,6 +11,7 @@ import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, is
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 import { getLevelIcon, getSubjectIcon } from '../dashboards/admin/PathsManager/pathDisplayPresentation';
+import { adapter } from '../services/adapter';
 
 const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
 const LightweightModalFallback = () => null;
@@ -92,7 +93,7 @@ export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hasScopedPackageAccess, checkAccess } = useStore();
+    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hydrateQuizzes, hasScopedPackageAccess, checkAccess } = useStore();
 
     const initialLevelId = searchParams.get('level') || null;
     const initialSubjectId = searchParams.get('subject') || null;
@@ -156,6 +157,54 @@ export const GenericPathPage: React.FC = () => {
             navigate(`/category/${resolvedPathId}${window.location.search || ''}`, { replace: true });
         }
     }, [navigate, pathId, resolvedPathId]);
+
+    useEffect(() => {
+        if (!path?.id || !selectedSubjectId) {
+            return;
+        }
+
+        const scopedSubjectId = resolveSubjectId(selectedSubjectId);
+        if (!scopedSubjectId) {
+            return;
+        }
+
+        let cancelled = false;
+        const loadScopedQuizCatalog = async () => {
+            const pageSize = 200;
+            const scopedQuizzes: any[] = [];
+
+            for (let page = 1; page <= 25; page += 1) {
+                const batch = await adapter.getQuizzes({
+                    page,
+                    limit: pageSize,
+                    pathId: path.id,
+                    subjectId: scopedSubjectId,
+                });
+                scopedQuizzes.push(...batch);
+                if (batch.length < pageSize) {
+                    break;
+                }
+            }
+
+            if (cancelled || scopedQuizzes.length === 0) {
+                return;
+            }
+
+            const merged = new Map(
+                useStore.getState().quizzes.map((quiz) => [quiz.id, quiz] as const),
+            );
+            scopedQuizzes.forEach((quiz) => merged.set(quiz.id, quiz));
+            hydrateQuizzes(Array.from(merged.values()));
+        };
+
+        void loadScopedQuizCatalog().catch((error) => {
+            console.warn('Scoped quiz catalog unavailable:', error);
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [path?.id, selectedSubjectId, pathSubjects.length, hydrateQuizzes]);
 
     useEffect(() => {
         if (!path?.id) {
