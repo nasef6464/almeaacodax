@@ -123,6 +123,9 @@ jobs:
       - name: Question bank HTTP boundary contract
         run: node scripts/smoke-question-bank-http-boundary-contract.mjs
 
+      - name: Question pilot import contract
+        run: node scripts/smoke-question-pilot-import-contract.mjs
+
       - name: Adaptive skill progress performance contract
         run: node scripts/smoke-adaptive-skill-progress-performance-contract.mjs
 
