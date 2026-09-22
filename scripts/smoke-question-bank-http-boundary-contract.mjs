@@ -9,6 +9,9 @@ const read = (relativePath) =>
 const rootRoutes = read('server/src/routes/quiz.routes.ts');
 const questionRoutes = read('server/src/modules/quizzes/http/questionBankRoutes.ts');
 const queryHelpers = read('server/src/modules/quizzes/infrastructure/quizDocumentQuery.ts');
+const questionSchemas = read('server/src/modules/quizzes/http/questionQuerySchemas.ts');
+const questionPresentation = read('server/src/modules/quizzes/presentation/questionPresentation.ts');
+const questionModel = read('server/src/models/Question.ts');
 
 const checks = [];
 const check = (name, assertion) => {
@@ -35,6 +38,23 @@ check('question bank public HTTP surface is preserved', () => {
     'questionBankRouter.patch(\n  "/questions/:id",',
     'questionBankRouter.delete(\n  "/questions/:id",',
   ]) assert.ok(questionRoutes.includes(fragment), `missing question bank route ${fragment}`);
+});
+
+check('question bank V2 keeps stable codes and AI metadata protected', () => {
+  for (const fragment of [
+    'questionCode: { type: String, unique: true',
+    'aiContext: { type: questionAiContextSchema',
+    'sourceMeta: { type: questionSourceMetaSchema',
+    'assignStableQuestionIdentity',
+  ]) assert.ok(questionModel.includes(fragment), `question model lost ${fragment}`);
+
+  assert.ok(questionSchemas.includes('export const questionVideoLinksSchema'));
+  assert.ok(questionRoutes.includes('"/questions/video-links"'));
+  assert.ok(questionRoutes.includes('"questionCode is immutable once assigned"'));
+
+  for (const hiddenField of ['hint,', 'solvingStrategy,', 'aiContext,', 'sourceMeta,']) {
+    assert.ok(questionPresentation.includes(hiddenField), `learner sanitizer lost ${hiddenField}`);
+  }
 });
 
 check('question bank mutations remain scoped and workflow-safe', () => {
