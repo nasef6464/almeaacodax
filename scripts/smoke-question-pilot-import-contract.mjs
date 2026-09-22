@@ -13,6 +13,7 @@ const questionModel = read("server/src/models/Question.ts");
 const questionSchemas = read("server/src/modules/quizzes/http/questionQuerySchemas.ts");
 const mediaRoutes = read("server/src/routes/media.routes.ts");
 const importImageUpload = read("server/src/modules/media/application/questionImportImageUpload.ts");
+const pilotRunner = read("scripts/run-question-bank-v2-pilot.mjs");
 
 const checks = [];
 const check = (name, assertion) => {
@@ -89,6 +90,18 @@ check("canonical provenance survives the production question contract", () => {
     "printedPageNumber: z.number().int().min(1)",
     "printedQuestionNumber: z.number().int().min(0)",
   ]) includes(questionSchemas, fragment);
+});
+
+check("pilot runner fails closed and separates dry-run from write modes", () => {
+  includes(pilotRunner, 'QUESTION_PILOT_MODE');
+  includes(pilotRunner, 'PILOT_ALLOW_EXTERNAL_RUN !== "YES"');
+  includes(pilotRunner, 'PILOT_WRITE_AUTHORIZATION !== "YES"');
+  includes(pilotRunner, 'mode === "canary"');
+  includes(pilotRunner, 'mode === "full"');
+  includes(pilotRunner, 'dryRun: true');
+  includes(pilotRunner, 'dryRun: false');
+  includes(pilotRunner, 'verified.slice(0, 5)');
+  includes(pilotRunner, 'verified.slice(5)');
 });
 
 check("pilot R2 image upload is admin-only, WebP-only and content-addressed", () => {
