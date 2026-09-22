@@ -530,6 +530,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         النوع: question.type,
         'رابط الشرح': question.videoUrl || '',
         'شرح نصي': question.explanation || '',
+        'نص الشرح الصوتي': question.voiceExplanation?.text || '',
+        'رابط الشرح الصوتي': question.voiceExplanation?.audioUrl || '',
         'حالة الاعتماد': getStatusMeta(question).label,
       };
     });
@@ -610,6 +612,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         النوع: 'mcq',
         'رابط الشرح': 'https://www.youtube.com/watch?v=example',
         'شرح نصي': 'نجمع 2 + 2 فنحصل على 4.',
+        'نص الشرح الصوتي': 'بص يا بطل، هنا نجمع اثنين زائد اثنين فنحصل على أربعة.',
+        'رابط الشرح الصوتي': '',
       },
     ];
 
@@ -620,6 +624,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       { البيان: 'الإجابة الصحيحة', التوضيح: 'يمكن كتابة أ، ب، ج، د أو A، B، C، D أو نص الاختيار نفسه.' },
       { البيان: 'الصعوبة', التوضيح: 'سهل، متوسط، صعب.' },
       { البيان: 'النوع', التوضيح: 'mcq أو true_false أو essay.' },
+      { البيان: 'الشرح الصوتي', التوضيح: 'يمكن إدخال نص شرح صوتي يدوي أو رابط تسجيل صوتي HTTPS؛ التسجيل الصوتي له الأولوية عند المراجعة.' },
     ];
 
     const workbook = XLSX.utils.book_new();
@@ -783,6 +788,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     const skillName = readCell(row, ['المهارة الفرعية', 'skill', 'subSkill']);
     const explanationLink = readCell(row, ['رابط الشرح', 'videoUrl', 'explanationVideo']);
     const explanationText = readCell(row, ['شرح نصي', 'الشرح', 'explanation']);
+    const voiceExplanationText = readCell(row, ['نص الشرح الصوتي', 'voiceExplanationText', 'voice_text']);
+    const voiceExplanationAudioUrl = readCell(row, ['رابط الشرح الصوتي', 'voiceExplanationAudioUrl', 'voice_audio_url']);
     const typeValue = readCell(row, ['النوع', 'type', 'questionType']);
     const optionA = readCell(row, ['الاختيار أ', 'الاختيار ا', 'الاختيار A', 'optionA', 'A']);
     const optionB = readCell(row, ['الاختيار ب', 'الاختيار B', 'optionB', 'B']);
@@ -895,6 +902,15 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       correctOptionIndex,
       explanation: explanationText,
       videoUrl: explanationLink || undefined,
+      voiceExplanation:
+        voiceExplanationText || voiceExplanationAudioUrl
+          ? {
+              text: voiceExplanationText,
+              audioUrl: voiceExplanationAudioUrl,
+              audioMimeType: '',
+              version: 1,
+            }
+          : undefined,
       skillIds: [
         ...new Set([
           matchedMainSkill.id,
