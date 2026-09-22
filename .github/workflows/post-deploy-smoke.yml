@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,6 +37,32 @@ jobs:
 
       - name: Install server dependencies
         run: npm --prefix server ci
+
+      - name: Classify frontend deployment requirement
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git rev-parse HEAD^ >/dev/null 2>&1; then
+            echo "SMOKE_REQUIRE_FRONTEND_VERSION=1" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          mapfile -t changed < <(git diff --name-only HEAD^ HEAD)
+          require_frontend=0
+          for path in "${changed[@]}"; do
+            case "$path" in
+              docs/*|.github/*|scripts/smoke-*.mjs|README*|*.md)
+                ;;
+              *)
+                require_frontend=1
+                break
+                ;;
+            esac
+          done
+
+          echo "Changed files:"
+          printf ' - %s\n' "${changed[@]}"
+          echo "SMOKE_REQUIRE_FRONTEND_VERSION=$require_frontend" >> "$GITHUB_ENV"
 
       - name: Frontend strict smoke
         run: npm run smoke:frontend:strict
