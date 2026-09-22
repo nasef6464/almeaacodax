@@ -1090,7 +1090,7 @@ const Dashboard: React.FC = () => {
                         }`
                 }`}
             >
-                <div className="flex items-center gap-3">
+                <div className="flex min-w-0 items-center gap-3">
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors ${
                         isOverview
                             ? 'bg-white/65 text-indigo-800 shadow-2xs'
@@ -1100,7 +1100,7 @@ const Dashboard: React.FC = () => {
                     }`}>
                         {item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <span className="whitespace-nowrap">{item.label}</span>
                 </div>
                 {isOverview && (
                     <ChevronLeft
@@ -1141,7 +1141,7 @@ const Dashboard: React.FC = () => {
 
             {/* Sidebar Navigation */}
             <aside className={`
-                fixed lg:sticky top-20 right-0 bottom-0 w-64 bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto h-[calc(100vh-5rem)]
+                fixed lg:sticky top-20 right-0 bottom-0 w-72 max-w-[calc(100vw-1rem)] bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto h-[calc(100vh-5rem)]
                 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
             `}>
                 <div className="p-6">
@@ -1298,7 +1298,7 @@ const Dashboard: React.FC = () => {
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 p-4 lg:p-8 w-full max-w-[100vw] lg:max-w-[calc(100vw-16rem)]">
+            <main className="flex-1 p-4 lg:p-8 w-full max-w-[100vw] lg:max-w-[calc(100vw-18rem)]">
                 <div className="max-w-5xl mx-auto">
                     {renderContent()}
                 </div>
