@@ -69,6 +69,7 @@
         "smoke:package-path-navigation": "node scripts/smoke-package-path-navigation-contract.mjs",
         "smoke:foundation-course-details": "node scripts/smoke-foundation-course-details-contract.mjs",
         "smoke:real-usage-readiness": "node scripts/smoke-real-usage-readiness-contract.mjs",
+        "smoke:learner-reference-audit-contract": "node scripts/smoke-learner-reference-audit-contract.mjs",
         "smoke:payment-providers": "node scripts/smoke-payment-provider-readiness-contract.mjs",
         "smoke:payment-tampering": "node scripts/smoke-payment-tampering-contract.mjs",
         "smoke:direct-unlock-cleanup": "node scripts/smoke-direct-unlock-cleanup-contract.mjs",

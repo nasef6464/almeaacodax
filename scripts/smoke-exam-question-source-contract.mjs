@@ -155,7 +155,8 @@ check('learner quiz lists are audience-scoped and never share a public cache acr
   assertIncludes(quizRoutesSource, 'learnerAudience: learnerAudienceForCatalog');
   assertIncludes(learnerQuizCatalogSource, 'const isQuizTargetedToLearner =');
   assertIncludes(learnerQuizCatalogSource, 'isQuizTargetedToLearner(quiz, learnerAudience)');
-  assertIncludes(learnerQuizCatalogSource, 'getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)');
+  assertIncludes(learnerQuizCatalogSource, 'const sanitizedQuiz = sanitizeLearnerQuizQuestionRefs(quiz, usableById)');
+  assertIncludes(learnerQuizCatalogSource, 'getQuizQuestionIds(sanitizedQuiz).length === 0');
 });
 
 check('quiz submission result response delegates non-critical side effects', () => {
