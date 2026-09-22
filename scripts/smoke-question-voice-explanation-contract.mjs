@@ -107,7 +107,7 @@ check("post-result review plays teacher audio or reads manual teacher text", () 
 check("question assistant prioritizes teacher-authored explanation after submission", () => {
   includes(aiRoutes, "teacherVoiceExplanation");
   includes(aiRoutes, "teacherVoiceExplanation || review?.explanation");
-  includes(aiRoutes, "voiceExplanation updatedAt");
+  includes(aiRoutes, "voiceExplanation?.version");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
