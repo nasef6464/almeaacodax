@@ -1,3 +1,8 @@
+> **TUTOR-X Integration Notice — 2026-09-22**
+> المرجع التنفيذي/المعماري الحاكم للتكامل مع الموقع، تقسيم الموديلات، الباندويث، التوكنز، الكاش، التكلفة، والـQuality Gates هو:
+> `docs/architecture/TUTOR_X_PLATFORM_INTEGRATION_MASTER_PLAN_AR.md`
+> ولأي مطور/Agent يبدأ العمل: `docs/architecture/TUTOR_X_AGENT_ENTRY_AR.md`
+
 # TUTOR-01 — خطة المعلم الشخصي الذكي لكل طالب
 
 **الحالة:** PLAN ONLY — لا تغييرات تشغيلية  
