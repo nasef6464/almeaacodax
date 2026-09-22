@@ -828,42 +828,46 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     const requestedSkillIds = splitSkillNames(skillIdsValue);
     const requestedSkillNames = splitSkillNames(skillName);
+    const subSkillPool = nestedSubSkills.filter(
+      (subSkill) =>
+        subSkill.subjectId === matchedSubject.id &&
+        subSkill.sectionId === matchedSection.id,
+    );
     const matchedSkillsById = requestedSkillIds
-      .map((requestedSkillId) =>
-        skills.find(
-          (skill) =>
-            skill.id === requestedSkillId &&
-            skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id,
-        ),
-      )
-      .filter(Boolean) as typeof skills;
+      .map((requestedSkillId) => subSkillPool.find((subSkill) => subSkill.id === requestedSkillId))
+      .filter(Boolean);
     const matchedSkillsByName = requestedSkillNames
       .map((requestedSkillName) =>
-        skills.find(
-          (skill) =>
-            skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id &&
-            normalizeLookup(skill.name) === normalizeLookup(requestedSkillName),
+        subSkillPool.find(
+          (subSkill) => normalizeLookup(subSkill.name) === normalizeLookup(requestedSkillName),
         ),
       )
-      .filter(Boolean) as typeof skills;
+      .filter(Boolean);
     const matchedSkills = [...matchedSkillsById, ...matchedSkillsByName].filter(
-      (skill, index, allSkills) => allSkills.findIndex((item) => item.id === skill.id) === index,
+      (subSkill, index, allSkills) => allSkills.findIndex((item) => item?.id === subSkill?.id) === index,
+    );
+    const matchedMainSkill = skills.find(
+      (skill) =>
+        skill.subjectId === matchedSubject.id &&
+        skill.sectionId === matchedSection.id,
     );
 
     if (
+      !matchedMainSkill ||
       (requestedSkillIds.length > 0 && matchedSkillsById.length !== requestedSkillIds.length) ||
       (requestedSkillNames.length > 0 && matchedSkillsByName.length !== requestedSkillNames.length) ||
       matchedSkills.length === 0
     ) {
       const missingNames = requestedSkillNames.filter(
-        (requestedSkillName) => !matchedSkillsByName.some((skill) => normalizeLookup(skill.name) === normalizeLookup(requestedSkillName)),
+        (requestedSkillName) =>
+          !matchedSkillsByName.some(
+            (subSkill) => subSkill && normalizeLookup(subSkill.name) === normalizeLookup(requestedSkillName),
+          ),
       );
       const missingIds = requestedSkillIds.filter(
-        (requestedSkillId) => !matchedSkillsById.some((skill) => skill.id === requestedSkillId),
+        (requestedSkillId) => !matchedSkillsById.some((subSkill) => subSkill?.id === requestedSkillId),
       );
-      throw new Error(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || missingIds.join(', ') || skillName || skillIdsValue}" غير موجودة تحت "${sectionName || sectionIdValue}".`);
+      throw new Error(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || missingIds.join(', ') || skillName || skillIdsValue}" غير موجودة تحت "${sectionName || sectionIdValue}" في مركز المهارات الحالي.`);
     }
 
     const { text, imageUrl } = normalizeQuestionContent(questionValue, questionImageValue);
@@ -891,7 +895,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       correctOptionIndex,
       explanation: explanationText,
       videoUrl: explanationLink || undefined,
-      skillIds: [...new Set(matchedSkills.map((skill) => skill.id))],
+      skillIds: [
+        ...new Set([
+          matchedMainSkill.id,
+          ...matchedSkills.map((subSkill) => String(subSkill?.id || '')).filter(Boolean),
+        ]),
+      ],
       pathId: matchedPath.id,
       subject: matchedSubject.id,
       sectionId: matchedSection.id,
