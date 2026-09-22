@@ -357,8 +357,14 @@ export interface QuizQuestionReview {
     correctOptionIndex?: number;
     selectedOptionIndex?: number;
     explanation?: string;
+    hint?: string;
+    solvingStrategy?: string;
     videoUrl?: string;
     imageUrl?: string;
+    imageAlt?: string;
+    optionsEmbeddedInImage?: boolean;
+    aiContext?: QuestionAiContext;
+    sourceMeta?: QuestionSourceMeta;
     isCorrect: boolean;
     timeSpentSeconds?: number;
 }
@@ -566,8 +572,36 @@ export interface PublicBarcodeTestConfig {
     qrPayload?: string;
 }
 
+export interface QuestionMathExpression {
+    latex: string;
+    spokenArabic: string;
+}
+
+export interface QuestionAiContext {
+    readableText?: string;
+    speechText?: string;
+    visualDescription?: string;
+    optionTexts?: string[];
+    mathExpressions?: QuestionMathExpression[];
+    concepts?: string[];
+    requiredData?: string[];
+    version?: number;
+}
+
+export interface QuestionSourceMeta {
+    documentCode?: string;
+    documentTitle?: string;
+    page?: number | null;
+    questionNumber?: string;
+    cropIndex?: number | null;
+    importBatchId?: string;
+    imageVersion?: number;
+    imageHash?: string;
+}
+
 export interface Question extends ContentWorkflow {
     id: string;
+    questionCode?: string;
     text: string;
     passage?: string;
     options: string[];
