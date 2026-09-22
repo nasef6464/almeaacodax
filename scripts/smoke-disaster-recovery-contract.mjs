@@ -7,6 +7,7 @@ const mediaBackup = fs.readFileSync(new URL('./verify-r2-media-backup.sh', impor
 const mediaRestore = fs.readFileSync(new URL('./restore-r2-media-verified.sh', import.meta.url), 'utf8');
 const runbook = fs.readFileSync(new URL('../docs/architecture/DISASTER_RECOVERY_RUNBOOK.md', import.meta.url), 'utf8');
 const productionGuide = fs.readFileSync(new URL('../docs/BACKUP_RESTORE_PRODUCTION.md', import.meta.url), 'utf8');
+const backupManager = fs.readFileSync(new URL('../dashboards/admin/BackupManager.tsx', import.meta.url), 'utf8');
 
 assert.match(backup, /mongodump/);
 assert.match(backup, /--archive=/);
@@ -52,5 +53,10 @@ assert.match(productionGuide, /restore:media:r2/);
 assert.match(productionGuide, /Sentry live proof is blocked/i);
 assert.doesNotMatch(productionGuide, /MONGODB_URI="mongodb\+srv:\/\/\.\.\." bash scripts\/backup-db\.sh/);
 assert.doesNotMatch(productionGuide, /bash scripts\/restore-db\.sh/);
+assert.match(backupManager, /data-testid="backup-schedule-readiness"/);
+assert.match(backupManager, /الجدولة التلقائية غير مفعّلة على بيئة الإنتاج الحالية/);
+assert.match(backupManager, /يتطلب Cron\/Backup service/);
+assert.doesNotMatch(backupManager, /تم تفعيل الجدولة بنجاح!/);
+assert.doesNotMatch(backupManager, /onClick=\{\(\) => alert\(/);
 
 console.log('Disaster recovery contract smoke: PASS');
