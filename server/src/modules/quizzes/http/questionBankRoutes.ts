@@ -319,6 +319,15 @@ questionBankRouter.patch(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
 
+    const existingQuestionCode = String((existing as any).questionCode || "").trim().toUpperCase();
+    const requestedQuestionCode = String((payload as any).questionCode || "").trim().toUpperCase();
+    if (existingQuestionCode && requestedQuestionCode && existingQuestionCode !== requestedQuestionCode) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "questionCode is immutable once assigned",
+        questionCode: existingQuestionCode,
+      });
+    }
+
     const mergedPayload = questionSchema.parse({
       ...existing.toObject(),
       ...payload,
