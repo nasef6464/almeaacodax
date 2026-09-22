@@ -4,7 +4,8 @@ import {
     Clock, TrendingUp, AlertTriangle, Zap, Sparkles, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
-    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon, Calculator
+    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon, Calculator,
+    GraduationCap, Wrench, Headphones
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -924,30 +925,30 @@ const Dashboard: React.FC = () => {
         { id: 'school-tests', label: 'الاختبارات المدرسية', icon: <Target size={20} /> },
         { id: 'mock-exams',   label: 'الاختبارات المحاكية', icon: <Star size={20} /> },
         { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
-        { id: 'reports',      label: 'تقاريري',              icon: <PieChart size={20} /> },
-        { id: 'plan',         label: 'خططي',                 icon: <MapIcon size={20} /> },
+        { id: 'reports',      label: 'تقاريري',              icon: <MapIcon size={20} /> },
+        { id: 'plan',         label: 'خططي',                 icon: <PieChart size={20} /> },
         { id: 'favorites',    label: 'مراجعة الأسئلة',      icon: <Heart size={20} /> },
-        { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <BookOpen size={20} /> },
-        { id: 'qa',           label: 'سؤال وجواب',           icon: <HelpCircle size={20} /> },
-        { id: 'requests',     label: 'طلباتي',               icon: <ShoppingCart size={20} /> },
+        { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <Copy size={20} /> },
+        { id: 'qa',           label: 'سؤال وجواب',           icon: <MessageCircle size={20} /> },
+        { id: 'requests',     label: 'طلباتي',               icon: <FileText size={20} /> },
     ];
 
     const studentItemStyles: Record<string, { iconBg: string; iconColor: string; activeBg: string; activeBorder: string; activeText: string }> = {
-        overview:      { iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600',  activeBg: 'bg-indigo-50',  activeBorder: 'border-indigo-200',  activeText: 'text-indigo-700' },
-        paths:         { iconBg: 'bg-blue-50',    iconColor: 'text-blue-600',    activeBg: 'bg-blue-50',    activeBorder: 'border-blue-200',    activeText: 'text-blue-700' },
-        'my-courses':  { iconBg: 'bg-violet-50',  iconColor: 'text-violet-600',  activeBg: 'bg-violet-50',  activeBorder: 'border-violet-200',  activeText: 'text-violet-700' },
-        'smart-path':  { iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600', activeBg: 'bg-emerald-50', activeBorder: 'border-emerald-200', activeText: 'text-emerald-700' },
-        sessions:      { iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600',    activeBg: 'bg-cyan-50',    activeBorder: 'border-cyan-200',    activeText: 'text-cyan-700' },
-        quizzes:       { iconBg: 'bg-amber-50',   iconColor: 'text-amber-600',   activeBg: 'bg-amber-50',   activeBorder: 'border-amber-200',   activeText: 'text-amber-700' },
-        'school-tests':{ iconBg: 'bg-sky-50',     iconColor: 'text-sky-600',     activeBg: 'bg-sky-50',     activeBorder: 'border-sky-200',     activeText: 'text-sky-700' },
-        'mock-exams':  { iconBg: 'bg-purple-50',  iconColor: 'text-purple-600',  activeBg: 'bg-purple-50',  activeBorder: 'border-purple-200',  activeText: 'text-purple-700' },
-        exams:         { iconBg: 'bg-amber-50',   iconColor: 'text-amber-600',   activeBg: 'bg-amber-50',   activeBorder: 'border-amber-200',   activeText: 'text-amber-700' },
-        reports:       { iconBg: 'bg-rose-50',    iconColor: 'text-rose-600',    activeBg: 'bg-rose-50',    activeBorder: 'border-rose-200',    activeText: 'text-rose-700' },
-        plan:          { iconBg: 'bg-teal-50',    iconColor: 'text-teal-600',    activeBg: 'bg-teal-50',    activeBorder: 'border-teal-200',    activeText: 'text-teal-700' },
-        favorites:     { iconBg: 'bg-pink-50',    iconColor: 'text-pink-600',    activeBg: 'bg-pink-50',    activeBorder: 'border-pink-200',    activeText: 'text-pink-700' },
-        flashcards:    { iconBg: 'bg-orange-50',  iconColor: 'text-orange-600',  activeBg: 'bg-orange-50',  activeBorder: 'border-orange-200',  activeText: 'text-orange-700' },
-        qa:            { iconBg: 'bg-amber-50',   iconColor: 'text-amber-700',   activeBg: 'bg-amber-50',   activeBorder: 'border-amber-200',   activeText: 'text-amber-700' },
-        requests:      { iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600', activeBg: 'bg-emerald-50', activeBorder: 'border-emerald-200', activeText: 'text-emerald-700' },
+        overview:      { iconBg: 'bg-white/65',     iconColor: 'text-indigo-800',  activeBg: 'bg-white/35',     activeBorder: 'border-white/60',    activeText: 'text-indigo-950' },
+        paths:         { iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
+        'my-courses':  { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        'smart-path':  { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
+        sessions:      { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
+        quizzes:       { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        'school-tests':{ iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
+        'mock-exams':  { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        exams:         { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        reports:       { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
+        plan:          { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        favorites:     { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        flashcards:    { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        qa:            { iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
+        requests:      { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
     };
 
     const parentMenuItems = [
@@ -1063,6 +1064,7 @@ const Dashboard: React.FC = () => {
         const isItemActive = item.id === 'quizzes'
             ? ['quizzes', 'exams', 'saher'].includes(activeTab)
             : activeTab === item.id;
+        const isOverview = item.id === 'overview';
         const style = studentItemStyles[item.id] || {
             iconBg: 'bg-indigo-50',
             iconColor: 'text-indigo-600',
@@ -1076,25 +1078,37 @@ const Dashboard: React.FC = () => {
                 key={item.id}
                 type="button"
                 onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                className={`w-full flex items-center justify-between px-3.5 py-2 rounded-2xl text-sm transition-all border ${
-                    isItemActive
-                        ? `${style.activeBg} ${style.activeText} font-black ${style.activeBorder} shadow-xs`
-                        : 'border-transparent text-gray-700 font-bold hover:bg-slate-100 hover:text-gray-900'
+                className={`w-full flex items-center justify-between text-sm transition-all border ${
+                    isOverview
+                        ? `rounded-[20px] border-sky-200 bg-gradient-to-l from-sky-200/90 to-blue-100/90 px-3.5 py-2.5 font-black text-indigo-950 shadow-sm ${
+                            isItemActive ? 'ring-2 ring-sky-200/80 ring-offset-1' : 'hover:brightness-[0.99]'
+                        }`
+                        : `rounded-2xl px-3 py-2 ${
+                            isItemActive
+                                ? `${style.activeBg} ${style.activeText} font-black ${style.activeBorder} shadow-xs`
+                                : 'border-transparent text-gray-800 font-bold hover:bg-white/80 hover:text-gray-950'
+                        }`
                 }`}
             >
                 <div className="flex items-center gap-3">
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors ${
-                        isItemActive ? 'bg-white shadow-2xs ' + style.iconColor : style.iconBg + ' ' + style.iconColor
+                        isOverview
+                            ? 'bg-white/65 text-indigo-800 shadow-2xs'
+                            : isItemActive
+                                ? 'bg-white shadow-2xs ' + style.iconColor
+                                : style.iconBg + ' ' + style.iconColor
                     }`}>
                         {item.icon}
                     </span>
                     <span>{item.label}</span>
                 </div>
-                <ChevronLeft
-                    size={16}
-                    className={isItemActive ? 'text-current' : 'text-slate-300'}
-                    aria-hidden="true"
-                />
+                {isOverview && (
+                    <ChevronLeft
+                        size={18}
+                        className="text-indigo-900"
+                        aria-hidden="true"
+                    />
+                )}
             </button>
         );
     };
@@ -1195,64 +1209,73 @@ const Dashboard: React.FC = () => {
                             </>
                         ) : (
                             <>
-                                {/* Group: التعلم */}
-                                <div
-                                    data-testid="student-menu-group-learning"
-                                    className="space-y-1 rounded-[22px] border border-sky-100 bg-white/95 p-2.5 shadow-xs"
-                                >
-                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-sky-50 px-2.5 py-2 text-sm font-black text-sky-800">
-                                        <LayoutDashboard size={17} aria-hidden="true" />
-                                        <span>التعلم</span>
-                                    </div>
-                                    {menuItems.filter(i => ['overview','paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
+                                {/* Primary overview strip */}
+                                <div data-testid="student-menu-overview" className="mb-2.5">
+                                    {menuItems.filter(i => i.id === 'overview').map(renderStudentMenuItem)}
                                 </div>
 
-                                {/* Group: رحلتي التعليمية — visually separated as the learner's core journey */}
+                                {/* Main learning shortcuts — intentionally unlabeled to match the approved compact reference */}
+                                <div
+                                    data-testid="student-menu-group-learning"
+                                    className="space-y-1 rounded-[20px] border border-slate-100 bg-white/95 p-2 shadow-sm"
+                                >
+                                    {menuItems.filter(i => ['paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
+
+                                {/* Group: رحلتي التعليمية */}
                                 <div
                                     data-testid="student-menu-group-journey"
-                                    className="mt-3 space-y-1 rounded-[22px] border border-emerald-200/80 bg-gradient-to-b from-emerald-100/75 to-emerald-50/65 p-2.5 shadow-sm"
+                                    className="mt-3 rounded-[22px] border border-emerald-200/80 bg-gradient-to-b from-emerald-100/90 to-emerald-50/80 p-2.5 shadow-sm"
                                 >
-                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-emerald-100/80 px-2.5 py-2 text-sm font-black text-emerald-800">
-                                        <Brain size={18} aria-hidden="true" />
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-emerald-800">
+                                        <GraduationCap size={21} aria-hidden="true" />
                                         <span>رحلتي التعليمية</span>
                                     </div>
-                                    {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
                                 </div>
 
                                 {/* Group: الاختبارات */}
                                 <div
                                     data-testid="student-menu-group-exams"
-                                    className="mt-3 space-y-1 rounded-[22px] border border-rose-200/80 bg-gradient-to-b from-rose-100/75 to-rose-50/65 p-2.5 shadow-sm"
+                                    className="mt-3 rounded-[22px] border border-rose-200/80 bg-gradient-to-b from-rose-100/90 to-rose-50/80 p-2.5 shadow-sm"
                                 >
-                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-rose-100/80 px-2.5 py-2 text-sm font-black text-rose-800">
-                                        <FileText size={18} aria-hidden="true" />
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-rose-800">
+                                        <FileText size={21} aria-hidden="true" />
                                         <span>الاختبارات</span>
                                     </div>
-                                    {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
                                 </div>
 
                                 {/* Group: الأدوات */}
                                 <div
                                     data-testid="student-menu-group-tools"
-                                    className="mt-3 space-y-1 rounded-[22px] border border-violet-200/80 bg-gradient-to-b from-violet-100/75 to-violet-50/65 p-2.5 shadow-sm"
+                                    className="mt-3 rounded-[22px] border border-violet-200/80 bg-gradient-to-b from-violet-100/90 to-violet-50/80 p-2.5 shadow-sm"
                                 >
-                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-violet-100/80 px-2.5 py-2 text-sm font-black text-violet-800">
-                                        <ClipboardList size={18} aria-hidden="true" />
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-violet-800">
+                                        <Wrench size={21} aria-hidden="true" />
                                         <span>الأدوات</span>
                                     </div>
-                                    {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
                                 </div>
 
                                 {/* Group: الدعم */}
                                 <div
                                     data-testid="student-menu-group-support"
-                                    className="mt-3 space-y-1 rounded-[22px] border border-orange-200/80 bg-gradient-to-b from-orange-100/75 to-orange-50/65 p-2.5 shadow-sm"
+                                    className="mt-3 rounded-[22px] border border-orange-200/80 bg-gradient-to-b from-orange-100/90 to-orange-50/80 p-2.5 shadow-sm"
                                 >
-                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-orange-100/80 px-2.5 py-2 text-sm font-black text-orange-800">
-                                        <HelpCircle size={18} aria-hidden="true" />
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-orange-800">
+                                        <Headphones size={21} aria-hidden="true" />
                                         <span>الدعم</span>
                                     </div>
-                                    {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
                                 </div>
                             </>
                         )}
@@ -1265,7 +1288,7 @@ const Dashboard: React.FC = () => {
                                 await logout();
                                 window.location.assign('/?auth=login');
                             }}
-                            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-[18px] border border-red-200 bg-gradient-to-l from-red-100 to-rose-50 px-4 py-2.5 text-sm font-black text-red-800 shadow-sm transition-colors hover:from-red-200 hover:to-rose-100"
                         >
                             <LogOut size={16} />
                             تسجيل الخروج
