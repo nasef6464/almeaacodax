@@ -67,6 +67,7 @@ check("pilot import forces imported draft workflow and canonical taxonomy", () =
   includes(importRoutes, "resolveCanonicalQuestionSkillIds(item)");
   includes(importRoutes, 'source: "imported"');
   includes(importRoutes, 'approvalStatus: "draft"');
+  includes(importRoutes, 'id: `q_${new mongoose.Types.ObjectId()}`');
   includes(importRoutes, "skillIds: canonicalSkills.skillIds");
   includes(importRoutes, "importBatchId: batchId");
 });
