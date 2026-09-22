@@ -5,10 +5,7 @@ const strictSmoke = await readFile(new URL("./smoke-frontend-strict.mjs", import
 
 const requiredWorkflow = [
   "fetch-depth: 2",
-  "Classify frontend deployment requirement",
-  'SMOKE_REQUIRE_FRONTEND_VERSION=1',
-  'SMOKE_REQUIRE_FRONTEND_VERSION=$require_frontend',
-  'docs/*|.github/*|scripts/smoke-*.mjs|README*|*.md',
+  "Frontend strict smoke",
 ];
 
 for (const fragment of requiredWorkflow) {
@@ -17,8 +14,22 @@ for (const fragment of requiredWorkflow) {
   }
 }
 
+for (const forbiddenWorkflowFragment of [
+  "SMOKE_REQUIRE_FRONTEND_VERSION",
+  "Classify frontend deployment requirement",
+]) {
+  if (workflow.includes(forbiddenWorkflowFragment)) {
+    throw new Error(`Post-deploy workflow introduced forbidden runtime env policy: ${forbiddenWorkflowFragment}`);
+  }
+}
+
 const requiredSmoke = [
-  "const requireExpectedVersion =",
+  "const nonRuntimeOnlyCommit =",
+  "git diff --name-only HEAD^ HEAD",
+  "file.startsWith('docs/')",
+  "file.startsWith('.github/')",
+  "/^scripts\\/smoke-.*\\.mjs$/.test(file)",
+  "const requireExpectedVersion = !nonRuntimeOnlyCommit",
   "if (requireExpectedVersion)",
   "Frontend version equality skipped for a non-runtime-only main commit",
   "process.env.SMOKE_STRICT_VERSION = requireExpectedVersion ? '1' : '0'",
