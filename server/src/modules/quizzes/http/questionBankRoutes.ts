@@ -187,8 +187,14 @@ questionBankRouter.get(
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
     const canSeeAnswers = isStaffRole(req.authUser?.role);
+    const summaryItems = limitedItems.map((item) => ({
+      ...item,
+      text: toQuestionSummaryText(item.text),
+    }));
     const items = query.summary
-      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+      ? canSeeAnswers
+        ? summaryItems
+        : summaryItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>))
       : canSeeAnswers
         ? limitedItems
         : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
