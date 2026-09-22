@@ -114,8 +114,9 @@ check("post-result review plays teacher audio or reads manual teacher text", () 
   includes(voicePlayer, "utterance.lang = 'ar-SA'");
 });
 
-check("question assistant prioritizes teacher-authored explanation after submission", () => {
-  includes(aiRoutes, "teacherVoiceExplanation");
+check("question assistant prioritizes the submitted teacher explanation snapshot", () => {
+  includes(aiRoutes, "reviewTeacherVoiceExplanation");
+  includes(aiRoutes, "reviewTeacherVoiceExplanation || liveTeacherVoiceExplanation");
   includes(aiRoutes, "teacherVoiceExplanation || review?.explanation");
   includes(aiRoutes, "voiceExplanation?.version");
 });
