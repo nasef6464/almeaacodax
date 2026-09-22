@@ -16,6 +16,16 @@ const questionAiContextSchema = z.object({
   version: z.number().int().min(1).max(100).default(1),
 });
 
+const questionVoiceExplanationSchema = z.object({
+  text: z.string().max(12000).default(""),
+  audioUrl: z.string().trim().max(2000).default("").refine(
+    (value) => !value || /^https?:\/\//i.test(value),
+    "Voice explanation audio URL must be blank or use HTTP(S)",
+  ),
+  audioMimeType: z.string().trim().max(120).default(""),
+  version: z.number().int().min(1).max(100000).default(1),
+});
+
 const questionSourceMetaSchema = z.object({
   documentCode: z.string().max(120).default(""),
   documentTitle: z.string().max(500).default(""),
@@ -41,6 +51,7 @@ export const questionBaseSchema = z.object({
   imageAlt: z.string().optional(),
   optionsEmbeddedInImage: z.boolean().optional().default(false),
   aiContext: questionAiContextSchema.optional(),
+  voiceExplanation: questionVoiceExplanationSchema.optional(),
   sourceMeta: questionSourceMetaSchema.optional(),
   skillIds: z.array(z.string()).min(1),
   skillId: z.string().min(1).nullable().optional(),
