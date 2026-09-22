@@ -31,7 +31,17 @@ export const toQuestionSummaryText = (value: unknown) => {
 };
 
 export const sanitizeQuestionForLearner = (question: Record<string, any>) => {
-  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
+  const {
+    correctOptionIndex,
+    explanation,
+    hint,
+    solvingStrategy,
+    aiContext,
+    sourceMeta,
+    reviewerNotes,
+    __v,
+    ...safeQuestion
+  } = question;
   return safeQuestion;
 };
 
