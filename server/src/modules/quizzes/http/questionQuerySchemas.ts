@@ -97,6 +97,22 @@ export const questionSchema = questionBaseSchema
     },
   );
 
+
+
+const httpUrlOrBlankSchema = z.string().trim().max(2000).refine(
+  (value) => !value || /^https?:\/\//i.test(value),
+  "Video URL must be blank or use HTTP(S)",
+);
+
+export const questionVideoLinksSchema = z.object({
+  items: z.array(
+    z.object({
+      questionCode: z.string().trim().min(3).max(120),
+      videoUrl: httpUrlOrBlankSchema,
+    }),
+  ).min(1).max(500),
+});
+
 export const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(80),
