@@ -7,6 +7,7 @@ const bootstrapServer = await readFile(new URL("../server/src/app/bootstrap/boot
 const gracefulShutdown = await readFile(new URL("../server/src/app/bootstrap/registerGracefulShutdown.ts", import.meta.url), "utf8");
 const queueSource = await readFile(new URL("../server/src/queues/notificationQueue.ts", import.meta.url), "utf8");
 const report = await readFile(new URL("../docs/archive_reports/14_15_16_PRODUCTION_OPS_REPORT.md", import.meta.url), "utf8");
+const operationsCommandCenter = await readFile(new URL("../dashboards/admin/OperationsCommandCenter.tsx", import.meta.url), "utf8");
 
 const checks = [];
 
@@ -82,8 +83,8 @@ if (failed.length > 0) {
   process.exit(1);
 }
 
-assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'api.getIntegrationsReadiness()');
-assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'جاهزية التكاملات الخارجية');
-assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'Sentry وCloudflare R2 وRedis');
-assertIncludes('dashboards/admin/OperationsCommandCenter.tsx', 'item.requiredEnv.map');
+assertIncludes(operationsCommandCenter, 'api.getIntegrationsReadiness()');
+assertIncludes(operationsCommandCenter, 'جاهزية التكاملات الخارجية');
+assertIncludes(operationsCommandCenter, 'Sentry وCloudflare R2 وRedis');
+assertIncludes(operationsCommandCenter, 'item.requiredEnv.map');
 console.log(`Production ops phase 14 contract passed (${checks.length} checks).`);
