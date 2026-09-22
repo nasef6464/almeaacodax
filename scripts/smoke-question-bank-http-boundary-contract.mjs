@@ -68,6 +68,15 @@ check('question bank mutations remain scoped and workflow-safe', () => {
   ]) assert.ok(questionRoutes.includes(fragment), `question route lost ${fragment}`);
 });
 
+check('learner summary responses are sanitized before caching', () => {
+  assert.ok(questionRoutes.includes('const summaryItems = limitedItems.map((item) => ({'));
+  assert.ok(questionRoutes.includes('summaryItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>))'));
+  assert.ok(questionPresentation.includes('correctOptionIndex,'));
+  assert.ok(questionPresentation.includes('explanation,'));
+  assert.ok(questionPresentation.includes('aiContext,'));
+  assert.ok(questionPresentation.includes('sourceMeta,'));
+});
+
 check('question summary coverage and cache remain full-bank aware', () => {
   for (const fragment of [
     'const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000',
