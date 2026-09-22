@@ -95,7 +95,8 @@
     "adaptiveMasteryRouter|GET|/next-best-action",
     "quizAnalyticsRouter|GET|/analytics/school-skills",
     "aiRouter|POST|/question-assistant",
-    "reviewRouter|GET|/mastery-challenges"
+    "reviewRouter|GET|/mastery-challenges",
+    "questionBankRouter|PATCH|/questions/video-links"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
