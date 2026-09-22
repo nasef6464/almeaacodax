@@ -1090,7 +1090,11 @@ const Dashboard: React.FC = () => {
                     </span>
                     <span>{item.label}</span>
                 </div>
-                {isItemActive && <ChevronLeft size={16} className="text-current" />}
+                <ChevronLeft
+                    size={16}
+                    className={isItemActive ? 'text-current' : 'text-slate-300'}
+                    aria-hidden="true"
+                />
             </button>
         );
     };
@@ -1192,50 +1196,62 @@ const Dashboard: React.FC = () => {
                         ) : (
                             <>
                                 {/* Group: التعلم */}
-                                <div data-testid="student-menu-group-learning" className="space-y-1">
-                                    <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-slate-400">التعلم</p>
+                                <div
+                                    data-testid="student-menu-group-learning"
+                                    className="space-y-1 rounded-[22px] border border-sky-100 bg-white/95 p-2.5 shadow-xs"
+                                >
+                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-sky-50 px-2.5 py-2 text-sm font-black text-sky-800">
+                                        <LayoutDashboard size={17} aria-hidden="true" />
+                                        <span>التعلم</span>
+                                    </div>
                                     {menuItems.filter(i => ['overview','paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
                                 </div>
 
                                 {/* Group: رحلتي التعليمية — visually separated as the learner's core journey */}
                                 <div
                                     data-testid="student-menu-group-journey"
-                                    className="mt-3 space-y-1 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-2 shadow-xs"
+                                    className="mt-3 space-y-1 rounded-[22px] border border-emerald-200/80 bg-gradient-to-b from-emerald-100/75 to-emerald-50/65 p-2.5 shadow-sm"
                                 >
-                                    <p className="flex items-center gap-2 px-2 pb-1 pt-1 text-[10px] font-black uppercase tracking-widest text-emerald-700">
-                                        <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
-                                        رحلتي التعليمية
-                                    </p>
+                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-emerald-100/80 px-2.5 py-2 text-sm font-black text-emerald-800">
+                                        <Brain size={18} aria-hidden="true" />
+                                        <span>رحلتي التعليمية</span>
+                                    </div>
                                     {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
                                 </div>
 
                                 {/* Group: الاختبارات */}
                                 <div
                                     data-testid="student-menu-group-exams"
-                                    className="mt-3 space-y-1 rounded-2xl border border-amber-100 bg-amber-50/55 p-2"
+                                    className="mt-3 space-y-1 rounded-[22px] border border-rose-200/80 bg-gradient-to-b from-rose-100/75 to-rose-50/65 p-2.5 shadow-sm"
                                 >
-                                    <p className="flex items-center gap-2 px-2 pb-1 pt-1 text-[10px] font-black uppercase tracking-widest text-amber-700">
-                                        <span className="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />
-                                        الاختبارات
-                                    </p>
+                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-rose-100/80 px-2.5 py-2 text-sm font-black text-rose-800">
+                                        <FileText size={18} aria-hidden="true" />
+                                        <span>الاختبارات</span>
+                                    </div>
                                     {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
                                 </div>
 
                                 {/* Group: الأدوات */}
                                 <div
                                     data-testid="student-menu-group-tools"
-                                    className="mt-3 space-y-1 rounded-2xl border border-indigo-100 bg-indigo-50/55 p-2"
+                                    className="mt-3 space-y-1 rounded-[22px] border border-violet-200/80 bg-gradient-to-b from-violet-100/75 to-violet-50/65 p-2.5 shadow-sm"
                                 >
-                                    <p className="flex items-center gap-2 px-2 pb-1 pt-1 text-[10px] font-black uppercase tracking-widest text-indigo-700">
-                                        <span className="h-2 w-2 rounded-full bg-indigo-500" aria-hidden="true" />
-                                        الأدوات
-                                    </p>
+                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-violet-100/80 px-2.5 py-2 text-sm font-black text-violet-800">
+                                        <ClipboardList size={18} aria-hidden="true" />
+                                        <span>الأدوات</span>
+                                    </div>
                                     {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
                                 </div>
 
                                 {/* Group: الدعم */}
-                                <div data-testid="student-menu-group-support" className="mt-2 space-y-1">
-                                    <p className="px-2 pb-1 pt-2 text-[10px] font-black uppercase tracking-widest text-slate-400">الدعم</p>
+                                <div
+                                    data-testid="student-menu-group-support"
+                                    className="mt-3 space-y-1 rounded-[22px] border border-orange-200/80 bg-gradient-to-b from-orange-100/75 to-orange-50/65 p-2.5 shadow-sm"
+                                >
+                                    <div className="mb-1 flex items-center gap-2 rounded-xl bg-orange-100/80 px-2.5 py-2 text-sm font-black text-orange-800">
+                                        <HelpCircle size={18} aria-hidden="true" />
+                                        <span>الدعم</span>
+                                    </div>
                                     {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
                                 </div>
                             </>
