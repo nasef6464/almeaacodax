@@ -128,6 +128,24 @@ type SeoStatus = {
     sampleRoutes: Array<{ title: string; loc: string }>;
 };
 
+type IntegrationsReadiness = {
+    checkedAt: string;
+    score: number;
+    status: 'ready' | 'ready_with_notes' | 'blocked';
+    checks: Array<{
+        id: string;
+        title: string;
+        status: 'pass' | 'warning' | 'fail';
+        detail: string;
+        requiredEnv: string[];
+    }>;
+    summary: {
+        failed: number;
+        warnings: number;
+        passed: number;
+    };
+};
+
 type DeliveryReadiness = {
     checkedAt: string;
     score: number;
@@ -234,6 +252,7 @@ export const OperationsCommandCenter: React.FC = () => {
     const [clientEvents, setClientEvents] = useState<ClientEventsResponse | null>(null);
     const [seoStatus, setSeoStatus] = useState<SeoStatus | null>(null);
     const [deliveryReadiness, setDeliveryReadiness] = useState<DeliveryReadiness | null>(null);
+    const [integrationsReadiness, setIntegrationsReadiness] = useState<IntegrationsReadiness | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
@@ -247,18 +266,20 @@ export const OperationsCommandCenter: React.FC = () => {
         setError(null);
 
         try {
-            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus, nextDeliveryReadiness] = await Promise.all([
+            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus, nextDeliveryReadiness, nextIntegrationsReadiness] = await Promise.all([
                 api.getOperationalStatus(),
                 api.getOperationsAudit(),
                 api.getClientEvents(12),
                 api.getSeoStatus(),
                 api.getDeliveryReadiness(),
+                api.getIntegrationsReadiness(),
             ]);
             setStatus(nextStatus as OperationalStatus);
             setAudit(nextAudit as OperationsAudit);
             setClientEvents(nextClientEvents as ClientEventsResponse);
             setSeoStatus(nextSeoStatus as SeoStatus);
             setDeliveryReadiness(nextDeliveryReadiness as DeliveryReadiness);
+            setIntegrationsReadiness(nextIntegrationsReadiness as IntegrationsReadiness);
         } catch (loadError) {
             console.error('Failed to load operations command center', loadError);
             setError(loadError instanceof Error ? loadError.message : 'تعذر تحميل فحص النظام الآن.');
@@ -293,6 +314,12 @@ export const OperationsCommandCenter: React.FC = () => {
         : deliveryReadiness?.status === 'ready_with_notes'
             ? 'جاهز مع ملاحظات'
             : 'معلّق قبل التسليم';
+
+    const integrationsLabel = integrationsReadiness?.status === 'ready'
+        ? 'التكاملات جاهزة'
+        : integrationsReadiness?.status === 'ready_with_notes'
+            ? 'تكاملات تحتاج استكمال'
+            : 'تكاملات مانعة';
 
     const downloadAudit = () => {
         if (!audit) return;
@@ -765,6 +792,86 @@ export const OperationsCommandCenter: React.FC = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+            </div>
+
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+                <div className="p-5 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <Activity size={18} className="text-indigo-600" />
+                            جاهزية التكاملات الخارجية
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            حالة الخدمات التي تعتمد عليها المنصة مثل Sentry وCloudflare R2 وRedis بدون عرض أي مفاتيح أو بيانات سرية.
+                        </p>
+                    </div>
+                    <div className={`rounded-2xl px-5 py-3 text-center ${
+                        integrationsReadiness?.status === 'ready'
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : integrationsReadiness?.status === 'ready_with_notes'
+                                ? 'bg-amber-50 text-amber-700'
+                                : 'bg-red-50 text-red-700'
+                    }`}>
+                        <div className="text-xs font-bold">الحالة</div>
+                        <div className="mt-1 text-lg font-black">{integrationsLabel}</div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 p-5 lg:grid-cols-3">
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">درجة الجاهزية</p>
+                        <p className="mt-2 text-3xl font-black text-gray-900">{formatNumber(integrationsReadiness?.score)}%</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">تكاملات سليمة</p>
+                        <p className="mt-2 text-3xl font-black text-emerald-700">{formatNumber(integrationsReadiness?.summary.passed)}</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">تحتاج استكمال</p>
+                        <p className="mt-2 text-3xl font-black text-amber-700">
+                            {formatNumber((integrationsReadiness?.summary.warnings || 0) + (integrationsReadiness?.summary.failed || 0))}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 px-5 pb-5 xl:grid-cols-2">
+                    {(integrationsReadiness?.checks || []).map((item) => (
+                        <div key={item.id} className="rounded-2xl border border-gray-100 p-4">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                    <p className="font-black text-gray-900">{item.title}</p>
+                                    <p className="mt-1 text-xs leading-5 text-gray-500">{item.detail}</p>
+                                </div>
+                                <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
+                                    item.status === 'pass'
+                                        ? 'bg-emerald-50 text-emerald-700'
+                                        : item.status === 'warning'
+                                            ? 'bg-amber-50 text-amber-700'
+                                            : 'bg-red-50 text-red-700'
+                                }`}>
+                                    {item.status === 'pass' ? 'جاهز' : item.status === 'warning' ? 'استكمال' : 'مهم'}
+                                </span>
+                            </div>
+                            {item.status !== 'pass' && item.requiredEnv.length > 0 && (
+                                <div className="mt-3 rounded-xl bg-slate-50 p-3">
+                                    <p className="text-[11px] font-bold text-slate-500">الإعدادات المطلوبة</p>
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {item.requiredEnv.map((name) => (
+                                            <code key={name} className="rounded-md bg-white px-2 py-1 text-[11px] text-slate-600 border border-slate-100">
+                                                {name}
+                                            </code>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                    {!integrationsReadiness && (
+                        <div className="rounded-2xl border border-dashed border-gray-200 p-6 text-center text-sm text-gray-500 xl:col-span-2">
+                            جاري تحميل جاهزية التكاملات...
+                        </div>
+                    )}
                 </div>
             </div>
 
