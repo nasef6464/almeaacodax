@@ -22,7 +22,7 @@ import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
-import { isQuestionContentUsable, sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
+import { sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
 import { clearQuestionBankSummaryCache, questionBankRouter } from "../modules/quizzes/http/questionBankRoutes.js";
 import { quizAnalyticsRouter } from "../modules/quizzes/http/quizAnalyticsRoutes.js";
 import { quizResultsRouter } from "../modules/quizzes/http/quizResultsRoutes.js";
