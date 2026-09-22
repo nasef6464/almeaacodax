@@ -286,7 +286,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const filteredQuestions = useMemo(
     () =>
       questions.filter((question) => {
-        const haystack = `${question.text || ''} ${question.options?.join(' ') || ''}`;
+        const haystack = `${question.questionCode || ''} ${question.text || ''} ${question.options?.join(' ') || ''}`;
         return normalizeLookup(haystack).includes(normalizeLookup(searchTerm));
       }),
     [questions, searchTerm],
