@@ -49,7 +49,7 @@ const userSchema = new Schema(
     favorites: { type: [String], default: [] },
     reviewLater: { type: [String], default: [] },
     phone: { type: String, default: "" },
-    nationalId: { type: String, default: null },
+    nationalId: { type: String },
     whatsappDigestEnabled: { type: Boolean, default: false },
   },
   {
