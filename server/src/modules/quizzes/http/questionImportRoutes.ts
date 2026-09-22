@@ -77,7 +77,7 @@ questionImportRouter.post(
     const input = questionImportBatchSchema.parse(req.body || {});
     const batchId = input.batchId.trim().toUpperCase();
     const requestedCodes = input.items.map((item) => normalizeCode(item.questionCode));
-    const sourceItemIds = input.items.map((item) => normalizeText(item.sourceMeta.sourceItemId));
+    const sourceItemIds = input.items.map((item) => normalizeText(item.sourceMeta.sourceItemId).toUpperCase());
     const duplicateCodes = findDuplicates(requestedCodes);
     const duplicateSourceItemIds = findDuplicates(sourceItemIds);
 
@@ -151,6 +151,9 @@ questionImportRouter.post(
           approvedAt: null,
           sourceMeta: {
             ...item.sourceMeta,
+            documentCode: normalizeText(item.sourceMeta.documentCode).toUpperCase(),
+            sourceItemId: normalizeText(item.sourceMeta.sourceItemId).toUpperCase(),
+            imageHash: normalizeText(item.sourceMeta.imageHash).toLowerCase(),
             importBatchId: batchId,
           },
         });
