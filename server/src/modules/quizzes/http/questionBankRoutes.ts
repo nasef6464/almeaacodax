@@ -12,7 +12,7 @@ import {
   combineMongoFilters,
   resolveManagedContentScope,
 } from "../../../services/managedContentScope.js";
-import { questionBaseSchema, questionListQuerySchema, questionSchema } from "./questionQuerySchemas.js";
+import { questionBaseSchema, questionListQuerySchema, questionSchema, questionVideoLinksSchema } from "./questionQuerySchemas.js";
 import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";
 import { escapeRegex } from "./queryUtilities.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../application/quizWorkflow.js";
@@ -251,6 +251,44 @@ questionBankRouter.post(
     await assertManagedContentScope(req.authUser!, payload);
     const created = await QuestionModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+questionBankRouter.patch(
+  "/questions/video-links",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const { items } = questionVideoLinksSchema.parse(req.body || {});
+    const normalizedItems = items.map((item) => ({
+      questionCode: item.questionCode.trim().toUpperCase(),
+      videoUrl: item.videoUrl.trim(),
+    }));
+    const codes = uniqueStrings(normalizedItems.map((item) => item.questionCode));
+    const existing = await QuestionModel.find({ questionCode: { $in: codes } })
+      .select("questionCode")
+      .lean();
+    const existingCodes = new Set(existing.map((item: any) => String(item.questionCode || "").toUpperCase()).filter(Boolean));
+    const operations = normalizedItems
+      .filter((item) => existingCodes.has(item.questionCode))
+      .map((item) => ({
+        updateOne: {
+          filter: { questionCode: item.questionCode },
+          update: { $set: { videoUrl: item.videoUrl } },
+        },
+      }));
+
+    const result = operations.length > 0
+      ? await QuestionModel.bulkWrite(operations, { ordered: false })
+      : null;
+    const missingCodes = codes.filter((code) => !existingCodes.has(code));
+
+    return res.json({
+      requested: normalizedItems.length,
+      matched: existingCodes.size,
+      modified: Number(result?.modifiedCount || 0),
+      missingCodes,
+    });
   }),
 );
 
