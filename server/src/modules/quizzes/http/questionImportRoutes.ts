@@ -1,4 +1,5 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import { env } from "../../../config/env.js";
 import { StatusCodes } from "http-status-codes";
 import { QuestionModel } from "../../../models/Question.js";
@@ -137,6 +138,7 @@ questionImportRouter.post(
 
         const draft = questionSchema.parse({
           ...item,
+          id: `q_${new mongoose.Types.ObjectId()}`,
           questionCode,
           skillIds: canonicalSkills.skillIds,
           source: "imported",
