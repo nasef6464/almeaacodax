@@ -607,8 +607,14 @@ export interface Question extends ContentWorkflow {
     options: string[];
     correctOptionIndex: number;
     explanation?: string;
+    hint?: string;
+    solvingStrategy?: string;
     videoUrl?: string;
     imageUrl?: string;
+    imageAlt?: string;
+    optionsEmbeddedInImage?: boolean;
+    aiContext?: QuestionAiContext;
+    sourceMeta?: QuestionSourceMeta;
     skillIds?: string[];
     skillId?: string | null;
     subSkillId?: string | null;
