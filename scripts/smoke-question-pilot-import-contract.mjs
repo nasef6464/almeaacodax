@@ -14,6 +14,7 @@ const questionSchemas = read("server/src/modules/quizzes/http/questionQuerySchem
 const mediaRoutes = read("server/src/routes/media.routes.ts");
 const importImageUpload = read("server/src/modules/media/application/questionImportImageUpload.ts");
 const pilotRunner = read("scripts/run-question-bank-v2-pilot.mjs");
+const pilotVerifier = read("scripts/verify-question-bank-v2-pilot-runtime.mjs");
 
 const checks = [];
 const check = (name, assertion) => {
@@ -120,6 +121,15 @@ check("pilot runner fails closed and separates dry-run from write modes", () => 
   includes(pilotRunner, 'dryRun: false');
   includes(pilotRunner, 'verified.slice(0, 5)');
   includes(pilotRunner, 'verified.slice(5)');
+});
+
+check("runtime verifier proves draft isolation before approval", () => {
+  includes(pilotVerifier, 'PILOT_ALLOW_EXTERNAL_RUN !== "YES"');
+  includes(pilotVerifier, 'batch?.status !== "PASS"');
+  includes(pilotVerifier, "linkedQuizCount");
+  includes(pilotVerifier, "adminVisible");
+  includes(pilotVerifier, "publicVisible");
+  includes(pilotVerifier, "publicRows.length !== 0");
 });
 
 check("pilot R2 image upload is admin-only, WebP-only and content-addressed", () => {
