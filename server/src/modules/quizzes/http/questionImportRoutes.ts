@@ -24,6 +24,51 @@ const findDuplicates = (values: string[]) => {
   return [...duplicates];
 };
 
+const padSourceNumber = (value: number, width: number) => String(value).padStart(width, "0");
+
+const validateImportIdentity = (item: any, questionCode: string) => {
+  const sourceMeta = item?.sourceMeta || {};
+  const documentCode = normalizeText(sourceMeta.documentCode).toUpperCase();
+  const pdfPageIndex = Number(sourceMeta.pdfPageIndex);
+  const printedPageNumber = Number(sourceMeta.printedPageNumber);
+  const printedQuestionNumber = Number(sourceMeta.printedQuestionNumber);
+  const sourceItemId = normalizeText(sourceMeta.sourceItemId).toUpperCase();
+  const imageHash = normalizeText(sourceMeta.imageHash).toLowerCase();
+  const imageUrl = normalizeText(item?.imageUrl);
+
+  if (!documentCode || !Number.isInteger(pdfPageIndex) || !Number.isInteger(printedPageNumber) || !Number.isInteger(printedQuestionNumber)) {
+    return "Canonical source coordinates are required for Pilot import";
+  }
+
+  const expectedQuestionCode =
+    `QDR-QNT-${documentCode}-P${padSourceNumber(printedPageNumber, 3)}-Q${padSourceNumber(printedQuestionNumber, 2)}`;
+  if (questionCode !== expectedQuestionCode) {
+    return `questionCode must match canonical source identity: ${expectedQuestionCode}`;
+  }
+
+  const expectedSourceItemId =
+    `${documentCode}-PDF${padSourceNumber(pdfPageIndex, 3)}-P${padSourceNumber(printedPageNumber, 3)}-N${padSourceNumber(printedQuestionNumber, 2)}`;
+  if (sourceItemId !== expectedSourceItemId) {
+    return `sourceItemId must match canonical source identity: ${expectedSourceItemId}`;
+  }
+
+  if (!/^[a-f0-9]{64}$/.test(imageHash)) {
+    return "sourceMeta.imageHash must be the SHA-256 hash of the uploaded WebP";
+  }
+
+  const expectedImagePath = `/questions/v2/${questionCode}/${imageHash}.webp`;
+  try {
+    const imagePath = new URL(imageUrl).pathname;
+    if (imagePath !== expectedImagePath) {
+      return `imageUrl must point to the content-addressed V2 object: ${expectedImagePath}`;
+    }
+  } catch {
+    return "imageUrl must be an absolute HTTP(S) URL returned by the V2 image presign flow";
+  }
+
+  return "";
+};
+
 questionImportRouter.post(
   "/questions/import-batch",
   requireAuth,
@@ -81,6 +126,12 @@ questionImportRouter.post(
       const item = input.items[index];
       const questionCode = requestedCodes[index];
       try {
+        const identityError = validateImportIdentity(item, questionCode);
+        if (identityError) {
+          validationErrors.push({ index, questionCode, message: identityError });
+          continue;
+        }
+
         const canonicalSkills = await resolveCanonicalQuestionSkillIds(item);
         if (!canonicalSkills.ok) {
           validationErrors.push({ index, questionCode, message: canonicalSkills.message });
