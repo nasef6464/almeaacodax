@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { env } from "../../../config/env.js";
 import { StatusCodes } from "http-status-codes";
 import { QuestionModel } from "../../../models/Question.js";
 import { QuizModel } from "../../../models/Quiz.js";
@@ -57,13 +58,9 @@ const validateImportIdentity = (item: any, questionCode: string) => {
   }
 
   const expectedImagePath = `/questions/v2/${questionCode}/${imageHash}.webp`;
-  try {
-    const imagePath = new URL(imageUrl).pathname;
-    if (imagePath !== expectedImagePath) {
-      return `imageUrl must point to the content-addressed V2 object: ${expectedImagePath}`;
-    }
-  } catch {
-    return "imageUrl must be an absolute HTTP(S) URL returned by the V2 image presign flow";
+  const expectedPublicUrl = `${env.R2_PUBLIC_BASE_URL.replace(/\\\/+$/, "")}${expectedImagePath}`;
+  if (imageUrl !== expectedPublicUrl) {
+    return `imageUrl must be the exact R2 V2 object URL returned by the presign flow: ${expectedImagePath}`;
   }
 
   return "";
