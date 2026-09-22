@@ -89,7 +89,19 @@ check("learner question list does not expose answer keys before submission", () 
   assertIncludes(questionBankRoutes, "sanitizeQuestionForLearner");
   assertIncludes(questionBankRoutes, "canSeeAnswers");
   assertIncludes(questionPresentation, "export const sanitizeQuestionForLearner");
-  assertIncludes(questionPresentation, "const { correctOptionIndex, explanation, __v, ...safeQuestion } = question");
+  for (const fragment of [
+    "correctOptionIndex,",
+    "explanation,",
+    "hint,",
+    "solvingStrategy,",
+    "aiContext,",
+    "sourceMeta,",
+    "reviewerNotes,",
+    "__v,",
+    "...safeQuestion",
+  ]) {
+    assertIncludes(questionPresentation, fragment);
+  }
   assertIncludes(questionPresentation, "return safeQuestion");
 });
 
