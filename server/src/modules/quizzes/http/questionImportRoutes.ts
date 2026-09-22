@@ -215,10 +215,37 @@ questionImportRouter.get(
       .sort({ createdAt: 1 })
       .lean();
 
+    const drafts = questions.filter((question: any) => question.approvalStatus === "draft").length;
+    const integrityIssues = questions
+      .map((question: any) => {
+        const questionCode = normalizeCode(question.questionCode);
+        const message = validateImportIdentity(question, questionCode);
+        return message ? { questionCode, message } : null;
+      })
+      .filter(Boolean);
+    const questionIds = questions.map((question: any) => String(question.id || "")).filter(Boolean);
+    const linkedQuizCount = questionIds.length > 0
+      ? await QuizModel.countDocuments({
+          $or: [
+            { questionIds: { $in: questionIds } },
+            { "mockExam.sections.questionIds": { $in: questionIds } },
+          ],
+        })
+      : 0;
+
     return res.json({
+      status:
+        integrityIssues.length === 0 &&
+        drafts === questions.length &&
+        linkedQuizCount === 0
+          ? "PASS"
+          : "CHECK_REQUIRED",
       batchId: normalizedBatchId,
       count: questions.length,
-      drafts: questions.filter((question: any) => question.approvalStatus === "draft").length,
+      drafts,
+      allDraft: drafts === questions.length,
+      linkedQuizCount,
+      integrityIssues,
       questionCodes: questions.map((question: any) => normalizeCode(question.questionCode)),
       questions,
     });
