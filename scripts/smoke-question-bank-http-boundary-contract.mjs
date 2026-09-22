@@ -45,8 +45,19 @@ check('question bank V2 keeps stable codes and AI metadata protected', () => {
     'questionCode: { type: String, unique: true',
     'aiContext: { type: questionAiContextSchema',
     'sourceMeta: { type: questionSourceMetaSchema',
+    'sourceItemId: { type: String',
+    'pdfPageIndex: { type: Number',
+    'printedPageNumber: { type: Number',
+    'printedQuestionNumber: { type: Number',
     'assignStableQuestionIdentity',
   ]) assert.ok(questionModel.includes(fragment), `question model lost ${fragment}`);
+
+  for (const fragment of [
+    'sourceItemId: z.string().max(200)',
+    'pdfPageIndex: z.number().int().min(1)',
+    'printedPageNumber: z.number().int().min(1)',
+    'printedQuestionNumber: z.number().int().min(0)',
+  ]) assert.ok(questionSchemas.includes(fragment), `question source schema lost ${fragment}`);
 
   assert.ok(questionSchemas.includes('export const questionVideoLinksSchema'));
   assert.ok(questionRoutes.includes('"/questions/video-links"'));

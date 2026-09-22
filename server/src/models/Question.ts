@@ -36,6 +36,10 @@ const questionSourceMetaSchema = new Schema(
   {
     documentCode: { type: String, default: "", trim: true },
     documentTitle: { type: String, default: "", trim: true },
+    sourceItemId: { type: String, default: "", trim: true },
+    pdfPageIndex: { type: Number, default: null },
+    printedPageNumber: { type: Number, default: null },
+    printedQuestionNumber: { type: Number, default: null },
     page: { type: Number, default: null },
     questionNumber: { type: String, default: "", trim: true },
     cropIndex: { type: Number, default: null },
