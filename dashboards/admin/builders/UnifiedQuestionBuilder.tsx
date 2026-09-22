@@ -142,6 +142,10 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
         ...prev,
         imageUrl: uploaded.publicUrl,
         imageAlt: prev.imageAlt || prev.questionCode || 'صورة السؤال',
+        sourceMeta: {
+          ...(prev.sourceMeta || {}),
+          imageVersion: Math.max(1, Number(prev.sourceMeta?.imageVersion || (prev.imageUrl ? 1 : 0)) + 1),
+        },
       }));
     } catch (error) {
       setQuestionImageError(error instanceof Error ? error.message : 'تعذر رفع صورة السؤال.');
