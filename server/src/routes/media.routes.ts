@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { createQuestionImageUploadIntent } from "../modules/media/application/questionImageUpload.js";
+import { createQuestionImportImageUploadIntent } from "../modules/media/application/questionImportImageUpload.js";
 import { createQuestionExplanationAudioUploadIntent } from "../modules/media/application/questionExplanationAudioUpload.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -22,6 +23,27 @@ mediaRouter.post(
       sizeBytes: number;
     };
     const intent = createQuestionImageUploadIntent(payload);
+    res.json(intent);
+  }),
+);
+
+const questionImportImageIntentSchema = z.object({
+  questionCode: z.string().trim().min(3).max(120),
+  imageHash: z.string().trim().regex(/^[a-fA-F0-9]{64}$/),
+  sizeBytes: z.coerce.number().int().positive(),
+});
+
+mediaRouter.post(
+  "/question-import-images/presign",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = questionImportImageIntentSchema.parse(req.body || {}) as {
+      questionCode: string;
+      imageHash: string;
+      sizeBytes: number;
+    };
+    const intent = createQuestionImportImageUploadIntent(payload);
     res.json(intent);
   }),
 );
