@@ -93,12 +93,13 @@ check('student quiz center excludes standalone path mock exams from regular cata
   assertIncludes(dashboardSource, "import { isStandaloneMockExam } from '../utils/mockExam'");
 });
 
-check('smart learning action buttons stay prominent but compact', () => {
-  assertIncludes(dashboardSource, 'hover:-translate-y-0.5 hover:shadow-md');
-  assertIncludes(dashboardSource, 'h-2 w-2 rounded-full bg-white/80 animate-pulse');
-  assertIncludes(smartLearningPathSource, 'bg-gradient-to-l from-indigo-600 to-purple-600');
-  assertIncludes(smartLearningPathSource, 'hover:-translate-y-0.5 hover:shadow-md');
-  assertIncludes(smartLearningPathSource, 'h-2 w-2 rounded-full bg-white/80 animate-pulse');
+check('smart learning actions stay prominent, compact, and child-friendly', () => {
+  assertIncludes(dashboardSource, 'data-testid="student-today-focus"');
+  assertIncludes(dashboardSource, 'خطوتك اليوم');
+  assertIncludes(smartLearningPathSource, 'data-testid="student-smart-path"');
+  assertIncludes(smartLearningPathSource, 'خطوتك الآن');
+  assertIncludes(smartLearningPathSource, 'بعدها');
+  assertIncludes(smartLearningPathSource, 'rounded-xl bg-emerald-600');
 });
 
 for (const item of checks) {
