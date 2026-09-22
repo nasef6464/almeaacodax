@@ -16,7 +16,7 @@ const supportedRecordingMime = () => {
 
 const normalizedAudioMime = (mime: string) => {
   const base = String(mime || '').split(';')[0].trim().toLowerCase();
-  if (['audio/mpeg', 'audio/webm', 'audio/mp4', 'audio/ogg', 'audio/wav', 'audio/x-wav'].includes(base)) {
+  if (['audio/mpeg', 'audio/webm', 'audio/mp4', 'audio/x-m4a', 'audio/ogg', 'audio/wav', 'audio/x-wav'].includes(base)) {
     return base;
   }
   return '';
@@ -26,6 +26,7 @@ const extensionForMime = (mime: string) => ({
   'audio/mpeg': 'mp3',
   'audio/webm': 'webm',
   'audio/mp4': 'm4a',
+  'audio/x-m4a': 'm4a',
   'audio/ogg': 'ogg',
   'audio/wav': 'wav',
   'audio/x-wav': 'wav',
@@ -174,7 +175,7 @@ export const QuestionVoiceExplanationEditor: React.FC<QuestionVoiceExplanationEd
         <input
           ref={fileInputRef}
           type="file"
-          accept="audio/mpeg,audio/webm,audio/mp4,audio/ogg,audio/wav"
+          accept="audio/mpeg,audio/webm,audio/mp4,audio/x-m4a,audio/ogg,audio/wav"
           className="hidden"
           onChange={(event) => {
             const file = event.target.files?.[0];
