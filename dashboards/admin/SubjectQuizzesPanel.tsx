@@ -23,6 +23,7 @@ import { UnifiedQuizBuilder } from "./UnifiedQuizBuilder";
 import { UnifiedQuestionBuilder } from "./builders/UnifiedQuestionBuilder";
 import { isMaterialQuizCandidate } from "../../utils/mockExam";
 import { isTrueMockExam } from "../../utils/quizPlacement";
+import { resolveQuizLearningAccessType, setQuizLearningSlotAccess } from "../../utils/quizLearningPlacement";
 
 type PanelKind = "drill" | "test";
 
@@ -63,7 +64,14 @@ const QuizCard: React.FC<{
   const [expanded, setExpanded] = useState(false);
   const c = kindColor(kind);
   const isVisible = quiz.showOnPlatform !== false;
-  const isPaid = quiz.access?.type === "paid";
+  const slot = kind === "drill" ? "training" : "tests";
+  const effectiveAccessType = resolveQuizLearningAccessType(quiz, {
+    pathId: quiz.pathId,
+    subjectId: quiz.subjectId,
+    slot,
+  });
+  const isPaid = effectiveAccessType === "paid" || effectiveAccessType === "package";
+  const isPrivate = effectiveAccessType === "private";
   const qCount = quiz.questionIds?.length || 0;
 
   const quizSkillNames = useMemo(() => {
@@ -98,8 +106,14 @@ const QuizCard: React.FC<{
             <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${isVisible ? "bg-sky-50 text-sky-700" : "bg-gray-100 text-gray-500"}`}>
               {isVisible ? "👁 ظاهر" : "🙈 مخفي"}
             </span>
-            <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${isPaid ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}>
-              {isPaid ? "🔒 ضمن باقة" : "✅ مجاني"}
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${
+              isPrivate
+                ? "bg-violet-50 text-violet-700"
+                : isPaid
+                  ? "bg-amber-50 text-amber-700"
+                  : "bg-emerald-50 text-emerald-700"
+            }`}>
+              {isPrivate ? "🔐 خاص" : isPaid ? "🔒 ضمن باقة" : "✅ مجاني"}
             </span>
             <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-black text-gray-600">{qCount} سؤال</span>
           </div>
@@ -206,8 +220,18 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
 
   const toggleVisibility = (quiz: Quiz) => updateQuiz(quiz.id, { showOnPlatform: quiz.showOnPlatform !== false ? false : true });
   const toggleAccess = (quiz: Quiz) => {
-    const isPaid = quiz.access?.type === "paid";
-    updateQuiz(quiz.id, { access: { ...(quiz.access || {}), type: isPaid ? "free" : "paid" } });
+    const slot = kind === "drill" ? "training" : "tests";
+    const scope = { pathId: quiz.pathId || pathId, subjectId, slot } as const;
+    const currentAccessType = resolveQuizLearningAccessType(quiz, scope);
+    const nextAccessType = currentAccessType === "free" ? "package" : "free";
+
+    updateQuiz(quiz.id, {
+      access: {
+        ...(quiz.access || {}),
+        type: nextAccessType === "free" ? "free" : "paid",
+      },
+      learningPlacements: setQuizLearningSlotAccess(quiz, scope, nextAccessType),
+    });
   };
   const handleDelete = (id: string) => { if (window.confirm("هل أنت متأكد من الحذف نهائياً؟")) deleteQuiz(id); };
   const handleEdit = (id: string) => { setEditingQuizId(id); setShowBuilder(true); };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CoursesManager } from './CoursesManager';
 import { QuestionBankManager } from './QuestionBankManager';
@@ -21,7 +21,7 @@ import { isQuizVisibleInLearningSlot } from '../../utils/quizLearningPlacement';
 import { getPathIcon, getSubjectIcon, getLevelIcon, resolveColor, resolvePathDisplaySettings } from './PathsManager/pathDisplayPresentation';
 import { EducationalIconPicker } from './PathsManager/EducationalIconPicker';
 import { buildPathReadinessSummary } from './PathsManager/pathReadiness';
-import { resolvePathsManagerUrlState } from './PathsManager/pathsManagerUrlState';
+import { replacePathsManagerUrlState, resolvePathsManagerUrlState } from './PathsManager/pathsManagerUrlState';
 import { AdminBreadcrumbHeader } from './components/AdminBreadcrumbHeader';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
@@ -47,9 +47,18 @@ export const PathsManager: React.FC = () => {
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialUrlState.selectedSubjectId);
   
   // Tabs for Path Overview
-  const [pathTab, setPathTab] = useState<'levels' | 'subjects' | 'packages' | 'settings'>('subjects');
+  const [pathTab, setPathTab] = useState<'levels' | 'subjects' | 'packages' | 'settings'>(initialUrlState.pathTab);
   // Tabs for Subject Workspace
   const [subjectTab, setSubjectTab] = useState(initialUrlState.subjectTab);
+
+  useEffect(() => {
+    replacePathsManagerUrlState({
+      selectedPathId,
+      selectedSubjectId,
+      pathTab,
+      subjectTab,
+    });
+  }, [pathTab, selectedPathId, selectedSubjectId, subjectTab]);
 
   // Modals state
   const [isPathModalOpen, setIsPathModalOpen] = useState(false);
@@ -808,7 +817,7 @@ export const PathsManager: React.FC = () => {
               <div 
                 key={`path-${path.id}-${index}`}
                 data-testid={`learning-manager-path-${path.id}`}
-                onClick={() => setSelectedPathId(path.id)}
+                onClick={() => { setSelectedPathId(path.id); setSelectedSubjectId(null); setPathTab('subjects'); setSubjectTab('courses'); }}
                 className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
               >
                 <div className="flex items-center justify-between mb-4">
@@ -1136,7 +1145,7 @@ export const PathsManager: React.FC = () => {
         <AdminBreadcrumbHeader
           breadcrumbs={[
             { label: 'لوحة الإدارة' },
-            { label: 'إدارة المسارات', onClick: () => setSelectedPathId(null) },
+            { label: 'إدارة المسارات', onClick: () => { setSelectedPathId(null); setSelectedSubjectId(null); setSubjectTab('courses'); } },
             { label: currentPath?.name || 'المسار', onClick: () => setPathTab('subjects') },
             { label: currentMeta.label, active: true },
           ]}
@@ -1150,7 +1159,7 @@ export const PathsManager: React.FC = () => {
               {currentPath?.isActive === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}
             </span>
           }
-          onBack={() => setSelectedPathId(null)}
+          onBack={() => { setSelectedPathId(null); setSelectedSubjectId(null); setSubjectTab('courses'); }}
           backLabel="عودة لقائمة المسارات"
           actions={
             <div className="flex items-center gap-2">
@@ -1312,7 +1321,7 @@ export const PathsManager: React.FC = () => {
                     <div 
                       key={`psub-${subject.id}-${sidx}`}
                       data-testid={`learning-manager-subject-${subject.id}`}
-                      onClick={() => setSelectedSubjectId(subject.id)}
+                      onClick={() => { setSelectedSubjectId(subject.id); setSubjectTab('courses'); }}
                       className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
                     >
                       <div className="flex items-center justify-between mb-4">
@@ -2112,7 +2121,7 @@ export const PathsManager: React.FC = () => {
         breadcrumbs={[
           { label: 'لوحة الإدارة' },
           { label: 'إدارة المسارات', onClick: () => { setSelectedPathId(null); setSelectedSubjectId(null); } },
-          { label: currentPath?.name || 'المسار', onClick: () => setSelectedSubjectId(null) },
+          { label: currentPath?.name || 'المسار', onClick: () => { setSelectedSubjectId(null); setSubjectTab('courses'); } },
           { label: currentSubject?.name || 'المادة', onClick: () => setSubjectTab('courses') },
           { label: activeSubjectMeta.label, active: true },
         ]}
@@ -2124,7 +2133,7 @@ export const PathsManager: React.FC = () => {
             {subjectWorkspaceTotals.total} عنصر ({subjectWorkspaceTotals.visible} ظاهر)
           </span>
         }
-        onBack={() => setSelectedSubjectId(null)}
+        onBack={() => { setSelectedSubjectId(null); setSubjectTab('courses'); }}
         backLabel="عودة لمواد المسار"
         actions={
           <button

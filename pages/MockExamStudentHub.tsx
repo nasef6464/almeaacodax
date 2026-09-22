@@ -181,14 +181,24 @@ const MockExamCard: React.FC<{
   selectedExamId: string | null;
   setSelectedExamId: (id: string | null) => void;
   isDirected?: boolean;
-}> = ({ exam, paths, resultsByExam, selectedExamId, setSelectedExamId, isDirected }) => {
+  hasPackageAccess?: boolean;
+}> = ({ exam, paths, resultsByExam, selectedExamId, setSelectedExamId, isDirected, hasPackageAccess = false }) => {
   const path = (paths || []).find((p) => p.id === exam.pathId);
   const sectionsCount = getMockExamSections(exam).length;
   const questionsCount = getMockExamQuestionCount(exam);
   const timeLimit = getMockExamTimeLimit(exam);
   const examAttempts = resultsByExam?.get?.(exam.id) || [];
   const bestScore = examAttempts.length > 0 ? Math.max(...examAttempts.map((r) => r.score || 0)) : null;
-  const isFree = exam.access?.type !== 'paid';
+  const accessType = exam.access?.type || 'free';
+  const requiresPackage = accessType === 'paid';
+  const isPrivate = accessType === 'private';
+  const isFree = !requiresPackage && !isPrivate;
+  const canStart = !requiresPackage || hasPackageAccess;
+  const packageParams = new URLSearchParams();
+  if (exam.subjectId) packageParams.set('subject', exam.subjectId);
+  packageParams.set('tab', 'packages');
+  packageParams.set('content', 'mockExams');
+  const packageHref = `/category/${exam.pathId}?${packageParams.toString()}`;
   const isSelected = selectedExamId === exam.id;
 
   return (
@@ -209,8 +219,14 @@ const MockExamCard: React.FC<{
             موجّه
           </span>
         )}
-        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${isFree ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-          {isFree ? 'مجاني' : 'مدفوع'}
+        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${
+          isPrivate
+            ? 'bg-violet-100 text-violet-700'
+            : requiresPackage
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-emerald-100 text-emerald-700'
+        }`}>
+          {isPrivate ? 'خاص' : requiresPackage ? 'ضمن باقة' : 'مجاني'}
         </span>
       </div>
 
@@ -278,12 +294,18 @@ const MockExamCard: React.FC<{
 
       <div className="mt-4 flex gap-2">
         <Link
-          to={`/quiz/${exam.id}`}
+          to={canStart ? `/quiz/${exam.id}` : packageHref}
           onClick={(e) => e.stopPropagation()}
-          className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-black text-white ${isDirected ? 'bg-blue-600 hover:bg-blue-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+          className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-black text-white ${
+            canStart
+              ? isDirected
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-indigo-600 hover:bg-indigo-700'
+              : 'bg-amber-500 hover:bg-amber-600'
+          }`}
         >
           <Zap size={13} />
-          {examAttempts.length === 0 ? 'ابدأ الاختبار' : 'محاولة جديدة'}
+          {canStart ? (examAttempts.length === 0 ? 'ابدأ الاختبار' : 'محاولة جديدة') : 'عرض الباقة'}
         </Link>
         {examAttempts.length > 0 && (
           <button
@@ -305,7 +327,7 @@ const MockExamCard: React.FC<{
 
 /* ─── Main Component ─── */
 const MockExamStudentHub: React.FC = () => {
-  const { user, quizzes, paths, examResults, groups } = useStore();
+  const { user, quizzes, paths, examResults, groups, hasScopedPackageAccess } = useStore();
 
   const [myResults, setMyResults] = useState<MockAttemptResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -625,6 +647,8 @@ const MockExamStudentHub: React.FC = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               {displayedExams.map((exam) => {
                 const isDirected = Array.isArray(exam.targetGroupIds) && exam.targetGroupIds.length > 0;
+                const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+                const hasPackageAccess = isStaffViewer || hasScopedPackageAccess('mockExams', exam.pathId, exam.subjectId);
                 return (
                   <MockExamCard
                     key={exam.id}
@@ -634,6 +658,7 @@ const MockExamStudentHub: React.FC = () => {
                     selectedExamId={selectedExamId}
                     setSelectedExamId={setSelectedExamId}
                     isDirected={isDirected}
+                    hasPackageAccess={hasPackageAccess}
                   />
                 );
               })}
