@@ -69,6 +69,20 @@ function assertPattern(source, pattern, message) {
   if (!pattern.test(source)) throw new Error(message || `Missing pattern: ${pattern}`);
 }
 
+check('student sidebar keeps a simple learning journey without changing the three exam entries', () => {
+  assertIncludes(files.dashboard, 'رحلتي التعليمية');
+  assertIncludes(files.dashboard, "{ id: 'smart-path',   label: 'المسار الذكي'");
+  assertIncludes(files.dashboard, "{ id: 'plan',         label: 'خططي'");
+  assertIncludes(files.dashboard, "{ id: 'reports',      label: 'تقاريري'");
+  assertIncludes(files.dashboard, "['smart-path','plan','reports']");
+  assertIncludes(files.dashboard, "['quizzes','school-tests','mock-exams']");
+  assertIncludes(files.dashboard, 'الاختبارات السابقة');
+  assertIncludes(files.dashboard, 'الاختبارات المدرسية');
+  assertIncludes(files.dashboard, 'الاختبارات المحاكية');
+  assertIncludes(files.dashboard, 'data-testid="student-today-focus"');
+  assertIncludes(files.reports, 'data-testid="student-adaptive-status-card"');
+});
+
 check('student dashboard keeps a clear continuation area and learner shortcuts', () => {
   assertIncludes(files.dashboard, "import { EmptyState } from '../components/ui/EmptyState'");
   assertIncludes(files.dashboard, 'const smartPathSkills = buildSmartPathSkillsFromResults(examResults);');

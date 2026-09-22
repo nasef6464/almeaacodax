@@ -2457,6 +2457,46 @@ const Reports: React.FC = () => {
                 </div>
             </div>
 
+            {(studentReadinessDecision || studentTodayLearningLoop) ? (
+                <Card
+                    data-testid="student-adaptive-status-card"
+                    className="border border-emerald-100 bg-gradient-to-l from-emerald-50/80 via-white to-white p-4 sm:p-5 shadow-sm"
+                >
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="min-w-0">
+                            <div className="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-black text-emerald-700">
+                                أين أنت الآن؟
+                            </div>
+                            <h2 className="mt-2 text-lg font-black text-gray-900">
+                                {studentReadinessDecision?.title || studentTodayLearningLoop?.skillName || 'خطوتك التالية جاهزة'}
+                            </h2>
+                            <p className="mt-1 max-w-2xl text-xs sm:text-sm font-bold leading-6 text-gray-500">
+                                {studentReadinessDecision?.body || 'اتبع خطوة واحدة الآن، ثم نحدّث تقدمك تلقائيًا.'}
+                            </p>
+                        </div>
+                        <div className="print-hide flex flex-wrap gap-2">
+                            {studentReadinessDecision ? (
+                                <Link
+                                    to={studentReadinessDecision.actionHref}
+                                    className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700"
+                                >
+                                    {studentReadinessDecision.actionLabel}
+                                </Link>
+                            ) : null}
+                            {studentTodayLearningLoop?.steps.slice(0, 3).map((action) => (
+                                <Link
+                                    key={`${action.title}-visible-${action.step}`}
+                                    to={action.link}
+                                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-50"
+                                >
+                                    {action.title}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </Card>
+            ) : null}
+
             {/* Preserved with zero visual footprint for auditability & smoke contracts */}
             <div className="sr-only absolute -z-50 h-px w-px overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
                 {studentReadinessDecision ? (

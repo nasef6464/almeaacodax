@@ -24,8 +24,6 @@ import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
 import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';
 import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
-import { DailySpeedDrillCard } from '../components/DailySpeedDrillCard';
-import { ReferralAmbassadorCard } from '../components/ReferralAmbassadorCard';
 
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
@@ -901,14 +899,14 @@ const Dashboard: React.FC = () => {
         { id: 'overview',     label: 'نظرة عامة',          icon: <LayoutDashboard size={20} /> },
         { id: 'paths',        label: 'مساراتي',             icon: <RouteIcon size={20} /> },
         { id: 'my-courses',   label: 'دوراتي',               icon: <BookOpen size={20} /> },
-        { id: 'smart-path',   label: 'التعلم الذكي',        icon: <Brain size={20} /> },
+        { id: 'smart-path',   label: 'المسار الذكي',        icon: <Brain size={20} /> },
         { id: 'sessions',     label: 'جلساتي',               icon: <Calendar size={20} /> },
         { id: 'quizzes',      label: 'الاختبارات السابقة',  icon: <FileText size={20} /> },
         { id: 'school-tests', label: 'الاختبارات المدرسية', icon: <Target size={20} /> },
         { id: 'mock-exams',   label: 'الاختبارات المحاكية', icon: <Star size={20} /> },
         { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
         { id: 'reports',      label: 'تقاريري',              icon: <PieChart size={20} /> },
-        { id: 'plan',         label: 'خطتي',                 icon: <MapIcon size={20} /> },
+        { id: 'plan',         label: 'خططي',                 icon: <MapIcon size={20} /> },
         { id: 'favorites',    label: 'مراجعة الأسئلة',      icon: <Heart size={20} /> },
         { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <BookOpen size={20} /> },
         { id: 'qa',           label: 'سؤال وجواب',           icon: <HelpCircle size={20} /> },
@@ -1176,10 +1174,13 @@ const Dashboard: React.FC = () => {
                             <>
                                 {/* Group: التعلم */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">التعلم</p>
-                                {menuItems.filter(i => ['overview','paths','my-courses','smart-path','sessions'].includes(i.id)).map(renderStudentMenuItem)}
+                                {menuItems.filter(i => ['overview','paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
+                                {/* Group: رحلتي التعليمية */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-emerald-600">رحلتي التعليمية</p>
+                                {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
                                 {/* Group: الاختبارات */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
-                                {menuItems.filter(i => ['quizzes','school-tests','mock-exams','reports','plan'].includes(i.id)).map(renderStudentMenuItem)}
+                                {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
                                 {/* Group: الأدوات */}
                                 <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
                                 {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
@@ -1827,7 +1828,7 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes, addActivity } = useStore();
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     
     const [copiedCode, setCopiedCode] = useState(false);
@@ -1873,6 +1874,11 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         })
         .filter((path) => path.courses.length > 0 || path.stats.examsCount > 0);
 
+    const pendingAssignedQuiz = assignedQuizzes.find(
+        (quiz) => !examResults.some((result) => result.quizId === quiz.id && result.userId === user.id),
+    );
+    const topSmartSkill = smartPathSkills[0];
+
     return (
     <div className="space-y-4 animate-fade-in pb-16">
         {/* Header & Streak */}
@@ -1893,29 +1899,52 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             </div>
         </div>
 
-        {/* Shortcuts for Students */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
-            {[
-                { id: 'saher', icon: <Zap size={18} />, label: 'اختبار سريع', sub: 'تدريب ذكي', color: 'text-purple-600', bg: 'bg-purple-50', ring: 'focus:ring-purple-200' },
-                { id: 'flashcards', icon: <BookOpen size={18} />, label: 'البطاقات', sub: 'المراجعة السريعة', color: 'text-rose-600', bg: 'bg-rose-50', ring: 'focus:ring-rose-200' },
-                { id: 'quizzes', icon: <FileText size={18} />, label: 'اختباراتي', sub: 'السابقة', color: 'text-blue-600', bg: 'bg-blue-50', ring: 'focus:ring-blue-200' },
-                { id: 'reports', icon: <PieChart size={18} />, label: 'التقارير', sub: 'أداء المستوى', color: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'focus:ring-emerald-200' }
-            ].map(btn => (
-                <button 
-                    key={btn.id}
-                    onClick={() => setActiveTab(btn.id as any)} 
-                    className={`group relative flex items-center gap-2.5 sm:gap-3 rounded-2xl bg-white p-2.5 sm:p-3 shadow-2xs border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-gray-200 focus:outline-none focus:ring-2 ${btn.ring} text-right`}
-                >
-                    <div className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl ${btn.bg} ${btn.color} shrink-0 transition-transform duration-200 group-hover:scale-105`}>
-                        {btn.icon}
+        {/* Student Today Focus: one clear action, no dashboard noise */}
+        <section
+            data-testid="student-today-focus"
+            className="rounded-3xl border border-emerald-100 bg-gradient-to-l from-emerald-50 via-white to-white p-4 sm:p-5 shadow-sm"
+        >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-black text-emerald-700">
+                        <Sparkles size={13} />
+                        خطوتك اليوم
                     </div>
-                    <div className="min-w-0 flex-1">
-                        <span className="block font-black text-gray-800 text-xs sm:text-sm truncate">{btn.label}</span>
-                        <span className="block text-[10px] sm:text-xs font-bold text-gray-400 truncate">{btn.sub}</span>
-                    </div>
-                </button>
-            ))}
-        </div>
+                    <h3 className="truncate text-base sm:text-lg font-black text-gray-900">
+                        {pendingAssignedQuiz
+                            ? pendingAssignedQuiz.title
+                            : topSmartSkill
+                                ? `ابدأ بـ ${topSmartSkill.skill}`
+                                : 'ابدأ بقياس قصير'}
+                    </h3>
+                    <p className="mt-1 text-xs sm:text-sm font-bold text-gray-500">
+                        {pendingAssignedQuiz
+                            ? 'اختبار موجه ينتظرك.'
+                            : topSmartSkill
+                                ? `مستواك الحالي ${Math.round(topSmartSkill.mastery)}% — خطوة واحدة تكفي الآن.`
+                                : 'قياس بسيط يساعدنا نحدد لك الخطوة التالية.'}
+                    </p>
+                </div>
+                {pendingAssignedQuiz ? (
+                    <Link
+                        to={`/quiz/${pendingAssignedQuiz.id}`}
+                        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
+                    >
+                        ابدأ الاختبار
+                        <ChevronLeft size={16} />
+                    </Link>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab(topSmartSkill ? 'smart-path' : 'quizzes')}
+                        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
+                    >
+                        {topSmartSkill ? 'افتح المسار الذكي' : 'ابدأ القياس'}
+                        <ChevronLeft size={16} />
+                    </button>
+                )}
+            </div>
+        </section>
 
         {/* ===== مهامي من المشرف ===== */}
         {user.role === Role.STUDENT && assignedQuizzes.length > 0 && (
@@ -1927,26 +1956,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
               window.location.assign(`/quiz/${quizId}`);
             }}
           />
-        )}
-
-        {/* Daily 60s Speed Drill & Referral Ambassador Program */}
-        {user.role === Role.STUDENT && (
-          <div className="space-y-3">
-            <DailySpeedDrillCard
-              userId={user.id}
-              onDrillCompleted={(record) => {
-                addActivity({
-                  type: 'quiz_complete',
-                  title: `أكمل تحدي الـ 60 ثانية اليومي بنتيجة ${record.score}/5 ⚡`,
-                  link: '/dashboard',
-                });
-              }}
-            />
-            <ReferralAmbassadorCard
-              userId={user.id}
-              userName={user.name}
-            />
-          </div>
         )}
 
         {/* Student Tools: Parent Code & Notifications */}

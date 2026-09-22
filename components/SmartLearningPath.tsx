@@ -100,75 +100,69 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
 
     if (recommendations.length === 0) return null;
 
+    const current = recommendations[0];
+    const nextItems = recommendations.slice(1, 4);
+
     return (
-        <div className="relative" data-adaptive-fingerprint={fingerprint}>
-            <div className="flex items-center gap-2 mb-4">
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-2 rounded-lg shadow-lg shadow-purple-200">
-                    <Sparkles size={20} />
-                </div>
-                <div>
-                    <h3 className="font-bold text-lg text-gray-900">مسار التعلم الذكي</h3>
-                    <p className="text-xs text-gray-500">تم اختياره لك بناءً على المهارات التي تحتاج دعمًا</p>
+        <Card
+            className="overflow-hidden border border-emerald-100 bg-white shadow-sm"
+            data-adaptive-fingerprint={fingerprint}
+            data-testid="student-smart-path"
+        >
+            <div className="border-b border-emerald-100 bg-gradient-to-l from-emerald-50 via-white to-white p-4 sm:p-5">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-sm">
+                        <Sparkles size={20} />
+                    </div>
+                    <div>
+                        <h3 className="text-base sm:text-lg font-black text-gray-900">المسار الذكي</h3>
+                        <p className="text-xs font-bold text-gray-500">خطوة واضحة، ثم نحدّث المسار تلقائيًا.</p>
+                    </div>
                 </div>
             </div>
 
-            <div className="relative border-r-2 border-purple-100 mr-4 space-y-6">
-                {recommendations.map((item, index) => (
-                    <div key={item.id} className="relative pr-8 animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
-                        <div
-                            className={`absolute -right-[9px] top-0 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
-                                item.priority === 'high' ? 'bg-red-500' : 'bg-purple-500'
-                            }`}
-                        ></div>
+            <div className="p-4 sm:p-5">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] font-black text-emerald-700">
+                        <span className="rounded-full bg-white px-2.5 py-1">خطوتك الآن</span>
+                        <span className="inline-flex items-center gap-1 text-gray-500">
+                            <Clock size={12} /> {current.duration}
+                        </span>
+                    </div>
+                    <h4 className="mt-3 text-base font-black text-gray-900">{current.title}</h4>
+                    <p className="mt-1 text-xs sm:text-sm font-bold leading-6 text-gray-500">{current.reason}</p>
+                    {current.link ? (
+                        <Link
+                            to={current.link}
+                            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
+                        >
+                            {current.actionLabel || 'ابدأ الآن'}
+                            <ArrowLeft size={15} />
+                        </Link>
+                    ) : null}
+                </div>
 
-                        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
-                            <div className="flex justify-between items-start mb-2">
-                                <div className="flex items-center gap-2">
-                                    <span
-                                        className={`text-[10px] font-bold px-2 py-0.5 rounded text-white ${
-                                            item.type === 'lesson'
-                                                ? 'bg-blue-500'
-                                                : item.type === 'quiz'
-                                                  ? 'bg-amber-500'
-                                                  : 'bg-emerald-500'
-                                        }`}
-                                    >
-                                        {item.type === 'lesson' ? 'درس' : item.type === 'quiz' ? 'اختبار' : 'مراجعة'}
-                                    </span>
-                                    <span className="text-xs text-gray-400 flex items-center gap-1">
-                                        <Clock size={12} /> {item.duration}
-                                    </span>
-                                </div>
-                                {item.priority === 'high' && (
-                                    <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded font-bold flex items-center gap-1">
-                                        <Zap size={12} /> أولوية عالية
-                                    </span>
-                                )}
-                            </div>
-
-                            <h4 className="font-bold text-gray-800 text-lg mb-1">{item.title}</h4>
-
-                            <div className="bg-purple-50 p-2 rounded-lg mb-3">
-                                <p className="text-xs text-purple-700 flex items-start gap-2">
-                                    <Sparkles size={12} className="mt-0.5 shrink-0" />
-                                    {item.reason}
-                                </p>
-                            </div>
-
-                            <div className="flex justify-start">
+                {nextItems.length ? (
+                    <div className="mt-4">
+                        <p className="mb-2 text-xs font-black text-gray-500">بعدها</p>
+                        <div className="grid gap-2 sm:grid-cols-3">
+                            {nextItems.map((item) => (
                                 <Link
-                                    to={item.link || '/dashboard'}
-                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-l from-indigo-600 to-purple-600 px-5 py-2 text-xs sm:text-sm font-black text-white shadow-sm shadow-indigo-100 transition-all hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                                    key={item.id}
+                                    to={item.link || '#'}
+                                    className="rounded-2xl border border-gray-100 bg-gray-50 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/40"
                                 >
-                                    <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
-                                    {item.actionLabel}
-                                    <ArrowLeft size={15} />
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="truncate text-xs font-black text-gray-800">{item.title}</span>
+                                        <Zap size={13} className="shrink-0 text-amber-500" />
+                                    </div>
+                                    <p className="mt-1 text-[11px] font-bold text-gray-400">{item.duration}</p>
                                 </Link>
-                            </div>
+                            ))}
                         </div>
                     </div>
-                ))}
+                ) : null}
             </div>
-        </div>
+        </Card>
     );
 };
