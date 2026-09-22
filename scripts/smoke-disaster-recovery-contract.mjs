@@ -6,6 +6,7 @@ const restore = fs.readFileSync(new URL('./restore-db-verified.sh', import.meta.
 const mediaBackup = fs.readFileSync(new URL('./verify-r2-media-backup.sh', import.meta.url), 'utf8');
 const mediaRestore = fs.readFileSync(new URL('./restore-r2-media-verified.sh', import.meta.url), 'utf8');
 const runbook = fs.readFileSync(new URL('../docs/architecture/DISASTER_RECOVERY_RUNBOOK.md', import.meta.url), 'utf8');
+const productionGuide = fs.readFileSync(new URL('../docs/BACKUP_RESTORE_PRODUCTION.md', import.meta.url), 'utf8');
 
 assert.match(backup, /mongodump/);
 assert.match(backup, /--archive=/);
@@ -44,5 +45,12 @@ assert.match(mediaRestore, /isolated-recovery-bucket/);
 assert.match(mediaRestore, /aws --endpoint-url "\$R2_ENDPOINT" s3 sync/);
 assert.doesNotMatch(mediaRestore, /--delete/);
 assert.match(runbook, /not a full database backup/i);
+assert.match(productionGuide, /backup:database:verified/);
+assert.match(productionGuide, /restore:database:verified/);
+assert.match(productionGuide, /backup:media:r2/);
+assert.match(productionGuide, /restore:media:r2/);
+assert.match(productionGuide, /Sentry live proof is blocked/i);
+assert.doesNotMatch(productionGuide, /MONGODB_URI="mongodb\+srv:\/\/\.\.\." bash scripts\/backup-db\.sh/);
+assert.doesNotMatch(productionGuide, /bash scripts\/restore-db\.sh/);
 
 console.log('Disaster recovery contract smoke: PASS');

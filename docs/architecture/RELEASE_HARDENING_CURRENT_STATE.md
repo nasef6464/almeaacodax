@@ -14,6 +14,10 @@
 
 ### Current verified facts
 
+- Production Operational Smoke is now GREEN on `main@6f1fab225216368333c30e225bc9b250a01851aa`; the remaining Post Deploy failure is isolated to Sentry live proof because production has no `SENTRY_DSN`.
+- Vercel Production and Render are aligned with the current main SHA.
+- Full scheduled/off-site MongoDB + R2 backup and isolated restore-drill evidence remains open.
+
 - GitHub `main`, Vercel production and Render production backend were verified on the same SHA `71da69db7ef95ff8fe6312848c555ae7a3f01c94`.
 - Pull-request gates on the student-dashboard release were green, but the live Post Deploy Smoke still fails an operational learner-content reference check.
 - Production read-only inspection found two visible topic-linked drills with zero resolvable question references and one 60-question mock exam with 12 missing references.
