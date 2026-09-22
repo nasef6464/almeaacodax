@@ -304,6 +304,16 @@ function documentId(item: any) {
   return String(item?.id || item?._id || "");
 }
 
+function documentAliases(item: any): string[] {
+  return Array.from(
+    new Set(
+      [item?.id, item?._id]
+        .map((value) => String(value || "").trim())
+        .filter(Boolean),
+    ),
+  );
+}
+
 function quizQuestionIds(item: any): string[] {
   const sectionIds = Array.isArray(item?.mockExam?.sections)
     ? item.mockExam.sections.flatMap((section: any) => Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [])
@@ -848,7 +858,7 @@ async function run() {
   const learnerLessonIds = new Set<string>((studentContent.lessons || []).map((lesson: any) => documentId(lesson)));
   const learnerQuizIds = new Set<string>(asArray(studentQuizzes).map((quiz: any) => documentId(quiz)));
   const learnerQuestionIds = new Set<string>(
-    [...asArray(studentQuestions), ...linkedStudentQuestions].map((question: any) => documentId(question)),
+    [...asArray(studentQuestions), ...linkedStudentQuestions].flatMap((question: any) => documentAliases(question)),
   );
   const learnerLessonsById = new Map<string, any>((studentContent.lessons || []).map((lesson: any) => [documentId(lesson), lesson]));
   const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
