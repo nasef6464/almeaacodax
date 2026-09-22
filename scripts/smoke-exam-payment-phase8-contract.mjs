@@ -86,7 +86,7 @@ check("quiz score and pass/fail are calculated only on the server", () => {
 });
 
 check("learner question list does not expose answer keys before submission", () => {
-  assertIncludes(questionBankRoutes, "sanitizeQuestionForLearner");
+  assertIncludes(questionBankRoutes, "buildQuestionResponseItems");
   assertIncludes(questionBankRoutes, "canSeeAnswers");
   assertIncludes(questionPresentation, "export const sanitizeQuestionForLearner");
   for (const fragment of [
