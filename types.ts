@@ -622,6 +622,7 @@ export interface Question extends ContentWorkflow {
     imageAlt?: string;
     optionsEmbeddedInImage?: boolean;
     aiContext?: QuestionAiContext;
+    voiceExplanation?: QuestionVoiceExplanation;
     sourceMeta?: QuestionSourceMeta;
     skillIds?: string[];
     skillId?: string | null;
