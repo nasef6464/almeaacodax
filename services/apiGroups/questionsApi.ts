@@ -148,6 +148,16 @@ export const createQuestionsApi = (request: ApiRequest) => ({
       token,
     }),
 
+  updateQuestionVideosByCode: (
+    items: Array<{ questionCode: string; videoUrl: string }>,
+    token?: string | null,
+  ) =>
+    request<{ requested: number; matched: number; modified: number; missingCodes: string[] }>("/quizzes/questions/video-links", {
+      method: "PATCH",
+      body: { items },
+      token,
+    }),
+
   deleteQuestion: (id: string, token?: string | null) =>
     request<{ success: boolean }>(`/quizzes/questions/${id}`, {
       method: "DELETE",

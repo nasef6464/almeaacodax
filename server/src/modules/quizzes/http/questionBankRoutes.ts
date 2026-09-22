@@ -12,12 +12,13 @@ import {
   combineMongoFilters,
   resolveManagedContentScope,
 } from "../../../services/managedContentScope.js";
-import { questionBaseSchema, questionListQuerySchema, questionSchema } from "./questionQuerySchemas.js";
-import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";
+import { questionBaseSchema, questionListQuerySchema, questionSchema, questionVideoLinksSchema } from "./questionQuerySchemas.js";
+import { buildQuestionResponseItems } from "../presentation/questionPresentation.js";
 import { escapeRegex } from "./queryUtilities.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../application/quizWorkflow.js";
 import { getQuizQuestionIds } from "../application/quizQuestionSelection.js";
 import { getQuestionBankCoverage } from "../application/questionBankCoverage.js";
+import { resolveCanonicalQuestionSkillIds } from "../application/questionSkillTaxonomy.js";
 import { buildOwnedDocumentQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
 
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -157,6 +158,7 @@ questionBankRouter.get(
       scopeFilter.$or = [
         ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
         { text: { $regex: safeSearch, $options: "i" } },
+        { questionCode: { $regex: safeSearch, $options: "i" } },
         { explanation: { $regex: safeSearch, $options: "i" } },
         { id: { $regex: safeSearch, $options: "i" } },
       ];
@@ -173,7 +175,7 @@ questionBankRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id text imageUrl options correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id questionCode text imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const shouldIncludeCoverage = Boolean(query.includeCoverage);
@@ -184,12 +186,10 @@ questionBankRouter.get(
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
-    const canSeeAnswers = isStaffRole(req.authUser?.role);
-    const items = query.summary
-      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
-      : canSeeAnswers
-        ? limitedItems
-        : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
+    const items = buildQuestionResponseItems(
+      limitedItems as Array<Record<string, any>>,
+      { summary: query.summary, canSeeAnswers: isStaffRole(req.authUser?.role) },
+    );
     if (total !== null) {
       res.setHeader("X-Total-Count", String(total));
     }
@@ -238,9 +238,15 @@ questionBankRouter.post(
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const draftPayload = questionBaseSchema.parse(req.body);
+    await assertManagedContentScope(req.authUser!, draftPayload);
+    const canonicalSkills = await resolveCanonicalQuestionSkillIds(draftPayload);
+    if (!canonicalSkills.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: canonicalSkills.message });
+    }
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const payload = questionSchema.parse({
       ...draftPayload,
+      skillIds: canonicalSkills.skillIds,
       ...workflowDefaults,
       approvalStatus:
         req.authUser?.role === "admin"
@@ -250,6 +256,44 @@ questionBankRouter.post(
     await assertManagedContentScope(req.authUser!, payload);
     const created = await QuestionModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+questionBankRouter.patch(
+  "/questions/video-links",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const { items } = questionVideoLinksSchema.parse(req.body || {});
+    const normalizedItems = items.map((item) => ({
+      questionCode: item.questionCode.trim().toUpperCase(),
+      videoUrl: item.videoUrl.trim(),
+    }));
+    const codes = uniqueStrings(normalizedItems.map((item) => item.questionCode));
+    const existing = await QuestionModel.find({ questionCode: { $in: codes } })
+      .select("questionCode")
+      .lean();
+    const existingCodes = new Set(existing.map((item: any) => String(item.questionCode || "").toUpperCase()).filter(Boolean));
+    const operations = normalizedItems
+      .filter((item) => existingCodes.has(item.questionCode))
+      .map((item) => ({
+        updateOne: {
+          filter: { questionCode: item.questionCode },
+          update: { $set: { videoUrl: item.videoUrl } },
+        },
+      }));
+
+    const result = operations.length > 0
+      ? await QuestionModel.bulkWrite(operations, { ordered: false })
+      : null;
+    const missingCodes = codes.filter((code) => !existingCodes.has(code));
+
+    return res.json({
+      requested: normalizedItems.length,
+      matched: existingCodes.size,
+      modified: Number(result?.modifiedCount || 0),
+      missingCodes,
+    });
   }),
 );
 
@@ -280,13 +324,34 @@ questionBankRouter.patch(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
 
-    const mergedPayload = questionSchema.parse({
+    const existingQuestionCode = String((existing as any).questionCode || "").trim().toUpperCase();
+    const requestedQuestionCode = String((payload as any).questionCode || "").trim().toUpperCase();
+    if (existingQuestionCode && requestedQuestionCode && existingQuestionCode !== requestedQuestionCode) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "questionCode is immutable once assigned",
+        questionCode: existingQuestionCode,
+      });
+    }
+
+    const mergedDraft = {
       ...existing.toObject(),
       ...payload,
+    };
+    await assertManagedContentScope(req.authUser!, mergedDraft);
+    const canonicalSkills = await resolveCanonicalQuestionSkillIds(mergedDraft);
+    if (!canonicalSkills.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: canonicalSkills.message });
+    }
+    const mergedPayload = questionSchema.parse({
+      ...mergedDraft,
+      skillIds: canonicalSkills.skillIds,
     });
 
     await assertManagedContentScope(req.authUser!, mergedPayload);
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
+    const sanitizedPayload = sanitizeWorkflowUpdate(
+      { ...payload, skillIds: canonicalSkills.skillIds } as Record<string, unknown>,
+      req.authUser!,
+    );
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
   }),

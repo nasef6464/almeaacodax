@@ -170,7 +170,7 @@ assertIncludes('services/apiGroups/questionsApi.ts', 'noTotal?: boolean');
 assertIncludes('server/src/modules/quizzes/http/questionQuerySchemas.ts', 'limit: z.coerce.number().int().min(1).max(100).default(80)');
 assertIncludes('server/src/modules/quizzes/http/questionBankRoutes.ts', 'res.setHeader("X-Total-Count", String(total));');
 assertIncludes('server/src/modules/quizzes/http/questionBankRoutes.ts', 'if (query.summary) {');
-assertIncludes('server/src/modules/quizzes/http/questionBankRoutes.ts', 'toQuestionSummaryText(item.text)');
+assertIncludes('server/src/modules/quizzes/presentation/questionPresentation.ts', 'toQuestionSummaryText(item.text)');
 assertIncludes('server/src/modules/quizzes/http/questionBankRoutes.ts', 'query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'PUBLIC_QUIZ_LIST_CACHE_TTL_MS');
 assertIncludes('server/src/routes/quiz.routes.ts', 'X-Quiz-List-Cache');

@@ -229,12 +229,31 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     [sections, selectedSubjectId],
   );
 
+  const nestedSubSkills = useMemo(
+    () =>
+      skills.flatMap((skill) =>
+        (skill.subSkills || []).map((subSkill) => ({
+          ...subSkill,
+          pathId: skill.pathId,
+          subjectId: skill.subjectId,
+          sectionId: skill.sectionId,
+          parentSkillId: skill.id,
+          parentSkillName: skill.name,
+        })),
+      ),
+    [skills],
+  );
+
   const availableSubSkills = useMemo(
     () =>
-      skills
-        .filter((skill) => skill.subjectId === selectedSubjectId && (!selectedSectionId || skill.sectionId === selectedSectionId))
+      nestedSubSkills
+        .filter(
+          (subSkill) =>
+            subSkill.subjectId === selectedSubjectId &&
+            (!selectedSectionId || subSkill.sectionId === selectedSectionId),
+        )
         .sort((a, b) => a.name.localeCompare(b.name, 'ar')),
-    [selectedSectionId, selectedSubjectId, skills],
+    [nestedSubSkills, selectedSectionId, selectedSubjectId],
   );
 
   const questions = useMemo(
@@ -267,7 +286,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const filteredQuestions = useMemo(
     () =>
       questions.filter((question) => {
-        const haystack = `${question.text || ''} ${question.options?.join(' ') || ''}`;
+        const haystack = `${question.questionCode || ''} ${question.text || ''} ${question.options?.join(' ') || ''}`;
         return normalizeLookup(haystack).includes(normalizeLookup(searchTerm));
       }),
     [questions, searchTerm],
@@ -388,7 +407,18 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       pathId: selectedPathId || '',
       subject: selectedSubjectId || '',
       sectionId: selectedSectionId || '',
-      skillIds: selectedSkillId ? [selectedSkillId] : [],
+      skillIds: [
+        ...new Set([
+          ...(skills.find(
+            (skill) => skill.subjectId === selectedSubjectId && skill.sectionId === selectedSectionId,
+          )?.id
+            ? [skills.find(
+                (skill) => skill.subjectId === selectedSubjectId && skill.sectionId === selectedSectionId,
+              )!.id]
+            : []),
+          ...(selectedSkillId ? [selectedSkillId] : []),
+        ]),
+      ],
       ownerType: user.role === 'teacher' ? 'teacher' : 'platform',
       ownerId: user.id,
       createdBy: user.id,
@@ -453,7 +483,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const handleDuplicate = async (question: Question) => {
     try {
       // لا نُمرّر id محلياً — السيرفر يُنشئ ID حقيقياً دائماً
-      const { id: _omit, ...questionWithoutId } = question;
+      const { id: _omit, questionCode: _omitQuestionCode, ...questionWithoutId } = question;
       await addQuestion({
         ...questionWithoutId,
         text: question.text ? `${question.text} (نسخة)` : question.text,
@@ -478,11 +508,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || '';
       const mainSkillName = sections.find((section) => section.id === question.sectionId)?.name || '';
       const subSkillNames = (question.skillIds || [])
-        .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+        .map((skillId) => nestedSubSkills.find((subSkill) => subSkill.id === skillId)?.name || '')
         .filter(Boolean)
         .join(' | ');
 
       return {
+        'ID داخلي': question.id || '',
+        'كود السؤال': question.questionCode || '',
         المسار: pathName,
         المادة: subjectName,
         'المهارة الرئيسية': mainSkillName,
@@ -551,10 +583,14 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     const sampleSubject = allowedSubjects.find((subject) => subject.pathId === samplePath?.id) || allowedSubjects[0];
     const sampleMainSkill = sections.find((section) => section.subjectId === sampleSubject?.id) || sections[0];
     const sampleSubSkill =
-      skills.find((skill) => skill.subjectId === sampleSubject?.id && skill.sectionId === sampleMainSkill?.id) || skills[0];
+      nestedSubSkills.find(
+        (subSkill) => subSkill.subjectId === sampleSubject?.id && subSkill.sectionId === sampleMainSkill?.id,
+      ) || nestedSubSkills[0];
 
     const templateRows = [
       {
+        questionCode: '',
+        'كود السؤال': '',
         pathId: samplePath?.id || '',
         subjectId: sampleSubject?.id || '',
         mainSkillId: sampleMainSkill?.id || '',
@@ -633,17 +669,18 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     XLSX.utils.book_append_sheet(
       workbook,
       XLSX.utils.json_to_sheet(
-        skills
-          .filter((skill) => allowedSubjects.some((subject) => subject.id === skill.subjectId))
-          .map((skill) => {
-            const subject = subjects.find((item) => item.id === skill.subjectId);
-            const section = sections.find((item) => item.id === skill.sectionId);
+        nestedSubSkills
+          .filter((subSkill) => allowedSubjects.some((subject) => subject.id === subSkill.subjectId))
+          .map((subSkill) => {
+            const subject = subjects.find((item) => item.id === subSkill.subjectId);
+            const section = sections.find((item) => item.id === subSkill.sectionId);
             return {
-              subSkillId: skill.id,
-              mainSkillId: skill.sectionId || '',
-              subjectId: skill.subjectId,
-              subSkillName: skill.name,
-              mainSkillName: section?.name || '',
+              subSkillId: subSkill.id,
+              parentSkillId: subSkill.parentSkillId,
+              mainSkillId: subSkill.sectionId || '',
+              subjectId: subSkill.subjectId,
+              subSkillName: subSkill.name,
+              mainSkillName: section?.name || subSkill.parentSkillName || '',
               subjectName: subject?.name || '',
               pathName: paths.find((path) => path.id === subject?.pathId)?.name || '',
             };
@@ -675,7 +712,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           subject: subjects.find((subject) => subject.id === question.subject)?.name || 'غير محدد',
           mainSkill: sections.find((section) => section.id === question.sectionId)?.name || 'غير محدد',
           subSkills: (question.skillIds || [])
-            .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+            .map((skillId) => nestedSubSkills.find((subSkill) => subSkill.id === skillId)?.name || '')
             .filter(Boolean)
             .join('، '),
           difficulty: difficultyLabel(question.difficulty),
@@ -733,6 +770,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   };
 
   const buildQuestionFromRow = (row: Record<string, unknown>, rowNumber: number): ImportDraftQuestion => {
+    const questionCode = readCell(row, ['كود السؤال', 'questionCode', 'question_code', 'code']);
     const questionValue = readCell(row, ['نص السؤال', 'السؤال', 'question', 'questionText']);
     const questionImageValue = readCell(row, ['رابط صورة السؤال', 'صورة السؤال', 'imageUrl', 'questionImage']);
     const pathIdValue = readCell(row, ['pathId', 'path_id']);
@@ -790,42 +828,46 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     const requestedSkillIds = splitSkillNames(skillIdsValue);
     const requestedSkillNames = splitSkillNames(skillName);
+    const subSkillPool = nestedSubSkills.filter(
+      (subSkill) =>
+        subSkill.subjectId === matchedSubject.id &&
+        subSkill.sectionId === matchedSection.id,
+    );
     const matchedSkillsById = requestedSkillIds
-      .map((requestedSkillId) =>
-        skills.find(
-          (skill) =>
-            skill.id === requestedSkillId &&
-            skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id,
-        ),
-      )
-      .filter(Boolean) as typeof skills;
+      .map((requestedSkillId) => subSkillPool.find((subSkill) => subSkill.id === requestedSkillId))
+      .filter(Boolean);
     const matchedSkillsByName = requestedSkillNames
       .map((requestedSkillName) =>
-        skills.find(
-          (skill) =>
-            skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id &&
-            normalizeLookup(skill.name) === normalizeLookup(requestedSkillName),
+        subSkillPool.find(
+          (subSkill) => normalizeLookup(subSkill.name) === normalizeLookup(requestedSkillName),
         ),
       )
-      .filter(Boolean) as typeof skills;
+      .filter(Boolean);
     const matchedSkills = [...matchedSkillsById, ...matchedSkillsByName].filter(
-      (skill, index, allSkills) => allSkills.findIndex((item) => item.id === skill.id) === index,
+      (subSkill, index, allSkills) => allSkills.findIndex((item) => item?.id === subSkill?.id) === index,
+    );
+    const matchedMainSkill = skills.find(
+      (skill) =>
+        skill.subjectId === matchedSubject.id &&
+        skill.sectionId === matchedSection.id,
     );
 
     if (
+      !matchedMainSkill ||
       (requestedSkillIds.length > 0 && matchedSkillsById.length !== requestedSkillIds.length) ||
       (requestedSkillNames.length > 0 && matchedSkillsByName.length !== requestedSkillNames.length) ||
       matchedSkills.length === 0
     ) {
       const missingNames = requestedSkillNames.filter(
-        (requestedSkillName) => !matchedSkillsByName.some((skill) => normalizeLookup(skill.name) === normalizeLookup(requestedSkillName)),
+        (requestedSkillName) =>
+          !matchedSkillsByName.some(
+            (subSkill) => subSkill && normalizeLookup(subSkill.name) === normalizeLookup(requestedSkillName),
+          ),
       );
       const missingIds = requestedSkillIds.filter(
-        (requestedSkillId) => !matchedSkillsById.some((skill) => skill.id === requestedSkillId),
+        (requestedSkillId) => !matchedSkillsById.some((subSkill) => subSkill?.id === requestedSkillId),
       );
-      throw new Error(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || missingIds.join(', ') || skillName || skillIdsValue}" غير موجودة تحت "${sectionName || sectionIdValue}".`);
+      throw new Error(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || missingIds.join(', ') || skillName || skillIdsValue}" غير موجودة تحت "${sectionName || sectionIdValue}" في مركز المهارات الحالي.`);
     }
 
     const { text, imageUrl } = normalizeQuestionContent(questionValue, questionImageValue);
@@ -846,13 +888,19 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     return {
       id: `q_import_${Date.now()}_${rowNumber}`,
+      questionCode: questionCode || undefined,
       text,
       imageUrl,
       options: type === 'essay' ? [] : options,
       correctOptionIndex,
       explanation: explanationText,
       videoUrl: explanationLink || undefined,
-      skillIds: [...new Set(matchedSkills.map((skill) => skill.id))],
+      skillIds: [
+        ...new Set([
+          matchedMainSkill.id,
+          ...matchedSkills.map((subSkill) => String(subSkill?.id || '')).filter(Boolean),
+        ]),
+      ],
       pathId: matchedPath.id,
       subject: matchedSubject.id,
       sectionId: matchedSection.id,
@@ -1703,6 +1751,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}
                         <div className="flex flex-wrap items-center gap-2 mt-2 pt-1.5 border-t border-gray-100">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
+                            {question.questionCode || questionIdentity}
+                          </span>
                           <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-600">
                             {question.ownerType === 'teacher'
                               ? 'سؤال معلم'
@@ -1736,7 +1787,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1 max-w-[200px]">
                         {question.skillIds?.map((skillId) => {
-                          const subSkill = skills.find((skill) => skill.id === skillId);
+                          const subSkill = nestedSubSkills.find((item) => item.id === skillId);
                           return subSkill ? (
                             <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold border border-indigo-100/60">
                               {subSkill.name}
@@ -1992,10 +2043,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   <div className="mt-3 flex flex-wrap gap-2">
                     {(previewQuestion.skillIds || []).length > 0 ? (
                       previewQuestion.skillIds!.map((skillId) => {
-                        const skill = skills.find((item) => item.id === skillId);
-                        return skill ? (
+                        const subSkill = nestedSubSkills.find((item) => item.id === skillId);
+                        return subSkill ? (
                           <span key={skillId} className="rounded-full bg-white px-3 py-1 text-xs font-black text-gray-700 shadow-sm">
-                            {skill.name}
+                            {subSkill.name}
                           </span>
                         ) : null;
                       })

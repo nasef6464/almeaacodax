@@ -9,6 +9,9 @@ const read = (relativePath) =>
 const rootRoutes = read('server/src/routes/quiz.routes.ts');
 const questionRoutes = read('server/src/modules/quizzes/http/questionBankRoutes.ts');
 const queryHelpers = read('server/src/modules/quizzes/infrastructure/quizDocumentQuery.ts');
+const questionSchemas = read('server/src/modules/quizzes/http/questionQuerySchemas.ts');
+const questionPresentation = read('server/src/modules/quizzes/presentation/questionPresentation.ts');
+const questionModel = read('server/src/models/Question.ts');
 
 const checks = [];
 const check = (name, assertion) => {
@@ -37,14 +40,42 @@ check('question bank public HTTP surface is preserved', () => {
   ]) assert.ok(questionRoutes.includes(fragment), `missing question bank route ${fragment}`);
 });
 
+check('question bank V2 keeps stable codes and AI metadata protected', () => {
+  for (const fragment of [
+    'questionCode: { type: String, unique: true',
+    'aiContext: { type: questionAiContextSchema',
+    'sourceMeta: { type: questionSourceMetaSchema',
+    'assignStableQuestionIdentity',
+  ]) assert.ok(questionModel.includes(fragment), `question model lost ${fragment}`);
+
+  assert.ok(questionSchemas.includes('export const questionVideoLinksSchema'));
+  assert.ok(questionRoutes.includes('"/questions/video-links"'));
+  assert.ok(questionRoutes.includes('"questionCode is immutable once assigned"'));
+
+  for (const hiddenField of ['hint,', 'solvingStrategy,', 'aiContext,', 'sourceMeta,']) {
+    assert.ok(questionPresentation.includes(hiddenField), `learner sanitizer lost ${hiddenField}`);
+  }
+});
+
 check('question bank mutations remain scoped and workflow-safe', () => {
   for (const fragment of [
     'requireRole(["admin", "teacher"])',
     'assertManagedContentScope(req.authUser!',
     'buildOwnedDocumentQuery(req.params.id, req.authUser!)',
-    'sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!)',
+    'sanitizeWorkflowUpdate(',
+    '{ ...payload, skillIds: canonicalSkills.skillIds } as Record<string, unknown>',
     'QuizModel.updateMany(',
   ]) assert.ok(questionRoutes.includes(fragment), `question route lost ${fragment}`);
+});
+
+check('learner summary responses are sanitized before caching', () => {
+  assert.ok(questionRoutes.includes('buildQuestionResponseItems('));
+  assert.ok(questionPresentation.includes('options.summary'));
+  assert.ok(questionPresentation.includes('sanitizeQuestionForLearner(item)'));
+  assert.ok(questionPresentation.includes('correctOptionIndex,'));
+  assert.ok(questionPresentation.includes('explanation,'));
+  assert.ok(questionPresentation.includes('aiContext,'));
+  assert.ok(questionPresentation.includes('sourceMeta,'));
 });
 
 check('question summary coverage and cache remain full-bank aware', () => {

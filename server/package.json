@@ -47,6 +47,7 @@
     "restore:learning": "tsx src/scripts/restoreLearningContent.ts",
     "migrate:question-inline-images:r2": "tsx src/scripts/migrateQuestionInlineImagesToR2.ts",
     "audit:foundation-skill-mapping": "tsx src/scripts/auditFoundationSkillMapping.ts",
+    "validate:question-manifest": "tsx src/scripts/validateQuestionBankV2Manifest.ts",
     "audit:learner-references": "tsx src/scripts/auditLearnerReferenceIntegrity.ts",
     "repair:learner-references": "tsx src/scripts/repairLearnerReferenceIntegrity.ts"
   },

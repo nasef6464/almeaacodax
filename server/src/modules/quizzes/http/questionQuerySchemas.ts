@@ -1,13 +1,47 @@
 import { z } from "zod";
 
+const questionMathExpressionSchema = z.object({
+  latex: z.string().max(1000).default(""),
+  spokenArabic: z.string().max(2000).default(""),
+});
+
+const questionAiContextSchema = z.object({
+  readableText: z.string().max(12000).default(""),
+  speechText: z.string().max(12000).default(""),
+  visualDescription: z.string().max(12000).default(""),
+  optionTexts: z.array(z.string().max(4000)).max(12).default([]),
+  mathExpressions: z.array(questionMathExpressionSchema).max(32).default([]),
+  concepts: z.array(z.string().max(240)).max(32).default([]),
+  requiredData: z.array(z.string().max(500)).max(64).default([]),
+  version: z.number().int().min(1).max(100).default(1),
+});
+
+const questionSourceMetaSchema = z.object({
+  documentCode: z.string().max(120).default(""),
+  documentTitle: z.string().max(500).default(""),
+  page: z.number().int().min(1).nullable().optional(),
+  questionNumber: z.string().max(80).default(""),
+  cropIndex: z.number().int().min(0).nullable().optional(),
+  importBatchId: z.string().max(160).default(""),
+  imageVersion: z.number().int().min(1).max(100000).default(1),
+  imageHash: z.string().max(256).default(""),
+});
+
 export const questionBaseSchema = z.object({
   id: z.string().optional(),
+  questionCode: z.string().trim().min(3).max(120).optional(),
   text: z.string().default(""),
   options: z.array(z.string()).default([]),
   correctOptionIndex: z.number().default(0),
   explanation: z.string().optional(),
+  hint: z.string().optional(),
+  solvingStrategy: z.string().optional(),
   videoUrl: z.string().optional(),
   imageUrl: z.string().optional(),
+  imageAlt: z.string().optional(),
+  optionsEmbeddedInImage: z.boolean().optional().default(false),
+  aiContext: questionAiContextSchema.optional(),
+  sourceMeta: questionSourceMetaSchema.optional(),
   skillIds: z.array(z.string()).min(1),
   skillId: z.string().min(1).nullable().optional(),
   subSkillId: z.string().min(1).nullable().optional(),
@@ -50,7 +84,34 @@ export const questionSchema = questionBaseSchema
       message: "Published or review-ready image questions require a written explanation",
       path: ["explanation"],
     },
+  )
+  .refine(
+    (value) => {
+      if (!value.optionsEmbeddedInImage || value.type !== "mcq") return true;
+      const optionTexts = value.aiContext?.optionTexts || [];
+      return optionTexts.length === value.options.length && optionTexts.every((option) => option.trim().length > 0);
+    },
+    {
+      message: "Image-embedded options require complete AI option text for every visible option",
+      path: ["aiContext", "optionTexts"],
+    },
   );
+
+
+
+const httpUrlOrBlankSchema = z.string().trim().max(2000).refine(
+  (value) => !value || /^https?:\/\//i.test(value),
+  "Video URL must be blank or use HTTP(S)",
+);
+
+export const questionVideoLinksSchema = z.object({
+  items: z.array(
+    z.object({
+      questionCode: z.string().trim().min(3).max(120),
+      videoUrl: httpUrlOrBlankSchema,
+    }),
+  ).min(1).max(500),
+});
 
 export const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),

@@ -31,8 +31,31 @@ export const toQuestionSummaryText = (value: unknown) => {
 };
 
 export const sanitizeQuestionForLearner = (question: Record<string, any>) => {
-  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
+  const {
+    correctOptionIndex,
+    explanation,
+    hint,
+    solvingStrategy,
+    aiContext,
+    sourceMeta,
+    reviewerNotes,
+    __v,
+    ...safeQuestion
+  } = question;
   return safeQuestion;
+};
+
+
+export const buildQuestionResponseItems = (
+  items: Array<Record<string, any>>,
+  options: { summary: boolean; canSeeAnswers: boolean },
+) => {
+  const presented = options.summary
+    ? items.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+    : items;
+  return options.canSeeAnswers
+    ? presented
+    : presented.map((item) => sanitizeQuestionForLearner(item));
 };
 
 export const isQuestionContentUsable = (question: any) => {

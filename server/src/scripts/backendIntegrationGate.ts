@@ -12,6 +12,7 @@ import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { QuestionModel } from "../models/Question.js";
+import { SkillModel } from "../models/Skill.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
@@ -49,6 +50,9 @@ const COURSE_ID = `platform-v3-integration-course-${RUN_MARKER}`;
 const LESSON_IDS = [`platform-v3-integration-lesson-a-${RUN_MARKER}`, `platform-v3-integration-lesson-b-${RUN_MARKER}`];
 const ASSESSMENT_PATH_ID = `platform-v3-integration-path-${RUN_MARKER}`;
 const ASSESSMENT_SUBJECT_ID = `platform-v3-integration-subject-${RUN_MARKER}`;
+const ASSESSMENT_SECTION_ID = `platform-v3-integration-section-${RUN_MARKER}`;
+const ASSESSMENT_MAIN_SKILL_ID = `platform-v3-integration-main-skill-${RUN_MARKER}`;
+const ASSESSMENT_SUB_SKILL_ID = `platform-v3-integration-sub-skill-${RUN_MARKER}`;
 const ASSESSMENT_QUESTION_ID = `platform-v3-integration-question-${RUN_MARKER}`;
 const ASSESSMENT_QUIZ_ID = `platform-v3-integration-quiz-${RUN_MARKER}`;
 const MISSING_QUESTION_QUIZ_ID = `platform-v3-integration-missing-question-quiz-${RUN_MARKER}`;
@@ -178,6 +182,22 @@ async function seedIsolatedUsers() {
     _id: ASSESSMENT_PATH_ID,
     name: "Platform V3 integration assessment path",
     isActive: true,
+  });
+
+  await SkillModel.create({
+    _id: ASSESSMENT_MAIN_SKILL_ID,
+    id: ASSESSMENT_MAIN_SKILL_ID,
+    pathId: ASSESSMENT_PATH_ID,
+    subjectId: ASSESSMENT_SUBJECT_ID,
+    sectionId: ASSESSMENT_SECTION_ID,
+    name: "Platform V3 integration assessment skill",
+    order: 1,
+    subSkills: [{
+      id: ASSESSMENT_SUB_SKILL_ID,
+      name: "Platform V3 integration assessment subskill",
+      code: "integration.1",
+      order: 1,
+    }],
   });
 
   const school = await GroupModel.create({
@@ -736,9 +756,10 @@ async function runAssessmentJourney(csrf: CsrfContext) {
       options: ["3", "4"],
       correctOptionIndex: 1,
       explanation: "2 + 2 = 4",
-      skillIds: [`platform-v3-integration-skill-${RUN_MARKER}`],
+      skillIds: [ASSESSMENT_MAIN_SKILL_ID, ASSESSMENT_SUB_SKILL_ID],
       pathId: ASSESSMENT_PATH_ID,
       subject: ASSESSMENT_SUBJECT_ID,
+      sectionId: ASSESSMENT_SECTION_ID,
       approvalStatus: "approved",
     },
   });
@@ -1220,9 +1241,10 @@ async function runMockAssessmentJourney(csrf: CsrfContext) {
       options: ["5", "6"],
       correctOptionIndex: 1,
       explanation: "3 + 3 = 6",
-      skillIds: [`platform-v3-integration-mock-skill-${RUN_MARKER}`],
+      skillIds: [ASSESSMENT_MAIN_SKILL_ID, ASSESSMENT_SUB_SKILL_ID],
       pathId: ASSESSMENT_PATH_ID,
       subject: ASSESSMENT_SUBJECT_ID,
+      sectionId: ASSESSMENT_SECTION_ID,
       approvalStatus: "approved",
     },
   });
@@ -1331,9 +1353,10 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
       text: "Platform V3 teacher scoped question",
       options: ["Wrong", "Correct"],
       correctOptionIndex: 1,
-      skillIds: [`platform-v3-integration-teacher-skill-${RUN_MARKER}`],
+      skillIds: [ASSESSMENT_MAIN_SKILL_ID, ASSESSMENT_SUB_SKILL_ID],
       pathId: ASSESSMENT_PATH_ID,
       subject: ASSESSMENT_SUBJECT_ID,
+      sectionId: ASSESSMENT_SECTION_ID,
       type: "mcq",
     },
   });
@@ -1732,9 +1755,10 @@ async function runScopedCreatorJourney(csrf: CsrfContext) {
       text: "Platform trainer must fail closed without assignments",
       options: ["Wrong", "Correct"],
       correctOptionIndex: 1,
-      skillIds: [`trainer-empty-scope-${RUN_MARKER}`],
+      skillIds: [ASSESSMENT_MAIN_SKILL_ID, ASSESSMENT_SUB_SKILL_ID],
       pathId: ASSESSMENT_PATH_ID,
       subject: ASSESSMENT_SUBJECT_ID,
+      sectionId: ASSESSMENT_SECTION_ID,
       type: "mcq",
     },
   });

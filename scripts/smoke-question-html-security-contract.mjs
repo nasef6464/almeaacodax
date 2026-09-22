@@ -24,7 +24,7 @@ const files = {
   styles: await read("styles/main.css"),
 };
 
-const questionPresentationImport = 'import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";';
+const questionPresentationImport = 'import { buildQuestionResponseItems } from "../presentation/questionPresentation.js";';
 const questionSummaryOwner = files.questionBankRoutes.includes(questionPresentationImport)
   ? files.questionPresentation
   : files.questionBankRoutes;
@@ -95,13 +95,17 @@ check("question summary API keeps one inline media preview for admin lists", () 
   assertIncludes(questionSummaryOwner, "<svg\\b[\\s\\S]*?<\\/svg>");
   assertIncludes(questionSummaryOwner, "<table\\b[\\s\\S]*?<\\/table>");
   assertIncludes(questionSummaryOwner, "<p>${escapeHtml(summaryText)}</p>");
-  assertIncludes(files.questionBankRoutes, "options correctOptionIndex explanation videoUrl");
-  assertIncludes(files.questionBankRoutes, "toQuestionSummaryText(item.text)");
+  for (const fragment of ["options", "correctOptionIndex", "explanation", "videoUrl"]) {
+    assertIncludes(files.questionBankRoutes, fragment);
+  }
+  assertIncludes(files.questionPresentation, "toQuestionSummaryText(item.text)");
 });
 
 check("question builder keeps MCQ options when editing summary rows", () => {
   assertIncludes(files.questionBank, 'data-testid="question-row-edit"');
-  assertIncludes(files.questionBankRoutes, "options correctOptionIndex explanation videoUrl");
+  for (const fragment of ["options", "correctOptionIndex", "explanation", "videoUrl"]) {
+    assertIncludes(files.questionBankRoutes, fragment);
+  }
   assertIncludes(files.unifiedQuestionBuilder, "normalizeQuestionForEditing");
   assertIncludes(files.unifiedQuestionBuilder, "data-testid=\"question-builder-modal\"");
   assertIncludes(files.unifiedQuestionBuilder, "max-w-6xl");
