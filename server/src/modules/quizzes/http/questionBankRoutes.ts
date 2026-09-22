@@ -157,6 +157,7 @@ questionBankRouter.get(
       scopeFilter.$or = [
         ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
         { text: { $regex: safeSearch, $options: "i" } },
+        { questionCode: { $regex: safeSearch, $options: "i" } },
         { explanation: { $regex: safeSearch, $options: "i" } },
         { id: { $regex: safeSearch, $options: "i" } },
       ];
@@ -173,7 +174,7 @@ questionBankRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id text imageUrl options correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id questionCode text imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const shouldIncludeCoverage = Boolean(query.includeCoverage);
