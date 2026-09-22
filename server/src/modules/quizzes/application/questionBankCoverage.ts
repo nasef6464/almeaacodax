@@ -1,4 +1,5 @@
 import { QuestionModel } from "../../../models/Question.js";
+import { SkillModel } from "../../../models/Skill.js";
 
 export type QuestionBankCoverage = {
   total: number;
@@ -113,13 +114,23 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
   const summary = result?.summary?.[0];
   if (!summary) return emptyCoverage;
 
+  const skillQuestionCounts = toCountMap(result?.skillCounts);
+  const topLevelSkillIds = new Set(
+    (await SkillModel.find({}).select("id").lean())
+      .map((skill: any) => String(skill?.id || skill?._id || "").trim())
+      .filter(Boolean),
+  );
+  const nestedSubSkillCount = Object.keys(skillQuestionCounts)
+    .filter((skillId) => !topLevelSkillIds.has(skillId))
+    .length;
+
   return {
     total: Number(summary.total || 0),
     mainSkillCount: Number(summary.mainSkillCount || 0),
-    subSkillCount: Number(summary.subSkillCount || 0),
+    subSkillCount: nestedSubSkillCount,
     pendingCount: Number(summary.pendingCount || 0),
     approvedCount: Number(summary.approvedCount || 0),
-    skillQuestionCounts: toCountMap(result?.skillCounts),
+    skillQuestionCounts,
     sectionQuestionCounts: toCountMap(result?.sectionCounts),
   };
 }
