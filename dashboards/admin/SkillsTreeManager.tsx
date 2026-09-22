@@ -91,7 +91,8 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
 
   const [serverQuestionCount, setServerQuestionCount] = useState<number | null>(null);
   const [isLoadingServerQuestionCount, setIsLoadingServerQuestionCount] = useState(true);
-  const [subSkillCounts, setSubSkillCounts] = useState<Record<string, number>>({});
+  const [subSkillCounts, setSubSkillCounts] = useState<Record<string, number> | null>(null);
+  const [sectionQuestionCounts, setSectionQuestionCounts] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -109,9 +110,13 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
         });
         if (!active) return;
         setServerQuestionCount(response?.coverage?.total ?? null);
+        setSubSkillCounts(response?.coverage?.skillQuestionCounts || {});
+        setSectionQuestionCounts(response?.coverage?.sectionQuestionCounts || {});
       } catch {
         if (!active) return;
         setServerQuestionCount(null);
+        setSubSkillCounts(null);
+        setSectionQuestionCounts(null);
       } finally {
         if (active) setIsLoadingServerQuestionCount(false);
       }
@@ -123,7 +128,10 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
   }, [selectedPathId, selectedSubjectId, subjectId]);
 
   const handleSubSkillQuestionCount = useCallback((id: string, count: number) => {
-    setSubSkillCounts((prev) => (prev[id] === count ? prev : { ...prev, [id]: count }));
+    setSubSkillCounts((prev) => {
+      const current = prev || {};
+      return current[id] === count ? current : { ...current, [id]: count };
+    });
   }, []);
 
   const totalLinkedQuestions = serverQuestionCount;
@@ -478,7 +486,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                   <div>
                     <h3 className="font-bold text-gray-900 text-lg">{mainSkill.name}</h3>
                     <p className="text-sm text-gray-500 mt-0.5">
-                      {mainSubSkills.length} مهارات فرعية · {getSubjectName(mainSkill.subjectId)} · {getPathNameBySubject(mainSkill.subjectId)}
+                      {mainSubSkills.length} مهارات فرعية · {sectionQuestionCounts ? (sectionQuestionCounts[mainSkill.id] || 0) : '—'} سؤال · {getSubjectName(mainSkill.subjectId)} · {getPathNameBySubject(mainSkill.subjectId)}
                     </p>
                   </div>
                 </div>
@@ -545,7 +553,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                               <div>
                                 <h5 className="font-bold text-gray-800">{subSkill.name}</h5>
                                 <p className="text-xs text-gray-500">
-                                  {subSkillLessons.length} درس · {subSkillCounts[subSkill.id] ?? subSkillQuestions.length} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
+                                  {subSkillLessons.length} درس · {subSkillCounts ? (subSkillCounts[subSkill.id] || 0) : '—'} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
                                 </p>
                               </div>
                             </div>

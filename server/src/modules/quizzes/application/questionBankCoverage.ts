@@ -6,6 +6,8 @@ export type QuestionBankCoverage = {
   subSkillCount: number;
   pendingCount: number;
   approvedCount: number;
+  skillQuestionCounts: Record<string, number>;
+  sectionQuestionCounts: Record<string, number>;
 };
 
 const emptyCoverage: QuestionBankCoverage = {
@@ -14,10 +16,19 @@ const emptyCoverage: QuestionBankCoverage = {
   subSkillCount: 0,
   pendingCount: 0,
   approvedCount: 0,
+  skillQuestionCounts: {},
+  sectionQuestionCounts: {},
 };
 
+const toCountMap = (rows: Array<{ _id?: unknown; count?: unknown }> | undefined) =>
+  Object.fromEntries(
+    (rows || [])
+      .map((row) => [String(row?._id || "").trim(), Number(row?.count || 0)] as const)
+      .filter(([id, count]) => Boolean(id) && Number.isFinite(count)),
+  );
+
 export async function getQuestionBankCoverage(filter: Record<string, unknown>): Promise<QuestionBankCoverage> {
-  const [coverage] = await QuestionModel.aggregate([
+  const [result] = await QuestionModel.aggregate([
     { $match: filter },
     {
       $project: {
@@ -27,70 +38,88 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
       },
     },
     {
-      $group: {
-        _id: null,
-        total: { $sum: 1 },
-        mainSkillIds: { $addToSet: "$sectionId" },
-        skillIdArrays: { $push: "$skillIds" },
-        pendingCount: {
-          $sum: { $cond: [{ $eq: ["$approvalStatus", "pending_review"] }, 1, 0] },
-        },
-        approvedCount: {
-          $sum: { $cond: [{ $eq: ["$approvalStatus", "approved"] }, 1, 0] },
-        },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        total: 1,
-        mainSkillCount: {
-          $size: {
-            $filter: {
-              input: "$mainSkillIds",
-              as: "sectionId",
-              cond: {
-                $and: [
-                  { $ne: ["$$sectionId", null] },
-                  { $ne: ["$$sectionId", ""] },
-                ],
+      $facet: {
+        summary: [
+          {
+            $group: {
+              _id: null,
+              total: { $sum: 1 },
+              mainSkillIds: { $addToSet: "$sectionId" },
+              skillIdArrays: { $push: "$skillIds" },
+              pendingCount: {
+                $sum: { $cond: [{ $eq: ["$approvalStatus", "pending_review"] }, 1, 0] },
+              },
+              approvedCount: {
+                $sum: { $cond: [{ $eq: ["$approvalStatus", "approved"] }, 1, 0] },
               },
             },
           },
-        },
-        subSkillCount: {
-          $size: {
-            $filter: {
-              input: {
-                $reduce: {
-                  input: "$skillIdArrays",
-                  initialValue: [],
-                  in: { $setUnion: ["$$value", "$$this"] },
+          {
+            $project: {
+              _id: 0,
+              total: 1,
+              mainSkillCount: {
+                $size: {
+                  $filter: {
+                    input: "$mainSkillIds",
+                    as: "sectionId",
+                    cond: {
+                      $and: [
+                        { $ne: ["$$sectionId", null] },
+                        { $ne: ["$$sectionId", ""] },
+                      ],
+                    },
+                  },
                 },
               },
-              as: "skillId",
-              cond: {
-                $and: [
-                  { $ne: ["$$skillId", null] },
-                  { $ne: ["$$skillId", ""] },
-                ],
+              subSkillCount: {
+                $size: {
+                  $filter: {
+                    input: {
+                      $reduce: {
+                        input: "$skillIdArrays",
+                        initialValue: [],
+                        in: { $setUnion: ["$$value", "$$this"] },
+                      },
+                    },
+                    as: "skillId",
+                    cond: {
+                      $and: [
+                        { $ne: ["$$skillId", null] },
+                        { $ne: ["$$skillId", ""] },
+                      ],
+                    },
+                  },
+                },
               },
+              pendingCount: 1,
+              approvedCount: 1,
             },
           },
-        },
-        pendingCount: 1,
-        approvedCount: 1,
+        ],
+        skillCounts: [
+          { $unwind: "$skillIds" },
+          { $match: { skillIds: { $nin: [null, ""] } } },
+          { $group: { _id: "$skillIds", count: { $sum: 1 } } },
+        ],
+        sectionCounts: [
+          { $match: { sectionId: { $nin: [null, ""] } } },
+          { $group: { _id: "$sectionId", count: { $sum: 1 } } },
+        ],
       },
     },
   ]).allowDiskUse(false);
 
-  return coverage
-    ? {
-        total: Number(coverage.total || 0),
-        mainSkillCount: Number(coverage.mainSkillCount || 0),
-        subSkillCount: Number(coverage.subSkillCount || 0),
-        pendingCount: Number(coverage.pendingCount || 0),
-        approvedCount: Number(coverage.approvedCount || 0),
-      }
-    : emptyCoverage;
+  const summary = result?.summary?.[0];
+  if (!summary) return emptyCoverage;
+
+  return {
+    total: Number(summary.total || 0),
+    mainSkillCount: Number(summary.mainSkillCount || 0),
+    subSkillCount: Number(summary.subSkillCount || 0),
+    pendingCount: Number(summary.pendingCount || 0),
+    approvedCount: Number(summary.approvedCount || 0),
+    skillQuestionCounts: toCountMap(result?.skillCounts),
+    sectionQuestionCounts: toCountMap(result?.sectionCounts),
+  };
 }
