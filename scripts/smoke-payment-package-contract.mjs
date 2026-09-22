@@ -174,6 +174,18 @@ check('admin can create global memberships that unlock the whole platform', () =
   assertIncludes(pathsManagerSource, 'عضوية عامة تفتح كل المنصة');
 });
 
+check('package purchases only unlock the content types selected by the admin', () => {
+  assertIncludes(pathsManagerSource, "const packageIncludesCourses =");
+  assertIncludes(pathsManagerSource, "normalizedContentTypes.includes('courses')");
+  assertIncludes(pathsManagerSource, "includedCourses: packageIncludesCourses");
+  assertIncludes(paymentRoutesSource, 'const packageIncludesCourses =');
+  assertIncludes(paymentRoutesSource, 'packageContentTypes.includes("courses")');
+  assertIncludes(paymentRoutesSource, 'packageIncludesCourses &&');
+  assertIncludes(pathsManagerSource, "mockExams: quizzes.filter");
+  assertIncludes(pathPageSource, "label: 'محاكيات'");
+  assertIncludes(pathPageSource, "shouldCount('mockExams')");
+});
+
 let failed = 0;
 for (const item of checks) {
   try {
