@@ -101,7 +101,6 @@ async function run() {
 
     await TopicModel.insertMany([
       {
-        _id: partialTopicId,
         id: partialTopicId,
         title: "Partial topic",
         pathId,
@@ -110,7 +109,6 @@ async function run() {
         showOnPlatform: true,
       },
       {
-        _id: mockTopicId,
         id: mockTopicId,
         title: "Mock topic",
         pathId,
@@ -153,8 +151,8 @@ async function run() {
       QuizModel.findById(partialQuizId).lean(),
       QuizModel.findById(zeroQuizId).lean(),
       QuizModel.findById(mockQuizId).lean(),
-      TopicModel.findById(partialTopicId).lean(),
-      TopicModel.findById(mockTopicId).lean(),
+      TopicModel.findOne({ id: partialTopicId }).lean(),
+      TopicModel.findOne({ id: mockTopicId }).lean(),
       BackupSnapshotModel.findById(applied.safetySnapshotId).lean(),
     ]);
 
@@ -177,8 +175,8 @@ async function run() {
       QuizModel.findById(partialQuizId).lean(),
       QuizModel.findById(zeroQuizId).lean(),
       QuizModel.findById(mockQuizId).lean(),
-      TopicModel.findById(partialTopicId).lean(),
-      TopicModel.findById(mockTopicId).lean(),
+      TopicModel.findOne({ id: partialTopicId }).lean(),
+      TopicModel.findOne({ id: mockTopicId }).lean(),
     ]);
 
     assert.deepEqual(
