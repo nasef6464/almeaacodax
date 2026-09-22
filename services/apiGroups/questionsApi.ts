@@ -30,6 +30,7 @@ export interface QuestionQuery {
   videoStatus?: "with" | "without";
   explanationStatus?: "with" | "without";
   includeCoverage?: boolean;
+  includeSkillBreakdown?: boolean;
   summary?: boolean;
   noTotal?: boolean;
 }
@@ -40,6 +41,7 @@ export interface QuestionBankCoverage {
   subSkillCount: number;
   pendingCount: number;
   approvedCount: number;
+  skillQuestionCounts?: Record<string, number>;
 }
 
 export interface QuestionUsageMetric {

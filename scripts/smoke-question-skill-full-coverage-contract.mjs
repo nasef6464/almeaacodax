@@ -49,10 +49,21 @@ check('skills center counts only linked questions from full server coverage', ()
     'summary: true',
     'noTotal: true',
     'setServerQuestionCount(response?.coverage?.total ?? null)',
+    'includeSkillBreakdown: true',
+    'setSubSkillCounts(response?.coverage?.skillQuestionCounts || {})',
   ]) {
     assert.ok(skillsTree.includes(fragment), `SkillsTreeManager lost ${fragment}`);
   }
   assert.ok(!skillsTree.includes('serverQuestionCount ?? fallbackLocalQuestionsCount'));
+  assert.ok(!skillsTree.includes('subSkillCounts[subSkill.id] ?? subSkillQuestions.length'));
+  assert.ok(skillsTree.includes("subSkillQuestionCount ?? '—'"));
+});
+
+check('skill question breakdown is computed from the complete filtered bank', () => {
+  assert.ok(coverage.includes('includeSkillBreakdown?: boolean'));
+  assert.ok(coverage.includes('{ $unwind: "$skillIds" }'));
+  assert.ok(coverage.includes('{ $group: { _id: "$skillIds", count: { $sum: 1 } } }'));
+  assert.ok(coverage.includes('result.skillQuestionCounts = Object.fromEntries'));
 });
 
 check('coverage aggregation excludes empty taxonomy ids', () => {

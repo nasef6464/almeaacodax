@@ -75,6 +75,10 @@ export const questionListQuerySchema = z.object({
     if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
     return value;
   }, z.boolean()).default(false),
+  includeSkillBreakdown: z.preprocess((value) => {
+    if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+    return value;
+  }, z.boolean()).default(false),
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
   noTotal: z.coerce.boolean().default(false),

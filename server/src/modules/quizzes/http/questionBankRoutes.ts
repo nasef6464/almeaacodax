@@ -180,7 +180,9 @@ questionBankRouter.get(
     const [rawItems, total, coverage] = await Promise.all([
       queryBuilder,
       query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),
-      shouldIncludeCoverage ? getQuestionBankCoverage(filter) : Promise.resolve(null),
+      shouldIncludeCoverage
+        ? getQuestionBankCoverage(filter, { includeSkillBreakdown: query.includeSkillBreakdown })
+        : Promise.resolve(null),
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;

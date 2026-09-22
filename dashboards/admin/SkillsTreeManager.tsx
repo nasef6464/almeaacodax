@@ -91,7 +91,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
 
   const [serverQuestionCount, setServerQuestionCount] = useState<number | null>(null);
   const [isLoadingServerQuestionCount, setIsLoadingServerQuestionCount] = useState(true);
-  const [subSkillCounts, setSubSkillCounts] = useState<Record<string, number>>({});
+  const [subSkillCounts, setSubSkillCounts] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -106,12 +106,15 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
           summary: true,
           noTotal: true,
           includeCoverage: true,
+          includeSkillBreakdown: true,
         });
         if (!active) return;
         setServerQuestionCount(response?.coverage?.total ?? null);
+        setSubSkillCounts(response?.coverage?.skillQuestionCounts || {});
       } catch {
         if (!active) return;
         setServerQuestionCount(null);
+        setSubSkillCounts(null);
       } finally {
         if (active) setIsLoadingServerQuestionCount(false);
       }
@@ -123,7 +126,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
   }, [selectedPathId, selectedSubjectId, subjectId]);
 
   const handleSubSkillQuestionCount = useCallback((id: string, count: number) => {
-    setSubSkillCounts((prev) => (prev[id] === count ? prev : { ...prev, [id]: count }));
+    setSubSkillCounts((prev) => (prev?.[id] === count ? prev : { ...(prev || {}), [id]: count }));
   }, []);
 
   const totalLinkedQuestions = serverQuestionCount;
@@ -533,6 +536,9 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                       const subSkillQuestions = getQuestionsForSubSkill(subSkill.id);
                       const subSkillQuizzes = getQuizzesForSubSkill(subSkill.id);
                       const subSkillLibraryItems = getLibraryItemsForSubSkill(subSkill.id);
+                      const subSkillQuestionCount = subSkillCounts
+                        ? (subSkillCounts[subSkill.id] ?? 0)
+                        : null;
 
                       return (
                         <div key={subSkill.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -545,7 +551,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                               <div>
                                 <h5 className="font-bold text-gray-800">{subSkill.name}</h5>
                                 <p className="text-xs text-gray-500">
-                                  {subSkillLessons.length} درس · {subSkillCounts[subSkill.id] ?? subSkillQuestions.length} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
+                                  {subSkillLessons.length} درس · {isLoadingServerQuestionCount ? '…' : (subSkillQuestionCount ?? '—')} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
                                 </p>
                               </div>
                             </div>

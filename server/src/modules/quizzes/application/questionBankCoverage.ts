@@ -6,6 +6,11 @@ export type QuestionBankCoverage = {
   subSkillCount: number;
   pendingCount: number;
   approvedCount: number;
+  skillQuestionCounts?: Record<string, number>;
+};
+
+type QuestionBankCoverageOptions = {
+  includeSkillBreakdown?: boolean;
 };
 
 const emptyCoverage: QuestionBankCoverage = {
@@ -16,8 +21,11 @@ const emptyCoverage: QuestionBankCoverage = {
   approvedCount: 0,
 };
 
-export async function getQuestionBankCoverage(filter: Record<string, unknown>): Promise<QuestionBankCoverage> {
-  const [coverage] = await QuestionModel.aggregate([
+export async function getQuestionBankCoverage(
+  filter: Record<string, unknown>,
+  options: QuestionBankCoverageOptions = {},
+): Promise<QuestionBankCoverage> {
+  const summaryPromise = QuestionModel.aggregate([
     { $match: filter },
     {
       $project: {
@@ -84,7 +92,20 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
     },
   ]).allowDiskUse(false);
 
-  return coverage
+  const skillBreakdownPromise = options.includeSkillBreakdown
+    ? QuestionModel.aggregate([
+        { $match: filter },
+        { $project: { skillIds: { $ifNull: ["$skillIds", []] } } },
+        { $unwind: "$skillIds" },
+        { $match: { skillIds: { $nin: ["", null] } } },
+        { $group: { _id: "$skillIds", count: { $sum: 1 } } },
+      ]).allowDiskUse(false)
+    : Promise.resolve([]);
+
+  const [summaryRows, skillRows] = await Promise.all([summaryPromise, skillBreakdownPromise]);
+  const coverage = summaryRows[0];
+
+  const result: QuestionBankCoverage = coverage
     ? {
         total: Number(coverage.total || 0),
         mainSkillCount: Number(coverage.mainSkillCount || 0),
@@ -92,5 +113,15 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
         pendingCount: Number(coverage.pendingCount || 0),
         approvedCount: Number(coverage.approvedCount || 0),
       }
-    : emptyCoverage;
+    : { ...emptyCoverage };
+
+  if (options.includeSkillBreakdown) {
+    result.skillQuestionCounts = Object.fromEntries(
+      skillRows
+        .map((row: { _id?: unknown; count?: unknown }) => [String(row._id || "").trim(), Number(row.count || 0)] as const)
+        .filter(([skillId]) => Boolean(skillId)),
+    );
+  }
+
+  return result;
 }
