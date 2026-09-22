@@ -36,7 +36,17 @@ mediaRouter.post(
   requireAuth,
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
-    const payload = questionExplanationAudioIntentSchema.parse(req.body || {});
+    const payload = questionExplanationAudioIntentSchema.parse(req.body || {}) as {
+      contentType:
+        | "audio/mpeg"
+        | "audio/webm"
+        | "audio/mp4"
+        | "audio/x-m4a"
+        | "audio/ogg"
+        | "audio/wav"
+        | "audio/x-wav";
+      sizeBytes: number;
+    };
     const intent = createQuestionExplanationAudioUploadIntent(payload);
     res.json(intent);
   }),
