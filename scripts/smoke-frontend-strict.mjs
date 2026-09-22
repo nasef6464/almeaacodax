@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process';
 
 const frontendUrl = (process.env.SMOKE_FRONTEND_URL || 'https://almeaacodax.vercel.app').replace(/\/$/, '');
 const expectedVersion = process.env.SMOKE_EXPECT_VERSION || execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+const requireExpectedVersion = String(process.env.SMOKE_REQUIRE_FRONTEND_VERSION || '1').trim() !== '0';
 const maxAttempts = 12;
 const waitMs = 5000;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,22 +26,26 @@ async function productionServesExpectedVersion() {
   return (await assetResponse.text()).includes(expectedVersion);
 }
 
-for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-  try {
-    if (await productionServesExpectedVersion()) {
-      console.log(`Production is serving expected version ${expectedVersion} (attempt ${attempt}/${maxAttempts}).`);
-      break;
+if (requireExpectedVersion) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      if (await productionServesExpectedVersion()) {
+        console.log(`Production is serving expected version ${expectedVersion} (attempt ${attempt}/${maxAttempts}).`);
+        break;
+      }
+    } catch (error) {
+      console.warn(`Production version probe ${attempt}/${maxAttempts} failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-  } catch (error) {
-    console.warn(`Production version probe ${attempt}/${maxAttempts} failed: ${error instanceof Error ? error.message : String(error)}`);
-  }
 
-  if (attempt === maxAttempts) {
-    throw new Error(`Production did not serve expected version ${expectedVersion} after ${maxAttempts} attempts.`);
-  }
+    if (attempt === maxAttempts) {
+      throw new Error(`Production did not serve expected version ${expectedVersion} after ${maxAttempts} attempts.`);
+    }
 
-  await sleep(waitMs);
+    await sleep(waitMs);
+  }
+} else {
+  console.log('Frontend version equality skipped for a non-runtime-only main commit; route smoke remains required.');
 }
 
-process.env.SMOKE_STRICT_VERSION = '1';
+process.env.SMOKE_STRICT_VERSION = requireExpectedVersion ? '1' : '0';
 await import('./smoke-frontend-routes.mjs');
