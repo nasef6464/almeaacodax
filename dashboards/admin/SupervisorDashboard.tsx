@@ -787,6 +787,34 @@ export const SupervisorDashboard: React.FC = () => {
               متابعة الطلاب والفصول، توجيه الاختبارات والتدخلات، ومراجعة التقارير داخل نطاق الإشراف المسند فقط.
             </div>
 
+            <section
+              data-testid="supervisor-today-focus"
+              className="rounded-2xl border border-amber-100 bg-amber-50/60 p-4"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[11px] font-black text-amber-700">الأولوية الآن</p>
+                  <h2 className="mt-1 text-base font-black text-gray-900">
+                    {supervisorScopeSummary.pendingFollowUpCount > 0
+                      ? `${supervisorScopeSummary.pendingFollowUpCount} طالب يحتاجون متابعة`
+                      : 'المتابعة تحت السيطرة'}
+                  </h2>
+                  <p className="mt-1 text-xs font-bold text-gray-500">
+                    {supervisorScopeSummary.weakestSkills[0]
+                      ? `ابدأ بمهارة: ${supervisorScopeSummary.weakestSkills[0].skill}`
+                      : 'راقب الفصول المسندة واستمر في القياس.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(supervisorScopeSummary.pendingFollowUpCount > 0 ? 'students' : 'skills')}
+                  className="rounded-xl bg-amber-500 px-4 py-2 text-xs font-black text-white hover:bg-amber-600"
+                >
+                  {supervisorScopeSummary.pendingFollowUpCount > 0 ? 'افتح المتابعة' : 'افتح المهارات'}
+                </button>
+              </div>
+            </section>
+
             {/* KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <KpiCard title="مجموع الطلاب" value={supervisorScopeSummary.studentCount} subtitle="تحت الإشراف المباشر" icon={<Users size={18} />} color="blue" />

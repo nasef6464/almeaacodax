@@ -50,6 +50,36 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
       </div>
     </div>
 
+    <section
+      data-testid="teacher-today-focus"
+      className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 shadow-xs"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-[11px] font-black text-indigo-600">الأولوية اليوم</p>
+          <h2 className="mt-1 text-base font-black text-slate-900">ابدأ من فصلك، ثم راجع الفجوات.</h2>
+          <p className="mt-1 text-xs font-bold text-slate-500">الحصة أولًا، والمتابعة بعد ظهور الأدلة.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={onOpenScheduler}
+            disabled={!selectedSchool.smartClassroomEnabled}
+            className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white disabled:opacity-40"
+          >
+            ابدأ حصة
+          </button>
+          <button
+            type="button"
+            onClick={() => onTabChange('reports')}
+            className="rounded-xl border border-indigo-200 bg-white px-4 py-2 text-xs font-black text-indigo-700"
+          >
+            راجع الفجوات
+          </button>
+        </div>
+      </div>
+    </section>
+
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs">
         <div className="flex items-center justify-between">

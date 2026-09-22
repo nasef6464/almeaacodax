@@ -1121,8 +1121,8 @@ const Plan: React.FC = () => {
           <ArrowRight size={24} />
         </Link>
         <div>
-          <h1 className="text-2xl font-black text-indigo-900 leading-tight">خطتي اليومية</h1>
-          <p className="text-sm font-bold text-gray-500 mt-1">تابع جدولك ومهامك بانتظام لتحقيق أهدافك.</p>
+          <h1 className="text-2xl font-black text-indigo-900 leading-tight">خططي</h1>
+          <p className="text-sm font-bold text-gray-500 mt-1">ابدأ بمهمة اليوم، والباقي نمشيه معك خطوة بخطوة.</p>
         </div>
       </header>
 
