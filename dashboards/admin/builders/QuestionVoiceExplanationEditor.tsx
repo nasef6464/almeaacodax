@@ -53,7 +53,7 @@ export const QuestionVoiceExplanationEditor: React.FC<QuestionVoiceExplanationEd
     onChange({
       ...(value || {}),
       ...patch,
-      version: Math.max(1, Number(value?.version || 1)),
+      version: Math.min(100000, Math.max(1, Number(value?.version || 1) + 1)),
     });
   };
 
