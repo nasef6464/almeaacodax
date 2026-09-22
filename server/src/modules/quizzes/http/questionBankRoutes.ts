@@ -13,7 +13,7 @@ import {
   resolveManagedContentScope,
 } from "../../../services/managedContentScope.js";
 import { questionBaseSchema, questionListQuerySchema, questionSchema, questionVideoLinksSchema } from "./questionQuerySchemas.js";
-import { sanitizeQuestionForLearner, toQuestionSummaryText } from "../presentation/questionPresentation.js";
+import { buildQuestionResponseItems } from "../presentation/questionPresentation.js";
 import { escapeRegex } from "./queryUtilities.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../application/quizWorkflow.js";
 import { getQuizQuestionIds } from "../application/quizQuestionSelection.js";
@@ -186,18 +186,10 @@ questionBankRouter.get(
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
-    const canSeeAnswers = isStaffRole(req.authUser?.role);
-    const summaryItems = limitedItems.map((item) => ({
-      ...item,
-      text: toQuestionSummaryText(item.text),
-    }));
-    const items = query.summary
-      ? canSeeAnswers
-        ? summaryItems
-        : summaryItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>))
-      : canSeeAnswers
-        ? limitedItems
-        : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
+    const items = buildQuestionResponseItems(
+      limitedItems as Array<Record<string, any>>,
+      { summary: query.summary, canSeeAnswers: isStaffRole(req.authUser?.role) },
+    );
     if (total !== null) {
       res.setHeader("X-Total-Count", String(total));
     }
