@@ -1192,20 +1192,52 @@ const Dashboard: React.FC = () => {
                         ) : (
                             <>
                                 {/* Group: التعلم */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">التعلم</p>
-                                {menuItems.filter(i => ['overview','paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
-                                {/* Group: رحلتي التعليمية */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-emerald-600">رحلتي التعليمية</p>
-                                {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
+                                <div data-testid="student-menu-group-learning" className="space-y-1">
+                                    <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-slate-400">التعلم</p>
+                                    {menuItems.filter(i => ['overview','paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
+
+                                {/* Group: رحلتي التعليمية — visually separated as the learner's core journey */}
+                                <div
+                                    data-testid="student-menu-group-journey"
+                                    className="mt-3 space-y-1 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-2 shadow-xs"
+                                >
+                                    <p className="flex items-center gap-2 px-2 pb-1 pt-1 text-[10px] font-black uppercase tracking-widest text-emerald-700">
+                                        <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+                                        رحلتي التعليمية
+                                    </p>
+                                    {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
+
                                 {/* Group: الاختبارات */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
-                                {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
+                                <div
+                                    data-testid="student-menu-group-exams"
+                                    className="mt-3 space-y-1 rounded-2xl border border-amber-100 bg-amber-50/55 p-2"
+                                >
+                                    <p className="flex items-center gap-2 px-2 pb-1 pt-1 text-[10px] font-black uppercase tracking-widest text-amber-700">
+                                        <span className="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />
+                                        الاختبارات
+                                    </p>
+                                    {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
+
                                 {/* Group: الأدوات */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
-                                {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
+                                <div
+                                    data-testid="student-menu-group-tools"
+                                    className="mt-3 space-y-1 rounded-2xl border border-indigo-100 bg-indigo-50/55 p-2"
+                                >
+                                    <p className="flex items-center gap-2 px-2 pb-1 pt-1 text-[10px] font-black uppercase tracking-widest text-indigo-700">
+                                        <span className="h-2 w-2 rounded-full bg-indigo-500" aria-hidden="true" />
+                                        الأدوات
+                                    </p>
+                                    {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
+
                                 {/* Group: الدعم */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
-                                {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
+                                <div data-testid="student-menu-group-support" className="mt-2 space-y-1">
+                                    <p className="px-2 pb-1 pt-2 text-[10px] font-black uppercase tracking-widest text-slate-400">الدعم</p>
+                                    {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
                             </>
                         )}
                     </nav>

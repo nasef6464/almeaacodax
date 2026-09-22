@@ -82,6 +82,12 @@ check('student sidebar keeps a simple learning journey without changing the thre
   assertIncludes(files.dashboard, 'data-testid="student-today-focus"');
   assertIncludes(files.dashboard, 'student-daily-nudge:');
   assertIncludes(files.dashboard, 'خطوتك اليوم جاهزة ✨');
+  assertIncludes(files.dashboard, 'data-testid="student-menu-group-journey"');
+  assertIncludes(files.dashboard, 'bg-emerald-50/60');
+  assertIncludes(files.dashboard, 'data-testid="student-menu-group-exams"');
+  assertIncludes(files.dashboard, 'bg-amber-50/55');
+  assertIncludes(files.dashboard, 'data-testid="student-menu-group-tools"');
+  assertIncludes(files.dashboard, 'bg-indigo-50/55');
 
   assertIncludes(files.plan, '>خططي</h1>');
 
