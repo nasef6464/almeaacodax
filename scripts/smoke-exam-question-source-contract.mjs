@@ -9,6 +9,7 @@ const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeT
 const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8').catch(() => '');
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8').catch(() => '');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8').catch(() => '');
+const learnerQuizCatalogSource = await readFile(new URL('../server/src/modules/quizzes/application/learnerQuizCatalog.ts', import.meta.url), 'utf8').catch(() => '');
 const adaptiveTelemetryRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts', import.meta.url), 'utf8').catch(() => '');
 const questionBankRoutesSource = await readFile(new URL('../server/src/modules/quizzes/http/questionBankRoutes.ts', import.meta.url), 'utf8').catch(() => '');
 const querySchemaSource = await readFile(new URL('../server/src/modules/quizzes/http/questionQuerySchemas.ts', import.meta.url), 'utf8').catch(() => '');
@@ -150,7 +151,11 @@ check('learner quiz lists are audience-scoped and never share a public cache acr
   assertIncludes(quizRoutesSource, 'let learnerAudienceForCatalog = learnerAudienceUser;');
   assertIncludes(quizRoutesSource, 'GroupModel.find({ studentIds: learnerId })');
   assertIncludes(quizRoutesSource, 'groupIds: uniqueStrings([...(learnerRecord.groupIds || []), ...membershipGroupIds])');
-  assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, learnerAudienceForCatalog)');
+  assertIncludes(quizRoutesSource, 'loadLearnerSafeQuizCatalogPage({');
+  assertIncludes(quizRoutesSource, 'learnerAudience: learnerAudienceForCatalog');
+  assertIncludes(learnerQuizCatalogSource, 'const isQuizTargetedToLearner =');
+  assertIncludes(learnerQuizCatalogSource, 'isQuizTargetedToLearner(quiz, learnerAudience)');
+  assertIncludes(learnerQuizCatalogSource, 'getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)');
 });
 
 check('quiz submission result response delegates non-critical side effects', () => {
