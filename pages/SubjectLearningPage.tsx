@@ -113,12 +113,10 @@ export const SubjectLearningPage: React.FC = () => {
     if (!topic) return false;
     const parentTopic = getTopicParent(topic);
 
-    // Per-topic admin choice is authoritative. A locked parent also locks its
-    // descendants. The old subject-wide switch is only a fallback for legacy
-    // topics that do not yet carry an explicit isLocked value.
-    if (topic.isLocked === true || parentTopic?.isLocked === true) return true;
-    if (topic.isLocked === false || parentTopic?.isLocked === false) return false;
-    return lockFoundationForSubject;
+    // The subject-wide switch is an explicit admin policy that locks the whole
+    // foundation area. Otherwise each topic (and a locked parent) carries the
+    // free/package classification shown to the learner.
+    return Boolean(lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true);
   };
   const isTopicLockedForStudent = (topic: Topic | null | undefined) =>
     Boolean(topic && !isStaffViewer && topicRequiresFoundationPackage(topic) && !hasFoundationAccess);
