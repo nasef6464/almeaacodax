@@ -52,6 +52,27 @@ PILOT_WRITE_AUTHORIZATION=YES
 QUESTION_PILOT_MODE=canary
 ```
 
+### 3.5) Verify Canary — قراءة فقط
+بعد استيراد أول 5 أسئلة وقبل استيراد البقية، شغّل التحقق التشغيلي:
+
+```bash
+PILOT_ALLOW_EXTERNAL_RUN=YES
+PILOT_API_BASE=https://.../api
+PILOT_ADMIN_TOKEN=...
+QUESTION_PILOT_EXPECTED_COUNT=5
+QUESTION_PILOT_OUTPUT_FILE=...
+npm run pilot:question-bank-v2:verify
+```
+
+ويجب أن يثبت:
+- `status = PASS`.
+- `count = 5`.
+- كل الأسئلة ما زالت `draft`.
+- `linkedQuizCount = 0`.
+- `integrityIssues = []`.
+- تظهر للإدارة كاملة.
+- `publicVisible = 0` للزائر/الطالب غير المسجل.
+
 ### 4) Full — بقية الـ35
 لا يبدأ إلا بعد فحص Canary من لوحة الإدارة وAPI.
 يرفع ويستورد العناصر من 6 إلى 40 تحت نفس Batch ID.
@@ -81,6 +102,16 @@ questions/v2/<questionCode>/<sha256>.webp
 ```
 
 المسار Content-addressed؛ تغيير الصورة ينتج Hash ومسارًا جديدين.
+
+### 4.5) Verify Full Batch — قراءة فقط
+بعد إدخال الـ35 المتبقية، أعد نفس الفحص مع:
+
+```bash
+QUESTION_PILOT_EXPECTED_COUNT=40
+npm run pilot:question-bank-v2:verify
+```
+
+ولا تنتقل إلى اعتماد الأسئلة أو ربطها باختبار إلا إذا بقي `publicVisible = 0` و`linkedQuizCount = 0` و`integrityIssues = []`.
 
 ## Rollback
 الـAPI يسمح بحذف Batch كامل فقط إذا:
