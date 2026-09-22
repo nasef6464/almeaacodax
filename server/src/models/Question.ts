@@ -79,6 +79,17 @@ const questionSchema = new Schema(
   },
 );
 
+questionSchema.pre("validate", function assignStableQuestionIdentity(next) {
+  const objectId = String(this._id || new mongoose.Types.ObjectId());
+  if (!String(this.id || "").trim()) {
+    this.id = `q_${objectId}`;
+  }
+  if (!String(this.questionCode || "").trim()) {
+    this.questionCode = `Q-${objectId.slice(-10).toUpperCase()}`;
+  }
+  next();
+});
+
 questionSchema.index({ pathId: 1, subject: 1, sectionId: 1, approvalStatus: 1 });
 questionSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, approvalStatus: 1 }, { sparse: true });
 questionSchema.index({ skillIds: 1, difficulty: 1 });
