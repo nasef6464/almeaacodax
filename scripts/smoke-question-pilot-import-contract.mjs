@@ -121,6 +121,11 @@ check("pilot runner fails closed and separates dry-run from write modes", () => 
   includes(pilotRunner, 'dryRun: false');
   includes(pilotRunner, 'verified.slice(0, 5)');
   includes(pilotRunner, 'verified.slice(5)');
+  includes(pilotRunner, 'preparedUploads.push({ entry, intent })');
+  includes(pilotRunner, 'dryRunResult?.status !== "PASS"');
+  const dryRunRequestIndex = pilotRunner.indexOf('body: { batchId, dryRun: true, items: preparedItems }');
+  const firstUploadIndex = pilotRunner.indexOf('const upload = await fetch(intent.uploadUrl');
+  assert.ok(dryRunRequestIndex >= 0 && firstUploadIndex > dryRunRequestIndex, 'R2 upload must happen only after API dry-run');
 });
 
 check("runtime verifier proves draft isolation before approval", () => {
