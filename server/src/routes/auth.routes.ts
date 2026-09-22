@@ -32,6 +32,8 @@ import { QuestionModel } from "../models/Question.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
+import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
+import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 import { deleteUserLifecycle } from "../modules/privacy/application/deleteUserLifecycle.js";
 
 const passwordStrengthSchema = z
@@ -413,16 +415,45 @@ async function queueEmailVerification(user: any) {
   });
 }
 
-const ensureGoogleOAuthEnabled = (res: any) => {
-  if (!env.GOOGLE_OAUTH_ENABLED) {
-    res.status(StatusCodes.BAD_REQUEST).json({ message: "Google login is disabled." });
-    return false;
+interface ResolvedGoogleOAuthConfig {
+  enabled: boolean;
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+}
+
+const resolveGoogleOAuthConfig = async (): Promise<ResolvedGoogleOAuthConfig> => {
+  try {
+    const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    if (settings) {
+      const decrypted = decryptIntegrationSecretsForRuntime(settings as unknown as Record<string, unknown>);
+      const googleProvider = (decrypted?.providers as any)?.google;
+      if (googleProvider?.enabled) {
+        const clientId = String(googleProvider.clientId || env.GOOGLE_CLIENT_ID || "").trim();
+        const clientSecret = String(googleProvider.clientSecret || env.GOOGLE_CLIENT_SECRET || "").trim();
+        const fallbackRedirectUri = `${env.CLIENT_URL.replace(/\/+$/, "")}/api/auth/google/callback`;
+        const redirectUri = String(googleProvider.callbackUrl || env.GOOGLE_REDIRECT_URI || fallbackRedirectUri).trim();
+        if (clientId && clientSecret && redirectUri) {
+          return { enabled: true, clientId, clientSecret, redirectUri };
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Failed to read Google OAuth settings from database:", error);
   }
-  if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET || !env.GOOGLE_REDIRECT_URI) {
-    res.status(StatusCodes.BAD_REQUEST).json({ message: "Google OAuth env is not configured." });
-    return false;
-  }
-  return true;
+
+  const enabled = Boolean(env.GOOGLE_OAUTH_ENABLED);
+  const clientId = String(env.GOOGLE_CLIENT_ID || "").trim();
+  const clientSecret = String(env.GOOGLE_CLIENT_SECRET || "").trim();
+  const fallbackRedirectUri = `${env.CLIENT_URL.replace(/\/+$/, "")}/api/auth/google/callback`;
+  const redirectUri = String(env.GOOGLE_REDIRECT_URI || fallbackRedirectUri).trim();
+
+  return {
+    enabled: Boolean(enabled && clientId && clientSecret && redirectUri),
+    clientId,
+    clientSecret,
+    redirectUri,
+  };
 };
 
 export const authRouter = Router();
@@ -527,7 +558,13 @@ authRouter.post(
 authRouter.get(
   "/google/start",
   asyncHandler(async (req, res) => {
-    if (!ensureGoogleOAuthEnabled(res)) return;
+    const oauthConfig = await resolveGoogleOAuthConfig();
+    if (!oauthConfig.enabled) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Google login is disabled." });
+    }
+    if (!oauthConfig.clientId || !oauthConfig.clientSecret || !oauthConfig.redirectUri) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Google OAuth is not configured." });
+    }
     const statePayload = {
       returnTo: normalizeOAuthReturnTo(req.query.returnTo),
       ts: Date.now(),
@@ -539,8 +576,8 @@ authRouter.get(
       maxAge: GOOGLE_OAUTH_STATE_TTL_MS,
     });
     const params = new URLSearchParams({
-      client_id: env.GOOGLE_CLIENT_ID,
-      redirect_uri: env.GOOGLE_REDIRECT_URI,
+      client_id: oauthConfig.clientId,
+      redirect_uri: oauthConfig.redirectUri,
       response_type: "code",
       scope: "openid email profile",
       access_type: "online",
@@ -553,7 +590,10 @@ authRouter.get(
 );
 
 const handleGoogleCallback = asyncHandler(async (req, res) => {
-  if (!ensureGoogleOAuthEnabled(res)) return;
+  const oauthConfig = await resolveGoogleOAuthConfig();
+  if (!oauthConfig.enabled || !oauthConfig.clientId || !oauthConfig.clientSecret || !oauthConfig.redirectUri) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: "Google login is disabled." });
+  }
 
   const code = typeof req.query.code === "string" ? req.query.code : "";
   const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
@@ -601,9 +641,9 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       code,
-      client_id: env.GOOGLE_CLIENT_ID,
-      client_secret: env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: env.GOOGLE_REDIRECT_URI,
+      client_id: oauthConfig.clientId,
+      client_secret: oauthConfig.clientSecret,
+      redirect_uri: oauthConfig.redirectUri,
       grant_type: "authorization_code",
     }),
   });

@@ -1,6 +1,18 @@
 # ALMEAA — Codex Execution State
 
 
+## Authentication & Integrations — Bridge Google OAuth to Platform Integration Settings
+
+- Status: `FIXED & VERIFIED` on 2026-09-22.
+- Scope Delivered:
+  - Enabled dynamic resolution of Google OAuth credentials (`clientId`, `clientSecret`, `callbackUrl`) directly from `PlatformIntegrationSettingsModel` (managed via Admin Dashboard > Integrations Management `/#/admin-dashboard?tab=platform-integrations`) with graceful fallback to environment variables.
+  - Decrypts secrets at runtime using `decryptIntegrationSecretsForRuntime` ensuring full secret security at rest while allowing seamless server migration without needing manual server environment variable reconfiguration.
+- Verification:
+  - `server` TypeScript check (`npx tsc -p server/tsconfig.json --noEmit`) — PASS (0 errors).
+  - `smoke:auth-cookie` — PASS (5/5).
+  - `smoke-integrations-runtime-contract.mjs` — PASS (10/10).
+
+
 ## Authentication & Client Transport — Fix Missing AUTH_COOKIE_NAME Constant
 
 - Status: `FIXED & VERIFIED` on 2026-09-21.
