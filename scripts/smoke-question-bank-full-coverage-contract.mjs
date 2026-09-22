@@ -26,7 +26,7 @@ const checks = [
   ["client exposes missing explanation filter", manager.includes('data-testid="question-bank-missing-explanation-filter"') && catalogData.includes("explanationStatus:")],
   ["full record is loaded before editing", manager.includes("api.getQuestionForEditing(questionId)") && questionApi.includes("getQuestionForEditing")],
   ["summary row is not directly opened for edit", !manager.includes("setCurrentQuestion(question);\n    setIsEditing(true);")],
-  ["builder preserves existing multi-skill ids", builder.includes("Existing skill links are authoritative while taxonomy is loading") && builder.includes("[...(prev.skillIds || []), event.target.value]")],
+  ["builder preserves existing multi-skill ids", builder.includes("Existing skill links are authoritative while taxonomy is loading") && builder.includes("...(prev.skillIds || []).filter") && builder.includes("event.target.value") && builder.includes("activeMainSkill?.id")],
   ["current external image is visible in editor", editor.includes('data-testid="question-editor-external-image"') && editor.includes("externalImageUrl")],
   ["question images upload direct to external storage", editor.includes("onUploadImage") && questionApi.includes("fetch(intent.uploadUrl")],
   ["base64 paste is rejected in question editor", editor.includes("Base64 غير مسموحة")],
