@@ -18,6 +18,7 @@ import { escapeRegex } from "./queryUtilities.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../application/quizWorkflow.js";
 import { getQuizQuestionIds } from "../application/quizQuestionSelection.js";
 import { getQuestionBankCoverage } from "../application/questionBankCoverage.js";
+import { resolveCanonicalQuestionSkillIds } from "../application/questionSkillTaxonomy.js";
 import { buildOwnedDocumentQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
 
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -239,9 +240,14 @@ questionBankRouter.post(
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const draftPayload = questionBaseSchema.parse(req.body);
+    const canonicalSkills = await resolveCanonicalQuestionSkillIds(draftPayload);
+    if (!canonicalSkills.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: canonicalSkills.message });
+    }
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const payload = questionSchema.parse({
       ...draftPayload,
+      skillIds: canonicalSkills.skillIds,
       ...workflowDefaults,
       approvalStatus:
         req.authUser?.role === "admin"
@@ -328,13 +334,24 @@ questionBankRouter.patch(
       });
     }
 
-    const mergedPayload = questionSchema.parse({
+    const mergedDraft = {
       ...existing.toObject(),
       ...payload,
+    };
+    const canonicalSkills = await resolveCanonicalQuestionSkillIds(mergedDraft);
+    if (!canonicalSkills.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: canonicalSkills.message });
+    }
+    const mergedPayload = questionSchema.parse({
+      ...mergedDraft,
+      skillIds: canonicalSkills.skillIds,
     });
 
     await assertManagedContentScope(req.authUser!, mergedPayload);
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
+    const sanitizedPayload = sanitizeWorkflowUpdate(
+      { ...payload, skillIds: canonicalSkills.skillIds } as Record<string, unknown>,
+      req.authUser!,
+    );
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
   }),
