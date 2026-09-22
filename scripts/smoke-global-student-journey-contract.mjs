@@ -94,6 +94,9 @@ check('student sidebar keeps a simple learning journey without changing the thre
   assertIncludes(files.dashboard, 'data-testid="student-menu-overview"');
   assertIncludes(files.dashboard, 'from-sky-200/90');
   assertIncludes(files.dashboard, 'border-slate-100');
+  assertIncludes(files.dashboard, 'w-72 max-w-[calc(100vw-1rem)]');
+  assertIncludes(files.dashboard, 'whitespace-nowrap');
+  assertIncludes(files.dashboard, 'lg:max-w-[calc(100vw-18rem)]');
 
   assertIncludes(files.plan, '>خططي</h1>');
 
