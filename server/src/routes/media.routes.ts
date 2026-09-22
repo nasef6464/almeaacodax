@@ -27,7 +27,7 @@ mediaRouter.post(
 );
 
 const questionExplanationAudioIntentSchema = z.object({
-  contentType: z.enum(["audio/mpeg", "audio/webm", "audio/mp4", "audio/ogg", "audio/wav", "audio/x-wav"]),
+  contentType: z.enum(["audio/mpeg", "audio/webm", "audio/mp4", "audio/x-m4a", "audio/ogg", "audio/wav", "audio/x-wav"]),
   sizeBytes: z.coerce.number().int().positive(),
 });
 
