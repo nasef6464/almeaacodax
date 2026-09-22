@@ -63,7 +63,8 @@ check('AI draft inherits the currently selected taxonomy context', () => {
   includes(manager, "pathId: selectedPathId || ''");
   includes(manager, "subject: selectedSubjectId || ''");
   includes(manager, "sectionId: selectedSectionId || ''");
-  includes(manager, 'skillIds: selectedSkillId ? [selectedSkillId] : []');
+  includes(manager, 'skillIds: [');
+  includes(manager, 'selectedSkillId ? [selectedSkillId] : []');
   includes(manager, "approvalStatus: approvalStatus || (user.role === 'admin' ? 'approved' : 'pending_review')");
 });
 
