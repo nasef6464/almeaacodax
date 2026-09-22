@@ -85,10 +85,13 @@ jobs:
         run: npm --prefix server run build
 
       - name: Integration harness typecheck
-        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts src/scripts/learnerQuizCatalogPaginationGate.ts ../.github/scripts/courseSalePricePaymentGate.ts
+        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts src/scripts/learnerQuizCatalogPaginationGate.ts src/scripts/learnerReferenceRepairGate.ts ../.github/scripts/courseSalePricePaymentGate.ts
 
       - name: Run learner quiz catalog pagination gate
         run: cd server && npx tsx src/scripts/learnerQuizCatalogPaginationGate.ts
+
+      - name: Run learner reference repair rollback gate
+        run: cd server && npx tsx src/scripts/learnerReferenceRepairGate.ts
 
       - name: Start exact branch API
         shell: bash
