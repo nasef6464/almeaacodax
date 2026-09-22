@@ -1351,7 +1351,9 @@ aiRouter.post(
       : Number.isInteger((question as any)?.correctOptionIndex)
         ? Number((question as any).correctOptionIndex)
         : undefined;
-    const teacherVoiceExplanation = String((question as any)?.voiceExplanation?.text || "").trim();
+    const reviewTeacherVoiceExplanation = String(review?.voiceExplanation?.text || "").trim();
+    const liveTeacherVoiceExplanation = String((question as any)?.voiceExplanation?.text || "").trim();
+    const teacherVoiceExplanation = reviewTeacherVoiceExplanation || liveTeacherVoiceExplanation;
     const trustedExplanation = String(
       teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || "",
     ).trim();
