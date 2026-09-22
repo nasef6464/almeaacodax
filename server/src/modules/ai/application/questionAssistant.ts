@@ -77,7 +77,6 @@ export const buildQuestionAssistantPrompt = (input: {
     safeQuestionCode ? `كود السؤال: ${safeQuestionCode}` : "",
     `نص السؤال: ${safeQuestionText}`,
     safeVisualDescription ? `وصف العناصر البصرية الموثوق: ${safeVisualDescription}` : "",
-     ${safeQuestionText}`,
     safeOptions.length ? `الاختيارات: ${safeOptions.map((option, index) => `${index + 1}) ${option}`).join(" | ")}` : "",
     `اختيار الطالب: ${selected}`,
     `الإجابة الصحيحة الموثوقة: ${correct}`,
