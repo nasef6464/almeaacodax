@@ -58,7 +58,7 @@ const validateImportIdentity = (item: any, questionCode: string) => {
   }
 
   const expectedImagePath = `/questions/v2/${questionCode}/${imageHash}.webp`;
-  const expectedPublicUrl = `${env.R2_PUBLIC_BASE_URL.replace(/\\\/+$/, "")}${expectedImagePath}`;
+  const expectedPublicUrl = `${env.R2_PUBLIC_BASE_URL.replace(/\/+$/, "")}${expectedImagePath}`;
   if (imageUrl !== expectedPublicUrl) {
     return `imageUrl must be the exact R2 V2 object URL returned by the presign flow: ${expectedImagePath}`;
   }
