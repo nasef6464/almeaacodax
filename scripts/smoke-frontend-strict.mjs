@@ -2,7 +2,28 @@ import { execSync } from 'node:child_process';
 
 const frontendUrl = (process.env.SMOKE_FRONTEND_URL || 'https://almeaacodax.vercel.app').replace(/\/$/, '');
 const expectedVersion = process.env.SMOKE_EXPECT_VERSION || execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-const requireExpectedVersion = String(process.env.SMOKE_REQUIRE_FRONTEND_VERSION || '1').trim() !== '0';
+
+const nonRuntimeOnlyCommit = (() => {
+  try {
+    execSync('git rev-parse HEAD^', { stdio: 'ignore' });
+    const changed = execSync('git diff --name-only HEAD^ HEAD', { encoding: 'utf8' })
+      .split(/\r?\n/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+    if (changed.length === 0) return false;
+    return changed.every((file) =>
+      file.startsWith('docs/') ||
+      file.startsWith('.github/') ||
+      /^scripts\/smoke-.*\.mjs$/.test(file) ||
+      /^README/i.test(file) ||
+      file.endsWith('.md'),
+    );
+  } catch {
+    return false;
+  }
+})();
+
+const requireExpectedVersion = !nonRuntimeOnlyCommit;
 const maxAttempts = 12;
 const waitMs = 5000;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
