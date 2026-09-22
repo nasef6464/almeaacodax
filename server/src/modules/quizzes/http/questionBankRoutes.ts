@@ -20,6 +20,7 @@ import { getQuizQuestionIds } from "../application/quizQuestionSelection.js";
 import { getQuestionBankCoverage } from "../application/questionBankCoverage.js";
 import { resolveCanonicalQuestionSkillIds } from "../application/questionSkillTaxonomy.js";
 import { buildOwnedDocumentQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
+import { questionImportRouter } from "./questionImportRoutes.js";
 
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
@@ -48,6 +49,7 @@ const buildQuestionSummaryCacheKey = (query: ReturnType<typeof questionListQuery
   });
 
 export const questionBankRouter = Router();
+questionBankRouter.use(questionImportRouter);
 
 questionBankRouter.get(
   "/questions",
