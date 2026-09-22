@@ -53,6 +53,14 @@ check("pilot import prevents duplicate codes and duplicate source identities", (
   includes(importRoutes, "StatusCodes.CONFLICT");
 });
 
+check("pilot import enforces canonical source identity and content-addressed image URL", () => {
+  includes(importRoutes, "validateImportIdentity(item, questionCode)");
+  includes(importRoutes, "questionCode must match canonical source identity");
+  includes(importRoutes, "sourceItemId must match canonical source identity");
+  includes(importRoutes, "sourceMeta.imageHash must be the SHA-256 hash of the uploaded WebP");
+  includes(importRoutes, "imageUrl must point to the content-addressed V2 object");
+});
+
 check("pilot import forces imported draft workflow and canonical taxonomy", () => {
   includes(importRoutes, "resolveCanonicalQuestionSkillIds(item)");
   includes(importRoutes, 'source: "imported"');
