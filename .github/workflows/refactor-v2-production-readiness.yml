@@ -209,7 +209,7 @@ jobs:
       - name: Deployment cache contract
         run: npm run smoke:deployment-cache
       - name: Post-deploy frontend version policy contract
-        run: npm run smoke:postdeploy-frontend-version-policy
+        run: node scripts/smoke-postdeploy-frontend-version-policy-contract.mjs
 
       - name: Load-test contract
         run: npm run smoke:load-tests
