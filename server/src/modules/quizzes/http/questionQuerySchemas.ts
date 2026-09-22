@@ -19,6 +19,10 @@ const questionAiContextSchema = z.object({
 const questionSourceMetaSchema = z.object({
   documentCode: z.string().max(120).default(""),
   documentTitle: z.string().max(500).default(""),
+  sourceItemId: z.string().max(200).default(""),
+  pdfPageIndex: z.number().int().min(1).nullable().optional(),
+  printedPageNumber: z.number().int().min(1).nullable().optional(),
+  printedQuestionNumber: z.number().int().min(0).nullable().optional(),
   page: z.number().int().min(1).nullable().optional(),
   questionNumber: z.string().max(80).default(""),
   cropIndex: z.number().int().min(0).nullable().optional(),

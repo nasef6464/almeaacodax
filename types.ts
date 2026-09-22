@@ -591,6 +591,10 @@ export interface QuestionAiContext {
 export interface QuestionSourceMeta {
     documentCode?: string;
     documentTitle?: string;
+    sourceItemId?: string;
+    pdfPageIndex?: number | null;
+    printedPageNumber?: number | null;
+    printedQuestionNumber?: number | null;
     page?: number | null;
     questionNumber?: string;
     cropIndex?: number | null;
