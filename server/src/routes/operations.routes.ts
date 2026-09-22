@@ -101,6 +101,13 @@ async function buildIntegrationsReadinessSnapshot() {
     (whatsappProvider === "http" && Boolean(process.env.WHATSAPP_WEBHOOK_URL && process.env.WHATSAPP_WEBHOOK_URL.trim()));
 
   const sentryConfigured = Boolean(env.SENTRY_DSN && env.SENTRY_DSN.trim());
+  const r2Configured =
+    env.R2_UPLOAD_ENABLED &&
+    Boolean(env.R2_ACCOUNT_ID && env.R2_ACCOUNT_ID.trim()) &&
+    Boolean(env.R2_BUCKET && env.R2_BUCKET.trim()) &&
+    Boolean(env.R2_ACCESS_KEY_ID && env.R2_ACCESS_KEY_ID.trim()) &&
+    Boolean(env.R2_SECRET_ACCESS_KEY && env.R2_SECRET_ACCESS_KEY.trim()) &&
+    Boolean(env.R2_PUBLIC_BASE_URL && env.R2_PUBLIC_BASE_URL.trim());
 
   const checks = [
     {
@@ -152,6 +159,24 @@ async function buildIntegrationsReadinessSnapshot() {
       requiredEnv: ["SENTRY_DSN", "SENTRY_ENVIRONMENT", "SENTRY_TRACES_SAMPLE_RATE"],
     },
     {
+      id: "r2_media",
+      title: "Cloudflare R2 Media",
+      status: r2Configured ? "pass" : "warning",
+      detail: r2Configured
+        ? "R2 question-image upload is enabled and all required runtime variables are present."
+        : env.R2_UPLOAD_ENABLED
+        ? "R2 upload is enabled but one or more required runtime variables are missing."
+        : "R2 media upload is currently disabled by configuration.",
+      requiredEnv: [
+        "R2_UPLOAD_ENABLED=true",
+        "R2_ACCOUNT_ID",
+        "R2_BUCKET",
+        "R2_ACCESS_KEY_ID",
+        "R2_SECRET_ACCESS_KEY",
+        "R2_PUBLIC_BASE_URL",
+      ],
+    },
+    {
       id: "managed_redis",
       title: "Managed Redis",
       status: redisHealth.ok ? "pass" : redisRequiredByQueue || redisRequiredByRateLimit ? "fail" : "warning",
@@ -183,6 +208,9 @@ async function buildIntegrationsReadinessSnapshot() {
       emailProvider: emailProvider || "unknown",
       redisConfigured: isRedisConfigured(),
       redisHealthy: redisHealth.ok,
+      sentryConfigured,
+      r2UploadEnabled: env.R2_UPLOAD_ENABLED,
+      r2Configured,
     },
   };
 }

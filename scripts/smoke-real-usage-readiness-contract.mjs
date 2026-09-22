@@ -63,6 +63,15 @@ check('runtime URLs are migration-friendly', () => {
   notIncludes('index.html', 'https://almeaacodax-k2ux.onrender.com');
 });
 
+check('integration readiness reports Sentry and R2 without exposing secrets', () => {
+  includes('server/src/routes/operations.routes.ts', 'const sentryConfigured =');
+  includes('server/src/routes/operations.routes.ts', 'const r2Configured =');
+  includes('server/src/routes/operations.routes.ts', 'id: "r2_media"');
+  includes('server/src/routes/operations.routes.ts', 'r2UploadEnabled: env.R2_UPLOAD_ENABLED');
+  includes('server/src/routes/operations.routes.ts', 'r2Configured,');
+  notIncludes('server/src/routes/operations.routes.ts', 'secretAccessKey: env.R2_SECRET_ACCESS_KEY');
+});
+
 check('deployment and environment files exist', () => {
   [
     'deploy/hostinger/README.md',
