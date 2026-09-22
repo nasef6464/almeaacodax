@@ -16,7 +16,7 @@ import {
 import { useStore } from '../../store/useStore';
 import { Course, PackageContentType, PathDisplaySettings } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
-import { isMaterialQuizCandidate } from '../../utils/mockExam';
+import { isMaterialQuizCandidate, isPathMockExam } from '../../utils/mockExam';
 import { isQuizVisibleInLearningSlot } from '../../utils/quizLearningPlacement';
 import { getPathIcon, getSubjectIcon, getLevelIcon, resolveColor, resolvePathDisplaySettings } from './PathsManager/pathDisplayPresentation';
 import { EducationalIconPicker } from './PathsManager/EducationalIconPicker';
@@ -578,6 +578,10 @@ export const PathsManager: React.FC = () => {
       .map((item) => item.trim())
       .filter(Boolean);
     const normalizedContentTypes = packageContentTypes.length ? packageContentTypes : ['all' as PackageContentType];
+    const packageIncludesCourses =
+      packageAppliesGlobally ||
+      normalizedContentTypes.includes('all') ||
+      normalizedContentTypes.includes('courses');
     const scopedSubjectId = packageAppliesGlobally ? '' : packageSubjectId.trim();
     const scopedPathId = packageAppliesGlobally ? '' : selectedPathId;
 
@@ -601,13 +605,15 @@ export const PathsManager: React.FC = () => {
       packageType: packageAppliesGlobally ? 'membership' : 'courses',
       packageContentTypes: packageAppliesGlobally ? ['all'] : normalizedContentTypes,
       originalPrice,
-      includedCourses: courses
-        .filter((course) => (
-          (packageAppliesGlobally || (course.pathId || course.category) === selectedPathId) &&
-          (!scopedSubjectId || course.subjectId === scopedSubjectId || course.subject === scopedSubjectId) &&
-          !course.isPackage
-        ))
-        .map((course) => course.id),
+      includedCourses: packageIncludesCourses
+        ? courses
+            .filter((course) => (
+              (packageAppliesGlobally || (course.pathId || course.category) === selectedPathId) &&
+              (!scopedSubjectId || course.subjectId === scopedSubjectId || course.subject === scopedSubjectId) &&
+              !course.isPackage
+            ))
+            .map((course) => course.id)
+        : [],
       isPublished: packagePublished,
       showOnPlatform: packageVisible,
       approvalStatus: packagePublished ? 'approved' : 'draft',
@@ -707,11 +713,12 @@ export const PathsManager: React.FC = () => {
     const counts = {
       courses: courses.filter((course: any) => !course.isPackage && hasType('courses') && isInScope(course)).length,
       foundation: topics.filter((topic: any) => hasType('foundation') && isInScope(topic)).length,
-        banks: quizzes.filter((quiz: any) => hasType('banks') && isMaterialQuizCandidate(quiz) && isTrainingQuiz(quiz) && isInScope(quiz)).length,
-        tests: quizzes.filter((quiz: any) => hasType('tests') && isMaterialQuizCandidate(quiz) && isMockQuiz(quiz) && isInScope(quiz)).length,
+      banks: quizzes.filter((quiz: any) => hasType('banks') && isMaterialQuizCandidate(quiz) && isTrainingQuiz(quiz) && isInScope(quiz)).length,
+      tests: quizzes.filter((quiz: any) => hasType('tests') && isMaterialQuizCandidate(quiz) && isMockQuiz(quiz) && isInScope(quiz)).length,
+      mockExams: quizzes.filter((quiz: any) => hasType('mockExams') && isPathMockExam(quiz, pkgPathId) && isInScope(quiz)).length,
       library: libraryItems.filter((item: any) => hasType('library') && isInScope(item)).length,
     };
-    const total = counts.courses + counts.foundation + counts.banks + counts.tests + counts.library;
+    const total = counts.courses + counts.foundation + counts.banks + counts.tests + counts.mockExams + counts.library;
     const warnings = [
       (pkg.price || 0) <= 0 ? 'السعر غير محدد' : '',
       total === 0 ? 'لا يوجد محتوى داخل نطاق الباقة' : '',
@@ -1459,12 +1466,13 @@ export const PathsManager: React.FC = () => {
                             <span className="text-gray-400">•</span>
                             <span className="rounded-full bg-amber-50 px-2 py-1 text-xs font-bold text-amber-700">{getPathPackageSubjectLabel(pkg)}</span>
                           </div>
-                          <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-600 sm:grid-cols-5">
+                          <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-600 sm:grid-cols-3 lg:grid-cols-6">
                             {[
                               ['دورات', coverage.counts.courses],
                               ['تأسيس', coverage.counts.foundation],
                               ['تدريب', coverage.counts.banks],
                               ['اختبارات', coverage.counts.tests],
+                              ['محاكيات', coverage.counts.mockExams],
                               ['مكتبة', coverage.counts.library],
                             ].map(([label, value]) => (
                               <div key={label} className="rounded-xl bg-gray-50 px-2 py-2 text-center">
