@@ -78,6 +78,15 @@ check("dry-run validates without writing; write mode uses one bounded insert", (
   includes(importRoutes, 'status: "IMPORTED"');
 });
 
+check("batch status reports draft integrity and quiz linkage", () => {
+  includes(importRoutes, 'status:');
+  includes(importRoutes, '"CHECK_REQUIRED"');
+  includes(importRoutes, "integrityIssues");
+  includes(importRoutes, "linkedQuizCount");
+  includes(importRoutes, "allDraft");
+  includes(importRoutes, "QuizModel.countDocuments");
+});
+
 check("batch rollback is limited to unlinked drafts", () => {
   includes(importRoutes, 'approvalStatus !== "draft"');
   includes(importRoutes, '"mockExam.sections.questionIds"');
