@@ -41,7 +41,10 @@ check('package payment and context fields are preserved', () => {
 });
 
 check('single-course approval cannot unlock package course bundle', () => {
-  includes('server/src/routes/payment.routes.ts', 'payload.itemType === "package" && Array.isArray(packageItem?.includedCourses)');
+  includes('server/src/routes/payment.routes.ts', 'const packageIncludesCourses =');
+  includes('server/src/routes/payment.routes.ts', 'packageContentTypes.includes("courses")');
+  includes('server/src/routes/payment.routes.ts', 'payload.itemType === "package" &&');
+  includes('server/src/routes/payment.routes.ts', 'packageIncludesCourses &&');
   includes('server/src/routes/payment.routes.ts', 'updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)');
 });
 
