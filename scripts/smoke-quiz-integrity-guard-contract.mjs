@@ -5,6 +5,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const normalizeLf = (s) => s.replace(/\r\n/g, "\n");
 const quizRoutesSource = normalizeLf(await read("server/src/routes/quiz.routes.ts"));
 const integrityModuleSource = normalizeLf(await read("server/src/modules/quizzes/application/quizQuestionIntegrity.ts"));
+const learnerQuizCatalogSource = normalizeLf(await read("server/src/modules/quizzes/application/learnerQuizCatalog.ts"));
 
 const checks = [];
 
@@ -43,9 +44,13 @@ check("integrity report endpoint exists for admins", () => {
 });
 
 check("learner quiz listing excludes unusable quizzes", () => {
-  assertIncludes(quizRoutesSource, "safeItems = items\n        .filter(");
-  assertIncludes(quizRoutesSource, "isQuizTargetedToLearner(quiz, learnerAudienceForCatalog)");
-  assertIncludes(quizRoutesSource, "getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)");
+  assertIncludes(quizRoutesSource, "loadLearnerSafeQuizCatalogPage({");
+  assertIncludes(quizRoutesSource, "learnerAudience: learnerAudienceForCatalog");
+  assertIncludes(learnerQuizCatalogSource, "const filterLearnerSafeQuizzes = async");
+  assertIncludes(learnerQuizCatalogSource, "isQuizTargetedToLearner(quiz, learnerAudience)");
+  assertIncludes(learnerQuizCatalogSource, "getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)");
+  assertIncludes(learnerQuizCatalogSource, "const aliases = uniqueStrings([");
+  assertIncludes(learnerQuizCatalogSource, "question._id ? String(question._id) :");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
