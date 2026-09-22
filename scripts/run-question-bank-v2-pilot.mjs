@@ -151,6 +151,7 @@ const selected = mode === "canary"
 safeReport.selected = selected.length;
 
 const preparedItems = [];
+const preparedUploads = [];
 for (const entry of selected) {
   const intent = await request("/media/question-import-images/presign", {
     method: "POST",
@@ -162,18 +163,7 @@ for (const entry of selected) {
   });
   safeReport.presignValidated += 1;
 
-  if (mode === "canary" || mode === "full") {
-    const upload = await fetch(intent.uploadUrl, {
-      method: "PUT",
-      headers: intent.headers,
-      body: entry.bytes,
-      signal: AbortSignal.timeout(60_000),
-    });
-    if (!upload.ok) {
-      throw new Error(`R2 upload failed for ${entry.questionCode}: HTTP ${upload.status}`);
-    }
-    safeReport.uploaded += 1;
-  }
+  preparedUploads.push({ entry, intent });
 
   const { imageFileName: _imageFileName, sha256: _sha256, ...payload } = entry.item;
   preparedItems.push({
@@ -206,6 +196,23 @@ safeReport.apiDryRun = {
 };
 
 if (mode === "canary" || mode === "full") {
+  if (dryRunResult?.status !== "PASS" || Number(dryRunResult?.prepared || 0) !== selected.length) {
+    throw new Error(`Pilot API dry-run did not pass for all selected items: ${JSON.stringify(dryRunResult)}`);
+  }
+
+  for (const { entry, intent } of preparedUploads) {
+    const upload = await fetch(intent.uploadUrl, {
+      method: "PUT",
+      headers: intent.headers,
+      body: entry.bytes,
+      signal: AbortSignal.timeout(60_000),
+    });
+    if (!upload.ok) {
+      throw new Error(`R2 upload failed for ${entry.questionCode}: HTTP ${upload.status}`);
+    }
+    safeReport.uploaded += 1;
+  }
+
   const writeResult = await request("/quizzes/questions/import-batch", {
     method: "POST",
     body: { batchId, dryRun: false, items: preparedItems },
