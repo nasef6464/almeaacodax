@@ -42,6 +42,8 @@ export const buildQuestionAssistantCacheKey = (input: {
 export const buildQuestionAssistantPrompt = (input: {
   level: QuestionHelpLevel;
   questionText: string;
+  questionCode?: string;
+  visualDescription?: string;
   options: string[];
   selectedOptionIndex?: number;
   correctOptionIndex?: number;
@@ -51,6 +53,8 @@ export const buildQuestionAssistantPrompt = (input: {
   hasImage: boolean;
 }) => {
   const safeQuestionText = sanitizeQuestionAssistantText(input.questionText);
+  const safeVisualDescription = sanitizeQuestionAssistantText(input.visualDescription || "");
+  const safeQuestionCode = sanitizeQuestionAssistantText(input.questionCode || "");
   const safeOptions = input.options.map(sanitizeQuestionAssistantText);
   const safeExplanation = sanitizeQuestionAssistantText(input.explanation);
   const safeStudentMessage = sanitizeQuestionAssistantText(input.studentMessage || "");
@@ -70,7 +74,10 @@ export const buildQuestionAssistantPrompt = (input: {
       ? "السؤال يحتوي صورة، لكن الصورة نفسها غير مرسلة لك. اعتمد على النص والشرح الموثوق، واذكر بوضوح إذا كان جزء بصري ضروري غير موصوف نصيًا."
       : "",
     `المهارات: ${input.skillLabels.join("، ") || "غير محددة"}`,
+    safeQuestionCode ? `كود السؤال: ${safeQuestionCode}` : "",
     `نص السؤال: ${safeQuestionText}`,
+    safeVisualDescription ? `وصف العناصر البصرية الموثوق: ${safeVisualDescription}` : "",
+     ${safeQuestionText}`,
     safeOptions.length ? `الاختيارات: ${safeOptions.map((option, index) => `${index + 1}) ${option}`).join(" | ")}` : "",
     `اختيار الطالب: ${selected}`,
     `الإجابة الصحيحة الموثوقة: ${correct}`,
