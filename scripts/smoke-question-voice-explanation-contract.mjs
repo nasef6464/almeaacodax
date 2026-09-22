@@ -10,6 +10,7 @@ const [
   mediaRoutes,
   audioUpload,
   questionsApi,
+  questionBankManager,
   builder,
   voiceEditor,
   results,
@@ -23,6 +24,7 @@ const [
   read("server/src/routes/media.routes.ts"),
   read("server/src/modules/media/application/questionExplanationAudioUpload.ts"),
   read("services/apiGroups/questionsApi.ts"),
+  read("dashboards/admin/QuestionBankManager.tsx"),
   read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx"),
   read("dashboards/admin/builders/QuestionVoiceExplanationEditor.tsx"),
   read("pages/Results.tsx"),
@@ -86,6 +88,14 @@ check("frontend API uploads explanation audio directly to presigned R2 URL", () 
   includes(questionsApi, "uploadQuestionExplanationAudio");
   includes(questionsApi, '"/media/question-explanations/presign"');
   includes(questionsApi, "body: file");
+});
+
+check("question bank import and export preserve teacher voice metadata", () => {
+  includes(questionBankManager, "'نص الشرح الصوتي'");
+  includes(questionBankManager, "'رابط الشرح الصوتي'");
+  includes(questionBankManager, "voiceExplanationText");
+  includes(questionBankManager, "voiceExplanationAudioUrl");
+  includes(questionBankManager, "voiceExplanation:");
 });
 
 check("admin editor supports text, upload and microphone recording", () => {
