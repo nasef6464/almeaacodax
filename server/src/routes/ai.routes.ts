@@ -1314,15 +1314,35 @@ aiRouter.post(
     }
 
     const question = await QuestionModel.findOne(buildDocumentsByIdsQuery([payload.questionId]))
-      .select("id text options correctOptionIndex explanation imageUrl skillIds updatedAt")
+      .select("id questionCode text options correctOptionIndex explanation imageUrl skillIds aiContext updatedAt")
       .lean();
 
-    const questionText = String(review?.text || (question as any)?.text || "").trim();
-    const options = Array.isArray(review?.options)
-      ? review.options.map(String)
-      : Array.isArray((question as any)?.options)
-        ? (question as any).options.map(String)
-        : [];
+    const normalizeStoredOption = (value: any) => {
+      if (typeof value === "string") return value.trim();
+      if (value && typeof value === "object" && typeof value.text === "string") return value.text.trim();
+      return String(value ?? "").trim();
+    };
+    const rawQuestionText = String(review?.text || (question as any)?.text || "").trim();
+    const aiReadableText = String((question as any)?.aiContext?.readableText || "").trim();
+    const visualDescription = String((question as any)?.aiContext?.visualDescription || "").trim();
+    const questionCode = String((question as any)?.questionCode || "").trim();
+    const questionText = aiReadableText || rawQuestionText;
+    const reviewOptions = Array.isArray(review?.options)
+      ? review.options.map(normalizeStoredOption).filter(Boolean)
+      : [];
+    const bankOptions = Array.isArray((question as any)?.options)
+      ? (question as any).options.map(normalizeStoredOption).filter(Boolean)
+      : [];
+    const aiOptionTexts = Array.isArray((question as any)?.aiContext?.optionTexts)
+      ? (question as any).aiContext.optionTexts.map(normalizeStoredOption).filter(Boolean)
+      : [];
+    const referenceOptionCount = bankOptions.length || reviewOptions.length;
+    const options =
+      aiOptionTexts.length > 0 && aiOptionTexts.length === referenceOptionCount
+        ? aiOptionTexts
+        : reviewOptions.length > 0
+          ? reviewOptions
+          : bankOptions;
     const selectedOptionIndex = Number.isInteger(review?.selectedOptionIndex)
       ? Number(review.selectedOptionIndex)
       : undefined;
@@ -1335,7 +1355,7 @@ aiRouter.post(
     const hasImage = Boolean(
       review?.imageUrl ||
       (question as any)?.imageUrl ||
-      /<img\b/i.test(questionText),
+      /<img\b/i.test(rawQuestionText),
     );
     const skillIds = uniqueNonEmpty(
       Array.isArray((question as any)?.skillIds) ? (question as any).skillIds.map(String) : [],
@@ -1360,6 +1380,9 @@ aiRouter.post(
       String(selectedOptionIndex ?? ""),
       String(correctOptionIndex ?? ""),
       String(trustedExplanation.length),
+      String((question as any)?.aiContext?.version || ""),
+      String(aiReadableText.length),
+      String(visualDescription.length),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,
@@ -1501,6 +1524,8 @@ aiRouter.post(
     const prompt = buildQuestionAssistantPrompt({
       level: payload.helpLevel as QuestionHelpLevel,
       questionText,
+      questionCode,
+      visualDescription,
       options,
       selectedOptionIndex,
       correctOptionIndex,
