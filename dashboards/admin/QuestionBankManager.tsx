@@ -453,7 +453,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const handleDuplicate = async (question: Question) => {
     try {
       // لا نُمرّر id محلياً — السيرفر يُنشئ ID حقيقياً دائماً
-      const { id: _omit, ...questionWithoutId } = question;
+      const { id: _omit, questionCode: _omitQuestionCode, ...questionWithoutId } = question;
       await addQuestion({
         ...questionWithoutId,
         text: question.text ? `${question.text} (نسخة)` : question.text,
@@ -483,6 +483,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         .join(' | ');
 
       return {
+        'ID داخلي': question.id || '',
+        'كود السؤال': question.questionCode || '',
         المسار: pathName,
         المادة: subjectName,
         'المهارة الرئيسية': mainSkillName,
@@ -555,6 +557,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     const templateRows = [
       {
+        questionCode: '',
+        'كود السؤال': '',
         pathId: samplePath?.id || '',
         subjectId: sampleSubject?.id || '',
         mainSkillId: sampleMainSkill?.id || '',
@@ -733,6 +737,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   };
 
   const buildQuestionFromRow = (row: Record<string, unknown>, rowNumber: number): ImportDraftQuestion => {
+    const questionCode = readCell(row, ['كود السؤال', 'questionCode', 'question_code', 'code']);
     const questionValue = readCell(row, ['نص السؤال', 'السؤال', 'question', 'questionText']);
     const questionImageValue = readCell(row, ['رابط صورة السؤال', 'صورة السؤال', 'imageUrl', 'questionImage']);
     const pathIdValue = readCell(row, ['pathId', 'path_id']);
@@ -846,6 +851,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     return {
       id: `q_import_${Date.now()}_${rowNumber}`,
+      questionCode: questionCode || undefined,
       text,
       imageUrl,
       options: type === 'essay' ? [] : options,
@@ -1703,6 +1709,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}
                         <div className="flex flex-wrap items-center gap-2 mt-2 pt-1.5 border-t border-gray-100">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
+                            {question.questionCode || questionIdentity}
+                          </span>
                           <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-600">
                             {question.ownerType === 'teacher'
                               ? 'سؤال معلم'
