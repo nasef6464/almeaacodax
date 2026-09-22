@@ -40,6 +40,8 @@ export interface QuestionBankCoverage {
   subSkillCount: number;
   pendingCount: number;
   approvedCount: number;
+  skillQuestionCounts: Record<string, number>;
+  sectionQuestionCounts: Record<string, number>;
 }
 
 export interface QuestionUsageMetric {

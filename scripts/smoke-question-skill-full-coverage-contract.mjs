@@ -49,10 +49,27 @@ check('skills center counts only linked questions from full server coverage', ()
     'summary: true',
     'noTotal: true',
     'setServerQuestionCount(response?.coverage?.total ?? null)',
+    'setSubSkillCounts(response?.coverage?.skillQuestionCounts || {})',
+    'setSectionQuestionCounts(response?.coverage?.sectionQuestionCounts || {})',
   ]) {
     assert.ok(skillsTree.includes(fragment), `SkillsTreeManager lost ${fragment}`);
   }
   assert.ok(!skillsTree.includes('serverQuestionCount ?? fallbackLocalQuestionsCount'));
+  assert.ok(!skillsTree.includes('subSkillCounts[subSkill.id] ?? subSkillQuestions.length'));
+  assert.ok(skillsTree.includes("subSkillCounts ? (subSkillCounts[subSkill.id] || 0) : '—'"));
+  assert.ok(skillsTree.includes("sectionQuestionCounts ? (sectionQuestionCounts[mainSkill.id] || 0) : '—'"));
+});
+
+check('coverage exposes exact per-skill and per-section counts from the same full-bank aggregate', () => {
+  for (const fragment of [
+    '$facet',
+    'skillCounts:',
+    'sectionCounts:',
+    'skillQuestionCounts: toCountMap(result?.skillCounts)',
+    'sectionQuestionCounts: toCountMap(result?.sectionCounts)',
+  ]) {
+    assert.ok(coverage.includes(fragment), `questionBankCoverage lost ${fragment}`);
+  }
 });
 
 check('coverage aggregation excludes empty taxonomy ids', () => {
