@@ -895,6 +895,25 @@ const Dashboard: React.FC = () => {
         return () => clearTimeout(timer);
     }, [latestNotification]);
 
+    // One friendly daily nudge keeps the learner experience alive without becoming noisy.
+    useEffect(() => {
+        if (typeof window === 'undefined' || isParentDashboard || user.role !== Role.STUDENT || activeTab !== 'overview' || latestNotification) return;
+
+        const today = new Date().toLocaleDateString('en-CA');
+        const storageKey = `student-daily-nudge:${user.id}:${today}`;
+        if (window.localStorage.getItem(storageKey)) return;
+
+        const timer = window.setTimeout(() => {
+            setNotifToast({
+                title: 'خطوتك اليوم جاهزة ✨',
+                body: 'ابدأ بمهمة واحدة فقط، والباقي نمشيه معك خطوة بخطوة.',
+            });
+            window.localStorage.setItem(storageKey, 'shown');
+        }, 900);
+
+        return () => window.clearTimeout(timer);
+    }, [activeTab, isParentDashboard, latestNotification, user.id, user.role]);
+
     const studentMenuItems = [
         { id: 'overview',     label: 'نظرة عامة',          icon: <LayoutDashboard size={20} /> },
         { id: 'paths',        label: 'مساراتي',             icon: <RouteIcon size={20} /> },
@@ -1080,7 +1099,7 @@ const Dashboard: React.FC = () => {
         <div className="flex min-h-screen bg-gray-50">
             {/* ── Notification Toast (SSE real-time) ─────────────────────── */}
             {notifToast && (
-                <div className="fixed top-24 left-6 z-[9999] max-w-sm w-full animate-fade-in">
+                <div className="fixed top-24 right-4 left-4 z-[9999] w-auto animate-fade-in sm:right-auto sm:left-6 sm:max-w-sm sm:w-full">
                     <div className="bg-white border border-indigo-100 rounded-2xl shadow-2xl p-4 flex items-start gap-3">
                         <div className="shrink-0 w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg">
                             🔔

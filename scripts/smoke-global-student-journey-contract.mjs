@@ -80,6 +80,9 @@ check('student sidebar keeps a simple learning journey without changing the thre
   assertIncludes(files.dashboard, 'الاختبارات المدرسية');
   assertIncludes(files.dashboard, 'الاختبارات المحاكية');
   assertIncludes(files.dashboard, 'data-testid="student-today-focus"');
+  assertIncludes(files.dashboard, 'student-daily-nudge:');
+  assertIncludes(files.dashboard, 'خطوتك اليوم جاهزة ✨');
+
   assertIncludes(files.plan, '>خططي</h1>');
 
   assertIncludes(files.reports, 'data-testid="student-adaptive-status-card"');
