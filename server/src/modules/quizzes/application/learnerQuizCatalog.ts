@@ -64,22 +64,65 @@ const buildQuestionUsabilityMap = async (quizzes: any[]) => {
   return usableById;
 };
 
+const sanitizeLearnerQuizQuestionRefs = (quiz: any, usableById: Map<string, boolean>) => {
+  const isUsableQuestionId = (questionId: unknown) =>
+    usableById.get(String(questionId || "").trim()) === true;
+
+  const safeQuestionIds = getQuizQuestionIds(quiz).filter(isUsableQuestionId);
+  const mockSections = Array.isArray(quiz?.mockExam?.sections) ? quiz.mockExam.sections : [];
+  const sanitizedSections = quiz?.mockExam?.enabled === true
+    ? mockSections
+        .map((section: any) => ({
+          ...section,
+          questionIds: uniqueStrings(
+            (Array.isArray(section?.questionIds) ? section.questionIds : [])
+              .map(String)
+              .filter(isUsableQuestionId),
+          ),
+        }))
+        .filter((section: any) => section.questionIds.length > 0)
+    : mockSections;
+
+  return {
+    ...quiz,
+    questionIds: safeQuestionIds,
+    ...(quiz?.mockExam
+      ? {
+          mockExam: {
+            ...quiz.mockExam,
+            sections: sanitizedSections,
+          },
+        }
+      : {}),
+  };
+};
+
 const filterLearnerSafeQuizzes = async (quizzes: any[], learnerAudience?: any) => {
   if (quizzes.length === 0) {
     return [];
   }
 
   const usableById = await buildQuestionUsabilityMap(quizzes);
-  return quizzes
-    .filter(
-      (quiz) =>
-        isQuizTargetedToLearner(quiz, learnerAudience) &&
-        getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
-    )
-    .map((quiz) => {
-      const hasExplicitTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
-      return hasExplicitTarget ? { ...quiz, viewerAudienceVerified: true } : quiz;
-    });
+  return quizzes.flatMap((quiz) => {
+    if (!isQuizTargetedToLearner(quiz, learnerAudience)) {
+      return [];
+    }
+
+    const sanitizedQuiz = sanitizeLearnerQuizQuestionRefs(quiz, usableById);
+    if (getQuizQuestionIds(sanitizedQuiz).length === 0) {
+      return [];
+    }
+
+    const hasExplicitTarget =
+      (quiz.targetUserIds || []).length > 0 ||
+      (quiz.targetGroupIds || []).length > 0;
+
+    return [
+      hasExplicitTarget
+        ? { ...sanitizedQuiz, viewerAudienceVerified: true }
+        : sanitizedQuiz,
+    ];
+  });
 };
 
 /**
