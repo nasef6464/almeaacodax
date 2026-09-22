@@ -181,7 +181,9 @@ questionBankRouter.get(
       queryBuilder,
       query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),
       shouldIncludeCoverage
-        ? getQuestionBankCoverage(filter, { includeSkillBreakdown: query.includeSkillBreakdown })
+        ? query.includeSkillBreakdown
+          ? getQuestionBankCoverage(filter, { includeSkillBreakdown: true })
+          : getQuestionBankCoverage(filter)
         : Promise.resolve(null),
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
