@@ -522,12 +522,18 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
       error: "لا يمكن إنشاء طلب شراء لهذا العنصر لأن سعره غير مضبوط أو يساوي صفر.",
     };
   }
+  const packageContentTypes = normalizeScopeIds((packageItem as any)?.packageContentTypes);
+  const packageIncludesCourses =
+    packageContentTypes.length === 0 ||
+    packageContentTypes.includes("all") ||
+    packageContentTypes.includes("courses");
   const resolvedIncludedCourseIds =
-    payload.itemType === "package" && Array.isArray(packageItem?.includedCourses)
+    payload.itemType === "package" &&
+    packageIncludesCourses &&
+    Array.isArray(packageItem?.includedCourses)
       ? packageItem.includedCourses.filter(Boolean).map((id: any) => String(id))
       : [];
   const resolvedPackageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
-  const packageContentTypes = normalizeScopeIds((packageItem as any)?.packageContentTypes);
   const packagePathIds = normalizeScopeIds((packageItem as any)?.pathIds);
   const packageSubjectIds = normalizeScopeIds((packageItem as any)?.subjectIds);
   const explicitPathId = String(packageItem?.pathId || primaryTarget?.pathId || primaryTarget?.category || "").trim();
