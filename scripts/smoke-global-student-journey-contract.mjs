@@ -98,11 +98,12 @@ check('student dashboard keeps a clear continuation area and learner shortcuts',
   assertIncludes(files.dashboard, 'secondaryAction={{ label:');
   assertIncludes(files.dashboard, 'id="available-paths"');
   assertIncludes(files.dashboard, 'هل تريد إلغاء التسجيل في مسار');
-  assertIncludes(files.dashboard, "{ id: 'saher'");
-  assertIncludes(files.dashboard, "{ id: 'flashcards'");
+  assertIncludes(files.dashboard, 'data-testid="student-today-focus"');
+  assertIncludes(files.dashboard, "{ id: 'smart-path'");
+  assertIncludes(files.dashboard, "{ id: 'plan'");
   assertIncludes(files.dashboard, "{ id: 'quizzes'");
   assertIncludes(files.dashboard, "{ id: 'reports'");
-  assertIncludes(files.dashboard, 'onClick={() => setActiveTab(btn.id as any)}');
+  assertIncludes(files.dashboard, 'رحلتي التعليمية');
   assertIncludes(files.dashboard, 'آخر إنجازاتك');
 });
 

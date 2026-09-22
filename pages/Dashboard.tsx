@@ -1,7 +1,7 @@
 
 import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
-    Clock, TrendingUp, AlertTriangle, Zap, FileText, 
+    Clock, TrendingUp, AlertTriangle, Zap, Sparkles, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
     Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon, Calculator
