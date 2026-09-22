@@ -350,6 +350,17 @@ export const GenericPathPage: React.FC = () => {
                     : 0,
             },
             {
+                label: 'محاكيات',
+                count: shouldCount('mockExams')
+                    ? quizzes.filter(
+                        (quiz) =>
+                            canStudentSeeContent(quiz) &&
+                            isPathMockExam(quiz, path.id) &&
+                            isWithinPackageScope(quiz, packageSubjectId),
+                    ).length
+                    : 0,
+            },
+            {
                 label: 'مكتبة',
                 count: shouldCount('library')
                     ? libraryItems.filter((item) => canStudentSeeContent(item) && isWithinPackageScope(item, packageSubjectId)).length
