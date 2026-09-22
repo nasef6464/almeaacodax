@@ -45,6 +45,19 @@ export const sanitizeQuestionForLearner = (question: Record<string, any>) => {
   return safeQuestion;
 };
 
+
+export const buildQuestionResponseItems = (
+  items: Array<Record<string, any>>,
+  options: { summary: boolean; canSeeAnswers: boolean },
+) => {
+  const presented = options.summary
+    ? items.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+    : items;
+  return options.canSeeAnswers
+    ? presented
+    : presented.map((item) => sanitizeQuestionForLearner(item));
+};
+
 export const isQuestionContentUsable = (question: any) => {
   const hasText = String(question?.text || "").trim().length > 0;
   const hasImage = String(question?.imageUrl || "").trim().length > 0;
