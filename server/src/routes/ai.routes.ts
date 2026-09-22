@@ -1314,7 +1314,7 @@ aiRouter.post(
     }
 
     const question = await QuestionModel.findOne(buildDocumentsByIdsQuery([payload.questionId]))
-      .select("id questionCode text options correctOptionIndex explanation imageUrl skillIds aiContext updatedAt")
+      .select("id questionCode text options correctOptionIndex explanation imageUrl skillIds aiContext voiceExplanation updatedAt")
       .lean();
 
     const normalizeStoredOption = (value: any) => {
@@ -1351,7 +1351,12 @@ aiRouter.post(
       : Number.isInteger((question as any)?.correctOptionIndex)
         ? Number((question as any).correctOptionIndex)
         : undefined;
-    const trustedExplanation = String(review?.explanation || (question as any)?.explanation || "").trim();
+    const reviewTeacherVoiceExplanation = String(review?.voiceExplanation?.text || "").trim();
+    const liveTeacherVoiceExplanation = String((question as any)?.voiceExplanation?.text || "").trim();
+    const teacherVoiceExplanation = reviewTeacherVoiceExplanation || liveTeacherVoiceExplanation;
+    const trustedExplanation = String(
+      teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || "",
+    ).trim();
     const hasImage = Boolean(
       review?.imageUrl ||
       (question as any)?.imageUrl ||
@@ -1393,6 +1398,8 @@ aiRouter.post(
       String(correctOptionIndex ?? ""),
       String(trustedExplanation.length),
       String((question as any)?.aiContext?.version || ""),
+      String((question as any)?.voiceExplanation?.version || ""),
+      String(teacherVoiceExplanation.length),
       String(aiReadableText.length),
       String(visualDescription.length),
     ].join("::");
