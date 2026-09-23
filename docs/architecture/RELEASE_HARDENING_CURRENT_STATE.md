@@ -1,5 +1,23 @@
 # ALMEAA — Release Hardening Current State
 
+## 2026-09-23 — Current master production checkpoint
+
+**Canonical current handoff:** `docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md`
+
+- Current main baseline at this checkpoint: `919acb01771abc88c7b89fe816153e10b178c7bd`.
+- Active master task: **ALM-PRD-001 — Final Product & Production Closure**.
+- ALM-STD-002: **CLOSED**.
+- Adaptive/Mastery 0–11: **CLOSED**.
+- Release Hardening Batches 0–14: broadly complete; remaining live evidence is owned by ALM-PRD-001 / Batch 15.
+- PR #254 is merged and makes integrations readiness visible in Operations Command Center while making backup-scheduling UI truthful.
+- Production Operational Smoke has been proven green after frontend/backend release synchronization.
+- Remaining live blockers are tracked in #234–#237: runtime integrations after Render migration, full DR, performance topology/capacity evidence, and governance.
+- Current release label remains: **NOT YET PRODUCTION CERTIFIED**.
+
+**Next exact action:** restore the migrated runtime integrations first (Redis URL, Sentry DSN, rotated R2 credentials, Google OAuth), re-run live proof, then close DR → performance → governance → final Batch 15 certification.
+
+---
+
 ## 2026-09-22 — Superseding production-closure checkpoint
 
 > This checkpoint supersedes the older Batch 1/2 status below for **current execution state**. The historical entries are retained as evidence of how the hardening program progressed.
