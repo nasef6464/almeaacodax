@@ -1,5 +1,19 @@
 # ALMEAA — Release Hardening Current State
 
+## 2026-09-23 — Current Batch 15 checkpoint
+
+- Current main baseline: `2b33434bd83658dc7c2b8591d7900bf443c90f5c`.
+- Active task: **ALM-PRD-001 — Final Product & Production Closure**.
+- Adaptive/Mastery 0–11: **CLOSED** unless a reproducible regression appears.
+- Release Hardening 0–14: implementation history retained; remaining live evidence is consolidated under Batch 15 / ALM-PRD-001.
+- PR #243: **MERGED / GREEN** — single-source frontend SHA proof + approved Pilot CSRF env contract extension.
+- Prepared no-PR closure branch: `chatgpt/alm-prd-001-batch15-closure-ui`.
+- Vercel conservation: one final closure Preview only after quota is healthy; no speculative frontend PRs.
+- Open blockers: #234 runtime integrations, #235 full DR, #236 production-like performance, #237 governance.
+- Release label: **NOT YET PRODUCTION CERTIFIED**.
+
+---
+
 ## 2026-09-22 — Superseding production-closure checkpoint
 
 > This checkpoint supersedes the older Batch 1/2 status below for **current execution state**. The historical entries are retained as evidence of how the hardening program progressed.
