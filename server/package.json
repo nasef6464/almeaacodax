@@ -49,7 +49,8 @@
     "audit:foundation-skill-mapping": "tsx src/scripts/auditFoundationSkillMapping.ts",
     "validate:question-manifest": "tsx src/scripts/validateQuestionBankV2Manifest.ts",
     "audit:learner-references": "tsx src/scripts/auditLearnerReferenceIntegrity.ts",
-    "repair:learner-references": "tsx src/scripts/repairLearnerReferenceIntegrity.ts"
+    "repair:learner-references": "tsx src/scripts/repairLearnerReferenceIntegrity.ts",
+    "validate:teaching-fingerprint": "tsx src/scripts/validateTeachingFingerprintV1.ts"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",

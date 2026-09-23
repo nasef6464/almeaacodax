@@ -364,6 +364,7 @@ export interface QuizQuestionReview {
     imageAlt?: string;
     optionsEmbeddedInImage?: boolean;
     aiContext?: QuestionAiContext;
+    voiceExplanation?: QuestionVoiceExplanation;
     sourceMeta?: QuestionSourceMeta;
     isCorrect: boolean;
     timeSpentSeconds?: number;
@@ -588,6 +589,13 @@ export interface QuestionAiContext {
     version?: number;
 }
 
+export interface QuestionVoiceExplanation {
+    text?: string;
+    audioUrl?: string;
+    audioMimeType?: string;
+    version?: number;
+}
+
 export interface QuestionSourceMeta {
     documentCode?: string;
     documentTitle?: string;
@@ -618,6 +626,7 @@ export interface Question extends ContentWorkflow {
     imageAlt?: string;
     optionsEmbeddedInImage?: boolean;
     aiContext?: QuestionAiContext;
+    voiceExplanation?: QuestionVoiceExplanation;
     sourceMeta?: QuestionSourceMeta;
     skillIds?: string[];
     skillId?: string | null;

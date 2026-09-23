@@ -126,6 +126,7 @@ export const toQuestionReviewFromBank = (
     selectedOptionIndex,
     videoUrl: savedReview?.videoUrl || sourceQuestion.videoUrl,
     imageUrl: savedReview?.imageUrl || sourceQuestion.imageUrl,
+    voiceExplanation: savedReview?.voiceExplanation || sourceQuestion.voiceExplanation,
     isCorrect:
       typeof savedReview?.isCorrect === 'boolean'
         ? savedReview.isCorrect

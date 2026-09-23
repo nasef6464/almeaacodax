@@ -134,6 +134,49 @@ export const createQuestionsApi = (request: ApiRequest) => ({
     return { publicUrl: intent.publicUrl, key: intent.key };
   },
 
+  createQuestionExplanationAudioUploadIntent: (
+    payload: { contentType: string; sizeBytes: number },
+    token?: string | null,
+  ) =>
+    request<{
+      uploadUrl: string;
+      publicUrl: string;
+      key: string;
+      method: "PUT";
+      headers: { "Content-Type": string };
+      expiresIn: number;
+      maxBytes: number;
+    }>("/media/question-explanations/presign", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+
+  uploadQuestionExplanationAudio: async (file: File, token?: string | null) => {
+    const intent = await request<{
+      uploadUrl: string;
+      publicUrl: string;
+      key: string;
+      method: "PUT";
+      headers: { "Content-Type": string };
+      expiresIn: number;
+      maxBytes: number;
+    }>("/media/question-explanations/presign", {
+      method: "POST",
+      body: { contentType: file.type, sizeBytes: file.size },
+      token,
+    });
+    const response = await fetch(intent.uploadUrl, {
+      method: intent.method,
+      headers: intent.headers,
+      body: file,
+    });
+    if (!response.ok) {
+      throw new Error(`تعذر رفع الشرح الصوتي إلى التخزين الخارجي (HTTP ${response.status}).`);
+    }
+    return { publicUrl: intent.publicUrl, key: intent.key };
+  },
+
   createQuestion: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/questions", {
       method: "POST",
