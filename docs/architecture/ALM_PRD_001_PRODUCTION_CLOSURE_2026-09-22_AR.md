@@ -152,3 +152,36 @@ The exact deployed SHA and core PR gates are strong, but Batch 15 remains open u
 - Sentry live proof remains **BLOCKED** with HTTP 412 because production has no `SENTRY_DSN` configured.
 - Verified MongoDB/R2 backup and isolated-restore tooling exists, but repository tooling is not equivalent to a live scheduled backup, off-site copy, restore drill or measured RPO/RTO.
 - The top-level production backup guide has been hardened to point only to the verified backup/restore path.
+
+## 2026-09-23 — Batch 15 closure checkpoint
+
+Current baseline after PR #243:
+
+- GitHub main: `2b33434bd83658dc7c2b8591d7900bf443c90f5c`.
+- ALM-PRD-001 remains the active release-closure task.
+- Adaptive/Mastery 0–11 remains closed; do not reopen without a reproduced regression.
+- Release Hardening Batches 0–14 remain historical/completed implementation work; current open release evidence is owned by Batch 15 / ALM-PRD-001.
+
+### Current verified closure work
+
+- PR #243 closed the duplicate frontend SHA proof race and restored the architecture gate by explicitly approving the existing Question Bank Pilot CSRF environment keys.
+- Exact-head Safety, Recovery, Backend Integration, Phase/Handover and Deep Pre-Merge E2E passed before merge.
+- Render and Vercel were aligned on the pre-merge production baseline; the merge intentionally avoided extra preview deployments where Vercel's ignored-build policy applied.
+- A final Batch 15 closure UI branch is prepared without an open PR to conserve Vercel quota:
+  `chatgpt/alm-prd-001-batch15-closure-ui`.
+- That branch exposes Sentry/R2/Redis/Google/Email/WhatsApp readiness in Operations Command Center and removes the false backup-scheduling success UI.
+
+### Open release blockers / tracked issues
+
+- #234 — ALM-OPS-002: restore runtime integrations after Render migration (Sentry DSN, R2 credentials, Redis URL, Google OAuth).
+- #235 — ALM-DR-002: replace fake backup schedule with real scheduled MongoDB + R2 DR and restore proof.
+- #236 — ALM-PERF-002: co-locate API/Mongo and certify production-like scale.
+- #237 — ALM-GOV-001: repository/network governance, including Atlas broad allowlist and repository-admin protection verification.
+
+### Vercel conservation rule
+
+Until preview quota is healthy, do not open multiple frontend PRs and do not create random commits to retrigger deployments. Accumulate Batch 15 UI closure work in the single prepared branch and use one exact-head Preview when the quota permits.
+
+### Release label
+
+**NOT YET PRODUCTION CERTIFIED.**
