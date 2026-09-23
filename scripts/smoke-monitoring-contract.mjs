@@ -5,6 +5,7 @@ const loggerSource = await readFile(new URL("../server/src/middleware/requestLog
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
 const guideSource = await readFile(new URL("../docs/archive_reports/MONITORING_AND_LOGGING_GUIDE.md", import.meta.url), "utf8");
 const readinessSource = await readFile(new URL("../docs/archive_reports/PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
+const operationsUiSource = await readFile(new URL("../dashboards/admin/OperationsCommandCenter.tsx", import.meta.url), "utf8");
 
 const checks = [];
 
@@ -66,6 +67,13 @@ check("monitoring guide documents health checks and diagnosis", () => {
 
 check("readiness report records monitoring sprint", () => {
   assertIncludes(readinessSource, "Monitoring Diagnostics Sprint - 2026-05-12");
+});
+
+check("operations command center exposes integration readiness", () => {
+  assertIncludes(operationsUiSource, "api.getIntegrationsReadiness()");
+  assertIncludes(operationsUiSource, "جاهزية التكاملات الخارجية");
+  assertIncludes(operationsUiSource, "integrationsReadiness?.checks");
+  assertIncludes(operationsUiSource, "الإعداد المطلوب:");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
