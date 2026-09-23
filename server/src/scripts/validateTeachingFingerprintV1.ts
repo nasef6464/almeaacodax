@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import mongoose from "mongoose";
 import { z } from "zod";
@@ -76,6 +77,8 @@ const main = async () => {
   }
 
   const filePath = path.resolve(process.cwd(), input);
+  const fileBytes = await fs.readFile(filePath);
+  const fileSha256 = createHash("sha256").update(fileBytes).digest("hex");
   const items = await readFingerprint(filePath);
 
   await mongoose.connect(env.MONGODB_URI);
@@ -238,6 +241,7 @@ const main = async () => {
 
     console.log(JSON.stringify({
       file: filePath,
+      fileSha256,
       status: errors.length === 0 ? "PASS" : "FAIL",
       contract: "TEACHING_FINGERPRINT_V1",
       schemaFieldCount: 16,
