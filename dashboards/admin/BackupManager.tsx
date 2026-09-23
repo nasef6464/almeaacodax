@@ -568,30 +568,39 @@ export const BackupManager: React.FC = () => {
                 ) : null}
             </section>
 
-            <section className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-5 shadow-sm mt-6">
+            <section
+                className="rounded-3xl border border-amber-200 bg-amber-50/70 p-5 shadow-sm mt-6"
+                data-testid="backup-schedule-readiness"
+            >
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                     <div>
-                        <h3 className="flex items-center gap-2 text-lg font-black text-indigo-950">
-                            <History size={19} className="text-indigo-700" />
+                        <h3 className="flex items-center gap-2 text-lg font-black text-amber-950">
+                            <History size={19} className="text-amber-700" />
                             جدولة النسخ الاحتياطي السحابي التلقائي
                         </h3>
-                        <p className="mt-1 max-w-3xl text-sm font-bold leading-7 text-indigo-800">
-                            قم بإعداد نظام النسخ الاحتياطي ليعمل تلقائياً بدون تدخل بشري لضمان حفظ بيانات المنصة في خوادم سحابية آمنة.
+                        <p className="mt-1 max-w-3xl text-sm font-bold leading-7 text-amber-900">
+                            الجدولة التلقائية غير مفعّلة على بيئة الإنتاج الحالية. إنشاء النسخ اليدوية المتاحة في هذه الصفحة لا يُعد بديلاً عن Full MongoDB + R2 DR Backup.
+                        </p>
+                        <p className="mt-2 text-xs font-bold leading-6 text-amber-800">
+                            يلزم أولاً ربط Cron/Backup service حقيقي، وتأكيد النسخ خارج نفس بيئة التشغيل، ثم إثبات Restore Drill قبل تفعيل أي جدول من هنا.
                         </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-3 bg-white p-2 rounded-2xl border border-indigo-200">
-                        <select className="rounded-xl bg-gray-50 border-transparent px-4 py-2.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="daily">تلقائي يومي (02:00 ص)</option>
-                            <option value="weekly">تلقائي أسبوعي (الجمعة)</option>
-                            <option value="monthly">تلقائي شهري</option>
+                    <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-amber-200 bg-white p-2">
+                        <select
+                            disabled
+                            aria-label="جدولة النسخ الاحتياطي غير مفعلة"
+                            className="rounded-xl border-transparent bg-gray-50 px-4 py-2.5 text-sm font-bold text-gray-500 outline-none disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                            <option value="not_configured">غير مفعّل — يتطلب Cron/Backup service</option>
                         </select>
                         <button
                             type="button"
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white hover:bg-indigo-700 transition-colors"
-                            onClick={() => alert('تم تفعيل الجدولة بنجاح!')}
+                            disabled
+                            className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-200 px-5 py-2.5 text-sm font-black text-gray-500"
+                            title="الجدولة غير متاحة حتى يتم ربط خدمة نسخ احتياطي مجدولة حقيقية"
                         >
                             <Save size={18} />
-                            حفظ وتفعيل
+                            الجدولة غير متاحة
                         </button>
                     </div>
                 </div>
