@@ -158,6 +158,24 @@ type DeliveryReadiness = {
     }>;
 };
 
+type IntegrationsReadiness = {
+    checkedAt: string;
+    score: number;
+    status: 'ready' | 'ready_with_notes' | 'blocked';
+    checks: Array<{
+        id: string;
+        title: string;
+        status: 'pass' | 'warning' | 'fail';
+        detail: string;
+        requiredEnv: string[];
+    }>;
+    summary: {
+        failed: number;
+        warnings: number;
+        passed: number;
+    };
+};
+
 const areaLabels: Record<string, string> = {
     student_journey: 'رحلة الطالب',
     content: 'المحتوى',
@@ -234,6 +252,7 @@ export const OperationsCommandCenter: React.FC = () => {
     const [clientEvents, setClientEvents] = useState<ClientEventsResponse | null>(null);
     const [seoStatus, setSeoStatus] = useState<SeoStatus | null>(null);
     const [deliveryReadiness, setDeliveryReadiness] = useState<DeliveryReadiness | null>(null);
+    const [integrationsReadiness, setIntegrationsReadiness] = useState<IntegrationsReadiness | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
@@ -247,18 +266,20 @@ export const OperationsCommandCenter: React.FC = () => {
         setError(null);
 
         try {
-            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus, nextDeliveryReadiness] = await Promise.all([
+            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus, nextDeliveryReadiness, nextIntegrationsReadiness] = await Promise.all([
                 api.getOperationalStatus(),
                 api.getOperationsAudit(),
                 api.getClientEvents(12),
                 api.getSeoStatus(),
                 api.getDeliveryReadiness(),
+                api.getIntegrationsReadiness(),
             ]);
             setStatus(nextStatus as OperationalStatus);
             setAudit(nextAudit as OperationsAudit);
             setClientEvents(nextClientEvents as ClientEventsResponse);
             setSeoStatus(nextSeoStatus as SeoStatus);
             setDeliveryReadiness(nextDeliveryReadiness as DeliveryReadiness);
+            setIntegrationsReadiness(nextIntegrationsReadiness as IntegrationsReadiness);
         } catch (loadError) {
             console.error('Failed to load operations command center', loadError);
             setError(loadError instanceof Error ? loadError.message : 'تعذر تحميل فحص النظام الآن.');
@@ -527,6 +548,66 @@ export const OperationsCommandCenter: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div
+                className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden"
+                data-testid="integrations-readiness-card"
+            >
+                <div className="p-5 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <Globe2 size={18} className="text-indigo-600" />
+                            جاهزية التكاملات الخارجية
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            حالة الخدمات الخارجية على بيئة التشغيل الحالية بدون عرض أي مفاتيح أو بيانات سرية.
+                        </p>
+                    </div>
+                    <div className={`rounded-2xl px-4 py-2 text-center ${
+                        integrationsReadiness?.status === 'ready'
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : integrationsReadiness?.status === 'blocked'
+                                ? 'bg-red-50 text-red-700'
+                                : 'bg-amber-50 text-amber-700'
+                    }`}>
+                        <div className="text-xs font-bold">النتيجة</div>
+                        <div className="mt-1 text-xl font-black">{formatNumber(integrationsReadiness?.score)}%</div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 p-5 md:grid-cols-2 xl:grid-cols-3">
+                    {(integrationsReadiness?.checks || []).map((item) => (
+                        <div key={item.id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                            <div className="flex items-start justify-between gap-3">
+                                <div>
+                                    <p className="font-black text-gray-900">{item.title}</p>
+                                    <p className="mt-2 text-xs leading-5 text-gray-500">{item.detail}</p>
+                                </div>
+                                <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
+                                    item.status === 'pass'
+                                        ? 'bg-emerald-50 text-emerald-700'
+                                        : item.status === 'fail'
+                                            ? 'bg-red-50 text-red-700'
+                                            : 'bg-amber-50 text-amber-700'
+                                }`}>
+                                    {item.status === 'pass' ? 'متصل' : item.status === 'fail' ? 'مطلوب' : 'غير مكتمل'}
+                                </span>
+                            </div>
+                            {item.status !== 'pass' && item.requiredEnv.length > 0 && (
+                                <p className="mt-3 text-[11px] leading-5 text-gray-400">
+                                    الإعداد المطلوب: {item.requiredEnv.join(' · ')}
+                                </p>
+                            )}
+                        </div>
+                    ))}
+
+                    {!loading && !(integrationsReadiness?.checks || []).length && (
+                        <div className="rounded-2xl border border-dashed border-gray-200 p-6 text-center text-sm text-gray-500 md:col-span-2 xl:col-span-3">
+                            لا تتوفر بيانات جاهزية التكاملات الآن.
+                        </div>
+                    )}
                 </div>
             </div>
 
