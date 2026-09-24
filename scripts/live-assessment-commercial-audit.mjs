@@ -294,6 +294,9 @@ async function main() {
     await freshStudent.page.getByRole("button", { name: /مراجعة لاحقاً|مراجعة لاحقًا/ }).click();
     const saveForReviewResponse = await saveForReviewResponsePromise;
     if (!saveForReviewResponse.ok()) throw new Error(`Save-for-review request failed (${saveForReviewResponse.status()})`);
+    const saveForReviewPayload = await saveForReviewResponse.json().catch(() => ({}));
+    const savedQuestionId = String(saveForReviewPayload?.questionId || "");
+    if (!savedQuestionId) throw new Error(`Save-for-review response did not identify the canonical question: ${JSON.stringify(saveForReviewPayload)}`);
     const autosaveResponsePromise = freshStudent.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
       { timeout: 30000 },
@@ -367,8 +370,9 @@ async function main() {
     const mistakeLibrary = await api(freshStudent.page, "/review/library?tab=mistakes&limit=20&page=1");
     const savedIds = listOf(savedLibrary.payload, "items").map((item) => String(item.questionId || item.question?.id || ""));
     const mistakeIds = listOf(mistakeLibrary.payload, "items").map((item) => String(item.questionId || item.question?.id || ""));
-    if (!savedLibrary.ok || !savedIds.includes(String(firstPageQuestion.id))) throw new Error(`Saved review library missing ${firstPageQuestion.id}: ${JSON.stringify(savedLibrary)}`);
-    if (!mistakeLibrary.ok || !mistakeIds.includes(String(secondPageQuestion.id))) throw new Error(`Mistake review library missing ${secondPageQuestion.id}: ${JSON.stringify(mistakeLibrary)}`);
+    const expectedMistakeQuestionId = `${marker}-question-100`;
+    if (!savedLibrary.ok || !savedIds.includes(savedQuestionId)) throw new Error(`Saved review library missing ${savedQuestionId}: ${JSON.stringify(savedLibrary)}`);
+    if (!mistakeLibrary.ok || !mistakeIds.includes(expectedMistakeQuestionId)) throw new Error(`Mistake review library missing ${expectedMistakeQuestionId}: ${JSON.stringify(mistakeLibrary)}`);
 
     await freshStudent.page.goto(`${BASE_URL}/favorites`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await freshStudent.page.getByRole("heading", { name: "أسئلتي للمراجعة" }).waitFor({ timeout: 30000 });
@@ -389,8 +393,8 @@ async function main() {
       ["target sees directed test in UI", true],
       ["target submits through runner", hasServerResult],
       ["fresh result page restores learner-safe answer review", true],
-      ["student can save a live quiz question for review", savedIds.includes(String(firstPageQuestion.id))],
-      ["wrong submitted answer appears in mistake review", mistakeIds.includes(String(secondPageQuestion.id))],
+      ["student can save a live quiz question for review", savedIds.includes(savedQuestionId)],
+      ["wrong submitted answer appears in mistake review", mistakeIds.includes(expectedMistakeQuestionId)],
       ["smart tutor is authorized from result review", tutorResponse.ok],
       ["review library UI exposes saved/mistake context and voice", true],
       ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
@@ -399,7 +403,7 @@ async function main() {
       ["no 5xx request was required", true],
     ];
     const failed = checks.filter(([, ok]) => !ok);
-    const summary = { generatedAt: new Date().toISOString(), marker, createdQuizId, checks: checks.map(([name, ok]) => ({ name, ok })), errors };
+    const summary = { generatedAt: new Date().toISOString(), marker, createdQuizId, savedQuestionId, expectedMistakeQuestionId, checks: checks.map(([name, ok]) => ({ name, ok })), errors };
     fs.writeFileSync(path.join(OUT_DIR, "SUMMARY.json"), JSON.stringify(summary, null, 2));
     if (failed.length) {
       throw new Error(`${failed.map(([name]) => name).join("; ")} :: ${JSON.stringify({ resultResponse, runnerBody: (await freshStudent.page.locator("body").innerText().catch(() => "")).slice(0, 1200) })}`);
