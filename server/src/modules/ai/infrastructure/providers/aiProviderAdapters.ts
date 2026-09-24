@@ -112,9 +112,11 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     const body = await response.text().catch(() => "");
     return `${provider} request failed with status ${response.status}${body ? `: ${config.redactDiagnostic(body)}` : ""}`;
   };
-  const providerPools = (provider: ExternalProvider) => {
+  const providerPools = (provider: ExternalProvider, allowPaid = true) => {
     const runtime = config.getProviderRuntime(provider);
-    if (runtime.quotaPools?.length) return sortAiQuotaPools(runtime.quotaPools);
+    if (runtime.quotaPools?.length) {
+      return sortAiQuotaPools(runtime.quotaPools).filter((pool) => allowPaid || pool.plan !== "paid");
+    }
     const apiKeys = uniqueNonEmpty([runtime.apiKey, ...(runtime.apiKeys || [])]);
     return [{
       id: `${provider}:legacy`,
