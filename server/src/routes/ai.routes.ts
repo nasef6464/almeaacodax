@@ -78,9 +78,12 @@ const imageInputSchema = z.object({
   }
 }).optional();
 
+const tutorSessionIdSchema = z.string().trim().min(8).max(120).regex(/^[A-Za-z0-9:_-]+$/).optional();
+
 const chatSchema = z.object({
   message: z.string().min(1).max(2000),
   image: imageInputSchema,
+  tutorSessionId: tutorSessionIdSchema,
 });
 
 const adminAssistantSchema = z.object({
@@ -115,6 +118,7 @@ const questionAssistantSchema = z.object({
   questionId: z.string().trim().min(1).max(160),
   helpLevel: z.enum(["hint", "stronger_hint", "concept", "steps", "follow_up"]).default("hint"),
   message: z.string().trim().max(800).optional().default(""),
+  tutorSessionId: tutorSessionIdSchema,
 });
 
 const courseSummarySchema = z.object({
@@ -1223,7 +1227,7 @@ aiRouter.post(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const parsed = chatSchema.parse(req.body);
-    const { message } = parsed;
+    const { message, tutorSessionId } = parsed;
     const image = parsed.image?.data && parsed.image?.mimeType
       ? { data: parsed.image.data, mimeType: parsed.image.mimeType }
       : undefined;
@@ -1233,6 +1237,7 @@ aiRouter.post(
       maxWeaknesses: 5,
       maxRecentResults: 3,
       maxRecentTutorTurns: 2,
+      sessionId: tutorSessionId,
     });
     const fallback = buildPersonalizedTutorFallback(message, studentContext);
 
@@ -1288,6 +1293,7 @@ ${message}
           perUserLimit: budget.perUserLimit,
           hasImage,
           fallbackReason,
+          tutorSessionId: tutorSessionId || "",
         },
       });
       return res.json({
@@ -1328,6 +1334,7 @@ ${message}
           capability: "student_chat",
           quotaPoolId: result.quotaPoolId || "",
           hasImage,
+          tutorSessionId: tutorSessionId || "",
         },
       });
       return res.json({
@@ -1354,7 +1361,7 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         error: fallbackReason,
-        metadata: { hasImage, fallbackReason },
+        metadata: { hasImage, fallbackReason, tutorSessionId: tutorSessionId || "" },
       });
       return res.json({
         text: fallback,
@@ -1506,6 +1513,7 @@ aiRouter.post(
       String(teacherVoiceExplanation.length),
       String(aiReadableText.length),
       String(visualDescription.length),
+      String(payload.tutorSessionId || ""),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,
@@ -1541,6 +1549,7 @@ aiRouter.post(
           helpLevel: payload.helpLevel,
           hasImage,
           imageSentToProvider: false,
+          tutorSessionId: payload.tutorSessionId || "",
         },
       });
       return res.json({
@@ -1649,7 +1658,8 @@ aiRouter.post(
       includeRecentTutorTurns: true,
       maxWeaknesses: 4,
       maxRecentResults: 2,
-      maxRecentTutorTurns: 1,
+      maxRecentTutorTurns: 2,
+      sessionId: payload.tutorSessionId,
     });
 
     const prompt = buildQuestionAssistantPrompt({
@@ -1746,6 +1756,7 @@ aiRouter.post(
           tutorContextVersion: tutorContext?.contextVersion || "",
           tutorWeaknessCount: tutorContext?.weaknesses.length || 0,
           tutorRecentTurnCount: tutorContext?.recentTutorTurns.length || 0,
+          tutorSessionId: payload.tutorSessionId || "",
           providerErrors: compactProviderErrors(resultCall.errors),
         },
       });

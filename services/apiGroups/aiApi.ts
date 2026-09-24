@@ -9,7 +9,7 @@ type ApiRequest = <T>(path: string, options?: {
 type AiProvider = "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
 
 export const createAiApi = (request: ApiRequest) => ({
-  aiChat: (payload: { message: string; image?: { data: string; mimeType: string } }, token?: string | null) =>
+  aiChat: (payload: { message: string; image?: { data: string; mimeType: string }; tutorSessionId?: string }, token?: string | null) =>
     request<{
       text: string;
       personalized?: boolean;
@@ -32,6 +32,7 @@ export const createAiApi = (request: ApiRequest) => ({
       questionId: string;
       helpLevel: "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
       message?: string;
+      tutorSessionId?: string;
     },
     token?: string | null,
   ) =>

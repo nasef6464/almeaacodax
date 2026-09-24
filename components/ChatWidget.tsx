@@ -34,6 +34,11 @@ const providerLabels: Record<string, string> = {
 
 export const ChatWidget: React.FC = () => {
     const widgetOwnerRef = useRef(false);
+    const tutorSessionIdRef = useRef(
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+            ? `student:${crypto.randomUUID()}`
+            : `student:${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    );
     const [isWidgetOwner, setIsWidgetOwner] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
@@ -110,7 +115,7 @@ export const ChatWidget: React.FC = () => {
         clearImage();
         setIsLoading(true);
 
-        const responseText = await getChatResponse(userMsg.text, currentImage || undefined);
+        const responseText = await getChatResponse(userMsg.text, currentImage || undefined, tutorSessionIdRef.current);
 
         const botMsg: Message = {
             id: (Date.now() + 1).toString(),

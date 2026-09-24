@@ -26,6 +26,11 @@ export const QuestionAssistantPanel: React.FC<{
   hasImage: boolean;
   context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 }> = ({ resultId, questionId, hasImage, context = "result_review" }) => {
+  const tutorSessionIdRef = React.useRef(
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? `question:${crypto.randomUUID()}`
+      : `question:${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
   const [response, setResponse] = React.useState<ResponseState | null>(null);
   const [followUp, setFollowUp] = React.useState('');
   const [pendingLevel, setPendingLevel] = React.useState<HelpLevel | null>(null);
@@ -42,6 +47,7 @@ export const QuestionAssistantPanel: React.FC<{
         questionId,
         helpLevel: level,
         ...(message?.trim() ? { message: message.trim() } : {}),
+        tutorSessionId: tutorSessionIdRef.current,
       });
       setResponse({
         text: payload.text,

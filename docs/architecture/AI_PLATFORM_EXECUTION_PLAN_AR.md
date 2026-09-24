@@ -167,9 +167,10 @@ Provider
 - [x] context summary لها حد أقصى واضح ولا تُمرر history خام غير محدود.
 - [x] no scoring/mastery by LLM؛ الأرقام مصدرها SkillProgress/QuizResult فقط.
 - [x] لا Collection جديدة للمحادثات؛ يتم إعادة استخدام AiInteraction المحدود بالـretention.
-- [ ] Session summary أدق على مستوى المحادثة المتصلة بدل recent-turn memory فقط.
+- [x] Session memory صريحة: كل Chat/Question Tutor يرسل tutorSessionId، والذاكرة لا تعبر بين جلسات منفصلة.
+- [x] cache والـAiInteraction metadata يربطان ردود Question Tutor بالجلسة الحالية.
 - [ ] روابط مباشرة للدرس/التدريب من taxonomy/recommendedAction بدل نصائح عامة فقط.
-- [ ] UI صغير يوضح للطالب عندما يكون الرد «مخصصًا من أدائك» بدون كشف تفاصيل غير لازمة.
+- [x] UI الطالب يوضح «مبني على أدائك» عندما يكون الرد مخصصًا، بدون كشف بيانات داخلية.
 
 ## AI-6 — Voice / Vision
 

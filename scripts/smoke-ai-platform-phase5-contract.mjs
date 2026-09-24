@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 const routes = await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8");
 const context = await readFile(new URL("../server/src/modules/ai/application/studentTutorContext.ts", import.meta.url), "utf8");
 const questionAssistant = await readFile(new URL("../server/src/modules/ai/application/questionAssistant.ts", import.meta.url), "utf8");
+const chatWidget = await readFile(new URL("../components/ChatWidget.tsx", import.meta.url), "utf8");
+const questionPanel = await readFile(new URL("../components/results/QuestionAssistantPanel.tsx", import.meta.url), "utf8");
 
 const checks = [];
 const check = (name, pass) => checks.push({ name, status: pass ? "PASS" : "FAIL" });
@@ -33,6 +35,18 @@ check("question prompt receives a compact student context",
   questionAssistant.includes("safeStudentContext") &&
   questionAssistant.includes(".slice(0, 2200)") &&
   routes.includes("studentContextSummary: tutorContext?.summary ||"));
+
+check("student and question UIs send explicit bounded tutor session identifiers",
+  routes.includes("tutorSessionIdSchema") &&
+  routes.includes("sessionId: tutorSessionId") &&
+  routes.includes("sessionId: payload.tutorSessionId") &&
+  chatWidget.includes("tutorSessionIdRef") &&
+  questionPanel.includes("tutorSessionIdRef"));
+
+check("cache and interaction memory are scoped to the explicit tutor session",
+  routes.includes('String(payload.tutorSessionId || "")') &&
+  routes.includes('tutorSessionId: payload.tutorSessionId || ""') &&
+  routes.includes('tutorSessionId: tutorSessionId || ""'));
 
 check("AI interaction log is reused for bounded recent turns instead of a new tutor-session collection",
   context.includes("AiInteractionModel.find") &&
