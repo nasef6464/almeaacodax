@@ -115,7 +115,7 @@ check("backend preserves and masks external AI secrets", () => {
 
 check("assistant manager shows source and bridges to integrations", () => {
   assertIncludes(assistantSource, "providerOrderSource");
-  assertIncludes(assistantSource, "فتح إدارة التكاملات");
+  assertIncludes(assistantSource, "التكاملات العامة");
   assertIncludes(assistantSource, "نسخ AI ID");
   assertIncludes(assistantSource, "sourceLabel");
 });
