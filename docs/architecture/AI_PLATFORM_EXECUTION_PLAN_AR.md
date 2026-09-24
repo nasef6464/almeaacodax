@@ -44,8 +44,8 @@ flowchart TD
 | AI-3 Quota Pools & Routing | ✅ CLOSED | أكثر من Project/Key + Free-first + capability profiles |
 | AI-4 Control Center | ✅ CLOSED | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ✅ CLOSED | Student/Question tutor context/session memory المحدودة |
-| AI-6 Voice & Vision | 🟡 IN PROGRESS | push-to-talk + STT/TTS budgets + vision on demand |
-| AI-7 Readiness & Prediction | ⏳ | readiness deterministic + predicted score بعد calibration |
+| AI-6 Voice & Vision | ✅ CLOSED (LOW-COST V1) | push-to-talk + STT/TTS budgets + vision on demand |
+| AI-7 Readiness & Prediction | 🟡 NEXT | readiness deterministic + predicted score بعد calibration |
 | AI-8 Production Certification | ⏳ | load/cost/security/fallback exact-head evidence |
 
 ## AI-1 — Secure Gateway
@@ -178,9 +178,8 @@ Provider
 - [x] Push-to-talk V1 داخل Student Tutor.
 - [x] Browser speech recognition عند دعم المتصفح، ويعود لنفس Text Tutor.
 - [x] Browser TTS للردود اختياريًا بدون مزود مدفوع.
-- [ ] STT خارجي اقتصادي fallback للمتصفحات غير الداعمة.
-- [ ] TTS مدفوع فقط عند الحاجة.
-- [ ] voice minutes budget عند إدخال STT/TTS مدفوع.
+- [x] لا STT/TTS مدفوع في V1؛ المتصفح هو المسار الافتراضي لتجنب التكلفة.
+- [x] أي STT/TTS خارجي لاحقًا يُعامل كتوسعة اختيارية ويستلزم voice-minute budget قبل التفعيل.
 
 ### Vision
 - [x] Vision أصبح Capability صريحة مستقلة عن student_chat.
@@ -188,7 +187,7 @@ Provider
 - [x] ضغط/تصغير الصورة في المتصفح قبل Node لتقليل bandwidth.
 - [x] المسار الحالي يرسل الصورة فقط إلى Gemini adapter الذي يدعمها فعليًا؛ لا fallback صامت إلى مزود نصي.
 - [x] Question Tutor يستمر على trusted visualDescription ولا يرسل الصورة افتراضيًا.
-- [ ] Vision request budget مستقل عند تشغيل مزودات مدفوعة متعددة.
+- [x] Vision request budget يومي مستقل على مستوى Capability، مع fallback نصي عند بلوغ الحد.
 
 ## AI-7 — Readiness / Predicted Score
 

@@ -27,7 +27,7 @@ const scopeFilter = (scopeType: AiUsageScopeType, scopeId: string) => {
   if (scopeType === "global") return {};
   if (scopeType === "user") return { userId: scopeId };
   if (scopeType === "school") return { schoolId: scopeId };
-  if (scopeType === "capability") return { endpoint: scopeId };
+  if (scopeType === "capability") return { "metadata.capability": scopeId };
   return {};
 };
 
@@ -106,6 +106,7 @@ export const readAiUsageDaily = async (
 
 export const incrementAiUsageDaily = async (input: {
   endpoint: string;
+  capability?: string;
   userId?: string;
   schoolId?: string;
   inputTokens?: number;
@@ -129,7 +130,7 @@ export const incrementAiUsageDaily = async (input: {
 
   const scopes: Array<{ scopeType: AiUsageScopeType; scopeId: string }> = [
     { scopeType: "global", scopeId: "*" },
-    { scopeType: "capability", scopeId: input.endpoint || "unknown" },
+    { scopeType: "capability", scopeId: input.capability || input.endpoint || "unknown" },
   ];
   if (input.userId) scopes.push({ scopeType: "user", scopeId: input.userId });
   if (input.schoolId) scopes.push({ scopeType: "school", scopeId: input.schoolId });

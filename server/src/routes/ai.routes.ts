@@ -33,6 +33,7 @@ import {
   AI_CHAT_IMAGE_MAX_BYTES,
   AI_DEFAULT_MAX_OUTPUT_TOKENS,
   AI_GUEST_EXTERNAL_ENABLED,
+  AI_VISION_DAILY_LIMIT,
   estimateBase64DecodedBytes,
   isExplicitLocalProviderConfigured,
 } from "../modules/ai/application/aiCapabilityPolicy.js";
@@ -712,6 +713,7 @@ const recordAiInteraction = async (payload: {
     if (payload.metadata?.billable !== false) {
       await incrementAiUsageDaily({
         endpoint: payload.endpoint,
+        capability: String(payload.metadata?.capability || payload.endpoint || "").trim() || undefined,
         userId: String(payload.req.authUser?.id || "").trim() || undefined,
         schoolId: String(payload.schoolId || payload.req.authUser?.schoolId || "").trim() || undefined,
         inputTokens: Number(payload.usage?.inputTokens || 0),
@@ -1273,6 +1275,43 @@ ${message}
       });
     }
 
+    const visionUsage = hasImage ? await readAiUsageDaily("capability", "vision_chat") : null;
+    if (hasImage && Number(visionUsage?.requestCount || 0) >= AI_VISION_DAILY_LIMIT) {
+      const fallbackReason = "تم الوصول إلى حد تحليل الصور اليومي. يمكنك متابعة السؤال نصيًا بدون الصورة.";
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/chat",
+        audience: req.authUser?.role || "guest",
+        message,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        latencyMs: Date.now() - startedAt,
+        metadata: {
+          billable: false,
+          capability: "vision_chat",
+          visionBudgetExceeded: true,
+          visionDailyLimit: AI_VISION_DAILY_LIMIT,
+          tutorSessionId: tutorSessionId || "",
+          hasImage: true,
+          fallbackReason,
+        },
+      });
+      return res.json({
+        text: fallback,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        weaknessesCount: studentContext?.weaknesses.length || 0,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        fallbackReason,
+        recommendedLinks,
+        visionLimited: true,
+      });
+    }
+
     const budget = await withinAiBudget(req.authUser?.id, req.authUser?.schoolId || "");
     if (!budget.allowed) {
       const fallbackReason = "تم استخدام الرد الاحتياطي لأن حد استخدام المساعد اليومي وصل إلى الحد المسموح.";
@@ -1289,6 +1328,7 @@ ${message}
         latencyMs: Date.now() - startedAt,
         metadata: {
           billable: false,
+          capability: hasImage ? "vision_chat" : "student_chat",
           budgetExceeded: true,
           globalCount: budget.globalCount,
           userCount: budget.userCount,
@@ -1367,7 +1407,13 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         error: fallbackReason,
-        metadata: { hasImage, fallbackReason, tutorSessionId: tutorSessionId || "" },
+        metadata: {
+          billable: false,
+          capability: hasImage ? "vision_chat" : "student_chat",
+          hasImage,
+          fallbackReason,
+          tutorSessionId: tutorSessionId || "",
+        },
       });
       return res.json({
         text: fallback,

@@ -5,6 +5,8 @@ const routing = await readFile(new URL("../server/src/modules/ai/application/aiC
 const media = await readFile(new URL("../services/aiMediaClient.ts", import.meta.url), "utf8");
 const chat = await readFile(new URL("../components/ChatWidget.tsx", import.meta.url), "utf8");
 const control = await readFile(new URL("../dashboards/admin/ai/AiControlCenterSettings.tsx", import.meta.url), "utf8");
+const policy = await readFile(new URL("../server/src/modules/ai/application/aiCapabilityPolicy.ts", import.meta.url), "utf8");
+const usage = await readFile(new URL("../server/src/modules/ai/application/aiUsageDaily.ts", import.meta.url), "utf8");
 
 const checks = [];
 const check = (name, pass) => checks.push({ name, status: pass ? "PASS" : "FAIL" });
@@ -29,6 +31,12 @@ check("voice v1 is push-to-talk and reuses the text tutor instead of adding a pa
   media.includes('recognition.lang = "ar-SA"') &&
   chat.includes("handleVoiceInput") &&
   chat.includes("getChatResponse"));
+
+check("vision has an independent daily capability budget",
+  policy.includes("AI_VISION_DAILY_LIMIT") &&
+  routes.includes('readAiUsageDaily("capability", "vision_chat")') &&
+  routes.includes("visionBudgetExceeded") &&
+  usage.includes('"metadata.capability"'));
 
 check("static tutor voice uses browser speech synthesis with no provider TTS call",
   media.includes("SpeechSynthesisUtterance") &&
