@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, FileQuestion, Star, PauseCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, FileQuestion, Star, PauseCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -8,6 +8,7 @@ import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { flattenMockExamQuestionIds, isStandaloneMockExam } from '../utils/mockExam';
+import { api } from '../services/api';
 
 const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
@@ -36,10 +37,6 @@ const Quiz: React.FC = () => {
   const location = useLocation();
   const {
     saveExamResult,
-    toggleFavorite: toggleStoreFavorite,
-    toggleReviewLater: toggleStoreReviewLater,
-    favorites: storeFavorites,
-    reviewLater: storeReviewLater,
     recordQuestionAttempt,
     skills,
     subjects,
@@ -76,6 +73,7 @@ const Quiz: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusTone, setStatusTone] = useState<'success' | 'error' | 'info'>('info');
   const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
+  const [savedReviewIds, setSavedReviewIds] = useState<string[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -266,14 +264,26 @@ const Quiz: React.FC = () => {
     [subjects, selectedSubjectId],
   );
 
-  const toggleFavorite = (idx: number) => {
+  const toggleReviewLater = async (idx: number) => {
     const questionId = questions[idx].id.toString();
-    toggleStoreFavorite(questionId);
-  };
-
-  const toggleReviewLater = (idx: number) => {
-    const questionId = questions[idx].id.toString();
-    toggleStoreReviewLater(questionId);
+    const wasSaved = savedReviewIds.includes(questionId);
+    if (!user?.id || user.id === 'guest') {
+      showStatus('سجّل الدخول لحفظ السؤال للمراجعة على حسابك.', 'info');
+      return;
+    }
+    setSavedReviewIds((prev) => wasSaved ? prev.filter((id) => id !== questionId) : [...prev, questionId]);
+    try {
+      if (wasSaved) {
+        await api.removeQuestionFromReview(questionId);
+        showStatus('تمت إزالة السؤال من المراجعة.', 'success');
+      } else {
+        await api.saveQuestionForReview(questionId);
+        showStatus('تم حفظ السؤال للمراجعة لاحقًا.', 'success');
+      }
+    } catch {
+      setSavedReviewIds((prev) => wasSaved ? [...new Set([...prev, questionId])] : prev.filter((id) => id !== questionId));
+      showStatus('تعذر تحديث قائمة المراجعة الآن.', 'error');
+    }
   };
 
   const showStatus = (message: string, tone: 'success' | 'error' | 'info' = 'info') => {
@@ -1196,18 +1206,11 @@ const Quiz: React.FC = () => {
           <div className="mb-4 sm:mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <button
-                onClick={() => toggleFavorite(currentQuestion)}
-                className={`${storeFavorites.includes(questions[currentQuestion].id) ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-3 py-1.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors`}
-              >
-                {storeFavorites.includes(questions[currentQuestion].id) ? <Trash2 size={15} /> : <Heart size={15} />}
-                {storeFavorites.includes(questions[currentQuestion].id) ? 'في المفضلة' : 'المفضلة'}
-              </button>
-              <button
                 onClick={() => toggleReviewLater(currentQuestion)}
-                className={`${storeReviewLater.includes(questions[currentQuestion].id) ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-3 py-1.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors`}
+                className={`${savedReviewIds.includes(questions[currentQuestion].id) ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-3 py-1.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors`}
               >
-                <Star size={15} className={storeReviewLater.includes(questions[currentQuestion].id) ? 'fill-current' : ''} />
-                {storeReviewLater.includes(questions[currentQuestion].id) ? 'للمراجعة' : 'راجع لاحقًا'}
+                <Star size={15} className={savedReviewIds.includes(questions[currentQuestion].id) ? 'fill-current' : ''} />
+                {savedReviewIds.includes(questions[currentQuestion].id) ? 'للمراجعة' : 'راجع لاحقًا'}
               </button>
             </div>
 
@@ -1280,7 +1283,7 @@ const Quiz: React.FC = () => {
                 {questions.map((question, idx) => {
                   const isCurrent = idx === currentQuestion;
                   const isAnswered = answers[idx] !== undefined;
-                  const isReviewLater = storeReviewLater.includes(question.id);
+                  const isReviewLater = savedReviewIds.includes(question.id);
                   const mapState = isCurrent
                     ? 'current'
                     : isReviewLater

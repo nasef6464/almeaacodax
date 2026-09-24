@@ -12,6 +12,7 @@ import { SkillModel } from "../models/Skill.js";
 import { UserModel } from "../models/User.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuestionModel } from "../models/Question.js";
+import { ReviewCardModel } from "../models/ReviewCard.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
@@ -66,7 +67,8 @@ const questionSchema = z.object({
 });
 
 const questionAssistantSchema = z.object({
-  resultId: z.string().trim().min(1).max(160),
+  resultId: z.string().trim().min(1).max(160).optional(),
+  context: z.enum(["result_review", "saved_review", "mistake_review", "mastery_review"]).default("result_review"),
   questionId: z.string().trim().min(1).max(160),
   helpLevel: z.enum(["hint", "stronger_hint", "concept", "steps", "follow_up"]).default("hint"),
   message: z.string().trim().max(800).optional().default(""),
@@ -1298,23 +1300,29 @@ aiRouter.post(
   asyncHandler(async (req, res) => {
     const payload = questionAssistantSchema.parse(req.body || {});
     const userId = String(req.authUser!.id || "");
-    const resultFilter = mongoose.Types.ObjectId.isValid(payload.resultId)
-      ? { _id: payload.resultId }
-      : { id: payload.resultId };
-
-    const result = await QuizResultModel.findOne({ ...resultFilter, userId }).lean();
-    if (!result) {
-      return res.status(404).json({ message: "Quiz result not found in your account" });
-    }
-
-    const review = (Array.isArray((result as any).questionReview) ? (result as any).questionReview : [])
-      .find((item: any) => String(item?.questionId || "") === payload.questionId);
-    if (!review) {
-      return res.status(404).json({ message: "Question is not part of this result review" });
+    let result: any = null;
+    let review: any = null;
+    let reviewCard: any = null;
+    if (payload.context === "result_review") {
+      if (!payload.resultId) return res.status(400).json({ message: "resultId is required for result review" });
+      const resultFilter = mongoose.Types.ObjectId.isValid(payload.resultId) ? { _id: payload.resultId } : { id: payload.resultId };
+      result = await QuizResultModel.findOne({ ...resultFilter, userId }).lean();
+      if (!result) return res.status(404).json({ message: "Quiz result not found in your account" });
+      review = (Array.isArray((result as any).questionReview) ? (result as any).questionReview : [])
+        .find((item: any) => String(item?.questionId || "") === payload.questionId);
+      if (!review) return res.status(404).json({ message: "Question is not part of this result review" });
+    } else {
+      reviewCard = await ReviewCardModel.findOne({ userId, questionId: payload.questionId }).lean();
+      if (!reviewCard) return res.status(404).json({ message: "Question is not available in your review list" });
+      const allowed =
+        (payload.context === "saved_review" && Boolean(reviewCard.savedForReview)) ||
+        (payload.context === "mistake_review" && Boolean(reviewCard.hasMistake || reviewCard.reviewType === "error_recovery")) ||
+        (payload.context === "mastery_review" && String(reviewCard.reviewType || "") === "mastery_review");
+      if (!allowed) return res.status(403).json({ message: "Question review context is not allowed" });
     }
 
     const question = await QuestionModel.findOne(buildDocumentsByIdsQuery([payload.questionId]))
-      .select("id questionCode text options correctOptionIndex explanation imageUrl skillIds aiContext voiceExplanation updatedAt")
+      .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy imageUrl skillIds aiContext voiceExplanation updatedAt")
       .lean();
 
     const normalizeStoredOption = (value: any) => {
@@ -1322,7 +1330,18 @@ aiRouter.post(
       if (value && typeof value === "object" && typeof value.text === "string") return value.text.trim();
       return String(value ?? "").trim();
     };
+    if (!question && payload.context !== "result_review") return res.status(404).json({ message: "Review question not found" });
     const rawQuestionText = String(review?.text || (question as any)?.text || "").trim();
+    if (!review) {
+      review = {
+        questionId: payload.questionId,
+        text: (question as any)?.text || "",
+        options: (question as any)?.options || [],
+        explanation: (question as any)?.explanation || "",
+        imageUrl: (question as any)?.imageUrl || "",
+        voiceExplanation: (question as any)?.voiceExplanation || undefined,
+      };
+    }
     const aiReadableText = String((question as any)?.aiContext?.readableText || "").trim();
     const visualDescription = String((question as any)?.aiContext?.visualDescription || "").trim();
     const questionCode = String((question as any)?.questionCode || "").trim();
@@ -1346,16 +1365,24 @@ aiRouter.post(
     const selectedOptionIndex = Number.isInteger(review?.selectedOptionIndex)
       ? Number(review.selectedOptionIndex)
       : undefined;
-    const correctOptionIndex = Number.isInteger(review?.correctOptionIndex)
-      ? Number(review.correctOptionIndex)
-      : Number.isInteger((question as any)?.correctOptionIndex)
-        ? Number((question as any).correctOptionIndex)
-        : undefined;
+    const correctOptionIndex = payload.context === "result_review"
+      ? Number.isInteger(review?.correctOptionIndex)
+        ? Number(review.correctOptionIndex)
+        : Number.isInteger((question as any)?.correctOptionIndex)
+          ? Number((question as any).correctOptionIndex)
+          : undefined
+      : undefined;
     const reviewTeacherVoiceExplanation = String(review?.voiceExplanation?.text || "").trim();
     const liveTeacherVoiceExplanation = String((question as any)?.voiceExplanation?.text || "").trim();
     const teacherVoiceExplanation = reviewTeacherVoiceExplanation || liveTeacherVoiceExplanation;
+    const guidedReviewContext = [
+      String((question as any)?.hint || "").trim(),
+      String((question as any)?.solvingStrategy || "").trim(),
+    ].filter(Boolean).join("\n");
     const trustedExplanation = String(
-      teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || "",
+      payload.context === "result_review"
+        ? teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || ""
+        : guidedReviewContext || teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || "",
     ).trim();
     const hasImage = Boolean(
       review?.imageUrl ||
@@ -1382,17 +1409,19 @@ aiRouter.post(
       ]),
     );
 
-    const owner = (result as any).schoolId
+    const owner = (result as any)?.schoolId
       ? null
       : await (mongoose.Types.ObjectId.isValid(userId)
         ? UserModel.findById(userId)
         : UserModel.findOne({ id: userId }))
           .select("schoolId")
           .lean();
-    const schoolId = String((result as any).schoolId || (owner as any)?.schoolId || "").trim();
-    const resultIdentity = String((result as any)._id || payload.resultId);
+    const schoolId = String((result as any)?.schoolId || (owner as any)?.schoolId || "").trim();
+    const resultIdentity = payload.context === "result_review"
+      ? String((result as any)?._id || payload.resultId || "")
+      : `review:${payload.context}:${String(reviewCard?._id || payload.questionId)}`;
     const contextVersion = [
-      String((result as any).updatedAt || (result as any).createdAt || ""),
+      String((result as any)?.updatedAt || (result as any)?.createdAt || (reviewCard as any)?.updatedAt || ""),
       String((question as any)?.updatedAt || ""),
       String(selectedOptionIndex ?? ""),
       String(correctOptionIndex ?? ""),

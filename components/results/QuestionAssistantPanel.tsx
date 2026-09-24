@@ -21,10 +21,11 @@ const HELP_ACTIONS: Array<{ level: Exclude<HelpLevel, 'follow_up'>; label: strin
 ];
 
 export const QuestionAssistantPanel: React.FC<{
-  resultId: string;
+  resultId?: string;
   questionId: string;
   hasImage: boolean;
-}> = ({ resultId, questionId, hasImage }) => {
+  context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
+}> = ({ resultId, questionId, hasImage, context = "result_review" }) => {
   const [response, setResponse] = React.useState<ResponseState | null>(null);
   const [followUp, setFollowUp] = React.useState('');
   const [pendingLevel, setPendingLevel] = React.useState<HelpLevel | null>(null);
@@ -36,7 +37,8 @@ export const QuestionAssistantPanel: React.FC<{
     setError('');
     try {
       const payload = await api.aiQuestionAssistant({
-        resultId,
+        ...(resultId ? { resultId } : {}),
+        context,
         questionId,
         helpLevel: level,
         ...(message?.trim() ? { message: message.trim() } : {}),
@@ -57,7 +59,7 @@ export const QuestionAssistantPanel: React.FC<{
     }
   };
 
-  if (!resultId) {
+  if (context === "result_review" && !resultId) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-xs font-bold leading-6 text-slate-500">
         مساعد السؤال متاح للمحاولات المحفوظة على الخادم فقط.
