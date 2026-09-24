@@ -5,6 +5,8 @@ import { api } from '../../../services/api';
 type AiCloudProvider = 'gemini' | 'openrouter' | 'qwen' | 'deepseek' | 'openai';
 type AiPlan = 'free' | 'trial' | 'paid' | 'unknown';
 type QuotaScope = 'project' | 'account' | 'organization' | 'workspace' | 'model' | 'unknown';
+type CapabilityId = 'student_chat' | 'question_tutor' | 'admin_copilot' | 'study_plan' | 'learning_path' | 'remediation' | 'authoring' | 'course_summary';
+type CapabilityProfile = { providerOrder: string; paidAllowed: boolean; maxOutputTokens: number };
 
 type ExternalPlatform = {
   id: string;
@@ -42,6 +44,19 @@ type DraftPool = {
   freeOnly: boolean;
   keysText: string;
 };
+
+const capabilityLabel: Record<CapabilityId, string> = {
+  student_chat: 'مساعد الطالب',
+  question_tutor: 'مساعد السؤال',
+  admin_copilot: 'مساعد المدير',
+  study_plan: 'خطة الدراسة',
+  learning_path: 'المسار التعليمي',
+  remediation: 'الخطة العلاجية',
+  authoring: 'إنشاء المحتوى',
+  course_summary: 'ملخص الدورة',
+};
+
+const capabilityIds = Object.keys(capabilityLabel) as CapabilityId[];
 
 const providerLabel: Record<AiCloudProvider, string> = {
   gemini: 'Google Gemini',
@@ -114,6 +129,9 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
   const [paidAllowed, setPaidAllowed] = useState(false);
   const [dailySpendCapUsd, setDailySpendCapUsd] = useState(0);
   const [providerOrder, setProviderOrder] = useState('gemini,openrouter,qwen,deepseek,openai,none');
+  const [routeProfiles, setRouteProfiles] = useState<Record<CapabilityId, CapabilityProfile>>(() =>
+    Object.fromEntries(capabilityIds.map((id) => [id, { providerOrder: '', paidAllowed: false, maxOutputTokens: 700 }])) as Record<CapabilityId, CapabilityProfile>,
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
@@ -124,6 +142,15 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
     setPaidAllowed(note.paidAllowed === true);
     setDailySpendCapUsd(Math.max(0, Number(note.dailySpendCapUsd || 0)));
     setProviderOrder(String(global?.syncScheduleCron || 'gemini,openrouter,qwen,deepseek,openai,none'));
+    const rawProfiles = note.routeProfiles && typeof note.routeProfiles === 'object' ? note.routeProfiles as Record<string, Record<string, unknown>> : {};
+    setRouteProfiles(Object.fromEntries(capabilityIds.map((id) => {
+      const profile = rawProfiles[id] || {};
+      return [id, {
+        providerOrder: Array.isArray(profile.providerOrder) ? profile.providerOrder.map(String).join(',') : '',
+        paidAllowed: profile.paidAllowed === true,
+        maxOutputTokens: Math.max(64, Math.min(4000, Number(profile.maxOutputTokens || 700))),
+      }];
+    })) as Record<CapabilityId, CapabilityProfile>);
   };
 
   const load = async () => {
@@ -232,6 +259,15 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           provider: String(providerOrder.split(',').map((item) => item.trim()).find(Boolean) || 'gemini'),
           paidAllowed,
           dailySpendCapUsd: Math.max(0, Number(dailySpendCapUsd || 0)),
+          routeProfiles: Object.fromEntries(capabilityIds.map((id) => {
+            const profile = routeProfiles[id];
+            const providerOrder = profile.providerOrder.split(',').map((item) => item.trim()).filter(Boolean);
+            return [id, {
+              ...(providerOrder.length ? { providerOrder } : {}),
+              paidAllowed: profile.paidAllowed,
+              maxOutputTokens: Math.max(64, Math.min(4000, Number(profile.maxOutputTokens || 700))),
+            }];
+          })),
         }),
       };
       if (index >= 0) next[index] = global;
@@ -301,6 +337,46 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           <p className="text-xs font-bold text-indigo-800/80 mt-2 leading-relaxed">
             عدة مفاتيح داخل نفس Project = حصة واحدة. عند 429 ينتقل النظام إلى Project/Quota Pool آخر بدل تدوير مفاتيح تشترك في نفس الحد.
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
+        <div>
+          <h3 className="font-black text-sm text-gray-900">توجيه كل مساعد حسب المهمة</h3>
+          <p className="text-xs text-gray-500 mt-1">اترك ترتيب المزودات فارغًا لاستخدام الترتيب العام. السماح المدفوع هنا لا يعمل إلا إذا كان السماح العام مفعّلًا أيضًا.</p>
+        </div>
+        <div className="space-y-2">
+          {capabilityIds.map((id) => {
+            const profile = routeProfiles[id];
+            return (
+              <div key={id} className="grid grid-cols-1 lg:grid-cols-[180px_1fr_120px_120px] gap-2 items-center rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                <span className="text-xs font-black text-gray-800">{capabilityLabel[id]}</span>
+                <input
+                  value={profile.providerOrder}
+                  onChange={(e) => setRouteProfiles((current) => ({ ...current, [id]: { ...current[id], providerOrder: e.target.value } }))}
+                  placeholder="مثال: gemini,qwen,openrouter"
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-[11px] font-mono"
+                />
+                <input
+                  type="number"
+                  min={64}
+                  max={4000}
+                  value={profile.maxOutputTokens}
+                  onChange={(e) => setRouteProfiles((current) => ({ ...current, [id]: { ...current[id], maxOutputTokens: Number(e.target.value || 700) } }))}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs"
+                  title="أقصى Output Tokens"
+                />
+                <label className="flex items-center justify-center gap-2 text-[11px] font-bold text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={profile.paidAllowed}
+                    onChange={(e) => setRouteProfiles((current) => ({ ...current, [id]: { ...current[id], paidAllowed: e.target.checked } }))}
+                  />
+                  مدفوع
+                </label>
+              </div>
+            );
+          })}
         </div>
       </div>
 
