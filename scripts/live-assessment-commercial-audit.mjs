@@ -407,6 +407,26 @@ async function main() {
     const mistakeTutorResponse = await mistakeTutorResponsePromise;
     if (!mistakeTutorResponse.ok()) throw new Error(`Question Assistant failed in mistake review (${mistakeTutorResponse.status()})`);
     await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-review-library.png"), fullPage: true });
+
+    await freshStudent.page.goto(`${BASE_URL}/review?mode=mistakes`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await freshStudent.page.getByText("استعادة خطأ", { exact: true }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByRole("button", { name: "ب", exact: true }).click();
+    const reviewAnswerResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && /\/api\/review\/[^/]+\/answer$/.test(new URL(response.url()).pathname),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "تحقق وسجّل المراجعة", exact: true }).click();
+    const reviewAnswerResponse = await reviewAnswerResponsePromise;
+    if (!reviewAnswerResponse.ok()) throw new Error(`Review practice answer failed (${reviewAnswerResponse.status()})`);
+    const reviewAnswerPayload = await reviewAnswerResponse.json().catch(() => ({}));
+    if (reviewAnswerPayload?.isCorrect !== true) throw new Error(`Review practice did not record a correct remediation attempt: ${JSON.stringify(reviewAnswerPayload)}`);
+    await freshStudent.page.getByRole("heading", { name: "تمت المراجعة اليومية" }).waitFor({ timeout: 30000 });
+    const dueAfterPractice = await api(freshStudent.page, "/review/due?limit=20");
+    const dueAfterPracticeIds = listOf(dueAfterPractice.payload, "items").map((item) => String(item.questionId || ""));
+    if (!dueAfterPractice.ok || dueAfterPracticeIds.includes(expectedMistakeQuestionId)) {
+      throw new Error(`Remediated question remained immediately due after spaced-review update: ${JSON.stringify(dueAfterPractice)}`);
+    }
     let completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
     for (let retry = 0; completedSession.payload?.session && retry < 10; retry += 1) {
       await freshStudent.page.waitForTimeout(250);
@@ -425,6 +445,8 @@ async function main() {
       ["mistake review preserves canonical question identity", String(mistakeItem?.question?.id || "") === expectedMistakeQuestionId],
       ["smart tutor is authorized from saved review", savedTutorResponse.ok],
       ["smart tutor is authorized from mistake review", mistakeTutorResponse.ok],
+      ["short mistake practice records a correct remediation attempt", reviewAnswerPayload?.isCorrect === true],
+      ["spaced review reschedules the remediated question", !dueAfterPracticeIds.includes(expectedMistakeQuestionId)],
       ["review library UI exposes saved/mistake context and voice", true],
       ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
       ["accepted submission closes the resumable session", !completedSession.payload?.session],
