@@ -234,7 +234,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
   const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiProviderCallOptions = {}) => {
     const runtime = config.getProviderRuntime("lmstudio");
     const baseUrl = String(runtime.baseUrl || "").trim();
-    if (!baseUrl || !runtime.model) return "";
+    if (!baseUrl || !runtime.model) return { text: "", usage: emptyUsage() };
 
     const response = await fetchWithTimeout(
       `${baseUrl.replace(/\/$/, "")}/chat/completions`,
