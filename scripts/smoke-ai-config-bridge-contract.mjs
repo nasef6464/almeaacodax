@@ -75,7 +75,7 @@ check("ai runtime config reads multiple keys and provider adapters retry quota p
   assertIncludes(aiRouteSource, "const noteKeys = Array.isArray(note.apiKeys) ? note.apiKeys : []");
   assertIncludes(aiRouteSource, "const directKeys = Array.isArray(item.apiKeys) ? item.apiKeys : []");
   assertIncludes(aiRouteSource, "readExternalQuotaPools");
-  assertIncludes(aiProviderAdapterSource, "const providerPools = (provider: ExternalProvider) =>");
+  assertIncludes(aiProviderAdapterSource, "const providerPools = (provider: ExternalProvider, allowPaid = true) =>");
   assertIncludes(aiProviderAdapterSource, "for (const pool of pools)");
   assertIncludes(aiProviderAdapterSource, "for (const apiKey of pool.apiKeys)");
 });
