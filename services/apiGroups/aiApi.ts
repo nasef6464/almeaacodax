@@ -68,12 +68,27 @@ export const createAiApi = (request: ApiRequest) => ({
         category: "free-friendly" | "paid" | "local" | "fallback";
         envKeys: string[];
         note: string;
+        quotaPoolCount?: number;
+        freeQuotaPoolCount?: number;
       }>;
+      quotaPools?: Record<string, Array<{
+        id: string;
+        label: string;
+        accountLabel: string;
+        projectLabel: string;
+        plan: "free" | "trial" | "paid" | "unknown";
+        quotaScope: "project" | "account" | "organization" | "workspace" | "model" | "unknown";
+        priority: number;
+        freeOnly: boolean;
+        model: string;
+        keyCount: number;
+      }>>;
       providerOrder?: string[];
       providerOrderSource?: "env" | "admin";
       routingMode?: "manual" | "auto";
       model: string;
       timeoutMs: number;
+      dailySpendCapUsd?: number;
       providerHealth?: Array<{
         provider: string;
         failures: number;

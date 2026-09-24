@@ -1,4 +1,5 @@
 import type { AiProviderId } from "../../application/aiProviderRouter.js";
+import { sortAiQuotaPools, type AiQuotaPoolRuntime } from "../../application/aiQuotaPools.js";
 
 export type AiResponseMimeType = "application/json";
 
@@ -7,6 +8,7 @@ export type AiProviderRuntime = {
   apiKeys?: string[];
   model: string;
   baseUrl?: string;
+  quotaPools?: AiQuotaPoolRuntime[];
 };
 
 export type AiProviderCallOptions = {
@@ -25,6 +27,7 @@ export type AiProviderUsage = {
 export type AiProviderResponse = {
   text: string;
   usage: AiProviderUsage;
+  quotaPoolId?: string;
 };
 
 type ExternalProvider = Exclude<AiProviderId, "none">;
@@ -127,9 +130,24 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     return `${provider} request failed with status ${response.status}${body ? `: ${config.redactDiagnostic(body)}` : ""}`;
   };
 
-  const providerKeys = (provider: ExternalProvider) => {
+  const providerPools = (provider: ExternalProvider) => {
     const runtime = config.getProviderRuntime(provider);
-    return uniqueNonEmpty([runtime.apiKey, ...(runtime.apiKeys || [])]);
+    if (runtime.quotaPools?.length) return sortAiQuotaPools(runtime.quotaPools);
+
+    const apiKeys = uniqueNonEmpty([runtime.apiKey, ...(runtime.apiKeys || [])]);
+    return [{
+      id: `${provider}:legacy`,
+      label: "Legacy provider pool",
+      accountLabel: "",
+      projectLabel: "",
+      plan: "unknown" as const,
+      quotaScope: "unknown" as const,
+      apiKeys,
+      model: runtime.model,
+      baseUrl: runtime.baseUrl,
+      priority: 100,
+      freeOnly: false,
+    }];
   };
 
   const callGemini = async (
@@ -138,57 +156,66 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ) => {
-    const runtime = config.getProviderRuntime("gemini");
-    const apiKeys = providerKeys("gemini");
-    if (apiKeys.length === 0) return { text: "", usage: emptyUsage() };
+    const pools = providerPools("gemini");
+    if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
 
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
       : [{ text: prompt }];
 
     const errors: string[] = [];
-    for (const apiKey of apiKeys) {
-      try {
-        const response = await fetchWithTimeout(
-          `https://generativelanguage.googleapis.com/v1beta/models/${runtime.model}:generateContent?key=${apiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts }],
-              generationConfig: {
-                ...(responseMimeType ? { responseMimeType } : {}),
-                ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
-              },
-            }),
-          },
-          options.timeoutMs,
-        );
+    for (const pool of pools) {
+      let poolRateLimited = false;
+      for (const apiKey of pool.apiKeys) {
+        try {
+          const response = await fetchWithTimeout(
+            `https://generativelanguage.googleapis.com/v1beta/models/${pool.model}:generateContent?key=${apiKey}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{ parts }],
+                generationConfig: {
+                  ...(responseMimeType ? { responseMimeType } : {}),
+                  ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
+                },
+              }),
+            },
+            options.timeoutMs,
+          );
 
-        if (!response.ok) throw new Error(await responseFailureMessage("Gemini", response));
-        const payload = (await response.json()) as {
-          candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-          usageMetadata?: {
-            promptTokenCount?: number;
-            candidatesTokenCount?: number;
-            totalTokenCount?: number;
-            cachedContentTokenCount?: number;
+          if (!response.ok) {
+            const message = await responseFailureMessage("Gemini", response);
+            if (response.status === 429) poolRateLimited = true;
+            throw new Error(message);
+          }
+
+          const payload = (await response.json()) as {
+            candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+            usageMetadata?: {
+              promptTokenCount?: number;
+              candidatesTokenCount?: number;
+              totalTokenCount?: number;
+              cachedContentTokenCount?: number;
+            };
           };
-        };
-        const text = payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
-        if (text) {
-          return {
-            text,
-            usage: normalizeUsage({
-              inputTokens: payload.usageMetadata?.promptTokenCount,
-              outputTokens: payload.usageMetadata?.candidatesTokenCount,
-              totalTokens: payload.usageMetadata?.totalTokenCount,
-              cachedTokens: payload.usageMetadata?.cachedContentTokenCount,
-            }, prompt, text),
-          };
+          const text = payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
+          if (text) {
+            return {
+              text,
+              quotaPoolId: pool.id,
+              usage: normalizeUsage({
+                inputTokens: payload.usageMetadata?.promptTokenCount,
+                outputTokens: payload.usageMetadata?.candidatesTokenCount,
+                totalTokens: payload.usageMetadata?.totalTokenCount,
+                cachedTokens: payload.usageMetadata?.cachedContentTokenCount,
+              }, prompt, text),
+            };
+          }
+        } catch (error) {
+          errors.push(`${pool.id}: ${error instanceof Error ? error.message : "Gemini request failed"}`);
+          if (poolRateLimited) break;
         }
-      } catch (error) {
-        errors.push(error instanceof Error ? error.message : "Gemini request failed");
       }
     }
 
@@ -276,61 +303,73 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     responseMimeType?: AiResponseMimeType,
     options: AiProviderCallOptions = {},
   ) => {
-    const runtime = config.getProviderRuntime(provider);
-    const settings: Record<OpenAiCompatibleProvider, { baseUrl: string; headers?: Record<string, string> }> = {
-      openrouter: {
-        baseUrl: runtime.baseUrl || "https://openrouter.ai/api/v1",
-        headers: { "HTTP-Referer": config.clientUrl, "X-Title": "Almeaa Educational Platform" },
-      },
-      deepseek: { baseUrl: runtime.baseUrl || "https://api.deepseek.com" },
-      qwen: { baseUrl: runtime.baseUrl || config.qwenBaseUrl },
-      openai: { baseUrl: runtime.baseUrl || "https://api.openai.com/v1" },
-    };
-    const selected = settings[provider];
-    const apiKeys = providerKeys(provider);
-    if (apiKeys.length === 0) return { text: "", usage: emptyUsage() };
+    const pools = providerPools(provider);
+    if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
 
     const errors: string[] = [];
-    for (const apiKey of apiKeys) {
-      try {
-        const response = await fetchWithTimeout(
-          `${selected.baseUrl.replace(/\/$/, "")}/chat/completions`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey}`,
-              ...(selected.headers || {}),
+    for (const pool of pools) {
+      const runtime = config.getProviderRuntime(provider);
+      const defaults: Record<OpenAiCompatibleProvider, { baseUrl: string; headers?: Record<string, string> }> = {
+        openrouter: {
+          baseUrl: runtime.baseUrl || "https://openrouter.ai/api/v1",
+          headers: { "HTTP-Referer": config.clientUrl, "X-Title": "Almeaa Educational Platform" },
+        },
+        deepseek: { baseUrl: runtime.baseUrl || "https://api.deepseek.com" },
+        qwen: { baseUrl: runtime.baseUrl || config.qwenBaseUrl },
+        openai: { baseUrl: runtime.baseUrl || "https://api.openai.com/v1" },
+      };
+      const selected = { ...defaults[provider], ...(pool.baseUrl ? { baseUrl: pool.baseUrl } : {}) };
+      let poolRateLimited = false;
+
+      for (const apiKey of pool.apiKeys) {
+        try {
+          const response = await fetchWithTimeout(
+            `${selected.baseUrl.replace(/\/$/, "")}/chat/completions`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+                ...(selected.headers || {}),
+              },
+              body: JSON.stringify({
+                model: pool.model,
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.25,
+                response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+                ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
+              }),
             },
-            body: JSON.stringify({
-              model: runtime.model,
-              messages: [{ role: "user", content: prompt }],
-              temperature: 0.25,
-              response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-              ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
-            }),
-          },
-          options.timeoutMs,
-        );
-        if (!response.ok) throw new Error(await responseFailureMessage(provider, response));
-        const payload = (await response.json()) as {
-          choices?: Array<{ message?: { content?: string } }>;
-          usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; prompt_tokens_details?: { cached_tokens?: number } };
-        };
-        const text = payload.choices?.[0]?.message?.content?.trim() || "";
-        if (text) {
-          return {
-            text,
-            usage: normalizeUsage({
-              inputTokens: payload.usage?.prompt_tokens,
-              outputTokens: payload.usage?.completion_tokens,
-              totalTokens: payload.usage?.total_tokens,
-              cachedTokens: payload.usage?.prompt_tokens_details?.cached_tokens,
-            }, prompt, text),
+            options.timeoutMs,
+          );
+
+          if (!response.ok) {
+            const message = await responseFailureMessage(provider, response);
+            if (response.status === 429) poolRateLimited = true;
+            throw new Error(message);
+          }
+
+          const payload = (await response.json()) as {
+            choices?: Array<{ message?: { content?: string } }>;
+            usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; prompt_tokens_details?: { cached_tokens?: number } };
           };
+          const text = payload.choices?.[0]?.message?.content?.trim() || "";
+          if (text) {
+            return {
+              text,
+              quotaPoolId: pool.id,
+              usage: normalizeUsage({
+                inputTokens: payload.usage?.prompt_tokens,
+                outputTokens: payload.usage?.completion_tokens,
+                totalTokens: payload.usage?.total_tokens,
+                cachedTokens: payload.usage?.prompt_tokens_details?.cached_tokens,
+              }, prompt, text),
+            };
+          }
+        } catch (error) {
+          errors.push(`${pool.id}: ${error instanceof Error ? error.message : `${provider} request failed`}`);
+          if (poolRateLimited) break;
         }
-      } catch (error) {
-        errors.push(error instanceof Error ? error.message : `${provider} request failed`);
       }
     }
 

@@ -70,13 +70,14 @@ check("integrations manager explains AI auto failover and multiple keys", () => 
   assertIncludes(integrationsSource, "عند فشل مفتاح سيجرب النظام المفتاح التالي لنفس المزود قبل الانتقال لمزود آخر");
 });
 
-check("ai runtime config reads multiple keys and provider adapters retry them", () => {
+check("ai runtime config reads multiple keys and provider adapters retry quota pools and keys", () => {
   assertIncludes(aiRouteSource, "readProviderKeyHints");
   assertIncludes(aiRouteSource, "const noteKeys = Array.isArray(note.apiKeys) ? note.apiKeys : []");
   assertIncludes(aiRouteSource, "const directKeys = Array.isArray(item.apiKeys) ? item.apiKeys : []");
-  assertIncludes(aiProviderAdapterSource, "const providerKeys = (provider: ExternalProvider) =>");
-  assertIncludes(aiProviderAdapterSource, "for (const apiKey of apiKeys)");
-  assertIncludes(aiProviderAdapterSource, "errors.push(error instanceof Error ? error.message");
+  assertIncludes(aiRouteSource, "readExternalQuotaPools");
+  assertIncludes(aiProviderAdapterSource, "const providerPools = (provider: ExternalProvider) =>");
+  assertIncludes(aiProviderAdapterSource, "for (const pool of pools)");
+  assertIncludes(aiProviderAdapterSource, "for (const apiKey of pool.apiKeys)");
 });
 
 check("ai provider outbound URLs reject unsafe destinations in the provider adapter layer", () => {

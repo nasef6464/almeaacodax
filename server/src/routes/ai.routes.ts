@@ -41,6 +41,13 @@ import { estimateAiCostMicrosUsd, readAiPricingHint, type AiPricingHint } from "
 import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
 import {
+  normalizeAiQuotaPlan,
+  normalizeAiQuotaScope,
+  quotaPoolIsFreeFirst,
+  sortAiQuotaPools,
+  type AiQuotaPoolRuntime,
+} from "../modules/ai/application/aiQuotaPools.js";
+import {
   createAiProviderAdapters,
   type AiProviderCallOptions,
   type AiProviderUsage,
@@ -127,6 +134,8 @@ type ProviderDescriptor = {
   category: "free-friendly" | "paid" | "local" | "fallback";
   envKeys: string[];
   note: string;
+  quotaPoolCount?: number;
+  freeQuotaPoolCount?: number;
 };
 
 type AiCallResult = {
@@ -138,6 +147,7 @@ type AiCallResult = {
   usage: AiProviderUsage;
   estimatedCostMicrosUsd: number;
   pricingKnown: boolean;
+  quotaPoolId?: string;
 };
 
 const zeroAiUsage = (): AiProviderUsage => ({
@@ -170,6 +180,7 @@ type ProviderRuntime = {
   enabled?: boolean;
   source: "env" | "admin";
   pricing?: AiPricingHint;
+  quotaPools?: AiQuotaPoolRuntime[];
 };
 
 type AiRuntimeConfig = {
@@ -228,6 +239,52 @@ const readProviderKeyHints = (item: Record<string, unknown>) => {
   return uniqueNonEmpty([item.apiKey, item.apiSecret, ...directKeys, ...noteKeys, ...commaKeys]);
 };
 
+const providerExternalId = (provider: Exclude<AiProvider, "none">) => `ai-${provider}`;
+
+const readExternalQuotaPools = (
+  provider: Exclude<AiProvider, "none">,
+  externalPlatforms: Array<Record<string, unknown>>,
+  fallbackModel: string,
+) => {
+  const baseId = providerExternalId(provider);
+  const matches = externalPlatforms.filter((item) => {
+    const id = String(item?.id || "").trim().toLowerCase();
+    return item?.enabled === true && (id === baseId || id.startsWith(`${baseId}-`));
+  });
+
+  const pools = matches
+    .map((item, index): AiQuotaPoolRuntime | null => {
+      const id = String(item.id || "").trim().toLowerCase();
+      const note = readJsonObject(item.note);
+      const apiKeys = readProviderKeyHints(item);
+      if (apiKeys.length === 0) return null;
+
+      const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
+      const pricing = readAiPricingHint(note);
+      const poolId = String(note.quotaPoolId || note.projectId || id || `${baseId}-pool-${index + 1}`).trim();
+      const priorityRaw = Number(note.priority ?? index + 1);
+      const priority = Number.isFinite(priorityRaw) ? priorityRaw : index + 1;
+
+      return {
+        id: poolId,
+        label: String(note.poolLabel || item.name || poolId).trim(),
+        accountLabel: String(note.accountLabel || "").trim(),
+        projectLabel: String(note.projectLabel || note.projectId || "").trim(),
+        plan: normalizeAiQuotaPlan(note.plan),
+        quotaScope: normalizeAiQuotaScope(note.quotaScope),
+        apiKeys,
+        model,
+        baseUrl: String(item.baseUrl || "").trim() || undefined,
+        priority,
+        freeOnly: note.freeOnly === true,
+        ...(pricing ? { pricing } : {}),
+      };
+    })
+    .filter((pool): pool is AiQuotaPoolRuntime => Boolean(pool));
+
+  return sortAiQuotaPools(pools);
+};
+
 const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   provider: env.AI_PROVIDER,
   providerOrder: env.AI_PROVIDER_ORDER,
@@ -263,22 +320,34 @@ const loadRuntimeAiConfigUncached = async () => {
     if (id) byId.set(id, item);
   });
 
-  const applyExternal = (provider: Exclude<AiProvider, "none">, externalId: string, fallbackModel: string) => {
-    const item = byId.get(externalId);
-    if (!item || item.enabled !== true) return;
-    const apiKeys = readProviderKeyHints(item);
-    const apiKey = apiKeys[0] || "";
-    const baseUrl = String(item.baseUrl || "").trim();
-    const note = readJsonObject(item.note);
-    const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
-    const pricing = readAiPricingHint(note);
+  const applyExternalPools = (provider: Exclude<AiProvider, "none">, fallbackModel: string) => {
+    const quotaPools = readExternalQuotaPools(provider, externalPlatforms, fallbackModel);
+    if (!quotaPools.length) return;
+
+    const primaryPool = quotaPools[0];
+    const apiKeys = uniqueNonEmpty(quotaPools.flatMap((pool) => pool.apiKeys));
     next.providers[provider] = {
       ...next.providers[provider],
-      ...(apiKey ? { apiKey } : {}),
-      ...(apiKeys.length ? { apiKeys } : {}),
+      apiKey: apiKeys[0] || "",
+      apiKeys,
+      quotaPools,
+      model: primaryPool.model,
+      ...(primaryPool.baseUrl ? { baseUrl: primaryPool.baseUrl } : {}),
+      ...(primaryPool.pricing ? { pricing: primaryPool.pricing } : {}),
+      enabled: true,
+      source: "admin",
+    };
+  };
+
+  const applyLocalExternal = (provider: "ollama" | "lmstudio", externalId: string, fallbackModel: string) => {
+    const item = byId.get(externalId);
+    if (!item || item.enabled !== true) return;
+    const baseUrl = String(item.baseUrl || "").trim();
+    const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
+    next.providers[provider] = {
+      ...next.providers[provider],
       ...(baseUrl ? { baseUrl } : {}),
       model,
-      ...(pricing ? { pricing } : {}),
       enabled: true,
       source: "admin",
     };
@@ -306,13 +375,13 @@ const loadRuntimeAiConfigUncached = async () => {
     }
   }
 
-  applyExternal("gemini", "ai-gemini", next.providers.gemini.model);
-  applyExternal("openrouter", "ai-openrouter", next.providers.openrouter.model);
-  applyExternal("deepseek", "ai-deepseek", next.providers.deepseek.model);
-  applyExternal("qwen", "ai-qwen", next.providers.qwen.model);
-  applyExternal("openai", "ai-openai", next.providers.openai.model);
-  applyExternal("ollama", "ai-ollama", next.providers.ollama.model);
-  applyExternal("lmstudio", "ai-lmstudio", next.providers.lmstudio.model);
+  applyExternalPools("gemini", next.providers.gemini.model);
+  applyExternalPools("openrouter", next.providers.openrouter.model);
+  applyExternalPools("deepseek", next.providers.deepseek.model);
+  applyExternalPools("qwen", next.providers.qwen.model);
+  applyExternalPools("openai", next.providers.openai.model);
+  applyLocalExternal("ollama", "ai-ollama", next.providers.ollama.model);
+  applyLocalExternal("lmstudio", "ai-lmstudio", next.providers.lmstudio.model);
 
   runtimeAiConfig = next;
   return runtimeAiConfig;
@@ -345,6 +414,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.gemini.model,
     configured: Boolean(runtimeAiConfig.providers.gemini.apiKey || runtimeAiConfig.providers.gemini.apiKeys?.length),
     source: runtimeAiConfig.providers.gemini.source,
+    quotaPoolCount: runtimeAiConfig.providers.gemini.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.gemini.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "GEMINI_API_KEY", "GEMINI_MODEL"],
     note: "مناسب كبداية مجانية أو منخفضة التكلفة حسب حدود حساب Google AI Studio.",
@@ -355,6 +426,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.openrouter.model,
     configured: Boolean(runtimeAiConfig.providers.openrouter.apiKey || runtimeAiConfig.providers.openrouter.apiKeys?.length),
     source: runtimeAiConfig.providers.openrouter.source,
+    quotaPoolCount: runtimeAiConfig.providers.openrouter.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.openrouter.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
     note: "يدعم موديلات كثيرة ومنها Qwen وDeepSeek وبعض النماذج المجانية عند توفرها.",
@@ -365,6 +438,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.deepseek.model,
     configured: Boolean(runtimeAiConfig.providers.deepseek.apiKey || runtimeAiConfig.providers.deepseek.apiKeys?.length),
     source: runtimeAiConfig.providers.deepseek.source,
+    quotaPoolCount: runtimeAiConfig.providers.deepseek.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.deepseek.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "DEEPSEEK_API_KEY", "DEEPSEEK_MODEL"],
     note: "قوي ورخيص عادة، مناسب لمساعد المدير والتحليلات الطويلة.",
@@ -375,6 +450,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.qwen.model,
     configured: Boolean(runtimeAiConfig.providers.qwen.apiKey || runtimeAiConfig.providers.qwen.apiKeys?.length),
     source: runtimeAiConfig.providers.qwen.source,
+    quotaPoolCount: runtimeAiConfig.providers.qwen.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.qwen.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "QWEN_API_KEY", "QWEN_MODEL", "QWEN_BASE_URL"],
     note: "خيار صيني ممتاز، وغالبا مناسب للتجارب والحصص المجانية حسب الحساب.",
@@ -385,6 +462,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.openai.model,
     configured: Boolean(runtimeAiConfig.providers.openai.apiKey || runtimeAiConfig.providers.openai.apiKeys?.length),
     source: runtimeAiConfig.providers.openai.source,
+    quotaPoolCount: runtimeAiConfig.providers.openai.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.openai.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "OPENAI_API_KEY", "OPENAI_MODEL"],
     note: "مناسب عند الحاجة لجودة واستقرار أعلى، وغالبا يكون مدفوعا حسب الاستهلاك.",
@@ -717,7 +796,12 @@ const callAiWithMeta = async (
           usedFallback: false,
           errors,
           usage: providerResponse.usage,
-          ...estimateAiCostMicrosUsd(providerResponse.usage, runtimeAiConfig.providers[provider].pricing),
+          quotaPoolId: providerResponse.quotaPoolId,
+          ...estimateAiCostMicrosUsd(
+            providerResponse.usage,
+            runtimeAiConfig.providers[provider].quotaPools?.find((pool) => pool.id === providerResponse.quotaPoolId)?.pricing
+              || runtimeAiConfig.providers[provider].pricing,
+          ),
         };
       }
       recordAiProviderFailure(provider);
@@ -859,6 +943,7 @@ const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
       billable: true,
       budgetExceeded: false,
       providerErrors: compactProviderErrors(result.errors),
+      quotaPoolId: result.quotaPoolId || "",
       promptChars: input.prompt.length,
       responseChars: responseText.length,
     },
@@ -900,6 +985,23 @@ aiRouter.get(
       lmStudioConfigured: isLmStudioExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.lmstudio.baseUrl && runtimeAiConfig.providers.lmstudio.model),
       geminiConfigured: Boolean(runtimeAiConfig.providers.gemini.apiKey || runtimeAiConfig.providers.gemini.apiKeys?.length),
       providers,
+      quotaPools: Object.fromEntries(
+        Object.entries(runtimeAiConfig.providers).map(([providerId, runtime]) => [
+          providerId,
+          (runtime.quotaPools || []).map((pool) => ({
+            id: pool.id,
+            label: pool.label,
+            accountLabel: pool.accountLabel,
+            projectLabel: pool.projectLabel,
+            plan: pool.plan,
+            quotaScope: pool.quotaScope,
+            priority: pool.priority,
+            freeOnly: pool.freeOnly,
+            model: pool.model,
+            keyCount: pool.apiKeys.length,
+          })),
+        ]),
+      ),
       providerOrder: providerPriority(),
       providerOrderSource: runtimeAiConfig.providerOrderSource,
       routingMode: runtimeAiConfig.routingMode,

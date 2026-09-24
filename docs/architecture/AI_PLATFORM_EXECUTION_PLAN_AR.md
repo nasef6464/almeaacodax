@@ -41,7 +41,7 @@ flowchart TD
 | AI-0 Canonicalize | ✅ CLOSED | مرجع موحد + جرد المشروع + Reference Center |
 | AI-1 Secure Gateway | ✅ CLOSED | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
 | AI-2 Usage & Cost | ✅ CLOSED | token ledger + cost + retention + counters |
-| AI-3 Quota Pools & Routing | 🟡 NEXT | أكثر من Project/Key + Free-first + capability profiles |
+| AI-3 Quota Pools & Routing | 🟡 IN PROGRESS | أكثر من Project/Key + Free-first + capability profiles |
 | AI-4 Control Center | ⏳ | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ⏳ | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ⏳ | push-to-talk + STT/TTS budgets + vision on demand |
@@ -65,9 +65,9 @@ flowchart TD
 - [x] question authoring داخل budget/ledger.
 - [x] course-summary محمي من الاستهلاك العام وداخل budget/ledger.
 - [x] مدخل الإدارة أصبح «إدارة الذكاء الاصطناعي».
-- [ ] استخراج provider adapters من `ai.routes.ts`.
-- [ ] config cache قصير بدل Mongo read لكل request.
-- [ ] Exact-head typecheck/build/smokes.
+- [x] استخراج provider adapters من `ai.routes.ts`.
+- [x] config cache قصير بدل Mongo read لكل request.
+- [x] Exact-head typecheck/build/smokes.
 
 ### Gate
 AI-1 لا يغلق إلا إذا:
@@ -112,9 +112,15 @@ Provider
           └── Key 2
 ```
 
-- المفاتيح داخل نفس quota pool ليست حصصًا مستقلة.
-- Key failover لأخطاء credential/health.
-- Quota failover ينتقل إلى Pool آخر أو Provider آخر.
+- [x] المفاتيح داخل نفس quota pool ليست حصصًا مستقلة.
+- [x] Key failover لأخطاء credential/health داخل Pool نفسه.
+- [x] 429 على Pool يقفز إلى Pool آخر بدل تدوير مفاتيح تشترك في نفس الحصة.
+- [x] Free/Trial pools تسبق Unknown/Paid في Free-First routing.
+- [x] status API يعرض metadata آمنة وعدد المفاتيح ولا يعرض الأسرار.
+- [x] لوحة الإدارة تعرض عدد الحصص وعدد الحصص المجانية لكل مزود.
+- [ ] Capability-specific route profiles.
+- [ ] paidAllowed/global paid kill-switch مستقل عن spend cap.
+- [ ] UI موحد لإضافة/تعديل Accounts/Projects/Pools داخل AI Control Center.
 - دعم Gemini Projects متعددة بطريقة مشروعة.
 - دعم Qwen/Groq/OpenRouter وغيرها عبر adapters.
 - Free-only pools.

@@ -15,6 +15,18 @@ type AiStatus = {
     model: string;
     timeoutMs: number;
     dailySpendCapUsd?: number;
+    quotaPools?: Record<string, Array<{
+        id: string;
+        label: string;
+        accountLabel: string;
+        projectLabel: string;
+        plan: 'free' | 'trial' | 'paid' | 'unknown';
+        quotaScope: 'project' | 'account' | 'organization' | 'workspace' | 'model' | 'unknown';
+        priority: number;
+        freeOnly: boolean;
+        model: string;
+        keyCount: number;
+    }>>;
 };
 
 type AiProviderStatus = {
@@ -26,6 +38,8 @@ type AiProviderStatus = {
     category: 'free-friendly' | 'paid' | 'local' | 'fallback';
     envKeys: string[];
     note: string;
+    quotaPoolCount?: number;
+    freeQuotaPoolCount?: number;
 };
 
 type Message = {
@@ -844,6 +858,11 @@ export const AiAssistantManager: React.FC = () => {
                                             <span className="px-2 py-0.5 rounded-lg bg-slate-100 font-bold text-slate-600">
                                                 المصدر: {sourceLabel[provider.source] || provider.source}
                                             </span>
+                                            {(provider.quotaPoolCount || 0) > 0 && (
+                                                <span className="px-2 py-0.5 rounded-lg bg-indigo-50 font-bold text-indigo-700">
+                                                    حصص: {provider.quotaPoolCount} • مجانية: {provider.freeQuotaPoolCount || 0}
+                                                </span>
+                                            )}
                                         </div>
 
                                         <p className="text-xs font-medium text-gray-600 mt-2.5 leading-relaxed">
