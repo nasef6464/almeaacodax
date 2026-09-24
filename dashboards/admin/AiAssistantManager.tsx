@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Activity, AlertTriangle, Bot, CheckCircle2, Clock, Copy, Loader2, MessageCircle, Send, Settings, ShieldCheck, Sparkles, Target, Users, Zap, Search, Filter, RefreshCw, Trash2, Check, ExternalLink, ChevronDown, BarChart2, Info, X, Play, ArrowLeftRight, CheckSquare } from 'lucide-react';
 import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
+import { AiControlCenterSettings } from './ai/AiControlCenterSettings';
 
 type AiStatus = {
     provider: 'gemini' | 'openrouter' | 'deepseek' | 'qwen' | 'openai' | 'ollama' | 'lmstudio' | 'none';
@@ -173,7 +174,7 @@ export const AiAssistantManager: React.FC = () => {
     const [status, setStatus] = useState<AiStatus | null>(null);
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [statusError, setStatusError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'chat' | 'providers' | 'logs' | 'readiness'>('chat');
+    const [activeTab, setActiveTab] = useState<'chat' | 'control' | 'providers' | 'logs' | 'readiness'>('chat');
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'welcome',
@@ -530,6 +531,7 @@ export const AiAssistantManager: React.FC = () => {
             <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
                 {[
                     { id: 'chat' as const, label: 'مساعد المدير التفاعلي', icon: <MessageCircle size={16} /> },
+                    { id: 'control' as const, label: 'المفاتيح والحصص والتكلفة', icon: <Settings size={16} /> },
                     {
                         id: 'providers' as const,
                         label: 'مزودو الذكاء وسلسلة الانتقال',
@@ -566,6 +568,10 @@ export const AiAssistantManager: React.FC = () => {
                     </button>
                 ))}
             </div>
+
+            {activeTab === 'control' && (
+                <AiControlCenterSettings onSaved={loadStatus} />
+            )}
 
             {/* ══════════════════════════════════════════════════════════════════════
                 التبويب 1: مساعد المدير التفاعلي (Interactive Copilot)
