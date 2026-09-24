@@ -85,3 +85,10 @@ Permission = Role + Scope + Ownership/Assignment + Resource State + Delivery Con
 4. الاقتراحات PROPOSED.
 
 أي تعارض يسجل بدل أن يُحسم بالتخمين.
+
+
+## ملاحق الجرد الجديدة
+
+17. `16_MODEL_CATALOG_AR.md` — قاموس الـ59 Model الحالية وما يقابلها في التصميم الجديد.
+18. `17_UI_SCREEN_WORKFLOW_MAP_AR.md` — خريطة الشاشات والـWorkflows.
+19. `18_MODULE_API_BOUNDARY_MAP_AR.md` — حدود الـModules والـAPI والاعتماد بينها.
