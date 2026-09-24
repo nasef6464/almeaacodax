@@ -87,8 +87,9 @@ AI-1 لا يغلق إلا إذا:
 - [x] تخزين input/output/total/cached tokens داخل `AiInteraction`.
 - [x] تجميع Tokens آخر 24 ساعة في Admin interactions summary.
 - [ ] cost estimator/model pricing registry.
-- [ ] daily atomic counters بدل countDocuments.
-- [ ] retention + daily rollups.
+- [x] daily indexed usage rollups بدل countDocuments على سجل التفاعلات في كل طلب.
+- [x] bootstrap للعداد اليومي من السجل القديم عند أول قراءة فقط.
+- [ ] retention للـdetail log + long-term daily rollups.
 - [ ] spend caps.
 
 - normalized usage: input/output/total tokens، estimated flag، provider/model/capability، latency/cost/cache/fallback.

@@ -37,6 +37,7 @@ import {
   isExplicitLocalProviderConfigured,
 } from "../modules/ai/application/aiCapabilityPolicy.js";
 import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
+import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
 import {
   createAiProviderAdapters,
@@ -639,6 +640,19 @@ const recordAiInteraction = async (payload: {
       usageEstimated: Boolean(payload.usage?.estimated),
       metadata: payload.metadata || {},
     });
+
+    if (payload.metadata?.billable !== false) {
+      await incrementAiUsageDaily({
+        endpoint: payload.endpoint,
+        userId: String(payload.req.authUser?.id || "").trim() || undefined,
+        schoolId: String(payload.schoolId || payload.req.authUser?.schoolId || "").trim() || undefined,
+        inputTokens: Number(payload.usage?.inputTokens || 0),
+        outputTokens: Number(payload.usage?.outputTokens || 0),
+        totalTokens: Number(payload.usage?.totalTokens || 0),
+        cachedTokens: Number(payload.usage?.cachedTokens || 0),
+        usageEstimated: Boolean(payload.usage?.estimated),
+      });
+    }
   } catch (error) {
     if (process.env.NODE_ENV !== "test") {
       console.warn("Failed to record AI interaction", error);
@@ -719,31 +733,32 @@ const callSingleProvider = async (
 ) => aiProviderAdapters.callProviderText(provider, prompt, undefined, image, options);
 
 const withinAiBudget = async (userId?: string, schoolId?: string) => {
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const billableFilter = {
-    createdAt: { $gte: since },
-    "metadata.billable": { $ne: false },
-  };
   const dailyLimit = Math.max(1, Number(env.AI_DAILY_LIMIT || 800));
   const perUserLimit = Math.max(1, Number(env.AI_PER_USER_DAILY_LIMIT || 80));
   const perSchoolLimit = Math.max(1, Number(env.AI_PER_SCHOOL_DAILY_LIMIT || 400));
-  const [globalCount, userCount, schoolCount] = await Promise.all([
-    AiInteractionModel.countDocuments(billableFilter),
-    userId ? AiInteractionModel.countDocuments({ ...billableFilter, userId }) : Promise.resolve(0),
-    schoolId ? AiInteractionModel.countDocuments({ ...billableFilter, schoolId }) : Promise.resolve(0),
+  const dayKey = utcDayKey();
+
+  const [globalUsage, userUsage, schoolUsage] = await Promise.all([
+    readAiUsageDaily("global", "*", dayKey),
+    userId ? readAiUsageDaily("user", userId, dayKey) : Promise.resolve({ requestCount: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0, cachedTokens: 0 }),
+    schoolId ? readAiUsageDaily("school", schoolId, dayKey) : Promise.resolve({ requestCount: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0, cachedTokens: 0 }),
   ]);
 
   return {
     allowed:
-      globalCount < dailyLimit &&
-      (!userId || userCount < perUserLimit) &&
-      (!schoolId || schoolCount < perSchoolLimit),
-    globalCount,
-    userCount,
-    schoolCount,
+      globalUsage.requestCount < dailyLimit &&
+      (!userId || userUsage.requestCount < perUserLimit) &&
+      (!schoolId || schoolUsage.requestCount < perSchoolLimit),
+    globalCount: globalUsage.requestCount,
+    userCount: userUsage.requestCount,
+    schoolCount: schoolUsage.requestCount,
+    globalTokens: globalUsage.totalTokens,
+    userTokens: userUsage.totalTokens,
+    schoolTokens: schoolUsage.totalTokens,
     dailyLimit,
     perUserLimit,
     perSchoolLimit,
+    dayKey,
   };
 };
 
@@ -980,7 +995,7 @@ aiRouter.get(
   asyncHandler(async (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit || 20), 1), 100);
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider, usage24h] = await Promise.all([
+    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider, usage24h, usageToday] = await Promise.all([
       AiInteractionModel.find().sort({ createdAt: -1 }).limit(limit).lean(),
       AiInteractionModel.countDocuments(),
       AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
@@ -1006,6 +1021,7 @@ aiRouter.get(
           },
         },
       ]),
+      readAiUsageDaily("global", "*"),
     ]);
 
     res.json({
@@ -1024,6 +1040,8 @@ aiRouter.get(
         outputTokens24h: Number(usage24h[0]?.outputTokens || 0),
         totalTokens24h: Number(usage24h[0]?.totalTokens || 0),
         cachedTokens24h: Number(usage24h[0]?.cachedTokens || 0),
+        requestsToday: Number(usageToday.requestCount || 0),
+        totalTokensToday: Number(usageToday.totalTokens || 0),
       },
       items,
     });
@@ -1124,6 +1142,7 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         metadata: {
+          billable: false,
           budgetExceeded: true,
           globalCount: budget.globalCount,
           userCount: budget.userCount,
@@ -1651,6 +1670,7 @@ ${message}
         usedFallback: true,
         latencyMs: Date.now() - startedAt,
         metadata: {
+          billable: false,
           budgetExceeded: true,
           globalCount: budget.globalCount,
           userCount: budget.userCount,
