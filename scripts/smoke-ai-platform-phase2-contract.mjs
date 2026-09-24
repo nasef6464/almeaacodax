@@ -5,6 +5,7 @@ const dailyModel = await readFile(new URL("../server/src/models/AiUsageDaily.ts"
 const dailyService = await readFile(new URL("../server/src/modules/ai/application/aiUsageDaily.ts", import.meta.url), "utf8");
 const interactionModel = await readFile(new URL("../server/src/models/AiInteraction.ts", import.meta.url), "utf8");
 const adapters = await readFile(new URL("../server/src/modules/ai/infrastructure/providers/aiProviderAdapters.ts", import.meta.url), "utf8");
+const costEstimator = await readFile(new URL("../server/src/modules/ai/application/aiCostEstimator.ts", import.meta.url), "utf8");
 
 const checks = [];
 const check = (name, pass) => checks.push({ name, status: pass ? "PASS" : "FAIL" });
@@ -37,6 +38,17 @@ check("AI budget reads indexed daily usage snapshots",
   routes.includes('readAiUsageDaily("user", userId, dayKey)') &&
   routes.includes('readAiUsageDaily("school", schoolId, dayKey)') &&
   !routes.includes("AiInteractionModel.countDocuments(billableFilter)"));
+
+check("cost estimation is configuration-driven and supports explicit free pricing",
+  costEstimator.includes("readAiPricingHint") &&
+  costEstimator.includes("estimateAiCostMicrosUsd") &&
+  routes.includes("dailySpendCapUsd") &&
+  routes.includes("globalUsage.estimatedCostMicrosUsd"));
+
+check("new detailed interaction logs have bounded retention while daily rollups remain",
+  interactionModel.includes("retentionUntil") &&
+  interactionModel.includes("expireAfterSeconds: 0") &&
+  routes.includes("30 * 24 * 60 * 60 * 1000"));
 
 check("billable interactions update daily counters and budget-limited fallbacks do not",
   routes.includes("await incrementAiUsageDaily({") &&

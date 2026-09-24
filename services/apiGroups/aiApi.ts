@@ -145,6 +145,9 @@ export const createAiApi = (request: ApiRequest) => ({
         outputTokens24h: number;
         totalTokens24h: number;
         cachedTokens24h: number;
+        requestsToday?: number;
+        totalTokensToday?: number;
+        estimatedCostMicrosUsdToday?: number;
       };
       items: Array<{
         _id: string;

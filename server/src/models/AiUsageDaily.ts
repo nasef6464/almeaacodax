@@ -13,6 +13,7 @@ const aiUsageDailySchema = new Schema(
     totalTokens: { type: Number, default: 0 },
     cachedTokens: { type: Number, default: 0 },
     estimatedUsageCount: { type: Number, default: 0 },
+    estimatedCostMicrosUsd: { type: Number, default: 0 },
     lastUsedAt: { type: Date, default: Date.now },
   },
   { timestamps: true },

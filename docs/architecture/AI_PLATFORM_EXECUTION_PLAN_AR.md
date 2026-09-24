@@ -40,8 +40,8 @@ flowchart TD
 |---|---|---|
 | AI-0 Canonicalize | ✅ CLOSED | مرجع موحد + جرد المشروع + Reference Center |
 | AI-1 Secure Gateway | ✅ CLOSED | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
-| AI-2 Usage & Cost | 🟡 IN PROGRESS | token ledger + cost + retention + counters |
-| AI-3 Quota Pools & Routing | ⏳ | أكثر من Project/Key + Free-first + capability profiles |
+| AI-2 Usage & Cost | ✅ CLOSED | token ledger + cost + retention + counters |
+| AI-3 Quota Pools & Routing | 🟡 NEXT | أكثر من Project/Key + Free-first + capability profiles |
 | AI-4 Control Center | ⏳ | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ⏳ | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ⏳ | push-to-talk + STT/TTS budgets + vision on demand |
@@ -89,8 +89,10 @@ AI-1 لا يغلق إلا إذا:
 - [ ] cost estimator/model pricing registry.
 - [x] daily indexed usage rollups بدل countDocuments على سجل التفاعلات في كل طلب.
 - [x] bootstrap للعداد اليومي من السجل القديم عند أول قراءة فقط.
-- [ ] retention للـdetail log + long-term daily rollups.
-- [ ] spend caps.
+- [x] retention للـdetail log الجديد 30 يومًا مع بقاء daily rollups.
+- [x] pricing hints اختيارية لكل مزود/موديل بدل hardcode أسعار قديمة.
+- [x] daily hard spend cap اختياري من `ai-global.note.dailySpendCapUsd`.
+- [x] AI-2 Exact-head gates مطلوبة قبل الانتقال إلى AI-3.
 
 - normalized usage: input/output/total tokens، estimated flag، provider/model/capability، latency/cost/cache/fallback.
 - provider usage adapters للاستفادة من usage الحقيقي عندما يرجعه المزود.

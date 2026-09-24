@@ -30,6 +30,9 @@ const aiInteractionSchema = new Schema(
     totalTokens: { type: Number, default: 0 },
     cachedTokens: { type: Number, default: 0 },
     usageEstimated: { type: Boolean, default: false },
+    estimatedCostMicrosUsd: { type: Number, default: 0 },
+    pricingKnown: { type: Boolean, default: false },
+    retentionUntil: { type: Date, default: undefined },
     messagePreview: { type: String, default: "" },
     responsePreview: { type: String, default: "" },
     responseLength: { type: Number, default: 0 },
@@ -53,5 +56,6 @@ aiInteractionSchema.index({ personalized: 1, createdAt: -1 });
 aiInteractionSchema.index({ userId: 1, createdAt: -1 });
 aiInteractionSchema.index({ schoolId: 1, endpoint: 1, createdAt: -1 });
 aiInteractionSchema.index({ createdAt: -1, totalTokens: 1 });
+aiInteractionSchema.index({ retentionUntil: 1 }, { expireAfterSeconds: 0 });
 
 export const AiInteractionModel = mongoose.model("AiInteraction", aiInteractionSchema);

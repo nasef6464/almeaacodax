@@ -37,6 +37,7 @@ import {
   isExplicitLocalProviderConfigured,
 } from "../modules/ai/application/aiCapabilityPolicy.js";
 import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
+import { estimateAiCostMicrosUsd, readAiPricingHint, type AiPricingHint } from "../modules/ai/application/aiCostEstimator.js";
 import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
 import {
@@ -135,6 +136,8 @@ type AiCallResult = {
   usedFallback: boolean;
   errors: string[];
   usage: AiProviderUsage;
+  estimatedCostMicrosUsd: number;
+  pricingKnown: boolean;
 };
 
 const zeroAiUsage = (): AiProviderUsage => ({
@@ -166,6 +169,7 @@ type ProviderRuntime = {
   baseUrl?: string;
   enabled?: boolean;
   source: "env" | "admin";
+  pricing?: AiPricingHint;
 };
 
 type AiRuntimeConfig = {
@@ -173,6 +177,7 @@ type AiRuntimeConfig = {
   providerOrder: string;
   providerOrderSource: "env" | "admin";
   routingMode: "manual" | "auto";
+  dailySpendCapUsd: number;
   providers: Record<Exclude<AiProvider, "none">, ProviderRuntime>;
 };
 
@@ -228,6 +233,7 @@ const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   providerOrder: env.AI_PROVIDER_ORDER,
   providerOrderSource: "env",
   routingMode: "manual",
+  dailySpendCapUsd: 0,
   providers: {
     gemini: { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, source: "env" },
     openrouter: { apiKey: env.OPENROUTER_API_KEY, model: env.OPENROUTER_MODEL, baseUrl: "https://openrouter.ai/api/v1", source: "env" },
@@ -263,13 +269,16 @@ const loadRuntimeAiConfigUncached = async () => {
     const apiKeys = readProviderKeyHints(item);
     const apiKey = apiKeys[0] || "";
     const baseUrl = String(item.baseUrl || "").trim();
+    const note = readJsonObject(item.note);
     const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
+    const pricing = readAiPricingHint(note);
     next.providers[provider] = {
       ...next.providers[provider],
       ...(apiKey ? { apiKey } : {}),
       ...(apiKeys.length ? { apiKeys } : {}),
       ...(baseUrl ? { baseUrl } : {}),
       model,
+      ...(pricing ? { pricing } : {}),
       enabled: true,
       source: "admin",
     };
@@ -279,6 +288,8 @@ const loadRuntimeAiConfigUncached = async () => {
   if (global) {
     const globalNote = readJsonObject(global.note);
     const rawPreferredProvider = String(globalNote.provider || global.note || "").trim().toLowerCase();
+    const dailySpendCapUsd = Math.max(0, Number(globalNote.dailySpendCapUsd || 0));
+    if (Number.isFinite(dailySpendCapUsd)) next.dailySpendCapUsd = dailySpendCapUsd;
     const routingMode = String(globalNote.mode || (rawPreferredProvider === "auto" ? "auto" : "manual")).trim().toLowerCase();
     if (routingMode === "auto") {
       next.provider = undefined;
@@ -613,6 +624,8 @@ const recordAiInteraction = async (payload: {
   schoolId?: string;
   metadata?: Record<string, unknown>;
   usage?: AiProviderUsage;
+  estimatedCostMicrosUsd?: number;
+  pricingKnown?: boolean;
 }) => {
   try {
     const role = String(payload.req.authUser?.role || payload.audience || "guest");
@@ -638,6 +651,9 @@ const recordAiInteraction = async (payload: {
       totalTokens: Number(payload.usage?.totalTokens || 0),
       cachedTokens: Number(payload.usage?.cachedTokens || 0),
       usageEstimated: Boolean(payload.usage?.estimated),
+      estimatedCostMicrosUsd: Math.max(0, Number(payload.estimatedCostMicrosUsd || 0)),
+      pricingKnown: Boolean(payload.pricingKnown),
+      retentionUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       metadata: payload.metadata || {},
     });
 
@@ -651,6 +667,7 @@ const recordAiInteraction = async (payload: {
         totalTokens: Number(payload.usage?.totalTokens || 0),
         cachedTokens: Number(payload.usage?.cachedTokens || 0),
         usageEstimated: Boolean(payload.usage?.estimated),
+        estimatedCostMicrosUsd: Math.max(0, Number(payload.estimatedCostMicrosUsd || 0)),
       });
     }
   } catch (error) {
@@ -700,6 +717,7 @@ const callAiWithMeta = async (
           usedFallback: false,
           errors,
           usage: providerResponse.usage,
+          ...estimateAiCostMicrosUsd(providerResponse.usage, runtimeAiConfig.providers[provider].pricing),
         };
       }
       recordAiProviderFailure(provider);
@@ -721,6 +739,8 @@ const callAiWithMeta = async (
     usedFallback: true,
     errors,
     usage: zeroAiUsage(),
+    estimatedCostMicrosUsd: 0,
+    pricingKnown: true,
   };
 };
 
@@ -748,13 +768,16 @@ const withinAiBudget = async (userId?: string, schoolId?: string) => {
     allowed:
       globalUsage.requestCount < dailyLimit &&
       (!userId || userUsage.requestCount < perUserLimit) &&
-      (!schoolId || schoolUsage.requestCount < perSchoolLimit),
+      (!schoolId || schoolUsage.requestCount < perSchoolLimit) &&
+      (runtimeAiConfig.dailySpendCapUsd <= 0 || globalUsage.estimatedCostMicrosUsd < Math.round(runtimeAiConfig.dailySpendCapUsd * 1_000_000)),
     globalCount: globalUsage.requestCount,
     userCount: userUsage.requestCount,
     schoolCount: schoolUsage.requestCount,
     globalTokens: globalUsage.totalTokens,
     userTokens: userUsage.totalTokens,
     schoolTokens: schoolUsage.totalTokens,
+    globalEstimatedCostMicrosUsd: globalUsage.estimatedCostMicrosUsd,
+    dailySpendCapUsd: runtimeAiConfig.dailySpendCapUsd,
     dailyLimit,
     perUserLimit,
     perSchoolLimit,
@@ -828,6 +851,8 @@ const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
     latencyMs: Date.now() - startedAt,
     schoolId,
     usage: result.usage,
+    estimatedCostMicrosUsd: result.estimatedCostMicrosUsd,
+    pricingKnown: result.pricingKnown,
     error: !result.text && result.errors.length ? fallbackReasonFromErrors(result.errors) : undefined,
     metadata: {
       ...(input.metadata || {}),
@@ -880,6 +905,7 @@ aiRouter.get(
       routingMode: runtimeAiConfig.routingMode,
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+      dailySpendCapUsd: runtimeAiConfig.dailySpendCapUsd,
       providerHealth: getAiProviderCircuitSnapshot(),
     });
   }),
@@ -1042,6 +1068,7 @@ aiRouter.get(
         cachedTokens24h: Number(usage24h[0]?.cachedTokens || 0),
         requestsToday: Number(usageToday.requestCount || 0),
         totalTokensToday: Number(usageToday.totalTokens || 0),
+        estimatedCostMicrosUsdToday: Number(usageToday.estimatedCostMicrosUsd || 0),
       },
       items,
     });
@@ -1180,6 +1207,8 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         usage: result.usage,
+        estimatedCostMicrosUsd: result.estimatedCostMicrosUsd,
+        pricingKnown: result.pricingKnown,
         metadata: {
           weaknessesCount: studentContext?.weaknesses.length || 0,
           recentResultsCount: studentContext?.recentResults.length || 0,
@@ -1576,6 +1605,8 @@ aiRouter.post(
         latencyMs: Date.now() - startedAt,
         schoolId,
         usage: resultCall.usage,
+        estimatedCostMicrosUsd: resultCall.estimatedCostMicrosUsd,
+        pricingKnown: resultCall.pricingKnown,
         error: provider === "none" && resultCall.errors.length ? fallbackReasonFromErrors(resultCall.errors) : undefined,
         metadata: {
           billable: true,
@@ -1704,6 +1735,8 @@ ${message}
         usedFallback: !result.text,
         latencyMs: Date.now() - startedAt,
         usage: result.usage,
+        estimatedCostMicrosUsd: result.estimatedCostMicrosUsd,
+        pricingKnown: result.pricingKnown,
         metadata: {
           auditScore: audit.score,
           critical: audit.totals.critical,

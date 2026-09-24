@@ -14,6 +14,7 @@ type AiStatus = {
     routingMode?: 'manual' | 'auto';
     model: string;
     timeoutMs: number;
+    dailySpendCapUsd?: number;
 };
 
 type AiProviderStatus = {
@@ -45,6 +46,9 @@ type AiInteractionsResponse = {
         outputTokens24h: number;
         totalTokens24h: number;
         cachedTokens24h: number;
+        requestsToday?: number;
+        totalTokensToday?: number;
+        estimatedCostMicrosUsdToday?: number;
     };
     items: Array<{
         _id: string;
@@ -499,7 +503,7 @@ export const AiAssistantManager: React.FC = () => {
                         </div>
                     </div>
                     <p className="mt-2.5 text-[11px] font-bold text-gray-500 line-clamp-1">
-                        Tokens: {formatNumber(interactions?.summary.totalTokens24h || 0)} • أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)} • احتياطي: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
+                        Tokens: {formatNumber(interactions?.summary.totalTokens24h || 0)} • تكلفة اليوم: ${((interactions?.summary.estimatedCostMicrosUsdToday || 0) / 1_000_000).toFixed(4)} • أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)} • احتياطي: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
                     </p>
                 </div>
             </div>

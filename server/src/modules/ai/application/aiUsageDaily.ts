@@ -7,6 +7,7 @@ export type AiUsageSnapshot = {
   outputTokens: number;
   totalTokens: number;
   cachedTokens: number;
+  estimatedCostMicrosUsd: number;
 };
 
 const zeroSnapshot = (): AiUsageSnapshot => ({
@@ -15,6 +16,7 @@ const zeroSnapshot = (): AiUsageSnapshot => ({
   outputTokens: 0,
   totalTokens: 0,
   cachedTokens: 0,
+  estimatedCostMicrosUsd: 0,
 });
 
 export const utcDayKey = (date = new Date()) => date.toISOString().slice(0, 10);
@@ -42,6 +44,7 @@ export const readAiUsageDaily = async (
       outputTokens: Number(found.outputTokens || 0),
       totalTokens: Number(found.totalTokens || 0),
       cachedTokens: Number(found.cachedTokens || 0),
+      estimatedCostMicrosUsd: Number(found.estimatedCostMicrosUsd || 0),
     };
   }
 
@@ -62,6 +65,7 @@ export const readAiUsageDaily = async (
         outputTokens: { $sum: "$outputTokens" },
         totalTokens: { $sum: "$totalTokens" },
         cachedTokens: { $sum: "$cachedTokens" },
+        estimatedCostMicrosUsd: { $sum: "$estimatedCostMicrosUsd" },
       },
     },
   ]);
@@ -73,6 +77,7 @@ export const readAiUsageDaily = async (
         outputTokens: Number(aggregate.outputTokens || 0),
         totalTokens: Number(aggregate.totalTokens || 0),
         cachedTokens: Number(aggregate.cachedTokens || 0),
+        estimatedCostMicrosUsd: Number(aggregate.estimatedCostMicrosUsd || 0),
       }
     : zeroSnapshot();
 
@@ -89,6 +94,7 @@ export const readAiUsageDaily = async (
         totalTokens: snapshot.totalTokens,
         cachedTokens: snapshot.cachedTokens,
         estimatedUsageCount: 0,
+        estimatedCostMicrosUsd: snapshot.estimatedCostMicrosUsd,
       },
       $set: { lastUsedAt: new Date() },
     },
@@ -107,6 +113,7 @@ export const incrementAiUsageDaily = async (input: {
   totalTokens?: number;
   cachedTokens?: number;
   usageEstimated?: boolean;
+  estimatedCostMicrosUsd?: number;
 }) => {
   const dayKey = utcDayKey();
   const now = new Date();
@@ -117,6 +124,7 @@ export const incrementAiUsageDaily = async (input: {
     totalTokens: Math.max(0, Number(input.totalTokens || 0)),
     cachedTokens: Math.max(0, Number(input.cachedTokens || 0)),
     estimatedUsageCount: input.usageEstimated ? 1 : 0,
+    estimatedCostMicrosUsd: Math.max(0, Number(input.estimatedCostMicrosUsd || 0)),
   };
 
   const scopes: Array<{ scopeType: AiUsageScopeType; scopeId: string }> = [
