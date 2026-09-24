@@ -121,7 +121,12 @@ async function main() {
           id,
           text: `${marker} pagination question ${index + 1}`,
           options: ["أ", "ب", "ج", "د"],
-          correctOptionIndex: 0,
+          correctOptionIndex: index === 100 ? 1 : 0,
+          explanation: `شرح موثوق لسؤال ${index + 1}`,
+          hint: `تلميح موثوق لسؤال ${index + 1}`,
+          solvingStrategy: "ابدأ بتحديد المعطيات ثم قارن الاختيارات.",
+          voiceExplanation: { text: `شرح المعلم الصوتي لسؤال ${index + 1}`, version: 1 },
+          aiContext: { speechText: `السؤال رقم ${index + 1} في اختبار E2E`, version: 1 },
           skillIds: [String(fixtureSkillId)],
           pathId: String(question.pathId),
           subject: String(question.subject || question.subjectId),
@@ -282,6 +287,16 @@ async function main() {
     }
     await freshStudent.page.getByTestId(`student-directed-test-${createdQuizId}`).getByRole("link", { name: /دخول الاختبار|إعادة الدخول/ }).click();
     await freshStudent.page.getByTestId("quiz-title").waitFor({ timeout: 30000 });
+    const saveForReviewResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "PUT" && /\/api\/review\/questions\/[^/]+\/saved$/.test(new URL(response.url()).pathname),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: /مراجعة لاحقاً|مراجعة لاحقًا/ }).click();
+    const saveForReviewResponse = await saveForReviewResponsePromise;
+    if (!saveForReviewResponse.ok()) throw new Error(`Save-for-review request failed (${saveForReviewResponse.status()})`);
+    const saveForReviewPayload = await saveForReviewResponse.json().catch(() => ({}));
+    const savedQuestionId = String(saveForReviewPayload?.questionId || "");
+    if (!savedQuestionId) throw new Error(`Save-for-review response did not identify the canonical question: ${JSON.stringify(saveForReviewPayload)}`);
     const autosaveResponsePromise = freshStudent.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/live-exams/progress"),
       { timeout: 30000 },
@@ -341,6 +356,77 @@ async function main() {
     await reviewButton.waitFor({ timeout: 30000 });
     await reviewButton.click();
     await freshStudent.page.getByRole("heading", { name: "مراجعة الحلول" }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("question-assistant-panel").first().waitFor({ timeout: 30000 });
+    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
+    const tutorResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "تلميح", exact: true }).first().click();
+    const tutorResponse = await tutorResponsePromise;
+    if (!tutorResponse.ok()) throw new Error(`Question Assistant failed in result review (${tutorResponse.status()})`);
+
+    const savedLibrary = await api(freshStudent.page, "/review/library?tab=saved&limit=20&page=1");
+    const mistakeLibrary = await api(freshStudent.page, "/review/library?tab=mistakes&limit=20&page=1");
+    const savedIds = listOf(savedLibrary.payload, "items").map((item) => String(item.questionId || item.question?.id || ""));
+    const mistakeIds = listOf(mistakeLibrary.payload, "items").map((item) => String(item.questionId || item.question?.id || ""));
+    const expectedMistakeQuestionId = `${marker}-question-100`;
+    if (!savedLibrary.ok || !savedIds.includes(savedQuestionId)) throw new Error(`Saved review library missing ${savedQuestionId}: ${JSON.stringify(savedLibrary)}`);
+    if (!mistakeLibrary.ok || !mistakeIds.includes(expectedMistakeQuestionId)) throw new Error(`Mistake review library missing ${expectedMistakeQuestionId}: ${JSON.stringify(mistakeLibrary)}`);
+    const savedItem = listOf(savedLibrary.payload, "items").find((item) => String(item.questionId || "") === savedQuestionId);
+    const mistakeItem = listOf(mistakeLibrary.payload, "items").find((item) => String(item.questionId || "") === expectedMistakeQuestionId);
+    if (String(savedItem?.question?.id || "") !== savedQuestionId || !String(savedItem?.question?.questionCode || "")) {
+      throw new Error(`Saved review lost canonical question identity: ${JSON.stringify(savedItem)}`);
+    }
+    if (String(mistakeItem?.question?.id || "") !== expectedMistakeQuestionId || !String(mistakeItem?.question?.questionCode || "")) {
+      throw new Error(`Mistake review lost canonical question identity: ${JSON.stringify(mistakeItem)}`);
+    }
+
+    await freshStudent.page.goto(`${BASE_URL}/favorites`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await freshStudent.page.getByRole("heading", { name: "أسئلتي للمراجعة" }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByText("حفظتها للمراجعة", { exact: false }).first().waitFor({ timeout: 30000 });
+    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
+    const savedTutorResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "تلميح", exact: true }).click();
+    const savedTutorResponse = await savedTutorResponsePromise;
+    if (!savedTutorResponse.ok()) throw new Error(`Question Assistant failed in saved review (${savedTutorResponse.status()})`);
+
+    await freshStudent.page.getByRole("button", { name: /أخطأت فيها/ }).click();
+    await freshStudent.page.getByText("خطأ سابق", { exact: true }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
+    const mistakeTutorResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "خطوات الحل", exact: true }).click();
+    const mistakeTutorResponse = await mistakeTutorResponsePromise;
+    if (!mistakeTutorResponse.ok()) throw new Error(`Question Assistant failed in mistake review (${mistakeTutorResponse.status()})`);
+    await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-review-library.png"), fullPage: true });
+
+    await freshStudent.page.goto(`${BASE_URL}/review?mode=mistakes`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await freshStudent.page.getByText("استعادة خطأ", { exact: true }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByRole("button", { name: "ب", exact: true }).click();
+    const reviewAnswerResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && /\/api\/review\/[^/]+\/answer$/.test(new URL(response.url()).pathname),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "تحقق وسجّل المراجعة", exact: true }).click();
+    const reviewAnswerResponse = await reviewAnswerResponsePromise;
+    if (!reviewAnswerResponse.ok()) throw new Error(`Review practice answer failed (${reviewAnswerResponse.status()})`);
+    const reviewAnswerPayload = await reviewAnswerResponse.json().catch(() => ({}));
+    if (reviewAnswerPayload?.isCorrect !== true) throw new Error(`Review practice did not record a correct remediation attempt: ${JSON.stringify(reviewAnswerPayload)}`);
+    await freshStudent.page.getByRole("heading", { name: "تمت المراجعة اليومية" }).waitFor({ timeout: 30000 });
+    const dueAfterPractice = await api(freshStudent.page, "/review/due?limit=20");
+    const dueAfterPracticeIds = listOf(dueAfterPractice.payload, "items").map((item) => String(item.questionId || ""));
+    if (!dueAfterPractice.ok || dueAfterPracticeIds.includes(expectedMistakeQuestionId)) {
+      throw new Error(`Remediated question remained immediately due after spaced-review update: ${JSON.stringify(dueAfterPractice)}`);
+    }
     let completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
     for (let retry = 0; completedSession.payload?.session && retry < 10; retry += 1) {
       await freshStudent.page.waitForTimeout(250);
@@ -352,13 +438,23 @@ async function main() {
       ["target sees directed test in UI", true],
       ["target submits through runner", hasServerResult],
       ["fresh result page restores learner-safe answer review", true],
+      ["student can save a live quiz question for review", savedIds.includes(savedQuestionId)],
+      ["wrong submitted answer appears in mistake review", mistakeIds.includes(expectedMistakeQuestionId)],
+      ["smart tutor is authorized from result review", tutorResponse.ok],
+      ["saved review preserves canonical question identity", String(savedItem?.question?.id || "") === savedQuestionId],
+      ["mistake review preserves canonical question identity", String(mistakeItem?.question?.id || "") === expectedMistakeQuestionId],
+      ["smart tutor is authorized from saved review", savedTutorResponse.ok],
+      ["smart tutor is authorized from mistake review", mistakeTutorResponse.ok],
+      ["short mistake practice records a correct remediation attempt", reviewAnswerPayload?.isCorrect === true],
+      ["spaced review reschedules the remediated question", !dueAfterPracticeIds.includes(expectedMistakeQuestionId)],
+      ["review library UI exposes saved/mistake context and voice", true],
       ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
       ["accepted submission closes the resumable session", !completedSession.payload?.session],
       ["outsider cannot open direct URL", !outsiderState.canSeeQuestion],
       ["no 5xx request was required", true],
     ];
     const failed = checks.filter(([, ok]) => !ok);
-    const summary = { generatedAt: new Date().toISOString(), marker, createdQuizId, checks: checks.map(([name, ok]) => ({ name, ok })), errors };
+    const summary = { generatedAt: new Date().toISOString(), marker, createdQuizId, savedQuestionId, expectedMistakeQuestionId, checks: checks.map(([name, ok]) => ({ name, ok })), errors };
     fs.writeFileSync(path.join(OUT_DIR, "SUMMARY.json"), JSON.stringify(summary, null, 2));
     if (failed.length) {
       throw new Error(`${failed.map(([name]) => name).join("; ")} :: ${JSON.stringify({ resultResponse, runnerBody: (await freshStudent.page.locator("body").innerText().catch(() => "")).slice(0, 1200) })}`);

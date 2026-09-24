@@ -32,7 +32,7 @@ export const QuestionAssistantPanel: React.FC<{
   const [error, setError] = React.useState('');
 
   const ask = async (level: HelpLevel, message?: string) => {
-    if (!resultId || !questionId || pendingLevel) return;
+    if (!questionId || pendingLevel || (context === "result_review" && !resultId)) return;
     setPendingLevel(level);
     setError('');
     try {

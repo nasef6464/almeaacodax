@@ -945,7 +945,7 @@ const Dashboard: React.FC = () => {
         exams:         { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
         reports:       { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
         plan:          { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
-        favorites:     { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        favorites:     { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
         flashcards:    { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
         qa:            { iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
         requests:      { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },

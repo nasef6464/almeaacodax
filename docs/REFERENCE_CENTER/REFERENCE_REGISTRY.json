@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-24",
+  "entryPoint": "docs/REFERENCE_CENTER/README_AR.md",
+  "truthOrder": [
+    "git-head",
+    "AGENTS.md",
+    "docs/REFERENCE_CENTER/README_AR.md",
+    "docs/REFERENCE_CENTER/REFERENCE_REGISTRY.json",
+    "domain-reference"
+  ],
+  "canonical": [
+    {
+      "path": "docs/architecture/CODEX_EXECUTION_STATE.md",
+      "role": "execution_state",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/CHAT_EXECUTION_GOALS_AR.md",
+      "role": "execution_plan",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/FINAL_MASTER_PLAN_V3_AR.md",
+      "role": "product_architecture",
+      "status": "reference"
+    },
+    {
+      "path": "docs/architecture/CURRENT_DIRECTORY_AND_MODULE_MAP.md",
+      "role": "module_ownership",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/DEEP_MODULARITY_AND_RESOURCE_AUDIT.md",
+      "role": "modularity_debt",
+      "status": "active"
+    },
+    {
+      "path": "docs/product/STUDENT_JOURNEY_PHILOSOPHY_AR.md",
+      "role": "student_journey",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/QUESTION_REVIEW_SMART_TUTOR_REFERENCE_AR.md",
+      "role": "question_review_tutor",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/ADAPTIVE_MASTERY_FINAL_MASTER_PLAN_AR.md",
+      "role": "adaptive_mastery",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/ADAPTIVE_MASTERY_AGENT_OPERATING_PROTOCOL_AR.md",
+      "role": "adaptive_agent_protocol",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md",
+      "role": "production_checkpoint",
+      "status": "active_evidence"
+    },
+    {
+      "path": "docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md",
+      "role": "production_closure_plan",
+      "status": "active"
+    }
+  ],
+  "supporting": [
+    {
+      "path": "docs/architecture/QUESTION_BANK_V2_INGESTION_CONTRACT_AR.md",
+      "role": "question_ingestion_contract"
+    },
+    {
+      "path": "docs/architecture/QUESTION_VOICE_EXPLANATION_V1_AR.md",
+      "role": "voice_contract"
+    },
+    {
+      "path": "docs/architecture/ASSESSMENT_COMPLETION_REPORT_AR.md",
+      "role": "assessment_completion"
+    },
+    {
+      "path": "docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md",
+      "role": "assessment_test_roadmap"
+    },
+    {
+      "path": "docs/architecture/SCHOOLS_RBAC_AUDIT_AR.md",
+      "role": "schools_rbac"
+    },
+    {
+      "path": "docs/architecture/SCHOOL_MVP_COMPLETION_REPORT_AR.md",
+      "role": "school_mvp"
+    },
+    {
+      "path": "docs/architecture/SMART_CLASSROOM_AGENT_ENTRY_AR.md",
+      "role": "smart_classroom_entry"
+    },
+    {
+      "path": "docs/architecture/DISASTER_RECOVERY_RUNBOOK.md",
+      "role": "disaster_recovery"
+    }
+  ],
+  "historicalExamples": [
+    {
+      "path": "docs/CURRENT_DEVELOPMENT_STATUS_AR.md",
+      "reason": "May 2026 snapshot; newer execution state exists"
+    },
+    {
+      "path": "docs/MASTER_DELIVERY_STATUS_AR.md",
+      "reason": "May 2026 snapshot; newer execution state exists"
+    },
+    {
+      "path": "docs/archive_reports/",
+      "reason": "archive by definition"
+    }
+  ],
+  "policy": "Unregistered docs may still be useful evidence, but are not authoritative current-state sources unless linked by a canonical reference."
+}
