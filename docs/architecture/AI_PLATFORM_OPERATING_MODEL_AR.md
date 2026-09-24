@@ -855,3 +855,232 @@ Gemini / OpenRouter / Qwen / DeepSeek / OpenAI / Local
 ```
 
 بهذا الشكل تبقى المنصة بسيطة، قليلة التوكنز، قابلة لتغيير المزود، وقابلة للمراقبة والتسعير دون ربط المنتج بمزود واحد.
+
+
+## 25. جرد المشروع الحالي بعد الفحص الشامل — 2026-09-24
+
+### واجهات المستخدم والإدارة
+- `components/ChatWidget.tsx`: مساعد الطالب العام، يدعم نصًا وصورة.
+- `components/results/QuestionAssistantPanel.tsx`: مساعد السؤال في result/saved/mistake/mastery review.
+- `components/results/QuestionVoiceExplanationPlayer.tsx`: تسجيل المعلم أو Browser SpeechSynthesis.
+- `dashboards/admin/AiAssistantManager.tsx`: مركز إدارة موجود بالفعل ويضم:
+  - مساعد المدير.
+  - المزودات وسلسلة الانتقال.
+  - سجل التفاعلات.
+  - جاهزية المساعد والطلاب.
+  - اختبار/benchmark للمزودات.
+- `dashboards/admin/PlatformIntegrationsManagerLegacy.tsx`: مكان تعديل مفاتيح AI حاليًا عبر `externalPlatforms`.
+- `dashboards/admin/builders/UnifiedQuestionBuilder.tsx`: إنشاء Draft سؤال بمساعدة AI.
+- `dashboards/admin/builders/QuestionVoiceExplanationEditor.tsx`: تسجيل/رفع صوت المعلم.
+
+### Backend
+- `server/src/routes/ai.routes.ts`: ما زال يحتوي معظم الـGateway + providers + endpoints + budgets + telemetry في ملف واحد كبير.
+- `server/src/modules/ai/application/questionAssistant.ts`: boundary جيدة مستقلة.
+- `server/src/modules/ai/application/providerCircuitBreaker.ts`: circuit breaker حالي process-local.
+- `server/src/modules/ai/application/aiStudentTargetAuthorization.ts`: authorization جيد ومبني على الدور/المدرسة/التكليف.
+- `server/src/middleware/aiStudentTargetGuard.ts`: scope guard للعمليات التي تستهدف طالبًا.
+- `server/src/models/AiInteraction.ts`: سجل التفاعلات.
+- `server/src/models/AiQuestionAssistCache.ts`: cache TTL لمساعد السؤال.
+- `PlatformIntegrationSettings` + encryption helpers: تخزين الأسرار المشفر الحالي.
+
+### Endpoints الحالية
+- `GET /ai/status`
+- `GET /ai/readiness`
+- `GET /ai/interactions`
+- `POST /ai/providers/test`
+- `POST /ai/chat`
+- `POST /ai/question-assistant`
+- `POST /ai/admin-assistant`
+- `POST /ai/generate-mock-exam`
+- `POST /ai/study-plan`
+- `POST /ai/learning-path`
+- `POST /ai/remediation-plan`
+- `POST /ai/question`
+- `POST /ai/course-summary`
+
+### ملاحظة معمارية
+`generate-mock-exam` الحالي لا يحتاج LLM في جوهره؛ هو اختيار deterministic من Question Bank وفق نتائج/مهارات الطالب. مكانه المنطقي على المدى المتوسط Assessment/Adaptive capability مع إبقاء AI فقط للتسمية/الشرح الاختياري.
+
+---
+
+## 26. نقاط القوة الحالية التي لا نعيد بناءها
+
+- كل provider call من الخادم، لا مفاتيح في الواجهة.
+- تشفير الأسرار عند التخزين + masking في الردود والتاريخ.
+- Multi-key موجود فعليًا لكل provider.
+- Sequential failover بدل parallel fan-out المكلف.
+- SSRF guard يمنع provider URLs الخاصة/غير HTTPS.
+- Student target authorization قوي.
+- Question Tutor explicit-click، لا يعمل عند render.
+- Question Tutor لا يرسل الصورة افتراضيًا.
+- cache + in-flight dedupe.
+- output/prompt bounds.
+- fallback داخلي.
+- AI لا يكتب scoring/mastery.
+- Authoring AI يفتح Draft للمراجعة بدل الحفظ التلقائي.
+
+---
+
+## 27. الفجوات المكتشفة — الأولويات
+
+### P0 — تكلفة/تشغيل
+1. `/ai/course-summary` لا يتطلب auth ولا يمر budget/usage ledger موحد؛ يجب تحويله إلى authoring/precompute أو حمايته.
+2. `/ai/chat` يسمح guest حاليًا؛ رغم global/sensitive limits يمكن لزائر استنزاف الحصة اليومية المشتركة. نحتاج Guest policy مستقلة أو Auth للـStudent Tutor.
+3. `study-plan / learning-path / remediation-plan / question / course-summary` لا تمر كلها حاليًا بنفس budget/recording pipeline.
+4. token usage الحقيقي غير مسجل؛ الموجود request counts + chars فقط.
+5. local providers: defaults تجعل Ollama/LM Studio يبدوان configured في Production حتى بدون endpoint فعلي. فحص الإنتاج على `main@4aec4bc26529` أكد أن الحالة تعلن الاثنين configured رغم عدم وجود cloud provider key فعال.
+6. Generic chat يسمح Base64 image داخل body حتى حد route البالغ 1MB؛ يجب وضع image policy/size validation/compression وفصل Vision capability عن chat العادي.
+
+### P1 — حمل الخادم/قاعدة البيانات
+1. `loadRuntimeAiConfig` يقرأ PlatformIntegrationSettings من Mongo في كل AI call؛ نحتاج cache قصير + invalidation بعد حفظ الإعداد.
+2. `withinAiBudget` ينفذ global/user/school `countDocuments` لكل طلب؛ يتحول إلى atomic daily counters (Redis عند توفره، Mongo bucket fallback).
+3. Question Assistant minute limit أيضًا يعتمد count على interaction log.
+4. `/ai/readiness` ينفذ counts متعددة ويمكن cache 30–60 ثانية لأنه Admin dashboard.
+5. `/ai/interactions` يعمل counts/aggregates على السجل كله؛ نحتاج date window + daily aggregates.
+6. `AiInteraction` ليس له retention TTL حاليًا؛ نحتاج سياسة retention ودaily rollups حتى لا يتضخم Mongo.
+7. Circuit breaker وin-flight dedupe process-local؛ عند multi-instance نستخدم Redis/shared state أو نقبل best-effort بوضوح.
+
+### P1 — تنظيم
+- اسم `services/geminiService.ts` مضلل؛ لا يتصل Gemini مباشرة بل Backend AI Gateway.
+- AI config محشور داخل generic `externalPlatforms`؛ مناسب compatibility لكنه ليس UX نهائيًا.
+- `ai.routes.ts` يحمل provider adapters + policy + endpoints + analytics في ملف واحد.
+- Admin AI وPlatform Integrations متداخلان وظيفيًا.
+
+### P2 — مستقبل
+- Capability-specific routing.
+- token/cost metering.
+- live voice.
+- vision-on-demand.
+- predicted score calibration.
+- provider/model deprecation watcher.
+
+---
+
+## 28. القرار المعماري النهائي
+
+**AI Domain واحد مستقل داخل الـModular Monolith، وليس Microservice الآن.**
+
+الهيكل المقترح:
+
+```
+server/src/modules/ai/
+  domain/
+    provider.ts
+    capability.ts
+    quota.ts
+    budget.ts
+    usage.ts
+  application/
+    aiGateway.ts
+    aiConfigService.ts
+    providerRouter.ts
+    contextBuilder.ts
+    budgetService.ts
+    usageMeter.ts
+    questionTutor.ts
+    studentTutor.ts
+    adminCopilot.ts
+    authoringAssistant.ts
+    voiceTutor.ts
+  infrastructure/
+    providers/
+      gemini.ts
+      openaiCompatible.ts
+      groq.ts
+      qwen.ts
+      openrouter.ts
+      deepseek.ts
+      openai.ts
+    config/
+    usage/
+    cache/
+  http/
+    aiRoutes.ts
+    adminAiRoutes.ts
+```
+
+لا ننشئ Process/Server منفصل للـAI في هذه المرحلة.
+
+### لماذا؟
+- أقل تكلفة تشغيلية.
+- لا network hop إضافي.
+- نفس auth/RBAC.
+- نفس Mongo/Redis.
+- deploy واحد.
+- نستطيع استخراج خدمة مستقلة لاحقًا إذا أثبت الحجم الحاجة.
+
+---
+
+## 29. شكل موديول الإدارة
+
+في القائمة الجانبية:
+**إدارة الذكاء الاصطناعي**
+
+داخلها تبويبات:
+1. **نظرة عامة** — health/free-vs-paid/tokens/cost/errors.
+2. **المساعدون** — Student Tutor / Question Tutor / Admin Copilot / Authoring / Voice.
+3. **المزودات والمفاتيح** — Accounts/Projects/Quota Pools/Keys.
+4. **التوجيه والنماذج** — route profiles.
+5. **الحدود والتكلفة** — budgets/spend caps.
+6. **الاستخدام** — tokens/cost/cache/fallback per capability/school.
+7. **السجل والتنبيهات**.
+8. **مختبر الاختبار**.
+
+`Platform Integrations` يبقى مسؤولًا عن Google Login/WhatsApp/Email/Zoom/... ويحتوي فقط رابطًا إلى AI Management، لا يكون مكان الإدارة الأساسي للـAI.
+
+---
+
+## 30. سياسة تقليل الحمل على السيرفر
+
+- ممنوع تشغيل Ollama/LM Studio على Render production الحالي.
+- لا inference محلي داخل Node.
+- Node يقوم orchestration فقط.
+- لا AI call على page render.
+- Question Tutor explicit click فقط.
+- Course summaries تُولد مرة وتخزن، لا عند كل مشاهدة.
+- Browser TTS للشرح النصي الثابت.
+- الصور من R2/CDN ولا تمر عبر Node إلا في Vision request مصرح ومحدود.
+- config cache.
+- usage counters O(1).
+- Redis optional للتوسع وليس شرطًا لو single instance؛ Mongo daily buckets fallback.
+- interaction logs لها retention + aggregation.
+- لا workers دائمة للصوت قبل وجود استخدام فعلي.
+
+---
+
+## 31. تقدير تكلفة القدرات
+
+هذه تقديرات هندسية وليست فاتورة مضمونة؛ تتغير حسب provider/model/context.
+
+### Question Tutor
+Typical short call: ~700 input + ~150 output tokens.
+- Free tier/cache/trusted explanation: قريب من صفر.
+- Paid cheap model: عادة أجزاء من السنت لكل طلب.
+- الهدف: معظم hints المتكررة من trusted/cache بلا provider call.
+
+### Student Tutor
+Typical: ~1,000–1,500 input + 200–400 output.
+- context محدود إلى أضعف مهارات + نتائج قليلة.
+- لا full history.
+
+### Admin Copilot
+Typical: ~2,000–4,000 input + 400–800 output.
+- عدد الطلبات قليل؛ يمكن استخدام model أقوى هنا.
+
+### Authoring
+- يستخدم عند الطلب فقط.
+- كل ناتج Draft.
+- batch authoring لا يمر من synchronous UI route عند التوسع.
+
+### Static Voice
+- Browser SpeechSynthesis: $0 provider cost.
+- teacher audio stored once on R2.
+
+### Live Voice
+- أعلى capability تكلفة.
+- يبدأ Push-to-talk/turn-based.
+- يمكن فصل STT عن LLM عن TTS لاختيار الأرخص.
+- budget بالدقائق إلزامي.
+
+---
+
