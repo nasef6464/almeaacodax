@@ -45,8 +45,8 @@ flowchart TD
 | AI-4 Control Center | ✅ CLOSED | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ✅ CLOSED | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ✅ CLOSED (LOW-COST V1) | push-to-talk + STT/TTS budgets + vision on demand |
-| AI-7 Readiness & Prediction | 🟡 IN PROGRESS | readiness deterministic + predicted score بعد calibration |
-| AI-8 Production Certification | ⏳ | load/cost/security/fallback exact-head evidence |
+| AI-7 Readiness & Prediction | ✅ INTERNAL CLOSED / QIYAS CALIBRATION GATED | readiness deterministic + predicted score بعد calibration |
+| AI-8 Production Certification | 🟡 IN PROGRESS | load/cost/security/fallback exact-head evidence |
 
 ## AI-1 — Secure Gateway
 
@@ -196,10 +196,15 @@ Provider
 - [x] لا يظهر التقدير قبل 3 قياسات و30 سؤالًا وحد أدنى من التغطية والأدلة.
 - [x] يظهر Range وثقة بدل رقم منفرد مضلل.
 - [x] Qiyas score يبقى null وcalibratedToQiyas=false حتى تتوفر بيانات معايرة فعلية.
-- [ ] بناء Dataset معايرة من نتائج قياس الفعلية بموافقة المستخدم/الطالب.
-- [ ] قياس MAE/Calibration error قبل إطلاق «درجة قياس متوقعة» بالاسم.
+- [ ] بناء Dataset معايرة من نتائج قياس الفعلية بموافقة المستخدم/الطالب — **بوابة مستقبلية منفصلة وليست مانعًا لإغلاق تقدير الأداء الداخلي**.
+- [ ] قياس MAE/Calibration error قبل إطلاق «درجة قياس متوقعة» بالاسم — `qiyasScoreEstimate` يبقى null حتى ذلك.
 
 ## AI-8 — Production Certification
+
+المرجع التنفيذي للشهادة:
+`docs/architecture/AI_PLATFORM_CERTIFICATION_AR.md`
+
+الحالة الحالية: يتم إغلاق **Pre-Production Certification** على exact-head أولًا. Live Provider Certification لا يمكن ادعاؤها قبل دمج نفس SHA وإضافة مفتاح حقيقي من الإدارة.
 
 يجب إثبات:
 - provider failover.

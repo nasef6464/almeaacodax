@@ -65,7 +65,8 @@
 ### 8) نظام الذكاء الاصطناعي الموحد
 - `docs/architecture/AI_PLATFORM_OPERATING_MODEL_AR.md`
 - `docs/architecture/AI_PLATFORM_EXECUTION_PLAN_AR.md`
-- الاستخدام: المرجع الأول يحدد النموذج التشغيلي، والثاني هو خطة التنفيذ المرحلية النشطة للـGateway والتكلفة والمفاتيح والمساعدين.
+- `docs/architecture/AI_PLATFORM_CERTIFICATION_AR.md`
+- الاستخدام: النموذج التشغيلي + خطة التنفيذ + مصفوفة الشهادة التي تفصل بين ما ثبت على الفرع وما يحتاج إثبات Live بعد الدمج.
 - الحالة: **CANONICAL / ACTIVE**
 
 ### 9) الإنتاج والجاهزية التشغيلية
@@ -84,7 +85,7 @@
 | Question Bank / الصور / ingest | `QUESTION_REVIEW_SMART_TUTOR_REFERENCE_AR.md` + `QUESTION_BANK_V2_INGESTION_CONTRACT_AR.md` |
 | اختبارات / Assessment / Results | `CHAT_EXECUTION_GOALS_AR.md` + `ASSESSMENT_COMPLETION_REPORT_AR.md` |
 | Adaptive / Mastery / Smart Path | `ADAPTIVE_MASTERY_FINAL_MASTER_PLAN_AR.md` |
-| AI / Question Assistant / Tokens / Keys | `AI_PLATFORM_OPERATING_MODEL_AR.md` + `QUESTION_REVIEW_SMART_TUTOR_REFERENCE_AR.md` |
+| AI / Question Assistant / Tokens / Keys | `AI_PLATFORM_OPERATING_MODEL_AR.md` + `AI_PLATFORM_EXECUTION_PLAN_AR.md` + `AI_PLATFORM_CERTIFICATION_AR.md` |
 | مدارس / RBAC | `SCHOOLS_RBAC_AUDIT_AR.md` + School completion references |
 | Smart Classroom | `SMART_CLASSROOM_AGENT_ENTRY_AR.md` |
 | Refactor / modularity | `CURRENT_DIRECTORY_AND_MODULE_MAP.md` + `DEEP_MODULARITY_AND_RESOURCE_AUDIT.md` |
