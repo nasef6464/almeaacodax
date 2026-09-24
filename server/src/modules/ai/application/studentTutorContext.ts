@@ -39,6 +39,7 @@ type StudentTutorContextOptions = {
   maxWeaknesses?: number;
   maxRecentResults?: number;
   maxRecentTutorTurns?: number;
+  sessionId?: string;
 };
 
 const compact = (value: unknown, max = 180) =>
@@ -93,12 +94,13 @@ export const buildStudentTutorContext = async (
       .limit(maxRecentResults)
       .select("quizTitle score totalQuestions wrongAnswers skillsAnalysis")
       .lean(),
-    options.includeRecentTutorTurns
+    options.includeRecentTutorTurns && options.sessionId
       ? AiInteractionModel.find({
           userId: normalizedUserId,
           audience: "student",
           endpoint: { $in: ["/ai/chat", "/ai/question-assistant"] },
           status: { $ne: "error" },
+          "metadata.tutorSessionId": String(options.sessionId).slice(0, 120),
         })
           .sort({ createdAt: -1 })
           .limit(maxRecentTutorTurns)
@@ -160,7 +162,7 @@ export const buildStudentTutorContext = async (
       : "لا توجد نتائج اختبارات حديثة.",
     `الدروس المكتملة: ${Array.isArray((user as any).completedLessons) ? (user as any).completedLessons.length : 0}`,
     turns.length
-      ? `ذاكرة الجلسة المختصرة: ${turns.map((item) => `الطالب: ${item.userText} | المساعد: ${item.assistantText}`).join(" || ")}`
+      ? `ذاكرة هذه الجلسة فقط: ${turns.map((item) => `الطالب: ${item.userText} | المساعد: ${item.assistantText}`).join(" || ")}`
       : "",
   ].filter(Boolean);
 
