@@ -62,7 +62,12 @@
 - الاستخدام: الإتقان، الأدلة، Next Best Action، وحدود الذكاء الاصطناعي.
 - الحالة: **CANONICAL / DOMAIN**
 
-### 8) الإنتاج والجاهزية التشغيلية
+### 8) نظام الذكاء الاصطناعي الموحد
+- `docs/architecture/AI_PLATFORM_OPERATING_MODEL_AR.md`
+- الاستخدام: المزودات، المفاتيح، التوكنز، الميزانيات، Student/Question/Admin/Voice Tutor، routing والمراقبة.
+- الحالة: **CANONICAL / ACTIVE**
+
+### 9) الإنتاج والجاهزية التشغيلية
 - `docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md`
 - `docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md`
 - الاستخدام: ما هو مثبت إنتاجيًا، ما هو غير مثبت، والحواجز التشغيلية.
@@ -78,7 +83,7 @@
 | Question Bank / الصور / ingest | `QUESTION_REVIEW_SMART_TUTOR_REFERENCE_AR.md` + `QUESTION_BANK_V2_INGESTION_CONTRACT_AR.md` |
 | اختبارات / Assessment / Results | `CHAT_EXECUTION_GOALS_AR.md` + `ASSESSMENT_COMPLETION_REPORT_AR.md` |
 | Adaptive / Mastery / Smart Path | `ADAPTIVE_MASTERY_FINAL_MASTER_PLAN_AR.md` |
-| AI / Question Assistant | `QUESTION_REVIEW_SMART_TUTOR_REFERENCE_AR.md` + Phase 9 evidence |
+| AI / Question Assistant / Tokens / Keys | `AI_PLATFORM_OPERATING_MODEL_AR.md` + `QUESTION_REVIEW_SMART_TUTOR_REFERENCE_AR.md` |
 | مدارس / RBAC | `SCHOOLS_RBAC_AUDIT_AR.md` + School completion references |
 | Smart Classroom | `SMART_CLASSROOM_AGENT_ENTRY_AR.md` |
 | Refactor / modularity | `CURRENT_DIRECTORY_AND_MODULE_MAP.md` + `DEEP_MODULARITY_AND_RESOURCE_AUDIT.md` |
