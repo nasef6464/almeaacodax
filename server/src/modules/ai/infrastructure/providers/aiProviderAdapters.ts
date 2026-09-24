@@ -383,7 +383,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     responseMimeType?: AiResponseMimeType,
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
-  ) => {
+  ): Promise<AiProviderResponse> => {
     if (provider === "gemini") return callGemini(prompt, responseMimeType, image, options);
     if (provider === "ollama") return callOllama(prompt, responseMimeType, options);
     if (provider === "lmstudio") return callLmStudio(prompt, responseMimeType, options);
