@@ -31,6 +31,13 @@ type AiStatus = {
         model: string;
         keyCount: number;
     }>>;
+    providerHealth?: Array<{
+        provider: string;
+        failures: number;
+        open: boolean;
+        openUntil?: number;
+        lastFailureAt?: number;
+    }>;
 };
 
 type AiProviderStatus = {
