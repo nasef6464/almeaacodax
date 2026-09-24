@@ -2,6 +2,7 @@ import type { AiProviderId } from "./aiProviderRouter.js";
 
 export type AiCapabilityId =
   | "student_chat"
+  | "vision_chat"
   | "question_tutor"
   | "admin_copilot"
   | "study_plan"
@@ -18,6 +19,7 @@ export type AiRouteProfile = {
 
 const capabilityIds: AiCapabilityId[] = [
   "student_chat",
+  "vision_chat",
   "question_tutor",
   "admin_copilot",
   "study_plan",

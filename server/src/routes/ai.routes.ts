@@ -522,6 +522,7 @@ const providerPriority = () =>
   });
 
 const providerAllowedForCapability = (provider: AiProvider, capability?: AiCapabilityId) => {
+  if (capability === "vision_chat") return provider === "gemini" || provider === "none";
   if (provider === "none" || provider === "ollama" || provider === "lmstudio") return true;
   const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
   const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
@@ -1311,7 +1312,7 @@ ${message}
     }
 
     try {
-      const result = await callAiWithMeta(prompt, undefined, image, { capability: "student_chat" });
+      const result = await callAiWithMeta(prompt, undefined, image, { capability: hasImage ? "vision_chat" : "student_chat" });
       const responseText = result.text || fallback;
       const providerErrors = compactProviderErrors(result.errors);
       const fallbackReason = result.text ? undefined : fallbackReasonFromErrors(result.errors);
@@ -1334,9 +1335,10 @@ ${message}
           recentResultsCount: studentContext?.recentResults.length || 0,
           providerErrors,
           fallbackReason,
-          capability: "student_chat",
+          capability: hasImage ? "vision_chat" : "student_chat",
           quotaPoolId: result.quotaPoolId || "",
           hasImage,
+          visionProviderUsed: hasImage && result.provider === "gemini",
           tutorSessionId: tutorSessionId || "",
         },
       });

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Sparkles, ImagePlus } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Sparkles, ImagePlus, Mic, Volume2 } from 'lucide-react';
 import { getChatResponse } from '../services/aiService';
 import { Link } from 'react-router-dom';
+import { browserSpeechInputSupported, compressImageForAi, recognizeArabicOnce, speakArabic } from '../services/aiMediaClient';
 
 interface Message {
     id: string;
@@ -54,6 +55,9 @@ export const ChatWidget: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [isListening, setIsListening] = useState(false);
+    const [autoSpeak, setAutoSpeak] = useState(false);
+    const [mediaError, setMediaError] = useState('');
     const [imageFile, setImageFile] = useState<{ data: string; mimeType: string } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -82,18 +86,32 @@ export const ChatWidget: React.FC = () => {
         scrollToBottom();
     }, [messages, isOpen]);
 
-    const handleImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImagePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (!file) return;
-        if (!file.type.startsWith('image/')) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-            const base64 = (reader.result as string).split(',')[1];
-            setImageFile({ data: base64, mimeType: file.type });
-            setImagePreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
         e.target.value = '';
+        if (!file || !file.type.startsWith('image/')) return;
+        setMediaError('');
+        try {
+            const compressed = await compressImageForAi(file);
+            setImageFile({ data: compressed.data, mimeType: compressed.mimeType });
+            setImagePreview(compressed.previewUrl);
+        } catch (error) {
+            setMediaError(error instanceof Error ? error.message : 'تعذر تجهيز الصورة.');
+        }
+    };
+
+    const handleVoiceInput = async () => {
+        if (!browserSpeechInputSupported() || isListening || isLoading) return;
+        setMediaError('');
+        setIsListening(true);
+        try {
+            const transcript = await recognizeArabicOnce();
+            if (transcript) setInputValue((current) => current ? `${current} ${transcript}` : transcript);
+        } catch (error) {
+            setMediaError(error instanceof Error ? error.message : 'تعذر التقاط الصوت.');
+        } finally {
+            setIsListening(false);
+        }
     };
 
     const clearImage = () => {
@@ -130,6 +148,7 @@ export const ChatWidget: React.FC = () => {
             recommendedLinks: responseText.recommendedLinks,
         };
         setMessages((prev) => [...prev, botMsg]);
+        if (autoSpeak && botMsg.text) speakArabic(botMsg.text);
         setIsLoading(false);
     };
 
@@ -224,8 +243,9 @@ export const ChatWidget: React.FC = () => {
 
                     <div className="p-3 bg-white border-t border-gray-100 space-y-3">
                         <div className="rounded-xl bg-emerald-50 px-3 py-2 text-[11px] font-bold leading-5 text-emerald-800">
-                            اسألني عن نقطة ضعفك، خطة يومية، شرح قانون، أو كيف تراجع أخطاء الاختبار.
+                            اسألني عن نقطة ضعفك، خطة يومية، شرح قانون، أو كيف تراجع أخطاء الاختبار. الصوت هنا Push-to-talk، والصورة تُضغط قبل الإرسال لتقليل الاستهلاك.
                         </div>
+                        {mediaError ? <div className="text-[11px] font-bold text-rose-600">{mediaError}</div> : null}
                         <div className="flex gap-2 overflow-x-auto pb-1">
                             {quickPrompts.map((prompt) => (
                                 <button
@@ -259,6 +279,25 @@ export const ChatWidget: React.FC = () => {
                                 className="hidden"
                                 onChange={handleImagePick}
                             />
+                            <button
+                                type="button"
+                                onClick={() => void handleVoiceInput()}
+                                disabled={isLoading || isListening || !browserSpeechInputSupported()}
+                                className="bg-gray-100 text-gray-600 p-2 rounded-full hover:bg-gray-200 disabled:opacity-50 shrink-0"
+                                aria-label="إملاء صوتي"
+                                title="اضغط وتحدث مرة واحدة"
+                            >
+                                {isListening ? <Loader2 size={18} className="animate-spin" /> : <Mic size={18} />}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setAutoSpeak((value) => !value)}
+                                className={`${autoSpeak ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-600'} p-2 rounded-full hover:bg-gray-200 shrink-0`}
+                                aria-label="قراءة الردود صوتيًا"
+                                title="قراءة الردود بصوت المتصفح"
+                            >
+                                <Volume2 size={18} />
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
