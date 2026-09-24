@@ -552,7 +552,269 @@ Platform Integrations يبقى للـGoogle/WhatsApp/Email/... ويضع فقط �
 
 ---
 
-## 20. معيار النجاح
+## 20. استراتيجية Free-First والمفاتيح المتعددة
+
+الهدف هو الاستفادة من الطبقات المجانية **بشكل مشروع ومستقر**، لا بناء النظام على التحايل على حصص المزودات.
+
+### القاعدة الأساسية
+كل مفتاح يحمل هوية Quota Pool، وليس مجرد secret مستقل:
+
+```
+Provider
+  └─ Account / Organization
+      └─ Project / Workspace   ← quota pool
+          ├─ Key A
+          ├─ Key B
+          └─ Key C
+```
+
+إذا كان مفتاحان تابعين لنفس Project/Workspace ويشتركان في نفس quota، **لا نعاملهما كمصدرين لحصة إضافية**. فائدتهما تكون rotation/security فقط.
+
+### Gemini / Google AI Studio
+- حدود Gemini API تُطبق أساسًا على **المشروع** لا على API key المنفرد.
+- لذلك إنشاء عدة keys داخل نفس المشروع لا يضاعف RPM/TPM/RPD.
+- يمكن تسجيل أكثر من مشروع مشروعًا مستقلًا عندما يكون لديك سبب مشروع للعزل أو البيئات أو الملكية، لكن لا نصمم النظام لإنشاء حسابات/مشاريع بهدف تجاوز حدود Free Tier.
+- كل Gemini key يسجل معه:
+  - projectLabel
+  - projectId إن توفر
+  - accountLabel إداري غير حساس
+  - plan: free/paid/unknown
+  - quotaPoolId = `gemini:<project>`
+
+### OpenRouter
+- يدعم free models.
+- Free plan محدود جدًا ومناسب للـfallback والتجارب أكثر من الاعتماد الإنتاجي.
+- quota pool يكون على مستوى الحساب/workspace حسب المزود.
+
+### Qwen / Alibaba Model Studio
+- يمكن الاستفادة من Free Quota للنماذج المؤهلة.
+- free quota عادة مرتبطة بالحساب/الموديل، وليست بكل API key.
+- نفعل Free Quota Only من لوحة المزود حين يكون الهدف منع أي رسوم تلقائية.
+- quotaPoolId = `qwen:<account/workspace>:<model-family>` عند الحاجة.
+
+### Groq
+- مرشح ممتاز كـOpenAI-compatible provider للسرعة والـfree developer usage.
+- limits لها سقف على مستوى organization؛ إنشاء projects متعددة لا يلغي سقف المنظمة.
+- يضاف لاحقًا عبر Provider Adapter مستقل، لا كمنطق خاص داخل الواجهات.
+
+### سياسة التدوير
+التدوير بين المفاتيح يكون لأحد الأسباب التالية فقط:
+- key revocation.
+- key health failure.
+- credential rotation.
+- عزل dev/staging/prod.
+- مفاتيح/مشاريع مستقلة مسموح بها لها quota pools مستقلة فعلًا.
+
+ولا يستخدم لإخفاء أو تجاوز rate-limit policy للمزود.
+
+### Free-First Router
+للطلبات منخفضة المخاطر:
+1. Trusted deterministic response/cache.
+2. Free healthy quota pool مناسب للـcapability.
+3. Free provider آخر.
+4. Paid-cheap provider إذا policy تسمح.
+5. Trusted fallback.
+
+للطلبات الحرجة:
+1. trusted context.
+2. provider موثوق ضمن budget.
+3. fallback provider.
+4. safe deterministic fallback.
+
+---
+
+## 21. نموذج الإدارة المقترح
+
+نبدأ Logical Model فوق التخزين الحالي قبل أي migration:
+
+### AiProvider
+- id: gemini/openrouter/qwen/deepseek/openai/groq/...
+- enabled.
+- adapterType.
+- baseUrl.
+- supportedCapabilities.
+- health.
+
+### AiQuotaPool
+يمثل الحصة الحقيقية:
+- id.
+- providerId.
+- accountLabel.
+- projectOrWorkspaceLabel.
+- plan: free/paid/trial/unknown.
+- quotaScope: project/account/organization/model.
+- resetRule.
+- enabled.
+- freeOnly.
+- notes.
+
+### AiCredential
+- id.
+- quotaPoolId.
+- label.
+- encryptedSecret.
+- maskedFingerprint.
+- state: active/draining/disabled/invalid.
+- lastUsedAt.
+- lastSuccessAt.
+- lastFailureAt.
+- failureCount.
+- createdAt/rotatedAt.
+
+### AiModelProfile
+- providerId.
+- modelId.
+- capabilityTags.
+- supportsVision.
+- supportsAudio.
+- supportsStructuredOutput.
+- pricing metadata.
+- freeEligible.
+- qualityTier.
+- speedTier.
+
+### AiRouteProfile
+مثال:
+- `question_hint`: cheap-fast-first.
+- `question_reasoning`: strong-text.
+- `student_chat`: cheap-fast.
+- `admin_diagnosis`: strong.
+- `authoring`: strong-structured.
+- `voice_live`: realtime.
+- `vision_question`: vision-only.
+
+ويحتوي:
+- ordered model candidates.
+- maxInputTokens.
+- maxOutputTokens.
+- timeout.
+- cache policy.
+- paidAllowed.
+- freeFirst.
+- fallbackMode.
+
+### AiBudgetPolicy
+- scopeType: global/school/user/capability/quotaPool.
+- period: minute/day/month.
+- requestLimit.
+- tokenLimit.
+- costLimit.
+- voiceMinuteLimit.
+- visionRequestLimit.
+- hardStop/softFallback.
+
+### AiUsageLedger
+- requestId.
+- capability.
+- provider/model.
+- quotaPoolId.
+- credentialId (reference only).
+- user/school.
+- input/output/total tokens.
+- estimated/actual.
+- cost.
+- latency.
+- cacheHit.
+- fallback.
+- error category.
+
+---
+
+## 22. AI Control Center — شكل لوحة الإدارة
+
+### Overview
+بطاقات:
+- AI Status.
+- Requests today.
+- Tokens today.
+- Free quota usage.
+- Paid spend.
+- Fallback rate.
+- Error rate.
+- Average latency.
+
+### Providers
+لكل Provider:
+- Enabled/Disabled.
+- Models.
+- عدد quota pools.
+- عدد المفاتيح الفعالة.
+- health.
+- current quota state.
+- Test.
+
+### Accounts / Projects / Keys
+مثال:
+
+| Provider | Pool | Plan | Keys | الحالة | استخدام اليوم |
+|---|---|---|---:|---|---:|
+| Gemini | Google Project A | Free | 2 | Healthy | ... |
+| Gemini | Google Project B | Free/Unknown | 1 | Healthy | ... |
+| OpenRouter | Main Workspace | Free | 1 | Limited | ... |
+| Qwen | Singapore Workspace | Trial Free | 1 | Healthy | ... |
+| Groq | Main Org | Free | 1 | Healthy | ... |
+
+المهم أن اللوحة تفرق بين **عدد المفاتيح** و**عدد حصص quota المستقلة**.
+
+### Routing
+يظهر كل Capability ومزوده الحالي وfallback chain.
+
+### Budgets
+- Global.
+- per school.
+- per student.
+- per capability.
+- per paid provider.
+
+### Usage & Cost
+Charts/Tables:
+- tokens by provider/model.
+- free vs paid.
+- top capabilities.
+- top schools/users.
+- cache savings.
+- fallback savings.
+
+### Alerts
+- Free quota قرب ينتهي.
+- 429.
+- invalid key.
+- provider circuit-open.
+- paid spend threshold.
+- abnormal token spike.
+
+### Test Lab
+اختبار مزود بدون بيانات طالب:
+- Arabic quality.
+- math formatting.
+- JSON output.
+- latency.
+- token usage.
+- vision capability.
+
+---
+
+## 23. قاعدة مهمة بخصوص تعدد الحسابات
+
+يمكن للمنصة تقنيًا تخزين أكثر من credential وأكثر من quota pool، لكن **لا نعتمد سياسة إنشاء حسابات كثيرة لتجاوز Free Tier أو rate limits**.
+
+السبب هندسي قبل أن يكون تنظيميًا:
+- غير مستقر.
+- يمكن إيقاف الحسابات.
+- يجعل الإنتاج يعتمد على سلوك غير مضمون.
+- يصعب مراقبة التكلفة والحصة.
+- بعض المزودات تطبق limit أعلى من مستوى المشروع أصلًا.
+
+التصميم الصحيح:
+- استفد من كل free tier رسمي.
+- افصل quota pools الحقيقية.
+- استخدم provider diversity.
+- استخدم cache/fallback.
+- وعند النمو الفعلي انتقل للـpaid-cheap provider ضمن spend cap واضح.
+
+---
+
+## 24. معيار النجاح
 
 نعتبر AI Platform متماسكة عندما:
 - كل AI call يمر من Gateway واحد.
