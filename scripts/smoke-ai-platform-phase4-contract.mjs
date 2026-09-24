@@ -37,6 +37,11 @@ check("backend masking and merge semantics preserve secrets when admin leaves ke
   runtime.includes("platform[fieldKey] = []") &&
   runtime.includes("if (!hasIncoming && previousValues.length > 0)"));
 
+check("test lab can validate one quota pool instead of only a whole provider",
+  control.includes("quotaPoolId: poolId") &&
+  control.includes("اختبر الحصة") &&
+  api.includes("quotaPoolId?: string"));
+
 check("existing platform integration endpoint remains the compatibility bridge",
   api.includes('request<unknown>("/content/platform-integrations"') &&
   api.includes('method: "PATCH"'));

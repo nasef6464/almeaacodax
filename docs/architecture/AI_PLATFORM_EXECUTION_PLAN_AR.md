@@ -142,7 +142,7 @@ Provider
 - [ ] محرر بصري لـCapability route profiles بدل JSON/metadata فقط.
 - [ ] Usage dashboard أوضح: free/paid/cache/cost by capability.
 - [ ] Alerts واضحة لـ429/key invalid/circuit-open/spend cap.
-- [ ] Test Lab يعرض نتيجة كل Pool/Model وليس Provider فقط.
+- [x] Test Lab يختبر كل Quota Pool على حدة، وليس Provider كامل فقط.
 - [ ] إزالة اعتماد AI اليومي على شاشة Platform Integrations العامة مع الإبقاء عليها كـcompatibility bridge.
 
 التبويبات المستهدفة نهائيًا:

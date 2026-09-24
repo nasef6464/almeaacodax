@@ -88,6 +88,7 @@ const adminAssistantSchema = z.object({
 
 const providerTestSchema = z.object({
   provider: z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio"]),
+  quotaPoolId: z.string().trim().min(1).max(180).optional(),
 });
 
 const studyPlanSchema = z.object({
@@ -1239,7 +1240,7 @@ aiRouter.post(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     await loadRuntimeAiConfig(true);
-    const { provider } = providerTestSchema.parse(req.body);
+    const { provider, quotaPoolId } = providerTestSchema.parse(req.body);
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!providerAllowedForCapability(provider, "admin_copilot")) {
       return res.json({
@@ -1258,10 +1259,16 @@ aiRouter.post(
 
     try {
       const startedAt = Date.now();
-      const text = await callSingleProvider(provider, "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.");
+      const text = await callSingleProvider(
+        provider,
+        "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.",
+        undefined,
+        quotaPoolId ? { quotaPoolId } : {},
+      );
       return res.json({
         ok: Boolean(text),
         provider,
+        quotaPoolId: quotaPoolId || undefined,
         model: descriptor.model,
         latencyMs: Date.now() - startedAt,
         sample: text.slice(0, 240),
@@ -1270,6 +1277,7 @@ aiRouter.post(
       return res.json({
         ok: false,
         provider,
+        quotaPoolId: quotaPoolId || undefined,
         model: descriptor.model,
         message: error instanceof Error ? error.message : "تعذر اختبار المزود.",
       });

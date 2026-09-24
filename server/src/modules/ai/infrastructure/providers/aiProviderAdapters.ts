@@ -12,6 +12,7 @@ export type AiProviderCallOptions = {
   timeoutMs?: number;
   maxOutputTokens?: number;
   allowPaid?: boolean;
+  quotaPoolId?: string;
 };
 export type AiProviderUsage = {
   inputTokens: number;
@@ -112,10 +113,12 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     const body = await response.text().catch(() => "");
     return `${provider} request failed with status ${response.status}${body ? `: ${config.redactDiagnostic(body)}` : ""}`;
   };
-  const providerPools = (provider: ExternalProvider, allowPaid = true) => {
+  const providerPools = (provider: ExternalProvider, allowPaid = true, quotaPoolId?: string) => {
     const runtime = config.getProviderRuntime(provider);
     if (runtime.quotaPools?.length) {
-      return sortAiQuotaPools(runtime.quotaPools).filter((pool) => allowPaid || pool.plan !== "paid");
+      return sortAiQuotaPools(runtime.quotaPools)
+        .filter((pool) => allowPaid || pool.plan !== "paid")
+        .filter((pool) => !quotaPoolId || pool.id === quotaPoolId);
     }
     const apiKeys = uniqueNonEmpty([runtime.apiKey, ...(runtime.apiKeys || [])]);
     return [{
@@ -138,7 +141,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ) => {
-    const pools = providerPools("gemini", options.allowPaid !== false);
+    const pools = providerPools("gemini", options.allowPaid !== false, options.quotaPoolId);
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
@@ -275,7 +278,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     responseMimeType?: AiResponseMimeType,
     options: AiProviderCallOptions = {},
   ) => {
-    const pools = providerPools(provider, options.allowPaid !== false);
+    const pools = providerPools(provider, options.allowPaid !== false, options.quotaPoolId);
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
     const errors: string[] = [];
     for (const pool of pools) {

@@ -127,8 +127,8 @@ export const createAiApi = (request: ApiRequest) => ({
       nextActions: string[];
     }>("/ai/readiness", { token }),
 
-  aiTestProvider: (payload: { provider: Exclude<AiProvider, "none"> }, token?: string | null) =>
-    request<{ ok: boolean; provider: string; model?: string; latencyMs?: number; sample?: string; message?: string }>("/ai/providers/test", {
+  aiTestProvider: (payload: { provider: Exclude<AiProvider, "none">; quotaPoolId?: string }, token?: string | null) =>
+    request<{ ok: boolean; provider: string; quotaPoolId?: string; model?: string; latencyMs?: number; sample?: string; message?: string }>("/ai/providers/test", {
       method: "POST",
       body: payload,
       token,

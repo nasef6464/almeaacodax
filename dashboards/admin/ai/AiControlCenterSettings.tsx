@@ -121,6 +121,8 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testingPool, setTestingPool] = useState<string | null>(null);
+  const [poolTestResult, setPoolTestResult] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
   const hydrateGlobal = (next: PlatformIntegrationSettings) => {
     const global = next.externalPlatforms.find((item) => item.id.trim().toLowerCase() === 'ai-global');
@@ -180,6 +182,20 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
       ...current,
       externalPlatforms: current.externalPlatforms.filter((item) => item.id !== id),
     }) : current);
+  };
+  const testPool = async (provider: AiCloudProvider, poolId: string) => {
+    setTestingPool(poolId);
+    try {
+      const response = await api.aiTestProvider({ provider, quotaPoolId: poolId });
+      setPoolTestResult((current) => ({
+        ...current,
+        [poolId]: response.ok ? `ناجح ${response.latencyMs || 0}ms` : response.message || 'فشل الاختبار',
+      }));
+    } catch (error) {
+      setPoolTestResult((current) => ({ ...current, [poolId]: error instanceof Error ? error.message : 'فشل الاختبار' }));
+    } finally {
+      setTestingPool(null);
+    }
   };
   const addPool = () => {
     if (!settings) return;
@@ -370,7 +386,13 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
                 <input type="checkbox" checked={item.enabled} onChange={(e) => updateExternal(item.id, { enabled: e.target.checked })} />
                 مفعّل
               </label>
-              <button type="button" onClick={() => removePool(item.id)} className="p-2 rounded-lg text-rose-600 hover:bg-rose-50" title="حذف الحصة"><Trash2 size={15} /></button>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => void testPool(provider, String(note.quotaPoolId || item.id))} disabled={testingPool === item.id} className="px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-[11px] font-black disabled:opacity-50">
+                  {testingPool === item.id ? 'جاري الاختبار...' : 'اختبر الحصة'}
+                </button>
+                <button type="button" onClick={() => removePool(item.id)} className="p-2 rounded-lg text-rose-600 hover:bg-rose-50" title="حذف الحصة"><Trash2 size={15} /></button>
+              </div>
+              {poolTestResult[item.id] && <span className="text-[10px] font-bold text-gray-500 lg:w-full">{poolTestResult[item.id]}</span>}
             </div>
           ))}
         </div>
