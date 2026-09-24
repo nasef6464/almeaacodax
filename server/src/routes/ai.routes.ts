@@ -29,7 +29,13 @@ import {
   recordAiProviderFailure,
   recordAiProviderSuccess,
 } from "../modules/ai/application/providerCircuitBreaker.js";
-import { estimateBase64DecodedBytes, isExplicitLocalProviderConfigured } from "../modules/ai/application/aiCapabilityPolicy.js";
+import {
+  AI_CHAT_IMAGE_MAX_BYTES,
+  AI_DEFAULT_MAX_OUTPUT_TOKENS,
+  AI_GUEST_EXTERNAL_ENABLED,
+  estimateBase64DecodedBytes,
+  isExplicitLocalProviderConfigured,
+} from "../modules/ai/application/aiCapabilityPolicy.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 
 const imageInputSchema = z.object({
@@ -37,11 +43,11 @@ const imageInputSchema = z.object({
   mimeType: z.string().regex(/^image\/(png|jpeg|webp|gif|svg\+xml)$/),
 }).superRefine((value, ctx) => {
   const decodedBytes = estimateBase64DecodedBytes(value.data);
-  if (decodedBytes > env.AI_CHAT_IMAGE_MAX_BYTES) {
+  if (decodedBytes > AI_CHAT_IMAGE_MAX_BYTES) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ["data"],
-      message: `AI chat image exceeds the allowed size of ${env.AI_CHAT_IMAGE_MAX_BYTES} bytes`,
+      message: `AI chat image exceeds the allowed size of ${AI_CHAT_IMAGE_MAX_BYTES} bytes`,
     });
   }
 }).optional();
@@ -1021,7 +1027,7 @@ const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
   }
 
   const result = await callAiWithMeta(input.prompt, input.responseMimeType, undefined, {
-    maxOutputTokens: input.maxOutputTokens || env.AI_DEFAULT_MAX_OUTPUT_TOKENS,
+    maxOutputTokens: input.maxOutputTokens || AI_DEFAULT_MAX_OUTPUT_TOKENS,
   });
   const responseText = String(result.text || input.fallbackText).trim();
 
@@ -1303,7 +1309,7 @@ ${hasImage ? "- الصورة المرفقة: حلل محتواها إن كانت
 ${message}
 `;
 
-    if (!req.authUser && !env.AI_GUEST_EXTERNAL_ENABLED) {
+    if (!req.authUser && !AI_GUEST_EXTERNAL_ENABLED) {
       const fallbackReason = "الزوار يستخدمون الرد المحلي لتقليل تكلفة المنصة. سجّل الدخول للحصول على المساعد الشخصي.";
       return res.json({
         text: fallback,
@@ -2259,7 +2265,7 @@ ${courseTitle}
 اجعله بسيطًا ومشجعًا للطالب.
 `;
 
-    if (!req.authUser && !env.AI_GUEST_EXTERNAL_ENABLED) {
+    if (!req.authUser && !AI_GUEST_EXTERNAL_ENABLED) {
       return res.json({ text: fallback, provider: "none", usedFallback: true });
     }
 

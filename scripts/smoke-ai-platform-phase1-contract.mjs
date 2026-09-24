@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 
 const routes = await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8");
-const env = await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8");
 const policy = await readFile(new URL("../server/src/modules/ai/application/aiCapabilityPolicy.ts", import.meta.url), "utf8");
 const admin = await readFile(new URL("../dashboards/admin/AdminDashboard.tsx", import.meta.url), "utf8");
 const manager = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
@@ -14,12 +13,12 @@ const sliceRoute = (start, end) => {
   return from >= 0 ? routes.slice(from, to >= 0 ? to : routes.length) : "";
 };
 
-check("guest external AI is opt-in and disabled by default",
-  env.includes("AI_GUEST_EXTERNAL_ENABLED") && env.includes("z.boolean()).default(false)") &&
-  routes.includes("!req.authUser && !env.AI_GUEST_EXTERNAL_ENABLED"));
+check("guest external AI is disabled by policy",
+  policy.includes("export const AI_GUEST_EXTERNAL_ENABLED = false") &&
+  routes.includes("!req.authUser && !AI_GUEST_EXTERNAL_ENABLED"));
 
 check("AI chat images have a decoded byte limit",
-  env.includes("AI_CHAT_IMAGE_MAX_BYTES") &&
+  policy.includes("AI_CHAT_IMAGE_MAX_BYTES = 600 * 1024") &&
   routes.includes("estimateBase64DecodedBytes(value.data)") &&
   routes.includes("AI chat image exceeds the allowed size"));
 

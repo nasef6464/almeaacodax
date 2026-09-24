@@ -1,5 +1,9 @@
 export type LocalAiProvider = "ollama" | "lmstudio";
 
+export const AI_GUEST_EXTERNAL_ENABLED = false;
+export const AI_DEFAULT_MAX_OUTPUT_TOKENS = 700;
+export const AI_CHAT_IMAGE_MAX_BYTES = 600 * 1024;
+
 export const estimateBase64DecodedBytes = (value: string) => {
   const normalized = String(value || "").replace(/\s+/g, "");
   if (!normalized) return 0;

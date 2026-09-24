@@ -93,12 +93,6 @@ const envSchema = z.object({
   }, z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio", "none"]).optional()),
   AI_PROVIDER_ORDER: z.string().default(""),
   AI_REQUEST_TIMEOUT_MS: z.coerce.number().default(15000),
-  AI_GUEST_EXTERNAL_ENABLED: z.preprocess((value) => {
-    if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
-    return value;
-  }, z.boolean()).default(false),
-  AI_DEFAULT_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(64).max(4000).default(700),
-  AI_CHAT_IMAGE_MAX_BYTES: z.coerce.number().int().min(32768).max(2 * 1024 * 1024).default(600 * 1024),
   AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(200000).default(800),
   AI_PER_USER_DAILY_LIMIT: z.coerce.number().int().min(1).max(20000).default(80),
   AI_PER_SCHOOL_DAILY_LIMIT: z.coerce.number().int().min(1).max(100000).default(400),
