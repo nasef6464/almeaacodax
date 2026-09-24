@@ -21,5 +21,4 @@ const aiUsageDailySchema = new Schema(
 aiUsageDailySchema.index({ dayKey: 1, scopeType: 1, scopeId: 1 }, { unique: true });
 aiUsageDailySchema.index({ scopeType: 1, scopeId: 1, dayKey: -1 });
 
-export const AiUsageDailyModel =
-  mongoose.models.AiUsageDaily || mongoose.model("AiUsageDaily", aiUsageDailySchema);
+export const AiUsageDailyModel = mongoose.model("AiUsageDaily", aiUsageDailySchema);
