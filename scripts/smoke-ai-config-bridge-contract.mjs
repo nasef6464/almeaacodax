@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const aiRouteSource = await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8");
+const aiProviderAdapterSource = await readFile(new URL("../server/src/modules/ai/infrastructure/providers/aiProviderAdapters.ts", import.meta.url), "utf8");
 const integrationsWrapperSource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManager.tsx", import.meta.url), "utf8");
 const integrationsLegacySource = await readFile(new URL("../dashboards/admin/PlatformIntegrationsManagerLegacy.tsx", import.meta.url), "utf8");
 const integrationsSource = `${integrationsWrapperSource}\n${integrationsLegacySource}`;
@@ -69,22 +70,22 @@ check("integrations manager explains AI auto failover and multiple keys", () => 
   assertIncludes(integrationsSource, "عند فشل مفتاح سيجرب النظام المفتاح التالي لنفس المزود قبل الانتقال لمزود آخر");
 });
 
-check("ai route reads and retries multiple keys per provider", () => {
+check("ai runtime config reads multiple keys and provider adapters retry them", () => {
   assertIncludes(aiRouteSource, "readProviderKeyHints");
   assertIncludes(aiRouteSource, "const noteKeys = Array.isArray(note.apiKeys) ? note.apiKeys : []");
   assertIncludes(aiRouteSource, "const directKeys = Array.isArray(item.apiKeys) ? item.apiKeys : []");
-  assertIncludes(aiRouteSource, "const providerKeys = (provider: Exclude<AiProvider, \"none\">) =>");
-  assertIncludes(aiRouteSource, "for (const apiKey of apiKeys)");
-  assertIncludes(aiRouteSource, "errors.push(error instanceof Error ? error.message");
+  assertIncludes(aiProviderAdapterSource, "const providerKeys = (provider: ExternalProvider) =>");
+  assertIncludes(aiProviderAdapterSource, "for (const apiKey of apiKeys)");
+  assertIncludes(aiProviderAdapterSource, "errors.push(error instanceof Error ? error.message");
 });
 
-check("ai provider outbound URLs reject unsafe destinations", () => {
-  assertIncludes(aiRouteSource, "assertSafeAiProviderUrl");
-  assertIncludes(aiRouteSource, 'parsed.protocol !== "https:"');
-  assertIncludes(aiRouteSource, 'hostname === "localhost"');
-  assertIncludes(aiRouteSource, "isPrivateIpv4(hostname)");
-  assertIncludes(aiRouteSource, 'throw new Error("AI provider URL must use HTTPS and a public host")');
-  assertIncludes(aiRouteSource, "assertSafeAiProviderUrl(url);");
+check("ai provider outbound URLs reject unsafe destinations in the provider adapter layer", () => {
+  assertIncludes(aiProviderAdapterSource, "assertSafeAiProviderUrl");
+  assertIncludes(aiProviderAdapterSource, 'parsed.protocol !== "https:"');
+  assertIncludes(aiProviderAdapterSource, 'hostname === "localhost"');
+  assertIncludes(aiProviderAdapterSource, "isPrivateIpv4(hostname)");
+  assertIncludes(aiProviderAdapterSource, 'throw new Error("AI provider URL must use HTTPS and a public host")');
+  assertIncludes(aiProviderAdapterSource, "assertSafeAiProviderUrl(url);");
 });
 
 check("live AI audit records real-provider success separately from fallback", () => {
