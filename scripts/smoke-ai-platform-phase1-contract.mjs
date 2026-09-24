@@ -4,6 +4,7 @@ const routes = await readFile(new URL("../server/src/routes/ai.routes.ts", impor
 const policy = await readFile(new URL("../server/src/modules/ai/application/aiCapabilityPolicy.ts", import.meta.url), "utf8");
 const configCache = await readFile(new URL("../server/src/modules/ai/application/aiRuntimeConfigCache.ts", import.meta.url), "utf8");
 const providerRouter = await readFile(new URL("../server/src/modules/ai/application/aiProviderRouter.ts", import.meta.url), "utf8");
+const providerAdapters = await readFile(new URL("../server/src/modules/ai/infrastructure/providers/aiProviderAdapters.ts", import.meta.url), "utf8");
 const admin = await readFile(new URL("../dashboards/admin/AdminDashboard.tsx", import.meta.url), "utf8");
 const manager = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
 
@@ -54,6 +55,12 @@ check("provider priority is owned by the AI application module",
   providerRouter.includes("DEFAULT_AI_PROVIDER_ORDER") &&
   providerRouter.includes("buildProviderPriority") &&
   routes.includes("buildProviderPriority({"));
+
+check("low-level provider HTTP adapters live outside the HTTP route",
+  providerAdapters.includes("createAiProviderAdapters") &&
+  providerAdapters.includes("callOpenAiCompatible") &&
+  routes.includes("aiProviderAdapters.callProvider") &&
+  !routes.includes("const callGemini ="));
 
 check("admin navigation exposes one AI management entry",
   admin.includes("إدارة الذكاء الاصطناعي") &&

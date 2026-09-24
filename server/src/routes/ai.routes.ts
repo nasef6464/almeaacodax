@@ -38,6 +38,11 @@ import {
 } from "../modules/ai/application/aiCapabilityPolicy.js";
 import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
+import {
+  createAiProviderAdapters,
+  type AiProviderCallOptions,
+  type AiResponseMimeType,
+} from "../modules/ai/infrastructure/providers/aiProviderAdapters.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 
 const imageInputSchema = z.object({
@@ -102,7 +107,6 @@ const generateMockExamSchema = z.object({
   weakSkills: z.array(z.string().min(1).max(120)).default([]),
 });
 
-type AiResponseMimeType = "application/json";
 type AiProvider = AiProviderId;
 
 type StudentAiContext = {
@@ -630,258 +634,19 @@ const resolveProvider = (): AiProvider =>
   providerPriority().find((provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured) ||
   "none";
 
-type AiCallOptions = {
-  timeoutMs?: number;
-  maxOutputTokens?: number;
-};
-
-const isPrivateIpv4 = (hostname: string) => {
-  const parts = hostname.split(".").map((part) => Number(part));
-  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
-  const [a, b] = parts;
-  return a === 10
-    || a === 127
-    || (a === 169 && b === 254)
-    || (a === 172 && b >= 16 && b <= 31)
-    || (a === 192 && b === 168)
-    || a === 0;
-};
-
-const assertSafeAiProviderUrl = (rawUrl: string) => {
-  let parsed: URL;
-  try {
-    parsed = new URL(rawUrl);
-  } catch {
-    throw new Error("AI provider URL is invalid");
-  }
-
-  const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
-  const isLocalHost = hostname === "localhost" || hostname.endsWith(".localhost");
-  const isPrivateIpv6 = hostname === "::1"
-    || hostname === "[::1]"
-    || hostname.startsWith("fc")
-    || hostname.startsWith("fd")
-    || hostname.startsWith("fe8")
-    || hostname.startsWith("fe9")
-    || hostname.startsWith("fea")
-    || hostname.startsWith("feb");
-
-  if (parsed.protocol !== "https:" || isLocalHost || isPrivateIpv4(hostname) || isPrivateIpv6) {
-    throw new Error("AI provider URL must use HTTPS and a public host");
-  }
-};
-
-const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = env.AI_REQUEST_TIMEOUT_MS) => {
-  assertSafeAiProviderUrl(url);
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timeoutId);
-  }
-};
-
-const responseFailureMessage = async (provider: string, response: Response) => {
-  const body = await response.text().catch(() => "");
-  return `${provider} request failed with status ${response.status}${body ? `: ${redactAiDiagnostic(body)}` : ""}`;
-};
-
-const providerKeys = (provider: Exclude<AiProvider, "none">) =>
-  uniqueNonEmpty([runtimeAiConfig.providers[provider].apiKey, ...(runtimeAiConfig.providers[provider].apiKeys || [])]);
-
-const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }, options: AiCallOptions = {}) => {
-  const apiKeys = providerKeys("gemini");
-  const model = runtimeAiConfig.providers.gemini.model;
-  if (apiKeys.length === 0) return "";
-
-  const parts: Array<Record<string, unknown>> = image
-    ? [
-        { inlineData: { mimeType: image.mimeType, data: image.data } },
-        { text: prompt },
-      ]
-    : [{ text: prompt }];
-
-  const errors: string[] = [];
-  for (const apiKey of apiKeys) {
-    try {
-      const response = await fetchWithTimeout(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts }],
-            generationConfig: {
-              ...(responseMimeType ? { responseMimeType } : {}),
-              ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
-            },
-          }),
-        },
-        options.timeoutMs,
-      );
-
-      if (!response.ok) {
-        throw new Error(await responseFailureMessage("Gemini", response));
-      }
-
-      const payload = (await response.json()) as {
-        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-      };
-
-      const text = payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
-      if (text) return text;
-    } catch (error) {
-      errors.push(error instanceof Error ? error.message : "Gemini request failed");
-    }
-  }
-
-  if (errors.length) throw new Error(errors.join(" | "));
-  return "";
-};
-
-const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiCallOptions = {}) => {
-  const baseUrl = String(runtimeAiConfig.providers.ollama.baseUrl || "").trim();
-  const model = runtimeAiConfig.providers.ollama.model;
-  if (!baseUrl || !model) return "";
-  const response = await fetchWithTimeout(
-    `${baseUrl.replace(/\/$/, "")}/api/generate`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        prompt,
-        stream: false,
-        format: responseMimeType === "application/json" ? "json" : undefined,
-        ...(options.maxOutputTokens ? { options: { num_predict: options.maxOutputTokens } } : {}),
-      }),
-    },
-    options.timeoutMs,
-  );
-
-  if (!response.ok) {
-    throw new Error(await responseFailureMessage("Ollama", response));
-  }
-
-  const payload = (await response.json()) as { response?: string };
-  return payload.response?.trim() || "";
-};
-
-const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiCallOptions = {}) => {
-  const baseUrl = String(runtimeAiConfig.providers.lmstudio.baseUrl || "").trim();
-  const model = runtimeAiConfig.providers.lmstudio.model;
-  if (!baseUrl || !model) return "";
-  const response = await fetchWithTimeout(
-    `${baseUrl.replace(/\/$/, "")}/chat/completions`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.3,
-        response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-        ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
-      }),
-    },
-    options.timeoutMs,
-  );
-
-  if (!response.ok) {
-    throw new Error(await responseFailureMessage("LM Studio", response));
-  }
-
-  const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-
-  return payload.choices?.[0]?.message?.content?.trim() || "";
-};
-
-const callOpenAiCompatible = async (
-  provider: Exclude<AiProvider, "gemini" | "ollama" | "lmstudio" | "none">,
-  prompt: string,
-  responseMimeType?: AiResponseMimeType,
-  options: AiCallOptions = {},
-) => {
-  const settings: Record<typeof provider, { baseUrl: string; apiKeys: string[]; model: string; headers?: Record<string, string> }> = {
-    openrouter: {
-      baseUrl: runtimeAiConfig.providers.openrouter.baseUrl || "https://openrouter.ai/api/v1",
-      apiKeys: providerKeys("openrouter"),
-      model: runtimeAiConfig.providers.openrouter.model,
-      headers: {
-        "HTTP-Referer": env.CLIENT_URL,
-        "X-Title": "Almeaa Educational Platform",
-      },
-    },
-    deepseek: {
-      baseUrl: runtimeAiConfig.providers.deepseek.baseUrl || "https://api.deepseek.com",
-      apiKeys: providerKeys("deepseek"),
-      model: runtimeAiConfig.providers.deepseek.model,
-    },
-    qwen: {
-      baseUrl: runtimeAiConfig.providers.qwen.baseUrl || env.QWEN_BASE_URL,
-      apiKeys: providerKeys("qwen"),
-      model: runtimeAiConfig.providers.qwen.model,
-    },
-    openai: {
-      baseUrl: runtimeAiConfig.providers.openai.baseUrl || "https://api.openai.com/v1",
-      apiKeys: providerKeys("openai"),
-      model: runtimeAiConfig.providers.openai.model,
-    },
-  };
-  const selected = settings[provider];
-  if (selected.apiKeys.length === 0) return "";
-
-  const errors: string[] = [];
-  for (const apiKey of selected.apiKeys) {
-    try {
-      const response = await fetchWithTimeout(
-        `${selected.baseUrl.replace(/\/$/, "")}/chat/completions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-            ...(selected.headers || {}),
-          },
-          body: JSON.stringify({
-            model: selected.model,
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.25,
-            response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-            ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
-          }),
-        },
-        options.timeoutMs,
-      );
-
-      if (!response.ok) {
-        throw new Error(await responseFailureMessage(provider, response));
-      }
-
-      const payload = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-
-      const text = payload.choices?.[0]?.message?.content?.trim() || "";
-      if (text) return text;
-    } catch (error) {
-      errors.push(error instanceof Error ? error.message : `${provider} request failed`);
-    }
-  }
-
-  if (errors.length) throw new Error(errors.join(" | "));
-  return "";
-};
+const aiProviderAdapters = createAiProviderAdapters({
+  getProviderRuntime: (provider) => runtimeAiConfig.providers[provider],
+  defaultTimeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+  clientUrl: env.CLIENT_URL,
+  qwenBaseUrl: env.QWEN_BASE_URL,
+  redactDiagnostic: redactAiDiagnostic,
+});
 
 const callAiWithMeta = async (
   prompt: string,
   responseMimeType?: AiResponseMimeType,
   image?: { data: string; mimeType: string },
-  options: AiCallOptions = {},
+  options: AiProviderCallOptions = {},
 ): Promise<AiCallResult> => {
   await loadRuntimeAiConfig();
   const errors: string[] = [];
@@ -895,16 +660,7 @@ const callAiWithMeta = async (
     }
 
     try {
-      let text = "";
-      if (provider === "gemini") {
-        text = await callGemini(prompt, responseMimeType, image, options);
-      } else if (provider === "ollama") {
-        text = await callOllama(prompt, responseMimeType, options);
-      } else if (provider === "lmstudio") {
-        text = await callLmStudio(prompt, responseMimeType, options);
-      } else if (provider === "openrouter" || provider === "deepseek" || provider === "qwen" || provider === "openai") {
-        text = await callOpenAiCompatible(provider, prompt, responseMimeType, options);
-      }
+      const text = await aiProviderAdapters.callProvider(provider, prompt, responseMimeType, image, options);
       if (text) {
         recordAiProviderSuccess(provider);
         return {
@@ -941,13 +697,8 @@ const callSingleProvider = async (
   provider: Exclude<AiProvider, "none">,
   prompt: string,
   image?: { data: string; mimeType: string },
-  options: AiCallOptions = { timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000) },
-) => {
-  if (provider === "gemini") return callGemini(prompt, undefined, image, options);
-  if (provider === "ollama") return callOllama(prompt, undefined, options);
-  if (provider === "lmstudio") return callLmStudio(prompt, undefined, options);
-  return callOpenAiCompatible(provider, prompt, undefined, options);
-};
+  options: AiProviderCallOptions = { timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000) },
+) => aiProviderAdapters.callProvider(provider, prompt, undefined, image, options);
 
 const withinAiBudget = async (userId?: string, schoolId?: string) => {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
