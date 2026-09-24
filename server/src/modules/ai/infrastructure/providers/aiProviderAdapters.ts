@@ -1,8 +1,6 @@
 import type { AiProviderId } from "../../application/aiProviderRouter.js";
 import { sortAiQuotaPools, type AiQuotaPoolRuntime } from "../../application/aiQuotaPools.js";
-
 export type AiResponseMimeType = "application/json";
-
 export type AiProviderRuntime = {
   apiKey?: string;
   apiKeys?: string[];
@@ -10,12 +8,10 @@ export type AiProviderRuntime = {
   baseUrl?: string;
   quotaPools?: AiQuotaPoolRuntime[];
 };
-
 export type AiProviderCallOptions = {
   timeoutMs?: number;
   maxOutputTokens?: number;
 };
-
 export type AiProviderUsage = {
   inputTokens: number;
   outputTokens: number;
@@ -23,16 +19,13 @@ export type AiProviderUsage = {
   cachedTokens: number;
   estimated: boolean;
 };
-
 export type AiProviderResponse = {
   text: string;
   usage: AiProviderUsage;
   quotaPoolId?: string;
 };
-
 type ExternalProvider = Exclude<AiProviderId, "none">;
 type OpenAiCompatibleProvider = Exclude<ExternalProvider, "gemini" | "ollama" | "lmstudio">;
-
 type AdapterConfig = {
   getProviderRuntime: (provider: ExternalProvider) => AiProviderRuntime;
   defaultTimeoutMs: number;
@@ -40,10 +33,8 @@ type AdapterConfig = {
   qwenBaseUrl: string;
   redactDiagnostic: (value: unknown) => string;
 };
-
 const uniqueNonEmpty = (values: unknown[]) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
-
 const emptyUsage = (): AiProviderUsage => ({
   inputTokens: 0,
   outputTokens: 0,
@@ -51,7 +42,6 @@ const emptyUsage = (): AiProviderUsage => ({
   cachedTokens: 0,
   estimated: false,
 });
-
 const normalizeUsage = (
   raw: Partial<AiProviderUsage> | undefined,
   prompt: string,
@@ -64,7 +54,6 @@ const normalizeUsage = (
   if (totalTokens > 0) {
     return { inputTokens, outputTokens, totalTokens, cachedTokens, estimated: Boolean(raw?.estimated) };
   }
-
   const estimatedInput = Math.max(1, Math.ceil(String(prompt || "").length / 3));
   const estimatedOutput = Math.max(1, Math.ceil(String(text || "").length / 3));
   return {
@@ -75,7 +64,6 @@ const normalizeUsage = (
     estimated: true,
   };
 };
-
 const isPrivateIpv4 = (hostname: string) => {
   const parts = hostname.split(".").map((part) => Number(part));
   if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
@@ -87,7 +75,6 @@ const isPrivateIpv4 = (hostname: string) => {
     || (a === 192 && b === 168)
     || a === 0;
 };
-
 const assertSafeAiProviderUrl = (rawUrl: string) => {
   let parsed: URL;
   try {
@@ -95,7 +82,6 @@ const assertSafeAiProviderUrl = (rawUrl: string) => {
   } catch {
     throw new Error("AI provider URL is invalid");
   }
-
   const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
   const isLocalHost = hostname === "localhost" || hostname.endsWith(".localhost");
   const isPrivateIpv6 = hostname === "::1"
@@ -106,34 +92,28 @@ const assertSafeAiProviderUrl = (rawUrl: string) => {
     || hostname.startsWith("fe9")
     || hostname.startsWith("fea")
     || hostname.startsWith("feb");
-
   if (parsed.protocol !== "https:" || isLocalHost || isPrivateIpv4(hostname) || isPrivateIpv6) {
     throw new Error("AI provider URL must use HTTPS and a public host");
   }
 };
-
 export const createAiProviderAdapters = (config: AdapterConfig) => {
   const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = config.defaultTimeoutMs) => {
     assertSafeAiProviderUrl(url);
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
     try {
       return await fetch(url, { ...init, signal: controller.signal });
     } finally {
       clearTimeout(timeoutId);
     }
   };
-
   const responseFailureMessage = async (provider: string, response: Response) => {
     const body = await response.text().catch(() => "");
     return `${provider} request failed with status ${response.status}${body ? `: ${config.redactDiagnostic(body)}` : ""}`;
   };
-
   const providerPools = (provider: ExternalProvider) => {
     const runtime = config.getProviderRuntime(provider);
     if (runtime.quotaPools?.length) return sortAiQuotaPools(runtime.quotaPools);
-
     const apiKeys = uniqueNonEmpty([runtime.apiKey, ...(runtime.apiKeys || [])]);
     return [{
       id: `${provider}:legacy`,
@@ -149,7 +129,6 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
       freeOnly: false,
     }];
   };
-
   const callGemini = async (
     prompt: string,
     responseMimeType?: AiResponseMimeType,
@@ -158,11 +137,9 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
   ) => {
     const pools = providerPools("gemini");
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
-
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
       : [{ text: prompt }];
-
     const errors: string[] = [];
     for (const pool of pools) {
       let poolRateLimited = false;
@@ -183,13 +160,11 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
             },
             options.timeoutMs,
           );
-
           if (!response.ok) {
             const message = await responseFailureMessage("Gemini", response);
             if (response.status === 429) poolRateLimited = true;
             throw new Error(message);
           }
-
           const payload = (await response.json()) as {
             candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
             usageMetadata?: {
@@ -218,16 +193,13 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
         }
       }
     }
-
     if (errors.length) throw new Error(errors.join(" | "));
     return { text: "", usage: emptyUsage() };
   };
-
   const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiProviderCallOptions = {}) => {
     const runtime = config.getProviderRuntime("ollama");
     const baseUrl = String(runtime.baseUrl || "").trim();
     if (!baseUrl || !runtime.model) return { text: "", usage: emptyUsage() };
-
     const response = await fetchWithTimeout(
       `${baseUrl.replace(/\/$/, "")}/api/generate`,
       {
@@ -257,12 +229,10 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
         : emptyUsage(),
     };
   };
-
   const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiProviderCallOptions = {}) => {
     const runtime = config.getProviderRuntime("lmstudio");
     const baseUrl = String(runtime.baseUrl || "").trim();
     if (!baseUrl || !runtime.model) return { text: "", usage: emptyUsage() };
-
     const response = await fetchWithTimeout(
       `${baseUrl.replace(/\/$/, "")}/chat/completions`,
       {
@@ -296,7 +266,6 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
         : emptyUsage(),
     };
   };
-
   const callOpenAiCompatible = async (
     provider: OpenAiCompatibleProvider,
     prompt: string,
@@ -305,7 +274,6 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
   ) => {
     const pools = providerPools(provider);
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
-
     const errors: string[] = [];
     for (const pool of pools) {
       const runtime = config.getProviderRuntime(provider);
@@ -320,7 +288,6 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
       };
       const selected = { ...defaults[provider], ...(pool.baseUrl ? { baseUrl: pool.baseUrl } : {}) };
       let poolRateLimited = false;
-
       for (const apiKey of pool.apiKeys) {
         try {
           const response = await fetchWithTimeout(
@@ -342,13 +309,11 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
             },
             options.timeoutMs,
           );
-
           if (!response.ok) {
             const message = await responseFailureMessage(provider, response);
             if (response.status === 429) poolRateLimited = true;
             throw new Error(message);
           }
-
           const payload = (await response.json()) as {
             choices?: Array<{ message?: { content?: string } }>;
             usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; prompt_tokens_details?: { cached_tokens?: number } };
@@ -372,11 +337,9 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
         }
       }
     }
-
     if (errors.length) throw new Error(errors.join(" | "));
     return { text: "", usage: emptyUsage() };
   };
-
   const callProvider = async (
     provider: ExternalProvider,
     prompt: string,
@@ -389,7 +352,6 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     if (provider === "lmstudio") return callLmStudio(prompt, responseMimeType, options);
     return callOpenAiCompatible(provider, prompt, responseMimeType, options);
   };
-
   const callProviderText = async (
     provider: ExternalProvider,
     prompt: string,
@@ -397,6 +359,5 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ) => (await callProvider(provider, prompt, responseMimeType, image, options)).text;
-
   return { callProvider, callProviderText };
 };
