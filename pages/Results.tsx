@@ -1368,11 +1368,23 @@ const ReviewSolutions = ({
   onBack: () => void;
   onShowVideo: (url: string, title: string) => void;
 }) => {
-  const { favorites, reviewLater, toggleFavorite, toggleReviewLater, questions: questionBank, quizzes } = useStore();
+  const { questions: questionBank, quizzes } = useStore();
   const [currentIdx, setCurrentIdx] = React.useState(0);
   const [showExplanation, setShowExplanation] = React.useState(false);
   const [zoomedImageUrl, setZoomedImageUrl] = React.useState<string | null>(null);
   const [filterMode, setFilterMode] = React.useState<'all' | 'wrong' | 'unanswered' | 'correct'>('all');
+  const [savedReviewIds, setSavedReviewIds] = React.useState<string[]>([]);
+  const toggleReviewLater = async (questionId: string) => {
+    const wasSaved = savedReviewIds.includes(questionId);
+    setSavedReviewIds((prev) => wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]);
+    try {
+      if (wasSaved) await api.removeQuestionFromReview(questionId);
+      else await api.saveQuestionForReview(questionId);
+    } catch {
+      setSavedReviewIds((prev) => wasSaved ? [...new Set([...prev, questionId])] : prev.filter((id) => id !== questionId));
+    }
+  };
+
   const resultId = String(
     (result as QuizResult & { id?: string; _id?: string }).id ||
     (result as QuizResult & { id?: string; _id?: string })._id ||
@@ -1520,8 +1532,7 @@ const ReviewSolutions = ({
     );
   }
 
-  const isFavorite = favorites.includes(q.questionId);
-  const isReviewLater = reviewLater.includes(q.questionId);
+  const isReviewLater = savedReviewIds.includes(q.questionId);
   const reviewOptionLayout = 'horizontal' as const;
 
   const wasAnswered = typeof q.selectedOptionIndex === 'number' && q.selectedOptionIndex !== -1;
@@ -1550,17 +1561,7 @@ const ReviewSolutions = ({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => toggleFavorite(q.questionId)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
-              isFavorite ? 'bg-rose-500 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
-            }`}
-          >
-            <Star size={14} className={isFavorite ? 'fill-current' : ''} />
-            <span>{isFavorite ? 'في المفضلة' : 'المفضلة'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => toggleReviewLater(q.questionId)}
+            onClick={() => void toggleReviewLater(q.questionId)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all ${
               isReviewLater ? 'bg-purple-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
             }`}

@@ -289,3 +289,13 @@
 - لا duplicate question/media.
 - لا AI في scoring/mastery/routing.
 - قياس token/bandwidth/cache بعد التنفيذ.
+
+
+## 18) تنفيذ Student Review V1 — 2026-09-24
+- ReviewCard هو علاقة الطالب بالسؤال ولا يخزن نسخة Question أو صورة.
+- savedForReview للحفظ اليدوي وhasMistake لأثر الخطأ السابق.
+- /favorites تتحول وظيفيًا إلى «أسئلتي للمراجعة»: حفظتها للمراجعة + أخطأت فيها.
+- /review?mode=saved|mistakes يعيد استخدام ReviewSession ولا ينشئ Quiz/Question جديدًا.
+- Question Assistant يقبل سياق review مصرحًا به من الخادم.
+- Student Review routes في `studentReviewRouter` مستقل صغير، ولا تُحشر داخل spaced-review أو AI modules.\n- القوائم paginated/bounded (20 افتراضيًا و50 كحد أقصى)، والجلسة 20؛ الصور lazy/CDN.
+- saved/mistake attempts تسجل remediation، وmastery_review فقط لتثبيت الإتقان.

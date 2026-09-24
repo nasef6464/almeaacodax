@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
+import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
 
 type ReviewItem = {
   cardId: string;
@@ -9,7 +10,7 @@ type ReviewItem = {
   pathId?: string;
   subjectId?: string;
   sectionId?: string;
-  reviewType?: "error_recovery" | "mastery_review";
+  reviewType?: "error_recovery" | "mastery_review" | "saved_review";
   question: {
     id: string;
     text: string;
@@ -36,6 +37,7 @@ const ReviewSession: React.FC = () => {
   const [searchParams] = useSearchParams();
   const pathId = String(searchParams.get("pathId") || "").trim();
   const subjectId = String(searchParams.get("subjectId") || "").trim();
+  const mode = String(searchParams.get("mode") || "").trim();
   const [items, setItems] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -48,14 +50,25 @@ const ReviewSession: React.FC = () => {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    api.getReviewDue({
-      limit: 20,
-      ...(pathId ? { pathId } : {}),
-      ...(subjectId ? { subjectId } : {}),
-    })
+    const sourcePromise = mode === "saved" || mode === "mistakes"
+      ? api.getStudentReviewLibrary({
+          tab: mode,
+          limit: 20,
+          ...(pathId ? { pathId } : {}),
+          ...(subjectId ? { subjectId } : {}),
+        })
+      : api.getReviewDue({
+          limit: 20,
+          ...(pathId ? { pathId } : {}),
+          ...(subjectId ? { subjectId } : {}),
+        });
+    sourcePromise
       .then((payload) => {
         if (!mounted) return;
-        setItems(Array.isArray(payload.items) ? payload.items : []);
+        setItems(Array.isArray(payload.items) ? payload.items.map((item: any) => ({
+          ...item,
+          reviewType: item.reviewType || (item.reasons?.mistake ? "error_recovery" : "saved_review"),
+        })) : []);
         setIndex(0);
         setDoneCount(0);
         setSelectedOptionIndex(null);
@@ -72,7 +85,7 @@ const ReviewSession: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [pathId, subjectId]);
+  }, [mode, pathId, subjectId]);
 
   const current = useMemo(() => items[index] || null, [items, index]);
   const isFinished = !loading && (items.length === 0 || index >= items.length);
@@ -134,6 +147,8 @@ const ReviewSession: React.FC = () => {
           <span>السؤال {index + 1} من {items.length}</span>
           {current?.reviewType === "mastery_review" ? (
             <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-black text-emerald-700">تثبيت إتقان</span>
+          ) : current?.reviewType === "saved_review" ? (
+            <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-700">محفوظ للمراجعة</span>
           ) : (
             <span className="rounded-full bg-amber-50 px-2 py-1 text-xs font-black text-amber-700">استعادة خطأ</span>
           )}
@@ -166,6 +181,20 @@ const ReviewSession: React.FC = () => {
           </div>
         ) : null}
       </div>
+
+      {current?.questionId ? (
+        <QuestionAssistantPanel
+          questionId={current.questionId}
+          hasImage={Boolean(current.question?.imageUrl)}
+          context={
+            current.reviewType === "mastery_review"
+              ? "mastery_review"
+              : current.reviewType === "saved_review"
+                ? "saved_review"
+                : "mistake_review"
+          }
+        />
+      ) : null}
 
       <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
         {current?.question?.options?.length ? (

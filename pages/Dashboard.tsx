@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, Sparkles, FileText, 
-    PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
+    PieChart, Bookmark, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
     Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon, Calculator,
     GraduationCap, Wrench, Headphones
@@ -927,7 +927,7 @@ const Dashboard: React.FC = () => {
         { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
         { id: 'reports',      label: 'تقاريري',              icon: <MapIcon size={20} /> },
         { id: 'plan',         label: 'خططي',                 icon: <PieChart size={20} /> },
-        { id: 'favorites',    label: 'مراجعة الأسئلة',      icon: <Heart size={20} /> },
+        { id: 'favorites',    label: 'أسئلتي للمراجعة',      icon: <Bookmark size={20} /> },
         { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <Copy size={20} /> },
         { id: 'qa',           label: 'سؤال وجواب',           icon: <MessageCircle size={20} /> },
         { id: 'requests',     label: 'طلباتي',               icon: <FileText size={20} /> },

@@ -167,10 +167,6 @@ export const QuizPage: React.FC = () => {
     lessons,
     topics,
     libraryItems,
-    toggleFavorite,
-    toggleReviewLater,
-    favorites,
-    reviewLater,
   } = useStore();
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -788,7 +784,7 @@ export const QuizPage: React.FC = () => {
   const shouldShowProgressBar = quizSettings.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
   const activeProgressPercentage = Math.round(((currentQuestionIndex + 1) / Math.max(quizQuestions.length, 1)) * 100);
-  const reviewQuestionCount = quizQuestions.filter((question) => reviewLater.includes(question.id)).length;
+  const reviewQuestionCount = quizQuestions.filter((question) => flaggedQuestionIds.includes(question.id)).length;
   const isNextBlocked =
     quizSettings.requireAnswerBeforeNext === true &&
     currentQuestion &&
@@ -867,15 +863,35 @@ export const QuizPage: React.FC = () => {
     });
   };
 
+  const toggleQuestionSavedForReview = async (questionId: string) => {
+    const wasSaved = flaggedQuestionIds.includes(questionId);
+    if (!user?.id || user.id === 'guest') {
+      setQuizStatusMessage('سجّل الدخول لحفظ السؤال للمراجعة على حسابك.');
+      setQuizStatusTone('info');
+      return;
+    }
+    setFlaggedQuestionIds((prev) => wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]);
+    try {
+      if (wasSaved) await api.removeQuestionFromReview(questionId);
+      else await api.saveQuestionForReview(questionId);
+      setQuizStatusMessage(wasSaved ? 'تمت إزالة السؤال من المراجعة.' : 'تم حفظ السؤال للمراجعة لاحقًا.');
+      setQuizStatusTone('success');
+    } catch {
+      setFlaggedQuestionIds((prev) => wasSaved ? [...new Set([...prev, questionId])] : prev.filter((id) => id !== questionId));
+      setQuizStatusMessage('تعذر تحديث قائمة المراجعة الآن.');
+      setQuizStatusTone('info');
+    }
+  };
+
   const handleToggleCurrentReviewLater = () => {
     if (!currentQuestion) return;
-    toggleReviewLater(currentQuestion.id);
+    void toggleQuestionSavedForReview(currentQuestion.id);
   };
 
   const getQuestionNumberClass = (question: Question, index: number) => {
     const isCurrent = index === currentQuestionIndex;
     const isAnswered = selectedOptions[question.id] !== undefined;
-    const isMarkedForReview = reviewLater.includes(question.id);
+    const isMarkedForReview = flaggedQuestionIds.includes(question.id);
 
     if (isCurrent) {
       return getQuizQuestionMapButtonClass('current', isNightMode);
@@ -1509,14 +1525,14 @@ export const QuizPage: React.FC = () => {
                           type="button"
                           onClick={handleToggleCurrentReviewLater}
                           className={`${
-                            reviewLater.includes(currentQuestion.id)
+                            flaggedQuestionIds.includes(currentQuestion.id)
                               ? (isNightMode ? 'bg-purple-950 text-purple-200 ring-1 ring-purple-800' : 'bg-purple-50 text-purple-700 ring-1 ring-purple-200')
                               : (isNightMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50')
                           } inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black transition shadow-xs`}
                           title="تمييز السؤال للمراجعة لاحقاً"
                         >
-                          <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current text-purple-500' : 'text-gray-400'} />
-                          <span>{reviewLater.includes(currentQuestion.id) ? 'تمت إضافته للمراجعة' : 'مراجعة لاحقاً'}</span>
+                          <Star size={14} className={flaggedQuestionIds.includes(currentQuestion.id) ? 'fill-current text-purple-500' : 'text-gray-400'} />
+                          <span>{flaggedQuestionIds.includes(currentQuestion.id) ? 'تمت إضافته للمراجعة' : 'مراجعة لاحقاً'}</span>
                         </button>
                       ) : null}
                     </div>
@@ -1878,9 +1894,9 @@ export const QuizPage: React.FC = () => {
                         {isStrictQiyasMode && currentMockExamSection
                           ? currentMockExamSection.questionIndexes.filter((idx) => {
                               const q = quizQuestions[idx];
-                              return q ? (reviewLater.includes(q.id) || flaggedQuestionIds.includes(q.id)) : false;
+                              return q ? (flaggedQuestionIds.includes(q.id)) : false;
                             }).length
-                          : reviewQuestionCount + flaggedQuestionIds.length}
+                          : reviewQuestionCount}
                       </div>
                       <div className="text-[10px] mt-0.5 opacity-90">للمراجعة</div>
                     </div>
@@ -1893,7 +1909,7 @@ export const QuizPage: React.FC = () => {
                         const question = quizQuestions[index];
                         if (!question) return null;
                         const isAnswered = selectedOptions[question.id] !== undefined;
-                        const isMarkedForReview = reviewLater.includes(question.id) || flaggedQuestionIds.includes(question.id);
+                        const isMarkedForReview = flaggedQuestionIds.includes(question.id);
                         const isCurrent = index === currentQuestionIndex;
                         const displayNum = isStrictQiyasMode ? pos + 1 : index + 1;
                         const title = isCurrent
@@ -2096,11 +2112,11 @@ export const QuizPage: React.FC = () => {
                                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }}
                               />
                               <button
-                                onClick={() => toggleFavorite(question.id)}
+                                onClick={() => void toggleQuestionSavedForReview(question.id)}
                                 className="text-gray-400 hover:text-amber-500 transition-colors p-2"
-                                title="إضافة للمفضلة"
+                                title="مراجعة لاحقًا"
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={favorites.includes(question.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={flaggedQuestionIds.includes(question.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                               </button>
                             </div>
                             {question.imageUrl && (

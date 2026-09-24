@@ -9,7 +9,10 @@ const reviewCardSchema = new Schema(
     pathId: { type: String, default: "" },
     subjectId: { type: String, default: "" },
     sectionId: { type: String, default: "" },
-    reviewType: { type: String, enum: ["error_recovery", "mastery_review"], default: "error_recovery" },
+    reviewType: { type: String, enum: ["error_recovery", "mastery_review", "saved_review"], default: "error_recovery" },
+    savedForReview: { type: Boolean, default: false },
+    savedAt: { type: Date, default: undefined },
+    hasMistake: { type: Boolean, default: false },
     easeFactor: { type: Number, default: 2.5 },
     interval: { type: Number, default: 1 },
     repetitions: { type: Number, default: 0 },
@@ -27,5 +30,8 @@ reviewCardSchema.index({ userId: 1, questionId: 1 }, { unique: true });
 reviewCardSchema.index({ userId: 1, nextReviewDate: 1 });
 reviewCardSchema.index({ userId: 1, skillId: 1, nextReviewDate: 1 });
 reviewCardSchema.index({ userId: 1, pathId: 1, subjectId: 1, nextReviewDate: 1 });
+reviewCardSchema.index({ userId: 1, savedForReview: 1, updatedAt: -1 });
+reviewCardSchema.index({ userId: 1, hasMistake: 1, updatedAt: -1 });
+reviewCardSchema.index({ userId: 1, reviewType: 1, updatedAt: -1 });
 
 export const ReviewCardModel = mongoose.model("ReviewCard", reviewCardSchema);

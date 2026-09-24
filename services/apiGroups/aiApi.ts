@@ -27,7 +27,8 @@ export const createAiApi = (request: ApiRequest) => ({
 
   aiQuestionAssistant: (
     payload: {
-      resultId: string;
+      resultId?: string;
+      context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
       questionId: string;
       helpLevel: "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
       message?: string;

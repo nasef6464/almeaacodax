@@ -545,7 +545,7 @@ const STUDENT_TAB_METAS: Record<string, { title: string; description: string }> 
     description: 'جدولك الدراسي المخصص للوصول إلى النسبة المستهدفة.',
   },
   favorites: {
-    title: 'مساحة الطالب | مراجعة الأسئلة المحفوظة - منصة المئة',
+    title: 'مساحة الطالب | أسئلتي للمراجعة - منصة المئة',
     description: 'الأسئلة التي قمت بحفظها للمراجعة والتدريب المركز.',
   },
   flashcards: {
@@ -740,7 +740,7 @@ const resolvePageMeta = (
 
   if (effectivePath === '/favorites') {
     return {
-      title: 'الأسئلة المفضلة والمحفوظة | منصة المئة',
+      title: 'أسئلتي للمراجعة | منصة المئة',
       description: 'قائمتك الخاصة من الأسئلة المحفوظة للمراجعة والتدريب المركز.',
       isPrivate: true,
       canonicalPath: '/favorites',

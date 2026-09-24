@@ -101,7 +101,10 @@
     "schoolAccessRouter|PUT|/memberships",
     "schoolAdminIntegrityRouter|PUT|/assignments",
     "schoolAdminIntegrityRouter|PUT|/contracts/:schoolId",
-    "schoolAdminIntegrityRouter|PUT|/memberships"
+    "schoolAdminIntegrityRouter|PUT|/memberships",
+    "studentReviewRouter|GET|/library",
+    "studentReviewRouter|DELETE|/questions/:questionId/saved",
+    "studentReviewRouter|PUT|/questions/:questionId/saved"
   ],
   "routerMountSignatures": [
     "apiRouter|/live-exams|liveExamsRouter",
@@ -111,7 +114,8 @@
     "apiRouter|/school-access|schoolAdminIntegrityRouter",
     "apiRouter|/school-access|schoolAccessRouter",
     "app|/api/ai/generate-mock-exam|requireAuth",
-    "apiRouter|/media|mediaRouter"
+    "apiRouter|/media|mediaRouter",
+    "apiRouter|/review|studentReviewRouter"
   ],
   "envKeys": [
     "AI_PER_SCHOOL_DAILY_LIMIT",
