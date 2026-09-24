@@ -34,7 +34,7 @@ export const readAiUsageDaily = async (
   scopeId: string,
   dayKey = utcDayKey(),
 ): Promise<AiUsageSnapshot> => {
-  const found = await AiUsageDailyModel.findOne({ dayKey, scopeType, scopeId }).lean();
+  const found = await AiUsageDailyModel.findOne({ dayKey, scopeType, scopeId }).lean() as any;
   if (found) {
     return {
       requestCount: Number(found.requestCount || 0),
