@@ -422,7 +422,7 @@ export const AiAssistantManager: React.FC = () => {
                         className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 font-black text-xs hover:bg-gray-50 transition-all shadow-xs"
                     >
                         <Settings size={15} />
-                        <span>فتح إدارة التكاملات</span>
+                        <span>التكاملات العامة</span>
                     </button>
 
                     <button

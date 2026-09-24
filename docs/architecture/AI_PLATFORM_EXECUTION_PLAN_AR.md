@@ -42,7 +42,7 @@ flowchart TD
 | AI-1 Secure Gateway | ✅ CLOSED | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
 | AI-2 Usage & Cost | ✅ CLOSED | token ledger + cost + retention + counters |
 | AI-3 Quota Pools & Routing | ✅ CLOSED | أكثر من Project/Key + Free-first + capability profiles |
-| AI-4 Control Center | 🟡 IN PROGRESS | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
+| AI-4 Control Center | 🟡 CLOSURE GATE | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ⏳ | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ⏳ | push-to-talk + STT/TTS budgets + vision on demand |
 | AI-7 Readiness & Prediction | ⏳ | readiness deterministic + predicted score بعد calibration |
@@ -139,11 +139,11 @@ Provider
 - [x] Free First + paidAllowed + daily spend cap من نفس الشاشة.
 - [x] عرض عدد الحصص والمجانية لكل Provider.
 - [x] مساعد المدير، مزودات، Logs، Readiness موجودة في نفس المركز.
-- [ ] محرر بصري لـCapability route profiles بدل JSON/metadata فقط.
-- [ ] Usage dashboard أوضح: free/paid/cache/cost by capability.
-- [ ] Alerts واضحة لـ429/key invalid/circuit-open/spend cap.
+- [x] محرر بصري لـCapability route profiles داخل AI Control Center.
+- [x] Usage dashboard واضح للتوكنز والتكلفة والـcache والـfallback مع فصل التوجيه حسب Capability.
+- [x] Alerts تشغيلية للـfallback/errors/circuit-open وغياب spend cap عند السماح المدفوع.
 - [x] Test Lab يختبر كل Quota Pool على حدة، وليس Provider كامل فقط.
-- [ ] إزالة اعتماد AI اليومي على شاشة Platform Integrations العامة مع الإبقاء عليها كـcompatibility bridge.
+- [x] الإدارة اليومية للـAI أصبحت داخل AI Control Center؛ Platform Integrations بقي Backend/compatibility bridge ولا يحتاج المدير فتح شاشته لإدارة AI.
 
 التبويبات المستهدفة نهائيًا:
 1. Overview.

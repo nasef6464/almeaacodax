@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 
 const manager = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
 const control = await readFile(new URL("../dashboards/admin/ai/AiControlCenterSettings.tsx", import.meta.url), "utf8");
+const routingEditor = await readFile(new URL("../dashboards/admin/ai/AiCapabilityRoutingEditor.tsx", import.meta.url), "utf8");
+const usageAlerts = await readFile(new URL("../dashboards/admin/ai/AiUsageAndAlertsPanel.tsx", import.meta.url), "utf8");
 const api = await readFile(new URL("../services/api.ts", import.meta.url), "utf8");
 const runtime = await readFile(new URL("../server/src/modules/content/integrations/platformIntegrationRuntime.ts", import.meta.url), "utf8");
 
@@ -36,6 +38,19 @@ check("backend masking and merge semantics preserve secrets when admin leaves ke
   runtime.includes("SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS") &&
   runtime.includes("platform[fieldKey] = []") &&
   runtime.includes("if (!hasIncoming && previousValues.length > 0)"));
+
+check("visual capability routing is managed inside the AI control center",
+  routingEditor.includes("AI_CAPABILITY_IDS") &&
+  routingEditor.includes("maxOutputTokens") &&
+  routingEditor.includes("paidAllowed") &&
+  control.includes("AiCapabilityRoutingEditor"));
+
+check("usage and alerts dashboard surfaces spend, cache, fallback and circuit health",
+  usageAlerts.includes("estimatedCostMicrosUsdToday") &&
+  usageAlerts.includes("cachedTokens24h") &&
+  usageAlerts.includes("fallbackRate") &&
+  usageAlerts.includes("Circuit Open") &&
+  manager.includes("الاستخدام والتنبيهات"));
 
 check("test lab can validate one quota pool instead of only a whole provider",
   control.includes("quotaPoolId: poolId") &&
