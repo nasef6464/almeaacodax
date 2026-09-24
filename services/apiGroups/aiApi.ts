@@ -89,6 +89,8 @@ export const createAiApi = (request: ApiRequest) => ({
       model: string;
       timeoutMs: number;
       dailySpendCapUsd?: number;
+      paidAllowed?: boolean;
+      routeProfiles?: Record<string, { providerOrder?: AiProvider[]; paidAllowed?: boolean; maxOutputTokens?: number }>;
       providerHealth?: Array<{
         provider: string;
         failures: number;

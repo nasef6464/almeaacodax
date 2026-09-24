@@ -4,6 +4,7 @@ const routes = await readFile(new URL("../server/src/routes/ai.routes.ts", impor
 const pools = await readFile(new URL("../server/src/modules/ai/application/aiQuotaPools.ts", import.meta.url), "utf8");
 const adapters = await readFile(new URL("../server/src/modules/ai/infrastructure/providers/aiProviderAdapters.ts", import.meta.url), "utf8");
 const manager = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
+const capabilityRouting = await readFile(new URL("../server/src/modules/ai/application/aiCapabilityRouting.ts", import.meta.url), "utf8");
 
 const checks = [];
 const check = (name, pass) => checks.push({ name, status: pass ? "PASS" : "FAIL" });
@@ -39,6 +40,21 @@ check("status API exposes sanitized pool metadata only",
   routes.includes("keyCount: pool.apiKeys.length") &&
   routes.includes("quotaPools: Object.fromEntries") &&
   !routes.includes("apiKeys: pool.apiKeys"));
+
+check("paid providers are disabled by default unless the global and capability policy allow them",
+  capabilityRouting.includes("capabilityPaidAllowed") &&
+  capabilityRouting.includes("isPaidByDefaultProvider") &&
+  routes.includes("paidAllowed: false") &&
+  routes.includes("providerAllowedForCapability") &&
+  adapters.includes("allowPaid"));
+
+check("capability route profiles can override provider order and output bounds",
+  capabilityRouting.includes("parseAiRouteProfiles") &&
+  capabilityRouting.includes("applyCapabilityProviderOrder") &&
+  routes.includes("routeProfiles") &&
+  routes.includes('capability: "question_tutor"') &&
+  routes.includes('capability: "admin_copilot"') &&
+  routes.includes('capability: "authoring"'));
 
 check("admin provider cards show real pool counts",
   manager.includes("quotaPoolCount") &&

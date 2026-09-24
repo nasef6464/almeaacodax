@@ -41,6 +41,14 @@ import { estimateAiCostMicrosUsd, readAiPricingHint, type AiPricingHint } from "
 import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
 import {
+  applyCapabilityProviderOrder,
+  capabilityPaidAllowed,
+  isPaidByDefaultProvider,
+  parseAiRouteProfiles,
+  type AiCapabilityId,
+  type AiRouteProfile,
+} from "../modules/ai/application/aiCapabilityRouting.js";
+import {
   normalizeAiQuotaPlan,
   normalizeAiQuotaScope,
   quotaPoolIsFreeFirst,
@@ -189,6 +197,8 @@ type AiRuntimeConfig = {
   providerOrderSource: "env" | "admin";
   routingMode: "manual" | "auto";
   dailySpendCapUsd: number;
+  paidAllowed: boolean;
+  routeProfiles: Partial<Record<AiCapabilityId, AiRouteProfile>>;
   providers: Record<Exclude<AiProvider, "none">, ProviderRuntime>;
 };
 
@@ -291,6 +301,8 @@ const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   providerOrderSource: "env",
   routingMode: "manual",
   dailySpendCapUsd: 0,
+  paidAllowed: false,
+  routeProfiles: {},
   providers: {
     gemini: { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, source: "env" },
     openrouter: { apiKey: env.OPENROUTER_API_KEY, model: env.OPENROUTER_MODEL, baseUrl: "https://openrouter.ai/api/v1", source: "env" },
@@ -359,6 +371,8 @@ const loadRuntimeAiConfigUncached = async () => {
     const rawPreferredProvider = String(globalNote.provider || global.note || "").trim().toLowerCase();
     const dailySpendCapUsd = Math.max(0, Number(globalNote.dailySpendCapUsd || 0));
     if (Number.isFinite(dailySpendCapUsd)) next.dailySpendCapUsd = dailySpendCapUsd;
+    next.paidAllowed = globalNote.paidAllowed === true;
+    next.routeProfiles = parseAiRouteProfiles(globalNote.routeProfiles);
     const routingMode = String(globalNote.mode || (rawPreferredProvider === "auto" ? "auto" : "manual")).trim().toLowerCase();
     if (routingMode === "auto") {
       next.provider = undefined;
@@ -506,6 +520,26 @@ const providerPriority = () =>
     configuredOrder: runtimeAiConfig.providerOrder,
     availableProviders: configuredProviders().map((candidate) => candidate.id),
   });
+
+const providerAllowedForCapability = (provider: AiProvider, capability?: AiCapabilityId) => {
+  if (provider === "none" || provider === "ollama" || provider === "lmstudio") return true;
+  const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
+  const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
+  if (allowPaid) return true;
+
+  const pools = runtimeAiConfig.providers[provider].quotaPools || [];
+  if (pools.length > 0) {
+    return pools.some((pool) => pool.plan !== "paid");
+  }
+
+  return !isPaidByDefaultProvider(provider);
+};
+
+const providerPriorityForCapability = (capability?: AiCapabilityId) => {
+  const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
+  return applyCapabilityProviderOrder(providerPriority(), profile)
+    .filter((provider) => providerAllowedForCapability(provider, capability));
+};
 
 const ARABIC_TUTOR_RULES = `
 أنت مساعد تعليمي عربي داخل منصة تعليمية للقدرات والتحصيلي.
@@ -757,8 +791,9 @@ const recordAiInteraction = async (payload: {
 };
 
 const resolveProvider = (): AiProvider =>
-  providerPriority().find((provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured) ||
-  "none";
+  providerPriorityForCapability("student_chat").find(
+    (provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured,
+  ) || "none";
 
 const aiProviderAdapters = createAiProviderAdapters({
   getProviderRuntime: (provider) => runtimeAiConfig.providers[provider],
@@ -768,16 +803,28 @@ const aiProviderAdapters = createAiProviderAdapters({
   redactDiagnostic: redactAiDiagnostic,
 });
 
+type AiGatewayCallOptions = AiProviderCallOptions & { capability?: AiCapabilityId };
+
 const callAiWithMeta = async (
   prompt: string,
   responseMimeType?: AiResponseMimeType,
   image?: { data: string; mimeType: string },
-  options: AiProviderCallOptions = {},
+  options: AiGatewayCallOptions = {},
 ): Promise<AiCallResult> => {
   await loadRuntimeAiConfig();
   const errors: string[] = [];
+  const capability = options.capability;
+  const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
+  const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
+  const providerCallOptions: AiProviderCallOptions = {
+    ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
+    ...(options.maxOutputTokens || profile?.maxOutputTokens
+      ? { maxOutputTokens: options.maxOutputTokens || profile?.maxOutputTokens }
+      : {}),
+    allowPaid,
+  };
 
-  for (const provider of providerPriority()) {
+  for (const provider of providerPriorityForCapability(capability)) {
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!descriptor?.configured || provider === "none") continue;
     if (isAiProviderCircuitOpen(provider)) {
@@ -786,7 +833,7 @@ const callAiWithMeta = async (
     }
 
     try {
-      const providerResponse = await aiProviderAdapters.callProvider(provider, prompt, responseMimeType, image, options);
+      const providerResponse = await aiProviderAdapters.callProvider(provider, prompt, responseMimeType, image, providerCallOptions);
       if (providerResponse.text) {
         recordAiProviderSuccess(provider);
         return {
@@ -833,8 +880,12 @@ const callSingleProvider = async (
   provider: Exclude<AiProvider, "none">,
   prompt: string,
   image?: { data: string; mimeType: string },
-  options: AiProviderCallOptions = { timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000) },
-) => aiProviderAdapters.callProviderText(provider, prompt, undefined, image, options);
+  options: AiProviderCallOptions = {},
+) => aiProviderAdapters.callProviderText(provider, prompt, undefined, image, {
+  timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000),
+  allowPaid: runtimeAiConfig.paidAllowed,
+  ...options,
+});
 
 const withinAiBudget = async (userId?: string, schoolId?: string) => {
   const dailyLimit = Math.max(1, Number(env.AI_DAILY_LIMIT || 800));
@@ -877,6 +928,7 @@ type BudgetedAiRequestInput = {
   fallbackText: string;
   responseMimeType?: AiResponseMimeType;
   maxOutputTokens?: number;
+  capability: AiCapabilityId;
   metadata?: Record<string, unknown>;
 };
 
@@ -919,6 +971,7 @@ const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
   }
 
   const result = await callAiWithMeta(input.prompt, input.responseMimeType, undefined, {
+    capability: input.capability,
     maxOutputTokens: input.maxOutputTokens || AI_DEFAULT_MAX_OUTPUT_TOKENS,
   });
   const responseText = String(result.text || input.fallbackText).trim();
@@ -943,6 +996,7 @@ const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
       billable: true,
       budgetExceeded: false,
       providerErrors: compactProviderErrors(result.errors),
+      capability: input.capability,
       quotaPoolId: result.quotaPoolId || "",
       promptChars: input.prompt.length,
       responseChars: responseText.length,
@@ -1002,9 +1056,11 @@ aiRouter.get(
           })),
         ]),
       ),
-      providerOrder: providerPriority(),
+      providerOrder: providerPriorityForCapability("student_chat"),
       providerOrderSource: runtimeAiConfig.providerOrderSource,
       routingMode: runtimeAiConfig.routingMode,
+      paidAllowed: runtimeAiConfig.paidAllowed,
+      routeProfiles: runtimeAiConfig.routeProfiles,
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
       dailySpendCapUsd: runtimeAiConfig.dailySpendCapUsd,
@@ -1093,7 +1149,7 @@ aiRouter.get(
         label: provider.label,
         model: provider.model,
       })),
-      recommendedProviderOrder: providerPriority().join(","),
+      recommendedProviderOrder: providerPriorityForCapability("student_chat").join(","),
       studentAdvisor: {
         ready: studentCount > 0 && (studentsWithResults > 0 || weakSkillSignals > 0),
         studentCount,
@@ -1185,6 +1241,13 @@ aiRouter.post(
     await loadRuntimeAiConfig(true);
     const { provider } = providerTestSchema.parse(req.body);
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
+    if (!providerAllowedForCapability(provider, "admin_copilot")) {
+      return res.json({
+        ok: false,
+        provider,
+        message: "المزود محظور بسياسة التكلفة الحالية. فعّل paidAllowed أو عرّف له Free/Trial quota pool.",
+      });
+    }
     if (!descriptor?.configured) {
       return res.json({
         ok: false,
@@ -1293,7 +1356,7 @@ ${message}
     }
 
     try {
-      const result = await callAiWithMeta(prompt, undefined, image);
+      const result = await callAiWithMeta(prompt, undefined, image, { capability: "student_chat" });
       const responseText = result.text || fallback;
       const providerErrors = compactProviderErrors(result.errors);
       const fallbackReason = result.text ? undefined : fallbackReasonFromErrors(result.errors);
@@ -1316,6 +1379,8 @@ ${message}
           recentResultsCount: studentContext?.recentResults.length || 0,
           providerErrors,
           fallbackReason,
+          capability: "student_chat",
+          quotaPoolId: result.quotaPoolId || "",
           hasImage,
         },
       });
@@ -1665,6 +1730,7 @@ aiRouter.post(
 
       const startedAt = Date.now();
       const resultCall = await callAiWithMeta(prompt, undefined, undefined, {
+        capability: "question_tutor",
         timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
         maxOutputTokens: env.AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS,
       });
@@ -1712,6 +1778,8 @@ aiRouter.post(
         error: provider === "none" && resultCall.errors.length ? fallbackReasonFromErrors(resultCall.errors) : undefined,
         metadata: {
           billable: true,
+          capability: "question_tutor",
+          quotaPoolId: resultCall.quotaPoolId || "",
           cacheHit: false,
           resultId: resultIdentity,
           questionId: payload.questionId,
@@ -1824,7 +1892,7 @@ ${message}
     }
 
     try {
-      const result = await callAiWithMeta(prompt);
+      const result = await callAiWithMeta(prompt, undefined, undefined, { capability: "admin_copilot" });
       const responseText = result.text || fallback;
       await recordAiInteraction({
         req,
@@ -1844,6 +1912,8 @@ ${message}
           critical: audit.totals.critical,
           warnings: audit.totals.warnings,
           providerErrors: result.errors.slice(0, 3),
+          capability: "admin_copilot",
+          quotaPoolId: result.quotaPoolId || "",
         },
       });
       return res.json({
@@ -2058,6 +2128,7 @@ ${weaknesses.join(", ") || "مهارات عامة"}
     const result = await runBudgetedAiRequest({
       req,
       endpoint: "/ai/study-plan",
+      capability: "study_plan",
       message: weaknesses.join(", "),
       prompt,
       fallbackText: JSON.stringify(fallback),
@@ -2101,6 +2172,7 @@ type واحد من lesson أو quiz أو flashcard. priority واحد من high 
     const result = await runBudgetedAiRequest({
       req,
       endpoint: "/ai/learning-path",
+      capability: "learning_path",
       message: targetSkills.map((skill) => formatSkillContext(skill)).join(", "),
       prompt,
       fallbackText: JSON.stringify(fallback),
@@ -2152,6 +2224,7 @@ ${JSON.stringify(targetSkills)}
     const result = await runBudgetedAiRequest({
       req,
       endpoint: "/ai/remediation-plan",
+      capability: "remediation",
       message: targetSkills.map((skill) => formatSkillContext(skill)).join(", "),
       prompt,
       fallbackText: JSON.stringify(fallback),
@@ -2187,6 +2260,7 @@ ${topic}
     const result = await runBudgetedAiRequest({
       req,
       endpoint: "/ai/question",
+      capability: "authoring",
       message: topic,
       prompt,
       fallbackText: JSON.stringify(fallback),
@@ -2217,6 +2291,7 @@ ${courseTitle}
     const result = await runBudgetedAiRequest({
       req,
       endpoint: "/ai/course-summary",
+      capability: "course_summary",
       message: courseTitle,
       prompt,
       fallbackText: fallback,

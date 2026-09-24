@@ -15,6 +15,8 @@ type AiStatus = {
     model: string;
     timeoutMs: number;
     dailySpendCapUsd?: number;
+    paidAllowed?: boolean;
+    routeProfiles?: Record<string, { providerOrder?: AiStatus['provider'][]; paidAllowed?: boolean; maxOutputTokens?: number }>;
     quotaPools?: Record<string, Array<{
         id: string;
         label: string;
@@ -703,6 +705,12 @@ export const AiAssistantManager: React.FC = () => {
                                     <span className="text-gray-500 font-bold">نمط التوجيه:</span>
                                     <span className="font-bold text-emerald-700">
                                         {status?.routingMode === 'auto' ? 'تلقائي مع انتقال عند التعطل' : 'يدوي'}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-500 font-bold">الإنفاق المدفوع:</span>
+                                    <span className={`font-bold ${status?.paidAllowed ? 'text-amber-700' : 'text-emerald-700'}`}>
+                                        {status?.paidAllowed ? 'مسموح ضمن سقف التكلفة' : 'مغلق — Free First'}
                                     </span>
                                 </div>
                             </div>

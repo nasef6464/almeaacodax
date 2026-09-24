@@ -11,6 +11,7 @@ export type AiProviderRuntime = {
 export type AiProviderCallOptions = {
   timeoutMs?: number;
   maxOutputTokens?: number;
+  allowPaid?: boolean;
 };
 export type AiProviderUsage = {
   inputTokens: number;
@@ -135,7 +136,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ) => {
-    const pools = providerPools("gemini");
+    const pools = providerPools("gemini", options.allowPaid !== false);
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
@@ -272,7 +273,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     responseMimeType?: AiResponseMimeType,
     options: AiProviderCallOptions = {},
   ) => {
-    const pools = providerPools(provider);
+    const pools = providerPools(provider, options.allowPaid !== false);
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
     const errors: string[] = [];
     for (const pool of pools) {

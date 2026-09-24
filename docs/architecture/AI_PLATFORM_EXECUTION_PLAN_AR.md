@@ -118,8 +118,8 @@ Provider
 - [x] Free/Trial pools تسبق Unknown/Paid في Free-First routing.
 - [x] status API يعرض metadata آمنة وعدد المفاتيح ولا يعرض الأسرار.
 - [x] لوحة الإدارة تعرض عدد الحصص وعدد الحصص المجانية لكل مزود.
-- [ ] Capability-specific route profiles.
-- [ ] paidAllowed/global paid kill-switch مستقل عن spend cap.
+- [x] Capability-specific route profiles قابلة للتهيئة من ai-global مع حدود output مستقلة.
+- [x] paidAllowed/global paid kill-switch مستقل عن spend cap، ومغلق افتراضيًا.
 - [ ] UI موحد لإضافة/تعديل Accounts/Projects/Pools داخل AI Control Center.
 - دعم Gemini Projects متعددة بطريقة مشروعة.
 - دعم Qwen/Groq/OpenRouter وغيرها عبر adapters.
