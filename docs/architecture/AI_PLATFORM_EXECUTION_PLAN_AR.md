@@ -41,8 +41,8 @@ flowchart TD
 | AI-0 Canonicalize | ✅ CLOSED | مرجع موحد + جرد المشروع + Reference Center |
 | AI-1 Secure Gateway | ✅ CLOSED | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
 | AI-2 Usage & Cost | ✅ CLOSED | token ledger + cost + retention + counters |
-| AI-3 Quota Pools & Routing | 🟡 IN PROGRESS | أكثر من Project/Key + Free-first + capability profiles |
-| AI-4 Control Center | ⏳ | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
+| AI-3 Quota Pools & Routing | ✅ CLOSED | أكثر من Project/Key + Free-first + capability profiles |
+| AI-4 Control Center | 🟡 IN PROGRESS | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ⏳ | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ⏳ | push-to-talk + STT/TTS budgets + vision on demand |
 | AI-7 Readiness & Prediction | ⏳ | readiness deterministic + predicted score بعد calibration |
@@ -120,7 +120,7 @@ Provider
 - [x] لوحة الإدارة تعرض عدد الحصص وعدد الحصص المجانية لكل مزود.
 - [x] Capability-specific route profiles قابلة للتهيئة من ai-global مع حدود output مستقلة.
 - [x] paidAllowed/global paid kill-switch مستقل عن spend cap، ومغلق افتراضيًا.
-- [ ] UI موحد لإضافة/تعديل Accounts/Projects/Pools داخل AI Control Center.
+- [x] UI موحد لإضافة/تعديل Accounts/Projects/Pools داخل AI Control Center.
 - دعم Gemini Projects متعددة بطريقة مشروعة.
 - دعم Qwen/Groq/OpenRouter وغيرها عبر adapters.
 - Free-only pools.
@@ -129,8 +129,23 @@ Provider
 
 ## AI-4 — AI Control Center
 
-نطور الشاشة الحالية `AiAssistantManager` بدل إنشاء إدارة ثالثة:
+نطور الشاشة الحالية `AiAssistantManager` بدل إنشاء إدارة ثالثة.
 
+### الحالة الحالية
+- [x] مدخل واحد باسم «إدارة الذكاء الاصطناعي».
+- [x] تبويب مباشر للمفاتيح والحصص والتكلفة داخل نفس الإدارة.
+- [x] إضافة Accounts / Projects / Quota Pools دون عرض الأسرار بعد الحفظ.
+- [x] مفاتيح متعددة داخل Pool واحد مع حفظ مشفر في الخادم.
+- [x] Free First + paidAllowed + daily spend cap من نفس الشاشة.
+- [x] عرض عدد الحصص والمجانية لكل Provider.
+- [x] مساعد المدير، مزودات، Logs، Readiness موجودة في نفس المركز.
+- [ ] محرر بصري لـCapability route profiles بدل JSON/metadata فقط.
+- [ ] Usage dashboard أوضح: free/paid/cache/cost by capability.
+- [ ] Alerts واضحة لـ429/key invalid/circuit-open/spend cap.
+- [ ] Test Lab يعرض نتيجة كل Pool/Model وليس Provider فقط.
+- [ ] إزالة اعتماد AI اليومي على شاشة Platform Integrations العامة مع الإبقاء عليها كـcompatibility bridge.
+
+التبويبات المستهدفة نهائيًا:
 1. Overview.
 2. Assistants.
 3. Providers / Accounts / Projects / Keys.
@@ -140,7 +155,7 @@ Provider
 7. Logs / Alerts.
 8. Test Lab.
 
-`Platform Integrations` يتوقف تدريجيًا عن كونه مكان تحرير AI ويحتفظ بالتكاملات غير AI فقط.
+`Platform Integrations` يبقى للتكاملات العامة، ويظل AI bridge داخله مؤقتًا فقط لتوافق البيانات القديمة.
 
 ## AI-5 — Tutor Sessions
 
