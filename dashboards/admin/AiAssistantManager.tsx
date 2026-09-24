@@ -357,9 +357,9 @@ export const AiAssistantManager: React.FC = () => {
                             مساعد الطالب والمدير
                         </span>
                     </div>
-                    <h1 className="text-2xl font-black text-gray-900">إدارة ومراقبة المساعد الذكي</h1>
+                    <h1 className="text-2xl font-black text-gray-900">إدارة الذكاء الاصطناعي والمساعدين</h1>
                     <p className="text-xs font-bold text-gray-500 mt-1 max-w-2xl">
-                        متابعة حية لتفاعلات الطلاب، قياس سرعة المزودات، تشخيص أخطاء المنصة، وتوجيه سلسلة الاستجابة الذكية.
+                        مركز موحد لمتابعة المساعدين، المزودات، سلسلة الاستجابة، الاستخدام، والجاهزية مع الحفاظ على أقل تكلفة ممكنة.
                     </p>
                 </div>
 

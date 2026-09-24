@@ -29,11 +29,21 @@ import {
   recordAiProviderFailure,
   recordAiProviderSuccess,
 } from "../modules/ai/application/providerCircuitBreaker.js";
+import { estimateBase64DecodedBytes, isExplicitLocalProviderConfigured } from "../modules/ai/application/aiCapabilityPolicy.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 
 const imageInputSchema = z.object({
   data: z.string().min(1),
   mimeType: z.string().regex(/^image\/(png|jpeg|webp|gif|svg\+xml)$/),
+}).superRefine((value, ctx) => {
+  const decodedBytes = estimateBase64DecodedBytes(value.data);
+  if (decodedBytes > env.AI_CHAT_IMAGE_MAX_BYTES) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["data"],
+      message: `AI chat image exceeds the allowed size of ${env.AI_CHAT_IMAGE_MAX_BYTES} bytes`,
+    });
+  }
 }).optional();
 
 const chatSchema = z.object({
@@ -275,9 +285,21 @@ const loadRuntimeAiConfig = async () => {
 };
 
 const isOllamaExplicitlyConfigured = () =>
-  Boolean(runtimeAiConfig.provider === "ollama" || runtimeAiConfig.providers.ollama.baseUrl || runtimeAiConfig.providers.ollama.model);
+  isExplicitLocalProviderConfigured({
+    provider: "ollama",
+    source: runtimeAiConfig.providers.ollama.source,
+    enabled: runtimeAiConfig.providers.ollama.enabled,
+    baseUrl: runtimeAiConfig.providers.ollama.baseUrl,
+    model: runtimeAiConfig.providers.ollama.model,
+  });
 const isLmStudioExplicitlyConfigured = () =>
-  Boolean(runtimeAiConfig.provider === "lmstudio" || runtimeAiConfig.providers.lmstudio.baseUrl || runtimeAiConfig.providers.lmstudio.model);
+  isExplicitLocalProviderConfigured({
+    provider: "lmstudio",
+    source: runtimeAiConfig.providers.lmstudio.source,
+    enabled: runtimeAiConfig.providers.lmstudio.enabled,
+    baseUrl: runtimeAiConfig.providers.lmstudio.baseUrl,
+    model: runtimeAiConfig.providers.lmstudio.model,
+  });
 
 const configuredProviders = (): ProviderDescriptor[] => [
   {
@@ -907,7 +929,6 @@ const callAiWithMeta = async (
   };
 };
 
-const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => (await callAiWithMeta(prompt, responseMimeType, image)).text;
 
 const callSingleProvider = async (
   provider: Exclude<AiProvider, "none">,
@@ -947,6 +968,92 @@ const withinAiBudget = async (userId?: string, schoolId?: string) => {
     dailyLimit,
     perUserLimit,
     perSchoolLimit,
+  };
+};
+
+type BudgetedAiRequestInput = {
+  req: any;
+  endpoint: string;
+  message: string;
+  prompt: string;
+  fallbackText: string;
+  responseMimeType?: AiResponseMimeType;
+  maxOutputTokens?: number;
+  metadata?: Record<string, unknown>;
+};
+
+const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
+  const startedAt = Date.now();
+  const userId = String(input.req.authUser?.id || "").trim() || undefined;
+  const schoolId = String(input.req.authUser?.schoolId || "").trim() || undefined;
+  const audience = String(input.req.authUser?.role || "guest");
+  const budget = await withinAiBudget(userId, schoolId);
+
+  if (!budget.allowed) {
+    await recordAiInteraction({
+      req: input.req,
+      endpoint: input.endpoint,
+      audience,
+      message: input.message,
+      responseText: input.fallbackText,
+      provider: "none",
+      model: "local-fallback",
+      usedFallback: true,
+      latencyMs: Date.now() - startedAt,
+      schoolId,
+      metadata: {
+        ...(input.metadata || {}),
+        billable: false,
+        budgetExceeded: true,
+        globalCount: budget.globalCount,
+        userCount: budget.userCount,
+        schoolCount: budget.schoolCount,
+      },
+    });
+    return {
+      text: input.fallbackText,
+      provider: "none" as AiProvider,
+      model: "local-fallback",
+      usedFallback: true,
+      budgetLimited: true,
+      errors: [] as string[],
+    };
+  }
+
+  const result = await callAiWithMeta(input.prompt, input.responseMimeType, undefined, {
+    maxOutputTokens: input.maxOutputTokens || env.AI_DEFAULT_MAX_OUTPUT_TOKENS,
+  });
+  const responseText = String(result.text || input.fallbackText).trim();
+
+  await recordAiInteraction({
+    req: input.req,
+    endpoint: input.endpoint,
+    audience,
+    message: input.message,
+    responseText,
+    provider: result.text ? result.provider : "none",
+    model: result.text ? result.model : "local-fallback",
+    usedFallback: !result.text,
+    latencyMs: Date.now() - startedAt,
+    schoolId,
+    error: !result.text && result.errors.length ? fallbackReasonFromErrors(result.errors) : undefined,
+    metadata: {
+      ...(input.metadata || {}),
+      billable: true,
+      budgetExceeded: false,
+      providerErrors: compactProviderErrors(result.errors),
+      promptChars: input.prompt.length,
+      responseChars: responseText.length,
+    },
+  });
+
+  return {
+    text: responseText,
+    provider: result.text ? result.provider : "none" as AiProvider,
+    model: result.text ? result.model : "local-fallback",
+    usedFallback: !result.text,
+    budgetLimited: false,
+    errors: result.errors,
   };
 };
 
@@ -1196,7 +1303,20 @@ ${hasImage ? "- الصورة المرفقة: حلل محتواها إن كانت
 ${message}
 `;
 
-    const budget = await withinAiBudget(req.authUser?.id);
+    if (!req.authUser && !env.AI_GUEST_EXTERNAL_ENABLED) {
+      const fallbackReason = "الزوار يستخدمون الرد المحلي لتقليل تكلفة المنصة. سجّل الدخول للحصول على المساعد الشخصي.";
+      return res.json({
+        text: fallback,
+        personalized: false,
+        weaknessesCount: 0,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        fallbackReason,
+      });
+    }
+
+    const budget = await withinAiBudget(req.authUser?.id, req.authUser?.schoolId || "");
     if (!budget.allowed) {
       const fallbackReason = "تم استخدام الرد الاحتياطي لأن حد استخدام المساعد اليومي وصل إلى الحد المسموح.";
       await recordAiInteraction({
@@ -1984,12 +2104,15 @@ ${weaknesses.join(", ") || "مهارات عامة"}
 {"steps":["...","...","..."]}
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      return res.json(safeJsonParse(text, fallback));
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/study-plan",
+      message: weaknesses.join(", "),
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+    });
+    return res.json(safeJsonParse(result.text, fallback));
   }),
 );
 
@@ -2024,13 +2147,16 @@ id,type,title,duration,reason,skillTargeted,priority,actionLabel,link
 type واحد من lesson أو quiz أو flashcard. priority واحد من high أو medium أو low.
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      const parsed = safeJsonParse(text, fallback);
-      return res.json(Array.isArray(parsed) ? parsed : fallback);
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/learning-path",
+      message: targetSkills.map((skill) => formatSkillContext(skill)).join(", "),
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+    });
+    const parsed = safeJsonParse(result.text, fallback);
+    return res.json(Array.isArray(parsed) ? parsed : fallback);
   }),
 );
 
@@ -2072,13 +2198,16 @@ ${JSON.stringify(targetSkills)}
 {"title":"...","summary":"...","steps":[{"day":"...","skill":"...","action":"...","check":"..."}],"parentNote":"..."}
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      const parsed = safeJsonParse(text, fallback);
-      return res.json(parsed);
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/remediation-plan",
+      message: targetSkills.map((skill) => formatSkillContext(skill)).join(", "),
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+      metadata: { ageBand },
+    });
+    return res.json(safeJsonParse(result.text, fallback));
   }),
 );
 
@@ -2104,17 +2233,21 @@ ${topic}
 {"question":"...","options":["...","...","...","..."],"correctIndex":0,"explanation":"..."}
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      return res.json(safeJsonParse(text, fallback));
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/question",
+      message: topic,
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+    });
+    return res.json(safeJsonParse(result.text, fallback));
   }),
 );
 
 aiRouter.post(
   "/course-summary",
+  optionalAuth,
   asyncHandler(async (req, res) => {
     const { courseTitle } = courseSummarySchema.parse(req.body);
     const fallback = `هذه الدورة تساعدك على فهم ${courseTitle} بخطوات منظمة وتدريبات تدريجية حتى تصل للإتقان.`;
@@ -2126,11 +2259,23 @@ ${courseTitle}
 اجعله بسيطًا ومشجعًا للطالب.
 `;
 
-    try {
-      const text = await callAi(prompt);
-      return res.json({ text: text || fallback });
-    } catch {
-      return res.json({ text: fallback });
+    if (!req.authUser && !env.AI_GUEST_EXTERNAL_ENABLED) {
+      return res.json({ text: fallback, provider: "none", usedFallback: true });
     }
+
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/course-summary",
+      message: courseTitle,
+      prompt,
+      fallbackText: fallback,
+      maxOutputTokens: 220,
+    });
+    return res.json({
+      text: result.text || fallback,
+      provider: result.provider,
+      usedFallback: result.usedFallback,
+      budgetLimited: result.budgetLimited,
+    });
   }),
 );

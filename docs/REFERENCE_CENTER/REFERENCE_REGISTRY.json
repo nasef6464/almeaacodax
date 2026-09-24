@@ -69,6 +69,11 @@
       "path": "docs/architecture/AI_PLATFORM_OPERATING_MODEL_AR.md",
       "role": "ai_platform_operating_model",
       "status": "active"
+    },
+    {
+      "path": "docs/architecture/AI_PLATFORM_EXECUTION_PLAN_AR.md",
+      "role": "ai_platform_execution_plan",
+      "status": "active"
     }
   ],
   "supporting": [

@@ -84,7 +84,7 @@ type TeacherContributionItem = {
 };
 
 type AiStatus = {
-    provider: 'gemini' | 'ollama' | 'lmstudio' | 'none';
+    provider: 'gemini' | 'openrouter' | 'deepseek' | 'qwen' | 'openai' | 'ollama' | 'lmstudio' | 'none';
     ollamaConfigured: boolean;
     lmStudioConfigured?: boolean;
     geminiConfigured: boolean;
@@ -945,7 +945,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = monitoringIndex === -1 ? nextItems.length : monitoringIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'ai-assistant', label: 'إدارة المساعد الذكي', icon: <Bot size={20} /> },
+                { id: 'ai-assistant', label: 'إدارة الذكاء الاصطناعي', icon: <Bot size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }

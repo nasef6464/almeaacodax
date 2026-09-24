@@ -64,7 +64,8 @@
 
 ### 8) نظام الذكاء الاصطناعي الموحد
 - `docs/architecture/AI_PLATFORM_OPERATING_MODEL_AR.md`
-- الاستخدام: المزودات، المفاتيح، التوكنز، الميزانيات، Student/Question/Admin/Voice Tutor، routing والمراقبة.
+- `docs/architecture/AI_PLATFORM_EXECUTION_PLAN_AR.md`
+- الاستخدام: المرجع الأول يحدد النموذج التشغيلي، والثاني هو خطة التنفيذ المرحلية النشطة للـGateway والتكلفة والمفاتيح والمساعدين.
 - الحالة: **CANONICAL / ACTIVE**
 
 ### 9) الإنتاج والجاهزية التشغيلية
