@@ -373,14 +373,39 @@ async function main() {
     const expectedMistakeQuestionId = `${marker}-question-100`;
     if (!savedLibrary.ok || !savedIds.includes(savedQuestionId)) throw new Error(`Saved review library missing ${savedQuestionId}: ${JSON.stringify(savedLibrary)}`);
     if (!mistakeLibrary.ok || !mistakeIds.includes(expectedMistakeQuestionId)) throw new Error(`Mistake review library missing ${expectedMistakeQuestionId}: ${JSON.stringify(mistakeLibrary)}`);
+    const savedItem = listOf(savedLibrary.payload, "items").find((item) => String(item.questionId || "") === savedQuestionId);
+    const mistakeItem = listOf(mistakeLibrary.payload, "items").find((item) => String(item.questionId || "") === expectedMistakeQuestionId);
+    if (String(savedItem?.question?.id || "") !== savedQuestionId || !String(savedItem?.question?.questionCode || "")) {
+      throw new Error(`Saved review lost canonical question identity: ${JSON.stringify(savedItem)}`);
+    }
+    if (String(mistakeItem?.question?.id || "") !== expectedMistakeQuestionId || !String(mistakeItem?.question?.questionCode || "")) {
+      throw new Error(`Mistake review lost canonical question identity: ${JSON.stringify(mistakeItem)}`);
+    }
 
     await freshStudent.page.goto(`${BASE_URL}/favorites`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await freshStudent.page.getByRole("heading", { name: "أسئلتي للمراجعة" }).waitFor({ timeout: 30000 });
     await freshStudent.page.getByText("حفظتها للمراجعة", { exact: false }).first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
+    await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
+    const savedTutorResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "تلميح", exact: true }).click();
+    const savedTutorResponse = await savedTutorResponsePromise;
+    if (!savedTutorResponse.ok()) throw new Error(`Question Assistant failed in saved review (${savedTutorResponse.status()})`);
+
     await freshStudent.page.getByRole("button", { name: /أخطأت فيها/ }).click();
     await freshStudent.page.getByText("خطأ سابق", { exact: true }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
+    const mistakeTutorResponsePromise = freshStudent.page.waitForResponse(
+      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+      { timeout: 30000 },
+    );
+    await freshStudent.page.getByRole("button", { name: "خطوات الحل", exact: true }).click();
+    const mistakeTutorResponse = await mistakeTutorResponsePromise;
+    if (!mistakeTutorResponse.ok()) throw new Error(`Question Assistant failed in mistake review (${mistakeTutorResponse.status()})`);
     await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-review-library.png"), fullPage: true });
     let completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
     for (let retry = 0; completedSession.payload?.session && retry < 10; retry += 1) {
@@ -396,6 +421,10 @@ async function main() {
       ["student can save a live quiz question for review", savedIds.includes(savedQuestionId)],
       ["wrong submitted answer appears in mistake review", mistakeIds.includes(expectedMistakeQuestionId)],
       ["smart tutor is authorized from result review", tutorResponse.ok],
+      ["saved review preserves canonical question identity", String(savedItem?.question?.id || "") === savedQuestionId],
+      ["mistake review preserves canonical question identity", String(mistakeItem?.question?.id || "") === expectedMistakeQuestionId],
+      ["smart tutor is authorized from saved review", savedTutorResponse.ok],
+      ["smart tutor is authorized from mistake review", mistakeTutorResponse.ok],
       ["review library UI exposes saved/mistake context and voice", true],
       ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
       ["accepted submission closes the resumable session", !completedSession.payload?.session],
