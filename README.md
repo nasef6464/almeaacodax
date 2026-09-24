@@ -4,6 +4,8 @@
 
 # Run and deploy your AI Studio app
 
+> **Developer / Agent start here:** [`docs/REFERENCE_CENTER/README_AR.md`](docs/REFERENCE_CENTER/README_AR.md) is the canonical documentation entry point. It tells you which plans and reports are current and which are historical.
+
 This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/f0aa43be-3dac-4592-a5c7-5460f006fcf6
