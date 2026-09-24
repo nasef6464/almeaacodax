@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle2, KeyRound, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2, Wallet } from 'lucide-react';
 import { api } from '../../../services/api';
-
 type AiCloudProvider = 'gemini' | 'openrouter' | 'qwen' | 'deepseek' | 'openai';
 type AiPlan = 'free' | 'trial' | 'paid' | 'unknown';
 type QuotaScope = 'project' | 'account' | 'organization' | 'workspace' | 'model' | 'unknown';
 type CapabilityId = 'student_chat' | 'question_tutor' | 'admin_copilot' | 'study_plan' | 'learning_path' | 'remediation' | 'authoring' | 'course_summary';
 type CapabilityProfile = { providerOrder: string; paidAllowed: boolean; maxOutputTokens: number };
-
 type ExternalPlatform = {
   id: string;
   name: string;
@@ -25,12 +23,10 @@ type ExternalPlatform = {
   syncScheduleCron: string;
   note: string;
 };
-
 type PlatformIntegrationSettings = {
   externalPlatforms: ExternalPlatform[];
   externalPlatformSecretState?: Record<string, Record<string, boolean>>;
 };
-
 type DraftPool = {
   provider: AiCloudProvider;
   poolLabel: string;
@@ -44,7 +40,6 @@ type DraftPool = {
   freeOnly: boolean;
   keysText: string;
 };
-
 const capabilityLabel: Record<CapabilityId, string> = {
   student_chat: 'مساعد الطالب',
   question_tutor: 'مساعد السؤال',
@@ -55,9 +50,7 @@ const capabilityLabel: Record<CapabilityId, string> = {
   authoring: 'إنشاء المحتوى',
   course_summary: 'ملخص الدورة',
 };
-
 const capabilityIds = Object.keys(capabilityLabel) as CapabilityId[];
-
 const providerLabel: Record<AiCloudProvider, string> = {
   gemini: 'Google Gemini',
   openrouter: 'OpenRouter',
@@ -65,7 +58,6 @@ const providerLabel: Record<AiCloudProvider, string> = {
   deepseek: 'DeepSeek',
   openai: 'OpenAI',
 };
-
 const defaultModel: Record<AiCloudProvider, string> = {
   gemini: 'gemini-2.5-flash',
   openrouter: 'openrouter/auto',
@@ -73,7 +65,6 @@ const defaultModel: Record<AiCloudProvider, string> = {
   deepseek: 'deepseek-chat',
   openai: 'gpt-4o-mini',
 };
-
 const emptyExternal = (id: string, name: string): ExternalPlatform => ({
   id,
   name,
@@ -91,7 +82,6 @@ const emptyExternal = (id: string, name: string): ExternalPlatform => ({
   syncScheduleCron: '',
   note: '',
 });
-
 const parseNote = (value: string) => {
   try {
     const parsed = JSON.parse(value || '{}');
@@ -100,7 +90,6 @@ const parseNote = (value: string) => {
     return {};
   }
 };
-
 const slug = (value: string) =>
   String(value || 'pool')
     .trim()
@@ -108,7 +97,6 @@ const slug = (value: string) =>
     .replace(/[^a-z0-9_-]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 42) || 'pool';
-
 const defaultDraft = (): DraftPool => ({
   provider: 'gemini',
   poolLabel: 'Google Project',
@@ -122,7 +110,6 @@ const defaultDraft = (): DraftPool => ({
   freeOnly: true,
   keysText: '',
 });
-
 export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> | void }> = ({ onSaved }) => {
   const [settings, setSettings] = useState<PlatformIntegrationSettings | null>(null);
   const [draft, setDraft] = useState<DraftPool>(defaultDraft());
@@ -135,7 +122,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
-
   const hydrateGlobal = (next: PlatformIntegrationSettings) => {
     const global = next.externalPlatforms.find((item) => item.id.trim().toLowerCase() === 'ai-global');
     const note = parseNote(global?.note || '');
@@ -152,7 +138,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
       }];
     })) as Record<CapabilityId, CapabilityProfile>);
   };
-
   const load = async () => {
     setLoading(true);
     setMessage(null);
@@ -167,11 +152,9 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
       setLoading(false);
     }
   };
-
   useEffect(() => {
     void load();
   }, []);
-
   const pools = useMemo(() => {
     if (!settings) return [];
     return settings.externalPlatforms
@@ -186,21 +169,18 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
         return { item, note, provider, hasStoredSecret };
       });
   }, [settings]);
-
   const updateExternal = (id: string, patch: Partial<ExternalPlatform>) => {
     setSettings((current) => current ? ({
       ...current,
       externalPlatforms: current.externalPlatforms.map((item) => item.id === id ? { ...item, ...patch } : item),
     }) : current);
   };
-
   const removePool = (id: string) => {
     setSettings((current) => current ? ({
       ...current,
       externalPlatforms: current.externalPlatforms.filter((item) => item.id !== id),
     }) : current);
   };
-
   const addPool = () => {
     if (!settings) return;
     const projectIdentity = draft.projectLabel || draft.accountLabel || draft.poolLabel;
@@ -209,12 +189,10 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
     let counter = 2;
     const existing = new Set(settings.externalPlatforms.map((item) => item.id.trim().toLowerCase()));
     while (existing.has(id)) id = `${baseId}-${counter++}`;
-
     const keys = draft.keysText
       .split(/\r?\n|,/)
       .map((key) => key.trim())
       .filter(Boolean);
-
     const entry: ExternalPlatform = {
       ...emptyExternal(id, `${providerLabel[draft.provider]} — ${draft.poolLabel || draft.projectLabel || 'Pool'}`),
       baseUrl: draft.baseUrl.trim(),
@@ -232,12 +210,10 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
         model: draft.model.trim() || defaultModel[draft.provider],
       }),
     };
-
     setSettings((current) => current ? ({ ...current, externalPlatforms: [...current.externalPlatforms, entry] }) : current);
     setDraft(defaultDraft());
     setMessage({ kind: 'success', text: 'أضيفت الحصة محليًا. اضغط حفظ لتشفير المفاتيح وتفعيلها على الخادم.' });
   };
-
   const persist = async () => {
     if (!settings) return;
     setSaving(true);
@@ -272,7 +248,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
       };
       if (index >= 0) next[index] = global;
       else next.push(global);
-
       const saved = await api.updatePlatformIntegrations({ externalPlatforms: next }) as PlatformIntegrationSettings;
       const normalized = { ...saved, externalPlatforms: Array.isArray(saved?.externalPlatforms) ? saved.externalPlatforms : [] };
       setSettings(normalized);
@@ -285,11 +260,9 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
       setSaving(false);
     }
   };
-
   if (loading) {
     return <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-sm font-bold text-gray-500"><Loader2 className="mx-auto mb-3 animate-spin" />جاري تحميل مفاتيح ومشاريع الذكاء...</div>;
   }
-
   return (
     <div className="space-y-5">
       {message && (
@@ -298,7 +271,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           {message.text}
         </div>
       )}
-
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between gap-3">
@@ -308,7 +280,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
             </div>
             <button type="button" onClick={() => void load()} className="p-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50"><RefreshCw size={15} /></button>
           </div>
-
           <label className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
             <div>
               <p className="text-xs font-black text-gray-900">السماح بالمزودات المدفوعة</p>
@@ -316,7 +287,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
             </div>
             <input type="checkbox" checked={paidAllowed} onChange={(e) => setPaidAllowed(e.target.checked)} className="h-5 w-5" />
           </label>
-
           <div className="grid md:grid-cols-2 gap-3">
             <label className="space-y-1">
               <span className="text-xs font-black text-gray-700">سقف التكلفة اليومية بالدولار</span>
@@ -330,7 +300,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
             </label>
           </div>
         </div>
-
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5">
           <Wallet size={20} className="text-indigo-700 mb-2" />
           <h3 className="font-black text-sm text-indigo-950">قاعدة الحصة</h3>
@@ -339,7 +308,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           </p>
         </div>
       </div>
-
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
         <div>
           <h3 className="font-black text-sm text-gray-900">توجيه كل مساعد حسب المهمة</h3>
@@ -379,13 +347,11 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           })}
         </div>
       </div>
-
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
         <div>
           <h3 className="font-black text-sm text-gray-900 flex items-center gap-2"><KeyRound size={17} className="text-violet-600" />الحسابات والمشاريع والمفاتيح</h3>
           <p className="text-xs text-gray-500 mt-1">المفاتيح لا تعود من الخادم. يظهر فقط هل يوجد سر محفوظ، ويتم الاحتفاظ بالمفتاح القديم إذا تركت الحقل فارغًا.</p>
         </div>
-
         <div className="space-y-2">
           {pools.length === 0 ? (
             <div className="rounded-xl border border-dashed border-gray-200 p-8 text-center text-xs font-bold text-gray-400">لا توجد Quota Pools سحابية بعد.</div>
@@ -408,7 +374,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
             </div>
           ))}
         </div>
-
         <div className="border-t border-gray-100 pt-4 space-y-3">
           <h4 className="text-xs font-black text-gray-800 flex items-center gap-2"><Plus size={15} />إضافة Account / Project / Quota Pool</h4>
           <div className="grid md:grid-cols-3 gap-3">
@@ -439,7 +404,6 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           <button type="button" onClick={addPool} disabled={!draft.projectLabel.trim() && !draft.accountLabel.trim()} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white text-xs font-black disabled:opacity-50"><Plus size={15} />إضافة الحصة</button>
         </div>
       </div>
-
       <div className="flex justify-end">
         <button type="button" onClick={() => void persist()} disabled={saving || !settings} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-900 text-white text-xs font-black disabled:opacity-50">
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
