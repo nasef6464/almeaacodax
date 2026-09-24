@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 
 const routes = await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8");
 const policy = await readFile(new URL("../server/src/modules/ai/application/aiCapabilityPolicy.ts", import.meta.url), "utf8");
+const configCache = await readFile(new URL("../server/src/modules/ai/application/aiRuntimeConfigCache.ts", import.meta.url), "utf8");
+const providerRouter = await readFile(new URL("../server/src/modules/ai/application/aiProviderRouter.ts", import.meta.url), "utf8");
 const admin = await readFile(new URL("../dashboards/admin/AdminDashboard.tsx", import.meta.url), "utf8");
 const manager = await readFile(new URL("../dashboards/admin/AiAssistantManager.tsx", import.meta.url), "utf8");
 
@@ -42,6 +44,16 @@ for (const [label, start, end, endpoint] of [
 check("course summary cannot spend for guests by default",
   sliceRoute('"/course-summary"', "").includes("optionalAuth") &&
   sliceRoute('"/course-summary"', "").includes("AI_GUEST_EXTERNAL_ENABLED"));
+
+check("runtime AI config uses a bounded cache for normal requests",
+  configCache.includes("AI_RUNTIME_CONFIG_CACHE_TTL_MS = 15_000") &&
+  routes.includes("createRuntimeConfigCache(loadRuntimeAiConfigUncached)") &&
+  routes.includes("loadRuntimeAiConfig(true)"));
+
+check("provider priority is owned by the AI application module",
+  providerRouter.includes("DEFAULT_AI_PROVIDER_ORDER") &&
+  providerRouter.includes("buildProviderPriority") &&
+  routes.includes("buildProviderPriority({"));
 
 check("admin navigation exposes one AI management entry",
   admin.includes("إدارة الذكاء الاصطناعي") &&

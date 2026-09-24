@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2, Sparkles, ImagePlus } from 'lucide-react';
-import { getChatResponse } from '../services/geminiService';
+import { getChatResponse } from '../services/aiService';
 import { Link } from 'react-router-dom';
 
 interface Message {

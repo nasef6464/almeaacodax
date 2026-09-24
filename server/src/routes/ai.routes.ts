@@ -36,6 +36,8 @@ import {
   estimateBase64DecodedBytes,
   isExplicitLocalProviderConfigured,
 } from "../modules/ai/application/aiCapabilityPolicy.js";
+import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
+import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 
 const imageInputSchema = z.object({
@@ -101,7 +103,7 @@ const generateMockExamSchema = z.object({
 });
 
 type AiResponseMimeType = "application/json";
-type AiProvider = "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+type AiProvider = AiProviderId;
 
 type StudentAiContext = {
   summary: string;
@@ -224,7 +226,7 @@ const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
 
 let runtimeAiConfig: AiRuntimeConfig = defaultAiRuntimeConfig();
 
-const loadRuntimeAiConfig = async () => {
+const loadRuntimeAiConfigUncached = async () => {
   const next = defaultAiRuntimeConfig();
   const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
   const runtimeSettings = settings
@@ -289,6 +291,9 @@ const loadRuntimeAiConfig = async () => {
   runtimeAiConfig = next;
   return runtimeAiConfig;
 };
+
+const runtimeAiConfigCache = createRuntimeConfigCache(loadRuntimeAiConfigUncached);
+const loadRuntimeAiConfig = async (force = false) => runtimeAiConfigCache.get(force);
 
 const isOllamaExplicitlyConfigured = () =>
   isExplicitLocalProviderConfigured({
@@ -390,16 +395,12 @@ const configuredProviders = (): ProviderDescriptor[] => [
   },
 ];
 
-const providerPriority = () => {
-  const fromEnv = runtimeAiConfig.providerOrder.split(",")
-    .map((value) => value.trim().toLowerCase() as AiProvider)
-    .filter(Boolean);
-  const preferred = runtimeAiConfig.provider ? [runtimeAiConfig.provider] : [];
-  const defaults: AiProvider[] = ["gemini", "openrouter", "qwen", "deepseek", "openai", "ollama", "lmstudio", "none"];
-  return [...new Set([...preferred, ...fromEnv, ...defaults])].filter((provider) =>
-    configuredProviders().some((candidate) => candidate.id === provider),
-  );
-};
+const providerPriority = () =>
+  buildProviderPriority({
+    preferred: runtimeAiConfig.provider,
+    configuredOrder: runtimeAiConfig.providerOrder,
+    availableProviders: configuredProviders().map((candidate) => candidate.id),
+  });
 
 const ARABIC_TUTOR_RULES = `
 أنت مساعد تعليمي عربي داخل منصة تعليمية للقدرات والتحصيلي.
@@ -1080,7 +1081,7 @@ export const aiRouter = Router();
 aiRouter.get(
   "/status",
   asyncHandler(async (_req, res) => {
-    await loadRuntimeAiConfig();
+    await loadRuntimeAiConfig(true);
     const providers = configuredProviders();
     const activeProvider = resolveProvider();
     res.json({
@@ -1104,7 +1105,7 @@ aiRouter.get(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (_req, res) => {
-    await loadRuntimeAiConfig();
+    await loadRuntimeAiConfig(true);
     const providers = configuredProviders();
     const activeProvider = resolveProvider();
     const configuredRealProviders = providers.filter((provider) => provider.id !== "none" && provider.configured);
@@ -1248,7 +1249,7 @@ aiRouter.post(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    await loadRuntimeAiConfig();
+    await loadRuntimeAiConfig(true);
     const { provider } = providerTestSchema.parse(req.body);
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!descriptor?.configured) {
