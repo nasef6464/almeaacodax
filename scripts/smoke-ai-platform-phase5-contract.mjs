@@ -5,6 +5,7 @@ const context = await readFile(new URL("../server/src/modules/ai/application/stu
 const questionAssistant = await readFile(new URL("../server/src/modules/ai/application/questionAssistant.ts", import.meta.url), "utf8");
 const chatWidget = await readFile(new URL("../components/ChatWidget.tsx", import.meta.url), "utf8");
 const questionPanel = await readFile(new URL("../components/results/QuestionAssistantPanel.tsx", import.meta.url), "utf8");
+const aiApi = await readFile(new URL("../services/apiGroups/aiApi.ts", import.meta.url), "utf8");
 
 const checks = [];
 const check = (name, pass) => checks.push({ name, status: pass ? "PASS" : "FAIL" });
@@ -47,6 +48,13 @@ check("cache and interaction memory are scoped to the explicit tutor session",
   routes.includes('String(payload.tutorSessionId || "")') &&
   routes.includes('tutorSessionId: payload.tutorSessionId || ""') &&
   routes.includes('tutorSessionId: tutorSessionId || ""'));
+
+check("student tutor returns deterministic links to real platform learning routes",
+  context.includes("buildStudentTutorLinks") &&
+  context.includes("/category/") &&
+  routes.includes("recommendedLinks = buildStudentTutorLinks") &&
+  aiApi.includes("recommendedLinks?: Array") &&
+  chatWidget.includes("msg.recommendedLinks"));
 
 check("AI interaction log is reused for bounded recent turns instead of a new tutor-session collection",
   context.includes("AiInteractionModel.find") &&

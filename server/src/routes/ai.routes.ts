@@ -37,7 +37,7 @@ import {
   isExplicitLocalProviderConfigured,
 } from "../modules/ai/application/aiCapabilityPolicy.js";
 import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
-import { buildStudentTutorContext, type StudentTutorContext } from "../modules/ai/application/studentTutorContext.js";
+import { buildStudentTutorContext, buildStudentTutorLinks, type StudentTutorContext } from "../modules/ai/application/studentTutorContext.js";
 import { estimateAiCostMicrosUsd, readAiPricingHint, type AiPricingHint } from "../modules/ai/application/aiCostEstimator.js";
 import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
@@ -1240,6 +1240,7 @@ aiRouter.post(
       sessionId: tutorSessionId,
     });
     const fallback = buildPersonalizedTutorFallback(message, studentContext);
+    const recommendedLinks = buildStudentTutorLinks(studentContext);
 
     const hasImage = Boolean(image);
     const prompt = `
@@ -1267,6 +1268,7 @@ ${message}
         model: "local-fallback",
         usedFallback: true,
         fallbackReason,
+        recommendedLinks,
       });
     }
 
@@ -1304,6 +1306,7 @@ ${message}
         model: "local-fallback",
         usedFallback: true,
         fallbackReason,
+        recommendedLinks,
       });
     }
 
@@ -1346,6 +1349,7 @@ ${message}
         usedFallback: !result.text,
         providerErrors,
         fallbackReason,
+        recommendedLinks,
       });
     } catch (error) {
       const fallbackReason = fallbackReasonFromErrors([error instanceof Error ? error.message : "AI chat failed"]);
@@ -1371,6 +1375,7 @@ ${message}
         model: "local-fallback",
         usedFallback: true,
         fallbackReason,
+        recommendedLinks,
       });
     }
   }),

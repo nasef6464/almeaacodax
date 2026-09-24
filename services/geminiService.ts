@@ -74,6 +74,7 @@ export type StudentChatResponse = {
   usedFallback?: boolean;
   providerErrors?: string[];
   fallbackReason?: string;
+  recommendedLinks?: Array<{ label: string; href: string; skillId: string }>;
 };
 
 export const getChatResponse = async (
@@ -97,6 +98,7 @@ export const getChatResponse = async (
       usedFallback: Boolean(response.usedFallback),
       providerErrors: response.providerErrors || [],
       fallbackReason: response.fallbackReason,
+      recommendedLinks: response.recommendedLinks || [],
     };
   } catch {
     return {
@@ -106,6 +108,7 @@ export const getChatResponse = async (
       provider: "none",
       model: "local-fallback",
       usedFallback: true,
+      recommendedLinks: [],
     };
   }
 };

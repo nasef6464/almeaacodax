@@ -12,6 +12,7 @@ interface Message {
     provider?: string;
     model?: string;
     usedFallback?: boolean;
+    recommendedLinks?: Array<{ label: string; href: string; skillId: string }>;
 }
 
 const quickPrompts = [
@@ -126,6 +127,7 @@ export const ChatWidget: React.FC = () => {
             provider: responseText.provider,
             model: responseText.model,
             usedFallback: responseText.usedFallback,
+            recommendedLinks: responseText.recommendedLinks,
         };
         setMessages((prev) => [...prev, botMsg]);
         setIsLoading(false);
@@ -174,6 +176,16 @@ export const ChatWidget: React.FC = () => {
                                     <div className="whitespace-pre-line">{msg.text}</div>
                                     {msg.sender === 'bot' && msg.personalized ? (
                                         <div className="mt-3 flex flex-wrap gap-2">
+                                            {(msg.recommendedLinks || []).map((link) => (
+                                                <Link
+                                                    key={`${link.href}:${link.skillId}`}
+                                                    to={link.href}
+                                                    onClick={() => setIsOpen(false)}
+                                                    className="rounded-full bg-primary-50 px-3 py-1 text-[11px] font-black text-primary-700 hover:bg-primary-100"
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            ))}
                                             <Link
                                                 to="/reports"
                                                 onClick={() => setIsOpen(false)}

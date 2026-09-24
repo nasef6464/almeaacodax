@@ -10,6 +10,9 @@ export type StudentTutorWeakness = {
   mastery: number;
   status: string;
   action: string;
+  pathId: string;
+  subjectId: string;
+  sectionId: string;
 };
 
 export type StudentTutorRecentResult = {
@@ -54,6 +57,9 @@ const normalizeWeakness = (item: any): StudentTutorWeakness => ({
   mastery: Math.max(0, Math.min(100, Number(item?.mastery || 0))),
   status: compact(item?.status || "weak", 24),
   action: compact(item?.recommendedAction || item?.recommendation || "راجع شرحا قصيرا ثم حل تدريبا متدرجا.", 180),
+  pathId: compact(item?.pathId, 80),
+  subjectId: compact(item?.subjectId, 80),
+  sectionId: compact(item?.sectionId, 80),
 });
 
 const stableContextVersion = (input: {
@@ -173,4 +179,30 @@ export const buildStudentTutorContext = async (
     recentTutorTurns: turns,
     contextVersion: stableContextVersion({ weaknesses: weakRows, results: resultRows, turns }),
   };
+};
+
+
+export type StudentTutorLink = {
+  label: string;
+  href: string;
+  skillId: string;
+};
+
+export const buildStudentTutorLinks = (context: StudentTutorContext | null | undefined): StudentTutorLink[] => {
+  if (!context?.weaknesses?.length) return [];
+
+  const seen = new Set<string>();
+  const links: StudentTutorLink[] = [];
+  for (const item of context.weaknesses) {
+    const pathId = String(item.pathId || "").trim();
+    if (!pathId || seen.has(pathId)) continue;
+    seen.add(pathId);
+    links.push({
+      label: `راجع ${compact(item.skill, 48)}`,
+      href: `/category/${encodeURIComponent(pathId)}`,
+      skillId: item.skillId,
+    });
+    if (links.length >= 2) break;
+  }
+  return links;
 };

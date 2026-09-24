@@ -43,8 +43,8 @@ flowchart TD
 | AI-2 Usage & Cost | ✅ CLOSED | token ledger + cost + retention + counters |
 | AI-3 Quota Pools & Routing | ✅ CLOSED | أكثر من Project/Key + Free-first + capability profiles |
 | AI-4 Control Center | ✅ CLOSED | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
-| AI-5 Tutor Sessions | 🟡 IN PROGRESS | Student/Question tutor context/session memory المحدودة |
-| AI-6 Voice & Vision | ⏳ | push-to-talk + STT/TTS budgets + vision on demand |
+| AI-5 Tutor Sessions | ✅ CLOSED | Student/Question tutor context/session memory المحدودة |
+| AI-6 Voice & Vision | 🟡 NEXT | push-to-talk + STT/TTS budgets + vision on demand |
 | AI-7 Readiness & Prediction | ⏳ | readiness deterministic + predicted score بعد calibration |
 | AI-8 Production Certification | ⏳ | load/cost/security/fallback exact-head evidence |
 
@@ -169,7 +169,7 @@ Provider
 - [x] لا Collection جديدة للمحادثات؛ يتم إعادة استخدام AiInteraction المحدود بالـretention.
 - [x] Session memory صريحة: كل Chat/Question Tutor يرسل tutorSessionId، والذاكرة لا تعبر بين جلسات منفصلة.
 - [x] cache والـAiInteraction metadata يربطان ردود Question Tutor بالجلسة الحالية.
-- [ ] روابط مباشرة للدرس/التدريب من taxonomy/recommendedAction بدل نصائح عامة فقط.
+- [x] روابط مباشرة لمسار التعلم من SkillProgress.pathId تظهر مع الرد المخصص بدون سؤال إضافي للـLLM.
 - [x] UI الطالب يوضح «مبني على أدائك» عندما يكون الرد مخصصًا، بدون كشف بيانات داخلية.
 
 ## AI-6 — Voice / Vision

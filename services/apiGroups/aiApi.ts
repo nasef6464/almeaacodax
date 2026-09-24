@@ -19,6 +19,7 @@ export const createAiApi = (request: ApiRequest) => ({
       usedFallback?: boolean;
       providerErrors?: string[];
       fallbackReason?: string;
+      recommendedLinks?: Array<{ label: string; href: string; skillId: string }>;
     }>("/ai/chat", {
       method: "POST",
       body: payload,
