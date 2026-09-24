@@ -41,6 +41,10 @@ type AiInteractionsResponse = {
         errorCount: number;
         byAudience: Array<{ audience: string; count: number }>;
         byProvider: Array<{ provider: string; count: number; avgLatencyMs: number }>;
+        inputTokens24h: number;
+        outputTokens24h: number;
+        totalTokens24h: number;
+        cachedTokens24h: number;
     };
     items: Array<{
         _id: string;
@@ -52,6 +56,11 @@ type AiInteractionsResponse = {
         usedFallback: boolean;
         personalized: boolean;
         latencyMs: number;
+        inputTokens?: number;
+        outputTokens?: number;
+        totalTokens?: number;
+        cachedTokens?: number;
+        usageEstimated?: boolean;
         messagePreview: string;
         responsePreview: string;
         responseLength: number;
