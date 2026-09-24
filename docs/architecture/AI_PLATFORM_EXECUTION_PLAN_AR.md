@@ -39,8 +39,8 @@ flowchart TD
 | المرحلة | الحالة | الناتج |
 |---|---|---|
 | AI-0 Canonicalize | ✅ CLOSED | مرجع موحد + جرد المشروع + Reference Center |
-| AI-1 Secure Gateway | 🟡 IN PROGRESS | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
-| AI-2 Usage & Cost | ⏳ NEXT | token ledger + cost + retention + counters |
+| AI-1 Secure Gateway | ✅ CLOSED | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
+| AI-2 Usage & Cost | 🟡 IN PROGRESS | token ledger + cost + retention + counters |
 | AI-3 Quota Pools & Routing | ⏳ | أكثر من Project/Key + Free-first + capability profiles |
 | AI-4 Control Center | ⏳ | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ⏳ | Student/Question tutor context/session memory المحدودة |
@@ -80,6 +80,16 @@ AI-1 لا يغلق إلا إذا:
 - Production status لا يعلن local provider جاهزًا من defaults فقط.
 
 ## AI-2 — Usage / Tokens / Cost
+
+### الحالة الحالية
+- [x] normalized token usage من Gemini/OpenAI-compatible/Ollama/LM Studio عندما يرجعه المزود.
+- [x] fallback تقديري معلّم بوضوح `usageEstimated=true` عندما لا يعيد المزود Usage.
+- [x] تخزين input/output/total/cached tokens داخل `AiInteraction`.
+- [x] تجميع Tokens آخر 24 ساعة في Admin interactions summary.
+- [ ] cost estimator/model pricing registry.
+- [ ] daily atomic counters بدل countDocuments.
+- [ ] retention + daily rollups.
+- [ ] spend caps.
 
 - normalized usage: input/output/total tokens، estimated flag، provider/model/capability، latency/cost/cache/fallback.
 - provider usage adapters للاستفادة من usage الحقيقي عندما يرجعه المزود.

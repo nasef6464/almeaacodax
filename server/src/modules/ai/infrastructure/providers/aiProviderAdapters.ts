@@ -14,6 +14,19 @@ export type AiProviderCallOptions = {
   maxOutputTokens?: number;
 };
 
+export type AiProviderUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  cachedTokens: number;
+  estimated: boolean;
+};
+
+export type AiProviderResponse = {
+  text: string;
+  usage: AiProviderUsage;
+};
+
 type ExternalProvider = Exclude<AiProviderId, "none">;
 type OpenAiCompatibleProvider = Exclude<ExternalProvider, "gemini" | "ollama" | "lmstudio">;
 
@@ -27,6 +40,38 @@ type AdapterConfig = {
 
 const uniqueNonEmpty = (values: unknown[]) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
+
+const emptyUsage = (): AiProviderUsage => ({
+  inputTokens: 0,
+  outputTokens: 0,
+  totalTokens: 0,
+  cachedTokens: 0,
+  estimated: false,
+});
+
+const normalizeUsage = (
+  raw: Partial<AiProviderUsage> | undefined,
+  prompt: string,
+  text: string,
+): AiProviderUsage => {
+  const inputTokens = Math.max(0, Number(raw?.inputTokens || 0));
+  const outputTokens = Math.max(0, Number(raw?.outputTokens || 0));
+  const totalTokens = Math.max(0, Number(raw?.totalTokens || inputTokens + outputTokens));
+  const cachedTokens = Math.max(0, Number(raw?.cachedTokens || 0));
+  if (totalTokens > 0) {
+    return { inputTokens, outputTokens, totalTokens, cachedTokens, estimated: Boolean(raw?.estimated) };
+  }
+
+  const estimatedInput = Math.max(1, Math.ceil(String(prompt || "").length / 3));
+  const estimatedOutput = Math.max(1, Math.ceil(String(text || "").length / 3));
+  return {
+    inputTokens: estimatedInput,
+    outputTokens: estimatedOutput,
+    totalTokens: estimatedInput + estimatedOutput,
+    cachedTokens: 0,
+    estimated: true,
+  };
+};
 
 const isPrivateIpv4 = (hostname: string) => {
   const parts = hostname.split(".").map((part) => Number(part));
@@ -95,7 +140,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
   ) => {
     const runtime = config.getProviderRuntime("gemini");
     const apiKeys = providerKeys("gemini");
-    if (apiKeys.length === 0) return "";
+    if (apiKeys.length === 0) return { text: "", usage: emptyUsage() };
 
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
@@ -123,22 +168,38 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
         if (!response.ok) throw new Error(await responseFailureMessage("Gemini", response));
         const payload = (await response.json()) as {
           candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+          usageMetadata?: {
+            promptTokenCount?: number;
+            candidatesTokenCount?: number;
+            totalTokenCount?: number;
+            cachedContentTokenCount?: number;
+          };
         };
         const text = payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
-        if (text) return text;
+        if (text) {
+          return {
+            text,
+            usage: normalizeUsage({
+              inputTokens: payload.usageMetadata?.promptTokenCount,
+              outputTokens: payload.usageMetadata?.candidatesTokenCount,
+              totalTokens: payload.usageMetadata?.totalTokenCount,
+              cachedTokens: payload.usageMetadata?.cachedContentTokenCount,
+            }, prompt, text),
+          };
+        }
       } catch (error) {
         errors.push(error instanceof Error ? error.message : "Gemini request failed");
       }
     }
 
     if (errors.length) throw new Error(errors.join(" | "));
-    return "";
+    return { text: "", usage: emptyUsage() };
   };
 
   const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiProviderCallOptions = {}) => {
     const runtime = config.getProviderRuntime("ollama");
     const baseUrl = String(runtime.baseUrl || "").trim();
-    if (!baseUrl || !runtime.model) return "";
+    if (!baseUrl || !runtime.model) return { text: "", usage: emptyUsage() };
 
     const response = await fetchWithTimeout(
       `${baseUrl.replace(/\/$/, "")}/api/generate`,
@@ -156,8 +217,18 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
       options.timeoutMs,
     );
     if (!response.ok) throw new Error(await responseFailureMessage("Ollama", response));
-    const payload = (await response.json()) as { response?: string };
-    return payload.response?.trim() || "";
+    const payload = (await response.json()) as { response?: string; prompt_eval_count?: number; eval_count?: number };
+    const text = payload.response?.trim() || "";
+    return {
+      text,
+      usage: text
+        ? normalizeUsage({
+            inputTokens: payload.prompt_eval_count,
+            outputTokens: payload.eval_count,
+            totalTokens: Number(payload.prompt_eval_count || 0) + Number(payload.eval_count || 0),
+          }, prompt, text)
+        : emptyUsage(),
+    };
   };
 
   const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiProviderCallOptions = {}) => {
@@ -181,8 +252,22 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
       options.timeoutMs,
     );
     if (!response.ok) throw new Error(await responseFailureMessage("LM Studio", response));
-    const payload = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    return payload.choices?.[0]?.message?.content?.trim() || "";
+    const payload = (await response.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+      usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; prompt_tokens_details?: { cached_tokens?: number } };
+    };
+    const text = payload.choices?.[0]?.message?.content?.trim() || "";
+    return {
+      text,
+      usage: text
+        ? normalizeUsage({
+            inputTokens: payload.usage?.prompt_tokens,
+            outputTokens: payload.usage?.completion_tokens,
+            totalTokens: payload.usage?.total_tokens,
+            cachedTokens: payload.usage?.prompt_tokens_details?.cached_tokens,
+          }, prompt, text)
+        : emptyUsage(),
+    };
   };
 
   const callOpenAiCompatible = async (
@@ -203,7 +288,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     };
     const selected = settings[provider];
     const apiKeys = providerKeys(provider);
-    if (apiKeys.length === 0) return "";
+    if (apiKeys.length === 0) return { text: "", usage: emptyUsage() };
 
     const errors: string[] = [];
     for (const apiKey of apiKeys) {
@@ -228,16 +313,29 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
           options.timeoutMs,
         );
         if (!response.ok) throw new Error(await responseFailureMessage(provider, response));
-        const payload = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
+        const payload = (await response.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+          usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; prompt_tokens_details?: { cached_tokens?: number } };
+        };
         const text = payload.choices?.[0]?.message?.content?.trim() || "";
-        if (text) return text;
+        if (text) {
+          return {
+            text,
+            usage: normalizeUsage({
+              inputTokens: payload.usage?.prompt_tokens,
+              outputTokens: payload.usage?.completion_tokens,
+              totalTokens: payload.usage?.total_tokens,
+              cachedTokens: payload.usage?.prompt_tokens_details?.cached_tokens,
+            }, prompt, text),
+          };
+        }
       } catch (error) {
         errors.push(error instanceof Error ? error.message : `${provider} request failed`);
       }
     }
 
     if (errors.length) throw new Error(errors.join(" | "));
-    return "";
+    return { text: "", usage: emptyUsage() };
   };
 
   const callProvider = async (
@@ -253,5 +351,13 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     return callOpenAiCompatible(provider, prompt, responseMimeType, options);
   };
 
-  return { callProvider };
+  const callProviderText = async (
+    provider: ExternalProvider,
+    prompt: string,
+    responseMimeType?: AiResponseMimeType,
+    image?: { data: string; mimeType: string },
+    options: AiProviderCallOptions = {},
+  ) => (await callProvider(provider, prompt, responseMimeType, image, options)).text;
+
+  return { callProvider, callProviderText };
 };

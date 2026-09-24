@@ -25,6 +25,11 @@ const aiInteractionSchema = new Schema(
     usedFallback: { type: Boolean, default: false, index: true },
     personalized: { type: Boolean, default: false, index: true },
     latencyMs: { type: Number, default: 0 },
+    inputTokens: { type: Number, default: 0 },
+    outputTokens: { type: Number, default: 0 },
+    totalTokens: { type: Number, default: 0 },
+    cachedTokens: { type: Number, default: 0 },
+    usageEstimated: { type: Boolean, default: false },
     messagePreview: { type: String, default: "" },
     responsePreview: { type: String, default: "" },
     responseLength: { type: Number, default: 0 },
@@ -47,5 +52,6 @@ aiInteractionSchema.index({ usedFallback: 1, createdAt: -1 });
 aiInteractionSchema.index({ personalized: 1, createdAt: -1 });
 aiInteractionSchema.index({ userId: 1, createdAt: -1 });
 aiInteractionSchema.index({ schoolId: 1, endpoint: 1, createdAt: -1 });
+aiInteractionSchema.index({ createdAt: -1, totalTokens: 1 });
 
 export const AiInteractionModel = mongoose.model("AiInteraction", aiInteractionSchema);

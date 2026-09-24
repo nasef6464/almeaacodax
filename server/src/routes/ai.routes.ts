@@ -41,6 +41,7 @@ import { buildProviderPriority, type AiProviderId } from "../modules/ai/applicat
 import {
   createAiProviderAdapters,
   type AiProviderCallOptions,
+  type AiProviderUsage,
   type AiResponseMimeType,
 } from "../modules/ai/infrastructure/providers/aiProviderAdapters.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
@@ -132,7 +133,16 @@ type AiCallResult = {
   model: string;
   usedFallback: boolean;
   errors: string[];
+  usage: AiProviderUsage;
 };
+
+const zeroAiUsage = (): AiProviderUsage => ({
+  inputTokens: 0,
+  outputTokens: 0,
+  totalTokens: 0,
+  cachedTokens: 0,
+  estimated: false,
+});
 
 const redactAiDiagnostic = (value: unknown) =>
   String(value || "")
@@ -601,6 +611,7 @@ const recordAiInteraction = async (payload: {
   error?: string;
   schoolId?: string;
   metadata?: Record<string, unknown>;
+  usage?: AiProviderUsage;
 }) => {
   try {
     const role = String(payload.req.authUser?.role || payload.audience || "guest");
@@ -621,6 +632,11 @@ const recordAiInteraction = async (payload: {
       schoolId: payload.schoolId || "",
       userEmail: payload.req.authUser?.email || "",
       role,
+      inputTokens: Number(payload.usage?.inputTokens || 0),
+      outputTokens: Number(payload.usage?.outputTokens || 0),
+      totalTokens: Number(payload.usage?.totalTokens || 0),
+      cachedTokens: Number(payload.usage?.cachedTokens || 0),
+      usageEstimated: Boolean(payload.usage?.estimated),
       metadata: payload.metadata || {},
     });
   } catch (error) {
@@ -660,15 +676,16 @@ const callAiWithMeta = async (
     }
 
     try {
-      const text = await aiProviderAdapters.callProvider(provider, prompt, responseMimeType, image, options);
-      if (text) {
+      const providerResponse = await aiProviderAdapters.callProvider(provider, prompt, responseMimeType, image, options);
+      if (providerResponse.text) {
         recordAiProviderSuccess(provider);
         return {
-          text,
+          text: providerResponse.text,
           provider,
           model: descriptor.model,
           usedFallback: false,
           errors,
+          usage: providerResponse.usage,
         };
       }
       recordAiProviderFailure(provider);
@@ -689,6 +706,7 @@ const callAiWithMeta = async (
     model: "local-fallback",
     usedFallback: true,
     errors,
+    usage: zeroAiUsage(),
   };
 };
 
@@ -698,7 +716,7 @@ const callSingleProvider = async (
   prompt: string,
   image?: { data: string; mimeType: string },
   options: AiProviderCallOptions = { timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000) },
-) => aiProviderAdapters.callProvider(provider, prompt, undefined, image, options);
+) => aiProviderAdapters.callProviderText(provider, prompt, undefined, image, options);
 
 const withinAiBudget = async (userId?: string, schoolId?: string) => {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -794,6 +812,7 @@ const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
     usedFallback: !result.text,
     latencyMs: Date.now() - startedAt,
     schoolId,
+    usage: result.usage,
     error: !result.text && result.errors.length ? fallbackReasonFromErrors(result.errors) : undefined,
     metadata: {
       ...(input.metadata || {}),
@@ -961,7 +980,7 @@ aiRouter.get(
   asyncHandler(async (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit || 20), 1), 100);
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider] = await Promise.all([
+    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider, usage24h] = await Promise.all([
       AiInteractionModel.find().sort({ createdAt: -1 }).limit(limit).lean(),
       AiInteractionModel.countDocuments(),
       AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
@@ -974,6 +993,18 @@ aiRouter.get(
       AiInteractionModel.aggregate([
         { $group: { _id: "$provider", count: { $sum: 1 }, avgLatencyMs: { $avg: "$latencyMs" } } },
         { $sort: { count: -1 } },
+      ]),
+      AiInteractionModel.aggregate([
+        { $match: { createdAt: { $gte: since } } },
+        {
+          $group: {
+            _id: null,
+            inputTokens: { $sum: "$inputTokens" },
+            outputTokens: { $sum: "$outputTokens" },
+            totalTokens: { $sum: "$totalTokens" },
+            cachedTokens: { $sum: "$cachedTokens" },
+          },
+        },
       ]),
     ]);
 
@@ -989,6 +1020,10 @@ aiRouter.get(
           count: item.count,
           avgLatencyMs: Math.round(Number(item.avgLatencyMs || 0)),
         })),
+        inputTokens24h: Number(usage24h[0]?.inputTokens || 0),
+        outputTokens24h: Number(usage24h[0]?.outputTokens || 0),
+        totalTokens24h: Number(usage24h[0]?.totalTokens || 0),
+        cachedTokens24h: Number(usage24h[0]?.cachedTokens || 0),
       },
       items,
     });
@@ -1125,6 +1160,7 @@ ${message}
         usedFallback: !result.text,
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
+        usage: result.usage,
         metadata: {
           weaknessesCount: studentContext?.weaknesses.length || 0,
           recentResultsCount: studentContext?.recentResults.length || 0,
@@ -1520,6 +1556,7 @@ aiRouter.post(
         usedFallback: provider === "none",
         latencyMs: Date.now() - startedAt,
         schoolId,
+        usage: resultCall.usage,
         error: provider === "none" && resultCall.errors.length ? fallbackReasonFromErrors(resultCall.errors) : undefined,
         metadata: {
           billable: true,
@@ -1646,6 +1683,7 @@ ${message}
         model: result.text ? result.model : "local-fallback",
         usedFallback: !result.text,
         latencyMs: Date.now() - startedAt,
+        usage: result.usage,
         metadata: {
           auditScore: audit.score,
           critical: audit.totals.critical,

@@ -490,7 +490,7 @@ export const AiAssistantManager: React.FC = () => {
                         </div>
                     </div>
                     <p className="mt-2.5 text-[11px] font-bold text-gray-500 line-clamp-1">
-                        أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)} • احتياطي للطلاب: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
+                        Tokens: {formatNumber(interactions?.summary.totalTokens24h || 0)} • أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)} • احتياطي: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
                     </p>
                 </div>
             </div>
