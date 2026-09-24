@@ -37,6 +37,7 @@ import {
   isExplicitLocalProviderConfigured,
 } from "../modules/ai/application/aiCapabilityPolicy.js";
 import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
+import { buildStudentTutorContext, type StudentTutorContext } from "../modules/ai/application/studentTutorContext.js";
 import { estimateAiCostMicrosUsd, readAiPricingHint, type AiPricingHint } from "../modules/ai/application/aiCostEstimator.js";
 import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
 import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
@@ -127,12 +128,6 @@ const generateMockExamSchema = z.object({
 });
 
 type AiProvider = AiProviderId;
-
-type StudentAiContext = {
-  summary: string;
-  weaknesses: Array<{ skill: string; mastery: number; status: string; action: string }>;
-  recentResults: Array<{ title: string; score: number; totalQuestions: number; wrongAnswers: number }>;
-};
 
 type ProviderDescriptor = {
   id: AiProvider;
@@ -622,69 +617,7 @@ const buildTutorFallback = (message: string) => {
   ].join("\n");
 };
 
-const buildStudentAiContext = async (userId?: string | null): Promise<StudentAiContext | null> => {
-  if (!userId) return null;
-  const normalizedUserId = String(userId);
-
-  const [user, weaknesses, recentResults] = await Promise.all([
-    (mongoose.isValidObjectId(normalizedUserId)
-      ? UserModel.findById(normalizedUserId)
-      : UserModel.findOne({ id: normalizedUserId }))
-      .select("id name role subscription completedLessons enrolledPaths")
-      .lean(),
-    SkillProgressModel.find({ userId: normalizedUserId, status: { $in: ["weak", "average"] } })
-      .sort({ mastery: 1, lastAttemptAt: -1 })
-      .limit(6)
-      .lean(),
-    QuizResultModel.find({ userId: normalizedUserId }).sort({ createdAt: -1 }).limit(3).lean(),
-  ]);
-
-  if (!user || user.role !== "student") return null;
-
-  const progressWeakSkillRows = weaknesses.map((item) => ({
-    skill: String(item.skill || "مهارة تحتاج مراجعة"),
-    mastery: Number(item.mastery || 0),
-    status: String(item.status || "weak"),
-    action: String(item.recommendedAction || "راجع شرحا قصيرا ثم حل تدريبا متدرجا."),
-  }));
-  const resultRows = recentResults.map((item) => ({
-    title: String(item.quizTitle || "اختبار سابق"),
-    score: Number(item.score || 0),
-    totalQuestions: Number(item.totalQuestions || 0),
-    wrongAnswers: Number(item.wrongAnswers || 0),
-  }));
-  const resultWeakSkillRows = recentResults
-    .flatMap((item) => (Array.isArray(item.skillsAnalysis) ? item.skillsAnalysis : []))
-    .filter((item) => String(item?.status || "") === "weak" || String(item?.status || "") === "average" || Number(item?.mastery || 0) < 75)
-    .map((item) => ({
-      skill: String(item.skill || item.name || "مهارة تحتاج مراجعة"),
-      mastery: Number(item.mastery || 0),
-      status: String(item.status || "weak"),
-      action: String(item.recommendation || "راجع شرحا قصيرا ثم حل تدريبا متدرجا."),
-    }));
-  const weakSkillRows = progressWeakSkillRows.length ? progressWeakSkillRows : resultWeakSkillRows;
-
-  const summaryLines = [
-    `اسم الطالب: ${String(user.name || "طالب")}`,
-    weakSkillRows.length
-      ? `أضعف المهارات الحالية: ${weakSkillRows
-          .map((item) => `${item.skill} (${item.mastery}%)`)
-          .join("، ")}`
-      : "لا توجد مهارات ضعيفة مسجلة حتى الآن.",
-    resultRows.length
-      ? `آخر النتائج: ${resultRows.map((item) => `${item.title}: ${item.score}%`).join("، ")}`
-      : "لا توجد نتائج اختبارات حديثة.",
-    `الدروس المكتملة: ${Array.isArray(user.completedLessons) ? user.completedLessons.length : 0}`,
-  ];
-
-  return {
-    summary: summaryLines.join("\n"),
-    weaknesses: weakSkillRows,
-    recentResults: resultRows,
-  };
-};
-
-const buildPersonalizedTutorFallback = (message: string, context: StudentAiContext | null) => {
+const buildPersonalizedTutorFallback = (message: string, context: StudentTutorContext | null) => {
   const base = buildTutorFallback(message);
   if (!context) return base;
 
@@ -1295,7 +1228,12 @@ aiRouter.post(
       ? { data: parsed.image.data, mimeType: parsed.image.mimeType }
       : undefined;
     const startedAt = Date.now();
-    const studentContext = await buildStudentAiContext(req.authUser?.id);
+    const studentContext = await buildStudentTutorContext(req.authUser?.id, {
+      includeRecentTutorTurns: true,
+      maxWeaknesses: 5,
+      maxRecentResults: 3,
+      maxRecentTutorTurns: 2,
+    });
     const fallback = buildPersonalizedTutorFallback(message, studentContext);
 
     const hasImage = Boolean(image);
@@ -1706,6 +1644,14 @@ aiRouter.post(
       });
     }
 
+    const tutorContext = await buildStudentTutorContext(userId, {
+      focusSkillIds: skillIds,
+      includeRecentTutorTurns: true,
+      maxWeaknesses: 4,
+      maxRecentResults: 2,
+      maxRecentTutorTurns: 1,
+    });
+
     const prompt = buildQuestionAssistantPrompt({
       level: payload.helpLevel as QuestionHelpLevel,
       questionText,
@@ -1717,6 +1663,7 @@ aiRouter.post(
       explanation: trustedExplanation,
       skillLabels,
       studentMessage: payload.message,
+      studentContextSummary: tutorContext?.summary || "",
       hasImage,
     });
 
@@ -1796,6 +1743,9 @@ aiRouter.post(
           imageSentToProvider: false,
           promptChars: prompt.length,
           responseChars: responseText.length,
+          tutorContextVersion: tutorContext?.contextVersion || "",
+          tutorWeaknessCount: tutorContext?.weaknesses.length || 0,
+          tutorRecentTurnCount: tutorContext?.recentTutorTurns.length || 0,
           providerErrors: compactProviderErrors(resultCall.errors),
         },
       });

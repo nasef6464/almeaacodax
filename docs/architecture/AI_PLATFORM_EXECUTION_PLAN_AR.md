@@ -42,8 +42,8 @@ flowchart TD
 | AI-1 Secure Gateway | ✅ CLOSED | إغلاق تسريب التكلفة + توحيد budget/logging + local-provider truth |
 | AI-2 Usage & Cost | ✅ CLOSED | token ledger + cost + retention + counters |
 | AI-3 Quota Pools & Routing | ✅ CLOSED | أكثر من Project/Key + Free-first + capability profiles |
-| AI-4 Control Center | 🟡 CLOSURE GATE | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
-| AI-5 Tutor Sessions | ⏳ | Student/Question tutor context/session memory المحدودة |
+| AI-4 Control Center | ✅ CLOSED | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
+| AI-5 Tutor Sessions | 🟡 IN PROGRESS | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ⏳ | push-to-talk + STT/TTS budgets + vision on demand |
 | AI-7 Readiness & Prediction | ⏳ | readiness deterministic + predicted score بعد calibration |
 | AI-8 Production Certification | ⏳ | load/cost/security/fallback exact-head evidence |
@@ -159,12 +159,17 @@ Provider
 
 ## AI-5 — Tutor Sessions
 
-- Student Tutor وQuestion Tutor يشتركان في Context Gateway.
-- لا full history.
-- session summary محدودة.
-- weak skills قليلة + recent results قليلة.
-- no scoring/mastery by LLM.
-- روابط مباشرة للدرس/التدريب بدل نصائح عامة فقط.
+### الحالة الحالية
+- [x] Student Tutor وQuestion Tutor يشتركان في Context Gateway واحد.
+- [x] لا full history؛ الذاكرة محصورة في آخر 1–2 turns فقط وبحد أقصى 3.
+- [x] weak skills محدودة (حتى 6 افتراضيًا) + recent results محدودة (حتى 3 افتراضيًا).
+- [x] Question Tutor يعطي أولوية للمهارات المرتبطة بالسؤال نفسه.
+- [x] context summary لها حد أقصى واضح ولا تُمرر history خام غير محدود.
+- [x] no scoring/mastery by LLM؛ الأرقام مصدرها SkillProgress/QuizResult فقط.
+- [x] لا Collection جديدة للمحادثات؛ يتم إعادة استخدام AiInteraction المحدود بالـretention.
+- [ ] Session summary أدق على مستوى المحادثة المتصلة بدل recent-turn memory فقط.
+- [ ] روابط مباشرة للدرس/التدريب من taxonomy/recommendedAction بدل نصائح عامة فقط.
+- [ ] UI صغير يوضح للطالب عندما يكون الرد «مخصصًا من أدائك» بدون كشف تفاصيل غير لازمة.
 
 ## AI-6 — Voice / Vision
 
