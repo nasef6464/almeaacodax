@@ -45,7 +45,7 @@ flowchart TD
 | AI-4 Control Center | ✅ CLOSED | نقل إدارة AI من Integrations إلى شاشة واحدة احترافية |
 | AI-5 Tutor Sessions | ✅ CLOSED | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ✅ CLOSED (LOW-COST V1) | push-to-talk + STT/TTS budgets + vision on demand |
-| AI-7 Readiness & Prediction | 🟡 NEXT | readiness deterministic + predicted score بعد calibration |
+| AI-7 Readiness & Prediction | 🟡 IN PROGRESS | readiness deterministic + predicted score بعد calibration |
 | AI-8 Production Certification | ⏳ | load/cost/security/fallback exact-head evidence |
 
 ## AI-1 — Secure Gateway
@@ -191,10 +191,13 @@ Provider
 
 ## AI-7 — Readiness / Predicted Score
 
-- readiness تحسب deterministic من SkillProgress/Attempts.
-- AI يشرح النتيجة ولا يحسبها.
-- predicted score لا يطلق قبل dataset وcalibration وقياس error.
-- يظهر Range وثقة بدل رقم مضلل عند الحاجة.
+- [x] readiness تحسب deterministic من SkillProgress/Attempts عبر نفس Mastery Readiness الحالي.
+- [x] تقدير أداء داخلي يجمع readiness + آخر قياسات موثوقة، ولا يستخدم LLM.
+- [x] لا يظهر التقدير قبل 3 قياسات و30 سؤالًا وحد أدنى من التغطية والأدلة.
+- [x] يظهر Range وثقة بدل رقم منفرد مضلل.
+- [x] Qiyas score يبقى null وcalibratedToQiyas=false حتى تتوفر بيانات معايرة فعلية.
+- [ ] بناء Dataset معايرة من نتائج قياس الفعلية بموافقة المستخدم/الطالب.
+- [ ] قياس MAE/Calibration error قبل إطلاق «درجة قياس متوقعة» بالاسم.
 
 ## AI-8 — Production Certification
 
