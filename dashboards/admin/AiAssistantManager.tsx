@@ -3,6 +3,7 @@ import { Activity, AlertTriangle, Bot, CheckCircle2, Clock, Copy, Loader2, Messa
 import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 import { AiControlCenterSettings } from './ai/AiControlCenterSettings';
+import { AiUsageAndAlertsPanel } from './ai/AiUsageAndAlertsPanel';
 
 type AiStatus = {
     provider: 'gemini' | 'openrouter' | 'deepseek' | 'qwen' | 'openai' | 'ollama' | 'lmstudio' | 'none';
@@ -174,7 +175,7 @@ export const AiAssistantManager: React.FC = () => {
     const [status, setStatus] = useState<AiStatus | null>(null);
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [statusError, setStatusError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'chat' | 'control' | 'providers' | 'logs' | 'readiness'>('chat');
+    const [activeTab, setActiveTab] = useState<'chat' | 'control' | 'usage' | 'providers' | 'logs' | 'readiness'>('chat');
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'welcome',
@@ -532,6 +533,7 @@ export const AiAssistantManager: React.FC = () => {
                 {[
                     { id: 'chat' as const, label: 'مساعد المدير التفاعلي', icon: <MessageCircle size={16} /> },
                     { id: 'control' as const, label: 'المفاتيح والحصص والتكلفة', icon: <Settings size={16} /> },
+                    { id: 'usage' as const, label: 'الاستخدام والتنبيهات', icon: <BarChart2 size={16} /> },
                     {
                         id: 'providers' as const,
                         label: 'مزودو الذكاء وسلسلة الانتقال',
@@ -571,6 +573,15 @@ export const AiAssistantManager: React.FC = () => {
 
             {activeTab === 'control' && (
                 <AiControlCenterSettings onSaved={loadStatus} />
+            )}
+
+            {activeTab === 'usage' && (
+                <AiUsageAndAlertsPanel
+                    summary={interactions?.summary}
+                    providerHealth={status?.providerHealth}
+                    paidAllowed={status?.paidAllowed}
+                    dailySpendCapUsd={status?.dailySpendCapUsd}
+                />
             )}
 
             {/* ══════════════════════════════════════════════════════════════════════
