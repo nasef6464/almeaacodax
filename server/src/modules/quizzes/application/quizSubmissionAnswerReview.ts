@@ -45,6 +45,8 @@ export const buildQuizSubmissionAnswerReview = ({
       explanation: question.explanation || "",
       videoUrl: question.videoUrl || "",
       imageUrl: question.imageUrl || "",
+      imageAlt: question.imageAlt || "",
+      optionsEmbeddedInImage: Boolean(question.optionsEmbeddedInImage),
       voiceExplanation: question.voiceExplanation || undefined,
       isCorrect,
     };
