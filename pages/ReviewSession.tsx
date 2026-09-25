@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
 import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
+import { QuestionVoiceExplanationPlayer } from "../components/results/QuestionVoiceExplanationPlayer";
+import type { QuestionVoiceExplanation } from "../types";
 
 type ReviewItem = {
   cardId: string;
@@ -16,6 +18,7 @@ type ReviewItem = {
     text: string;
     options: string[];
     imageUrl?: string;
+    voiceExplanation?: QuestionVoiceExplanation;
   };
 };
 
@@ -181,6 +184,10 @@ const ReviewSession: React.FC = () => {
           </div>
         ) : null}
       </div>
+
+      {current?.question?.voiceExplanation ? (
+        <QuestionVoiceExplanationPlayer voiceExplanation={current.question.voiceExplanation} />
+      ) : null}
 
       {current?.questionId ? (
         <QuestionAssistantPanel
