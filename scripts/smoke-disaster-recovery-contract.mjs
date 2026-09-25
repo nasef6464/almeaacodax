@@ -68,5 +68,8 @@ assert.match(scheduledWorkflow, /Fail closed when DR secrets are incomplete/);
 assert.match(scheduledWorkflow, /Off-site MongoDB backup evidence is incomplete/);
 assert.match(scheduledWorkflow, /Off-site R2 backup evidence is incomplete/);
 assert.doesNotMatch(scheduledWorkflow, /upload-artifact/);
+assert.match(scheduledWorkflow, /Alert DR backup failure/);
+assert.match(scheduledWorkflow, /issue_number: 235/);
+assert.match(scheduledWorkflow, /fail-closed alert/);
 
 console.log('Disaster recovery contract smoke: PASS');
