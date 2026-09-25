@@ -1,6 +1,7 @@
 import React from 'react';
-import { Loader2, MessageCircle, Send, Sparkles } from 'lucide-react';
+import { Loader2, MessageCircle, Mic, Send, Sparkles, Volume2 } from 'lucide-react';
 import { api } from '../../services/api';
+import { browserSpeechInputSupported, recognizeArabicOnce, speakArabic } from '../../services/aiMediaClient';
 
 type HelpLevel = 'hint' | 'stronger_hint' | 'concept' | 'steps' | 'follow_up';
 
@@ -12,6 +13,11 @@ type ResponseState = {
   usedFallback: boolean;
   visualContextBlocked?: boolean;
 };
+
+const createQuestionTutorSessionId = () =>
+  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? `question:${crypto.randomUUID()}`
+    : `question:${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 const HELP_ACTIONS: Array<{ level: Exclude<HelpLevel, 'follow_up'>; label: string }> = [
   { level: 'hint', label: 'تلميح' },
@@ -26,15 +32,22 @@ export const QuestionAssistantPanel: React.FC<{
   hasImage: boolean;
   context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 }> = ({ resultId, questionId, hasImage, context = "result_review" }) => {
-  const tutorSessionIdRef = React.useRef(
-    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-      ? `question:${crypto.randomUUID()}`
-      : `question:${Date.now()}-${Math.random().toString(36).slice(2)}`,
-  );
+  const tutorSessionIdRef = React.useRef(createQuestionTutorSessionId());
   const [response, setResponse] = React.useState<ResponseState | null>(null);
   const [followUp, setFollowUp] = React.useState('');
   const [pendingLevel, setPendingLevel] = React.useState<HelpLevel | null>(null);
   const [error, setError] = React.useState('');
+  const [isListening, setIsListening] = React.useState(false);
+  const [autoSpeak, setAutoSpeak] = React.useState(false);
+
+  React.useEffect(() => {
+    tutorSessionIdRef.current = createQuestionTutorSessionId();
+    setResponse(null);
+    setFollowUp('');
+    setPendingLevel(null);
+    setError('');
+    setIsListening(false);
+  }, [context, questionId, resultId]);
 
   const ask = async (level: HelpLevel, message?: string) => {
     if (!questionId || pendingLevel || (context === "result_review" && !resultId)) return;
@@ -49,19 +62,37 @@ export const QuestionAssistantPanel: React.FC<{
         ...(message?.trim() ? { message: message.trim() } : {}),
         tutorSessionId: tutorSessionIdRef.current,
       });
-      setResponse({
+      const nextResponse = {
         text: payload.text,
         level,
         provider: payload.provider,
         cacheHit: Boolean(payload.cacheHit),
         usedFallback: Boolean(payload.usedFallback),
         visualContextBlocked: payload.visualContextBlocked,
-      });
+      };
+      setResponse(nextResponse);
+      if (autoSpeak && nextResponse.text) speakArabic(nextResponse.text);
       if (level === 'follow_up') setFollowUp('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'تعذر تشغيل مساعد السؤال الآن.');
     } finally {
       setPendingLevel(null);
+    }
+  };
+
+  const handleVoiceInput = async () => {
+    if (!browserSpeechInputSupported() || isListening || Boolean(pendingLevel)) return;
+    setError('');
+    setIsListening(true);
+    try {
+      const transcript = await recognizeArabicOnce();
+      if (transcript) {
+        setFollowUp((current) => current ? `${current} ${transcript}`.slice(0, 800) : transcript.slice(0, 800));
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'تعذر التقاط الصوت الآن.');
+    } finally {
+      setIsListening(false);
     }
   };
 
@@ -116,8 +147,8 @@ export const QuestionAssistantPanel: React.FC<{
         </div>
       ) : null}
 
-      <div className="mt-3 flex gap-2">
-        <div className="relative min-w-0 flex-1">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="relative min-w-0 flex-1 basis-[220px]">
           <MessageCircle size={14} className="absolute right-3 top-3 text-slate-400" />
           <input
             value={followUp}
@@ -132,6 +163,26 @@ export const QuestionAssistantPanel: React.FC<{
             className="w-full rounded-xl border border-violet-100 bg-white py-2.5 pr-9 pl-3 text-xs font-bold text-slate-700 outline-none focus:border-violet-300"
           />
         </div>
+        <button
+          type="button"
+          disabled={Boolean(pendingLevel) || isListening || !browserSpeechInputSupported()}
+          onClick={() => void handleVoiceInput()}
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-100 bg-white text-violet-700 hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="اسأل المعلم صوتيًا"
+          title={browserSpeechInputSupported() ? 'تحدث، ثم راجع النص وأرسله' : 'الإملاء الصوتي غير مدعوم في هذا المتصفح'}
+        >
+          {isListening ? <Loader2 size={15} className="animate-spin" /> : <Mic size={15} />}
+        </button>
+        <button
+          type="button"
+          onClick={() => setAutoSpeak((value) => !value)}
+          className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-100 transition ${autoSpeak ? 'bg-violet-600 text-white' : 'bg-white text-violet-700 hover:bg-violet-100'}`}
+          aria-pressed={autoSpeak}
+          aria-label="قراءة رد المعلم صوتيًا"
+          title={autoSpeak ? 'قراءة الرد الصوتي مفعلة' : 'فعّل قراءة رد المعلم صوتيًا'}
+        >
+          <Volume2 size={15} />
+        </button>
         <button
           type="button"
           disabled={!followUp.trim() || Boolean(pendingLevel)}
