@@ -146,6 +146,7 @@ It schedules a daily production backup attempt at 01:17 UTC (04:17 Asia/Riyadh) 
 - it runs the verified MongoDB and R2 backup scripts;
 - it copies verified artifacts to an independent S3-compatible destination;
 - it verifies that remote MongoDB and R2 artifacts exist;
+- it comments on Issue #235 with the failed run link when the scheduled backup fails;
 - it does not publish production backup bytes as GitHub Actions artifacts.
 
 Required GitHub secret names are documented by the workflow itself. Their presence must never be inferred from repository code.
