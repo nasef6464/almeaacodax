@@ -38,10 +38,9 @@ import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
+import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
-import { QuestionVoiceExplanationPlayer } from '../components/results/QuestionVoiceExplanationPlayer';
 
 const ResultDonutChart = React.lazy(() =>
   import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
@@ -798,7 +797,7 @@ const Results: React.FC = () => {
       </header>
 
       {/* ── 1. بطاقة النتيجة والمؤشرات الرئيسية (ما نتيجتي؟) ── */}
-      <Card className={`p-5 sm:p-7 relative overflow-hidden bg-gradient-to-br ${scoreTone.soft} border border-slate-100 shadow-sm`}>
+      <Card className={`relative overflow-hidden border border-slate-100 bg-gradient-to-br p-3 shadow-sm sm:p-6 ${scoreTone.soft}`}>
         <div className="absolute top-0 right-0 w-36 h-36 bg-white rounded-full -translate-y-1/2 translate-x-1/2 opacity-60 pointer-events-none" />
         <div className="relative z-10">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -822,28 +821,28 @@ const Results: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 items-center gap-6 md:grid-cols-[220px_1fr]">
+          <div className="mt-4 grid grid-cols-[112px_1fr] items-center gap-3 sm:grid-cols-[180px_1fr] sm:gap-5">
             {/* Donut Chart with Score */}
-            <div className="h-48 sm:h-52 relative flex justify-center items-center rounded-3xl bg-white/90 border border-white p-3 shadow-xs">
+            <div className="relative flex h-28 items-center justify-center rounded-2xl border border-white bg-white/90 p-1 shadow-xs sm:h-44 sm:p-3">
               <React.Suspense fallback={<ResultChartFallback />}>
                 <ResultDonutChart
                   data={donutData}
                   colors={donutColors}
                   primaryColor={scoreTone.ring}
-                  innerRadius={58}
-                  outerRadius={78}
+                  innerRadius={42}
+                  outerRadius={58}
                   cellKeyPrefix="cell"
                 />
               </React.Suspense>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className={`text-4xl font-black tracking-tight ${scoreTone.text}`}>{latestResult.score}%</span>
+                <span className={`text-2xl font-black tracking-tight sm:text-4xl ${scoreTone.text}`}>{latestResult.score}%</span>
                 <span className="text-xs font-black text-gray-500 mt-0.5">درجتك</span>
               </div>
             </div>
 
             {/* 5 Core Metric Cards */}
             <div className="space-y-3">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+              <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 lg:grid-cols-5 sm:gap-2.5">
                 <SimpleResultStat label="عدد الأسئلة" value={latestResult.totalQuestions.toString()} />
                 <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
                 <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
@@ -903,7 +902,7 @@ const Results: React.FC = () => {
           ) : null}
 
           {/* Primary Action Buttons - Ordered for optimal student journey */}
-          <div className="mt-6 flex flex-wrap items-center gap-3 pt-5 border-t border-slate-200/80">
+          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-200/80 pt-3 sm:flex sm:flex-wrap sm:items-center">
             <button
               onClick={() => {
                 if (questionReviewCount > 0) {
@@ -914,7 +913,7 @@ const Results: React.FC = () => {
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-sm shadow-emerald-200 transition-all hover:bg-emerald-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
             >
               <Eye size={17} />
-              <span>{questionReviewCount > 0 ? `مراجعة الحلول والأخطاء (${questionReviewCount})` : 'المراجعة غير متاحة'}</span>
+              <span>{questionReviewCount > 0 ? `مراجعة الأسئلة (${questionReviewCount})` : 'المراجعة غير متاحة'}</span>
             </button>
             <Link
               to={additionalQuizLink}
@@ -1493,6 +1492,7 @@ const ReviewSolutions = ({
 
   const q = questions[currentIdx];
   const questionHasInlineMedia = hasInlineQuestionMedia(q?.text);
+  const imageQuestion = usesImageEmbeddedOptions(q);
   const handleInlineQuestionImageClick = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as Element | null;
     const image =
@@ -1619,34 +1619,30 @@ const ReviewSolutions = ({
             </div>
 
             {/* Question Prompt Body */}
-            <div className="space-y-4 mb-8">
-              <div
-                onClick={handleInlineQuestionImageClick}
-                className="question-html text-base sm:text-lg font-bold leading-relaxed text-slate-900 [&_img]:cursor-zoom-in"
-                dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
-              />
+            <div className="mb-4 space-y-3">
+              {!imageQuestion ? (
+                <div
+                  onClick={handleInlineQuestionImageClick}
+                  className="question-html text-base sm:text-lg font-bold leading-relaxed text-slate-900 [&_img]:cursor-zoom-in"
+                  dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
+                />
+              ) : null}
 
               {q.imageUrl ? (
-                <div className="relative group cursor-zoom-in rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 sm:p-3 shadow-xs">
+                <div className="relative group cursor-zoom-in rounded-xl border border-slate-200/80 bg-white p-1.5 sm:p-2 shadow-xs">
                   <img
                     src={q.imageUrl}
                     alt="صورة السؤال"
-                    className="mx-auto max-h-56 sm:max-h-72 w-full object-contain rounded-xl"
+                    className="mx-auto max-h-[300px] sm:max-h-[360px] w-full object-contain rounded-lg"
                     referrerPolicy="no-referrer"
                     onClick={() => setZoomedImageUrl(q.imageUrl || null)}
                   />
-                  <div
-                    onClick={() => setZoomedImageUrl(q.imageUrl || null)}
-                    className="mt-2 text-center text-xs font-bold text-indigo-600 flex items-center justify-center gap-1 hover:underline cursor-pointer"
-                  >
-                    🔍 اضغط على الصورة للتكبير
-                  </div>
                 </div>
               ) : null}
             </div>
 
             {/* Options List (Radio Circle Cards - NO Duplicate Letters) */}
-            <div className={`grid ${getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2.5 sm:gap-3 mb-6`}>
+            <div className={`grid ${imageQuestion ? 'grid-cols-4' : getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2 mb-4`}>
               {q.options.map((option, i) => {
                 const isUserChoice = i === q.selectedOptionIndex;
 
@@ -1672,16 +1668,22 @@ const ReviewSolutions = ({
                 return (
                   <div
                     key={`${q.questionId}-${i}`}
-                    className={`flex ${getQuizOptionButtonHeightClass(q.options, reviewOptionLayout)} items-center justify-between gap-3 rounded-2xl border-2 p-3 sm:p-4 text-right transition-all ${cardStyle}`}
+                    className={`flex ${imageQuestion ? 'min-h-[46px]' : getQuizOptionButtonHeightClass(q.options, reviewOptionLayout)} items-center justify-center gap-2 rounded-xl border-2 ${imageQuestion ? 'p-2' : 'p-3 sm:p-4'} text-center transition-all ${cardStyle}`}
                   >
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                      <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black transition-all ${radioStyle}`}>
-                        {isUserChoice ? (wasCorrect ? '✓' : '✕') : ''}
-                      </div>
-                      <span
-                        className="question-html flex-1 text-sm sm:text-base font-bold leading-relaxed text-slate-800 break-words"
-                        dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
-                      />
+                    <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
+                      {!imageQuestion ? (
+                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black transition-all ${radioStyle}`}>
+                          {isUserChoice ? (wasCorrect ? '✓' : '✕') : ''}
+                        </div>
+                      ) : null}
+                      {imageQuestion ? (
+                        <span className="text-lg font-black text-slate-900 sm:text-xl">{getLearnerOptionLabel(q, option, i)}</span>
+                      ) : (
+                        <span
+                          className="question-html flex-1 text-sm sm:text-base font-bold leading-relaxed text-slate-800 break-words"
+                          dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(typeof option === 'string' ? option : '') }}
+                        />
+                      )}
                     </div>
                     {badgeText ? (
                       <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${badgeClass}`}>
@@ -1716,8 +1718,6 @@ const ReviewSolutions = ({
                 </p>
               </div>
             ) : null}
-
-            <QuestionVoiceExplanationPlayer voiceExplanation={q.voiceExplanation} />
 
             <QuestionAssistantPanel
               key={`${resultId}::${q.questionId}`}
