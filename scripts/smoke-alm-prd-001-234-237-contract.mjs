@@ -6,6 +6,7 @@ const read = (path) => fs.readFileSync(path, "utf8");
 const speed = read("scripts/smoke-production-speed.mjs");
 const latency = read("scripts/measure-production-latency.mjs");
 const drWorkflow = read(".github/workflows/production-dr-backup.yml");
+const postDeploy = read(".github/workflows/post-deploy-smoke.yml");
 const drContract = read("scripts/smoke-disaster-recovery-contract.mjs");
 const closureDoc = read("docs/architecture/ALM_PRD_001_234_237_EXECUTION_2026-09-25_AR.md");
 
@@ -29,6 +30,10 @@ for (const evidence of [
 }
 assert.ok(latency.includes("https://almeaacodax.vercel.app/api"));
 assert.ok(latency.includes("does not certify 500/1000 concurrent-user capacity"));
+assert.ok(postDeploy.includes("Production bounded latency evidence"));
+assert.ok(postDeploy.includes("npm run measure:production-latency"));
+assert.ok(postDeploy.includes("audit-artifacts/production-latency/summary.json"));
+assert.ok(postDeploy.includes("actions/upload-artifact@v4"));
 
 assert.ok(drWorkflow.includes("schedule:"));
 assert.ok(drWorkflow.includes('cron: "17 1 * * *"'));
