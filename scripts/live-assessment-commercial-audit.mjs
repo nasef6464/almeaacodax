@@ -266,6 +266,27 @@ async function main() {
     await studentContext.close();
     studentContext = await browser.newContext({ locale: "ar-SA", timezoneId: "Asia/Riyadh" });
     const freshStudent = await login(studentContext, credentials.student);
+    await freshStudent.page.addInitScript(() => {
+      class MockSpeechRecognition {
+        lang = "ar-SA";
+        interimResults = false;
+        continuous = false;
+        onresult = null;
+        onerror = null;
+        onend = null;
+        start() {
+          setTimeout(() => {
+            this.onresult?.({ results: [[{ transcript: "ساعدني أفهم بداية السؤال" }]] });
+            this.onend?.();
+          }, 25);
+        }
+        stop() {
+          this.onend?.();
+        }
+      }
+      Object.defineProperty(window, "SpeechRecognition", { configurable: true, value: MockSpeechRecognition });
+      Object.defineProperty(window, "webkitSpeechRecognition", { configurable: true, value: MockSpeechRecognition });
+    });
     const browserErrors = [];
     freshStudent.page.on("pageerror", (error) => browserErrors.push(`pageerror:${error.message}`));
     freshStudent.page.on("console", (message) => {
@@ -352,7 +373,7 @@ async function main() {
     const hasServerResult = Boolean(serverResult);
     if (!serverResult?.date) throw new Error(`Server result is missing its attempt date: ${JSON.stringify(resultResponse)}`);
     await freshStudent.page.goto(`${BASE_URL}/results?attempt=${encodeURIComponent(String(serverResult.date))}`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    const reviewButton = freshStudent.page.getByRole("button", { name: /^مراجعة الحلول والأخطاء/ });
+    const reviewButton = freshStudent.page.getByRole("button", { name: /^مراجعة الأسئلة/ });
     await reviewButton.waitFor({ timeout: 30000 });
     await reviewButton.click();
     await freshStudent.page.getByRole("heading", { name: "مراجعة الحلول" }).waitFor({ timeout: 30000 });
@@ -362,7 +383,7 @@ async function main() {
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
       { timeout: 30000 },
     );
-    await freshStudent.page.getByRole("button", { name: "تلميح", exact: true }).first().click();
+    await freshStudent.page.getByRole("button", { name: "التحدث مع المعلم الذكي", exact: true }).first().click();
     const tutorResponse = await tutorResponsePromise;
     if (!tutorResponse.ok()) throw new Error(`Question Assistant failed in result review (${tutorResponse.status()})`);
 
@@ -385,25 +406,23 @@ async function main() {
     await freshStudent.page.goto(`${BASE_URL}/favorites`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await freshStudent.page.getByRole("heading", { name: "أسئلتي للمراجعة" }).waitFor({ timeout: 30000 });
     await freshStudent.page.getByText("حفظتها للمراجعة", { exact: false }).first().waitFor({ timeout: 30000 });
-    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
     const savedTutorResponsePromise = freshStudent.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
       { timeout: 30000 },
     );
-    await freshStudent.page.getByRole("button", { name: "تلميح", exact: true }).click();
+    await freshStudent.page.getByRole("button", { name: "التحدث مع المعلم الذكي", exact: true }).click();
     const savedTutorResponse = await savedTutorResponsePromise;
     if (!savedTutorResponse.ok()) throw new Error(`Question Assistant failed in saved review (${savedTutorResponse.status()})`);
 
     await freshStudent.page.getByRole("button", { name: /أخطأت فيها/ }).click();
     await freshStudent.page.getByText("خطأ سابق", { exact: true }).waitFor({ timeout: 30000 });
-    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
     const mistakeTutorResponsePromise = freshStudent.page.waitForResponse(
       (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
       { timeout: 30000 },
     );
-    await freshStudent.page.getByRole("button", { name: "خطوات الحل", exact: true }).click();
+    await freshStudent.page.getByRole("button", { name: "التحدث مع المعلم الذكي", exact: true }).click();
     const mistakeTutorResponse = await mistakeTutorResponsePromise;
     if (!mistakeTutorResponse.ok()) throw new Error(`Question Assistant failed in mistake review (${mistakeTutorResponse.status()})`);
     await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-review-library.png"), fullPage: true });
