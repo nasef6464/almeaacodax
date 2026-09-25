@@ -8,6 +8,7 @@ const mediaRestore = fs.readFileSync(new URL('./restore-r2-media-verified.sh', i
 const runbook = fs.readFileSync(new URL('../docs/architecture/DISASTER_RECOVERY_RUNBOOK.md', import.meta.url), 'utf8');
 const productionGuide = fs.readFileSync(new URL('../docs/BACKUP_RESTORE_PRODUCTION.md', import.meta.url), 'utf8');
 const backupManager = fs.readFileSync(new URL('../dashboards/admin/BackupManager.tsx', import.meta.url), 'utf8');
+const scheduledWorkflow = fs.readFileSync(new URL('../.github/workflows/production-dr-backup.yml', import.meta.url), 'utf8');
 
 assert.match(backup, /mongodump/);
 assert.match(backup, /--archive=/);
@@ -57,5 +58,15 @@ assert.match(backupManager, /data-testid="backup-schedule-readiness"/);
 assert.match(backupManager, /الجدولة التلقائية غير مفعّلة على بيئة الإنتاج الحالية/);
 assert.match(backupManager, /يتطلب Cron\/Backup service/);
 assert.doesNotMatch(backupManager, /تم تفعيل الجدولة بنجاح!/);
+assert.match(scheduledWorkflow, /schedule:/);
+assert.match(scheduledWorkflow, /cron: "17 1 \* \* \*"/);
+assert.match(scheduledWorkflow, /PRODUCTION_BACKUP_MONGODB_URI/);
+assert.match(scheduledWorkflow, /PRODUCTION_R2_BACKUP_ACCESS_KEY_ID/);
+assert.match(scheduledWorkflow, /DR_OFFSITE_ENDPOINT/);
+assert.match(scheduledWorkflow, /DR_OFFSITE_BUCKET/);
+assert.match(scheduledWorkflow, /Fail closed when DR secrets are incomplete/);
+assert.match(scheduledWorkflow, /Off-site MongoDB backup evidence is incomplete/);
+assert.match(scheduledWorkflow, /Off-site R2 backup evidence is incomplete/);
+assert.doesNotMatch(scheduledWorkflow, /upload-artifact/);
 
 console.log('Disaster recovery contract smoke: PASS');
