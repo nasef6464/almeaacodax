@@ -1,7 +1,7 @@
 # ALMEAA — شهادة ما قبل الإنتاج لنظام الذكاء الاصطناعي
 
-> التاريخ: 2026-09-24  
-> الحالة: **ACTIVE PRE-PRODUCTION CERTIFICATION**  
+> التاريخ: 2026-09-25  
+> الحالة: **PRE-PRODUCTION CERTIFIED — LIVE PROVIDER CERTIFICATION PENDING**  
 > النطاق: الفرع `chatgpt/ai-platform-operating-model`  
 > قاعدة الحقيقة: لا تعتبر أي خانة Live Verified إلا بعد دمج نفس الـSHA وتشغيلها على Production بالمفاتيح الفعلية.
 
@@ -100,11 +100,38 @@
 حتى يتحقق ذلك يبقى:
 `calibratedToQiyas=false` و`qiyasScoreEstimate=null`.
 
-## 8. نتيجة الإغلاق
+## 8. دليل Exact-head للإغلاق
 
-عند نجاح Exact-head النهائي، توصف المرحلة بأنها:
+تم إغلاق بوابة ما قبل الإنتاج على head سابق للتوثيق فقط:
+`cdc99722e658910cc84e1897a00c1209776cdc68`
+
+والبوابات المسجلة على هذا الـhead كانت:
+- Recovery Gate — Run `36053012592` — SUCCESS
+- Phase + Handover Gate — Run `36053012433` — SUCCESS
+- Safety Gate — Run `36053012253` — SUCCESS
+- Public UI Gate — Run `36053012144` — SUCCESS
+- Dependency Audit — Run `36053012297` — SUCCESS
+- Production Readiness Gate — Run `36053012191` — SUCCESS
+- Backend Integration Gate — Run `36053012139` — SUCCESS
+- Deep Pre-Merge E2E Gate — Run `36053012210` — SUCCESS
+
+هذا التحديث توثيقي فقط، ولذلك **يجب أن تعود نفس البوابات Green على الـPR head النهائي بعد هذا التحديث قبل الدمج**. لا يجوز اعتبار رقم الـSHA أعلاه هو SHA الدمج النهائي إذا تغير الرأس.
+
+## 9. نتيجة الإغلاق
+
+الوصف المسموح بعد نجاح Exact-head النهائي:
 **PRE-PRODUCTION CERTIFIED**
 
-ولا تصبح:
+الوصف غير المسموح بعد:
 **LIVE PROVIDER CERTIFIED**
-إلا بعد تنفيذ بوابة ما بعد الدمج بمزود فعلي واحد على الأقل.
+
+ولا يصبح Live Provider Certified إلا بعد:
+- دمج نفس الـhead الأخضر.
+- تطابق Vercel/Render مع نسخة الدمج.
+- إضافة Quota Pool حقيقي واحد على الأقل من Control Center.
+- نجاح Per-Pool Test Lab.
+- إثبات Student Tutor وQuestion Tutor وUsage Ledger مع المزود الحقيقي.
+- إثبات fallback في بيئة آمنة.
+- عدم كشف أي secret في responses/logs.
+
+حتى ذلك الوقت، عدم وجود مفتاح Cloud فعلي **ليس عيبًا في الشهادة الهندسية**؛ بل بوابة تشغيل مقصودة تمنع ادعاء تشغيل مزود لم يتم تزويده بعد.
