@@ -10,6 +10,7 @@ import { ReviewCardModel } from "../models/ReviewCard.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { SubjectModel } from "../models/Subject.js";
 import { updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { normalizeQuestionOptions } from "../modules/quizzes/presentation/reviewQuestionPresentation.js";
 import { sm2 } from "../services/spacedRepetition.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -35,29 +36,6 @@ const masteryChallengeQuerySchema = z.object({
   subjectId: z.string().trim().optional().default(""),
   limit: z.coerce.number().int().min(1).max(20).default(5),
 });
-
-const optionLetters = ["أ", "ب", "ج", "د"] as const;
-
-const normalizeLearnerOption = (value: unknown, index: number) => {
-  if (typeof value === "string") return value;
-  if (typeof value === "number" || typeof value === "boolean") return String(value);
-  if (value && typeof value === "object") {
-    const candidate = value as Record<string, unknown>;
-    for (const key of ["text", "label", "value", "content", "html", "option", "answer", "displayText"]) {
-      const resolved = candidate[key];
-      if (typeof resolved === "string" || typeof resolved === "number") return String(resolved);
-    }
-  }
-  return optionLetters[index] || String(index + 1);
-};
-
-const normalizeQuestionOptions = (question: any) => {
-  const options = Array.isArray(question?.options) ? question.options : [];
-  if (Boolean(question?.optionsEmbeddedInImage)) {
-    return options.map((_: unknown, index: number) => optionLetters[index] || String(index + 1));
-  }
-  return options.map((value: unknown, index: number) => normalizeLearnerOption(value, index));
-};
 
 const buildQuestionBatchQuery = (ids: string[]) => {
   const uniqueIds = [...new Set(ids.map((value) => String(value || "").trim()).filter(Boolean))];
