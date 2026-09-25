@@ -1649,24 +1649,24 @@ const ReviewSolutions = ({
             <div className={`grid ${imageQuestion ? 'grid-cols-4' : getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2 mb-4`}>
               {q.options.map((option, i) => {
                 const isUserChoice = i === q.selectedOptionIndex;
-                const isCorrectAnswer = i === q.correctOptionIndex;
 
                 let cardStyle = 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
                 let radioStyle = 'border-slate-300 bg-white';
                 let badgeText = '';
                 let badgeClass = '';
 
-                if (isCorrectAnswer) {
-                  cardStyle = 'border-emerald-500 bg-emerald-50/60 text-slate-900 shadow-xs';
-                  radioStyle = 'border-emerald-500 bg-emerald-500 text-white';
-                  badgeText = imageQuestion ? '✓' : (isUserChoice ? '✓ اختيارك' : '✓ الصحيحة');
-                  badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
-                }
-                if (isUserChoice && !wasCorrect) {
-                  cardStyle = 'border-rose-500 bg-rose-50/60 text-slate-900 shadow-xs';
-                  radioStyle = 'border-rose-500 bg-rose-500 text-white';
-                  badgeText = imageQuestion ? '✕' : '✗ اختيارك';
-                  badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
+                if (isUserChoice) {
+                  if (wasCorrect) {
+                    cardStyle = 'border-emerald-500 bg-emerald-50/60 text-slate-900 shadow-xs';
+                    radioStyle = 'border-emerald-500 bg-emerald-500 text-white';
+                    badgeText = imageQuestion ? '✓' : '✓ اختيارك';
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                  } else {
+                    cardStyle = 'border-rose-500 bg-rose-50/60 text-slate-900 shadow-xs';
+                    radioStyle = 'border-rose-500 bg-rose-500 text-white';
+                    badgeText = imageQuestion ? '✕' : '✗ اختيارك';
+                    badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
+                  }
                 }
 
                 return (
