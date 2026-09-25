@@ -46,7 +46,7 @@ flowchart TD
 | AI-5 Tutor Sessions | ✅ CLOSED | Student/Question tutor context/session memory المحدودة |
 | AI-6 Voice & Vision | ✅ CLOSED (LOW-COST V1) | push-to-talk + STT/TTS budgets + vision on demand |
 | AI-7 Readiness & Prediction | ✅ INTERNAL CLOSED / QIYAS CALIBRATION GATED | readiness deterministic + predicted score بعد calibration |
-| AI-8 Production Certification | 🟡 IN PROGRESS | load/cost/security/fallback exact-head evidence |
+| AI-8 Production Certification | ✅ PRE-PRODUCTION CERTIFIED / LIVE PROVIDER PENDING | load/cost/security/fallback exact-head evidence |
 
 ## AI-1 — Secure Gateway
 
@@ -204,7 +204,7 @@ Provider
 المرجع التنفيذي للشهادة:
 `docs/architecture/AI_PLATFORM_CERTIFICATION_AR.md`
 
-الحالة الحالية: يتم إغلاق **Pre-Production Certification** على exact-head أولًا. Live Provider Certification لا يمكن ادعاؤها قبل دمج نفس SHA وإضافة مفتاح حقيقي من الإدارة.
+الحالة الحالية: **Pre-Production Certification مغلقة هندسيًا**، مع إعادة تشغيل Exact-head على آخر commit توثيقي قبل الدمج. Live Provider Certification تظل بوابة منفصلة ولا يمكن ادعاؤها قبل دمج النسخة وإضافة مفتاح حقيقي من الإدارة.
 
 يجب إثبات:
 - provider failover.
