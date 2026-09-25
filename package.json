@@ -183,6 +183,7 @@
         "smoke:admin-school-command": "node scripts/smoke-admin-school-command-center-contract.mjs",
         "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
         "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",
+        "smoke:production-closure-234-237": "node scripts/smoke-alm-prd-001-234-237-contract.mjs",
         "smoke:batch12-golive": "node scripts/smoke-batch12-go-live.mjs",
         "smoke:api-phase4": "node scripts/smoke-api-phase4-contract.mjs",
         "smoke:frontend-phase5": "node scripts/smoke-frontend-phase5-contract.mjs",
