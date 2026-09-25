@@ -64,6 +64,21 @@
       "path": "docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md",
       "role": "production_closure_plan",
       "status": "active"
+    },
+    {
+      "path": "docs/architecture/AI_PLATFORM_OPERATING_MODEL_AR.md",
+      "role": "ai_platform_operating_model",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/AI_PLATFORM_EXECUTION_PLAN_AR.md",
+      "role": "ai_platform_execution_plan",
+      "status": "active"
+    },
+    {
+      "path": "docs/architecture/AI_PLATFORM_CERTIFICATION_AR.md",
+      "role": "ai_platform_certification",
+      "status": "active_evidence"
     }
   ],
   "supporting": [

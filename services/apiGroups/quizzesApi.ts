@@ -186,6 +186,19 @@ export const createQuizzesApi = (request: ApiRequest) => ({
         reliableSkills: number;
         totalEvidence: number;
         explanation: string;
+        examEstimate: {
+          status: "insufficient_evidence" | "available";
+          expectedPerformancePercent: number | null;
+          range: { min: number; max: number } | null;
+          confidence: "insufficient" | "low" | "medium" | "high";
+          recentAssessments: number;
+          totalQuestions: number;
+          weightedRecentScore: number | null;
+          readinessScore: number;
+          calibratedToQiyas: false;
+          qiyasScoreEstimate: null;
+          note: string;
+        };
       };
     }>(withQuery("/quizzes/mastery-readiness", scope)),
 

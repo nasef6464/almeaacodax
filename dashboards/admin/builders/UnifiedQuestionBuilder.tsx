@@ -5,7 +5,7 @@ import { RichTextEditor } from '../../../components/RichTextEditor';
 import { QuestionVoiceExplanationEditor } from './QuestionVoiceExplanationEditor';
 import { Save, X, Wand2, Loader2, BookOpen, ImagePlus, Trash2 } from 'lucide-react';
 import { useStore } from '../../../store/useStore';
-import { generateQuizQuestion } from '../../../services/geminiService';
+import { generateQuizQuestion } from '../../../services/aiService';
 import { api } from '../../../services/api';
 
 interface UnifiedQuestionBuilderProps {

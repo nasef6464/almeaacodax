@@ -74,11 +74,20 @@ export type StudentChatResponse = {
   usedFallback?: boolean;
   providerErrors?: string[];
   fallbackReason?: string;
+  recommendedLinks?: Array<{ label: string; href: string; skillId: string }>;
 };
 
-export const getChatResponse = async (message: string, image?: { data: string; mimeType: string }): Promise<StudentChatResponse> => {
+export const getChatResponse = async (
+  message: string,
+  image?: { data: string; mimeType: string },
+  tutorSessionId?: string,
+): Promise<StudentChatResponse> => {
   try {
-    const response = await api.aiChat(image ? { message, image } : { message });
+    const response = await api.aiChat({
+      message,
+      ...(image ? { image } : {}),
+      ...(tutorSessionId ? { tutorSessionId } : {}),
+    });
     const text = displayText(response.text);
     return {
       text: text || buildLocalStudentReply(message),
@@ -89,6 +98,7 @@ export const getChatResponse = async (message: string, image?: { data: string; m
       usedFallback: Boolean(response.usedFallback),
       providerErrors: response.providerErrors || [],
       fallbackReason: response.fallbackReason,
+      recommendedLinks: response.recommendedLinks || [],
     };
   } catch {
     return {
@@ -98,6 +108,7 @@ export const getChatResponse = async (message: string, image?: { data: string; m
       provider: "none",
       model: "local-fallback",
       usedFallback: true,
+      recommendedLinks: [],
     };
   }
 };

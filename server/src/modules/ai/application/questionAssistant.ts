@@ -50,6 +50,7 @@ export const buildQuestionAssistantPrompt = (input: {
   explanation: string;
   skillLabels: string[];
   studentMessage?: string;
+  studentContextSummary?: string;
   hasImage: boolean;
 }) => {
   const safeQuestionText = sanitizeQuestionAssistantText(input.questionText);
@@ -58,6 +59,7 @@ export const buildQuestionAssistantPrompt = (input: {
   const safeOptions = input.options.map(sanitizeQuestionAssistantText);
   const safeExplanation = sanitizeQuestionAssistantText(input.explanation);
   const safeStudentMessage = sanitizeQuestionAssistantText(input.studentMessage || "");
+  const safeStudentContext = sanitizeQuestionAssistantText(input.studentContextSummary || "").slice(0, 2200);
   const selected = Number.isInteger(input.selectedOptionIndex)
     ? safeOptions[input.selectedOptionIndex as number] || "غير محدد"
     : "لم يختر إجابة";
@@ -70,6 +72,7 @@ export const buildQuestionAssistantPrompt = (input: {
     "ممنوع تعديل الدرجة أو الإتقان أو الادعاء بأنك صححت النتيجة؛ النتيجة محسوبة مسبقًا من الخادم.",
     levelInstruction[input.level],
     "ابدأ بالنقاش والسؤال عن طريقة تفكير الطالب، ثم ساعد تدريجيًا. استخدم السياق الموثوق ولا تطلب تاريخ الطالب أو بيانات إضافية.",
+    safeStudentContext ? `سياق تعلم الطالب المحدود من المنصة:\n${safeStudentContext}` : "",
     input.hasImage
       ? "السؤال يحتوي صورة، لكن الصورة نفسها غير مرسلة لك. اعتمد على النص والشرح الموثوق، واذكر بوضوح إذا كان جزء بصري ضروري غير موصوف نصيًا."
       : "",
