@@ -147,9 +147,9 @@ export const toQuestionReviewFromBank = (
     text: savedReview?.text || sourceQuestion.text,
     options: savedReview?.options?.length ? savedReview.options : sourceQuestion.options,
     selectedOptionIndex,
-    explanation: savedReview?.explanation || sourceQuestion.explanation,
-    hint: savedReview?.hint || sourceQuestion.hint,
-    solvingStrategy: savedReview?.solvingStrategy || sourceQuestion.solvingStrategy,
+    explanation: savedReview?.explanation,
+    hint: savedReview?.hint,
+    solvingStrategy: savedReview?.solvingStrategy,
     videoUrl: savedReview?.videoUrl || sourceQuestion.videoUrl,
     imageUrl: savedReview?.imageUrl || sourceQuestion.imageUrl,
     imageAlt: savedReview?.imageAlt || sourceQuestion.imageAlt,
@@ -157,7 +157,7 @@ export const toQuestionReviewFromBank = (
       typeof savedReview?.optionsEmbeddedInImage === 'boolean'
         ? savedReview.optionsEmbeddedInImage
         : sourceQuestion.optionsEmbeddedInImage,
-    aiContext: savedReview?.aiContext || sourceQuestion.aiContext,
+    aiContext: savedReview?.aiContext,
     voiceExplanation: savedReview?.voiceExplanation || sourceQuestion.voiceExplanation,
     sourceMeta: savedReview?.sourceMeta || sourceQuestion.sourceMeta,
     isCorrect:
