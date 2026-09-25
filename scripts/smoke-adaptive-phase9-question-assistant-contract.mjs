@@ -11,6 +11,8 @@ const env = read('server/src/config/env.ts');
 const api = read('services/apiGroups/aiApi.ts');
 const panel = read('components/results/QuestionAssistantPanel.tsx');
 const results = read('pages/Results.tsx');
+const reviewSession = read('pages/ReviewSession.tsx');
+const favorites = read('pages/Favorites.tsx');
 
 assert.ok(route.includes('"/question-assistant"'));
 assert.ok(route.includes('requireAuth'));
@@ -74,7 +76,10 @@ assert.ok(!panel.includes('<input'), 'voice-only tutor must not expose a text in
 assert.ok(!panel.includes('HELP_ACTIONS'), 'voice-only tutor must not expose help-button clutter');
 assert.ok(!panel.includes('useEffect('), 'question assistant must be explicit-click only');
 assert.ok(results.includes('QuestionAssistantPanel'));
+assert.ok(results.includes('key={`${resultId}::${q.questionId}`}'));
 assert.ok(results.includes('hasImage={Boolean(q.imageUrl || questionHasInlineMedia)}'));
+assert.ok(reviewSession.includes('key={`review-tutor-${current.reviewType || "review"}-${current.questionId}`}'));
+assert.ok(favorites.includes('key={`review-library-tutor-${assistantContext}-${current.questionId}`}'));
 
 console.log(JSON.stringify({
   phase: 'adaptive-phase9-question-assistant-gateway',
