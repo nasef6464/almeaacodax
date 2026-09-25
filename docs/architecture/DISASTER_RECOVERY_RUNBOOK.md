@@ -108,3 +108,27 @@ Before Batch 11 can claim production DR closure, record provider-side evidence f
 If the Cloudflare layer has no independent object recovery/versioning/export path, Batch 11 must remain **BLOCKED for full production DR** even when MongoDB restore succeeds.
 
 The exact Cloudflare account/bucket configuration is live-environment evidence and must not be inferred from repository templates. A public delivery URL alone can prove reachability, but not backup/versioning, access control, or recoverability.
+
+
+## 2026-09-25 recovery checkpoint
+
+Repository-side scheduling now exists in `.github/workflows/production-dr-backup.yml`.
+
+The scheduler is intentionally fail-closed. Missing production source secrets or independent off-site destination secrets make the run fail rather than claim a backup. Production backup bytes are not stored as GitHub Actions artifacts.
+
+An isolated Atlas recovery/staging environment has also been created:
+
+- project `almeaacodax-eu-recovery`;
+- cluster `almeaa-eu-recovery`;
+- AWS `EU_CENTRAL_1` / Frankfurt;
+- FREE tier;
+- MongoDB 8.0.32.
+
+A bounded logical recovery exercise copied several small/medium collections with identifier preservation and matching counts. That exercise is useful isolation evidence, but it is **not full DR certification** because connector payload limits blocked some large documents and no complete `mongodump → mongorestore` archive drill has yet been recorded.
+
+Batch 15 remains blocked until:
+- one scheduled full MongoDB backup succeeds and reaches independent off-site storage;
+- one scheduled R2 backup succeeds and reaches independent off-site storage;
+- isolated MongoDB and R2 restore drills succeed;
+- backup age and restore duration are recorded;
+- achieved RPO/RTO and failure alerting are evidenced.
