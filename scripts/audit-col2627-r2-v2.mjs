@@ -217,7 +217,8 @@ const report = {
   reachable: rows.length - failures.length,
   failures: failures.length,
   unresolvedWithoutHash: ["QDR-QNT-COL2627-P060-Q01"],
-  downloadedForVisualAudit: ITEMS.length,\n  visuallySensitive: [
+  downloadedForVisualAudit: ITEMS.length,
+  visuallySensitive: [
     "QDR-QNT-COL2627-P005-Q01",
     "QDR-QNT-COL2627-P024-Q02",
     "QDR-QNT-COL2627-P067-Q01",
