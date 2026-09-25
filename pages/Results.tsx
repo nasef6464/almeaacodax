@@ -421,6 +421,10 @@ const Results: React.FC = () => {
 
     return Array.from(aggregated.values())
       .map(({ totalMastery, lowestMastery, ...item }) => item)
+      .filter((item) => {
+        const name = String(item.skillName || '').trim();
+        return Boolean(name) && name !== 'مهارة غير مسماة' && name !== 'مهارة غير معروفة';
+      })
       .sort((a, b) => a.mastery - b.mastery);
   }, [latestResult, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections]);
 
@@ -1583,10 +1587,10 @@ const ReviewSolutions = ({
         
         {/* Main Column: Isolated Question Card (lg:col-span-8) */}
         <div className="lg:col-span-8 space-y-5">
-          <Card className="p-5 sm:p-7 border border-slate-200/80 bg-white shadow-sm rounded-3xl">
+          <Card className="rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm sm:rounded-3xl sm:p-6">
             
             {/* Top Bar of Question Card */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-6 border-b border-slate-100">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 sm:mb-5">
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-xs">
                   السؤال {currentIdx + 1} من {questions.length}
@@ -1645,24 +1649,24 @@ const ReviewSolutions = ({
             <div className={`grid ${imageQuestion ? 'grid-cols-4' : getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2 mb-4`}>
               {q.options.map((option, i) => {
                 const isUserChoice = i === q.selectedOptionIndex;
+                const isCorrectAnswer = i === q.correctOptionIndex;
 
                 let cardStyle = 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
                 let radioStyle = 'border-slate-300 bg-white';
                 let badgeText = '';
                 let badgeClass = '';
 
-                if (isUserChoice) {
-                  if (wasCorrect) {
-                    cardStyle = 'border-emerald-500 bg-emerald-50/60 text-slate-900 shadow-xs';
-                    radioStyle = 'border-emerald-500 bg-emerald-500 text-white';
-                    badgeText = '✓ اختيارك (صحيح)';
-                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
-                  } else {
-                    cardStyle = 'border-rose-500 bg-rose-50/60 text-slate-900 shadow-xs';
-                    radioStyle = 'border-rose-500 bg-rose-500 text-white';
-                    badgeText = '✗ اختيارك (خاطئ)';
-                    badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
-                  }
+                if (isCorrectAnswer) {
+                  cardStyle = 'border-emerald-500 bg-emerald-50/60 text-slate-900 shadow-xs';
+                  radioStyle = 'border-emerald-500 bg-emerald-500 text-white';
+                  badgeText = imageQuestion ? '✓' : (isUserChoice ? '✓ اختيارك' : '✓ الصحيحة');
+                  badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                }
+                if (isUserChoice && !wasCorrect) {
+                  cardStyle = 'border-rose-500 bg-rose-50/60 text-slate-900 shadow-xs';
+                  radioStyle = 'border-rose-500 bg-rose-500 text-white';
+                  badgeText = imageQuestion ? '✕' : '✗ اختيارك';
+                  badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
                 }
 
                 return (
@@ -1727,7 +1731,7 @@ const ReviewSolutions = ({
             />
 
             {/* Question Card Navigation Bar */}
-            <div className="flex items-center justify-between pt-5 border-t border-slate-100">
+            <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-3 sm:pt-5">
               <button
                 type="button"
                 onClick={handlePrevQuestion}
@@ -1767,8 +1771,38 @@ const ReviewSolutions = ({
           </Card>
         </div>
 
-        {/* Sidebar Column: Sticky Review Board (lg:col-span-4) */}
-        <div className="lg:col-span-4 space-y-4 sticky top-6">
+        <details className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm lg:hidden">
+          <summary className="cursor-pointer select-none text-center text-sm font-black text-slate-800">
+            لوحة الأسئلة · {questions.length}
+          </summary>
+          <div className="mt-3 grid grid-cols-4 gap-1.5 text-[11px] font-black">
+            <button type="button" onClick={() => handleFilterChange('all')} className={`rounded-lg px-1 py-2 ${filterMode === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'}`}>الكل {questionFilterCounts.all}</button>
+            <button type="button" onClick={() => handleFilterChange('wrong')} className={`rounded-lg px-1 py-2 ${filterMode === 'wrong' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-700'}`}>خطأ {questionFilterCounts.wrong}</button>
+            <button type="button" onClick={() => handleFilterChange('correct')} className={`rounded-lg px-1 py-2 ${filterMode === 'correct' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700'}`}>صحيح {questionFilterCounts.correct}</button>
+            <button type="button" onClick={() => handleFilterChange('unanswered')} className={`rounded-lg px-1 py-2 ${filterMode === 'unanswered' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-700'}`}>بدون {questionFilterCounts.unanswered}</button>
+          </div>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {filteredIndices.map((index) => {
+              const question = questions[index];
+              const answered = typeof question.selectedOptionIndex === 'number' && question.selectedOptionIndex !== -1;
+              const cls = index === currentIdx
+                ? 'bg-indigo-600 text-white ring-2 ring-indigo-200'
+                : !answered
+                  ? 'bg-amber-50 text-amber-800'
+                  : question.isCorrect
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-rose-500 text-white';
+              return (
+                <button key={`mobile-review-${question.questionId}-${index}`} type="button" onClick={() => { setCurrentIdx(index); setShowExplanation(false); }} className={`h-8 w-8 rounded-lg text-xs font-black ${cls}`}>
+                  {index + 1}
+                </button>
+              );
+            })}
+          </div>
+        </details>
+
+        {/* Sidebar Column: Sticky Review Board (desktop) */}
+        <div className="hidden lg:col-span-4 lg:block space-y-4 sticky top-6">
           <Card className="p-5 border border-slate-200/80 bg-white shadow-sm rounded-3xl space-y-5">
             
             {/* Sidebar Header */}
