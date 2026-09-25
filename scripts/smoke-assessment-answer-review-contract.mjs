@@ -18,7 +18,7 @@ check('submission answer review is delegated', () => {
 });
 
 check('review fields, answer classification, and skill aggregation remain explicit', () => {
-  for (const fragment of ['correctAnswers += 1;', 'wrongAnswers += 1;', 'unanswered += 1;', 'skillStats.set(skillId, current);', 'correctOptionIndex:', 'selectedOptionIndex,', 'explanation:', 'videoUrl:', 'imageUrl:', 'isCorrect,']) {
+  for (const fragment of ['correctAnswers += 1;', 'wrongAnswers += 1;', 'unanswered += 1;', 'skillStats.set(skillId, current);', 'correctOptionIndex:', 'selectedOptionIndex,', 'explanation:', 'videoUrl:', 'imageUrl:', 'imageAlt:', 'optionsEmbeddedInImage:', 'isCorrect,']) {
     assert.ok(moduleSource.includes(fragment), `answer review missing ${fragment}`);
   }
 });
