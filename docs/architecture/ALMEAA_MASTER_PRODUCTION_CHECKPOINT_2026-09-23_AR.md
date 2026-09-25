@@ -1,5 +1,14 @@
 # ALMEAA — Master Production Closure Checkpoint
 
+> **CURRENT OVERRIDE — 2026-09-25:** the authoritative live execution record for the remaining production blockers is
+> `docs/architecture/ALM_PRD_001_234_237_EXECUTION_2026-09-25_AR.md`.
+> Fresh production baseline is `main@c378525cb505f4bfb548153c115991a2a18438b2`.
+> Vercel/Render release identity is synchronized, MongoDB is ready, Redis scale readiness is still blocked,
+> a separate FREE Frankfurt Atlas recovery cluster now exists, a fail-closed scheduled DR workflow is being introduced,
+> GitHub `main` remains unprotected, and Atlas still contains `0.0.0.0/0`.
+> This 2026-09-23 file remains historical context; when facts conflict, use the 2026-09-25 execution record.
+
+
 **Date:** 2026-09-23  
 **Active master task:** `ALM-PRD-001 — Final Product & Production Closure`  
 **Current main baseline:** `919acb01771abc88c7b89fe816153e10b178c7bd`  
