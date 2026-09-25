@@ -41,6 +41,7 @@ import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
+import { QuestionVoiceExplanationPlayer } from '../components/results/QuestionVoiceExplanationPlayer';
 
 const ResultDonutChart = React.lazy(() =>
   import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
@@ -1722,6 +1723,8 @@ const ReviewSolutions = ({
                 </p>
               </div>
             ) : null}
+
+            <QuestionVoiceExplanationPlayer voiceExplanation={q.voiceExplanation} />
 
             <QuestionAssistantPanel
               key={`${resultId}::${q.questionId}`}
