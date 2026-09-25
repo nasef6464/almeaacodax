@@ -190,9 +190,9 @@ for (const item of ITEMS) {
       ok,
     });
 
-    if (ok && SAMPLE_CODES.has(item.questionCode)) {
+    if (ok) {
       const full = await fetch(url, { redirect: "follow" });
-      if (!full.ok) throw new Error(`sample GET failed ${full.status}`);
+      if (!full.ok) throw new Error(`image GET failed ${full.status}`);
       const bytes = Buffer.from(await full.arrayBuffer());
       fs.writeFileSync(path.join(sampleDir, `${item.questionCode}.webp`), bytes);
     }
@@ -217,7 +217,7 @@ const report = {
   reachable: rows.length - failures.length,
   failures: failures.length,
   unresolvedWithoutHash: ["QDR-QNT-COL2627-P060-Q01"],
-  visuallySensitive: [
+  downloadedForVisualAudit: ITEMS.length,\n  visuallySensitive: [
     "QDR-QNT-COL2627-P005-Q01",
     "QDR-QNT-COL2627-P024-Q02",
     "QDR-QNT-COL2627-P067-Q01",
