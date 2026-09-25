@@ -95,7 +95,7 @@ const Favorites: React.FC = () => {
         </div>
         {showAnswer&&currentQuestion.explanation ? <div className="border-t bg-emerald-50 p-4 text-sm font-bold leading-7 text-emerald-900">{currentQuestion.explanation}</div> : null}
       </Card>
-      <QuestionAssistantPanel questionId={current.questionId} hasImage={Boolean(currentQuestion.imageUrl)} context={assistantContext}/>
+      <QuestionAssistantPanel key={`review-library-tutor-${assistantContext}-${current.questionId}`} questionId={current.questionId} hasImage={Boolean(currentQuestion.imageUrl)} context={assistantContext}/>
       <div className="flex justify-center gap-2 pt-1">
         <button
           disabled={page <= 1 || loading}
