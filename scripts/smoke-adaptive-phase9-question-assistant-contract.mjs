@@ -65,10 +65,13 @@ for (const setting of [
 
 assert.ok(api.includes('aiQuestionAssistant'));
 assert.ok(panel.includes('ناقص هذا السؤال') === false);
-assert.ok(panel.includes('ناقش هذا السؤال'));
+assert.ok(panel.includes('المعلم الصوتي'));
 assert.ok(panel.includes("api.aiQuestionAssistant"));
-assert.ok(panel.includes("helpLevel: level"));
-assert.ok(panel.includes('الصورة نفسها لا تُرسل للمساعد افتراضيًا'));
+assert.ok(panel.includes("helpLevel: 'follow_up'"));
+assert.ok(panel.includes('SpeechRecognition'));
+assert.ok(panel.includes('speechSynthesis'));
+assert.ok(!panel.includes('<input'), 'voice-only tutor must not expose a text input');
+assert.ok(!panel.includes('HELP_ACTIONS'), 'voice-only tutor must not expose help-button clutter');
 assert.ok(!panel.includes('useEffect('), 'question assistant must be explicit-click only');
 assert.ok(results.includes('QuestionAssistantPanel'));
 assert.ok(results.includes('hasImage={Boolean(q.imageUrl || questionHasInlineMedia)}'));

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireAuth } from "../../../middleware/auth.js";
 import { QuestionModel } from "../../../models/Question.js";
 import { ReviewCardModel } from "../../../models/ReviewCard.js";
+import { normalizeQuestionOptions } from "../presentation/reviewQuestionPresentation.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 
 const libraryQuerySchema = z.object({
@@ -102,7 +103,7 @@ studentReviewRouter.get(
           id: String(question.id || question._id || ""),
           questionCode: String(question.questionCode || ""),
           text: String(question.text || ""),
-          options: Array.isArray(question.options) ? question.options.map(String) : [],
+          options: normalizeQuestionOptions(question),
           correctOptionIndex: Number(question.correctOptionIndex ?? 0),
           explanation: String(question.explanation || ""),
           hint: String(question.hint || ""),

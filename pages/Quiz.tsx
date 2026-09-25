@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, FileQuestion, Star, PauseCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, FileQuestion, Star, PauseCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
+import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { flattenMockExamQuestionIds, isStandaloneMockExam } from '../utils/mockExam';
 import { api } from '../services/api';
@@ -622,8 +622,15 @@ const Quiz: React.FC = () => {
         correctOptionIndex: question.correctOptionIndex,
         selectedOptionIndex,
         explanation: question.explanation,
+        hint: question.hint,
+        solvingStrategy: question.solvingStrategy,
         videoUrl: question.videoUrl,
         imageUrl: question.imageUrl,
+        imageAlt: question.imageAlt,
+        optionsEmbeddedInImage: question.optionsEmbeddedInImage,
+        aiContext: question.aiContext,
+        voiceExplanation: question.voiceExplanation,
+        sourceMeta: question.sourceMeta,
         isCorrect: selectedOptionIndex === question.correctOptionIndex,
       };
     });
@@ -719,19 +726,6 @@ const Quiz: React.FC = () => {
   const persistSavedSnapshot = (snapshot: SavedQuizSnapshot) => {
     localStorage.setItem(QUIZ_PROGRESS_SNAPSHOT_KEY, JSON.stringify(snapshot));
     setSavedSnapshot(snapshot);
-  };
-
-  const handleSaveProgress = () => {
-    if (!quizStarted || questions.length === 0) {
-      showStatus('ابدأ الاختبار أولًا حتى يمكن حفظ تقدمك.', 'error');
-      return;
-    }
-
-    const snapshot = buildSavedSnapshot();
-    if (!snapshot) return;
-
-    persistSavedSnapshot(snapshot);
-    showStatus('تم حفظ تقدمك. يمكنك الاستكمال لاحقًا من نفس الصفحة.', 'success');
   };
 
   const handlePauseAndSave = () => {
@@ -1130,9 +1124,11 @@ const Quiz: React.FC = () => {
     );
   }
 
-  const currentOptions = questions[currentQuestion]?.options || [];
-  const currentOptionGridClass = getQuizOptionGridClass(currentOptions, 'horizontal');
-  const currentOptionHeightClass = getQuizOptionButtonHeightClass(currentOptions, 'horizontal');
+  const currentQuestionItem = questions[currentQuestion];
+  const currentOptions = currentQuestionItem?.options || [];
+  const letterOnlyOptions = usesImageEmbeddedOptions(currentQuestionItem);
+  const currentOptionGridClass = letterOnlyOptions ? 'grid-cols-4' : getQuizOptionGridClass(currentOptions, 'horizontal');
+  const currentOptionHeightClass = letterOnlyOptions ? 'min-h-[46px]' : getQuizOptionButtonHeightClass(currentOptions, 'horizontal');
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -1218,27 +1214,29 @@ const Quiz: React.FC = () => {
           </div>
 
           <div className="flex-1">
-            <div
-              onClick={handleInlineQuestionImageClick}
-              className="question-html text-base sm:text-lg font-medium text-gray-800 leading-loose mb-5 sm:mb-8 text-right break-words [&_img]:cursor-zoom-in"
-              dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
-            />
+            {!letterOnlyOptions ? (
+              <div
+                onClick={handleInlineQuestionImageClick}
+                className="question-html text-base sm:text-lg font-medium text-gray-800 leading-loose mb-3 sm:mb-5 text-right break-words [&_img]:cursor-zoom-in"
+                dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
+              />
+            ) : null}
             {questions[currentQuestion].imageUrl && (
               <button
                 type="button"
                 onClick={() => setZoomedImageUrl(questions[currentQuestion].imageUrl || null)}
-                className="mb-5 sm:mb-8 block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-2 sm:p-3 shadow-sm"
+                className="mb-3 sm:mb-5 block w-full cursor-zoom-in rounded-xl border border-gray-200 bg-white p-1.5 sm:p-2 shadow-sm"
               >
                 <img
                   src={questions[currentQuestion].imageUrl}
                   alt="صورة السؤال"
-                  className="mx-auto max-h-[260px] sm:max-h-[340px] w-full object-contain"
+                  className="mx-auto max-h-[300px] sm:max-h-[360px] w-full object-contain"
                   referrerPolicy="no-referrer"
                 />
               </button>
             )}
 
-            <div className={`grid ${currentOptionGridClass} gap-x-2 sm:gap-x-3 gap-y-2 dir-rtl`}>
+            <div className={`grid ${currentOptionGridClass} gap-2 dir-rtl`}>
               {questions[currentQuestion].options.map((option, idx) => {
                 const isSelected = selectedAnswer === idx || answers[currentQuestion] === idx;
                 const borderClass = isSelected
@@ -1249,12 +1247,12 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`${currentOptionHeightClass} px-2 sm:px-2.5 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-1.5 shadow-sm ${borderClass}`}
+                    className={`${currentOptionHeightClass} ${letterOnlyOptions ? 'px-1 py-1.5' : 'px-2 sm:px-2.5 py-1'} rounded-xl border-2 transition-all flex items-center justify-center text-center gap-1.5 shadow-sm ${borderClass}`}
                   >
-                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-5 text-center break-words">
-                      {sanitizeArabicText(option)}
+                    <span className={`${letterOnlyOptions ? 'text-lg sm:text-xl' : 'flex-1 text-xs sm:text-sm'} font-black text-gray-800 leading-5 text-center break-words`}>
+                      {getLearnerOptionLabel(questions[currentQuestion], option, idx)}
                     </span>
-                    <div className="flex items-center shrink-0">
+                    <div className={`${letterOnlyOptions ? 'absolute opacity-0 pointer-events-none' : 'flex'} items-center shrink-0`}>
                       <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>
@@ -1268,7 +1266,33 @@ const Quiz: React.FC = () => {
               })}
             </div>
 
-            <div className="mt-5 sm:mt-6 rounded-2xl bg-gray-50 p-2.5 sm:p-3">
+            <details className="mt-4 rounded-xl border border-slate-200 bg-white p-2 sm:hidden">
+              <summary className="cursor-pointer select-none text-center text-xs font-black text-slate-700">
+                لوحة الأسئلة · {Object.keys(answers).length}/{questions.length}
+              </summary>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                {questions.map((question, idx) => {
+                  const isCurrent = idx === currentQuestion;
+                  const isAnswered = answers[idx] !== undefined;
+                  const isReviewLater = savedReviewIds.includes(question.id);
+                  const mapState = isCurrent ? 'current' : isReviewLater ? 'review' : isAnswered ? 'answered' : 'unanswered';
+                  return (
+                    <button
+                      key={`mobile-${question.id}`}
+                      onClick={() => {
+                        setCurrentQuestion(idx);
+                        setSelectedAnswer(answers[idx] ?? null);
+                      }}
+                      className={`h-8 w-8 rounded-lg border-2 text-xs font-black ${getQuizQuestionMapButtonClass(mapState)}`}
+                    >
+                      {idx + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </details>
+
+            <div className="mt-5 hidden rounded-2xl bg-gray-50 p-2.5 sm:block sm:p-3">
               <div className="mb-2 flex items-center justify-between text-[11px] font-bold text-gray-500">
                 <span>خريطة الأسئلة</span>
                 <span>{Object.keys(answers).length} من {questions.length} محلولة</span>
@@ -1310,15 +1334,7 @@ const Quiz: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
-            <button
-              onClick={handleSaveProgress}
-              className="inline-flex min-w-[92px] items-center justify-center gap-1.5 rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs sm:text-sm font-bold text-amber-700 hover:bg-amber-100"
-            >
-              <Save size={15} />
-              حفظ
-            </button>
-
+          <div className="mt-4 flex items-center justify-between gap-2 border-t border-gray-100 pt-3 sm:mt-6 sm:pt-4">
             <div className="flex flex-wrap items-center justify-center gap-2">
               <button
                 onClick={handlePrev}

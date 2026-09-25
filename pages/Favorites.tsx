@@ -3,11 +3,10 @@ import { ArrowLeft, ArrowRight, Bookmark, BookOpen, CheckCircle2, Eye, EyeOff, R
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
-import { QuestionVoiceExplanationPlayer } from '../components/results/QuestionVoiceExplanationPlayer';
 import { api } from '../services/api';
 import type { Question } from '../types';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { getLearnerOptionLabel, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 
 type ReviewTab = 'saved' | 'mistakes';
 type ReviewItem = { cardId: string; questionId: string; reasons: { saved: boolean; mistake: boolean }; reviewType: 'error_recovery' | 'mastery_review' | 'saved_review'; question: Question; };
@@ -47,6 +46,7 @@ const Favorites: React.FC = () => {
   const current = items[currentIndex];
   const currentQuestion = current?.question;
   const assistantContext = current?.reasons?.mistake ? 'mistake_review' : 'saved_review';
+  const imageQuestion = usesImageEmbeddedOptions(currentQuestion);
 
   const removeSaved = async () => {
     if (!currentQuestion || !current?.reasons.saved) return;
@@ -55,11 +55,11 @@ const Favorites: React.FC = () => {
     await load(activeTab, nextPage);
   };
 
-  return <div className="space-y-6 pb-20">
+  return <div className="mx-auto max-w-3xl space-y-4 pb-16">
     <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <Link to="/dashboard" className="text-gray-500 hover:text-gray-700"><ArrowRight /></Link>
-        <div><h1 className="text-xl sm:text-2xl font-black text-emerald-700">أسئلتي للمراجعة</h1><p className="mt-1 text-sm text-gray-500">مكان واحد للأسئلة التي حفظتها والأسئلة التي أخطأت فيها.</p></div>
+        <div><h1 className="text-xl sm:text-2xl font-black text-emerald-700">أسئلتي للمراجعة</h1><p className="mt-1 text-xs sm:text-sm text-gray-500">المحفوظة والأخطاء في مكان واحد.</p></div>
       </div>
       <Link to={`/review?mode=${activeTab}`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700"><Sparkles size={16}/>تدرّب على هذه الأسئلة</Link>
     </header>
@@ -83,11 +83,11 @@ const Favorites: React.FC = () => {
         </div>
       </div>
       <Card className="overflow-hidden border border-gray-200 shadow-sm">
-        <div className="bg-white p-5 sm:p-7">
-          {currentQuestion.imageUrl ? <img src={currentQuestion.imageUrl} alt={currentQuestion.imageAlt || 'صورة السؤال'} loading="lazy" className="mx-auto mb-4 max-h-[360px] max-w-full object-contain"/> : null}
-          <div className="question-html text-center text-lg font-black leading-loose text-gray-800" dangerouslySetInnerHTML={{__html:normalizeQuestionHtml(currentQuestion.text)}}/>
+        <div className="bg-white p-3 sm:p-5">
+          {!imageQuestion ? <div className="question-html mb-3 text-center text-base sm:text-lg font-black leading-loose text-gray-800" dangerouslySetInnerHTML={{__html:normalizeQuestionHtml(currentQuestion.text)}}/> : null}
+          {currentQuestion.imageUrl ? <img src={currentQuestion.imageUrl} alt={currentQuestion.imageAlt || 'صورة السؤال'} loading="lazy" className="mx-auto max-h-[340px] max-w-full rounded-xl object-contain"/> : null}
         </div>
-        <div className="grid gap-3 bg-gray-50 p-4 sm:grid-cols-2">{(currentQuestion.options||[]).map((option,idx)=>{const correct=showAnswer&&idx===currentQuestion.correctOptionIndex;return <div key={idx} className={`rounded-xl border p-3 text-center font-bold ${correct?'border-emerald-400 bg-emerald-50 text-emerald-700':'border-gray-200 bg-white text-gray-700'}`}>{sanitizeArabicText(option)} {correct?<CheckCircle2 size={15} className="mr-1 inline"/>:null}</div>;})}</div>
+        <div className={`grid ${imageQuestion ? 'grid-cols-4' : 'grid-cols-2'} gap-2 bg-gray-50 p-3`}>{(currentQuestion.options||[]).map((option,idx)=>{const correct=showAnswer&&idx===currentQuestion.correctOptionIndex;return <div key={idx} className={`rounded-xl border px-2 py-2 text-center ${imageQuestion?'text-lg font-black':'text-sm font-bold'} ${correct?'border-emerald-400 bg-emerald-50 text-emerald-700':'border-gray-200 bg-white text-gray-700'}`}>{getLearnerOptionLabel(currentQuestion,option,idx)} {correct?<CheckCircle2 size={15} className="mr-1 inline"/>:null}</div>;})}</div>
         <div className="flex flex-wrap gap-2 border-t bg-white p-4">
           <button onClick={()=>setShowAnswer(v=>!v)} className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-black text-white">{showAnswer?<EyeOff size={16}/>:<Eye size={16}/>} {showAnswer?'إخفاء الحل':'إظهار الحل'}</button>
           <button disabled={currentIndex===0} onClick={()=>{setCurrentIndex(v=>v-1);setShowAnswer(false);}} className="rounded-xl border px-4 py-2 text-sm font-black disabled:opacity-40"><ArrowRight size={15} className="ml-1 inline"/>السابق</button>
@@ -95,9 +95,8 @@ const Favorites: React.FC = () => {
         </div>
         {showAnswer&&currentQuestion.explanation ? <div className="border-t bg-emerald-50 p-4 text-sm font-bold leading-7 text-emerald-900">{currentQuestion.explanation}</div> : null}
       </Card>
-      <QuestionVoiceExplanationPlayer voiceExplanation={currentQuestion.voiceExplanation}/>
       <QuestionAssistantPanel questionId={current.questionId} hasImage={Boolean(currentQuestion.imageUrl)} context={assistantContext}/>
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-2 pt-1">
         <button
           disabled={page <= 1 || loading}
           onClick={() => void load(activeTab, Math.max(1, page - 1))}

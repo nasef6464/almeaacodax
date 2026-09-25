@@ -1,149 +1,153 @@
 import React from 'react';
-import { Loader2, MessageCircle, Send, Sparkles } from 'lucide-react';
+import { Loader2, Mic, MicOff, Volume2 } from 'lucide-react';
 import { api } from '../../services/api';
 
-type HelpLevel = 'hint' | 'stronger_hint' | 'concept' | 'steps' | 'follow_up';
+type AssistantContext = "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 
-type ResponseState = {
-  text: string;
-  level: HelpLevel;
-  provider: string;
-  cacheHit: boolean;
-  usedFallback: boolean;
-  visualContextBlocked?: boolean;
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  onresult: ((event: any) => void) | null;
+  onerror: ((event: any) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
 };
 
-const HELP_ACTIONS: Array<{ level: Exclude<HelpLevel, 'follow_up'>; label: string }> = [
-  { level: 'hint', label: 'تلميح' },
-  { level: 'stronger_hint', label: 'تلميح أقوى' },
-  { level: 'concept', label: 'اشرح الفكرة' },
-  { level: 'steps', label: 'خطوات الحل' },
-];
+const getSpeechRecognition = (): (new () => SpeechRecognitionLike) | null => {
+  if (typeof window === 'undefined') return null;
+  const target = window as typeof window & {
+    SpeechRecognition?: new () => SpeechRecognitionLike;
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+  };
+  return target.SpeechRecognition || target.webkitSpeechRecognition || null;
+};
+
+const speakArabic = (text: string) => {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window) || !text.trim()) return false;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ar-SA';
+  utterance.rate = 0.95;
+  window.speechSynthesis.speak(utterance);
+  return true;
+};
 
 export const QuestionAssistantPanel: React.FC<{
   resultId?: string;
   questionId: string;
   hasImage: boolean;
-  context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
-}> = ({ resultId, questionId, hasImage, context = "result_review" }) => {
+  context?: AssistantContext;
+}> = ({ resultId, questionId, context = "result_review" }) => {
   const tutorSessionIdRef = React.useRef(
     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
       ? `question:${crypto.randomUUID()}`
       : `question:${Date.now()}-${Math.random().toString(36).slice(2)}`,
   );
-  const [response, setResponse] = React.useState<ResponseState | null>(null);
-  const [followUp, setFollowUp] = React.useState('');
-  const [pendingLevel, setPendingLevel] = React.useState<HelpLevel | null>(null);
+  const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
+  const [listening, setListening] = React.useState(false);
+  const [pending, setPending] = React.useState(false);
+  const [status, setStatus] = React.useState('');
   const [error, setError] = React.useState('');
 
-  const ask = async (level: HelpLevel, message?: string) => {
-    if (!questionId || pendingLevel || (context === "result_review" && !resultId)) return;
-    setPendingLevel(level);
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    recognitionRef.current = null;
+    setListening(false);
+  };
+
+  const sendVoiceTurn = async (message: string) => {
+    const clean = message.trim();
+    if (!clean || pending) return;
+    setPending(true);
+    setStatus('المعلم يفكر…');
     setError('');
     try {
       const payload = await api.aiQuestionAssistant({
         ...(resultId ? { resultId } : {}),
         context,
         questionId,
-        helpLevel: level,
-        ...(message?.trim() ? { message: message.trim() } : {}),
+        helpLevel: 'follow_up',
+        message: clean.slice(0, 800),
         tutorSessionId: tutorSessionIdRef.current,
       });
-      setResponse({
-        text: payload.text,
-        level,
-        provider: payload.provider,
-        cacheHit: Boolean(payload.cacheHit),
-        usedFallback: Boolean(payload.usedFallback),
-        visualContextBlocked: payload.visualContextBlocked,
-      });
-      if (level === 'follow_up') setFollowUp('');
+      const responseText = String(payload.text || '').trim();
+      if (!responseText) {
+        setStatus('');
+        setError('لم يصل رد صوتي الآن. حاول مرة أخرى.');
+        return;
+      }
+      const spoken = speakArabic(responseText);
+      setStatus(spoken ? 'المعلم يشرح الآن…' : 'الرد جاهز، لكن تشغيل الصوت غير متاح على هذا الجهاز.');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'تعذر تشغيل مساعد السؤال الآن.');
+      setStatus('');
+      setError(err instanceof Error ? err.message : 'تعذر تشغيل المعلم الصوتي الآن.');
     } finally {
-      setPendingLevel(null);
+      setPending(false);
     }
   };
 
-  if (context === "result_review" && !resultId) {
-    return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-xs font-bold leading-6 text-slate-500">
-        مساعد السؤال متاح للمحاولات المحفوظة على الخادم فقط.
-      </div>
-    );
-  }
+  const startListening = () => {
+    if (!questionId || pending || listening || (context === "result_review" && !resultId)) return;
+    const SpeechRecognitionCtor = getSpeechRecognition();
+    if (!SpeechRecognitionCtor) {
+      setError('المحادثة الصوتية غير مدعومة في هذا المتصفح. جرّب Chrome على الهاتف.');
+      return;
+    }
+
+    setError('');
+    setStatus('تكلّم الآن…');
+    const recognition = new SpeechRecognitionCtor();
+    recognition.lang = 'ar-SA';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.onresult = (event: any) => {
+      const transcript = String(event?.results?.[0]?.[0]?.transcript || '').trim();
+      setListening(false);
+      recognitionRef.current = null;
+      if (transcript) void sendVoiceTurn(transcript);
+      else setStatus('');
+    };
+    recognition.onerror = () => {
+      setListening(false);
+      recognitionRef.current = null;
+      setStatus('');
+      setError('لم ألتقط الكلام بوضوح. اضغط الميكروفون وحاول مرة أخرى.');
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
+    recognitionRef.current = recognition;
+    setListening(true);
+    recognition.start();
+  };
+
+  if (context === "result_review" && !resultId) return null;
 
   return (
-    <div className="rounded-2xl border border-violet-100 bg-violet-50/60 p-4 sm:p-5" data-testid="question-assistant-panel">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-violet-700 shadow-xs">
-            <Sparkles size={14} />
-            ناقش هذا السؤال
-          </div>
-          <p className="mt-2 text-xs font-bold leading-6 text-slate-600">
-            يعمل فقط عند الضغط. يعتمد على نص السؤال وإجابتك والشرح الموثوق، ولا يغيّر الدرجة أو الإتقان.
-          </p>
-          {hasImage ? (
-            <p className="mt-1 text-[11px] font-bold leading-5 text-amber-700">
-              السؤال يحتوي صورة؛ الصورة نفسها لا تُرسل للمساعد افتراضيًا، ويُستخدم الشرح النصي الموثوق أولًا.
-            </p>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {HELP_ACTIONS.map((action) => (
-          <button
-            key={action.level}
-            type="button"
-            disabled={Boolean(pendingLevel)}
-            onClick={() => void ask(action.level)}
-            className="rounded-xl border border-violet-100 bg-white px-3 py-2 text-xs font-black text-violet-700 transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {pendingLevel === action.level ? <Loader2 size={13} className="mx-auto animate-spin" /> : action.label}
-          </button>
-        ))}
-      </div>
-
-      {response ? (
-        <div className="mt-4 rounded-xl border border-white bg-white p-3 shadow-xs">
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] font-black text-slate-400">
-            <span>{response.cacheHit ? 'إجابة مخزنة لتقليل الاستهلاك' : response.usedFallback ? 'شرح داخلي موثوق' : 'مساعد السؤال'}</span>
-            {response.visualContextBlocked ? <span className="text-amber-600">يلزم وصف بصري موثوق</span> : null}
-          </div>
-          <p className="whitespace-pre-wrap text-sm font-bold leading-7 text-slate-700">{response.text}</p>
+    <div className="flex flex-col items-center gap-2 py-1" data-testid="question-assistant-panel">
+      <button
+        type="button"
+        onClick={listening ? stopListening : startListening}
+        disabled={pending}
+        className={`inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-4 text-sm font-black shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${
+          listening ? 'bg-rose-600 text-white' : 'bg-violet-600 text-white hover:bg-violet-700'
+        }`}
+        aria-label={listening ? 'إيقاف الاستماع' : 'التحدث مع المعلم الذكي'}
+        title={listening ? 'إيقاف الاستماع' : 'المعلم الذكي الصوتي'}
+      >
+        {pending ? <Loader2 size={20} className="animate-spin" /> : listening ? <MicOff size={20} /> : <Mic size={20} />}
+        <span className="hidden sm:inline">{listening ? 'إيقاف' : 'المعلم الصوتي'}</span>
+      </button>
+      {status ? (
+        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500" aria-live="polite">
+          {status.includes('يشرح') ? <Volume2 size={13} /> : null}
+          {status}
         </div>
       ) : null}
-
-      <div className="mt-3 flex gap-2">
-        <div className="relative min-w-0 flex-1">
-          <MessageCircle size={14} className="absolute right-3 top-3 text-slate-400" />
-          <input
-            value={followUp}
-            onChange={(event) => setFollowUp(event.target.value.slice(0, 800))}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && followUp.trim()) {
-                event.preventDefault();
-                void ask('follow_up', followUp);
-              }
-            }}
-            placeholder="اسأل عن خطوة محددة في هذا السؤال…"
-            className="w-full rounded-xl border border-violet-100 bg-white py-2.5 pr-9 pl-3 text-xs font-bold text-slate-700 outline-none focus:border-violet-300"
-          />
-        </div>
-        <button
-          type="button"
-          disabled={!followUp.trim() || Boolean(pendingLevel)}
-          onClick={() => void ask('follow_up', followUp)}
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="إرسال سؤال متابعة"
-        >
-          {pendingLevel === 'follow_up' ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
-        </button>
-      </div>
-
-      {error ? <p className="mt-2 text-xs font-bold text-rose-700">{error}</p> : null}
+      {error ? <p className="max-w-sm text-center text-[11px] font-bold text-rose-600">{error}</p> : null}
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { ReviewCardModel } from "../models/ReviewCard.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { SubjectModel } from "../models/Subject.js";
 import { updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { normalizeQuestionOptions } from "../modules/quizzes/presentation/reviewQuestionPresentation.js";
 import { sm2 } from "../services/spacedRepetition.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -116,7 +117,7 @@ reviewRouter.get(
           question: {
             id: String(question.id || question._id),
             text: String(question.text || ""),
-            options: Array.isArray(question.options) ? question.options.map(String) : [],
+            options: normalizeQuestionOptions(question),
             imageUrl: String(question.imageUrl || ""),
             imageAlt: String(question.imageAlt || ""),
             questionCode: String(question.questionCode || ""),

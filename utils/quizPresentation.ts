@@ -25,6 +25,29 @@ export const stripQuestionHtml = (value?: string | null) =>
     .replace(/\s+/g, ' ')
     .trim();
 
+export const QUIZ_OPTION_LABELS = ['أ', 'ب', 'ج', 'د'] as const;
+
+export const getQuizOptionLabel = (index: number) =>
+  QUIZ_OPTION_LABELS[index] || String(index + 1);
+
+export const usesImageEmbeddedOptions = (question?: {
+  imageUrl?: string;
+  optionsEmbeddedInImage?: boolean;
+} | null) => Boolean(question?.imageUrl && question?.optionsEmbeddedInImage);
+
+export const getLearnerOptionLabel = (
+  question: { imageUrl?: string; optionsEmbeddedInImage?: boolean },
+  option: unknown,
+  index: number,
+) => {
+  if (usesImageEmbeddedOptions(question)) return getQuizOptionLabel(index);
+  if (typeof option === 'string') {
+    const normalized = stripQuestionHtml(option);
+    return normalized && normalized !== '[object Object]' ? normalized : getQuizOptionLabel(index);
+  }
+  return getQuizOptionLabel(index);
+};
+
 export const getQuizOptionGridClass = (
   options: Array<string | undefined> = [],
   optionLayout: QuizSettings['optionLayout'] = 'auto',
@@ -124,9 +147,19 @@ export const toQuestionReviewFromBank = (
     text: savedReview?.text || sourceQuestion.text,
     options: savedReview?.options?.length ? savedReview.options : sourceQuestion.options,
     selectedOptionIndex,
+    explanation: savedReview?.explanation,
+    hint: savedReview?.hint,
+    solvingStrategy: savedReview?.solvingStrategy,
     videoUrl: savedReview?.videoUrl || sourceQuestion.videoUrl,
     imageUrl: savedReview?.imageUrl || sourceQuestion.imageUrl,
+    imageAlt: savedReview?.imageAlt || sourceQuestion.imageAlt,
+    optionsEmbeddedInImage:
+      typeof savedReview?.optionsEmbeddedInImage === 'boolean'
+        ? savedReview.optionsEmbeddedInImage
+        : sourceQuestion.optionsEmbeddedInImage,
+    aiContext: savedReview?.aiContext,
     voiceExplanation: savedReview?.voiceExplanation || sourceQuestion.voiceExplanation,
+    sourceMeta: savedReview?.sourceMeta || sourceQuestion.sourceMeta,
     isCorrect:
       typeof savedReview?.isCorrect === 'boolean'
         ? savedReview.isCorrect
