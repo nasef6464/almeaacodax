@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, FileQuestion, Star, PauseCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, FileQuestion, Star, PauseCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -622,8 +622,15 @@ const Quiz: React.FC = () => {
         correctOptionIndex: question.correctOptionIndex,
         selectedOptionIndex,
         explanation: question.explanation,
+        hint: question.hint,
+        solvingStrategy: question.solvingStrategy,
         videoUrl: question.videoUrl,
         imageUrl: question.imageUrl,
+        imageAlt: question.imageAlt,
+        optionsEmbeddedInImage: question.optionsEmbeddedInImage,
+        aiContext: question.aiContext,
+        voiceExplanation: question.voiceExplanation,
+        sourceMeta: question.sourceMeta,
         isCorrect: selectedOptionIndex === question.correctOptionIndex,
       };
     });
@@ -719,19 +726,6 @@ const Quiz: React.FC = () => {
   const persistSavedSnapshot = (snapshot: SavedQuizSnapshot) => {
     localStorage.setItem(QUIZ_PROGRESS_SNAPSHOT_KEY, JSON.stringify(snapshot));
     setSavedSnapshot(snapshot);
-  };
-
-  const handleSaveProgress = () => {
-    if (!quizStarted || questions.length === 0) {
-      showStatus('ابدأ الاختبار أولًا حتى يمكن حفظ تقدمك.', 'error');
-      return;
-    }
-
-    const snapshot = buildSavedSnapshot();
-    if (!snapshot) return;
-
-    persistSavedSnapshot(snapshot);
-    showStatus('تم حفظ تقدمك. يمكنك الاستكمال لاحقًا من نفس الصفحة.', 'success');
   };
 
   const handlePauseAndSave = () => {
