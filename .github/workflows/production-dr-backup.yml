@@ -1,0 +1,119 @@
+name: Production DR Scheduled Backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 04:17 Asia/Riyadh. Keep outside the main school-day traffic window.
+    - cron: "17 1 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-dr-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      MONGODB_URI: ${{ secrets.PRODUCTION_BACKUP_MONGODB_URI }}
+      R2_ENDPOINT: ${{ secrets.PRODUCTION_R2_ENDPOINT }}
+      R2_BUCKET: ${{ secrets.PRODUCTION_R2_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.PRODUCTION_R2_BACKUP_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY }}
+      DR_OFFSITE_ENDPOINT: ${{ secrets.DR_OFFSITE_ENDPOINT }}
+      DR_OFFSITE_BUCKET: ${{ secrets.DR_OFFSITE_BUCKET }}
+      DR_OFFSITE_ACCESS_KEY_ID: ${{ secrets.DR_OFFSITE_ACCESS_KEY_ID }}
+      DR_OFFSITE_SECRET_ACCESS_KEY: ${{ secrets.DR_OFFSITE_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      RETENTION_DAYS: "0"
+
+    steps:
+      - name: Checkout exact main
+        uses: actions/checkout@v4
+
+      - name: Fail closed when DR secrets are incomplete
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          for name in             MONGODB_URI             R2_ENDPOINT             R2_BUCKET             AWS_ACCESS_KEY_ID             AWS_SECRET_ACCESS_KEY             DR_OFFSITE_ENDPOINT             DR_OFFSITE_BUCKET             DR_OFFSITE_ACCESS_KEY_ID             DR_OFFSITE_SECRET_ACCESS_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              missing+=("$name")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error::Production DR is not configured. Missing secret-backed values: ${missing[*]}"
+            exit 1
+          fi
+
+          if [ "$DR_OFFSITE_ENDPOINT" = "$R2_ENDPOINT" ] && [ "$DR_OFFSITE_BUCKET" = "$R2_BUCKET" ]; then
+            echo "::error::DR off-site destination must not be the production R2 bucket."
+            exit 1
+          fi
+
+      - name: Install MongoDB Database Tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="100.19.0"
+          archive="mongodb-database-tools-ubuntu2404-x86_64-${version}.tgz"
+          curl --fail --silent --show-error --location             "https://fastdl.mongodb.org/tools/db/${archive}"             --output "/tmp/${archive}"
+          tar -xzf "/tmp/${archive}" -C /tmp
+          echo "/tmp/mongodb-database-tools-ubuntu2404-x86_64-${version}/bin" >> "$GITHUB_PATH"
+
+      - name: Verify backup tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          mongodump --version
+          aws --version
+          sha256sum --version | head -1
+
+      - name: Create verified MongoDB backup
+        shell: bash
+        env:
+          BACKUP_DIR: backups/mongodb
+        run: npm run backup:database:verified
+
+      - name: Create verified R2 media backup
+        shell: bash
+        env:
+          MEDIA_BACKUP_DIR: backups/r2
+        run: npm run backup:media:r2
+
+      - name: Copy verified artifacts to independent off-site storage
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DR_OFFSITE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DR_OFFSITE_SECRET_ACCESS_KEY }}
+        run: |
+          set -euo pipefail
+          prefix="almeaa/$(date -u +%Y/%m/%d)/run-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          aws --endpoint-url "$DR_OFFSITE_ENDPOINT" s3 cp             backups/mongodb/ "s3://$DR_OFFSITE_BUCKET/$prefix/mongodb/"             --recursive --only-show-errors
+          aws --endpoint-url "$DR_OFFSITE_ENDPOINT" s3 cp             backups/r2/ "s3://$DR_OFFSITE_BUCKET/$prefix/r2/"             --recursive --only-show-errors
+
+          mongo_count="$(aws --endpoint-url "$DR_OFFSITE_ENDPOINT" s3 ls             "s3://$DR_OFFSITE_BUCKET/$prefix/mongodb/" --recursive | wc -l | tr -d ' ')"
+          media_count="$(aws --endpoint-url "$DR_OFFSITE_ENDPOINT" s3 ls             "s3://$DR_OFFSITE_BUCKET/$prefix/r2/" --recursive | wc -l | tr -d ' ')"
+
+          if [ "$mongo_count" -lt 3 ]; then
+            echo "::error::Off-site MongoDB backup evidence is incomplete."
+            exit 1
+          fi
+          if [ "$media_count" -lt 3 ]; then
+            echo "::error::Off-site R2 backup evidence is incomplete."
+            exit 1
+          fi
+
+          {
+            echo "### Production DR backup"
+            echo "- commit: \`$GITHUB_SHA\`"
+            echo "- UTC: \`$(date -u +%FT%TZ)\`"
+            echo "- MongoDB off-site artifacts: \`$mongo_count\`"
+            echo "- R2 off-site artifacts: \`$media_count\`"
+            echo "- destination prefix: \`$prefix\`"
+          } >> "$GITHUB_STEP_SUMMARY"
