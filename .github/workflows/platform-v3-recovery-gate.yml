@@ -282,6 +282,10 @@ jobs:
         run: npm run smoke:production-hardening
       - name: Production audit
         run: npm run smoke:production-audit
+      - name: Disaster recovery contract
+        run: npm run smoke:disaster-recovery
+      - name: ALM-PRD-001 234-237 closure contract
+        run: npm run smoke:production-closure-234-237
       - name: Real usage readiness
         run: npm run smoke:real-usage-readiness
       - name: Learner reference audit stays read-only

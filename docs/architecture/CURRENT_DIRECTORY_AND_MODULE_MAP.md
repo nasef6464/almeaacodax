@@ -116,7 +116,7 @@ Line count is only a signal. Split when responsibilities, state ownership, autho
 | Notification delivery | `NotificationDelivery` + Redis + BullMQ | some legacy audience resolution |
 | Account erasure / privacy lifecycle | `modules/privacy/application/deleteUserLifecycle.ts` + `PRIVACY_DATA_LIFECYCLE_RETENTION_MATRIX.md` | exact retention durations for retained history remain policy-dependent |
 | Media | external URL/CDN references; production question images verified on Cloudflare R2 public delivery | application stores URL/key metadata; R2 object bytes require independent recovery evidence |
-| Disaster recovery | `DISASTER_RECOVERY_RUNBOOK.md` + verified Mongo/R2 backup/restore scripts | live scheduling, independent off-site destination and measured restore drills remain deployment evidence |
+| Disaster recovery | `DISASTER_RECOVERY_RUNBOOK.md` + verified Mongo/R2 backup/restore scripts + fail-closed `.github/workflows/production-dr-backup.yml` | scheduler code exists; live secret-backed runs, independent off-site evidence and measured full restore drills remain deployment evidence. A FREE Frankfurt recovery/staging Atlas cluster exists and is not production. |
 | Production release identity | `server/src/observability/releaseIdentity.ts` + health payload + post-deploy identity smoke | Vercel is the frontend release owner; Render backend SHA must match the intended GitHub release before closure |
 
 ## 5. Runtime areas that should NOT be restructured for appearance
