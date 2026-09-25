@@ -15,6 +15,9 @@ const [
   voiceEditor,
   results,
   voicePlayer,
+  reviewSession,
+  questionAssistant,
+  aiMedia,
   aiRoutes,
 ] = await Promise.all([
   read("server/src/models/Question.ts"),
@@ -29,6 +32,9 @@ const [
   read("dashboards/admin/builders/QuestionVoiceExplanationEditor.tsx"),
   read("pages/Results.tsx"),
   read("components/results/QuestionVoiceExplanationPlayer.tsx"),
+  read("pages/ReviewSession.tsx"),
+  read("components/results/QuestionAssistantPanel.tsx"),
+  read("services/aiMediaClient.ts"),
   read("server/src/routes/ai.routes.ts"),
 ]);
 
@@ -107,11 +113,24 @@ check("admin editor supports text, upload and microphone recording", () => {
   includes(voiceEditor, "uploadQuestionExplanationAudio");
 });
 
-check("post-result review plays teacher audio or reads manual teacher text", () => {
+check("post-result and practice review play teacher audio or read manual teacher text", () => {
   includes(results, "QuestionVoiceExplanationPlayer");
+  includes(reviewSession, "QuestionVoiceExplanationPlayer");
+  includes(reviewSession, "voiceExplanation={current.question.voiceExplanation}");
   includes(voicePlayer, "<audio controls");
   includes(voicePlayer, "SpeechSynthesisUtterance");
   includes(voicePlayer, "utterance.lang = 'ar-SA'");
+});
+
+check("question tutor voice reuses low-cost browser STT/TTS and isolates each question session", () => {
+  includes(questionAssistant, "recognizeArabicOnce");
+  includes(questionAssistant, "speakArabic");
+  includes(questionAssistant, "اسأل المعلم صوتيًا");
+  includes(questionAssistant, "قراءة رد المعلم صوتيًا");
+  includes(questionAssistant, "tutorSessionIdRef.current = createQuestionTutorSessionId()");
+  includes(questionAssistant, "[context, questionId, resultId]");
+  includes(aiMedia, "SpeechRecognition");
+  includes(aiMedia, "SpeechSynthesisUtterance");
 });
 
 check("question assistant prioritizes the submitted teacher explanation snapshot", () => {
