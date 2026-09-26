@@ -41,7 +41,7 @@
 ---
 
 ### PLAN 1 — Repository Reconciliation & Missing-Work Closure
-**الحالة: NEXT**
+**الحالة: CLOSED ✅**
 
 الهدف: ضمان أن `main` يحتوي كل الوظائف المعتمدة، بدون دمج فروع قديمة بالجملة.
 
@@ -57,12 +57,22 @@
 3. إثبات أن Adaptive 0–11، Student Review، AI Platform، sidebar، quant image parity، production closure tooling ممثلة على main.
 4. لا merge wholesale لأي فرع diverged تاريخي.
 
-**Exit Gate:** لا توجد feature معتمدة موجودة فقط خارج `main`.
+تم:
+- إعادة تطبيق فجوة PR #260 فقط: teacher voice playback داخل `ReviewSession` مع الحفاظ على Smart Tutor والـmobile quant UI.
+- تمديد smoke contract لتثبيت هذا السلوك.
+- إعادة تطبيق R2 V2 reachability tooling بشكل يدوي current-compatible، مع فصل reachability عن visual correctness وربطه بقواعد #264.
+- توثيق matrix للـPRs والفروع التاريخية وإثبات أن الأعمال المعتمدة ممثلة على main.
+- عدم دمج أي stale/diverged branch wholesale.
+
+Evidence:
+`docs/MASTER_CONTROL/PLAN_1_RECONCILIATION_EVIDENCE_AR.md`
+
+**Exit Gate: PASS عند دمج PR الخاص بالخطة بعد required CI.**
 
 ---
 
 ### PLAN 2 — Production Closure / Runtime / DR / Governance
-**الحالة: WAITING AFTER PLAN 1**
+**الحالة: NEXT**
 
 المهام الرئيسية:
 - #234 Runtime integrations: Redis / Sentry / R2 / Google OAuth live evidence.

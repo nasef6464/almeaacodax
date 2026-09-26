@@ -7,8 +7,8 @@
 | Plan | الحالة | التالي |
 |---|---|---|
 | 0 — Master Control & Safe Delivery | CLOSED ✅ | ابدأ Plan 1 |
-| 1 — Repository Reconciliation | NEXT | PR #260 gap + R2 audit tooling decision |
-| 2 — Production Closure | WAITING | #234–#237 |
+| 1 — Repository Reconciliation | CLOSED ✅ | voice gap + R2 tooling reconciled |
+| 2 — Production Closure | NEXT | #234–#237 |
 | 3 — Speed/Bandwidth | WAITING | #268 |
 | 4 — Data Model/Storage | WAITING FOR DR | بعد Plan 2 baseline |
 | 5 — Residual Architecture | WAITING | auth/App/quiz/store residuals |
@@ -38,14 +38,14 @@ Ruleset: `Protect main`
 - verification commit: `ab30963e0fd9e45e94bed31bd24499e107e609ad`.
 - deployment records for that verification window: **0**.
 
-## Current known residuals entering PLAN 1
+## PLAN 1 closure
 
-1. PR #260 closed/not merged:
-   - only proven missing behavior: static teacher `voiceExplanation` playback inside `ReviewSession`.
-   - do not cherry-pick whole PR.
-2. `chatgpt/r2-v2-audit`:
-   - workflow + script absent from main.
-   - review for clean reapply under current #264 contract.
+- PR #260 gap: minimal teacher voice playback reapplied inside `ReviewSession`; STT/TTS/Smart Tutor/session isolation preserved.
+- R2 V2 audit tooling: clean-reapplied as manual reachability evidence; it does not authorize image linking and #264 remains visual truth.
+- Reconciliation evidence: `docs/MASTER_CONTROL/PLAN_1_RECONCILIATION_EVIDENCE_AR.md`.
+- No stale branch was merged wholesale.
+
+**NEXT:** PLAN 2 — Production Closure / Runtime / DR / Governance.
 
 ## Open operational/domain issues
 

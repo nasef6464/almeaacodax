@@ -14,6 +14,7 @@ const [
   builder,
   voiceEditor,
   results,
+  reviewSession,
   voicePlayer,
   aiRoutes,
 ] = await Promise.all([
@@ -28,6 +29,7 @@ const [
   read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx"),
   read("dashboards/admin/builders/QuestionVoiceExplanationEditor.tsx"),
   read("pages/Results.tsx"),
+  read("pages/ReviewSession.tsx"),
   read("components/results/QuestionVoiceExplanationPlayer.tsx"),
   read("server/src/routes/ai.routes.ts"),
 ]);
@@ -112,6 +114,13 @@ check("post-result review plays teacher audio or reads manual teacher text", () 
   includes(voicePlayer, "<audio controls");
   includes(voicePlayer, "SpeechSynthesisUtterance");
   includes(voicePlayer, "utterance.lang = 'ar-SA'");
+});
+
+check("review session plays teacher voice explanation alongside the smart tutor", () => {
+  includes(reviewSession, "QuestionVoiceExplanationPlayer");
+  includes(reviewSession, "voiceExplanation?: QuestionVoiceExplanation");
+  includes(reviewSession, "voiceExplanation={current.question?.voiceExplanation}");
+  includes(reviewSession, "QuestionAssistantPanel");
 });
 
 check("question assistant prioritizes the submitted teacher explanation snapshot", () => {

@@ -58,3 +58,38 @@ Required checks:
 - المفتاح لم يكن مسجلًا في `APPROVED_CONTRACT_EXTENSIONS.json`.
 - تم تسجيله كـruntime env contract معتمد؛ لم يتغير سلوك التطبيق في هذا الإصلاح.
 - الهدف: إعادة Architecture Gate إلى التطابق مع main الفعلي بدل ترك regression صامت في CI.
+
+## 2026-09-26 — PLAN 1 repository reconciliation
+
+Baseline:
+`main@72193436ac77df781ce9cc1382737fba00cbc8a2`
+
+تم:
+- عزل PR #260 إلى فجوة واحدة قابلة لإعادة التطبيق.
+- إضافة `QuestionVoiceExplanationPlayer` إلى `ReviewSession` بدون cherry-pick للفرع القديم.
+- تحديث smoke voice contract.
+- مراجعة `chatgpt/r2-v2-audit` وإعادة تطبيق reachability tooling فقط.
+- تحويل R2 workflow إلى manual `workflow_dispatch` بدل branch-specific stale trigger.
+- توثيق merged/superseded/gap classification في `PLAN_1_RECONCILIATION_EVIDENCE_AR.md`.
+
+قيد الإغلاق:
+- required CI على exact PLAN 1 head.
+- merge عبر PR إلى main.
+
+بعد نجاحهما:
+**PLAN 1: CLOSED ✅**
+**NEXT: PLAN 2.**
+
+### CI reconciliation أثناء PLAN 1
+كشف Safety Gate عدم تطابق عداد المهارات مع عقد full-bank coverage.
+تم تثبيت القاعدة:
+- coverage غير متاح → fallback محلي مؤقت.
+- coverage متاح → server count authoritative، والمفقود = 0.
+وتم تحديث smoke contract المقابل.
+
+### Delivery workflow reconciliation أثناء PLAN 1
+بعد تعطيل Vercel Preview Branch Tracking في PLAN 0، ظل `refactor-v2-guard.yml` ينتظر Preview غير مسموح بإنشائه.
+تم جعل `Vercel preview deployment gate` policy-aware:
+- Preview disabled → job ينجح بدون polling أو deployment.
+- Preview enabled مستقبلًا → يمكن إعادة تفعيل polling بتغيير flag واحدة.
+الهدف: CI يطابق سياسة النشر الفعلية ولا يهدر 12 دقيقة في انتظار مورد ممنوع.

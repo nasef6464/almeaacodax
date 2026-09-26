@@ -562,7 +562,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                       const subSkillQuizzes = getQuizzesForSubSkill(subSkill.id);
                       const subSkillLibraryItems = getLibraryItemsForSubSkill(subSkill.id);
                       const questionCount = subSkillCounts
-                        ? (subSkillCounts[subSkill.id] ?? (subSkillQuestions.length || subSkill.questionIds?.length || 0))
+                        ? (subSkillCounts[subSkill.id] || 0)
                         : (subSkillQuestions.length || subSkill.questionIds?.length || 0);
 
                       return (

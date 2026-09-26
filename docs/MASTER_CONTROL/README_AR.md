@@ -10,7 +10,8 @@
 2. `CURRENT_EXECUTION_STATUS_AR.md` — الحالة الحالية المختصرة.
 3. `ISSUES_AND_DECISIONS_AR.md` — المشاكل والقرارات المعمارية/التشغيلية.
 4. `EXECUTION_LOG_AR.md` — سجل التنفيذ والأدلة.
-5. `../REFERENCE_CENTER/README_AR.md` — خريطة مراجع الـDomain.
+5. `PLAN_1_RECONCILIATION_EVIDENCE_AR.md` — أدلة إغلاق مراجعة الفروع والفجوات.
+6. `../REFERENCE_CENTER/README_AR.md` — خريطة مراجع الـDomain.
 
 ## ترتيب الحقيقة
 

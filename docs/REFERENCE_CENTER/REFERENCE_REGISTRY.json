@@ -89,6 +89,11 @@
   ],
   "supporting": [
     {
+      "path": "docs/MASTER_CONTROL/PLAN_1_RECONCILIATION_EVIDENCE_AR.md",
+      "role": "plan1_reconciliation_evidence",
+      "status": "active_evidence"
+    },
+    {
       "path": "docs/architecture/CODEX_EXECUTION_STATE.md",
       "role": "historical_execution_evidence",
       "status": "supporting"
