@@ -368,8 +368,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithGoogle = async () => {
     const returnTo = window.location.hash.replace(/^#/, '') || '/';
-    const baseUrl = api.baseUrl.endsWith('/api') ? api.baseUrl : `${api.baseUrl.replace(/\/$/, '')}/api`;
-    window.location.assign(`${baseUrl}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`);
+    const oauthApiBase =
+      import.meta.env.VITE_GOOGLE_OAUTH_API_BASE?.replace(/\/$/, '') ||
+      (import.meta.env.PROD ? 'https://almeaacodax-codex.onrender.com/api' : (api.baseUrl.endsWith('/api') ? api.baseUrl : `${api.baseUrl.replace(/\/$/, '')}/api`));
+    window.location.assign(`${oauthApiBase}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`);
   };
 
   const logout = async () => {
