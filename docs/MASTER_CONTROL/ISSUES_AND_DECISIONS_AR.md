@@ -66,3 +66,25 @@
 **المشكلة:** Safety workflow كان ينتظر Vercel Preview بعد أن PLAN 0 عطّل Preview Branch Tracking رسميًا.  
 **القرار:** إبقاء gate لكن جعله policy-aware؛ عندما previews disabled لا يحدث polling ويُعتبر الاختبار غير منطبق، وعند إعادة تمكينها يمكن قلب flag وإرجاع exact-head polling.  
 **السبب:** منع CI hang/failure على مورد محظور عمدًا بدون إضعاف باقي Safety Gate.
+
+## D-016 — Redis production activation
+**الحالة قبل PLAN 2:** `REDIS_URL` كان مستخدمًا فعليًا بواسطة Socket/Realtime، لكن distributed rate-limit وBullMQ/scheduler كانا معطلين بالـflags.  
+**القرار:** تفعيل `RATE_LIMIT_REDIS_ENABLED=true` و`NOTIFICATION_QUEUE_ENABLED=true` وconcurrency=5 على Render.  
+**الدليل:** `scale-ready=200` وMongo/Redis checks كلها pass.
+
+## D-017 — Post-deploy 429 handling
+**المشكلة:** GitHub Runner حصل على 429 transient من edge، والـhelper المسمى `fetchWithRetry` كان يعيد أي 4xx فورًا.  
+**القرار:** retry فقط لـ408/429/5xx مع bounded backoff/Retry-After؛ لا تغيير في حدود production ولا bypass أمني.
+
+## D-018 — Frankfurt recovery is not production
+**المشكلة:** وجود recovery cluster في Frankfurt قد يوحي أنه صالح للـcutover.  
+**الدليل:** recovery لا يحتوي parity: 10 collections فقط مقابل 66؛ users/questions/quizresults=0.  
+**القرار:** منع أي cutover إليه حتى full verified restore + parity + rollback.
+
+## D-019 — Atlas topology change requires owner approval
+**الخيارات:** paid Atlas Flex/M10 relocation إلى Frankfurt، أو full verified migration بعد DR.  
+**القرار:** لا billing-impacting upgrade ولا destructive connection-string cutover ضمن تفويض ضمني. يلزم owner approval/evidence.
+
+## D-020 — Atlas broad allowlist
+**المشكلة:** `0.0.0.0/0` ما زالت موجودة رغم وجود Render CIDRs.  
+**القرار:** حذفها فقط من owner/admin control ثم smoke فوري؛ connector الحالي لا يملك delete access-list action.
