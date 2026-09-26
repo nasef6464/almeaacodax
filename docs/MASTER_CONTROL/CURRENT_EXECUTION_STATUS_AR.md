@@ -8,7 +8,7 @@
 |---|---|---|
 | 0 — Master Control & Safe Delivery | CLOSED ✅ | ابدأ Plan 1 |
 | 1 — Repository Reconciliation | CLOSED ✅ | voice gap + R2 tooling reconciled |
-| 2 — Production Closure | NEXT | #234–#237 |
+| 2 — Production Closure | IN PROGRESS ⚠️ | runtime green; DR/topology/Atlas owner blockers remain |
 | 3 — Speed/Bandwidth | WAITING | #268 |
 | 4 — Data Model/Storage | WAITING FOR DR | بعد Plan 2 baseline |
 | 5 — Residual Architecture | WAITING | auth/App/quiz/store residuals |
@@ -46,6 +46,21 @@ Ruleset: `Protect main`
 - No stale branch was merged wholesale.
 
 **NEXT:** PLAN 2 — Production Closure / Runtime / DR / Governance.
+
+## PLAN 2 current state
+
+- Managed Redis: **LIVE PASS** — rate-limit + queue + realtime + scheduler; `scale-ready=200`.
+- Google OAuth start: **LIVE PASS** — Google redirect + canonical Render callback.
+- Sentry: runtime configured; final live event proof will run after PLAN 2 merge.
+- R2: runtime configured; final one-time presign/PUT/public-GET proof will run after PLAN 2 merge.
+- DR: **BLOCKED** — nine GitHub Actions secrets are absent; the real scheduled workflow fails closed before backup.
+- Frankfurt Atlas recovery: **NOT A FULL RESTORE** — do not cut over.
+- Mongo topology: Render Frankfurt ↔ Atlas Singapore remains cross-region.
+- GitHub governance: closed.
+- Atlas network: `0.0.0.0/0` still present; owner/admin removal + smoke required.
+- Evidence: `docs/MASTER_CONTROL/PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md`.
+
+**PLAN 2 is not CLOSED yet. PLAN 3 must wait.**
 
 ## Open operational/domain issues
 

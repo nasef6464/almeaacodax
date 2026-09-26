@@ -58,7 +58,12 @@ export function createRateLimiter(options: RateLimitOptions) {
   const useRedis = Boolean(redis && isRedisConfigured());
 
   if (!useRedis && env.NODE_ENV === "production") {
-    console.warn(`[rate-limit] ${options.keyPrefix} is using in-memory limits because REDIS_URL is not configured`);
+    const reason = !env.RATE_LIMIT_REDIS_ENABLED
+      ? "RATE_LIMIT_REDIS_ENABLED=false"
+      : !isRedisConfigured()
+        ? "REDIS_URL is not configured"
+        : "Redis client is unavailable";
+    console.warn(`[rate-limit] ${options.keyPrefix} is using in-memory limits because ${reason}`);
   }
 
   return rateLimit({

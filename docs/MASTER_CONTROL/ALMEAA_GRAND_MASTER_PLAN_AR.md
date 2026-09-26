@@ -72,7 +72,7 @@ Evidence:
 ---
 
 ### PLAN 2 — Production Closure / Runtime / DR / Governance
-**الحالة: NEXT**
+**الحالة: IN PROGRESS ⚠️ — external owner/billing controls remain**
 
 المهام الرئيسية:
 - #234 Runtime integrations: Redis / Sentry / R2 / Google OAuth live evidence.
@@ -81,6 +81,8 @@ Evidence:
 - #237 Governance/Network: branch/ruleset أصبح جزءه GitHub مغلقًا؛ يكمل ما بقي من network/allowlists/release operations.
 - post-deploy smoke + release identity.
 - لا Production cutover بلا rollback/restore proof.
+
+**Current evidence:** `docs/MASTER_CONTROL/PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md`
 
 **Exit Gate:** #234–#237 مغلقة بالأدلة الحية.
 
