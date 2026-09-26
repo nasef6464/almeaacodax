@@ -154,8 +154,8 @@ export const SubSkillQuestionsPreview: React.FC<SubSkillQuestionsPreviewProps> =
                   )}
 
                   <div className="mt-2 flex items-center justify-between gap-2 pt-1 border-t border-gray-200/50 text-[11px]">
-                    <div className="flex items-center gap-1.5 text-gray-400">
-                      <span>كود: {question.id.slice(-6)}</span>
+                    <div className="flex items-center gap-1.5 text-gray-500 font-mono font-bold">
+                      <span>{question.questionCode || `كود: ${question.id.slice(-6)}`}</span>
                       {question.videoUrl && (
                         <span className="text-indigo-500 flex items-center gap-0.5" title="يتضمن فيديو شرح">
                           <Video size={12} />
@@ -167,11 +167,15 @@ export const SubSkillQuestionsPreview: React.FC<SubSkillQuestionsPreviewProps> =
                 </div>
               );
             })}
-            {totalCount > questions.length && (
-              <div className="text-xs text-gray-500 text-center py-1 font-medium">
-                + {totalCount - questions.length} سؤال إضافي مسجل في بنك الأسئلة
-              </div>
-            )}
+            <div className="pt-2 flex items-center justify-between text-xs text-gray-500 border-t border-gray-100">
+              <span>{totalCount > questions.length ? `+ ${totalCount - questions.length} سؤال إضافي` : `إجمالي ${totalCount} سؤال`}</span>
+              <a
+                href={`/#/admin-dashboard?tab=questions&skillId=${encodeURIComponent(subSkillId)}`}
+                className="font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
+              >
+                عرض الكل في بنك الأسئلة ←
+              </a>
+            </div>
           </>
         ) : (
           <div className="text-center py-6 text-sm text-gray-400 border border-dashed border-gray-200 rounded-lg">

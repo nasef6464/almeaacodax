@@ -1825,16 +1825,35 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1 max-w-[200px]">
-                        {question.skillIds?.map((skillId) => {
-                          const subSkill = nestedSubSkills.find((item) => item.id === skillId);
-                          return subSkill ? (
-                            <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold border border-indigo-100/60">
-                              {subSkill.name}
-                            </span>
-                          ) : null;
-                        })}
-                        {!question.skillIds?.length && <span className="text-xs text-gray-400">غير مربوط</span>}
+                      <div className="flex flex-col gap-1 max-w-[220px]">
+                        {question.sectionId && (
+                          <div className="text-[11px] font-bold text-gray-700">
+                            {sections.find((s) => s.id === question.sectionId)?.name || ''}
+                          </div>
+                        )}
+                        <div className="flex flex-wrap gap-1">
+                          {(() => {
+                            const ids = (question.skillIds && question.skillIds.length > 0)
+                              ? question.skillIds
+                              : (question.subSkillId ? [question.subSkillId] : []);
+                            if (ids.length === 0) {
+                              return <span className="text-xs text-gray-400">غير مربوط</span>;
+                            }
+                            return ids.map((skillId) => {
+                              const subSkill =
+                                nestedSubSkills.find((item) => item.id === skillId) ||
+                                skills.flatMap((s) => s.subSkills || []).find((sub) => sub.id === skillId);
+                              return (
+                                <span
+                                  key={skillId}
+                                  className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md text-xs font-bold border border-indigo-100"
+                                >
+                                  {subSkill?.name || skillId}
+                                </span>
+                              );
+                            });
+                          })()}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

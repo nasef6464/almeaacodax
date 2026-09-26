@@ -561,23 +561,34 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                       const subSkillQuestions = getQuestionsForSubSkill(subSkill.id);
                       const subSkillQuizzes = getQuizzesForSubSkill(subSkill.id);
                       const subSkillLibraryItems = getLibraryItemsForSubSkill(subSkill.id);
+                      const questionCount = subSkillCounts
+                        ? (subSkillCounts[subSkill.id] ?? (subSkillQuestions.length || subSkill.questionIds?.length || 0))
+                        : (subSkillQuestions.length || subSkill.questionIds?.length || 0);
 
                       return (
                         <div key={subSkill.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                          <div className="p-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
-                            <div className="flex items-center gap-3 flex-1 cursor-pointer" onClick={() => setExpandedSubSkillId(expandedSubSkillId === subSkill.id ? null : subSkill.id)}>
-                              <CornerDownLeft size={18} className="text-gray-400" />
-                              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-100 text-indigo-600">
+                          <div className="p-4 flex items-center justify-between gap-3 bg-gray-50 hover:bg-gray-100 transition-colors">
+                            <div
+                              className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer"
+                              onClick={() => setExpandedSubSkillId(expandedSubSkillId === subSkill.id ? null : subSkill.id)}
+                            >
+                              <CornerDownLeft size={18} className="text-gray-400 shrink-0" />
+                              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-100 text-indigo-600 shrink-0">
                                 <Target size={16} />
                               </div>
-                              <div>
-                                <h5 className="font-bold text-gray-800">{subSkill.name}</h5>
-                                <p className="text-xs text-gray-500">
-                                  {subSkillLessons.length} درس · {subSkillCounts ? (subSkillCounts[subSkill.id] || 0) : '—'} سؤال · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h5 className="font-bold text-gray-800 truncate">{subSkill.name}</h5>
+                                  <span className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/70">
+                                    {questionCount} سؤال
+                                  </span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                  {subSkillLessons.length} درس · {subSkillQuizzes.length} اختبار · {subSkillLibraryItems.length} ملف
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 shrink-0">
                               <button
                                 onClick={() => openEditSubSkillModal(subSkill)}
                                 className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

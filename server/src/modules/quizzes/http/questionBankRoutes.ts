@@ -46,6 +46,7 @@ const buildQuestionSummaryCacheKey = (query: ReturnType<typeof questionListQuery
     subject: query.subject || "",
     sectionId: query.sectionId || "",
     skillId: query.skillId || "",
+    skillLinkStatus: query.skillLinkStatus || "",
   });
 
 export const questionBankRouter = Router();
@@ -59,6 +60,8 @@ questionBankRouter.get(
     const canUseSummaryCache =
       query.summary &&
       query.noTotal &&
+      !query.paginate &&
+      !query.includeCoverage &&
       !query.ids &&
       !query.search &&
       !query.approvalStatus &&
