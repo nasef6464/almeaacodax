@@ -86,3 +86,10 @@ Baseline:
 - coverage غير متاح → fallback محلي مؤقت.
 - coverage متاح → server count authoritative، والمفقود = 0.
 وتم تحديث smoke contract المقابل.
+
+### Delivery workflow reconciliation أثناء PLAN 1
+بعد تعطيل Vercel Preview Branch Tracking في PLAN 0، ظل `refactor-v2-guard.yml` ينتظر Preview غير مسموح بإنشائه.
+تم جعل `Vercel preview deployment gate` policy-aware:
+- Preview disabled → job ينجح بدون polling أو deployment.
+- Preview enabled مستقبلًا → يمكن إعادة تفعيل polling بتغيير flag واحدة.
+الهدف: CI يطابق سياسة النشر الفعلية ولا يهدر 12 دقيقة في انتظار مورد ممنوع.

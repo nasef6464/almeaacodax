@@ -61,3 +61,8 @@
 **المشكلة:** تعديل سابق سمح بالرجوع لعداد محلي حتى بعد نجاح full-bank server coverage عند غياب مفتاح subskill.  
 **القرار:** fallback المحلي مسموح فقط عندما coverage غير متاح؛ بعد نجاحه يكون server map هو الحقيقة وغياب المفتاح = 0.  
 **السبب:** منع رجوع عدادات أول صفحة/بيانات محلية باعتبارها Full-bank coverage.
+
+## D-015 — Vercel preview CI gate follows delivery policy
+**المشكلة:** Safety workflow كان ينتظر Vercel Preview بعد أن PLAN 0 عطّل Preview Branch Tracking رسميًا.  
+**القرار:** إبقاء gate لكن جعله policy-aware؛ عندما previews disabled لا يحدث polling ويُعتبر الاختبار غير منطبق، وعند إعادة تمكينها يمكن قلب flag وإرجاع exact-head polling.  
+**السبب:** منع CI hang/failure على مورد محظور عمدًا بدون إضعاف باقي Safety Gate.

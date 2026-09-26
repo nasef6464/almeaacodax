@@ -345,14 +345,29 @@ jobs:
     needs: baseline-quality-gate
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      # PLAN 0 delivery policy: Vercel Preview Branch Tracking is disabled.
+      # Flip this to "true" only if project-level preview deployments are re-enabled.
+      VERCEL_PREVIEW_DEPLOYMENTS_ENABLED: "false"
     steps:
+      - name: Read preview deployment policy
+        id: preview-policy
+        shell: bash
+        run: |
+          echo "enabled=${VERCEL_PREVIEW_DEPLOYMENTS_ENABLED}" >> "$GITHUB_OUTPUT"
+          if [ "${VERCEL_PREVIEW_DEPLOYMENTS_ENABLED}" != "true" ]; then
+            echo "Vercel preview deployments are disabled by delivery policy; exact-head preview polling is not applicable."
+          fi
+
       - name: Checkout exact PR head for deployability comparison
+        if: steps.preview-policy.outputs.enabled == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 50
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Wait for Vercel preview to become ready
+        if: steps.preview-policy.outputs.enabled == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           PUSH_SHA: ${{ github.sha }}
