@@ -68,21 +68,41 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
     [filteredSubjects, sections, selectedPathId, selectedSubjectId, subjectId]
   );
 
-  const relatedSubSkills = useMemo(
-    () => skills.filter((skill) => mainSkills.some((section) => section.id === skill.sectionId)).sort((a, b) => a.name.localeCompare(b.name, 'ar')),
-    [mainSkills, skills]
-  );
-
   const subSkillsByMainSkill = useMemo(() => {
-    const map = new Map<string, Skill[]>();
+    const map = new Map<string, any[]>();
     mainSkills.forEach((section) => {
-      map.set(
-        section.id,
-        relatedSubSkills.filter((skill) => skill.sectionId === section.id)
-      );
+      const parentSkill = skills.find((sk) => sk.sectionId === section.id || sk.id === section.id);
+      if (parentSkill && Array.isArray(parentSkill.subSkills) && parentSkill.subSkills.length > 0) {
+        map.set(
+          section.id,
+          parentSkill.subSkills.map((sub) => ({
+            id: sub.id,
+            name: sub.name,
+            code: sub.code,
+            description: sub.description || '',
+            order: sub.order,
+            sectionId: section.id,
+            subjectId: parentSkill.subjectId,
+            pathId: parentSkill.pathId,
+            parentSkillId: parentSkill.id,
+            parentSkillName: parentSkill.name,
+            lessonIds: parentSkill.lessonIds || [],
+            questionIds: parentSkill.questionIds || [],
+            createdAt: parentSkill.createdAt,
+          }))
+        );
+      } else {
+        const directSkills = skills.filter((sk) => sk.sectionId === section.id);
+        map.set(section.id, directSkills);
+      }
     });
     return map;
-  }, [mainSkills, relatedSubSkills]);
+  }, [mainSkills, skills]);
+
+  const relatedSubSkills = useMemo(
+    () => Array.from(subSkillsByMainSkill.values()).flat().sort((a, b) => (a.order || 0) - (b.order || 0)),
+    [subSkillsByMainSkill]
+  );
 
   const totalLinkedLessons = useMemo(
     () => lessons.filter((lesson) => (lesson.skillIds || []).some((skillId) => relatedSubSkills.some((skill) => skill.id === skillId))).length,
