@@ -56,3 +56,8 @@
 ## D-013 — R2 audit semantics
 **المشكلة:** tooling القديم مفيد لكنه مربوط بفرع قديم، وreachability لا يساوي visual/source approval.  
 **القرار:** clean-reapply كـmanual reachability audit فقط. الصور الناتجة Evidence للمراجعة البشرية؛ #264 وحده يحدد صحة المصدر/الترتيب/الإجابة قبل الربط.
+
+## D-014 — Skill coverage authority after load
+**المشكلة:** تعديل سابق سمح بالرجوع لعداد محلي حتى بعد نجاح full-bank server coverage عند غياب مفتاح subskill.  
+**القرار:** fallback المحلي مسموح فقط عندما coverage غير متاح؛ بعد نجاحه يكون server map هو الحقيقة وغياب المفتاح = 0.  
+**السبب:** منع رجوع عدادات أول صفحة/بيانات محلية باعتبارها Full-bank coverage.

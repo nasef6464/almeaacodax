@@ -78,3 +78,16 @@ PASS عند:
 بعد ذلك:
 **PLAN 1 = CLOSED**  
 **NEXT = PLAN 2 — Production Closure / Runtime / DR / Governance**
+
+## E — CI كشف regression قائمًا على main في عدادات المهارات
+
+أثناء PLAN 1 كشف `Refactor V2 Safety Gate` أن `smoke-question-skill-full-coverage-contract` لا يطابق تعديل `e60a8f...`.
+
+المراجعة أثبتت نقطة سلوكية فعلية:
+- قبل اكتمال/عند فشل server coverage يمكن استخدام fallback محلي للحفاظ على responsive UI.
+- بعد نجاح server coverage يجب أن يكون السيرفر هو الحقيقة؛ غياب subskill من map يعني `0`، وليس الرجوع لأسئلة محلية/صفحة حالية.
+
+تم:
+- تعديل `SkillsTreeManager` ليستخدم `0` من server truth بعد تحميل coverage.
+- تحديث smoke contract ليحمي هذا السلوك الجديد.
+- لم يتغير API ولا taxonomy ولا بيانات production.

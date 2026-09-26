@@ -79,3 +79,10 @@ Baseline:
 بعد نجاحهما:
 **PLAN 1: CLOSED ✅**
 **NEXT: PLAN 2.**
+
+### CI reconciliation أثناء PLAN 1
+كشف Safety Gate عدم تطابق عداد المهارات مع عقد full-bank coverage.
+تم تثبيت القاعدة:
+- coverage غير متاح → fallback محلي مؤقت.
+- coverage متاح → server count authoritative، والمفقود = 0.
+وتم تحديث smoke contract المقابل.
