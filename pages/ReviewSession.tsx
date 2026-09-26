@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
 import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
+import { QuestionVoiceExplanationPlayer } from "../components/results/QuestionVoiceExplanationPlayer";
+import type { QuestionVoiceExplanation } from "../types";
 import { getLearnerOptionLabel, usesImageEmbeddedOptions } from "../utils/quizPresentation";
 
 type ReviewItem = {
@@ -19,6 +21,7 @@ type ReviewItem = {
     imageUrl?: string;
     imageAlt?: string;
     optionsEmbeddedInImage?: boolean;
+    voiceExplanation?: QuestionVoiceExplanation;
   };
 };
 
@@ -185,6 +188,13 @@ const ReviewSession: React.FC = () => {
           </div>
         ) : null}
       </div>
+
+      {current?.questionId ? (
+        <QuestionVoiceExplanationPlayer
+          key={`review-teacher-voice-${current.questionId}`}
+          voiceExplanation={current.question?.voiceExplanation}
+        />
+      ) : null}
 
       {current?.questionId ? (
         <QuestionAssistantPanel
