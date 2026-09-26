@@ -48,3 +48,11 @@
 **المشكلة:** #267 أضاف `VITE_GOOGLE_OAUTH_API_BASE` إلى runtime لكن architecture allowlist لم تُحدَّث.  
 **الأثر:** `Core build + architecture` يفشل على main/PRs اللاحقة رغم أن التغيير مقصود.  
 **القرار:** إضافة المفتاح إلى `APPROVED_CONTRACT_EXTENSIONS.json` كامتداد runtime معتمد؛ لا تغيير لسلوك OAuth نفسه.
+
+## D-012 — ReviewSession teacher voice gap
+**المشكلة:** backend يعيد `voiceExplanation` لكن `ReviewSession` لا يعرضه.  
+**القرار:** إضافة `QuestionVoiceExplanationPlayer` فقط، keyed by questionId، مع الإبقاء على `QuestionAssistantPanel` وكل UI الحالي. لا cherry-pick لـ#260.
+
+## D-013 — R2 audit semantics
+**المشكلة:** tooling القديم مفيد لكنه مربوط بفرع قديم، وreachability لا يساوي visual/source approval.  
+**القرار:** clean-reapply كـmanual reachability audit فقط. الصور الناتجة Evidence للمراجعة البشرية؛ #264 وحده يحدد صحة المصدر/الترتيب/الإجابة قبل الربط.
