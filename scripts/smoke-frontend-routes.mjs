@@ -53,18 +53,37 @@ async function check(name, fn) {
 async function fetchWithRetry(url, options = {}, attempts = 8) {
   let lastError;
   for (let index = 0; index < attempts; index += 1) {
+    let retryDelayMs = Math.min(1500 * (index + 1), 6000);
     try {
-      const response = await fetch(url, options);
-      if (response.ok || response.status < 500) {
-        return response;
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'user-agent': 'almeaa-production-smoke/1.0',
+          ...(options.headers || {}),
+        },
+      });
+
+      const retryableStatus = response.status === 408 || response.status === 429 || response.status >= 500;
+      if (response.ok || !retryableStatus) return response;
+
+      const retryAfter = Number(response.headers.get('retry-after') || '');
+      if (Number.isFinite(retryAfter) && retryAfter > 0) {
+        retryDelayMs = Math.min(retryAfter * 1000, 30000);
       }
-      lastError = new Error(`${response.status} ${response.statusText}`);
+
+      const origin = response.headers.get('x-render-origin-server')
+        ? 'render'
+        : response.headers.get('x-vercel-id')
+          ? 'vercel-edge'
+          : response.headers.get('server') || 'unknown';
+      lastError = new Error(`${response.status} ${response.statusText} origin=${origin}`);
+      if (index < attempts - 1) {
+        console.warn(`Retryable production response ${response.status} from ${origin} for ${url} (attempt ${index + 1}/${attempts}); waiting ${retryDelayMs}ms.`);
+      }
     } catch (error) {
       lastError = error;
     }
-    if (index < attempts - 1) {
-      await sleep(Math.min(1500 * (index + 1), 6000));
-    }
+    if (index < attempts - 1) await sleep(retryDelayMs);
   }
   throw lastError instanceof Error ? lastError : new Error(String(lastError || 'fetch failed'));
 }
