@@ -1,23 +1,34 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": "2026-09-24",
-  "entryPoint": "docs/REFERENCE_CENTER/README_AR.md",
+  "schemaVersion": 2,
+  "updatedAt": "2026-09-26",
+  "entryPoint": "docs/MASTER_CONTROL/README_AR.md",
   "truthOrder": [
     "git-head",
     "AGENTS.md",
-    "docs/REFERENCE_CENTER/README_AR.md",
+    "docs/MASTER_CONTROL/README_AR.md",
+    "docs/MASTER_CONTROL/CURRENT_EXECUTION_STATUS_AR.md",
     "docs/REFERENCE_CENTER/REFERENCE_REGISTRY.json",
     "domain-reference"
   ],
   "canonical": [
     {
-      "path": "docs/architecture/CODEX_EXECUTION_STATE.md",
+      "path": "docs/MASTER_CONTROL/ALMEAA_GRAND_MASTER_PLAN_AR.md",
+      "role": "grand_execution_plan",
+      "status": "active"
+    },
+    {
+      "path": "docs/MASTER_CONTROL/CURRENT_EXECUTION_STATUS_AR.md",
       "role": "execution_state",
       "status": "active"
     },
     {
-      "path": "docs/architecture/CHAT_EXECUTION_GOALS_AR.md",
-      "role": "execution_plan",
+      "path": "docs/MASTER_CONTROL/ISSUES_AND_DECISIONS_AR.md",
+      "role": "decision_register",
+      "status": "active"
+    },
+    {
+      "path": "docs/MASTER_CONTROL/EXECUTION_LOG_AR.md",
+      "role": "execution_log",
       "status": "active"
     },
     {
@@ -56,78 +67,90 @@
       "status": "active"
     },
     {
-      "path": "docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md",
-      "role": "production_checkpoint",
-      "status": "active_evidence"
-    },
-    {
-      "path": "docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md",
-      "role": "production_closure_plan",
-      "status": "active"
-    },
-    {
       "path": "docs/architecture/AI_PLATFORM_OPERATING_MODEL_AR.md",
       "role": "ai_platform_operating_model",
       "status": "active"
     },
     {
       "path": "docs/architecture/AI_PLATFORM_EXECUTION_PLAN_AR.md",
-      "role": "ai_platform_execution_plan",
+      "role": "ai_platform_domain_plan",
       "status": "active"
     },
     {
       "path": "docs/architecture/AI_PLATFORM_CERTIFICATION_AR.md",
       "role": "ai_platform_certification",
       "status": "active_evidence"
+    },
+    {
+      "path": "docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md",
+      "role": "production_checkpoint",
+      "status": "active_evidence"
     }
   ],
   "supporting": [
     {
+      "path": "docs/architecture/CODEX_EXECUTION_STATE.md",
+      "role": "historical_execution_evidence",
+      "status": "supporting"
+    },
+    {
+      "path": "docs/architecture/CHAT_EXECUTION_GOALS_AR.md",
+      "role": "superseded_execution_plan",
+      "status": "supporting"
+    },
+    {
+      "path": "docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md",
+      "role": "production_domain_plan",
+      "status": "supporting"
+    },
+    {
       "path": "docs/architecture/QUESTION_BANK_V2_INGESTION_CONTRACT_AR.md",
-      "role": "question_ingestion_contract"
+      "role": "question_ingestion_contract",
+      "status": "supporting"
     },
     {
       "path": "docs/architecture/QUESTION_VOICE_EXPLANATION_V1_AR.md",
-      "role": "voice_contract"
+      "role": "voice_contract",
+      "status": "supporting"
     },
     {
       "path": "docs/architecture/ASSESSMENT_COMPLETION_REPORT_AR.md",
-      "role": "assessment_completion"
-    },
-    {
-      "path": "docs/architecture/ASSESSMENT_TEST_ROADMAP_AR.md",
-      "role": "assessment_test_roadmap"
+      "role": "assessment_completion",
+      "status": "supporting"
     },
     {
       "path": "docs/architecture/SCHOOLS_RBAC_AUDIT_AR.md",
-      "role": "schools_rbac"
-    },
-    {
-      "path": "docs/architecture/SCHOOL_MVP_COMPLETION_REPORT_AR.md",
-      "role": "school_mvp"
+      "role": "schools_rbac",
+      "status": "supporting"
     },
     {
       "path": "docs/architecture/SMART_CLASSROOM_AGENT_ENTRY_AR.md",
-      "role": "smart_classroom_entry"
+      "role": "smart_classroom_entry",
+      "status": "supporting"
     },
     {
       "path": "docs/architecture/DISASTER_RECOVERY_RUNBOOK.md",
-      "role": "disaster_recovery"
+      "role": "disaster_recovery",
+      "status": "supporting"
     }
   ],
   "historicalExamples": [
     {
       "path": "docs/CURRENT_DEVELOPMENT_STATUS_AR.md",
-      "reason": "May 2026 snapshot; newer execution state exists"
+      "reason": "old snapshot; Master Control supersedes execution status"
     },
     {
       "path": "docs/MASTER_DELIVERY_STATUS_AR.md",
-      "reason": "May 2026 snapshot; newer execution state exists"
+      "reason": "old snapshot; Master Control supersedes execution status"
     },
     {
       "path": "docs/archive_reports/",
       "reason": "archive by definition"
+    },
+    {
+      "path": "docs/architecture/RELEASE_HARDENING_EXECUTION_PLAN.md",
+      "reason": "completed historical hardening roadmap; retained as evidence"
     }
   ],
-  "policy": "Unregistered docs may still be useful evidence, but are not authoritative current-state sources unless linked by a canonical reference."
+  "policy": "Git HEAD and Master Control define execution truth. Unregistered or older plans may be useful evidence but cannot drive current execution unless explicitly linked by Master Control."
 }
