@@ -56,7 +56,10 @@ check('skills center counts only linked questions from full server coverage', ()
   }
   assert.ok(!skillsTree.includes('serverQuestionCount ?? fallbackLocalQuestionsCount'));
   assert.ok(!skillsTree.includes('subSkillCounts[subSkill.id] ?? subSkillQuestions.length'));
-  assert.ok(skillsTree.includes("subSkillCounts ? (subSkillCounts[subSkill.id] || 0) : '—'"));
+  assert.ok(!skillsTree.includes('subSkillCounts[subSkill.id] ?? (subSkillQuestions.length'));
+  assert.ok(skillsTree.includes('const questionCount = subSkillCounts'));
+  assert.ok(skillsTree.includes('? (subSkillCounts[subSkill.id] || 0)'));
+  assert.ok(skillsTree.includes(': (subSkillQuestions.length || subSkill.questionIds?.length || 0);'));
   assert.ok(skillsTree.includes("sectionQuestionCounts ? (sectionQuestionCounts[mainSkill.id] || 0) : '—'"));
 });
 
