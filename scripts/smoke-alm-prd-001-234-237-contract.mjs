@@ -8,7 +8,10 @@ const latency = read("scripts/measure-production-latency.mjs");
 const drWorkflow = read(".github/workflows/production-dr-backup.yml");
 const postDeploy = read(".github/workflows/post-deploy-smoke.yml");
 const drContract = read("scripts/smoke-disaster-recovery-contract.mjs");
-const closureDoc = read("docs/architecture/ALM_PRD_001_234_237_EXECUTION_2026-09-25_AR.md");
+const plan2Evidence = read("docs/MASTER_CONTROL/PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md");
+const frontendSmoke = read("scripts/smoke-frontend-routes.mjs");
+const r2LiveProof = read("scripts/smoke-r2-live-proof.mjs");
+const googleLiveProof = read("scripts/smoke-google-oauth-live-proof.mjs");
 
 assert.ok(
   speed.includes('${FRONTEND_URL}/api'),
@@ -44,11 +47,29 @@ assert.ok(drWorkflow.includes("Fail closed when DR secrets are incomplete"));
 assert.ok(!drWorkflow.includes("upload-artifact"));
 
 assert.ok(drContract.includes("production-dr-backup.yml"));
-assert.ok(closureDoc.includes("redis_not_configured_for_multi_instance_scale"));
-assert.ok(closureDoc.includes("almeaa-eu-recovery"));
-assert.ok(closureDoc.includes("protected=false"));
-assert.ok(closureDoc.includes("0.0.0.0/0"));
-assert.ok(closureDoc.includes("NOT PRODUCTION CERTIFIED"));
+
+assert.ok(frontendSmoke.includes("response.status === 429"));
+assert.ok(frontendSmoke.includes("retry-after"));
+assert.ok(postDeploy.includes("smoke:google-oauth-live-proof"));
+assert.ok(postDeploy.includes("smoke:r2-live-proof"));
+assert.ok(googleLiveProof.includes("accounts.google.com"));
+assert.ok(googleLiveProof.includes("almeaacodax-codex.onrender.com/api/auth/google/callback"));
+assert.ok(r2LiveProof.includes("/media/question-images/presign"));
+assert.ok(r2LiveProof.includes("sha256"));
+assert.ok(!r2LiveProof.includes("console.log(intent.uploadUrl"));
+
+for (const evidence of [
+  "scaleReady=true",
+  "dep-daru6pjncjis73f4f0m0",
+  "36222909358",
+  "9 GitHub Actions secrets",
+  "66 collections",
+  "10 collections",
+  "0.0.0.0/0",
+  "No production cutover",
+]) {
+  assert.ok(plan2Evidence.includes(evidence), `Plan 2 evidence must include ${evidence}`);
+}
 
 console.log(JSON.stringify({
   phase: "alm-prd-001-234-237-repository-closure",
