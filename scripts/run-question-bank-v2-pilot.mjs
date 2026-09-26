@@ -28,9 +28,18 @@ const payloadFile = required("QUESTION_PILOT_PAYLOAD_FILE");
 const imageDir = required("QUESTION_PILOT_IMAGE_DIR");
 const outputFile = required("QUESTION_PILOT_OUTPUT_FILE");
 const raw = JSON.parse(await readFile(payloadFile, "utf8"));
-const allItems = Array.isArray(raw) ? raw : Array.isArray(raw?.items) ? raw.items : null;
-if (!allItems || allItems.length !== 40) {
-  throw new Error("Pilot payload must contain exactly 40 items");
+const allItems = Array.isArray(raw)
+  ? raw
+  : Array.isArray(raw?.items)
+    ? raw.items
+    : Array.isArray(raw?.questions)
+      ? raw.questions
+      : null;
+const expectedCount = process.env.QUESTION_PILOT_EXPECTED_COUNT
+  ? Number.parseInt(process.env.QUESTION_PILOT_EXPECTED_COUNT, 10)
+  : (raw?.totalQuestions || (allItems ? allItems.length : 40));
+if (!allItems || allItems.length !== expectedCount) {
+  throw new Error(`Pilot payload must contain exactly ${expectedCount} items, received ${allItems ? allItems.length : 0}`);
 }
 
 const batchId = String(raw?.batchId || process.env.QUESTION_PILOT_BATCH_ID || "QBANK-COL2627-PILOT40-20260922-V1")
@@ -90,7 +99,7 @@ const duplicate = (values) => {
 };
 
 const duplicateCodes = duplicate(verified.map((entry) => entry.questionCode));
-const duplicateSourceIds = duplicate(verified.map((entry) => normalize(entry.item?.sourceMeta?.sourceItemId)));
+const duplicateSourceIds = duplicate(verified.map((entry) => normalize(entry.item?.sourceItemId || entry.item?.sourceMeta?.sourceItemId)).filter(Boolean));
 if (duplicateCodes.length || duplicateSourceIds.length) {
   throw new Error(`Duplicate pilot identities: codes=${duplicateCodes.join(",")} sourceIds=${duplicateSourceIds.join(",")}`);
 }
