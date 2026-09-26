@@ -1,5 +1,53 @@
 # ALMEAA — Codex Execution State
 
+## Question Bank V2 — Live Production Bank Execution (295 Questions Ingested, 0 Unlinked — Book 1 100% COMPLETE)
+- Status: `LIVE / 100% VERIFIED & INGESTED IN MONGODB ATLAS` on 2026-09-26.
+- Database Bank Total: **295 Questions** (Zero unlinked, 100% taxonomy-mapped to Section, Main Skill, and Sub-Skill).
+- Document Source: `تاسيس انشتين معدل .pdf` (`FND26` - 145 pages total).
+- Standards: Ultra-HD 600 DPI lossless WebP uploaded to Cloudflare R2, Vector circle masking (zero printed numbers visible), Clean UI (`explanation: ""` and `hint: ""`), Comprehensive Audio-First Voice Teacher (`voiceExplanation.text` and `aiContext`).
+- Book 1 (الباب الأول: الحساب والجبر - Pages 4 to 53) Coverage: **100% COMPLETE**:
+  - **Section 1 (أساسيات الأعداد والعمليات الحسابية)**: 27 Qs (100% complete)
+  - **Section 2 (قابلية القسمة وبواقي الأعداد)**: 19 Qs (100% complete)
+  - **Section 3 (الكسور الاعتيادية)**: 43 Qs (100% complete)
+  - **Section 4 (الأعداد العشرية)**: 27 Qs (100% complete)
+  - **Section 5 (الأسس والقوى)**: 83 Qs (100% complete)
+  - **Section 6 (الجذور والعمليات عليها)**: 59 Qs (100% complete)
+  - **Section 7 (الجبر والمتطابقات والمعادلات)**: 37 Qs (100% complete - all 4 subskills populated)
+- Recent Batches Ingested:
+  - **Batch 25**: Pages 50-51 (13 Qs: QDR-QNT-FND26-P050-Q19 and P051-Q19 to P051-Q30) -> Bank reached 284 Qs.
+  - **Batch 26**: Page 52 (11 Qs: QDR-QNT-FND26-P052-Q31 to P052-Q41) -> Bank reached 295 Qs (Book 1 Full Closure).
+- Next Batch Target: **Book 2 Launch — Batch 27** (Page 54: النسبة والتناسب, `skill_quant_08`).
+
+
+## Question Bank V2 — Canonical Foundation Book (FND26) Autonomous Extraction & Verification (Books 1, 2, 3, 4 100% Complete)
+
+- Status: `VERIFIED / 100% LOCAL PASS` on 2026-09-23.
+- Document Source: `تاسيس انشتين معدل .pdf` (`FND26` - 145 pages total).
+- Cumulative Verified Items: **652 Items** across 35 Batches (Pages 4 through 101 inclusive).
+- Execution Truth & Coverage:
+  1. **Book 1 (الباب الأول: الحساب والجبر - Pages 4 to 53)**:
+     - Batches 01 to 13: 276 items completely extracted, cropped at 300 DPI WebP, badge-masked, and schema-verified (100% PASS).
+  2. **Book 2 (الباب الثاني: النسب والتناسب والمئوية واستراتيجيات الحل - Pages 54 to 75)**:
+     - Batches 14 to 20: 149 items completely extracted, cropped at 300 DPI WebP, badge-masked, and schema-verified (100% PASS).
+  3. **Book 3 (الباب الثالث: السرعة والمسائل الحسابية المتقدمة والأعمار والمتتابعات والأنماط - Pages 76 to 92)**:
+     - Batches 21 to 29: 167 items completely extracted, cropped at 300 DPI WebP, badge-masked, and schema-verified (100% PASS).
+     - Breakdown:
+       - Chapter 1: مسائل السرعة والحركة (Pages 76-80, Q01-Q26, Batches 21-22, 26 items)
+       - Chapter 2: قوانين هامة في القدرات 2 (Pages 81-85, Q01-Q31, Batches 23-24, 31 items)
+       - Chapter 3: الزاوية بين العقربين والساعة والأعمار والدوريات والمتتابعات والأنماط والألغاز البصرية (Pages 86-92, Q01-Q53, Batches 25-29, 110 items)
+  4. **Book 4 (الباب الرابع: الإحصاء والاحتمالات ومبدأ العد - Pages 93 to 101)**:
+     - Batches 30 to 35: 60 items completely extracted, cropped at 300 DPI WebP, badge-masked, and schema-verified (100% PASS).
+     - Breakdown:
+       - Chapter 1: المتوسط الحسابي، الوسيط، المنوال، والمدى (Pages 94-98, Q01-Q36, Batches 30, 31, 32, 36 items)
+       - Chapter 2: فضاء العينة والاحتمالات البسيطة ومسائل الكرات ومبدأ العد والتباديل والتوافيق (Pages 99-101, Q01-Q24, Batches 33, 34, 35, 24 items)
+  5. **Quality & Pedagogical Standards**:
+     - 100% lossless 300 DPI WebP crops.
+     - 100% zero solution leakage verified via programmatic bounding box text audits and visual confirmation.
+     - Vector badge masking using canonical `badge_clean_template.png`.
+     - Canonical 95-subskill taxonomy mapping (`scratch/teaching_fingerprint_v1_95.json`).
+     - Spoken natural Arabic transcript (`speechText`) and comprehensive pedagogical annotations (`hint1`, `hint2`, `quduratFastMethod`, `fullExplanation`).
+  6. **Next Target**: Book 5 (الباب الخامس: الهندسة - Pages 102 to 145, starting with Batch 36 on Page 103: الزوايا والمستقيمات والمضلعات).
+
 ## Question Bank V2 — Quantitative Pilot 40 Ingestion & Content-Addressed R2 Verification
 
 - Status: `VERIFIED / PILOT RUNTIME INGESTED` on 2026-09-22.
